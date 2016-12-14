@@ -1,0 +1,84 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.neenbedankt.android-apt'
+
+android {
+    def gConfig = rootProject.extensions.getByName("ext")
+    compileSdkVersion gConfig.getAt("compileSdkVersion")
+    buildToolsVersion gConfig.getAt("buildToolsVersion")
+    defaultConfig {
+        minSdkVersion gConfig.getAt("minSdkVersion")
+        targetSdkVersion gConfig.getAt("targetSdkVersion")
+        versionCode gConfig.getAt("versionCode")
+        versionName gConfig.getAt("versionName")
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+    }
+}
+
+dependencies {
+    def testDependences = rootProject.ext.testDependencies;
+    def dataDependences = rootProject.ext.dataDependencies;
+    def sdkSoupportDependences = rootProject.ext.sdksoupportDependencies;
+    def developmentDependencies = rootProject.ext.developmentDependencies
+
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Sdksoupport dependencies
+    compile sdkSoupportDependences.appcompatV7
+    compile sdkSoupportDependences.supportV4
+    compile sdkSoupportDependences.design
+    compile sdkSoupportDependences.recyclerview
+    compile sdkSoupportDependences.rxpermissions
+
+    // Eventbus
+    compile dataDependences.androideventbus
+
+    // Dagger dependencies
+    compile dataDependences.dagger
+    provided dataDependences.javaxAnnotation
+    apt dataDependences.daggerCompiler
+
+
+
+    // Retrofit + rx + gson
+    compile dataDependences.retrofit
+    compile dataDependences.retrofitConverterGson
+    compile dataDependences.retrofitAdapterRxJava
+    compile dataDependences.rxJava
+    compile dataDependences.rxAndroid
+    compile dataDependences.rxlifecycle
+    compile dataDependences.rxlifecycleAndroid
+    compile dataDependences.rxlifecycleComponents
+    compile dataDependences.rxlifecycleNavi
+    compile dataDependences.rxlifecycleKotlin
+
+
+    compile dataDependences.gson
+
+    // Image
+    compile dataDependences.glide
+
+    // Log
+    compile dataDependences.timber
+
+    // Development
+    compile developmentDependencies.leakCanary
+
+    // Test
+    testCompile testDependences.junit
+
+
+}
