@@ -43,6 +43,9 @@ dependencies {
     compile sdkSoupportDependences.recyclerview
     compile sdkSoupportDependences.rxpermissions
 
+    // Butterknife
+    compile dataDependences.butterknife
+
     // Eventbus
     compile dataDependences.androideventbus
 
@@ -50,8 +53,6 @@ dependencies {
     compile dataDependences.dagger
     provided dataDependences.javaxAnnotation
     apt dataDependences.daggerCompiler
-
-
 
     // Retrofit + rx + gson
     compile dataDependences.retrofit
