@@ -1,8 +1,10 @@
 allprojects {
     repositories {
         jcenter()
+        maven { url "https://jitpack.io" }
     }
 }
+
 ext {
     //Android
     applicationId = "com.zhiyicx.thinksnsplus"
@@ -71,6 +73,8 @@ ext {
             butterknifeApt       : "com.jakewharton:butterknife-compiler:${butterKnifeVersion}",
             // log
             timber               : "com.jakewharton.timber:timber:4.1.2",
+            logger               : "com.orhanobut:logger:1.15"
+
 
     ]
     sdksoupportDependencies = [

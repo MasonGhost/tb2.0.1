@@ -4,6 +4,10 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 
+import com.zhiyicx.common.dagger.module.AppModule;
+import com.zhiyicx.common.dagger.module.ImageModule;
+import com.zhiyicx.common.net.intercept.GlobeHttpHandler;
+
 import java.util.LinkedList;
 
 import okhttp3.Interceptor;
@@ -16,12 +20,14 @@ import okhttp3.Interceptor;
  */
 
 public abstract class BaseApplication extends Application{
+    protected final String TAG = this.getClass().getSimpleName();
+
     static private BaseApplication mApplication;
     public LinkedList<BaseActivity> mActivityList;
     private ClientModule mClientModule;
     private AppModule mAppModule;
     private ImageModule mImagerModule;
-    protected final String TAG = this.getClass().getSimpleName();
+
 
 
     @Override
@@ -37,6 +43,8 @@ public abstract class BaseApplication extends Application{
                 .build();
         this.mAppModule = new AppModule(this);//提供application
         this.mImagerModule = new ImageModule();//图片加载框架默认使用glide
+
+
     }
 
 

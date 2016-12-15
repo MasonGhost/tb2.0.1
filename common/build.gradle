@@ -46,8 +46,14 @@ dependencies {
     // Butterknife
     compile dataDependences.butterknife
 
+    // Image
+    compile dataDependences.glide
+
     // Eventbus
     compile dataDependences.androideventbus
+
+    // Log
+    compile dataDependences.logger
 
     // Dagger dependencies
     compile dataDependences.dagger
@@ -65,15 +71,9 @@ dependencies {
     compile dataDependences.rxlifecycleComponents
     compile dataDependences.rxlifecycleNavi
     compile dataDependences.rxlifecycleKotlin
-
-
+    compile dataDependences.rxcache
+    compile dataDependences.rxcacheJolyglotGson
     compile dataDependences.gson
-
-    // Image
-    compile dataDependences.glide
-
-    // Log
-    compile dataDependences.timber
 
     // Development
     compile developmentDependencies.leakCanary
@@ -81,5 +81,7 @@ dependencies {
     // Test
     testCompile testDependences.junit
 
+    // Project
+    compile project(":rxerrorhandler")
 
 }
