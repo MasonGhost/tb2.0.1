@@ -10,7 +10,7 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.PopupWindow;
 
 /**
- * @Describe 自定义popupindow
+ * @Describe 自定义 popupindow,builder 模式
  * @Author Jungle68
  * @Date 2016/12/15
  * @Contact 335891510@qq.com
@@ -56,7 +56,7 @@ public class CustomPopupWindow extends PopupWindow {
     }
 
     /**
-     * 获得用于展示popup内容的view
+     * 获得用于展示 popup 内容的 view
      *
      * @return
      */
@@ -65,7 +65,7 @@ public class CustomPopupWindow extends PopupWindow {
     }
 
     /**
-     * 用于填充contentView,必须传ContextThemeWrapper(比如activity)不然popupwindow要报错
+     * 用于填充 contentView,必须传 ContextThemeWrapper (比如 activity )不然 popupwindow 要报错
      *
      * @param context
      * @param layoutId
@@ -92,11 +92,11 @@ public class CustomPopupWindow extends PopupWindow {
         private View contentView;
         private View parentView;
 
-        private boolean isOutsideTouch = true;//默认为true
-        private boolean isFocus = true;//默认为true
-        private boolean isWrap;
+        private boolean isOutsideTouch = true;// 默认为true
+        private boolean isFocus = true;// 默认为true
+        private boolean isWrap;// 是否wrap_content
         private int animationStyle = -1;
-        private Drawable backgroundDrawable = new ColorDrawable(0x00000000);//默认为透明
+        private Drawable backgroundDrawable = new ColorDrawable(0x00000000);// 默认为透明
         private CustomPopupWindowListener listener;
 
         private Builder() {

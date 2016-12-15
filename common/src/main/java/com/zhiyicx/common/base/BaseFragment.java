@@ -36,7 +36,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends RxFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mRootView = initView();
-        //绑定到butterknife
+        // 绑定到 butterknife
         mUnbinder = ButterKnife.bind(this, mRootView);
         return mRootView;
     }
@@ -45,8 +45,8 @@ public abstract class BaseFragment<P extends BasePresenter> extends RxFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mActivity = (BaseActivity) getActivity();
-        if (useEventBus())//如果要使用eventbus请将此方法返回true
-            EventBus.getDefault().register(this);//注册到事件主线
+        if (useEventBus())// 如果要使用 eventbus 请将此方法返回 true
+            EventBus.getDefault().register(this);// 注册到事件主线
         ComponentInject();
         initData();
     }
@@ -61,8 +61,8 @@ public abstract class BaseFragment<P extends BasePresenter> extends RxFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mPresenter != null) mPresenter.onDestroy();//释放资源
-        if (useEventBus())//如果要使用eventbus请将此方法返回true
+        if (mPresenter != null) mPresenter.onDestroy();// 释放资源
+        if (useEventBus())// 如果要使用 eventbus 请将此方法返回 true
             EventBus.getDefault().unregister(this);
     }
 
@@ -72,7 +72,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends RxFragment {
     protected abstract void ComponentInject();
 
     /**
-     * 是否使用eventBus,默认为使用(true)，
+     * 是否使用 eventBus,默认为使用(true)，
      *
      * @return
      */
@@ -87,13 +87,13 @@ public abstract class BaseFragment<P extends BasePresenter> extends RxFragment {
 
 
     /**
-     * 此方法是让外部调用使fragment做一些操作的,比如说外部的activity想让fragment对象执行一些方法,
-     * 建议在有多个需要让外界调用的方法时,统一传bundle,里面存一个what字段,来区分不同的方法,在setData
-     * 方法中就可以switch做不同的操作,这样就可以用统一的入口方法做不同的事,和message同理
+     * 此方法是让外部调用使 fragment 做一些操作的,比如说外部的 activity 想让 fragment 对象执行一些方法,
+     * 建议在有多个需要让外界调用的方法时,统一传 bundle,里面存一个 what 字段,来区分不同的方法,在 setData
+     * 方法中就可以 switch 做不同的操作,这样就可以用统一的入口方法做不同的事,和 message 同理
      * <p>
-     * 使用此方法时请注意调用时fragment的生命周期,如果调用此setData方法时onActivityCreated
-     * 还没执行,setData里调用presenter的方法时,是会报空的,因为dagger注入是在onActivityCreated
-     * 方法中执行的,如果要做一些初始化操作,可以不必让外部调setData,在内部onActivityCreated中
+     * 使用此方法时请注意调用时 fragment 的生命周期,如果调用此 setData 方法时 onActivityCreated
+     * 还没执行,setData 里调用 presenter 的方法时,是会报空的,因为 dagger 注入是在 onActivityCreated
+     * 方法中执行的,如果要做一些初始化操作,可以不必让外部调 setData,在内部 onActivityCreated 中
      * 初始化就可以了
      *
      * @param data
@@ -103,9 +103,9 @@ public abstract class BaseFragment<P extends BasePresenter> extends RxFragment {
     }
 
     /**
-     * 使用此方法时请注意调用时fragment的生命周期,如果调用此setData方法时onActivityCreated
-     * 还没执行,setData里调用presenter的方法时,是会报空的,因为dagger注入是在onActivityCreated
-     * 方法中执行的,如果要做一些初始化操作,可以不必让外部调setData,在内部onActivityCreated中
+     * 使用此方法时请注意调用时 fragment 的生命周期,如果调用此 setData 方法时 onActivityCreated
+     * 还没执行,setData 里调用 presenter 的方法时,是会报空的,因为 dagger 注入是在 onActivityCreated
+     * 方法中执行的,如果要做一些初始化操作,可以不必让外部调 setData,在内部 onActivityCreated 中
      * 初始化就可以了
      */
     public void setData() {
