@@ -15,6 +15,12 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+
+        <!--glide配置-->
+        <meta-data
+            android:name="com.zhiyicx.common.utils.imageloader.core.GlideConfiguration"
+            android:value="GlideModule"/>
     </application>
 
 </manifest>

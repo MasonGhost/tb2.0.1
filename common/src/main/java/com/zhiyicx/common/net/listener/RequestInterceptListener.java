@@ -4,8 +4,9 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
+
 /**
- * @Describe  网络拦截回掉
+ * @Describe 网络拦截回掉
  * @Author Jungle68
  * @Date 2016/12/15
  * @Contact 335891510@qq.com
@@ -25,10 +26,10 @@ public interface RequestInterceptListener {
     /**
      * 网络请求发出去之前调用
      *
+     *
      * @param chain
      * @param request
      * @return
      */
     Request onHttpRequestBefore(Interceptor.Chain chain, Request request);
-
 }

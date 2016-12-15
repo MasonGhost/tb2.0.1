@@ -5,36 +5,38 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.zhiyicx.common.dagger.module.AppModule;
+import com.zhiyicx.common.dagger.module.HttpClientModule;
 import com.zhiyicx.common.dagger.module.ImageModule;
-import com.zhiyicx.common.net.intercept.GlobeHttpHandler;
+import com.zhiyicx.common.net.listener.RequestInterceptListener;
+import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
 
 import java.util.LinkedList;
 
 import okhttp3.Interceptor;
 
 /**
- * @Describe  Applicaiton 基类
+ * @Describe Applicaiton 基类
  * @Author Jungle68
  * @Date 2016/12/14
  * @Contact 335891510@qq.com
  */
 
-public abstract class BaseApplication extends Application{
+public abstract class BaseApplication extends Application {
     protected final String TAG = this.getClass().getSimpleName();
 
     static private BaseApplication mApplication;
     public LinkedList<BaseActivity> mActivityList;
-    private ClientModule mClientModule;
+    private HttpClientModule mHttpClientModule;
     private AppModule mAppModule;
     private ImageModule mImagerModule;
-
 
 
     @Override
     public void onCreate() {
         super.onCreate();
         mApplication = this;
-        this.mClientModule = ClientModule//用于提供okhttp和retrofit的单列
+        this.mHttpClientModule = HttpClientModule//用于提供okhttp和retrofit的单列
                 .buidler()
                 .baseurl(getBaseUrl())
                 .globeHttpHandler(getHttpHandler())
@@ -43,7 +45,10 @@ public abstract class BaseApplication extends Application{
                 .build();
         this.mAppModule = new AppModule(this);//提供application
         this.mImagerModule = new ImageModule();//图片加载框架默认使用glide
-
+        /**
+         * 日志初始化
+         */
+        LogUtils.init();
 
     }
 
@@ -69,8 +74,8 @@ public abstract class BaseApplication extends Application{
     }
 
 
-    public ClientModule getClientModule() {
-        return mClientModule;
+    public HttpClientModule getHttpClientModule() {
+        return mHttpClientModule;
     }
 
     public AppModule getAppModule() {
@@ -89,7 +94,7 @@ public abstract class BaseApplication extends Application{
      *
      * @return
      */
-    protected GlobeHttpHandler getHttpHandler() {
+    protected RequestInterceptListener getHttpHandler() {
         return null;
     }
 
@@ -107,12 +112,14 @@ public abstract class BaseApplication extends Application{
      * 用来提供处理所有错误的监听
      * 如果要使用ErrorHandleSubscriber(默认实现Subscriber的onError方法)
      * 则让子application重写此方法
+     *
      * @return
      */
     protected ResponseErroListener getResponseErroListener() {
         return new ResponseErroListener() {
+
             @Override
-            public void handleResponseError(Context context, Exception e) {
+            public void handleResponseError(Context context, Throwable throwable) {
 
             }
         };

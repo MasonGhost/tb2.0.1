@@ -1,8 +1,9 @@
 package com.zhiyicx.common.dagger.module;
 
-import com.jess.arms.widget.imageloader.BaseImageLoaderStrategy;
-import com.jess.arms.widget.imageloader.ImageLoader;
-import com.jess.arms.widget.imageloader.glide.GlideImageLoaderStrategy;
+
+import com.zhiyicx.common.utils.imageloader.core.GlideImageLoaderStrategy;
+import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.common.utils.imageloader.loadstrategy.ImageLoaderStrategy;
 
 import javax.inject.Singleton;
 
@@ -20,13 +21,13 @@ public class ImageModule {
 
     @Singleton
     @Provides
-    public BaseImageLoaderStrategy provideImageLoaderStrategy() {
+    public ImageLoaderStrategy provideImageLoaderStrategy() {
         return new GlideImageLoaderStrategy();
     }
 
     @Singleton
     @Provides
-    public ImageLoader provideImageLoader(BaseImageLoaderStrategy strategy) {
+    public ImageLoader provideImageLoader(ImageLoaderStrategy strategy) {
         return new ImageLoader(strategy);
     }
 }

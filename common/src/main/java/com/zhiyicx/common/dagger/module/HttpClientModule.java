@@ -4,8 +4,9 @@ import android.app.Application;
 import android.text.TextUtils;
 
 import com.tbruyelle.rxpermissions.RxPermissions;
-import com.zhiyicx.common.net.intercept.GlobeHttpHandler;
+import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.net.intercept.RequestIntercept;
+import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.rxerrorhandler.RxErrorHandler;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
 
@@ -39,7 +40,7 @@ public class HttpClientModule {
     private static final int TOME_OUT = 10;
 
     private HttpUrl mApiUrl;
-    private GlobeHttpHandler mHandler;
+    private RequestInterceptListener mHandler;
     private Interceptor[] mInterceptors;
     private ResponseErroListener mErroListener;
 
@@ -116,7 +117,7 @@ public class HttpClientModule {
     @Singleton
     @Provides
     File provideCacheFile(Application application) {
-        return DataHelper.getCacheFile(application);
+        return FileUtils.getCacheFile(application);
     }
 
     /**
@@ -214,7 +215,7 @@ public class HttpClientModule {
 
     public static final class Buidler {
         private HttpUrl apiUrl = HttpUrl.parse("https://api.github.com/");
-        private GlobeHttpHandler handler;
+        private RequestInterceptListener handler;
         private Interceptor[] interceptors;
         private ResponseErroListener responseErroListener;
 
@@ -240,7 +241,7 @@ public class HttpClientModule {
          * @param handler
          * @return
          */
-        public Buidler globeHttpHandler(GlobeHttpHandler handler) {
+        public Buidler globeHttpHandler(RequestInterceptListener handler) {
             this.handler = handler;
             return this;
         }

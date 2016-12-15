@@ -2,7 +2,9 @@ package com.zhiyicx.common.net.intercept;
 
 import android.support.annotation.NonNull;
 
+import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.utils.ZipHelper;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -17,7 +19,6 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okio.Buffer;
 import okio.BufferedSource;
-import timber.log.Timber;
 
 /**
  * @Describe
@@ -27,10 +28,11 @@ import timber.log.Timber;
  */
 
 public class RequestIntercept implements Interceptor {
-    private GlobeHttpHandler mHandler;
+    private static final String TAG = "RequestIntercept";
+    private RequestInterceptListener mListener;
 
-    public RequestIntercept(GlobeHttpHandler handler) {
-        this.mHandler = handler;
+    public RequestIntercept(RequestInterceptListener listener) {
+        this.mListener = listener;
     }
 
     @Override
@@ -38,20 +40,20 @@ public class RequestIntercept implements Interceptor {
         Request request = chain.request();
 
 
-        if (mHandler != null)//在请求服务器之前可以拿到request,做一些操作比如给request添加header,如果不做操作则返回参数中的request
-            request = mHandler.onHttpRequestBefore(chain, request);
+        if (mListener != null)//在请求服务器之前可以拿到request,做一些操作比如给request添加header,如果不做操作则返回参数中的request
+            request = mListener.onHttpRequestBefore(chain, request);
 
 
         Buffer requestbuffer = new Buffer();
         if (request.body() != null) {
             request.body().writeTo(requestbuffer);
         } else {
-            Timber.tag("Request").w("request.body() == null");
+            LogUtils.d(TAG,"request.body() == null");
         }
 
 
         //打印url信息
-        Timber.tag("Request").w("Sending Request %s on %n Params --->  %s%n Connection ---> %s%n Headers ---> %s", request.url()
+        LogUtils.d(TAG,"Sending Request %s on %n Params --->  %s%n Connection ---> %s%n Headers ---> %s", request.url()
                 , request.body() != null ? parseParams(request.body(), requestbuffer) : "null"
                 , chain.connection()
                 , request.headers());
@@ -60,7 +62,7 @@ public class RequestIntercept implements Interceptor {
         Response originalResponse = chain.proceed(request);
         long t2 = System.nanoTime();
         //打赢响应时间
-        Timber.tag("Response").w("Received response  in %.1fms%n%s", (t2 - t1) / 1e6d, originalResponse.headers());
+        LogUtils.d(TAG,"Received response  in %.1fms%n%s", (t2 - t1) / 1e6d, originalResponse.headers());
 
         //读取服务器返回的结果
         ResponseBody responseBody = originalResponse.body();
@@ -91,10 +93,10 @@ public class RequestIntercept implements Interceptor {
         }
 
 
-        Timber.tag("Result"). (bodyString);
+        LogUtils.json(TAG,bodyString);
 
-        if (mHandler != null)//这里可以比客户端提前一步拿到服务器返回的结果,可以做一些操作,比如token超时,重新获取
-            return mHandler.onHttpResultResponse(bodyString, chain, originalResponse);
+        if (mListener != null)//这里可以比客户端提前一步拿到服务器返回的结果,可以做一些操作,比如token超时,重新获取
+            return mListener.onHttpResponse(bodyString, chain, originalResponse);
 
         return originalResponse;
     }
