@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import okhttp3.Interceptor;
 
 /**
- * @Describe  通用 Applicaiton
+ * @Describe  Applicaiton 基类
  * @Author Jungle68
  * @Date 2016/12/14
  * @Contact 335891510@qq.com

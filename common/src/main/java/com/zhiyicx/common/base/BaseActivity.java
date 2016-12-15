@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -23,7 +22,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 /**
- * @Describe
+ * @Describe  Activity 基类
  * @Author Jungle68
  * @Date 2016/12/14
  * @Contact 335891510@qq.com
@@ -85,29 +84,11 @@ public abstract class BaseActivity<P extends BasePresenter> extends RxAppCompatA
             EventBus.getDefault().unregister(this);
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
 
     /**
      * 依赖注入的入口
      */
     protected abstract void ComponentInject();
-
-
-    public void FullScreencall() {
-        if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
-            View v = this.getWindow().getDecorView();
-            v.setSystemUiVisibility(View.GONE);
-        } else if (Build.VERSION.SDK_INT >= 19) {
-            //for new api versions.
-            View decorView = getWindow().getDecorView();
-            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-            decorView.setSystemUiVisibility(uiOptions);
-        }
-    }
-
 
     /**
      * 是否使用eventBus,默认为使用(true)，
@@ -171,12 +152,11 @@ public abstract class BaseActivity<P extends BasePresenter> extends RxAppCompatA
                     case "killAll":
                         LinkedList<BaseActivity> copy;
                         synchronized (BaseActivity.class) {
-                            copy = new LinkedList<BaseActivity>(mApplication.getActivityList());
+                            copy = new LinkedList<>(mApplication.getActivityList());
                         }
                         for (BaseActivity baseActivity : copy) {
                             baseActivity.finish();
                         }
-                        //		android.os.Process.killProcess(android.os.Process.myPid());
                         break;
                 }
             }
