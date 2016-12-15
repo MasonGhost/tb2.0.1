@@ -13,22 +13,11 @@ import com.zhiyicx.common.utils.imageloader.loadstrategy.ImageLoaderStrategy;
  */
 
 public class ImageLoader {
-    //    private volatile static ImageLoader mImageLoader;
     private ImageLoaderStrategy mStrategy;
 
     public ImageLoader(ImageLoaderStrategy strategy) {
         setLoadImgStrategy(strategy);
     }
-
-//    public static ImageLoader getInstance() {
-//        if (mImageLoader == null) {
-//            synchronized (ImageLoader.class) {
-//                if (mImageLoader == null)
-//                    mImageLoader = new ImageLoader();
-//            }
-//        }
-//        return mImageLoader;
-//    }
 
     public <T extends ImageConfig> void loadImage(Context context, T config) {
         this.mStrategy.loadImage(context, config);
