@@ -44,36 +44,45 @@ ext {
 
     dataDependencies = [
             // dex分包
-            multidex             : "compile 'com.android.support:multidex:1.0.1'",
+            multidex                     : "compile 'com.android.support:multidex:1.0.1'",
             // dagger
-            dagger               : "com.google.dagger:dagger:${daggerVersion}",
-            javaxAnnotation      : "javax.annotation:jsr250-api:${javaxAnnotationVersion}",
-            daggerCompiler       : "com.google.dagger:dagger-compiler:${daggerVersion}",
+            dagger                       : "com.google.dagger:dagger:${daggerVersion}",
+            javaxAnnotation              : "javax.annotation:jsr250-api:${javaxAnnotationVersion}",
+            daggerCompiler               : "com.google.dagger:dagger-compiler:${daggerVersion}",
             // retrofit + rx
-            retrofit             : "com.squareup.retrofit2:retrofit:${retrofitSdkVersion}",
-            retrofitConverterGson: "com.squareup.retrofit2:converter-gson:${retrofitSdkVersion}",
-            retrofitAdapterRxJava: "com.squareup.retrofit2:adapter-rxjava:${retrofitSdkVersion}",
-            rxJava               : "io.reactivex:rxjava:${rxJavaVersion}",
-            rxAndroid            : "io.reactivex:rxandroid:${rxAndroidVersion}",
-            rxlifecycle          : "com.trello:rxlifecycle:${rxlifecycleSdkVersion}",
-            rxlifecycleAndroid   : "com.trello:rxlifecycle-android:${rxlifecycleSdkVersion}",
-            rxlifecycleComponents: "com.trello:rxlifecycle-components:${rxlifecycleSdkVersion}",
-            rxlifecycleNavi      : "com.trello:rxlifecycle-navi:${rxlifecycleSdkVersion}",
-            rxlifecycleKotlin    : "com.trello:rxlifecycle-kotlin:${rxlifecycleSdkVersion}",
-            rxcache              : "com.github.VictorAlbertos.RxCache:runtime:1.6.2",
-            rxcacheJolyglotGson  : "com.github.VictorAlbertos.Jolyglot:gson:0.0.3",
-            gson                 : "com.google.code.gson:gson:${gsonVersion}",
+            retrofit                     : "com.squareup.retrofit2:retrofit:${retrofitSdkVersion}",
+            retrofitConverterGson        : "com.squareup.retrofit2:converter-gson:${retrofitSdkVersion}",
+            retrofitAdapterRxJava        : "com.squareup.retrofit2:adapter-rxjava:${retrofitSdkVersion}",
+            rxJava                       : "io.reactivex:rxjava:${rxJavaVersion}",
+            rxAndroid                    : "io.reactivex:rxandroid:${rxAndroidVersion}",
+            rxlifecycle                  : "com.trello:rxlifecycle:${rxlifecycleSdkVersion}",
+            rxlifecycleAndroid           : "com.trello:rxlifecycle-android:${rxlifecycleSdkVersion}",
+            rxlifecycleComponents        : "com.trello:rxlifecycle-components:${rxlifecycleSdkVersion}",
+            rxlifecycleNavi              : "com.trello:rxlifecycle-navi:${rxlifecycleSdkVersion}",
+            rxlifecycleKotlin            : "com.trello:rxlifecycle-kotlin:${rxlifecycleSdkVersion}",
+            rxcache                      : "com.github.VictorAlbertos.RxCache:runtime:1.6.2",
+            rxcacheJolyglotGson          : "com.github.VictorAlbertos.Jolyglot:gson:0.0.3",
+            gson                         : "com.google.code.gson:gson:${gsonVersion}",
+            // rxBindding
+            rxbinding                    : "com.jakewharton.rxbinding:rxbinding:1.0.0",
+            rxbindingSupportV4           : "com.jakewharton.rxbinding:rxbinding-support-v4:1.0.0",
+            rxbindingSupportV7           : "com.jakewharton.rxbinding:rxbinding-appcompat-v7:1.0.0",
+            rxbindingDesign              : "com.jakewharton.rxbinding:rxbinding-design:1.0.0",
+            rxbindingDesignrRcyclerviewV7: "com.jakewharton.rxbinding:rxbinding-recyclerview-v7:1.0.0",
+            // database
+            greendao                     : "org.greenrobot:greendao:3.2.0",
+            greendaoSqlcipher            : "net.zetetic:android-database-sqlcipher:3.5.4",
             // image
-            glide                : "com.github.bumptech.glide:glide:3.7.0",
-            nineoldandroids      : "com.nineoldandroids:library:2.4.0",
+            glide                        : "com.github.bumptech.glide:glide:3.7.0",
+            nineoldandroids              : "com.nineoldandroids:library:2.4.0",
             // eventbus
-            androideventbus      : "org.simple:androideventbus:1.0.5.1",
+            androideventbus              : "org.simple:androideventbus:1.0.5.1",
             // butterknife
-            butterknife          : "com.jakewharton:butterknife:${butterKnifeVersion}",
-            butterknifeApt       : "com.jakewharton:butterknife-compiler:${butterKnifeVersion}",
+            butterknife                  : "com.jakewharton:butterknife:${butterKnifeVersion}",
+            butterknifeApt               : "com.jakewharton:butterknife-compiler:${butterKnifeVersion}",
             // log
-            timber               : "com.jakewharton.timber:timber:4.1.2",
-            logger               : "com.orhanobut:logger:1.15"
+            timber                       : "com.jakewharton.timber:timber:4.1.2",
+            logger                       : "com.orhanobut:logger:1.15"
 
 
     ]

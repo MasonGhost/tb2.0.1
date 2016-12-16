@@ -9,7 +9,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * @Describe 公共请求参数，Query Parameters
+ * @Describe 公共请求参数，Query Parameters 如 token\veresion 等
  * @Author Jungle68
  * @Date 2016/11/30
  */
@@ -27,11 +27,11 @@ public class CommonRequestIntercept implements Interceptor {
         HttpUrl originalHttpUrl = original.url();
 
         HttpUrl.Builder urlBuilder = originalHttpUrl.newBuilder();
-
-        for (Map.Entry<String, String> entry : mQueryParameterMap.entrySet()) {
-            urlBuilder.addQueryParameter(entry.getKey(), entry.getValue());
+        if (mQueryParameterMap != null) {
+            for (Map.Entry<String, String> entry : mQueryParameterMap.entrySet()) {
+                urlBuilder.addQueryParameter(entry.getKey(), entry.getValue());
+            }
         }
-
         // Request customization: add request headers
         Request.Builder requestBuilder = original.newBuilder()
                 .url(urlBuilder.build());

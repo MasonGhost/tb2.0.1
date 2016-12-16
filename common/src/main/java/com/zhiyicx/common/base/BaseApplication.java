@@ -4,6 +4,9 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
+import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.dagger.module.AppModule;
 import com.zhiyicx.common.dagger.module.HttpClientModule;
 import com.zhiyicx.common.dagger.module.ImageModule;
@@ -25,31 +28,35 @@ import okhttp3.Interceptor;
 public abstract class BaseApplication extends Application {
     protected final String TAG = this.getClass().getSimpleName();
 
-    static private BaseApplication mApplication;
+    private static BaseApplication mApplication;
     public LinkedList<BaseActivity> mActivityList;
     private HttpClientModule mHttpClientModule;
     private AppModule mAppModule;
     private ImageModule mImagerModule;
 
+    private RefWatcher mRefWatcher;//leakCanary观察器
 
     @Override
     public void onCreate() {
         super.onCreate();
         mApplication = this;
-        this.mHttpClientModule = HttpClientModule//用于提供okhttp和retrofit的单列
+        this.mHttpClientModule = HttpClientModule// 用于提供 okhttp 和 retrofit 的单列
                 .buidler()
                 .baseurl(getBaseUrl())
                 .globeHttpHandler(getHttpHandler())
                 .interceptors(getInterceptors())
                 .responseErroListener(getResponseErroListener())
                 .build();
-        this.mAppModule = new AppModule(this);//提供application
-        this.mImagerModule = new ImageModule();//图片加载框架默认使用glide
+        this.mAppModule = new AppModule(this);// 提供 application
+        this.mImagerModule = new ImageModule();// 图片加载框架默认使用 glide
         /**
          * 日志初始化
          */
         LogUtils.init();
-
+        /**
+         * leakCanary 内存泄露检查
+         */
+        installLeakCanary();
     }
 
 
@@ -60,6 +67,24 @@ public abstract class BaseApplication extends Application {
      */
     protected abstract String getBaseUrl();
 
+
+    /**
+     * 安装leakCanary检测内存泄露
+     */
+    protected void installLeakCanary() {
+        this.mRefWatcher = BuildConfig.USE_CANARY ? LeakCanary.install(this) : RefWatcher.DISABLED;
+    }
+
+    /**
+     * 获得leakCanary观察器
+     *
+     * @param context
+     * @return
+     */
+    public RefWatcher getRefWatcher(Context context) {
+
+        return this.mRefWatcher;
+    }
 
     /**
      * 返回一个存储所有存在的activity的列表

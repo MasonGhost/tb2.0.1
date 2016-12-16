@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.neenbedankt.android-apt'
-
+apply plugin: 'org.greenrobot.greendao'
 android {
     def gConfig = rootProject.extensions.getByName("ext")
     compileSdkVersion gConfig.getAt("compileSdkVersion")
@@ -13,11 +13,20 @@ android {
     }
     buildTypes {
         release {
+            buildConfigField "boolean", "USE_CANARY", "true"
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            buildConfigField "boolean", "USE_CANARY", "true"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
+
+
+
 buildscript {
     repositories {
         jcenter()
@@ -25,9 +34,20 @@ buildscript {
     }
     dependencies {
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.1'
     }
 }
-
+greendao {
+    /**
+     * daoPackage 生成的DAO，DaoMaster和DaoSession的包名。默认是实体的包名。
+     * targetGenDir 生成源文件的路径。默认源文件目录是在build目录中的(build/generated/source/greendao)。
+     * generateTests 设置是否自动生成单元测试。
+     * targetGenDirTest 生成的单元测试的根目录。
+     */
+    schemaVersion 1
+    //daoPackage 'com.zhiyicx.common.greendao.gen'
+    //targetGenDir 'src/main/java'
+}
 dependencies {
     def testDependences = rootProject.ext.testDependencies;
     def dataDependences = rootProject.ext.dataDependencies;
@@ -74,6 +94,10 @@ dependencies {
     compile dataDependences.rxcache
     compile dataDependences.rxcacheJolyglotGson
     compile dataDependences.gson
+
+    // database
+    compile dataDependences.greendao
+    compile dataDependences.greendaoSqlcipher
 
     // Development
     compile developmentDependencies.leakCanary

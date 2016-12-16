@@ -16,7 +16,7 @@ Gradle
 ```
 整体结构   MVP
 
-技术说明 ：  retrofit + dagger2 + rx +relm
+技术说明 ：  retrofit + dagger2 + rx + greenDao
 
 #### gradle 全局配置
 gradle配置文件`config.gradle`,需要在主项目的`buid.grale`中进行声明 `apply from："config.gralde"`
