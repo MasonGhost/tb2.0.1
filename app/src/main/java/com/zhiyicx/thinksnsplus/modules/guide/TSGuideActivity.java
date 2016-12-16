@@ -1,11 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.guide;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.TSActivity;
 
-public class TSGuideActivity extends AppCompatActivity {
+public class TSGuideActivity extends TSActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

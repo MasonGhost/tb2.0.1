@@ -100,10 +100,12 @@ dependencies {
     compile dataDependences.greendaoSqlcipher
 
     // Development
-    compile developmentDependencies.leakCanary
-
+    releaseCompile developmentDependencies.leakCanaryRelease
+    debugCompile developmentDependencies.leakCanaryDebug
+    
     // Test
     testCompile testDependences.junit
+    developmentDependencies.leakCanaryRelease
 
     // Project
     compile project(":rxerrorhandler")

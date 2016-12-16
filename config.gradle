@@ -106,6 +106,8 @@ ext {
     ]
 
     developmentDependencies = [
-            leakCanary: "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}",
+            leakCanaryDebug: "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}",
+            leakCanaryRelease: "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}",
+            leakCanaryTest: "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}",
     ]
 }

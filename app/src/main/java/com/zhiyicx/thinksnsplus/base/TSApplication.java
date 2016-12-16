@@ -2,12 +2,11 @@ package com.zhiyicx.thinksnsplus.base;
 
 import android.content.Context;
 
-import com.squareup.leakcanary.LeakCanary;
-import com.squareup.leakcanary.RefWatcher;
 import com.zhiyicx.common.base.BaseApplication;
+import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
-import com.zhiyicx.thinksnsplus.BuildConfig;
+import com.zhiyicx.thinksnsplus.config.TSApiConfig;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,22 +32,20 @@ public class TSApplication extends BaseApplication {
         super.onCreate();
         mAppComponent = DaggerAppComponent
                 .builder()
-                .appModule(getAppModule())//baseApplication提供
-                .clientModule(getClientModule())//baseApplication提供
-                .imageModule(getImageModule())//baseApplication提供
-                .serviceModule(new ServiceModule())//需自行创建
-                .cacheModule(new CacheModule())//需自行创建
+                .appModule(getAppModule())// baseApplication 提供
+                .clientModule(getClientModule())// baseApplication 提供
+                .imageModule(getImageModule())// baseApplication 提供
+                .serviceModule(new ServiceModule())// 需自行创建
+                .cacheModule(new CacheModule())// 需自行创建
                 .build();
 
 
     }
 
 
-
-
     @Override
     public String getBaseUrl() {
-        return Api.APP_DOMAIN;
+        return TSApiConfig.APP_DOMAIN;
     }
 
     /**
@@ -69,10 +66,10 @@ public class TSApplication extends BaseApplication {
      * @return
      */
     @Override
-    public GlobeHttpHandler getHttpHandler() {
-        return new GlobeHttpHandler() {
+    public RequestInterceptListener getHttpHandler() {
+        return new RequestInterceptListener() {
             @Override
-            public Response onHttpResultResponse(String httpResult, Interceptor.Chain chain, Response response) {
+            public Response onHttpResponse(String httpResult, Interceptor.Chain chain, Response response) {
                 //这里可以先客户端一步拿到每一次http请求的结果,可以解析成json,做一些操作,如检测到token过期后
                 //重新请求token,并重新执行请求
                 try {
@@ -80,7 +77,7 @@ public class TSApplication extends BaseApplication {
                     JSONObject object = (JSONObject) array.get(0);
                     String login = object.getString("login");
                     String avatar_url = object.getString("avatar_url");
-                    Timber.tag(TAG).w("result ------>" + login + "    ||   avatar_url------>" + avatar_url);
+                    LogUtils.d(TAG, "result ------>" + login + "    ||   avatar_url------>" + avatar_url);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -118,8 +115,7 @@ public class TSApplication extends BaseApplication {
         return new ResponseErroListener() {
             @Override
             public void handleResponseError(Context context, Throwable e) {
-                LogUtils.d(TAG,"------------>" + e.getMessage());
-                UiUtils.SnackbarText("net error");
+                LogUtils.d(TAG, "------------>" + e.getMessage());
             }
         };
     }

@@ -2,6 +2,7 @@ package com.zhiyicx.common.utils.log;
 
 import com.orhanobut.logger.LogLevel;
 import com.orhanobut.logger.Logger;
+import com.zhiyicx.common.BuildConfig;
 
 /**
  * @Describe
@@ -20,7 +21,7 @@ public class LogUtils {
                 .init(APPLICATION_TAG)           // default PRETTYLOGGER or use just init()
                 .methodCount(3)                 // default 2
                 .hideThreadInfo()               // default shown
-                .logLevel(LogLevel.NONE)        // default LogLevel.FULL
+                .logLevel(BuildConfig.DEBUG?LogLevel.FULL:LogLevel.NONE)        // default LogLevel.FULL
                 .methodOffset(2);              // default 0
         // .logAdapter(new AndroidLogAdapter()); //default AndroidLogAdapter
     }

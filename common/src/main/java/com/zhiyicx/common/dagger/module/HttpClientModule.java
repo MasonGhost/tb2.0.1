@@ -36,7 +36,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
 public class HttpClientModule {
-    public static final int HTTP_RESPONSE_DISK_CACHE_MAX_SIZE = 10 * 1024 * 1024;//缓存文件最大值为10Mb
+    private static final int HTTP_RESPONSE_DISK_CACHE_MAX_SIZE = 10 * 1024 * 1024;// 缓存文件最大值为 10Mb
+    private static final String DEFAULT_BASEURL = "https://api.github.com/";
     private static final int TOME_OUT = 10;
 
     private HttpUrl mApiUrl;
@@ -214,7 +215,7 @@ public class HttpClientModule {
 
 
     public static final class Buidler {
-        private HttpUrl apiUrl = HttpUrl.parse("https://api.github.com/");
+        private HttpUrl apiUrl = HttpUrl.parse(DEFAULT_BASEURL);
         private RequestInterceptListener handler;
         private Interceptor[] interceptors;
         private ResponseErroListener responseErroListener;
@@ -223,8 +224,7 @@ public class HttpClientModule {
         }
 
         /**
-         *
-         * @param baseurl  基础 url
+         * @param baseurl 基础 url
          * @return
          */
         public Buidler baseurl(String baseurl) {

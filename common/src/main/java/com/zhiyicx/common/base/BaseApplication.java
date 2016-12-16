@@ -1,5 +1,6 @@
 package com.zhiyicx.common.base;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -29,7 +30,7 @@ public abstract class BaseApplication extends Application {
     protected final String TAG = this.getClass().getSimpleName();
 
     private static BaseApplication mApplication;
-    public LinkedList<BaseActivity> mActivityList;
+    public LinkedList<Activity> mActivityList;
     private HttpClientModule mHttpClientModule;
     private AppModule mAppModule;
     private ImageModule mImagerModule;
@@ -39,6 +40,19 @@ public abstract class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        /**
+         * leakCanary 内存泄露检查
+         */
+        installLeakCanary();
+        /**
+         * 日志初始化
+         */
+        LogUtils.init();
         mApplication = this;
         this.mHttpClientModule = HttpClientModule// 用于提供 okhttp 和 retrofit 的单列
                 .buidler()
@@ -49,14 +63,7 @@ public abstract class BaseApplication extends Application {
                 .build();
         this.mAppModule = new AppModule(this);// 提供 application
         this.mImagerModule = new ImageModule();// 图片加载框架默认使用 glide
-        /**
-         * 日志初始化
-         */
-        LogUtils.init();
-        /**
-         * leakCanary 内存泄露检查
-         */
-        installLeakCanary();
+
     }
 
 
@@ -91,9 +98,9 @@ public abstract class BaseApplication extends Application {
      *
      * @return
      */
-    public LinkedList<BaseActivity> getActivityList() {
+    public LinkedList<Activity> getActivityList() {
         if (mActivityList == null) {
-            mActivityList = new LinkedList<BaseActivity>();
+            mActivityList = new LinkedList<>();
         }
         return mActivityList;
     }
