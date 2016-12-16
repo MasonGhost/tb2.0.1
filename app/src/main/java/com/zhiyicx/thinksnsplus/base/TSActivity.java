@@ -11,7 +11,7 @@ import com.zhiyicx.common.base.BaseActivity;
  * @Contact 335891510@qq.com
  */
 
-public class TPActivity extends BaseActivity {
+public class TSActivity extends BaseActivity {
     @Override
     protected void ComponentInject() {
 

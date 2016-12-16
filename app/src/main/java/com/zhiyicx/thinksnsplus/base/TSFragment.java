@@ -11,7 +11,7 @@ import com.zhiyicx.common.base.BaseFragment;
  * @Contact 335891510@qq.com
  */
 
-public class TPFragment extends BaseFragment{
+public class TSFragment extends BaseFragment{
     @Override
     protected void ComponentInject() {
 

@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import com.zhiyicx.thinksnsplus.R;
 
-public class GuideActivity extends AppCompatActivity {
+public class TSGuideActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

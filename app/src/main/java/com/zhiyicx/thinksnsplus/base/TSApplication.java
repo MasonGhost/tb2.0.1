@@ -9,7 +9,7 @@ import com.zhiyicx.common.base.BaseApplication;
  * @Contact 335891510@qq.com
  */
 
-public class TPApplication extends BaseApplication {
+public class TSApplication extends BaseApplication {
     @Override
     protected String getBaseUrl() {
         return null;
