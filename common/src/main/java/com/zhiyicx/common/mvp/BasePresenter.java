@@ -40,33 +40,8 @@ public class BasePresenter<M, V extends IBaseView> implements IBasePresenter {
     }
 
 
-    @Override
-    public void onStart() {
-        if (useEventBus())//如果要使用eventbus请将此方法返回true
-            EventBus.getDefault().register(this);//注册eventbus
-    }
-
-    @Override
-    public void onDestroy() {
-        if (useEventBus())//如果要使用eventbus请将此方法返回true
-            EventBus.getDefault().unregister(this);//解除注册eventbus
-        unSubscribe();//解除订阅
-        this.mModel = null;
-        this.mRootView = null;
-    }
-
-    @Override
-    public void unSubscribe(Subscription subscription) {
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();//保证activity结束时取消所有正在执行的订阅
-        }
-    }
-    protected void handleError(Throwable throwable) {
-
-    }
-
     /**
-     * 是否使用eventBus,默认为使用(true)，
+     * 是否使用 eventBus,默认为使用(true)，
      *
      * @return
      */
@@ -74,17 +49,41 @@ public class BasePresenter<M, V extends IBaseView> implements IBasePresenter {
         return false;
     }
 
+    @Override
+    public void onStart() {
+        if (useEventBus())// 如果要使用 eventbus 请将此方法返回 true
+            EventBus.getDefault().register(this);// 注册 eventbus
+    }
+
+    @Override
+    public void onDestroy() {
+        if (useEventBus())// 如果要使用 eventbus 请将此方法返回 true
+            EventBus.getDefault().unregister(this);// 解除注册 eventbus
+        unSubscribe();// 解除订阅
+        this.mModel = null;
+        this.mRootView = null;
+    }
+
+    @Override
+    public void unSubscribe(Subscription subscription) {
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();// 保证 activity 结束时取消所有正在执行的订阅
+        }
+    }
+    protected void handleError(Throwable throwable) {
+
+    }
 
     protected void addSubscrebe(Subscription subscription) {
         if (mCompositeSubscription == null) {
             mCompositeSubscription = new CompositeSubscription();
         }
-        mCompositeSubscription.add(subscription);//将所有subscription放入,集中处理
+        mCompositeSubscription.add(subscription);// 将所有 subscription 放入,集中处理
     }
 
     protected void unSubscribe() {
         if (mCompositeSubscription != null) {
-            mCompositeSubscription.unsubscribe();//保证activity结束时取消所有正在执行的订阅
+            mCompositeSubscription.unsubscribe();// 保证 activity 结束时取消所有正在执行的订阅
         }
     }
 
