@@ -13,6 +13,12 @@ android {
         versionCode gConfig.getAt("versionCode")
         versionName gConfig.getAt("versionName")
         testInstrumentationRunner gConfig.testDependencies.androidJUnitRunner
+
+        ndk {
+            //选择要添加的对应cpu类型的.so库。
+            abiFilters 'armeabi', 'armeabi-v7a', 'armeabi-v8a','x86', 'x86_64', 'mips', 'mips64'
+        }
+
     }
     packagingOptions {
         exclude 'LICENSE.txt'
@@ -35,7 +41,7 @@ android {
 
     signingConfigs {
         debug {
-            storeFile file('../debug.keystore')
+            storeFile file('debug.keystore')
             storePassword 'android'
             keyAlias 'androiddebugkey'
             keyPassword 'android'
