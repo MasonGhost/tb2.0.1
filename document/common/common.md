@@ -3,7 +3,7 @@
  - BaseApplication
  - BaseActivity
  - BaseFragment
- - BaseJson基类：Json解析类
+ - BaseJson基类：Json解析类,实现泛型
 
 ##config文件夹：项目中可能需要的辅助常量，比如：时分秒
 
