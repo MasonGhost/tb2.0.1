@@ -2,7 +2,6 @@ package com.zhiyicx.common.base;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.View;
 
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import com.zhiyicx.common.mvp.BasePresenter;
@@ -37,15 +36,16 @@ public abstract class BaseActivity<P extends BasePresenter> extends RxAppCompatA
         mApplication.getActivityList().add(this);
         // 如果要使用eventbus请将此方法返回 true
         if (useEventBus()) {
-
             EventBus.getDefault().register(this);// 注册到事件主线
         }
-        setContentView(initView());
+        setContentView(getLayoutId());
         // 绑定到butterknife
         mUnbinder = ButterKnife.bind(this);
         ComponentInject();// 依赖注入
+        initView();
         initData();
     }
+
 
     @Override
     protected void onDestroy() {
@@ -59,6 +59,12 @@ public abstract class BaseActivity<P extends BasePresenter> extends RxAppCompatA
             EventBus.getDefault().unregister(this);
     }
 
+    /**
+     * 获取布局文件
+     *
+     * @return
+     */
+    protected abstract int getLayoutId();
 
     /**
      * 依赖注入的入口
@@ -74,10 +80,19 @@ public abstract class BaseActivity<P extends BasePresenter> extends RxAppCompatA
         return false;
     }
 
+    /**
+     * view 初始化
+     */
+    protected void initView() {
 
-    protected abstract View initView();
+    }
 
-    protected abstract void initData();
+    /**
+     * 数据初始化
+     */
+    protected void initData() {
+
+    }
 
 
 }
