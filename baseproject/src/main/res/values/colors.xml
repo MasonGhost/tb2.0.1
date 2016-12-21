@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--主题色-->
+    <color name="themeColor">#FF4081</color>
+    <!--titilebar背景色   your app's branding color (for the app bar) -->
+    <color name="colorPrimary">@color/themeColor</color>
+    <!--状态栏背景色   darker variant of colorPrimary (for status bar, contextual app bars) -->
+    <color name="colorPrimaryDark">@color/themeColor</color>
+    <!--checkbox或者dialog按钮颜色    theme UI controls like checkboxes and text fields-->
+    <color name="colorAccent">@color/themeColor</color>
+</resources>
