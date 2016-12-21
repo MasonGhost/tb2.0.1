@@ -3,7 +3,9 @@ package com.zhiyicx.thinksnsplus.base;
 import android.content.Context;
 
 import com.zhiyicx.common.base.BaseApplication;
+import com.zhiyicx.common.dagger.module.ImageModule;
 import com.zhiyicx.common.net.listener.RequestInterceptListener;
+import com.zhiyicx.baseproject.utils.imageloader.GlideImageLoaderStrategy;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
 import com.zhiyicx.thinksnsplus.config.TSApiConfig;
@@ -33,19 +35,31 @@ public class TSApplication extends BaseApplication {
         mAppComponent = DaggerAppComponent
                 .builder()
                 .appModule(getAppModule())// baseApplication 提供
-                .clientModule(getClientModule())// baseApplication 提供
-                .imageModule(getImageModule())// baseApplication 提供
+                .httpClientModule(getHttpClientModule())// baseApplication 提供
+                .imageModule(a())// // 图片加载框架
                 .serviceModule(new ServiceModule())// 需自行创建
                 .cacheModule(new CacheModule())// 需自行创建
                 .build();
-
-
     }
 
-
+    /**
+     * 网络根地址
+     *
+     * @return
+     */
     @Override
     public String getBaseUrl() {
         return TSApiConfig.APP_DOMAIN;
+    }
+
+    /**
+     * 默认使用 glide,如果需要使用picasso等，请按照Gi{@Link GlideImageLoaderStrategy 配置}
+     *
+     * @return
+     */
+    @Override
+    protected ImageModule getImagerModule() {
+        return new ImageModule(new GlideImageLoaderStrategy());
     }
 
     /**

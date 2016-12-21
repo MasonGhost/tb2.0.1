@@ -90,7 +90,7 @@ dependencies {
     compile dataDependences.butterknife
     apt dataDependences.butterknifeApt
     // Project
-    compile project(":common")
+    compile project(":baseproject")
 
 
 }

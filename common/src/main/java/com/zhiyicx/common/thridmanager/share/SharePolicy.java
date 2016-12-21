@@ -1,6 +1,10 @@
 package com.zhiyicx.common.thridmanager.share;
 
 
+import android.app.Activity;
+
+import com.zhiyicx.common.thridmanager.OnShareCallbackListener;
+
 /**
  * @Describe  分享方针
  * @Author Jungle68
@@ -11,32 +15,32 @@ public interface SharePolicy {
     /**
      * 分享朋友圈
      */
-    void shareMoment();
+    void shareMoment(Activity activity, OnShareCallbackListener l);
 
     /**
      * 分享微信
      */
-    void shareWechat();
+    void shareWechat(Activity activity, OnShareCallbackListener l);
 
     /**
      * 分享微博
      */
-    void shareWeibo();
+    void shareWeibo(Activity activity, OnShareCallbackListener l);
 
     /**
      * 分享qq
      */
-    void shareQQ();
+    void shareQQ(Activity activity, OnShareCallbackListener l);
 
     /**
      * 分享qq空间
      */
-    void shareZone();
+    void shareZone(Activity activity, OnShareCallbackListener l);
 
     /**
      * 显示分享的弹框
      */
-    void showShare();
+    void showShare(Activity activity);
 
     /**
      * 设置分享内容

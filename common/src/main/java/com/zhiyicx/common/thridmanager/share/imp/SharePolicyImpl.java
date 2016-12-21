@@ -1,8 +1,14 @@
 package com.zhiyicx.common.thridmanager.share.imp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.umeng.socialize.PlatformConfig;
+import com.umeng.socialize.ShareAction;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.zhiyicx.common.thridmanager.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
 
@@ -15,19 +21,22 @@ import com.zhiyicx.common.thridmanager.share.SharePolicy;
  */
 public class SharePolicyImpl implements SharePolicy {
 
-
     private ShareContent mShareContent;
-    private Context mContext;
 
     public SharePolicyImpl(Context mContext) {
-        this.mContext = mContext;
-//        ShareSDK.initSDK(mContext.getApplicationContext());
+        init(mContext);
     }
 
     public SharePolicyImpl(ShareContent mShareContent, Context mContext) {
         this.mShareContent = mShareContent;
-        this.mContext = mContext;
-//        ShareSDK.initSDK(mContext.getApplicationContext());
+        init(mContext);
+    }
+
+    private void init(Context mContext) {
+        PlatformConfig.setWeixin("wx967daebe835fbeac", "5bb696d9ccd75a38c8a0bfe0675559b3");
+        PlatformConfig.setSinaWeibo("3921700954", "04b48b094faeb16683c32669824ebdad");
+        PlatformConfig.setQQZone("100424468", "c7394704798a158208a74ab60104f0ba");
+        UMShareAPI.get(mContext);
     }
 
     public ShareContent getShareContent() {
@@ -48,7 +57,7 @@ public class SharePolicyImpl implements SharePolicy {
      * 微信朋友分享
      */
     @Override
-    public void shareMoment() {
+    public void shareMoment(Activity activity, OnShareCallbackListener l) {
         if (checkShareContent()) return;
 //
 //        OnekeyShare share = new OnekeyShare();
@@ -62,6 +71,10 @@ public class SharePolicyImpl implements SharePolicy {
 //        share.setImageUrl(mShareContent.getImage());
 //        share.setPlatform(WechatMoments.NAME);
 //        share.show(mContext.getApplicationContext());
+        new ShareAction(activity).setPlatform(SHARE_MEDIA.WEIXIN_CIRCLE)
+                .withText("hello")
+                .setCallback(umShareListener)
+                .share();
 
     }
 
@@ -69,7 +82,7 @@ public class SharePolicyImpl implements SharePolicy {
      * QQ分享
      */
     @Override
-    public void shareQQ() {
+    public void shareQQ(Activity activity, OnShareCallbackListener l) {
         if (checkShareContent()) return;
 //        QQ.ShareParams sp = new QQ.ShareParams();
 //        sp.setTitle(mShareContent.getTitle());
@@ -84,7 +97,7 @@ public class SharePolicyImpl implements SharePolicy {
      * QQ空间分享
      */
     @Override
-    public void shareZone() {
+    public void shareZone(Activity activity, OnShareCallbackListener l) {
         if (checkShareContent()) return;
 //        QZone.ShareParams sp = new QZone.ShareParams();
 //        sp.setTitle(mShareContent.getTitle());
@@ -117,7 +130,7 @@ public class SharePolicyImpl implements SharePolicy {
      * 微博分享
      */
     @Override
-    public void shareWeibo() {
+    public void shareWeibo(Activity activity, OnShareCallbackListener l) {
 //        if (checkShareContent()) return;
 //        SinaWeibo.ShareParams sp = new SinaWeibo.ShareParams();
 //        sp.setText(mShareContent.getContent() + "  " + mShareContent.getUrl());
@@ -148,7 +161,7 @@ public class SharePolicyImpl implements SharePolicy {
      * 微信分享
      */
     @Override
-    public void shareWechat() {
+    public void shareWechat(Activity activity, OnShareCallbackListener l) {
 //        if (checkShareContent()) return;
 //        Wechat.ShareParams sp = new Wechat.ShareParams();
 //        sp.setShareType(Platform.SHARE_WEBPAGE);
@@ -182,7 +195,7 @@ public class SharePolicyImpl implements SharePolicy {
      * 分享弹框
      */
     @Override
-    public void showShare() {
+    public void showShare(Activity activity) {
 //        if (checkShareContent()) return;
 //        ShareSDK.initSDK(mContext.getApplicationContext());
 //        OnekeyShare oks = new OnekeyShare();
@@ -219,9 +232,9 @@ public class SharePolicyImpl implements SharePolicy {
      *
      * @return
      */
-    private boolean checkShareContent() {
+    private boolean checkShareContent(Context context) {
         if (mShareContent == null) {
-            Toast.makeText(mContext, "分享内容为空!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "分享内容为空!", Toast.LENGTH_SHORT).show();
             return true;
         }
         return false;

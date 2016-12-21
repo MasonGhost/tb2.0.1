@@ -1,4 +1,4 @@
-package com.zhiyicx.common.utils.imageloader.core;
+package com.zhiyicx.baseproject.utils.imageloader;
 
 import android.widget.ImageView;
 

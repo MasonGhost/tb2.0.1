@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.base;
+package com.zhiyicx.baseproject.base;
 
 import android.view.View;
 
