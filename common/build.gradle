@@ -10,6 +10,7 @@ android {
         targetSdkVersion gConfig.getAt("targetSdkVersion")
         versionCode gConfig.getAt("versionCode")
         versionName gConfig.getAt("versionName")
+        testInstrumentationRunner gConfig.testDependencies.androidJUnitRunner
     }
     buildTypes {
         release {
@@ -62,6 +63,7 @@ dependencies {
     compile sdkSoupportDependences.design
     compile sdkSoupportDependences.recyclerview
     compile sdkSoupportDependences.rxpermissions
+    compile sdkSoupportDependences.annotations
 
     // Butterknife
     compile dataDependences.butterknife
@@ -102,10 +104,12 @@ dependencies {
     // Development
     releaseCompile developmentDependencies.leakCanaryRelease
     debugCompile developmentDependencies.leakCanaryDebug
-    
+    testCompile developmentDependencies.leakCanaryTest
+
     // Test
     testCompile testDependences.junit
-    developmentDependencies.leakCanaryRelease
+    androidTestCompile testDependences.espresso
+    androidTestCompile testDependences.runner
 
     // Project
     compile project(":rxerrorhandler")
