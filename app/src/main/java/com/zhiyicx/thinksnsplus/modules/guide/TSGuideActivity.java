@@ -2,8 +2,8 @@ package com.zhiyicx.thinksnsplus.modules.guide;
 
 import android.os.Bundle;
 
+import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.TSActivity;
 
 public class TSGuideActivity extends TSActivity {
 

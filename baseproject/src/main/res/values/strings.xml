@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">baseproject</string>
+    <string name="app_name">Common</string>
+
+
+    <!--error print content-->
+    <string name="err_share_no_content">share content not null</string>
 </resources>

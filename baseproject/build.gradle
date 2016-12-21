@@ -10,6 +10,14 @@ android {
         versionCode gConfig.getAt("versionCode")
         versionName gConfig.getAt("versionName")
         testInstrumentationRunner gConfig.testDependencies.androidJUnitRunner
+
+
+        // 友盟三方key配置
+        manifestPlaceholders = [
+                TECENT_APPID: 100424468,
+                UMENG_APPKEY: "d1b01388780156949b02cadd",
+        ]
+
     }
     buildTypes {
         release {

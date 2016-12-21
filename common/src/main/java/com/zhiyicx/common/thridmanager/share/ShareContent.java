@@ -1,6 +1,10 @@
 package com.zhiyicx.common.thridmanager.share;
 
 
+import android.graphics.Bitmap;
+import android.support.annotation.DrawableRes;
+
+import java.io.File;
 import java.io.Serializable;
 
 
@@ -20,10 +24,15 @@ public class ShareContent implements Serializable {
      * image :
      */
 
-    public String title;
-    public String content;
-    public String url;
-    public String image;
+    private String title;
+    private String content;
+    private String url;
+    private String image;
+    private Bitmap bitmap;
+    private
+    @DrawableRes
+    int resImage;
+    private File file;
 
     public String getTitle() {
         return title;
@@ -57,6 +66,30 @@ public class ShareContent implements Serializable {
         this.image = image;
     }
 
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+    }
+
+    public int getResImage() {
+        return resImage;
+    }
+
+    public void setResImage(int resImage) {
+        this.resImage = resImage;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
+
     @Override
     public String toString() {
         return "ShareContent{" +
@@ -64,31 +97,9 @@ public class ShareContent implements Serializable {
                 ", content='" + content + '\'' +
                 ", url='" + url + '\'' +
                 ", image='" + image + '\'' +
+                ", bitmap=" + bitmap +
+                ", resImage=" + resImage +
+                ", file=" + file +
                 '}';
-    }
-
-    /**
-     * 通过用户信息获取分享数据
-     *
-     * @return
-     */
-    public static ShareContent getShareContentByUserInfo() {
-
-        ShareContent shareContent = new ShareContent();
-//        if (userInfo.uname != null) {
-//            shareContent.title = ZhiboApplication.getShareContent().getTitle();
-//            shareContent.title = shareContent.title.replace(STR_SHARE_NAME, userInfo.uname);
-//        }
-//        if (userInfo.usid != null) {
-//            shareContent.url = ZhiboApplication.getShareContent().getUrl();
-//            shareContent.url = shareContent.url.replace(STR_SHARE_USID, userInfo.usid);
-//        }
-//        if (userInfo.usid.equals(ZhiboApplication.getUserInfo().usid))
-//            shareContent.content = STR_SHARE_ME + ZhiboApplication.getShareContent().getContent();
-//        else
-//            shareContent.content = userInfo.uname + ZhiboApplication.getShareContent().getContent();
-//        shareContent.image = userInfo.avatar.origin;
-
-        return shareContent;
     }
 }

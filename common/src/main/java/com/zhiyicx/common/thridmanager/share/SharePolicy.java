@@ -3,8 +3,6 @@ package com.zhiyicx.common.thridmanager.share;
 
 import android.app.Activity;
 
-import com.zhiyicx.common.thridmanager.OnShareCallbackListener;
-
 /**
  * @Describe  分享方针
  * @Author Jungle68

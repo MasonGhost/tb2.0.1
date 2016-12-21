@@ -12,7 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.zhiyicx.common.config.ConsantConfig;
+import com.zhiyicx.common.config.ConstantConfig;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -134,25 +134,25 @@ public class ConvertUtils {
      * @param memorySize 大小
      * @param unit       单位类型
      *                   <ul>
-     *                   <li>{@link ConsantConfig.MemoryUnit#BYTE}: 字节</li>
-     *                   <li>{@link ConsantConfig.MemoryUnit#KB}  : 千字节</li>
-     *                   <li>{@link ConsantConfig.MemoryUnit#MB}  : 兆</li>
-     *                   <li>{@link ConsantConfig.MemoryUnit#GB}  : GB</li>
+     *                   <li>{@link ConstantConfig.MemoryUnit#BYTE}: 字节</li>
+     *                   <li>{@link ConstantConfig.MemoryUnit#KB}  : 千字节</li>
+     *                   <li>{@link ConstantConfig.MemoryUnit#MB}  : 兆</li>
+     *                   <li>{@link ConstantConfig.MemoryUnit#GB}  : GB</li>
      *                   </ul>
      * @return 字节数
      */
-    public static long memorySize2Byte(long memorySize, ConsantConfig.MemoryUnit unit) {
+    public static long memorySize2Byte(long memorySize, ConstantConfig.MemoryUnit unit) {
         if (memorySize < 0) return -1;
         switch (unit) {
             default:
             case BYTE:
                 return memorySize;
             case KB:
-                return memorySize * ConsantConfig.KB;
+                return memorySize * ConstantConfig.KB;
             case MB:
-                return memorySize * ConsantConfig.MB;
+                return memorySize * ConstantConfig.MB;
             case GB:
-                return memorySize * ConsantConfig.GB;
+                return memorySize * ConstantConfig.GB;
         }
     }
 
@@ -162,25 +162,25 @@ public class ConvertUtils {
      * @param byteNum 字节数
      * @param unit    单位类型
      *                <ul>
-     *                <li>{@link ConsantConfig.MemoryUnit#BYTE}: 字节</li>
-     *                <li>{@link ConsantConfig.MemoryUnit#KB}  : 千字节</li>
-     *                <li>{@link ConsantConfig.MemoryUnit#MB}  : 兆</li>
-     *                <li>{@link ConsantConfig.MemoryUnit#GB}  : GB</li>
+     *                <li>{@link ConstantConfig.MemoryUnit#BYTE}: 字节</li>
+     *                <li>{@link ConstantConfig.MemoryUnit#KB}  : 千字节</li>
+     *                <li>{@link ConstantConfig.MemoryUnit#MB}  : 兆</li>
+     *                <li>{@link ConstantConfig.MemoryUnit#GB}  : GB</li>
      *                </ul>
      * @return 以unit为单位的size
      */
-    public static double byte2MemorySize(long byteNum, ConsantConfig.MemoryUnit unit) {
+    public static double byte2MemorySize(long byteNum, ConstantConfig.MemoryUnit unit) {
         if (byteNum < 0) return -1;
         switch (unit) {
             default:
             case BYTE:
                 return (double) byteNum;
             case KB:
-                return (double) byteNum / ConsantConfig.KB;
+                return (double) byteNum / ConstantConfig.KB;
             case MB:
-                return (double) byteNum / ConsantConfig.MB;
+                return (double) byteNum / ConstantConfig.MB;
             case GB:
-                return (double) byteNum / ConsantConfig.GB;
+                return (double) byteNum / ConstantConfig.GB;
         }
     }
 
@@ -195,14 +195,14 @@ public class ConvertUtils {
     public static String byte2FitMemorySize(long byteNum) {
         if (byteNum < 0) {
             return "shouldn't be less than zero!";
-        } else if (byteNum < ConsantConfig.KB) {
+        } else if (byteNum < ConstantConfig.KB) {
             return String.format("%.3fB", byteNum + 0.0005);
-        } else if (byteNum < ConsantConfig.MB) {
-            return String.format("%.3fKB", byteNum / ConsantConfig.KB + 0.0005);
-        } else if (byteNum < ConsantConfig.GB) {
-            return String.format("%.3fMB", byteNum / ConsantConfig.MB + 0.0005);
+        } else if (byteNum < ConstantConfig.MB) {
+            return String.format("%.3fKB", byteNum / ConstantConfig.KB + 0.0005);
+        } else if (byteNum < ConstantConfig.GB) {
+            return String.format("%.3fMB", byteNum / ConstantConfig.MB + 0.0005);
         } else {
-            return String.format("%.3fGB", byteNum / ConsantConfig.GB + 0.0005);
+            return String.format("%.3fGB", byteNum / ConstantConfig.GB + 0.0005);
         }
     }
 
@@ -212,27 +212,27 @@ public class ConvertUtils {
      * @param timeSpan 毫秒时间戳
      * @param unit     单位类型
      *                 <ul>
-     *                 <li>{@link ConsantConfig.TimeUnit#MSEC}: 毫秒</li>
-     *                 <li>{@link ConsantConfig.TimeUnit#SEC }: 秒</li>
-     *                 <li>{@link ConsantConfig.TimeUnit#MIN }: 分</li>
-     *                 <li>{@link ConsantConfig.TimeUnit#HOUR}: 小时</li>
-     *                 <li>{@link ConsantConfig.TimeUnit#DAY }: 天</li>
+     *                 <li>{@link ConstantConfig.TimeUnit#MSEC}: 毫秒</li>
+     *                 <li>{@link ConstantConfig.TimeUnit#SEC }: 秒</li>
+     *                 <li>{@link ConstantConfig.TimeUnit#MIN }: 分</li>
+     *                 <li>{@link ConstantConfig.TimeUnit#HOUR}: 小时</li>
+     *                 <li>{@link ConstantConfig.TimeUnit#DAY }: 天</li>
      *                 </ul>
      * @return 毫秒时间戳
      */
-    public static long timeSpan2Millis(long timeSpan, ConsantConfig.TimeUnit unit) {
+    public static long timeSpan2Millis(long timeSpan, ConstantConfig.TimeUnit unit) {
         switch (unit) {
             default:
             case MSEC:
                 return timeSpan;
             case SEC:
-                return timeSpan * ConsantConfig.SEC;
+                return timeSpan * ConstantConfig.SEC;
             case MIN:
-                return timeSpan * ConsantConfig.MIN;
+                return timeSpan * ConstantConfig.MIN;
             case HOUR:
-                return timeSpan * ConsantConfig.HOUR;
+                return timeSpan * ConstantConfig.HOUR;
             case DAY:
-                return timeSpan * ConsantConfig.DAY;
+                return timeSpan * ConstantConfig.DAY;
         }
     }
 
@@ -242,27 +242,27 @@ public class ConvertUtils {
      * @param millis 毫秒时间戳
      * @param unit   单位类型
      *               <ul>
-     *               <li>{@link ConsantConfig.TimeUnit#MSEC}: 毫秒</li>
-     *               <li>{@link ConsantConfig.TimeUnit#SEC }: 秒</li>
-     *               <li>{@link ConsantConfig.TimeUnit#MIN }: 分</li>
-     *               <li>{@link ConsantConfig.TimeUnit#HOUR}: 小时</li>
-     *               <li>{@link ConsantConfig.TimeUnit#DAY }: 天</li>
+     *               <li>{@link ConstantConfig.TimeUnit#MSEC}: 毫秒</li>
+     *               <li>{@link ConstantConfig.TimeUnit#SEC }: 秒</li>
+     *               <li>{@link ConstantConfig.TimeUnit#MIN }: 分</li>
+     *               <li>{@link ConstantConfig.TimeUnit#HOUR}: 小时</li>
+     *               <li>{@link ConstantConfig.TimeUnit#DAY }: 天</li>
      *               </ul>
      * @return 以 unit 为单位的时间长度
      */
-    public static long millis2TimeSpan(long millis, ConsantConfig.TimeUnit unit) {
+    public static long millis2TimeSpan(long millis, ConstantConfig.TimeUnit unit) {
         switch (unit) {
             default:
             case MSEC:
                 return millis;
             case SEC:
-                return millis / ConsantConfig.SEC;
+                return millis / ConstantConfig.SEC;
             case MIN:
-                return millis / ConsantConfig.MIN;
+                return millis / ConstantConfig.MIN;
             case HOUR:
-                return millis / ConsantConfig.HOUR;
+                return millis / ConstantConfig.HOUR;
             case DAY:
-                return millis / ConsantConfig.DAY;
+                return millis / ConstantConfig.DAY;
         }
     }
 
@@ -349,9 +349,9 @@ public class ConvertUtils {
         if (is == null) return null;
         try {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            byte[] b = new byte[ConsantConfig.KB];
+            byte[] b = new byte[ConstantConfig.KB];
             int len;
-            while ((len = is.read(b, 0, ConsantConfig.KB)) != -1) {
+            while ((len = is.read(b, 0, ConstantConfig.KB)) != -1) {
                 os.write(b, 0, len);
             }
             return os;

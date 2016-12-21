@@ -6,9 +6,9 @@ package com.zhiyicx.common.config;
  * @Date 2016/12/15
  * @Contact 335891510@qq.com
  */
-public class ConsantConfig {
+public class ConstantConfig {
 
-    private ConsantConfig() {
+    private ConstantConfig() {
         throw new UnsupportedOperationException("u can't instantiate me...");
     }
 

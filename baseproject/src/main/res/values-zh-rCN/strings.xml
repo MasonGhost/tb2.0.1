@@ -1,0 +1,4 @@
+<resources>
+    <!--异常输出内容-->
+    <string name="err_share_no_content">分享内容不能为空</string>
+</resources>
