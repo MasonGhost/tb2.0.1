@@ -7,7 +7,7 @@ import android.app.Activity;
  * @Describe  分享方针
  * @Author Jungle68
  * @Date 2016/12/15
- * @Contact master.jungle68@qq.com
+ * @Contact master.jungle68@gmail.com
  */
 public interface SharePolicy {
     /**

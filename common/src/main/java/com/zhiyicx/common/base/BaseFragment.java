@@ -1,5 +1,6 @@
 package com.zhiyicx.common.base;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -17,7 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 /**
- * @Describe  Fragment 基类
+ * @Describe Fragment 基类
  * @Author Jungle68
  * @Date 2016/12/15
  * @Contact 335891510@qq.com
@@ -27,7 +28,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends RxFragment {
 
     protected View mRootView;
 
-    protected BaseActivity mActivity;
+    protected Activity mActivity;
     @Inject
     protected P mPresenter;
     private Unbinder mUnbinder;
@@ -35,22 +36,23 @@ public abstract class BaseFragment<P extends BasePresenter> extends RxFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mRootView = initView();
+
+        mRootView = inflater.inflate(getlayoutId(), container);
         // 绑定到 butterknife
         mUnbinder = ButterKnife.bind(this, mRootView);
+        initView(mRootView);
         return mRootView;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mActivity = (BaseActivity) getActivity();
+        mActivity = getActivity();
         if (useEventBus())// 如果要使用 eventbus 请将此方法返回 true
             EventBus.getDefault().register(this);// 注册到事件主线
         ComponentInject();
         initData();
     }
-
 
     @Override
     public void onDestroyView() {
@@ -66,10 +68,16 @@ public abstract class BaseFragment<P extends BasePresenter> extends RxFragment {
             EventBus.getDefault().unregister(this);
     }
 
+    protected abstract int getlayoutId();
+
     /**
      * 依赖注入的入口
      */
     protected abstract void ComponentInject();
+
+    protected abstract void initView(View rootView);
+
+    protected abstract void initData();
 
     /**
      * 是否使用 eventBus,默认为使用(true)，
@@ -79,12 +87,6 @@ public abstract class BaseFragment<P extends BasePresenter> extends RxFragment {
     protected boolean useEventBus() {
         return false;
     }
-
-
-    protected abstract View initView();
-
-    protected abstract void initData();
-
 
     /**
      * 此方法是让外部调用使 fragment 做一些操作的,比如说外部的 activity 想让 fragment 对象执行一些方法,

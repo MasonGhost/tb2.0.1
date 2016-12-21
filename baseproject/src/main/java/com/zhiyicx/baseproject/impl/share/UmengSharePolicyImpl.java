@@ -24,7 +24,7 @@ import com.zhiyicx.common.thridmanager.share.SharePolicy;
  * @Describe 友盟分享方针实现
  * @Author Jungle68
  * @Date 2016/12/20
- * @Contact master.jungle68@qq.com
+ * @Contact master.jungle68@gmail.com
  */
 public class UmengSharePolicyImpl implements SharePolicy {
 

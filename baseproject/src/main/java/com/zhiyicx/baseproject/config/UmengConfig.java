@@ -4,7 +4,7 @@ package com.zhiyicx.baseproject.config;
  * @Describe 友盟三方帐号配置
  * @Author Jungle68
  * @Date 2016/12/21
- * @Contact master.jungle68@qq.com
+ * @Contact master.jungle68@gmail.com
  */
 
 public class UmengConfig {

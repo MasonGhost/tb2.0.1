@@ -1,7 +1,5 @@
 package com.zhiyicx.common.mvp.i;
 
-import android.content.Intent;
-
 /**
  * @Describe view 公用接口
  * @Author Jungle68
@@ -24,11 +22,6 @@ public interface IBaseView {
      * 显示信息
      */
     void showMessage(String message);
-
-    /**
-     * 跳转activity
-     */
-    void launchActivity(Intent intent);
 
     /**
      * 杀死自己
