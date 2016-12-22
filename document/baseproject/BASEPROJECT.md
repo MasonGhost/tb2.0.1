@@ -1,17 +1,26 @@
-# baseproject module的概述
+# baseproject module
+结构目录
+ ```
+ --base
+    ...
+ --config
+    ...
+ --impl
+    --share
+    --imageloader
+ ```
+ ts项目的基类包，主工程是在此基础上直接进行开发的
 
-##base目录：TSActivity和TSFragment类，继承自common下的相关基类
 
-- 项目主工程中的所有activity和fragment的父类
+###base目录：
+    包含项目主工程中的所有activity和fragment的父类
 
-##config目录：
-- UmengConfig类：配置友盟第三方的相关key和secret，目前包括qq，微信，新浪（含回调地址）
+###config目录：
+    项目中可能用到的一些配置数据，例如网络请求地址，第三方分享key
 
-##impl.share目录：
-- UmengSharePolicyImpl类：实现了友盟分享功能
+###impl目录：
+    基于common包下的接口实现，一般都是一些框架替换，比如第三方分享
+   - share目录：实现SharePolicy接口，当前完成友盟分享的功能
+   - imageloader：试下你ImageLoaderStrategy接口，当前完成gilde加载图片的功能
 
-##utils.imageloader目录：
-- GlideConfiguration类：自定义的GlideModule,对Glide缓存大小进行配置
-- GlideImageConfig类：继承自ImageConfig类，封装Glide的图片加载信息
-- GlideImageLoaderStrategy类：实现ImageLoaderStrategy接口，GLide加载图片的方法
 
