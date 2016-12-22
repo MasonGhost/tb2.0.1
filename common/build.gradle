@@ -49,6 +49,11 @@ greendao {
     //daoPackage 'com.zhiyicx.common.greendao.gen'
     //targetGenDir 'src/main/java'
 }
+configurations.all {
+    resolutionStrategy {
+        force 'com.android.support:support-annotations:25.0.1'
+    }
+}
 dependencies {
     def testDependences = rootProject.ext.testDependencies;
     def dataDependences = rootProject.ext.dataDependencies;
@@ -108,7 +113,9 @@ dependencies {
 
     // Test
     testCompile testDependences.junit
-    androidTestCompile testDependences.espresso
+    androidTestCompile (testDependences.espresso){
+        exclude module: 'support-annotations'
+    }
     androidTestCompile testDependences.runner
 
     // Project

@@ -8,8 +8,22 @@ import com.zhiyicx.thinksnsplus.R;
 public class TSGuideActivity extends TSActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_guide);
+    protected int getLayoutId() {
+        return R.layout.activity_guide;
+    }
+
+    @Override
+    protected void ComponentInject() {
+
+    }
+
+    @Override
+    protected void initView() {
+
+    }
+
+    @Override
+    protected void initData() {
+
     }
 }

@@ -26,11 +26,26 @@ android {
         }
     }
 }
+configurations.all {
+    resolutionStrategy {
+        force 'com.android.support:support-annotations:25.0.1'
+    }
+}
 
 dependencies {
     def dataDependences = rootProject.ext.dataDependencies;
+    def testDependences = rootProject.ext.testDependencies;
+
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
+
+
+    // Test
+    testCompile testDependences.junit
+    androidTestCompile (testDependences.espresso){
+            exclude module: 'support-annotations'
+    }
+    androidTestCompile testDependences.runner
 
     // Project
     compile project(":common")

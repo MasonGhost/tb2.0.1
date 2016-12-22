@@ -9,26 +9,6 @@ import com.zhiyicx.common.base.BaseActivity;
  * @Contact 335891510@qq.com
  */
 
-public class TSActivity extends BaseActivity {
-
-    @Override
-    protected int getLayoutId() {
-        return 0;
-    }
-
-    @Override
-    protected void ComponentInject() {
-
-    }
-
-    @Override
-    protected void initView() {
-
-    }
-
-    @Override
-    protected void initData() {
-
-    }
+public abstract class TSActivity extends BaseActivity {
 
 }

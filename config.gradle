@@ -33,8 +33,6 @@ ext {
     assertJVersion = '1.7.1'
     mockitoVersion = '1.9.5'
     dexmakerVersion = '1.0'
-    espressoVersion = '2.0'
-    testingSupportLibVersion = '0.1'
     espressoVersion = '2.2.2'
     runnerVersion = '0.5'
 
