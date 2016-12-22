@@ -102,8 +102,8 @@ dependencies {
     compile dataDependences.greendaoSqlcipher
 
     // Development
-    releaseCompile developmentDependencies.leakCanaryRelease
     debugCompile developmentDependencies.leakCanaryDebug
+    releaseCompile developmentDependencies.leakCanaryRelease
     testCompile developmentDependencies.leakCanaryTest
 
     // Test

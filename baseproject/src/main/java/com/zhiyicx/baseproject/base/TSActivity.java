@@ -31,13 +31,4 @@ public class TSActivity extends BaseActivity {
 
     }
 
-    @Override
-    public void showSnackBar(String text) {
-
-    }
-
-    @Override
-    public void showToast(String text) {
-
-    }
 }
