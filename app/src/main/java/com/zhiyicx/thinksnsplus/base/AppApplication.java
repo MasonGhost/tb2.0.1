@@ -116,6 +116,11 @@ public class AppApplication extends TSApplication {
         };
     }
 
+    /**
+     * rx 对 mErrorHandler 错误统一回调处理
+     *
+     * @return
+     */
     @Override
     protected ResponseErroListener getResponseErroListener() {
         return new ResponseErroListener() {
