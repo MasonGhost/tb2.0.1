@@ -1,5 +1,8 @@
 package com.zhiyicx.baseproject.base;
 
+import android.widget.Toolbar;
+
+import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.base.BaseActivity;
 
 /**
@@ -10,5 +13,19 @@ import com.zhiyicx.common.base.BaseActivity;
  */
 
 public abstract class TSActivity extends BaseActivity {
+    Toolbar mToolbar;
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_ts;
+    }
 
+    @Override
+    protected void initView() {
+
+    }
+
+    @Override
+    protected void initData() {
+
+    }
 }
