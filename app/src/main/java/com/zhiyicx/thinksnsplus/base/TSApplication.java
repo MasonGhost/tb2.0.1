@@ -8,7 +8,7 @@ import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.baseproject.utils.imageloader.GlideImageLoaderStrategy;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
-import com.zhiyicx.thinksnsplus.config.TSApiConfig;
+import com.zhiyicx.baseproject.config.TSApiConfig;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,7 +36,7 @@ public class TSApplication extends BaseApplication {
                 .builder()
                 .appModule(getAppModule())// baseApplication 提供
                 .httpClientModule(getHttpClientModule())// baseApplication 提供
-                .imageModule(a())// // 图片加载框架
+                .imageModule(getImagerModule())// // 图片加载框架
                 .serviceModule(new ServiceModule())// 需自行创建
                 .cacheModule(new CacheModule())// 需自行创建
                 .build();

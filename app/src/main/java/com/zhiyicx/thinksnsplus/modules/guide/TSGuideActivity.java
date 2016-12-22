@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.guide;
+package com.zhiyicx.thinksnsplus.modules;
 
 import android.os.Bundle;
 

@@ -1,7 +1,5 @@
 package com.zhiyicx.baseproject.base;
 
-import android.view.View;
-
 import com.zhiyicx.common.base.BaseActivity;
 
 /**
@@ -12,18 +10,34 @@ import com.zhiyicx.common.base.BaseActivity;
  */
 
 public class TSActivity extends BaseActivity {
+
+    @Override
+    protected int getLayoutId() {
+        return 0;
+    }
+
     @Override
     protected void ComponentInject() {
 
     }
 
     @Override
-    protected View initView() {
-        return null;
+    protected void initView() {
+
     }
 
     @Override
     protected void initData() {
+
+    }
+
+    @Override
+    public void showSnackBar(String text) {
+
+    }
+
+    @Override
+    public void showToast(String text) {
 
     }
 }

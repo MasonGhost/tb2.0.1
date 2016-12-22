@@ -12,14 +12,20 @@ import com.zhiyicx.common.base.BaseFragment;
  */
 
 public class TSFragment extends BaseFragment{
+
+    @Override
+    protected int getlayoutId() {
+        return 0;
+    }
+
     @Override
     protected void ComponentInject() {
 
     }
 
     @Override
-    protected View initView() {
-        return null;
+    protected void initView(View rootView) {
+
     }
 
     @Override

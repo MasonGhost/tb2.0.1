@@ -15,7 +15,7 @@ import rx.subscriptions.CompositeSubscription;
  * @Contact 335891510@qq.com
  */
 
-public class BasePresenter<M, V extends IBaseView> implements IBasePresenter {
+public abstract class BasePresenter<M, V extends IBaseView> implements IBasePresenter {
     protected final String TAG = this.getClass().getSimpleName();
 
     protected CompositeSubscription mCompositeSubscription;

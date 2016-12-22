@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @Describe 分享内容
  * @Author Jungle68
  * @Date 2016/12/20
- * @Contact master.jungle68@qq.com
+ * @Contact master.jungle68@gmail.com
  */
 
 public class ShareContent implements Serializable {
