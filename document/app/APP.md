@@ -1,7 +1,30 @@
-# app module的概述
-**base文件夹：ts+的基类，继承自common包下的base基类**
+# app module
 
-**config文件夹：ts+中的一些配置参数**
+结构目录：
+```shell
+--base
+    ...
+--config
+--datasource
+    --local
+    --remote
+--modules
+    ...
+```
+项目主工程，实现ts的所有功能模块
 
- - TSApiConfig类：ts+中使用的网络接口参数
- - TSEventBusTagConfig:使用eventbus的标识
+###base目录：
+    ts的基类，继承自common包下的base基类
+
+###config目录：
+    ts中的一些配置参数
+
+###data.source目录：
+    数据源管理
+ - local目录
+ - remote目录
+
+###modules目录
+    ts项目的功能模块
+
+当前项目所使用的所有接口[API.md](https://github.com/zhiyicx/thinksns-plus-android/blob/master/document/app/API.md)

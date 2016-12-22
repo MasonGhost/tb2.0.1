@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.guide;
 
-import android.os.Bundle;
-
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.R;
 
