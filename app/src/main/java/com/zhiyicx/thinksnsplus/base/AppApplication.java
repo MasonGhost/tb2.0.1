@@ -2,13 +2,11 @@ package com.zhiyicx.thinksnsplus.base;
 
 import android.content.Context;
 
-import com.zhiyicx.common.base.BaseApplication;
-import com.zhiyicx.common.dagger.module.ImageModule;
+import com.zhiyicx.baseproject.base.TSApplication;
 import com.zhiyicx.common.net.listener.RequestInterceptListener;
-import com.zhiyicx.baseproject.utils.imageloader.GlideImageLoaderStrategy;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
-import com.zhiyicx.baseproject.config.TSApiConfig;
+import com.zhiyicx.thinksnsplus.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,7 +23,10 @@ import okhttp3.Response;
  * @Contact 335891510@qq.com
  */
 
-public class TSApplication extends BaseApplication {
+public class AppApplication extends TSApplication {
+    public static int gThemeCorlor = 0; //主题色
+
+
     private AppComponent mAppComponent;
 
 
@@ -40,27 +41,18 @@ public class TSApplication extends BaseApplication {
                 .serviceModule(new ServiceModule())// 需自行创建
                 .cacheModule(new CacheModule())// 需自行创建
                 .build();
+        setThemeCorlor(getResources().getColor(R.color.themeColor));
     }
 
     /**
-     * 网络根地址
+     * 设置主题色
      *
-     * @return
+     * @param themeCorlor
      */
-    @Override
-    public String getBaseUrl() {
-        return TSApiConfig.APP_DOMAIN;
+    protected void setThemeCorlor(int themeCorlor) {
+        AppApplication.gThemeCorlor = themeCorlor;
     }
 
-    /**
-     * 默认使用 glide,如果需要使用picasso等，请按照Gi{@Link GlideImageLoaderStrategy 配置}
-     *
-     * @return
-     */
-    @Override
-    protected ImageModule getImagerModule() {
-        return new ImageModule(new GlideImageLoaderStrategy());
-    }
 
     /**
      * 将AppComponent返回出去,供其它地方使用, AppComponent接口中声明的方法返回的实例, 在getAppComponent()拿到对象后都可以直接使用

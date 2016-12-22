@@ -7,7 +7,7 @@ package com.zhiyicx.baseproject.config;
  * @Contact 335891510@qq.com
  */
 
-public class TSApiConfig {
+public class ApiConfig {
     /**
      * 网络根地址
      */
