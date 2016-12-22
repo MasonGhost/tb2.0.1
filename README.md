@@ -1,5 +1,9 @@
 # thinksns-plus-android
-Thinksns plus Android code repository.
+
+整个项目相关的决策工作安排等记录在[thinksns-plus-document](https://github.com/zhiyicx/thinksns-plus-document).
+
+
+## 工程基础配置说明
 
 该工程使用 java 语言编写.支持 Android 4.0 (api 15) 以上系统.
 
@@ -18,7 +22,38 @@ Gradle 版本
 
 **注：** 所有三方依赖包统一写入`config.gradle`，gradle配置文件`config.gradle`,需要在主项目的`buid.grale`中进行声明 `apply from："config.gralde"`
 
+### Git 忽略文件说明
+
+本工程忽略文件配置位于主工程下 `.gitignore`文件，可手动修改配置内容
+
+## 文档位置说明
+
+本工程文档统一记录在`ThinksnsPlus/document`文件夹下.
+
+## 分支使用说明
+
+分支命名方式为`主分支名称_子分支名称_特性名称_作者名称`
+
+示例:
+
+```shell
+master ( 主分支 )
+master_release ( 发布名称 )
+master_develop ( 开发名称 )
+master_future_add_image ( 特性分支 )
+master_future_add_image_lip ( 作者分支 )
+
+```
+
+**注意:**
+
+`作者分支`和`作者分支`的子分支按照作者意愿合并,由`作者分支`作者负责管理.
+
+因为远端仓库存储了大量的主版本和子版本分支,为了减少不必要的更新和下载操作,所以`作者分支`不允许推送到远端.
+
+
 ## 框架选型
+
 - 整体结构   [MVP+Dagger2](https://github.com/googlesamples/android-architecture/tree/todo-mvp-dagger/)
 
 - 技术说明 ：  [retrofit](https://github.com/square/retrofit) + [dagger2](https://google.github.io/dagger/) + [rx](http://reactivex.io/)
@@ -35,3 +70,10 @@ Gradle 版本
 |rx||1.使用干净的输入/输出函数;<br><br>2.减少代码行数；<br><br>3.异步的错误处理；<br><br>4.便于线程操作|
 
 
+## 主要模块介绍
+
+[app](document/app/APP.md) app 主工程
+
+[baseproject](document/baseproject/BASEPROJECT.md) 项目基类定义，和各种配置信息
+
+[common](document/common/COMMON.md) 基础框架包
