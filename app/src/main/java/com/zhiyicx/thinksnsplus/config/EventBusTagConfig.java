@@ -7,5 +7,5 @@ package com.zhiyicx.thinksnsplus.config;
  * @Contact 335891510@qq.com
  */
 
-public class TSEventBusTagConfig {
+public class EventBusTagConfig {
 }
