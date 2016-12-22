@@ -38,8 +38,10 @@ public class AppApplication extends TSApplication {
                 .appModule(getAppModule())// baseApplication 提供
                 .httpClientModule(getHttpClientModule())// baseApplication 提供
                 .imageModule(getImagerModule())// // 图片加载框架
+                .shareModule(getShareModule())// 分享框架
                 .serviceModule(new ServiceModule())// 需自行创建
                 .cacheModule(new CacheModule())// 需自行创建
+
                 .build();
         setThemeCorlor(getResources().getColor(R.color.themeColor));
     }

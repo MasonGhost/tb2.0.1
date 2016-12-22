@@ -1,9 +1,11 @@
 package com.zhiyicx.baseproject.base;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.utils.imageloader.GlideImageLoaderStrategy;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.dagger.module.ImageModule;
+import com.zhiyicx.common.dagger.module.ShareModule;
 
 /**
  * @Describe
@@ -34,4 +36,15 @@ public abstract class TSApplication extends BaseApplication {
     protected ImageModule getImagerModule() {
         return new ImageModule(new GlideImageLoaderStrategy());
     }
+
+    /**
+     * 默认使用 umengshare,如果需要使用shareSDK等，请按照Gi{@Link UmengSharePolicyImpl 配置}
+     *
+     * @return
+     */
+    @Override
+    protected ShareModule getShareModule() {
+        return new ShareModule(new UmengSharePolicyImpl(getApplicationContext()));
+    }
+
 }

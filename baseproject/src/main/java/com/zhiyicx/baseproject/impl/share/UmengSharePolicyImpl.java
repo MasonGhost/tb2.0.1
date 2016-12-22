@@ -67,10 +67,10 @@ public class UmengSharePolicyImpl implements SharePolicy {
      *
      * @param requestCode
      * @param resultCode
-     * @param data
+   @param data
      */
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        UMShareAPI.get(mContext).onActivityResult(requestCode, resultCode, data);
+    public static void onActivityResult(int requestCode, int resultCode, Intent data,Context context) {
+        UMShareAPI.get(context).onActivityResult(requestCode, resultCode, data);
     }
 
     /**

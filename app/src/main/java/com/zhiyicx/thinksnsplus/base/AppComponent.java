@@ -2,11 +2,12 @@ package com.zhiyicx.thinksnsplus.base;
 
 import android.app.Application;
 
-import com.google.gson.Gson;
 import com.tbruyelle.rxpermissions.RxPermissions;
 import com.zhiyicx.common.dagger.module.AppModule;
 import com.zhiyicx.common.dagger.module.HttpClientModule;
 import com.zhiyicx.common.dagger.module.ImageModule;
+import com.zhiyicx.common.dagger.module.ShareModule;
+import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.rxerrorhandler.RxErrorHandler;
 import com.zhiyicx.thinksnsplus.data.source.local.CacheManager;
@@ -25,7 +26,7 @@ import okhttp3.OkHttpClient;
  */
 
 @Singleton
-@Component(modules = {AppModule.class, HttpClientModule.class, ServiceModule.class, ImageModule.class, CacheModule.class})
+@Component(modules = {AppModule.class, HttpClientModule.class, ServiceModule.class, CacheModule.class,ImageModule.class, ShareModule.class})
 public interface AppComponent {
     Application Application();
 
@@ -45,5 +46,7 @@ public interface AppComponent {
 
     //图片管理器,用于加载图片的管理类,默认使用glide,使用策略模式,可替换框架
     ImageLoader imageLoader();
+
+    SharePolicy sharePolicy();
 
 }
