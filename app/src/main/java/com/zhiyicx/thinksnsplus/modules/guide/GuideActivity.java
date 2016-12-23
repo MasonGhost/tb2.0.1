@@ -19,7 +19,6 @@ public class GuideActivity extends TSActivity {
 
     @Override
     protected void initView() {
-        mToolbar.setNavigationIcon(getResources().getDrawable(R.drawable.abc_text_select_handle_left_mtrl_dark));
     }
 
     @Override
