@@ -30,7 +30,7 @@ _**不建议除了当前项目开发人员和维护人员以外的人，对其�
 ### [net目录：](HTTP.md)
     使用retrofit网络框架进行网络请求，该目录下包含了retrofit的一些自定义拦截器
 
-### [thirdmanager.share目录：](./baseproject/THIRDSHARE)
+### [thirdmanager.share目录：](../baseproject/THIRDSHARE)
     定义了分享功能的一些接口，如果需要替换工程中的分享平台，需要遵循这些接口定义；
 
 ### [utils目录：](UTILS.md)
