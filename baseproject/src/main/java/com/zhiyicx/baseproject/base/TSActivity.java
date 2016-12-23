@@ -1,7 +1,7 @@
 package com.zhiyicx.baseproject.base;
 
 import android.support.v4.app.Fragment;
-import android.widget.Toolbar;
+import android.support.v7.widget.Toolbar;
 
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.base.BaseActivity;

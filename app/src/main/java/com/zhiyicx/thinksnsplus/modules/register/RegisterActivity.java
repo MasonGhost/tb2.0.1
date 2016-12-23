@@ -20,11 +20,6 @@ public class RegisterActivity extends TSActivity {
     }
 
     @Override
-    protected void initView() {
-
-    }
-
-    @Override
     protected void initData() {
 
     }

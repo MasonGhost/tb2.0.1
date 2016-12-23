@@ -37,7 +37,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends RxFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        mRootView = inflater.inflate(getlayoutId(), container);
+        mRootView = inflater.inflate(getlayoutId(), null);
         // 绑定到 butterknife
         mUnbinder = ButterKnife.bind(this, mRootView);
         initView(mRootView);
