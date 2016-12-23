@@ -1,7 +1,7 @@
 package com.zhiyicx.thinksnsplus.base;
 
 
-import com.zhiyicx.thinksnsplus.data.source.remote.CommonService;
+import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 
 import javax.inject.Singleton;
 
@@ -17,8 +17,8 @@ public class ServiceModule {
 
     @Singleton
     @Provides
-    CommonService provideCommonService(Retrofit retrofit) {
-        return retrofit.create(CommonService.class);
+    CommonClient provideCommonService(Retrofit retrofit) {
+        return retrofit.create(CommonClient.class);
     }
 
 }
