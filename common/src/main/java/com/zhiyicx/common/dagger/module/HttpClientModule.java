@@ -4,13 +4,14 @@ import android.app.Application;
 import android.text.TextUtils;
 
 import com.tbruyelle.rxpermissions.RxPermissions;
-import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.net.intercept.RequestIntercept;
+import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.rxerrorhandler.RxErrorHandler;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
 
 import java.io.File;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
@@ -42,7 +43,7 @@ public class HttpClientModule {
 
     private HttpUrl mApiUrl;
     private RequestInterceptListener mHandler;
-    private Interceptor[] mInterceptors;
+    private Set<Interceptor> mInterceptorSet;
     private ResponseErroListener mErroListener;
 
     /**
@@ -53,7 +54,7 @@ public class HttpClientModule {
     private HttpClientModule(Buidler buidler) {
         this.mApiUrl = buidler.apiUrl;
         this.mHandler = buidler.handler;
-        this.mInterceptors = buidler.interceptors;
+        this.mInterceptorSet = buidler.mInterceptorSet;
         this.mErroListener = buidler.responseErroListener;
     }
 
@@ -204,8 +205,8 @@ public class HttpClientModule {
                 .readTimeout(TOME_OUT, TimeUnit.SECONDS)
                 .cache(cache)//设置缓存
                 .addNetworkInterceptor(intercept);
-        if (mInterceptors != null && mInterceptors.length > 0) {// 如果外部提供了 interceptor 的数组则遍历添加
-            for (Interceptor interceptor : mInterceptors) {
+        if (mInterceptorSet != null ) {// 如果外部提供了 interceptor 则遍历添加
+            for (Interceptor interceptor : mInterceptorSet) {
                 builder.addInterceptor(interceptor);
             }
         }
@@ -217,7 +218,7 @@ public class HttpClientModule {
     public static final class Buidler {
         private HttpUrl apiUrl = HttpUrl.parse(DEFAULT_BASEURL);
         private RequestInterceptListener handler;
-        private Interceptor[] interceptors;
+        private Set<Interceptor> mInterceptorSet;
         private ResponseErroListener responseErroListener;
 
         private Buidler() {
@@ -249,11 +250,11 @@ public class HttpClientModule {
         /**
          * 动态添加任意个 interceptor
          *
-         * @param interceptors
+         * @param interceptorSet
          * @return
          */
-        public Buidler interceptors(Interceptor[] interceptors) {
-            this.interceptors = interceptors;
+        public Buidler interceptors(Set<Interceptor> interceptorSet ) {
+            this.mInterceptorSet = interceptorSet;
             return this;
         }
 

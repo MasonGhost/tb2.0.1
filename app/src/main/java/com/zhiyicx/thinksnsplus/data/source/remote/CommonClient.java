@@ -7,7 +7,7 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
  * @Contact 335891510@qq.com
  */
 
-public interface CommonService {
+public interface CommonClient {
 
     String HEADER_API_VERSION = "Accept: application/vnd.github.v3+json";
 

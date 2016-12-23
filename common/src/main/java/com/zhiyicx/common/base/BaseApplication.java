@@ -16,6 +16,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
 
 import java.util.LinkedList;
+import java.util.Set;
 
 import okhttp3.Interceptor;
 
@@ -133,7 +134,7 @@ public abstract class BaseApplication extends Application {
      *
      * @return
      */
-    protected Interceptor[] getInterceptors() {
+    protected Set<Interceptor> getInterceptors() {
         return null;
     }
 

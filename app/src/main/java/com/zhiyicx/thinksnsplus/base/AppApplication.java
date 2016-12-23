@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.base;
 import android.content.Context;
 
 import com.zhiyicx.baseproject.base.TSApplication;
+import com.zhiyicx.common.net.intercept.CommonRequestIntercept;
 import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
@@ -11,6 +12,11 @@ import com.zhiyicx.thinksnsplus.R;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import okhttp3.Interceptor;
 import okhttp3.Request;
@@ -41,7 +47,6 @@ public class AppApplication extends TSApplication {
                 .shareModule(getShareModule())// 分享框架
                 .serviceModule(new ServiceModule())// 需自行创建
                 .cacheModule(new CacheModule())// 需自行创建
-
                 .build();
         setThemeCorlor(getResources().getColor(R.color.themeColor));
     }
@@ -65,6 +70,18 @@ public class AppApplication extends TSApplication {
         return mAppComponent;
     }
 
+    /**
+     * 增加统一请求头
+     *
+     * @return
+     */
+    @Override
+    protected Set<Interceptor> getInterceptors() {
+        Map<String, String> params = new HashMap<>();//统一请求头数据
+        Set<Interceptor> set = new HashSet<>();
+        set.add(new CommonRequestIntercept(params));
+        return set;
+    }
 
     /**
      * 这里可以提供一个全局处理http响应结果的处理类,
