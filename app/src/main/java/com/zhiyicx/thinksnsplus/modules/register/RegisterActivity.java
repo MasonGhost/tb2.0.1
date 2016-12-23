@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.register;
 
+import android.support.v4.app.Fragment;
+
 import com.zhiyicx.baseproject.base.TSActivity;
 
 /**
@@ -25,5 +27,10 @@ public class RegisterActivity extends TSActivity {
     @Override
     protected void initData() {
 
+    }
+
+    @Override
+    protected Fragment getFragment() {
+        return null;
     }
 }

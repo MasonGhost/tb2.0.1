@@ -13,5 +13,9 @@
     <!--checkbox或者dialog按钮颜色    theme UI controls like checkboxes and text fields-->
     <color name="colorAccent">@color/themeColor</color>
 
+    <!--common-->
     <color name="white">#ffffff</color>
+
+    <!--toolbar-->
+    <color name="toolbar_text_corlor_normal">#ffffff</color>
 </resources>

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="TSTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
@@ -9,6 +9,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowBackground">@color/bg_color</item>
         <item name="alertDialogTheme">@style/TSAlertDialogStyle</item>
+        <item name="toolbarStyle" tools:ignore="NewApi">@style/TSToolBar</item>
     </style>
     <!--修改系统dialog样式-->
     <style name="TSAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
@@ -18,5 +19,9 @@
         <!--<item name="android:textColorPrimary">#FFFFFF</item>-->
         <!-- Used for the background -->
         <!--<item name="android:background">#4CAF50</item>-->
+    </style>
+    <style name="TSToolBar" parent="Widget.AppCompat.Toolbar">
+        <!--左边边距-->
+        <item name="contentInsetStart">0dp</item>
     </style>
 </resources>
