@@ -19,10 +19,10 @@ public class LogUtils {
     public static void init() {
         Logger
                 .init(APPLICATION_TAG)           // default PRETTYLOGGER or use just init()
-                .methodCount(3)                 // default 2
+                .methodCount(LOGGER_METHODCOUNT)                 // default 2
                 .hideThreadInfo()               // default shown
                 .logLevel(BuildConfig.DEBUG?LogLevel.FULL:LogLevel.NONE)        // default LogLevel.FULL
-                .methodOffset(2);              // default 0
+                .methodOffset(LOGGER_METHODOFFSET);              // default 0
         // .logAdapter(new AndroidLogAdapter()); //default AndroidLogAdapter
     }
 
