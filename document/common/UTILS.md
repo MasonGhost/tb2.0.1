@@ -6,7 +6,7 @@
   ImageLoader类：图片加载使用类
   core文件夹下：当前实现了Glide的图片加载策略
 
- - LogUtils:log信息工具类，封装了logger第三方库
+ - [LogUtils](LOG.md):log信息工具类，封装了logger第三方库
 
  - CloseUtils：IO关闭工具类
 
@@ -23,3 +23,5 @@
  - ZipHelper：压缩和解压的辅助类
 
  - widget文件夹：下面放着各种常用的和自定义的控件
+
+ 2016年12月23日 13:58:56
