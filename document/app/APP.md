@@ -27,4 +27,4 @@
 ###modules目录
     ts项目的功能模块
 
-当前项目所使用的所有接口[API.md](https://github.com/zhiyicx/thinksns-plus-android/blob/master/document/app/API.md)
+当前项目所使用的所有接口[API.md](API.md)

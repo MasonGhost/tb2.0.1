@@ -3,7 +3,7 @@
 ##  1.概述
    - 目的
 
-   实现了分享（文字、图片、连接、文件）内容到QQ、QZone、微信、朋友圈、Snia微博
+   实现了分享（文字、图片、连接、文件）内容到QQ、QZone、微信、朋友圈、Sina微博
 
 ## 2.定义
 - ShareContent 定义了分享的内容；
@@ -15,7 +15,7 @@
 ## 3.使用
 ### 配置
  - baseproject/config/UmengConfig 中配置三方key、secret
- - baseproject/build.gradle 中配置友盟key,QQ的appId
+ - baseproject/build.gradle 中配置[友盟](http://dev.umeng.com/social/android/quick-integration)key,QQ的appId
  - baseproject/AndroidManifest.xml 中配置权限和三方使用的Activity
 
 ### 使用说明
