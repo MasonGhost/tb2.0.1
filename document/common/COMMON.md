@@ -18,23 +18,23 @@ _**不建议除了当前项目开发人员和维护人员以外的人，对其�
 ###base目录：
     主工程中会重写相应的基类，作为项目的基类使用
 
-###config目录：
+### [config目录：](CONSTANTCONFIG.md)
     项目中可能需要的辅助常量，比如：时分秒
 
-###dagger目录：
-    基于dagger2，添加了一些公用的module
+### [dagger目录：](DAGGER2.md)
 
-###mvp目录：
+    基于dagger2，添加了一些公用的module
+### [mvp目录：](MVP.md)
     定义了BasePresenter基类，IBaseView接口，项目中的mvp相关类都继承于此
 
-###net目录：
+### [net目录：](HTTP.md)
     使用retrofit网络框架进行网络请求，该目录下包含了retrofit的一些自定义拦截器
 
-###thirdmanager.share目录：
+### [thirdmanager.share目录：](./baseproject/THIRDSHARE)
     定义了分享功能的一些接口，如果需要替换工程中的分享平台，需要遵循这些接口定义；
 
-###utils目录：
+### [utils目录：](UTILS.md)
     封装了一些常用的工具类，在版本升级或者维护中，会继续扩充更多的功能
-###widget目录：
+### [widget目录：](WIDGET.md)
     封装了一些基础的，通用的自定义控件，在版本升级或者维护中，会继续扩充更多的功能
-
+2016年12月23日09:50:34

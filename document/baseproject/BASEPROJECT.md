@@ -20,7 +20,7 @@
 
 ###impl目录：
     基于common包下的接口实现，一般都是一些框架替换，比如第三方分享
-   - share目录：实现SharePolicy接口，当前完成友盟分享的功能
-   - imageloader：试下你ImageLoaderStrategy接口，当前完成gilde加载图片的功能
+   - share目录：实现SharePolicy接口，当前完成[友盟分享的功能](THIRDSHARE.md)
+   - imageloader：试下你ImageLoaderStrategy接口，当前完成[gilde加载图片](IMAGELOADER.md)的功能
 
 
