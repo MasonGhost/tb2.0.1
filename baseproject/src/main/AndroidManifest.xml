@@ -48,6 +48,10 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
+        <!--glide配置-->
+        <meta-data
+            android:name="com.zhiyicx.baseproject.impl.imageloader.GlideConfiguration"
+            android:value="GlideModule"/>
     </application>
 
 </manifest>

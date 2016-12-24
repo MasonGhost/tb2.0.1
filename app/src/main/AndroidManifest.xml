@@ -19,10 +19,6 @@
         <activity android:name=".modules.register.RegisterActivity"/>
 
 
-        <!--glide配置-->
-        <meta-data
-            android:name="com.zhiyicx.baseproject.impl.imageloader.GlideConfiguration"
-            android:value="GlideModule"/>
     </application>
 
 </manifest>
