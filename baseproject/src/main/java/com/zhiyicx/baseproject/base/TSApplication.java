@@ -1,6 +1,9 @@
 package com.zhiyicx.baseproject.base;
 
+import com.umeng.socialize.Config;
+import com.umeng.socialize.PlatformConfig;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.UmengConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.utils.imageloader.GlideImageLoaderStrategy;
 import com.zhiyicx.common.base.BaseApplication;
@@ -34,6 +37,10 @@ public abstract class TSApplication extends BaseApplication {
      */
     @Override
     protected ImageModule getImagerModule() {
+        PlatformConfig.setQQZone(UmengConfig.QQ_APPID, UmengConfig.QQ_SECRETKEY);
+        PlatformConfig.setWeixin(UmengConfig.WEIXIN_APPID, UmengConfig.WEIXIN_SECRETKEY);
+        PlatformConfig.setSinaWeibo(UmengConfig.SINA_APPID, UmengConfig.SINA_SECRETKEY);
+        Config.REDIRECT_URL = UmengConfig.SINA_SECRETKEY;
         return new ImageModule(new GlideImageLoaderStrategy());
     }
 

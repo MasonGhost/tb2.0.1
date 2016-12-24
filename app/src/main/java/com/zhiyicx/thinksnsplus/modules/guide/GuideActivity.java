@@ -1,9 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.guide;
 
+import android.support.v4.app.Fragment;
+
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.R;
 
-public class TSGuideActivity extends TSActivity {
+public class GuideActivity extends TSActivity {
 
     @Override
     protected int getLayoutId() {
@@ -17,11 +19,15 @@ public class TSGuideActivity extends TSActivity {
 
     @Override
     protected void initView() {
-
     }
 
     @Override
     protected void initData() {
 
+    }
+
+    @Override
+    protected Fragment getFragment() {
+        return GuideFragment.newInstance("","");
     }
 }

@@ -2,7 +2,7 @@
 
 整个项目相关的决策工作安排等记录在[thinksns-plus-document](https://github.com/zhiyicx/thinksns-plus-document).
 
-
+整个项目代码风格都遵守[智艺创想移动端开发代码风格指南](https://github.com/zhiyicx/mobile-devices-code-style-guide)
 ## 工程基础配置说明
 
 该工程使用 java 语言编写.支持 Android 4.0 (api 15) 以上系统.
@@ -78,4 +78,4 @@ master_future_add_image_lip ( 作者分支 )
 
 [common](document/common/COMMON.md) 基础框架包
 
-2016年12月22日 17:53:32
+2016年12月23日 11:55:58

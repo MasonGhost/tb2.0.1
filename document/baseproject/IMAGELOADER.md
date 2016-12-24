@@ -6,7 +6,7 @@
 加载图片。
 
 ## 2.定义
-在[common包](./common/COMMON.md)下，我们定义了下面的接口和类：
+在[common包](../common/COMMON.md)下，我们定义了下面的接口和类：
 - ImageConfig类：图片加载的配置信息
 ```
 public class ImageConfig {
