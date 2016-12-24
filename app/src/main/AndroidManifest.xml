@@ -21,7 +21,7 @@
 
         <!--glide配置-->
         <meta-data
-            android:name="com.zhiyicx.baseproject.utils.imageloader.GlideConfiguration"
+            android:name="com.zhiyicx.baseproject.impl.imageloader.GlideConfiguration"
             android:value="GlideModule"/>
     </application>
 
