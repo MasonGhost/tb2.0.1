@@ -31,11 +31,6 @@ public class LoginFragment extends TSFragment {
     Button mBtLoginLogin;
 
     @Override
-    protected int getlayoutId() {
-        return R.layout.fragment_login;
-    }
-
-    @Override
     protected void ComponentInject() {
 
     }
@@ -53,5 +48,15 @@ public class LoginFragment extends TSFragment {
     @OnClick(R.id.bt_login_login)
     public void onClick() {
         LogUtils.i("lalallalalalla");
+    }
+
+    @Override
+    protected int getBodyLayoutId() {
+        return R.layout.fragment_login;
+    }
+
+    @Override
+    protected String setLeftTitle() {
+        return "登陆";
     }
 }

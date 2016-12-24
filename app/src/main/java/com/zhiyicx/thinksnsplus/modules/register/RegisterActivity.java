@@ -13,24 +13,8 @@ import com.zhiyicx.baseproject.base.TSActivity;
 
 public class RegisterActivity extends TSActivity {
 
-
-    @Override
-    protected void ComponentInject() {
-
-    }
-
-    @Override
-    protected void initView() {
-
-    }
-
-    @Override
-    protected void initData() {
-
-    }
-
     @Override
     protected Fragment getFragment() {
-        return RegisterFragment.newInstance("", "");
+        return new RegisterFragment();
     }
 }

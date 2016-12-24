@@ -37,7 +37,7 @@ public class LoginActivityTest {
      */
     @Test
     public void notInputPhone() {
-        onView(withId(R.id.bt_login_login)).perform(click());
+        onView(withId(R.id.bt_login_login)).check(matches(withText("登陆")));
     }
 
     /**

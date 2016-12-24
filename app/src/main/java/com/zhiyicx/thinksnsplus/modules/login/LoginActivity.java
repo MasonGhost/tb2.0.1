@@ -13,12 +13,8 @@ import com.zhiyicx.baseproject.base.TSActivity;
 
 public class LoginActivity extends TSActivity {
     @Override
-    protected void ComponentInject() {
-
-    }
-
-    @Override
     protected Fragment getFragment() {
         return new LoginFragment();
     }
+
 }

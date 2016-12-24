@@ -8,26 +8,7 @@ import com.zhiyicx.thinksnsplus.R;
 public class GuideActivity extends TSActivity {
 
     @Override
-    protected int getLayoutId() {
-        return R.layout.activity_guide;
-    }
-
-    @Override
-    protected void ComponentInject() {
-
-    }
-
-    @Override
-    protected void initView() {
-    }
-
-    @Override
-    protected void initData() {
-
-    }
-
-    @Override
     protected Fragment getFragment() {
-        return GuideFragment.newInstance("","");
+        return new GuideFragment();
     }
 }
