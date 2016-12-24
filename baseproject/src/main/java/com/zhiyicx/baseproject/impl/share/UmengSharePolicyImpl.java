@@ -36,7 +36,6 @@ public class UmengSharePolicyImpl implements SharePolicy {
         PlatformConfig.setWeixin(UmengConfig.WEIXIN_APPID, UmengConfig.WEIXIN_SECRETKEY);
         PlatformConfig.setSinaWeibo(UmengConfig.SINA_APPID, UmengConfig.SINA_SECRETKEY);
         Config.REDIRECT_URL = UmengConfig.SINA_SECRETKEY;
-
     }
 
     private Context mContext;

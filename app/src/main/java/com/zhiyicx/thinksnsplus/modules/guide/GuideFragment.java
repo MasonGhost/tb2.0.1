@@ -32,4 +32,5 @@ public class GuideFragment extends TSFragment {
     protected void initData() {
 
     }
+
 }

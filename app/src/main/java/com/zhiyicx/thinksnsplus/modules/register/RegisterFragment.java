@@ -11,11 +11,6 @@ import com.zhiyicx.thinksnsplus.R;
 public class RegisterFragment extends TSFragment {
 
     @Override
-    protected int getBodyLayoutId() {
-        return R.layout.fragment_register;
-    }
-
-    @Override
     protected void ComponentInject() {
 
     }
@@ -28,5 +23,10 @@ public class RegisterFragment extends TSFragment {
     @Override
     protected void initData() {
 
+    }
+
+    @Override
+    protected int getBodyLayoutId() {
+        return R.layout.fragment_register;
     }
 }

@@ -1,6 +1,7 @@
 ﻿# 分享功能
 
 ##  1.概述
+   主项目基于 Android U-share 6.0sdk 实现，根据扩展可替换成其他三方分享
    - 目的
 
    实现了分享（文字、图片、连接、文件）内容到QQ、QZone、微信、朋友圈、Sina微博
@@ -49,7 +50,7 @@ UmengSharePolicyImpl. onActivityResult(int requestCode, int resultCode, Intent d
 
 如果需要替换成其他的分享平台，比如shareSdk，需要遵循以上规范,实现SharePolicy
 
-2016年12月22日 18:59:39
+2016年12月24日10:08:01
 
 
 

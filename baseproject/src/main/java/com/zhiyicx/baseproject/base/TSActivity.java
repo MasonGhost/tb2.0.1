@@ -3,15 +3,6 @@ package com.zhiyicx.baseproject.base;
 import android.graphics.Color;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.base.BaseActivity;
 import com.zhiyicx.common.utils.ActivityUtils;

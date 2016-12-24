@@ -37,10 +37,6 @@ public abstract class TSApplication extends BaseApplication {
      */
     @Override
     protected ImageModule getImagerModule() {
-        PlatformConfig.setQQZone(UmengConfig.QQ_APPID, UmengConfig.QQ_SECRETKEY);
-        PlatformConfig.setWeixin(UmengConfig.WEIXIN_APPID, UmengConfig.WEIXIN_SECRETKEY);
-        PlatformConfig.setSinaWeibo(UmengConfig.SINA_APPID, UmengConfig.SINA_SECRETKEY);
-        Config.REDIRECT_URL = UmengConfig.SINA_SECRETKEY;
         return new ImageModule(new GlideImageLoaderStrategy());
     }
 
