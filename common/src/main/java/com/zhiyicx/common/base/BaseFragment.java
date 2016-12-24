@@ -27,17 +27,17 @@ public abstract class BaseFragment<P extends BasePresenter> extends RxFragment {
     protected final String TAG = this.getClass().getSimpleName();
 
     protected View mRootView;
-
     protected Activity mActivity;
     @Inject
     protected P mPresenter;
     private Unbinder mUnbinder;
+    protected LayoutInflater mLayoutInflater;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        mRootView = inflater.inflate(getlayoutId(), container);
+        mLayoutInflater = inflater;
+        mRootView = getContentView();
         // 绑定到 butterknife
         mUnbinder = ButterKnife.bind(this, mRootView);
         initView(mRootView);
@@ -68,7 +68,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends RxFragment {
             EventBus.getDefault().unregister(this);
     }
 
-    protected abstract int getlayoutId();
+    protected abstract View getContentView();
 
     /**
      * 依赖注入的入口
