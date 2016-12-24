@@ -20,8 +20,16 @@
         <!-- Used for the background -->
         <!--<item name="android:background">#4CAF50</item>-->
     </style>
+
     <style name="TSToolBar" parent="Widget.AppCompat.Toolbar">
         <!--左边边距-->
         <item name="contentInsetStart">0dp</item>
+    </style>
+    <!--TranslucentLAUNCHER theme 启动页主题-->
+    <style name="TranslucentLauncherTheme" parent="android:Theme.Translucent.NoTitleBar.Fullscreen"/>
+    <!--BackGroundLauncherTheme theme 启动页主题-->
+    <style name="BackGroundLauncherTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:screenOrientation">portrait</item>
+        <!--<item name="android:windowBackground">>@mipmap/splash</item>-->
     </style>
 </resources>

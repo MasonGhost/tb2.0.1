@@ -9,8 +9,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/TSTheme">
-        <activity android:name=".modules.guide.GuideActivity">
-
+        <activity
+            android:name=".modules.guide.GuideActivity"
+            android:theme="@style/TranslucentLauncherTheme">
         </activity>
         <activity android:name=".modules.register.RegisterActivity"/>
         <activity android:name=".modules.login.LoginActivity">
