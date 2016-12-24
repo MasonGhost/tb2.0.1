@@ -27,18 +27,18 @@ public abstract class TSFragment extends BaseFragment {
 
     @Override
     protected View getContentView() {
-        View rootView = mLayoutInflater.inflate(R.layout.activity_ts, null);
-        AppBarLayout appBarLayout = (AppBarLayout) rootView.findViewById(R.id.toolbar_layout);
-        FrameLayout frameLayout = (FrameLayout) rootView.findViewById(R.id.fl_fragment_container);
+        LinearLayout linearLayout = new LinearLayout(getActivity());
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         if (showToolbar()) {// 在需要显示toolbar时，进行添加
             View toolBarContainer = mLayoutInflater.inflate(getToolBarLayoutId(), null);
             initDefaultToolBar(toolBarContainer);
-            appBarLayout.addView(toolBarContainer);
+            linearLayout.addView(toolBarContainer);
         }
         View bodyContainer = mLayoutInflater.inflate(getBodyLayoutId(), null);
         bodyContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        frameLayout.addView(bodyContainer);
-        return rootView;
+        linearLayout.addView(bodyContainer);
+        return linearLayout;
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.zhiyicx.common.base;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import com.zhiyicx.common.R;
 import com.zhiyicx.common.base.i.IBaseActivity;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.StatusBarUtils;
 
 import org.simple.eventbus.EventBus;
 
@@ -44,7 +46,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends RxAppCompatA
         if (useEventBus()) {
             EventBus.getDefault().register(this);// 注册到事件主线
         }
-        setContentView(getContentView());
+        setContentView(getLayoutId());
         // 绑定到 butterknife
         mUnbinder = ButterKnife.bind(this);
         ComponentInject();// 依赖注入
@@ -57,7 +59,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends RxAppCompatA
      *
      * @return
      */
-    protected abstract View getContentView();
+    protected abstract int getLayoutId();
 
     @Override
     protected void onDestroy() {
