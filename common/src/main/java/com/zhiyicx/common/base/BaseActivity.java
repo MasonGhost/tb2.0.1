@@ -1,11 +1,16 @@
 package com.zhiyicx.common.base;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
+import com.zhiyicx.common.R;
 import com.zhiyicx.common.base.i.IBaseActivity;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.StatusBarUtils;
 
 import org.simple.eventbus.EventBus;
 
@@ -28,6 +33,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends RxAppCompatA
     @Inject
     protected P mPresenter;
     private Unbinder mUnbinder;
+    protected LayoutInflater mLayoutInflater;
 
     @Nullable
     @Override
@@ -35,6 +41,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends RxAppCompatA
         super.onCreate(savedInstanceState);
         mApplication = (BaseApplication) getApplication();
         mApplication.getActivityList().add(this);
+        mLayoutInflater = LayoutInflater.from(this);
         // 如果要使用 eventbus 请将此方法返回 true
         if (useEventBus()) {
             EventBus.getDefault().register(this);// 注册到事件主线
@@ -47,6 +54,12 @@ public abstract class BaseActivity<P extends BasePresenter> extends RxAppCompatA
         initData();
     }
 
+    /**
+     * 子类获取contentView
+     *
+     * @return
+     */
+    protected abstract int getLayoutId();
 
     @Override
     protected void onDestroy() {
@@ -59,13 +72,6 @@ public abstract class BaseActivity<P extends BasePresenter> extends RxAppCompatA
         if (useEventBus())// 如果要使用 eventbus 请将此方法返回 true
             EventBus.getDefault().unregister(this);
     }
-
-    /**
-     * 获取布局文件
-     *
-     * @return
-     */
-    protected abstract int getLayoutId();
 
     /**
      * 是否使用 eventBus,默认为使用(true)，

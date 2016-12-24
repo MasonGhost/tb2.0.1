@@ -1,21 +1,21 @@
 package com.zhiyicx.baseproject.base;
 
+import android.graphics.Color;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
-
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.base.BaseActivity;
 import com.zhiyicx.common.utils.ActivityUtils;
+import com.zhiyicx.common.utils.StatusBarUtils;
 
 /**
- * @Describe
+ * @Describe activity只是作为fragment的容器，具体的功能逻辑在fragment中完成
  * @Author Jungle68
  * @Date 2016/12/16
  * @Contact 335891510@qq.com
  */
 
 public abstract class TSActivity extends BaseActivity {
-   protected Toolbar mToolbar;
 
     @Override
     protected int getLayoutId() {
@@ -24,7 +24,8 @@ public abstract class TSActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        StatusBarUtils.setStatusBarColor(this, R.color.themeColor);
+        // 添加fragment
         ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), getFragment(), R.id.fl_fragment_container);
     }
 
@@ -33,8 +34,14 @@ public abstract class TSActivity extends BaseActivity {
 
     }
 
+    @Override
+    protected void ComponentInject() {
+
+    }
+
     /**
      * @return 当前页的Fragment
      */
     protected abstract Fragment getFragment();
+
 }

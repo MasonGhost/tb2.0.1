@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">ThinksnsPlus</string>
+    <!--控件上的名称-->
+    <string name="bt_login">登陆</string>
+    <string name="login_phone_hint">账号hint</string>
+    <string name="login_password_hint">密码hint</string>
+
+
+
+    <!--代码中的string-->
 </resources>
