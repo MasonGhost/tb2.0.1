@@ -35,6 +35,21 @@ public class LoginFragment extends TSFragment {
         return R.layout.fragment_login;
     }
 
+    @Override
+    protected void ComponentInject() {
+
+    }
+
+    @Override
+    protected void initView(View rootView) {
+
+    }
+
+    @Override
+    protected void initData() {
+
+    }
+
     @OnClick(R.id.bt_login_login)
     public void onClick() {
         LogUtils.i("lalallalalalla");

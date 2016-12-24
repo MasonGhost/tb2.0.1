@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".modules.register.RegisterActivity"/>
-
+        <activity android:name=".modules.login.LoginActivity"/>
 
         <!--glide配置-->
         <meta-data

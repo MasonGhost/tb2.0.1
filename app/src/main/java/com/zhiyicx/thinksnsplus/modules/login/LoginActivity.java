@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.login;
 
+import android.support.v4.app.Fragment;
+
 import com.zhiyicx.baseproject.base.TSActivity;
 
 /**
@@ -13,5 +15,10 @@ public class LoginActivity extends TSActivity {
     @Override
     protected void ComponentInject() {
 
+    }
+
+    @Override
+    protected Fragment getFragment() {
+        return new LoginFragment();
     }
 }
