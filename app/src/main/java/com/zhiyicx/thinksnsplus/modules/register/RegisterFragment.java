@@ -8,12 +8,13 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class RegisterFragment extends TSFragment<RegisterPresenter> implements RegisterContract.View {
+public class RegisterFragment extends TSFragment<RegisterContract.Presenter> implements RegisterContract.View {
 
 
     @BindView(R.id.et_regist_nickname)
@@ -61,7 +62,7 @@ public class RegisterFragment extends TSFragment<RegisterPresenter> implements R
 
     @Override
     public void setPresenter(RegisterContract.Presenter presenter) {
-
+        mPresenter = presenter;
     }
 
     @Override
@@ -89,12 +90,19 @@ public class RegisterFragment extends TSFragment<RegisterPresenter> implements R
         switch (view.getId()) {
             case R.id.bt_regist_send_vertify_code:
                 mPresenter.getVertifyCode("15694005009");
-                Toast.makeText(getActivity(),"vertify_code",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "vertify_code", Toast.LENGTH_SHORT).show();
+                LogUtils.d("--------bt_regist_send_vertify_code--------");
                 break;
             case R.id.bt_regist_regist:
                 mPresenter.register();
-                Toast.makeText(getActivity(),"bt_regist_regist",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "bt_regist_regist", Toast.LENGTH_SHORT).show();
+                LogUtils.d("--------bt_regist_regist--------");
                 break;
         }
+    }
+
+    @Override
+    protected String setCenterTitle() {
+        return getString(R.string.immediate_regist);
     }
 }

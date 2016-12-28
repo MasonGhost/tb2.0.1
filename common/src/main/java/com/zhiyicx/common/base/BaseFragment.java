@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.trello.rxlifecycle.components.support.RxFragment;
-import com.zhiyicx.common.mvp.BasePresenter;
 
 import org.simple.eventbus.EventBus;
 
@@ -23,7 +22,7 @@ import butterknife.Unbinder;
  * @Date 2016/12/15
  * @Contact 335891510@qq.com
  */
-public abstract class BaseFragment<P extends BasePresenter> extends RxFragment {
+public abstract class BaseFragment<P > extends RxFragment {
     protected final String TAG = this.getClass().getSimpleName();
 
     protected View mRootView;
@@ -63,7 +62,6 @@ public abstract class BaseFragment<P extends BasePresenter> extends RxFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mPresenter != null) mPresenter.onDestroy();// 释放资源
         if (useEventBus())// 如果要使用 eventbus 请将此方法返回 true
             EventBus.getDefault().unregister(this);
     }

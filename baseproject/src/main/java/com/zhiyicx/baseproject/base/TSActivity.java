@@ -6,7 +6,6 @@ import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.base.BaseActivity;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.ActivityUtils;
-import com.zhiyicx.common.utils.StatusBarUtils;
 
 /**
  * @Describe activity只是作为fragment的容器，具体的功能逻辑在fragment中完成
@@ -25,7 +24,7 @@ public abstract class TSActivity<P extends BasePresenter> extends BaseActivity<P
 
     @Override
     protected void initView() {
-        StatusBarUtils.setStatusBarColor(this, R.color.themeColor);
+//        StatusBarUtils.setStatusBarColor(this, R.color.themeColor);
         // 添加fragment
         mContanierFragment= getFragment();
         ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),mContanierFragment, R.id.fl_fragment_container);

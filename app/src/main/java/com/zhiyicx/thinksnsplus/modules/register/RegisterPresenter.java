@@ -18,7 +18,14 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
     public RegisterPresenter(RegisterContract.Repository repository, RegisterContract.View rootView) {
         super(repository, rootView);
     }
-
+    /**
+     * Method injection is used here to safely reference {@code this} after the object is created.
+     * For more information, see Java Concurrency in Practice.
+     */
+    @Inject
+    void setupListeners() {
+        mRootView.setPresenter(this);
+    }
     @Override
     public void getVertifyCode(String phone) {
 

@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.base.BaseFragment;
-import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.StatusBarUtils;
 
 /**
  * @Describe
@@ -17,12 +17,13 @@ import com.zhiyicx.common.mvp.BasePresenter;
  * @Contact 335891510@qq.com
  */
 
-public abstract class TSFragment<P extends BasePresenter> extends BaseFragment<P> {
+public abstract class TSFragment<P> extends BaseFragment<P> {
     private static final int DEFAULT_TOOLBAR = R.layout.toolbar_custom;
 
     private TextView mToolbarLeft;
     private TextView mToolbarRight;
     private TextView mToolbarCenter;
+    private boolean mIscUseSatusbar=false;// 内容是否需要占用状态栏
 
     @Override
     protected View getContentView() {
@@ -36,6 +37,15 @@ public abstract class TSFragment<P extends BasePresenter> extends BaseFragment<P
         }
         View bodyContainer = mLayoutInflater.inflate(getBodyLayoutId(), null);
         bodyContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        if (mIscUseSatusbar) {
+            //顶上去
+            StatusBarUtils.transparencyBar(getActivity());
+            linearLayout.setFitsSystemWindows(false);
+        }else {
+            //不顶上去
+            StatusBarUtils.setStatusBarColor(getActivity(), R.color.themeColor);
+            linearLayout.setFitsSystemWindows(true);
+        }
         linearLayout.addView(bodyContainer);
         return linearLayout;
     }
@@ -64,8 +74,8 @@ public abstract class TSFragment<P extends BasePresenter> extends BaseFragment<P
      */
     protected void initDefaultToolBar(View toolBarContainer) {
         mToolbarLeft = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_left);
-        mToolbarRight = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_center);
-        mToolbarCenter = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_r);
+        mToolbarRight = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_right);
+        mToolbarCenter = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_center);
 
         // 如果标题为空，就隐藏它
         mToolbarCenter.setVisibility(TextUtils.isEmpty(setCenterTitle()) ? View.GONE : View.VISIBLE);
