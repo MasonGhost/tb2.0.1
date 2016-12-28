@@ -46,7 +46,7 @@ dependencies {
     androidTestCompile (testDependences.espresso){
             exclude module: 'support-annotations'
     }
-    androidTestCompile testDependences.runner
+    testCompile testDependences.robolectric
 
     // Project
     compile project(":common")
