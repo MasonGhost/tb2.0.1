@@ -4,10 +4,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.utils.ManyEdittextContentWatcher;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 
@@ -32,12 +34,16 @@ public class LoginFragment extends TSFragment {
 
     @Override
     protected void ComponentInject() {
-
     }
 
     @Override
     protected void initView(View rootView) {
-
+        new ManyEdittextContentWatcher(new ManyEdittextContentWatcher.ContentWatcher() {
+            @Override
+            public void allHasContent(boolean hasContent) {
+                mBtLoginLogin.setClickable(hasContent);
+            }
+        }, mEtLoginPhone, mEtLoginPassword);
     }
 
     @Override
