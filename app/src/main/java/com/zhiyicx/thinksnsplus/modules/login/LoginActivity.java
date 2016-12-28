@@ -17,4 +17,8 @@ public class LoginActivity extends TSActivity {
         return new LoginFragment();
     }
 
+    @Override
+    protected void componentInject() {
+
+    }
 }

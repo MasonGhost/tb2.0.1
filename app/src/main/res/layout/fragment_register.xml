@@ -1,14 +1,132 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="com.zhiyicx.thinksnsplus.modules.register.RegisterFragment">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        style="@style/style_edit_line">
+
+        <TextView
+            style="@style/style_small_text"
+            android:layout_marginLeft="@dimen/spacing_large"
+            android:text="@string/nickname"/>
+
+        <EditText
+            android:id="@+id/et_regist_nickname"
+            style="@style/style_edit"
+            android:layout_marginLeft="42px"
+            android:hint="@string/nickname_input_hint"
+            android:inputType="textFilter|textImeMultiLine"
+            android:maxLength="8"/>
+    </LinearLayout>
+
+    <ImageView style="@style/divider_style_horizontal"/>
+
+    <RelativeLayout style="@style/style_edit_line">
+
+        <LinearLayout
+            style="@style/style_edit_line"
+            android:layout_width="590px">
+
+            <TextView
+                style="@style/style_small_text"
+                android:layout_marginLeft="@dimen/spacing_large"
+                android:text="@string/phone_number"/>
+
+            <EditText
+                android:id="@+id/et_regist_phone"
+                style="@style/style_edit"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:hint="@string/phone_number_input_hint"
+                android:inputType="phone"
+                android:maxLength="11"/>
+        </LinearLayout>
+
+        <RelativeLayout style="@style/style_send_button_cotainer">
+
+            <Button
+                android:id="@+id/bt_regist_send_vertify_code"
+                style="@style/style_send_button"
+                android:layout_centerVertical="true"
+                android:enabled="false"/>
+
+            <ImageView
+                android:id="@+id/pb_regist_loading"
+                android:layout_width="50px"
+                android:layout_height="50px"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="38px"
+                android:src="@drawable/frame_loading"
+                android:visibility="invisible"
+                />
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+    <ImageView style="@style/divider_style_horizontal"/>
+
+    <LinearLayout style="@style/style_edit_line">
+
+        <TextView
+            style="@style/style_small_text"
+            android:layout_marginLeft="@dimen/spacing_large"
+            android:text="@string/vertify_code"/>
+
+        <EditText
+            android:id="@+id/et_regist_vertify_code"
+            style="@style/style_edit"
+            android:hint="@string/vertify_code_input_hint"
+            android:inputType="number"
+            android:maxLength="4"/>
+    </LinearLayout>
+
+    <ImageView style="@style/divider_style_horizontal"/>
+
+    <LinearLayout
+        style="@style/style_edit_line">
+
+        <TextView
+            style="@style/style_small_text"
+            android:layout_marginLeft="@dimen/spacing_large"
+            android:text="@string/password"/>
+
+        <EditText
+            android:id="@+id/et_regist_password"
+            style="@style/style_edit"
+            android:layout_width="510px"
+            android:layout_marginLeft="42px"
+            android:hint="@string/password_input_hint"
+            android:inputType="textPassword"
+            android:maxLength="16"/>
+
+        <CheckBox
+            android:id="@+id/cb_login"
+            android:layout_width="80px"
+            android:layout_height="80px"
+            android:layout_marginLeft="20px"
+            android:button="@drawable/selector_psw_look"
+            android:gravity="center"/>
+    </LinearLayout>
+
+    <ImageView style="@style/divider_style_horizontal"/>
+
     <TextView
-        android:id="@+id/tv_test"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment"/>
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/textview_height_tall"
+        android:layout_gravity="right"
+        android:layout_marginRight="@dimen/spacing_large"
+        android:gravity="center_vertical|right"
+        android:textSize="@dimen/font_normal"/>
 
-</FrameLayout>
+    <Button
+        android:id="@+id/bt_regist_regist"
+        style="@style/style_login_button"
+        android:enabled="false"
+        android:text="@string/immediate_regist"/>
+
+
+</LinearLayout>

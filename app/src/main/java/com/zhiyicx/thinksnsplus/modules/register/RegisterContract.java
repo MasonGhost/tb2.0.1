@@ -15,7 +15,7 @@ import rx.Observable;
 
 public interface RegisterContract {
     //对于经常使用的关于UI的方法可以定义到BaseView中,如显示隐藏进度条,和显示文字消息
-    interface View extends IBaseView {
+    interface View extends IBaseView<Presenter> {
 
     }
 
@@ -27,7 +27,7 @@ public interface RegisterContract {
     interface Presenter {
         void getVertifyCode(String phone);
 
-        void login();
+        void register();
     }
 
 }

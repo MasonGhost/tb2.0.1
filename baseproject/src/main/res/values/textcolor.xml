@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="title">@color/white</color>
+    <color name="head">#333333</color>
+    <color name="sub">#666666</color>
+    <color name="body">#999999</color>
+</resources>

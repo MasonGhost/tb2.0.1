@@ -23,7 +23,6 @@ public abstract class BasePresenter<R, V extends IBaseView> implements IBasePres
     protected R mRepository;
     protected V mRootView;
 
-
     public BasePresenter(R repository, V rootView) {
         this.mRepository = repository;
         this.mRootView = rootView;
