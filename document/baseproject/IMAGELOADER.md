@@ -1,9 +1,10 @@
+2016年12月24日10:34:23
 # 图片加载实现
 
 ## 1.概述
 
 谷歌官方推荐使用glide进行图片加载，因此项目当前使用[gilde图片框架](https://github.com/bumptech/glide)
-加载图片。
+加载图片。`GlideConfiguration`根据官方配置实现`GlideModule`,如需详细了解，请移步[官方](https://github.com/bumptech/glide)
 
 ## 2.定义
 在[common包](../common/COMMON.md)下，我们定义了下面的接口和类：
@@ -52,7 +53,7 @@ public interface ImageLoaderStrategy<T extends ImageConfig> {
    ```
    Inject
    ImageLoader imageLoader;
-   imageLoader.loadImage(Context context, GlideConfiguration config);
+   imageLoader.loadImage(Context context, GlideImageConfig config);
    ```
 
 ## 4.逻辑描述

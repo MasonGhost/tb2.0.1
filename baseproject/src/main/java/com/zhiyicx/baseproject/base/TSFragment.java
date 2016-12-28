@@ -1,15 +1,14 @@
 package com.zhiyicx.baseproject.base;
 
-import android.support.design.widget.AppBarLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.base.BaseFragment;
+import com.zhiyicx.common.mvp.BasePresenter;
 
 /**
  * @Describe
@@ -18,7 +17,7 @@ import com.zhiyicx.common.base.BaseFragment;
  * @Contact 335891510@qq.com
  */
 
-public abstract class TSFragment extends BaseFragment {
+public abstract class TSFragment<P extends BasePresenter> extends BaseFragment<P> {
     private static final int DEFAULT_TOOLBAR = R.layout.toolbar_custom;
 
     private TextView mToolbarLeft;

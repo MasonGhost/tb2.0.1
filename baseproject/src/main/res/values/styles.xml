@@ -7,7 +7,7 @@
         <!--导航栏上的标题颜色-->
         <item name="android:textColorPrimary">@color/textColorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowBackground">@color/bg_color</item>
+        <item name="android:windowBackground">@color/bgColor</item>
         <item name="alertDialogTheme">@style/TSAlertDialogStyle</item>
         <item name="toolbarStyle" tools:ignore="NewApi">@style/TSToolBar</item>
     </style>
@@ -20,8 +20,17 @@
         <!-- Used for the background -->
         <!--<item name="android:background">#4CAF50</item>-->
     </style>
+
     <style name="TSToolBar" parent="Widget.AppCompat.Toolbar">
         <!--左边边距-->
         <item name="contentInsetStart">0dp</item>
+    </style>
+    <!--TranslucentLAUNCHER theme 启动页主题-->
+    <style name="TranslucentLauncherTheme" parent="android:Theme.Translucent.NoTitleBar.Fullscreen"/>
+    <!--BackGroundLauncherTheme theme 启动页主题-->
+    <style name="BackGroundLauncherTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:screenOrientation">portrait</item>
+        <!--<item name="android:windowBackground">>@mipmap/splash</item>-->
+        <item name="android:windowBackground">@color/themeColor</item>
     </style>
 </resources>

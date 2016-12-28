@@ -1,10 +1,10 @@
 package com.zhiyicx.baseproject.base;
 
-import android.graphics.Color;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
+
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.base.BaseActivity;
+import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 
@@ -15,8 +15,9 @@ import com.zhiyicx.common.utils.StatusBarUtils;
  * @Contact 335891510@qq.com
  */
 
-public abstract class TSActivity extends BaseActivity {
+public abstract class TSActivity<P extends BasePresenter> extends BaseActivity<P> {
 
+    protected Fragment mContanierFragment;
     @Override
     protected int getLayoutId() {
         return R.layout.activity_ts;
@@ -26,16 +27,12 @@ public abstract class TSActivity extends BaseActivity {
     protected void initView() {
         StatusBarUtils.setStatusBarColor(this, R.color.themeColor);
         // 添加fragment
-        ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), getFragment(), R.id.fl_fragment_container);
+        mContanierFragment= getFragment();
+        ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),mContanierFragment, R.id.fl_fragment_container);
     }
 
     @Override
     protected void initData() {
-
-    }
-
-    @Override
-    protected void ComponentInject() {
 
     }
 

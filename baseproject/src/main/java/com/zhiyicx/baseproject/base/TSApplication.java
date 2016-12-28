@@ -1,11 +1,8 @@
 package com.zhiyicx.baseproject.base;
 
-import com.umeng.socialize.Config;
-import com.umeng.socialize.PlatformConfig;
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.baseproject.config.UmengConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
-import com.zhiyicx.baseproject.utils.imageloader.GlideImageLoaderStrategy;
+import com.zhiyicx.baseproject.impl.imageloader.GlideImageLoaderStrategy;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.dagger.module.ImageModule;
 import com.zhiyicx.common.dagger.module.ShareModule;

@@ -15,17 +15,16 @@ import rx.subscriptions.CompositeSubscription;
  * @Contact 335891510@qq.com
  */
 
-public abstract class BasePresenter<M, V extends IBaseView> implements IBasePresenter {
+public abstract class BasePresenter<R, V extends IBaseView> implements IBasePresenter {
     protected final String TAG = this.getClass().getSimpleName();
 
     protected CompositeSubscription mCompositeSubscription;
 
-    protected M mModel;
+    protected R mRepository;
     protected V mRootView;
 
-
-    public BasePresenter(M model, V rootView) {
-        this.mModel = model;
+    public BasePresenter(R repository, V rootView) {
+        this.mRepository = repository;
         this.mRootView = rootView;
         onStart();
     }
@@ -60,7 +59,7 @@ public abstract class BasePresenter<M, V extends IBaseView> implements IBasePres
         if (useEventBus())// 如果要使用 eventbus 请将此方法返回 true
             EventBus.getDefault().unregister(this);// 解除注册 eventbus
         unSubscribe();// 解除订阅
-        this.mModel = null;
+        this.mRepository = null;
         this.mRootView = null;
     }
 

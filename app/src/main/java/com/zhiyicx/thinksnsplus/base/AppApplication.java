@@ -33,13 +33,10 @@ public class AppApplication extends TSApplication {
     public static int gThemeCorlor = 0; //主题色
 
 
-    private AppComponent mAppComponent;
-
-
     @Override
     public void onCreate() {
         super.onCreate();
-        mAppComponent = DaggerAppComponent
+        AppComponent appComponent = DaggerAppComponent
                 .builder()
                 .appModule(getAppModule())// baseApplication 提供
                 .httpClientModule(getHttpClientModule())// baseApplication 提供
@@ -48,6 +45,7 @@ public class AppApplication extends TSApplication {
                 .serviceModule(new ServiceModule())// 需自行创建
                 .cacheModule(new CacheModule())// 需自行创建
                 .build();
+        AppComponentHolder.setAppComponent(appComponent);
         setThemeCorlor(getResources().getColor(R.color.themeColor));
     }
 
@@ -61,14 +59,6 @@ public class AppApplication extends TSApplication {
     }
 
 
-    /**
-     * 将AppComponent返回出去,供其它地方使用, AppComponent接口中声明的方法返回的实例, 在getAppComponent()拿到对象后都可以直接使用
-     *
-     * @return
-     */
-    public AppComponent getAppComponent() {
-        return mAppComponent;
-    }
 
     /**
      * 增加统一请求头
@@ -100,7 +90,7 @@ public class AppApplication extends TSApplication {
                 try {
                     JSONArray array = new JSONArray(httpResult);
                     JSONObject object = (JSONObject) array.get(0);
-                    String login = object.getString("login");
+                    String login = object.getString("register");
                     String avatar_url = object.getString("avatar_url");
                     LogUtils.d(TAG, "result ------>" + login + "    ||   avatar_url------>" + avatar_url);
 
@@ -148,5 +138,21 @@ public class AppApplication extends TSApplication {
                 LogUtils.d(TAG, "------------>" + e.getMessage());
             }
         };
+    }
+
+    /**
+     * 将AppComponent返回出去,供其它地方使用
+     *
+     * @return
+     */
+    public static class AppComponentHolder {
+        private static AppComponent sAppComponent;
+        public static void setAppComponent(AppComponent appComponent) {
+            sAppComponent = appComponent;
+        }
+        public static AppComponent getAppComponent() {
+            return sAppComponent;
+        }
+
     }
 }

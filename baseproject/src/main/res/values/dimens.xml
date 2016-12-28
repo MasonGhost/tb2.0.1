@@ -7,4 +7,43 @@
     <dimen name="toolbar_left_text_size">14sp</dimen>
     <dimen name="toolbar_center_text_size">18sp</dimen>
     <dimen name="toolbar_right_text_size">14sp</dimen>
+
+
+    <dimen name="edit_line_height">46dp</dimen>
+
+    <!--view高度-->
+    <dimen name="edit_height_tall">46dp</dimen>
+    <dimen name="textview_height_tall">32dp</dimen>
+    <dimen name="divider_height">1px</dimen>
+    <dimen name="button_big_height">48dp</dimen>
+    <dimen name="button_big_width">350dp</dimen>
+    <dimen name="toolview_height">48dp</dimen>
+    <dimen name="toolview_and_statubar_height">73dp</dimen>
+    <dimen name="loading_height">25dp</dimen>
+    <dimen name="back_height">17dp</dimen>
+    <dimen name="back_width">10dp</dimen>
+    <dimen name="loading_width">50dp</dimen>
+    <dimen name="loading_rect_width">100dp</dimen>
+    <dimen name="statu_bar_height">25dp</dimen>
+    <dimen name="arrow_height">20dp</dimen>
+    <dimen name="verified_height">13dp</dimen>
+    <dimen name="shape_stroke_width">1dp</dimen>
+    <dimen name="margin_statubar">25dp</dimen>
+
+
+    <!-- view间距 -->
+    <dimen name="spacing_large">16dp</dimen>
+    <dimen name="spacing_normal">10dp</dimen>
+    <dimen name="item_spacing_small">3dp</dimen>
+    <dimen name="margin_normal">10dp</dimen>
+    <dimen name="margin_large">16dp</dimen>
+    <dimen name="margin_big_large">106dp</dimen>
+    <dimen name="margin_big">30dp</dimen>
+    <dimen name="margin_huge">20dp</dimen>
+    <dimen name="padding_normal">10dp</dimen>
+
+    <!--  圆角  -->
+    <dimen name="button_corner">3dp</dimen>
+    <dimen name="send_button_corner">5dp</dimen>
+    <dimen name="send_stroke_corner">8dp</dimen>
 </resources>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--######################### 分割线 ##########################-->
+    <!-- 分隔线水平-->
+    <style name="divider_style_horizontal">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/divider_height</item>
+        <item name="android:background">@color/color_divider</item>
+    </style>
+    <!-- 分隔线垂直-->
+    <style name="divider_style_veitical">
+        <item name="android:layout_width">@dimen/divider_height</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/color_divider</item>
+    </style>
+
+    <!--######################## 编辑框 ############################-->
+
+    <style name="style_edit_line">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/edit_line_height</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="style_edit">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginLeft">@dimen/spacing_normal</item>
+        <item name="android:background">@null</item>
+        <item name="android:textSize">@dimen/font_large</item>
+        <item name="android:textColor">@color/themeColor</item>
+    </style>
+
+    <style name="style_small_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/font_normal</item>
+        <item name="android:textColor">@color/body</item>
+    </style>
+
+    <!--###################### 按钮 ################################-->
+
+    <style name="style_login_button">
+        <item name="android:layout_width">@dimen/button_big_width</item>
+        <item name="android:layout_height">@dimen/button_big_height</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/selector_corner_button</item>
+        <item name="android:textSize">@dimen/font_large</item>
+    </style>
+    <style name="style_send_button_cotainer">
+        <item name="android:layout_width">140px</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginRight">@dimen/spacing_large</item>
+    </style>
+    <style name="style_send_button">
+        <item name="android:layout_width">120px</item>
+        <item name="android:layout_height">50px</item>
+        <item name="android:background">@drawable/selector_corner_button</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textSize">@dimen/font_small</item>
+    </style>
+</resources>
