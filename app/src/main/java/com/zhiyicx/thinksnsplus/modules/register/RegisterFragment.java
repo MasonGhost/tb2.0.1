@@ -1,14 +1,18 @@
 package com.zhiyicx.thinksnsplus.modules.register;
 
-import android.content.Context;
-import android.net.Uri;
-import android.os.Bundle;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.home.HomeFragment;
 
 public class RegisterFragment extends TSFragment {
+
+
+    public static RegisterFragment newInstance() {
+        RegisterFragment fragment = new RegisterFragment();
+        return fragment;
+    }
 
     @Override
     protected void ComponentInject() {

@@ -15,6 +15,6 @@ public class RegisterActivity extends TSActivity {
 
     @Override
     protected Fragment getFragment() {
-        return new RegisterFragment();
+        return RegisterFragment.newInstance();
     }
 }
