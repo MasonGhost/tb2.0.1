@@ -3,6 +3,7 @@ package com.zhiyicx.common.base;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDex;
 
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
@@ -63,9 +64,13 @@ public abstract class BaseApplication extends Application {
                 .build();
         this.mAppModule = new AppModule(this);// 提供 application
 
-
     }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 
     /**
      * 提供基础 url 给 retrofit

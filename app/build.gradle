@@ -18,7 +18,7 @@ android {
             //选择要添加的对应cpu类型的.so库。
             abiFilters 'armeabi', 'armeabi-v7a', 'armeabi-v8a', 'x86', 'x86_64', 'mips', 'mips64'
         }
-
+        multiDexEnabled true
     }
     packagingOptions {
         exclude 'LICENSE.txt'
@@ -98,7 +98,9 @@ dependencies {
     androidTestCompile(testDependences.espresso) {
         exclude module: 'support-annotations'
     }
-    androidTestCompile testDependences.runner
+    testCompile testDependences.runner
+    testCompile testDependences.robolectric
+    testCompile testDependences.mockito
 
     // Dagger dependencies
     compile dataDependences.dagger
@@ -110,6 +112,6 @@ dependencies {
     // Project
     compile project(":baseproject")
 
-
     compile 'com.android.support:support-v4:25.0.1'
+
 }

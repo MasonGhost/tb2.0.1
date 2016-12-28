@@ -13,7 +13,8 @@
  ts项目的基类包，主工程是在此基础上直接进行开发的
 
 
-### base目录：
+
+### [base目录：](BASEACTIVITY.md)
     包含项目主工程中的所有activity和fragment的父类
 
 ### config目录：

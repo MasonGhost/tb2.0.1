@@ -28,7 +28,7 @@ ext {
     androidSupportSdkVersion = '25.0.1'
 
     //Testing
-    robolectricVersion = '3.0'
+    robolectricVersion = '3.1.4'
     jUnitVersion = '4.12'
     assertJVersion = '1.7.1'
     mockitoVersion = '1.9.5'
@@ -44,7 +44,7 @@ ext {
 
     dataDependencies = [
             // dex分包
-            multidex                     : "compile 'com.android.support:multidex:1.0.1'",
+            multidex                     : "com.android.support:multidex:1.0.1",
             // dagger
             dagger                       : "com.google.dagger:dagger:${daggerVersion}",
             javaxAnnotation              : "javax.annotation:jsr250-api:${javaxAnnotationVersion}",
@@ -103,6 +103,7 @@ ext {
             assertj           : "org.assertj:assertj-core:${assertJVersion}",
             mockito           : "org.mockito:mockito-core:${mockitoVersion}",
             robolectric       : "org.robolectric:robolectric:${robolectricVersion}",
+            multidexTest      : "org.robolectric:shadows-multidex:${robolectricVersion}",
             espresso          : "com.android.support.test.espresso:espresso-core:${espressoVersion}",
             runner            : "com.android.support.test:runner:${runnerVersion}"
     ]

@@ -114,12 +114,16 @@ dependencies {
 
     // Test
     testCompile testDependences.junit
-    androidTestCompile (testDependences.espresso){
+    androidTestCompile(testDependences.espresso) {
         exclude module: 'support-annotations'
     }
-    androidTestCompile testDependences.runner
+    testCompile testDependences.runner
+    testCompile testDependences.robolectric
 
     // Project
     compile project(":rxerrorhandler")
 
+    //分包
+    compile dataDependences.multidex
+    testCompile testDependencies.multidexTest
 }
