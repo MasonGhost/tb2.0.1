@@ -51,7 +51,11 @@ master_future_add_image_lip ( 作者分支 )
 
 因为远端仓库存储了大量的主版本和子版本分支,为了减少不必要的更新和下载操作,所以`作者分支`不允许推送到远端.
 
+为了方便后续使用自动化工具筛检`commit`内容,规定每次提交和`issues`相关的代码时,使用统一格式: 在提交信息末尾空一格,空一格后记录下`commit`类型,然后再在英文符号的括号内填写`issues code`.默认的 commit 类型为: 代码,文档以及测试
 
+    示例代码:```(#9527) 文档 提交信息```
+    示例代码:```(#12 #30 #78) 测试 提交了测试信息```
+    
 ## 框架选型
 
 - 整体结构   [MVP+Dagger2](https://github.com/googlesamples/android-architecture/tree/todo-mvp-dagger/)
