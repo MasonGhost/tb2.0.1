@@ -1,3 +1,4 @@
+2016年12月29日09:26:49
 # thinksns-plus-android
 
 整个项目相关的决策工作安排等记录在[thinksns-plus-document](https://github.com/zhiyicx/thinksns-plus-document).
@@ -82,4 +83,5 @@ master_future_add_image_lip ( 作者分支 )
 
 [common](document/common/COMMON.md) 基础框架包
 
-2016年12月23日 11:55:58
+[imsdk](document/imsdk/STRUCTURE.md) 聊天SDK
+
