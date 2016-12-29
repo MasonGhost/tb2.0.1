@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import com.zhiyicx.common.base.i.IBaseActivity;
-import com.zhiyicx.common.mvp.BasePresenter;
 
 import org.simple.eventbus.EventBus;
 

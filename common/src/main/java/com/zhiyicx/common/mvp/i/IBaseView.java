@@ -24,8 +24,4 @@ public interface IBaseView<T>{
      */
     void showMessage(String message);
 
-    /**
-     * 杀死自己
-     */
-    void killMyself();
 }

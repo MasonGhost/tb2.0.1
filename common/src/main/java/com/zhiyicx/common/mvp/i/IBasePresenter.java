@@ -20,10 +20,4 @@ public interface IBasePresenter {
      */
     void onDestroy();
 
-    /**
-     * 解绑 rx 注册
-     *
-     * @param subscription
-     */
-    void unSubscribe(Subscription subscription);
 }

@@ -49,7 +49,6 @@ public abstract class BaseFragment<P > extends RxFragment {
         mActivity = getActivity();
         if (useEventBus())// 如果要使用 eventbus 请将此方法返回 true
             EventBus.getDefault().register(this);// 注册到事件主线
-        ComponentInject();
         initData();
     }
 
@@ -67,11 +66,6 @@ public abstract class BaseFragment<P > extends RxFragment {
     }
 
     protected abstract View getContentView();
-
-    /**
-     * 依赖注入的入口
-     */
-    protected abstract void ComponentInject();
 
     protected abstract void initView(View rootView);
 

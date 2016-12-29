@@ -50,7 +50,7 @@
                 android:id="@+id/bt_regist_send_vertify_code"
                 style="@style/style_send_button"
                 android:layout_centerVertical="true"
-                android:enabled="false"/>
+                />
 
             <ImageView
                 android:id="@+id/pb_regist_loading"

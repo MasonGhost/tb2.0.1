@@ -12,7 +12,7 @@ android {
         targetSdkVersion gConfig.getAt("targetSdkVersion")
         versionCode gConfig.getAt("versionCode")
         versionName gConfig.getAt("versionName")
-        testInstrumentationRunner gConfig.testDependencies.androidJUnitRunner
+//        testInstrumentationRunner gConfig.testDependencies.androidJUnitRunner
 
         ndk {
             //选择要添加的对应cpu类型的.so库。
@@ -95,23 +95,23 @@ dependencies {
 
     // Test
     testCompile testDependences.junit
-    androidTestCompile(testDependences.espresso) {
-        exclude module: 'support-annotations'
-    }
-    testCompile testDependences.runner
+//    androidTestCompile(testDependences.espresso) {
+//        exclude module: 'support-annotations'
+//        exclude group: 'javax.inject'
+//    }
+//    testCompile testDependences.runner
     testCompile testDependences.robolectric
     testCompile testDependences.mockito
 
     // Dagger dependencies
     compile dataDependences.dagger
     provided dataDependences.javaxAnnotation
+    provided dataDependences.daggerCompiler
     apt dataDependences.daggerCompiler
     // Butterknife
     compile dataDependences.butterknife
     apt dataDependences.butterknifeApt
     // Project
     compile project(":baseproject")
-
-    compile 'com.android.support:support-v4:25.0.1'
 
 }

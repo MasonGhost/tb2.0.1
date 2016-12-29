@@ -33,7 +33,7 @@ public abstract class TSApplication extends BaseApplication {
      * @return
      */
     @Override
-    protected ImageModule getImagerModule() {
+    protected ImageModule getImageModule() {
         return new ImageModule(new GlideImageLoaderStrategy());
     }
 

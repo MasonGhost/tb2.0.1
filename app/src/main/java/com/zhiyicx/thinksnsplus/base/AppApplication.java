@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.base;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.zhiyicx.baseproject.base.TSApplication;
 import com.zhiyicx.common.net.intercept.CommonRequestIntercept;
@@ -36,29 +37,9 @@ public class AppApplication extends TSApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        AppComponent appComponent = DaggerAppComponent
-                .builder()
-                .appModule(getAppModule())// baseApplication 提供
-                .httpClientModule(getHttpClientModule())// baseApplication 提供
-                .imageModule(getImagerModule())// // 图片加载框架
-                .shareModule(getShareModule())// 分享框架
-                .serviceModule(new ServiceModule())// 需自行创建
-                .cacheModule(new CacheModule())// 需自行创建
-                .build();
-        AppComponentHolder.setAppComponent(appComponent);
+        initComponent();
         setThemeCorlor(getResources().getColor(R.color.themeColor));
     }
-
-    /**
-     * 设置主题色
-     *
-     * @param themeCorlor
-     */
-    protected void setThemeCorlor(int themeCorlor) {
-        AppApplication.gThemeCorlor = themeCorlor;
-    }
-
-
 
     /**
      * 增加统一请求头
@@ -141,15 +122,52 @@ public class AppApplication extends TSApplication {
     }
 
     /**
+     * 设置主题色
+     *
+     * @param themeCorlor
+     */
+    protected void setThemeCorlor(int themeCorlor) {
+        AppApplication.gThemeCorlor = themeCorlor;
+    }
+
+    /**
+     * 初始化Component
+     */
+    public void initComponent() {
+        AppComponent appComponent = DaggerAppComponent
+                .builder()
+                .appModule(getAppModule())// baseApplication 提供
+                .httpClientModule(getHttpClientModule())// baseApplication 提供
+                .imageModule(getImageModule())// // 图片加载框架
+                .shareModule(getShareModule())// 分享框架
+                .serviceModule(getServiceModule())// 需自行创建
+                .cacheModule(getCacheModule())// 需自行创建
+                .build();
+        AppComponentHolder.setAppComponent(appComponent);
+    }
+
+    @NonNull
+    protected CacheModule getCacheModule() {
+        return new CacheModule();
+    }
+
+    @NonNull
+    protected ServiceModule getServiceModule() {
+        return new ServiceModule();
+    }
+
+    /**
      * 将AppComponent返回出去,供其它地方使用
      *
      * @return
      */
     public static class AppComponentHolder {
         private static AppComponent sAppComponent;
+
         public static void setAppComponent(AppComponent appComponent) {
             sAppComponent = appComponent;
         }
+
         public static AppComponent getAppComponent() {
             return sAppComponent;
         }
