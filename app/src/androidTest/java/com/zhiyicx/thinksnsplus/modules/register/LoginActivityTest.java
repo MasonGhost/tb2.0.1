@@ -1,13 +1,15 @@
 package com.zhiyicx.thinksnsplus.modules.register;
 
+
 import android.support.test.espresso.ViewInteraction;
-import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.zhiyicx.thinksnsplus.R;
+
+import com.zhiyicx.thinksnsplus.modules.AcitivityTest;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
+import com.zhiyicx.thinksnsplus.R;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -15,12 +17,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.matcher.ViewMatchers.*;
-import static android.support.test.espresso.action.ViewActions.*;
-import static android.support.test.espresso.assertion.ViewAssertions.*;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
+import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static android.support.test.espresso.action.ViewActions.replaceText;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static com.zhiyicx.thinksnsplus.modules.MyViewMatchers.isUnClickable;
 
 /**
  * @author LiuChao
@@ -28,9 +28,8 @@ import static org.junit.Assert.assertSame;
  * @date 2016/12/30
  * @contact email:450127106@qq.com
  */
-@RunWith(AndroidJUnit4.class)
-@LargeTest
-public class LoginActivityTest {
+
+public class LoginActivityTest extends AcitivityTest {
 
     private ViewInteraction etPhone, etPass, btnLogin;
 
@@ -39,76 +38,52 @@ public class LoginActivityTest {
 
     @Before
     public void initActivity() {
-        etPhone = onView(withId(R.id.et_login_phone));
-        etPass = onView(withId(R.id.et_login_password));
-        btnLogin = onView(withId(R.id.bt_login_login));
+        etPhone = findViewById(R.id.et_login_phone);
+        etPass = findViewById(R.id.et_login_password);
+        btnLogin = findViewById(R.id.bt_login_login);
     }
 
     /**
-     * 不输入手机号，登录按钮无法点击
+     * summary   不输入手机号，只输入密码能否点击登录按钮
+     * steps     1.清空输入框  2.输入密码
+     * expected  登录按钮无法点击
      */
     @Test
-    public void clickableWhenNoPhone() {
-        etPhone.perform(clearText());
-        etPass.perform(clearText());
-        etPhone.perform(replaceText("空寂很哈dsafas"));
-        etPass.perform(replaceText("fdasfdsafdas"), closeSoftKeyboard());
-        btnLogin.check(matches(isClickable()));
+    public void clickableWhenNoPhone() throws Exception {
+        clearEditText(etPhone, etPass);
+        etPass.perform(replaceText("123456"), closeSoftKeyboard());
+        btnLogin.check(matches(isUnClickable()));
     }
 
     /**
-     * 不输入密码，登录按钮无法点击
+     * summary    不输入密码，只输入手机号能否点击登录按钮
+     * steps      1.清空输入框  2.输入手机号
+     * expected   登录按钮无法点击
      */
     @Test
-    public void clickableWhenNoPassword() {
-
+    public void clickableWhenNoPassword() throws Exception {
+        clearEditText(etPhone, etPass);
+        etPhone.perform(replaceText("15928856596"), closeSoftKeyboard());
+        btnLogin.check(matches(isUnClickable()));
     }
 
     /**
-     * 不输入手机号登陆
+     * summary    输入错误手机号，正确的密码，提示
+     * steps      1.清空输入框 2.输入错误的手机号 3.输入正确的密码
+     * expected   提示手机号错误
      */
     @Test
-    public void notInputPhone() {
-
-    }
-
-    /**
-     * 不输入密码登陆
-     */
-    @Test
-    public void notInputPassword() {
-
-    }
-
-    /**
-     * 输入合法手机号和不合法密码
-     */
-    @Test
-    public void inputIllegalPassword() {
+    public void wrongPhone() throws Exception {
 
     }
 
     /**
-     * 输入不合法手机号和合法密码
+     * summary    输入正确手机号，错误的密码，提示
+     * steps      1.清空输入框 2.输入正确的手机号 3.输入错误的密码
+     * expected   提示密码错误
      */
     @Test
-    public void inputIllegalPhone() {
-
-    }
-
-    /**
-     * 输入合法手机号和合法密码
-     */
-    @Test
-    public void inputRight() {
-
-    }
-
-    /**
-     * 密码大小写测试
-     */
-    @Test
-    public void changePasseordLowerUpper() {
+    public void wrongPassword() throws Exception {
 
     }
 }
