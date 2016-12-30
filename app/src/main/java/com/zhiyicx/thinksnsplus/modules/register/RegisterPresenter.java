@@ -24,8 +24,11 @@ import rx.functions.Action1;
 @FragmentScoped
 public class RegisterPresenter extends BasePresenter<RegisterContract.Repository, RegisterContract.View> implements RegisterContract.Presenter {
 
-    public static int S_TO_MS_SPACING = 1000; // s 和 ms 的比例
-    public static int SNS_TIME = 60 * S_TO_MS_SPACING; // 发送短信间隔时间，单位 ms
+    public static final int S_TO_MS_SPACING = 1000; // s 和 ms 的比例
+    public static final int SNS_TIME = 60 * S_TO_MS_SPACING; // 发送短信间隔时间，单位 ms
+    public static final int USERNAME_MIN_LENGTH = 2; // 用户名最小长度
+    public static final int PASSWORD_MIN_LENGTH = 6; // 密码最小长度
+
     @Nullable
     @BindString(R.string.seconds)
     String mScondsStr;
@@ -38,7 +41,12 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
     @Nullable
     @BindString(R.string.err_net_not_work)
     String mNetErrorStr;
-
+    @Nullable
+    @BindString(R.string.username_toast_hint)
+    String mUsernameToastHintStr;
+    @Nullable
+    @BindString(R.string.password_toast_hint)
+    String mPasswordToastHintStr;
 
     private int mTimeOut = SNS_TIME;
 
@@ -83,10 +91,10 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
                     @Override
                     public void call(BaseJson<String> json) {
 //                        if (json.code.equals(ZBLApi.REQUEST_SUCESS)) {
-                            mRootView.hideLoading();//隐藏loading
-                            timer.start();//开始倒计时
-                            mRootView.setVertifyCodeBtEnabled(false);
-                            mRootView.showMessage(json.getData());
+                        mRootView.hideLoading();//隐藏loading
+                        timer.start();//开始倒计时
+                        mRootView.setVertifyCodeBtEnabled(false);
+                        mRootView.showMessage(json.getData());
 //                        } else {
 //                            mRootView.showMessage(json.getMessage());
 //                        }
@@ -102,6 +110,12 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
 
     @Override
     public void register(String nickName, String phone, String vertifyCode, String password) {
+        if (!checkUsername(nickName)) {
+            return;
+        }
+        if (!checkPassword(password)) {
+            return;
+        }
 
     }
 
@@ -115,4 +129,31 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
         timer.cancel();
     }
 
+    /**
+     * 检查用户名是否小于最小长度
+     *
+     * @param nickName
+     * @return
+     */
+    private boolean checkUsername(String nickName) {
+        if (nickName.length() < USERNAME_MIN_LENGTH) {
+            mRootView.showMessage(mUsernameToastHintStr);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 检查密码是否是最小长度
+     *
+     * @param password
+     * @return
+     */
+    private boolean checkPassword(String password) {
+        if (password.length() < PASSWORD_MIN_LENGTH) {
+            mRootView.showMessage(mPasswordToastHintStr);
+            return false;
+        }
+        return true;
+    }
 }

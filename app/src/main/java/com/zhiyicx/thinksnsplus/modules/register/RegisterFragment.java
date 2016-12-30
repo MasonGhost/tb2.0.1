@@ -1,16 +1,19 @@
 package com.zhiyicx.thinksnsplus.modules.register;
 
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
@@ -21,6 +24,7 @@ import com.zhiyicx.thinksnsplus.R;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import rx.functions.Action1;
 
 public class RegisterFragment extends TSFragment<RegisterContract.Presenter> implements RegisterContract.View {
@@ -29,8 +33,8 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     public static final int MOBILE_PHONE_NUMBER_LENGHT = 11; // 手机号码长度
     public static final int VERTIRY_CODE_LENGHT = 4; // 验证码长度
 
-    @BindView(R.id.et_regist_nickname)
-    EditText mEtRegistNickname;
+    @BindView(R.id.et_regist_username)
+    EditText mEtRegistUsername;
     @BindView(R.id.et_regist_phone)
     EditText mEtRegistPhone;
     @BindView(R.id.bt_regist_send_vertify_code)
@@ -45,6 +49,8 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     CheckBox mCbLogin;
     @BindView(R.id.bt_regist_regist)
     Button mBtRegistRegist;
+    @BindView(R.id.tv_error_tip)
+    TextView mTvErrorTip;
 
     private boolean isNameEdited;
     private boolean isPhoneEdited;
@@ -65,7 +71,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     @Override
     protected void initView(View rootView) {
         // 用户名观察
-        RxTextView.textChanges(mEtRegistNickname)
+        RxTextView.textChanges(mEtRegistUsername)
                 .compose(this.<CharSequence>bindToLifecycle())
                 .subscribe(new Action1<CharSequence>() {
                     @Override
@@ -212,7 +218,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
 
     @Override
     public void showMessage(String message) {
-        Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
+        mTvErrorTip.setText(message);
     }
 
     @Override
@@ -232,4 +238,11 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     }
 
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: inflate a fragment view
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        ButterKnife.bind(this, rootView);
+        return rootView;
+    }
 }

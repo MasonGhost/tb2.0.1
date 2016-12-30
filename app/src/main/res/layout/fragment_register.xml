@@ -10,13 +10,13 @@
         <TextView
             style="@style/style_small_text"
             android:layout_marginLeft="@dimen/spacing_large"
-            android:text="@string/nickname"/>
+            android:text="@string/username"/>
 
         <EditText
-            android:id="@+id/et_regist_nickname"
+            android:id="@+id/et_regist_username"
             style="@style/style_edit"
             android:layout_marginLeft="42px"
-            android:hint="@string/nickname_input_hint"
+            android:hint="@string/username_input_hint"
             android:inputType="textPersonName"
             android:maxLength="8"/>
     </LinearLayout>
@@ -49,8 +49,8 @@
             <Button
                 android:id="@+id/bt_regist_send_vertify_code"
                 style="@style/style_send_button"
-                android:enabled="false"
                 android:layout_centerVertical="true"
+                android:enabled="false"
                 />
 
             <ImageView
@@ -128,6 +128,15 @@
         style="@style/style_login_button"
         android:enabled="false"
         android:text="@string/immediate_regist"/>
+
+
+    <TextView
+        android:id="@+id/tv_error_tip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/spacing_large"
+        android:gravity="center"
+        android:textSize="@dimen/font_normal"/>
 
 
 </LinearLayout>
