@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.register;
 
 import android.os.CountDownTimer;
-import android.support.annotation.Nullable;
 
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -9,9 +8,11 @@ import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.inject.Inject;
 
-import butterknife.BindString;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
@@ -24,21 +25,10 @@ import rx.functions.Action1;
 @FragmentScoped
 public class RegisterPresenter extends BasePresenter<RegisterContract.Repository, RegisterContract.View> implements RegisterContract.Presenter {
 
-    public static int S_TO_MS_SPACING = 1000; // s 和 ms 的比例
-    public static int SNS_TIME = 60 * S_TO_MS_SPACING; // 发送短信间隔时间，单位 ms
-    @Nullable
-    @BindString(R.string.seconds)
-    String mScondsStr;
-    @Nullable
-    @BindString(R.string.send_vertify_code)
-    String mSendVertifyCodeStr;
-    @Nullable
-    @BindString(R.string.phone_number_toast_hint)
-    String mPhoneNumberErrorStr;
-    @Nullable
-    @BindString(R.string.err_net_not_work)
-    String mNetErrorStr;
-
+    public static final int S_TO_MS_SPACING = 1000; // s 和 ms 的比例
+    public static final int SNS_TIME = 60 * S_TO_MS_SPACING; // 发送短信间隔时间，单位 ms
+    public static final int USERNAME_MIN_LENGTH = 2; // 用户名最小长度
+    public static final int PASSWORD_MIN_LENGTH = 6; // 密码最小长度
 
     private int mTimeOut = SNS_TIME;
 
@@ -46,16 +36,15 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
 
         @Override
         public void onTick(long millisUntilFinished) {
-            mRootView.setVertifyCodeBtText(millisUntilFinished / S_TO_MS_SPACING + mScondsStr);//显示倒数的秒速
+            mRootView.setVertifyCodeBtText(millisUntilFinished / S_TO_MS_SPACING + mContext.getString(R.string.seconds));//显示倒数的秒速
         }
 
         @Override
         public void onFinish() {
             mRootView.setVertifyCodeBtEnabled(true);//恢复初始化状态
-            mRootView.setVertifyCodeBtText(mSendVertifyCodeStr);
+            mRootView.setVertifyCodeBtText(mContext.getString(R.string.send_vertify_code));
         }
     };
-
 
     @Inject
     public RegisterPresenter(RegisterContract.Repository repository, RegisterContract.View rootView) {
@@ -74,7 +63,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
     @Override
     public void getVertifyCode(String phone) {
         if (!RegexUtils.isMobileExact(phone)) {
-            mRootView.showMessage(mPhoneNumberErrorStr);
+            mRootView.showMessage(mContext.getString(R.string.phone_number_toast_hint));
             return;
         }
         mRepository.getVertifyCode(phone)
@@ -83,10 +72,10 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
                     @Override
                     public void call(BaseJson<String> json) {
 //                        if (json.code.equals(ZBLApi.REQUEST_SUCESS)) {
-                            mRootView.hideLoading();//隐藏loading
-                            timer.start();//开始倒计时
-                            mRootView.setVertifyCodeBtEnabled(false);
-                            mRootView.showMessage(json.getData());
+                        mRootView.hideLoading();//隐藏loading
+                        timer.start();//开始倒计时
+                        mRootView.setVertifyCodeBtEnabled(false);
+                        mRootView.showMessage(json.getData());
 //                        } else {
 //                            mRootView.showMessage(json.getMessage());
 //                        }
@@ -95,14 +84,21 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
                     @Override
                     public void call(Throwable throwable) {
                         throwable.printStackTrace();
-                        mRootView.showMessage(mNetErrorStr);
+                        mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
                     }
                 });
     }
 
     @Override
     public void register(String nickName, String phone, String vertifyCode, String password) {
-
+        if (!checkUsername(nickName)) {
+            return;
+        }
+        if (!checkPassword(password)) {
+            return;
+        }
+        // 代表检测成功
+        mRootView.showMessage("");
     }
 
     @Override
@@ -115,4 +111,37 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
         timer.cancel();
     }
 
+    /**
+     * 检查用户名是否小于最小长度,不能以数字开头
+     *
+     * @param nickName
+     * @return
+     */
+    private boolean checkUsername(String nickName) {
+        if (nickName.length() < USERNAME_MIN_LENGTH) {
+            mRootView.showMessage(mContext.getString(R.string.username_toast_hint));
+            return false;
+        }
+        Pattern pattern = Pattern.compile("^(\\d+)(.*)");
+        Matcher matcher = pattern.matcher(nickName);
+        if (matcher.matches()) {//数字开头
+            mRootView.showMessage(mContext.getString(R.string.username_toast_not_number_start_hint));
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 检查密码是否是最小长度
+     *
+     * @param password
+     * @return
+     */
+    private boolean checkPassword(String password) {
+        if (password.length() < PASSWORD_MIN_LENGTH) {
+            mRootView.showMessage(mContext.getString(R.string.password_toast_hint));
+            return false;
+        }
+        return true;
+    }
 }

@@ -38,7 +38,7 @@ public abstract class BaseFragment<P > extends RxFragment {
         mLayoutInflater = inflater;
         mRootView = getContentView();
         // 绑定到 butterknife
-        mUnbinder = ButterKnife.bind(this, mRootView);
+        mUnbinder = ButterKnife.bind(this,mRootView);
         initView(mRootView);
         return mRootView;
     }
