@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserCacheImpl;
 
 import javax.inject.Singleton;
 
+import dagger.Module;
 import dagger.Provides;
 
 /**
@@ -14,7 +15,7 @@ import dagger.Provides;
  * @date 2016/12/30
  * @contact email:450127106@qq.com
  */
-
+@Module
 public class GreenDaoModule {
     private Context mContext;
 
