@@ -31,7 +31,7 @@ import static com.zhiyicx.thinksnsplus.modules.MyViewMatchers.isDisappear;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class RegisterActivityTest {
-    private static final String USER_NAME = "七夜";
+    private static final String USER_NAME = "七夜26";
     @Rule
     public ActivityTestRule<RegisterActivity> mActivityRule = new ActivityTestRule(RegisterActivity.class);
 
@@ -91,6 +91,27 @@ public class RegisterActivityTest {
         onView(withId(R.id.bt_regist_regist)).perform(click());
         onView(withId(R.id.tv_error_tip)).check(matches(withText(mActivityRule.getActivity().getString(R.string.username_toast_hint))));
 
+    }
+
+    /**
+     * summary                       用户名字符长度是否有限制(最长、最短)
+     * steps                         1. 用户名输入文字若干
+     *                               2. 填写正确手机号、验证码、密码
+     *                               3. 点击注册
+     * expected                      用户名可以包含数字
+     *
+     *
+     * @throws Exception
+     */
+    @Test
+    public void usernameContainerNumber() throws Exception {
+        onView(withId(R.id.et_regist_phone)).perform(typeText("15694005009"));
+        onView(withId(R.id.et_regist_vertify_code)).perform(typeText("1234"));
+        onView(withId(R.id.et_regist_password)).perform(typeText("fdagiasdg"));
+        // 用户名可以包含数字
+        onView(withId(R.id.et_regist_username)).perform(replaceText(USER_NAME));
+        onView(withId(R.id.bt_regist_regist)).check(matches(isEnabled())).perform(click());
+        onView(withId(R.id.tv_error_tip)).check(matches(isDisappear()));
     }
 
     /**
