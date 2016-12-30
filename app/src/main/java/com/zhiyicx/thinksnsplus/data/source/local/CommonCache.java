@@ -5,7 +5,7 @@ import java.util.List;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 /**
- * @Describe
+ * @Describe 数据库保存服务器数据，实现本地缓存,b
  * @Author Jungle68
  * @Date 2016/12/16
  * @Contact 335891510@qq.com
@@ -38,9 +38,9 @@ public interface CommonCache<T> {
     List<T> getMultiDataFromCache();
 
     /**
-     * 清空缓存
+     * 清空当前的表
      */
-    void clearCache();
+    void clearTable();
 
     /**
      * 根据key，删除缓存中的某条数据
@@ -48,12 +48,7 @@ public interface CommonCache<T> {
     void deleteSingleCache(String key);
 
     /**
-     * 获取缓存大小,返回MB
-     */
-    double getCacheSize();
-
-    /**
      * 更新缓存中的某条数据
      */
-    void updateSingleData(String key);
+    void updateSingleData(T newData);
 }

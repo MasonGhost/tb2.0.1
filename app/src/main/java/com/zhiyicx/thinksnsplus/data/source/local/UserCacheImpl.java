@@ -1,11 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 
-import com.zhiyicx.baseproject.config.DBConfig;
-import com.zhiyicx.thinksnsplus.data.beans.DaoMaster;
-import com.zhiyicx.thinksnsplus.data.beans.DaoSession;
 import com.zhiyicx.thinksnsplus.data.beans.User;
 import com.zhiyicx.thinksnsplus.data.beans.UserDao;
 
@@ -13,50 +9,27 @@ import java.util.List;
 
 /**
  * @author LiuChao
- * @describe 数据库保存服务器数据，实现本地缓存
+ * @describe 用户信息存储
  * @date 2016/12/29
  * @contact email:450127106@qq.com
  */
 
-public class UserCacheImpl implements CommonCache<User> {
-
-    private DaoMaster.DevOpenHelper mDevOpenHelper;
-    private Context mContext;
+public class UserCacheImpl extends CommonCacheImpl<User> {
 
     public UserCacheImpl(Context context) {
-        mContext = context;
-        mDevOpenHelper = new DaoMaster.DevOpenHelper(context, DBConfig.DB_NAME);
+        super(context);
     }
-
-
-    /**
-     * 获取可读数据库
-     */
-    private SQLiteDatabase getReadableDatabase() {
-        SQLiteDatabase db = mDevOpenHelper.getReadableDatabase();
-        return db;
-    }
-
-    /**
-     * 获取可写数据库
-     */
-    private SQLiteDatabase getWritableDatabase() {
-        SQLiteDatabase db = mDevOpenHelper.getWritableDatabase();
-        return db;
-    }
-    DaoMaster daoMaster = new DaoMaster(getWritableDatabase());
-    DaoSession daoSession = daoMaster.newSession();
-    UserDao userDao = daoSession.getUserDao();
-
 
     @Override
     public void saveSingleData(User singleData) {
-
+        UserDao userDao = getRDaoSession().getUserDao();
+        userDao.insert(singleData);
     }
 
     @Override
     public void saveMultiData(List<User> multiData) {
-
+        UserDao userDao = getRDaoSession().getUserDao();
+        userDao.insertInTx(multiData);
     }
 
     @Override
@@ -66,31 +39,32 @@ public class UserCacheImpl implements CommonCache<User> {
 
     @Override
     public User getSingleDataFromCache(String key) {
-        return null;
+        UserDao userDao = getRDaoSession().getUserDao();
+        return userDao.load(Long.parseLong(key));
     }
 
     @Override
     public List<User> getMultiDataFromCache() {
-        return null;
+        UserDao userDao = getRDaoSession().getUserDao();
+        return userDao.loadAll();
     }
 
     @Override
-    public void clearCache() {
-
+    public void clearTable() {
+        UserDao userDao = getWDaoSession().getUserDao();
+        userDao.deleteAll();
     }
 
     @Override
     public void deleteSingleCache(String key) {
-
+        UserDao userDao = getWDaoSession().getUserDao();
+        userDao.deleteByKey(Long.parseLong(key));
     }
 
     @Override
-    public double getCacheSize() {
-        return 0;
-    }
-
-    @Override
-    public void updateSingleData(String key) {
-
+    public void updateSingleData(User newData) {
+        // 根据User的主键ID更新对应的实体
+        UserDao userDao = getWDaoSession().getUserDao();
+        userDao.update(newData);
     }
 }

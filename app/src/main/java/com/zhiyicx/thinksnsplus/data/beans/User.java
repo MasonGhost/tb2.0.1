@@ -16,7 +16,7 @@ import org.greenrobot.greendao.annotation.Generated;
 @Entity
 public class User implements Parcelable {
     @Id
-    private long id;
+    private Long userId;
     private String userName;
     private String userIcon;
 
@@ -36,6 +36,14 @@ public class User implements Parcelable {
         this.userIcon = userIcon;
     }
 
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -43,29 +51,23 @@ public class User implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.userId);
         dest.writeString(this.userName);
         dest.writeString(this.userIcon);
-    }
-
-    public long getId() {
-        return this.id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public User() {
     }
 
     protected User(Parcel in) {
+        this.userId = (Long) in.readValue(Long.class.getClassLoader());
         this.userName = in.readString();
         this.userIcon = in.readString();
     }
 
-    @Generated(hash = 565001058)
-    public User(long id, String userName, String userIcon) {
-        this.id = id;
+    @Generated(hash = 1619955636)
+    public User(Long userId, String userName, String userIcon) {
+        this.userId = userId;
         this.userName = userName;
         this.userIcon = userIcon;
     }
