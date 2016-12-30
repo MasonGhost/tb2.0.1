@@ -33,7 +33,9 @@ public class MockHttpClientModule extends HttpClientModule {
     public MockHttpClientModule(Buidler buidler) {
         super(buidler);
     }
-
+    public MockHttpClientModule() {
+        super(null);
+    }
     @Override
     public OkHttpClient provideClient(Cache cache, Interceptor intercept) {
         return  mock(OkHttpClient.class);

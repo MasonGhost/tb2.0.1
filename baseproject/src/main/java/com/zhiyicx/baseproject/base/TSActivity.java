@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.base.BaseActivity;
+import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.ActivityUtils;
 
 /**

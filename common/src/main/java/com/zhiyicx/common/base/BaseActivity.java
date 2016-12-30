@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import com.zhiyicx.common.base.i.IBaseActivity;
+import com.zhiyicx.common.mvp.BasePresenter;
 
 import org.simple.eventbus.EventBus;
 
@@ -63,7 +64,6 @@ public abstract class BaseActivity<P extends BasePresenter> extends RxAppCompatA
         synchronized (BaseActivity.class) {
             mApplication.getActivityList().remove(this);
         }
-        if (mPresenter != null) mPresenter.onDestroy();// 释放资源
         if (mUnbinder != Unbinder.EMPTY) mUnbinder.unbind();
         if (useEventBus())// 如果要使用 eventbus 请将此方法返回 true
             EventBus.getDefault().unregister(this);

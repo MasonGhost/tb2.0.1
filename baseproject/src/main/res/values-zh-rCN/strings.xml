@@ -4,6 +4,8 @@
     <string name="err_net_not_work">当前网络状况不佳</string>
     <!-- 通用 -->
     <string name="seconds">秒</string>
+    <string name="nickname">昵称</string>
+    <string name="password">密码</string>
     <string name="vertify_code">验证码</string>
     <string name="phone_number">手机号</string>
     <string name="send_vertify_code">发验证码</string>
