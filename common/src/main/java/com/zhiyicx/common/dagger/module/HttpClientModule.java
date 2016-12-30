@@ -51,7 +51,7 @@ public class HttpClientModule {
      *
      * @param buidler
      */
-    private HttpClientModule(Buidler buidler) {
+    protected HttpClientModule(Buidler buidler) {
         this.mApiUrl = buidler.apiUrl;
         this.mHandler = buidler.handler;
         this.mInterceptorSet = buidler.mInterceptorSet;
@@ -71,7 +71,7 @@ public class HttpClientModule {
      */
     @Singleton
     @Provides
-    OkHttpClient provideClient(Cache cache, Interceptor intercept) {
+   public OkHttpClient provideClient(Cache cache, Interceptor intercept) {
         final OkHttpClient.Builder okHttpClient = new OkHttpClient.Builder();
         return configureClient(okHttpClient, cache, intercept);
     }
@@ -85,7 +85,7 @@ public class HttpClientModule {
      */
     @Singleton
     @Provides
-    Retrofit provideRetrofit(OkHttpClient client, HttpUrl httpUrl) {
+    public Retrofit provideRetrofit(OkHttpClient client, HttpUrl httpUrl) {
         final Retrofit.Builder builder = new Retrofit.Builder();
         return configureRetrofit(builder, client, httpUrl);
     }
@@ -97,7 +97,7 @@ public class HttpClientModule {
      */
     @Singleton
     @Provides
-    HttpUrl provideBaseUrl() {
+    public HttpUrl provideBaseUrl() {
         return mApiUrl;
     }
 
@@ -109,7 +109,7 @@ public class HttpClientModule {
      */
     @Singleton
     @Provides
-    Cache provideCache(File cacheFile) {
+    public Cache provideCache(File cacheFile) {
         return new Cache(cacheFile, HTTP_RESPONSE_DISK_CACHE_MAX_SIZE);
     }
 
@@ -118,7 +118,7 @@ public class HttpClientModule {
      */
     @Singleton
     @Provides
-    File provideCacheFile(Application application) {
+    public File provideCacheFile(Application application) {
         return FileUtils.getCacheFile(application);
     }
 
@@ -129,7 +129,7 @@ public class HttpClientModule {
      */
     @Singleton
     @Provides
-    Interceptor provideIntercept() {
+    public Interceptor provideIntercept() {
         return new RequestIntercept(mHandler);
     }
 
@@ -141,7 +141,7 @@ public class HttpClientModule {
      */
     @Singleton
     @Provides
-    RxCache provideRxCache(File cacheDir) {
+    public RxCache provideRxCache(File cacheDir) {
         return new RxCache
                 .Builder()
                 .persistence(cacheDir, new GsonSpeaker());
@@ -155,7 +155,7 @@ public class HttpClientModule {
      */
     @Singleton
     @Provides
-    RxErrorHandler proRxErrorHandler(Application application) {
+    public  RxErrorHandler proRxErrorHandler(Application application) {
         return RxErrorHandler
                 .builder()
                 .with(application)
@@ -171,7 +171,7 @@ public class HttpClientModule {
      */
     @Singleton
     @Provides
-    RxPermissions provideRxPermissions(Application application) {
+    public RxPermissions provideRxPermissions(Application application) {
         return RxPermissions.getInstance(application);
     }
 

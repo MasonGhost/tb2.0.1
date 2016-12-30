@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.data.beans.User;
 import com.zhiyicx.thinksnsplus.data.source.local.CacheManager;
 import com.zhiyicx.thinksnsplus.data.source.local.CommonCache;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
@@ -28,7 +27,7 @@ public class RegisterRepository implements RegisterContract.Repository {
     }
 
     @Override
-    public Observable<BaseJson<User>> getVertifyCode(String phone) {
+    public Observable<BaseJson<String>> getVertifyCode(String phone) {
         return null;
     }
 }

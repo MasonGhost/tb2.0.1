@@ -15,11 +15,6 @@ public class GuideFragment extends TSFragment {
     }
 
     @Override
-    protected void ComponentInject() {
-
-    }
-
-    @Override
     protected void initView(View rootView) {
 
     }

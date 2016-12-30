@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--toolbar-->
-    <dimen name="toolbar_height">46dp</dimen>
+    <dimen name="toolbar_height">44dp</dimen>
     <dimen name="toolbar_padding_left">16dp</dimen>
     <dimen name="toolbar_padding_right">16dp</dimen>
     <dimen name="toolbar_left_text_size">14sp</dimen>

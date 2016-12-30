@@ -108,14 +108,15 @@ dependencies {
     testCompile testDependences.junit
     androidTestCompile(testDependences.espresso) {
         exclude module: 'support-annotations'
+        exclude group: 'javax.inject'
     }
     testCompile testDependences.runner
-    testCompile testDependences.robolectric
     testCompile testDependences.mockito
 
     // Dagger dependencies
     compile dataDependences.dagger
     provided dataDependences.javaxAnnotation
+    provided dataDependences.daggerCompiler
     apt dataDependences.daggerCompiler
     // Butterknife
     compile dataDependences.butterknife
@@ -129,4 +130,5 @@ dependencies {
     //compile dataDependences.greendaoGenerator
 
     compile 'com.android.support:support-v4:25.0.1'
+
 }

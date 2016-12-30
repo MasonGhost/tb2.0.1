@@ -64,11 +64,6 @@ public class HomeFragment extends TSFragment {
     }
 
     @Override
-    protected void ComponentInject() {
-
-    }
-
-    @Override
     protected void initView(View rootView) {
 
     }

@@ -79,7 +79,7 @@ public abstract class BaseApplication extends Application {
      */
     protected abstract String getBaseUrl();
 
-    protected abstract ImageModule getImagerModule();
+    protected abstract ImageModule getImageModule();
 
     protected abstract ShareModule getShareModule();
 

@@ -1,10 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.login;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -14,7 +10,6 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -31,10 +26,6 @@ public class LoginFragment extends TSFragment {
     EditText mEtLoginPassword;
     @BindView(R.id.bt_login_login)
     Button mBtLoginLogin;
-
-    @Override
-    protected void ComponentInject() {
-    }
 
     @Override
     protected void initView(View rootView) {

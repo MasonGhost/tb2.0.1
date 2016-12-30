@@ -1,18 +1,22 @@
 <resources>
-    <!--异常输出内容-->
+    <!-- 异常输出内容 -->
     <string name="err_share_no_content">分享内容不能为空</string>
-
-
-    <!--注册-->
+    <string name="err_net_not_work">当前网络状况不佳</string>
+    <!-- 通用 -->
+    <string name="seconds">秒</string>
     <string name="nickname">昵称</string>
+    <string name="password">密码</string>
+    <string name="vertify_code">验证码</string>
+    <string name="phone_number">手机号</string>
+    <string name="send_vertify_code">发验证码</string>
+
+    <!-- 注册 -->
     <string name="nickname_input_hint">请输入小于9位昵称</string>
     <string name="immediate_regist">立即注册</string>
-    <string name="vertify_code">验证码</string>
-    <string name="send_vertify_code">发验证码</string>
     <string name="vertify_code_input_hint">请输入4位验证码</string>
-    <string name="phone_number">手机号</string>
     <string name="phone_number_input_hint">请输入11位手机号</string>
-    <string name="password">密码</string>
+    <string name="phone_number_toast_hint">请输入正确的手机号</string>
     <string name="password_toast_hint">密码必须包含大小字母小写字母和数字</string>
     <string name="password_input_hint">请输入6-16位密码</string>
+
 </resources>
