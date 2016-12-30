@@ -19,7 +19,7 @@ import butterknife.OnClick;
  * @contact email:450127106@qq.com
  */
 
-public class LoginFragment extends TSFragment {
+public class LoginFragment extends TSFragment<LoginContract.Presenter> implements LoginContract.View {
     @BindView(R.id.et_login_phone)
     EditText mEtLoginPhone;
     @BindView(R.id.et_login_password)
@@ -55,5 +55,40 @@ public class LoginFragment extends TSFragment {
     @Override
     protected String setLeftTitle() {
         return "登陆";
+    }
+
+    @Override
+    public void setLogining() {
+
+    }
+
+    @Override
+    public void setLoginSuccess() {
+
+    }
+
+    @Override
+    public void setLoginFailure() {
+
+    }
+
+    @Override
+    public void setPresenter(LoginContract.Presenter presenter) {
+        mPresenter = presenter;
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
+    }
+
+    @Override
+    public void showMessage(String message) {
+
     }
 }
