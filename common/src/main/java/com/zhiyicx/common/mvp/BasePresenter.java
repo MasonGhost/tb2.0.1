@@ -2,10 +2,7 @@ package com.zhiyicx.common.mvp;
 
 import android.app.Application;
 
-import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
-
-import org.simple.eventbus.EventBus;
 
 import javax.inject.Inject;
 

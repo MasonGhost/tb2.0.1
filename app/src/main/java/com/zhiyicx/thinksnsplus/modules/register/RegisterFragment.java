@@ -169,7 +169,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        mPresenter.register(mEtRegistPhone.getText().toString().trim()
+                        mPresenter.register(mEtRegistUsername.getText().toString().trim()
                                 , mEtRegistPhone.getText().toString().trim()
                                 , mEtRegistVertifyCode.getText().toString().trim()
                                 , mEtRegistPassword.getText().toString().trim()
@@ -218,7 +218,14 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
 
     @Override
     public void showMessage(String message) {
-        mTvErrorTip.setText(message);
+        if (TextUtils.isEmpty(message)) {
+            mTvErrorTip.setVisibility(View.INVISIBLE);
+            System.out.println(" =INVISIBLE ");
+        } else {
+            mTvErrorTip.setVisibility(View.VISIBLE);
+            mTvErrorTip.setText(message);
+            System.out.println(" =VISIBLE "+message);
+        }
     }
 
     @Override
