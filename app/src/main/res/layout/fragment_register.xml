@@ -17,7 +17,7 @@
             style="@style/style_edit"
             android:layout_marginLeft="42px"
             android:hint="@string/nickname_input_hint"
-            android:inputType="textFilter|textImeMultiLine"
+            android:inputType="textPersonName"
             android:maxLength="8"/>
     </LinearLayout>
 
@@ -49,6 +49,7 @@
             <Button
                 android:id="@+id/bt_regist_send_vertify_code"
                 style="@style/style_send_button"
+                android:enabled="false"
                 android:layout_centerVertical="true"
                 />
 
@@ -125,6 +126,7 @@
     <Button
         android:id="@+id/bt_regist_regist"
         style="@style/style_login_button"
+        android:enabled="false"
         android:text="@string/immediate_regist"/>
 
 

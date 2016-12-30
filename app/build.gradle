@@ -100,8 +100,9 @@ dependencies {
         exclude group: 'javax.inject'
     }
     testCompile testDependences.runner
+    testCompile testDependences.robolectric
     testCompile testDependences.mockito
-
+    androidTestApt dataDependences.daggerCompiler
     // Dagger dependencies
     compile dataDependences.dagger
     provided dataDependences.javaxAnnotation
