@@ -30,4 +30,22 @@ public final class MyViewMatchers {
             }
         };
     }
+
+    /**
+     * Returns a matcher that matches {@link View}s that are clickable.
+     */
+    public static Matcher<View> isUnClickable() {
+        return new TypeSafeMatcher<View>() {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("is unclickable");
+            }
+
+            @Override
+            public boolean matchesSafely(View view) {
+                return !view.isClickable();
+            }
+        };
+    }
+
 }
