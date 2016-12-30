@@ -46,7 +46,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends RxAppCompatA
         // 绑定到 butterknife
         mUnbinder = ButterKnife.bind(this);
         initView();
-        componentInject();// 依赖注入
+        componentInject();// 依赖注入，必须放在initview后
         initData();
 
     }
