@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'org.greenrobot.greendao'
 
 
 android {
@@ -70,7 +71,17 @@ android {
         abortOnError false
     }
 }
-
+greendao {
+    /**
+     * daoPackage 生成的DAO，DaoMaster和DaoSession的包名。默认是实体的包名。
+     * targetGenDir 生成源文件的路径。默认源文件目录是在build目录中的(build/generated/source/greendao)。
+     * generateTests 设置是否自动生成单元测试。
+     * targetGenDirTest 生成的单元测试的根目录。
+     */
+    schemaVersion 1
+    //daoPackage 'com.zhiyicx.common.greendao.gen'
+    //targetGenDir 'src/main/java'
+}
 buildscript {
     repositories {
         jcenter()
@@ -113,5 +124,12 @@ dependencies {
     apt dataDependences.butterknifeApt
     // Project
     compile project(":baseproject")
+
+    // database
+    compile dataDependences.greendao
+    compile dataDependences.greendaoSqlcipher
+    //compile dataDependences.greendaoGenerator
+
+    compile 'com.android.support:support-v4:25.0.1'
 
 }
