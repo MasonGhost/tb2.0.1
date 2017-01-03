@@ -37,6 +37,8 @@ public class RegisterActivityTest {
     @Rule
     public ActivityTestRule<RegisterActivity> mActivityRule = new ActivityTestRule(RegisterActivity.class);
 
+    /*******************************************  用户名  *********************************************/
+
     /**
      * summary                       不输入用户名
      * steps                         不输入用户名点击注册
@@ -133,13 +135,14 @@ public class RegisterActivityTest {
         onView(withId(R.id.bt_regist_regist)).check(matches(isEnabled())).perform(click());
         onView(withId(R.id.tv_error_tip)).check(matches(isDisappear()));
     }
+
     /**
      * summary                      用户名是否可以输入特殊字符
-     *
+     * <p>
      * steps                        1.输入用户名“测￥%”
-                                    2.填写手机号，验证码，密码
-                                    3.点击注册
-
+     * 2.填写手机号，验证码，密码
+     * 3.点击注册
+     * <p>
      * expected                   .提示“用户名只能包含数字、字母和下划线”
      *
      * @throws Exception
@@ -155,7 +158,7 @@ public class RegisterActivityTest {
         onView(withId(R.id.tv_error_tip)).check(matches(withText(mActivityRule.getActivity().getString(R.string.username_toast_not_symbol_hint))));
     }
 
-    /************************************** 手机号 ************************************/
+    /*******************************************  手机号  *********************************************/
 
 
     /**
@@ -225,6 +228,7 @@ public class RegisterActivityTest {
         onView(withId(R.id.et_regist_phone)).perform(typeText("156940050091"));
         onView(withId(R.id.et_regist_phone)).check(matches(withText("15694005009")));
     }
+
     /**
      * summary                      输入合法手机号
      * <p>
@@ -235,9 +239,32 @@ public class RegisterActivityTest {
      * @throws Exception
      */
     @Test
-    public void correctPhoneNumber(){
+    public void correctPhoneNumber() {
         onView(withId(R.id.et_regist_phone)).perform(typeText(USER_PHONE));
         onView(withId(R.id.bt_regist_send_vertify_code)).check(matches(isEnabled())).perform(click());
         onView(withId(R.id.tv_error_tip)).check(matches(isDisappear()));
+    }
+
+    /*******************************************  验证码  *********************************************/
+
+    /**
+     * summary                      不输入验证码
+     * <p>
+     * steps                        1.输入手机号获取验证码
+                                    2.不填写验证码,
+
+     * <p>
+     * expected                    其他都填写情况下，注册按钮颜色不亮无法点击
+     *
+     * @throws Exception
+     */
+    @Test
+    public void vertifyCode_null() {
+        onView(withId(R.id.et_regist_phone)).perform(typeText(USER_PHONE));
+        onView(withId(R.id.et_regist_vertify_code)).perform(typeText(""));
+        onView(withId(R.id.et_regist_password)).perform(typeText("fdagiasdg"));
+        onView(withId(R.id.et_regist_username)).perform(replaceText(USER_NAME));
+        onView(withId(R.id.bt_regist_regist)).check(matches(disEnabled()));
+
     }
 }
