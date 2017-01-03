@@ -1,3 +1,4 @@
+2017年1月3日 17:43:34
 `LogUtils`基于[Logger](https://github.com/orhanobut/logger) 构建的日志多等级显示.
 
 ## 概览
@@ -27,7 +28,7 @@ public class LogUtils {
                 .init(APPLICATION_TAG)           // default PRETTYLOGGER or use just init()
                 .methodCount(LOGGER_METHODCOUNT)                 // default 2
                 .hideThreadInfo()               // default shown
-                .logLevel(BuildConfig.DEBUG?LogLevel.FULL:LogLevel.NONE)        // debug时进行日子打印，release不会打印日志
+                .logLevel(BuildConfig.USE_LOG?LogLevel.FULL:LogLevel.NONE)        // debug时进行日子打印，release不会打印日志
                 .methodOffset(LOGGER_METHODOFFSET);              // default 0
         // .logAdapter(new AndroidLogAdapter()); //default AndroidLogAdapter
     }
@@ -51,5 +52,18 @@ LogUtils.log(DEBUG, "tag", "message", throwable);
 ## 注意事项
 
 本工程只允许使用该日志输出方式,方便统一配置和管理.
-
-2016年12月23日 13:53:28
+`BuildConfig.USE_LOG`配置在`common`下的`build.gradle`中修改
+```grovy
+    release {
+            buildConfigField "boolean", "USE_LOG", "true"
+            buildConfigField "boolean", "USE_CANARY", "true"
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            buildConfigField "boolean", "USE_LOG", "true" //在Module做为library时，只会使用release中的
+            buildConfigField "boolean", "USE_CANARY", "true"
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+```

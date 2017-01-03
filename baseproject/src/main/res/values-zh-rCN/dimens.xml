@@ -2,12 +2,11 @@
 <resources>
     <!--toolbar-->
     <dimen name="toolbar_height">44dp</dimen>
-    <dimen name="toolbar_padding_left">16dp</dimen>
-    <dimen name="toolbar_padding_right">16dp</dimen>
+    <dimen name="toolbar_padding_left">15dp</dimen>
+    <dimen name="toolbar_padding_right">15dp</dimen>
     <dimen name="toolbar_left_text_size">14sp</dimen>
-    <dimen name="toolbar_center_text_size">18sp</dimen>
-    <dimen name="toolbar_right_text_size">14sp</dimen>
-
+    <dimen name="toolbar_center_text_size">@dimen/primary_title</dimen>
+    <dimen name="toolbar_right_text_size">@dimen/sub_title</dimen>
 
     <dimen name="edit_line_height">46dp</dimen>
 
@@ -46,4 +45,26 @@
     <dimen name="button_corner">3dp</dimen>
     <dimen name="send_button_corner">5dp</dimen>
     <dimen name="send_stroke_corner">8dp</dimen>
+
+
+    <!--#########################################      头像尺寸       ################################-->
+
+    <!--
+    用户个人主页头像
+    -->
+    <dimen name="headpic_for_user_home">70dp</dimen>
+    <!--
+    个人中心头像
+    -->
+    <dimen name="headpic_for_user_center">60dp</dimen>
+    <!--
+    动态/消息/赞过的/排行榜/粉丝/评论的 列表头像、
+    聊详情页头像、修改资料-更换头像
+    -->
+    <dimen name="headpic_for_list">38dp</dimen>
+    <!--
+    动态/消息/赞过的/排行榜/粉丝/评论的 列表头像、
+    聊详情页头像、修改资料-更换头像
+    -->
+    <dimen name="headpic_for_assist">26dp</dimen>
 </resources>

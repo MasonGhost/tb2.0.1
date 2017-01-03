@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.login;
 
-import android.support.annotation.MainThread;
-import android.support.design.widget.Snackbar;
 import android.widget.Toast;
 
 import com.zhiyicx.common.base.BaseJson;
@@ -19,7 +17,6 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -56,13 +53,11 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
                 .subscribe(new TestAction<BaseJson<LoginBean>>() {
                     @Override
                     void testCall(BaseJson<LoginBean> integerBaseJson) {
-                        LogUtils.i("login_success" + integerBaseJson);
-                        Toast.makeText(mContext, "login_success" + integerBaseJson, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "login_success", Toast.LENGTH_SHORT).show();
                     }
                 }, new TestAction<Throwable>() {
                     @Override
                     void testCall(Throwable e) {
-                        LogUtils.i("login_failure" + e.getMessage());
                         Toast.makeText(mContext, "login_failure" + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });

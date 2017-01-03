@@ -23,7 +23,7 @@
 
     <!--  button  -->
     <color name="bt_normal">@color/themeColor</color>
-    <color name="bt_disable">#666666</color>
-    <color name="bt_pressed">#15b7f1</color>
+    <color name="bt_disable">@color/general_for_hint</color>
+    <color name="bt_pressed">#4ab2ce</color>
 
 </resources>
