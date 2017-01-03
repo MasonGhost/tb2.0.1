@@ -18,6 +18,7 @@ public interface RegisterContract {
     interface View extends IBaseView<Presenter> {
         /**
          * 设置验证码按钮状态
+         *
          * @param isEnable
          */
         void setVertifyCodeBtEnabled(boolean isEnable);
@@ -31,6 +32,7 @@ public interface RegisterContract {
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
     interface Repository {
         Observable<BaseJson<String>> getVertifyCode(String phone);
+
     }
 
     interface Presenter extends IBasePresenter {

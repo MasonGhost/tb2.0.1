@@ -331,4 +331,47 @@ public class RegisterActivityTest {
         onView(withId(R.id.et_regist_password)).perform(typeText(""));
         onView(withId(R.id.bt_regist_regist)).check(matches(disEnabled()));
     }
+
+    /**
+     * summary                      输入5位密码
+     * <p>
+     * steps                         1.输入昵称“测试124”
+                                     2.填写手机号、验证码
+                                     3.不输入密码
+                                     4.点击注册
+     * <p>
+     * expected                    注册按钮颜色不亮，无法点击
+     *
+     * @throws Exception
+     */
+    @Test
+    public void password_erroLength() throws Exception {
+        onView(withId(R.id.et_regist_username)).perform(replaceText(USER_NAME));
+        onView(withId(R.id.et_regist_phone)).perform(typeText(USER_PHONE));
+        onView(withId(R.id.et_regist_vertify_code)).perform(typeText("2124"));
+        onView(withId(R.id.et_regist_password)).perform(replaceText("12345"));
+        onView(withId(R.id.bt_regist_regist)).check(matches(isEnabled())).perform(click());
+        onView(withId(R.id.tv_error_tip)).check(matches(withText(mActivityRule.getActivity().getString(R.string.password_toast_hint))));
+    }
+    /**
+     * summary                      输入6位密码
+     * <p>
+     * steps                         1.输入昵称“测试124”
+                                     2.填写手机号、验证码
+                                     3.不输入密码
+                                     4.点击注册
+     * <p>
+     * expected                   注册成功跳转首页
+     *
+     * @throws Exception
+     */
+    @Test
+    public void password_correct() throws Exception {
+        onView(withId(R.id.et_regist_username)).perform(replaceText(USER_NAME));
+        onView(withId(R.id.et_regist_phone)).perform(typeText(USER_PHONE));
+        onView(withId(R.id.et_regist_vertify_code)).perform(typeText("2124"));
+        onView(withId(R.id.et_regist_password)).perform(replaceText("123456"));
+        onView(withId(R.id.bt_regist_regist)).check(matches(isEnabled())).perform(click());
+        onView(withId(R.id.tv_error_tip)).check(matches(isDisappear()));
+    }
 }
