@@ -30,4 +30,9 @@ public class RegisterRepository implements RegisterContract.Repository {
     public Observable<BaseJson<String>> getVertifyCode(String phone) {
         return Observable.just(new BaseJson<String>());
     }
+
+    @Override
+    public Observable<BaseJson<String>> register(String phone, String name, String vertifyCode, String password) {
+        return Observable.just(new BaseJson<String>());
+    }
 }

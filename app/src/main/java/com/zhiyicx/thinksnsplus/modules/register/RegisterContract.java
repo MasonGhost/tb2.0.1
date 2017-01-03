@@ -14,7 +14,9 @@ import rx.Observable;
  */
 
 public interface RegisterContract {
-    //对于经常使用的关于UI的方法可以定义到BaseView中,如显示隐藏进度条,和显示文字消息
+    /**
+     *   对于经常使用的关于 UI 的方法可以定义到 BaseView 中,如显示隐藏进度条,和显示文字消息
+     */
     interface View extends IBaseView<Presenter> {
         /**
          * 设置验证码按钮状态
@@ -29,16 +31,32 @@ public interface RegisterContract {
         void setVertifyCodeBtText(String text);
     }
 
-    //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
+    /**
+     * Model 层定义接口,外部只需关心 model 返回的数据,无需关心内部细节,及是否使用缓存
+     */
     interface Repository {
+        /**
+         * 获取验证码
+         * @param phone 注册的手机号码
+         * @return
+         */
         Observable<BaseJson<String>> getVertifyCode(String phone);
 
+        /**
+         * 注册
+         * @param phone 注册的手机号码
+         * @param name  用户名
+         * @param vertifyCode 手机验证码
+         * @param password 用户密码
+         * @return
+         */
+        Observable<BaseJson<String>> register(String phone, String name, String vertifyCode, String password);
     }
 
     interface Presenter extends IBasePresenter {
         void getVertifyCode(String phone);
 
-        void register(String nickName, String phone, String vertifyCode, String password);
+        void register(String name, String phone, String vertifyCode, String password);
     }
 
 }

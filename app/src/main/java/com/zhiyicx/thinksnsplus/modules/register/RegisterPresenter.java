@@ -63,8 +63,6 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
             mRootView.showMessage(mContext.getString(R.string.phone_number_toast_hint));
             return;
         }
-        // 代表检测成功
-        mRootView.showMessage("");
         mRepository.getVertifyCode(phone)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<BaseJson<String>>() {
@@ -86,16 +84,39 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
                         mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
                     }
                 });
+        // 代表检测成功
+        mRootView.showMessage("");
     }
 
     @Override
-    public void register(String nickName, String phone, String vertifyCode, String password) {
-        if (!checkUsername(nickName)) {
+    public void register(String name, String phone, String vertifyCode, String password) {
+        if (!checkUsername(name)) {
             return;
         }
         if (!checkPassword(password)) {
             return;
         }
+        mRepository.register(phone, name, vertifyCode, password)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<BaseJson<String>>() {
+                    @Override
+                    public void call(BaseJson<String> json) {
+//                        if (json.code.equals(ZBLApi.REQUEST_SUCESS)) {
+                        mRootView.hideLoading();//隐藏loading
+                        timer.start();//开始倒计时
+                        mRootView.setVertifyCodeBtEnabled(false);
+                        mRootView.showMessage(json.getData());
+//                        } else {
+//                            mRootView.showMessage(json.getMessage());
+//                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
+                    }
+                });
         // 代表检测成功
         mRootView.showMessage("");
     }
@@ -113,19 +134,19 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
     /**
      * 检查用户名是否小于最小长度,不能以数字开头
      *
-     * @param nickName
+     * @param name
      * @return
      */
-    private boolean checkUsername(String nickName) {
-        if (nickName.length() < USERNAME_MIN_LENGTH) {
+    private boolean checkUsername(String name) {
+        if (name.length() < USERNAME_MIN_LENGTH) {
             mRootView.showMessage(mContext.getString(R.string.username_toast_hint));
             return false;
         }
-        if (RegexUtils.isUsernameNoNumberStart(nickName)) {// 数字开头
+        if (RegexUtils.isUsernameNoNumberStart(name)) {// 数字开头
             mRootView.showMessage(mContext.getString(R.string.username_toast_not_number_start_hint));
             return false;
         }
-        if (!RegexUtils.isUsername(nickName)) {// 用户名只能包含数字、字母和下划线
+        if (!RegexUtils.isUsername(name)) {// 用户名只能包含数字、字母和下划线
             mRootView.showMessage(mContext.getString(R.string.username_toast_not_symbol_hint));
             return false;
         }
