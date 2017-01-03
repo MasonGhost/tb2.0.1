@@ -92,4 +92,22 @@ public final class MyViewMatchers {
         };
     }
 
+    /**
+     * Returns a matcher that matches {@link View}s currently have no focus.
+     */
+    public static Matcher<View> notFcused() {
+        return new TypeSafeMatcher<View>() {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("has no focus on the screen to the user");
+            }
+
+            @Override
+            public boolean matchesSafely(View view) {
+                return !view.hasFocus();
+            }
+        };
+    }
+
+
 }

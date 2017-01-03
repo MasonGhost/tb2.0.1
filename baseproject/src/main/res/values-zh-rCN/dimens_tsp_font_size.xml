@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 标题栏标题；动态详情页标题 -->
+    <dimen name="primary_title">18sp</dimen>
+    <!-- 动态列表动态标题；
+    顶部标题栏右侧文字按钮；
+    详情页顶部标题栏昵称；
+    消息/相册/点赞/粉丝/关注列表标题;
+    个人中心/个人主页用户昵称
+    -->
+    <dimen name="sub_title">16sp</dimen>
+    <!--
+    设置/修改资料/修改密码/意见反馈页面文字；
+    动态详情页正文/聊天详情页聊天内容
+    收到的赞列表的用户昵称;
+    发布动态编辑标题和内容文字
+    -->
+    <dimen name="content">15sp</dimen>
+    <!--
+    消息/相册/点赞/粉丝/关注列表中标题下文字及粉丝数；
+    详情页评论内容和详情页点赞人数
+    个人中心/个人主页简介
+    -->
+    <dimen name="content_assist">14sp</dimen>
+    <!--
+    首页动态/详情页评论/聊天详情的列表用户昵称;
+    首页动态列表评论及昵称
+    -->
+    <dimen name="content_comment">13sp</dimen>
+    <!--
+    时间、点赞数、图标标签等辅助信息;
+    分享弹窗图标下文字；
+    详情页底部操作栏
+    新消息数量提示圈内的数字
+    -->
+    <dimen name="icon_assist">12sp</dimen>
+    <!--
+    底部导航栏下边小字
+    输入评论字数限制提示；
+    聊天详情页时间
+    -->
+    <dimen name="note_assist">10sp</dimen>
+</resources>
