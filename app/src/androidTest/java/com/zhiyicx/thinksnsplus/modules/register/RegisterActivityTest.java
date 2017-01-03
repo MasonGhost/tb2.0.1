@@ -267,4 +267,23 @@ public class RegisterActivityTest {
         onView(withId(R.id.bt_regist_regist)).check(matches(disEnabled()));
 
     }
+
+    /**
+     * summary                      验证码倒计时时是否还能点击
+     * <p>
+     * steps                        1.输入手机号获取验证码
+                                    2.点击正在倒计时的验证码
+     * <p>
+     * expected                    点击无效，倒计时结束后才能继续点击发送
+     *
+     * @throws Exception
+     */
+    @Test
+    public void vertifyCode_countDownTimer() throws Exception {
+        onView(withId(R.id.et_regist_phone)).perform(typeText(USER_PHONE));
+        onView(withId(R.id.bt_regist_send_vertify_code)).perform(click());
+        onView(withId(R.id.bt_regist_send_vertify_code)).check(matches(disEnabled()));
+        Thread.sleep(60*1000);
+        onView(withId(R.id.bt_regist_send_vertify_code)).check(matches(isEnabled()));
+    }
 }
