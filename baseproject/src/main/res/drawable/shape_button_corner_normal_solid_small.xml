@@ -5,6 +5,6 @@
     <!-- 纯色 -->
     <solid android:color="@color/bt_normal" />
     <corners
-        android:radius="@dimen/button_corner"
+        android:radius="@dimen/button_corner_small"
         ></corners>
 </shape>

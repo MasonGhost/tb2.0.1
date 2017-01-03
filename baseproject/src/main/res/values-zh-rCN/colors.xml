@@ -21,9 +21,4 @@
     <!--divider-->
     <color name="color_divider">#e1e1e1</color>
 
-    <!--  button  -->
-    <color name="bt_normal">@color/themeColor</color>
-    <color name="bt_disable">@color/general_for_hint</color>
-    <color name="bt_pressed">#4ab2ce</color>
-
 </resources>
