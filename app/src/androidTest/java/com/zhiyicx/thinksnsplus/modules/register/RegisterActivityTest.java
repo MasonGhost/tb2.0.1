@@ -31,6 +31,7 @@ import static com.zhiyicx.thinksnsplus.modules.MyViewMatchers.isDisappear;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class RegisterActivityTest {
+    private static final String USER_PHONE = "15694005009";
     private static final String USER_NAME = "七夜26";
     private static final String TEST_USER_NAME = "啊哈";
     @Rule
@@ -187,5 +188,20 @@ public class RegisterActivityTest {
         onView(withId(R.id.et_regist_username)).perform(replaceText(TEST_USER_NAME));
         onView(withId(R.id.et_regist_phone)).perform(typeText(""));
         onView(withId(R.id.bt_regist_send_vertify_code)).check(matches(disEnabled()));
+    }
+
+    /**
+     * summary                      手机号是否可输入12位数字
+     * <p>
+     * steps                             手机号输入数字
+     * <p>
+     * expected                     手机要只能11位，当输入11位就不能输入了
+     *
+     * @throws Exception
+     */
+    @Test
+    public void errorPhoneNumber_maxLength() throws Exception {
+        onView(withId(R.id.et_regist_phone)).perform(typeText("156940050091"));
+        onView(withId(R.id.et_regist_phone)).check(matches(withText("15694005009")));
     }
 }
