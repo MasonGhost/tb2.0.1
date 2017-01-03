@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.register;
+package com.zhiyicx.thinksnsplus.modules.login;
 
 
 import android.support.test.espresso.ViewInteraction;
@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -84,6 +85,29 @@ public class LoginActivityTest extends AcitivityTest {
      */
     @Test
     public void wrongPassword() throws Exception {
+
+    }
+
+    /**
+     * summary    不输入密码，登录按钮无法点击
+     * steps
+     * expected
+     */
+    @Test
+    public void loginFailure() throws Exception {
+
+    }
+
+    /**
+     * summary    输入正确的手机号，密码登陆成功
+     * steps
+     * expected
+     */
+    @Test
+    public void loginSuccess() throws Exception {
+        clearEditText(etPhone, etPass);
+        etPhone.perform(replaceText("15928856596"), closeSoftKeyboard());
+        btnLogin.perform(click());
 
     }
 }
