@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.data.client.LoginClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.login.LoginContract;
@@ -15,14 +16,14 @@ import rx.Observable;
  */
 
 public class LoginRepository implements LoginContract.Repository {
-    private CommonClient mCommonClient;
+    private LoginClient mLoginClient;
 
     public LoginRepository(ServiceManager serviceManager) {
-        mCommonClient = serviceManager.getCommonClient();
+        mLoginClient = serviceManager.getLoginClient();
     }
 
     @Override
-    public Observable<BaseJson<String>> login(String phone, String password) {
-        return null;
+    public Observable<BaseJson<Integer>> login(String phone, String password) {
+        return mLoginClient.login();
     }
 }
