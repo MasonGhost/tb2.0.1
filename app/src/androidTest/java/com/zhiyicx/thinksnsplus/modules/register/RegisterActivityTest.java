@@ -133,6 +133,27 @@ public class RegisterActivityTest {
         onView(withId(R.id.bt_regist_regist)).check(matches(isEnabled())).perform(click());
         onView(withId(R.id.tv_error_tip)).check(matches(isDisappear()));
     }
+    /**
+     * summary                      用户名是否可以输入特殊字符
+     *
+     * steps                        1.输入用户名“测￥%”
+                                    2.填写手机号，验证码，密码
+                                    3.点击注册
+
+     * expected                   .提示“用户名只能包含数字、字母和下划线”
+     *
+     * @throws Exception
+     */
+    @Test
+    public void usernameRightSymbol() throws Exception {
+        onView(withId(R.id.et_regist_phone)).perform(typeText(USER_PHONE));
+        onView(withId(R.id.et_regist_vertify_code)).perform(typeText("1234"));
+        onView(withId(R.id.et_regist_password)).perform(typeText("fdagiasdg"));
+        // 用户名过短，提示应为 3-8 个字符
+        onView(withId(R.id.et_regist_username)).perform(replaceText("测￥%"));
+        onView(withId(R.id.bt_regist_regist)).check(matches(isEnabled())).perform(click());
+        onView(withId(R.id.tv_error_tip)).check(matches(withText(mActivityRule.getActivity().getString(R.string.username_toast_not_symbol_hint))));
+    }
 
     /************************************** 手机号 ************************************/
 

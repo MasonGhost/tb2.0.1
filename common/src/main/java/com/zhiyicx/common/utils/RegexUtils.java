@@ -12,10 +12,10 @@ import static com.zhiyicx.common.config.ConstantConfig.REGEX_ID_CARD18;
 import static com.zhiyicx.common.config.ConstantConfig.REGEX_IP;
 import static com.zhiyicx.common.config.ConstantConfig.REGEX_MOBILE_EXACT;
 import static com.zhiyicx.common.config.ConstantConfig.REGEX_MOBILE_SIMPLE;
+import static com.zhiyicx.common.config.ConstantConfig.REGEX_NOT_NUMBER_START;
 import static com.zhiyicx.common.config.ConstantConfig.REGEX_TEL;
 import static com.zhiyicx.common.config.ConstantConfig.REGEX_URL;
 import static com.zhiyicx.common.config.ConstantConfig.REGEX_USERNAME;
-import static com.zhiyicx.common.config.ConstantConfig.REGEX_USERNAME2;
 import static com.zhiyicx.common.config.ConstantConfig.REGEX_ZH;
 
 /**
@@ -124,7 +124,7 @@ public class RegexUtils {
      * @return {@code true}: 匹配<br>{@code false}: 不匹配
      */
     public static boolean isUsernameNoNumberStart(CharSequence input) {
-        return isMatch(REGEX_USERNAME, input);
+        return isMatch(REGEX_NOT_NUMBER_START, input);
     }
     /**
      * 验证用户名
@@ -133,8 +133,8 @@ public class RegexUtils {
      * @param input 待验证文本
      * @return {@code true}: 匹配<br>{@code false}: 不匹配
      */
-    public static boolean isUsernameNoEmoji(CharSequence input) {
-        return isMatch(REGEX_USERNAME2, input);
+    public static boolean isUsername(CharSequence input) {
+        return isMatch(REGEX_USERNAME, input);
     }
     /**
      * 验证yyyy-MM-dd格式的日期校验，已考虑平闰年
