@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.client;
 
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.data.beans.LoginBean;
 
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -22,5 +23,5 @@ public interface LoginClient {
      * @return
      */
     @GET("mockjs/2/test-get-repose-head-normal?")
-    Observable<BaseJson<Integer>> login();
+    Observable<BaseJson<LoginBean>> login();
 }

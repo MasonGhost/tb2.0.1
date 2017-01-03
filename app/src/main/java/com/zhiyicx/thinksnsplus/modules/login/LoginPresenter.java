@@ -6,11 +6,18 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.LoginBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.LoginRepository;
+import com.zhiyicx.thinksnsplus.modules.register.RegisterContract;
+
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * @author LiuChao
@@ -41,23 +48,17 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
             return;
         }
         mRepository.login(phone, password)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<BaseJson<Integer>>() {
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new TestAction<BaseJson<LoginBean>>() {
                     @Override
-                    public void onCompleted() {
-
+                    void testCall(BaseJson<LoginBean> integerBaseJson) {
+                        Toast.makeText(mContext, "login_success", Toast.LENGTH_SHORT).show();
                     }
-
+                }, new TestAction<Throwable>() {
                     @Override
-                    public void onError(Throwable e) {
-                        LogUtils.e("login_failure" + e.getMessage());
+                    void testCall(Throwable e) {
                         Toast.makeText(mContext, "login_failure" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onNext(BaseJson<Integer> integerBaseJson) {
-                        LogUtils.i("login_success" + integerBaseJson);
-                        Toast.makeText(mContext, "login_success" + integerBaseJson, Toast.LENGTH_SHORT).show();
                     }
                 });
     }

@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.data.beans.LoginBean;
 import com.zhiyicx.thinksnsplus.data.client.LoginClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -23,7 +24,7 @@ public class LoginRepository implements LoginContract.Repository {
     }
 
     @Override
-    public Observable<BaseJson<Integer>> login(String phone, String password) {
+    public Observable<BaseJson<LoginBean>> login(String phone, String password) {
         return mLoginClient.login();
     }
 }
