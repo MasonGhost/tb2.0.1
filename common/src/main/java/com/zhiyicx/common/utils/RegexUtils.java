@@ -15,6 +15,7 @@ import static com.zhiyicx.common.config.ConstantConfig.REGEX_MOBILE_SIMPLE;
 import static com.zhiyicx.common.config.ConstantConfig.REGEX_TEL;
 import static com.zhiyicx.common.config.ConstantConfig.REGEX_URL;
 import static com.zhiyicx.common.config.ConstantConfig.REGEX_USERNAME;
+import static com.zhiyicx.common.config.ConstantConfig.REGEX_USERNAME2;
 import static com.zhiyicx.common.config.ConstantConfig.REGEX_ZH;
 
 /**
@@ -117,15 +118,24 @@ public class RegexUtils {
 
     /**
      * 验证用户名
-     * <p>取值范围为a-z,A-Z,0-9,"_",汉字，不能以"_"结尾,用户名必须是6-20位</p>
+     * <p>不能以数字开通</p>
      *
      * @param input 待验证文本
      * @return {@code true}: 匹配<br>{@code false}: 不匹配
      */
-    public static boolean isUsername(CharSequence input) {
+    public static boolean isUsernameNoNumberStart(CharSequence input) {
         return isMatch(REGEX_USERNAME, input);
     }
-
+    /**
+     * 验证用户名
+     * <p>不能以数字开通</p>
+     *
+     * @param input 待验证文本
+     * @return {@code true}: 匹配<br>{@code false}: 不匹配
+     */
+    public static boolean isUsernameNoEmoji(CharSequence input) {
+        return isMatch(REGEX_USERNAME2, input);
+    }
     /**
      * 验证yyyy-MM-dd格式的日期校验，已考虑平闰年
      *

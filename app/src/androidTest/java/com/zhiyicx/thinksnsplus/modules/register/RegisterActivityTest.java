@@ -32,9 +32,9 @@ import static com.zhiyicx.thinksnsplus.modules.MyViewMatchers.isDisappear;
 @LargeTest
 public class RegisterActivityTest {
     private static final String USER_NAME = "七夜26";
+    private static final String TEST_USER_NAME = "啊哈";
     @Rule
     public ActivityTestRule<RegisterActivity> mActivityRule = new ActivityTestRule(RegisterActivity.class);
-
 
     /**
      * summary                       不输入用户名
@@ -133,6 +133,39 @@ public class RegisterActivityTest {
         onView(withId(R.id.et_regist_username)).perform(replaceText(USER_NAME));
         onView(withId(R.id.bt_regist_regist)).check(matches(isEnabled())).perform(click());
         onView(withId(R.id.tv_error_tip)).check(matches(isDisappear()));
+    }
+    /**
+     * summary                       是否可输入不合法的手机号码
+     *
+     * steps                             ① 输入用户名“啊哈”
+                                         ② 手机号：12345685
+                                         ③ 发送验证码;
+
+     * expected                       发送验证码按钮不亮
+     * @throws Exception
+     */
+    @Test
+    public void errorPhoneNumber_length() throws Exception {
+        onView(withId(R.id.et_regist_phone)).perform(typeText("12345685"));
+        onView(withId(R.id.et_regist_username)).perform(replaceText(TEST_USER_NAME));
+        onView(withId(R.id.bt_regist_send_vertify_code)).check(matches(disEnabled()));
+    }
+    /**
+     * summary                       是否可输入不合法的手机号码
+     *
+     * steps                             ① 输入用户名“啊哈”
+                                         ② 手机号：
+                                         ③ 发送验证码
+
+     * expected                     提示请输入正确的手机号
+     * @throws Exception
+     */
+    @Test
+    public void errorPhoneNumber_symbol() throws Exception {
+        onView(withId(R.id.et_regist_username)).perform(replaceText(TEST_USER_NAME));
+        onView(withId(R.id.et_regist_phone)).perform(typeText("1361802982#"));
+        onView(withId(R.id.bt_regist_send_vertify_code)).check(matches(isEnabled())).perform(click());
+        onView(withId(R.id.tv_error_tip)).check(matches(withText(mActivityRule.getActivity().getString(R.string.phone_number_toast_hint))));
     }
 
 }

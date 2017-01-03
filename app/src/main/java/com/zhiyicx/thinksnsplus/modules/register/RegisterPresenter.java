@@ -8,9 +8,6 @@ import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import javax.inject.Inject;
 
 import rx.android.schedulers.AndroidSchedulers;
@@ -122,10 +119,12 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
             mRootView.showMessage(mContext.getString(R.string.username_toast_hint));
             return false;
         }
-        Pattern pattern = Pattern.compile("^(\\d+)(.*)");
-        Matcher matcher = pattern.matcher(nickName);
-        if (matcher.matches()) {//数字开头
+        if (!RegexUtils.isUsernameNoNumberStart(nickName)) {//数字开头
             mRootView.showMessage(mContext.getString(R.string.username_toast_not_number_start_hint));
+            return false;
+        }
+        if (!RegexUtils.isUsernameNoEmoji(nickName)) {//数字开头
+            mRootView.showMessage(mContext.getString(R.string.username_toast_not_symbol_hint));
             return false;
         }
         return true;

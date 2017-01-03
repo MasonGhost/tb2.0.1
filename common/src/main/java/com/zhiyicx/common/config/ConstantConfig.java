@@ -98,9 +98,13 @@ public class ConstantConfig {
      */
     public static final String REGEX_ZH            = "^[\\u4e00-\\u9fa5]+$";
     /**
-     * 正则：用户名，取值范围为a-z,A-Z,0-9,"_",汉字，不能以"_"结尾,用户名必须是6-20位
+     * 正则：用户名，不能以数字开头，
      */
-    public static final String REGEX_USERNAME      = "^[\\w\\u4e00-\\u9fa5]{6,20}(?<!_)$";
+    public static final String REGEX_USERNAME      = "^[a-zA-Z_\\\\u4e00-\\\\u9fa5]*$";
+    /**
+     * 正则：用户名，不能有emoji
+     */
+    public static final String REGEX_USERNAME2      = "^[a-zA-Z0-9_\\\\u4e00-\\\\u9fa5]*$";
     /**
      * 正则：yyyy-MM-dd格式的日期校验，已考虑平闰年
      */
