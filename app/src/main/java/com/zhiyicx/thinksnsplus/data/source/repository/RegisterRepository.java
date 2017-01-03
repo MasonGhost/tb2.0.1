@@ -28,6 +28,6 @@ public class RegisterRepository implements RegisterContract.Repository {
 
     @Override
     public Observable<BaseJson<String>> getVertifyCode(String phone) {
-        return null;
+        return Observable.just(new BaseJson<String>());
     }
 }

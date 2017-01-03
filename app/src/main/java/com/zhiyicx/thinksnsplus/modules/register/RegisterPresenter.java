@@ -63,6 +63,8 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
             mRootView.showMessage(mContext.getString(R.string.phone_number_toast_hint));
             return;
         }
+        // 代表检测成功
+        mRootView.showMessage("");
         mRepository.getVertifyCode(phone)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<BaseJson<String>>() {
@@ -119,11 +121,11 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
             mRootView.showMessage(mContext.getString(R.string.username_toast_hint));
             return false;
         }
-        if (!RegexUtils.isUsernameNoNumberStart(nickName)) {//数字开头
+        if (!RegexUtils.isUsernameNoNumberStart(nickName)) {// 数字开头
             mRootView.showMessage(mContext.getString(R.string.username_toast_not_number_start_hint));
             return false;
         }
-        if (!RegexUtils.isUsernameNoEmoji(nickName)) {//数字开头
+        if (!RegexUtils.isUsernameNoEmoji(nickName)) {// 用户名只能包含数字、字母和下划线
             mRootView.showMessage(mContext.getString(R.string.username_toast_not_symbol_hint));
             return false;
         }

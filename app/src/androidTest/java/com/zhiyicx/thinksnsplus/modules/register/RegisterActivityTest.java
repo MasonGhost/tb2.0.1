@@ -204,4 +204,19 @@ public class RegisterActivityTest {
         onView(withId(R.id.et_regist_phone)).perform(typeText("156940050091"));
         onView(withId(R.id.et_regist_phone)).check(matches(withText("15694005009")));
     }
+    /**
+     * summary                      输入合法手机号
+     * <p>
+     * steps                             手机号输入数字
+     * <p>
+     * expected                     手机要只能11位，当输入11位就不能输入了
+     *
+     * @throws Exception
+     */
+    @Test
+    public void correctPhoneNumber(){
+        onView(withId(R.id.et_regist_phone)).perform(typeText(USER_PHONE));
+        onView(withId(R.id.bt_regist_send_vertify_code)).check(matches(isEnabled())).perform(click());
+        onView(withId(R.id.tv_error_tip)).check(matches(isDisappear()));
+    }
 }
