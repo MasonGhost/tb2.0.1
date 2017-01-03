@@ -1,16 +1,22 @@
 package com.zhiyicx.thinksnsplus.modules.login;
 
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.utils.ManyEdittextContentWatcher;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 
+import java.util.concurrent.TimeUnit;
+
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.functions.Action1;
 
 /**
  * @author LiuChao
@@ -20,6 +26,8 @@ import butterknife.OnClick;
  */
 
 public class LoginFragment extends TSFragment<LoginContract.Presenter> implements LoginContract.View {
+    public static final int JITTER_SPACING_TIME = 2; // 抖动间隔时间，单位 s
+
     @BindView(R.id.et_login_phone)
     EditText mEtLoginPhone;
     @BindView(R.id.et_login_password)
@@ -27,14 +35,41 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     @BindView(R.id.bt_login_login)
     Button mBtLoginLogin;
 
+    private boolean isPhoneEdited;
+    private boolean isPasswordEdited;
+
     @Override
     protected void initView(View rootView) {
-        new ManyEdittextContentWatcher(new ManyEdittextContentWatcher.ContentWatcher() {
-            @Override
-            public void allHasContent(boolean hasContent) {
-                mBtLoginLogin.setClickable(hasContent);
-            }
-        }, mEtLoginPhone, mEtLoginPassword);
+        // 手机号码输入框观察
+        RxTextView.textChanges(mEtLoginPhone)
+                .compose(this.<CharSequence>bindToLifecycle())
+                .subscribe(new Action1<CharSequence>() {
+                    @Override
+                    public void call(CharSequence charSequence) {
+                        isPhoneEdited = !TextUtils.isEmpty(charSequence.toString());
+                        setConfirmEnable();
+                    }
+                });
+        // 密码输入框观察
+        RxTextView.textChanges(mEtLoginPassword)
+                .compose(this.<CharSequence>bindToLifecycle())
+                .subscribe(new Action1<CharSequence>() {
+                    @Override
+                    public void call(CharSequence charSequence) {
+                        isPasswordEdited = !TextUtils.isEmpty(charSequence.toString());
+                        setConfirmEnable();
+                    }
+                });
+        // 点击登录按钮
+        RxView.clicks(mBtLoginLogin)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        mPresenter.login(mEtLoginPhone.getText().toString().trim(), mEtLoginPassword.getText().toString().trim());
+                    }
+                });
     }
 
     @Override
@@ -42,19 +77,9 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
 
     }
 
-    @OnClick(R.id.bt_login_login)
-    public void onClick() {
-        LogUtils.i("lalallalalalla");
-    }
-
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_login;
-    }
-
-    @Override
-    protected String setLeftTitle() {
-        return "登陆";
     }
 
     @Override
@@ -90,5 +115,16 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     @Override
     public void showMessage(String message) {
 
+    }
+
+    /**
+     * 设置登陆按钮是否可点击
+     */
+    private void setConfirmEnable() {
+        if (isPhoneEdited && isPasswordEdited) {
+            mBtLoginLogin.setEnabled(true);
+        } else {
+            mBtLoginLogin.setEnabled(false);
+        }
     }
 }

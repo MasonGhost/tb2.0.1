@@ -10,6 +10,7 @@ package com.zhiyicx.baseproject.config;
 public class ApiConfig {
     /**
      * 网络根地址
+     * 测试服务器：http://192.168.10.222/mockjs/2/test-get-repose-head-normal?
      */
-    public static final String APP_DOMAIN="https://api.github.com/";//repos/vmg/redcarpet/issues?state=closed
+    public static final String APP_DOMAIN="http://192.168.10.222/";// rap测试服务器
 }

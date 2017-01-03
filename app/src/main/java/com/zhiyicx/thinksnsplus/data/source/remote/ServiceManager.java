@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.remote;
 
+import com.zhiyicx.thinksnsplus.data.client.LoginClient;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -14,17 +16,25 @@ import javax.inject.Singleton;
 @Singleton
 public class ServiceManager {
     private CommonClient mCommonClient;
+    private LoginClient mLoginClient;
 
     /**
      * 如果需要添加 service 只需在构造方法中添加对应的 service,在提供 get 方法返回出去,只要在 ServiceModule 提供了该 service
      * Dagger2 会自行注入
+     *
      * @param commonClient
      */
-    @Inject public ServiceManager(CommonClient commonClient){
+    @Inject
+    public ServiceManager(CommonClient commonClient, LoginClient loginClient) {
         this.mCommonClient = commonClient;
+        this.mLoginClient = loginClient;
     }
 
     public CommonClient getCommonClient() {
         return mCommonClient;
+    }
+
+    public LoginClient getLoginClient() {
+        return mLoginClient;
     }
 }
