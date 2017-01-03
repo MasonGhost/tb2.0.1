@@ -21,6 +21,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.zhiyicx.thinksnsplus.modules.MyViewMatchers.disEnabled;
 import static com.zhiyicx.thinksnsplus.modules.MyViewMatchers.isDisappear;
+import static com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter.SNS_TIME;
 
 /**
  * @Describe
@@ -285,5 +286,49 @@ public class RegisterActivityTest {
         onView(withId(R.id.bt_regist_send_vertify_code)).check(matches(disEnabled()));
         Thread.sleep(60*1000);
         onView(withId(R.id.bt_regist_send_vertify_code)).check(matches(isEnabled()));
+    }
+
+    /**
+     * summary                      验证码倒计时时切换手机号是否能点击重新发送验证码
+     * <p>
+     * steps                        1.输入手机号获取验证码
+     * 2.删除手机号重新输入新的
+     * <p>
+     * expected                    倒计时依旧进行，待倒计时结束才可重新点击获取验证码
+     *
+     * @throws Exception
+     */
+    @Test
+    public void vertifyCode_change() throws Exception {
+        onView(withId(R.id.et_regist_phone)).perform(typeText(USER_PHONE));
+        onView(withId(R.id.bt_regist_send_vertify_code)).perform(click());
+        onView(withId(R.id.et_regist_phone)).perform(typeText("15694005008"));
+        onView(withId(R.id.bt_regist_send_vertify_code)).check(matches(disEnabled()));
+        Thread.sleep(SNS_TIME);
+        onView(withId(R.id.bt_regist_send_vertify_code)).check(matches(isEnabled()));
+    }
+
+
+    /*******************************************  密码  *********************************************/
+
+    /**
+     * summary                      不输入密码
+     * <p>
+     * steps                         1.输入昵称“测试124”
+                                     2.填写手机号、验证码
+                                     3.不输入密码
+                                     4.点击注册
+     * <p>
+     * expected                    注册按钮颜色不亮，无法点击
+     *
+     * @throws Exception
+     */
+    @Test
+    public void password_null() throws Exception {
+        onView(withId(R.id.et_regist_username)).perform(replaceText(USER_NAME));
+        onView(withId(R.id.et_regist_phone)).perform(typeText(USER_PHONE));
+        onView(withId(R.id.et_regist_vertify_code)).perform(typeText("2124"));
+        onView(withId(R.id.et_regist_password)).perform(typeText(""));
+        onView(withId(R.id.bt_regist_regist)).check(matches(disEnabled()));
     }
 }
