@@ -49,6 +49,7 @@
         <item name="android:background">@drawable/selector_button_corner_solid_big</item>
         <item name="android:textSize">@dimen/primary_title</item>
     </style>
+
     <style name="style_send_button_cotainer">
         <item name="android:layout_width">140px</item>
         <item name="android:layout_height">match_parent</item>
@@ -56,6 +57,7 @@
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_marginRight">@dimen/spacing_large</item>
     </style>
+
     <style name="style_send_button">
         <item name="android:layout_width">120px</item>
         <item name="android:layout_height">50px</item>
@@ -64,6 +66,7 @@
         <item name="android:layout_gravity">center</item>
         <item name="android:textSize">@dimen/icon_assist</item>
     </style>
+
     <style name="style_action_list_item">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/action_button_list_item_height</item>
@@ -71,5 +74,11 @@
         <item name="android:textColor">@color/important_for_content</item>
         <item name="android:background">@color/white</item>
         <item name="android:textSize">@dimen/button_text_size_big</item>
+    </style>
+
+    <!--#########################################      popwindow       ################################-->
+    <style name="actionPopupAnimation" mce_bogus="1" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/slide_in_bottom</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
     </style>
 </resources>
