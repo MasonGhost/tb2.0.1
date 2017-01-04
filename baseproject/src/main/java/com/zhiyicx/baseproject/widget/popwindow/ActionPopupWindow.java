@@ -63,7 +63,7 @@ public class ActionPopupWindow extends PopupWindow {
     }
 
     private void initLayout() {
-        mContentView = LayoutInflater.from(mActivity).inflate(R.layout.pop_for_action, null);
+        mContentView = LayoutInflater.from(mActivity).inflate(R.layout.ppw_for_action, null);
         if (!TextUtils.isEmpty(mTopStr)) {
             TextView topView = (TextView) mContentView.findViewById(R.id.tv_pop_top);
             topView.setVisibility(View.VISIBLE);
