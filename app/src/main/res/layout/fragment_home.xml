@@ -1,13 +1,163 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeFragment">
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+    <LinearLayout
+        android:id="@+id/ll_home"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/home_bottom_navigate_bg"
+        android:orientation="horizontal"
+        >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/bt_home_live"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/iv_home_live"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_bottom_live_blue"/>
+
+                <TextView
+                    android:id="@+id/tv_home_live"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3px"
+                    android:text="直播"
+                    android:textColor="@color/color_blue_button"
+                    android:textSize="@dimen/font_smart_little"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/bt_home_replay"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone"
+                >
+
+                <ImageView
+                    android:id="@+id/iv_home_replay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_bottom_replay_grey"/>
+
+                <TextView
+                    android:id="@+id/tv_home_replay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3px"
+                    android:text="回放"
+                    android:textColor="@color/gray"
+                    android:textSize="@dimen/font_smart_little"/>
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/bt_home_add"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_weight="1.3"
+            android:background="@color/color_blue_button">
+
+            <TextView
+                android:layout_width="55px"
+                android:layout_height="55px"
+                android:layout_centerInParent="true"
+                android:background="@mipmap/icp_bottom_add"
+                android:textSize="80px"/>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/bt_home_message"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone"
+                >
+
+                <ImageView
+                    android:id="@+id/iv_home_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_bottom_chat_grey"/>
+
+                <TextView
+                    android:id="@+id/tv_home_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3px"
+                    android:text="聊天"
+                    android:textColor="@color/gray"
+                    android:textSize="@dimen/font_smart_little"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/bt_home_my"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/iv_home_my"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:src="@mipmap/ico_bottom_myself_grey"/>
+
+                <TextView
+                    android:id="@+id/tv_home_my"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3px"
+                    android:text="我"
+                    android:textColor="@color/gray"
+                    android:textSize="@dimen/font_smart_little"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.zhiyicx.zhibo.ui.components.NoPullViewPager
+        android:id="@+id/vp_home"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment"/>
-
-</FrameLayout>
+        android:layout_above="@id/ll_home"/>
+</RelativeLayout>

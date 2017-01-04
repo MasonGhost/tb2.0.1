@@ -27,6 +27,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.functions.Action1;
 
+/**
+ * @Describe
+ * @Author Jungle68
+ * @Date 2017/1/4
+ * @Contact master.jungle68@gmail.com
+ */
 public class RegisterFragment extends TSFragment<RegisterContract.Presenter> implements RegisterContract.View {
     public static final int PASSWORD_MAXLENGHT = 16;
     public static final int JITTER_SPACING_TIME = 2; // 抖动间隔时间，单位 s
