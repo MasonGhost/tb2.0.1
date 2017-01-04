@@ -27,6 +27,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.functions.Action1;
 
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.common.config.ConstantConfig.MOBILE_PHONE_NUMBER_LENGHT;
+
 /**
  * @Describe
  * @Author Jungle68
@@ -35,8 +38,7 @@ import rx.functions.Action1;
  */
 public class RegisterFragment extends TSFragment<RegisterContract.Presenter> implements RegisterContract.View {
     public static final int PASSWORD_MAXLENGHT = 16;
-    public static final int JITTER_SPACING_TIME = 2; // 抖动间隔时间，单位 s
-    public static final int MOBILE_PHONE_NUMBER_LENGHT = 11; // 手机号码长度
+
     public static final int VERTIRY_CODE_LENGHT = 4; // 验证码长度
 
     @BindView(R.id.et_regist_username)
