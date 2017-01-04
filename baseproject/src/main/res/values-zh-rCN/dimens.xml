@@ -28,12 +28,16 @@
     <dimen name="verified_height">13dp</dimen>
     <dimen name="shape_stroke_width">1dp</dimen>
     <dimen name="margin_statubar">25dp</dimen>
+    <!--可操作按钮列表高度-->
+    <dimen name="action_button_list_item_height">45dp</dimen>
+
 
 
     <!-- view间距 -->
     <dimen name="spacing_large">16dp</dimen>
     <dimen name="spacing_normal">10dp</dimen>
-    <dimen name="item_spacing_small">3dp</dimen>
+    <dimen name="item_spacing_normal">5dp</dimen>
+    <dimen name="item_spacing_line">1px</dimen>
     <dimen name="margin_normal">10dp</dimen>
     <dimen name="margin_large">16dp</dimen>
     <dimen name="margin_big_large">106dp</dimen>

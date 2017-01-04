@@ -56,5 +56,6 @@
     页面的浅灰色背景
     -->
     <color name="general_for_light_bg">#f4f5f5</color>
+    <color name="general_for_light_bg_alpha_0.5">#80f4f5f5</color>
 
 </resources>

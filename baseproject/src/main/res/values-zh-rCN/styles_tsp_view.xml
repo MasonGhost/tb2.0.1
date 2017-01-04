@@ -64,4 +64,12 @@
         <item name="android:layout_gravity">center</item>
         <item name="android:textSize">@dimen/icon_assist</item>
     </style>
+    <style name="style_action_list_item">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/action_button_list_item_height</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/important_for_content</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:textSize">@dimen/button_text_size_big</item>
+    </style>
 </resources>
