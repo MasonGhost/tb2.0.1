@@ -41,12 +41,6 @@
     <dimen name="margin_huge">20dp</dimen>
     <dimen name="padding_normal">10dp</dimen>
 
-    <!--  圆角  -->
-    <dimen name="button_corner_big">6dp</dimen>
-    <dimen name="button_corner_small">4dp</dimen>
-    <dimen name="send_button_corner">5dp</dimen>
-    <dimen name="send_stroke_corner">8dp</dimen>
-
 
     <!--#########################################      头像尺寸       ################################-->
 
