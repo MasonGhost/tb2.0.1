@@ -133,7 +133,7 @@
         </LinearLayout>
     </LinearLayout>
 
-    <com.zhiyicx.zhibo.ui.components.NoPullViewPager
+    <com.zhiyicx.common.widget.NoPullViewPager
         android:id="@+id/vp_home"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
