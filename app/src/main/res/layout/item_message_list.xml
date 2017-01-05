@@ -1,0 +1,37 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/padding_normal"
+    android:paddingLeft="@dimen/padding_small"
+    android:paddingRight="@dimen/padding_small"
+    android:paddingTop="@dimen/padding_normal"
+    tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
+
+    <com.zhiyicx.common.widget.FilterImageView
+        android:id="@+id/iv_headpic"
+        android:layout_width="@dimen/headpic_for_list"
+        android:layout_height="@dimen/headpic_for_list"
+        android:src="@mipmap/ic_launcher"/>
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:maxLines="1"
+        android:textSize="@dimen/size_icon_assist"
+        tools:text="2016-05-06"/>
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/tv_time"
+        android:layout_toRightOf="@id/iv_headpic"
+        android:maxLines="1"
+        tools:text="张三 "/>
+
+
+</RelativeLayout>

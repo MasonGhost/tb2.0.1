@@ -6,4 +6,4 @@
     android:layout_height="wrap_content"
     android:layout_marginRight="@dimen/spacing_large"
     android:gravity="center"
-    android:textSize="@dimen/content"/>
+    android:textSize="@dimen/size_content"/>

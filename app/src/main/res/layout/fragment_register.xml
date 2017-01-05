@@ -121,7 +121,7 @@
         android:layout_gravity="right"
         android:layout_marginRight="@dimen/spacing_large"
         android:gravity="center_vertical|right"
-        android:textSize="@dimen/content"/>
+        android:textSize="@dimen/size_content"/>
 
     <Button
         android:id="@+id/bt_regist_regist"

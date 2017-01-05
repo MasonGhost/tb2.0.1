@@ -5,8 +5,8 @@
     <dimen name="toolbar_padding_left">15dp</dimen>
     <dimen name="toolbar_padding_right">15dp</dimen>
     <dimen name="toolbar_left_text_size">14sp</dimen>
-    <dimen name="toolbar_center_text_size">@dimen/primary_title</dimen>
-    <dimen name="toolbar_right_text_size">@dimen/sub_title</dimen>
+    <dimen name="toolbar_center_text_size">@dimen/size_primary_title</dimen>
+    <dimen name="toolbar_right_text_size">@dimen/size_sub_title</dimen>
     <!-- custom navigationbar -->
     <dimen name="custom_navigationbar_height">46dp</dimen>
     <dimen name="edit_line_height">46dp</dimen>
@@ -45,9 +45,12 @@
     <dimen name="margin_big_large">106dp</dimen>
     <dimen name="margin_big">30dp</dimen>
     <dimen name="margin_huge">20dp</dimen>
+
+    <!--#########################################      tsp 间距定义       ################################-->
+    <dimen name="padding_mid">15dp</dimen>
     <dimen name="padding_normal">10dp</dimen>
-
-
+    <dimen name="padding_small">5dp</dimen>
+    <dimen name="padding_tiny">2dp</dimen>
 
     <!--#########################################      分割线       ################################-->
     <dimen name="divider_line">1px</dimen>

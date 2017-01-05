@@ -35,7 +35,7 @@
                 android:layout_marginTop="@dimen/icon_for_home_bottom_text_margin"
                 android:text="@string/home"
                 android:textColor="@color/home_bottom_navigate_text_normal"
-                android:textSize="@dimen/note_assist"/>
+                android:textSize="@dimen/size_note_assist"/>
         </LinearLayout>
 
 
@@ -61,7 +61,7 @@
                 android:layout_marginTop="@dimen/icon_for_home_bottom_text_margin"
                 android:text="@string/find"
                 android:textColor="@color/home_bottom_navigate_text_normal"
-                android:textSize="@dimen/note_assist"/>
+                android:textSize="@dimen/size_note_assist"/>
         </LinearLayout>
         <FrameLayout
             android:id="@+id/fl_add"
@@ -103,7 +103,7 @@
                 android:layout_marginTop="@dimen/icon_for_home_bottom_text_margin"
                 android:text="@string/message"
                 android:textColor="@color/home_bottom_navigate_text_normal"
-                android:textSize="@dimen/note_assist"/>
+                android:textSize="@dimen/size_note_assist"/>
         </LinearLayout>
 
         <LinearLayout
@@ -128,7 +128,7 @@
                 android:layout_marginTop="@dimen/icon_for_home_bottom_text_margin"
                 android:text="@string/mine"
                 android:textColor="@color/home_bottom_navigate_text_normal"
-                android:textSize="@dimen/note_assist"/>
+                android:textSize="@dimen/size_note_assist"/>
         </LinearLayout>
     </LinearLayout>
 
