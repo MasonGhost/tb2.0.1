@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.home;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -13,7 +15,11 @@ import com.zhiyicx.thinksnsplus.R;
  * @Contact master.jungle68@gmail.com
  */
 public class MessageFragment extends TSFragment {
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
+    }
 
     public MessageFragment() {
     }
@@ -27,7 +33,7 @@ public class MessageFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
-
+        mToolbarCenter.setTextColor(ContextCompat.getColor(getContext(),R.color.important_for_content));
     }
 
 
@@ -39,6 +45,11 @@ public class MessageFragment extends TSFragment {
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_message;
+    }
+
+    @Override
+    protected int setToolBarBackgroud() {
+        return R.color.white;
     }
 
     @Override

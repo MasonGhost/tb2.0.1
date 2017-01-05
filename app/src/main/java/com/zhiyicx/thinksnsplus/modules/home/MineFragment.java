@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 /**
@@ -40,13 +41,10 @@ public class MineFragment extends TSFragment {
         return R.layout.fragment_mine;
     }
 
-    /**
-     * 不需要 toolbar
-     *
-     * @return
-     */
     @Override
-    protected boolean showToolbar() {
-        return false;
+    protected int setToolBarBackgroud() {
+        StatusBarUtils.statusBarLightMode(getActivity());//当状态栏颜色为白色时使用，Activity 中最后一次调用确定状态栏背景颜色和图标颜色
+        return R.color.white;
     }
+
 }

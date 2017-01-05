@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -8,7 +9,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.ViewPagerAdapter;
 import com.zhiyicx.common.widget.NoPullViewPager;
@@ -19,7 +19,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.functions.Action1;
 
 /**
  * @Describe
@@ -67,6 +66,11 @@ public class HomeFragment extends TSFragment {
         return fragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
     /**
      * 不需要 toolbar
      *
@@ -78,8 +82,14 @@ public class HomeFragment extends TSFragment {
     }
 
     @Override
+    protected int setToolBarBackgroud() {
+        return R.color.white;
+    }
+
+    @Override
     protected void initView(View rootView) {
         initViewPager();
+        mVpHome.setCurrentItem(PAGE_HOME);
         initListener();
     }
 
@@ -95,36 +105,29 @@ public class HomeFragment extends TSFragment {
 
     @OnClick({R.id.ll_home, R.id.ll_find, R.id.fl_add, R.id.ll_message, R.id.ll_mine})
     public void onClick(final View view) {
-        RxView.clicks(view)
-                .compose(this.<Void>bindToLifecycle())
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        switch (view.getId()) {
-                            // 点击主页
-                            case R.id.ll_home:
-                                mVpHome.setCurrentItem(PAGE_HOME, false);
-                                break;
-                            // 点击发现
-                            case R.id.ll_find:
-                                mVpHome.setCurrentItem(PAGE_FIND, false);
-                                break;
-                            // 点击增加
-                            case R.id.fl_add:
-                                //// TODO: 2017/1/5  添加动态
-                                break;
-                            // 点击消息
-                            case R.id.ll_message:
-                                mVpHome.setCurrentItem(PAGE_MESSAGE, false);
-                                break;
-                            // 点击我的
-                            case R.id.ll_mine:
-                                mVpHome.setCurrentItem(PAGE_MINE, false);
-                                break;
-                            default:
-                        }
-                    }
-                });
+        switch (view.getId()) {
+            // 点击主页
+            case R.id.ll_home:
+                mVpHome.setCurrentItem(PAGE_HOME, false);
+                break;
+            // 点击发现
+            case R.id.ll_find:
+                mVpHome.setCurrentItem(PAGE_FIND, false);
+                break;
+            // 点击增加
+            case R.id.fl_add:
+                //// TODO: 2017/1/5  添加动态
+                break;
+            // 点击消息
+            case R.id.ll_message:
+                mVpHome.setCurrentItem(PAGE_MESSAGE, false);
+                break;
+            // 点击我的
+            case R.id.ll_mine:
+                mVpHome.setCurrentItem(PAGE_MINE, false);
+                break;
+            default:
+        }
 
     }
 

@@ -41,13 +41,8 @@ public class FindFragment extends TSFragment {
         return R.layout.fragment_find;
     }
 
-    /**
-     * 不需要 toolbar
-     * @return
-     */
     @Override
-    protected boolean showToolbar() {
-        return false;
+    protected int setToolBarBackgroud() {
+        return R.color.white;
     }
-
 }

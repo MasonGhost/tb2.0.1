@@ -41,13 +41,8 @@ public class MainFragment extends TSFragment {
         return R.layout.fragment_main;
     }
 
-//    /**
-//     * 不需要 toolbar
-//     * @return
-//     */
-//    @Override
-//    protected boolean showToolbar() {
-//        return false;
-//    }
-
+    @Override
+    protected boolean showToolbar() {
+        return false;
+    }
 }
