@@ -1,18 +1,21 @@
 package com.zhiyicx.thinksnsplus.modules.home;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.base.ViewPagerAdapter;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -36,32 +39,23 @@ public class HomeFragment extends TSFragment {
     ImageView mIvHome;
     @BindView(R.id.tv_home)
     TextView mTvHome;
-    @BindView(R.id.ll_home)
-    LinearLayout mLlHome;
     @BindView(R.id.iv_find)
     ImageView mIvFind;
     @BindView(R.id.tv_find)
     TextView mTvFind;
-    @BindView(R.id.ll_find)
-    LinearLayout mLlFind;
-    @BindView(R.id.fl_add)
-    FrameLayout mFlAdd;
     @BindView(R.id.iv_message)
     ImageView mIvMessage;
     @BindView(R.id.tv_message)
     TextView mTvMessage;
-    @BindView(R.id.ll_message)
-    LinearLayout mLlMessage;
     @BindView(R.id.iv_mine)
     ImageView mIvMine;
     @BindView(R.id.tv_mine)
     TextView mTvMine;
-    @BindView(R.id.ll_mine)
-    LinearLayout mLlMine;
     @BindView(R.id.vp_home)
     NoPullViewPager mVpHome;
-    @BindView(R.id.ll_bottom_container)
-    LinearLayout mLlBottomContainer;
+
+    private ViewPagerAdapter mHomePager;
+
 
     public HomeFragment() {
     }
@@ -73,10 +67,19 @@ public class HomeFragment extends TSFragment {
         return fragment;
     }
 
+    /**
+     * 不需要 toolbar
+     * @return
+     */
+    @Override
+    protected boolean showToolbar() {
+        return false;
+    }
+
     @Override
     protected void initView(View rootView) {
         initViewPager();
-
+        initListener();
     }
 
 
@@ -90,7 +93,7 @@ public class HomeFragment extends TSFragment {
         return R.layout.fragment_home;
     }
 
-    @OnClick({R.id.ll_home, R.id.ll_find})
+    @OnClick({R.id.ll_home, R.id.ll_find,R.id.ll_message,R.id.ll_mine})
     public void onClick(final View view) {
         RxView.clicks(view)
                 .compose(this.<Void>bindToLifecycle())
@@ -100,19 +103,19 @@ public class HomeFragment extends TSFragment {
                         switch (view.getId()) {
                             // 点击主页
                             case R.id.ll_home:
-                                mVpHome.setCurrentItem(PAGE_HOME);
+                                mVpHome.setCurrentItem(PAGE_HOME,false);
                                 break;
                             // 点击发现
                             case R.id.ll_find:
-                                mVpHome.setCurrentItem(PAGE_FIND);
+                                mVpHome.setCurrentItem(PAGE_FIND,false);
                                 break;
                             // 点击发现
                             case R.id.ll_message:
-                                mVpHome.setCurrentItem(PAGE_MESSAGE);
+                                mVpHome.setCurrentItem(PAGE_MESSAGE,false);
                                 break;
                             // 点击发现
                             case R.id.ll_mine:
-                                mVpHome.setCurrentItem(PAGE_MINE);
+                                mVpHome.setCurrentItem(PAGE_MINE,false);
                                 break;
                             default:
                         }
@@ -127,13 +130,15 @@ public class HomeFragment extends TSFragment {
 
     private void initViewPager() {
         //设置缓存的个数
-        mVpHome.setOffscreenPageLimit(4);
-//        mAdapter = new AdapterViewPager(getSupportFragmentManager());
-//        mFragmentList = mPresenter.getFragments();
-//        mAdapter.bindData(mFragmentList);//将List设置给adapter
-//        mVpHome.setAdapter(mAdapter);
-
-
+        mVpHome.setOffscreenPageLimit(PAGE_NUMS);
+        mHomePager = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
+        List<Fragment> mFragmentList = new ArrayList<>();
+        mFragmentList.add(MainFragment.newInstance());
+        mFragmentList.add(FindFragment.newInstance());
+        mFragmentList.add(MessageFragment.newInstance());
+        mFragmentList.add(MineFragment.newInstance());
+        mHomePager.bindData(mFragmentList);//将List设置给adapter
+        mVpHome.setAdapter(mHomePager);
     }
 
     /**
@@ -144,7 +149,6 @@ public class HomeFragment extends TSFragment {
         mVpHome.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
@@ -154,7 +158,6 @@ public class HomeFragment extends TSFragment {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
     }
