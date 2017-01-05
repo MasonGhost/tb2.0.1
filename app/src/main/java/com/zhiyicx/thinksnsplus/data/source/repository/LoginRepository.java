@@ -25,6 +25,6 @@ public class LoginRepository implements LoginContract.Repository {
 
     @Override
     public Observable<BaseJson<LoginBean>> login(String phone, String password) {
-        return mLoginClient.login();
+        return mLoginClient.login("success", phone, password,"dfsafds");
     }
 }

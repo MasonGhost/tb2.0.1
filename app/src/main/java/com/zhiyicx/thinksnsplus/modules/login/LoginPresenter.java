@@ -45,6 +45,7 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
     public void login(String phone, String password) {
         if (!RegexUtils.isMobileExact(phone)) {
             // 不符合手机号格式
+            mRootView.showErrorTips(mContext.getResources().getString(R.string.phone_number_toast_hint));
             return;
         }
         mRepository.login(phone, password)
@@ -53,12 +54,21 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
                 .subscribe(new TestAction<BaseJson<LoginBean>>() {
                     @Override
                     void testCall(BaseJson<LoginBean> integerBaseJson) {
-                        Toast.makeText(mContext, "login_success", Toast.LENGTH_SHORT).show();
+                        if (integerBaseJson.isStatus()) {
+                            // 登陆成功跳转
+                            mRootView.setLoginSuccess();
+                        } else {
+                            // 登陆失败
+                            mRootView.setLoginFailure();
+                            mRootView.showErrorTips(integerBaseJson.getMessage());
+                        }
                     }
                 }, new TestAction<Throwable>() {
                     @Override
                     void testCall(Throwable e) {
-                        Toast.makeText(mContext, "login_failure" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        LogUtils.e(e,"login_error"+e.getMessage());
+                        mRootView.showErrorTips(e.getMessage());
+                        mRootView.setLoginFailure();
                     }
                 });
     }
