@@ -41,13 +41,13 @@ public class MessageFragment extends TSFragment {
         return R.layout.fragment_message;
     }
 
-    /**
-     * 不需要 toolbar
-     * @return
-     */
     @Override
-    protected boolean showToolbar() {
-        return false;
+    protected String setCenterTitle() {
+        return getString(R.string.message);
     }
 
+    @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
 }

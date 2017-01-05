@@ -5,15 +5,26 @@
     <style name="divider_style_horizontal">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/divider_height</item>
-        <item name="android:background">@color/color_divider</item>
+        <item name="android:background">@color/general_for_line</item>
+    </style>
+    <!-- 分隔线水平 浅色-->
+    <style name="divider_style_horizontal_light">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/divider_height</item>
+        <item name="android:background">@color/general_for_line_light</item>
     </style>
     <!-- 分隔线垂直-->
     <style name="divider_style_veitical">
         <item name="android:layout_width">@dimen/divider_height</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="android:background">@color/color_divider</item>
+        <item name="android:background">@color/general_for_line</item>
     </style>
-
+    <!-- 分隔线垂直 浅色-->
+    <style name="divider_style_veitical_light">
+        <item name="android:layout_width">@dimen/divider_height</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/general_for_line_light</item>
+    </style>
     <!--######################## 编辑框 ############################-->
 
     <style name="style_edit_line">

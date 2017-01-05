@@ -7,7 +7,8 @@
     <dimen name="toolbar_left_text_size">14sp</dimen>
     <dimen name="toolbar_center_text_size">@dimen/primary_title</dimen>
     <dimen name="toolbar_right_text_size">@dimen/sub_title</dimen>
-
+    <!-- custom navigationbar -->
+    <dimen name="custom_navigationbar_height">46dp</dimen>
     <dimen name="edit_line_height">46dp</dimen>
 
     <!--view高度-->
@@ -28,6 +29,7 @@
     <dimen name="verified_height">13dp</dimen>
     <dimen name="shape_stroke_width">1dp</dimen>
     <dimen name="margin_statubar">25dp</dimen>
+
     <!--可操作按钮列表高度-->
     <dimen name="action_button_list_item_height">45dp</dimen>
 
@@ -37,13 +39,19 @@
     <dimen name="spacing_large">16dp</dimen>
     <dimen name="spacing_normal">10dp</dimen>
     <dimen name="item_spacing_normal">5dp</dimen>
-    <dimen name="item_spacing_line">1px</dimen>
+    <dimen name="item_spacing_line">@dimen/divider_line</dimen>
     <dimen name="margin_normal">10dp</dimen>
     <dimen name="margin_large">16dp</dimen>
     <dimen name="margin_big_large">106dp</dimen>
     <dimen name="margin_big">30dp</dimen>
     <dimen name="margin_huge">20dp</dimen>
     <dimen name="padding_normal">10dp</dimen>
+
+
+
+    <!--#########################################      分割线       ################################-->
+    <dimen name="divider_line">1px</dimen>
+
 
 
     <!--#########################################      头像尺寸       ################################-->

@@ -69,6 +69,7 @@ public class HomeFragment extends TSFragment {
 
     /**
      * 不需要 toolbar
+     *
      * @return
      */
     @Override
@@ -85,7 +86,6 @@ public class HomeFragment extends TSFragment {
 
     @Override
     protected void initData() {
-
     }
 
     @Override
@@ -93,7 +93,7 @@ public class HomeFragment extends TSFragment {
         return R.layout.fragment_home;
     }
 
-    @OnClick({R.id.ll_home, R.id.ll_find,R.id.ll_message,R.id.ll_mine})
+    @OnClick({R.id.ll_home, R.id.ll_find, R.id.fl_add, R.id.ll_message, R.id.ll_mine})
     public void onClick(final View view) {
         RxView.clicks(view)
                 .compose(this.<Void>bindToLifecycle())
@@ -103,19 +103,23 @@ public class HomeFragment extends TSFragment {
                         switch (view.getId()) {
                             // 点击主页
                             case R.id.ll_home:
-                                mVpHome.setCurrentItem(PAGE_HOME,false);
+                                mVpHome.setCurrentItem(PAGE_HOME, false);
                                 break;
                             // 点击发现
                             case R.id.ll_find:
-                                mVpHome.setCurrentItem(PAGE_FIND,false);
+                                mVpHome.setCurrentItem(PAGE_FIND, false);
                                 break;
-                            // 点击发现
+                            // 点击增加
+                            case R.id.fl_add:
+                                //// TODO: 2017/1/5  添加动态
+                                break;
+                            // 点击消息
                             case R.id.ll_message:
-                                mVpHome.setCurrentItem(PAGE_MESSAGE,false);
+                                mVpHome.setCurrentItem(PAGE_MESSAGE, false);
                                 break;
-                            // 点击发现
+                            // 点击我的
                             case R.id.ll_mine:
-                                mVpHome.setCurrentItem(PAGE_MINE,false);
+                                mVpHome.setCurrentItem(PAGE_MINE, false);
                                 break;
                             default:
                         }
