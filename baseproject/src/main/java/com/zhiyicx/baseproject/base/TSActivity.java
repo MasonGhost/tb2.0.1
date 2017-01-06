@@ -24,7 +24,6 @@ public abstract class TSActivity<P extends BasePresenter,F extends Fragment> ext
 
     @Override
     protected void initView() {
-//        StatusBarUtils.setStatusBarColor(this, R.color.themeColor);
         // 添加fragment
         mContanierFragment= getFragment();
         ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),mContanierFragment, R.id.fl_fragment_container);

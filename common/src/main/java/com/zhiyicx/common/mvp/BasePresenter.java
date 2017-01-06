@@ -40,6 +40,14 @@ public abstract class BasePresenter<R, V extends IBaseView> {
 
 
     /**
+     * Method injection is used here to safely reference {@code this} after the object is created.
+     * For more information, see Java Concurrency in Practice.
+     */
+    @Inject
+    void setupListeners() {
+        mRootView.setPresenter(this);
+    }
+    /**
      * 是否使用 eventBus,默认为使用(true)，
      *
      * @return

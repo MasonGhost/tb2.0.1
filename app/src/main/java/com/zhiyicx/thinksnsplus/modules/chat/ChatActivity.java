@@ -1,31 +1,30 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
-import android.support.v4.app.Fragment;
-
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.modules.register.DaggerRegisterComponent;
-import com.zhiyicx.thinksnsplus.modules.register.RegisterContract;
-import com.zhiyicx.thinksnsplus.modules.register.RegisterFragment;
-import com.zhiyicx.thinksnsplus.modules.register.RegisterPresenterModule;
-
-public class ChatActivity extends TSActivity {
+/**
+ * @Describe
+ * @Author Jungle68
+ * @Date 2017/1/6
+ * @Contact master.jungle68@gmail.com
+ */
+public class ChatActivity extends TSActivity<ChatPresenter,ChatFragment> {
 
 
     @Override
     protected void componentInject() {
-        DaggerRegisterComponent
+        DaggerChatComponent
                 .builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .registerPresenterModule(new RegisterPresenterModule((RegisterContract.View) mContanierFragment))
+                .chatPresenterModule(new ChatPresenterModule(mContanierFragment))
                 .build()
                 .inject(this);
 
     }
 
     @Override
-    protected Fragment getFragment() {
-        return RegisterFragment.newInstance();
+    protected ChatFragment getFragment() {
+        return ChatFragment.newInstance("9527");
     }
 
 }
