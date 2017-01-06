@@ -1,17 +1,17 @@
-package com.zhiyicx.thinksnsplus.data.source.local;
+package com.zhiyicx.baseproject.cache;
 
 import java.util.List;
 
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 /**
- * @Describe 数据库保存服务器数据，实现本地缓存,b
+ * @Describe 数据库保存服务器数据，实现本地缓存
  * @Author Jungle68
  * @Date 2016/12/16
  * @Contact 335891510@qq.com
  */
 
-public interface CommonCache<T> {
+public interface IDataBaseOperate<T> {
     /**
      * 保存服务器单条数据
      */
@@ -51,4 +51,5 @@ public interface CommonCache<T> {
      * 更新缓存中的某条数据
      */
     void updateSingleData(T newData);
+
 }

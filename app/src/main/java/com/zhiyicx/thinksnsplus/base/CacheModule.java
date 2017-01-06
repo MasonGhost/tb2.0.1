@@ -1,7 +1,8 @@
 package com.zhiyicx.thinksnsplus.base;
 
 
-import com.zhiyicx.thinksnsplus.data.source.local.CommonCache;
+import com.zhiyicx.baseproject.cache.CacheImp;
+import com.zhiyicx.baseproject.cache.IDataBaseOperate;
 
 import javax.inject.Singleton;
 
@@ -21,8 +22,8 @@ public class CacheModule {
 
     @Singleton
     @Provides
-    CommonCache provideCommonService(RxCache rxCache) {
-        return rxCache.using(CommonCache.class);
+    CacheImp provideCommonService(RxCache rxCache) {
+        return rxCache.using(CacheImp.class);
     }
 
 

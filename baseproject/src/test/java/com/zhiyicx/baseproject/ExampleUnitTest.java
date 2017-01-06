@@ -14,4 +14,14 @@ public class ExampleUnitTest {
     public void addition_isCorrect() throws Exception {
         assertEquals(4, 2 + 2);
     }
+
+    /**
+     * summary 获取app可用的最大内存
+     * steps
+     * expected
+     */
+    @Test
+    public void getMaxMemory() throws Exception {
+        System.out.print("app可使用最大内存----》"+Runtime.getRuntime().maxMemory()/1024/1024+"MB");
+    }
 }

@@ -48,7 +48,7 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
             mRootView.showErrorTips(mContext.getResources().getString(R.string.phone_number_toast_hint));
             return;
         }
-        mRepository.login(phone, password)
+        mRepository.login(mContext, phone, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new TestAction<BaseJson<LoginBean>>() {
@@ -66,7 +66,7 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
                 }, new TestAction<Throwable>() {
                     @Override
                     void testCall(Throwable e) {
-                        LogUtils.e(e,"login_error"+e.getMessage());
+                        LogUtils.e(e, "login_error" + e.getMessage());
                         mRootView.showErrorTips(e.getMessage());
                         mRootView.setLoginFailure();
                     }
