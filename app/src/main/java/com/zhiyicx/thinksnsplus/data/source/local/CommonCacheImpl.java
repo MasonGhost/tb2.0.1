@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.zhiyicx.baseproject.cache.IDataBaseOperate;
 import com.zhiyicx.baseproject.config.DBConfig;
 import com.zhiyicx.thinksnsplus.data.beans.DaoMaster;
 import com.zhiyicx.thinksnsplus.data.beans.DaoSession;
@@ -14,7 +15,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DaoSession;
  * @contact email:450127106@qq.com
  */
 
-public abstract class CommonCacheImpl<T> implements CommonCache<T> {
+public abstract class CommonCacheImpl<T> implements IDataBaseOperate<T> {
     protected DaoMaster.DevOpenHelper mDevOpenHelper;
     private Context mContext;
 
