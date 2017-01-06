@@ -65,11 +65,11 @@ public class ChatMessageList extends FrameLayout {
         init(context);
     }
     protected void parseStyle(Context context, AttributeSet attrs) {
-        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.EaseChatMessageList);
-        showAvatar = ta.getBoolean(R.styleable.EaseChatMessageList_msgListShowUserAvatar, true);
-        myBubbleBg = ta.getDrawable(R.styleable.EaseChatMessageList_msgListMyBubbleBackground);
-        otherBuddleBg = ta.getDrawable(R.styleable.EaseChatMessageList_msgListMyBubbleBackground);
-        showUserNick = ta.getBoolean(R.styleable.EaseChatMessageList_msgListShowUserNick, false);
+        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.ChatMessageList);
+        showAvatar = ta.getBoolean(R.styleable.ChatMessageList_showUserAvatar, true);
+        myBubbleBg = ta.getDrawable(R.styleable.ChatMessageList_myBubbleBackground);
+        otherBuddleBg = ta.getDrawable(R.styleable.ChatMessageList_otherBubbleBackground);
+        showUserNick = ta.getBoolean(R.styleable.ChatMessageList_showUserNick, false);
         ta.recycle();
     }
 
