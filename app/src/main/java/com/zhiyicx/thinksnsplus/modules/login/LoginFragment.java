@@ -1,18 +1,24 @@
 package com.zhiyicx.thinksnsplus.modules.login;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity;
 
 import java.util.concurrent.TimeUnit;
-
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -31,6 +37,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     EditText mEtLoginPassword;
     @BindView(R.id.bt_login_login)
     Button mBtLoginLogin;
+    @BindView(R.id.login_error_tip)
+    TextView mLoginErrorTip;
 
     private boolean isPhoneEdited;
     private boolean isPasswordEdited;
@@ -86,12 +94,19 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
 
     @Override
     public void setLoginSuccess() {
-
+        Intent it = new Intent();
+        it.setClass(getActivity(), GuideActivity.class);
+        startActivity(it);
     }
 
     @Override
     public void setLoginFailure() {
 
+    }
+
+    @Override
+    public void showErrorTips(String error) {
+        mLoginErrorTip.setText(error);
     }
 
     @Override
@@ -124,4 +139,14 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
             mBtLoginLogin.setEnabled(false);
         }
     }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: inflate a fragment view
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        ButterKnife.bind(this, rootView);
+        return rootView;
+    }
+
 }

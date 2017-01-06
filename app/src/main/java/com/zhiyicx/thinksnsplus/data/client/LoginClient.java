@@ -7,6 +7,8 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -22,6 +24,8 @@ public interface LoginClient {
      *
      * @return
      */
-    @GET("mockjs/2/test-get-repose-head-normal?")
-    Observable<BaseJson<LoginBean>> login();
+    @FormUrlEncoded
+    @POST("api/v1/auth")
+    Observable<BaseJson<LoginBean>> login(@Query("requestState") String requestState, @Field("phone") String phone
+            , @Field("password") String password,@Field("device_code") String device_code);
 }

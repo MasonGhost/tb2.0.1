@@ -185,6 +185,7 @@ public class HttpClientModule {
      * @return
      */
     private Retrofit configureRetrofit(Retrofit.Builder builder, OkHttpClient client, HttpUrl httpUrl) {
+
         return builder
                 .baseUrl(httpUrl)// 域名
                 .client(client)// 设置 okhttp

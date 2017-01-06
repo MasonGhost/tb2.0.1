@@ -38,22 +38,19 @@ public class RequestIntercept implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
-
-
         if (mListener != null)//在请求服务器之前可以拿到request,做一些操作比如给request添加header,如果不做操作则返回参数中的request
             request = mListener.onHttpRequestBefore(chain, request);
-
 
         Buffer requestbuffer = new Buffer();
         if (request.body() != null) {
             request.body().writeTo(requestbuffer);
         } else {
-            LogUtils.d(TAG,"request.body() == null");
+            LogUtils.d(TAG, "request.body() == null");
         }
 
 
         //打印url信息
-        LogUtils.d(TAG,"Sending Request %s on %n Params --->  %s%n Connection ---> %s%n Headers ---> %s", request.url()
+        LogUtils.d(TAG, "Sending Request %s on %n Params --->  %s%n Connection ---> %s%n Headers ---> %s", request.url()
                 , request.body() != null ? parseParams(request.body(), requestbuffer) : "null"
                 , chain.connection()
                 , request.headers());
@@ -62,7 +59,7 @@ public class RequestIntercept implements Interceptor {
         Response originalResponse = chain.proceed(request);
         long t2 = System.nanoTime();
         //打赢响应时间
-        LogUtils.d(TAG,"Received response  in %.1fms%n%s", (t2 - t1) / 1e6d, originalResponse.headers());
+        LogUtils.d(TAG, "Received response  in %.1fms%n%s", (t2 - t1) / 1e6d, originalResponse.headers());
 
         //读取服务器返回的结果
         ResponseBody responseBody = originalResponse.body();
@@ -91,9 +88,8 @@ public class RequestIntercept implements Interceptor {
             }
             bodyString = clone.readString(charset);
         }
-
-
-        LogUtils.json(TAG,bodyString);
+        // 打印返回的json结果
+        LogUtils.json(TAG, bodyString);
 
         if (mListener != null)//这里可以比客户端提前一步拿到服务器返回的结果,可以做一些操作,比如token超时,重新获取
             return mListener.onHttpResponse(bodyString, chain, originalResponse);
