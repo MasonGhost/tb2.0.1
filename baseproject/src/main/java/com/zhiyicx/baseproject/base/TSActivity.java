@@ -14,9 +14,9 @@ import com.zhiyicx.common.utils.ActivityUtils;
  * @Contact 335891510@qq.com
  */
 
-public abstract class TSActivity<P extends BasePresenter> extends BaseActivity<P> {
+public abstract class TSActivity<P extends BasePresenter,F extends Fragment> extends BaseActivity<P> {
 
-    protected Fragment mContanierFragment;
+    protected F mContanierFragment;
     @Override
     protected int getLayoutId() {
         return R.layout.activity_ts;
@@ -38,6 +38,6 @@ public abstract class TSActivity<P extends BasePresenter> extends BaseActivity<P
     /**
      * @return 当前页的Fragment
      */
-    protected abstract Fragment getFragment();
+    protected abstract F getFragment();
 
 }
