@@ -51,4 +51,5 @@ dependencies {
     // Project
     compile project(":common")
     compile project(":imsdk")
+    compile project(":refresh")
 }
