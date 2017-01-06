@@ -33,6 +33,7 @@ public class MessageSendItemDelagate implements ItemViewDelegate<Message> {
 
     @Override
     public void convert(ViewHolder holder, Message message, int position) {
-
+        holder.setText(R.id.tv_chat_name,"占三");// 测试数据，暂时使用
+        holder.setText(R.id.tv_chat_content,"我的天四大金刚绝对控股可大幅高开");
     }
 }
