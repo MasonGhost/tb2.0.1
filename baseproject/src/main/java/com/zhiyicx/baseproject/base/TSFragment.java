@@ -1,14 +1,18 @@
 package com.zhiyicx.baseproject.base;
 
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.utils.StatusBarUtils;
+
+import static com.zhiyicx.baseproject.R.layout.toolbar_custom;
 
 /**
  * @Describe
@@ -18,12 +22,13 @@ import com.zhiyicx.common.utils.StatusBarUtils;
  */
 
 public abstract class TSFragment<P> extends BaseFragment<P> {
-    private static final int DEFAULT_TOOLBAR = R.layout.toolbar_custom;
-
-    private TextView mToolbarLeft;
-    private TextView mToolbarRight;
-    private TextView mToolbarCenter;
-    private boolean mIscUseSatusbar=false;// 内容是否需要占用状态栏
+    private static final int DEFAULT_TOOLBAR = toolbar_custom;
+    private static final int DEFAULT_TOOLBAR_BACKGROUD_COLOR = R.color.themeColor;
+    private static final int DEFAULT_DIVIDER_COLOR = R.color.general_for_line;
+    protected TextView mToolbarLeft;
+    protected TextView mToolbarRight;
+    protected TextView mToolbarCenter;
+    private boolean mIscUseSatusbar = false;// 内容是否需要占用状态栏
 
     @Override
     protected View getContentView() {
@@ -35,15 +40,21 @@ public abstract class TSFragment<P> extends BaseFragment<P> {
             initDefaultToolBar(toolBarContainer);
             linearLayout.addView(toolBarContainer);
         }
+        if (showToolBarDivider()) {// 在需要显示分割线时，进行添加
+            View divider = new View(getContext());
+            divider.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.divider_line)));
+            divider.setBackgroundColor(ContextCompat.getColor(getContext(),setToolBarDividerColor()));
+            linearLayout.addView(divider);
+        }
         View bodyContainer = mLayoutInflater.inflate(getBodyLayoutId(), null);
         bodyContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         if (mIscUseSatusbar) {
             //顶上去
             StatusBarUtils.transparencyBar(getActivity());
             linearLayout.setFitsSystemWindows(false);
-        }else {
+        } else {
             //不顶上去
-            StatusBarUtils.setStatusBarColor(getActivity(), R.color.themeColor);
+            StatusBarUtils.setStatusBarColor(getActivity(), setToolBarBackgroud());
             linearLayout.setFitsSystemWindows(true);
         }
         linearLayout.addView(bodyContainer);
@@ -64,6 +75,22 @@ public abstract class TSFragment<P> extends BaseFragment<P> {
         return DEFAULT_TOOLBAR;
     }
 
+    protected int setToolBarBackgroud(){
+        return DEFAULT_TOOLBAR_BACKGROUD_COLOR;
+    }
+
+    /**
+     * 是否显示分割线,默认显示
+     */
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+    /**
+     * 是否显示分割线,默认显示
+     */
+    protected int setToolBarDividerColor() {
+        return DEFAULT_DIVIDER_COLOR;
+    }
     /**
      * 获取toolbar下方的布局文件
      */
@@ -73,6 +100,8 @@ public abstract class TSFragment<P> extends BaseFragment<P> {
      * 初始化toolbar布局,如果进行了自定义toolbar布局，就应该重写该方法
      */
     protected void initDefaultToolBar(View toolBarContainer) {
+//        mToolbar = (Toolbar) toolBarContainer.findViewById(R.id.toolbar);
+        toolBarContainer.setBackgroundResource(setToolBarBackgroud());
         mToolbarLeft = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_left);
         mToolbarRight = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_right);
         mToolbarCenter = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_center);

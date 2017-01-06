@@ -12,6 +12,15 @@ public class ConstantConfig {
         throw new UnsupportedOperationException("u can't instantiate me...");
     }
 
+    /**
+     * 抖动间隔时间，单位 s
+     */
+    public static final int JITTER_SPACING_TIME = 2;
+    /**
+     * 手机号码长度
+     */
+    public static final int MOBILE_PHONE_NUMBER_LENGHT = 11;
+
     /******************** 存储相关常量 ********************/
     /**
      * KB 与 Byte 的倍数

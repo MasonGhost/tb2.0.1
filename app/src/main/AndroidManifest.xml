@@ -15,7 +15,7 @@
 
         </activity>
         <activity android:name=".modules.register.RegisterActivity"/>
-        <activity android:name=".modules.login.LoginActivity">
+        <activity android:name=".modules.home.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

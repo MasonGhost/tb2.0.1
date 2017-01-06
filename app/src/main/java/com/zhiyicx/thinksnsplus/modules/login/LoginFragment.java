@@ -17,10 +17,11 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity;
 
 import java.util.concurrent.TimeUnit;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.functions.Action1;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @author LiuChao
@@ -30,8 +31,6 @@ import rx.functions.Action1;
  */
 
 public class LoginFragment extends TSFragment<LoginContract.Presenter> implements LoginContract.View {
-    public static final int JITTER_SPACING_TIME = 2; // 抖动间隔时间，单位 s
-
     @BindView(R.id.et_login_phone)
     EditText mEtLoginPhone;
     @BindView(R.id.et_login_password)

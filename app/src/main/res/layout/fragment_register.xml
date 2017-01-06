@@ -121,7 +121,7 @@
         android:layout_gravity="right"
         android:layout_marginRight="@dimen/spacing_large"
         android:gravity="center_vertical|right"
-        android:textSize="@dimen/content"/>
+        android:textSize="@dimen/size_content"/>
 
     <Button
         android:id="@+id/bt_regist_regist"
@@ -129,14 +129,7 @@
         android:enabled="false"
         android:text="@string/immediate_regist"/>
 
-
-    <TextView
-        android:id="@+id/tv_error_tip"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/spacing_large"
-        android:gravity="center"
-        android:textSize="@dimen/content"/>
-
+    <include
+        layout="@layout/include_error_tip_text"/>
 
 </LinearLayout>

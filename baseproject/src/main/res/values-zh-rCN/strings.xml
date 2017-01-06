@@ -3,6 +3,7 @@
     <string name="err_share_no_content">分享内容不能为空</string>
     <string name="err_net_not_work">当前网络状况不佳</string>
     <!-- 通用 -->
+    <string name="cancel">取消</string>
     <string name="seconds">秒</string>
     <string name="username">用户名</string>
     <string name="password">密码</string>
@@ -22,5 +23,8 @@
     <string name="password_input_hint">请输入6-16位密码</string>
     <string name="password_toast_hint">请输入6-16位密码</string>
 
+    <!-- 拍照相关 -->
+    <string name="choose_from_photo">从相册选取</string>
+    <string name="choose_from_camera">拍照</string>
 
 </resources>

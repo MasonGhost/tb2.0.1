@@ -1,13 +1,140 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeFragment">
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+    <LinearLayout
+        android:id="@+id/ll_bottom_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/custom_navigationbar_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/home_bottom_navigate_bg"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/ll_home"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/iv_home"
+                android:layout_width="@dimen/icon_for_home_bottom"
+                android:layout_height="@dimen/icon_for_home_bottom"
+                android:src="@mipmap/ic_launcher"/>
+
+            <TextView
+                android:id="@+id/tv_home"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/icon_for_home_bottom_text_margin"
+                android:text="@string/home"
+                android:textColor="@color/home_bottom_navigate_text_normal"
+                android:textSize="@dimen/size_note_assist"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/ll_find"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/iv_find"
+                android:layout_width="@dimen/icon_for_home_bottom"
+                android:layout_height="@dimen/icon_for_home_bottom"
+                android:src="@mipmap/ic_launcher"/>
+
+            <TextView
+                android:id="@+id/tv_find"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/icon_for_home_bottom_text_margin"
+                android:text="@string/find"
+                android:textColor="@color/home_bottom_navigate_text_normal"
+                android:textSize="@dimen/size_note_assist"/>
+        </LinearLayout>
+        <FrameLayout
+            android:id="@+id/fl_add"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_weight="1"
+            android:background="@color/themeColor">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@mipmap/ic_launcher"
+                />
+        </FrameLayout>
+
+
+
+        <LinearLayout
+            android:id="@+id/ll_message"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/iv_message"
+                android:layout_width="@dimen/icon_for_home_bottom"
+                android:layout_height="@dimen/icon_for_home_bottom"
+                android:src="@mipmap/ic_launcher"/>
+
+            <TextView
+                android:id="@+id/tv_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/icon_for_home_bottom_text_margin"
+                android:text="@string/message"
+                android:textColor="@color/home_bottom_navigate_text_normal"
+                android:textSize="@dimen/size_note_assist"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_mine"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/iv_mine"
+                android:layout_width="@dimen/icon_for_home_bottom"
+                android:layout_height="@dimen/icon_for_home_bottom"
+                android:src="@mipmap/ic_launcher"/>
+
+            <TextView
+                android:id="@+id/tv_mine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/icon_for_home_bottom_text_margin"
+                android:text="@string/mine"
+                android:textColor="@color/home_bottom_navigate_text_normal"
+                android:textSize="@dimen/size_note_assist"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.zhiyicx.common.widget.NoPullViewPager
+        android:id="@+id/vp_home"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment"/>
-
-</FrameLayout>
+        android:layout_above="@id/ll_bottom_container"/>
+</RelativeLayout>

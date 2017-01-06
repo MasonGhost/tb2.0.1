@@ -5,9 +5,10 @@
     <dimen name="toolbar_padding_left">15dp</dimen>
     <dimen name="toolbar_padding_right">15dp</dimen>
     <dimen name="toolbar_left_text_size">14sp</dimen>
-    <dimen name="toolbar_center_text_size">@dimen/primary_title</dimen>
-    <dimen name="toolbar_right_text_size">@dimen/sub_title</dimen>
-
+    <dimen name="toolbar_center_text_size">@dimen/size_primary_title</dimen>
+    <dimen name="toolbar_right_text_size">@dimen/size_sub_title</dimen>
+    <!-- custom navigationbar -->
+    <dimen name="custom_navigationbar_height">46dp</dimen>
     <dimen name="edit_line_height">46dp</dimen>
 
     <!--view高度-->
@@ -29,22 +30,31 @@
     <dimen name="shape_stroke_width">1dp</dimen>
     <dimen name="margin_statubar">25dp</dimen>
 
+    <!--可操作按钮列表高度-->
+    <dimen name="action_button_list_item_height">45dp</dimen>
+
+
 
     <!-- view间距 -->
     <dimen name="spacing_large">16dp</dimen>
     <dimen name="spacing_normal">10dp</dimen>
-    <dimen name="item_spacing_small">3dp</dimen>
+    <dimen name="item_spacing_normal">5dp</dimen>
+    <dimen name="item_spacing_line">@dimen/divider_line</dimen>
     <dimen name="margin_normal">10dp</dimen>
     <dimen name="margin_large">16dp</dimen>
     <dimen name="margin_big_large">106dp</dimen>
     <dimen name="margin_big">30dp</dimen>
     <dimen name="margin_huge">20dp</dimen>
-    <dimen name="padding_normal">10dp</dimen>
 
-    <!--  圆角  -->
-    <dimen name="button_corner">3dp</dimen>
-    <dimen name="send_button_corner">5dp</dimen>
-    <dimen name="send_stroke_corner">8dp</dimen>
+    <!--#########################################      tsp 间距定义       ################################-->
+    <dimen name="padding_mid">15dp</dimen>
+    <dimen name="padding_normal">10dp</dimen>
+    <dimen name="padding_small">5dp</dimen>
+    <dimen name="padding_tiny">2dp</dimen>
+
+    <!--#########################################      分割线       ################################-->
+    <dimen name="divider_line">1px</dimen>
+
 
 
     <!--#########################################      头像尺寸       ################################-->
@@ -67,4 +77,17 @@
     聊详情页头像、修改资料-更换头像
     -->
     <dimen name="headpic_for_assist">26dp</dimen>
+
+    <!--#########################################      图标尺寸       ################################-->
+    <!-- 底部操作栏图标  -->
+    <dimen name="icon_for_home_bottom">24dp</dimen>
+    <dimen name="icon_for_home_bottom_text_margin">2dp</dimen>
+    <!-- 顶部标题栏图标  -->
+    <dimen name="icon_for_toolbar">24dp</dimen>
+    <!-- 个人中心图标   -->
+    <dimen name="icon_for_user_center">20dp</dimen>
+    <!--  其他辅助图标  -->
+    <dimen name="icon_for_assist_big">33dp</dimen>
+    <dimen name="icon_for_assist_big_text_margin">12dp</dimen>
+    <dimen name="icon_for_assist_small">16dp</dimen>
 </resources>
