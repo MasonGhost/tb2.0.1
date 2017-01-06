@@ -52,4 +52,5 @@ dependencies {
     compile project(":common")
     compile project(":imsdk")
     compile project(":refresh")
+    compile project(":baseadapter-recyclerview")
 }

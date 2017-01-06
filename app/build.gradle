@@ -124,7 +124,7 @@ dependencies {
     apt dataDependences.butterknifeApt
     // Project
     compile project(":baseproject")
-    compile project(":baseadapter-recyclerview")
+
 
     // database
     compile dataDependences.greendao
