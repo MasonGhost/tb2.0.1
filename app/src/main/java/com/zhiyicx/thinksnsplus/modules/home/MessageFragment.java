@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.home;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,8 +12,10 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -34,12 +35,7 @@ public class MessageFragment extends TSFragment {
     RecyclerView mRvMessageList;
 
     View mHeaderView;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
+    ImageLoader mImageLoader;
 
     public MessageFragment() {
     }
@@ -60,6 +56,7 @@ public class MessageFragment extends TSFragment {
 
     @Override
     protected void initData() {
+        mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         List<String> mDatas = new ArrayList<>();
         mDatas.add("nihao"); // 测试数据，暂时使用
         mDatas.add("nihao1");
@@ -74,10 +71,11 @@ public class MessageFragment extends TSFragment {
             @Override
             protected void convert(ViewHolder holder, String s, int position) {
                 Glide.with(getContext()).load(R.mipmap.ico_eye_open).into((ImageView) holder.getView(R.id.iv_headpic));
-                holder.setText(R.id.tv_name,"张三");
-                holder.setText(R.id.tv_content,"我的天的道德观念我的是高科技的思考国际快递发几个客服房间打开数据库");
-                holder.setText(R.id.tv_time,"2016-05-06");
-                holder.setText(R.id.tv_tip,"109");
+//                mImageLoader.loadImage(getContext(), GlideImageConfig.builder());
+                holder.setText(R.id.tv_name, "张三");
+                holder.setText(R.id.tv_content, "我的天的道德观念我的是高科技的思考国际快递发几个客服房间打开数据库");
+                holder.setText(R.id.tv_time, "2016-05-06");
+                holder.setText(R.id.tv_tip, "109");
             }
         });
     }
