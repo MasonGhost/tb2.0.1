@@ -3,11 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/padding_normal"
-    android:paddingLeft="@dimen/padding_small"
+    android:paddingBottom="@dimen/spacing_normal"
+    android:paddingLeft="@dimen/spacing_small"
     android:background="@color/white"
-    android:paddingRight="@dimen/padding_small"
-    android:paddingTop="@dimen/padding_normal"
+    android:paddingRight="@dimen/spacing_small"
+    android:paddingTop="@dimen/spacing_normal"
     tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
 
     <com.zhiyicx.common.widget.FilterImageView
@@ -27,13 +27,13 @@
 
     <TextView
         android:id="@+id/tv_tip"
-        android:layout_width="50dp"
+        android:layout_width="@dimen/chat_list_new_msg_tip_with"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@id/tv_time"
         android:maxLines="1"
         android:gravity="center|bottom"
-        android:paddingTop="@dimen/padding_small"
+        android:paddingTop="@dimen/spacing_small"
         android:textSize="@dimen/size_icon_assist"
         tools:text="小红点99"/>
 
@@ -45,7 +45,7 @@
         android:layout_toLeftOf="@id/tv_time"
         android:layout_toRightOf="@id/iv_headpic"
         android:maxLines="1"
-        android:paddingLeft="@dimen/padding_normal"
+        android:paddingLeft="@dimen/spacing_normal"
         tools:text="张三 "/>
 
     <TextView
@@ -59,7 +59,7 @@
         android:layout_alignBaseline="@id/tv_tip"
         android:maxLines="1"
         android:ellipsize="end"
-        android:paddingLeft="@dimen/padding_normal"
+        android:paddingLeft="@dimen/spacing_normal"
         tools:text="我送第几个 "/>
 
 

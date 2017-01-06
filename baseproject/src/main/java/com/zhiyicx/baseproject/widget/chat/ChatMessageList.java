@@ -32,7 +32,7 @@ import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 
 public class ChatMessageList extends FrameLayout {
     private static final String TAG = ChatMessageList.class.getSimpleName();
-    private static final float RECYCLEVIEW_ITEMDECORATION_SPACING = 10F;
+    private static final float RECYCLEVIEW_ITEMDECORATION_SPACING = 15F;
 
     protected BGARefreshLayout mRefreshLayout;
     protected RecyclerView mRecyclerView;

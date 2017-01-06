@@ -36,21 +36,19 @@
 
 
     <!-- view间距 -->
-    <dimen name="spacing_large">16dp</dimen>
-    <dimen name="spacing_normal">10dp</dimen>
+
     <dimen name="item_spacing_normal">5dp</dimen>
     <dimen name="item_spacing_line">@dimen/divider_line</dimen>
-    <dimen name="margin_normal">10dp</dimen>
-    <dimen name="margin_large">16dp</dimen>
-    <dimen name="margin_big_large">106dp</dimen>
-    <dimen name="margin_big">30dp</dimen>
-    <dimen name="margin_huge">20dp</dimen>
+
+
 
     <!--#########################################      tsp 间距定义       ################################-->
-    <dimen name="padding_mid">15dp</dimen>
-    <dimen name="padding_normal">10dp</dimen>
-    <dimen name="padding_small">5dp</dimen>
-    <dimen name="padding_tiny">2dp</dimen>
+    <dimen name="spacing_big_large">30dp</dimen>
+    <dimen name="spacing_large">20dp</dimen>
+    <dimen name="spacing_mid">15dp</dimen>
+    <dimen name="spacing_normal">10dp</dimen>
+    <dimen name="spacing_small">5dp</dimen>
+    <dimen name="spacing_tiny">2dp</dimen>
 
     <!--#########################################      分割线       ################################-->
     <dimen name="divider_line">1px</dimen>
@@ -90,4 +88,12 @@
     <dimen name="icon_for_assist_big">33dp</dimen>
     <dimen name="icon_for_assist_big_text_margin">12dp</dimen>
     <dimen name="icon_for_assist_small">16dp</dimen>
+
+
+
+    <!--#########################################      聊天       ################################-->
+    <dimen name="chat_list_new_msg_tip_with">50dp</dimen>
+    <dimen name="chat_list_msg_text_maxwith">225dp</dimen>
+    <dimen name="chat_list_content_margintop">6dp</dimen>
+
 </resources>
