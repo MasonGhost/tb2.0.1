@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -17,6 +18,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity;
 
 import java.util.concurrent.TimeUnit;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.functions.Action1;
@@ -94,9 +96,10 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
 
     @Override
     public void setLoginSuccess() {
-        Intent it = new Intent();
+        Toast.makeText(getActivity(), "登陆成功", Toast.LENGTH_SHORT).show();
+        /*Intent it = new Intent();
         it.setClass(getActivity(), GuideActivity.class);
-        startActivity(it);
+        startActivity(it);*/
     }
 
     @Override
