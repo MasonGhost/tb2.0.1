@@ -7,7 +7,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.EditText;
 
-import com.zhiyicx.common.R;
+import com.zhiyicx.baseproject.R;
+
 
 /**
  * @author LiuChao
@@ -17,9 +18,9 @@ import com.zhiyicx.common.R;
  */
 public class PasswordEditText extends EditText {
     // 当前密码可见时的图片
-    private static final int SHOW_ICON = 0;
+    private static final int SHOW_ICON = R.mipmap.ico_eye_open;
     // 当前密码不可见时的图片
-    private static final int HIDE_ICON = 0;
+    private static final int HIDE_ICON = R.mipmap.ico_eye_close;
 
     //注意设置密码的明暗文，需要组合使用InputType
     private static final int hide = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD;

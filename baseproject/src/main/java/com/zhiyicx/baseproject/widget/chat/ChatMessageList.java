@@ -79,7 +79,7 @@ public class ChatMessageList extends FrameLayout {
         showAvatar = ta.getBoolean(R.styleable.ChatMessageList_showUserAvatar, true);
         myBubbleBg = ta.getDrawable(R.styleable.ChatMessageList_myBubbleBackground);
         otherBuddleBg = ta.getDrawable(R.styleable.ChatMessageList_otherBubbleBackground);
-        showUserNick = ta.getBoolean(R.styleable.ChatMessageList_showUserNick, false);
+        showUserNick = ta.getBoolean(R.styleable.ChatMessageList_showName, false);
         ta.recycle();
     }
 

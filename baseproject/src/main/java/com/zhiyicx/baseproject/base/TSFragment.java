@@ -12,8 +12,6 @@ import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.utils.StatusBarUtils;
 
-import static com.zhiyicx.baseproject.R.layout.toolbar_custom;
-
 /**
  * @Describe
  * @Author Jungle68
@@ -22,7 +20,7 @@ import static com.zhiyicx.baseproject.R.layout.toolbar_custom;
  */
 
 public abstract class TSFragment<P> extends BaseFragment<P> {
-    private static final int DEFAULT_TOOLBAR = toolbar_custom;
+    private static final int DEFAULT_TOOLBAR = R.layout.toolbar_custom;
     private static final int DEFAULT_TOOLBAR_BACKGROUD_COLOR = R.color.themeColor;
     private static final int DEFAULT_DIVIDER_COLOR = R.color.general_for_line;
     protected TextView mToolbarLeft;
@@ -43,7 +41,7 @@ public abstract class TSFragment<P> extends BaseFragment<P> {
         if (showToolBarDivider()) {// 在需要显示分割线时，进行添加
             View divider = new View(getContext());
             divider.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.divider_line)));
-            divider.setBackgroundColor(ContextCompat.getColor(getContext(),setToolBarDividerColor()));
+            divider.setBackgroundColor(ContextCompat.getColor(getContext(), setToolBarDividerColor()));
             linearLayout.addView(divider);
         }
         View bodyContainer = mLayoutInflater.inflate(getBodyLayoutId(), null);
@@ -75,7 +73,7 @@ public abstract class TSFragment<P> extends BaseFragment<P> {
         return DEFAULT_TOOLBAR;
     }
 
-    protected int setToolBarBackgroud(){
+    protected int setToolBarBackgroud() {
         return DEFAULT_TOOLBAR_BACKGROUD_COLOR;
     }
 
@@ -85,12 +83,14 @@ public abstract class TSFragment<P> extends BaseFragment<P> {
     protected boolean showToolBarDivider() {
         return false;
     }
+
     /**
      * 是否显示分割线,默认显示
      */
     protected int setToolBarDividerColor() {
         return DEFAULT_DIVIDER_COLOR;
     }
+
     /**
      * 获取toolbar下方的布局文件
      */
@@ -113,6 +113,20 @@ public abstract class TSFragment<P> extends BaseFragment<P> {
         mToolbarCenter.setText(setCenterTitle());
         mToolbarLeft.setText(setLeftTitle());
         mToolbarRight.setText(setRightTitle());
+
+        mToolbarLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setLeftClick();
+            }
+        });
+
+        mToolbarRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setRightClick();
+            }
+        });
     }
 
     /**
@@ -134,5 +148,19 @@ public abstract class TSFragment<P> extends BaseFragment<P> {
      */
     protected String setRightTitle() {
         return "";
+    }
+
+    /**
+     * 设置左边的点击事件，默认为关闭activity，有必要重写该方法
+     */
+    protected void setLeftClick() {
+        getActivity().finish();
+    }
+
+    /**
+     * 设置右边的点击时间，有必要重写该方法
+     */
+    protected void setRightClick() {
+
     }
 }

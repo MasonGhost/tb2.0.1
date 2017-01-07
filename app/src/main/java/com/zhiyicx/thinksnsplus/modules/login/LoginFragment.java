@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.login;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -50,6 +51,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
 
     @Override
     protected void initView(View rootView) {
+        mToolbarCenter.setTextColor(getResources().getColor(R.color.important_for_content));
         // 手机号码输入框观察
         RxTextView.textChanges(mEtLoginPhone)
                 .compose(this.<CharSequence>bindToLifecycle())
@@ -93,8 +95,22 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     }
 
     @Override
-    public void setLogining() {
+    protected int setToolBarBackgroud() {
+        return R.color.white;
+    }
 
+    @Override
+    protected String setCenterTitle() {
+        return getResources().getString(R.string.bt_login);
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+
+    @Override
+    public void setLogining() {
     }
 
     @Override
@@ -144,15 +160,6 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         } else {
             mBtLoginLogin.setEnabled(false);
         }
-    }
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate a fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        ButterKnife.bind(this, rootView);
-        return rootView;
     }
 
     @OnClick({R.id.tv_look_around, R.id.tv_forget_password})

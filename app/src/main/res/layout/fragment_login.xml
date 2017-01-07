@@ -14,12 +14,13 @@
         <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
             android:id="@+id/et_login_phone"
             style="@style/style_edit"
+            android:drawableRight="@mipmap/ico_eye_close"
             android:hint="@string/phone_number_input_hint"
             android:inputType="phone"
             />
     </LinearLayout>
 
-    <ImageView style="@style/divider_style_horizontal"/>
+    <ImageView style="@style/style_divider_horizontal"/>
 
     <LinearLayout
         style="@style/style_edit_line">

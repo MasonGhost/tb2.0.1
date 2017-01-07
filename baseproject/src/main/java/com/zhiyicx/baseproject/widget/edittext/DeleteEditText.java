@@ -43,11 +43,10 @@ public class DeleteEditText extends EditText implements OnFocusChangeListener, T
     private void init() {
         // 获取EditText的DrawableRight,假如没有设置我们就使用默认的图片
         mClearDrawable = getCompoundDrawables()[2];//左 上 右 下
-//        if (mClearDrawable == null) {
-//            // throw new
-//            // NullPointerException("You can add drawableRight attribute in XML");
-//            mClearDrawable = getResources().getDrawable(R.drawable.delete_input);
-//        }
+        if (mClearDrawable == null) {
+            throw new
+                    NullPointerException("You can add drawableRight attribute in XML");
+        }
 
         mClearDrawable.setBounds(0, 0, mClearDrawable.getIntrinsicWidth(), mClearDrawable.getIntrinsicHeight());
         // 默认设置隐藏图标
