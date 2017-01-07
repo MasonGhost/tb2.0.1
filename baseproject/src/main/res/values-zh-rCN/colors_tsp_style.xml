@@ -13,7 +13,7 @@
     例如标题栏标题、个人中心类列表项文字、用户昵称、聊天详情页聊天内容
     、弹窗内重要文字、详情页正文文字 等
     -->
-    <color name="important_for_content">#000000</color>
+    <color name="important_for_content">#333333</color>
     <!--
     少量使用-点赞心形图标高亮、新消息提示、警告
     -->

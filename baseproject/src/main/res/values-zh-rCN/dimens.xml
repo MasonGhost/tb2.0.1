@@ -9,7 +9,7 @@
     <dimen name="toolbar_right_text_size">@dimen/size_sub_title</dimen>
     <!-- custom navigationbar -->
     <dimen name="custom_navigationbar_height">46dp</dimen>
-    <dimen name="edit_line_height">46dp</dimen>
+    <dimen name="edit_line_height">55dp</dimen>
 
     <!--view高度-->
     <dimen name="edit_height_tall">46dp</dimen>
@@ -29,6 +29,8 @@
     <dimen name="verified_height">13dp</dimen>
     <dimen name="shape_stroke_width">1dp</dimen>
     <dimen name="margin_statubar">25dp</dimen>
+    <!--登录注册编辑框左边的文字宽度-->
+    <dimen name="edit_lefttext_width">45dp</dimen>
 
     <!--可操作按钮列表高度-->
     <dimen name="action_button_list_item_height">45dp</dimen>
@@ -43,6 +45,7 @@
 
 
     <!--#########################################      tsp 间距定义       ################################-->
+    <dimen name="spacing_huge">50dp</dimen>
     <dimen name="spacing_big_large">30dp</dimen>
     <dimen name="spacing_large">20dp</dimen>
     <dimen name="spacing_mid">15dp</dimen>
@@ -95,5 +98,6 @@
     <dimen name="chat_list_new_msg_tip_with">50dp</dimen>
     <dimen name="chat_list_msg_text_maxwith">225dp</dimen>
     <dimen name="chat_list_content_margintop">6dp</dimen>
+
 
 </resources>
