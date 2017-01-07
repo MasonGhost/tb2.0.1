@@ -2,11 +2,13 @@ package com.zhiyicx.thinksnsplus.modules.register;
 
 import android.os.CountDownTimer;
 
+import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 
 import javax.inject.Inject;
 
@@ -52,16 +54,16 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
         if (checkPhone(phone)) {
             return;
         }
-        mRepository.getVertifyCode(phone)
+        mRepository.getVertifyCode(phone, CommonClient.VERTIFY_CODE_TYPE_REGISTER)
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<BaseJson<String>>() {
+                .subscribe(new Action1<BaseJson<CacheBean>>() {
                     @Override
-                    public void call(BaseJson<String> json) {
+                    public void call(BaseJson<CacheBean> json) {
 //                        if (json.code.equals(ZBLApi.REQUEST_SUCESS)) {
                         mRootView.hideLoading();//隐藏loading
                         timer.start();//开始倒计时
                         mRootView.setVertifyCodeBtEnabled(false);
-                        mRootView.showMessage(json.getData());
+                        mRootView.showMessage(json.getMessage());
 //                        } else {
 //                            mRootView.showMessage(json.getMessage());
 //                        }
@@ -91,14 +93,14 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
         }
         mRepository.register(phone, name, vertifyCode, password)
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<BaseJson<String>>() {
+                .subscribe(new Action1<BaseJson<CacheBean>>() {
                     @Override
-                    public void call(BaseJson<String> json) {
+                    public void call(BaseJson<CacheBean> json) {
 //                        if (json.code.equals(ZBLApi.REQUEST_SUCESS)) {
                         mRootView.hideLoading();//隐藏loading
                         timer.start();//开始倒计时
                         mRootView.setVertifyCodeBtEnabled(false);
-                        mRootView.showMessage(json.getData());
+                        mRootView.showMessage(json.getMessage());
 //                        } else {
 //                            mRootView.showMessage(json.getMessage());
 //                        }

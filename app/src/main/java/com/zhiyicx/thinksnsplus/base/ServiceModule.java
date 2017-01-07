@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.base;
 
 import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
+import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
 
 import javax.inject.Singleton;
 
@@ -28,4 +29,9 @@ public class ServiceModule {
         return retrofit.create(LoginClient.class);
     }
 
+    @Singleton
+    @Provides
+    RegisterClient provideRegisterClient(Retrofit retrofit) {
+        return retrofit.create(RegisterClient.class);
+    }
 }
