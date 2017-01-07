@@ -8,73 +8,42 @@
               android:paddingLeft="@dimen/spacing_normal"
               android:paddingRight="@dimen/spacing_normal">
 
-    <TextView
-        android:id="@+id/tv_chat_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:background="@color/general_for_hint"
-        android:textSize="@dimen/size_note_assist"
-        tools:text="一分钟前"/>
+    <include
+        layout="@layout/include_chat_time"/>
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_small">
+        style="@style/style_chat_content_container">
 
         <com.zhiyicx.common.widget.FilterImageView
             android:id="@+id/iv_chat_headpic"
-            android:layout_width="@dimen/headpic_for_list"
-            android:layout_height="@dimen/headpic_for_list"
-            android:layout_alignParentTop="true"
-            android:layout_marginRight="@dimen/spacing_normal"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/ico_eye_open"/>
+            style="@style/style_chat_headpic"
+            android:layout_marginRight="@dimen/spacing_normal"/>
 
         <TextView
             android:id="@+id/tv_chat_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/style_chat_name"
             android:layout_toRightOf="@id/iv_chat_headpic"
-            android:layout_marginTop="@dimen/spacing_normal"
-            android:ellipsize="end"
             android:gravity="center|left"
-            android:maxLines="1"
-            android:textColor="@color/normal_for_dynamic_list_content"
-            android:textSize="@dimen/size_content_comment"
             tools:text="李四"/>
 
         <RelativeLayout
             android:id="@+id/rl_chat_bubble"
-            android:layout_width="wrap_content"
+            style="@style/style_chat_bubble"
             android:layout_below="@id/tv_chat_name"
-            android:layout_marginTop="@dimen/chat_list_content_margintop"
-            android:layout_height="wrap_content"
             android:layout_toRightOf="@id/iv_chat_headpic">
 
             <TextView
                 android:id="@+id/tv_chat_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:autoLink="web"
+                style="@style/style_chat_content"
                 android:gravity="center|left"
-                android:lineSpacingExtra="2dp"
-                android:maxWidth="@dimen/chat_list_msg_text_maxwith"
-                android:textColor="@color/important_for_content"
-                android:textSize="@dimen/size_content"
                 tools:text="今天天气弱爆了"/>
         </RelativeLayout>
 
         <ImageView
             android:id="@+id/msg_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/style_chat_status"
             android:layout_marginRight="@dimen/spacing_normal"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/rl_chat_bubble"
-            android:clickable="true"
-            android:visibility="gone"/>
+            android:layout_toRightOf="@id/rl_chat_bubble"/>
 
     </RelativeLayout>
 

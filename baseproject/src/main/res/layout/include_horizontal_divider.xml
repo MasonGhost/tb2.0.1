@@ -2,4 +2,4 @@
 <View
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/v_horizontal_line"
-    style="@style/divider_style_horizontal"/>
+    style="@style/style_divider_horizontal"/>
