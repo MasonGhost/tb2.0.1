@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.login;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -15,12 +14,12 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity;
 
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -39,8 +38,12 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     EditText mEtLoginPassword;
     @BindView(R.id.bt_login_login)
     Button mBtLoginLogin;
-    @BindView(R.id.login_error_tip)
-    TextView mLoginErrorTip;
+    @BindView(R.id.tv_error_tip)
+    TextView mTvErrorTip;
+    @BindView(R.id.tv_look_around)
+    TextView mTvLookAround;
+    @BindView(R.id.tv_forget_password)
+    TextView mTvForgetPassword;
 
     private boolean isPhoneEdited;
     private boolean isPasswordEdited;
@@ -109,7 +112,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
 
     @Override
     public void showErrorTips(String error) {
-        mLoginErrorTip.setText(error);
+        mTvErrorTip.setText(error);
     }
 
     @Override
@@ -152,4 +155,13 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         return rootView;
     }
 
+    @OnClick({R.id.tv_look_around, R.id.tv_forget_password})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tv_look_around:
+                break;
+            case R.id.tv_forget_password:
+                break;
+        }
+    }
 }

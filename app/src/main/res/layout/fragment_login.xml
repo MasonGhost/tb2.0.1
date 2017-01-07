@@ -4,28 +4,72 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/et_login_phone"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:inputType="textPersonName"
-        android:text="Name"/>
+    <LinearLayout
+        style="@style/style_edit_line">
 
-    <EditText
-        android:id="@+id/et_login_password"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:inputType="textPersonName"
-        android:text="Name"/>
+        <TextView
+            style="@style/style_small_text"
+            android:text="@string/phone_number"/>
+
+        <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
+            android:id="@+id/et_login_phone"
+            style="@style/style_edit"
+            android:hint="@string/phone_number_input_hint"
+            android:inputType="phone"
+            />
+    </LinearLayout>
+
+    <ImageView style="@style/divider_style_horizontal"/>
+
+    <LinearLayout
+        style="@style/style_edit_line">
+
+        <TextView
+            style="@style/style_small_text"
+            android:text="@string/password"/>
+
+        <com.zhiyicx.baseproject.widget.edittext.PasswordEditText
+            android:id="@+id/et_login_password"
+            style="@style/style_edit"
+            android:hint="@string/password_input_hint"
+            android:inputType="text"
+            android:text=""/>
+    </LinearLayout>
+
     <!--登陆异常相关提示-->
-    <TextView
-        android:id="@+id/login_error_tip"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"/>
+    <include
+        layout="@layout/include_error_tip_text"/>
 
     <Button
         android:id="@+id/bt_login_login"
+        style="@style/style_login_button"
+        android:layout_marginTop="23dp"
+        android:enabled="false"
+        android:text="@string/bt_login"/>
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/bt_login"/>
+        android:layout_marginLeft="@dimen/spacing_mid"
+        android:layout_marginRight="@dimen/spacing_mid"
+        android:layout_marginTop="@dimen/spacing_mid"
+        >
+        <!--随便逛逛-->
+        <TextView
+            android:id="@+id/tv_look_around"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_login"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_content_comment"/>
+        <!--忘记密码-->
+        <TextView
+            android:id="@+id/tv_forget_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="@string/forget_password"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_content_comment"/>
+    </RelativeLayout>
 </LinearLayout>
