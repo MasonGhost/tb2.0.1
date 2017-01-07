@@ -106,11 +106,11 @@ public class ChatMessageList extends FrameLayout {
         this.chatType = chatType;
         this.toChatUsername = toChatUsername;
         messageAdapter = new MultiItemTypeAdapter(mContext, datas);
-        messageAdapter.addItemViewDelegate(new MessageSendItemDelagate());
+        messageAdapter.addItemViewDelegate(new MessageTextItemDelagate());
         messageAdapter.addItemViewDelegate(new MessageReceiveItemDelagate());
 //        messageAdapter = new EaseMessageAdapter(context, toChatUsername, chatType, mRecyclerView);
 //        messageAdapter.setShowAvatar(showAvatar);
-//        messageAdapter.setShowUserNick(showUserNick);
+//        messageAdapter.setShowUserNick(showName);
 //        messageAdapter.setMyBubbleBg(myBubbleBg);
 //        messageAdapter.setOtherBuddleBg(otherBuddleBg);
         // set message adapter
