@@ -1,12 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.register;
 
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,7 +18,6 @@ import com.zhiyicx.thinksnsplus.R;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -89,7 +85,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                         if (mIsVertifyCodeEnalbe) {
                             mBtRegistSendVertifyCode.setEnabled(charSequence.length() == MOBILE_PHONE_NUMBER_LENGHT);
                         }
-                        isPhoneEdited = charSequence.length() == MOBILE_PHONE_NUMBER_LENGHT;
+                        isPhoneEdited = !TextUtils.isEmpty(charSequence.toString());
                         setConfirmEnable();
                     }
                 });
@@ -227,12 +223,4 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
         }
     }
 
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate a fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        ButterKnife.bind(this, rootView);
-        return rootView;
-    }
 }

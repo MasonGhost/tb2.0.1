@@ -9,7 +9,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.LoginBean;
-import com.zhiyicx.thinksnsplus.data.client.LoginClient;
+import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
 import com.zhiyicx.thinksnsplus.modules.AcitivityTest;
 
 import org.junit.Before;

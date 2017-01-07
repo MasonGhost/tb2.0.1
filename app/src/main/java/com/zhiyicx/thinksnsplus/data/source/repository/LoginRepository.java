@@ -6,9 +6,8 @@ import com.zhiyicx.baseproject.cache.CacheImp;
 import com.zhiyicx.baseproject.cache.NetWorkCache;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.LoginBean;
-import com.zhiyicx.thinksnsplus.data.client.LoginClient;
+import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
 import com.zhiyicx.thinksnsplus.data.source.local.LoginBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.login.LoginContract;
 

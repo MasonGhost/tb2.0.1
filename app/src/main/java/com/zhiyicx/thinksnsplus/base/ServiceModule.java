@@ -1,7 +1,7 @@
 package com.zhiyicx.thinksnsplus.base;
 
 
-import com.zhiyicx.thinksnsplus.data.client.LoginClient;
+import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 
 import javax.inject.Singleton;

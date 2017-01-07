@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.data.source.remote;
 
-import com.zhiyicx.thinksnsplus.data.client.LoginClient;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -17,6 +15,7 @@ import javax.inject.Singleton;
 public class ServiceManager {
     private CommonClient mCommonClient;
     private LoginClient mLoginClient;
+    private RegisterClient mRegisterClient;
 
     /**
      * 如果需要添加 service 只需在构造方法中添加对应的 service,在提供 get 方法返回出去,只要在 ServiceModule 提供了该 service
@@ -25,9 +24,10 @@ public class ServiceManager {
      * @param commonClient
      */
     @Inject
-    public ServiceManager(CommonClient commonClient, LoginClient loginClient) {
+    public ServiceManager(CommonClient commonClient, LoginClient loginClient,RegisterClient registerClient) {
         this.mCommonClient = commonClient;
         this.mLoginClient = loginClient;
+        this.mRegisterClient=registerClient;
     }
 
     public CommonClient getCommonClient() {
@@ -36,5 +36,9 @@ public class ServiceManager {
 
     public LoginClient getLoginClient() {
         return mLoginClient;
+    }
+
+    public RegisterClient getRegisterClient() {
+        return mRegisterClient;
     }
 }

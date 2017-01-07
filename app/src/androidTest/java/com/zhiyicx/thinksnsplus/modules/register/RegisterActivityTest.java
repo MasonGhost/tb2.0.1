@@ -5,7 +5,10 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +41,12 @@ public class RegisterActivityTest {
     @Rule
     public ActivityTestRule<RegisterActivity> mActivityRule = new ActivityTestRule(RegisterActivity.class);
 
+    private LoginClient mLoginClient;
+    @Before
+    public void initActivity() {
+        mLoginClient = AppApplication.AppComponentHolder.getAppComponent().serviceManager().getLoginClient();
+
+    }
     /*******************************************  用户名  *********************************************/
 
     /**

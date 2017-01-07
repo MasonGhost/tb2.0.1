@@ -49,8 +49,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
 
     @Override
     public void getVertifyCode(String phone) {
-        if (!RegexUtils.isMobileExact(phone)) {
-            mRootView.showMessage(mContext.getString(R.string.phone_number_toast_hint));
+        if (checkPhone(phone)) {
             return;
         }
         mRepository.getVertifyCode(phone)
@@ -78,12 +77,16 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
         mRootView.showMessage("");
     }
 
+
     @Override
     public void register(String name, String phone, String vertifyCode, String password) {
-        if (!checkUsername(name)) {
+        if (checkUsername(name)) {
             return;
         }
-        if (!checkPassword(password)) {
+        if (checkPassword(password)) {
+            return;
+        }
+        if (checkPhone(phone)) {
             return;
         }
         mRepository.register(phone, name, vertifyCode, password)
@@ -122,6 +125,19 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
     }
 
     /**
+     * 检测手机号码是否正确
+     * @param phone
+     * @return
+     */
+    private boolean checkPhone(String phone) {
+        if (!RegexUtils.isMobileExact(phone)) {
+            mRootView.showMessage(mContext.getString(R.string.phone_number_toast_hint));
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * 检查用户名是否小于最小长度,不能以数字开头
      *
      * @param name
@@ -130,17 +146,17 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
     private boolean checkUsername(String name) {
         if (name.length() < mContext.getResources().getInteger(R.integer.username_min_length)) {
             mRootView.showMessage(mContext.getString(R.string.username_toast_hint));
-            return false;
+            return true;
         }
         if (RegexUtils.isUsernameNoNumberStart(name)) {// 数字开头
             mRootView.showMessage(mContext.getString(R.string.username_toast_not_number_start_hint));
-            return false;
+            return true;
         }
         if (!RegexUtils.isUsername(name)) {// 用户名只能包含数字、字母和下划线
             mRootView.showMessage(mContext.getString(R.string.username_toast_not_symbol_hint));
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**
@@ -152,8 +168,8 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
     private boolean checkPassword(String password) {
         if (password.length() < mContext.getResources().getInteger(R.integer.password_min_length)) {
             mRootView.showMessage(mContext.getString(R.string.password_toast_hint));
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 }
