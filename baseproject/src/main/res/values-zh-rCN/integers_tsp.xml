@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+<!--密码最大长度-->
+  <integer name="password_maxlenght">16</integer>
+  <!--密码最小长度-->
+  <integer name="password_min_length">2</integer>
+  <!--用户名最大长度-->
+  <integer name="username_max_length">20</integer>
+  <!--用户名最小长度-->
+  <integer name="username_min_length">6</integer>
+  <!--验证码长度-->
+  <integer name="vertiry_code_lenght">4</integer>
+  <!--动画执行时长-->
   <integer name="animation_default_duration">300</integer>
 </resources>

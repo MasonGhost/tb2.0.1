@@ -37,10 +37,6 @@ import static com.zhiyicx.common.config.ConstantConfig.MOBILE_PHONE_NUMBER_LENGH
  * @Contact master.jungle68@gmail.com
  */
 public class RegisterFragment extends TSFragment<RegisterContract.Presenter> implements RegisterContract.View {
-    public static final int PASSWORD_MAXLENGHT = 16;
-
-    public static final int VERTIRY_CODE_LENGHT = 4; // 验证码长度
-
     @BindView(R.id.et_regist_username)
     EditText mEtRegistUsername;
     @BindView(R.id.et_regist_phone)
@@ -107,7 +103,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                 .subscribe(new Action1<CharSequence>() {
                     @Override
                     public void call(CharSequence charSequence) {
-                        isCodeEdited = !TextUtils.isEmpty(charSequence.toString()) && charSequence.length() == VERTIRY_CODE_LENGHT;
+                        isCodeEdited = !TextUtils.isEmpty(charSequence.toString()) && charSequence.length() == getResources().getInteger(R.integer.vertiry_code_lenght);
                         setConfirmEnable();
                     }
                 });
@@ -122,11 +118,11 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                         Editable editable = mEtRegistPassword.getText();
                         int len = editable.length();
 
-                        if (len > PASSWORD_MAXLENGHT) {
+                        if (len > getResources().getInteger(R.integer.password_maxlenght)) {
                             int selEndIndex = Selection.getSelectionEnd(editable);
                             String str = editable.toString();
                             //截取新字符串
-                            String newStr = str.substring(0, PASSWORD_MAXLENGHT);
+                            String newStr = str.substring(0, getResources().getInteger(R.integer.password_maxlenght));
                             mEtRegistPassword.setText(newStr);
                             editable = mEtRegistPassword.getText();
                             //新字符串的长度

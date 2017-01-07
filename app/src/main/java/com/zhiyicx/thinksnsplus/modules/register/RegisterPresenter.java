@@ -24,8 +24,6 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
 
     public static final int S_TO_MS_SPACING = 1000; // s 和 ms 的比例
     public static final int SNS_TIME = 60 * S_TO_MS_SPACING; // 发送短信间隔时间，单位 ms
-    public static final int USERNAME_MIN_LENGTH = 2; // 用户名最小长度
-    public static final int PASSWORD_MIN_LENGTH = 6; // 密码最小长度
 
     private int mTimeOut = SNS_TIME;
 
@@ -130,7 +128,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
      * @return
      */
     private boolean checkUsername(String name) {
-        if (name.length() < USERNAME_MIN_LENGTH) {
+        if (name.length() < mContext.getResources().getInteger(R.integer.username_min_length)) {
             mRootView.showMessage(mContext.getString(R.string.username_toast_hint));
             return false;
         }
@@ -152,7 +150,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
      * @return
      */
     private boolean checkPassword(String password) {
-        if (password.length() < PASSWORD_MIN_LENGTH) {
+        if (password.length() < mContext.getResources().getInteger(R.integer.password_min_length)) {
             mRootView.showMessage(mContext.getString(R.string.password_toast_hint));
             return false;
         }
