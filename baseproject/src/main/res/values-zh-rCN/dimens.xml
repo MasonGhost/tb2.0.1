@@ -35,13 +35,12 @@
     <!--可操作按钮列表高度-->
     <dimen name="action_button_list_item_height">45dp</dimen>
 
-
-
+    <!-- 光标宽度 -->
+    <dimen name="cursor_with">1dp</dimen>
     <!-- view间距 -->
 
     <dimen name="item_spacing_normal">5dp</dimen>
     <dimen name="item_spacing_line">@dimen/divider_line</dimen>
-
 
 
     <!--#########################################      tsp 间距定义       ################################-->
@@ -55,7 +54,6 @@
 
     <!--#########################################      分割线       ################################-->
     <dimen name="divider_line">1px</dimen>
-
 
 
     <!--#########################################      头像尺寸       ################################-->
@@ -91,7 +89,6 @@
     <dimen name="icon_for_assist_big">33dp</dimen>
     <dimen name="icon_for_assist_big_text_margin">12dp</dimen>
     <dimen name="icon_for_assist_small">16dp</dimen>
-
 
 
     <!--#########################################      聊天       ################################-->
