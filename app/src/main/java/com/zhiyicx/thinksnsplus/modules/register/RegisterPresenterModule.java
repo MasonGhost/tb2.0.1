@@ -28,7 +28,7 @@ public class RegisterPresenterModule {
 
 
     @Provides
-    RegisterContract.Repository provideRegisterContractRepository(ServiceManager serviceManager, CacheManager cacheManager){
-        return new RegisterRepository(serviceManager,cacheManager);
+    RegisterContract.Repository provideRegisterContractRepository(ServiceManager serviceManager){
+        return new RegisterRepository(serviceManager);
     }
 }

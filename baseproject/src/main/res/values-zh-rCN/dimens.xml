@@ -31,7 +31,7 @@
     <dimen name="margin_statubar">25dp</dimen>
     <!--登录注册编辑框左边的文字宽度-->
     <dimen name="edit_lefttext_width">45dp</dimen>
-
+    <dimen name="button_send_vertify_code_min_width">75dp</dimen>
     <!--可操作按钮列表高度-->
     <dimen name="action_button_list_item_height">45dp</dimen>
 

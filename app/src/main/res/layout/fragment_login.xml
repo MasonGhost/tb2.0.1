@@ -44,7 +44,7 @@
     <Button
         android:id="@+id/bt_login_login"
         style="@style/style_login_button"
-        android:layout_marginTop="23dp"
+        android:layout_marginTop="@dimen/button_login_margin_top"
         android:enabled="false"
         android:text="@string/bt_login"/>
 

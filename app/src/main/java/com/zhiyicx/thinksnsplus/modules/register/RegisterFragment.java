@@ -4,21 +4,18 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.TextUtils;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
+import com.zhiyicx.baseproject.widget.edittext.PasswordEditText;
 import com.zhiyicx.thinksnsplus.R;
 
 import java.util.concurrent.TimeUnit;
@@ -38,24 +35,23 @@ import static com.zhiyicx.common.config.ConstantConfig.MOBILE_PHONE_NUMBER_LENGH
  */
 public class RegisterFragment extends TSFragment<RegisterContract.Presenter> implements RegisterContract.View {
     @BindView(R.id.et_regist_username)
-    EditText mEtRegistUsername;
+    DeleteEditText mEtRegistUsername;
     @BindView(R.id.et_regist_phone)
-    EditText mEtRegistPhone;
+    DeleteEditText mEtRegistPhone;
     @BindView(R.id.bt_regist_send_vertify_code)
     Button mBtRegistSendVertifyCode;
     @BindView(R.id.pb_regist_loading)
     ImageView mPbRegistLoading;
     @BindView(R.id.et_regist_vertify_code)
-    EditText mEtRegistVertifyCode;
+    DeleteEditText mEtRegistVertifyCode;
     @BindView(R.id.et_regist_password)
-    EditText mEtRegistPassword;
-    @BindView(R.id.cb_login)
-    CheckBox mCbLogin;
+    PasswordEditText mEtRegistPassword;
     @BindView(R.id.bt_regist_regist)
     Button mBtRegistRegist;
     @BindView(R.id.tv_error_tip)
     TextView mTvErrorTip;
-
+    @BindView(R.id.tv_look_around)
+    TextView mTvLookAround;
     private boolean isNameEdited;
     private boolean isPhoneEdited;
     private boolean isCodeEdited;
@@ -139,23 +135,6 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                 });
 
 
-        // 是否显示密码
-        RxCompoundButton.checkedChanges(mCbLogin)
-                .compose(this.<Boolean>bindToLifecycle())
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        if (aBoolean) {
-                            //如果选中，显示密码
-                            mEtRegistPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                            mEtRegistPassword.setSelection(mEtRegistPassword.getText().toString().length());
-                        } else {
-                            //否则隐藏密码
-                            mEtRegistPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                            mEtRegistPassword.setSelection(mEtRegistPassword.getText().toString().length());
-                        }
-                    }
-                });
         // 点击发送验证码
         RxView.clicks(mBtRegistSendVertifyCode)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作

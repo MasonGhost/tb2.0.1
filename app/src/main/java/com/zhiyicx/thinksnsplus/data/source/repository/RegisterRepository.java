@@ -1,9 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import com.zhiyicx.baseproject.cache.CacheImp;
-import com.zhiyicx.baseproject.cache.IDataBaseOperate;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.data.source.local.CacheManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterContract;
@@ -19,12 +16,12 @@ import rx.Observable;
 
 public class RegisterRepository implements RegisterContract.Repository {
     private CommonClient mCommonClient;
-    private CacheImp mCommonCache;
 
-    public RegisterRepository(ServiceManager serviceManager, CacheManager cacheManager) {
+
+    public RegisterRepository(ServiceManager serviceManager) {
         super();
         mCommonClient = serviceManager.getCommonClient();
-        mCommonCache = cacheManager.getCommonCache();
+
     }
 
     @Override

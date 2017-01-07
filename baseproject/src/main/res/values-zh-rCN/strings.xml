@@ -9,7 +9,7 @@
     <string name="password">密码</string>
     <string name="vertify_code">验证码</string>
     <string name="phone_number">手机号</string>
-    <string name="send_vertify_code">发验证码</string>
+    <string name="send_vertify_code">获取验证码</string>
     <string name="forget_password">忘记密码</string>
 
     <!-- 注册 -->
