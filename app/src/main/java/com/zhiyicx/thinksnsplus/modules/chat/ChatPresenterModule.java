@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
-import com.zhiyicx.thinksnsplus.data.source.local.CacheManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.ChatRepository;
 
@@ -28,7 +27,7 @@ public class ChatPresenterModule {
 
 
     @Provides
-    ChatContract.Repository provideChatContractRepository(ServiceManager serviceManager, CacheManager cacheManager){
-        return new ChatRepository(serviceManager,cacheManager);
+    ChatContract.Repository provideChatContractRepository(ServiceManager serviceManager){
+        return new ChatRepository(serviceManager);
     }
 }
