@@ -4,7 +4,7 @@
         <attr name="myBubbleBackground" format="reference"/>
         <attr name="otherBubbleBackground" format="reference"/>
         <attr name="showUserAvatar" format="boolean"/>
-        <attr name="showUserNick" format="boolean"/>
+        <attr name="showName" format="boolean"/>
     </declare-styleable>
 
 </resources>

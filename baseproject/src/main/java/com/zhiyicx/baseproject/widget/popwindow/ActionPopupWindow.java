@@ -56,7 +56,7 @@ public class ActionPopupWindow extends PopupWindow {
         setFocusable(mIsFocus);
         setOutsideTouchable(mIsOutsideTouch);
         setBackgroundDrawable(mBackgroundDrawable);
-        setAnimationStyle(R.style.actionPopupAnimation);
+        setAnimationStyle(R.style.style_actionPopupAnimation);
         setContentView(mContentView);
 
 

@@ -13,15 +13,15 @@ import com.zhiyicx.imsdk.entity.MessageType;
  * @Contact master.jungle68@gmail.com
  */
 
-public class MessageSendItemDelagate extends MessageTextItemDelagate {
+public class MessageReceiveItemDelagate extends MessageTextItemDelagate {
 
-    public MessageSendItemDelagate(boolean showName, boolean showAvatar, Drawable myBubbleBg, Drawable otherBuddleBg) {
+    public MessageReceiveItemDelagate(boolean showName, boolean showAvatar, Drawable myBubbleBg, Drawable otherBuddleBg) {
         super(showName, showAvatar, myBubbleBg, otherBuddleBg);
     }
 
     @Override
     public int getItemViewLayoutId() {
-        return R.layout.item_chat_list_send_text;
+        return R.layout.item_chat_list_receive_text;
     }
 
     /**
@@ -36,6 +36,5 @@ public class MessageSendItemDelagate extends MessageTextItemDelagate {
         // TODO: 2017/1/6 需要添加是否是我的消息的判断
         return item.getType() == MessageType.MESSAGE_TYPE_TEXT;
     }
-
 
 }

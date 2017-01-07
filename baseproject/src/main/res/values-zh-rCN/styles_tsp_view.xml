@@ -2,25 +2,25 @@
 <resources>
     <!--######################### 分割线 ##########################-->
     <!-- 分隔线水平-->
-    <style name="divider_style_horizontal">
+    <style name="style_divider_horizontal">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/divider_height</item>
         <item name="android:background">@color/general_for_line</item>
     </style>
     <!-- 分隔线水平 浅色-->
-    <style name="divider_style_horizontal_light">
+    <style name="style_divider_horizontal_light">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/divider_height</item>
         <item name="android:background">@color/general_for_line_light</item>
     </style>
     <!-- 分隔线垂直-->
-    <style name="divider_style_veitical">
+    <style name="style_divider_veitical">
         <item name="android:layout_width">@dimen/divider_height</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:background">@color/general_for_line</item>
     </style>
     <!-- 分隔线垂直 浅色-->
-    <style name="divider_style_veitical_light">
+    <style name="style_divider_veitical_light">
         <item name="android:layout_width">@dimen/divider_height</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:background">@color/general_for_line_light</item>
@@ -91,8 +91,9 @@
     </style>
 
     <!--#########################################      popwindow       ################################-->
-    <style name="actionPopupAnimation" mce_bogus="1" parent="android:Animation">
+    <style name="style_actionPopupAnimation" mce_bogus="1" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/slide_in_bottom</item>
         <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
     </style>
+
 </resources>
