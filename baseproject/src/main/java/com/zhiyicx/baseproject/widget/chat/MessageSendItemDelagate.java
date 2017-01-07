@@ -5,8 +5,6 @@ import android.graphics.drawable.Drawable;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.entity.MessageType;
-import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
-import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 /**
  * @Describe 我发送的文本消息
@@ -15,11 +13,12 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
  * @Contact master.jungle68@gmail.com
  */
 
-public class MessageSendItemDelagate implements ItemViewDelegate<Message> {
-    protected boolean showUserNick;
-    protected boolean showAvatar;
-    protected Drawable myBubbleBg;
-    protected Drawable otherBuddleBg;
+public class MessageSendItemDelagate extends MessageTextItemDelagate {
+
+    public MessageSendItemDelagate(boolean showName, boolean showAvatar, Drawable myBubbleBg, Drawable otherBuddleBg) {
+        super(showName, showAvatar, myBubbleBg, otherBuddleBg);
+    }
+
     @Override
     public int getItemViewLayoutId() {
         return R.layout.item_chat_list_send_text;
@@ -27,6 +26,7 @@ public class MessageSendItemDelagate implements ItemViewDelegate<Message> {
 
     /**
      * 消息类型为文本，是我发送的消息
+     *
      * @param item
      * @param position
      * @return
@@ -34,12 +34,8 @@ public class MessageSendItemDelagate implements ItemViewDelegate<Message> {
     @Override
     public boolean isForViewType(Message item, int position) {
         // TODO: 2017/1/6 需要添加是否是我的消息的判断
-        return item.getType()== MessageType.MESSAGE_TYPE_TEXT;
+        return item.getType() == MessageType.MESSAGE_TYPE_TEXT;
     }
 
-    @Override
-    public void convert(ViewHolder holder, Message message, int position) {
-        holder.setText(R.id.tv_chat_name,"占三");// 测试数据，暂时使用
-        holder.setText(R.id.tv_chat_content,"我的天四大金刚绝对控股可大幅高开");
-    }
+
 }

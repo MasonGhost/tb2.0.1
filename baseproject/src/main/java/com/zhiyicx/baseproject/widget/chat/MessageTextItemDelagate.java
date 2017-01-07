@@ -55,6 +55,8 @@ public class MessageTextItemDelagate implements ItemViewDelegate<Message> {
         if (showName) {
             holder.setVisible(R.id.tv_chat_name, View.VISIBLE);
             holder.setText(R.id.tv_chat_name, "占三");// 测试数据，暂时使用
+        }else {
+            holder.setVisible(R.id.tv_chat_name, View.INVISIBLE);
         }
 
         holder.setText(R.id.tv_chat_content, "我的天四大金刚绝对控股可大幅高开");
