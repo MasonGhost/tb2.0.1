@@ -1,4 +1,4 @@
-2017年1月6日15:27:58
+2017年1月9日 11:20:13
 # thinksns-plus-android
 
 整个项目相关的决策工作安排等记录在[thinksns-plus-document](https://github.com/zhiyicx/thinksns-plus-document).
@@ -90,3 +90,5 @@ master_future_add_image_lip ( 作者分支 )
 [baseadapter-recyclerview](document/baseadapter/BASEADAPTER.md) 基础列表Adapter
 
 [refresh](document/refresh/REFRESH.md) 刷新控件
+
+[design](document/design/DESIGN.md) 视觉规范
