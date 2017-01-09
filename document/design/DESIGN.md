@@ -1,6 +1,20 @@
+2017年1月9日 10:51:05
 # 视觉规范定义
 
-### 颜色使用，文件位于`八色project/src/main/res/values-zh-rCN/colors_tsp_style.xml`
+本应用UI设计遵照TS+ Android设计文档1.1编写.
+> **注：** 为了方便二次的使用修改和组件复用,本应用所有二次使用和可修改的控件及配置都位于`baseprojece`下
+## 目录
+> - [颜色](#color)
+- [字体大小](#font_size)
+- [按钮](#button)
+- [头像大小](#headpic_size)
+- [图标大小](#icon_size)
+- [间距](#spacing)
+- [UI常量](#ui_constant)
+- [动作表单](#action_form)
+
+## <span id = "color">1.颜色</span> 
+文件位于`project/src/main/res/values-zh-rCN/colors_tsp_style.xml`
 ```java
 
 <?xml version="1.0" encoding="utf-8"?>
@@ -65,3 +79,167 @@
 
 </resources>
 ```
+## <span id = "font_size">2.字体大小</span>
+文件位于`project/src/main/res/values-zh-rCN/dimens_tsp_font_size.xml`
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 标题栏标题；动态详情页标题 -->
+    <dimen name="size_primary_title">18sp</dimen>
+    <!-- 动态列表动态标题；
+    顶部标题栏右侧文字按钮；
+    详情页顶部标题栏昵称；
+    消息/相册/点赞/粉丝/关注列表标题;
+    个人中心/个人主页用户昵称
+    -->
+    <dimen name="size_sub_title">16sp</dimen>
+    <!--
+    设置/修改资料/修改密码/意见反馈页面文字；
+    动态详情页正文/聊天详情页聊天内容
+    收到的赞列表的用户昵称;
+    发布动态编辑标题和内容文字
+    -->
+    <dimen name="size_content">15sp</dimen>
+    <!--
+    消息/相册/点赞/粉丝/关注列表中标题下文字及粉丝数；
+    详情页评论内容和详情页点赞人数
+    个人中心/个人主页简介
+    -->
+    <dimen name="size_content_assist">14sp</dimen>
+    <!--
+    首页动态/详情页评论/聊天详情的列表用户昵称;
+    首页动态列表评论及昵称
+    -->
+    <dimen name="size_content_comment">13sp</dimen>
+    <!--
+    时间、点赞数、图标标签等辅助信息;
+    分享弹窗图标下文字；
+    详情页底部操作栏
+    新消息数量提示圈内的数字
+    -->
+    <dimen name="size_icon_assist">12sp</dimen>
+    <!--
+    底部导航栏下边小字
+    输入评论字数限制提示；
+    聊天详情页时间
+    -->
+    <dimen name="size_note_assist">10sp</dimen>
+</resources>
+```
+## <span id = "button">3.按钮</span>
+### 1.按钮大小圆角，位于`baseproject/src/main/res/values-zh-rCN/dimens_tsp_button.xml;`
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--  圆角  -->
+    <dimen name="button_corner_big">6dp</dimen>
+    <dimen name="button_corner_small">4dp</dimen>
+    <!--  大小  -->
+    <dimen name="button_text_size_big">@dimen/size_sub_title</dimen>
+    <dimen name="button_text_size_small">@dimen/size_content_assist</dimen>
+</resources>
+```
+### 2.按钮颜色，位于`baseproject/src/main/res/values-zh-rCN/colors_tsp_button.xml`
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bt_normal">@color/themeColor</color>
+    <color name="bt_disable">@color/general_for_hint</color>
+    <color name="bt_pressed">#4ab2ce</color>
+    <color name="bt_pressed_hollow">#4ab2ce</color>
+</resources>
+
+```
+## <span id = "headpic_size">4.头像大小</span>
+位于`baseproject/src/main/res/values-zh-rCN/dimens_tsp_headpic.xml`
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--#########################################      头像尺寸       ################################-->
+
+    <!--
+    用户个人主页头像
+    -->
+    <dimen name="headpic_for_user_home">70dp</dimen>
+    <!--
+    个人中心头像
+    -->
+    <dimen name="headpic_for_user_center">60dp</dimen>
+    <!--
+    动态/消息/赞过的/排行榜/粉丝/评论的 列表头像、
+    聊详情页头像、修改资料-更换头像
+    -->
+    <dimen name="headpic_for_list">38dp</dimen>
+    <!--
+    动态/消息/赞过的/排行榜/粉丝/评论的 列表头像、
+    聊详情页头像、修改资料-更换头像
+    -->
+    <dimen name="headpic_for_assist">26dp</dimen>
+</resources>
+```
+## <span id = "icon_size">5.图标大小</span>
+位于`baseproject/src/main/res/values-zh-rCN/dimens_tsp_icon.xml`
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--#########################################      图标尺寸       ################################-->
+    
+    <!-- 底部操作栏图标  -->
+    <dimen name="icon_for_home_bottom">24dp</dimen>
+    <dimen name="icon_for_home_bottom_text_margin">2dp</dimen>
+    <!-- 顶部标题栏图标  -->
+    <dimen name="icon_for_toolbar">24dp</dimen>
+    <!-- 个人中心图标   -->
+    <dimen name="icon_for_user_center">20dp</dimen>
+    <!--  其他辅助图标  -->
+    <dimen name="icon_for_assist_big">33dp</dimen>
+    <dimen name="icon_for_assist_big_text_margin">12dp</dimen>
+    <dimen name="icon_for_assist_small">16dp</dimen>
+
+</resources>
+```
+## <span id = "spacing">6.间距</span>
+位于`baseproject/src/main/res/values-zh-rCN/dimens_tsp_spacing.xml`
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--#########################################      tsp 间距定义       ################################-->
+
+    <dimen name="spacing_huge">50dp</dimen>
+    <dimen name="spacing_big_large">30dp</dimen>
+    <dimen name="spacing_large">20dp</dimen>
+    <dimen name="spacing_mid">15dp</dimen>
+    <dimen name="spacing_normal">10dp</dimen>
+    <dimen name="spacing_small">5dp</dimen>
+    <dimen name="spacing_tiny">2dp</dimen>
+    <dimen name="spacing_line">@dimen/divider_line</dimen>
+
+    <!--#########################################      分割线       ################################-->
+    <dimen name="divider_line">1px</dimen>
+
+</resources>
+```
+
+## <span id = "ui_constant">7.密码长度、动画时长、名字长度等常量定义</span>
+位于`baseproject/src/main/res/values-zh-rCN/integers_tsp.xml`
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--手机号长度-->
+    <integer name="phone_number_length">11</integer>
+    <!--密码最大长度-->
+    <integer name="password_maxlenght">16</integer>
+    <!--密码最小长度-->
+    <integer name="password_min_length">2</integer>
+    <!--用户名最大长度-->
+    <integer name="username_max_length">20</integer>
+    <!--用户名最小长度-->
+    <integer name="username_min_length">6</integer>
+    <!--验证码长度-->
+    <integer name="vertiry_code_lenght">4</integer>
+    <!--动画执行时长-->
+    <integer name="animation_default_duration">300</integer>
+</resources>
+```
+## <span id = "action_form">8.动作表单</span>
+统一使用`ActionPopupWindow`
