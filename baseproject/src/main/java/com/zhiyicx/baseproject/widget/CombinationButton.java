@@ -13,7 +13,7 @@ import com.zhiyicx.baseproject.R;
 
 /**
  * @author LiuChao
- * @describe 个人中心的组合控件，提高代码的复用率
+ * @describe 个人中心的组合控件，图片-文字-图片
  * @date 2017/1/7
  * @contact email:450127106@qq.com
  */
