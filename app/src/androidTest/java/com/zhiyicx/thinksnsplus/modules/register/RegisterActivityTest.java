@@ -598,4 +598,27 @@ public class RegisterActivityTest {
         name="Test123";
         assertTrue(!RegexUtils.isUsernameNoNumberStart(name));
     }
+    
+    /*******************************************   验证码正则 单元测试 *********************************************/
+    /**
+     * summary                      验证码必须为 4 位
+     * <p>
+     * steps                      1.输入 123; 2.输入 12345; 3.输入 1234
+     * <p>
+     * expected                   1.false 2.false 3.true
+     *
+     * @throws Exception
+     */
+    @Test
+    public void vertify_code_length() throws Exception {
+        onView(withId(R.id.et_regist_username)).perform(replaceText(USER_NAME));
+        onView(withId(R.id.et_regist_phone)).perform(typeText(USER_PHONE));
+        onView(withId(R.id.et_regist_vertify_code)).perform(typeText("123"));
+        onView(withId(R.id.et_regist_password)).perform(replaceText("123456"));
+        onView(withId(R.id.bt_regist_regist)).check(matches(disEnabled()));
+        onView(withId(R.id.et_regist_vertify_code)).perform(replaceText("12345")).check(matches(withText("1234")));
+        onView(withId(R.id.et_regist_vertify_code)).perform(replaceText("1234"));
+        onView(withId(R.id.bt_regist_regist)).check(matches(isEnabled()));
+    }
+
 }
