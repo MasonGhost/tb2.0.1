@@ -6,6 +6,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -457,4 +458,22 @@ public class RegisterActivityTest {
         onView(withId(R.id.bt_regist_regist)).check(matches(isEnabled())).perform(click());
         onView(withId(R.id.tv_error_tip)).check(matches(isDisappear()));
     }
+    /**
+     * summary                       判断手机号必须为 11 位
+     * <p>
+     * steps                         1.输入 1234; 2.输入 18908199568
+     * <p>
+     * expected                      1.false 2.true
+     *
+     * @throws Exception
+     */
+
+    @Test
+    public void phoneNumber_length() throws Exception {
+        String phone="1234";
+        assertFalse(RegexUtils.isMobileExact(phone));
+        phone="18908199568";
+        assertTrue(RegexUtils.isMobileExact(phone));
+    }
+
 }
