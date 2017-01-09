@@ -1,4 +1,4 @@
-2017年1月9日 11:19:27
+2017年1月9日 11:51:34
 # 视觉规范定义
 
 本应用UI设计遵照TS+ Android设计文档1.1编写.
@@ -226,14 +226,14 @@
     输入框输入大量文字而引起换行；
     除了a中的情况及其他特殊情况外其他时候均按1.3倍行间距处理
     -->
-    <float name="line_spacing_Multiplier_normal">1.3</float>
+    <item name="line_spacing_Multiplier_normal" format="float" type="dimen"> 1.3</item>
     <!--
     有大段落的文字出现的情况，此时需要稍大的行间距，利于阅读。例如：
     动态详情页；
     文章详情页；
     资讯详情页等
     -->
-    <float name="line_spacing_Multiplier_big">1.7</float>
+    <item name="line_spacing_Multiplier_big" format="float" type="dimen">1.7</item>
 
 </resources>
 ```
