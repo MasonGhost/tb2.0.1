@@ -29,7 +29,6 @@ import butterknife.OnClick;
  */
 public class MineFragment extends TSFragment {
 
-
     @BindView(R.id.iv_head_icon)
     ImageView mIvHeadIcon;
     @BindView(R.id.tv_user_name)
