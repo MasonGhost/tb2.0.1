@@ -459,6 +459,8 @@ public class RegisterActivityTest {
         onView(withId(R.id.tv_error_tip)).check(matches(isDisappear()));
     }
 
+    /*******************************************  手机号正则 单元测试  *********************************************/
+
     /**
      * summary                       判断手机号必须为 11 位
      * <p>
@@ -509,4 +511,22 @@ public class RegisterActivityTest {
         phone="18908199568";
         assertTrue(RegexUtils.isMobileExact(phone));
     }
+
+    /*******************************************  密码正则 单元测试  *********************************************/
+
+    /**
+     * summary                       判断密码大于 5 位
+     * <p>
+     * steps                         1.输入 Test1; 2.输入 Test12
+     * <p>
+     * expected                      1.false 2.true
+     *
+     * @throws Exception
+     */
+    @Test
+    public void password_length() throws Exception {
+        password_erroLength();
+        password_correct();
+    }
+
 }
