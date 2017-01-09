@@ -476,4 +476,20 @@ public class RegisterActivityTest {
         assertTrue(RegexUtils.isMobileExact(phone));
     }
 
+    /**
+     * summary                       判断手机号第一位必须为 1
+     * <p>
+     * steps                         1.输入 28908199568; 2.输入 18908199568
+     * <p>
+     * expected                      1.false 2.true
+     *
+     * @throws Exception
+     */
+    @Test
+    public void phoneNumber_startWith1() throws Exception {
+        String phone="28908199568";
+        assertFalse(RegexUtils.isMobileExact(phone));
+        phone="18908199568";
+        assertTrue(RegexUtils.isMobileExact(phone));
+    }
 }
