@@ -4,7 +4,7 @@
     <string name="err_net_not_work">当前网络状况不佳</string>
     <!-- 通用 -->
     <string name="cancel">取消</string>
-    <string name="seconds">秒</string>
+    <string name="seconds">秒后重发</string>
     <string name="username">用户名</string>
     <string name="password">密码</string>
     <string name="vertify_code">验证码</string>

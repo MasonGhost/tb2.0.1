@@ -62,7 +62,7 @@
                 android:gravity="center"
                 android:minWidth="@dimen/button_send_vertify_code_min_width"
                 android:text="@string/send_vertify_code"
-                android:textColor="@color/themeColor"
+                android:textColor="@drawable/selector_text_color"
                 android:textSize="@dimen/size_content"/>
 
             <ImageView
