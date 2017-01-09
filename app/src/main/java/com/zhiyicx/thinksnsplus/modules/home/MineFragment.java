@@ -14,6 +14,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.CombinationButton;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 
 import butterknife.BindView;
@@ -111,6 +112,7 @@ public class MineFragment extends TSFragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_userinfo_container:
+                startActivity(new Intent(getActivity(), UserInfoActivity.class));
                 break;
             case R.id.ll_fans_container:
                 break;

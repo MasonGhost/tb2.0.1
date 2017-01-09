@@ -14,5 +14,16 @@
     <string name="question_answer">Q&amp;A</string>
     <string name="setting">设置</string>
 
+    <!--个人资料-->
+    <string name="user_info">个人资料</string>
+    <string name="change_head_icon">更换头像</string>
+    <string name="user_name">用户名</string>
+    <string name="sex">性别</string>
+    <string name="select_sex">选择性别</string>
+    <string name="city">城市</string>
+    <string name="select_city">选择居住地</string>
+    <string name="introduce">简介</string>
+    <string name="edit_introduce">编辑简介</string>
+
     <!--代码中的string-->
 </resources>
