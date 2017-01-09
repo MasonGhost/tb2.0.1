@@ -529,4 +529,73 @@ public class RegisterActivityTest {
         password_correct();
     }
 
+    /*******************************************  用户名正则 单元测试  *********************************************/
+
+    /**
+     * summary                       用户名至少为 4 个英文字符
+     * <p>
+     * steps                         1.输入 thi; 2.输入 thinksns
+     * <p>
+     * expected                      1.false 2.true
+     *
+     * @throws Exception
+     */
+    @Test
+    public void name_english() throws Exception {
+        String name="thi";
+        assertFalse(RegexUtils.isUsernameLength(name,mActivityRule.getActivity().getResources().getInteger(R.integer.username_min_length)));
+        name="thinksns";
+        assertTrue(RegexUtils.isUsernameLength(name,mActivityRule.getActivity().getResources().getInteger(R.integer.username_min_length)));
+    }
+
+    /**
+     * summary                      用户名至少为 2 个中文字符
+     * <p>
+     * steps                         1.输入 嗷; 2.输入 嗷嗷嗷
+     * <p>
+     * expected                      1.false 2.true
+     *
+     * @throws Exception
+     */
+    @Test
+    public void name_chinese() throws Exception {
+        String name="嗷";
+        assertFalse(RegexUtils.isUsernameLength(name,mActivityRule.getActivity().getResources().getInteger(R.integer.username_min_length)));
+        name="嗷嗷嗷";
+        assertTrue(RegexUtils.isUsernameLength(name,mActivityRule.getActivity().getResources().getInteger(R.integer.username_min_length)));
+    }
+
+    /**
+     * summary                      用户名只能使用大小写字母、中文、数字和下划线
+     * <p>
+     * steps                         1.输入 emoji😈; 2.输入 Think123_嗷
+     * <p>
+     * expected                      1.false 2.true
+     *
+     * @throws Exception
+     */
+    @Test
+    public void name_symblol() throws Exception {
+        String name="emoji\uD83D\uDE08";
+        assertFalse(RegexUtils.isUsername(name));
+        name="Think123_嗷";
+        assertTrue(RegexUtils.isUsername(name));
+    }
+
+    /**
+     * summary                      用户名不能以数字开头
+     * <p>
+     * steps                         1.输入 123Test; 2.输入 Test123
+     * <p>
+     * expected                      1.false 2.true
+     *
+     * @throws Exception
+     */
+    @Test
+    public void name_not_start_number() throws Exception {
+        String name="123Test";
+        assertFalse(!RegexUtils.isUsernameNoNumberStart(name));
+        name="Test123";
+        assertTrue(!RegexUtils.isUsernameNoNumberStart(name));
+    }
 }

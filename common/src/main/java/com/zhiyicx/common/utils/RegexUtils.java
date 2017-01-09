@@ -126,6 +126,18 @@ public class RegexUtils {
     public static boolean isUsernameNoNumberStart(CharSequence input) {
         return isMatch(REGEX_NOT_NUMBER_START, input);
     }
+
+    /**
+     * 用户名至少为 length 个英文字符,用户名至少为 length/3 个中文字符 ,至少length个字节
+     * <p>不能以数字开通</p>
+     *
+     * @param input 待验证文本
+     * @return {@code true}: 匹配<br>{@code false}: 不匹配
+     */
+    public static boolean isUsernameLength(CharSequence input, int length) {
+        return input.toString().getBytes().length >= length;
+    }
+
     /**
      * 验证用户名
      * <p>不能以数字开通</p>
@@ -136,6 +148,7 @@ public class RegexUtils {
     public static boolean isUsername(CharSequence input) {
         return isMatch(REGEX_USERNAME, input);
     }
+
     /**
      * 验证yyyy-MM-dd格式的日期校验，已考虑平闰年
      *

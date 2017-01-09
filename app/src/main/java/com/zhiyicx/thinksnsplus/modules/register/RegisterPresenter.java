@@ -146,7 +146,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
      * @return
      */
     private boolean checkUsername(String name) {
-        if (name.length() < mContext.getResources().getInteger(R.integer.username_min_length)) {
+        if (!RegexUtils.isUsernameLength(name, mContext.getResources().getInteger(R.integer.username_min_length))) {
             mRootView.showMessage(mContext.getString(R.string.username_toast_hint));
             return true;
         }
