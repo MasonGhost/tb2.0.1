@@ -16,6 +16,7 @@ public class ServiceManager {
     private CommonClient mCommonClient;
     private LoginClient mLoginClient;
     private RegisterClient mRegisterClient;
+    private UserInfoClient mUserInfoClient;
 
     /**
      * 如果需要添加 service 只需在构造方法中添加对应的 service,在提供 get 方法返回出去,只要在 ServiceModule 提供了该 service
@@ -24,10 +25,14 @@ public class ServiceManager {
      * @param commonClient
      */
     @Inject
-    public ServiceManager(CommonClient commonClient, LoginClient loginClient,RegisterClient registerClient) {
+    public ServiceManager(CommonClient commonClient
+            , LoginClient loginClient
+            , RegisterClient registerClient
+            , UserInfoClient userInfoClient) {
         this.mCommonClient = commonClient;
         this.mLoginClient = loginClient;
-        this.mRegisterClient=registerClient;
+        this.mRegisterClient = registerClient;
+        this.mUserInfoClient = userInfoClient;
     }
 
     public CommonClient getCommonClient() {
@@ -40,5 +45,9 @@ public class ServiceManager {
 
     public RegisterClient getRegisterClient() {
         return mRegisterClient;
+    }
+
+    public UserInfoClient getUserInfoClient() {
+        return mUserInfoClient;
     }
 }
