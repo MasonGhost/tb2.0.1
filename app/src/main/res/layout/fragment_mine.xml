@@ -6,6 +6,7 @@
     >
     <!--头像，用户名，简介-->
     <RelativeLayout
+        android:id="@+id/rl_userinfo_container"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:background="@color/white"
@@ -61,6 +62,7 @@
         android:orientation="horizontal">
         <!--粉丝-->
         <LinearLayout
+            android:id="@+id/ll_fans_container"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -82,6 +84,7 @@
         <ImageView style="@style/style_divider_veitical"/>
         <!--关注-->
         <LinearLayout
+            android:id="@+id/ll_follow_container"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -89,7 +92,7 @@
             android:orientation="vertical">
             <!--关注数量-->
             <TextView
-                android:id="@+id/tv_folow_count"
+                android:id="@+id/tv_follow_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="12233"/>
