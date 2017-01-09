@@ -458,6 +458,7 @@ public class RegisterActivityTest {
         onView(withId(R.id.bt_regist_regist)).check(matches(isEnabled())).perform(click());
         onView(withId(R.id.tv_error_tip)).check(matches(isDisappear()));
     }
+
     /**
      * summary                       判断手机号必须为 11 位
      * <p>
@@ -467,7 +468,6 @@ public class RegisterActivityTest {
      *
      * @throws Exception
      */
-
     @Test
     public void phoneNumber_length() throws Exception {
         String phone="1234";
