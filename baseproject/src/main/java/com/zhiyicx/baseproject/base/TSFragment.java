@@ -1,5 +1,6 @@
 package com.zhiyicx.baseproject.base;
 
+import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
@@ -52,6 +53,7 @@ public abstract class TSFragment<P> extends BaseFragment<P> {
             linearLayout.setFitsSystemWindows(false);
         } else {
             //不顶上去
+            setToolBarTextColor();
             StatusBarUtils.setStatusBarColor(getActivity(), setToolBarBackgroud());
             linearLayout.setFitsSystemWindows(true);
         }
@@ -162,5 +164,15 @@ public abstract class TSFragment<P> extends BaseFragment<P> {
      */
     protected void setRightClick() {
 
+    }
+
+    /**
+     * 根据toolbar的背景设置它的文字颜色
+     */
+    protected void setToolBarTextColor() {
+        // 如果toolbar背景是白色的，就将文字颜色设置成黑色
+        if (showToolbar()&&getResources().getColor(setToolBarBackgroud()) == Color.WHITE) {
+            mToolbarCenter.setTextColor(getResources().getColor(R.color.important_for_content));
+        }
     }
 }
