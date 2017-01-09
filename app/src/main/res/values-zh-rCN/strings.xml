@@ -14,5 +14,11 @@
     <string name="question_answer">Q&amp;A</string>
     <string name="setting">设置</string>
 
+    <!-- 设置 -->
+    <string name="vertify">认证</string>
+    <string name="change_password">修改密码</string>
+    <string name="clean_cache">清理缓存</string>
+    <string name="about_us">关于我们</string>
+    <string name="login_out">退出登录</string>
     <!--代码中的string-->
 </resources>

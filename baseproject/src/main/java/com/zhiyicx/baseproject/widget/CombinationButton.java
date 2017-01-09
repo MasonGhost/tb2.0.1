@@ -5,19 +5,24 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.R;
+
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 
 /**
  * @author LiuChao
  * @describe 个人中心的组合控件，图片-文字-图片
  * @date 2017/1/7
- * @contact email:450127106@qq.com
+ * @contactemail:450127106@qq.com
  */
-public class CombinationButton extends LinearLayout {
+public class CombinationButton extends FrameLayout {
     ImageView combined_button_img_left, combined_button_img_right;
     TextView combined_button_text;
 
@@ -34,8 +39,13 @@ public class CombinationButton extends LinearLayout {
         String text = array.getString(R.styleable.combinationBtn_text);
         array.recycle();
         combined_button_text.setText(text);
-        combined_button_img_left.setImageDrawable(left);
-        combined_button_img_right.setImageDrawable(right);
+        if (left != null) {
+            combined_button_img_left.setImageDrawable(left);
+        }
+        if (right != null) {
+            combined_button_img_right.setImageDrawable(right);
+        }
+
     }
 
     /**

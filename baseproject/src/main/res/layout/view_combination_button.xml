@@ -1,38 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+<RelativeLayout
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/iv_left_img"
+        android:layout_centerVertical="true"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_width="wrap_content"
+        android:src="@mipmap/ico_eye_close"/>
 
-        <ImageView
-            android:id="@+id/iv_left_img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:src="@mipmap/ico_eye_close"/>
+    <TextView
+        android:id="@+id/tv_left_text"
+        android:layout_centerVertical="true"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/iv_left_img"
+        android:layout_width="wrap_content"
+        android:textSize="@dimen/size_content_assist"
+        android:textColor="@color/important_for_content"
+        tools:text="我的订阅"/>
+    <TextView
+        android:id="@+id/tv_right_text"
+        android:layout_centerVertical="true"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_toLeftOf="@id/iv_right_img"
+        android:paddingRight="@dimen/spacing_small"
+        android:textSize="@dimen/size_content_comment"
+        android:textColor="@color/normal_for_assist_text"
+        android:layout_width="wrap_content"
+        tools:text="34.8M"/>
 
-        <TextView
-            android:id="@+id/tv_left_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@id/iv_left_img"
-            android:text="我的订阅"/>
+    <ImageView
+        android:id="@+id/iv_right_img"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:layout_width="wrap_content"
+        android:src="@mipmap/ico_eye_close"/>
+</RelativeLayout>
 
-        <ImageView
-            android:id="@+id/iv_right_img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:src="@mipmap/ico_eye_close"/>
-    </RelativeLayout>
-
-</LinearLayout>
