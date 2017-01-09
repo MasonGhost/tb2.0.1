@@ -3,6 +3,7 @@
     <string name="err_share_no_content">分享内容不能为空</string>
     <string name="err_net_not_work">当前网络状况不佳</string>
     <string name="erro_argument_in_method">方法使用了不合法的参数</string>
+    <string name="data_load_error">数据加载失败</string>
     <!-- 通用 -->
     <string name="cancel">取消</string>
     <string name="seconds">秒</string>

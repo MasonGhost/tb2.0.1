@@ -10,8 +10,15 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bigkoo.pickerview.OptionsPickerView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
+
+import org.simple.eventbus.EventBus;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,6 +47,12 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     @BindView(R.id.ll_city_container)
     LinearLayout mLlCityContainer;
 
+    private ArrayList<AreaBean> options1Items;
+    private ArrayList<ArrayList<AreaBean>> options2Items;
+    private int mCityOption1;//用来记录地区中滚轮的位置
+    private int mCityOption2;
+    private OptionsPickerView mAreaPickerView;// 地域选择器
+
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_user_info;
@@ -47,7 +60,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     @Override
     protected void initView(View rootView) {
-
+        initCityPickerView();
     }
 
     @Override
@@ -93,7 +106,45 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
             case R.id.ll_sex_container:
                 break;
             case R.id.ll_city_container:
+                mAreaPickerView.setSelectOptions(mCityOption1, mCityOption2);
+                mAreaPickerView.show();
                 break;
         }
+    }
+
+    @Override
+    public void setAreaData(ArrayList<AreaBean> options1Items, ArrayList<ArrayList<AreaBean>> options2Items) {
+        this.options1Items = options1Items;
+        this.options2Items = options2Items;
+        mAreaPickerView.setPicker(options1Items, options2Items, true);
+        mAreaPickerView.setCyclic(false);// 设置是否可以循环滚动
+    }
+
+    /**
+     * 初始化城市选择器
+     */
+    private void initCityPickerView() {
+        if (mAreaPickerView != null) {
+            return;
+        }
+        mAreaPickerView = new OptionsPickerView(getActivity());
+        mAreaPickerView.setCancelable(true);// 触摸是否自动消失
+        mAreaPickerView.setTitle("请选择城市");
+        mAreaPickerView.setOnoptionsSelectListener(new OptionsPickerView.OnOptionsSelectListener() {
+            @Override
+            public void onOptionsSelect(int options1, int option2, int options3) {
+                if (options2Items.size() <= options1 || options2Items.get(options1).size() <= option2) {
+                    return;//避免pickview控件的bug
+                }
+                //EventBus.getDefault().post(options2Items.get(options1).get(option2), "update_location");
+                String areaText = options1Items.get(options1).getPickerViewText();
+                String city = options2Items.get(options1).get(option2).getPickerViewText();
+                city = city.equals("全部") ? areaText : city;//如果为全部则不显示
+                mTvCity.setText(city);//更新位置
+                mCityOption1 = options1;
+                mCityOption2 = option2;
+            }
+        });
+        mPresenter.getAreaData();
     }
 }

@@ -20,6 +20,5 @@ public class UserInfoActivity extends TSActivity<UserInfoPresenter, UserInfoFrag
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .userInfoPresenterModule(new UserInfoPresenterModule(mContanierFragment))
                 .build().inject(this);
-
     }
 }
