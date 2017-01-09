@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.base.BaseFragment;
@@ -173,6 +172,7 @@ public abstract class TSFragment<P> extends BaseFragment<P> {
         // 如果toolbar背景是白色的，就将文字颜色设置成黑色
         if (showToolbar()&&getResources().getColor(setToolBarBackgroud()) == Color.WHITE) {
             mToolbarCenter.setTextColor(getResources().getColor(R.color.important_for_content));
+            StatusBarUtils.statusBarLightMode(getActivity());
         }
     }
 }

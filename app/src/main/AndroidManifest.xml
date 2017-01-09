@@ -14,7 +14,7 @@
             android:theme="@style/BackGroundLauncherTheme">
         </activity>
         <activity android:name=".modules.register.RegisterActivity"/>
-        <activity android:name=".modules.home.HomeActivity">
+        <activity android:name=".modules.settings.SettingsActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

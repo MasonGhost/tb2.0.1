@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.settings;
 
 import com.zhiyicx.baseproject.base.TSActivity;
-import com.zhiyicx.thinksnsplus.modules.register.RegisterFragment;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter;
 
 /**
@@ -11,7 +10,7 @@ import com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter;
  * @Contact master.jungle68@gmail.com
  */
 
-public class SettingsActivity extends TSActivity<RegisterPresenter, RegisterFragment> {
+public class SettingsActivity extends TSActivity<RegisterPresenter, SettingsFragment> {
 
     @Override
     protected void componentInject() {
@@ -25,8 +24,8 @@ public class SettingsActivity extends TSActivity<RegisterPresenter, RegisterFrag
     }
 
     @Override
-    protected RegisterFragment getFragment() {
-        return RegisterFragment.newInstance();
+    protected SettingsFragment getFragment() {
+        return SettingsFragment.newInstance();
     }
 
 }

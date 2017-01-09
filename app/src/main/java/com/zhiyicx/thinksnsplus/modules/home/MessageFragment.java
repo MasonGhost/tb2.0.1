@@ -48,6 +48,25 @@ public class MessageFragment extends TSFragment {
     }
 
     @Override
+    protected int getBodyLayoutId() {
+        return R.layout.fragment_message;
+    }
+
+    @Override
+    protected int setToolBarBackgroud() {
+        return R.color.white;
+    }
+
+    @Override
+    protected String setCenterTitle() {
+        return getString(R.string.message);
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+    @Override
     protected void initView(View rootView) {
         mToolbarCenter.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
         mHeaderView = LayoutInflater.from(getActivity()).inflate(R.layout.header_message_list, null);
@@ -80,24 +99,5 @@ public class MessageFragment extends TSFragment {
         });
     }
 
-    @Override
-    protected int getBodyLayoutId() {
-        return R.layout.fragment_message;
-    }
-
-    @Override
-    protected int setToolBarBackgroud() {
-        return R.color.white;
-    }
-
-    @Override
-    protected String setCenterTitle() {
-        return getString(R.string.message);
-    }
-
-    @Override
-    protected boolean showToolBarDivider() {
-        return true;
-    }
 
 }

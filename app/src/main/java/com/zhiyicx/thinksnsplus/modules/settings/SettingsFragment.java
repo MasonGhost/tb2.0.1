@@ -21,7 +21,22 @@ public class SettingsFragment extends TSFragment<RegisterContract.Presenter> imp
 
     @Override
     protected int getBodyLayoutId() {
-        return R.layout.fragment_register;
+        return R.layout.fragment_settings;
+    }
+
+    @Override
+    protected String setCenterTitle() {
+        return getString(R.string.setting);
+    }
+
+    @Override
+    protected int setToolBarBackgroud() {
+        return R.color.white;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return true;
     }
 
     @Override
@@ -70,10 +85,6 @@ public class SettingsFragment extends TSFragment<RegisterContract.Presenter> imp
 
     }
 
-    @Override
-    protected String setCenterTitle() {
-        return getString(R.string.immediate_regist);
-    }
 
     /**
      * 设置确定按钮是否可点击
