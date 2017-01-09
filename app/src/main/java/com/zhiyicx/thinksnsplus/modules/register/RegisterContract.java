@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.register;
 
+import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
@@ -40,7 +41,7 @@ public interface RegisterContract {
          * @param phone 注册的手机号码
          * @return
          */
-        Observable<BaseJson<String>> getVertifyCode(String phone);
+        Observable<BaseJson<CacheBean>> getVertifyCode(String phone,String type);
 
         /**
          * 注册
@@ -50,7 +51,7 @@ public interface RegisterContract {
          * @param password 用户密码
          * @return
          */
-        Observable<BaseJson<String>> register(String phone, String name, String vertifyCode, String password);
+        Observable<BaseJson<CacheBean>> register(String phone, String name, String vertifyCode, String password);
     }
 
     interface Presenter extends IBasePresenter {

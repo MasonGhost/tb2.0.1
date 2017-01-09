@@ -1,14 +1,15 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import com.zhiyicx.baseproject.cache.CacheImp;
-import com.zhiyicx.baseproject.cache.IDataBaseOperate;
+import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.data.source.local.CacheManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
+import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterContract;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * @Describe
@@ -19,21 +20,21 @@ import rx.Observable;
 
 public class RegisterRepository implements RegisterContract.Repository {
     private CommonClient mCommonClient;
-    private CacheImp mCommonCache;
+    private RegisterClient mRegisterClient;
 
-    public RegisterRepository(ServiceManager serviceManager, CacheManager cacheManager) {
-        super();
+    public RegisterRepository(ServiceManager serviceManager) {
         mCommonClient = serviceManager.getCommonClient();
-        mCommonCache = cacheManager.getCommonCache();
+        mRegisterClient = serviceManager.getRegisterClient();
     }
 
     @Override
-    public Observable<BaseJson<String>> getVertifyCode(String phone) {
-        return Observable.just(new BaseJson<String>());
+    public Observable<BaseJson<CacheBean>> getVertifyCode(String phone,String type) {
+        return Observable.just(new BaseJson<CacheBean>());
     }
 
     @Override
-    public Observable<BaseJson<String>> register(String phone, String name, String vertifyCode, String password) {
-        return Observable.just(new BaseJson<String>());
+    public Observable<BaseJson<CacheBean>> register(String phone, String name, String vertifyCode, String password) {
+        return mRegisterClient.register("success", phone, name, vertifyCode, password)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 }

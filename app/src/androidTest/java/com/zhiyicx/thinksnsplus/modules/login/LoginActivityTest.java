@@ -1,35 +1,24 @@
 package com.zhiyicx.thinksnsplus.modules.login;
 
 
-import android.app.Application;
-import android.support.test.espresso.Espresso;
 import android.support.test.espresso.ViewInteraction;
-import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
-import android.support.test.runner.AndroidJUnit4;
-
 
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.base.ServiceModule;
-import com.zhiyicx.thinksnsplus.data.beans.LoginBean;
-import com.zhiyicx.thinksnsplus.data.client.LoginClient;
-import com.zhiyicx.thinksnsplus.modules.AcitivityTest;
-import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.LoginBean;
+import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
+import com.zhiyicx.thinksnsplus.modules.AcitivityTest;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import javax.inject.Inject;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.replaceText;
@@ -37,7 +26,6 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.zhiyicx.thinksnsplus.modules.MyViewMatchers.isUnClickable;
 import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
 
 /**
  * @author LiuChao
@@ -60,7 +48,7 @@ public class LoginActivityTest extends AcitivityTest {
         etPhone = findViewById(R.id.et_login_phone);
         etPass = findViewById(R.id.et_login_password);
         btnLogin = findViewById(R.id.bt_login_login);
-        tvErrorTip = findViewById(R.id.login_error_tip);
+        tvErrorTip = findViewById(R.id.tv_error_tip);
     }
 
     /**

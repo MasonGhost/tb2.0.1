@@ -31,12 +31,14 @@
     <dimen name="margin_statubar">25dp</dimen>
     <!--登录注册编辑框左边的文字宽度-->
     <dimen name="edit_lefttext_width">45dp</dimen>
-
+    <dimen name="button_send_vertify_code_min_width">75dp</dimen>
     <!--可操作按钮列表高度-->
     <dimen name="action_button_list_item_height">45dp</dimen>
     <!--宽度为整个屏幕宽的按钮高度-->
     <dimen name="full_button_height">50dp</dimen>
 
+    <!-- 光标宽度 -->
+    <dimen name="cursor_with">1dp</dimen>
     <!-- view间距 -->
 
     <dimen name="item_spacing_normal">5dp</dimen>
@@ -93,6 +95,7 @@
     <!--#########################################      圆角尺寸       ################################-->
     <!--提示信息背景角度-->
     <dimen name="hintview_corner">5dp</dimen>
+
     <!--#########################################      聊天       ################################-->
     <dimen name="chat_list_new_msg_tip_with">50dp</dimen>
     <dimen name="chat_list_msg_text_maxwith">225dp</dimen>

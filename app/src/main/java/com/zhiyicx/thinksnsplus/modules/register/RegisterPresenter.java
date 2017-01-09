@@ -2,11 +2,13 @@ package com.zhiyicx.thinksnsplus.modules.register;
 
 import android.os.CountDownTimer;
 
+import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 
 import javax.inject.Inject;
 
@@ -24,8 +26,6 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
 
     public static final int S_TO_MS_SPACING = 1000; // s 和 ms 的比例
     public static final int SNS_TIME = 60 * S_TO_MS_SPACING; // 发送短信间隔时间，单位 ms
-    public static final int USERNAME_MIN_LENGTH = 2; // 用户名最小长度
-    public static final int PASSWORD_MIN_LENGTH = 6; // 密码最小长度
 
     private int mTimeOut = SNS_TIME;
 
@@ -51,20 +51,19 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
 
     @Override
     public void getVertifyCode(String phone) {
-        if (!RegexUtils.isMobileExact(phone)) {
-            mRootView.showMessage(mContext.getString(R.string.phone_number_toast_hint));
+        if (checkPhone(phone)) {
             return;
         }
-        mRepository.getVertifyCode(phone)
+        mRepository.getVertifyCode(phone, CommonClient.VERTIFY_CODE_TYPE_REGISTER)
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<BaseJson<String>>() {
+                .subscribe(new Action1<BaseJson<CacheBean>>() {
                     @Override
-                    public void call(BaseJson<String> json) {
+                    public void call(BaseJson<CacheBean> json) {
 //                        if (json.code.equals(ZBLApi.REQUEST_SUCESS)) {
                         mRootView.hideLoading();//隐藏loading
                         timer.start();//开始倒计时
                         mRootView.setVertifyCodeBtEnabled(false);
-                        mRootView.showMessage(json.getData());
+                        mRootView.showMessage(json.getMessage());
 //                        } else {
 //                            mRootView.showMessage(json.getMessage());
 //                        }
@@ -80,24 +79,28 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
         mRootView.showMessage("");
     }
 
+
     @Override
     public void register(String name, String phone, String vertifyCode, String password) {
-        if (!checkUsername(name)) {
+        if (checkUsername(name)) {
             return;
         }
-        if (!checkPassword(password)) {
+        if (checkPassword(password)) {
+            return;
+        }
+        if (checkPhone(phone)) {
             return;
         }
         mRepository.register(phone, name, vertifyCode, password)
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<BaseJson<String>>() {
+                .subscribe(new Action1<BaseJson<CacheBean>>() {
                     @Override
-                    public void call(BaseJson<String> json) {
+                    public void call(BaseJson<CacheBean> json) {
 //                        if (json.code.equals(ZBLApi.REQUEST_SUCESS)) {
                         mRootView.hideLoading();//隐藏loading
                         timer.start();//开始倒计时
                         mRootView.setVertifyCodeBtEnabled(false);
-                        mRootView.showMessage(json.getData());
+                        mRootView.showMessage(json.getMessage());
 //                        } else {
 //                            mRootView.showMessage(json.getMessage());
 //                        }
@@ -124,25 +127,38 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
     }
 
     /**
+     * 检测手机号码是否正确
+     * @param phone
+     * @return
+     */
+    private boolean checkPhone(String phone) {
+        if (!RegexUtils.isMobileExact(phone)) {
+            mRootView.showMessage(mContext.getString(R.string.phone_number_toast_hint));
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * 检查用户名是否小于最小长度,不能以数字开头
      *
      * @param name
      * @return
      */
     private boolean checkUsername(String name) {
-        if (name.length() < USERNAME_MIN_LENGTH) {
+        if (name.length() < mContext.getResources().getInteger(R.integer.username_min_length)) {
             mRootView.showMessage(mContext.getString(R.string.username_toast_hint));
-            return false;
+            return true;
         }
         if (RegexUtils.isUsernameNoNumberStart(name)) {// 数字开头
             mRootView.showMessage(mContext.getString(R.string.username_toast_not_number_start_hint));
-            return false;
+            return true;
         }
         if (!RegexUtils.isUsername(name)) {// 用户名只能包含数字、字母和下划线
             mRootView.showMessage(mContext.getString(R.string.username_toast_not_symbol_hint));
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**
@@ -152,10 +168,10 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
      * @return
      */
     private boolean checkPassword(String password) {
-        if (password.length() < PASSWORD_MIN_LENGTH) {
+        if (password.length() < mContext.getResources().getInteger(R.integer.password_min_length)) {
             mRootView.showMessage(mContext.getString(R.string.password_toast_hint));
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 }

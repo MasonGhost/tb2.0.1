@@ -23,4 +23,10 @@ public class CacheBean {
         return (System.currentTimeMillis() - mCreatTime) / 1000 > EXPIRE_LIMIT;
     }
 
+    @Override
+    public String toString() {
+        return "CacheBean{" +
+                "mCreatTime=" + mCreatTime +
+                '}';
+    }
 }

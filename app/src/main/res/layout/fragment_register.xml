@@ -9,16 +9,15 @@
 
         <TextView
             style="@style/style_small_text"
-            android:layout_marginLeft="@dimen/spacing_mid"
             android:text="@string/username"/>
 
-        <EditText
+        <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
             android:id="@+id/et_regist_username"
             style="@style/style_edit"
-            android:layout_marginLeft="42px"
+            android:drawableRight="@mipmap/ico_eye_close"
             android:hint="@string/username_input_hint"
             android:inputType="textPersonName"
-            android:maxLength="8"/>
+            android:maxLength="@integer/username_max_length"/>
     </LinearLayout>
 
     <ImageView style="@style/style_divider_horizontal"/>
@@ -27,42 +26,54 @@
 
         <LinearLayout
             style="@style/style_edit_line"
-            android:layout_width="590px">
+            android:layout_toLeftOf="@+id/rl_send_vertify_code_container">
 
             <TextView
                 style="@style/style_small_text"
-                android:layout_marginLeft="@dimen/spacing_mid"
                 android:text="@string/phone_number"/>
 
-            <EditText
+            <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
                 android:id="@+id/et_regist_phone"
                 style="@style/style_edit"
-                android:layout_height="match_parent"
                 android:layout_centerVertical="true"
+                android:drawableRight="@mipmap/ico_eye_close"
                 android:hint="@string/phone_number_input_hint"
                 android:inputType="phone"
-                android:maxLength="11"/>
+                android:maxLength="@integer/phone_number_length"/>
         </LinearLayout>
 
-        <RelativeLayout style="@style/style_send_button_cotainer">
+        <RelativeLayout
+            android:id="@+id/rl_send_vertify_code_container"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:paddingRight="@dimen/spacing_mid"
+            >
 
             <Button
                 android:id="@+id/bt_regist_send_vertify_code"
-                style="@style/style_send_button"
-                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:background="@null"
                 android:enabled="false"
-                />
+                android:gravity="center"
+                android:minWidth="@dimen/button_send_vertify_code_min_width"
+                android:text="@string/send_vertify_code"
+                android:textColor="@color/themeColor"
+                android:textSize="@dimen/size_content"/>
 
             <ImageView
                 android:id="@+id/pb_regist_loading"
-                android:layout_width="50px"
-                android:layout_height="50px"
+                android:layout_width="@dimen/icon_for_assist_small"
+                android:layout_height="@dimen/icon_for_assist_small"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="38px"
+                android:layout_toLeftOf="@id/bt_regist_send_vertify_code"
                 android:src="@drawable/frame_loading"
                 android:visibility="invisible"
                 />
-
         </RelativeLayout>
 
 
@@ -74,15 +85,15 @@
 
         <TextView
             style="@style/style_small_text"
-            android:layout_marginLeft="@dimen/spacing_mid"
             android:text="@string/vertify_code"/>
 
-        <EditText
+        <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
             android:id="@+id/et_regist_vertify_code"
             style="@style/style_edit"
+            android:drawableRight="@mipmap/ico_eye_close"
             android:hint="@string/vertify_code_input_hint"
             android:inputType="number"
-            android:maxLength="4"/>
+            android:maxLength="@integer/vertiry_code_lenght"/>
     </LinearLayout>
 
     <ImageView style="@style/style_divider_horizontal"/>
@@ -92,44 +103,46 @@
 
         <TextView
             style="@style/style_small_text"
-            android:layout_marginLeft="@dimen/spacing_mid"
             android:text="@string/password"/>
 
-        <EditText
+        <com.zhiyicx.baseproject.widget.edittext.PasswordEditText
             android:id="@+id/et_regist_password"
             style="@style/style_edit"
-            android:layout_width="510px"
-            android:layout_marginLeft="42px"
+            android:drawableRight="@mipmap/ico_eye_close"
             android:hint="@string/password_input_hint"
             android:inputType="textPassword"
-            android:maxLength="16"/>
+            android:maxLength="@integer/password_maxlenght"/>
 
-        <CheckBox
-            android:id="@+id/cb_login"
-            android:layout_width="80px"
-            android:layout_height="80px"
-            android:layout_marginLeft="20px"
-            android:button="@drawable/selector_psw_look"
-            android:gravity="center"/>
     </LinearLayout>
 
     <ImageView style="@style/style_divider_horizontal"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/textview_height_tall"
-        android:layout_gravity="right"
-        android:layout_marginRight="@dimen/spacing_mid"
-        android:gravity="center_vertical|right"
-        android:textSize="@dimen/size_content"/>
-
-    <Button
-        android:id="@+id/bt_regist_regist"
-        style="@style/style_login_button"
-        android:enabled="false"
-        android:text="@string/immediate_regist"/>
 
     <include
         layout="@layout/include_error_tip_text"/>
 
+    <Button
+        android:id="@+id/bt_regist_regist"
+        style="@style/style_login_button"
+        android:layout_marginTop="@dimen/button_login_margin_top"
+        android:enabled="false"
+        android:text="@string/immediate_regist"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_mid"
+        android:layout_marginRight="@dimen/spacing_mid"
+        android:layout_marginTop="@dimen/spacing_mid"
+        >
+        <!--随便逛逛-->
+        <TextView
+            android:id="@+id/tv_look_around"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_login"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_content_comment"/>
+
+    </RelativeLayout>
 </LinearLayout>

@@ -4,11 +4,21 @@ import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.zhiyicx.baseproject.cache.CacheBean;
+import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -22,6 +32,8 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.zhiyicx.thinksnsplus.modules.MyViewMatchers.disEnabled;
 import static com.zhiyicx.thinksnsplus.modules.MyViewMatchers.isDisappear;
 import static com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter.SNS_TIME;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 
 /**
  * @Describe
@@ -38,6 +50,76 @@ public class RegisterActivityTest {
     @Rule
     public ActivityTestRule<RegisterActivity> mActivityRule = new ActivityTestRule(RegisterActivity.class);
 
+    private RegisterClient mRegisterClient;
+
+    @Before
+    public void initActivity() {
+        mRegisterClient = AppApplication.AppComponentHolder.getAppComponent().serviceManager().getRegisterClient();
+
+    }
+
+    /**
+     * summary    因为某些原因导致注册失败，比如验证码错误
+     * steps        1.输入正确的手机号、用户名、密码  2.输入错误的验证码码 3.点击注册按钮
+     * expected   errorTip显示登陆失败的原因
+     */
+    @Test
+    public void registerFailure() throws Exception {
+        mRegisterClient.register("failure", USER_PHONE, USER_NAME, "12344", "dsafdsa")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<BaseJson<CacheBean>>() {
+                    @Override
+                    public void call(BaseJson<CacheBean> integerBaseJson) {
+                        LogUtils.d(integerBaseJson.toString());
+                        if (integerBaseJson.isStatus()) {
+                            // 成功跳转:当前不可能发生
+                            assertFalse(true);
+                        } else {
+                            // 登陆失败
+                            assertFalse(false);
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        LogUtils.e(throwable,"error");
+                        assertFalse(false);
+                    }
+                });
+
+    }
+
+    /**
+     * 测试注册网络请求成功
+     * @throws Exception
+     */
+    @Test
+    public void registerSuccess() throws Exception {
+        mRegisterClient.register("success", USER_PHONE, USER_NAME, "1244", "dsafdsa")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<BaseJson<CacheBean>>() {
+                    @Override
+                    public void call(BaseJson<CacheBean> integerBaseJson) {
+                        LogUtils.d(integerBaseJson.toString());
+                        if (integerBaseJson.isStatus()) {
+                            // 成功跳转:当前不可能发生
+                            assertTrue(true);
+                        } else {
+                            // 登陆失败
+                            assertFalse(false);
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        LogUtils.e(throwable,"error");
+                        assertFalse(false);
+                    }
+                });
+
+    }
     /*******************************************  用户名  *********************************************/
 
     /**
@@ -252,8 +334,8 @@ public class RegisterActivityTest {
      * summary                      不输入验证码
      * <p>
      * steps                        1.输入手机号获取验证码
-                                    2.不填写验证码,
-
+     * 2.不填写验证码,
+     * <p>
      * <p>
      * expected                    其他都填写情况下，注册按钮颜色不亮无法点击
      *
@@ -273,7 +355,7 @@ public class RegisterActivityTest {
      * summary                      验证码倒计时时是否还能点击
      * <p>
      * steps                        1.输入手机号获取验证码
-                                    2.点击正在倒计时的验证码
+     * 2.点击正在倒计时的验证码
      * <p>
      * expected                    点击无效，倒计时结束后才能继续点击发送
      *
@@ -284,7 +366,7 @@ public class RegisterActivityTest {
         onView(withId(R.id.et_regist_phone)).perform(typeText(USER_PHONE));
         onView(withId(R.id.bt_regist_send_vertify_code)).perform(click());
         onView(withId(R.id.bt_regist_send_vertify_code)).check(matches(disEnabled()));
-        Thread.sleep(60*1000);
+        Thread.sleep(60 * 1000);
         onView(withId(R.id.bt_regist_send_vertify_code)).check(matches(isEnabled()));
     }
 
@@ -315,9 +397,9 @@ public class RegisterActivityTest {
      * summary                      不输入密码
      * <p>
      * steps                         1.输入昵称“测试124”
-                                     2.填写手机号、验证码
-                                     3.不输入密码
-                                     4.点击注册
+     * 2.填写手机号、验证码
+     * 3.不输入密码
+     * 4.点击注册
      * <p>
      * expected                    注册按钮颜色不亮，无法点击
      *
@@ -336,9 +418,9 @@ public class RegisterActivityTest {
      * summary                      输入5位密码
      * <p>
      * steps                         1.输入昵称“测试124”
-                                     2.填写手机号、验证码
-                                     3.不输入密码
-                                     4.点击注册
+     * 2.填写手机号、验证码
+     * 3.不输入密码
+     * 4.点击注册
      * <p>
      * expected                    注册按钮颜色不亮，无法点击
      *
@@ -353,13 +435,14 @@ public class RegisterActivityTest {
         onView(withId(R.id.bt_regist_regist)).check(matches(isEnabled())).perform(click());
         onView(withId(R.id.tv_error_tip)).check(matches(withText(mActivityRule.getActivity().getString(R.string.password_toast_hint))));
     }
+
     /**
      * summary                      输入6位密码
      * <p>
      * steps                         1.输入昵称“测试124”
-                                     2.填写手机号、验证码
-                                     3.不输入密码
-                                     4.点击注册
+     * 2.填写手机号、验证码
+     * 3.不输入密码
+     * 4.点击注册
      * <p>
      * expected                   注册成功跳转首页
      *
