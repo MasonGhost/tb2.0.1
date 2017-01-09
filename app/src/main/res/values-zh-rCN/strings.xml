@@ -6,5 +6,13 @@
     <string name="message">消息</string>
     <string name="mine">我</string>
 
+    <!--我的-->
+    <string name="personal_page">个人主页</string>
+    <string name="ranking">排行榜</string>
+    <string name="gold">金币</string>
+    <string name="suggetion">意见反馈</string>
+    <string name="question_answer">Q&amp;A</string>
+    <string name="setting">设置</string>
+
     <!--代码中的string-->
 </resources>

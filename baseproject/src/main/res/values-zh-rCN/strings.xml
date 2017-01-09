@@ -2,6 +2,7 @@
     <!-- 异常输出内容 -->
     <string name="err_share_no_content">分享内容不能为空</string>
     <string name="err_net_not_work">当前网络状况不佳</string>
+    <string name="erro_argument_in_method">方法使用了不合法的参数</string>
     <!-- 通用 -->
     <string name="cancel">取消</string>
     <string name="seconds">秒后重发</string>
@@ -11,7 +12,7 @@
     <string name="phone_number">手机号</string>
     <string name="send_vertify_code">获取验证码</string>
     <string name="forget_password">忘记密码</string>
-
+    
     <!-- 注册 -->
     <string name="username_input_hint">请输入2-8位用户名</string>
     <string name="username_toast_hint">@string/username_input_hint</string>

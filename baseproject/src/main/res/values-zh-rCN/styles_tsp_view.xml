@@ -57,8 +57,8 @@
     </style>
 
     <!--###################### 按钮 ################################-->
-
-    <style name="style_login_button">
+    <!--继承自没有阴影的按钮style，如果需要阴影，取消parent-->
+    <style name="style_login_button" parent="@style/Widget.AppCompat.Button.Borderless">
         <item name="android:layout_width">@dimen/button_big_width</item>
         <item name="android:layout_height">@dimen/button_big_height</item>
         <item name="android:layout_gravity">center</item>

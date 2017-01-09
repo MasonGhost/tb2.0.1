@@ -51,7 +51,6 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
 
     @Override
     protected void initView(View rootView) {
-        mToolbarCenter.setTextColor(getResources().getColor(R.color.important_for_content));
         // 手机号码输入框观察
         RxTextView.textChanges(mEtLoginPhone)
                 .compose(this.<CharSequence>bindToLifecycle())
@@ -101,7 +100,12 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
 
     @Override
     protected String setCenterTitle() {
-        return getResources().getString(R.string.bt_login);
+        return getString(R.string.bt_login);
+    }
+
+    @Override
+    protected String setRightTitle() {
+        return getString(R.string.immediate_regist);
     }
 
     @Override
@@ -171,4 +175,5 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 break;
         }
     }
+
 }

@@ -37,6 +37,16 @@ public class MineFragment extends TSFragment {
     }
 
     @Override
+    protected String setCenterTitle() {
+        return getString(R.string.mine);
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_mine;
     }

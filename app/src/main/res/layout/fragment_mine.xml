@@ -1,14 +1,62 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/iv_bg"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+    >
+    <!--头像，用户名，简介-->
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/mine"/>
+        android:layout_height="wrap_content">
 
-</FrameLayout>
+    </RelativeLayout>
+
+    <!--粉丝，关注-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></LinearLayout>
+
+    <!--个人主页-->
+    <com.zhiyicx.baseproject.widget.CombinationButton
+        android:id="@+id/bt_personal_page"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/full_button_height"
+        app:left="@mipmap/ico_eye_close"
+        app:text="@string/personal_page"></com.zhiyicx.baseproject.widget.CombinationButton>
+    <!--排行榜-->
+    <com.zhiyicx.baseproject.widget.CombinationButton
+        android:id="@+id/bt_ranking"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/full_button_height"
+        app:left="@mipmap/ico_eye_close"
+        app:text="@string/ranking"></com.zhiyicx.baseproject.widget.CombinationButton>
+    <!--金币-->
+    <com.zhiyicx.baseproject.widget.CombinationButton
+        android:id="@+id/bt_gold"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/full_button_height"
+        app:left="@mipmap/ico_eye_close"
+        app:text="@string/gold"></com.zhiyicx.baseproject.widget.CombinationButton>
+    <!--意见反馈-->
+    <com.zhiyicx.baseproject.widget.CombinationButton
+        android:id="@+id/bt_suggestion"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/full_button_height"
+        app:left="@mipmap/ico_eye_close"
+        app:text="@string/suggetion"></com.zhiyicx.baseproject.widget.CombinationButton>
+    <!--Q&A-->
+    <com.zhiyicx.baseproject.widget.CombinationButton
+        android:id="@+id/bt_question_answer"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/full_button_height"
+        app:left="@mipmap/ico_eye_close"
+        app:text="@string/question_answer"></com.zhiyicx.baseproject.widget.CombinationButton>
+    <!--设置-->
+    <com.zhiyicx.baseproject.widget.CombinationButton
+        android:id="@+id/bt_setting"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/full_button_height"
+        app:left="@mipmap/ico_eye_close"
+        app:text="@string/setting"></com.zhiyicx.baseproject.widget.CombinationButton>
+
+</LinearLayout>

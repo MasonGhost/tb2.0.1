@@ -6,5 +6,18 @@
         <attr name="showUserAvatar" format="boolean"/>
         <attr name="showName" format="boolean"/>
     </declare-styleable>
+    <!--组合按钮-->
+    <declare-styleable name="combinationBtn">
+        <!--左图-->
+        <attr name="left" format="reference"></attr>
+        <!--文字-->
+        <attr name="text" format="reference|string"></attr>
+        <!--右图-->
+        <attr name="right" format="reference"></attr>
+        <!--是否隐藏左图-->
+        <attr name="hide_left_img" format="boolean"></attr>
+        <!--是否隐藏右图-->
+        <attr name="hide_right_img" format="boolean"></attr>
+    </declare-styleable>
 
 </resources>
