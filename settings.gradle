@@ -1,1 +1,1 @@
-include ':app', ':common', ':rxerrorhandler', ':baseproject', ':imsdk', ':baseadapter-recyclerview', ':refresh', ':pickerview'
+include ':app', ':common', ':rxerrorhandler', ':baseproject', ':imsdk', ':baseadapter-recyclerview', ':refresh', ':pickerview', ':ucrop'

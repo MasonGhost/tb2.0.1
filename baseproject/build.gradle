@@ -49,4 +49,5 @@ dependencies {
     compile project(':refresh')
     compile project(':baseadapter-recyclerview')
     compile project(':pickerview')
+    compile project(':ucrop')
 }
