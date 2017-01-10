@@ -7,7 +7,6 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.CombinationButton;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.register.RegisterContract;
 
 import java.util.concurrent.TimeUnit;
 
@@ -22,7 +21,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/9
  * @Contact master.jungle68@gmail.com
  */
-public class SettingsFragment extends TSFragment<RegisterContract.Presenter> implements RegisterContract.View {
+public class SettingsFragment extends TSFragment<SettingsContract.Presenter> implements SettingsContract.View {
 
     @BindView(R.id.bt_login_out)
     CombinationButton mBtLoginOut;
@@ -77,20 +76,10 @@ public class SettingsFragment extends TSFragment<RegisterContract.Presenter> imp
     }
 
     @Override
-    public void setPresenter(RegisterContract.Presenter presenter) {
+    public void setPresenter(SettingsContract.Presenter presenter) {
         mPresenter = presenter;
     }
 
-
-    @Override
-    public void setVertifyCodeBtEnabled(boolean isEnable) {
-
-    }
-
-    @Override
-    public void setVertifyCodeBtText(String text) {
-
-    }
 
     @Override
     public void showLoading() {
@@ -107,12 +96,9 @@ public class SettingsFragment extends TSFragment<RegisterContract.Presenter> imp
         ToastUtils.showToast(message);
     }
 
-
-    /**
-     * 设置确定按钮是否可点击
-     */
-    private void setConfirmEnable() {
-
+    @Override
+    public void setCacheDirSize(String size) {
+        mBtCleanCache.setRightText(size);
     }
 
     private void initListener() {
@@ -167,4 +153,5 @@ public class SettingsFragment extends TSFragment<RegisterContract.Presenter> imp
                     }
                 });
     }
+
 }

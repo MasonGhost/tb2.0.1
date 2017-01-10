@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.settings.aboutus;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebView;
 
@@ -65,5 +66,19 @@ public class AboutUsFragment extends TSWebFragment {
     @Override
     protected void initView(View rootView) {
         mWebView = (WebView) rootView.findViewById(R.id.wv_about_us);
+    }
+
+    /**
+     * 覆盖系统的回退键
+     * @param keyCode
+     * @param event
+     * @return
+     */
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        if (keyCode == KeyEvent.KEYCODE_BACK && mWebView.canGoBack()) {
+            mWebView.goBack();
+            return true;
+        }
+        return false;
     }
 }

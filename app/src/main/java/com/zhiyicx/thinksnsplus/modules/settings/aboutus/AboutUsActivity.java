@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.settings.aboutus;
 
+import android.view.KeyEvent;
+
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter;
 
@@ -20,5 +22,17 @@ public class AboutUsActivity extends TSActivity<RegisterPresenter, AboutUsFragme
     @Override
     protected AboutUsFragment getFragment() {
         return AboutUsFragment.newInstance(getIntent().getStringExtra(KEY_URL));
+    }
+
+    /**
+     * 覆盖系统的回退键
+     *
+     * @param keyCode
+     * @param event
+     * @return
+     */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        return mContanierFragment.onKeyDown(keyCode, event) == true ? true : super.onKeyDown(keyCode, event);
     }
 }

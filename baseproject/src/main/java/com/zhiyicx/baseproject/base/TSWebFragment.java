@@ -34,21 +34,5 @@ public abstract class TSWebFragment extends TSFragment {
     protected void loadUrl(String url) {
         mWebView.loadUrl(url);
     }
-//
-//    /**
-//     * 覆盖系统的回退键
-//     *
-//     * @param keyCode
-//     * @param event
-//     * @return
-//     */
-//    @Override
-//    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        if (keyCode == KeyEvent.KEYCODE_BACK && wv_about_us.canGoBack()) {
-//            wv_about_us.goBack();
-//            return true;
-//        }
-//
-//        return super.onKeyDown(keyCode, event);
-//    }
+
 }

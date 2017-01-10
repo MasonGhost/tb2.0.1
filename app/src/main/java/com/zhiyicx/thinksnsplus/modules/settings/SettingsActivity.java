@@ -1,7 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.settings;
 
 import com.zhiyicx.baseproject.base.TSActivity;
-import com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 /**
  * @Describe 设置
@@ -10,16 +10,16 @@ import com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter;
  * @Contact master.jungle68@gmail.com
  */
 
-public class SettingsActivity extends TSActivity<RegisterPresenter, SettingsFragment> {
+public class SettingsActivity extends TSActivity<SettingsPresenter, SettingsFragment> {
 
     @Override
     protected void componentInject() {
-//        DaggerRegisterComponent
-//                .builder()
-//                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-//                .registerPresenterModule(new RegisterPresenterModule(mContanierFragment))
-//                .build()
-//                .inject(this);
+        DaggerSettingsComponent
+                .builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .settingsPresenterModule(new SettingsPresenterModule(mContanierFragment))
+                .build()
+                .inject(this);
 
     }
 
@@ -27,5 +27,7 @@ public class SettingsActivity extends TSActivity<RegisterPresenter, SettingsFrag
     protected SettingsFragment getFragment() {
         return SettingsFragment.newInstance();
     }
+
+
 
 }

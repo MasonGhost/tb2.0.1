@@ -12,6 +12,7 @@ import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
@@ -54,7 +55,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
         if (checkPhone(phone)) {
             return;
         }
-        mRepository.getVertifyCode(phone, CommonClient.VERTIFY_CODE_TYPE_REGISTER)
+        Subscription getVertifySub = mRepository.getVertifyCode(phone, CommonClient.VERTIFY_CODE_TYPE_REGISTER)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<BaseJson<CacheBean>>() {
                     @Override
@@ -77,6 +78,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
                 });
         // 代表检测成功
         mRootView.showMessage("");
+        addSubscrebe(getVertifySub);
     }
 
 
@@ -91,7 +93,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
         if (checkPhone(phone)) {
             return;
         }
-        mRepository.register(phone, name, vertifyCode, password)
+        Subscription registerSub = mRepository.register(phone, name, vertifyCode, password)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<BaseJson<CacheBean>>() {
                     @Override
@@ -114,6 +116,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
                 });
         // 代表检测成功
         mRootView.showMessage("");
+        addSubscrebe(registerSub);
     }
 
     @Override
@@ -124,10 +127,12 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
     @Override
     public void onDestroy() {
         timer.cancel();
+        unSubscribe();
     }
 
     /**
      * 检测手机号码是否正确
+     *
      * @param phone
      * @return
      */
