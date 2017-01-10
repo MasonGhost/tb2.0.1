@@ -9,6 +9,9 @@
     <string name="seconds">秒后重发</string>
     <string name="username">用户名</string>
     <string name="password">密码</string>
+    <string name="old_password">旧密码</string>
+    <string name="new_password">新密码</string>
+    <string name="sure_new_password">确认新密码</string>
     <string name="vertify_code">验证码</string>
     <string name="phone_number">手机号</string>
     <string name="send_vertify_code">获取验证码</string>
