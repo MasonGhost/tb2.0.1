@@ -4,7 +4,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 /**
- * @Describe
+ * @Describe H5 基类
  * @Author Jungle68
  * @Date 2017/1/10
  * @Contact master.jungle68@gmail.com
