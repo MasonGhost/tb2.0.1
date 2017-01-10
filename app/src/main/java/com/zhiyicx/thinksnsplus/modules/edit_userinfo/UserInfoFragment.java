@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 
@@ -52,6 +53,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     private int mCityOption1;//用来记录地区中滚轮的位置
     private int mCityOption2;
     private OptionsPickerView mAreaPickerView;// 地域选择器
+    private ActionPopupWindow mGenderPopupWindow;// 性别选择弹框
 
     @Override
     protected int getBodyLayoutId() {
@@ -98,12 +100,19 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         return getString(R.string.complete);
     }
 
+    @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+
     @OnClick({R.id.rl_change_head_container, R.id.ll_sex_container, R.id.ll_city_container})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_change_head_container:
                 break;
             case R.id.ll_sex_container:
+                initGenderPopupWindow();
+                mGenderPopupWindow.show();
                 break;
             case R.id.ll_city_container:
                 mAreaPickerView.setSelectOptions(mCityOption1, mCityOption2);
@@ -146,5 +155,48 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
             }
         });
         mPresenter.getAreaData();
+    }
+
+    /**
+     * 初始化性别选择弹框
+     */
+    private void initGenderPopupWindow() {
+        if (mGenderPopupWindow != null) {
+            return;
+        }
+        mGenderPopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.male))
+                .item2Str(getString(R.string.female))
+                .item3Str(getString(R.string.keep_secret))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(0.8f)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+
+                    }
+                })
+                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
+                    @Override
+                    public void onItem2Clicked() {
+
+                    }
+                })
+                .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
+                    @Override
+                    public void onItem3Clicked() {
+
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mGenderPopupWindow.hide();
+                    }
+                })
+                .build();
     }
 }
