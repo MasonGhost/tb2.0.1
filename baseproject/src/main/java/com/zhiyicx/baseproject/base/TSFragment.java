@@ -21,7 +21,7 @@ import com.zhiyicx.common.utils.StatusBarUtils;
 
 public abstract class TSFragment<P> extends BaseFragment<P> {
     private static final int DEFAULT_TOOLBAR = R.layout.toolbar_custom;
-    private static final int DEFAULT_TOOLBAR_BACKGROUD_COLOR = R.color.themeColor;
+    private static final int DEFAULT_TOOLBAR_BACKGROUD_COLOR = R.color.white;
     private static final int DEFAULT_DIVIDER_COLOR = R.color.general_for_line;
     protected TextView mToolbarLeft;
     protected TextView mToolbarRight;
@@ -170,8 +170,10 @@ public abstract class TSFragment<P> extends BaseFragment<P> {
      */
     protected void setToolBarTextColor() {
         // 如果toolbar背景是白色的，就将文字颜色设置成黑色
-        if (showToolbar()&&getResources().getColor(setToolBarBackgroud()) == Color.WHITE) {
+        if (showToolbar() && getResources().getColor(setToolBarBackgroud()) == Color.WHITE) {
             mToolbarCenter.setTextColor(getResources().getColor(R.color.important_for_content));
+            mToolbarRight.setTextColor(getResources().getColor(R.color.important_for_content));
+            mToolbarLeft.setTextColor(getResources().getColor(R.color.important_for_content));
             StatusBarUtils.statusBarLightMode(getActivity());
         }
     }

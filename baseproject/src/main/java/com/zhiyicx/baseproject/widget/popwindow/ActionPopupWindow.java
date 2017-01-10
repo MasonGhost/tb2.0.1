@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -14,7 +16,7 @@ import com.zhiyicx.baseproject.R;
 
 /**
  * @Describe 动作表单;
- * 使用场景：上传图片、删除操作确认、保存图片、性别选择、
+ * 使用场景：上传图片、删除操作确认、保存图片、性别选择
  * 动态/评论是否重发确认等情况
  * @Author Jungle68
  * @Date 2017/1/4
@@ -22,29 +24,39 @@ import com.zhiyicx.baseproject.R;
  */
 
 public class ActionPopupWindow extends PopupWindow {
+    public static final float POPUPWINDOW_ALPHA = 0.8f;
+
     private Activity mActivity;
     private View mParentView;
     private View mContentView;
-    private String mTopStr;
-    private String mCenterStr;
+    private String mItem1Str;
+    private String mItem2Str;
+    private String mItem3Str;
     private String mBottomStr;
+    private int mItem1Color;
     private boolean mIsOutsideTouch;
     private boolean mIsFocus;
+    private float mAlpha;
     private Drawable mBackgroundDrawable = new ColorDrawable(0x00000000);// 默认为透明;
-    private ActionPopupWindow.ActionPopupWindowTopClickListener mActionPopupWindowTopClickListener;
-    private ActionPopupWindow.ActionPopupWindowCenterClickListener mActionPopupWindowCenterClickListener;
+    private ActionPopupWindowItem1ClickListener mActionPopupWindowItem1ClickListener;
+    private ActionPopupWindowItem2ClickListener mActionPopupWindowItem2ClickListener;
+    private ActionPopupWindowItem3ClickListener mActionPopupWindowItem3ClickListener;
     private ActionPopupWindow.ActionPopupWindowBottomClickListener mActionPopupWindowBottomClickListener;
 
     public ActionPopupWindow(Builder builder) {
         this.mActivity = builder.mActivity;
         this.mParentView = builder.parentView;
-        this.mTopStr = builder.mTopStr;
-        this.mCenterStr = builder.mCenterStr;
+        this.mItem1Str = builder.mItem1Str;
+        this.mItem2Str = builder.mItem2Str;
+        this.mItem3Str = builder.mItem3Str;
+        this.mItem1Color=builder.mItem1Color;
         this.mBottomStr = builder.mBottomStr;
         this.mIsOutsideTouch = builder.mIsOutsideTouch;
         this.mIsFocus = builder.mIsFocus;
-        this.mActionPopupWindowTopClickListener = builder.mActionPopupWindowTopClickListener;
-        this.mActionPopupWindowCenterClickListener = builder.mActionPopupWindowCenterClickListener;
+        this.mAlpha = builder.mAlpha;
+        this.mActionPopupWindowItem1ClickListener = builder.mActionPopupWindowItem1ClickListener;
+        this.mActionPopupWindowItem2ClickListener = builder.mActionPopupWindowItem2ClickListener;
+        this.mActionPopupWindowItem3ClickListener = builder.mActionPopupWindowItem3ClickListener;
         this.mActionPopupWindowBottomClickListener = builder.mActionPopupWindowBottomClickListener;
         initView();
     }
@@ -52,44 +64,67 @@ public class ActionPopupWindow extends PopupWindow {
     private void initView() {
         initLayout();
         setWidth(LinearLayout.LayoutParams.MATCH_PARENT);
-        setHeight(LinearLayout.LayoutParams.MATCH_PARENT);
+        setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
         setFocusable(mIsFocus);
         setOutsideTouchable(mIsOutsideTouch);
         setBackgroundDrawable(mBackgroundDrawable);
         setAnimationStyle(R.style.style_actionPopupAnimation);
         setContentView(mContentView);
+    }
 
+    public void setItem1Str(String item1Str) {
+        ((TextView) mContentView.findViewById(R.id.tv_pop_item1)).setText(item1Str);
+    }
 
+    public void setItem1StrColor(int res) {
+        ((TextView) mContentView.findViewById(R.id.tv_pop_item1)).setTextColor(res);
     }
 
     private void initLayout() {
         mContentView = LayoutInflater.from(mActivity).inflate(R.layout.ppw_for_action, null);
-        if (!TextUtils.isEmpty(mTopStr)) {
-            TextView topView = (TextView) mContentView.findViewById(R.id.tv_pop_top);
-            topView.setVisibility(View.VISIBLE);
-            topView.setText(mTopStr);
-            topView.setOnClickListener(new View.OnClickListener() {
+        if (!TextUtils.isEmpty(mItem1Str)) {
+            TextView item1View = (TextView) mContentView.findViewById(R.id.tv_pop_item1);
+            item1View.setVisibility(View.VISIBLE);
+            item1View.setText(mItem1Str);
+            item1View.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (mActionPopupWindowTopClickListener != null) {
-                        mActionPopupWindowTopClickListener.onTopClicked();
+                    if (mActionPopupWindowItem1ClickListener != null) {
+                        mActionPopupWindowItem1ClickListener.onItem1Clicked();
+                    }
+                }
+            });
+            if(mItem1Color!=0){
+                item1View.setTextColor(mItem1Color);
+            }
+        }
+        if (!TextUtils.isEmpty(mItem2Str)) {
+            TextView item2View = (TextView) mContentView.findViewById(R.id.tv_pop_item2);
+            item2View.setVisibility(View.VISIBLE);
+            item2View.setText(mItem2Str);
+            item2View.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mActionPopupWindowItem2ClickListener != null) {
+                        mActionPopupWindowItem2ClickListener.onItem2Clicked();
                     }
                 }
             });
         }
-        if (!TextUtils.isEmpty(mCenterStr)) {
-            TextView centerView = (TextView) mContentView.findViewById(R.id.tv_pop_center);
-            centerView.setVisibility(View.VISIBLE);
-            centerView.setText(mCenterStr);
-            centerView.setOnClickListener(new View.OnClickListener() {
+        if (!TextUtils.isEmpty(mItem3Str)) {
+            TextView item3View = (TextView) mContentView.findViewById(R.id.tv_pop_item3);
+            item3View.setVisibility(View.VISIBLE);
+            item3View.setText(mItem3Str);
+            item3View.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (mActionPopupWindowCenterClickListener != null) {
-                        mActionPopupWindowCenterClickListener.onCenterClicked();
+                    if (mActionPopupWindowItem3ClickListener != null) {
+                        mActionPopupWindowItem3ClickListener.onItem3Clicked();
                     }
                 }
             });
         }
+
         if (!TextUtils.isEmpty(mBottomStr)) {
             TextView bottomView = (TextView) mContentView.findViewById(R.id.tv_pop_bottom);
             bottomView.setVisibility(View.VISIBLE);
@@ -103,35 +138,65 @@ public class ActionPopupWindow extends PopupWindow {
                 }
             });
         }
+
+        setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                setWindowAlpha(1.0f);
+            }
+        });
+
     }
 
+    /**
+     * 设置屏幕的透明度
+     *
+     * @param alpha 需要设置透明度
+     */
+    private void setWindowAlpha(float alpha) {
+        WindowManager.LayoutParams params = mActivity.getWindow().getAttributes();
+        params.alpha = alpha;
+        params.verticalMargin = 100;
+        mActivity.getWindow().setAttributes(params);
+    }
 
     public static ActionPopupWindow.Builder builder() {
         return new ActionPopupWindow.Builder();
     }
 
     /**
-     * 默认显示到中间
+     * 默认显示到底部
      */
     public void show() {
+        setWindowAlpha(mAlpha);
         if (mParentView == null) {
-            showAsDropDown(mContentView, 0, 0);
+            showAtLocation(mContentView, Gravity.BOTTOM, 0, 0);
         } else {
-            showAsDropDown(mParentView, 0, 0);
+            showAtLocation(mParentView, Gravity.BOTTOM, 0, 0);
         }
+    }
+
+    /**
+     * 隐藏popupwindow
+     */
+    public void hide() {
+        dismiss();
     }
 
     public static final class Builder {
         private Activity mActivity;
         private View parentView;
-        private String mTopStr;
-        private String mCenterStr;
+        private String mItem1Str;
+        private String mItem2Str;
+        private String mItem3Str;
         private String mBottomStr;
-
+        private int mItem1Color;
+        private float mAlpha;
         private boolean mIsOutsideTouch = true;// 默认为true
         private boolean mIsFocus = true;// 默认为true
-        private ActionPopupWindow.ActionPopupWindowTopClickListener mActionPopupWindowTopClickListener;
-        private ActionPopupWindow.ActionPopupWindowCenterClickListener mActionPopupWindowCenterClickListener;
+        private ActionPopupWindowItem1ClickListener mActionPopupWindowItem1ClickListener;
+        private ActionPopupWindowItem2ClickListener mActionPopupWindowItem2ClickListener;
+        private ActionPopupWindowItem3ClickListener mActionPopupWindowItem3ClickListener;
         private ActionPopupWindow.ActionPopupWindowBottomClickListener mActionPopupWindowBottomClickListener;
 
         private Builder() {
@@ -147,13 +212,18 @@ public class ActionPopupWindow extends PopupWindow {
             return this;
         }
 
-        public ActionPopupWindow.Builder topStr(String topStr) {
-            this.mTopStr = topStr;
+        public ActionPopupWindow.Builder item1Str(String item1Str) {
+            this.mItem1Str = item1Str;
             return this;
         }
 
-        public ActionPopupWindow.Builder centerStr(String centerStr) {
-            this.mCenterStr = centerStr;
+        public ActionPopupWindow.Builder item2Str(String item2Str) {
+            this.mItem2Str = item2Str;
+            return this;
+        }
+
+        public ActionPopupWindow.Builder item3Str(String item3Str) {
+            this.mItem3Str = item3Str;
             return this;
         }
 
@@ -161,14 +231,23 @@ public class ActionPopupWindow extends PopupWindow {
             this.mBottomStr = bottomStr;
             return this;
         }
-
-        public ActionPopupWindow.Builder popClickListener(ActionPopupWindow.ActionPopupWindowTopClickListener actionPopupWindowTopClickListener) {
-            this.mActionPopupWindowTopClickListener = actionPopupWindowTopClickListener;
+        public ActionPopupWindow.Builder item1StrColor(int color) {
+            this.mItem1Color = color;
             return this;
         }
 
-        public ActionPopupWindow.Builder centerClickListener(ActionPopupWindow.ActionPopupWindowCenterClickListener actionPopupWindowCenterClickListener) {
-            this.mActionPopupWindowCenterClickListener = actionPopupWindowCenterClickListener;
+        public ActionPopupWindow.Builder item1ClickListener(ActionPopupWindowItem1ClickListener actionPopupWindowItem1ClickListener) {
+            this.mActionPopupWindowItem1ClickListener = actionPopupWindowItem1ClickListener;
+            return this;
+        }
+
+        public ActionPopupWindow.Builder item2ClickListener(ActionPopupWindowItem2ClickListener actionPopupWindowItem2ClickListener) {
+            this.mActionPopupWindowItem2ClickListener = actionPopupWindowItem2ClickListener;
+            return this;
+        }
+
+        public ActionPopupWindow.Builder item3ClickListener(ActionPopupWindowItem3ClickListener actionPopupWindowItem3ClickListener) {
+            this.mActionPopupWindowItem3ClickListener = actionPopupWindowItem3ClickListener;
             return this;
         }
 
@@ -176,7 +255,6 @@ public class ActionPopupWindow extends PopupWindow {
             this.mActionPopupWindowBottomClickListener = actionPopupWindowBottomClickListener;
             return this;
         }
-
 
         public ActionPopupWindow.Builder isOutsideTouch(boolean isOutsideTouch) {
             this.mIsOutsideTouch = isOutsideTouch;
@@ -188,20 +266,30 @@ public class ActionPopupWindow extends PopupWindow {
             return this;
         }
 
+        public ActionPopupWindow.Builder backgroundAlpha(float alpha) {
+            this.mAlpha = alpha;
+            return this;
+        }
+
         public ActionPopupWindow build() {
             return new ActionPopupWindow(this);
         }
     }
 
-    public interface ActionPopupWindowTopClickListener {
-        void onTopClicked();
+    public interface ActionPopupWindowItem1ClickListener {
+        void onItem1Clicked();
     }
 
-    public interface ActionPopupWindowCenterClickListener {
-        void onCenterClicked();
+    public interface ActionPopupWindowItem2ClickListener {
+        void onItem2Clicked();
+    }
+
+    public interface ActionPopupWindowItem3ClickListener {
+        void onItem3Clicked();
     }
 
     public interface ActionPopupWindowBottomClickListener {
         void onBottomClicked();
     }
+
 }

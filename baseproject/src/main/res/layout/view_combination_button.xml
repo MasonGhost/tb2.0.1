@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/white"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <ImageView
         android:id="@+id/iv_left_img"
@@ -45,6 +45,7 @@
         android:textColor="@color/normal_for_assist_text"
         android:textSize="@dimen/size_content_comment"
         tools:text="34.8M"/>
+
     <View
         android:id="@+id/v_line"
         style="@style/style_divider_horizontal"

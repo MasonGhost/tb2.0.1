@@ -1,11 +1,13 @@
 package com.zhiyicx.thinksnsplus.modules.settings.aboutus;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebView;
 
 import com.zhiyicx.baseproject.base.TSWebFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.R;
 
 
@@ -18,29 +20,21 @@ import com.zhiyicx.thinksnsplus.R;
 
 public class AboutUsFragment extends TSWebFragment {
 
-    private String mUrl;
+    private String mUrl = ApiConfig.URL_ABOUT_US;
 
     public AboutUsFragment() {
         // Required empty public constructor
     }
 
-    public static AboutUsFragment newInstance(String mUrl) {
+    public static AboutUsFragment newInstance() {
         AboutUsFragment fragment = new AboutUsFragment();
-        Bundle args = new Bundle();
-        args.putString(AboutUsActivity.KEY_URL, mUrl);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mUrl = getArguments().getString(AboutUsActivity.KEY_URL);
-            loadUrl(mUrl);
-        }else {
-            throw new IllegalArgumentException("url must be setted");
-        }
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        loadUrl(mUrl);
     }
 
     @Override
@@ -60,7 +54,7 @@ public class AboutUsFragment extends TSWebFragment {
 
     @Override
     protected String setCenterTitle() {
-        return getString(R.string.setting);
+        return getString(R.string.about_us);
     }
 
     @Override
@@ -70,11 +64,12 @@ public class AboutUsFragment extends TSWebFragment {
 
     /**
      * 覆盖系统的回退键
+     *
      * @param keyCode
      * @param event
      * @return
      */
-    public boolean onKeyDown(int keyCode, KeyEvent event){
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && mWebView.canGoBack()) {
             mWebView.goBack();
             return true;

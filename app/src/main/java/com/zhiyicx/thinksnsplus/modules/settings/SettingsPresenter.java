@@ -76,6 +76,11 @@ public class SettingsPresenter extends BasePresenter<SettingsContract.Repository
     }
 
     @Override
+    public boolean loginOut() {
+        return false;
+    }
+
+    @Override
     public void onStart() {
 
     }

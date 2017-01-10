@@ -76,6 +76,7 @@
         <item name="android:textColor">@color/important_for_content</item>
         <item name="android:background">@color/white</item>
         <item name="android:textSize">@dimen/button_text_size_big</item>
+        <item name="android:visibility">gone</item>
     </style>
 
     <!--#########################################      popwindow       ################################-->

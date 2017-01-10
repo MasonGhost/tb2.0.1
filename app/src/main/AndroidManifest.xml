@@ -13,19 +13,23 @@
             android:name=".modules.guide.GuideActivity"
             android:theme="@style/BackGroundLauncherTheme">
         </activity>
-        <activity android:name=".modules.register.RegisterActivity"/>
-        <activity android:name=".modules.settings.SettingsActivity">
+        <activity android:name=".modules.register.RegisterActivity">
+        </activity>
+        <activity android:name=".modules.home.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity android:name=".modules.settings.SettingsActivity">
         </activity>
         <activity android:name=".modules.login.LoginActivity">
         </activity>
         <activity android:name=".modules.chat.ChatActivity">
         </activity>
         <activity android:name=".modules.settings.aboutus.AboutUsActivity">
+        </activity>
+        <activity android:name=".modules.edit_userinfo.UserInfoActivity">
         </activity>
     </application>
 

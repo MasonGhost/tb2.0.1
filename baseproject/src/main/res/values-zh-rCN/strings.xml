@@ -3,6 +3,7 @@
     <string name="err_share_no_content">分享内容不能为空</string>
     <string name="err_net_not_work">当前网络状况不佳</string>
     <string name="erro_argument_in_method">方法使用了不合法的参数</string>
+    <string name="data_load_error">数据加载失败</string>
     <!-- 通用 -->
     <string name="cancel">取消</string>
     <string name="seconds">秒后重发</string>
@@ -12,7 +13,10 @@
     <string name="phone_number">手机号</string>
     <string name="send_vertify_code">获取验证码</string>
     <string name="forget_password">忘记密码</string>
-    
+    <string name="male">男</string>
+    <string name="female">女</string>
+    <string name="keep_secret">保密</string>
+    <string name="complete">完成</string>
     <!-- 注册 -->
     <string name="username_input_hint">请输入2-8位用户名</string>
     <string name="username_toast_hint">@string/username_input_hint</string>
@@ -28,7 +32,7 @@
     <!-- 拍照相关 -->
     <string name="choose_from_photo">从相册选取</string>
     <string name="choose_from_camera">拍照</string>
-    
+
     <!--登陆-->
     <string name="bt_login">登陆</string>
     <string name="no_login">不登陆，先随便逛逛</string>

@@ -13,7 +13,6 @@ import com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter;
  */
 
 public class AboutUsActivity extends TSActivity<RegisterPresenter, AboutUsFragment> {
-    public static final String KEY_URL = "url";
 
     @Override
     protected void componentInject() {
@@ -21,7 +20,7 @@ public class AboutUsActivity extends TSActivity<RegisterPresenter, AboutUsFragme
 
     @Override
     protected AboutUsFragment getFragment() {
-        return AboutUsFragment.newInstance(getIntent().getStringExtra(KEY_URL));
+        return AboutUsFragment.newInstance();
     }
 
     /**

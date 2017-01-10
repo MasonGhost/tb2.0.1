@@ -4,6 +4,7 @@ package com.zhiyicx.thinksnsplus.base;
 import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
+import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 
 import javax.inject.Singleton;
 
@@ -27,6 +28,12 @@ public class ServiceModule {
     @Provides
     LoginClient provideLoginClient(Retrofit retrofit) {
         return retrofit.create(LoginClient.class);
+    }
+
+    @Singleton
+    @Provides
+    UserInfoClient provideUserInfoClient(Retrofit retrofit) {
+        return retrofit.create(UserInfoClient.class);
     }
 
     @Singleton
