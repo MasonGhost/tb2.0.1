@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.base.ViewPagerAdapter;
+import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 
@@ -53,7 +53,7 @@ public class HomeFragment extends TSFragment {
     @BindView(R.id.vp_home)
     NoPullViewPager mVpHome;
 
-    private ViewPagerAdapter mHomePager;
+    private TSViewPagerAdapter mHomePager;
 
 
     public HomeFragment() {
@@ -138,7 +138,7 @@ public class HomeFragment extends TSFragment {
     private void initViewPager() {
         //设置缓存的个数
         mVpHome.setOffscreenPageLimit(PAGE_NUMS);
-        mHomePager = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
+        mHomePager = new TSViewPagerAdapter(getActivity().getSupportFragmentManager());
         List<Fragment> mFragmentList = new ArrayList<>();
         mFragmentList.add(MainFragment.newInstance());
         mFragmentList.add(FindFragment.newInstance());

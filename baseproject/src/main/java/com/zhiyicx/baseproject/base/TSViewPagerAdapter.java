@@ -15,11 +15,11 @@ import java.util.List;
  * @Date 2017/1/5
  * @Contact master.jungle68@gmail.com
  */
-public class ViewPagerAdapter extends FragmentStatePagerAdapter {
+public class TSViewPagerAdapter extends FragmentStatePagerAdapter {
     private List<Fragment> list;
     private String[] mLitles;
 
-    public ViewPagerAdapter(FragmentManager fragmentManager) {
+    public TSViewPagerAdapter(FragmentManager fragmentManager) {
         super(fragmentManager);
     }
 
