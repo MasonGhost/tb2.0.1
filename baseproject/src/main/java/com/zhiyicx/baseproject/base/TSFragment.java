@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.utils.StatusBarUtils;
+import com.zhiyicx.common.utils.UIUtils;
 
 /**
  * @Describe
@@ -20,9 +21,10 @@ import com.zhiyicx.common.utils.StatusBarUtils;
  */
 
 public abstract class TSFragment<P> extends BaseFragment<P> {
-    private static final int DEFAULT_TOOLBAR = R.layout.toolbar_custom;
-    private static final int DEFAULT_TOOLBAR_BACKGROUD_COLOR = R.color.white;
-    private static final int DEFAULT_DIVIDER_COLOR = R.color.general_for_line;
+    private static final int DEFAULT_TOOLBAR = R.layout.toolbar_custom; // 默认的toolbar
+    private static final int DEFAULT_TOOLBAR_BACKGROUD_COLOR = R.color.white;// 默认的toolbar背景色
+    private static final int DEFAULT_DIVIDER_COLOR = R.color.general_for_line;// 默认的toolbar下方分割线颜色
+    private static final int DEFAULT_TOOLBAR_LEFT_IMG = R.mipmap.ico_eye_open;// 默认的toolbar左边的图片，一般是返回键
     protected TextView mToolbarLeft;
     protected TextView mToolbarRight;
     protected TextView mToolbarCenter;
@@ -109,11 +111,12 @@ public abstract class TSFragment<P> extends BaseFragment<P> {
 
         // 如果标题为空，就隐藏它
         mToolbarCenter.setVisibility(TextUtils.isEmpty(setCenterTitle()) ? View.GONE : View.VISIBLE);
-        mToolbarLeft.setVisibility(TextUtils.isEmpty(setLeftTitle()) ? View.GONE : View.VISIBLE);
+        mToolbarLeft.setVisibility(TextUtils.isEmpty(setLeftTitle()) && setLeftImg() == 0 ? View.GONE : View.VISIBLE);
         mToolbarRight.setVisibility(TextUtils.isEmpty(setRightTitle()) ? View.GONE : View.VISIBLE);
         mToolbarCenter.setText(setCenterTitle());
         mToolbarLeft.setText(setLeftTitle());
         mToolbarRight.setText(setRightTitle());
+        mToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(),setLeftImg()), null, null, null);
 
         mToolbarLeft.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,6 +152,13 @@ public abstract class TSFragment<P> extends BaseFragment<P> {
      */
     protected String setRightTitle() {
         return "";
+    }
+
+    /**
+     * 设置左边的图片
+     */
+    protected int setLeftImg() {
+        return DEFAULT_TOOLBAR_LEFT_IMG;
     }
 
     /**
