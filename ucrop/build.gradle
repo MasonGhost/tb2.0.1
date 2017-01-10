@@ -1,15 +1,13 @@
 apply plugin: 'com.android.library'
-
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.1'
-
+    def gConfig = rootProject.extensions.getByName("ext")
+    compileSdkVersion gConfig.getAt("compileSdkVersion")
+    buildToolsVersion gConfig.getAt("buildToolsVersion")
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 25
         versionCode 22
         versionName "2.2.0-native"
-
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -31,10 +29,12 @@ android {
     sourceSets.main {
         jni.srcDirs = [];
     }
-
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:25.0.1'
+    def sdkSoupportDependences = rootProject.ext.sdksoupportDependencies;
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile sdkSoupportDependences.appcompatV7
     compile 'com.squareup.okhttp3:okhttp:3.4.1'
 }
+
