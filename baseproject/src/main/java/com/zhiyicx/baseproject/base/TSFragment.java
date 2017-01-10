@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.base.BaseFragment;
@@ -175,6 +174,7 @@ public abstract class TSFragment<P> extends BaseFragment<P> {
             mToolbarCenter.setTextColor(getResources().getColor(R.color.important_for_content));
             mToolbarRight.setTextColor(getResources().getColor(R.color.important_for_content));
             mToolbarLeft.setTextColor(getResources().getColor(R.color.important_for_content));
+            StatusBarUtils.statusBarLightMode(getActivity());
         }
     }
 }

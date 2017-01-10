@@ -15,13 +15,13 @@
         />
     <TextView
         android:id="@+id/tv_pop_center"
-        android:layout_marginTop="@dimen/item_spacing_line"
+        android:layout_marginTop="@dimen/spacing_line"
         style="@style/style_action_list_item"
         tools:text="@string/choose_from_camera"
         />
     <TextView
         android:id="@+id/tv_pop_bottom"
-        android:layout_marginTop="@dimen/item_spacing_normal"
+        android:layout_marginTop="@dimen/spacing_normal"
         style="@style/style_action_list_item"
         tools:text="@string/cancel"
         />

@@ -6,6 +6,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -457,4 +458,187 @@ public class RegisterActivityTest {
         onView(withId(R.id.bt_regist_regist)).check(matches(isEnabled())).perform(click());
         onView(withId(R.id.tv_error_tip)).check(matches(isDisappear()));
     }
+
+    /*******************************************  手机号正则 单元测试  *********************************************/
+
+    /**
+     * summary                       判断手机号必须为 11 位
+     * <p>
+     * steps                         1.输入 1234; 2.输入 18908199568
+     * <p>
+     * expected                      1.false 2.true
+     *
+     * @throws Exception
+     */
+    @Test
+    public void phoneNumber_length() throws Exception {
+        String phone="1234";
+        assertFalse(RegexUtils.isMobileExact(phone));
+        phone="18908199568";
+        assertTrue(RegexUtils.isMobileExact(phone));
+    }
+
+    /**
+     * summary                       判断手机号第一位必须为 1
+     * <p>
+     * steps                         1.输入 28908199568; 2.输入 18908199568
+     * <p>
+     * expected                      1.false 2.true
+     *
+     * @throws Exception
+     */
+    @Test
+    public void phoneNumber_startWith1() throws Exception {
+        String phone="28908199568";
+        assertFalse(RegexUtils.isMobileExact(phone));
+        phone="18908199568";
+        assertTrue(RegexUtils.isMobileExact(phone));
+    }
+
+    /**
+     * summary                       判断手机号第二位必须为 34578 其中之一
+     * <p>
+     * steps                         1.输入 11908199568; 2.输入 18908199568
+     * <p>
+     * expected                      1.false 2.true
+     *
+     * @throws Exception
+     */
+    @Test
+    public void phoneNumber_secondNum() throws Exception {
+        String phone="11908199568";
+        assertFalse(RegexUtils.isMobileExact(phone));
+        phone="18908199568";
+        assertTrue(RegexUtils.isMobileExact(phone));
+    }
+
+    /*******************************************  密码正则 单元测试  *********************************************/
+
+    /**
+     * summary                       判断密码大于 5 位
+     * <p>
+     * steps                         1.输入 Test1; 2.输入 Test12
+     * <p>
+     * expected                      1.false 2.true
+     *
+     * @throws Exception
+     */
+    @Test
+    public void password_length() throws Exception {
+        password_erroLength();
+        password_correct();
+    }
+
+    /*******************************************  用户名正则 单元测试  *********************************************/
+
+    /**
+     * summary                       用户名至少为 4 个英文字符
+     * <p>
+     * steps                         1.输入 thi; 2.输入 thinksns
+     * <p>
+     * expected                      1.false 2.true
+     *
+     * @throws Exception
+     */
+    @Test
+    public void name_english() throws Exception {
+        String name="thi";
+        assertFalse(RegexUtils.isUsernameLength(name,mActivityRule.getActivity().getResources().getInteger(R.integer.username_min_length)));
+        name="thinksns";
+        assertTrue(RegexUtils.isUsernameLength(name,mActivityRule.getActivity().getResources().getInteger(R.integer.username_min_length)));
+    }
+
+    /**
+     * summary                      用户名至少为 2 个中文字符
+     * <p>
+     * steps                         1.输入 嗷; 2.输入 嗷嗷嗷
+     * <p>
+     * expected                      1.false 2.true
+     *
+     * @throws Exception
+     */
+    @Test
+    public void name_chinese() throws Exception {
+        String name="嗷";
+        assertFalse(RegexUtils.isUsernameLength(name,mActivityRule.getActivity().getResources().getInteger(R.integer.username_min_length)));
+        name="嗷嗷嗷";
+        assertTrue(RegexUtils.isUsernameLength(name,mActivityRule.getActivity().getResources().getInteger(R.integer.username_min_length)));
+    }
+
+    /**
+     * summary                      用户名只能使用大小写字母、中文、数字和下划线
+     * <p>
+     * steps                         1.输入 emoji😈; 2.输入 Think123_嗷
+     * <p>
+     * expected                      1.false 2.true
+     *
+     * @throws Exception
+     */
+    @Test
+    public void name_symblol() throws Exception {
+        String name="emoji\uD83D\uDE08";
+        assertFalse(RegexUtils.isUsername(name));
+        name="Think123_嗷";
+        assertTrue(RegexUtils.isUsername(name));
+    }
+
+    /**
+     * summary                      用户名不能以数字开头
+     * <p>
+     * steps                         1.输入 123Test; 2.输入 Test123
+     * <p>
+     * expected                      1.false 2.true
+     *
+     * @throws Exception
+     */
+    @Test
+    public void name_not_start_number() throws Exception {
+        String name="123Test";
+        assertFalse(!RegexUtils.isUsernameNoNumberStart(name));
+        name="Test123";
+        assertTrue(!RegexUtils.isUsernameNoNumberStart(name));
+    }
+    
+    /*******************************************   验证码正则 单元测试 *********************************************/
+
+    /**
+     * summary                      验证码必须为 4 位
+     * <p>
+     * steps                      1.输入 123; 2.输入 12345; 3.输入 1234
+     * <p>
+     * expected                   1.false 2.false 3.true
+     *
+     * @throws Exception
+     */
+    @Test
+    public void vertify_code_length() throws Exception {
+        onView(withId(R.id.et_regist_username)).perform(replaceText(USER_NAME));
+        onView(withId(R.id.et_regist_phone)).perform(typeText(USER_PHONE));
+        onView(withId(R.id.et_regist_vertify_code)).perform(typeText("123"));
+        onView(withId(R.id.et_regist_password)).perform(replaceText("123456"));
+        onView(withId(R.id.bt_regist_regist)).check(matches(disEnabled()));
+        onView(withId(R.id.et_regist_vertify_code)).perform(replaceText("12345")).check(matches(withText("1234")));
+        onView(withId(R.id.et_regist_vertify_code)).perform(replaceText("1234"));
+        onView(withId(R.id.bt_regist_regist)).check(matches(isEnabled()));
+    }
+    /**
+     * summary                      验证码必须为 4 位
+     * <p>
+     * steps                      1.输入 test; 2.输入 1234
+     * <p>
+     * expected                   1.false  3.true
+     *
+     * @throws Exception
+     */
+    @Test
+    public void vertify_code_must_mumber() throws Exception {
+        onView(withId(R.id.et_regist_username)).perform(replaceText(USER_NAME));
+        onView(withId(R.id.et_regist_phone)).perform(typeText(USER_PHONE));
+        onView(withId(R.id.et_regist_vertify_code)).perform(typeText("test"));
+        onView(withId(R.id.et_regist_password)).perform(replaceText("123456"));
+        onView(withId(R.id.bt_regist_regist)).check(matches(disEnabled()));
+        onView(withId(R.id.et_regist_vertify_code)).perform(replaceText("1234"));
+        onView(withId(R.id.bt_regist_regist)).check(matches(isEnabled()));
+    }
+
 }

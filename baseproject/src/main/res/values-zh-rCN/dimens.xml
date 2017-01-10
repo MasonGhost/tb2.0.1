@@ -39,58 +39,6 @@
 
     <!-- 光标宽度 -->
     <dimen name="cursor_with">1dp</dimen>
-    <!-- view间距 -->
-
-    <dimen name="item_spacing_normal">5dp</dimen>
-    <dimen name="item_spacing_line">@dimen/divider_line</dimen>
-
-
-    <!--#########################################      tsp 间距定义       ################################-->
-    <dimen name="spacing_huge">50dp</dimen>
-    <dimen name="spacing_big_large">30dp</dimen>
-    <dimen name="spacing_large">20dp</dimen>
-    <dimen name="spacing_mid">15dp</dimen>
-    <dimen name="spacing_normal">10dp</dimen>
-    <dimen name="spacing_small">5dp</dimen>
-    <dimen name="spacing_tiny">2dp</dimen>
-
-    <!--#########################################      分割线       ################################-->
-    <dimen name="divider_line">1px</dimen>
-
-
-    <!--#########################################      头像尺寸       ################################-->
-
-    <!--
-    用户个人主页头像
-    -->
-    <dimen name="headpic_for_user_home">70dp</dimen>
-    <!--
-    个人中心头像
-    -->
-    <dimen name="headpic_for_user_center">60dp</dimen>
-    <!--
-    动态/消息/赞过的/排行榜/粉丝/评论的 列表头像、
-    聊详情页头像、修改资料-更换头像
-    -->
-    <dimen name="headpic_for_list">38dp</dimen>
-    <!--
-    动态/消息/赞过的/排行榜/粉丝/评论的 列表头像、
-    聊详情页头像、修改资料-更换头像
-    -->
-    <dimen name="headpic_for_assist">26dp</dimen>
-
-    <!--#########################################      图标尺寸       ################################-->
-    <!-- 底部操作栏图标  -->
-    <dimen name="icon_for_home_bottom">24dp</dimen>
-    <dimen name="icon_for_home_bottom_text_margin">2dp</dimen>
-    <!-- 顶部标题栏图标  -->
-    <dimen name="icon_for_toolbar">24dp</dimen>
-    <!-- 个人中心图标   -->
-    <dimen name="icon_for_user_center">20dp</dimen>
-    <!--  其他辅助图标  -->
-    <dimen name="icon_for_assist_big">33dp</dimen>
-    <dimen name="icon_for_assist_big_text_margin">12dp</dimen>
-    <dimen name="icon_for_assist_small">16dp</dimen>
 
     <!--#########################################      圆角尺寸       ################################-->
     <!--提示信息背景角度-->

@@ -1,23 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="ChatMessageList">
+        <!--我的气泡-->
         <attr name="myBubbleBackground" format="reference"/>
+        <!--别人的气泡-->
         <attr name="otherBubbleBackground" format="reference"/>
+        <!--是否显示头像-->
         <attr name="showUserAvatar" format="boolean"/>
+        <!--是否显示名字-->
         <attr name="showName" format="boolean"/>
     </declare-styleable>
     <!--组合按钮-->
     <declare-styleable name="combinationBtn">
         <!--左图-->
-        <attr name="left" format="reference"></attr>
-        <!--文字-->
-        <attr name="text" format="reference|string"></attr>
+        <attr name="leftImage" format="reference"></attr>
         <!--右图-->
-        <attr name="right" format="reference"></attr>
-        <!--是否隐藏左图-->
-        <attr name="hide_left_img" format="boolean"></attr>
-        <!--是否隐藏右图-->
-        <attr name="hide_right_img" format="boolean"></attr>
+        <attr name="rightImage" format="reference"></attr>
+        <!--左边文字-->
+        <attr name="leftText" format="reference|string"></attr>
+        <!--右边文字-->
+        <attr name="rightText" format="reference|string"></attr>
+        <!--左边文字颜色-->
+        <attr name="leftTextColor" format="reference|color"></attr>
+        <!--右边文字颜色-->
+        <attr name="rightTextColor" format="reference|color"></attr>
+        <!--是否显示分割线-->
+        <attr name="showLine" format="reference|boolean"></attr>
     </declare-styleable>
 
 </resources>

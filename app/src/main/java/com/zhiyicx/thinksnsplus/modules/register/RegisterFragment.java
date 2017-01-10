@@ -65,6 +65,11 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     }
 
     @Override
+    protected String setCenterTitle() {
+        return getString(R.string.immediate_regist);
+    }
+
+    @Override
     protected void initView(View rootView) {
         // 用户名观察
         RxTextView.textChanges(mEtRegistUsername)
@@ -203,14 +208,10 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
         } else {
             mTvErrorTip.setVisibility(View.VISIBLE);
             mTvErrorTip.setText(message);
-            System.out.println(" =VISIBLE "+message);
+            System.out.println(" =VISIBLE " + message);
         }
     }
 
-    @Override
-    protected String setCenterTitle() {
-        return getString(R.string.immediate_regist);
-    }
 
     /**
      * 设置确定按钮是否可点击

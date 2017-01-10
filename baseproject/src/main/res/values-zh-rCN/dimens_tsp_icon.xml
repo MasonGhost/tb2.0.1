@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--#########################################      图标尺寸       ################################-->
+
+    <!-- 底部操作栏图标  -->
+    <dimen name="icon_for_home_bottom">24dp</dimen>
+    <dimen name="icon_for_home_bottom_text_margin">2dp</dimen>
+    <!-- 顶部标题栏图标  -->
+    <dimen name="icon_for_toolbar">24dp</dimen>
+    <!-- 个人中心图标   -->
+    <dimen name="icon_for_user_center">20dp</dimen>
+    <!--  其他辅助图标  -->
+    <dimen name="icon_for_assist_big">33dp</dimen>
+    <dimen name="icon_for_assist_big_text_margin">12dp</dimen>
+    <dimen name="icon_for_assist_small">16dp</dimen>
+
+</resources>
