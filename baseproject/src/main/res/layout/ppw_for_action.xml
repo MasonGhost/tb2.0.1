@@ -3,26 +3,35 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="vertical"
     android:layout_height="match_parent"
     android:background="@color/bgColor_alpha_0.5"
-    android:gravity="bottom">
+    android:gravity="bottom"
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/tv_pop_top"
+        android:id="@+id/tv_pop_item1"
         style="@style/style_action_list_item"
         tools:text="@string/choose_from_photo"
         />
+
     <TextView
-        android:id="@+id/tv_pop_center"
-        android:layout_marginTop="@dimen/spacing_line"
+        android:id="@+id/tv_pop_item2"
         style="@style/style_action_list_item"
+        android:layout_marginTop="@dimen/spacing_line"
         tools:text="@string/choose_from_camera"
         />
+
+    <TextView
+        android:id="@+id/tv_pop_item3"
+        style="@style/style_action_list_item"
+        android:layout_marginTop="@dimen/spacing_line"
+        tools:text="@string/choose_from_camera"
+        />
+
     <TextView
         android:id="@+id/tv_pop_bottom"
-        android:layout_marginTop="@dimen/spacing_normal"
         style="@style/style_action_list_item"
+        android:layout_marginTop="@dimen/spacing_normal"
         tools:text="@string/cancel"
         />
 </LinearLayout>
