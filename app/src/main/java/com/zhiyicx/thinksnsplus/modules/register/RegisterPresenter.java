@@ -87,7 +87,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
         if (checkUsername(name)) {
             return;
         }
-        if (checkPassword(password)) {
+        if (checkPasswordLength(password)) {
             return;
         }
         if (checkPhone(phone)) {
@@ -172,7 +172,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
      * @param password
      * @return
      */
-    private boolean checkPassword(String password) {
+    private boolean checkPasswordLength(String password) {
         if (password.length() < mContext.getResources().getInteger(R.integer.password_min_length)) {
             mRootView.showMessage(mContext.getString(R.string.password_toast_hint));
             return true;

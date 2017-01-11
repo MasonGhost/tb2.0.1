@@ -1,9 +1,10 @@
-package com.zhiyicx.thinksnsplus.modules.password;
+package com.zhiyicx.thinksnsplus.modules.password.findpassword;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.password.changepassword.ChangePasswordContract;
 
 import javax.inject.Inject;
 
@@ -14,11 +15,11 @@ import javax.inject.Inject;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class PasswordPresenter extends BasePresenter<PasswordContract.Repository, PasswordContract.View> implements PasswordContract.Presenter {
+public class FindPasswordPresenter extends BasePresenter<ChangePasswordContract.Repository, ChangePasswordContract.View> implements ChangePasswordContract.Presenter {
 
 
     @Inject
-    public PasswordPresenter(PasswordContract.Repository repository, PasswordContract.View rootView) {
+    public FindPasswordPresenter(ChangePasswordContract.Repository repository, ChangePasswordContract.View rootView) {
         super(repository, rootView);
     }
 
@@ -81,5 +82,10 @@ public class PasswordPresenter extends BasePresenter<PasswordContract.Repository
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void changePassword(String oldPassword, String newPassword, String sureNewPassword) {
+
     }
 }

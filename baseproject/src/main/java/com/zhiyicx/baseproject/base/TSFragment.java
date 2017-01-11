@@ -8,10 +8,17 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.UIUtils;
+
+import java.util.concurrent.TimeUnit;
+
+import rx.functions.Action1;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Describe
@@ -103,7 +110,6 @@ public abstract class TSFragment<P> extends BaseFragment<P> {
      * 初始化toolbar布局,如果进行了自定义toolbar布局，就应该重写该方法
      */
     protected void initDefaultToolBar(View toolBarContainer) {
-//        mToolbar = (Toolbar) toolBarContainer.findViewById(R.id.toolbar);
         toolBarContainer.setBackgroundResource(setToolBarBackgroud());
         mToolbarLeft = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_left);
         mToolbarRight = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_right);
@@ -111,26 +117,31 @@ public abstract class TSFragment<P> extends BaseFragment<P> {
 
         // 如果标题为空，就隐藏它
         mToolbarCenter.setVisibility(TextUtils.isEmpty(setCenterTitle()) ? View.GONE : View.VISIBLE);
-        mToolbarLeft.setVisibility(TextUtils.isEmpty(setLeftTitle()) && setLeftImg() == 0 ? View.GONE : View.VISIBLE);
-        mToolbarRight.setVisibility(TextUtils.isEmpty(setRightTitle()) ? View.GONE : View.VISIBLE);
         mToolbarCenter.setText(setCenterTitle());
+        mToolbarLeft.setVisibility(TextUtils.isEmpty(setLeftTitle()) && setLeftImg() == 0 ? View.GONE : View.VISIBLE);
         mToolbarLeft.setText(setLeftTitle());
+        mToolbarRight.setVisibility(TextUtils.isEmpty(setRightTitle()) ? View.GONE : View.VISIBLE);
         mToolbarRight.setText(setRightTitle());
-        mToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(),setLeftImg()), null, null, null);
+        mToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), setLeftImg()), null, null, null);
 
-        mToolbarLeft.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setLeftClick();
-            }
-        });
-
-        mToolbarRight.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setRightClick();
-            }
-        });
+        RxView.clicks(mToolbarLeft)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        setLeftClick();
+                    }
+                });
+        RxView.clicks(mToolbarRight)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        setRightClick();
+                    }
+                });
     }
 
     /**

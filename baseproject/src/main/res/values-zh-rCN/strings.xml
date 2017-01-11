@@ -31,6 +31,10 @@
     <string name="phone_number_toast_hint">请输入正确的手机号</string>
     <string name="password_input_hint">输入6位以上登陆密码</string>
     <string name="password_toast_hint">请输入6-16位密码</string>
+    <string name="old_password_toast_hint">请输入6-16位旧密码</string>
+    <string name="new_password_toast_hint">请输入6-16位新密码</string>
+    <string name="sure_new_password_toast_hint">请输入6-16位确认密码</string>
+    <string name="password_diffrent">新密码输入不一致</string>
 
     <!-- 拍照相关 -->
     <string name="choose_from_photo">从相册选取</string>

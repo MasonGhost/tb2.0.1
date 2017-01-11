@@ -10,6 +10,7 @@ import com.zhiyicx.baseproject.widget.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.password.changepassword.ChangePasswordActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.AboutUsActivity;
 
 import java.util.concurrent.TimeUnit;
@@ -127,7 +128,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        showMessage("change_password");
+                        startActivity(new Intent(getActivity(), ChangePasswordActivity.class));
                     }
                 });
         // 清理缓存

@@ -1,10 +1,7 @@
-package com.zhiyicx.thinksnsplus.modules.password;
+package com.zhiyicx.thinksnsplus.modules.password.changepassword;
 
-import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -12,7 +9,6 @@ import com.zhiyicx.baseproject.widget.edittext.PasswordEditText;
 import com.zhiyicx.thinksnsplus.R;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * @Describe
@@ -20,7 +16,7 @@ import butterknife.ButterKnife;
  * @Date 2017/1/10
  * @Contact master.jungle68@gmail.com
  */
-public class PasswordFragment extends TSFragment<PasswordContract.Presenter> implements PasswordContract.View {
+public class ChangePasswordFragment extends TSFragment<ChangePasswordContract.Presenter> implements ChangePasswordContract.View {
 
 
     @BindView(R.id.et_old_password)
@@ -32,8 +28,8 @@ public class PasswordFragment extends TSFragment<PasswordContract.Presenter> imp
     @BindView(R.id.tv_error_tip)
     TextView mTvErrorTip;
 
-    public static PasswordFragment newInstance() {
-        PasswordFragment fragment = new PasswordFragment();
+    public static ChangePasswordFragment newInstance() {
+        ChangePasswordFragment fragment = new ChangePasswordFragment();
         return fragment;
     }
 
@@ -44,13 +40,38 @@ public class PasswordFragment extends TSFragment<PasswordContract.Presenter> imp
 
     @Override
     protected String setCenterTitle() {
-        return getString(R.string.immediate_regist);
+        return getString(R.string.change_password);
+    }
+
+    @Override
+    protected String setRightTitle() {
+        return getString(R.string.change);
+    }
+
+    /**
+     * toolbar右边点击
+     */
+    @Override
+    protected void setRightClick() {
+        mPresenter.changePassword(mEtOldPassword.getText().toString().trim()
+                , mEtNewPassword.getText().toString().trim(), mEtSureNewPassword.getText().toString().trim());
+    }
+
+    @Override
+    protected int setToolBarBackgroud() {
+        return R.color.white;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return true;
     }
 
     @Override
     protected void initView(View rootView) {
-
+        mToolbarRight.setEnabled(false);
     }
+
 
     @Override
     protected void initData() {
@@ -58,14 +79,7 @@ public class PasswordFragment extends TSFragment<PasswordContract.Presenter> imp
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-    }
-
-
-    @Override
-    public void setPresenter(PasswordContract.Presenter presenter) {
+    public void setPresenter(ChangePasswordContract.Presenter presenter) {
         mPresenter = presenter;
     }
 
@@ -83,20 +97,10 @@ public class PasswordFragment extends TSFragment<PasswordContract.Presenter> imp
     public void showMessage(String message) {
         if (TextUtils.isEmpty(message)) {
             mTvErrorTip.setVisibility(View.INVISIBLE);
-            System.out.println(" =INVISIBLE ");
         } else {
             mTvErrorTip.setVisibility(View.VISIBLE);
             mTvErrorTip.setText(message);
-            System.out.println(" =VISIBLE " + message);
         }
     }
 
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate a fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        ButterKnife.bind(this, rootView);
-        return rootView;
-    }
 }

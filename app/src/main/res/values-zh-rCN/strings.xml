@@ -35,5 +35,7 @@
     <string name="clean_success">删除成功</string>
     <string name="clean_failure">删除失败!</string>
     <string name="cache_zero_size">0.0B</string>
+    <string name="change">更改</string>
+
     <!--代码中的string-->
 </resources>

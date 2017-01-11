@@ -1,7 +1,9 @@
-package com.zhiyicx.thinksnsplus.modules.password;
+package com.zhiyicx.thinksnsplus.modules.password.changepassword;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.modules.password.DaggerPasswordComponent;
+
 /**
  * @Describe
  * @Author Jungle68
@@ -9,7 +11,9 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
  * @Contact master.jungle68@gmail.com
  */
 
-public class PasswordActivity extends TSActivity<PasswordPresenter, PasswordFragment> {
+public class ChangePasswordActivity extends TSActivity<ChangePasswordPresenter, ChangePasswordFragment> {
+    public static final String intent_password_type = "password_type";
+
     static public enum PASSWORD {
         CHANGE_PASSWORD,
         FIND_PASSWORD;
@@ -20,15 +24,15 @@ public class PasswordActivity extends TSActivity<PasswordPresenter, PasswordFrag
         DaggerPasswordComponent
                 .builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .passwordPresenterModule(new PasswordPresenterModule(mContanierFragment))
+                .changePasswordPresenterModule(new ChangePasswordPresenterModule(mContanierFragment))
                 .build()
                 .inject(this);
 
     }
 
     @Override
-    protected PasswordFragment getFragment() {
-        return PasswordFragment.newInstance();
+    protected ChangePasswordFragment getFragment() {
+        return ChangePasswordFragment.newInstance();
     }
 
 }
