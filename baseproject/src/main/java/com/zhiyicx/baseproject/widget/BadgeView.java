@@ -73,7 +73,7 @@ public class BadgeView extends TextView {
         setPadding(dip2Px(5), dip2Px(1), dip2Px(5), dip2Px(1));
 
         // set default background
-        setBackground(20, Color.parseColor("#d3321b"));
+        setBackground(20, Color.parseColor("#f4504d"));
 
         setGravity(Gravity.CENTER);
 

@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
+import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
@@ -34,6 +35,7 @@ import butterknife.BindView;
  * @Contact master.jungle68@gmail.com
  */
 public class MessageFragment extends TSFragment {
+    private static final float LIST_ITEM_SPACING=1f;
     private static final int ITEM_TYPE_COMMNETED = 0;
     private static final int ITEM_TYPE_LIKED = 1;
 
@@ -85,7 +87,7 @@ public class MessageFragment extends TSFragment {
         mMessageItems = new ArrayList<>();
         initCommentAndLike(mMessageItems);
         mRvMessageList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRvMessageList.addItemDecoration(new LinearDecoration(0, ConvertUtils.dp2px(getContext(), 10f), 0, 0));//设置Item的间隔
+        mRvMessageList.addItemDecoration(new LinearDecoration(0, ConvertUtils.dp2px(getContext(), LIST_ITEM_SPACING), 0, 0));//设置Item的间隔
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
         mRvMessageList.setHasFixedSize(true);
         mRvMessageList.setItemAnimator(new DefaultItemAnimator());//设置动画
@@ -129,7 +131,7 @@ public class MessageFragment extends TSFragment {
                 + getString(R.string.like_me));
         testMessage.setCreate_time(System.currentTimeMillis());
         test.setLastMessage(likeMessage);
-        test.setUnReadMessageNums(Math.round(15));
+        test.setUnReadMessageNums((int) (Math.random()*10));
         messageItems.add(test);
     }
 
@@ -172,6 +174,6 @@ public class MessageFragment extends TSFragment {
 
         holder.setText(R.id.tv_content, messageItem.getLastMessage().getTxt());
         holder.setText(R.id.tv_time, ConvertUtils.millis2FitTimeSpan(messageItem.getLastMessage().getCreate_time(), 3));
-        holder.setText(R.id.tv_tip, String.valueOf(messageItem.getUnReadMessageNums()));
+        ((BadgeView) holder.getView(R.id.tv_tip)).setBadgeCount(messageItem.getUnReadMessageNums());
     }
 }
