@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
@@ -152,15 +153,19 @@ public class MessageFragment extends TSFragment {
             case ITEM_TYPE_LIKED:// 点赞图标
                 mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
                         .resourceId(R.mipmap.login_ico_copeneye)
+
                         .imagerView((ImageView) holder.getView(R.id.iv_headpic)).build()
                 );
+
                 holder.setText(R.id.tv_name, getString(R.string.liked));
                 break;
 
             default:// 网络头像
                 mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
                         .url(messageItem.getUserInfo().getUserIcon())
-                        .imagerView((ImageView) holder.getView(R.id.iv_headpic)).build()
+                        .transformation(new GlideCircleTransform(getContext()))
+                        .imagerView((ImageView) holder.getView(R.id.iv_headpic))
+                        .build()
                 );
                 holder.setText(R.id.tv_name, messageItem.getUserInfo().getUserName());
         }
