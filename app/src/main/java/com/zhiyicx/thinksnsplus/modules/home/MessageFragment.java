@@ -134,6 +134,7 @@ public class MessageFragment extends TSFragment {
         UserInfoBean testUserinfo = new UserInfoBean();
         testUserinfo.setUserIcon("http://image.xinmin.cn/2017/01/11/bedca80cdaa44849a813e7820fff8a26.jpg");
         testUserinfo.setUserName("颤三");
+        testUserinfo.setUserId("123");
         test.setUserInfo(testUserinfo);
         Message testMessage = new Message();
         testMessage.setTxt("一叶之秋、晴天色"

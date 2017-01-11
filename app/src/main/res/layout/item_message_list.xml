@@ -58,7 +58,7 @@
         android:layout_toRightOf="@id/iv_headpic"
         android:maxLines="1"
         android:paddingLeft="@dimen/spacing_normal"
-        android:textSize="@dimen/size_content"
+        android:textSize="@dimen/size_sub_title"
         android:textColor="@color/important_for_content"
         tools:text="张三 "/>
 
