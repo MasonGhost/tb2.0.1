@@ -49,6 +49,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     private int mCityOption2;
     private OptionsPickerView mAreaPickerView;// 地域选择器
     private ActionPopupWindow mGenderPopupWindow;// 性别选择弹框
+    private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
 
     @Override
     protected int getBodyLayoutId() {
@@ -104,6 +105,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_change_head_container:
+                initPhotoPopupWindow();
+                mPhotoPopupWindow.show();
                 break;
             case R.id.ll_sex_container:
                 initGenderPopupWindow();
@@ -122,6 +125,18 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         this.options2Items = options2Items;
         mAreaPickerView.setPicker(options1Items, options2Items, true);
         mAreaPickerView.setCyclic(false);// 设置是否可以循环滚动
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // 处理pickerView和返回键的逻辑
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (mAreaPickerView.isShowing()) {
+                mAreaPickerView.dismiss();
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     /**
@@ -194,16 +209,40 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .build();
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        // 处理pickerView和返回键的逻辑
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if(mAreaPickerView.isShowing()){
-                mAreaPickerView.dismiss();
-                return true;
-            }
+    /**
+     * 初始化图片选择弹框
+     */
+    private void initPhotoPopupWindow() {
+        if (mPhotoPopupWindow != null) {
+            return;
         }
-        return super.onKeyDown(keyCode, event);
+        mPhotoPopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.choose_from_photo))
+                .item2Str(getString(R.string.choose_from_camera))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(0.8f)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+
+                    }
+                })
+                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
+                    @Override
+                    public void onItem2Clicked() {
+
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mGenderPopupWindow.hide();
+                    }
+                }).build();
+
     }
 
 }
