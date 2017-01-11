@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.password;
+package com.zhiyicx.thinksnsplus.modules.password.findpassword;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
@@ -14,11 +14,11 @@ import javax.inject.Inject;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class PasswordPresenter extends BasePresenter<PasswordContract.Repository, PasswordContract.View> implements PasswordContract.Presenter {
+public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Repository, FindPasswordContract.View> implements FindPasswordContract.Presenter {
 
 
     @Inject
-    public PasswordPresenter(PasswordContract.Repository repository, PasswordContract.View rootView) {
+    public FindPasswordPresenter(FindPasswordContract.Repository repository, FindPasswordContract.View rootView) {
         super(repository, rootView);
     }
 
@@ -81,5 +81,16 @@ public class PasswordPresenter extends BasePresenter<PasswordContract.Repository
             return true;
         }
         return false;
+    }
+
+
+    @Override
+    public void findPassword(String oldPassword, String newPassword, String sureNewPassword) {
+
+    }
+
+    @Override
+    public void getVertifyCode(String phone, String type) {
+
     }
 }

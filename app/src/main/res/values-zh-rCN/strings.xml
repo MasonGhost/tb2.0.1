@@ -5,7 +5,11 @@
     <string name="find">发现</string>
     <string name="message">消息</string>
     <string name="mine">我</string>
-
+    <!-- 消息 -->
+    <string name="critical">评论的</string>
+    <string name="liked">赞过的</string>
+    <string name="like_me">赞了我</string>
+    <string name="comment_me">评论了我</string>
     <!--我的-->
     <string name="personal_page">个人主页</string>
     <string name="ranking">排行榜</string>
@@ -35,5 +39,9 @@
     <string name="clean_success">删除成功</string>
     <string name="clean_failure">删除失败!</string>
     <string name="cache_zero_size">0.0B</string>
+    <string name="change">更改</string>
+
+
+
     <!--代码中的string-->
 </resources>

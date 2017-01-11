@@ -5,12 +5,10 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.modules.password.PasswordContract;
-import com.zhiyicx.thinksnsplus.modules.register.RegisterContract;
+import com.zhiyicx.thinksnsplus.modules.password.changepassword.ChangePasswordContract;
+import com.zhiyicx.thinksnsplus.modules.password.findpassword.FindPasswordContract;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * @Describe
@@ -19,13 +17,20 @@ import rx.schedulers.Schedulers;
  * @Contact master.jungle68@gmail.com
  */
 
-public class PasswordRepository implements PasswordContract.Repository {
+public class FindPasswordRepository implements FindPasswordContract.Repository {
     private CommonClient mCommonClient;
     private RegisterClient mRegisterClient;
 
-    public PasswordRepository(ServiceManager serviceManager) {
+    public FindPasswordRepository(ServiceManager serviceManager) {
         mCommonClient = serviceManager.getCommonClient();
         mRegisterClient = serviceManager.getRegisterClient();
     }
-
+    @Override
+    public Observable<BaseJson<CacheBean>> getVertifyCode(String phone, String type) {
+        return Observable.just(new BaseJson<CacheBean>());
+    }
+    @Override
+    public Observable<BaseJson<Boolean>> findPassword(String phone, String vertifyCode) {
+        return Observable.just(new BaseJson<Boolean>());
+    }
 }

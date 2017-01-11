@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:paddingBottom="@dimen/spacing_normal"
     android:paddingLeft="@dimen/spacing_small"
-    android:background="@color/white"
     android:paddingRight="@dimen/spacing_small"
     android:paddingTop="@dimen/spacing_normal"
     tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
@@ -22,20 +22,32 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:maxLines="1"
+        android:textColor="@color/general_for_hint"
         android:textSize="@dimen/size_icon_assist"
         tools:text="2016-05-06"/>
 
-    <TextView
-        android:id="@+id/tv_tip"
+    <FrameLayout
+        android:id="@+id/fl_tip"
         android:layout_width="@dimen/chat_list_new_msg_tip_with"
-        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/spacing_small"
         android:layout_alignParentRight="true"
         android:layout_below="@id/tv_time"
-        android:maxLines="1"
-        android:gravity="center|bottom"
-        android:paddingTop="@dimen/spacing_small"
-        android:textSize="@dimen/size_icon_assist"
-        tools:text="小红点99"/>
+        android:layout_height="wrap_content">
+
+        <com.zhiyicx.baseproject.widget.BadgeView
+            android:id="@+id/tv_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/spacing_line"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_line"
+            android:maxLines="1"
+            android:maxWidth="@dimen/chat_list_new_msg_tip_with"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_icon_assist"
+            tools:text="99"/>
+    </FrameLayout>
 
     <TextView
         android:id="@+id/tv_name"
@@ -46,6 +58,7 @@
         android:layout_toRightOf="@id/iv_headpic"
         android:maxLines="1"
         android:paddingLeft="@dimen/spacing_normal"
+        android:textColor="@color/important_for_content"
         tools:text="张三 "/>
 
     <TextView
@@ -53,13 +66,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_name"
-        android:layout_toLeftOf="@id/tv_tip"
+        android:layout_toLeftOf="@id/fl_tip"
         android:layout_toRightOf="@id/iv_headpic"
-        android:gravity="bottom"
-        android:layout_alignBaseline="@id/tv_tip"
-        android:maxLines="1"
+        android:paddingTop="@dimen/spacing_small"
         android:ellipsize="end"
+        android:gravity="bottom"
+        android:maxLines="1"
         android:paddingLeft="@dimen/spacing_normal"
+        android:textColor="@color/normal_for_assist_text"
         tools:text="我送第几个 "/>
 
 
