@@ -1,4 +1,4 @@
-package com.zhiyicx.baseproject.impl.imageloader;
+package com.zhiyicx.baseproject.impl.imageloader.glide;
 
 import android.content.Context;
 

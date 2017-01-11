@@ -2,7 +2,7 @@ package com.zhiyicx.baseproject.base;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
-import com.zhiyicx.baseproject.impl.imageloader.GlideImageLoaderStrategy;
+import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageLoaderStrategy;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.dagger.module.ImageModule;
 import com.zhiyicx.common.dagger.module.ShareModule;

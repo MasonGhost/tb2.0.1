@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.impl.imageloader.GlideImageConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;

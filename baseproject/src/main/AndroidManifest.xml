@@ -50,7 +50,7 @@
 
         <!--glide配置-->
         <meta-data
-            android:name="com.zhiyicx.baseproject.impl.imageloader.GlideConfiguration"
+            android:name="com.zhiyicx.baseproject.impl.imageloader.glide.GlideConfiguration"
             android:value="GlideModule"/>
     </application>
 
