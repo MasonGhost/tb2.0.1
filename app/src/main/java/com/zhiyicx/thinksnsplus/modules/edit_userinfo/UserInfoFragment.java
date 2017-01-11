@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 
@@ -138,7 +140,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 if (options2Items.size() <= options1 || options2Items.get(options1).size() <= option2) {
                     return;//避免pickview控件的bug
                 }
-                //EventBus.getDefault().post(options2Items.get(options1).get(option2), "update_location");
                 String areaText = options1Items.get(options1).getPickerViewText();
                 String city = options2Items.get(options1).get(option2).getPickerViewText();
                 city = city.equals("全部") ? areaText : city;//如果为全部则不显示
@@ -192,4 +193,17 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 })
                 .build();
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // 处理pickerView和返回键的逻辑
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if(mAreaPickerView.isShowing()){
+                mAreaPickerView.dismiss();
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
 }

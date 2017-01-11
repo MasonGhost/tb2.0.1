@@ -13,7 +13,7 @@
         android:paddingLeft="@dimen/pickerview_topbar_paddingleft"
         android:paddingRight="@dimen/pickerview_topbar_paddingright"
         android:text="@string/pickerview_cancel"
-        android:textColor="@color/pickerview_wheelview_textcolor_out"
+        android:textColor="@drawable/selector_pickerview_btn"
         android:textSize="@dimen/pickerview_topbar_btn_textsize" />
 
     <TextView
@@ -25,7 +25,6 @@
         android:layout_toLeftOf="@+id/btnSubmit"
         android:layout_toRightOf="@+id/btnCancel"
         android:textColor="@color/pickerview_topbar_title"
-        android:visibility="gone"
         android:textSize="@dimen/pickerview_topbar_title_textsize" />
 
     <Button

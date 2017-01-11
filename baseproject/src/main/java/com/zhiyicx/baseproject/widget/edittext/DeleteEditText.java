@@ -2,6 +2,7 @@ package com.zhiyicx.baseproject.widget.edittext;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -10,6 +11,8 @@ import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.widget.EditText;
 
+import com.zhiyicx.baseproject.R;
+
 /**
  * @author LiuChao
  * @describe 带删除图标的edittext，也可以定制其他的功能，区别于Imageview+Edittext的组合控件
@@ -17,6 +20,7 @@ import android.widget.EditText;
  * @contact email:450127106@qq.com
  */
 public class DeleteEditText extends EditText implements OnFocusChangeListener, TextWatcher {
+    private static final int DEFAULT_DELETE_IMG = R.mipmap.login_inputbox_clean;
     /**
      * 删除按钮的引用
      */
@@ -25,6 +29,7 @@ public class DeleteEditText extends EditText implements OnFocusChangeListener, T
      * 控件是否有焦点
      */
     private boolean hasFoucs;
+    private Context mContext;
 
     public DeleteEditText(Context context) {
         this(context, null);
@@ -37,6 +42,7 @@ public class DeleteEditText extends EditText implements OnFocusChangeListener, T
 
     public DeleteEditText(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        mContext = context;
         init();
     }
 
@@ -44,8 +50,11 @@ public class DeleteEditText extends EditText implements OnFocusChangeListener, T
         // 获取EditText的DrawableRight,假如没有设置我们就使用默认的图片
         mClearDrawable = getCompoundDrawables()[2];//左 上 右 下
         if (mClearDrawable == null) {
-            throw new
-                    NullPointerException("You can add drawableRight attribute in XML");
+            mClearDrawable = ContextCompat.getDrawable(mContext, DEFAULT_DELETE_IMG);
+            if (mClearDrawable == null) {
+                throw new
+                        NullPointerException("You can add drawableRight attribute in XML");
+            }
         }
 
         mClearDrawable.setBounds(0, 0, mClearDrawable.getIntrinsicWidth(), mClearDrawable.getIntrinsicHeight());

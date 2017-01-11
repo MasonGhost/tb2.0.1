@@ -3,6 +3,7 @@ package com.zhiyicx.baseproject.base;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -16,6 +17,7 @@ import com.zhiyicx.common.utils.UIUtils;
 
 import java.util.concurrent.TimeUnit;
 
+import retrofit2.http.HEAD;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -31,7 +33,7 @@ public abstract class TSFragment<P> extends BaseFragment<P> {
     private static final int DEFAULT_TOOLBAR = R.layout.toolbar_custom; // 默认的toolbar
     private static final int DEFAULT_TOOLBAR_BACKGROUD_COLOR = R.color.white;// 默认的toolbar背景色
     private static final int DEFAULT_DIVIDER_COLOR = R.color.general_for_line;// 默认的toolbar下方分割线颜色
-    private static final int DEFAULT_TOOLBAR_LEFT_IMG = R.mipmap.ico_eye_open;// 默认的toolbar左边的图片，一般是返回键
+    private static final int DEFAULT_TOOLBAR_LEFT_IMG = R.mipmap.topbar_back;// 默认的toolbar左边的图片，一般是返回键
     protected TextView mToolbarLeft;
     protected TextView mToolbarRight;
     protected TextView mToolbarCenter;
@@ -183,7 +185,6 @@ public abstract class TSFragment<P> extends BaseFragment<P> {
      * 设置右边的点击时间，有必要重写该方法
      */
     protected void setRightClick() {
-
     }
 
     /**
@@ -197,5 +198,16 @@ public abstract class TSFragment<P> extends BaseFragment<P> {
             mToolbarLeft.setTextColor(ContextCompat.getColor(getContext(),R.color.important_for_content));
             StatusBarUtils.statusBarLightMode(getActivity());
         }
+    }
+
+    /**
+     * 添加返回按键的监听方法，在它所依附的activity中调用
+     *
+     * @param keyCode
+     * @param event
+     * @return false 表示down事件未处理，会继续传递，交给up处理，知道结束或true停止
+     */
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        return false;
     }
 }
