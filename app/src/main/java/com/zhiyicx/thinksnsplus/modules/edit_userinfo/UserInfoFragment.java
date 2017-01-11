@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -190,5 +191,17 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                     }
                 })
                 .build();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // 处理pickerView和返回键的逻辑
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if(mAreaPickerView.isShowing()){
+                mAreaPickerView.dismiss();
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
