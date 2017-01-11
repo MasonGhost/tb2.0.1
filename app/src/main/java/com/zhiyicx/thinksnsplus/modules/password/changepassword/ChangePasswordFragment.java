@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.edittext.PasswordEditText;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 import butterknife.BindView;
@@ -53,6 +54,7 @@ public class ChangePasswordFragment extends TSFragment<ChangePasswordContract.Pr
      */
     @Override
     protected void setRightClick() {
+        ToastUtils.showToast("hhahahhha");
         mPresenter.changePassword(mEtOldPassword.getText().toString().trim()
                 , mEtNewPassword.getText().toString().trim(), mEtSureNewPassword.getText().toString().trim());
     }
