@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
+import com.bigkoo.pickerview.model.IPickerViewData;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +12,7 @@ import java.util.List;
  * @contact email:450127106@qq.com
  */
 
-public class AreaBean {
+public class AreaBean implements IPickerViewData {
     private String area_id;
     private String title;
     private ArrayList<AreaBean> child;
@@ -29,15 +31,6 @@ public class AreaBean {
         this.area_id = area_id;
     }
 
-    /**
-     * 固定的方法名，用于pickerview显示数据
-     *
-     * @return
-     */
-    public String getPickerViewText() {
-        return title;
-    }
-
     public void setAreaName(String title) {
         this.title = title;
     }
@@ -48,5 +41,10 @@ public class AreaBean {
 
     public void setChild(ArrayList<AreaBean> child) {
         this.child = child;
+    }
+
+    @Override
+    public String getPickerViewText() {
+        return title;
     }
 }

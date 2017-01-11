@@ -138,7 +138,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 if (options2Items.size() <= options1 || options2Items.get(options1).size() <= option2) {
                     return;//避免pickview控件的bug
                 }
-                //EventBus.getDefault().post(options2Items.get(options1).get(option2), "update_location");
                 String areaText = options1Items.get(options1).getPickerViewText();
                 String city = options2Items.get(options1).get(option2).getPickerViewText();
                 city = city.equals("全部") ? areaText : city;//如果为全部则不显示
