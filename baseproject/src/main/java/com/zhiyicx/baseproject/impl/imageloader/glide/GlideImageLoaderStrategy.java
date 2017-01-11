@@ -25,8 +25,11 @@ public class GlideImageLoaderStrategy implements ImageLoaderStrategy<GlideImageC
             manager = Glide.with((Activity) ctx);
         else
             manager = Glide.with(ctx);
-        DrawableRequestBuilder requestBuilder = manager.load(TextUtils.isEmpty(config.getUrl()) ? config.getResourceId() : config.getUrl())
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+        String imgUrl = config.getUrl();
+        boolean isFromNet = !TextUtils.isEmpty(imgUrl) && imgUrl.startsWith("http");// 是否来源于网络
+        DrawableRequestBuilder requestBuilder = manager.load(TextUtils.isEmpty(imgUrl) ? config.getResourceId() : isFromNet ? imgUrl : "file://" + imgUrl)
+                .diskCacheStrategy(isFromNet ? DiskCacheStrategy.ALL : DiskCacheStrategy.NONE)
+                .skipMemoryCache(isFromNet?false:true)
                 .crossFade()
                 .centerCrop();
         if (config.getTransformation() != null) {
