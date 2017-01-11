@@ -194,7 +194,7 @@ public abstract class TSFragment<P> extends BaseFragment<P> {
      *
      * @param keyCode
      * @param event
-     * @return false 表示down事件未处理，回继续传递，交给up处理，知道结束或true停止
+     * @return false 表示down事件未处理，会继续传递，交给up处理，知道结束或true停止
      */
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         return false;

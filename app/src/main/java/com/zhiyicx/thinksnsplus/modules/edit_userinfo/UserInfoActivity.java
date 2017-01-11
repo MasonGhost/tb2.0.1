@@ -26,9 +26,7 @@ public class UserInfoActivity extends TSActivity<UserInfoPresenter, UserInfoFrag
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // 处理fragment中的返回键按键
-        if (mContanierFragment != null) {
-            return mContanierFragment.onKeyDown(keyCode, event);
-        }
-        return super.onKeyDown(keyCode, event);
+        boolean flag = mContanierFragment.onKeyDown(keyCode, event);
+        return flag ? true : super.onKeyDown(keyCode, event);
     }
 }
