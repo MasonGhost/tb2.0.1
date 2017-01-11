@@ -1,14 +1,75 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
+
+
+<RelativeLayout
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/spacing_normal"
+    android:paddingLeft="@dimen/spacing_small"
+    android:background="@color/white"
+    android:paddingRight="@dimen/spacing_small"
+    android:paddingTop="@dimen/spacing_normal"
+    tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
+
+    <com.zhiyicx.common.widget.FilterImageView
+        android:id="@+id/iv_headpic"
+        android:layout_width="@dimen/headpic_for_list"
+        android:layout_height="@dimen/headpic_for_list"
+        android:src="@mipmap/ic_launcher"/>
+
     <TextView
-        android:id="@+id/iv_bg"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/mine"/>
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:maxLines="1"
+        android:textSize="@dimen/size_icon_assist"
+        tools:text="2016-05-06"/>
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/tv_tip"
+        android:layout_width="@dimen/chat_list_new_msg_tip_with"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/tv_time"
+        android:maxLines="1"
+        android:gravity="center|bottom"
+        android:paddingTop="@dimen/spacing_small"
+        android:textSize="@dimen/size_icon_assist"
+        tools:text="小红点99"/>
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/tv_time"
+        android:layout_toLeftOf="@id/tv_time"
+        android:layout_toRightOf="@id/iv_headpic"
+        android:maxLines="1"
+        android:paddingLeft="@dimen/spacing_normal"
+        tools:text="张三 "/>
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_name"
+        android:layout_toLeftOf="@id/tv_tip"
+        android:layout_toRightOf="@id/iv_headpic"
+        android:gravity="bottom"
+        android:layout_alignBaseline="@id/tv_tip"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:paddingLeft="@dimen/spacing_normal"
+        tools:text="我送第几个 "/>
+
+
+</RelativeLayout>
+</LinearLayout>

@@ -12,6 +12,7 @@ import android.widget.ImageView;
 
 public class ImageConfig {
     protected String url;
+    protected Integer resourceId;
     protected ImageView imageView;
     protected int placeholder;
     protected int errorPic;
@@ -21,6 +22,9 @@ public class ImageConfig {
         return url;
     }
 
+    public Integer getResourceId() {
+        return resourceId;
+    }
     public ImageView getImageView() {
         return imageView;
     }

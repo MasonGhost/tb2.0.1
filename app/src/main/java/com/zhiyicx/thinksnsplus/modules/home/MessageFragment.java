@@ -9,8 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.impl.imageloader.GlideImageConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
@@ -66,6 +66,7 @@ public class MessageFragment extends TSFragment {
     protected boolean showToolBarDivider() {
         return true;
     }
+
     @Override
     protected void initView(View rootView) {
         mToolbarCenter.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
@@ -89,8 +90,10 @@ public class MessageFragment extends TSFragment {
         mRvMessageList.setAdapter(new CommonAdapter<String>(getActivity(), R.layout.item_message_list, mDatas) {
             @Override
             protected void convert(ViewHolder holder, String s, int position) {
-                Glide.with(getContext()).load(R.mipmap.ico_eye_open).into((ImageView) holder.getView(R.id.iv_headpic));
-//                mImageLoader.loadImage(getContext(), GlideImageConfig.builder());
+                mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
+                        .resourceId(R.mipmap.ico_eye_open)
+                        .imagerView((ImageView) holder.getView(R.id.iv_headpic)).build()
+                );
                 holder.setText(R.id.tv_name, "张三");
                 holder.setText(R.id.tv_content, "我的天的道德观念我的是高科技的思考国际快递发几个客服房间打开数据库");
                 holder.setText(R.id.tv_time, "2016-05-06");

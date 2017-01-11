@@ -6,7 +6,7 @@ import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter;
 
 /**
- * @Describe 关于我没
+ * @Describe 关于我们
  * @Author Jungle68
  * @Date 2017/1/10
  * @Contact master.jungle68@gmail.com
@@ -32,6 +32,9 @@ public class AboutUsActivity extends TSActivity<RegisterPresenter, AboutUsFragme
      */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return mContanierFragment.onKeyDown(keyCode, event) == true ? true : super.onKeyDown(keyCode, event);
+        if (mContanierFragment.onKeyDown(keyCode, event)) {
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
