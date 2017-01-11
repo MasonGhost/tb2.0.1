@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.utils.StatusBarUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 
 /**
@@ -25,7 +26,7 @@ public abstract class TSFragment<P> extends BaseFragment<P> {
     private static final int DEFAULT_TOOLBAR = R.layout.toolbar_custom; // 默认的toolbar
     private static final int DEFAULT_TOOLBAR_BACKGROUD_COLOR = R.color.white;// 默认的toolbar背景色
     private static final int DEFAULT_DIVIDER_COLOR = R.color.general_for_line;// 默认的toolbar下方分割线颜色
-    private static final int DEFAULT_TOOLBAR_LEFT_IMG = R.mipmap.ico_eye_open;// 默认的toolbar左边的图片，一般是返回键
+    private static final int DEFAULT_TOOLBAR_LEFT_IMG = R.mipmap.topbar_back;// 默认的toolbar左边的图片，一般是返回键
     protected TextView mToolbarLeft;
     protected TextView mToolbarRight;
     protected TextView mToolbarCenter;
@@ -117,7 +118,7 @@ public abstract class TSFragment<P> extends BaseFragment<P> {
         mToolbarCenter.setText(setCenterTitle());
         mToolbarLeft.setText(setLeftTitle());
         mToolbarRight.setText(setRightTitle());
-        mToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(),setLeftImg()), null, null, null);
+        mToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), setLeftImg()), null, null, null);
 
         mToolbarLeft.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,7 +174,6 @@ public abstract class TSFragment<P> extends BaseFragment<P> {
      * 设置右边的点击时间，有必要重写该方法
      */
     protected void setRightClick() {
-
     }
 
     /**
@@ -191,9 +191,10 @@ public abstract class TSFragment<P> extends BaseFragment<P> {
 
     /**
      * 添加返回按键的监听方法，在它所依附的activity中调用
+     *
      * @param keyCode
      * @param event
-     * @return  false 表示down事件未处理，回继续传递，交给up处理，知道结束或true停止
+     * @return false 表示down事件未处理，回继续传递，交给up处理，知道结束或true停止
      */
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         return false;

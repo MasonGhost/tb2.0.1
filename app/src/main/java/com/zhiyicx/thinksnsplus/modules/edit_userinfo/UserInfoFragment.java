@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 
@@ -204,4 +205,5 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         }
         return super.onKeyDown(keyCode, event);
     }
+
 }

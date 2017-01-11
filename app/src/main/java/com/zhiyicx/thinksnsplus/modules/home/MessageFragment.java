@@ -89,7 +89,7 @@ public class MessageFragment extends TSFragment {
         mRvMessageList.setAdapter(new CommonAdapter<String>(getActivity(), R.layout.item_message_list, mDatas) {
             @Override
             protected void convert(ViewHolder holder, String s, int position) {
-                Glide.with(getContext()).load(R.mipmap.ico_eye_open).into((ImageView) holder.getView(R.id.iv_headpic));
+                Glide.with(getContext()).load(R.mipmap.login_ico_closeye).into((ImageView) holder.getView(R.id.iv_headpic));
 //                mImageLoader.loadImage(getContext(), GlideImageConfig.builder());
                 holder.setText(R.id.tv_name, "张三");
                 holder.setText(R.id.tv_content, "我的天的道德观念我的是高科技的思考国际快递发几个客服房间打开数据库");

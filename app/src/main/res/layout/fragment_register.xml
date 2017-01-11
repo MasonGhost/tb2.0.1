@@ -14,7 +14,6 @@
         <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
             android:id="@+id/et_regist_username"
             style="@style/style_edit"
-            android:drawableRight="@mipmap/ico_eye_close"
             android:hint="@string/username_input_hint"
             android:inputType="textPersonName"
             android:maxLength="@integer/username_max_length"/>
@@ -36,7 +35,6 @@
                 android:id="@+id/et_regist_phone"
                 style="@style/style_edit"
                 android:layout_centerVertical="true"
-                android:drawableRight="@mipmap/ico_eye_close"
                 android:hint="@string/phone_number_input_hint"
                 android:inputType="phone"
                 android:maxLength="@integer/phone_number_length"/>
@@ -90,7 +88,6 @@
         <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
             android:id="@+id/et_regist_vertify_code"
             style="@style/style_edit"
-            android:drawableRight="@mipmap/ico_eye_close"
             android:hint="@string/vertify_code_input_hint"
             android:inputType="number"
             android:maxLength="@integer/vertiry_code_lenght"/>
@@ -108,7 +105,6 @@
         <com.zhiyicx.baseproject.widget.edittext.PasswordEditText
             android:id="@+id/et_regist_password"
             style="@style/style_edit"
-            android:drawableRight="@mipmap/ico_eye_close"
             android:hint="@string/password_input_hint"
             android:inputType="textPassword"
             android:maxLength="@integer/password_maxlenght"/>

@@ -18,9 +18,9 @@ import com.zhiyicx.baseproject.R;
  */
 public class PasswordEditText extends EditText {
     // 当前密码可见时的图片
-    private static final int SHOW_ICON = R.mipmap.ico_eye_open;
+    private static final int SHOW_ICON = R.mipmap.login_ico_copeneye;
     // 当前密码不可见时的图片
-    private static final int HIDE_ICON = R.mipmap.ico_eye_close;
+    private static final int HIDE_ICON = R.mipmap.login_ico_closeye;
 
     //注意设置密码的明暗文，需要组合使用InputType
     private static final int hide = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD;
