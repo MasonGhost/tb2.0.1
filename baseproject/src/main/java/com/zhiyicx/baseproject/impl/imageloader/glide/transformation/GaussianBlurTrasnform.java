@@ -11,12 +11,12 @@ import com.zhiyicx.common.utils.FastBlur;
 /**
  * @Describe  滤镜效果
  * @Author Jungle68
- * @Date 2017/1/
+ * @Date 2017/1/11
  * @Contact master.jungle68@gmail.com
  */
 
-public class GaussianBlurTrasform extends BitmapTransformation {
-    public GaussianBlurTrasform(Context context) {
+public class GaussianBlurTrasnform extends BitmapTransformation {
+    public GaussianBlurTrasnform(Context context) {
         super(context);
     }
 

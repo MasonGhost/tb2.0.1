@@ -15,12 +15,12 @@ import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 /**
  * @Describe 带白底框的圆形 trasform
  * @Author Jungle68
- * @Date 2017/1/
+ * @Date 2017/1/11
  * @Contact master.jungle68@gmail.com
  */
 
-public class GlideCircleBoundTrasform extends BitmapTransformation {
-    public GlideCircleBoundTrasform(Context context) {
+public class GlideCircleBoundTransform extends BitmapTransformation {
+    public GlideCircleBoundTransform(Context context) {
         super(context);
     }
 
