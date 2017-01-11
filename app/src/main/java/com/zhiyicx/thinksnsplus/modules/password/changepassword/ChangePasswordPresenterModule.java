@@ -21,13 +21,13 @@ public class ChangePasswordPresenterModule {
     }
 
     @Provides
-    ChangePasswordContract.View providePasswordContractView() {
+    ChangePasswordContract.View provideChangePasswordContractView() {
         return mView;
     }
 
 
     @Provides
-    ChangePasswordContract.Repository providePasswordContractRepository(ServiceManager serviceManager) {
+    ChangePasswordContract.Repository provideChangePasswordContractRepository(ServiceManager serviceManager) {
         return new ChangePasswordRepository(serviceManager);
     }
 }

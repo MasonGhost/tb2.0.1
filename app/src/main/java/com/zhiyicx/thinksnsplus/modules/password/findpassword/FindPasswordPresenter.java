@@ -4,7 +4,6 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.password.changepassword.ChangePasswordContract;
 
 import javax.inject.Inject;
 
@@ -15,11 +14,11 @@ import javax.inject.Inject;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class FindPasswordPresenter extends BasePresenter<ChangePasswordContract.Repository, ChangePasswordContract.View> implements ChangePasswordContract.Presenter {
+public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Repository, FindPasswordContract.View> implements FindPasswordContract.Presenter {
 
 
     @Inject
-    public FindPasswordPresenter(ChangePasswordContract.Repository repository, ChangePasswordContract.View rootView) {
+    public FindPasswordPresenter(FindPasswordContract.Repository repository, FindPasswordContract.View rootView) {
         super(repository, rootView);
     }
 
@@ -84,8 +83,14 @@ public class FindPasswordPresenter extends BasePresenter<ChangePasswordContract.
         return false;
     }
 
+
     @Override
-    public void changePassword(String oldPassword, String newPassword, String sureNewPassword) {
+    public void findPassword(String oldPassword, String newPassword, String sureNewPassword) {
+
+    }
+
+    @Override
+    public void getVertifyCode(String phone, String type) {
 
     }
 }
