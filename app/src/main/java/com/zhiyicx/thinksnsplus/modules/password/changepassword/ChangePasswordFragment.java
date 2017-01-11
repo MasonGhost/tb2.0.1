@@ -4,12 +4,14 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.edittext.PasswordEditText;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 import butterknife.BindView;
+import rx.functions.Action1;
 
 /**
  * @Describe
@@ -28,6 +30,10 @@ public class ChangePasswordFragment extends TSFragment<ChangePasswordContract.Pr
     PasswordEditText mEtSureNewPassword;
     @BindView(R.id.tv_error_tip)
     TextView mTvErrorTip;
+
+    private boolean isOldPasswordEdited;
+    private boolean isNewPasswordEdited;
+    private boolean isSureNewPasswordEdited;
 
     public static ChangePasswordFragment newInstance() {
         ChangePasswordFragment fragment = new ChangePasswordFragment();
@@ -72,8 +78,37 @@ public class ChangePasswordFragment extends TSFragment<ChangePasswordContract.Pr
     @Override
     protected void initView(View rootView) {
         mToolbarRight.setEnabled(false);
+        // 旧密码观察
+        RxTextView.textChanges(mEtOldPassword)
+                .compose(this.<CharSequence>bindToLifecycle())
+                .subscribe(new Action1<CharSequence>() {
+                    @Override
+                    public void call(CharSequence charSequence) {
+                        isOldPasswordEdited = !TextUtils.isEmpty(charSequence.toString());
+                        setConfirmEnable();
+                    }
+                });
+        // 旧密码观察
+        RxTextView.textChanges(mEtNewPassword)
+                .compose(this.<CharSequence>bindToLifecycle())
+                .subscribe(new Action1<CharSequence>() {
+                    @Override
+                    public void call(CharSequence charSequence) {
+                        isNewPasswordEdited = !TextUtils.isEmpty(charSequence.toString());
+                        setConfirmEnable();
+                    }
+                });
+        // 旧密码观察
+        RxTextView.textChanges(mEtSureNewPassword)
+                .compose(this.<CharSequence>bindToLifecycle())
+                .subscribe(new Action1<CharSequence>() {
+                    @Override
+                    public void call(CharSequence charSequence) {
+                        isSureNewPasswordEdited = !TextUtils.isEmpty(charSequence.toString());
+                        setConfirmEnable();
+                    }
+                });
     }
-
 
     @Override
     protected void initData() {
@@ -104,5 +139,17 @@ public class ChangePasswordFragment extends TSFragment<ChangePasswordContract.Pr
             mTvErrorTip.setText(message);
         }
     }
+
+    /**
+     * 更改按钮是否可用
+     */
+    private void setConfirmEnable() {
+        if (isOldPasswordEdited && isNewPasswordEdited && isSureNewPasswordEdited) {
+            mToolbarRight.setEnabled(true);
+        } else {
+            mToolbarRight.setEnabled(false);
+        }
+    }
+
 
 }
