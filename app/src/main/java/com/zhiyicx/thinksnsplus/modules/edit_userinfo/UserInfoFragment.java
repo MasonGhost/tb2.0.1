@@ -18,9 +18,13 @@ import android.widget.Toast;
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.yalantis.ucrop.UCrop;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 
 import java.io.File;
@@ -316,7 +320,12 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     private void handleCropResult(@NonNull Intent result) {
         final Uri resultUri = UCrop.getOutput(result);
         if (resultUri != null) {
-
+            ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
+            imageLoader.loadImage(getContext(), GlideImageConfig.builder()
+                    .url(resultUri.getPath())
+                    .imagerView(mIvHeadIcon)
+                    .transformation(new GlideCircleTransform(getContext()))
+                    .build());
         } else {
             ToastUtils.showToast("Cannot retrieve cropped image");
         }
