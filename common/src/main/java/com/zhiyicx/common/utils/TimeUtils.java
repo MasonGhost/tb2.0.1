@@ -1,5 +1,7 @@
 package com.zhiyicx.common.utils;
 
+import android.support.annotation.Nullable;
+
 import com.zhiyicx.common.config.ConstantConfig;
 
 import java.text.SimpleDateFormat;
@@ -39,30 +41,17 @@ public class TimeUtils {
      * 9天以上显示月日如（05-21）
      *
      * @param timesamp 时间戳，单位 s
-     * @return
+     * @return 友好时间字符串
      */
     public static String getFriendlyNormal(long timesamp) {
         String result = "1分钟前";
         timesamp = timesamp * ConstantConfig.SEC;// 将 s 转换为 ms
-        SimpleDateFormat sdf = new SimpleDateFormat("dd");
-        Date today = new Date(System.currentTimeMillis());
-        Date otherDay = new Date(timesamp);
-        int temp = Integer.parseInt(sdf.format(today))
-                - Integer.parseInt(sdf.format(otherDay));
-        switch (temp) {
+        switch (getifferenceDays(timesamp)) {
             case 0:
-                long curTime = System.currentTimeMillis();
-                long time = curTime - timesamp;
-                if (time < ConstantConfig.MIN) {
-                    return result;
-                } else if (time < ConstantConfig.HOUR) {
-                    return time / ConstantConfig.MIN + "分钟前";
-                } else if (time < ConstantConfig.DAY) {
-                    return time / ConstantConfig.HOUR + "小时前";
-                }
+                result = getFriendlyTimeForBeforHour(timesamp, result);
                 break;
             case 1:
-                result = "昨天 " + getStandardTimeWithHour(timesamp);
+                result = "昨天";
                 break;
             case 2:
                 result = "两天前";
@@ -96,6 +85,97 @@ public class TimeUtils {
         return result;
     }
 
+
+    /**
+     * 详情页
+     * <p>
+     * 一分钟内显示一分钟
+     * 一小时内显示几分钟前，
+     * 一天内显示几小时前，
+     * 1天到2天显示如（昨天 20:36），
+     * 2天到9天显示如（五天前 20：34），
+     * 9天以上显示如（02-28 19:15）
+     *
+     * @param timesamp 时间戳，单位 s
+     * @return 友好时间字符串
+     */
+    public static String getFriendlyForDetail(long timesamp) {
+        String result = "1分钟前";
+        timesamp = timesamp * ConstantConfig.SEC;// 将 s 转换为 ms
+        switch (getifferenceDays(timesamp)) {
+            case 0:
+                result = getFriendlyTimeForBeforHour(timesamp, result);
+                break;
+            case 1:
+                result = "昨天 " + getStandardTimeWithHour(timesamp);
+                break;
+            case 2:
+                result = "两天前 " + getStandardTimeWithHour(timesamp);
+                break;
+            case 3:
+                result = "三天前 " + getStandardTimeWithHour(timesamp);
+                break;
+            case 4:
+                result = "四天前 " + getStandardTimeWithHour(timesamp);
+                break;
+            case 5:
+                result = "五天前 " + getStandardTimeWithHour(timesamp);
+                break;
+            case 6:
+                result = "六天前 " + getStandardTimeWithHour(timesamp);
+                break;
+            case 7:
+                result = "七天前 " + getStandardTimeWithHour(timesamp);
+                break;
+            case 8:
+                result = "八天前 " + getStandardTimeWithHour(timesamp);
+                break;
+            case 9:
+                result = "九天前 " + getStandardTimeWithHour(timesamp);
+                break;
+
+            default:
+                result = getStandardTimeWithDate(timesamp);
+                break;
+        }
+        return result;
+    }
+
+    /**
+     * 输入时间和当前时间间隔的天数
+     *
+     * @param timesamp 输入时间
+     * @return 输入时间和当前时间间隔的天数
+     */
+    private static int getifferenceDays(long timesamp) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd");
+        Date today = new Date(System.currentTimeMillis());
+        Date otherDay = new Date(timesamp);
+        return Integer.parseInt(sdf.format(today))
+                - Integer.parseInt(sdf.format(otherDay));
+    }
+
+    /**
+     * 获取几分钟前、和几小时前
+     *
+     * @param timesamp     时间戳
+     * @param defaltString 默认文字
+     * @return
+     */
+    @Nullable
+    private static String getFriendlyTimeForBeforHour(long timesamp, String defaltString) {
+        long curTime = System.currentTimeMillis();
+        long time = curTime - timesamp;
+        if (time < ConstantConfig.MIN) {
+            return defaltString;
+        } else if (time < ConstantConfig.HOUR) {
+            return time / ConstantConfig.MIN + "分钟前";
+        } else if (time < ConstantConfig.DAY) {
+            return time / ConstantConfig.HOUR + "小时前";
+        }
+        return defaltString;
+    }
+
     /**
      * 通过时间戳获取 yyyy
      *
@@ -120,7 +200,7 @@ public class TimeUtils {
      * 通过时间戳获取 format类型时间
      *
      * @param timestamp ms
-     * @param format 格式类型
+     * @param format    格式类型
      * @return
      */
     public static String getTime(long timestamp, String format) {
@@ -145,6 +225,7 @@ public class TimeUtils {
     public static String getStandardTimeWithHour(long timestamp) {
         return getTime(timestamp, "HH:mm");
     }
+
     /**
      * 通过时间戳获取 MM-dd
      */
