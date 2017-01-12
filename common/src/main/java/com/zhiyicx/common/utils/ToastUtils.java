@@ -90,7 +90,7 @@ public class ToastUtils {
         } else {
             toast = new Toast(context);
             toast.setView(v);
-            toast.setGravity(Gravity.FILL_HORIZONTAL | Gravity.TOP, 0, 0);
+            toast.setGravity(Gravity.CENTER, 0, 0);
             toast.setDuration(Toast.LENGTH_SHORT);
             toast.show();
         }

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.CombinationButton;
+import com.zhiyicx.baseproject.widget.infohint.ShowHintInfo;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
@@ -123,6 +124,7 @@ public class MineFragment extends TSFragment {
             case R.id.bt_ranking:
                 break;
             case R.id.bt_gold:
+                ShowHintInfo.showSendError();
                 break;
             case R.id.bt_suggestion:
                 break;
