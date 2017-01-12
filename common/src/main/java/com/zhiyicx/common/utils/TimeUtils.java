@@ -43,7 +43,7 @@ public class TimeUtils {
      * @param timesamp 时间戳，单位 s
      * @return 友好时间字符串
      */
-    public static String getFriendlyNormal(long timesamp) {
+    public static String getTimeFriendlyNormal(long timesamp) {
         String result = "1分钟前";
         timesamp = timesamp * ConstantConfig.SEC;// 将 s 转换为 ms
         switch (getifferenceDays(timesamp)) {
@@ -99,7 +99,7 @@ public class TimeUtils {
      * @param timesamp 时间戳，单位 s
      * @return 友好时间字符串
      */
-    public static String getFriendlyForDetail(long timesamp) {
+    public static String getTimeFriendlyForDetail(long timesamp) {
         String result = "1分钟前";
         timesamp = timesamp * ConstantConfig.SEC;// 将 s 转换为 ms
         switch (getifferenceDays(timesamp)) {
@@ -136,6 +136,33 @@ public class TimeUtils {
 
             default:
                 result = getStandardTimeWithDate(timesamp);
+                break;
+        }
+        return result;
+    }
+
+    /**
+     * 个人主页
+     * 1天内显示今天，
+     * 1天到2天显示昨天，
+     * 2天以上显示月日如（05-21）
+     *
+     * @param timesamp 时间戳
+     * @return  友好的时间字符串
+     */
+    public static String getTimeFriendlyForUserHome(long timesamp) {
+        String result = "1分钟前";
+        timesamp = timesamp * ConstantConfig.SEC;// 将 s 转换为 ms
+        switch (getifferenceDays(timesamp)) {
+            case 0:
+                result = "今天" ;
+                break;
+            case 1:
+                result = "昨天";
+                break;
+
+            default:
+                result = getStandardTimeWithMothAndDay(timesamp);
                 break;
         }
         return result;
