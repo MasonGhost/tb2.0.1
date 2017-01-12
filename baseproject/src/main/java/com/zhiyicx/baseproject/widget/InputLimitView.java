@@ -2,6 +2,7 @@ package com.zhiyicx.baseproject.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -16,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.R;
+import com.zhiyicx.common.utils.ColorPhrase;
 
 /**
  * @Describe
@@ -33,6 +35,7 @@ public class InputLimitView extends FrameLayout {
     private int mLimitMaxSize;// 最大输入值
     private int mshowLimitSize;// 当输入值达到 mshowLimitSize 时，显示提示
 
+    private String mLimitTipStr = "{}/";// 添加格式符号，用户ColorPhrase
     private OnSendClickListener mOnSendClickListener;
 
     public void setTvLimitTip(TextView tvLimitTip) {
@@ -54,7 +57,7 @@ public class InputLimitView extends FrameLayout {
         init(context, attrs);
     }
 
-    private void init(Context context, AttributeSet attrs) {
+    private void init(final Context context, AttributeSet attrs) {
         LayoutInflater.from(context).inflate(R.layout.view_input_limit_viewgroup, this);
         mTvLimitTip = (TextView) findViewById(R.id.tv_limit_tip);
         mBtSend = (Button) findViewById(R.id.bt_send);
@@ -69,6 +72,7 @@ public class InputLimitView extends FrameLayout {
             mLimitMaxSize = context.getResources().getInteger(R.integer.comment_input_max_size);
             mshowLimitSize = context.getResources().getInteger(R.integer.show_comment_input_size);
         }
+
         mEtContent.setFilters(new InputFilter[]{new InputFilter.LengthFilter(mLimitMaxSize)});
         mEtContent.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
@@ -99,6 +103,12 @@ public class InputLimitView extends FrameLayout {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() >= mshowLimitSize) {
+                    mLimitTipStr = "<" + s + ">" + "/" + mLimitMaxSize;
+                    CharSequence chars = ColorPhrase.from(mLimitTipStr).withSeparator("<>")
+                            .innerColor(ContextCompat.getColor(context, R.color.important_for_note))
+                            .outerColor(ContextCompat.getColor(context, R.color.general_for_hint))
+                            .format();
+                    mTvLimitTip.setText(chars);
                     mTvLimitTip.setVisibility(VISIBLE);
                 } else {
                     mTvLimitTip.setVisibility(GONE);
