@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:padding="@dimen/spacing_normal"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <Button
+        android:id="@+id/bt_send"
+        android:layout_width="45dp"
+        android:layout_height="25dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/selector_button_corner_solid_small"
+        android:text="@string/send"
+        android:textColor="@color/white"
+        android:textSize="@dimen/button_text_size_small"/>
+    <TextView
+        android:id="@+id/tv_limit_tip"
+        android:textSize="@dimen/size_note_assist"
+        android:layout_width="match_parent"
+        android:layout_toRightOf="@id/et_content"
+        tools:text="210/255"
+        android:paddingBottom="@dimen/spacing_small"
+        android:gravity="center"
+        android:textColor="@color/important_for_note"
+        android:layout_above="@id/bt_send"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:id="@+id/et_content"
+        android:layout_width="match_parent"
+        android:layout_toLeftOf="@id/bt_send"
+        android:layout_height="wrap_content"
+        android:textColor="@color/important_for_content"
+        android:textSize="@dimen/size_content_assist"
+        tools:text="刚刚加息公积金阿哥电视卡鼓励进口大幅拉升价格可分离收购价格浮动式结构"
+        android:layout_alignParentBottom="true"
+        />
+
+
+</RelativeLayout>
+

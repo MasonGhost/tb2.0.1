@@ -20,6 +20,7 @@
     <string name="female">女</string>
     <string name="keep_secret">保密</string>
     <string name="complete">完成</string>
+    <string name="send">发送</string>
     <!-- 注册 -->
     <string name="username_input_hint">请输入2-8位用户名</string>
     <string name="username_toast_hint">@string/username_input_hint</string>
