@@ -4,7 +4,7 @@
 
 ## 2.定义
 项目中定义了如下的接口和基类
- - IBasePresenter接口
+ - IBasePresenter接口，所有Presenter接口的父接口
  ```
      /**
       * 关联 Activity\Fragment 生命周期
@@ -23,7 +23,7 @@
       */
      void unSubscribe(Subscription subscription);
  ```
- - IBaseView接口
+ - IBaseView接口：所有View接口的父接口
 
     根据实际需要，添加或者修改接口方法
  ```
@@ -95,4 +95,20 @@
      }
  ```
     在BaseActivity中调用presenter的onDestroy()方法，释放presenter
- 2016年12月23日10:08:54
+
+
+## 3.使用
+**一千个人眼中，有一千个哈姆雷特，一个项目中只需要一种MVP；（-。-）**
+
+以项目中的登陆功能为例，我们需要实现下面的这些：
+
+- LoginContract:定义mvp层次的接口
+- LoginPresenter：实现登陆的Presenter接口
+- LoginRepository:实现登陆的Model层接口
+- LoginFragment中实现View接口
+- LoginPresenterModule：针对Presenter的Dagger管理，添加的module
+- LoginComponent：针对Presenter的Dagger管理，添加的Component
+- LoginActivity：管理LoginFragment
+
+
+2017年1月12日11:20:48
