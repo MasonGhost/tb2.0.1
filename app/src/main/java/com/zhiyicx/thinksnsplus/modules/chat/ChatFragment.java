@@ -15,11 +15,13 @@ import com.zhiyicx.thinksnsplus.modules.register.RegisterActivity;
  * @Contact master.jungle68@gmail.com
  */
 public class ChatFragment extends TSFragment<ChatContract.Presenter> implements ChatContract.View {
+    public static final String BUNDLE_USERID = "userId";
 
+    private String mTochatUsreId;// 聊天对方用户的id
     public static ChatFragment newInstance(String userId) {
 
         Bundle args = new Bundle();
-
+        args.putString(BUNDLE_USERID,userId);
         ChatFragment fragment = new ChatFragment();
         fragment.setArguments(args);
         return fragment;

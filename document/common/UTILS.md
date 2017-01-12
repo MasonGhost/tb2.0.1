@@ -1,3 +1,4 @@
+2017年1月12日17:38:24
 # 常用工具类集合
  - imageloader文件夹：项目所使用的图片加载框架接口
 
@@ -22,6 +23,23 @@
 
  - ZipHelper：压缩和解压的辅助类
 
+ - [ColorPhrase](#ColorPhrase)： 文字颜色修改工具
+
  - widget文件夹：下面放着各种常用的和自定义的控件
 
- 2016年12月23日 13:58:56
+
+ ## 使用说明
+
+ ### <span id = "ColorPhrase">ColorPhrase</span>
+ ```java
+       String content = "<" + data.mUserInfo.uname + ">" + " : " + data.msg.txt;
+         try {
+             CharSequence chars = ColorPhrase.from(content).withSeparator("<>").innerColor(0xff64d7fe).outerColor(0xffffffff).format();
+             mContentTV.setText(chars);
+         } catch (Exception e) {
+             e.printStackTrace();
+             mContentTV.setText(data.mUserInfo.uname + " : " + data.msg.txt);
+         }
+ ```
+
+

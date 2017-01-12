@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -8,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
@@ -20,13 +22,20 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItem;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
+import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import rx.functions.Action1;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Describe 消息页面
@@ -35,7 +44,7 @@ import butterknife.BindView;
  * @Contact master.jungle68@gmail.com
  */
 public class MessageFragment extends TSFragment {
-    private static final float LIST_ITEM_SPACING=1f;
+    private static final float LIST_ITEM_SPACING = 1f;
     private static final int ITEM_TYPE_COMMNETED = 0;
     private static final int ITEM_TYPE_LIKED = 1;
 
@@ -125,13 +134,14 @@ public class MessageFragment extends TSFragment {
         UserInfoBean testUserinfo = new UserInfoBean();
         testUserinfo.setUserIcon("http://image.xinmin.cn/2017/01/11/bedca80cdaa44849a813e7820fff8a26.jpg");
         testUserinfo.setUserName("颤三");
+        testUserinfo.setUserId("123");
         test.setUserInfo(testUserinfo);
         Message testMessage = new Message();
         testMessage.setTxt("一叶之秋、晴天色"
                 + getString(R.string.like_me));
         testMessage.setCreate_time(System.currentTimeMillis());
         test.setLastMessage(likeMessage);
-        test.setUnReadMessageNums((int) (Math.random()*10));
+        test.setUnReadMessageNums((int) (Math.random() * 10));
         messageItems.add(test);
     }
 
@@ -143,7 +153,7 @@ public class MessageFragment extends TSFragment {
      * @param position    当前数据位置
      */
 
-    private void setItemData(ViewHolder holder, MessageItem messageItem, int position) {
+    private void setItemData(ViewHolder holder, final MessageItem messageItem, int position) {
         switch (position) {
             case ITEM_TYPE_COMMNETED:// 评论图标
                 mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
@@ -175,5 +185,56 @@ public class MessageFragment extends TSFragment {
         holder.setText(R.id.tv_content, messageItem.getLastMessage().getTxt());
         holder.setText(R.id.tv_time, ConvertUtils.millis2FitTimeSpan(messageItem.getLastMessage().getCreate_time(), 3));
         ((BadgeView) holder.getView(R.id.tv_tip)).setBadgeCount(messageItem.getUnReadMessageNums());
+        // 响应事件
+        RxView.clicks(holder.getView(R.id.tv_name))
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        toUserCenter();
+                    }
+                });
+        RxView.clicks(holder.getView(R.id.iv_headpic))
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        toUserCenter();
+                    }
+                });
+        RxView.clicks(holder.getConvertView())
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        toChat(messageItem);
+                    }
+                });
+
     }
+
+    /**
+     * 进入聊天页
+     *
+     * @param messageItem
+     */
+    private void toChat(MessageItem messageItem) {
+        Intent to = new Intent(getActivity(), ChatActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(ChatFragment.BUNDLE_USERID, messageItem.getUserInfo().getUserId());
+        to.putExtras(bundle);
+        startActivity(to);
+    }
+
+    /**
+     * 前往用户个人中心
+     */
+    private void toUserCenter() {
+        Intent to = new Intent(getActivity(), UserInfoActivity.class);
+        startActivity(to);
+    }
+
 }

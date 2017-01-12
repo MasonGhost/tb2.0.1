@@ -58,6 +58,7 @@
         android:layout_toRightOf="@id/iv_headpic"
         android:maxLines="1"
         android:paddingLeft="@dimen/spacing_normal"
+        android:textSize="@dimen/size_sub_title"
         android:textColor="@color/important_for_content"
         tools:text="张三 "/>
 
@@ -72,6 +73,7 @@
         android:ellipsize="end"
         android:gravity="bottom"
         android:maxLines="1"
+        android:textSize="@dimen/size_content_assist"
         android:paddingLeft="@dimen/spacing_normal"
         android:textColor="@color/normal_for_assist_text"
         tools:text="我送第几个 "/>

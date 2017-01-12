@@ -5,7 +5,7 @@
               android:orientation="vertical">
 
     <LinearLayout
-        style="@style/style_edit_line">
+        style="@style/style_edit_white_container">
 
         <TextView
             style="@style/style_small_text"
@@ -21,10 +21,10 @@
 
     <ImageView style="@style/style_divider_horizontal"/>
 
-    <RelativeLayout style="@style/style_edit_line">
+    <RelativeLayout style="@style/style_edit_white_container">
 
         <LinearLayout
-            style="@style/style_edit_line"
+            style="@style/style_edit_white_container"
             android:layout_toLeftOf="@+id/rl_send_vertify_code_container">
 
             <TextView
@@ -79,7 +79,7 @@
 
     <ImageView style="@style/style_divider_horizontal"/>
 
-    <LinearLayout style="@style/style_edit_line">
+    <LinearLayout style="@style/style_edit_white_container">
 
         <TextView
             style="@style/style_small_text"
@@ -96,7 +96,7 @@
     <ImageView style="@style/style_divider_horizontal"/>
 
     <LinearLayout
-        style="@style/style_edit_line">
+        style="@style/style_edit_white_container">
 
         <TextView
             style="@style/style_small_text"

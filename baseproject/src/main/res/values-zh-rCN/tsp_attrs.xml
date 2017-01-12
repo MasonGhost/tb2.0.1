@@ -27,5 +27,11 @@
         <!--是否显示分割线-->
         <attr name="showLine" format="reference|boolean"></attr>
     </declare-styleable>
-
+    <!--组合输入框和按钮文字-->
+    <declare-styleable name="inputLimitView">
+        <!--输入的最大值-->
+        <attr name="limitSize" format="reference|integer"></attr>
+        <!--输入多少字的时候显示 限制提示-->
+        <attr name="showLimitSize" format="reference|integer"></attr>
+    </declare-styleable>
 </resources>
