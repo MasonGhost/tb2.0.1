@@ -50,4 +50,5 @@ dependencies {
     compile project(':baseadapter-recyclerview')
     compile project(':ucrop')
     compile project(':pickerview')
+    compile project(':PhotoPicker')
 }

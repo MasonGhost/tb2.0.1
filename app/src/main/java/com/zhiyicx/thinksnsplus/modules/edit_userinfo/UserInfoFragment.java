@@ -1,5 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 
+import android.content.ContextWrapper;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -7,18 +13,31 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bigkoo.pickerview.OptionsPickerView;
+import com.yalantis.ucrop.UCrop;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import me.iwf.photopicker.PhotoPicker;
+import me.iwf.photopicker.PhotoPreview;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * @author LiuChao
@@ -49,6 +68,9 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     private int mCityOption2;
     private OptionsPickerView mAreaPickerView;// 地域选择器
     private ActionPopupWindow mGenderPopupWindow;// 性别选择弹框
+    private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
+
+    private List<String> selectedPhotos = new ArrayList<>();// 被选择的图片
 
     @Override
     protected int getBodyLayoutId() {
@@ -104,6 +126,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_change_head_container:
+                initPhotoPopupWindow();
+                mPhotoPopupWindow.show();
                 break;
             case R.id.ll_sex_container:
                 initGenderPopupWindow();
@@ -122,6 +146,18 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         this.options2Items = options2Items;
         mAreaPickerView.setPicker(options1Items, options2Items, true);
         mAreaPickerView.setCyclic(false);// 设置是否可以循环滚动
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // 处理pickerView和返回键的逻辑
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (mAreaPickerView.isShowing()) {
+                mAreaPickerView.dismiss();
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     /**
@@ -194,16 +230,116 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .build();
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        // 处理pickerView和返回键的逻辑
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if(mAreaPickerView.isShowing()){
-                mAreaPickerView.dismiss();
-                return true;
-            }
+    /**
+     * 初始化图片选择弹框
+     */
+    private void initPhotoPopupWindow() {
+        if (mPhotoPopupWindow != null) {
+            return;
         }
-        return super.onKeyDown(keyCode, event);
+        mPhotoPopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.choose_from_photo))
+                .item2Str(getString(R.string.choose_from_camera))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(0.8f)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+                        // 选择相册，单张
+                        PhotoPicker.builder()
+                                .setPreviewEnabled(true)
+                                .setGridColumnCount(3)
+                                .setPhotoCount(1)
+                                .setShowCamera(true)
+                                .start(getActivity(), UserInfoFragment.this);
+                        mPhotoPopupWindow.hide();
+                    }
+                })
+                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
+                    @Override
+                    public void onItem2Clicked() {
+                        // 选择相机，拍照
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mPhotoPopupWindow.hide();
+                    }
+                }).build();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+
+            if ((requestCode == PhotoPicker.REQUEST_CODE || requestCode == PhotoPreview.REQUEST_CODE)) {
+                List<String> photos = null;
+                if (data != null) {
+                    photos = data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS);
+                }
+                startCropActivity(Uri.fromFile(new File(photos.get(0))));
+                selectedPhotos.clear();
+                if (photos != null) {
+                    selectedPhotos.addAll(photos);
+                }
+            }
+
+            if (requestCode == UCrop.REQUEST_CROP) {
+                handleCropResult(data);
+            }
+
+            if (resultCode == UCrop.RESULT_ERROR) {
+                handleCropError(data);
+            }
+
+        }
+    }
+
+    /**
+     * 调用裁剪方法
+     *
+     * @param uri
+     */
+    private void startCropActivity(@NonNull Uri uri) {
+        String destinationFileName = "SampleCropImage.jpg";
+        UCrop uCrop = UCrop.of(uri, Uri.fromFile(new File(getActivity().getCacheDir(), destinationFileName)));
+        uCrop.withAspectRatio(1, 1);//方形
+        UCrop.Options options = new UCrop.Options();
+        options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
+        options.setCompressionQuality(100);
+        uCrop.withOptions(options);
+        uCrop.start(getActivity(), UserInfoFragment.this);
+    }
+
+    private void handleCropResult(@NonNull Intent result) {
+        final Uri resultUri = UCrop.getOutput(result);
+        if (resultUri != null) {
+            ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
+            imageLoader.loadImage(getContext(), GlideImageConfig.builder()
+                    .url(resultUri.getPath())
+                    .imagerView(mIvHeadIcon)
+                    .transformation(new GlideCircleTransform(getContext()))
+                    .build());
+        } else {
+            ToastUtils.showToast("Cannot retrieve cropped image");
+        }
+    }
+
+    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
+    private void handleCropError(@NonNull Intent result) {
+        final Throwable cropError = UCrop.getError(result);
+        if (cropError != null) {
+            Log.e(TAG, "handleCropError: ", cropError);
+            ToastUtils.showToast(cropError.getMessage());
+        } else {
+            ToastUtils.showToast("Unexpected error");
+        }
     }
 
 }
