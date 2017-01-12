@@ -14,6 +14,7 @@ import android.view.View;
 import java.util.Stack;
 
 /**
+ *
  * A fluent API for formatting Strings. Canonical usage:
  * <pre>
  *  CharSequence chars = ColorPhrase.from("I'm<Chinese>,I love <China>").
