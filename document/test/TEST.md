@@ -39,11 +39,183 @@ src目录下：
   测试框架需要在该目录下运行，gradle配置以testCompile开头
 
 ## 在项目中使用上述的框架进行单元测试
-    **逐步添加中**
+
+   ### AndroidTest  依赖于android环境
+   在app目录下的androidTest中，当前定义了如下的一些类：
+   ```
+   @RunWith(AndroidJUnit4.class)
+   @LargeTest
+   public abstract class AcitivityTest {
+
+       /**
+        * 清空输入框的内容
+        *
+        * @param viewInteraction
+        */
+       protected void clearEditText(ViewInteraction... viewInteraction) {
+           if (viewInteraction != null) {
+               for (ViewInteraction interaction : viewInteraction) {
+                   interaction.perform(clearText());
+               }
+           }
+       }
+
+       /**
+        * 根据控件id获取控件
+        *
+        * @param viewId
+        * @return
+        */
+       protected ViewInteraction findViewById(int viewId) {
+           return onView(withId(viewId));
+       }
+
+   }
+   ```
+
+   AcitivityTest是我们自定义的android测试的基类，在其中，定义了了一些常用的方法，当然有必要可以继续添加其他方法，这样做主要是
+   方便调用测试方法，不需要反复导入static方法；另外因为添加了
+   ```
+      @RunWith(AndroidJUnit4.class)
+      @LargeTest
+   ```
+   所以继承它的子类测试类，不需要再添加这些注解；
+
+   下面的类，是用来判断一些反面情况的，比如控件的enable为false
+   ```
+public final class MyViewMatchers {
+    /**
+     * Returns a matcher that matches {@link View}s that are disenabled.
+     */
+    public static Matcher<View> disEnabled() {
+        return new TypeSafeMatcher<View>() {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("is disable");
+            }
+
+            @Override
+            public boolean matchesSafely(View view) {
+                return !view.isEnabled();
+            }
+        };
+    }
+      ...
+ }
+   ```
+在android的断言中，一般只有正面的断言，比如控件可点击，控件可见，为了让测试用例通过，我们需要模仿官方的正面断言方法，
+自己添加反面的断言判断即可；
+
+下面我就以登陆的测试为例，进行简单的说明：
+
+首先，创建一个测试类,继承自AcitivityTest类:
+```
+public class LoginActivityTest extends AcitivityTest {
+}
+```
+
+接下来我们添加启动activity的方法，当然可以在rule中添加activity的bundle:
+```
+    @Rule
+    public ActivityTestRule<LoginActivity> mActivityRule = new ActivityTestRule(LoginActivity.class);
+```
+
+下面，我们对Activity进行初始化:
+```
+    private ViewInteraction etPhone, etPass, btnLogin, tvErrorTip;
+    private LoginClient mLoginClient;
+    @Before
+    public void initActivity() {
+        mLoginClient = AppApplication.AppComponentHolder.getAppComponent().serviceManager().getLoginClient();
+        etPhone = findViewById(R.id.et_login_phone);
+        etPass = findViewById(R.id.et_login_password);
+        btnLogin = findViewById(R.id.bt_login_login);
+        tvErrorTip = findViewById(R.id.tv_error_tip);
+    }
+```
+- 在这里，虽然我们的登陆是写在LoginFragment中，但在测试中依然能够通过activity获取到这些控件；<br>
+- 这里的findViewById()方法是我在AcitivityTest中自定义的方法；<br>
+- 这里的LoginClient，是Retrofit创建的服务器请求接口，这里我通过AppApplication中的Dagger2获取到这个对象，
+在下面的代码中进行网络请求；
+
+接下来，我们就可以进行具体的测试：
+```
+    /**
+     * summary    不输入密码，只输入手机号能否点击登录按钮
+     * steps      1.清空输入框  2.输入手机号
+     * expected   登录按钮无法点击
+     */
+    @Test
+    public void clickableWhenNoPassword() throws Exception {
+        clearEditText(etPhone, etPass);
+        etPhone.perform(replaceText("15928856596"), closeSoftKeyboard());
+        btnLogin.check(matches(isUnClickable()));
+    }
+```
+
+上面的方法中，我们进行了 清空输入框 --> 输入手机号，并关闭软件盘 -->验证按钮是否可点击 的步骤；
+
+下面的方法,是对登陆进行网络请求，这里我调用了rap的接口进行测试，在action的回调中进行断言
+```
+    /**
+     * summary    因为某些原因导致登录失败，比如密码错误
+     * steps        1.输入正确的手机号  2.输入错误的密码 3.点击登陆按钮
+     * expected   errorTip显示登陆失败的原因
+     */
+    @Test
+    public void loginFailure() throws Exception {
+        mLoginClient.login("failure", "12344", "dsafdsa","fdsadfs")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new TestAction<BaseJson<LoginBean>>() {
+                    @Override
+                    void testCall(BaseJson<LoginBean> integerBaseJson) {
+                        LogUtils.d("haha",integerBaseJson.toString());
+                        if (integerBaseJson.isStatus()) {
+                            // 登陆成功跳转:当前不可能发生
+                           assertFalse(true);
+                        } else {
+                            // 登陆失败
+                            assertFalse(false);
+                        }
+                    }
+                }, new TestAction<Throwable>() {
+                    @Override
+                    void testCall(Throwable e) {
+                        LogUtils.e(e,"exception");
+                        //assertFalse(true);
+                    }
+                });
+    }
+```
+
+还有另外一种网络请求测试方法
+```
+    /**
+     * summary    输入正确的手机号，密码登陆成功
+     * steps      1.输入正确的手机号 2.输入正确的密码 3.点击登陆按钮 4.主线成沉睡1s等待网络请求结果
+     * expected   errorTip显示登陆成功的内容
+     */
+    @Test
+    public void loginSuccess() throws Exception {
+        clearEditText(etPhone, etPass);
+        etPhone.perform(replaceText("15928856596"), closeSoftKeyboard());
+        etPass.perform(replaceText("123456"), closeSoftKeyboard());
+        btnLogin.perform(click());
+        Thread.sleep(1000);
+        tvErrorTip.check(matches(withText("登陆失败")));
+    }
+```
+在上面的方法中，直接调用了界面的登陆点击事件，主线程沉睡1s后（使用的rap，内部网络一般都在几百ms内），直接通过某些变化条件（比如提示信息内容）进行断言
+
+
+  ## javaTest 直接在jvm上运行
+   在app目录下的test中，我们会进行一些工具类的测试，比如字符串，手机号。。。的格式验证
+
 
 如果对单元测试想要更全面的了解，推荐一篇博客:[关于安卓单元测试，你需要知道的一切](http://www.jianshu.com/p/dc30338a3e84)
 
-
+2017年1月12日15:40:58
 
 
 
