@@ -1,4 +1,4 @@
-2017年1月9日 11:20:13
+2017年1月12日14:23:55
 # thinksns-plus-android
 
 整个项目相关的决策工作安排等记录在[thinksns-plus-document](https://github.com/zhiyicx/thinksns-plus-document).
@@ -92,3 +92,9 @@ master_future_add_image_lip ( 作者分支 )
 [refresh](document/refresh/REFRESH.md) 刷新控件
 
 [design](document/design/DESIGN.md) 视觉规范
+
+[ucrop](document/baseproject/UCROP.md) 图片裁剪库
+
+[PhotoPicker](document/baseproject/PHOTOPICKER.md) 图片选择器
+
+pickerview  时间选择器，滑轮选择器
