@@ -26,8 +26,8 @@
         <item name="android:background">@color/general_for_line_light</item>
     </style>
     <!--######################## 编辑框 ############################-->
-
-    <style name="style_edit_line">
+    <!-- 输入框外层背景 -->
+    <style name="style_edit_white_container">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/edit_line_height</item>
         <item name="android:gravity">center_vertical</item>
@@ -35,7 +35,8 @@
         <item name="android:orientation">horizontal</item>
     </style>
 
-    <style name="style_edit">
+    <!-- 登录注册输入框-->
+    <style name="style_edit" parent="style_edit_cursor">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_marginLeft">@dimen/spacing_normal</item>
@@ -43,10 +44,27 @@
         <item name="android:textSize">@dimen/size_content</item>
         <item name="android:textColor">@color/important_for_content</item>
         <item name="android:paddingRight">@dimen/spacing_mid</item>
+    </style>
+
+    <style name="style_edit_bg_line" parent="style_edit_cursor">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:textSize">@dimen/size_content_assist</item>
+        <item name="android:textColor">@color/important_for_content</item>
+        <item name="android:paddingRight">@dimen/spacing_small</item>
+        <item name="android:paddingLeft">@dimen/spacing_small</item>
+        <item name="android:drawableBottom">@drawable/selector_editext_bg_line</item>
+        <item name="android:drawablePadding">@dimen/spacing_small</item>
+    </style>
+    <!-- 输入框游标 -->
+    <style name="style_edit_cursor">
         <item name="android:textColorHint">@color/general_for_hint</item>
         <item name="android:textCursorDrawable">@drawable/shape_cursor_drawable</item>
     </style>
+    <!--#########################################      文字       ################################-->
 
+    <!-- 登录注册文字-->
     <style name="style_small_text">
         <item name="android:layout_width">@dimen/edit_lefttext_width</item>
         <item name="android:layout_height">wrap_content</item>
@@ -55,7 +73,8 @@
         <item name="android:textColor">@color/important_for_content</item>
         <item name="android:lineSpacingMultiplier">@dimen/line_spacing_Multiplier_normal</item>
     </style>
-    // 修改密码页面的文字
+
+    <!-- 修改密码页面的文字 -->
     <style name="style_change_password_text" parent="style_small_text">
         <item name="android:layout_width">@dimen/edit_lefttext_width_change_password</item>
     </style>
@@ -70,7 +89,6 @@
         <item name="android:background">@drawable/selector_button_corner_solid_big</item>
         <item name="android:textSize">@dimen/size_primary_title</item>
     </style>
-
 
 
     <style name="style_action_list_item">

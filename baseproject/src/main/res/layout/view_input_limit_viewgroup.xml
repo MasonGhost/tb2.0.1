@@ -32,20 +32,12 @@
 
     <EditText
         android:id="@+id/et_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/style_edit_bg_line"
         android:layout_alignParentBottom="true"
         android:layout_marginRight="@dimen/spacing_normal"
         android:layout_toLeftOf="@id/bt_send"
-        android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
-        android:background="@color/white"
-        android:drawableBottom="@drawable/selector_editext_bg_line"
-        android:drawablePadding="@dimen/spacing_small"
-        android:textColor="@color/important_for_content"
-        android:textSize="@dimen/size_content_assist"
         tools:text="刚刚加息公积金阿哥电视卡鼓励进口大幅拉升价格可分离收购价格浮动式结构"
         />
-
 
 </RelativeLayout>
 
