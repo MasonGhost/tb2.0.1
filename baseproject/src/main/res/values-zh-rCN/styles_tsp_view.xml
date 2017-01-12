@@ -56,6 +56,7 @@
         <item name="android:paddingLeft">@dimen/spacing_small</item>
         <item name="android:drawableBottom">@drawable/selector_editext_bg_line</item>
         <item name="android:drawablePadding">@dimen/spacing_small</item>
+        <item name="android:maxLines">@integer/max_lines</item>
     </style>
     <!-- 输入框游标 -->
     <style name="style_edit_cursor">
