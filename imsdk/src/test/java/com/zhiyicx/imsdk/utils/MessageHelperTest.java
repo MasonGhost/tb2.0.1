@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.zhiyicx.imsdk.utils.MessageHelper.BINARY_TITLE_TYPE_PING;
+import static com.zhiyicx.imsdk.utils.MessageHelper.SERILIZE_TYPE_JSON;
+import static com.zhiyicx.imsdk.utils.MessageHelper.SERILIZE_TYPE_MSGPACK;
 import static com.zhiyicx.imsdk.utils.MessageHelper.TITLE_TYPE_MESSAGE;
 import static com.zhiyicx.imsdk.utils.MessageHelper.TITLE_TYPE_MESSAGE_ACK;
 import static com.zhiyicx.imsdk.utils.MessageHelper.TITLE_TYPE_MESSAGE_ERR_ACK;
@@ -132,6 +134,15 @@ public class MessageHelperTest {
 
     /**
      * 测试首字节
+     * http://www.kancloud.cn/xiew/webim/192518
+     * 首字节前 4 位代表
+     * 0 客户端ping服务端，此类型数据包没有消息主体
+     * 1 服务端pong客户端，此类型数据包没有消息主体
+     * 2 消息包，此类型必须包含消息主体
+     * 3 应答消息包，此类型必须包含消息主体
+     * 4 错误应答消息包，此类型必须包含消息主体
+     * 5~f 预留类型，暂未启用
+     * <p>
      * 0010 0000 对应 空格 十进制 32
      * '0' 对应  0011 0000 对应 十进制 48
      *
@@ -153,9 +164,23 @@ public class MessageHelperTest {
 
     }
 
+    /**
+     * 测试首字节
+     * <p>
+     * 第5 bit~6bit 表示消息主体序列化类型，取值范围 0~3；目前仅支持 json 和 msgpack 两种
+     * 如果为0表示消息主体使用 json 序列化
+     * 如果为1表示消息主体使用 maspack 序列化
+     * 0000 0000  json
+     * 0000 0100  maspack   测试只关心56位
+     *
+     * @throws Exception
+     */
     @Test
     public void getPackageSerilType() throws Exception {
-
+        byte[] dataJson = new byte[]{0};
+        Assert.assertTrue(MessageHelper.getPackageSerilType(dataJson) == SERILIZE_TYPE_JSON);
+        byte[] dataMaspack = new byte[]{4};
+        Assert.assertTrue(MessageHelper.getPackageSerilType(dataMaspack) == SERILIZE_TYPE_MSGPACK);
     }
 
     /**
