@@ -3,8 +3,10 @@ package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -312,7 +314,14 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         uCrop.withAspectRatio(1, 1);//方形
         UCrop.Options options = new UCrop.Options();
         options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
-        options.setCompressionQuality(100);
+        options.setCompressionQuality(100);    // 图片质量压缩
+        options.setCircleDimmedLayer(false); // 是否裁剪圆形
+        options.setHideBottomControls(true);// 是否隐藏底部的控制面板
+        options.setCropFrameColor(Color.WHITE);// 设置内矩形边框线条颜色
+        options.setShowCropGrid(false);// 是否展示内矩形的分割线
+        options.setDimmedLayerColor(Color.argb(0xbb,0xff,0xff,0xff));// 设置蒙层的颜色
+        options.setRootViewBackgroundColor(Color.WHITE);// 设置图片背景颜色
+        options.setToolbarColor(ContextCompat.getColor(getContext(),R.color.themeColor));
         uCrop.withOptions(options);
         uCrop.start(getActivity(), UserInfoFragment.this);
     }

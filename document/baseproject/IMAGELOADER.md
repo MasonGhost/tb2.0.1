@@ -1,4 +1,4 @@
-2016年12月24日10:34:23
+
 # 图片加载实现
 
 ## 1.概述
@@ -12,6 +12,7 @@
 ```
 public class ImageConfig {
     protected String url; //图片路径
+    protected Integer resourceId;// res中的图片id
     protected ImageView imageView; // 图片控件
     protected int placeholder; // 加载中的缺省图
     protected int errorPic;// 加载错误的缺省图
@@ -51,9 +52,12 @@ public interface ImageLoaderStrategy<T extends ImageConfig> {
 ## 3.使用说明
    主项目中的ImageLoader是TSApplication中创建，dagger进行管理
    ```
-   Inject
-   ImageLoader imageLoader;
-   imageLoader.loadImage(Context context, GlideImageConfig config);
+   ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
+               imageLoader.loadImage(getContext(), GlideImageConfig.builder()
+                       .url(resultUri.getPath())
+                       .imagerView(mIvHeadIcon)
+                       .transformation(new GlideCircleTransform(getContext()))
+                       .build());
    ```
 
 ## 4.逻辑描述
@@ -124,21 +128,96 @@ public class GlideImageLoaderStrategy implements ImageLoaderStrategy<GlideImageC
             manager = Glide.with((Activity) ctx);
         else
             manager = Glide.with(ctx);
-
-        DrawableRequestBuilder<String> requestBuilder = manager.load(config.getUrl())
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+        String imgUrl = config.getUrl();
+        boolean isFromNet = !TextUtils.isEmpty(imgUrl) && imgUrl.startsWith("http");// 是否来源于网络
+        DrawableRequestBuilder requestBuilder = manager.load(TextUtils.isEmpty(imgUrl) ? config.getResourceId() : isFromNet ? imgUrl : "file://" + imgUrl)
+                .diskCacheStrategy(isFromNet ? DiskCacheStrategy.ALL : DiskCacheStrategy.NONE)
+                .skipMemoryCache(isFromNet?false:true)
                 .crossFade()
                 .centerCrop();
-        if (config.getPlaceholder() != 0)//设置占位符
+        if (config.getTransformation() != null) {
+            requestBuilder.transform(config.getTransformation());
+        }
+        if (config.getPlaceholder() != 0)// 设置占位符
+        {
             requestBuilder.placeholder(config.getPlaceholder());
-
-        if (config.getErrorPic() != 0)//设置错误的图片
+        }
+        if (config.getErrorPic() != 0)// 设置错误的图片
+        {
             requestBuilder.error(config.getErrorPic());
-
+        }
         requestBuilder
                 .into(config.getImageView());
     }
 }
 ```
+在上面的Glide加载图片实现方法中，分别处理了来自于res的图片，sd中的图片以及网络图片的加载和缓存处理；
+
+## 5.glide的拓展
+
+在baseproject中我们添加了下面的这些TransForm，用于实现Glide的特殊效果：
+
+- GaussianBlurTrasnform: 给图片加上模糊效果，通过FastBlur工具类进行模糊处理
+```
+public class GaussianBlurTrasnform extends BitmapTransformation {
+    public GaussianBlurTrasnform(Context context) {
+        super(context);
+    }
+
+    @Override
+    protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
+        return FastBlur.blurBitmap(toTransform,outWidth,outHeight);
+    }
+
+    @Override
+    public String getId() {
+        return getClass().getName();
+    }
+}
+```
+
+- GlideCircleBoundTransform：带白底边框的圆形 trasform ，类似自定义View中的onDraw()处理
+```
+public class GlideCircleBoundTransform extends BitmapTransformation {
+    ...
+      private static Bitmap circleCrop(BitmapPool pool, Bitmap source) {
+             if (source == null) return null;
+
+             int size = Math.min(source.getWidth(), source.getHeight());
+             int x = (source.getWidth() - size) / 2;
+             int y = (source.getHeight() - size) / 2;
+
+             // TODO this could be acquired from the pool too
+             Bitmap squared = Bitmap.createBitmap(source, x, y, size, size);
+
+             Bitmap result = pool.get(size, size, Bitmap.Config.ARGB_8888);
+             if (result == null) {
+                 result = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+             }
 
 
+             Canvas canvas = new Canvas(result);
+             float r = size / 2f;
+
+             //画轮廓
+             Paint paint1 = new Paint();
+             paint1.setAntiAlias(true);
+             paint1.setColor(Color.WHITE);
+             canvas.drawCircle(r, r, r, paint1);
+
+
+             //画图片
+             Paint paint = new Paint();
+             paint.setShader(new BitmapShader(squared, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP));
+             paint.setAntiAlias(true);
+             canvas.drawCircle(r, r, r - 3, paint);
+
+             return result;
+         }
+    ...
+}
+```
+
+- GlideCircleTransform：加载圆形图片，和上方实现类似
+
+2017年1月12日11:41:18

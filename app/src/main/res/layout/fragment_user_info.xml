@@ -7,15 +7,16 @@
     <RelativeLayout
         android:id="@+id/rl_change_head_container"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="@dimen/userinfo_head_icon_container_hegiht"
         android:background="@color/white">
 
         <ImageView
             android:id="@+id/iv_head_icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/headpic_for_list"
+            android:layout_height="@dimen/headpic_for_list"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/spacing_mid"
+            android:layout_marginRight="@dimen/spacing_mid"
             android:src="@mipmap/ic_launcher"/>
 
         <TextView
@@ -23,7 +24,9 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/iv_head_icon"
-            android:text="@string/change_head_icon"/>
+            android:text="@string/change_head_icon"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_sub_title"/>
 
         <ImageView
             android:layout_width="wrap_content"
@@ -47,12 +50,19 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/user_name"/>
+            android:layout_marginLeft="@dimen/spacing_mid"
+            android:text="@string/user_name"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_sub_title"/>
 
-        <EditText
+        <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
             android:id="@+id/et_user_name"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:paddingRight="@dimen/spacing_mid"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_sub_title"/>
     </LinearLayout>
     <!--修改性别-->
     <LinearLayout
@@ -64,20 +74,27 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/headpic_for_list"
             android:layout_height="wrap_content"
-            android:text="@string/sex"/>
+            android:layout_marginLeft="@dimen/spacing_mid"
+            android:layout_marginRight="@dimen/spacing_mid"
+            android:text="@string/sex"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_sub_title"/>
 
         <TextView
             android:id="@+id/tv_sex"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/select_sex"/>
+            android:text="@string/select_sex"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_sub_title"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing_mid"
             android:src="@mipmap/login_ico_closeye"/>
     </LinearLayout>
     <!--修改城市-->
@@ -90,20 +107,27 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/headpic_for_list"
             android:layout_height="wrap_content"
-            android:text="@string/city"/>
+            android:layout_marginLeft="@dimen/spacing_mid"
+            android:layout_marginRight="@dimen/spacing_mid"
+            android:text="@string/city"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_sub_title"/>
 
         <TextView
             android:id="@+id/tv_city"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/select_city"/>
+            android:text="@string/select_city"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_sub_title"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing_mid"
             android:src="@mipmap/login_ico_closeye"/>
     </LinearLayout>
     <!--修改简介-->
@@ -115,13 +139,19 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/headpic_for_list"
             android:layout_height="wrap_content"
-            android:text="@string/introduce"/>
+            android:layout_marginLeft="@dimen/spacing_mid"
+            android:layout_marginRight="@dimen/spacing_mid"
+            android:text="@string/introduce"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_sub_title"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/edit_introduce"/>
+            android:text="@string/edit_introduce"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_content_assist"/>
     </LinearLayout>
 </LinearLayout>
