@@ -14,6 +14,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.CombinationButton;
 import com.zhiyicx.baseproject.widget.infohint.ShowHintInfo;
 import com.zhiyicx.common.utils.StatusBarUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
@@ -22,6 +23,8 @@ import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import solid.ren.skinlibrary.SkinLoaderListener;
+import solid.ren.skinlibrary.loader.SkinManager;
 
 /**
  * @Describe 我的页面
@@ -120,8 +123,30 @@ public class MineFragment extends TSFragment {
             case R.id.ll_follow_container:
                 break;
             case R.id.bt_personal_page:
+                SkinManager.getInstance().restoreDefaultTheme();
                 break;
             case R.id.bt_ranking:
+                SkinManager.getInstance().loadSkin("tsplustheme.skin", new SkinLoaderListener() {
+                    @Override
+                    public void onStart() {
+
+                    }
+
+                    @Override
+                    public void onSuccess() {
+                        ToastUtils.showToast("加载成功");
+                    }
+
+                    @Override
+                    public void onFailed(String errMsg) {
+                        ToastUtils.showToast("加载失败-->" + errMsg);
+                    }
+
+                    @Override
+                    public void onProgress(int progress) {
+
+                    }
+                });
                 break;
             case R.id.bt_gold:
                 ShowHintInfo.showSendError();

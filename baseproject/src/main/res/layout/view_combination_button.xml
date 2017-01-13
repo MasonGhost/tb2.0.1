@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:skin="http://schemas.android.com/android/skin"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingPrefix"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
@@ -12,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
-        tools:src="@mipmap/ico_eye_close"/>
+        tools:src="@mipmap/login_ico_closeye"/>
 
     <TextView
         android:id="@+id/tv_left_text"
@@ -23,7 +25,9 @@
         android:layout_toRightOf="@id/iv_left_img"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_content_assist"
-        tools:text="我的订阅"/>
+        skin:enable="true"
+        tools:text="我的订阅"
+        />
 
     <ImageView
         android:id="@+id/iv_right_img"
@@ -32,7 +36,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="10dp"
-        tools:src="@mipmap/ico_eye_close"/>
+        tools:src="@mipmap/login_ico_closeye"/>
 
     <TextView
         android:id="@+id/tv_right_text"
