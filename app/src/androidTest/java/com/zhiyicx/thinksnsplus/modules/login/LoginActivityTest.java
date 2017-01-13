@@ -77,8 +77,8 @@ public class LoginActivityTest extends AcitivityTest {
 
     /**
      * summary    因为某些原因导致登录失败，比如密码错误
-     * steps        1.输入正确的手机号  2.输入错误的密码 3.点击登陆按钮
-     * expected   errorTip显示登陆失败的原因
+     * steps        1.输入正确的手机号  2.输入错误的密码 3.点击登录按钮
+     * expected   errorTip显示登录失败的原因
      */
     @Test
     public void loginFailure() throws Exception {
@@ -90,10 +90,10 @@ public class LoginActivityTest extends AcitivityTest {
                     void testCall(BaseJson<LoginBean> integerBaseJson) {
                         LogUtils.d("haha",integerBaseJson.toString());
                         if (integerBaseJson.isStatus()) {
-                            // 登陆成功跳转:当前不可能发生
+                            // 登录成功跳转:当前不可能发生
                            assertFalse(true);
                         } else {
-                            // 登陆失败
+                            // 登录失败
                             assertFalse(false);
                         }
                     }
@@ -107,9 +107,9 @@ public class LoginActivityTest extends AcitivityTest {
     }
 
     /**
-     * summary    输入正确的手机号，密码登陆成功
-     * steps      1.输入正确的手机号 2.输入正确的密码 3.点击登陆按钮 4.主线成沉睡1s等待网络请求结果
-     * expected   errorTip显示登陆成功的内容
+     * summary    输入正确的手机号，密码登录成功
+     * steps      1.输入正确的手机号 2.输入正确的密码 3.点击登录按钮 4.主线成沉睡1s等待网络请求结果
+     * expected   errorTip显示登录成功的内容
      */
     @Test
     public void loginSuccess() throws Exception {
@@ -118,6 +118,6 @@ public class LoginActivityTest extends AcitivityTest {
         etPass.perform(replaceText("123456"), closeSoftKeyboard());
         btnLogin.perform(click());
         Thread.sleep(1000);
-        tvErrorTip.check(matches(withText("登陆失败")));
+        tvErrorTip.check(matches(withText("登录失败")));
     }
 }

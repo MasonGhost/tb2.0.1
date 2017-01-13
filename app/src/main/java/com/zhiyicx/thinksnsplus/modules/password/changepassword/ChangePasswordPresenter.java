@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.password.changepassword;
 
+import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
@@ -54,9 +55,9 @@ public class ChangePasswordPresenter extends BasePresenter<ChangePasswordContrac
             return;
         }
         Subscription changePasswordSub=mRepository.changePassword(oldPassword,newPassword)
-                .subscribe(new Action1<BaseJson<Boolean>>() {
+                .subscribe(new Action1<BaseJson<CacheBean>>() {
                     @Override
-                    public void call(BaseJson<Boolean> booleanBaseJson) {
+                    public void call(BaseJson<CacheBean> booleanBaseJson) {
 
                     }
                 }, new Action1<Throwable>() {

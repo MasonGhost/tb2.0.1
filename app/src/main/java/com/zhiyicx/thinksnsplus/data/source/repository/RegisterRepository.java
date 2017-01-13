@@ -28,8 +28,9 @@ public class RegisterRepository implements RegisterContract.Repository {
     }
 
     @Override
-    public Observable<BaseJson<CacheBean>> getVertifyCode(String phone,String type) {
-        return Observable.just(new BaseJson<CacheBean>());
+    public Observable<BaseJson<CacheBean>> getVertifyCode(String phone, String type) {
+        return mCommonClient.getVertifyCode("success", phone, type)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override

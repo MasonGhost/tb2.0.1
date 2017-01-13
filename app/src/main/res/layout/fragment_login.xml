@@ -36,7 +36,7 @@
             android:text=""/>
     </LinearLayout>
 
-    <!--登陆异常相关提示-->
+    <!--登录异常相关提示-->
     <include
         layout="@layout/include_error_tip_text"/>
 

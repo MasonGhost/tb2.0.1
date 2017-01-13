@@ -48,6 +48,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     TextView mTvErrorTip;
     @BindView(R.id.tv_look_around)
     TextView mTvLookAround;
+
     private boolean isNameEdited;
     private boolean isPhoneEdited;
     private boolean isCodeEdited;

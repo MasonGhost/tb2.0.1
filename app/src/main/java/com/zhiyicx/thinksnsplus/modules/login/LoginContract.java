@@ -26,7 +26,7 @@ public interface LoginContract {
         void setLogining();
 
         /**
-         * 登陆成功
+         * 登录成功
          */
         void setLoginSuccess();
 
@@ -36,7 +36,7 @@ public interface LoginContract {
         void setLoginFailure();
 
         /**
-         * 登陆异常提示
+         * 登录异常提示
          */
         void showErrorTips(String error);
 

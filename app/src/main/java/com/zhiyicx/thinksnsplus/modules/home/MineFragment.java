@@ -84,7 +84,10 @@ public class MineFragment extends TSFragment {
     protected String setCenterTitle() {
         return getString(R.string.mine);
     }
-
+    @Override
+    protected int setLeftImg() {
+        return 0;
+    }
     @Override
     protected boolean showToolBarDivider() {
         return true;
@@ -100,15 +103,6 @@ public class MineFragment extends TSFragment {
         StatusBarUtils.statusBarLightMode(getActivity());//当状态栏颜色为白色时使用，Activity 中最后一次调用确定状态栏背景颜色和图标颜色
         return R.color.white;
     }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate a fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        ButterKnife.bind(this, rootView);
-        return rootView;
-    }
-
     @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_gold, R.id.bt_suggestion, R.id.bt_question_answer, R.id.bt_setting})
     public void onClick(View view) {
         switch (view.getId()) {

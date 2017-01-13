@@ -29,6 +29,9 @@ public class UIUtils {
      * Textview或者button设置Drawable
      */
     public static Drawable getCompoundDrawables(Context context, int imgRsID) {
+        if (imgRsID == 0) {
+            return null;
+        }
         Drawable drawable = ContextCompat.getDrawable(context, imgRsID);
         if (drawable == null) {
             return null;

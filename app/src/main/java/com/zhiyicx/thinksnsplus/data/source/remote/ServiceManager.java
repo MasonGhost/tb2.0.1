@@ -16,6 +16,7 @@ public class ServiceManager {
     private CommonClient mCommonClient;
     private LoginClient mLoginClient;
     private RegisterClient mRegisterClient;
+    private PasswordClient mPasswordClient;
     private UserInfoClient mUserInfoClient;
 
     /**
@@ -28,11 +29,13 @@ public class ServiceManager {
     public ServiceManager(CommonClient commonClient
             , LoginClient loginClient
             , RegisterClient registerClient
+            , PasswordClient passwordClient
             , UserInfoClient userInfoClient) {
         this.mCommonClient = commonClient;
         this.mLoginClient = loginClient;
         this.mRegisterClient = registerClient;
         this.mUserInfoClient = userInfoClient;
+        this.mPasswordClient = passwordClient;
     }
 
     public CommonClient getCommonClient() {
@@ -49,5 +52,9 @@ public class ServiceManager {
 
     public UserInfoClient getUserInfoClient() {
         return mUserInfoClient;
+    }
+
+    public PasswordClient getPasswordClient() {
+        return mPasswordClient;
     }
 }

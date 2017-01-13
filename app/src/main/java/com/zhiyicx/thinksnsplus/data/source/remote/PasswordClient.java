@@ -11,7 +11,7 @@ import rx.Observable;
 
 /**
  * @author LiuChao
- * @describe 登陆相关的网络请求
+ * @describe 登录相关的网络请求
  * @date 2017/1/3
  * @contact email:450127106@qq.com
  */
@@ -26,8 +26,8 @@ public interface PasswordClient {
      */
     @FormUrlEncoded
     @POST("api/v1/auth")
-    Observable<BaseJson<Boolean>> changePassword(@Query("requestState") String requestState, @Field("password") String password
-            , @Field("newpassword") String newPassword);
+    Observable<BaseJson<CacheBean>> changePassword(@Query("requestState") String requestState, @Field("password") String password
+            , @Field("new_password") String newPassword);
 
     /**
      *  找回密码
@@ -39,5 +39,5 @@ public interface PasswordClient {
     @FormUrlEncoded
     @POST("api/v1/auth")
     Observable<BaseJson<CacheBean>> findPassword(@Query("requestState") String requestState, @Field("phone") String phone
-          , @Field("vertifyCode") String vertifyCode);
+          , @Field("code") String vertifyCode, @Field("password") String newPassword);
 }

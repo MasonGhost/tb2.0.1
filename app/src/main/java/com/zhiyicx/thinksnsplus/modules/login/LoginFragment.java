@@ -1,11 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.login;
 
-import android.graphics.Color;
-import android.os.Bundle;
+import android.content.Intent;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -15,11 +12,11 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.password.findpassword.FindPasswordActivity;
 
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.functions.Action1;
 
@@ -119,7 +116,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
 
     @Override
     public void setLoginSuccess() {
-        Toast.makeText(getActivity(), "登陆成功", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "登录成功", Toast.LENGTH_SHORT).show();
         /*Intent it = new Intent();
         it.setClass(getActivity(), GuideActivity.class);
         startActivity(it);*/
@@ -156,7 +153,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     }
 
     /**
-     * 设置登陆按钮是否可点击
+     * 设置登录按钮是否可点击
      */
     private void setConfirmEnable() {
         if (isPhoneEdited && isPasswordEdited) {
@@ -172,6 +169,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
             case R.id.tv_look_around:
                 break;
             case R.id.tv_forget_password:
+                startActivity(new Intent(getActivity(), FindPasswordActivity.class));
                 break;
         }
     }
