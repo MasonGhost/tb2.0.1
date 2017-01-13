@@ -3,7 +3,12 @@
     <!--  圆角  -->
     <dimen name="button_corner_big">6dp</dimen>
     <dimen name="button_corner_small">4dp</dimen>
-    <!--  大小  -->
+    <!-- 文字大小  -->
     <dimen name="button_text_size_big">@dimen/size_sub_title</dimen>
     <dimen name="button_text_size_small">@dimen/size_content_assist</dimen>
+    <!-- button 大小-->
+    <dimen name="button_send_with">45dp</dimen>
+    <dimen name="button_send_height">25dp</dimen>
+
+
 </resources>

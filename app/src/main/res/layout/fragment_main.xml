@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:limitSize="@integer/comment_input_max_size"
-        app:showLimitSize="@integer/comment_input_max_size">
+        app:showLimitSize="@integer/show_comment_input_size">
 
     </com.zhiyicx.baseproject.widget.InputLimitView>
 

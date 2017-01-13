@@ -5,7 +5,7 @@
     <!-- width 占位值，使用无效 -->
     <size
         android:width="1000dp"
-        android:height="@dimen/divider_line"
+        android:height="@dimen/edittext_line"
         >
     </size>
 </shape>

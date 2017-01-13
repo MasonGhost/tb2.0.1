@@ -7,10 +7,8 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -65,8 +63,8 @@ public class InputLimitView extends FrameLayout {
         if (attrs != null) {
             TypedArray array = context.obtainStyledAttributes(attrs,
                     R.styleable.inputLimitView);
-            mLimitMaxSize = (int) array.getDimension(R.styleable.inputLimitView_limitSize, context.getResources().getInteger(R.integer.comment_input_max_size));
-            mshowLimitSize = (int) array.getDimension(R.styleable.inputLimitView_showLimitSize, context.getResources().getInteger(R.integer.show_comment_input_size));
+            mLimitMaxSize = array.getInteger(R.styleable.inputLimitView_limitSize, context.getResources().getInteger(R.integer.comment_input_max_size));
+            mshowLimitSize = array.getInteger(R.styleable.inputLimitView_showLimitSize, context.getResources().getInteger(R.integer.show_comment_input_size));
             array.recycle();
         } else {
             mLimitMaxSize = context.getResources().getInteger(R.integer.comment_input_max_size);
@@ -74,20 +72,6 @@ public class InputLimitView extends FrameLayout {
         }
 
         mEtContent.setFilters(new InputFilter[]{new InputFilter.LengthFilter(mLimitMaxSize)});
-        mEtContent.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                boolean handled = false;
-                if (mOnSendClickListener == null) {
-                    return handled;
-                }
-                if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    mOnSendClickListener.onSendClick();
-                    handled = true;
-                }
-                return handled;
-            }
-        });
 
         mEtContent.addTextChangedListener(new TextWatcher() {
             @Override
@@ -103,7 +87,7 @@ public class InputLimitView extends FrameLayout {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() >= mshowLimitSize) {
-                    mLimitTipStr = "<" + s + ">" + "/" + mLimitMaxSize;
+                    mLimitTipStr = "<" + s.length() + ">" + "/" + mLimitMaxSize;
                     CharSequence chars = ColorPhrase.from(mLimitTipStr).withSeparator("<>")
                             .innerColor(ContextCompat.getColor(context, R.color.important_for_note))
                             .outerColor(ContextCompat.getColor(context, R.color.general_for_hint))
@@ -124,6 +108,7 @@ public class InputLimitView extends FrameLayout {
                 }
             }
         });
+
     }
 
     /**
