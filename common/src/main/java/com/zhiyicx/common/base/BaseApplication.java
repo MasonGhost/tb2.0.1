@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.Set;
 
 import okhttp3.Interceptor;
+import solid.ren.skinlibrary.base.SkinBaseApplication;
 
 /**
  * @Describe Applicaiton 基类
@@ -28,7 +29,7 @@ import okhttp3.Interceptor;
  * @Contact 335891510@qq.com
  */
 
-public abstract class BaseApplication extends Application {
+public abstract class BaseApplication extends SkinBaseApplication {
     protected final String TAG = this.getClass().getSimpleName();
 
     private static BaseApplication mApplication;

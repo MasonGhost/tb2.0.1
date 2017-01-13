@@ -92,8 +92,9 @@ public class HomeFragment extends TSFragment {
     @Override
     protected void initView(View rootView) {
         initViewPager();
-        mVpHome.setCurrentItem(PAGE_HOME);
         initListener();
+        changeNavigationButton(PAGE_HOME);
+        mVpHome.setCurrentItem(PAGE_HOME, false);
     }
 
 
@@ -187,13 +188,13 @@ public class HomeFragment extends TSFragment {
     private void changeNavigationButton(int position) {
         int checkedColor = ContextCompat.getColor(getContext(), R.color.themeColor);
         int unckeckedColor = ContextCompat.getColor(getContext(), R.color.home_bottom_navigate_text_normal);
-        mIvHome.setImageResource(position == PAGE_HOME ? R.mipmap.ic_launcher : R.mipmap.ic_launcher);
+        mIvHome.setImageResource(position == PAGE_HOME ? R.mipmap.common_ico_bottom_home_high : R.mipmap.common_ico_bottom_home_normal);
         mTvHome.setTextColor(position == PAGE_HOME ? checkedColor : unckeckedColor);
-        mIvFind.setImageResource(position == PAGE_FIND ? R.mipmap.ic_launcher : R.mipmap.ic_launcher);
+        mIvFind.setImageResource(position == PAGE_FIND ? R.mipmap.common_ico_bottom_discover_high : R.mipmap.common_ico_bottom_discover_normal);
         mTvFind.setTextColor(position == PAGE_FIND ? checkedColor : unckeckedColor);
-        mIvMessage.setImageResource(position == PAGE_MESSAGE ? R.mipmap.ic_launcher : R.mipmap.ic_launcher);
+        mIvMessage.setImageResource(position == PAGE_MESSAGE ? R.mipmap.common_ico_bottom_message_high : R.mipmap.common_ico_bottom_message_normal);
         mTvMessage.setTextColor(position == PAGE_MESSAGE ? checkedColor : unckeckedColor);
-        mIvMine.setImageResource(position == PAGE_MINE ? R.mipmap.ic_launcher : R.mipmap.ic_launcher);
+        mIvMine.setImageResource(position == PAGE_MINE ? R.mipmap.common_ico_bottom_me_high : R.mipmap.common_ico_bottom_me_normal);
         mTvMine.setTextColor(position == PAGE_MINE ? checkedColor : unckeckedColor);
     }
 

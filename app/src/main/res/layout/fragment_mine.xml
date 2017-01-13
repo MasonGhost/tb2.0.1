@@ -113,7 +113,8 @@
         android:layout_marginTop="15dp"
         app:leftImage="@mipmap/login_ico_closeye"
         app:leftText="@string/personal_page"
-        app:rightImage="@mipmap/login_ico_closeye"></com.zhiyicx.baseproject.widget.CombinationButton>
+        app:rightImage="@mipmap/login_ico_closeye"
+        ></com.zhiyicx.baseproject.widget.CombinationButton>
 
     <!--排行榜-->
     <com.zhiyicx.baseproject.widget.CombinationButton

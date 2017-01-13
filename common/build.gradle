@@ -47,13 +47,11 @@ configurations.all {
     }
 }
 dependencies {
-    def testDependences = rootProject.ext.testDependencies;
-    def dataDependences = rootProject.ext.dataDependencies;
-    def sdkSoupportDependences = rootProject.ext.sdksoupportDependencies;
+    def testDependences = rootProject.ext.testDependencies
+    def dataDependences = rootProject.ext.dataDependencies
+    def sdkSoupportDependences = rootProject.ext.sdksoupportDependencies
     def developmentDependencies = rootProject.ext.developmentDependencies
-
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     // Sdksoupport dependencies
     compile sdkSoupportDependences.appcompatV7
     compile sdkSoupportDependences.supportV4
@@ -61,24 +59,18 @@ dependencies {
     compile sdkSoupportDependences.recyclerview
     compile sdkSoupportDependences.rxpermissions
     compile sdkSoupportDependences.annotations
-
     // Butterknife
     compile dataDependences.butterknife
-
     // Image
     compile dataDependences.glide
-
     // Eventbus
     compile dataDependences.androideventbus
-
     // Log
     compile dataDependences.logger
-
     // Dagger dependencies
     compile dataDependences.dagger
     provided dataDependences.javaxAnnotation
     apt dataDependences.daggerCompiler
-
     // Retrofit + rx + gson
     compile dataDependences.retrofit
     compile dataDependences.retrofitConverterGson
@@ -93,12 +85,10 @@ dependencies {
     compile dataDependences.rxcache
     compile dataDependences.rxcacheJolyglotGson
     compile dataDependences.gson
-
     // Development
     debugCompile developmentDependencies.leakCanaryDebug
     releaseCompile developmentDependencies.leakCanaryRelease
     testCompile developmentDependencies.leakCanaryTest
-
     // Test
     testCompile testDependences.junit
     androidTestCompile(testDependences.espresso) {
@@ -108,9 +98,9 @@ dependencies {
     testCompile testDependences.robolectric
     compile testDependencies.espressoIdling
     // Project
-    compile project(":rxerrorhandler")
-
+    compile project(':rxerrorhandler')
     //分包
     compile dataDependences.multidex
     testCompile testDependencies.multidexTest
+    compile project(':skinlibrary')
 }
