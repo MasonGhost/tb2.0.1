@@ -241,8 +241,6 @@ public class MessageHelper {
         List<Object> src = new ArrayList();
         src.add(body.mEvent);//事件名
         Map<String, Object> map = new HashMap();
-
-
         map = DataDealUitls.transBean2Map(body.msg);
         /**
          * "msg" 对应Message 里面的属性msg名字
@@ -251,6 +249,7 @@ public class MessageHelper {
             if (map.containsKey("ext") && body.msg != null && body.msg.ext != null) {
                 Map<String, Object> msgMap = DataDealUitls.transBean2Map(body.msg.ext);
                 map.put("ext", msgMap);
+//                如果内部嵌套了自定义 Object ,继续转 map
 //                if (msgMap.containsKey("gift") && body.ext.msg.gift != null) {
 //                    msgMap.put("gift", transBean2Map(body.ext.msg.gift));
 //                    map.put("msg", msgMap);
@@ -479,7 +478,7 @@ public class MessageHelper {
         if (data == null) return TYPE_UNKNOW;
         byte title = data[0];
 
-        return (byte) ((((int) ((char) title)) & 255) >> 4);
+        return (byte) ((title & 255) >> 4);
     }
 
     /**

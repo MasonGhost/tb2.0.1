@@ -418,7 +418,6 @@ public class SocketService extends BaseService implements ImService.ImListener {
     @Override
     public void onMessage(String message) {
         responseTime();
-
     }
 
     /**

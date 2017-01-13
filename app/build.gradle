@@ -70,6 +70,19 @@ android {
         disable "ResourceType"
         abortOnError false
     }
+    /**
+     * 保证 testDebug 执行完成后会执行 testRelease
+     * ｛@Link http://g.co/androidstudio/not-mocked｝
+     *
+     */
+    testOptions {
+        unitTests.all {
+            // All the usual Gradle options.
+            jvmArgs '-XX:MaxPermSize=256m'
+            // resolve "Method ... not mocked."
+            unitTests.returnDefaultValues = true
+        }
+    }
 }
 greendao {
     /**
