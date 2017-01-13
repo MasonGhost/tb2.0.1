@@ -31,8 +31,7 @@ import static junit.framework.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class ChangePasswordPresenterTest {
-    private static final String USER_PHONE = "15694005009";
-    private static final String USER_NAME = "七夜68";
+
 
     @Rule
     public ActivityTestRule<ChangePasswordActivity> mActivityRule = new ActivityTestRule(ChangePasswordActivity.class);

@@ -45,9 +45,9 @@ import static junit.framework.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class RegisterActivityTest {
-    private static final String USER_PHONE = "15694005009";
-    private static final String USER_NAME = "七夜26";
-    private static final String TEST_USER_NAME = "啊哈";
+    public static final String USER_PHONE = "15694005009";
+    public static final String USER_NAME = "七夜68";
+    public static final String TEST_USER_NAME = "啊哈";
     @Rule
     public ActivityTestRule<RegisterActivity> mActivityRule = new ActivityTestRule(RegisterActivity.class);
 
