@@ -63,7 +63,7 @@ public class WheelView extends View {
     int dividerColor;
 
     // 条目间距倍数
-    static final float lineSpacingMultiplier = 1.4F;
+    static final float lineSpacingMultiplier = 2.0F;
     boolean isLoop;
 
     // 第一条线Y坐标值
@@ -250,6 +250,7 @@ public class WheelView extends View {
 
     /**
      * 设置是否循环滚动
+     *
      * @param cyclic 是否循环
      */
     public final void setCyclic(boolean cyclic) {
@@ -441,14 +442,14 @@ public class WheelView extends View {
 
     /**
      * 根据传进来的对象获取getPickerViewText()方法，来获取需要显示的值
+     *
      * @param item 数据源的item
      * @return 对应显示的字符串
      */
     private String getContentText(Object item) {
         if (item == null) {
             return "";
-        }
-        else if (item instanceof IPickerViewData) {
+        } else if (item instanceof IPickerViewData) {
             return ((IPickerViewData) item).getPickerViewText();
         }
         return item.toString();
@@ -553,6 +554,7 @@ public class WheelView extends View {
 
     /**
      * 获取Item个数
+     *
      * @return item个数
      */
     public int getItemsCount() {
@@ -561,6 +563,7 @@ public class WheelView extends View {
 
     /**
      * 附加在右边的单位字符串
+     *
      * @param label 单位
      */
     public void setLabel(String label) {

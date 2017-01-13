@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/pickerview_bg_topbar">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/pickerview_bg_topbar">
 
     <Button
         android:id="@+id/btnCancel"
@@ -13,7 +13,7 @@
         android:paddingLeft="@dimen/pickerview_topbar_paddingleft"
         android:paddingRight="@dimen/pickerview_topbar_paddingright"
         android:text="@string/pickerview_cancel"
-        android:textColor="@drawable/selector_pickerview_btn"
+        android:textColor="@color/pickerview_wheelview_textcolor_out"
         android:textSize="@dimen/pickerview_topbar_btn_textsize" />
 
     <TextView
@@ -25,6 +25,7 @@
         android:layout_toLeftOf="@+id/btnSubmit"
         android:layout_toRightOf="@+id/btnCancel"
         android:textColor="@color/pickerview_topbar_title"
+        android:visibility="gone"
         android:textSize="@dimen/pickerview_topbar_title_textsize" />
 
     <Button
