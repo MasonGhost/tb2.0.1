@@ -158,9 +158,17 @@ public class MessageHelperTest {
 
     }
 
+    /**
+     * 测试二进制数组拼接
+     *
+     * @throws Exception
+     */
     @Test
     public void binarySplit() throws Exception {
-
+        byte[] a = new byte[]{2, 3};
+        byte[] b = new byte[]{4, 5};
+        byte[] c = new byte[]{2, 3, 4, 5};
+        Assert.assertArrayEquals(c, MessageHelper.binarySplit(a, b));
     }
 
     /**
