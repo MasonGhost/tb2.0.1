@@ -3,30 +3,29 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/white"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:padding="@dimen/spacing_normal">
+
+    <EditText
+        android:id="@+id/et_content"
+        style="@style/style_edit_bg_line"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:layout_toLeftOf="@+id/bt_send"
+        tools:text="视卡鼓励进口大幅拉升刚刚加息公积金阿哥电视卡鼓励进口大幅拉刚刚加息公积金阿哥电视卡鼓励进口大幅拉刚刚加"
+        />
+
     <Button
         android:id="@+id/bt_send"
         android:layout_width="@dimen/button_send_with"
         android:layout_height="@dimen/button_send_height"
-        android:layout_alignParentBottom="true"
+        android:layout_alignBottom="@id/et_content"
         android:layout_alignParentRight="true"
         android:background="@drawable/selector_button_corner_solid_small"
         android:imeOptions="actionSend"
         android:text="@string/send"
         android:textColor="@color/white"
         android:textSize="@dimen/button_text_size_small"/>
-
-
-    <EditText
-        android:id="@+id/et_content"
-        style="@style/style_edit_bg_line"
-        android:layout_alignParentBottom="true"
-        android:layout_marginRight="@dimen/spacing_normal"
-        android:layout_toLeftOf="@id/bt_send"
-        tools:text="视卡鼓励进口大幅拉升刚刚加息公积金阿哥电视卡鼓励进口大幅拉刚刚加息公积金阿哥电视卡鼓励进口大幅拉刚刚加"
-        />
 
     <TextView
         android:id="@+id/tv_limit_tip"
@@ -40,4 +39,3 @@
         android:textSize="@dimen/size_note_assist"
         tools:text="210/255"/>
 </RelativeLayout>
-
