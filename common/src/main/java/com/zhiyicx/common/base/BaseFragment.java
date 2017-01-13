@@ -15,6 +15,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import solid.ren.skinlibrary.base.SkinBaseFragment;
 
 /**
  * @Describe Fragment 基类
@@ -22,7 +23,7 @@ import butterknife.Unbinder;
  * @Date 2016/12/15
  * @Contact 335891510@qq.com
  */
-public abstract class BaseFragment<P > extends RxFragment {
+public abstract class BaseFragment<P > extends SkinBaseFragment {
     protected final String TAG = this.getClass().getSimpleName();
 
     protected View mRootView;
