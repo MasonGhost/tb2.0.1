@@ -75,7 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:src="@mipmap/ic_launcher"
+                android:src="@mipmap/common_ico_bottom_add"
                 />
         </FrameLayout>
 
