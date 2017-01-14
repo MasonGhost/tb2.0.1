@@ -2,13 +2,12 @@ package com.zhiyicx.imsdk.utils;
 
 import android.text.TextUtils;
 
+import com.zhiyicx.imsdk.core.ImService;
 import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
 import com.zhiyicx.imsdk.entity.MessageContainer;
-import com.zhiyicx.imsdk.core.ImService;
 
 import org.msgpack.MessagePack;
 import org.msgpack.packer.Packer;
-import org.msgpack.type.Value;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -466,7 +465,7 @@ public class MessageHelper {
         if (data == null) return TYPE_UNKNOW;
         byte title = data[0];
 
-        return (byte) ((((int) ((char) title)) & 255) >> 4);
+        return (byte) ((title & 255) >> 4);
     }
 
     /**

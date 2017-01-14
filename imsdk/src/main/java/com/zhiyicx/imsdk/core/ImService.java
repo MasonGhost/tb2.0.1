@@ -16,6 +16,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -232,14 +233,9 @@ public class ImService {
         if (cid == 0) {
             return false;
         }
-        //        String tmp = "{\"cid\":" + cid + "}";
-        Map<String, Object> params = new HashMap<>();
-        params.put("cid", cid);
-        if (!TextUtils.isEmpty(field))
-            params.put("field", field);
-
-        return sendJsonData(new JSONObject(params).toString(), GET_CONVERSATON_INFO, 0);
-
+        List<Integer> cids = new ArrayList<>();
+        cids.add(cid);
+        return sendGetConversatonInfo(cids, field);
     }
 
     /**
@@ -259,7 +255,7 @@ public class ImService {
         }
         if (cidstr.length() > 0)
             cidstr = cidstr.substring(0, cidstr.length() - 1);
-        params.put("cid", cid);
+        params.put("cid", cidstr);
         if (!TextUtils.isEmpty(field))
             params.put("field", field);
         return sendJsonData(new JSONObject(params).toString(), GET_CONVERSATON_INFO, 0);
