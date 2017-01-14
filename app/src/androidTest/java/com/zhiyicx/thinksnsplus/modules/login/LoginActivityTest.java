@@ -17,6 +17,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static android.support.test.espresso.action.ViewActions.click;
@@ -85,9 +86,9 @@ public class LoginActivityTest extends AcitivityTest {
         mLoginClient.login("failure", "12344", "dsafdsa","fdsadfs")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new TestAction<BaseJson<LoginBean>>() {
+                .subscribe(new Action1<BaseJson<LoginBean>>() {
                     @Override
-                    void testCall(BaseJson<LoginBean> integerBaseJson) {
+                    public void call(BaseJson<LoginBean> integerBaseJson) {
                         LogUtils.d("haha",integerBaseJson.toString());
                         if (integerBaseJson.isStatus()) {
                             // 登录成功跳转:当前不可能发生
@@ -97,9 +98,9 @@ public class LoginActivityTest extends AcitivityTest {
                             assertFalse(false);
                         }
                     }
-                }, new TestAction<Throwable>() {
+                }, new Action1<Throwable>() {
                     @Override
-                    void testCall(Throwable e) {
+                    public void call(Throwable e) {
                         LogUtils.e(e,"exception");
                         //assertFalse(true);
                     }

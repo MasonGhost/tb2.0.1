@@ -17,6 +17,7 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -51,9 +52,9 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
         mRepository.login(mContext, phone, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new TestAction<BaseJson<LoginBean>>() {
+                .subscribe(new Action1<BaseJson<LoginBean>>() {
                     @Override
-                    void testCall(BaseJson<LoginBean> integerBaseJson) {
+                    public void call(BaseJson<LoginBean> integerBaseJson) {
                         if (integerBaseJson.isStatus()) {
                             // 登录成功跳转
                             mRootView.setLoginSuccess();
@@ -63,9 +64,9 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
                             mRootView.showErrorTips(integerBaseJson.getMessage());
                         }
                     }
-                }, new TestAction<Throwable>() {
+                }, new Action1<Throwable>() {
                     @Override
-                    void testCall(Throwable e) {
+                    public void call(Throwable e) {
                         LogUtils.e(e, "login_error" + e.getMessage());
                         mRootView.showErrorTips(e.getMessage());
                         mRootView.setLoginFailure();
