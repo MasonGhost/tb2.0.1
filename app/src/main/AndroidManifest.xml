@@ -39,5 +39,4 @@
         <activity android:name=".modules.edit_userinfo.UserInfoActivity">
         </activity>
     </application>
-
 </manifest>

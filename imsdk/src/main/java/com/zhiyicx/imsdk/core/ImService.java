@@ -3,6 +3,7 @@ package com.zhiyicx.imsdk.core;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.zhiyicx.imsdk.core.autobahn.WebSocket;
 import com.zhiyicx.imsdk.core.autobahn.WebSocketConnection;
 import com.zhiyicx.imsdk.core.autobahn.WebSocketConnectionHandler;
@@ -122,12 +123,20 @@ public class ImService {
 
     private WebSocket mConnection;//autobaha
 
+    /**
+     * 构造函数
+     *
+     * @param webSocket
+     */
     public ImService(WebSocket webSocket) {
 
         this.mConnection = webSocket;
         initService();
     }
 
+    /**
+     * 构造函数
+     */
     public ImService() {
 
         this.mConnection = new WebSocketConnection();
@@ -136,6 +145,10 @@ public class ImService {
 
     private void initService() {
         // TODO: 16/5/18 初始化设置
+    }
+
+    public void setConnection(WebSocket connection) {
+        mConnection = connection;
     }
 
     public void setUrlParams(String params, String web_socket_authority) {
@@ -258,7 +271,7 @@ public class ImService {
         params.put("cid", cidstr);
         if (!TextUtils.isEmpty(field))
             params.put("field", field);
-        return sendJsonData(new JSONObject(params).toString(), GET_CONVERSATON_INFO, 0);
+        return sendJsonData(new Gson().toJson(params), GET_CONVERSATON_INFO, 0);
 
     }
 
@@ -273,7 +286,7 @@ public class ImService {
         Map<String, Object> params = new HashMap<>();
         params.put("cid", cid);
         params.put("seq", seq);
-        return sendJsonData(new JSONObject(params).toString(), GET_CONVERSATON_INFO, msgid);
+        return sendJsonData(new Gson().toJson(params), GET_CONVERSATON_INFO, msgid);
     }
 
     /**
@@ -300,7 +313,7 @@ public class ImService {
             }
             params.put("limit", limit);
         }
-        return sendJsonData(new JSONObject(params).toString(), CONVR_MSG_SYNC, msgid);
+        return sendJsonData(new Gson().toJson(params), CONVR_MSG_SYNC, msgid);
     }
 
     /**

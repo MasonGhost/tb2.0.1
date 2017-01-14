@@ -80,8 +80,8 @@ android {
             // All the usual Gradle options.
             jvmArgs '-XX:MaxPermSize=256m'
             // resolve "Method ... not mocked."
-            unitTests.returnDefaultValues = true
         }
+        unitTests.returnDefaultValues = true
     }
 }
 greendao {

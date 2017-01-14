@@ -10,10 +10,10 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.imsdk.core.ImService;
+import com.zhiyicx.imsdk.core.autobahn.WebSocket;
 import com.zhiyicx.imsdk.db.base.BaseDao;
 import com.zhiyicx.imsdk.db.dao.ConversationDao;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
-import com.zhiyicx.imsdk.core.autobahn.WebSocket;
 import com.zhiyicx.imsdk.entity.ChatRoom;
 import com.zhiyicx.imsdk.entity.ChatRoomContainer;
 import com.zhiyicx.imsdk.entity.ChatRoomErr;
@@ -130,6 +130,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
     private static final long DISCONNECT_NOTIFY_TIME = 10 * 1000;//IM超过10s没有连上，通知下发
     private static final long MESSAGE_SEND_INTERVAL_FOR_CPU = 100;//消息发送间隔时间，防止cpu占用过高
     private long disconnect_start_time = 0;//重连开始时间
+
 
     private ImService mService;
     private Context mContext;
@@ -313,6 +314,10 @@ public class SocketService extends BaseService implements ImService.ImListener {
      */
     private void responseTime() {
         responsTime = System.currentTimeMillis();
+    }
+
+    public void setService(ImService service) {
+        mService = service;
     }
 
 
@@ -543,7 +548,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
     /**
      * 检测消息类型，并设置消息文本默认值
      *
-     * @param messageContainer
+     * @param messageContainer 消息内容
      */
     private void checkMessageType(MessageContainer messageContainer) {
         switch (messageContainer.msg.type) {
@@ -575,8 +580,8 @@ public class SocketService extends BaseService implements ImService.ImListener {
     /**
      * 设置默认文本
      *
-     * @param messageContainer
-     * @param txt
+     * @param messageContainer 消息内容
+     * @param txt              默认文本
      */
     private void setDefaultTxt(MessageContainer messageContainer, String txt) {
         if (TextUtils.isEmpty(messageContainer.msg.txt))
@@ -586,45 +591,95 @@ public class SocketService extends BaseService implements ImService.ImListener {
     /**
      * 加入会话
      *
-     * @param id
-     * @param msgid
-     * @param pwd
+     * @param cid   房间号
+     * @param msgid 本条消息的 id
+     * @param pwd   密码
      */
-    public boolean join(int id, int msgid, String pwd) {
-
-        addTimeoutTask(new MessageContainer(ImService.CONVERSATION_JOIN, new Message(msgid), id, null));
-        return mService.joinConversation(id, msgid, pwd);
+    public boolean join(int cid, int msgid, String pwd) {
+        if (cid == 0) {
+            return false;
+        }
+        addTimeoutTask(new MessageContainer(ImService.CONVERSATION_JOIN, new Message(msgid), cid, null));
+        return mService.joinConversation(cid, msgid, pwd);
 
     }
 
     /**
      * 离开会话
      *
-     * @param id
-     * @param msgid
-     * @param pwd
+     * @param cid   房间号
+     * @param msgid 本条消息的 id
+     * @param pwd   密码
      */
-    public boolean leave(int id, int msgid, String pwd) {
-        addTimeoutTask(new MessageContainer(ImService.CONVERSATION_LEAVE, new Message(msgid), id, null));
-        return mService.leaveConversation(id, msgid, pwd);
+    public boolean leave(int cid, int msgid, String pwd) {
+        if (cid == 0) {
+            return false;
+        }
+        addTimeoutTask(new MessageContainer(ImService.CONVERSATION_LEAVE, new Message(msgid), cid, null));
+        return mService.leaveConversation(cid, msgid, pwd);
     }
 
-    public boolean mc(List<Integer> id, int msgid, String field) {
-        addTimeoutTask(new MessageContainer(ImService.GET_CONVERSATON_INFO_TIMEOUT, new Message(msgid), 0, id));
-        return mService.sendGetConversatonInfo(id, field);
+    /**
+     * 查看对话信息
+     *
+     * @param cids  房间号
+     * @param msgid 本条消息的 id
+     * @param field 需要的字段
+     * @return
+     */
+    public boolean mc(List<Integer> cids, int msgid, String field) {
+        if (cids == null) {
+            return false;
+        }
+        addTimeoutTask(new MessageContainer(ImService.GET_CONVERSATON_INFO_TIMEOUT, new Message(msgid), 0, cids));
+        return mService.sendGetConversatonInfo(cids, field);
     }
 
+    /**
+     * 同步丢失的消息
+     *
+     * @param cid   房间号
+     * @param seq   序列号
+     * @param msgid 本条消息的 id
+     * @return
+     */
     public boolean sendPluckMessage(int cid, List<Integer> seq, int msgid) {
+        if (cid == 0) {
+            return false;
+        }
         addTimeoutTask(new MessageContainer(ImService.CONVR_MSG_PLUCK, new Message(msgid), cid, null));
         return mService.sendPluckMessage(cid, seq, msgid);
     }
 
+    /**
+     * 同步丢失的消息
+     *
+     * @param cid   房间号
+     * @param gt    开始的 seq
+     * @param lt    结束的 seq
+     * @param msgid 本条消息的 id
+     * @return
+     */
     public boolean sendSyncMessage(int cid, int gt, int lt, int msgid) {
+        if (cid == 0) {
+            return false;
+        }
         addTimeoutTask(new MessageContainer(ImService.CONVR_MSG_SYNC, new Message(msgid), cid, null));
         return mService.sendSyncMessage(cid, gt, lt, ImService.SEQ_LIMIT, msgid);
     }
 
+    /**
+     * 同步丢失的消息
+     *
+     * @param cid   房间号
+     * @param limit 获取的数量
+     * @param msgid 本条消息的 id
+     * @return
+     */
     public boolean sendSyncLastMessage(int cid, int limit, int msgid) {
+        if (cid == 0) {
+            return false;
+        }
         addTimeoutTask(new MessageContainer(ImService.CONVR_MSG_SYNC, new Message(msgid), cid, null));
         return mService.sendSyncMessage(cid, 0, 0, limit, msgid);
     }

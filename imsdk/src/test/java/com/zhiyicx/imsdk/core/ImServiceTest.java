@@ -1,6 +1,13 @@
 package com.zhiyicx.imsdk.core;
 
+import com.zhiyicx.imsdk.core.autobahn.WebSocket;
+import com.zhiyicx.imsdk.core.autobahn.WebSocketConnection;
+
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+
+import static org.mockito.Mockito.mock;
 
 /**
  * @Describe
@@ -9,57 +16,24 @@ import org.junit.Test;
  * @Contact master.jungle68@gmail.com
  */
 public class ImServiceTest {
-    ImService mImService=new ImService();
+    ImService mImService;
+    WebSocket mWebSocket;
 
+    @Before
+    public void before() {
+        mWebSocket = mock(WebSocketConnection.class);
+        mImService = new ImService(mWebSocket);
+    }
 
+    /**
+     * 测试发送获取对话信息
+     *
+     * @throws Exception
+     */
     @Test
     public void sendGetConversatonInfo() throws Exception {
-        mImService.sendGetConversatonInfo()
-    }
-
-    @Test
-    public void sendGetConversatonInfo1() throws Exception {
-
-    }
-
-    @Test
-    public void sendPluckMessage() throws Exception {
-
-    }
-
-    @Test
-    public void sendSyncMessage() throws Exception {
-
-    }
-
-    @Test
-    public void sendJsonData() throws Exception {
-
-    }
-
-    @Test
-    public void sendJsonData1() throws Exception {
-
-    }
-
-    @Test
-    public void sendMsgpackData() throws Exception {
-
-    }
-
-    @Test
-    public void sendMsgpackData1() throws Exception {
-
-    }
-
-    @Test
-    public void joinConversation() throws Exception {
-
-    }
-
-    @Test
-    public void leaveConversation() throws Exception {
-
+        Assert.assertFalse(mImService.sendGetConversatonInfo(0, "cid"));
+        Assert.assertTrue(mImService.sendGetConversatonInfo(123, "cid"));
     }
 
 }
