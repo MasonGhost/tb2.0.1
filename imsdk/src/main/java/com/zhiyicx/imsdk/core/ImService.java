@@ -14,6 +14,7 @@ import com.zhiyicx.imsdk.utils.common.LogUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
@@ -227,15 +228,17 @@ public class ImService {
      *
      * @param cid
      */
-    public void sendGetConversatonInfo(int cid, String field) {
-        if (cid == 0) return;
-//        String tmp = "{\"cid\":" + cid + "}";
+    public boolean sendGetConversatonInfo(int cid, String field) {
+        if (cid == 0) {
+            return false;
+        }
+        //        String tmp = "{\"cid\":" + cid + "}";
         Map<String, Object> params = new HashMap<>();
         params.put("cid", cid);
         if (!TextUtils.isEmpty(field))
             params.put("field", field);
 
-        sendJsonData(new JSONObject(params).toString(), GET_CONVERSATON_INFO, 0);
+        return sendJsonData(new JSONObject(params).toString(), GET_CONVERSATON_INFO, 0);
 
     }
 
@@ -244,8 +247,10 @@ public class ImService {
      *
      * @param cid
      */
-    public void sendGetConversatonInfo(List<Integer> cid, String field) {
-        if (cid == null || cid.size() == 0) return;
+    public boolean sendGetConversatonInfo(List<Integer> cid, String field) {
+        if (cid == null || cid.size() == 0) {
+            return false;
+        }
 //        String tmp = "{\"cid\":" + cid + "}";
         Map<String, Object> params = new HashMap<>();
         String cidstr = "";
@@ -257,7 +262,7 @@ public class ImService {
         params.put("cid", cid);
         if (!TextUtils.isEmpty(field))
             params.put("field", field);
-        sendJsonData(new JSONObject(params).toString(), GET_CONVERSATON_INFO, 0);
+        return sendJsonData(new JSONObject(params).toString(), GET_CONVERSATON_INFO, 0);
 
     }
 
@@ -267,12 +272,12 @@ public class ImService {
      * @param cid
      * @param seq
      */
-    public void sendPluckMessage(int cid, List<Integer> seq, int msgid) {
+    public boolean sendPluckMessage(int cid, List<Integer> seq, int msgid) {
 
         Map<String, Object> params = new HashMap<>();
         params.put("cid", cid);
         params.put("seq", seq);
-        sendJsonData(new JSONObject(params).toString(), GET_CONVERSATON_INFO, msgid);
+        return sendJsonData(new JSONObject(params).toString(), GET_CONVERSATON_INFO, msgid);
     }
 
     /**
@@ -284,7 +289,7 @@ public class ImService {
      * @param limit
      * @param msgid
      */
-    public void sendSyncMessage(int cid, int gt, int lt, int limit, int msgid) {
+    public boolean sendSyncMessage(int cid, int gt, int lt, int limit, int msgid) {
 
         Map<String, Object> params = new HashMap<>();
         params.put("cid", cid);
@@ -299,18 +304,20 @@ public class ImService {
             }
             params.put("limit", limit);
         }
-        sendJsonData(new JSONObject(params).toString(), CONVR_MSG_SYNC, msgid);
+        return sendJsonData(new JSONObject(params).toString(), CONVR_MSG_SYNC, msgid);
     }
 
     /**
      * 向IM服务器发送json类型数据
      */
-    public void sendJsonData(String json, String mEvent, int msgid) {
+    public boolean sendJsonData(String json, String mEvent, int msgid) {
         try {
             mConnection.sendBinaryMessage(MessageHelper.getSendBinaryForJson(json.getBytes("UTF-8"), mEvent, msgid));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     /**
@@ -323,15 +330,27 @@ public class ImService {
     /**
      * 向IM服务器发送msgpack类型数据
      */
-    public void sendMsgpackData(Message msg, String mEvent) {
-        mConnection.sendBinaryMessage(MessageHelper.getMessageForMsgpack(new MessageContainer(mEvent, msg), msg.id));
+    public boolean sendMsgpackData(Message msg, String mEvent) {
+        try {
+            mConnection.sendBinaryMessage(MessageHelper.getMessageForMsgpack(new MessageContainer(mEvent, msg), msg.id));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     /**
      * 向IM服务器发送msgpack类型数据
      */
-    public void sendMsgpackData(MessageContainer messageContainer) {
-        mConnection.sendBinaryMessage(MessageHelper.getMessageForMsgpack(messageContainer, messageContainer.msg.id));
+    public boolean sendMsgpackData(MessageContainer messageContainer) {
+        try {
+            mConnection.sendBinaryMessage(MessageHelper.getMessageForMsgpack(messageContainer, messageContainer.msg.id));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -341,7 +360,7 @@ public class ImService {
      * @param msgid
      * @param pwd   会话密钥
      */
-    public void joinConversation(int data, int msgid, String pwd) {
+    public boolean joinConversation(int data, int msgid, String pwd) {
         try {
 
             JSONObject jsonObject = new JSONObject();
@@ -351,9 +370,12 @@ public class ImService {
             mConnection.sendBinaryMessage(MessageHelper.getSendBinaryForJson((jsonObject.toString()).getBytes("UTF-8"), CONVERSATION_JOIN, msgid));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+            return false;
         } catch (JSONException js) {
             js.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     /**
@@ -363,7 +385,7 @@ public class ImService {
      * @param msgid
      * @param pwd   会话密钥
      */
-    public void leaveConversation(int data, int msgid, String pwd) {
+    public boolean leaveConversation(int data, int msgid, String pwd) {
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("cid", data);
@@ -372,10 +394,14 @@ public class ImService {
             mConnection.sendBinaryMessage(MessageHelper.getSendBinaryForJson((jsonObject.toString()).getBytes("UTF-8"), CONVERSATION_LEAVE, msgid));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+            return false;
         } catch (JSONException js) {
             js.printStackTrace();
+            return false;
         }
+        return true;
     }
+
     /**
      * 设置监听器
      *
@@ -393,15 +419,15 @@ public class ImService {
      * 监听器
      */
     public interface ImListener {
-         void onConnected();
+        void onConnected();
 
-         void onMessage(String message);
+        void onMessage(String message);
 
-         void onMessage(byte[] data);
+        void onMessage(byte[] data);
 
-         void onDisconnect(int code, String reason);
+        void onDisconnect(int code, String reason);
 
-         void onError(Exception error);
+        void onError(Exception error);
     }
 
 }

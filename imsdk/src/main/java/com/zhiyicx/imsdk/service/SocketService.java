@@ -337,7 +337,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      *
      * @param imConfig
      */
-    private void login(IMConfig imConfig) {
+    private boolean login(IMConfig imConfig) {
         isNeedReConnected = true;
         mService.setParams(imConfig.getWeb_socket_authority(), imConfig.getToken(),
                 imConfig.getSerial(), imConfig.getComprs());
@@ -355,6 +355,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
         timeOutTaskPool = new TimeOutTaskPool();
         new Thread(timeOutTaskPool).start();
         registerAction(SOCKET_RETRY_CONNECT);
+        return true;
     }
 
     /**
@@ -418,6 +419,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
     @Override
     public void onMessage(String message) {
         responseTime();
+
     }
 
     /**
@@ -432,105 +434,109 @@ public class SocketService extends BaseService implements ImService.ImListener {
     }
 
     @Subscriber(tag = EVENT_SOCKET_DEAL_MESSAGE, mode = ThreadMode.ASYNC)
-    public void dealMessage(Bundle bundle) {
-        if (bundle == null) return;
+    public boolean dealMessage(Bundle bundle) {
+        boolean result = false;
+        if (bundle == null) {
+            return result;
+        }
         try {
             switch (bundle.getInt(EVENT_SOCKET_TAG)) {
                 /**
                  * IM登录
                  */
                 case TAG_IM_LOGIN:
-                    login((IMConfig) bundle.getSerializable(BUNDLE_IMCONFIG));
+                    result = login((IMConfig) bundle.getSerializable(BUNDLE_IMCONFIG));
                     break;
                 /**
                  * IM登出
                  */
                 case TAG_IM_LOGINOUT:
-                    disConnect();
+                    result = disConnect();
                     break;
                 /**
                  * 重连
                  */
                 case TAG_IM_RECONNECT:
-                    connect();
+                    result = connect();
                     break;
                 /**
                  * 加入对话
                  */
                 case TAG_IM_JOIN_CONVERSATION:
-                    join(bundle.getInt(BUNDLE_ROOMID), bundle.getInt(BUNDLE_MSG_ID), bundle.getString(BUNDLE_CONVR_PWD));
+                    result = join(bundle.getInt(BUNDLE_ROOMID), bundle.getInt(BUNDLE_MSG_ID), bundle.getString(BUNDLE_CONVR_PWD));
                     break;
                 /**
                  * 加入消息队列
                  */
                 case TAG_IM_SEND_MESSAGE:
 
-                    mMessageContainers.add((MessageContainer) bundle.getSerializable(BUNDLE_MESSAGECONTAINER));
+                    result = mMessageContainers.add((MessageContainer) bundle.getSerializable(BUNDLE_MESSAGECONTAINER));
                     break;
                 /***
                  * 离开会话
                  */
                 case TAG_IM_LEAVE_CONVERSATION:
-                    leave(bundle.getInt(BUNDLE_ROOMID), bundle.getInt(BUNDLE_MSG_ID), bundle.getString(BUNDLE_CONVR_PWD));
+                    result = leave(bundle.getInt(BUNDLE_ROOMID), bundle.getInt(BUNDLE_MSG_ID), bundle.getString(BUNDLE_CONVR_PWD));
                     break;
 
                 /**
                  * 查询会话消息
                  */
                 case TAG_IM_MC:
-                    mc((List<Integer>) bundle.getSerializable(BUNDLE_ROOMIDS), bundle.getInt(BUNDLE_MSG_ID), bundle.getString(BUNDLE_CONVERSATION_FIELD));
+                    result = mc((List<Integer>) bundle.getSerializable(BUNDLE_ROOMIDS), bundle.getInt(BUNDLE_MSG_ID), bundle.getString(BUNDLE_CONVERSATION_FIELD));
                     break;
                 /**
                  * 通过消息序号同步消息
                  */
                 case TAG_IM_PLUCK:
-                    sendPluckMessage(bundle.getInt(BUNDLE_ROOMID), (List<Integer>) bundle.getSerializable(BUNDLE_MSG_SEQ), bundle.getInt(BUNDLE_MSG_ID));
+                    result = sendPluckMessage(bundle.getInt(BUNDLE_ROOMID), (List<Integer>) bundle.getSerializable(BUNDLE_MSG_SEQ), bundle.getInt(BUNDLE_MSG_ID));
                     break;
                 /**
                  * 通过消息序号同步消息
                  */
                 case TAG_IM_SYNC:
-                    sendSyncMessage(bundle.getInt(BUNDLE_ROOMID), bundle.getInt(BUNDLE_MSG_GT), bundle.getInt(BUNDLE_MSG_LT, 0), bundle.getInt(BUNDLE_MSG_ID));
+                    result = sendSyncMessage(bundle.getInt(BUNDLE_ROOMID), bundle.getInt(BUNDLE_MSG_GT), bundle.getInt(BUNDLE_MSG_LT, 0), bundle.getInt(BUNDLE_MSG_ID));
                     break;
                 /**
                  * 获取房间中最新的几条消息
                  */
                 case TAG_IM_SYNCLASTMESSAGE:
-                    sendSyncLastMessage(bundle.getInt(BUNDLE_ROOMID), bundle.getInt(BUNDLE_MSG_LIMIT, 0), bundle.getInt(BUNDLE_MSG_ID));
+                    result = sendSyncLastMessage(bundle.getInt(BUNDLE_ROOMID), bundle.getInt(BUNDLE_MSG_LIMIT, 0), bundle.getInt(BUNDLE_MSG_ID));
                     break;
-
-
                 default:
-                    break;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        // 刷新发送消息时间
+        if (result) {
+            resetTime();
+        }
+        return result;
     }
 
     /**
      * 向IM服务器发送msgpack类型数据
      */
-    public void sendMessage(MessageContainer messageContainer) {
+    public boolean sendMessage(MessageContainer messageContainer) {
         if (!messageContainer.msg.rt)
             resetTime();
-        if (!DeviceUtils.netIsConnected(getApplicationContext()) || !connected) return;
+        if (!DeviceUtils.netIsConnected(getApplicationContext()) || !connected) {
+            return false;
+        }
         checkMessageType(messageContainer);
         switch (send_serilize_type) {
 
             case ImService.BIN_JSON:
 
-                mService.sendJsonData(new Gson().toJson(messageContainer.msg), messageContainer.mEvent, messageContainer.msg.id);
-                break;
+                return mService.sendJsonData(new Gson().toJson(messageContainer.msg), messageContainer.mEvent, messageContainer.msg.id);
 
             case ImService.BIN_MSGPACK:
 
-                mService.sendMsgpackData(messageContainer);
+                return mService.sendMsgpackData(messageContainer);
 
-                break;
         }
-
+        return false;
 
     }
 
@@ -584,11 +590,11 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param msgid
      * @param pwd
      */
-    public void join(int id, int msgid, String pwd) {
+    public boolean join(int id, int msgid, String pwd) {
 
         addTimeoutTask(new MessageContainer(ImService.CONVERSATION_JOIN, new Message(msgid), id, null));
-        mService.joinConversation(id, msgid, pwd);
-        resetTime();
+        return mService.joinConversation(id, msgid, pwd);
+
     }
 
     /**
@@ -598,34 +604,29 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param msgid
      * @param pwd
      */
-    public void leave(int id, int msgid, String pwd) {
+    public boolean leave(int id, int msgid, String pwd) {
         addTimeoutTask(new MessageContainer(ImService.CONVERSATION_LEAVE, new Message(msgid), id, null));
-        mService.leaveConversation(id, msgid, pwd);
-        resetTime();
+        return mService.leaveConversation(id, msgid, pwd);
     }
 
-    public void mc(List<Integer> id, int msgid, String field) {
+    public boolean mc(List<Integer> id, int msgid, String field) {
         addTimeoutTask(new MessageContainer(ImService.GET_CONVERSATON_INFO_TIMEOUT, new Message(msgid), 0, id));
-        mService.sendGetConversatonInfo(id, field);
-        resetTime();
+        return mService.sendGetConversatonInfo(id, field);
     }
 
-    public void sendPluckMessage(int cid, List<Integer> seq, int msgid) {
+    public boolean sendPluckMessage(int cid, List<Integer> seq, int msgid) {
         addTimeoutTask(new MessageContainer(ImService.CONVR_MSG_PLUCK, new Message(msgid), cid, null));
-        mService.sendPluckMessage(cid, seq, msgid);
-        resetTime();
+        return mService.sendPluckMessage(cid, seq, msgid);
     }
 
-    public void sendSyncMessage(int cid, int gt, int lt, int msgid) {
+    public boolean sendSyncMessage(int cid, int gt, int lt, int msgid) {
         addTimeoutTask(new MessageContainer(ImService.CONVR_MSG_SYNC, new Message(msgid), cid, null));
-        mService.sendSyncMessage(cid, gt, lt, ImService.SEQ_LIMIT, msgid);
-        resetTime();
+        return mService.sendSyncMessage(cid, gt, lt, ImService.SEQ_LIMIT, msgid);
     }
 
-    public void sendSyncLastMessage(int cid, int limit, int msgid) {
+    public boolean sendSyncLastMessage(int cid, int limit, int msgid) {
         addTimeoutTask(new MessageContainer(ImService.CONVR_MSG_SYNC, new Message(msgid), cid, null));
-        mService.sendSyncMessage(cid, 0, 0, limit, msgid);
-        resetTime();
+        return mService.sendSyncMessage(cid, 0, 0, limit, msgid);
     }
 
     /**
@@ -1503,7 +1504,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
     /**
      * socket重连
      */
-    private void socketReconnect() {
+    private boolean socketReconnect() {
 
         if (DeviceUtils.netIsConnected(getApplicationContext()) && isNeedReConnected) {
             if (mService.isConnected()) {
@@ -1518,25 +1519,28 @@ public class SocketService extends BaseService implements ImService.ImListener {
                 resetTime();
                 if (disconnect_start_time == 0)
                     disconnect_start_time = System.currentTimeMillis();
+                return true;
             }
         }
+        return false;
     }
 
     /**
      * 断开连接
      */
-    private void disConnect() {
+    private boolean disConnect() {
         isNeedReConnected = false;
         mService.disconnect();
         isDisconnecting = true;
+        return true;
     }
 
     /**
      * 开启连接
      */
-    private void connect() {
+    private boolean connect() {
         isNeedReConnected = true;
-        socketReconnect();
+        return socketReconnect();
     }
 
     /**

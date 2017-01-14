@@ -232,7 +232,7 @@ public class MessageHelper {
      * @return
      */
 
-    public static byte[] getMessageForMsgpack(MessageContainer body, int id) {
+    public static byte[] getMessageForMsgpack(MessageContainer body, int id) throws IOException {
         byte title = BINARY_TITLE_TYPE_MESSAGE | BODY_SERILIZE_TYPE_MSGPACK;
         MessagePack msgPack = new MessagePack();
         byte[] result = null;
@@ -241,6 +241,7 @@ public class MessageHelper {
         List<Object> src = new ArrayList();
         src.add(body.mEvent);//事件名
         Map<String, Object> map = new HashMap();
+
         map = DataDealUitls.transBean2Map(body.msg);
         /**
          * "msg" 对应Message 里面的属性msg名字
@@ -249,7 +250,6 @@ public class MessageHelper {
             if (map.containsKey("ext") && body.msg != null && body.msg.ext != null) {
                 Map<String, Object> msgMap = DataDealUitls.transBean2Map(body.msg.ext);
                 map.put("ext", msgMap);
-//                如果内部嵌套了自定义 Object ,继续转 map
 //                if (msgMap.containsKey("gift") && body.ext.msg.gift != null) {
 //                    msgMap.put("gift", transBean2Map(body.ext.msg.gift));
 //                    map.put("msg", msgMap);
@@ -262,20 +262,14 @@ public class MessageHelper {
         if (id != 0) {
             src.add(id);//自定义消息id
         }
-
-
-        try {
-            packer.write(src);
-            result = out.toByteArray();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            Value value = msgPack.read(result);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        packer.write(src);
+        result = out.toByteArray();
+//        msgpack 数据读取
+//        try {
+//            Value value = msgPack.read(result);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         if (result.length > 1024) {
             title |= BODY_COMPRS_TYPE_ZLIB;
             result = ZipHelper.compressForZlib(result);
@@ -294,18 +288,14 @@ public class MessageHelper {
      * @param comprs
      * @return
      */
-    public static byte[] getSendBinaryForMsgpack(MessageContainer body, int comprs) {
+    public static byte[] getSendBinaryForMsgpack(MessageContainer body, int comprs) throws IOException {
         byte title = BINARY_TITLE_TYPE_MESSAGE | BODY_SERILIZE_TYPE_MSGPACK;
         MessagePack msgPack = new MessagePack();
         byte[] result = null;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Packer packer = msgPack.createPacker(out);
-        try {
-            packer.write(body);
-            result = out.toByteArray();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        packer.write(body);
+        result = out.toByteArray();
         switch (comprs) {
             case ImService.COMPRS_ZLIB:
                 title |= BODY_COMPRS_TYPE_ZLIB;
@@ -322,8 +312,6 @@ public class MessageHelper {
                 break;
 
         }
-
-
         return binarySplit(new byte[]{title}, result);
 
     }
@@ -478,7 +466,7 @@ public class MessageHelper {
         if (data == null) return TYPE_UNKNOW;
         byte title = data[0];
 
-        return (byte) ((title & 255) >> 4);
+        return (byte) ((((int) ((char) title)) & 255) >> 4);
     }
 
     /**
@@ -514,3 +502,4 @@ public class MessageHelper {
     }
 
 }
+
