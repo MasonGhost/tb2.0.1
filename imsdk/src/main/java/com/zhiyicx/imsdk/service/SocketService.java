@@ -95,7 +95,6 @@ public class SocketService extends BaseService implements ImService.ImListener {
     public static final String BUNDLE_MSG_LIMIT = "limit";
 
 
-
     public static final String SOCKET_RETRY_CONNECT = "com.zhiyicx.zhibo.socket_retry_connect";
     public static final String EVENT_SOCKET_DEAL_MESSAGE = "event_socket_deal_message";//分发处理消息
     public static final String EVENT_SOCKET_RECEIVE_MESSAGE = "event_socket_receive_message";//分发处理消息
@@ -739,7 +738,9 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @return
      */
     private boolean checkData(EventContainer eventContainer) {
-        if (eventContainer == null) return false;
+        if (eventContainer == null) {
+            return false;
+        }
         switch (eventContainer.err) {
             case SERVER_EXCEPTION:
                 break;
@@ -919,7 +920,6 @@ public class SocketService extends BaseService implements ImService.ImListener {
                     break;
                 default:
 
-                    break;
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -937,13 +937,25 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * ["auth", {"code":1021,"msg":"User disabled","disa":1234567890}] // 用户被禁用，disa为自动解禁时间
      *
      * @param eventContainer 事件内容器
-     * @param gson Gosn 对象
-     * @param body 消息内容 对应 {"code":1020,"msg":"Auth failed"}
+     * @param gson           Gosn 对象
+     * @param body           消息内容 对应 {"code":1020,"msg":"Auth failed"}
      * @return
      */
-    private EventContainer dealAuth(EventContainer eventContainer, Gson gson, String body) {
-        
+    private EventContainer dealAuth(EventContainer eventContainer, Gson gson, String body) throws JSONException {
+        JSONObject jsonObject = new JSONObject(body);
+        if (jsonObject.has("code")) {
+            int code = jsonObject.getInt("code");
+            eventContainer.err = code;
+            switch (code) {
+                case AUTH_FAILED_ERR_UID_OR_PWD: //1021
+                    eventContainer.disa = jsonObject.getLong("disa");
+                    break;
+                case AUTH_FAILED_NO_UID_OR_PWD:
 
+                    break;
+                default:
+            }
+        }
         return eventContainer;
     }
 
@@ -1286,8 +1298,14 @@ public class SocketService extends BaseService implements ImService.ImListener {
                 case ImService.CONVR_MSG_SYNC:
                     eventContainer = dealPluck(eventContainer, gson, msg);
                     break;
-                default:
+                /**
+                 * 登录认证
+                 */
+                case ImService.AUTH:
+                    eventContainer = dealAuth(eventContainer, gson, msg);
                     break;
+                default:
+
 
             }
         } catch (JSONException json) {

@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class EventContainer implements Serializable {
     public int err;
-
+    public long disa;
 
     public String errMsg;
     public String mEvent;
@@ -30,13 +30,15 @@ public class EventContainer implements Serializable {
     public String toString() {
         return "EventContainer{" +
                 "err=" + err +
+                ", disa=" + disa +
                 ", errMsg='" + errMsg + '\'' +
                 ", mEvent='" + mEvent + '\'' +
+                ", blk=" + blk +
+                ", expire=" + expire +
                 ", mMessageContainer=" + mMessageContainer +
                 ", mChatRoomContainer=" + mChatRoomContainer +
                 ", mConver=" + mConver +
                 ", mConversations=" + mConversations +
                 '}';
     }
-
 }
