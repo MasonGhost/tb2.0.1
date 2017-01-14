@@ -22,6 +22,8 @@ import com.yalantis.ucrop.UCrop;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -47,7 +49,7 @@ import static android.app.Activity.RESULT_OK;
  * @date 2017/1/9
  * @contact email:450127106@qq.com
  */
-public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> implements UserInfoContract.View {
+public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> implements UserInfoContract.View, PhotoSelectorImpl.IPhotoBackListener {
 
     @BindView(R.id.iv_head_icon)
     ImageView mIvHeadIcon;
@@ -71,6 +73,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     private OptionsPickerView mAreaPickerView;// 地域选择器
     private ActionPopupWindow mGenderPopupWindow;// 性别选择弹框
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
+    private PhotoSelectorImpl mPhotoSelector;
 
     private List<String> selectedPhotos = new ArrayList<>();// 被选择的图片
 
@@ -81,6 +84,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     @Override
     protected void initView(View rootView) {
+        mPhotoSelector = new PhotoSelectorImpl(this, this);
         initCityPickerView();
     }
 
@@ -160,6 +164,27 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
             }
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPhotoSelector.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void getPhotoSuccess(List<ImageBean> photoList) {
+        ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
+        imageLoader.loadImage(getContext(), GlideImageConfig.builder()
+                .url(photoList.get(0).getImgUrl())
+                .imagerView(mIvHeadIcon)
+                .transformation(new GlideCircleTransform(getContext()))
+                .build());
+    }
+
+    @Override
+    public void getPhotoFailure(String errorMsg) {
+        ToastUtils.showToast(errorMsg);
     }
 
     /**
@@ -251,12 +276,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                     @Override
                     public void onItem1Clicked() {
                         // 选择相册，单张
-                        PhotoPicker.builder()
-                                .setPreviewEnabled(true)
-                                .setGridColumnCount(3)
-                                .setPhotoCount(1)
-                                .setShowCamera(true)
-                                .start(getActivity(), UserInfoFragment.this);
+                        mPhotoSelector.getPhotoListFromSelector(1);
                         mPhotoPopupWindow.hide();
                     }
                 })
@@ -264,6 +284,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                     @Override
                     public void onItem2Clicked() {
                         // 选择相机，拍照
+                        mPhotoSelector.getPhotoFromCamera();
+                        mPhotoPopupWindow.hide();
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
@@ -272,83 +294,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                         mPhotoPopupWindow.hide();
                     }
                 }).build();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK) {
-
-            if ((requestCode == PhotoPicker.REQUEST_CODE || requestCode == PhotoPreview.REQUEST_CODE)) {
-                List<String> photos = null;
-                if (data != null) {
-                    photos = data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS);
-                }
-                startCropActivity(Uri.fromFile(new File(photos.get(0))));
-                selectedPhotos.clear();
-                if (photos != null) {
-                    selectedPhotos.addAll(photos);
-                }
-            }
-
-            if (requestCode == UCrop.REQUEST_CROP) {
-                handleCropResult(data);
-            }
-
-            if (resultCode == UCrop.RESULT_ERROR) {
-                handleCropError(data);
-            }
-
-        }
-    }
-
-    /**
-     * 调用裁剪方法
-     *
-     * @param uri
-     */
-    private void startCropActivity(@NonNull Uri uri) {
-        String destinationFileName = "SampleCropImage.jpg";
-        UCrop uCrop = UCrop.of(uri, Uri.fromFile(new File(getActivity().getCacheDir(), destinationFileName)));
-        uCrop.withAspectRatio(1, 1);//方形
-        UCrop.Options options = new UCrop.Options();
-        options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
-        options.setCompressionQuality(100);    // 图片质量压缩
-        options.setCircleDimmedLayer(false); // 是否裁剪圆形
-        options.setHideBottomControls(true);// 是否隐藏底部的控制面板
-        options.setCropFrameColor(Color.WHITE);// 设置内矩形边框线条颜色
-        options.setShowCropGrid(false);// 是否展示内矩形的分割线
-        options.setDimmedLayerColor(Color.argb(0xbb,0xff,0xff,0xff));// 设置蒙层的颜色
-        options.setRootViewBackgroundColor(Color.WHITE);// 设置图片背景颜色
-        options.setToolbarColor(ContextCompat.getColor(getContext(),R.color.themeColor));
-        uCrop.withOptions(options);
-        uCrop.start(getActivity(), UserInfoFragment.this);
-    }
-
-    private void handleCropResult(@NonNull Intent result) {
-        final Uri resultUri = UCrop.getOutput(result);
-        if (resultUri != null) {
-            ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-            imageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                    .url(resultUri.getPath())
-                    .imagerView(mIvHeadIcon)
-                    .transformation(new GlideCircleTransform(getContext()))
-                    .build());
-        } else {
-            ToastUtils.showToast("Cannot retrieve cropped image");
-        }
-    }
-
-    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-    private void handleCropError(@NonNull Intent result) {
-        final Throwable cropError = UCrop.getError(result);
-        if (cropError != null) {
-            Log.e(TAG, "handleCropError: ", cropError);
-            ToastUtils.showToast(cropError.getMessage());
-        } else {
-            ToastUtils.showToast("Unexpected error");
-        }
     }
 
 }
