@@ -17,7 +17,13 @@ import rx.Observable;
  */
 
 public interface CommonClient {
-    // 验证码类型
+    /**
+     * 验证码类型
+     * register: 注册
+     * login: 登录
+     * change: 修改,找回密码
+     */
+
     public static final String VERTIFY_CODE_TYPE_REGISTER = "register";
     public static final String VERTIFY_CODE_TYPE_LOGIN = "login";
     public static final String VERTIFY_CODE_TYPE_CHANGE = "change";

@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.password.changepassword;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.modules.password.DaggerPasswordComponent;
 
 /**
  * @Describe
@@ -21,7 +20,7 @@ public class ChangePasswordActivity extends TSActivity<ChangePasswordPresenter, 
 
     @Override
     protected void componentInject() {
-        DaggerPasswordComponent
+        DaggerChangePasswordComponent
                 .builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .changePasswordPresenterModule(new ChangePasswordPresenterModule(mContanierFragment))

@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.password.findpassword;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.modules.password.DaggerPasswordComponent;
 
 /**
  * @Describe 找回密码
@@ -21,7 +20,7 @@ public class FindPasswordActivity extends TSActivity<FindPasswordPresenter, Find
 
     @Override
     protected void componentInject() {
-        DaggerPasswordComponent
+        DaggerFindPasswordComponent
                 .builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .findPasswordPresenterModule(new FindPasswordPresenterModule(mContanierFragment))

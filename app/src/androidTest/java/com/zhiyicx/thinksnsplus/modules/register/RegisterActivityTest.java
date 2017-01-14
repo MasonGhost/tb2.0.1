@@ -45,9 +45,9 @@ import static junit.framework.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class RegisterActivityTest {
-    private static final String USER_PHONE = "15694005009";
-    private static final String USER_NAME = "七夜26";
-    private static final String TEST_USER_NAME = "啊哈";
+    public static final String USER_PHONE = "15694005009";
+    public static final String USER_NAME = "七夜68";
+    public static final String TEST_USER_NAME = "啊哈";
     @Rule
     public ActivityTestRule<RegisterActivity> mActivityRule = new ActivityTestRule(RegisterActivity.class);
 
@@ -62,7 +62,7 @@ public class RegisterActivityTest {
     /**
      * summary    因为某些原因导致注册失败，比如验证码错误
      * steps        1.输入正确的手机号、用户名、密码  2.输入错误的验证码码 3.点击注册按钮
-     * expected   errorTip显示登陆失败的原因
+     * expected   errorTip显示登录失败的原因
      */
     @Test
     public void registerFailure() throws Exception {
@@ -77,7 +77,7 @@ public class RegisterActivityTest {
                             // 成功跳转:当前不可能发生
                             assertFalse(true);
                         } else {
-                            // 登陆失败
+                            // 登录失败
                             assertFalse(false);
                         }
                     }
@@ -108,7 +108,7 @@ public class RegisterActivityTest {
                             // 成功跳转:当前不可能发生
                             assertTrue(true);
                         } else {
-                            // 登陆失败
+                            // 登录失败
                             assertFalse(false);
                         }
                     }

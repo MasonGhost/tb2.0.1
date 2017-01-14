@@ -45,4 +45,14 @@ public class FindFragment extends TSFragment {
     protected int setToolBarBackgroud() {
         return R.color.white;
     }
+
+    @Override
+    protected String setCenterTitle() {
+        return getString(R.string.find);
+    }
+
+    @Override
+    protected int setLeftImg() {
+        return 0;
+    }
 }

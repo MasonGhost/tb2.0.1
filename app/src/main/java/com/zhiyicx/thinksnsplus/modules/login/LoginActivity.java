@@ -5,7 +5,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 /**
  * @author LiuChao
- * @describe 登陆界面
+ * @describe 登录界面
  * @date 2016/12/23
  * @contact email:450127106@qq.com
  */

@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.base;
 
 import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
+import com.zhiyicx.thinksnsplus.data.source.remote.PasswordClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 
@@ -17,25 +18,60 @@ import retrofit2.Retrofit;
  */
 @Module
 public class ServiceModule {
-
+    /**
+     * 公用相关的网络接口
+     *
+     * @param retrofit 网络框架
+     * @return
+     */
     @Singleton
     @Provides
     CommonClient provideCommonService(Retrofit retrofit) {
         return retrofit.create(CommonClient.class);
     }
 
+    /**
+     * 登录相关的网络接口
+     *
+     * @param retrofit 网络框架
+     * @return
+     */
     @Singleton
     @Provides
     LoginClient provideLoginClient(Retrofit retrofit) {
         return retrofit.create(LoginClient.class);
     }
 
+    /**
+     * 密码相关的网络接口
+     *
+     * @param retrofit 网络框架
+     * @return
+     */
+    @Singleton
+    @Provides
+    PasswordClient providePasswordClient(Retrofit retrofit) {
+        return retrofit.create(PasswordClient.class);
+    }
+
+    /**
+     * 用户信息的网络接口
+     *
+     * @param retrofit 网络框架
+     * @return
+     */
     @Singleton
     @Provides
     UserInfoClient provideUserInfoClient(Retrofit retrofit) {
         return retrofit.create(UserInfoClient.class);
     }
 
+    /**
+     * 注册相关的网络接口
+     *
+     * @param retrofit 网络框架
+     * @return
+     */
     @Singleton
     @Provides
     RegisterClient provideRegisterClient(Retrofit retrofit) {

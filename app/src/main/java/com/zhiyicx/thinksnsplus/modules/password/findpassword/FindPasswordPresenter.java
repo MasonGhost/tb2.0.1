@@ -1,11 +1,19 @@
 package com.zhiyicx.thinksnsplus.modules.password.findpassword;
 
+import android.os.CountDownTimer;
+
+import com.zhiyicx.baseproject.cache.CacheBean;
+import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 
 import javax.inject.Inject;
+
+import rx.Subscription;
+import rx.functions.Action1;
 
 /**
  * @Describe
@@ -15,6 +23,24 @@ import javax.inject.Inject;
  */
 @FragmentScoped
 public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Repository, FindPasswordContract.View> implements FindPasswordContract.Presenter {
+    public static final int S_TO_MS_SPACING = 1000; // s 和 ms 的比例
+    public static final int SNS_TIME = 60 * S_TO_MS_SPACING; // 发送短信间隔时间，单位 ms
+
+    private int mTimeOut = SNS_TIME;
+
+    CountDownTimer timer = new CountDownTimer(mTimeOut, S_TO_MS_SPACING) {
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            mRootView.setVertifyCodeBtText(millisUntilFinished / S_TO_MS_SPACING + mContext.getString(R.string.seconds));//显示倒数的秒速
+        }
+
+        @Override
+        public void onFinish() {
+            mRootView.setVertifyCodeBtEnabled(true);//恢复初始化状态
+            mRootView.setVertifyCodeBtText(mContext.getString(R.string.send_vertify_code));
+        }
+    };
 
 
     @Inject
@@ -34,6 +60,81 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
     }
 
     /**
+     * 找回密码
+     *
+     * @param phone       电话号码
+     * @param vertifyCode 验证码
+     * @param newPassword 新密码
+     */
+    @Override
+    public void findPassword(String phone, String vertifyCode, String newPassword) {
+
+        if (checkPasswordLength(newPassword)) {
+            return;
+        }
+        if (checkPhone(phone)) {
+            return;
+        }
+        Subscription findPasswordSub = mRepository.findPassword(phone, vertifyCode, newPassword)
+                .subscribe(new Action1<BaseJson<CacheBean>>() {
+                    @Override
+                    public void call(BaseJson<CacheBean> json) {
+//                        if (json.code.equals(ZBLApi.REQUEST_SUCESS)) {
+                        mRootView.showMessage(json.getMessage());
+//                        } else {
+//                            mRootView.showMessage(json.getMessage());
+//                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
+                    }
+                });
+        // 代表检测成功
+        mRootView.showMessage("");
+        addSubscrebe(findPasswordSub);
+    }
+
+    /**
+     * 获取验证码
+     *
+     * @param phone 电话号码
+     */
+    @Override
+    public void getVertifyCode(String phone) {
+        if (checkPhone(phone)) {
+            return;
+        }
+        mRootView.setVertifyCodeBtEnabled(false);
+        Subscription getVertifySub = mRepository.getVertifyCode(phone, CommonClient.VERTIFY_CODE_TYPE_CHANGE)
+                .subscribe(new Action1<BaseJson<CacheBean>>() {
+                    @Override
+                    public void call(BaseJson<CacheBean> json) {
+//                        if (json.code.equals(ZBLApi.REQUEST_SUCESS)) {
+                        mRootView.hideLoading();//隐藏loading
+                        timer.start();//开始倒计时
+                        mRootView.showMessage(json.getMessage());
+//                        } else {
+//                            mRootView.showMessage(json.getMessage());
+//                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
+                        mRootView.setVertifyCodeBtEnabled(true);
+                    }
+                });
+        // 代表检测成功
+        mRootView.showMessage("");
+        addSubscrebe(getVertifySub);
+    }
+
+
+    /**
      * 检测手机号码是否正确
      *
      * @param phone
@@ -48,34 +149,12 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
     }
 
     /**
-     * 检查用户名是否小于最小长度,不能以数字开头
-     *
-     * @param name
-     * @return
-     */
-    private boolean checkUsername(String name) {
-        if (!RegexUtils.isUsernameLength(name, mContext.getResources().getInteger(R.integer.username_min_length))) {
-            mRootView.showMessage(mContext.getString(R.string.username_toast_hint));
-            return true;
-        }
-        if (RegexUtils.isUsernameNoNumberStart(name)) {// 数字开头
-            mRootView.showMessage(mContext.getString(R.string.username_toast_not_number_start_hint));
-            return true;
-        }
-        if (!RegexUtils.isUsername(name)) {// 用户名只能包含数字、字母和下划线
-            mRootView.showMessage(mContext.getString(R.string.username_toast_not_symbol_hint));
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * 检查密码是否是最小长度
      *
      * @param password
      * @return
      */
-    private boolean checkPassword(String password) {
+    private boolean checkPasswordLength(String password) {
         if (password.length() < mContext.getResources().getInteger(R.integer.password_min_length)) {
             mRootView.showMessage(mContext.getString(R.string.password_toast_hint));
             return true;
@@ -84,13 +163,4 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
     }
 
 
-    @Override
-    public void findPassword(String oldPassword, String newPassword, String sureNewPassword) {
-
-    }
-
-    @Override
-    public void getVertifyCode(String phone, String type) {
-
-    }
 }

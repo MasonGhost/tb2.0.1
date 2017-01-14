@@ -3,8 +3,6 @@ package com.zhiyicx.imsdk.utils.common;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.zhiyicx.imsdk.BuildConfig;
-
 /**
  * Created by jungle on 16/5/20.
  * com.zhiyicx.zhibo.util
@@ -14,7 +12,7 @@ import com.zhiyicx.imsdk.BuildConfig;
 public class LogUtils {
     private static final String TAG = "ZBIMSDK";
 
-    private final static boolean isLog = BuildConfig.DEBUG;
+    private final static boolean isLog = true;
 
     public static void debugInfo(String tag, String msg) {
         if (!isLog || TextUtils.isEmpty(msg)) return;

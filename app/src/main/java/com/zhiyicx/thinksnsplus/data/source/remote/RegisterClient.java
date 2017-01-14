@@ -11,7 +11,7 @@ import rx.Observable;
 
 /**
  * @author LiuChao
- * @describe 登陆相关的网络请求
+ * @describe 登录相关的网络请求
  * @date 2017/1/3
  * @contact email:450127106@qq.com
  */

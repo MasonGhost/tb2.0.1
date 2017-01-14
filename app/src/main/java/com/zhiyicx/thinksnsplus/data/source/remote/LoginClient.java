@@ -11,14 +11,14 @@ import rx.Observable;
 
 /**
  * @author LiuChao
- * @describe 登陆相关的网络请求
+ * @describe 登录相关的网络请求
  * @date 2017/1/3
  * @contact email:450127106@qq.com
  */
 
 public interface LoginClient {
     /**
-     * 用户输入手机号和密码进行登陆
+     * 用户输入手机号和密码进行登录
      *
      * @return
      */

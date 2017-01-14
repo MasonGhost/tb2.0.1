@@ -16,6 +16,7 @@
     <string name="phone_number">手机号</string>
     <string name="send_vertify_code">获取验证码</string>
     <string name="forget_password">忘记密码</string>
+    <string name="find_password">找回密码</string>
     <string name="male">男</string>
     <string name="female">女</string>
     <string name="keep_secret">保密</string>
@@ -23,6 +24,7 @@
     <string name="send_success">发送成功</string>
     <string name="send_failure">发送失败</string>
     <string name="send">发送</string>
+    <string name="sure">确认</string>
 
     <!-- 注册 -->
     <string name="username_input_hint">请输入2-8位用户名</string>
@@ -33,7 +35,7 @@
     <string name="vertify_code_input_hint">请输入4位验证码</string>
     <string name="phone_number_input_hint">输入11位手机号</string>
     <string name="phone_number_toast_hint">请输入正确的手机号</string>
-    <string name="password_input_hint">输入6位以上登陆密码</string>
+    <string name="password_input_hint">输入6位以上登录密码</string>
     <string name="password_toast_hint">请输入6-16位密码</string>
     <string name="old_password_toast_hint">请输入6-16位旧密码</string>
     <string name="new_password_toast_hint">请输入6-16位新密码</string>
@@ -44,7 +46,8 @@
     <string name="choose_from_photo">从相册选取</string>
     <string name="choose_from_camera">拍照</string>
 
-    <!--登陆-->
-    <string name="bt_login">登陆</string>
-    <string name="no_login">不登陆，先随便逛逛</string>
+    <!--登录-->
+    <string name="bt_login">登录</string>
+    <string name="no_login">不登录，先随便逛逛</string>
+
 </resources>

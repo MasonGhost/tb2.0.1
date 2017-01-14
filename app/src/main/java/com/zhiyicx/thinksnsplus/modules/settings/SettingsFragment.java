@@ -10,6 +10,7 @@ import com.zhiyicx.baseproject.widget.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.password.changepassword.ChangePasswordActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.AboutUsActivity;
 
@@ -214,7 +215,9 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
                     public void onItem1Clicked() {
-                        mPresenter.loginOut();
+                        if(mPresenter.loginOut()){
+                            startActivity(new Intent(getActivity(), LoginActivity.class));
+                        }
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {

@@ -16,7 +16,7 @@
     <string name="code_1012">token过期，需要刷新</string>
     <string name="code_1013">token刷新失败，需要重新登录</string>
     <string name="code_1014">移动端设备登录/注册未传递设备号</string>
-    <string name="code_1015">token在其他设备登陆</string>
+    <string name="code_1015">token在其他设备登录</string>
     <string name="code_1016">token不存在</string>
     <!--在生产模式下,移动端获取到1013,1014,1016错误码需要让用户重新登录. 如果登录后的用户获取到了1005错误码,也需要让用户重新登录. 如果登录后获取到了1015错误码,需要根据配置来决定是否让用户重新登录-->
     <!--测试用的code-->

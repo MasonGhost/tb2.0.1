@@ -55,10 +55,10 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
                     @Override
                     void testCall(BaseJson<LoginBean> integerBaseJson) {
                         if (integerBaseJson.isStatus()) {
-                            // 登陆成功跳转
+                            // 登录成功跳转
                             mRootView.setLoginSuccess();
                         } else {
-                            // 登陆失败
+                            // 登录失败
                             mRootView.setLoginFailure();
                             mRootView.showErrorTips(integerBaseJson.getMessage());
                         }

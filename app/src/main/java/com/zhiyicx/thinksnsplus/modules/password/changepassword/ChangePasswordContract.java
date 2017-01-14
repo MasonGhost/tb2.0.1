@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.password.changepassword;
 
+import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
@@ -25,7 +26,7 @@ public interface ChangePasswordContract {
      * Model 层定义接口,外部只需关心 model 返回的数据,无需关心内部细节,及是否使用缓存
      */
     interface Repository  {
-        Observable<BaseJson<Boolean>> changePassword(String oldPassword, String newPassword);
+        Observable<BaseJson<CacheBean>> changePassword(String oldPassword, String newPassword);
     }
 
     interface Presenter extends IBasePresenter {

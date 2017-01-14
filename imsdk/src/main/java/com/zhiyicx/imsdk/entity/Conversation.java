@@ -23,7 +23,7 @@ public class Conversation implements Serializable {
      * `pwd` varchar(32) DEFAULT NULL COMMENT '加入对话的秘钥',
      * `last_message_time` int(11) NOT NULL DEFAULT '0' COMMENT '最新消息时间',
      * `is_del` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否被删除 1:是 0:否',
-     * `im_uid` int(11) NOT NULL COMMENT '当前登陆的用户IM_uid'
+     * `im_uid` int(11) NOT NULL COMMENT '当前登录的用户IM_uid'
      * `mc` int(11) 当前群聊中的人数
      * )
      */

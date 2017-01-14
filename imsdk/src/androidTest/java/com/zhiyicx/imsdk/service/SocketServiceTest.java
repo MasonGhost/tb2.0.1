@@ -1,12 +1,12 @@
 package com.zhiyicx.imsdk.service;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.test.ServiceTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
 
 import com.zhiyicx.imsdk.entity.IMConfig;
+import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.imsdk.utils.common.LogUtils;
 
 /**
@@ -73,13 +73,10 @@ public class SocketServiceTest extends ServiceTestCase<SocketService> {
     @MediumTest
     public void testLogin() {
         IMConfig imConfig = new IMConfig();
-        imConfig.setImUid(20124);
-        imConfig.setToken("lEzgo3Ko-8B45s9LbYwQv5xOAAA");
-        imConfig.setWeb_socket_authority("ws://218.244.149.144:9900/");
-        Bundle bundle = new Bundle();
-        bundle.putInt(SocketService.EVENT_SOCKET_TAG, SocketService.TAG_IM_LOGIN);
-        bundle.putSerializable(SocketService.BUNDLE_IMCONFIG, imConfig);
-        getService().dealMessage(bundle);
+        imConfig.setImUid(1001);
+        imConfig.setToken("vZ2aegWZlQVSPp9ysLrSGukDAAA");
+        imConfig.setWeb_socket_authority("ws://192.168.10.222:9900");
+        ZBIMClient.getInstance().login(imConfig);
     }
 
     @MediumTest

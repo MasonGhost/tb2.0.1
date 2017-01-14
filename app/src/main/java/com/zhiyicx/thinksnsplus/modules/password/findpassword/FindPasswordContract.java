@@ -19,7 +19,17 @@ public interface FindPasswordContract {
      * 对于经常使用的关于 UI 的方法可以定义到 BaseView 中,如显示隐藏进度条,和显示文字消息
      */
     interface View extends IBaseView<Presenter> {
+        /**
+         * 设置验证码按钮状态
+         *
+         * @param isEnable
+         */
+        void setVertifyCodeBtEnabled(boolean isEnable);
 
+        /**
+         * 设置发送按钮的提示信息
+         */
+        void setVertifyCodeBtText(String text);
     }
 
     /**
@@ -37,19 +47,20 @@ public interface FindPasswordContract {
         /**
          * 找回密码
          *
-         * @param phone
-         * @param vertifyCode
+         * @param phone       电话号码
+         * @param vertifyCode 验证码
+         * @param newPassword 新密码
          * @return
          */
-        Observable<BaseJson<Boolean>> findPassword(String phone
-                , String vertifyCode);
+        Observable<BaseJson<CacheBean>> findPassword(String phone
+                , String vertifyCode, String newPassword);
     }
 
     interface Presenter extends IBasePresenter {
 
-        void findPassword(String oldPassword, String newPassword, String sureNewPassword);
+        void findPassword(String phone, String vertifyCode, String newPassword);
 
-        void getVertifyCode(String phone, String type);
+        void getVertifyCode(String phone);
     }
 
 }
