@@ -69,6 +69,10 @@ public class ImService {
      * 消息事件返回
      */
     public static final String MSG_ACK = "msg.ack";
+    /**
+     * 认证事件
+     */
+    public static final String AUTH="auth";
 
     /**
      * 会话

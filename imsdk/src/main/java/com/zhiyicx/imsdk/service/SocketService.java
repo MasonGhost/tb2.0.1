@@ -51,6 +51,15 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import static com.zhiyicx.imsdk.core.ErroCode.AUTH_FAILED_ERR_UID_OR_PWD;
+import static com.zhiyicx.imsdk.core.ErroCode.AUTH_FAILED_NO_UID_OR_PWD;
+import static com.zhiyicx.imsdk.core.ErroCode.PACKET_EXCEPTION_ERR_BODY_TYPE;
+import static com.zhiyicx.imsdk.core.ErroCode.PACKET_EXCEPTION_ERR_DATA;
+import static com.zhiyicx.imsdk.core.ErroCode.PACKET_EXCEPTION_ERR_KEY_TYPE;
+import static com.zhiyicx.imsdk.core.ErroCode.PACKET_EXCEPTION_ERR_PACKET_TYPE;
+import static com.zhiyicx.imsdk.core.ErroCode.PACKET_EXCEPTION_ERR_SERILIZE_TYPE;
+import static com.zhiyicx.imsdk.core.ErroCode.SERVER_EXCEPTION;
+
 /**
  * Created by jungle68 on 16/7/6.
  */
@@ -85,27 +94,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
     public static final String BUNDLE_MSG_LT = "lt";
     public static final String BUNDLE_MSG_LIMIT = "limit";
 
-    /**
-     * Im错误事件回执码
-     */
-    public static final int SUCCESS_CODE = 0;//通信成功
-    public static final int SERVER_EXCEPTION = 1000;//服务器发生了未知的异常，导致处理中断
-    public static final int PACKET_EXCEPTION_ERR_DATA = 1010;//无效的数据包
-    public static final int PACKET_EXCEPTION_ERR_PACKET_TYPE = 1011;//无效的数据包类型
-    public static final int PACKET_EXCEPTION_ERR_BODY_TYPE = 1012;//无效的消息主体
-    public static final int PACKET_EXCEPTION_ERR_SERILIZE_TYPE = 1013;//无效的序列化类型
-    public static final int PACKET_EXCEPTION_ERR_KEY_TYPE = 1014;//无效的键名路由
 
-    public static final int AUTH_FAILED_NO_UID_OR_PWD = 1020;//未提供认证需要的uid和pwd
-    public static final int AUTH_FAILED_ERR_UID_OR_PWD = 1021;//认证失败，可能原因是uid不存在或密码错误，或账号已被禁用
-
-    public static final int CHATROOM_JOIN_FAILED = 2001;//对话加入失败
-    public static final int CHATROOM_LEAVE_FAILED = 2002;//对话离开失败
-    public static final int CHATROOM_MC_FAILED = 2003;//对话成员查询失败
-
-    public static final int CHATROOM_SEND_MESSAGE_FAILED = 3001;//消息发送失败
-    public static final int CHATROOM_BANNED_WORDS = 3004;//对话成员被禁言
-    public static final int CHATROOM_NOT_JOIN_ROOM = 3003;//未加入房间
 
     public static final String SOCKET_RETRY_CONNECT = "com.zhiyicx.zhibo.socket_retry_connect";
     public static final String EVENT_SOCKET_DEAL_MESSAGE = "event_socket_deal_message";//分发处理消息
@@ -869,7 +858,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
             eventContainer.mEvent = jsonArray.get(0).toString();
             eventContainer.mEvent = eventContainer.mEvent.replace("\"", "");
             MessageContainer messageContainer = null;
-            if (jsonArray.length() >= 3)
+            if (jsonArray.length() >= 3)// 是否包含消息 id
                 messageContainer = cancleTimeoutListen(jsonArray.get(2).toString());
             else
                 messageContainer = cancleTimeoutListen(0 + "");
@@ -884,14 +873,12 @@ public class SocketService extends BaseService implements ImService.ImListener {
 
                     break;
 
-
                 /**
                  * 加入对话回调
                  */
                 case ImService.CONVERSATION_JOIN:
                     eventContainer.mEvent = ImService.CONVERSATION_JOIN_ACK;
                     setJoinEventContainer(eventContainer, (JSONObject) jsonArray.get(1));
-
 
                     break;
                 /**
@@ -923,10 +910,13 @@ public class SocketService extends BaseService implements ImService.ImListener {
                  */
                 case ImService.CONVR_MSG_SYNC:
                     eventContainer = dealPluck(eventContainer, gson, jsonArray.get(1).toString());
-
-
                     break;
-
+                /**
+                 * 登录认证
+                 */
+                case ImService.AUTH:
+                    eventContainer = dealAuth(eventContainer, gson, jsonArray.get(1).toString());
+                    break;
                 default:
 
                     break;
@@ -938,6 +928,22 @@ public class SocketService extends BaseService implements ImService.ImListener {
             e.printStackTrace();
             return null;
         }
+        return eventContainer;
+    }
+
+    /**
+     * 处理认证数据
+     * ["auth", {"code":1020,"msg":"Auth failed"}] // token无效
+     * ["auth", {"code":1021,"msg":"User disabled","disa":1234567890}] // 用户被禁用，disa为自动解禁时间
+     *
+     * @param eventContainer 事件内容器
+     * @param gson Gosn 对象
+     * @param body 消息内容 对应 {"code":1020,"msg":"Auth failed"}
+     * @return
+     */
+    private EventContainer dealAuth(EventContainer eventContainer, Gson gson, String body) {
+        
+
         return eventContainer;
     }
 
