@@ -6,6 +6,8 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.widget.TextView;
 
+import com.zhiyicx.common.base.BaseApplication;
+
 /**
  * @author LiuChao
  * @describe 一些和Ui相关的工具类方法
@@ -39,5 +41,13 @@ public class UIUtils {
         /// 这一步必须要做,否则不会显示.
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
         return drawable;
+    }
+
+    /**
+     * 通过资源名称查找resource
+     */
+    public static int getResourceByName(String name, String type, Context context) {
+        int id = context.getResources().getIdentifier(name, type, context.getPackageName());
+        return id;
     }
 }

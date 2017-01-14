@@ -1,6 +1,7 @@
 package com.zhiyicx.baseproject.base;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.crashhandler.CrashHandler;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageLoaderStrategy;
 import com.zhiyicx.common.base.BaseApplication;
@@ -16,6 +17,14 @@ import com.zhiyicx.common.dagger.module.ShareModule;
 
 public abstract class TSApplication extends BaseApplication {
 
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        // 处理app崩溃异常
+        CrashHandler crashHandler = CrashHandler.getInstance();
+        crashHandler.init(this);
+    }
 
     /**
      * 网络根地址
