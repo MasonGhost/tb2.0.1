@@ -34,7 +34,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/spacing_mid"
-            android:src="@mipmap/login_ico_closeye"/>
+            android:src="@mipmap/ic_arrow_smallgrey"/>
     </RelativeLayout>
 
     <ImageView style="@style/style_divider_horizontal"/>
@@ -95,7 +95,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/spacing_mid"
-            android:src="@mipmap/login_ico_closeye"/>
+            android:src="@mipmap/ic_arrow_smallgrey"/>
     </LinearLayout>
     <!--修改城市-->
     <LinearLayout
@@ -128,7 +128,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/spacing_mid"
-            android:src="@mipmap/login_ico_closeye"/>
+            android:src="@mipmap/ic_arrow_smallgrey"/>
     </LinearLayout>
     <!--修改简介-->
     <LinearLayout
