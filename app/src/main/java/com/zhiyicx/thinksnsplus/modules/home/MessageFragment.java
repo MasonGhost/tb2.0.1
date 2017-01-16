@@ -75,6 +75,11 @@ public class MessageFragment extends TSFragment {
     }
 
     @Override
+    protected int setLeftImg() {
+        return 0;
+    }
+
+    @Override
     protected String setCenterTitle() {
         return getString(R.string.message);
     }
