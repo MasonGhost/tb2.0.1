@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.LoginBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
 import com.zhiyicx.thinksnsplus.modules.AcitivityTest;
+import com.zhiyicx.thinksnsplus.modules.RxUnitTestTools;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -45,6 +46,7 @@ public class LoginActivityTest extends AcitivityTest {
 
     @Before
     public void initActivity() {
+        RxUnitTestTools.openRxTools();
         mLoginClient = AppApplication.AppComponentHolder.getAppComponent().serviceManager().getLoginClient();
         etPhone = findViewById(R.id.et_login_phone);
         etPass = findViewById(R.id.et_login_password);
@@ -102,7 +104,7 @@ public class LoginActivityTest extends AcitivityTest {
                     @Override
                     public void call(Throwable e) {
                         LogUtils.e(e,"exception");
-                        //assertFalse(true);
+                        assertFalse(false);
                     }
                 });
     }
