@@ -117,6 +117,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
     private static final long DISCONNECT_NOTIFY_TIME = 10 * 1000;//IM超过10s没有连上，通知下发
     private static final long MESSAGE_SEND_INTERVAL_FOR_CPU = 100;//消息发送间隔时间，防止cpu占用过高
     private long disconnect_start_time = 0;//重连开始时间
+    private int MAX_RESEND_COUNT = 3;//最大的重发次数
 
 
     private ImService mService;
@@ -267,7 +268,12 @@ public class SocketService extends BaseService implements ImService.ImListener {
         TimeOutTask timeOutTask = new TimeOutTask(messageContainer, System.currentTimeMillis(), new TimeOutListener() {
             @Override
             public void timeOut(MessageContainer messageContainer) {
-                sendTimeOutMsg(messageContainer);
+                if (messageContainer.reSendCounts > MAX_RESEND_COUNT) {
+                    sendTimeOutMsg(messageContainer);
+                } else {
+                    mMessageContainers.add(messageContainer);
+                }
+
             }
         });
         TimeOutTaskManager.getInstance().addTimeoutTask(timeOutTask);
@@ -582,7 +588,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param msgid 本条消息的 id
      * @param pwd   密码
      */
-    public boolean join(int cid, int msgid, String pwd) {
+    private boolean join(int cid, int msgid, String pwd) {
         if (cid == 0) {
             return false;
         }
@@ -598,7 +604,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param msgid 本条消息的 id
      * @param pwd   密码
      */
-    public boolean leave(int cid, int msgid, String pwd) {
+    private boolean leave(int cid, int msgid, String pwd) {
         if (cid == 0) {
             return false;
         }
@@ -614,7 +620,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param field 需要的字段
      * @return
      */
-    public boolean mc(List<Integer> cids, int msgid, String field) {
+    private boolean mc(List<Integer> cids, int msgid, String field) {
         if (cids == null) {
             return false;
         }
@@ -630,7 +636,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param msgid 本条消息的 id
      * @return
      */
-    public boolean sendPluckMessage(int cid, List<Integer> seq, int msgid) {
+    private boolean sendPluckMessage(int cid, List<Integer> seq, int msgid) {
         if (cid == 0) {
             return false;
         }
@@ -647,7 +653,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param msgid 本条消息的 id
      * @return
      */
-    public boolean sendSyncMessage(int cid, int gt, int lt, int msgid) {
+    private boolean sendSyncMessage(int cid, int gt, int lt, int msgid) {
         if (cid == 0) {
             return false;
         }
@@ -663,7 +669,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param msgid 本条消息的 id
      * @return
      */
-    public boolean sendSyncLastMessage(int cid, int limit, int msgid) {
+    private boolean sendSyncLastMessage(int cid, int limit, int msgid) {
         if (cid == 0) {
             return false;
         }
@@ -1450,12 +1456,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                 && eventContainer.mMessageContainer.msg != null) {
             if (!MessageDao.getInstance(getApplicationContext()).hasMessage(eventContainer.mMessageContainer.msg.mid)) {
                 Conversation conversation = ConversationDao.getInstance(getApplicationContext()).getConversationByCid(eventContainer.mMessageContainer.msg.cid);
-                if (conversation == null) {//创建本地对话信息
-//                    Conversation newConversation = new Conversation();
-//                    conversation.setCid(eventContainer.mMessageContainer.msg.cid);
-//                    conversation.setLast_message_time((eventContainer.mMessageContainer.msg.mid >> 23) + ConversationDao.TIME_DEFAULT_ADD);
-//                    ConversationDao.getInstance(getApplicationContext()).insertConversation(newConversation);
-//                    MessageDao.getInstance(getApplicationContext()).insertMessage(eventContainer.mMessageContainer.msg);
+                if (conversation == null) {// 获取服务器对话信息
                     mEventContainerCache.put(eventContainer.mMessageContainer.msg.cid, eventContainer);
                     /**
                      * 获取对话信息

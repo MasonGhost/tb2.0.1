@@ -15,6 +15,7 @@ public class MessageContainer implements Serializable{
     public Message msg;
     public int roomId;
     public List<Integer> roomIds;
+    public int reSendCounts;// 重复次数
 
     public MessageContainer(String event, Message msg, int roomId, List<Integer> roomIds) {
         mEvent = event;
@@ -38,7 +39,7 @@ public class MessageContainer implements Serializable{
                 ", msg=" + msg +
                 ", roomId=" + roomId +
                 ", roomIds=" + roomIds +
+                ", reSendCounts=" + reSendCounts +
                 '}';
     }
-
 }
