@@ -17,7 +17,6 @@ import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.ChatRoom;
 import com.zhiyicx.imsdk.entity.ChatRoomContainer;
 import com.zhiyicx.imsdk.entity.ChatRoomErr;
-import com.zhiyicx.imsdk.entity.Conver;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.EventContainer;
 import com.zhiyicx.imsdk.entity.IMConfig;
@@ -754,9 +753,13 @@ public class SocketService extends BaseService implements ImService.ImListener {
                 break;
             case PACKET_EXCEPTION_ERR_KEY_TYPE:
                 break;
+            // 认证失败，不需要重连
             case AUTH_FAILED_NO_UID_OR_PWD:
+                setNeedReConnected(false);
                 break;
+            // 认证失败，不需要重连
             case AUTH_FAILED_ERR_UID_OR_PWD:
+                setNeedReConnected(false);
                 break;
 
         }
@@ -823,9 +826,9 @@ public class SocketService extends BaseService implements ImService.ImListener {
                  * 会话结束
                  */
                 case ImService.CONVR_END:
-                    Conver conver = new Conver();
+                    Conversation conver = new Conversation();
                     try {
-                        conver.cid = Integer.valueOf(jsonArray.get(1).toString());
+                        conver.setCid(Integer.valueOf(jsonArray.get(1).toString()));
                     } catch (NumberFormatException e) {
                         e.printStackTrace();
                     }
@@ -933,6 +936,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
 
     /**
      * 处理认证数据
+     * ["auth",{"ping":200}] 成功
      * ["auth", {"code":1020,"msg":"Auth failed"}] // token无效
      * ["auth", {"code":1021,"msg":"User disabled","disa":1234567890}] // 用户被禁用，disa为自动解禁时间
      *
@@ -945,22 +949,26 @@ public class SocketService extends BaseService implements ImService.ImListener {
         JSONObject jsonObject = new JSONObject(body);
         if (jsonObject.has("code")) {
             int code = jsonObject.getInt("code");
+            eventContainer.errMsg = jsonObject.getString("msg");
             eventContainer.err = code;
             switch (code) {
                 case AUTH_FAILED_ERR_UID_OR_PWD: //1021
                     eventContainer.disa = jsonObject.getLong("disa");
+
                     break;
                 case AUTH_FAILED_NO_UID_OR_PWD:
 
                     break;
                 default:
             }
+        } else if (jsonObject.has("ping")) {
+
         }
         return eventContainer;
     }
 
     private EventContainer dealPluck(EventContainer eventContainer, Gson gson, String content) {
-        System.out.println("------------dealPluck---------- = " + content);
+        LogUtils.debugInfo("------------dealPluck---------- = " + content);
         List<Message> messages = gson.fromJson(content, new TypeToken<List<Message>>() {
         }.getType());
         if (messages != null && messages.size() > 0) {
@@ -972,7 +980,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                 messageContainer.mEvent = ImService.MSG;
                 tmp.mEvent = ImService.MSG;
                 tmp.mMessageContainer = messageContainer;
-                System.out.println("----------dealPluck---------messageContainer = " + messageContainer.toString());
+                LogUtils.debugInfo("----------dealPluck---------messageContainer = " + messageContainer.toString());
                 if (checkData(tmp))
                     sendImBroadCast(tmp);
 
@@ -1211,9 +1219,9 @@ public class SocketService extends BaseService implements ImService.ImListener {
              * 会话结束
              */
             case ImService.CONVR_END:
-                Conver conver = new Conver();
+                Conversation conver = new Conversation();
                 try {
-                    conver.cid = Integer.valueOf(msg);
+                    conver.setCid(Integer.valueOf(msg));
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
