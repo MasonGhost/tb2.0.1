@@ -1442,9 +1442,12 @@ public class SocketService extends BaseService implements ImService.ImListener {
      *
      * @param eventContainer
      */
-    private boolean checkDuplicateMessages(EventContainer eventContainer) {
+    public boolean checkDuplicateMessages(EventContainer eventContainer) {
         LogUtils.debugInfo("eventContainer = " + eventContainer.toString());
-        if ((eventContainer.mEvent.equals(ImService.MSG) || eventContainer.mEvent.equals(ImService.MSG_ACK)) && eventContainer.mMessageContainer != null && eventContainer.mMessageContainer.msg != null) {
+        if ((eventContainer.mEvent.equals(ImService.MSG)
+                || eventContainer.mEvent.equals(ImService.MSG_ACK))
+                && eventContainer.mMessageContainer != null
+                && eventContainer.mMessageContainer.msg != null) {
             if (!MessageDao.getInstance(getApplicationContext()).hasMessage(eventContainer.mMessageContainer.msg.mid)) {
                 Conversation conversation = ConversationDao.getInstance(getApplicationContext()).getConversationByCid(eventContainer.mMessageContainer.msg.cid);
                 if (conversation == null) {//创建本地对话信息
