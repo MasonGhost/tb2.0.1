@@ -165,7 +165,6 @@ public class MessageFragment extends TSFragment {
             case ITEM_TYPE_LIKED:// 点赞图标
                 mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
                         .resourceId(R.mipmap.login_ico_copeneye)
-
                         .imagerView((ImageView) holder.getView(R.id.iv_headpic)).build()
                 );
 
