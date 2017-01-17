@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="code_identify">code_%d</string>
     <!--服务器返回的code，对应message映射表-->
+    <string name="code_not_define">未定义的错误码</string>
     <string name="code_1000">手机号码错误</string>
     <string name="code_1001">手机验证码错误或失效</string>
     <string name="code_1002">用户名长度错误</string>

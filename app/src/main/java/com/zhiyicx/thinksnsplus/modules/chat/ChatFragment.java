@@ -54,7 +54,6 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     @Override
     protected void initData() {
-        startActivity(new Intent(getActivity(), RegisterActivity.class));
     }
 
     @Override

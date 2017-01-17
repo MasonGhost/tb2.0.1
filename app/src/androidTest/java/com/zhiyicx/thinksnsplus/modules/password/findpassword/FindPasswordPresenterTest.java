@@ -10,6 +10,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.PasswordClient;
+import com.zhiyicx.thinksnsplus.modules.RxUnitTestTools;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -39,6 +40,7 @@ public class FindPasswordPresenterTest {
 
     @Before
     public void initActivity() {
+        RxUnitTestTools.openRxTools();
         mPasswordClient = AppApplication.AppComponentHolder.getAppComponent().serviceManager().getPasswordClient();
         mCommonClient = AppApplication.AppComponentHolder.getAppComponent().serviceManager().getCommonClient();
 

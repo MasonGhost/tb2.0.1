@@ -11,6 +11,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
+import com.zhiyicx.thinksnsplus.modules.RxUnitTestTools;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -55,6 +56,7 @@ public class RegisterActivityTest {
 
     @Before
     public void initActivity() {
+        RxUnitTestTools.openRxTools();
         mRegisterClient = AppApplication.AppComponentHolder.getAppComponent().serviceManager().getRegisterClient();
 
     }

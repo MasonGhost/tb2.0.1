@@ -450,8 +450,14 @@ public class ZBIMClient implements IMSoupport {
 
                 break;
 
-            default:
+            /**
+             * 登录认证
+             */
+            case ImService.AUTH:
+
                 break;
+
+            default:
         }
 
     }

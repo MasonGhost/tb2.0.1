@@ -8,6 +8,10 @@ import android.test.suitebuilder.annotation.MediumTest;
 
 import com.zhiyicx.imsdk.core.ImService;
 import com.zhiyicx.imsdk.core.autobahn.WebSocketConnection;
+import com.zhiyicx.imsdk.db.dao.ConversationDao;
+import com.zhiyicx.imsdk.db.dao.MessageDao;
+import com.zhiyicx.imsdk.entity.Conversation;
+import com.zhiyicx.imsdk.entity.EventContainer;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.entity.MessageContainer;
@@ -57,6 +61,7 @@ public class SocketServiceTest extends ServiceTestCase<SocketService> {
         LogUtils.debugInfo(TAG, "tearDown");
         stopService();
     }
+
 
     /**
      * Test basic startup/shutdown of Service
@@ -115,6 +120,75 @@ public class SocketServiceTest extends ServiceTestCase<SocketService> {
     }
 
     /**
+     * 消息去重，消息不重复的情况
+     */
+    @MediumTest
+    public void testCheckDuplicateMessages() {
+        boolean result = false;
+
+        EventContainer eventContanter = new EventContainer();
+        MessageContainer messageContainer = new MessageContainer(ImService.MSG, new Message());
+        messageContainer.msg.mid = (int) (System.currentTimeMillis());
+        messageContainer.msg.cid = 1000;
+        eventContanter.mEvent = messageContainer.mEvent;
+        eventContanter.mMessageContainer = messageContainer;
+        Conversation newConversation = new Conversation();
+        newConversation.setCid(eventContanter.mMessageContainer.msg.cid);
+        if (!ConversationDao.getInstance(getContext()).hasConversation(newConversation.getCid())) {
+            ConversationDao.getInstance(getContext()).insertConversation(newConversation);
+        }
+        result = getService().checkDuplicateMessages(eventContanter);
+        Assert.assertFalse(result);
+    }
+
+    /**
+     * 消息去重,没有创建对话的情况
+     */
+    @MediumTest
+    public void testCheckDuplicateMessagesNOcid() {
+        boolean result = false;
+        getService().setService(new ImService(mock(WebSocketConnection.class)));
+        EventContainer eventContanter = new EventContainer();
+        MessageContainer messageContainer = new MessageContainer(ImService.MSG, new Message());
+        messageContainer.msg.mid = (int) (System.currentTimeMillis());
+        messageContainer.msg.cid = 10001;
+        eventContanter.mEvent = messageContainer.mEvent;
+        eventContanter.mMessageContainer = messageContainer;
+        Conversation newConversation = new Conversation();
+        newConversation.setCid(eventContanter.mMessageContainer.msg.cid);
+        if (!ConversationDao.getInstance(getContext()).hasConversation(newConversation.getCid())) {
+            result = getService().checkDuplicateMessages(eventContanter);
+            Assert.assertTrue(result);
+        }else{
+            Assert.assertTrue(false);
+        }
+    }
+
+
+    /**
+     * 消息去重,消息重复的情况
+     */
+    @MediumTest
+    public void testDuplicateMessages() {
+        boolean result = false;
+        EventContainer eventContanter = new EventContainer();
+        MessageContainer messageContainer = new MessageContainer(ImService.MSG, new Message());
+        messageContainer.msg.mid = (int) (System.currentTimeMillis());
+        messageContainer.msg.cid = 1000;
+        eventContanter.mEvent = messageContainer.mEvent;
+        eventContanter.mMessageContainer = messageContainer;
+        Conversation newConversation = new Conversation();
+        newConversation.setCid(eventContanter.mMessageContainer.msg.cid);
+        if (!ConversationDao.getInstance(getContext()).hasConversation(newConversation.getCid())) {
+            ConversationDao.getInstance(getContext()).insertConversation(newConversation);
+        }
+        if (!MessageDao.getInstance(getContext()).hasMessage(messageContainer.msg.mid)) {
+            MessageDao.getInstance(getContext()).insertMessage(messageContainer.msg);
+        }
+        result = getService().checkDuplicateMessages(eventContanter);
+        Assert.assertTrue(result);
+    }
+    /**
      * IM 重连
      */
     @MediumTest
@@ -136,6 +210,7 @@ public class SocketServiceTest extends ServiceTestCase<SocketService> {
         getService().setService(new ImService(mockWebSocketConnection));
         Assert.assertTrue(getService().dealMessage(bundle));
     }
+
     /**
      * IM  加入聊天室
      */

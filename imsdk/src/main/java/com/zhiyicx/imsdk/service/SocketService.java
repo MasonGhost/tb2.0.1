@@ -17,7 +17,6 @@ import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.ChatRoom;
 import com.zhiyicx.imsdk.entity.ChatRoomContainer;
 import com.zhiyicx.imsdk.entity.ChatRoomErr;
-import com.zhiyicx.imsdk.entity.Conver;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.EventContainer;
 import com.zhiyicx.imsdk.entity.IMConfig;
@@ -118,6 +117,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
     private static final long DISCONNECT_NOTIFY_TIME = 10 * 1000;//IM超过10s没有连上，通知下发
     private static final long MESSAGE_SEND_INTERVAL_FOR_CPU = 100;//消息发送间隔时间，防止cpu占用过高
     private long disconnect_start_time = 0;//重连开始时间
+    private int MAX_RESEND_COUNT = 3;//最大的重发次数
 
 
     private ImService mService;
@@ -268,7 +268,12 @@ public class SocketService extends BaseService implements ImService.ImListener {
         TimeOutTask timeOutTask = new TimeOutTask(messageContainer, System.currentTimeMillis(), new TimeOutListener() {
             @Override
             public void timeOut(MessageContainer messageContainer) {
-                sendTimeOutMsg(messageContainer);
+                if (messageContainer.reSendCounts > MAX_RESEND_COUNT) {
+                    sendTimeOutMsg(messageContainer);
+                } else {
+                    mMessageContainers.add(messageContainer);
+                }
+
             }
         });
         TimeOutTaskManager.getInstance().addTimeoutTask(timeOutTask);
@@ -583,7 +588,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param msgid 本条消息的 id
      * @param pwd   密码
      */
-    public boolean join(int cid, int msgid, String pwd) {
+    private boolean join(int cid, int msgid, String pwd) {
         if (cid == 0) {
             return false;
         }
@@ -599,7 +604,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param msgid 本条消息的 id
      * @param pwd   密码
      */
-    public boolean leave(int cid, int msgid, String pwd) {
+    private boolean leave(int cid, int msgid, String pwd) {
         if (cid == 0) {
             return false;
         }
@@ -615,7 +620,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param field 需要的字段
      * @return
      */
-    public boolean mc(List<Integer> cids, int msgid, String field) {
+    private boolean mc(List<Integer> cids, int msgid, String field) {
         if (cids == null) {
             return false;
         }
@@ -631,7 +636,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param msgid 本条消息的 id
      * @return
      */
-    public boolean sendPluckMessage(int cid, List<Integer> seq, int msgid) {
+    private boolean sendPluckMessage(int cid, List<Integer> seq, int msgid) {
         if (cid == 0) {
             return false;
         }
@@ -648,7 +653,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param msgid 本条消息的 id
      * @return
      */
-    public boolean sendSyncMessage(int cid, int gt, int lt, int msgid) {
+    private boolean sendSyncMessage(int cid, int gt, int lt, int msgid) {
         if (cid == 0) {
             return false;
         }
@@ -664,7 +669,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param msgid 本条消息的 id
      * @return
      */
-    public boolean sendSyncLastMessage(int cid, int limit, int msgid) {
+    private boolean sendSyncLastMessage(int cid, int limit, int msgid) {
         if (cid == 0) {
             return false;
         }
@@ -754,9 +759,13 @@ public class SocketService extends BaseService implements ImService.ImListener {
                 break;
             case PACKET_EXCEPTION_ERR_KEY_TYPE:
                 break;
+            // 认证失败，不需要重连
             case AUTH_FAILED_NO_UID_OR_PWD:
+                setNeedReConnected(false);
                 break;
+            // 认证失败，不需要重连
             case AUTH_FAILED_ERR_UID_OR_PWD:
+                setNeedReConnected(false);
                 break;
 
         }
@@ -823,9 +832,9 @@ public class SocketService extends BaseService implements ImService.ImListener {
                  * 会话结束
                  */
                 case ImService.CONVR_END:
-                    Conver conver = new Conver();
+                    Conversation conver = new Conversation();
                     try {
-                        conver.cid = Integer.valueOf(jsonArray.get(1).toString());
+                        conver.setCid(Integer.valueOf(jsonArray.get(1).toString()));
                     } catch (NumberFormatException e) {
                         e.printStackTrace();
                     }
@@ -933,6 +942,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
 
     /**
      * 处理认证数据
+     * ["auth",{"ping":200}] 成功
      * ["auth", {"code":1020,"msg":"Auth failed"}] // token无效
      * ["auth", {"code":1021,"msg":"User disabled","disa":1234567890}] // 用户被禁用，disa为自动解禁时间
      *
@@ -945,22 +955,26 @@ public class SocketService extends BaseService implements ImService.ImListener {
         JSONObject jsonObject = new JSONObject(body);
         if (jsonObject.has("code")) {
             int code = jsonObject.getInt("code");
+            eventContainer.errMsg = jsonObject.getString("msg");
             eventContainer.err = code;
             switch (code) {
                 case AUTH_FAILED_ERR_UID_OR_PWD: //1021
                     eventContainer.disa = jsonObject.getLong("disa");
+
                     break;
                 case AUTH_FAILED_NO_UID_OR_PWD:
 
                     break;
                 default:
             }
+        } else if (jsonObject.has("ping")) {
+
         }
         return eventContainer;
     }
 
     private EventContainer dealPluck(EventContainer eventContainer, Gson gson, String content) {
-        System.out.println("------------dealPluck---------- = " + content);
+        LogUtils.debugInfo("------------dealPluck---------- = " + content);
         List<Message> messages = gson.fromJson(content, new TypeToken<List<Message>>() {
         }.getType());
         if (messages != null && messages.size() > 0) {
@@ -972,7 +986,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                 messageContainer.mEvent = ImService.MSG;
                 tmp.mEvent = ImService.MSG;
                 tmp.mMessageContainer = messageContainer;
-                System.out.println("----------dealPluck---------messageContainer = " + messageContainer.toString());
+                LogUtils.debugInfo("----------dealPluck---------messageContainer = " + messageContainer.toString());
                 if (checkData(tmp))
                     sendImBroadCast(tmp);
 
@@ -1211,9 +1225,9 @@ public class SocketService extends BaseService implements ImService.ImListener {
              * 会话结束
              */
             case ImService.CONVR_END:
-                Conver conver = new Conver();
+                Conversation conver = new Conversation();
                 try {
-                    conver.cid = Integer.valueOf(msg);
+                    conver.setCid(Integer.valueOf(msg));
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
@@ -1434,17 +1448,15 @@ public class SocketService extends BaseService implements ImService.ImListener {
      *
      * @param eventContainer
      */
-    private boolean checkDuplicateMessages(EventContainer eventContainer) {
+    public boolean checkDuplicateMessages(EventContainer eventContainer) {
         LogUtils.debugInfo("eventContainer = " + eventContainer.toString());
-        if ((eventContainer.mEvent.equals(ImService.MSG) || eventContainer.mEvent.equals(ImService.MSG_ACK)) && eventContainer.mMessageContainer != null && eventContainer.mMessageContainer.msg != null) {
+        if ((eventContainer.mEvent.equals(ImService.MSG)
+                || eventContainer.mEvent.equals(ImService.MSG_ACK))
+                && eventContainer.mMessageContainer != null
+                && eventContainer.mMessageContainer.msg != null) {
             if (!MessageDao.getInstance(getApplicationContext()).hasMessage(eventContainer.mMessageContainer.msg.mid)) {
                 Conversation conversation = ConversationDao.getInstance(getApplicationContext()).getConversationByCid(eventContainer.mMessageContainer.msg.cid);
-                if (conversation == null) {//创建本地对话信息
-//                    Conversation newConversation = new Conversation();
-//                    conversation.setCid(eventContainer.mMessageContainer.msg.cid);
-//                    conversation.setLast_message_time((eventContainer.mMessageContainer.msg.mid >> 23) + ConversationDao.TIME_DEFAULT_ADD);
-//                    ConversationDao.getInstance(getApplicationContext()).insertConversation(newConversation);
-//                    MessageDao.getInstance(getApplicationContext()).insertMessage(eventContainer.mMessageContainer.msg);
+                if (conversation == null) {// 获取服务器对话信息
                     mEventContainerCache.put(eventContainer.mMessageContainer.msg.cid, eventContainer);
                     /**
                      * 获取对话信息

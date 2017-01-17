@@ -54,7 +54,7 @@ public class FilterImageView extends ImageView {
                 default:
                     break;
             }
-            return true;
+            return false;
         }
     };
     private void changeLight() {

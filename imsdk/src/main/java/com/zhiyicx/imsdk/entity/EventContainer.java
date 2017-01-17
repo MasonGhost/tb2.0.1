@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class EventContainer implements Serializable {
     public int err;
-    public long disa;
+    public long disa; //  用户被禁用，disa为自动解禁时间
 
     public String errMsg;
     public String mEvent;
@@ -20,7 +20,7 @@ public class EventContainer implements Serializable {
 
     public MessageContainer mMessageContainer;
     public ChatRoomContainer mChatRoomContainer;
-    public Conver mConver;
+    public Conversation mConver;
     public List<Conversation> mConversations;
 
     public EventContainer() {
