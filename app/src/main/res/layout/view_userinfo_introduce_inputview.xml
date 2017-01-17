@@ -15,18 +15,20 @@
         android:layout_marginLeft="@dimen/spacing_mid"
         android:layout_marginRight="@dimen/spacing_mid"
         android:background="@color/white"
-        android:text="@string/edit_introduce"
+        android:hint="@string/edit_introduce"
+        android:text=""
         android:textColor="@color/important_for_content"
+        android:textColorHint="@color/normal_for_assist_text"
         android:textSize="@dimen/size_sub_title"/>
     <!--字数提示-->
     <TextView
         android:id="@+id/tv_limit_tip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_mid"
         android:layout_marginRight="@dimen/spacing_mid"
         android:gravity="right"
         android:textColor="@color/important_for_note"
-        android:layout_marginBottom="@dimen/spacing_mid"
         android:textSize="@dimen/size_note_assist"
         tools:text="210/255"/>
 </LinearLayout>

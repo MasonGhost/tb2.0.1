@@ -80,11 +80,10 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     @Override
     protected void initView(View rootView) {
 
-        DaggerPhotoSelectorImplComponent
+        mPhotoSelector = DaggerPhotoSelectorImplComponent
                 .builder()
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this))
-                .build();
-        mPhotoSelector = new PhotoSelectorImpl(this, this);
+                .build().photoSelectorImpl();
         initCityPickerView();
     }
 
