@@ -4,6 +4,7 @@ import android.app.Application;
 import android.text.TextUtils;
 
 import com.tbruyelle.rxpermissions.RxPermissions;
+import com.zhiyicx.common.R;
 import com.zhiyicx.common.net.intercept.RequestIntercept;
 import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.utils.FileUtils;
@@ -15,6 +16,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
+import javax.net.ssl.SSLSocketFactory;
 
 import dagger.Module;
 import dagger.Provides;
@@ -45,6 +47,7 @@ public class HttpClientModule {
     private RequestInterceptListener mHandler;
     private Set<Interceptor> mInterceptorSet;
     private ResponseErroListener mErroListener;
+    private SSLSocketFactory mSSLSocketFactory;// 配置安全证书
 
     /**
      * 设置 baseurl
@@ -56,6 +59,7 @@ public class HttpClientModule {
         this.mHandler = buidler.handler;
         this.mInterceptorSet = buidler.mInterceptorSet;
         this.mErroListener = buidler.responseErroListener;
+        this.mSSLSocketFactory = buidler.mSSLSocketFactory;
     }
 
     public static Buidler buidler() {
@@ -71,7 +75,7 @@ public class HttpClientModule {
      */
     @Singleton
     @Provides
-   public OkHttpClient provideClient(Cache cache, Interceptor intercept) {
+    public OkHttpClient provideClient(Cache cache, Interceptor intercept) {
         final OkHttpClient.Builder okHttpClient = new OkHttpClient.Builder();
         return configureClient(okHttpClient, cache, intercept);
     }
@@ -155,7 +159,7 @@ public class HttpClientModule {
      */
     @Singleton
     @Provides
-    public  RxErrorHandler proRxErrorHandler(Application application) {
+    public RxErrorHandler proRxErrorHandler(Application application) {
         return RxErrorHandler
                 .builder()
                 .with(application)
@@ -201,12 +205,16 @@ public class HttpClientModule {
      * @return
      */
     private OkHttpClient configureClient(OkHttpClient.Builder okHttpClient, Cache cache, Interceptor intercept) {
+
         OkHttpClient.Builder builder = okHttpClient
                 .connectTimeout(TOME_OUT, TimeUnit.SECONDS)
                 .readTimeout(TOME_OUT, TimeUnit.SECONDS)
                 .cache(cache)//设置缓存
                 .addNetworkInterceptor(intercept);
-        if (mInterceptorSet != null ) {// 如果外部提供了 interceptor 则遍历添加
+        if (mSSLSocketFactory != null) {
+            builder.sslSocketFactory(mSSLSocketFactory);
+        }
+        if (mInterceptorSet != null) {// 如果外部提供了 interceptor 则遍历添加
             for (Interceptor interceptor : mInterceptorSet) {
                 builder.addInterceptor(interceptor);
             }
@@ -221,6 +229,7 @@ public class HttpClientModule {
         private RequestInterceptListener handler;
         private Set<Interceptor> mInterceptorSet;
         private ResponseErroListener responseErroListener;
+        private SSLSocketFactory mSSLSocketFactory;
 
         private Buidler() {
         }
@@ -254,7 +263,7 @@ public class HttpClientModule {
          * @param interceptorSet
          * @return
          */
-        public Buidler interceptors(Set<Interceptor> interceptorSet ) {
+        public Buidler interceptors(Set<Interceptor> interceptorSet) {
             this.mInterceptorSet = interceptorSet;
             return this;
         }
@@ -268,6 +277,17 @@ public class HttpClientModule {
         public Buidler responseErroListener(ResponseErroListener listener) {
             this.responseErroListener = listener;
             return this;
+        }
+
+        /**
+         * 获取证书id
+         *
+         * @return
+         */
+        public Buidler sslSocketFactory(SSLSocketFactory mSSLSocketFactory) {
+            this.mSSLSocketFactory = mSSLSocketFactory;
+            return this;
+
         }
 
 

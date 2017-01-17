@@ -8,6 +8,7 @@ import android.support.multidex.MultiDex;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 import com.zhiyicx.common.BuildConfig;
+import com.zhiyicx.common.R;
 import com.zhiyicx.common.dagger.module.AppModule;
 import com.zhiyicx.common.dagger.module.HttpClientModule;
 import com.zhiyicx.common.dagger.module.ImageModule;
@@ -18,6 +19,8 @@ import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
 
 import java.util.LinkedList;
 import java.util.Set;
+
+import javax.net.ssl.SSLSocketFactory;
 
 import okhttp3.Interceptor;
 import solid.ren.skinlibrary.base.SkinBaseApplication;
@@ -62,6 +65,7 @@ public abstract class BaseApplication extends SkinBaseApplication {
                 .globeHttpHandler(getHttpHandler())
                 .interceptors(getInterceptors())
                 .responseErroListener(getResponseErroListener())
+                .sslSocketFactory(getSSLSocketFactory())
                 .build();
         this.mAppModule = new AppModule(this);// 提供 application
 
@@ -160,6 +164,13 @@ public abstract class BaseApplication extends SkinBaseApplication {
 
             }
         };
+    }
+
+    /**
+     * 提供SSlFactory
+     */
+    protected SSLSocketFactory getSSLSocketFactory() {
+        return null;
     }
 
     /**

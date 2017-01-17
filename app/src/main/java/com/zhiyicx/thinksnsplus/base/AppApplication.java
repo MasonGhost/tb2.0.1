@@ -9,6 +9,7 @@ import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.common.net.HttpsSSLFactroyUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,6 +19,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import javax.net.ssl.SSLSocketFactory;
 
 import okhttp3.Interceptor;
 import okhttp3.Request;
@@ -154,6 +157,12 @@ public class AppApplication extends TSApplication {
     @NonNull
     protected ServiceModule getServiceModule() {
         return new ServiceModule();
+    }
+
+    @Override
+    protected SSLSocketFactory getSSLSocketFactory() {
+        int[] a = {R.raw.plus};
+        return HttpsSSLFactroyUtils.getSSLSocketFactory(this, a);
     }
 
     /**
