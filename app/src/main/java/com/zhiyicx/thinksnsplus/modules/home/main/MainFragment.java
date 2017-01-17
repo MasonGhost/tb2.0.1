@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.home;
+package com.zhiyicx.thinksnsplus.modules.home.main;
 
 import android.os.Bundle;
 import android.view.View;

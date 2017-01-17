@@ -84,6 +84,12 @@ dependencies {
     compile dataDependences.rxlifecycleKotlin
     compile dataDependences.rxcache
     compile dataDependences.rxcacheJolyglotGson
+    compile dataDependences.rxbinding
+    compile dataDependences.rxbindingSupportV4
+    compile dataDependences.rxbindingSupportV7
+    compile dataDependences.rxbindingDesign
+    compile dataDependences.rxbindingDesignrRcyclerviewV7
+
     compile dataDependences.gson
     // Development
     debugCompile developmentDependencies.leakCanaryDebug

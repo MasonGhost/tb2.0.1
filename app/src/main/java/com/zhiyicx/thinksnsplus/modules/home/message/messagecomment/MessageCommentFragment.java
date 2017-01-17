@@ -1,8 +1,7 @@
-package com.zhiyicx.thinksnsplus.modules.home;
+package com.zhiyicx.thinksnsplus.modules.home.message.messagecomment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,27 +37,27 @@ import rx.functions.Action1;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
- * @Describe 消息页面
+ * @Describe 消息评论
  * @Author Jungle68
- * @Date 2017/1/5
+ * @Date 2017/1/17
  * @Contact master.jungle68@gmail.com
  */
-public class MessageFragment extends TSFragment {
+public class MessageCommentFragment extends TSFragment {
     private static final float LIST_ITEM_SPACING = 1f;
     private static final int ITEM_TYPE_COMMNETED = 0;
     private static final int ITEM_TYPE_LIKED = 1;
 
-    @BindView(R.id.rv_message_list)
-    RecyclerView mRvMessageList;
+    @BindView(R.id.rv_comment_list)
+    RecyclerView mRvLikeList;
 
     private ImageLoader mImageLoader;
     private List<MessageItem> mMessageItems;
 
-    public MessageFragment() {
+    public MessageCommentFragment() {
     }
 
-    public static MessageFragment newInstance() {
-        MessageFragment fragment = new MessageFragment();
+    public static MessageCommentFragment newInstance() {
+        MessageCommentFragment fragment = new MessageCommentFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -66,7 +65,7 @@ public class MessageFragment extends TSFragment {
 
     @Override
     protected int getBodyLayoutId() {
-        return R.layout.fragment_message;
+        return R.layout.fragment_message_comment;
     }
 
     @Override
@@ -74,14 +73,10 @@ public class MessageFragment extends TSFragment {
         return R.color.white;
     }
 
-    @Override
-    protected int setLeftImg() {
-        return 0;
-    }
 
     @Override
     protected String setCenterTitle() {
-        return getString(R.string.message);
+        return getString(R.string.comment);
     }
 
     @Override
@@ -91,7 +86,7 @@ public class MessageFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
-        mToolbarCenter.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
+//        mToolbarCenter.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
     }
 
 
@@ -100,12 +95,12 @@ public class MessageFragment extends TSFragment {
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         mMessageItems = new ArrayList<>();
         initCommentAndLike(mMessageItems);
-        mRvMessageList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRvMessageList.addItemDecoration(new LinearDecoration(0, ConvertUtils.dp2px(getContext(), LIST_ITEM_SPACING), 0, 0));//设置Item的间隔
+        mRvLikeList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRvLikeList.addItemDecoration(new LinearDecoration(0, ConvertUtils.dp2px(getContext(), LIST_ITEM_SPACING), 0, 0));//设置Item的间隔
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
-        mRvMessageList.setHasFixedSize(true);
-        mRvMessageList.setItemAnimator(new DefaultItemAnimator());//设置动画
-        mRvMessageList.setAdapter(new CommonAdapter<MessageItem>(getActivity(), R.layout.item_message_list, mMessageItems) {
+        mRvLikeList.setHasFixedSize(true);
+        mRvLikeList.setItemAnimator(new DefaultItemAnimator());//设置动画
+        mRvLikeList.setAdapter(new CommonAdapter<MessageItem>(getActivity(), R.layout.item_message_list, mMessageItems) {
             @Override
             protected void convert(ViewHolder holder, MessageItem messageItem, int position) {
                 setItemData(holder, messageItem, position);
@@ -192,7 +187,6 @@ public class MessageFragment extends TSFragment {
         // 响应事件
         RxView.clicks(holder.getView(R.id.tv_name))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.<Void>bindToLifecycle())
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
@@ -201,7 +195,6 @@ public class MessageFragment extends TSFragment {
                 });
         RxView.clicks(holder.getView(R.id.iv_headpic))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.<Void>bindToLifecycle())
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
@@ -210,7 +203,6 @@ public class MessageFragment extends TSFragment {
                 });
         RxView.clicks(holder.getConvertView())
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.<Void>bindToLifecycle())
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {

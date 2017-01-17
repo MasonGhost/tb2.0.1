@@ -7,6 +7,8 @@
     <string name="mine">我</string>
     <!-- 消息 -->
     <string name="critical">评论的</string>
+    <string name="comment">评论</string>
+    <string name="like">赞</string>
     <string name="liked">赞过的</string>
     <string name="like_me">赞了我</string>
     <string name="comment_me">评论了我</string>

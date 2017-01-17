@@ -16,6 +16,10 @@ import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.imsdk.manage.ZBIMSDK;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
+import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
+import com.zhiyicx.thinksnsplus.modules.home.message.MessageFragment;
+import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment;
 
 import java.util.ArrayList;
 import java.util.List;
