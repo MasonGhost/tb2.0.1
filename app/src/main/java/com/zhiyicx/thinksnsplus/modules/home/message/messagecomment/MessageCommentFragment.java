@@ -46,7 +46,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/17
  * @Contact master.jungle68@gmail.com
  */
-public class MessageCommentFragment extends TSFragment implements  BGARefreshLayout.BGARefreshLayoutDelegate {
+public class MessageCommentFragment extends TSFragment implements BGARefreshLayout.BGARefreshLayoutDelegate {
     private static final float LIST_ITEM_SPACING = 1f;
     @BindView(R.id.rv_comment_list)
     RecyclerView mRvLikeList;
@@ -111,7 +111,7 @@ public class MessageCommentFragment extends TSFragment implements  BGARefreshLay
             }
 
         });
-        mRefreshlayoutMessageComment.setRefreshViewHolder(new TSPRefreshViewHolder(getActivity(),true));
+        mRefreshlayoutMessageComment.setRefreshViewHolder(new TSPRefreshViewHolder(getActivity(), true));
     }
 
     /**
@@ -150,7 +150,9 @@ public class MessageCommentFragment extends TSFragment implements  BGARefreshLay
         testMessage.setCreate_time(System.currentTimeMillis());
         test.setLastMessage(likeMessage);
         test.setUnReadMessageNums((int) (Math.random() * 10));
-        messageItems.add(test);
+        for (int i = 0; i < 10; i++) {
+            messageItems.add(test);
+        }
     }
 
     /**
@@ -258,6 +260,7 @@ public class MessageCommentFragment extends TSFragment implements  BGARefreshLay
 
     /**
      * 上拉刷新
+     *
      * @param refreshLayout
      */
     @Override
@@ -267,11 +270,13 @@ public class MessageCommentFragment extends TSFragment implements  BGARefreshLay
 
     /**
      * 下拉加载
+     *
      * @param refreshLayout
      * @return
      */
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
-        return false;
+
+        return true;
     }
 }
