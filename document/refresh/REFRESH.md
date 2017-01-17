@@ -1,7 +1,7 @@
-2017年1月6日16:15:24
+2017年1月17日 14:32:42
 #刷新控件
 
 目前使用 [BGARefreshLayout-Android](https://github.com/bingoogolapple/BGARefreshLayout-Android)
 
-# 修改
-1.`MultiItemTypeAdapter`增加`getItem(int position)`方法
+# [修改](../refresh/README.md)
+

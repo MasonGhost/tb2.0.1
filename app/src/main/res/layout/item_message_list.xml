@@ -66,9 +66,6 @@
         android:id="@+id/tv_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_name"
-        android:layout_toLeftOf="@id/fl_tip"
-        android:layout_toRightOf="@id/iv_headpic"
         android:paddingTop="@dimen/spacing_small"
         android:ellipsize="end"
         android:gravity="bottom"
@@ -76,7 +73,11 @@
         android:textSize="@dimen/size_content_assist"
         android:paddingLeft="@dimen/spacing_normal"
         android:textColor="@color/normal_for_assist_text"
-        tools:text="我送第几个 "/>
+        android:layout_marginRight="@dimen/spacing_normal"
+        tools:text="我送第几个 "
+        android:layout_below="@+id/tv_time"
+        android:layout_toRightOf="@+id/iv_headpic"
+        android:layout_toLeftOf="@+id/fl_tip"/>
 
 
 </RelativeLayout>

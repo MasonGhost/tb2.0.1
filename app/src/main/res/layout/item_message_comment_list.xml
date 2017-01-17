@@ -16,24 +16,41 @@
         android:layout_height="@dimen/headpic_for_list"
         tools:src="@mipmap/ic_launcher"/>
 
-    <com.zhiyicx.baseproject.widget.InputLimitView
-        android:id="@+id/iv_detail_image"
+    <FrameLayout
+        android:id="@+id/fl_detial"
         android:layout_width="@dimen/rec_image_for_list"
         android:layout_height="@dimen/rec_image_for_list"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        tools:src="@mipmap/ic_launcher">
+        android:background="@color/bgColor">
 
-    </com.zhiyicx.baseproject.widget.InputLimitView>
+        <TextView
+            android:id="@+id/tv_deatil"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/spacing_tiny"
+            android:gravity="center"
+            android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
+            android:textSize="@dimen/size_note_assist"
+            tools:text="点点滴滴的撒范德萨范德萨范德萨多少撒 "/>
+
+        <com.zhiyicx.common.widget.FilterImageView
+            android:id="@+id/iv_detail_image"
+            android:layout_width="@dimen/rec_image_for_list"
+            android:layout_height="@dimen/rec_image_for_list"
+            android:visibility="gone"
+            tools:src="@mipmap/ic_launcher">
+        </com.zhiyicx.common.widget.FilterImageView>
+    </FrameLayout>
 
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/iv_detail_image"
+        android:layout_toLeftOf="@id/fl_detial"
         android:layout_toRightOf="@id/iv_headpic"
-        android:maxLines="1"
         android:ellipsize="end"
+        android:maxLines="1"
         android:paddingLeft="@dimen/spacing_normal"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_content_comment"
@@ -44,7 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_name"
-        android:layout_toLeftOf="@id/iv_detail_image"
+        android:layout_toLeftOf="@id/fl_detial"
         android:layout_toRightOf="@id/iv_headpic"
         android:ellipsize="end"
         android:gravity="bottom"
@@ -60,7 +77,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_content"
-        android:layout_toLeftOf="@id/iv_detail_image"
+        android:layout_toLeftOf="@id/fl_detial"
         android:layout_toRightOf="@id/iv_headpic"
         android:ellipsize="end"
         android:maxLines="1"

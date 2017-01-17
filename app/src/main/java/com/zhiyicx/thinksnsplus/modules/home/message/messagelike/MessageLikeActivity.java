@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.home.message.messagelike;
 import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSActivity;
-import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentFragment;
 
 /**
  * @Describe  消息赞
@@ -26,7 +25,7 @@ public class MessageLikeActivity extends TSActivity {
     }
     @Override
     protected Fragment getFragment() {
-        return MessageCommentFragment.newInstance();
+        return MessageLikeFragment.newInstance();
     }
 
 }

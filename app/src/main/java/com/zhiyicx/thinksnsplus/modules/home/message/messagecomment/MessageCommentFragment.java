@@ -5,14 +5,15 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
@@ -32,6 +33,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
+import cn.bingoogolapple.refreshlayout.TSPRefreshViewHolder;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -42,13 +46,12 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/17
  * @Contact master.jungle68@gmail.com
  */
-public class MessageCommentFragment extends TSFragment {
+public class MessageCommentFragment extends TSFragment implements  BGARefreshLayout.BGARefreshLayoutDelegate {
     private static final float LIST_ITEM_SPACING = 1f;
-    private static final int ITEM_TYPE_COMMNETED = 0;
-    private static final int ITEM_TYPE_LIKED = 1;
-
     @BindView(R.id.rv_comment_list)
     RecyclerView mRvLikeList;
+    @BindView(R.id.refreshlayout_message_comment)
+    BGARefreshLayout mRefreshlayoutMessageComment;
 
     private ImageLoader mImageLoader;
     private List<MessageItem> mMessageItems;
@@ -92,6 +95,7 @@ public class MessageCommentFragment extends TSFragment {
 
     @Override
     protected void initData() {
+        mRefreshlayoutMessageComment.setDelegate(this);
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         mMessageItems = new ArrayList<>();
         initCommentAndLike(mMessageItems);
@@ -100,20 +104,26 @@ public class MessageCommentFragment extends TSFragment {
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
         mRvLikeList.setHasFixedSize(true);
         mRvLikeList.setItemAnimator(new DefaultItemAnimator());//设置动画
-        mRvLikeList.setAdapter(new CommonAdapter<MessageItem>(getActivity(), R.layout.item_message_list, mMessageItems) {
+        mRvLikeList.setAdapter(new CommonAdapter<MessageItem>(getActivity(), R.layout.item_message_comment_list, mMessageItems) {
             @Override
             protected void convert(ViewHolder holder, MessageItem messageItem, int position) {
                 setItemData(holder, messageItem, position);
             }
 
         });
+        mRefreshlayoutMessageComment.setRefreshViewHolder(new TSPRefreshViewHolder(getActivity(),true));
     }
 
     /**
      * 评论的和点赞的数据
      */
     private void initCommentAndLike(List<MessageItem> messageItems) {
+        UserInfoBean testUserinfo = new UserInfoBean();
+        testUserinfo.setUserIcon("http://image.xinmin.cn/2017/01/11/bedca80cdaa44849a813e7820fff8a26.jpg");
+        testUserinfo.setUserName("颤三");
+        testUserinfo.setUserId("123");
         MessageItem commentItem = new MessageItem();
+        commentItem.setUserInfo(testUserinfo);
         Message commentMessage = new Message();
         commentMessage.setTxt("默默的小红大家来到江苏高考加分临时价格来看大幅减少了国家法律的世界观浪费时间管理方式的建立各级地方楼市困局"
                 + getString(R.string.comment_me));
@@ -123,6 +133,7 @@ public class MessageCommentFragment extends TSFragment {
         messageItems.add(commentItem);
 
         MessageItem likedmessageItem = new MessageItem();
+        likedmessageItem.setUserInfo(testUserinfo);
         Message likeMessage = new Message();
         likeMessage.setTxt("一叶之秋、晴天色"
                 + getString(R.string.like_me));
@@ -131,10 +142,7 @@ public class MessageCommentFragment extends TSFragment {
         likedmessageItem.setUnReadMessageNums(Math.round(15));
         messageItems.add(likedmessageItem);
         MessageItem test = new MessageItem();
-        UserInfoBean testUserinfo = new UserInfoBean();
-        testUserinfo.setUserIcon("http://image.xinmin.cn/2017/01/11/bedca80cdaa44849a813e7820fff8a26.jpg");
-        testUserinfo.setUserName("颤三");
-        testUserinfo.setUserId("123");
+
         test.setUserInfo(testUserinfo);
         Message testMessage = new Message();
         testMessage.setTxt("一叶之秋、晴天色"
@@ -154,36 +162,28 @@ public class MessageCommentFragment extends TSFragment {
      */
 
     private void setItemData(ViewHolder holder, final MessageItem messageItem, int position) {
-        switch (position) {
-            case ITEM_TYPE_COMMNETED:// 评论图标
-                mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                        .resourceId(R.mipmap.login_ico_copeneye)
-                        .imagerView((ImageView) holder.getView(R.id.iv_headpic)).build()
-                );
-                holder.setText(R.id.tv_name, getString(R.string.critical));
-                break;
-            case ITEM_TYPE_LIKED:// 点赞图标
-                mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                        .resourceId(R.mipmap.login_ico_copeneye)
-                        .imagerView((ImageView) holder.getView(R.id.iv_headpic)).build()
-                );
 
-                holder.setText(R.id.tv_name, getString(R.string.liked));
-                break;
-
-            default:// 网络头像
-                mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                        .url(messageItem.getUserInfo().getUserIcon())
-                        .transformation(new GlideCircleTransform(getContext()))
-                        .imagerView((ImageView) holder.getView(R.id.iv_headpic))
-                        .build()
-                );
-                holder.setText(R.id.tv_name, messageItem.getUserInfo().getUserName());
+        mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
+                .url(messageItem.getUserInfo().getUserIcon())
+                .transformation(new GlideCircleTransform(getContext()))
+                .imagerView((ImageView) holder.getView(R.id.iv_headpic))
+                .build());
+        if (position % 2 == 0) {
+            holder.setVisible(R.id.tv_deatil, View.GONE);
+            holder.setVisible(R.id.iv_detail_image, View.VISIBLE);
+            mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
+                    .url(messageItem.getUserInfo().getUserIcon())
+                    .imagerView((ImageView) holder.getView(R.id.iv_detail_image))
+                    .build());
+        } else {
+            holder.setVisible(R.id.iv_detail_image, View.GONE);
+            holder.setVisible(R.id.tv_deatil, View.VISIBLE);
+            holder.setText(R.id.tv_deatil, messageItem.getLastMessage().getTxt());
         }
 
+        holder.setText(R.id.tv_name, messageItem.getUserInfo().getUserName());
         holder.setText(R.id.tv_content, messageItem.getLastMessage().getTxt());
         holder.setText(R.id.tv_time, ConvertUtils.millis2FitTimeSpan(messageItem.getLastMessage().getCreate_time(), 3));
-        ((BadgeView) holder.getView(R.id.tv_tip)).setBadgeCount(messageItem.getUnReadMessageNums());
         // 响应事件
         RxView.clicks(holder.getView(R.id.tv_name))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
@@ -209,7 +209,22 @@ public class MessageCommentFragment extends TSFragment {
                         toChat(messageItem);
                     }
                 });
-
+        RxView.clicks(holder.getView(R.id.iv_detail_image))
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        toChat(messageItem);
+                    }
+                });
+        RxView.clicks(holder.getView(R.id.tv_deatil))
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        toChat(messageItem);
+                    }
+                });
     }
 
     /**
@@ -233,4 +248,30 @@ public class MessageCommentFragment extends TSFragment {
         startActivity(to);
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: inflate a fragment view
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        ButterKnife.bind(this, rootView);
+        return rootView;
+    }
+
+    /**
+     * 上拉刷新
+     * @param refreshLayout
+     */
+    @Override
+    public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
+
+    }
+
+    /**
+     * 下拉加载
+     * @param refreshLayout
+     * @return
+     */
+    @Override
+    public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
+        return false;
+    }
 }

@@ -9,6 +9,8 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.zhiyicx.common.utils.log.LogUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
@@ -82,6 +84,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
      * @return true:如果处理了该异常信息;否则返回false.
      */
     private boolean handleException(Throwable ex) {
+        LogUtils.e(ex,TAG);
         if (ex == null) {
             return false;
         }
