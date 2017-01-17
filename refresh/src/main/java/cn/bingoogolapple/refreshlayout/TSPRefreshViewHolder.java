@@ -40,6 +40,9 @@ public class TSPRefreshViewHolder extends BGARefreshViewHolder {
      */
     public TSPRefreshViewHolder(Context context, boolean isLoadingMoreEnabled) {
         super(context, isLoadingMoreEnabled);
+        setPullDownImageResource(R.mipmap.refresh_icon_header_00000);
+        setChangeToReleaseRefreshAnimResId(R.drawable.refresh_loading);
+        setRefreshingAnimResId(R.drawable.refresh_loading);
     }
 
     /**
