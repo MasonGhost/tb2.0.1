@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-
+apply plugin: 'com.neenbedankt.android-apt'
 android {
     def gConfig = rootProject.extensions.getByName("ext")
     compileSdkVersion gConfig.getAt("compileSdkVersion")
@@ -33,6 +33,16 @@ configurations.all {
     }
 }
 
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+    }
+}
+
 dependencies {
     def dataDependences = rootProject.ext.dataDependencies
     def testDependences = rootProject.ext.testDependencies
@@ -43,6 +53,8 @@ dependencies {
         exclude module: 'support-annotations'
     }
     testCompile testDependences.robolectric
+
+    apt dataDependences.daggerCompiler
     // Project
     compile project(':common')
     compile project(':imsdk')

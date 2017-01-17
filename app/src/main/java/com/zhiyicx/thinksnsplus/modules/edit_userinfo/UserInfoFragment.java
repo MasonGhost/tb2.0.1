@@ -1,13 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 
-import android.content.ContextWrapper;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -15,13 +8,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bigkoo.pickerview.OptionsPickerView;
-import com.yalantis.ucrop.UCrop;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
+import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
@@ -38,16 +30,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import me.iwf.photopicker.PhotoPicker;
-import me.iwf.photopicker.PhotoPreview;
-
-import static android.app.Activity.RESULT_OK;
 
 /**
  * @author LiuChao
@@ -94,9 +79,11 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     @Override
     protected void initView(View rootView) {
-       /* DaggerPhotoSelectorImplComponent.builder()
+
+        DaggerPhotoSelectorImplComponent
+                .builder()
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this))
-                .build();*/
+                .build();
         mPhotoSelector = new PhotoSelectorImpl(this, this);
         initCityPickerView();
     }

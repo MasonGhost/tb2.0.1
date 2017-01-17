@@ -1,6 +1,5 @@
 package com.zhiyicx.baseproject.impl.photoselector;
 
-import android.app.Activity;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 
