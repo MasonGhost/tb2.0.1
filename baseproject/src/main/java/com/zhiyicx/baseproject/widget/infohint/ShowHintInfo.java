@@ -1,7 +1,5 @@
 package com.zhiyicx.baseproject.widget.infohint;
 
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,11 +7,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.R;
-import com.zhiyicx.baseproject.base.TSApplication;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.ToastUtils;
-
-import butterknife.BindString;
 
 /**
  * @author LiuChao
@@ -28,14 +23,14 @@ public class ShowHintInfo {
      * 通过toast自定义布局，发送失败提示
      */
     public static void showSendError() {
-        showSend(R.mipmap.bga_refresh_loading01, BaseApplication.getContext().getString(R.string.send_success));
+        showSend(R.mipmap.refresh_icon_header_00000, BaseApplication.getContext().getString(R.string.send_success));
     }
 
     /**
      * 通过toast自定义布局，发送成功提示
      */
     public static void showSendSuccess() {
-        showSend(R.mipmap.bga_refresh_loading01, BaseApplication.getContext().getString(R.string.send_failure));
+        showSend(R.mipmap.refresh_icon_header_00000, BaseApplication.getContext().getString(R.string.send_failure));
     }
 
     private static void showSend(Integer imgRsId, String hintContent) {
