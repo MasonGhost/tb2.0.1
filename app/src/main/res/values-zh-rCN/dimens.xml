@@ -4,5 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <!--登录按钮margintop-->
     <dimen name="button_login_margin_top">23dp</dimen>
+    <!--用户资料编辑分割线左边的距离-->
+    <dimen name="useredit_divier_marginleft">63dp</dimen>
 
 </resources>

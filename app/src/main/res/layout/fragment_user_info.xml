@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
@@ -34,15 +35,15 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/spacing_mid"
-            android:src="@mipmap/login_ico_closeye"/>
+            android:src="@mipmap/ic_arrow_smallgrey"/>
     </RelativeLayout>
 
-    <ImageView style="@style/style_divider_horizontal"/>
+    <View style="@style/style_divider_horizontal"/>
 
     <!--修改用户名-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="@dimen/userinfo_btn_height"
         android:background="@color/white"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -64,11 +65,14 @@
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_sub_title"/>
     </LinearLayout>
+
+    <include
+        layout="@layout/include_horizontal_userinfo_white_bg_divider"></include>
     <!--修改性别-->
     <LinearLayout
         android:id="@+id/ll_sex_container"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="@dimen/userinfo_btn_height"
         android:background="@color/white"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -87,21 +91,27 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/select_sex"
+            android:hint="@string/select_sex"
+            android:text=""
             android:textColor="@color/important_for_content"
+            android:textColorHint="@color/normal_for_assist_text"
             android:textSize="@dimen/size_sub_title"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/spacing_mid"
-            android:src="@mipmap/login_ico_closeye"/>
+            android:src="@mipmap/ic_arrow_smallgrey"/>
     </LinearLayout>
+
+    <include
+        layout="@layout/include_horizontal_userinfo_white_bg_divider"></include>
     <!--修改城市-->
     <LinearLayout
         android:id="@+id/ll_city_container"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+
+        android:layout_height="@dimen/userinfo_btn_height"
         android:background="@color/white"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -120,38 +130,44 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/select_city"
+            android:hint="@string/select_city"
+            android:text=""
             android:textColor="@color/important_for_content"
+            android:textColorHint="@color/normal_for_assist_text"
             android:textSize="@dimen/size_sub_title"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/spacing_mid"
-            android:src="@mipmap/login_ico_closeye"/>
+            android:src="@mipmap/ic_arrow_smallgrey"/>
     </LinearLayout>
+
+    <include
+        layout="@layout/include_horizontal_userinfo_white_bg_divider"></include>
     <!--修改简介-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:background="@color/white"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="@dimen/headpic_for_list"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/userinfo_btn_height"
             android:layout_marginLeft="@dimen/spacing_mid"
             android:layout_marginRight="@dimen/spacing_mid"
+            android:gravity="center_vertical"
             android:text="@string/introduce"
             android:textColor="@color/normal_for_assist_text"
             android:textSize="@dimen/size_sub_title"/>
-
-        <TextView
-            android:layout_width="wrap_content"
+        <!--简介编辑框-->
+        <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/edit_introduce"
-            android:textColor="@color/important_for_content"
-            android:textSize="@dimen/size_content_assist"/>
+            app:limitSize="@integer/comment_input_max_size"
+            app:showLimitSize="@integer/show_comment_input_size"></com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView>
+
     </LinearLayout>
 </LinearLayout>

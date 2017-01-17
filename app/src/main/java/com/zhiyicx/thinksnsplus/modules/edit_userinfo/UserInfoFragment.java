@@ -25,6 +25,7 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircle
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
@@ -33,7 +34,9 @@ import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import butterknife.BindView;
@@ -50,6 +53,10 @@ import static android.app.Activity.RESULT_OK;
  * @contact email:450127106@qq.com
  */
 public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> implements UserInfoContract.View, PhotoSelectorImpl.IPhotoBackListener {
+
+    private static final int GENDER_MALE = 0;// 性别男
+    private static final int GENDER_FEMALE = 1;// 性别女
+    private static final int GENDER_SECRET = 2;// 性别保密
 
     @BindView(R.id.iv_head_icon)
     ImageView mIvHeadIcon;
@@ -174,6 +181,11 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
+        String filePath = photoList.get(0).getImgUrl();
+        File file = new File(filePath);
+        Map<String, String> map = new HashMap<>();
+        map.put("file1", filePath);
+        mPresenter.changeUserHeadIcon(FileUtils.getFileMD5ToString(file), file.getName(), map);
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
                 .url(photoList.get(0).getImgUrl())
@@ -233,19 +245,22 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
                     public void onItem1Clicked() {
-
+                        setGender(GENDER_MALE);
+                        mGenderPopupWindow.hide();
                     }
                 })
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
                     public void onItem2Clicked() {
-
+                        setGender(GENDER_FEMALE);
+                        mGenderPopupWindow.hide();
                     }
                 })
                 .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
                     @Override
                     public void onItem3Clicked() {
-
+                        setGender(GENDER_SECRET);
+                        mGenderPopupWindow.hide();
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
@@ -294,6 +309,28 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                         mPhotoPopupWindow.hide();
                     }
                 }).build();
+    }
+
+    /**
+     * 设置用户性别
+     */
+    private void setGender(int genderType) {
+        switch (genderType) {
+            case GENDER_MALE:
+                mTvSex.setText(R.string.male);
+                //mTvSex.setTag();
+                break;
+            case GENDER_FEMALE:
+                mTvSex.setText(R.string.female);
+                //mTvSex.setTag();
+                break;
+            case GENDER_SECRET:
+                mTvSex.setText(R.string.keep_secret);
+                // mTvSex.setTag();
+                break;
+            default: // 没有该性别
+        }
+
     }
 
 }
