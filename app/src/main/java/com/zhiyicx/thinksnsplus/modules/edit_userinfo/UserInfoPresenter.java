@@ -1,16 +1,26 @@
 package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 
+import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.imsdk.utils.common.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * @author LiuChao
@@ -63,4 +73,27 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                     }
                 });
     }
+
+    @Override
+    public void changeUserHeadIcon(String hash, String fileName, Map<String, String> filePathList) {
+        mRepository.changeUserHeadIcon(hash, fileName, filePathList)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<BaseJson>() {
+                    @Override
+                    public void call(BaseJson baseJson) {
+                        if (baseJson.isStatus()) {
+                            ToastUtils.showToast("头像上传成功");
+                        } else {
+                            ToastUtils.showToast("头像上传失败");
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        ToastUtils.showToast("-->" + throwable.getMessage());
+                    }
+                });
+    }
+
 }

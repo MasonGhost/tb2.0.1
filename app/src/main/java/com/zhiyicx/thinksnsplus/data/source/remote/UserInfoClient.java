@@ -8,4 +8,5 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
  */
 
 public interface UserInfoClient {
+    // 上传头像功能，写在CommonClient中
 }
