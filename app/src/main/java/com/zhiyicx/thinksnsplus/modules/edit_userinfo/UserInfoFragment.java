@@ -24,6 +24,7 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
+import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.ToastUtils;
@@ -38,6 +39,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -91,6 +94,9 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     @Override
     protected void initView(View rootView) {
+       /* DaggerPhotoSelectorImplComponent.builder()
+                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this))
+                .build();*/
         mPhotoSelector = new PhotoSelectorImpl(this, this);
         initCityPickerView();
     }
