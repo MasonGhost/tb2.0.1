@@ -101,7 +101,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                 .subscribe(new Action1<CharSequence>() {
                     @Override
                     public void call(CharSequence charSequence) {
-                        isCodeEdited = !TextUtils.isEmpty(charSequence.toString()) && charSequence.length() == getResources().getInteger(R.integer.vertiry_code_lenght);
+                        isCodeEdited = !TextUtils.isEmpty(charSequence.toString());
                         setConfirmEnable();
                     }
                 });

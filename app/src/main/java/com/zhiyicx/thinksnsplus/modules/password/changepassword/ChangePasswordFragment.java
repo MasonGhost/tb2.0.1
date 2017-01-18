@@ -112,6 +112,7 @@ public class ChangePasswordFragment extends TSFragment<ChangePasswordContract.Pr
 
     @Override
     protected void initData() {
+        setConfirmEnable();
 
     }
 

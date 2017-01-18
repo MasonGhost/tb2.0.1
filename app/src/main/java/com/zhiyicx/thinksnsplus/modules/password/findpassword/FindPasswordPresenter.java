@@ -69,10 +69,13 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
     @Override
     public void findPassword(String phone, String vertifyCode, String newPassword) {
 
-        if (checkPasswordLength(newPassword)) {
+        if (checkPhone(phone)) {
             return;
         }
-        if (checkPhone(phone)) {
+        if (checkVertifyLength(vertifyCode)) {
+            return;
+        }
+        if (checkPasswordLength(newPassword)) {
             return;
         }
         Subscription findPasswordSub = mRepository.findPassword(phone, vertifyCode, newPassword)
@@ -135,6 +138,19 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
         addSubscrebe(getVertifySub);
     }
 
+    /**
+     * 检测验证码码是否正确
+     *
+     * @param vertifyCode
+     * @return
+     */
+    private boolean checkVertifyLength(String vertifyCode) {
+        if (vertifyCode.length() != mContext.getResources().getInteger(R.integer.vertiry_code_lenght)) {
+            mRootView.showMessage(mContext.getString(R.string.vertify_code_input_hint));
+            return true;
+        }
+        return false;
+    }
 
     /**
      * 检测手机号码是否正确

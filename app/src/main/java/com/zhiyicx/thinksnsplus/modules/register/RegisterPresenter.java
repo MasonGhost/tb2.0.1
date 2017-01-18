@@ -89,10 +89,13 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
         if (checkUsername(name)) {
             return;
         }
-        if (checkPasswordLength(password)) {
+        if (checkPhone(phone)) {
             return;
         }
-        if (checkPhone(phone)) {
+        if (checkVertifyLength(vertifyCode)) {
+            return;
+        }
+        if (checkPasswordLength(password)) {
             return;
         }
         mRootView.setVertifyCodeBtEnabled(false);
@@ -131,6 +134,20 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
     public void onDestroy() {
         timer.cancel();
         unSubscribe();
+    }
+
+    /**
+     * 检测验证码码是否正确
+     *
+     * @param vertifyCode
+     * @return
+     */
+    private boolean checkVertifyLength(String vertifyCode) {
+        if (vertifyCode.length() != mContext.getResources().getInteger(R.integer.vertiry_code_lenght)) {
+            mRootView.showMessage(mContext.getString(R.string.vertify_code_input_hint));
+            return true;
+        }
+        return false;
     }
 
     /**
