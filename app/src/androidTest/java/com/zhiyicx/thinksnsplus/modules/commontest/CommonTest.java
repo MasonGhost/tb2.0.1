@@ -62,11 +62,7 @@ public class CommonTest extends AcitivityTest {
      */
     @Test
     public void createStorageTaskExist() throws Exception {
-        MultipartBody.Builder builder = new MultipartBody.Builder();
-        builder.setType(MultipartBody.FORM);//表单类型
-        builder.addFormDataPart("test", "test");
-        List<MultipartBody.Part> parts = builder.build().parts();
-        mCommonClient.createStorageTask("hash", "origin_filename", "exist", parts)
+        mCommonClient.createStorageTask("hash", "origin_filename", "exist")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<BaseJson<StorageTaskBean>>() {
@@ -91,11 +87,7 @@ public class CommonTest extends AcitivityTest {
      */
     @Test
     public void creatStorageTaskSuccess() throws Exception {
-        MultipartBody.Builder builder = new MultipartBody.Builder();
-        builder.setType(MultipartBody.FORM);//表单类型
-        builder.addFormDataPart("test", "test");
-        List<MultipartBody.Part> parts = builder.build().parts();
-        mCommonClient.createStorageTask("hash", "origin_filename", "next", parts)
+        mCommonClient.createStorageTask("hash", "origin_filename", "next")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<BaseJson<StorageTaskBean>>() {
@@ -120,11 +112,8 @@ public class CommonTest extends AcitivityTest {
      */
     @Test
     public void creatStorageTaskFailure() throws Exception {
-        MultipartBody.Builder builder = new MultipartBody.Builder();
-        builder.setType(MultipartBody.FORM);//表单类型
-        builder.addFormDataPart("test", "test");
-        List<MultipartBody.Part> parts = builder.build().parts();
-        mCommonClient.createStorageTask("hash", "origin_filename", "error", parts)
+
+        mCommonClient.createStorageTask("hash", "origin_filename", "error")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<BaseJson<StorageTaskBean>>() {
