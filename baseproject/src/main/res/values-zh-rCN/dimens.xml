@@ -12,23 +12,8 @@
     <dimen name="edit_line_height">55dp</dimen>
 
     <!--view高度-->
-    <dimen name="edit_height_tall">46dp</dimen>
-    <dimen name="textview_height_tall">32dp</dimen>
-    <dimen name="divider_height">1px</dimen>
-    <dimen name="button_big_height">48dp</dimen>
-    <dimen name="button_big_width">350dp</dimen>
-    <dimen name="toolview_height">48dp</dimen>
-    <dimen name="toolview_and_statubar_height">73dp</dimen>
-    <dimen name="loading_height">25dp</dimen>
-    <dimen name="back_height">17dp</dimen>
-    <dimen name="back_width">10dp</dimen>
-    <dimen name="loading_width">50dp</dimen>
-    <dimen name="loading_rect_width">100dp</dimen>
-    <dimen name="statu_bar_height">25dp</dimen>
-    <dimen name="arrow_height">20dp</dimen>
-    <dimen name="verified_height">13dp</dimen>
-    <dimen name="shape_stroke_width">1dp</dimen>
-    <dimen name="margin_statubar">25dp</dimen>
+    <dimen name="button_login_height">45dp</dimen>
+
     <!--登录注册编辑框左边的文字宽度-->
     <dimen name="edit_lefttext_width">45dp</dimen>
     <dimen name="edit_lefttext_width_change_password">75dp</dimen>

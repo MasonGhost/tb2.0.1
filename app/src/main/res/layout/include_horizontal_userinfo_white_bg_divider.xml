@@ -8,7 +8,7 @@
     <include
         layout="@layout/include_horizontal_divider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_height"
+        android:layout_height="@dimen/divider_line"
         android:layout_marginLeft="@dimen/useredit_divier_marginleft"></include>
 
 </FrameLayout>
