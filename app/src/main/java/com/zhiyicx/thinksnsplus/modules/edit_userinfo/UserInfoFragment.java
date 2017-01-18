@@ -178,6 +178,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         Map<String, String> map = new HashMap<>();
         map.put("file1", filePath);
         mPresenter.changeUserHeadIcon(FileUtils.getFileMD5ToString(file), file.getName(), map);
+
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
                 .url(photoList.get(0).getImgUrl())

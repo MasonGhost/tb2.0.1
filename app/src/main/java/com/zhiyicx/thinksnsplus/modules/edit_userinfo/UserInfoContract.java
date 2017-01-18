@@ -38,7 +38,7 @@ public interface UserInfoContract {
         /**
          * 修改用户头像
          */
-        Observable<BaseJson<StorageTaskBean>> changeUserHeadIcon(String hash, String fileName, Map<String, String> filePathList);
+        Observable<BaseJson> changeUserHeadIcon(String hash, String fileName, Map<String, String> filePathList);
     }
 
     interface Presenter extends IBasePresenter {
