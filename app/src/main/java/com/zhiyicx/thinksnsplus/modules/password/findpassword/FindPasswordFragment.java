@@ -204,6 +204,11 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
         mBtSendVertifyCode.setText(text);
     }
 
+    @Override
+    public void finsh() {
+        getActivity().finish();
+    }
+
 
     /**
      * 设置确定按钮是否可点击

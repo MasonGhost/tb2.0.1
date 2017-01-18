@@ -30,6 +30,11 @@ public interface FindPasswordContract {
          * 设置发送按钮的提示信息
          */
         void setVertifyCodeBtText(String text);
+
+        /**
+         * 关闭
+         */
+        void finsh();
     }
 
     /**

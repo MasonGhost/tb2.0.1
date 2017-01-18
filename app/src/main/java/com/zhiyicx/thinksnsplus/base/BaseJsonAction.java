@@ -16,7 +16,7 @@ import rx.functions.Action1;
  * @contact email:450127106@qq.com
  */
 
-public class BaseJsonAction<T> implements Action1<BaseJson<T>> {
+public abstract class BaseJsonAction<T> implements Action1<BaseJson<T>> {
 
     @Override
     public void call(BaseJson<T> tBaseJson) {
@@ -49,11 +49,7 @@ public class BaseJsonAction<T> implements Action1<BaseJson<T>> {
         }
     }
 
-    protected void onSuccess(T data) {
+    protected abstract void onSuccess(T data) ;
 
-    }
-
-    protected void onFailure(String message) {
-
-    }
+    protected abstract void onFailure(String message);
 }

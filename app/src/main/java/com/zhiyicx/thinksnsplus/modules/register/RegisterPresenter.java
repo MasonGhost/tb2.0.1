@@ -8,6 +8,7 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.BaseJsonAction;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 
 import javax.inject.Inject;
@@ -57,25 +58,26 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
         }
         Subscription getVertifySub = mRepository.getVertifyCode(phone, CommonClient.VERTIFY_CODE_TYPE_REGISTER)
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<BaseJson<CacheBean>>() {
-                    @Override
-                    public void call(BaseJson<CacheBean> json) {
-//                        if (json.code.equals(ZBLApi.REQUEST_SUCESS)) {
-                        mRootView.hideLoading();//隐藏loading
-                        timer.start();//开始倒计时
-                        mRootView.setVertifyCodeBtEnabled(false);
-                        mRootView.showMessage(json.getMessage());
-//                        } else {
-//                            mRootView.showMessage(json.getMessage());
-//                        }
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                        mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
-                    }
-                });
+                .subscribe(new BaseJsonAction<CacheBean>() {
+                               @Override
+                               protected void onSuccess(CacheBean data) {
+                                   mRootView.hideLoading();//隐藏loading
+                                   timer.start();//开始倒计时
+                                   mRootView.setVertifyCodeBtEnabled(false);
+                               }
+
+                               @Override
+                               protected void onFailure(String message) {
+                                   mRootView.showMessage(message);
+                               }
+                           }
+                        , new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                throwable.printStackTrace();
+                                mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
+                            }
+                        });
         // 代表检测成功
         mRootView.showMessage("");
         addSubscrebe(getVertifySub);
