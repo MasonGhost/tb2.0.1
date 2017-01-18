@@ -7,11 +7,11 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
     android:layout_marginTop="@dimen/spacing_mid"
-    android:background="@color/general_for_line"
+    android:background="@drawable/shape_bg_radus_deepgrey"
+    android:paddingBottom="@dimen/spacing_tiny"
     android:paddingLeft="@dimen/spacing_normal"
     android:paddingRight="@dimen/spacing_normal"
     android:paddingTop="@dimen/spacing_tiny"
-    android:paddingBottom="@dimen/spacing_tiny"
     android:textColor="@color/white"
     android:textSize="@dimen/size_note_assist"
     tools:text="一分钟前"/>
