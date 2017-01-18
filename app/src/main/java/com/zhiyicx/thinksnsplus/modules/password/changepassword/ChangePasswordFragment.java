@@ -152,4 +152,8 @@ public class ChangePasswordFragment extends TSFragment<ChangePasswordContract.Pr
     }
 
 
+    @Override
+    public void finsh() {
+        getActivity().finish();
+    }
 }

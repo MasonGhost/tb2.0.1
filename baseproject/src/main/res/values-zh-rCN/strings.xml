@@ -42,6 +42,7 @@
     <string name="sure_new_password_toast_hint">请输入6-16位确认密码</string>
     <string name="password_diffrent">新密码输入不一致</string>
     <string name="find_password_success">找回密码成功</string>
+    <string name="change_password_success">修改密码成功</string>
 
     <!-- 拍照相关 -->
     <string name="choose_from_photo">从相册选取</string>
