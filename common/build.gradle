@@ -74,6 +74,7 @@ dependencies {
     // Retrofit + rx + gson
     compile dataDependences.retrofit
     compile dataDependences.retrofitConverterGson
+    compile dataDependences.retorfitConverterScalar
     compile dataDependences.retrofitAdapterRxJava
     compile dataDependences.rxJava
     compile dataDependences.rxAndroid
