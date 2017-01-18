@@ -65,12 +65,14 @@ public class ChatMessageList extends FrameLayout {
 
     public ChatMessageList(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        parseStyle(context, attrs);
         init(context);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public ChatMessageList(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        parseStyle(context, attrs);
         init(context);
     }
 
@@ -84,11 +86,16 @@ public class ChatMessageList extends FrameLayout {
     }
 
     private void init(Context context) {
+        if (myBubbleBg == null) {
+            myBubbleBg = getResources().getDrawable(R.drawable.shape_message_bubble_my);
+        }
+        if (otherBuddleBg == null) {
+            otherBuddleBg = getResources().getDrawable(R.drawable.shape_message_bubble_other);
+        }
         this.mContext = context;
         LayoutInflater.from(context).inflate(R.layout.view_chat_message_list, this);
         mRefreshLayout = (BGARefreshLayout) findViewById(R.id.rl_chat_refresh_layout);
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_chat_list);
-
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         mRecyclerView.addItemDecoration(new LinearDecoration(0, ConvertUtils.dp2px(getContext(), RECYCLEVIEW_ITEMDECORATION_SPACING), 0, 0));//设置Item的间隔
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
@@ -102,16 +109,15 @@ public class ChatMessageList extends FrameLayout {
      * @param toChatUsername
      * @param chatType
      */
-    public void init(String toChatUsername, int chatType, List<String> datas) {
+    public void init(String toChatUsername, int chatType, List<Message> datas) {
         this.chatType = chatType;
         this.toChatUsername = toChatUsername;
         messageAdapter = new MultiItemTypeAdapter(mContext, datas);
         messageAdapter.addItemViewDelegate(new MessageSendItemDelagate(showUserNick, showAvatar, myBubbleBg));
-        messageAdapter.addItemViewDelegate(new MessageReceiveItemDelagate(showUserNick, showAvatar,otherBuddleBg));
+        messageAdapter.addItemViewDelegate(new MessageReceiveItemDelagate(showUserNick, showAvatar, otherBuddleBg));
         // TODO: 2017/1/7 添加图片、视频、音频等Delegate
         // set message adapter
         mRecyclerView.setAdapter(messageAdapter);
-
         refreshSelectLast();
     }
 

@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:animateLayoutChanges="true">
 
     <!--<com.zhiyicx.baseproject.widget.chat.CahtMenuItem-->
@@ -16,6 +17,8 @@
         android:id="@+id/message_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:showName="true"
+        app:showUserAvatar="true"
         />
 
     <com.zhiyicx.baseproject.widget.InputLimitView

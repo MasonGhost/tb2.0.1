@@ -10,7 +10,7 @@
     <corners
         android:bottomLeftRadius="@dimen/chat_message_bubble_radus"
         android:bottomRightRadius="@dimen/chat_message_bubble_radus"
-        android:topLeftRadius="@dimen/chat_message_bubble_radus"
+        android:topRightRadius="@dimen/chat_message_bubble_radus"
         ></corners>
     <padding android:bottom="@dimen/chat_message_bubble_padding"/>
 </shape>

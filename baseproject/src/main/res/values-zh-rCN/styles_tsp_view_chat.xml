@@ -30,6 +30,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">@dimen/chat_list_content_margintop</item>
+
     </style>
     <!-- 文字内容 -->
     <style name="style_chat_content">
@@ -41,6 +42,7 @@
         <item name="android:lineSpacingExtra">2dp</item>
         <item name="android:textColor">@color/important_for_content</item>
         <item name="android:textSize">@dimen/size_content</item>
+        <item name="android:padding">@dimen/chat_message_bubble_padding</item>
     </style>
     <!-- 发送状态 -->
     <style name="style_chat_status">

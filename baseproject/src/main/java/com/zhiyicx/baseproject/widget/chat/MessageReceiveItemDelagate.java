@@ -34,7 +34,7 @@ public class MessageReceiveItemDelagate extends MessageTextItemDelagate {
     @Override
     public boolean isForViewType(Message item, int position) {
         // TODO: 2017/1/6 需要添加是否是我的消息的判断
-        return item.getType() == MessageType.MESSAGE_TYPE_TEXT;
+        return item.getType() == MessageType.MESSAGE_TYPE_TIP;
     }
 
 }

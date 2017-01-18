@@ -3,8 +3,14 @@ package com.zhiyicx.baseproject.widget.chat;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.R;
+import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageLoaderStrategy;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
+import com.zhiyicx.common.config.ConstantConfig;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.entity.MessageType;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
@@ -18,19 +24,26 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
  */
 
 public class MessageTextItemDelagate implements ItemViewDelegate<Message> {
-    protected boolean showName = true;
-    protected boolean showAvatar = true;
-    protected Drawable myBubbleBg ;
-    protected Drawable otherBuddleBg ;
+    public static final int MAX_SPACING_TIME = 6;// 显示时间的，最大间隔时间；当两条消息间隔 > MAX_SPACING_TIME 时显示时间
+    protected long mLastMessageTime;// 上一条消息的时间
+    protected GlideImageLoaderStrategy mImageLoader;
+
+    protected boolean mIsShowName = true;
+    protected boolean mIsShowAvatar = true;
+    protected Drawable mBubbleBg;
 
     public MessageTextItemDelagate() {
     }
 
     public MessageTextItemDelagate(boolean showName, boolean showAvatar, Drawable myBubbleBg, Drawable otherBuddleBg) {
-        this.showName = showName;
-        this.showAvatar = showAvatar;
-        this.myBubbleBg = myBubbleBg;
-        this.otherBuddleBg = otherBuddleBg;
+        this.mIsShowName = showName;
+        this.mIsShowAvatar = showAvatar;
+        if (myBubbleBg != null) {
+            this.mBubbleBg = myBubbleBg;
+        } else {
+            this.mBubbleBg = otherBuddleBg;
+        }
+        mImageLoader = new GlideImageLoaderStrategy();
     }
 
     @Override
@@ -53,27 +66,41 @@ public class MessageTextItemDelagate implements ItemViewDelegate<Message> {
 
     @Override
     public void convert(ViewHolder holder, Message message, int position) {
-        if (showName) {
+        // 显示时间的，最大间隔时间；当两条消息间隔 > MAX_SPACING_TIME 时显示时间
+        if ((message.getCreate_time() - mLastMessageTime) >= MAX_SPACING_TIME * ConstantConfig.MIN) {
+            holder.setText(R.id.tv_chat_time, TimeUtils.getTimeFriendlyForDetail(message.getCreate_time() / 1000));// 测试数据，暂时使用
+            holder.setVisible(R.id.tv_chat_time, View.VISIBLE);
+        } else {
+            holder.setVisible(R.id.tv_chat_time, View.GONE);
+        }
+        mLastMessageTime = message.getCreate_time();
+        // 是否需要显示名字
+        if (mIsShowName) {
             holder.setVisible(R.id.tv_chat_name, View.VISIBLE);
             holder.setText(R.id.tv_chat_name, "占三");// 测试数据，暂时使用
-        }else {
-            holder.setVisible(R.id.tv_chat_name, View.INVISIBLE);
+        } else {
+            holder.setVisible(R.id.tv_chat_name, View.GONE);
         }
-        if(myBubbleBg!=null){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                holder.getView(R.id.rl_chat_bubble).setBackground(myBubbleBg);
-            }else {
-                holder.getView(R.id.rl_chat_bubble).setBackgroundDrawable(myBubbleBg);
-            }
-        }else if(otherBuddleBg!=null){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                holder.getView(R.id.rl_chat_bubble).setBackground(otherBuddleBg);
-            }else {
-                holder.getView(R.id.rl_chat_bubble).setBackgroundDrawable(otherBuddleBg);
-            }
+        // 是否需要显示头像
+        if (mIsShowAvatar) {
+            holder.setVisible(R.id.iv_chat_headpic, View.VISIBLE);
+            mImageLoader.loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
+                    .placeholder(R.mipmap.login_inputbox_clean)
+                    .url("http://image.xinmin.cn/2017/01/11/bedca80cdaa44849a813e7820fff8a26.jpg")
+                    .errorPic(R.mipmap.login_inputbox_clean)
+                    .transformation(new GlideCircleTransform(holder.getConvertView().getContext()))
+                    .imagerView((ImageView) holder.getView(R.id.iv_chat_headpic))
+                    .build()
+            );
+        } else {
+            holder.setVisible(R.id.iv_chat_headpic, View.GONE);
         }
-
-        holder.setText(R.id.tv_chat_content, "我的天四大金刚绝对控股可大幅高开");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            holder.getView(R.id.rl_chat_bubble).setBackground(mBubbleBg);
+        } else {
+            holder.getView(R.id.rl_chat_bubble).setBackgroundDrawable(mBubbleBg);
+        }
+        holder.setText(R.id.tv_chat_content, message.getTxt());
     }
 }
 
