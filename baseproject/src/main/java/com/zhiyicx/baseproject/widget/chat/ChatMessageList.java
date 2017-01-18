@@ -21,6 +21,7 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.List;
 
+import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 
 /**
@@ -35,6 +36,9 @@ public class ChatMessageList extends FrameLayout {
     private static final float RECYCLEVIEW_ITEMDECORATION_SPACING = 15F;
 
     protected BGARefreshLayout mRefreshLayout;
+
+
+    protected BGARefreshLayout.BGARefreshLayoutDelegate mBGARefreshLayoutDelegate;
     protected RecyclerView mRecyclerView;
     protected Conversation conversation;
     protected int chatType;
@@ -95,12 +99,14 @@ public class ChatMessageList extends FrameLayout {
         this.mContext = context;
         LayoutInflater.from(context).inflate(R.layout.view_chat_message_list, this);
         mRefreshLayout = (BGARefreshLayout) findViewById(R.id.rl_chat_refresh_layout);
+
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_chat_list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         mRecyclerView.addItemDecoration(new LinearDecoration(0, ConvertUtils.dp2px(getContext(), RECYCLEVIEW_ITEMDECORATION_SPACING), 0, 0));//设置Item的间隔
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());//设置动画
+        mRefreshLayout.setRefreshViewHolder(new BGANormalRefreshViewHolder(mContext, false));
     }
 
     /**
@@ -119,6 +125,16 @@ public class ChatMessageList extends FrameLayout {
         // set message adapter
         mRecyclerView.setAdapter(messageAdapter);
         refreshSelectLast();
+    }
+
+    /**
+     * 设置刷新监听
+     *
+     * @param BGARefreshLayoutDelegate
+     */
+    public void setBGARefreshLayoutDelegate(BGARefreshLayout.BGARefreshLayoutDelegate BGARefreshLayoutDelegate) {
+        mBGARefreshLayoutDelegate = BGARefreshLayoutDelegate;
+        mRefreshLayout.setDelegate(mBGARefreshLayoutDelegate);
     }
 
     /**
