@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -86,6 +87,11 @@ public class InputLimitView extends FrameLayout {
 
             @Override
             public void afterTextChanged(Editable s) {
+                if (TextUtils.isEmpty(s)) {
+                    mBtSend.setEnabled(false);
+                } else {
+                    mBtSend.setEnabled(true);
+                }
                 if (s.length() >= mshowLimitSize) {
                     mLimitTipStr = "<" + s.length() + ">" + "/" + mLimitMaxSize;
                     CharSequence chars = ColorPhrase.from(mLimitTipStr).withSeparator("<>")

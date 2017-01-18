@@ -15,8 +15,8 @@ import com.zhiyicx.imsdk.entity.MessageType;
 
 public class MessageReceiveItemDelagate extends MessageTextItemDelagate {
 
-    public MessageReceiveItemDelagate(boolean showName, boolean showAvatar, Drawable myBubbleBg, Drawable otherBuddleBg) {
-        super(showName, showAvatar, myBubbleBg, otherBuddleBg);
+    public MessageReceiveItemDelagate(boolean showName, boolean showAvatar, Drawable otherBuddleBg) {
+        super(showName, showAvatar, null, otherBuddleBg);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class MessageReceiveItemDelagate extends MessageTextItemDelagate {
     @Override
     public boolean isForViewType(Message item, int position) {
         // TODO: 2017/1/6 需要添加是否是我的消息的判断
-        return item.getType() == MessageType.MESSAGE_TYPE_TEXT;
+        return item.getType() == MessageType.MESSAGE_TYPE_TIP;
     }
 
 }

@@ -2,7 +2,6 @@ package com.zhy.adapter.recyclerview;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -42,7 +41,7 @@ public abstract class CommonAdapter<T> extends MultiItemTypeAdapter<T>
             }
 
             @Override
-            public void convert(ViewHolder holder, T t, int position)
+            public void convert(ViewHolder holder, T t, T lsatT,  int position)
             {
                 CommonAdapter.this.convert(holder, t, position);
             }

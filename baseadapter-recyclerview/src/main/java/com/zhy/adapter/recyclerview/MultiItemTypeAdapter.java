@@ -40,17 +40,17 @@ public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
         ItemViewDelegate itemViewDelegate = mItemViewDelegateManager.getItemViewDelegate(viewType);
         int layoutId = itemViewDelegate.getItemViewLayoutId();
         ViewHolder holder = ViewHolder.createViewHolder(mContext, parent, layoutId);
-        onViewHolderCreated(holder,holder.getConvertView());
+        onViewHolderCreated(holder, holder.getConvertView());
         setListener(parent, holder, viewType);
         return holder;
     }
 
-    public void onViewHolderCreated(ViewHolder holder,View itemView){
+    public void onViewHolderCreated(ViewHolder holder, View itemView) {
 
     }
 
-    public void convert(ViewHolder holder, T t) {
-        mItemViewDelegateManager.convert(holder, t, holder.getAdapterPosition());
+    public void convert(ViewHolder holder, T t, T lastT) {
+        mItemViewDelegateManager.convert(holder, t,lastT, holder.getAdapterPosition());
     }
 
     protected boolean isEnabled(int viewType) {
@@ -65,7 +65,7 @@ public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
             public void onClick(View v) {
                 if (mOnItemClickListener != null) {
                     int position = viewHolder.getAdapterPosition();
-                    mOnItemClickListener.onItemClick(v, viewHolder , position);
+                    mOnItemClickListener.onItemClick(v, viewHolder, position);
                 }
             }
         });
@@ -84,7 +84,8 @@ public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        convert(holder, mDatas.get(position));
+        T lastData = position != 0 ? mDatas.get(position - 1) : null;
+        convert(holder, mDatas.get(position), lastData);
     }
 
     @Override
@@ -117,9 +118,9 @@ public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     }
 
     public interface OnItemClickListener {
-        void onItemClick(View view, RecyclerView.ViewHolder holder,  int position);
+        void onItemClick(View view, RecyclerView.ViewHolder holder, int position);
 
-        boolean onItemLongClick(View view, RecyclerView.ViewHolder holder,  int position);
+        boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {

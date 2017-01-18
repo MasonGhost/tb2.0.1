@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -31,6 +33,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
+import cn.bingoogolapple.refreshlayout.TSPRefreshViewHolder;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -41,11 +46,13 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/17
  * @Contact master.jungle68@gmail.com
  */
-public class MessageLikeFragment extends TSFragment {
+public class MessageLikeFragment extends TSFragment implements BGARefreshLayout.BGARefreshLayoutDelegate {
     private static final float LIST_ITEM_SPACING = 1f;
 
     @BindView(R.id.rv_like_list)
     RecyclerView mRvLikeList;
+    @BindView(R.id.refreshlayout_message_like)
+    BGARefreshLayout mRefreshlayoutMessageLike;
 
     private ImageLoader mImageLoader;
     private List<MessageItem> mMessageItems;
@@ -89,6 +96,7 @@ public class MessageLikeFragment extends TSFragment {
 
     @Override
     protected void initData() {
+        mRefreshlayoutMessageLike.setDelegate(this);
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         mMessageItems = new ArrayList<>();
         initCommentAndLike(mMessageItems);
@@ -104,6 +112,7 @@ public class MessageLikeFragment extends TSFragment {
             }
 
         });
+        mRefreshlayoutMessageLike.setRefreshViewHolder(new TSPRefreshViewHolder(getActivity(), true));
     }
 
     /**
@@ -239,4 +248,21 @@ public class MessageLikeFragment extends TSFragment {
         startActivity(to);
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: inflate a fragment view
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        ButterKnife.bind(this, rootView);
+        return rootView;
+    }
+
+    @Override
+    public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
+
+    }
+
+    @Override
+    public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
+        return false;
+    }
 }
