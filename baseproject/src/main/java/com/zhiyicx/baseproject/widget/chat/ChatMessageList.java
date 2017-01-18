@@ -36,9 +36,9 @@ public class ChatMessageList extends FrameLayout {
     private static final float RECYCLEVIEW_ITEMDECORATION_SPACING = 15F;
 
     protected BGARefreshLayout mRefreshLayout;
-
-
     protected BGARefreshLayout.BGARefreshLayoutDelegate mBGARefreshLayoutDelegate;
+    protected MessageListItemClickListener mMessageListItemClickListener;
+
     protected RecyclerView mRecyclerView;
     protected Conversation conversation;
     protected int chatType;
@@ -49,6 +49,9 @@ public class ChatMessageList extends FrameLayout {
     protected Drawable myBubbleBg;
     protected Drawable otherBuddleBg;
     protected Context mContext;
+
+    protected MessageSendItemDelagate mMessageSendItemDelagate;
+    protected MessageReceiveItemDelagate mMessageReceiveItemDelagate;
 
     public ChatMessageList(Context context) {
         super(context);
@@ -119,8 +122,12 @@ public class ChatMessageList extends FrameLayout {
         this.chatType = chatType;
         this.toChatUsername = toChatUsername;
         messageAdapter = new MultiItemTypeAdapter(mContext, datas);
-        messageAdapter.addItemViewDelegate(new MessageSendItemDelagate(showUserNick, showAvatar, myBubbleBg));
-        messageAdapter.addItemViewDelegate(new MessageReceiveItemDelagate(showUserNick, showAvatar, otherBuddleBg));
+        mMessageSendItemDelagate = new MessageSendItemDelagate(showUserNick, showAvatar, myBubbleBg);
+        mMessageSendItemDelagate.setMessageListItemClickListener(mMessageListItemClickListener);
+        mMessageReceiveItemDelagate = new MessageReceiveItemDelagate(showUserNick, showAvatar, otherBuddleBg);
+        mMessageReceiveItemDelagate.setMessageListItemClickListener(mMessageListItemClickListener);
+        messageAdapter.addItemViewDelegate(mMessageSendItemDelagate);
+        messageAdapter.addItemViewDelegate(mMessageReceiveItemDelagate);
         // TODO: 2017/1/7 添加图片、视频、音频等Delegate
         // set message adapter
         mRecyclerView.setAdapter(messageAdapter);
@@ -187,7 +194,7 @@ public class ChatMessageList extends FrameLayout {
     }
 
     public interface MessageListItemClickListener {
-        void onResendClick(Message message);
+        void onStatusClick(Message message);
 
         /**
          * there is default handling when bubble is clicked, if you want handle it, return true
@@ -196,23 +203,21 @@ public class ChatMessageList extends FrameLayout {
          * @param message
          * @return
          */
-        boolean onBubbleClick(Message message);
+        void onBubbleClick(Message message);
 
-        void onBubbleLongClick(Message message);
+        boolean onBubbleLongClick(Message message);
 
-        void onUserAvatarClick(String username);
+        void onUserInfoClick(String username);
 
-        void onUserAvatarLongClick(String username);
+        boolean onUserInfoLongClick(String username);
+
+        void onItemClickListener(Message message);
+
+        boolean onItemLongClickListener(Message message);
     }
 
-    /**
-     * set click listener
-     *
-     * @param listener
-     */
-    public void setItemClickListener(MultiItemTypeAdapter.OnItemClickListener listener) {
-        if (messageAdapter != null) {
-            messageAdapter.setOnItemClickListener(listener);
-        }
+    public void setMessageListItemClickListener(MessageListItemClickListener messageListItemClickListener) {
+        this.mMessageListItemClickListener = messageListItemClickListener;
     }
+
 }

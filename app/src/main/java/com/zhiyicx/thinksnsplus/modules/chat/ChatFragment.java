@@ -6,6 +6,7 @@ import android.view.View;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.chat.ChatMessageList;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.R;
 
@@ -21,7 +22,7 @@ import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
  * @Date 2017/01/06
  * @Contact master.jungle68@gmail.com
  */
-public class ChatFragment extends TSFragment<ChatContract.Presenter> implements ChatContract.View, BGARefreshLayout.BGARefreshLayoutDelegate {
+public class ChatFragment extends TSFragment<ChatContract.Presenter> implements ChatContract.View, BGARefreshLayout.BGARefreshLayoutDelegate, ChatMessageList.MessageListItemClickListener {
     public static final String BUNDLE_USERID = "userId";
 
     protected List<Message> mDatas;
@@ -80,6 +81,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
             }
             mDatas.add(message);
         }
+        mMessageList.setMessageListItemClickListener(this);
         mMessageList.init("张三", 0, mDatas);
         mMessageList.setBGARefreshLayoutDelegate(this);
     }
@@ -101,7 +103,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     @Override
     public void showMessage(String message) {
-
+        ToastUtils.showToast(message);
     }
 
     @Override
@@ -112,5 +114,45 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
         return false;
+    }
+    // 聊天 item 点击事件
+
+    @Override
+    public void onStatusClick(Message message) {
+        showMessage(message.getTxt());
+    }
+
+    @Override
+    public void onBubbleClick(Message message) {
+        showMessage(message.getTxt());
+
+    }
+
+    @Override
+    public boolean onBubbleLongClick(Message message) {
+        showMessage(message.getTxt());
+        return true;
+    }
+
+    @Override
+    public void onUserInfoClick(String username) {
+        showMessage(username);
+    }
+
+    @Override
+    public boolean onUserInfoLongClick(String username) {
+        showMessage(username);
+        return true;
+    }
+
+    @Override
+    public void onItemClickListener(Message message) {
+        showMessage(message.getTxt());
+    }
+
+    @Override
+    public boolean onItemLongClickListener(Message message) {
+        showMessage(message.getTxt());
+        return true;
     }
 }
