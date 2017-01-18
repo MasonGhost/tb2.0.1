@@ -102,7 +102,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
 
     @Override
     protected String setRightTitle() {
-        return getString(R.string.immediate_regist);
+        return getString(R.string.regist);
     }
 
     @Override

@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.List;
+
 /**
  * @author LiuChao
  * @describe 储存任务（文件上传）的返回体
@@ -15,11 +17,10 @@ public class StorageTaskBean {
     private int storage_id;
     // storage_task_id 上传任务的id，作为本次操作的唯一标识符
     private int storage_task_id;
-    // 下面的部分暂时没有啥用，但需要传递给服务器
-    private String uri;
-    private String method;
-    private JSONObject headers;
-    private JSONArray options;
+    private String uri; // 上传附件的地址
+    private String method;// 请求附件上传的方式
+    private JSONObject headers; // 请求头
+    private List<JSONObject> options;// 请求体，不能是JsonArray
 
     public int getStorage_id() {
         return storage_id;
@@ -37,5 +38,35 @@ public class StorageTaskBean {
         this.storage_task_id = storage_task_id;
     }
 
+    public String getUri() {
+        return uri;
+    }
 
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
+    public JSONObject getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(JSONObject headers) {
+        this.headers = headers;
+    }
+
+    public List<JSONObject> getOptions() {
+        return options;
+    }
+
+    public void setOptions(List<JSONObject> options) {
+        this.options = options;
+    }
 }

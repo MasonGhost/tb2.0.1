@@ -91,7 +91,8 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        ToastUtils.showToast("-->" + throwable.getMessage());
+                        com.zhiyicx.common.utils.log.LogUtils.e(throwable,"headIcon");
+                        //ToastUtils.showToast("-->" + throwable.getMessage());
                     }
                 });
     }

@@ -52,6 +52,7 @@ ext {
             // retrofit + rx
             retrofit                     : "com.squareup.retrofit2:retrofit:${retrofitSdkVersion}",
             retrofitConverterGson        : "com.squareup.retrofit2:converter-gson:${retrofitSdkVersion}",
+            retorfitConverterScalar      : "com.squareup.retrofit2:converter-scalars:${retrofitSdkVersion}",
             retrofitAdapterRxJava        : "com.squareup.retrofit2:adapter-rxjava:${retrofitSdkVersion}",
             rxJava                       : "io.reactivex:rxjava:${rxJavaVersion}",
             rxAndroid                    : "io.reactivex:rxandroid:${rxAndroidVersion}",
