@@ -25,7 +25,6 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 public class MessageTextItemDelagate implements ItemViewDelegate<Message> {
     public static final int MAX_SPACING_TIME = 6;// 显示时间的，最大间隔时间；当两条消息间隔 > MAX_SPACING_TIME 时显示时间
-    protected long mLastMessageTime;// 上一条消息的时间
     protected GlideImageLoaderStrategy mImageLoader;
 
     protected boolean mIsShowName = true;
@@ -65,15 +64,17 @@ public class MessageTextItemDelagate implements ItemViewDelegate<Message> {
     }
 
     @Override
-    public void convert(ViewHolder holder, Message message, int position) {
+    public void convert(ViewHolder holder, Message message, Message lastMessage, int position) {
         // 显示时间的，最大间隔时间；当两条消息间隔 > MAX_SPACING_TIME 时显示时间
-        if ((message.getCreate_time() - mLastMessageTime) >= MAX_SPACING_TIME * ConstantConfig.MIN) {
+        if (lastMessage == null || (message.getCreate_time() - lastMessage.getCreate_time()) >= MAX_SPACING_TIME * ConstantConfig.MIN) {
             holder.setText(R.id.tv_chat_time, TimeUtils.getTimeFriendlyForDetail(message.getCreate_time() / 1000));// 测试数据，暂时使用
             holder.setVisible(R.id.tv_chat_time, View.VISIBLE);
+
         } else {
+
             holder.setVisible(R.id.tv_chat_time, View.GONE);
         }
-        mLastMessageTime = message.getCreate_time();
+
         // 是否需要显示名字
         if (mIsShowName) {
             holder.setVisible(R.id.tv_chat_name, View.VISIBLE);

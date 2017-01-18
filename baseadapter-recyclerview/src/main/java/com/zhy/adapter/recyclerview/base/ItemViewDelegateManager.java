@@ -81,7 +81,7 @@ public class ItemViewDelegateManager<T>
                 "No ItemViewDelegate added that matches position=" + position + " in data source");
     }
 
-    public void convert(ViewHolder holder, T item, int position)
+    public void convert(ViewHolder holder, T item, T lastItem,int position)
     {
         int delegatesCount = delegates.size();
         for (int i = 0; i < delegatesCount; i++)
@@ -90,7 +90,7 @@ public class ItemViewDelegateManager<T>
 
             if (delegate.isForViewType( item, position))
             {
-                delegate.convert(holder, item, position);
+                delegate.convert(holder, item,lastItem, position);
                 return;
             }
         }

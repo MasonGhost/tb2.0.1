@@ -76,7 +76,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
             message.setMid(System.currentTimeMillis());
             message.setId(i);
             message.setCreate_time(System.currentTimeMillis());
-            message.setTxt("测试消息： " + i);
+            message.setTxt("测试消息，我的看了个的空间广阔疯狂的疯狂付款的流沙看到了 " + i);
             if(i%2==0){
                 message.setType(-1);
             }
