@@ -1,4 +1,4 @@
-2017年1月17日 14:30:55
+2017年1月18日13:40:10
 # 基础列表Adapter
 
  基于[baseAdapter](https://github.com/hongyangAndroid/baseAdapter),
@@ -15,3 +15,5 @@
      }
  ```
  2. `MultiItemTypeAdapter`增加`getItem(int position)`方法
+
+ 3. `ItemViewDelegate` 添加返回了上一条消息
