@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * @Describe
@@ -56,19 +57,21 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
         if (checkPhone(phone)) {
             return;
         }
+        mRootView.setVertifyCodeBtEnabled(false);
         Subscription getVertifySub = mRepository.getVertifyCode(phone, CommonClient.VERTIFY_CODE_TYPE_REGISTER)
-                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(new BaseJsonAction<CacheBean>() {
                                @Override
                                protected void onSuccess(CacheBean data) {
                                    mRootView.hideLoading();//隐藏loading
                                    timer.start();//开始倒计时
-                                   mRootView.setVertifyCodeBtEnabled(false);
+
                                }
 
                                @Override
                                protected void onFailure(String message) {
                                    mRootView.showMessage(message);
+                                   mRootView.setVertifyCodeBtEnabled(true);
                                }
                            }
                         , new Action1<Throwable>() {
@@ -76,6 +79,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
                             public void call(Throwable throwable) {
                                 throwable.printStackTrace();
                                 mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
+                                mRootView.setVertifyCodeBtEnabled(true);
                             }
                         });
         // 代表检测成功
