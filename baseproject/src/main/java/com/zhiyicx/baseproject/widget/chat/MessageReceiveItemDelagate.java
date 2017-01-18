@@ -15,8 +15,8 @@ import com.zhiyicx.imsdk.entity.MessageType;
 
 public class MessageReceiveItemDelagate extends MessageTextItemDelagate {
 
-    public MessageReceiveItemDelagate(boolean showName, boolean showAvatar, Drawable myBubbleBg, Drawable otherBuddleBg) {
-        super(showName, showAvatar, myBubbleBg, otherBuddleBg);
+    public MessageReceiveItemDelagate(boolean showName, boolean showAvatar, Drawable otherBuddleBg) {
+        super(showName, showAvatar, null, otherBuddleBg);
     }
 
     @Override

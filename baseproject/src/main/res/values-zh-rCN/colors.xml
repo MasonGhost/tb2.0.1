@@ -20,4 +20,9 @@
     <!--toolbar-->
     <color name="toolbar_text_corlor_normal">#ffffff</color>
 
+    <!-- 聊天-->
+    <color name="chat_message_bubble_my_bgColor">#b3e1f2</color>
+    <color name="chat_message_bubble_my_strokeColor">#87c6dd</color>
+    <color name="chat_message_bubble_other_bgColor">#f7f7f7</color>
+    <color name="chat_message_bubble_other_strokeColor">#dee1e2</color>
 </resources>

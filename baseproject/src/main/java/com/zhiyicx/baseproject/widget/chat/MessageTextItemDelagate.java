@@ -1,6 +1,7 @@
 package com.zhiyicx.baseproject.widget.chat;
 
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.view.View;
 
 import com.zhiyicx.baseproject.R;
@@ -57,6 +58,19 @@ public class MessageTextItemDelagate implements ItemViewDelegate<Message> {
             holder.setText(R.id.tv_chat_name, "占三");// 测试数据，暂时使用
         }else {
             holder.setVisible(R.id.tv_chat_name, View.INVISIBLE);
+        }
+        if(myBubbleBg!=null){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                holder.getView(R.id.rl_chat_bubble).setBackground(myBubbleBg);
+            }else {
+                holder.getView(R.id.rl_chat_bubble).setBackgroundDrawable(myBubbleBg);
+            }
+        }else if(otherBuddleBg!=null){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                holder.getView(R.id.rl_chat_bubble).setBackground(otherBuddleBg);
+            }else {
+                holder.getView(R.id.rl_chat_bubble).setBackgroundDrawable(otherBuddleBg);
+            }
         }
 
         holder.setText(R.id.tv_chat_content, "我的天四大金刚绝对控股可大幅高开");

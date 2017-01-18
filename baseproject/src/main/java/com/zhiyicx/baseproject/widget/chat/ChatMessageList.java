@@ -106,8 +106,8 @@ public class ChatMessageList extends FrameLayout {
         this.chatType = chatType;
         this.toChatUsername = toChatUsername;
         messageAdapter = new MultiItemTypeAdapter(mContext, datas);
-        messageAdapter.addItemViewDelegate(new MessageSendItemDelagate(showUserNick, showAvatar, myBubbleBg, otherBuddleBg));
-        messageAdapter.addItemViewDelegate(new MessageReceiveItemDelagate(showUserNick, showAvatar, myBubbleBg, otherBuddleBg));
+        messageAdapter.addItemViewDelegate(new MessageSendItemDelagate(showUserNick, showAvatar, myBubbleBg));
+        messageAdapter.addItemViewDelegate(new MessageReceiveItemDelagate(showUserNick, showAvatar,otherBuddleBg));
         // TODO: 2017/1/7 添加图片、视频、音频等Delegate
         // set message adapter
         mRecyclerView.setAdapter(messageAdapter);
