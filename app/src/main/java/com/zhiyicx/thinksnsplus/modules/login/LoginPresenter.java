@@ -46,7 +46,7 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
     public void login(String phone, String password) {
         if (!RegexUtils.isMobileExact(phone)) {
             // 不符合手机号格式
-            mRootView.showErrorTips(mContext.getResources().getString(R.string.phone_number_toast_hint));
+            mRootView.showErrorTips(mContext.getString(R.string.phone_number_toast_hint));
             return;
         }
         mRepository.login(mContext, phone, password)
@@ -68,7 +68,7 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
                     @Override
                     public void call(Throwable e) {
                         LogUtils.e(e, "login_error" + e.getMessage());
-                        mRootView.showErrorTips(e.getMessage());
+                        mRootView.showErrorTips(mContext.getString(R.string.err_net_not_work));
                         mRootView.setLoginFailure();
                     }
                 });
