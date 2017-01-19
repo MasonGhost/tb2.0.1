@@ -8,7 +8,7 @@ import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseJsonAction;
-import com.zhiyicx.thinksnsplus.data.beans.LoginBean;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 
 import javax.inject.Inject;
@@ -106,10 +106,11 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
         }
         mRootView.setRegisterBtEnabled(false);
         Subscription registerSub = mRepository.register(phone, name, vertifyCode, password)
-                .subscribe(new BaseJsonAction<LoginBean>() {
+                .subscribe(new BaseJsonAction<AuthBean>() {
                     @Override
-                    protected void onSuccess(LoginBean data) {
+                    protected void onSuccess(AuthBean data) {
                         mRootView.setRegisterBtEnabled(true);
+                        mRootView.showMessage(data.getUser_id()+"");
                     }
 
                     @Override

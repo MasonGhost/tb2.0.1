@@ -1,8 +1,11 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import android.content.Context;
+
 import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.data.beans.LoginBean;
+import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -22,10 +25,12 @@ import rx.schedulers.Schedulers;
 public class RegisterRepository implements RegisterContract.Repository {
     private CommonClient mCommonClient;
     private RegisterClient mRegisterClient;
+    private Context mContext;
 
-    public RegisterRepository(ServiceManager serviceManager) {
+    public RegisterRepository(ServiceManager serviceManager, Context context) {
         mCommonClient = serviceManager.getCommonClient();
         mRegisterClient = serviceManager.getRegisterClient();
+        mContext = context;
     }
 
     @Override
@@ -35,8 +40,8 @@ public class RegisterRepository implements RegisterContract.Repository {
     }
 
     @Override
-    public Observable<BaseJson<LoginBean>> register(String phone, String name, String vertifyCode, String password) {
-        return mRegisterClient.register("success", phone, name, vertifyCode, password)
+    public Observable<BaseJson<AuthBean>> register(String phone, String name, String vertifyCode, String password) {
+        return mRegisterClient.register("success", phone, name, vertifyCode, password, DeviceUtils.getIMEI(mContext))
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 }
