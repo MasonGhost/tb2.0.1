@@ -196,13 +196,13 @@ public class ConvertUtils {
         if (byteNum < 0) {
             return "shouldn't be less than zero!";
         } else if (byteNum < ConstantConfig.KB) {
-            return String.format("%.3fB", byteNum + 0.0005);
+            return String.format("%.1fB", byteNum + 0.05);
         } else if (byteNum < ConstantConfig.MB) {
-            return String.format("%.3fKB", byteNum / ConstantConfig.KB + 0.0005);
+            return String.format("%.1fKB", byteNum / ConstantConfig.KB + 0.05);
         } else if (byteNum < ConstantConfig.GB) {
-            return String.format("%.3fMB", byteNum / ConstantConfig.MB + 0.0005);
+            return String.format("%.1fMB", byteNum / ConstantConfig.MB + 0.05);
         } else {
-            return String.format("%.3fGB", byteNum / ConstantConfig.GB + 0.0005);
+            return String.format("%.1fGB", byteNum / ConstantConfig.GB + 0.05);
         }
     }
 

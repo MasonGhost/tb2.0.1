@@ -7,7 +7,6 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.edittext.PasswordEditText;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 import butterknife.BindView;
@@ -60,7 +59,6 @@ public class ChangePasswordFragment extends TSFragment<ChangePasswordContract.Pr
      */
     @Override
     protected void setRightClick() {
-        ToastUtils.showToast("hhahahhha");
         mPresenter.changePassword(mEtOldPassword.getText().toString().trim()
                 , mEtNewPassword.getText().toString().trim(), mEtSureNewPassword.getText().toString().trim());
     }
@@ -77,7 +75,6 @@ public class ChangePasswordFragment extends TSFragment<ChangePasswordContract.Pr
 
     @Override
     protected void initView(View rootView) {
-        mToolbarRight.setEnabled(false);
         // 旧密码观察
         RxTextView.textChanges(mEtOldPassword)
                 .compose(this.<CharSequence>bindToLifecycle())
@@ -112,8 +109,6 @@ public class ChangePasswordFragment extends TSFragment<ChangePasswordContract.Pr
 
     @Override
     protected void initData() {
-        setConfirmEnable();
-
     }
 
     @Override
