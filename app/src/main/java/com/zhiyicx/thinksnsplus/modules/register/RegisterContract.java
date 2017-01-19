@@ -16,7 +16,7 @@ import rx.Observable;
 
 public interface RegisterContract {
     /**
-     *   对于经常使用的关于 UI 的方法可以定义到 BaseView 中,如显示隐藏进度条,和显示文字消息
+     * 对于经常使用的关于 UI 的方法可以定义到 BaseView 中,如显示隐藏进度条,和显示文字消息
      */
     interface View extends IBaseView<Presenter> {
         /**
@@ -27,9 +27,22 @@ public interface RegisterContract {
         void setVertifyCodeBtEnabled(boolean isEnable);
 
         /**
+         * 设置验证码加载
+         * @param isEnable
+         */
+        void setVertifyCodeLoadin(boolean isEnable);
+
+        /**
          * 设置发送按钮的提示信息
          */
         void setVertifyCodeBtText(String text);
+
+        /**
+         * 设置验证码按钮状态
+         *
+         * @param isEnable
+         */
+        void setRegisterBtEnabled(boolean isEnable);
     }
 
     /**
@@ -38,17 +51,19 @@ public interface RegisterContract {
     interface Repository {
         /**
          * 获取验证码
+         *
          * @param phone 注册的手机号码
          * @return
          */
-        Observable<BaseJson<CacheBean>> getVertifyCode(String phone,String type);
+        Observable<BaseJson<CacheBean>> getVertifyCode(String phone, String type);
 
         /**
          * 注册
-         * @param phone 注册的手机号码
-         * @param name  用户名
+         *
+         * @param phone       注册的手机号码
+         * @param name        用户名
          * @param vertifyCode 手机验证码
-         * @param password 用户密码
+         * @param password    用户密码
          * @return
          */
         Observable<BaseJson<CacheBean>> register(String phone, String name, String vertifyCode, String password);

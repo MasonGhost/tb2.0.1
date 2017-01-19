@@ -113,18 +113,21 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
             return;
         }
         mRootView.setVertifyCodeBtEnabled(false);
+        mRootView.setVertifyCodeLoading(true);
         Subscription getVertifySub = mRepository.getVertifyCode(phone, CommonClient.VERTIFY_CODE_TYPE_CHANGE)
                 .subscribe(new BaseJsonAction<CacheBean>() {
                                @Override
                                protected void onSuccess(CacheBean data) {
                                    mRootView.hideLoading();//隐藏loading
                                    timer.start();//开始倒计时
+                                   mRootView.setVertifyCodeLoading(false);
                                }
 
                                @Override
                                protected void onFailure(String message) {
                                    mRootView.showMessage(message);
                                    mRootView.setVertifyCodeBtEnabled(true);
+                                   mRootView.setVertifyCodeLoading(false);
                                }
                            }
                         , new Action1<Throwable>() {
@@ -133,6 +136,7 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
                                 throwable.printStackTrace();
                                 mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
                                 mRootView.setVertifyCodeBtEnabled(true);
+                                mRootView.setVertifyCodeLoading(false);
                             }
                         });
         // 代表检测成功

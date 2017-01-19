@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.password.findpassword;
 
+import android.graphics.drawable.Animatable;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.TextUtils;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.edittext.PasswordEditText;
 import com.zhiyicx.thinksnsplus.R;
@@ -38,8 +40,8 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
     DeleteEditText mEtPhone;
     @BindView(R.id.bt_send_vertify_code)
     Button mBtSendVertifyCode;
-    @BindView(R.id.pb_loading)
-    ImageView mPbLoading;
+    @BindView(R.id.iv_vertify_loading)
+    ImageView mIvVertifyLoading;
     @BindView(R.id.rl_send_vertify_code_container)
     RelativeLayout mRlSendVertifyCodeContainer;
     @BindView(R.id.et_vertify_code)
@@ -47,12 +49,13 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
     @BindView(R.id.et_password)
     PasswordEditText mEtPassword;
     @BindView(R.id.bt_sure)
-    Button mBtSure;
+    LoadingButton mBtSure;
 
     private boolean isPhoneEdited;
     private boolean isCodeEdited;
     private boolean isPassEdited;
     private boolean mIsVertifyCodeEnalbe = true;
+    private Animatable mVertifyAnimationDrawable;
 
     public static FindPasswordFragment newInstance() {
         FindPasswordFragment fragment = new FindPasswordFragment();
@@ -82,6 +85,7 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
 
     @Override
     protected void initView(View rootView) {
+        mVertifyAnimationDrawable= (Animatable) mIvVertifyLoading.getDrawable();
         // 电话号码观察
         RxTextView.textChanges(mEtPhone)
                 .compose(this.<CharSequence>bindToLifecycle())
@@ -197,6 +201,18 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
     public void setVertifyCodeBtEnabled(boolean isEnable) {
         mIsVertifyCodeEnalbe = isEnable;
         mBtSendVertifyCode.setEnabled(isEnable);
+    }
+    @Override
+    public void setVertifyCodeLoading(boolean isEnable) {
+        if (isEnable) {
+            mIvVertifyLoading.setVisibility(View.VISIBLE);
+            mBtSendVertifyCode.setVisibility(View.INVISIBLE);
+            mVertifyAnimationDrawable.start();
+        } else {
+            mVertifyAnimationDrawable.stop();
+            mIvVertifyLoading.setVisibility(View.INVISIBLE);
+            mBtSendVertifyCode.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

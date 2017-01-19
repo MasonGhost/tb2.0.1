@@ -58,6 +58,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
             return;
         }
         mRootView.setVertifyCodeBtEnabled(false);
+        mRootView.setVertifyCodeLoadin(true);
         Subscription getVertifySub = mRepository.getVertifyCode(phone, CommonClient.VERTIFY_CODE_TYPE_REGISTER)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new BaseJsonAction<CacheBean>() {
@@ -65,13 +66,14 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
                                protected void onSuccess(CacheBean data) {
                                    mRootView.hideLoading();//隐藏loading
                                    timer.start();//开始倒计时
-
+                                   mRootView.setVertifyCodeLoadin(false);
                                }
 
                                @Override
                                protected void onFailure(String message) {
                                    mRootView.showMessage(message);
                                    mRootView.setVertifyCodeBtEnabled(true);
+                                   mRootView.setVertifyCodeLoadin(false);
                                }
                            }
                         , new Action1<Throwable>() {
@@ -80,6 +82,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
                                 throwable.printStackTrace();
                                 mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
                                 mRootView.setVertifyCodeBtEnabled(true);
+                                mRootView.setVertifyCodeLoadin(false);
                             }
                         });
         // 代表检测成功
@@ -102,6 +105,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
         if (checkPasswordLength(password)) {
             return;
         }
+        mRootView.setRegisterBtEnabled(false);
         Subscription registerSub = mRepository.register(phone, name, vertifyCode, password)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<BaseJson<CacheBean>>() {
@@ -111,6 +115,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
                         mRootView.hideLoading();//隐藏loading
                         timer.start();//开始倒计时
                         mRootView.showMessage(json.getMessage());
+                        mRootView.setRegisterBtEnabled(true);
 //                        } else {
 //                            mRootView.showMessage(json.getMessage());
 //                        }
@@ -120,6 +125,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
                     public void call(Throwable throwable) {
                         throwable.printStackTrace();
                         mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
+                        mRootView.setRegisterBtEnabled(true);
                     }
                 });
         // 代表检测成功

@@ -34,4 +34,11 @@
         <!--输入多少字的时候显示 限制提示-->
         <attr name="showLimitSize" format="reference|integer"></attr>
     </declare-styleable>
+
+    <!--有加载动画的按钮-->
+    <declare-styleable name="loadButton">
+        <!--按钮文字-->
+        <attr name="text" format="reference|string"></attr>
+
+    </declare-styleable>
 </resources>

@@ -6,41 +6,41 @@
 
 
     <!--认证-->
-    <com.zhiyicx.baseproject.widget.CombinationButton
+    <com.zhiyicx.baseproject.widget.button.CombinationButton
         android:id="@+id/bt_set_vertify"
         android:layout_width="match_parent"
         android:layout_height="@dimen/full_button_height"
         app:rightImage="@mipmap/ic_arrow_smallgrey"
-        app:leftText="@string/vertify"></com.zhiyicx.baseproject.widget.CombinationButton>
+        app:leftText="@string/vertify"></com.zhiyicx.baseproject.widget.button.CombinationButton>
     <!--修改密码-->
-    <com.zhiyicx.baseproject.widget.CombinationButton
+    <com.zhiyicx.baseproject.widget.button.CombinationButton
         android:id="@+id/bt_change_password"
         android:layout_width="match_parent"
         android:layout_height="@dimen/full_button_height"
         app:rightImage="@mipmap/ic_arrow_smallgrey"
-        app:leftText="@string/change_password"></com.zhiyicx.baseproject.widget.CombinationButton>
+        app:leftText="@string/change_password"></com.zhiyicx.baseproject.widget.button.CombinationButton>
     <!--清理缓存-->
-    <com.zhiyicx.baseproject.widget.CombinationButton
+    <com.zhiyicx.baseproject.widget.button.CombinationButton
         android:id="@+id/bt_clean_cache"
         android:layout_width="match_parent"
         android:layout_height="@dimen/full_button_height"
         app:rightImage="@mipmap/ic_arrow_smallgrey"
-        app:leftText="@string/clean_cache"></com.zhiyicx.baseproject.widget.CombinationButton>
+        app:leftText="@string/clean_cache"></com.zhiyicx.baseproject.widget.button.CombinationButton>
     <!--关于我们-->
-    <com.zhiyicx.baseproject.widget.CombinationButton
+    <com.zhiyicx.baseproject.widget.button.CombinationButton
         android:id="@+id/bt_about_us"
         android:layout_width="match_parent"
         android:layout_height="@dimen/full_button_height"
         app:rightImage="@mipmap/ic_arrow_smallgrey"
-        app:leftText="@string/about_us"></com.zhiyicx.baseproject.widget.CombinationButton>
+        app:leftText="@string/about_us"></com.zhiyicx.baseproject.widget.button.CombinationButton>
     <!--退出登录-->
-    <com.zhiyicx.baseproject.widget.CombinationButton
+    <com.zhiyicx.baseproject.widget.button.CombinationButton
         android:id="@+id/bt_login_out"
         android:layout_width="match_parent"
         android:layout_height="@dimen/full_button_height"
         app:rightImage="@mipmap/ic_arrow_smallgrey"
         app:leftTextColor="@color/themeColor"
         app:showLine="false"
-        app:leftText="@string/login_out"></com.zhiyicx.baseproject.widget.CombinationButton>
+        app:leftText="@string/login_out"></com.zhiyicx.baseproject.widget.button.CombinationButton>
 
 </LinearLayout>

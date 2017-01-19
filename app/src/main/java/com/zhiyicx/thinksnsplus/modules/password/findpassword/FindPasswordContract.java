@@ -32,6 +32,11 @@ public interface FindPasswordContract {
         void setVertifyCodeBtText(String text);
 
         /**
+         * 验证码加载动画
+         * @param isEnable
+         */
+        void setVertifyCodeLoading(boolean isEnable);
+        /**
          * 关闭
          */
         void finsh();
