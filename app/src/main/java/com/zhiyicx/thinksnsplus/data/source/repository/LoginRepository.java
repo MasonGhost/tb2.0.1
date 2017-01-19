@@ -5,9 +5,9 @@ import android.content.Context;
 import com.zhiyicx.baseproject.cache.CacheImp;
 import com.zhiyicx.baseproject.cache.NetWorkCache;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.data.beans.LoginBean;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
-import com.zhiyicx.thinksnsplus.data.source.local.LoginBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.AuthBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.login.LoginContract;
 
@@ -24,20 +24,20 @@ import rx.schedulers.Schedulers;
 
 public class LoginRepository implements LoginContract.Repository {
     private LoginClient mLoginClient;
-    private CacheImp<LoginBean> cacheImp;
+    private CacheImp<AuthBean> cacheImp;
 
     public LoginRepository(ServiceManager serviceManager) {
         mLoginClient = serviceManager.getLoginClient();
     }
 
     @Override
-    public Observable<BaseJson<LoginBean>> login(Context context, final String phone, final String password) {
+    public Observable<BaseJson<AuthBean>> login(Context context, final String phone, final String password) {
         if(cacheImp==null){
-            cacheImp = new CacheImp<>(new LoginBeanGreenDaoImpl(context));
+            cacheImp = new CacheImp<>(new AuthBeanGreenDaoImpl(context));
         }
-        return cacheImp.load("1483098241", new NetWorkCache<LoginBean>() {
+        return cacheImp.load("1483098241", new NetWorkCache<AuthBean>() {
             @Override
-            public Observable<BaseJson<LoginBean>> get(String key) {
+            public Observable<BaseJson<AuthBean>> get(String key) {
                 return mLoginClient.login("success", phone, password, "dfsafds").subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
             }
         });

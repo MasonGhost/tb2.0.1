@@ -2,7 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.data.beans.LoginBean;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 
 import java.util.HashMap;
@@ -64,7 +64,7 @@ public interface CommonClient {
      * @return 成功后自动调用auth接口，返回信息和login一样
      */
     @PATCH("api/v1/auth")
-    Observable<LoginBean> refreshToken(@Query("refresh_token") String refrshToken, @Query("device_code") String deviceCode);
+    Observable<AuthBean> refreshToken(@Query("refresh_token") String refrshToken, @Query("device_code") String deviceCode);
 
 
     ///////////////////////////////////////文件上传////////////////////////////////////////////////////

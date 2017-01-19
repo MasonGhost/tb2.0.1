@@ -5,7 +5,7 @@ import android.content.Context;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
-import com.zhiyicx.thinksnsplus.data.beans.LoginBean;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterContract;
 
 import rx.Observable;
@@ -44,7 +44,7 @@ public interface LoginContract {
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
     interface Repository {
-        Observable<BaseJson<LoginBean>> login(Context context, String phone, String password);
+        Observable<BaseJson<AuthBean>> login(Context context, String phone, String password);
     }
 
     interface Presenter extends IBasePresenter {

@@ -8,7 +8,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.LoginBean;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
 import com.zhiyicx.thinksnsplus.modules.AcitivityTest;
 import com.zhiyicx.thinksnsplus.modules.RxUnitTestTools;
@@ -88,9 +88,9 @@ public class LoginActivityTest extends AcitivityTest {
         mLoginClient.login("failure", "12344", "dsafdsa","fdsadfs")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<BaseJson<LoginBean>>() {
+                .subscribe(new Action1<BaseJson<AuthBean>>() {
                     @Override
-                    public void call(BaseJson<LoginBean> integerBaseJson) {
+                    public void call(BaseJson<AuthBean> integerBaseJson) {
                         LogUtils.d("haha",integerBaseJson.toString());
                         if (integerBaseJson.isStatus()) {
                             // 登录成功跳转:当前不可能发生

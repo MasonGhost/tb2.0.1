@@ -7,7 +7,7 @@ import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.LoginBean;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.LoginRepository;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterContract;
 
@@ -52,9 +52,9 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
         mRepository.login(mContext, phone, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<BaseJson<LoginBean>>() {
+                .subscribe(new Action1<BaseJson<AuthBean>>() {
                     @Override
-                    public void call(BaseJson<LoginBean> integerBaseJson) {
+                    public void call(BaseJson<AuthBean> integerBaseJson) {
                         if (integerBaseJson.isStatus()) {
                             // 登录成功跳转
                             mRootView.setLoginSuccess();

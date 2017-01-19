@@ -167,9 +167,9 @@ public class LoginActivityTest extends AcitivityTest {
         mLoginClient.login("failure", "12344", "dsafdsa","fdsadfs")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new TestAction<BaseJson<LoginBean>>() {
+                .subscribe(new TestAction<BaseJson<AuthBean>>() {
                     @Override
-                    void testCall(BaseJson<LoginBean> integerBaseJson) {
+                    void testCall(BaseJson<AuthBean> integerBaseJson) {
                         LogUtils.d("haha",integerBaseJson.toString());
                         if (integerBaseJson.isStatus()) {
                             // 登陆成功跳转:当前不可能发生

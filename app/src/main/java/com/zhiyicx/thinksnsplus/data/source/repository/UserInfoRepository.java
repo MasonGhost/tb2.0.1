@@ -7,7 +7,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
-import com.zhiyicx.thinksnsplus.data.beans.LoginBean;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -46,7 +46,7 @@ import rx.schedulers.Schedulers;
 public class UserInfoRepository implements UserInfoContract.Repository {
     private UserInfoClient mUserInfoClient;
     private CommonClient mCommonClient;
-    private CacheImp<LoginBean> cacheImp;
+    private CacheImp<AuthBean> cacheImp;
 
     public UserInfoRepository(ServiceManager serviceManager) {
         mUserInfoClient = serviceManager.getUserInfoClient();

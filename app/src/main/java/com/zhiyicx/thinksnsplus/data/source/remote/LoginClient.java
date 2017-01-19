@@ -1,7 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.data.beans.LoginBean;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -24,6 +24,6 @@ public interface LoginClient {
      */
     @FormUrlEncoded
     @POST("api/v1/auth")
-    Observable<BaseJson<LoginBean>> login(@Query("requestState") String requestState, @Field("phone") String phone
+    Observable<BaseJson<AuthBean>> login(@Query("requestState") String requestState, @Field("phone") String phone
             , @Field("password") String password,@Field("device_code") String device_code);
 }

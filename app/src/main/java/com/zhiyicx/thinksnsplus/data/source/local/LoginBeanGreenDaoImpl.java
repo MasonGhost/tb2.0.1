@@ -2,8 +2,8 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.content.Context;
 
-import com.zhiyicx.thinksnsplus.data.beans.LoginBean;
-import com.zhiyicx.thinksnsplus.data.beans.LoginBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBeanDao;
 
 import java.util.List;
 
@@ -14,22 +14,22 @@ import java.util.List;
  * @contact email:450127106@qq.com
  */
 
-public class LoginBeanGreenDaoImpl extends CommonCacheImpl<LoginBean> {
-    public LoginBeanGreenDaoImpl(Context context) {
+public class AuthBeanGreenDaoImpl extends CommonCacheImpl<AuthBean> {
+    public AuthBeanGreenDaoImpl(Context context) {
         super(context);
     }
 
     @Override
-    public void saveSingleData(LoginBean singleData) {
-        LoginBeanDao loginBeanDao = getWDaoSession().getLoginBeanDao();
-        loginBeanDao.insert(singleData);
-       loginBeanDao.save(singleData);
+    public void saveSingleData(AuthBean singleData) {
+        AuthBeanDao AuthBeanDao = getWDaoSession().getAuthBeanDao();
+        AuthBeanDao.insert(singleData);
+       AuthBeanDao.save(singleData);
     }
 
     @Override
-    public void saveMultiData(List<LoginBean> multiData) {
-        LoginBeanDao loginBeanDao = getWDaoSession().getLoginBeanDao();
-        loginBeanDao.saveInTx(multiData);
+    public void saveMultiData(List<AuthBean> multiData) {
+        AuthBeanDao AuthBeanDao = getWDaoSession().getAuthBeanDao();
+        AuthBeanDao.saveInTx(multiData);
     }
 
     @Override
@@ -38,15 +38,15 @@ public class LoginBeanGreenDaoImpl extends CommonCacheImpl<LoginBean> {
     }
 
     @Override
-    public LoginBean getSingleDataFromCache(String key) {
-        LoginBeanDao loginBeanDao = getRDaoSession().getLoginBeanDao();
-        return loginBeanDao.load(Long.parseLong(key));
+    public AuthBean getSingleDataFromCache(String key) {
+        AuthBeanDao AuthBeanDao = getRDaoSession().getAuthBeanDao();
+        return AuthBeanDao.load(Long.parseLong(key));
     }
 
     @Override
-    public List<LoginBean> getMultiDataFromCache() {
-        LoginBeanDao loginBeanDao = getRDaoSession().getLoginBeanDao();
-        return loginBeanDao.loadAll();
+    public List<AuthBean> getMultiDataFromCache() {
+        AuthBeanDao AuthBeanDao = getRDaoSession().getAuthBeanDao();
+        return AuthBeanDao.loadAll();
     }
 
     @Override
@@ -56,11 +56,11 @@ public class LoginBeanGreenDaoImpl extends CommonCacheImpl<LoginBean> {
 
     @Override
     public void deleteSingleCache(String key) {
-        LoginBeanDao loginBeanDao = getWDaoSession().getLoginBeanDao();
+        AuthBeanDao AuthBeanDao = getWDaoSession().getAuthBeanDao();
     }
 
     @Override
-    public void updateSingleData(LoginBean newData) {
-        LoginBeanDao loginBeanDao = getWDaoSession().getLoginBeanDao();
+    public void updateSingleData(AuthBean newData) {
+        AuthBeanDao AuthBeanDao = getWDaoSession().getAuthBeanDao();
     }
 }

@@ -16,7 +16,7 @@ import org.greenrobot.greendao.annotation.Generated;
  * @contact email:450127106@qq.com
  */
 @Entity
-public class LoginBean extends CacheBean implements Parcelable {
+public class AuthBean extends CacheBean implements Parcelable {
     @Id
     private Long created_at;
     private int expires;
@@ -68,10 +68,10 @@ public class LoginBean extends CacheBean implements Parcelable {
         dest.writeString(this.refresh_token);
     }
 
-    public LoginBean() {
+    public AuthBean() {
     }
 
-    protected LoginBean(Parcel in) {
+    protected AuthBean(Parcel in) {
         this.created_at = (Long) in.readValue(Long.class.getClassLoader());
         this.expires = in.readInt();
         this.token = in.readString();
@@ -79,7 +79,7 @@ public class LoginBean extends CacheBean implements Parcelable {
     }
 
     @Generated(hash = 2036631705)
-    public LoginBean(Long created_at, int expires, String token,
+    public AuthBean(Long created_at, int expires, String token,
             String refresh_token) {
         this.created_at = created_at;
         this.expires = expires;
@@ -87,15 +87,15 @@ public class LoginBean extends CacheBean implements Parcelable {
         this.refresh_token = refresh_token;
     }
 
-    public static final Creator<LoginBean> CREATOR = new Creator<LoginBean>() {
+    public static final Creator<AuthBean> CREATOR = new Creator<AuthBean>() {
         @Override
-        public LoginBean createFromParcel(Parcel source) {
-            return new LoginBean(source);
+        public AuthBean createFromParcel(Parcel source) {
+            return new AuthBean(source);
         }
 
         @Override
-        public LoginBean[] newArray(int size) {
-            return new LoginBean[size];
+        public AuthBean[] newArray(int size) {
+            return new AuthBean[size];
         }
     };
 }
