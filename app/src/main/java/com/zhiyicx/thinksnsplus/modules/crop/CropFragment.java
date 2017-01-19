@@ -54,6 +54,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.app.Activity.RESULT_OK;
+import static com.yalantis.ucrop.UCrop.EXSTRA_IMAGESOURCE_PADDING;
+import static com.yalantis.ucrop.UCrop.EXSTRA_OVERLAY_PADDING;
 
 /**
  * @author LiuChao
@@ -127,7 +129,7 @@ public class CropFragment extends TSFragment {
 
     @Override
     protected String setRightTitle() {
-        return "完成";
+        return getString(R.string.complete);
     }
 
     @Override
@@ -236,6 +238,9 @@ public class CropFragment extends TSFragment {
             mGestureCropImageView.setMaxResultImageSizeX(maxSizeX);
             mGestureCropImageView.setMaxResultImageSizeY(maxSizeY);
         }
+
+        mUCropView.setImageSourcePadding(bundle.getInt(EXSTRA_IMAGESOURCE_PADDING, 0));
+        mUCropView.setOverlayPadding(bundle.getInt(EXSTRA_OVERLAY_PADDING, 0));
     }
 
     private void initiateRootViews() {

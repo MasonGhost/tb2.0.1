@@ -15,14 +15,16 @@ import dagger.Provides;
 public class PhotoSeletorImplModule {
     private PhotoSelectorImpl.IPhotoBackListener mPhotoBackListener;
     private Fragment mFragment;
+    private int mCropShape;// 裁剪框的形状
 
-    public PhotoSeletorImplModule(PhotoSelectorImpl.IPhotoBackListener photoBackListener, Fragment fragment) {
+    public PhotoSeletorImplModule(PhotoSelectorImpl.IPhotoBackListener photoBackListener, Fragment fragment, int cropShape) {
         mPhotoBackListener = photoBackListener;
         this.mFragment = fragment;
+        this.mCropShape = cropShape;
     }
 
     @Provides
     public PhotoSelectorImpl providePhotoSelectorImpl() {
-        return new PhotoSelectorImpl(mPhotoBackListener, mFragment);
+        return new PhotoSelectorImpl(mPhotoBackListener, mFragment, mCropShape);
     }
 }

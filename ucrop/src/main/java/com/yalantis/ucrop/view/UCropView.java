@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.RectF;
 import android.support.annotation.NonNull;
+import android.support.annotation.Px;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
@@ -61,6 +62,16 @@ public class UCropView extends FrameLayout {
     @NonNull
     public OverlayView getOverlayView() {
         return mViewOverlay;
+    }
+
+    //设置裁剪框左右边缘的间距
+    public void setOverlayPadding(@Px int padding) {
+        mViewOverlay.setPadding(padding, 0, padding, 0);
+    }
+
+    // 设置图片左右鼻缘的间距
+    public void setImageSourcePadding(@Px int padding) {
+        mGestureCropImageView.setPadding(padding, 0, padding, 0);
     }
 
 }

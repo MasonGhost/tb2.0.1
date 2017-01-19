@@ -82,7 +82,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
         mPhotoSelector = DaggerPhotoSelectorImplComponent
                 .builder()
-                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this))
+                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this,PhotoSelectorImpl.SHAPE_RCTANGLE))
                 .build().photoSelectorImpl();
         initCityPickerView();
     }

@@ -48,6 +48,10 @@ public class UCrop {
     public static final String EXTRA_MAX_SIZE_X = EXTRA_PREFIX + ".MaxSizeX";
     public static final String EXTRA_MAX_SIZE_Y = EXTRA_PREFIX + ".MaxSizeY";
 
+    ////添加控制裁剪框和图片边距的标志  by lc 2017.1.19
+    public static final String EXSTRA_OVERLAY_PADDING = EXTRA_PREFIX + ".overLayPadding";
+    public static final String EXSTRA_IMAGESOURCE_PADDING = EXTRA_PREFIX + ".imageSourcePadding";
+
     private Intent mCropIntent;
     private Bundle mCropOptionsBundle;
 
@@ -172,7 +176,7 @@ public class UCrop {
      * @return Intent for {@link UCropActivity}
      */
     public Intent getIntent(@NonNull Context context) {
-        mCropIntent.setClassName(context,"com.zhiyicx.thinksnsplus.modules.crop.CropActivity");
+        mCropIntent.setClassName(context, "com.zhiyicx.thinksnsplus.modules.crop.CropActivity");
         mCropIntent.putExtras(mCropOptionsBundle);
         return mCropIntent;
     }
@@ -490,6 +494,17 @@ public class UCrop {
             }
             mOptionBundle.putInt(EXTRA_ASPECT_RATIO_SELECTED_BY_DEFAULT, selectedByDefault);
             mOptionBundle.putParcelableArrayList(EXTRA_ASPECT_RATIO_OPTIONS, new ArrayList<Parcelable>(Arrays.asList(aspectRatio)));
+        }
+
+        /**
+         * 设置裁剪页面的padding by lc 2017/1/19
+         *
+         * @param cropViewPadding 裁剪框的左右边距
+         * @param imgSrcPadding   图片的左右边距
+         */
+        public void setCropViewPadding(int cropViewPadding, int imgSrcPadding) {
+            mOptionBundle.putInt(EXSTRA_OVERLAY_PADDING, cropViewPadding);
+            mOptionBundle.putInt(EXSTRA_IMAGESOURCE_PADDING, imgSrcPadding);
         }
 
         /**

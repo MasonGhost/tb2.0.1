@@ -7,14 +7,17 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.yalantis.ucrop.UCrop;
 import com.zhiyicx.baseproject.R;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.UIUtils;
 
 
 import org.json.JSONArray;
@@ -41,18 +44,24 @@ import static android.app.Activity.RESULT_OK;
 public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
 
     private static final int CAMERA_PHOTO_CODE = 8888;
+    // 添加几种默认的裁剪框形状
+    public static final int SHAPE_SQUARE = 1;// 正方形
+    public static final int SHAPE_RCTANGLE = 2;// 长方形，宽度占满
+    private static final int SQUARE_LEFT_MARGIN = 36;// 裁剪框距离屏幕左边缘的距离；右边也是一样的
 
     private IPhotoBackListener mTIPhotoBackListener;
     private Fragment mFragment;
     private Context mContext;
-    private File takePhotoFolder;
-    private Uri mTakePhotoUri;
+    private File takePhotoFolder;// 拍照后照片的存放目录
+    private Uri mTakePhotoUri;// 拍照后照片的uri
+    private int mCropShape;
 
-    public PhotoSelectorImpl(IPhotoBackListener iPhotoBackListener, Fragment mFragment) {
+    public PhotoSelectorImpl(IPhotoBackListener iPhotoBackListener, Fragment mFragment, int cropShape) {
         takePhotoFolder = new File(Environment.getExternalStorageDirectory(), "/DCIM/" + "TSPlusPhotoFolder/");
         mTIPhotoBackListener = iPhotoBackListener;
         this.mFragment = mFragment;
         this.mContext = mFragment.getContext();
+        this.mCropShape = cropShape;
     }
 
     @Override
@@ -86,8 +95,8 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
     public void startToCraft(String imgPath) {
         String destinationFileName = "SampleCropImage.jpg";
         UCrop uCrop = UCrop.of(Uri.fromFile(new File(imgPath)), Uri.fromFile(new File(mFragment.getActivity().getCacheDir(), destinationFileName)));
-        uCrop.withAspectRatio(1, 1);//方形
         UCrop.Options options = new UCrop.Options();
+        initCropShape(uCrop, options);
         options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
         options.setCompressionQuality(100);    // 图片质量压缩
         options.setCircleDimmedLayer(false); // 是否裁剪圆形
@@ -103,6 +112,12 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
         uCrop.start(mContext, mFragment);
     }
 
+
+    /**
+     * 统一的判断是否需要进行裁剪的逻辑
+     *
+     * @return
+     */
     @Override
     public boolean isNeededCraft() {
         return true;
@@ -213,6 +228,23 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
     private String format() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         return dateFormat.format(new Date());
+    }
+
+    /**
+     * 处理裁剪框的形状
+     */
+    private void initCropShape(UCrop uCrop, UCrop.Options options) {
+        switch (mCropShape) {
+            case SHAPE_SQUARE:
+                uCrop.withAspectRatio(1, 1);
+                options.setCropViewPadding(ConvertUtils.dp2px(mContext,SQUARE_LEFT_MARGIN),0);
+                break;
+            case SHAPE_RCTANGLE:
+                uCrop.withAspectRatio(1, 0.5f);// 矩形高度为屏幕宽度的一半
+                options.setCropViewPadding(0,0);
+                break;
+            default:
+        }
     }
 
 }
