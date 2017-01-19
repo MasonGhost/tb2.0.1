@@ -17,6 +17,7 @@ import org.greenrobot.greendao.annotation.Generated;
  */
 @Entity
 public class AuthBean extends CacheBean implements Parcelable {
+    public static final String SHAREPREFERENCE_TAG="authBean";
     @Id
     private Long created_at;
     private int expires;

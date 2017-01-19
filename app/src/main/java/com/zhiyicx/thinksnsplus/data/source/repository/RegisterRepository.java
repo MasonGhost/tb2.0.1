@@ -5,6 +5,7 @@ import android.content.Context;
 import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
@@ -47,7 +48,6 @@ public class RegisterRepository implements RegisterContract.Repository {
 
     @Override
     public boolean saveAuthBean(AuthBean authBean) {
-
-        return false;
+        return SharePreferenceUtils.saveObject(mContext, AuthBean.SHAREPREFERENCE_TAG, authBean);
     }
 }
