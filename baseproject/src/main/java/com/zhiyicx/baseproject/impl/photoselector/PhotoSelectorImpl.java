@@ -92,11 +92,13 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
         options.setCompressionQuality(100);    // 图片质量压缩
         options.setCircleDimmedLayer(false); // 是否裁剪圆形
         options.setHideBottomControls(true);// 是否隐藏底部的控制面板
-        options.setCropFrameColor(Color.WHITE);// 设置内矩形边框线条颜色
+        options.setCropFrameColor(Color.TRANSPARENT);// 设置内矩形边框线条颜色
         options.setShowCropGrid(false);// 是否展示内矩形的分割线
-        options.setDimmedLayerColor(Color.argb(0xbb, 0xff, 0xff, 0xff));// 设置蒙层的颜色
+        options.setToolbarCancelDrawable(R.mipmap.topbar_back);
+        options.setToolbarTitle(mContext.getString(R.string.change_head_icon));
+        options.setDimmedLayerColor(Color.argb(0xcc, 0xff, 0xff, 0xff));// 设置蒙层的颜色
         options.setRootViewBackgroundColor(Color.WHITE);// 设置图片背景颜色
-        options.setToolbarColor(ContextCompat.getColor(mContext, R.color.themeColor));
+        options.setToolbarColor(ContextCompat.getColor(mContext, R.color.white));
         uCrop.withOptions(options);
         uCrop.start(mContext, mFragment);
     }

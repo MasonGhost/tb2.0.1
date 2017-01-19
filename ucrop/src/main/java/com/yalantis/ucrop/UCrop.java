@@ -172,7 +172,7 @@ public class UCrop {
      * @return Intent for {@link UCropActivity}
      */
     public Intent getIntent(@NonNull Context context) {
-        mCropIntent.setClass(context, UCropActivity.class);
+        mCropIntent.setClassName(context,"com.zhiyicx.thinksnsplus.modules.crop.CropActivity");
         mCropIntent.putExtras(mCropOptionsBundle);
         return mCropIntent;
     }

@@ -37,6 +37,7 @@
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_gravity="center"
+            android:visibility="gone"
             app:srcCompat="@drawable/ucrop_vector_ic_crop"
             tools:background="@drawable/ucrop_vector_ic_crop"
             tools:ignore="MissingPrefix"/>
