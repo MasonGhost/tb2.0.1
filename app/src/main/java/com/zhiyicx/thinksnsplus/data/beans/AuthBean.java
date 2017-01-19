@@ -23,6 +23,16 @@ public class AuthBean extends CacheBean implements Parcelable {
     private String token;
     private String refresh_token;
 
+    private int user_id;
+
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
+    }
+
     public Long getCreated_at() {
         return created_at;
     }
@@ -55,6 +65,10 @@ public class AuthBean extends CacheBean implements Parcelable {
         this.refresh_token = refresh_token;
     }
 
+
+    public AuthBean() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -66,9 +80,7 @@ public class AuthBean extends CacheBean implements Parcelable {
         dest.writeInt(this.expires);
         dest.writeString(this.token);
         dest.writeString(this.refresh_token);
-    }
-
-    public AuthBean() {
+        dest.writeInt(this.user_id);
     }
 
     protected AuthBean(Parcel in) {
@@ -76,15 +88,17 @@ public class AuthBean extends CacheBean implements Parcelable {
         this.expires = in.readInt();
         this.token = in.readString();
         this.refresh_token = in.readString();
+        this.user_id = in.readInt();
     }
 
-    @Generated(hash = 2036631705)
+    @Generated(hash = 1235601946)
     public AuthBean(Long created_at, int expires, String token,
-            String refresh_token) {
+            String refresh_token, int user_id) {
         this.created_at = created_at;
         this.expires = expires;
         this.token = token;
         this.refresh_token = refresh_token;
+        this.user_id = user_id;
     }
 
     public static final Creator<AuthBean> CREATOR = new Creator<AuthBean>() {

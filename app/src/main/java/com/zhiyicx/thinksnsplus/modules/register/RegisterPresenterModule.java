@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.register;
 
-import com.zhiyicx.thinksnsplus.data.source.local.CacheManager;
+import android.app.Application;
+
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.RegisterRepository;
 
@@ -28,7 +29,7 @@ public class RegisterPresenterModule {
 
 
     @Provides
-    RegisterContract.Repository provideRegisterContractRepository(ServiceManager serviceManager){
-        return new RegisterRepository(serviceManager);
+    RegisterContract.Repository provideRegisterContractRepository(ServiceManager serviceManager, Application application){
+        return new RegisterRepository(serviceManager,application);
     }
 }
