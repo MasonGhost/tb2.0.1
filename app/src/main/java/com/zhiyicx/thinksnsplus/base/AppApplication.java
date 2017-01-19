@@ -7,9 +7,13 @@ import com.zhiyicx.baseproject.base.TSApplication;
 import com.zhiyicx.common.net.HttpsSSLFactroyUtils;
 import com.zhiyicx.common.net.intercept.CommonRequestIntercept;
 import com.zhiyicx.common.net.listener.RequestInterceptListener;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,6 +25,9 @@ import javax.net.ssl.SSLSocketFactory;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * @Describe
@@ -177,5 +184,23 @@ public class AppApplication extends TSApplication {
             return sAppComponent;
         }
 
+    }
+
+    /**
+     * 尝试通过refreshToken
+     */
+    private void refreshToken() {
+        CommonClient commonClient = AppComponentHolder.getAppComponent().serviceManager().getCommonClient();
+        String imei = DeviceUtils.getIMEI(this);
+        commonClient.refreshToken("fdsaf",imei)
+                .subscribeOn(Schedulers.io())
+                .retryWhen(new RetryWithDelay(2,2))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<AuthBean>() {
+                    @Override
+                    public void call(AuthBean authBean) {
+
+                    }
+                });
     }
 }
