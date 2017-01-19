@@ -1,9 +1,12 @@
 package com.zhiyicx.thinksnsplus.base;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 
+import com.google.gson.Gson;
 import com.zhiyicx.baseproject.base.TSApplication;
+import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.net.HttpsSSLFactroyUtils;
 import com.zhiyicx.common.net.intercept.CommonRequestIntercept;
 import com.zhiyicx.common.net.listener.RequestInterceptListener;
@@ -12,8 +15,10 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
+import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -73,31 +78,14 @@ public class AppApplication extends TSApplication {
             @Override
             public Response onHttpResponse(String httpResult, Interceptor.Chain chain, Response response) {
                 //这里可以先客户端一步拿到每一次http请求的结果,可以解析成json,做一些操作,如检测到token过期后
-                //重新请求token,并重新执行请求
-//                try {
-//                    JSONArray array = new JSONArray(httpResult);
-//                    JSONObject object = (JSONObject) array.get(0);
-//                    String login = object.getString("register");
-//                    String avatar_url = object.getString("avatar_url");
-//                    LogUtils.d(TAG, "result ------>" + login + "    ||   avatar_url------>" + avatar_url);
-//
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-
-
-                //这里如果发现token过期,可以先请求最新的token,然后在拿新的token放入request里去重新请求
-                //注意在这个回调之前已经调用过proceed,所以这里必须自己去建立网络请求,如使用okhttp使用新的request去请求
-                // create a new request and modify it accordingly using the new token
-//                    Request newRequest = chain.request().newBuilder().header("token", newToken)
-//                            .build();
-
-//                    // retry the request
-//
-//                    response.body().close();
-                //如果使用okhttp将新的请求,请求成功后,将返回的response  return出去即可
-
-                //如果不需要返回新的结果,则直接把response参数返回出去
+                //token过期，调到登陆页面重新请求token,
+                BaseJson baseJson = new Gson().fromJson(httpResult, BaseJson.class);
+                if (baseJson.getCode() == ErrorCodeConfig.TOKEN_EXPIERD
+                        || baseJson.getCode() == ErrorCodeConfig.NEED_RELOGIN
+                        || baseJson.getCode() == ErrorCodeConfig.OTHER_DEVICE_LOGIN
+                        || baseJson.getCode() == ErrorCodeConfig.TOKEN_NOT_EXIST) {
+                    startActivity(new Intent(AppApplication.this, LoginActivity.class));
+                }
                 return response;
             }
 
@@ -187,20 +175,35 @@ public class AppApplication extends TSApplication {
     }
 
     /**
-     * 尝试通过refreshToken
+     * 在启动页面尝试通过refreshToken,同时需要刷新im的token
      */
-    private void refreshToken() {
+    private void attemptToRefreshToken() {
+        if (!isNeededRefreshToken()) {
+            return;
+        }
         CommonClient commonClient = AppComponentHolder.getAppComponent().serviceManager().getCommonClient();
         String imei = DeviceUtils.getIMEI(this);
-        commonClient.refreshToken("fdsaf",imei)
+        commonClient.refreshToken("fdsaf", imei)
                 .subscribeOn(Schedulers.io())
-                .retryWhen(new RetryWithDelay(2,2))
+                .retryWhen(new RetryWithDelay(2, 2))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<AuthBean>() {
+                .subscribe(new Action1<BaseJson<AuthBean>>() {
                     @Override
-                    public void call(AuthBean authBean) {
+                    public void call(BaseJson<AuthBean> authBeanBaseJson) {
+                        if (authBeanBaseJson.isStatus() || authBeanBaseJson.getCode() == 0) {
+                            // 获取了最新的token，将这些信息保存起来
 
+                        }
                     }
                 });
+    }
+
+    /**
+     * 是否需要刷新token
+     *
+     * @return
+     */
+    private boolean isNeededRefreshToken() {
+        return false;
     }
 }
