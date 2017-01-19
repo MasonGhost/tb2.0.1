@@ -26,20 +26,19 @@ public abstract class BaseJsonAction<T> implements Action1<BaseJson<T>> {
             int code = tBaseJson.getCode();
             String message = tBaseJson.getMessage();
 
-            // 状态值为 false 或者 code 不为 0，并且此时的消息为空，需要尝试从映射表中查找消息
-            if (code != 0 && TextUtils.isEmpty(message)) {
-                String codeName = String.format(BaseApplication.getContext().getString(R.string.code_identify), code);
-                int id = UIUtils.getResourceByName(codeName, "string", BaseApplication.getContext());
-                if (id != 0) { // 没找到，返回 0
-                    message = BaseApplication.getContext().getString(id);
-                } else {
-                    message = BaseApplication.getContext().getString(R.string.code_not_define);
-                }
-            }
-
             if (status) {
                 onSuccess(tBaseJson.getData());
             } else {
+                // 状态值为 false 或者 code 不为 0，并且此时的消息为空，需要尝试从映射表中查找消息
+                if (code != 0 && TextUtils.isEmpty(message)) {
+                    String codeName = String.format(BaseApplication.getContext().getString(R.string.code_identify), code);
+                    int id = UIUtils.getResourceByName(codeName, "string", BaseApplication.getContext());
+                    if (id != 0) { // 没找到，返回 0
+                        message = BaseApplication.getContext().getString(id);
+                    } else {
+                        message = BaseApplication.getContext().getString(R.string.code_not_define);
+                    }
+                }
                 if (TextUtils.isEmpty(tBaseJson.getMessage())) {
                     // 重新设置 message
                     tBaseJson.setMessage(message);
@@ -49,7 +48,7 @@ public abstract class BaseJsonAction<T> implements Action1<BaseJson<T>> {
         }
     }
 
-    protected abstract void onSuccess(T data) ;
+    protected abstract void onSuccess(T data);
 
     protected abstract void onFailure(String message);
 }

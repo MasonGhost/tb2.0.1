@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.trello.rxlifecycle.components.support.RxFragment;
+import com.zhiyicx.common.mvp.i.IBasePresenter;
 
 import org.simple.eventbus.EventBus;
 
@@ -23,7 +23,7 @@ import solid.ren.skinlibrary.base.SkinBaseFragment;
  * @Date 2016/12/15
  * @Contact 335891510@qq.com
  */
-public abstract class BaseFragment<P > extends SkinBaseFragment {
+public abstract class BaseFragment<P extends IBasePresenter> extends SkinBaseFragment {
     protected final String TAG = this.getClass().getSimpleName();
 
     protected View mRootView;
@@ -39,7 +39,7 @@ public abstract class BaseFragment<P > extends SkinBaseFragment {
         mLayoutInflater = inflater;
         mRootView = getContentView();
         // 绑定到 butterknife
-        mUnbinder = ButterKnife.bind(this,mRootView);
+        mUnbinder = ButterKnife.bind(this, mRootView);
         initView(mRootView);
         return mRootView;
     }
@@ -60,8 +60,19 @@ public abstract class BaseFragment<P > extends SkinBaseFragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if (mPresenter != null) {
+            mPresenter.onStart();
+        }
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
+        if (mPresenter != null) {
+            mPresenter.onDestroy();
+        }
         if (useEventBus())// 如果要使用 eventbus 请将此方法返回 true
             EventBus.getDefault().unregister(this);
     }

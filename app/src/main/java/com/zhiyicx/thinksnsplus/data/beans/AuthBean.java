@@ -9,6 +9,8 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
 
+import java.io.Serializable;
+
 /**
  * @author LiuChao
  * @describe
@@ -16,8 +18,9 @@ import org.greenrobot.greendao.annotation.Generated;
  * @contact email:450127106@qq.com
  */
 @Entity
-public class AuthBean extends CacheBean implements Parcelable {
-    public static final String SHAREPREFERENCE_TAG="authBean";
+public class AuthBean extends CacheBean implements Parcelable, Serializable {
+    public static final long serialVersionUID = 536871008l;
+    public static final String SHAREPREFERENCE_TAG = "authBean";
     @Id
     private Long created_at;
     private int expires;
@@ -94,7 +97,7 @@ public class AuthBean extends CacheBean implements Parcelable {
 
     @Generated(hash = 1235601946)
     public AuthBean(Long created_at, int expires, String token,
-            String refresh_token, int user_id) {
+                    String refresh_token, int user_id) {
         this.created_at = created_at;
         this.expires = expires;
         this.token = token;

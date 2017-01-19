@@ -2,6 +2,7 @@ package com.zhiyicx.common.mvp;
 
 import android.app.Application;
 
+import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 
 import javax.inject.Inject;
@@ -16,7 +17,7 @@ import rx.subscriptions.CompositeSubscription;
  * @Contact 335891510@qq.com
  */
 
-public abstract class BasePresenter<R, V extends IBaseView> {
+public abstract class BasePresenter<R, V extends IBaseView> implements IBasePresenter {
     protected final String TAG = this.getClass().getSimpleName();
 
     protected CompositeSubscription mCompositeSubscription;

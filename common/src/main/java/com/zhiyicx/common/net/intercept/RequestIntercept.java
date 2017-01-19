@@ -47,8 +47,6 @@ public class RequestIntercept implements Interceptor {
         } else {
             LogUtils.d(TAG, "request.body() == null");
         }
-
-
         //打印url信息
         LogUtils.d(TAG, "Sending Request %s on %n Params --->  %s%n Connection ---> %s%n Headers ---> %s", request.url()
                 , request.body() != null ? parseParams(request.body(), requestbuffer) : "null"

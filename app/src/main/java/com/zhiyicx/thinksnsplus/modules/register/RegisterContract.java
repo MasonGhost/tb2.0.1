@@ -69,7 +69,6 @@ public interface RegisterContract {
          */
         Observable<BaseJson<AuthBean>> register(String phone, String name, String vertifyCode, String password);
 
-        boolean  saveAuthBean(AuthBean authBean);
     }
 
     interface Presenter extends IBasePresenter {

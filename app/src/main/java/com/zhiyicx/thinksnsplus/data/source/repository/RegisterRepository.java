@@ -5,7 +5,6 @@ import android.content.Context;
 import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
@@ -23,7 +22,7 @@ import rx.schedulers.Schedulers;
  * @Contact master.jungle68@gmail.com
  */
 
-public class RegisterRepository implements RegisterContract.Repository {
+public class RegisterRepository  implements RegisterContract.Repository {
     private CommonClient mCommonClient;
     private RegisterClient mRegisterClient;
     private Context mContext;
@@ -46,8 +45,4 @@ public class RegisterRepository implements RegisterContract.Repository {
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
-    @Override
-    public boolean saveAuthBean(AuthBean authBean) {
-        return SharePreferenceUtils.saveObject(mContext, AuthBean.SHAREPREFERENCE_TAG, authBean);
-    }
 }

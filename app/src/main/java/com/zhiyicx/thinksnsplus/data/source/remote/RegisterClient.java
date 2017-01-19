@@ -27,7 +27,7 @@ public interface RegisterClient {
      * @return
      */
     @FormUrlEncoded
-    @POST("api/v1/auth")
+    @POST("api/v1/auth/register")
     Observable<BaseJson<AuthBean>> register(@Query("requestState") String requestState, @Field("phone") String phone
             , @Field("name") String name, @Field("code") String vertifyCode, @Field("password") String password,@Field("device_code") String deviceCode);
 }

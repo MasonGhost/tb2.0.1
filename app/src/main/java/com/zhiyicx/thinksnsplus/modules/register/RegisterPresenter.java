@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseJsonAction;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
+import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
 
 import javax.inject.Inject;
 
@@ -30,6 +31,9 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
     public static final int SNS_TIME = 60 * S_TO_MS_SPACING; // 发送短信间隔时间，单位 ms
 
     private int mTimeOut = SNS_TIME;
+
+    @Inject
+    IAuthRepository mAuthRepository;
 
     CountDownTimer timer = new CountDownTimer(mTimeOut, S_TO_MS_SPACING) {
 
@@ -110,7 +114,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
                     @Override
                     protected void onSuccess(AuthBean data) {
                         mRootView.setRegisterBtEnabled(true);
-                        mRootView.showMessage(data.getUser_id()+"");
+                        mAuthRepository.saveAuthBean(data);
                     }
 
                     @Override

@@ -187,7 +187,6 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     @Override
     public void onDestroy() {
         super.onDestroy();
-
     }
 
     @Override
