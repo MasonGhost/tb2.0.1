@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.login;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -11,8 +10,10 @@ import android.widget.Toast;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.password.findpassword.FindPasswordActivity;
+import com.zhiyicx.thinksnsplus.modules.register.RegisterActivity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -35,7 +36,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     @BindView(R.id.et_login_password)
     EditText mEtLoginPassword;
     @BindView(R.id.bt_login_login)
-    Button mBtLoginLogin;
+    LoadingButton mBtLoginLogin;
     @BindView(R.id.tv_error_tip)
     TextView mTvErrorTip;
     @BindView(R.id.tv_look_around)
@@ -108,6 +109,12 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     @Override
     protected boolean showToolBarDivider() {
         return true;
+    }
+
+    @Override
+    protected void setRightClick() {
+        super.setRightClick();
+        startActivity(new Intent(getActivity(), RegisterActivity.class));
     }
 
     @Override

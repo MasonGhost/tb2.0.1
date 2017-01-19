@@ -4,19 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:animateLayoutChanges="true">
-
-    <!--<com.zhiyicx.baseproject.widget.chat.CahtMenuItem-->
-    <!--android:id="@+id/input_menu"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_alignParentBottom="true"/>-->
+    android:animateLayoutChanges="true"
+    android:background="@color/white">
 
     <com.zhiyicx.baseproject.widget.chat.ChatMessageList
         android:id="@+id/message_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/ilv_container"
         app:showName="true"
         app:showUserAvatar="true"
         />

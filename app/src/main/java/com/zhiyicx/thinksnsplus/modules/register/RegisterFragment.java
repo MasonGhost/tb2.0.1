@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.register;
 
+import android.graphics.drawable.AnimationDrawable;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.TextUtils;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.edittext.PasswordEditText;
 import com.zhiyicx.thinksnsplus.R;
@@ -36,24 +38,26 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     DeleteEditText mEtRegistPhone;
     @BindView(R.id.bt_regist_send_vertify_code)
     Button mBtRegistSendVertifyCode;
-    @BindView(R.id.pb_regist_loading)
-    ImageView mPbRegistLoading;
+    @BindView(R.id.iv_vertify_loading)
+    ImageView mIvVertifyLoading;
     @BindView(R.id.et_regist_vertify_code)
     DeleteEditText mEtRegistVertifyCode;
     @BindView(R.id.et_regist_password)
     PasswordEditText mEtRegistPassword;
     @BindView(R.id.bt_regist_regist)
-    Button mBtRegistRegist;
+    LoadingButton mBtRegistRegist;
     @BindView(R.id.tv_error_tip)
     TextView mTvErrorTip;
     @BindView(R.id.tv_look_around)
     TextView mTvLookAround;
 
+    private AnimationDrawable mVertifyAnimationDrawable;
     private boolean isNameEdited;
     private boolean isPhoneEdited;
     private boolean isCodeEdited;
     private boolean isPassEdited;
     private boolean mIsVertifyCodeEnalbe = true;
+    private boolean isRegisting = false;
 
     public static RegisterFragment newInstance() {
         RegisterFragment fragment = new RegisterFragment();
@@ -66,12 +70,24 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+
+    @Override
+    protected int setToolBarBackgroud() {
+        return R.color.white;
+    }
+
+    @Override
     protected String setCenterTitle() {
         return getString(R.string.immediate_regist);
     }
 
     @Override
     protected void initView(View rootView) {
+        mVertifyAnimationDrawable = (AnimationDrawable) mIvVertifyLoading.getDrawable();
+
         // 用户名观察
         RxTextView.textChanges(mEtRegistUsername)
                 .compose(this.<CharSequence>bindToLifecycle())
@@ -101,7 +117,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                 .subscribe(new Action1<CharSequence>() {
                     @Override
                     public void call(CharSequence charSequence) {
-                        isCodeEdited = !TextUtils.isEmpty(charSequence.toString()) && charSequence.length() == getResources().getInteger(R.integer.vertiry_code_lenght);
+                        isCodeEdited = !TextUtils.isEmpty(charSequence.toString());
                         setConfirmEnable();
                     }
                 });
@@ -187,8 +203,28 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     }
 
     @Override
+    public void setVertifyCodeLoadin(boolean isEnable) {
+        if (isEnable) {
+            mIvVertifyLoading.setVisibility(View.VISIBLE);
+            mBtRegistSendVertifyCode.setVisibility(View.INVISIBLE);
+            mVertifyAnimationDrawable.start();
+        } else {
+            mVertifyAnimationDrawable.stop();
+            mIvVertifyLoading.setVisibility(View.INVISIBLE);
+            mBtRegistSendVertifyCode.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
     public void setVertifyCodeBtText(String text) {
         mBtRegistSendVertifyCode.setText(text);
+    }
+
+    @Override
+    public void setRegisterBtEnabled(boolean isEnable) {
+        mBtRegistRegist.handleAnimation(!isEnable);
+        isRegisting = !isEnable;
+        setConfirmEnable();
     }
 
     @Override
@@ -218,7 +254,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
      * 设置确定按钮是否可点击
      */
     private void setConfirmEnable() {
-        if (isNameEdited && isPhoneEdited && isCodeEdited && isPassEdited) {
+        if (isNameEdited && isPhoneEdited && isCodeEdited && isPassEdited && !isRegisting) {
             mBtRegistRegist.setEnabled(true);
         } else {
             mBtRegistRegist.setEnabled(false);

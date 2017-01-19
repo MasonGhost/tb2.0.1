@@ -30,6 +30,22 @@ public interface FindPasswordContract {
          * 设置发送按钮的提示信息
          */
         void setVertifyCodeBtText(String text);
+
+        /**
+         * 验证码加载动画
+         * @param isEnable
+         */
+        void setVertifyCodeLoading(boolean isEnable);
+        /**
+         * 关闭
+         */
+        void finsh();
+        /**
+         * 设置确认按钮状态
+         *
+         * @param isEnable
+         */
+        void setSureBtEnabled(boolean isEnable);
     }
 
     /**

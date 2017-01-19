@@ -24,12 +24,20 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
  */
 
 public class MessageTextItemDelagate implements ItemViewDelegate<Message> {
+
     public static final int MAX_SPACING_TIME = 6;// 显示时间的，最大间隔时间；当两条消息间隔 > MAX_SPACING_TIME 时显示时间
     protected GlideImageLoaderStrategy mImageLoader;
 
     protected boolean mIsShowName = true;
     protected boolean mIsShowAvatar = true;
     protected Drawable mBubbleBg;
+
+
+    protected ChatMessageList.MessageListItemClickListener mMessageListItemClickListener;
+
+    public void setMessageListItemClickListener(ChatMessageList.MessageListItemClickListener messageListItemClickListener) {
+        mMessageListItemClickListener = messageListItemClickListener;
+    }
 
     public MessageTextItemDelagate() {
     }
@@ -64,7 +72,7 @@ public class MessageTextItemDelagate implements ItemViewDelegate<Message> {
     }
 
     @Override
-    public void convert(ViewHolder holder, Message message, Message lastMessage, int position) {
+    public void convert(ViewHolder holder, final Message message, Message lastMessage, int position) {
         // 显示时间的，最大间隔时间；当两条消息间隔 > MAX_SPACING_TIME 时显示时间
         if (lastMessage == null || (message.getCreate_time() - lastMessage.getCreate_time()) >= MAX_SPACING_TIME * ConstantConfig.MIN) {
             holder.setText(R.id.tv_chat_time, TimeUtils.getTimeFriendlyForDetail(message.getCreate_time() / 1000));// 测试数据，暂时使用
@@ -102,6 +110,68 @@ public class MessageTextItemDelagate implements ItemViewDelegate<Message> {
             holder.getView(R.id.rl_chat_bubble).setBackgroundDrawable(mBubbleBg);
         }
         holder.setText(R.id.tv_chat_content, message.getTxt());
+        // 响应事件
+        if (mMessageListItemClickListener != null) {
+            View.OnClickListener mStatusClick = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mMessageListItemClickListener.onStatusClick(message);
+                }
+            };
+
+            View.OnClickListener mUserInfoClick = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mMessageListItemClickListener.onUserInfoClick("张三");
+                }
+            };
+
+            View.OnLongClickListener mUserInfoLongClick = new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    return  mMessageListItemClickListener.onUserInfoLongClick("张三");
+                }
+            };
+            View.OnClickListener mBubbleClick = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mMessageListItemClickListener.onBubbleClick(message);
+                }
+            };
+
+            View.OnLongClickListener mBubbleLongClick = new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                   return mMessageListItemClickListener.onBubbleLongClick(message);
+
+                }
+            };
+            View.OnClickListener mOnItemClick = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mMessageListItemClickListener.onItemClickListener(message);
+                }
+            };
+
+            View.OnLongClickListener mOnItemLongClick = new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    return  mMessageListItemClickListener.onItemLongClickListener(message);
+                }
+            };
+            holder.setOnClickListener(R.id.msg_status, mStatusClick);
+            holder.setOnClickListener(R.id.tv_chat_name, mUserInfoClick);
+            holder.setOnLongClickListener(R.id.tv_chat_name, mUserInfoLongClick);
+            holder.setOnClickListener(R.id.iv_chat_headpic, mUserInfoClick);
+            holder.setOnLongClickListener(R.id.iv_chat_headpic, mUserInfoLongClick);
+            holder.setOnClickListener(R.id.rl_chat_bubble, mBubbleClick);
+            holder.setOnLongClickListener(R.id.rl_chat_bubble, mBubbleLongClick);
+            holder.getConvertView().setOnClickListener(mOnItemClick);
+            holder.getConvertView().setOnLongClickListener(mOnItemLongClick);
+        }
+
     }
+
+
 }
 

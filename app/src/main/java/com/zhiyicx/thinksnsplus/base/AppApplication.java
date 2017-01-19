@@ -4,16 +4,12 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.zhiyicx.baseproject.base.TSApplication;
+import com.zhiyicx.common.net.HttpsSSLFactroyUtils;
 import com.zhiyicx.common.net.intercept.CommonRequestIntercept;
 import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.common.net.HttpsSSLFactroyUtils;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -71,16 +67,16 @@ public class AppApplication extends TSApplication {
             public Response onHttpResponse(String httpResult, Interceptor.Chain chain, Response response) {
                 //这里可以先客户端一步拿到每一次http请求的结果,可以解析成json,做一些操作,如检测到token过期后
                 //重新请求token,并重新执行请求
-                try {
-                    JSONArray array = new JSONArray(httpResult);
-                    JSONObject object = (JSONObject) array.get(0);
-                    String login = object.getString("register");
-                    String avatar_url = object.getString("avatar_url");
-                    LogUtils.d(TAG, "result ------>" + login + "    ||   avatar_url------>" + avatar_url);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    JSONArray array = new JSONArray(httpResult);
+//                    JSONObject object = (JSONObject) array.get(0);
+//                    String login = object.getString("register");
+//                    String avatar_url = object.getString("avatar_url");
+//                    LogUtils.d(TAG, "result ------>" + login + "    ||   avatar_url------>" + avatar_url);
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
 
 
                 //这里如果发现token过期,可以先请求最新的token,然后在拿新的token放入request里去重新请求

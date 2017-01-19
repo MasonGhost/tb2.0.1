@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical">
 
     <LinearLayout
@@ -64,11 +65,10 @@
                 android:textSize="@dimen/size_content"/>
 
             <ImageView
-                android:id="@+id/pb_regist_loading"
+                android:id="@+id/iv_vertify_loading"
                 android:layout_width="@dimen/icon_for_assist_small"
                 android:layout_height="@dimen/icon_for_assist_small"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@id/bt_regist_send_vertify_code"
+                android:layout_centerInParent="true"
                 android:src="@drawable/frame_loading_grey"
                 android:visibility="invisible"
                 />
@@ -117,12 +117,12 @@
     <include
         layout="@layout/include_error_tip_text"/>
 
-    <Button
+    <com.zhiyicx.baseproject.widget.button.LoadingButton
         android:id="@+id/bt_regist_regist"
         style="@style/style_login_button"
         android:layout_marginTop="@dimen/button_login_margin_top"
         android:enabled="false"
-        android:text="@string/immediate_regist"/>
+        app:text="@string/immediate_regist"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

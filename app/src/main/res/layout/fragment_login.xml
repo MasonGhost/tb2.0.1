@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical">
 
     <LinearLayout
@@ -40,12 +41,12 @@
     <include
         layout="@layout/include_error_tip_text"/>
 
-    <Button
+    <com.zhiyicx.baseproject.widget.button.LoadingButton
         android:id="@+id/bt_login_login"
         style="@style/style_login_button"
         android:layout_marginTop="@dimen/button_login_margin_top"
         android:enabled="false"
-        android:text="@string/bt_login"/>
+        app:text="@string/bt_login"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

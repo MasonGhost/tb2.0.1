@@ -3,18 +3,19 @@ package com.zhiyicx.thinksnsplus.modules.register;
 import android.os.CountDownTimer;
 
 import com.zhiyicx.baseproject.cache.CacheBean;
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.BaseJsonAction;
+import com.zhiyicx.thinksnsplus.data.beans.LoginBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 
 import javax.inject.Inject;
 
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * @Describe
@@ -55,27 +56,34 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
         if (checkPhone(phone)) {
             return;
         }
+        mRootView.setVertifyCodeBtEnabled(false);
+        mRootView.setVertifyCodeLoadin(true);
         Subscription getVertifySub = mRepository.getVertifyCode(phone, CommonClient.VERTIFY_CODE_TYPE_REGISTER)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<BaseJson<CacheBean>>() {
-                    @Override
-                    public void call(BaseJson<CacheBean> json) {
-//                        if (json.code.equals(ZBLApi.REQUEST_SUCESS)) {
-                        mRootView.hideLoading();//隐藏loading
-                        timer.start();//开始倒计时
-                        mRootView.setVertifyCodeBtEnabled(false);
-                        mRootView.showMessage(json.getMessage());
-//                        } else {
-//                            mRootView.showMessage(json.getMessage());
-//                        }
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                        mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
-                    }
-                });
+                .subscribeOn(Schedulers.io())
+                .subscribe(new BaseJsonAction<CacheBean>() {
+                               @Override
+                               protected void onSuccess(CacheBean data) {
+                                   mRootView.hideLoading();//隐藏loading
+                                   timer.start();//开始倒计时
+                                   mRootView.setVertifyCodeLoadin(false);
+                               }
+
+                               @Override
+                               protected void onFailure(String message) {
+                                   mRootView.showMessage(message);
+                                   mRootView.setVertifyCodeBtEnabled(true);
+                                   mRootView.setVertifyCodeLoadin(false);
+                               }
+                           }
+                        , new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                throwable.printStackTrace();
+                                mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
+                                mRootView.setVertifyCodeBtEnabled(true);
+                                mRootView.setVertifyCodeLoadin(false);
+                            }
+                        });
         // 代表检测成功
         mRootView.showMessage("");
         addSubscrebe(getVertifySub);
@@ -87,32 +95,33 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
         if (checkUsername(name)) {
             return;
         }
-        if (checkPasswordLength(password)) {
-            return;
-        }
         if (checkPhone(phone)) {
             return;
         }
-        mRootView.setVertifyCodeBtEnabled(false);
+        if (checkVertifyLength(vertifyCode)) {
+            return;
+        }
+        if (checkPasswordLength(password)) {
+            return;
+        }
+        mRootView.setRegisterBtEnabled(false);
         Subscription registerSub = mRepository.register(phone, name, vertifyCode, password)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<BaseJson<CacheBean>>() {
+                .subscribe(new BaseJsonAction<LoginBean>() {
                     @Override
-                    public void call(BaseJson<CacheBean> json) {
-//                        if (json.code.equals(ZBLApi.REQUEST_SUCESS)) {
-                        mRootView.hideLoading();//隐藏loading
-                        timer.start();//开始倒计时
-                        mRootView.showMessage(json.getMessage());
-//                        } else {
-//                            mRootView.showMessage(json.getMessage());
-//                        }
+                    protected void onSuccess(LoginBean data) {
+                        mRootView.setRegisterBtEnabled(true);
+                    }
+
+                    @Override
+                    protected void onFailure(String message) {
+                        mRootView.setRegisterBtEnabled(true);
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
                         throwable.printStackTrace();
                         mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
-                        mRootView.setVertifyCodeBtEnabled(true);
+                        mRootView.setRegisterBtEnabled(true);
                     }
                 });
         // 代表检测成功
@@ -129,6 +138,20 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
     public void onDestroy() {
         timer.cancel();
         unSubscribe();
+    }
+
+    /**
+     * 检测验证码码是否正确
+     *
+     * @param vertifyCode
+     * @return
+     */
+    private boolean checkVertifyLength(String vertifyCode) {
+        if (vertifyCode.length() != mContext.getResources().getInteger(R.integer.vertiry_code_lenght)) {
+            mRootView.showMessage(mContext.getString(R.string.vertify_code_input_hint));
+            return true;
+        }
+        return false;
     }
 
     /**

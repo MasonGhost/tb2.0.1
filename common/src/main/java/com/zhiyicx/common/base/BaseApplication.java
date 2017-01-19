@@ -1,14 +1,11 @@
 package com.zhiyicx.common.base;
 
-import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 import com.zhiyicx.common.BuildConfig;
-import com.zhiyicx.common.R;
 import com.zhiyicx.common.dagger.module.AppModule;
 import com.zhiyicx.common.dagger.module.HttpClientModule;
 import com.zhiyicx.common.dagger.module.ImageModule;
@@ -17,7 +14,6 @@ import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
 
-import java.util.LinkedList;
 import java.util.Set;
 
 import javax.net.ssl.SSLSocketFactory;
@@ -36,7 +32,6 @@ public abstract class BaseApplication extends SkinBaseApplication {
     protected final String TAG = this.getClass().getSimpleName();
 
     private static BaseApplication mApplication;
-    public LinkedList<Activity> mActivityList;
     private HttpClientModule mHttpClientModule;
     private AppModule mAppModule;
 
@@ -105,19 +100,6 @@ public abstract class BaseApplication extends SkinBaseApplication {
 
         return this.mRefWatcher;
     }
-
-    /**
-     * 返回一个存储所有存在的 activity 的列表
-     *
-     * @return
-     */
-    public LinkedList<Activity> getActivityList() {
-        if (mActivityList == null) {
-            mActivityList = new LinkedList<>();
-        }
-        return mActivityList;
-    }
-
 
     public HttpClientModule getHttpClientModule() {
         return mHttpClientModule;

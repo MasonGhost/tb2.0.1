@@ -21,6 +21,7 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.List;
 
+import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 
 /**
@@ -35,6 +36,9 @@ public class ChatMessageList extends FrameLayout {
     private static final float RECYCLEVIEW_ITEMDECORATION_SPACING = 15F;
 
     protected BGARefreshLayout mRefreshLayout;
+    protected BGARefreshLayout.BGARefreshLayoutDelegate mBGARefreshLayoutDelegate;
+    protected MessageListItemClickListener mMessageListItemClickListener;
+
     protected RecyclerView mRecyclerView;
     protected Conversation conversation;
     protected int chatType;
@@ -45,6 +49,9 @@ public class ChatMessageList extends FrameLayout {
     protected Drawable myBubbleBg;
     protected Drawable otherBuddleBg;
     protected Context mContext;
+
+    protected MessageSendItemDelagate mMessageSendItemDelagate;
+    protected MessageReceiveItemDelagate mMessageReceiveItemDelagate;
 
     public ChatMessageList(Context context) {
         super(context);
@@ -95,12 +102,14 @@ public class ChatMessageList extends FrameLayout {
         this.mContext = context;
         LayoutInflater.from(context).inflate(R.layout.view_chat_message_list, this);
         mRefreshLayout = (BGARefreshLayout) findViewById(R.id.rl_chat_refresh_layout);
+
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_chat_list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         mRecyclerView.addItemDecoration(new LinearDecoration(0, ConvertUtils.dp2px(getContext(), RECYCLEVIEW_ITEMDECORATION_SPACING), 0, 0));//设置Item的间隔
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());//设置动画
+        mRefreshLayout.setRefreshViewHolder(new BGANormalRefreshViewHolder(mContext, false));
     }
 
     /**
@@ -113,12 +122,26 @@ public class ChatMessageList extends FrameLayout {
         this.chatType = chatType;
         this.toChatUsername = toChatUsername;
         messageAdapter = new MultiItemTypeAdapter(mContext, datas);
-        messageAdapter.addItemViewDelegate(new MessageSendItemDelagate(showUserNick, showAvatar, myBubbleBg));
-        messageAdapter.addItemViewDelegate(new MessageReceiveItemDelagate(showUserNick, showAvatar, otherBuddleBg));
+        mMessageSendItemDelagate = new MessageSendItemDelagate(showUserNick, showAvatar, myBubbleBg);
+        mMessageSendItemDelagate.setMessageListItemClickListener(mMessageListItemClickListener);
+        mMessageReceiveItemDelagate = new MessageReceiveItemDelagate(showUserNick, showAvatar, otherBuddleBg);
+        mMessageReceiveItemDelagate.setMessageListItemClickListener(mMessageListItemClickListener);
+        messageAdapter.addItemViewDelegate(mMessageSendItemDelagate);
+        messageAdapter.addItemViewDelegate(mMessageReceiveItemDelagate);
         // TODO: 2017/1/7 添加图片、视频、音频等Delegate
         // set message adapter
         mRecyclerView.setAdapter(messageAdapter);
         refreshSelectLast();
+    }
+
+    /**
+     * 设置刷新监听
+     *
+     * @param BGARefreshLayoutDelegate
+     */
+    public void setBGARefreshLayoutDelegate(BGARefreshLayout.BGARefreshLayoutDelegate BGARefreshLayoutDelegate) {
+        mBGARefreshLayoutDelegate = BGARefreshLayoutDelegate;
+        mRefreshLayout.setDelegate(mBGARefreshLayoutDelegate);
     }
 
     /**
@@ -171,7 +194,7 @@ public class ChatMessageList extends FrameLayout {
     }
 
     public interface MessageListItemClickListener {
-        void onResendClick(Message message);
+        void onStatusClick(Message message);
 
         /**
          * there is default handling when bubble is clicked, if you want handle it, return true
@@ -180,23 +203,21 @@ public class ChatMessageList extends FrameLayout {
          * @param message
          * @return
          */
-        boolean onBubbleClick(Message message);
+        void onBubbleClick(Message message);
 
-        void onBubbleLongClick(Message message);
+        boolean onBubbleLongClick(Message message);
 
-        void onUserAvatarClick(String username);
+        void onUserInfoClick(String username);
 
-        void onUserAvatarLongClick(String username);
+        boolean onUserInfoLongClick(String username);
+
+        void onItemClickListener(Message message);
+
+        boolean onItemLongClickListener(Message message);
     }
 
-    /**
-     * set click listener
-     *
-     * @param listener
-     */
-    public void setItemClickListener(MultiItemTypeAdapter.OnItemClickListener listener) {
-        if (messageAdapter != null) {
-            messageAdapter.setOnItemClickListener(listener);
-        }
+    public void setMessageListItemClickListener(MessageListItemClickListener messageListItemClickListener) {
+        this.mMessageListItemClickListener = messageListItemClickListener;
     }
+
 }

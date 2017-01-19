@@ -8,7 +8,7 @@
     <!--密码最大长度-->
     <integer name="password_maxlenght">16</integer>
     <!--密码最小长度-->
-    <integer name="password_min_length">2</integer>
+    <integer name="password_min_length">6</integer>
     <!--用户名最大长度-->
     <integer name="username_max_length">20</integer>
     <!--用户名最小长度 ,数量代表字符-->

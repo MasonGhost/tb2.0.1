@@ -4,9 +4,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 
-import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import com.zhiyicx.common.base.i.IBaseActivity;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.ActivityHandler;
 
 import org.simple.eventbus.EventBus;
 
@@ -37,7 +37,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends SkinBaseActi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mApplication = (BaseApplication) getApplication();
-        mApplication.getActivityList().add(this);
+        ActivityHandler.getInstance().addActivity(this);
         mLayoutInflater = LayoutInflater.from(this);
         // 如果要使用 eventbus 请将此方法返回 true
         if (useEventBus()) {
@@ -62,9 +62,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends SkinBaseActi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        synchronized (BaseActivity.class) {
-            mApplication.getActivityList().remove(this);
-        }
+        ActivityHandler.getInstance().finishActivity(this);
         if (mUnbinder != Unbinder.EMPTY) mUnbinder.unbind();
         if (useEventBus())// 如果要使用 eventbus 请将此方法返回 true
             EventBus.getDefault().unregister(this);

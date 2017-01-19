@@ -1,10 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.password.changepassword;
 
 import com.zhiyicx.baseproject.cache.CacheBean;
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.BaseJsonAction;
 
 import javax.inject.Inject;
 
@@ -49,21 +49,27 @@ public class ChangePasswordPresenter extends BasePresenter<ChangePasswordContrac
         if (checkPasswordLength(oldPassword, mContext.getString(R.string.sure_new_password_toast_hint))) {
             return;
         }
-        if(!newPassword.equals(sureNessword))
-        {
+        if (!newPassword.equals(sureNessword)) {
             mRootView.showMessage(mContext.getString(R.string.password_diffrent));
             return;
         }
-        Subscription changePasswordSub=mRepository.changePassword(oldPassword,newPassword)
-                .subscribe(new Action1<BaseJson<CacheBean>>() {
+        Subscription changePasswordSub = mRepository.changePassword(oldPassword, newPassword)
+                .subscribe(new BaseJsonAction<CacheBean>() {
                     @Override
-                    public void call(BaseJson<CacheBean> booleanBaseJson) {
+                    protected void onSuccess(CacheBean data) {
+                        mRootView.showMessage(mContext.getString(R.string.change_password_success));
+                        mRootView.finsh();
+                    }
 
+                    @Override
+                    protected void onFailure(String message) {
+                        mRootView.showMessage(message);
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-
+                        throwable.printStackTrace();
+                        mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
                     }
                 });
         addSubscrebe(changePasswordSub);

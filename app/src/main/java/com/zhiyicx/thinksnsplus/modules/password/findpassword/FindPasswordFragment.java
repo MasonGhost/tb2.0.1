@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.password.findpassword;
 
+import android.graphics.drawable.Animatable;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.TextUtils;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.edittext.PasswordEditText;
 import com.zhiyicx.thinksnsplus.R;
@@ -38,8 +40,8 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
     DeleteEditText mEtPhone;
     @BindView(R.id.bt_send_vertify_code)
     Button mBtSendVertifyCode;
-    @BindView(R.id.pb_loading)
-    ImageView mPbLoading;
+    @BindView(R.id.iv_vertify_loading)
+    ImageView mIvVertifyLoading;
     @BindView(R.id.rl_send_vertify_code_container)
     RelativeLayout mRlSendVertifyCodeContainer;
     @BindView(R.id.et_vertify_code)
@@ -47,12 +49,14 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
     @BindView(R.id.et_password)
     PasswordEditText mEtPassword;
     @BindView(R.id.bt_sure)
-    Button mBtSure;
+    LoadingButton mBtSure;
 
     private boolean isPhoneEdited;
     private boolean isCodeEdited;
     private boolean isPassEdited;
     private boolean mIsVertifyCodeEnalbe = true;
+    private Animatable mVertifyAnimationDrawable;
+    private boolean isSureLoading;
 
     public static FindPasswordFragment newInstance() {
         FindPasswordFragment fragment = new FindPasswordFragment();
@@ -82,6 +86,7 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
 
     @Override
     protected void initView(View rootView) {
+        mVertifyAnimationDrawable = (Animatable) mIvVertifyLoading.getDrawable();
         // 电话号码观察
         RxTextView.textChanges(mEtPhone)
                 .compose(this.<CharSequence>bindToLifecycle())
@@ -101,7 +106,7 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
                 .subscribe(new Action1<CharSequence>() {
                     @Override
                     public void call(CharSequence charSequence) {
-                        isCodeEdited = !TextUtils.isEmpty(charSequence.toString()) && charSequence.length() == getResources().getInteger(R.integer.vertiry_code_lenght);
+                        isCodeEdited = !TextUtils.isEmpty(charSequence.toString());
                         setConfirmEnable();
                     }
                 });
@@ -164,7 +169,7 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
 
     @Override
     protected void initData() {
-
+        setConfirmEnable();
     }
 
 
@@ -200,8 +205,32 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
     }
 
     @Override
+    public void setVertifyCodeLoading(boolean isEnable) {
+        if (isEnable) {
+            mIvVertifyLoading.setVisibility(View.VISIBLE);
+            mBtSendVertifyCode.setVisibility(View.INVISIBLE);
+            mVertifyAnimationDrawable.start();
+        } else {
+            mVertifyAnimationDrawable.stop();
+            mIvVertifyLoading.setVisibility(View.INVISIBLE);
+            mBtSendVertifyCode.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
     public void setVertifyCodeBtText(String text) {
         mBtSendVertifyCode.setText(text);
+    }
+
+    @Override
+    public void finsh() {
+        getActivity().finish();
+    }
+
+    @Override
+    public void setSureBtEnabled(boolean isEnable) {
+        mBtSure.handleAnimation(!isEnable);
+        isSureLoading = !isEnable;
     }
 
 
@@ -209,7 +238,7 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
      * 设置确定按钮是否可点击
      */
     private void setConfirmEnable() {
-        if (isPhoneEdited && isCodeEdited && isPassEdited) {
+        if (isPhoneEdited && isCodeEdited && isPassEdited && !isSureLoading) {
             mBtSure.setEnabled(true);
         } else {
             mBtSure.setEnabled(false);
