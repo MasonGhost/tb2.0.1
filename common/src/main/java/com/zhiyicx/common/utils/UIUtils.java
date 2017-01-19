@@ -50,4 +50,25 @@ public class UIUtils {
         int id = context.getResources().getIdentifier(name, type, context.getPackageName());
         return id;
     }
+
+    /**
+     * 获取屏幕宽度
+     *
+     * @param context
+     * @return
+     */
+    public static int getWindowWidth(Context context) {
+        return context.getResources().getDisplayMetrics().widthPixels;
+    }
+
+    /**
+     * 获取屏幕高度
+     *
+     * @param context
+     * @return
+     */
+
+    public static int getWindowHeight(Context context) {
+        return context.getResources().getDisplayMetrics().heightPixels;
+    }
 }
