@@ -78,12 +78,14 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
         if (checkPasswordLength(newPassword)) {
             return;
         }
+        mRootView.setSureBtEnabled(false);
         Subscription findPasswordSub = mRepository.findPassword(phone, vertifyCode, newPassword)
                 .subscribe(new BaseJsonAction<CacheBean>() {
                     @Override
                     protected void onSuccess(CacheBean data) {
                         mRootView.showMessage(mContext.getString(R.string.find_password_success));
                         mRootView.finsh();
+                        mRootView.setSureBtEnabled(true);
                     }
 
                     @Override
@@ -95,6 +97,7 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
                     public void call(Throwable throwable) {
                         throwable.printStackTrace();
                         mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
+                        mRootView.setSureBtEnabled(true);
                     }
                 });
         // 代表检测成功

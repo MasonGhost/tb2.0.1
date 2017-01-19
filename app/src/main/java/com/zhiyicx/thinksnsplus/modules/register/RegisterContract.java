@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.LoginBean;
 
 import rx.Observable;
 
@@ -66,7 +67,7 @@ public interface RegisterContract {
          * @param password    用户密码
          * @return
          */
-        Observable<BaseJson<CacheBean>> register(String phone, String name, String vertifyCode, String password);
+        Observable<BaseJson<LoginBean>> register(String phone, String name, String vertifyCode, String password);
     }
 
     interface Presenter extends IBasePresenter {

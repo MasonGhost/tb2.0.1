@@ -102,12 +102,13 @@ public class LoadingButton extends FrameLayout {
             throw new IllegalArgumentException("load animation not be null");
         if (status) {
             if (!mAnimationDrawable.isRunning()) {
+                mIvLoad.setVisibility(VISIBLE);
                 mAnimationDrawable.start();
             }
         } else {
             if (mAnimationDrawable.isRunning()) {
                 mAnimationDrawable.stop();
-                mIvLoad.setVisibility(GONE);
+                mIvLoad.setVisibility(INVISIBLE);
             }
         }
     }

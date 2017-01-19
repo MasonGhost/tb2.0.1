@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.data.beans.LoginBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -34,7 +35,7 @@ public class RegisterRepository implements RegisterContract.Repository {
     }
 
     @Override
-    public Observable<BaseJson<CacheBean>> register(String phone, String name, String vertifyCode, String password) {
+    public Observable<BaseJson<LoginBean>> register(String phone, String name, String vertifyCode, String password) {
         return mRegisterClient.register("success", phone, name, vertifyCode, password)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }

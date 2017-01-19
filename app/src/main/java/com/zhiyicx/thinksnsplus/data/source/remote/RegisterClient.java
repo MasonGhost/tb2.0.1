@@ -1,7 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.remote;
 
-import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.data.beans.LoginBean;
 
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -28,6 +28,6 @@ public interface RegisterClient {
      */
     @FormUrlEncoded
     @POST("api/v1/auth")
-    Observable<BaseJson<CacheBean>> register(@Query("requestState") String requestState, @Field("phone") String phone
+    Observable<BaseJson<LoginBean>> register(@Query("requestState") String requestState, @Field("phone") String phone
             , @Field("name") String name, @Field("vertifyCode") String vertifyCode, @Field("password") String password);
 }

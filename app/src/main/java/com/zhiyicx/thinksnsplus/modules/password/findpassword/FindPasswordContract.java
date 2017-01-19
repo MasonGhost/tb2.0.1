@@ -40,6 +40,12 @@ public interface FindPasswordContract {
          * 关闭
          */
         void finsh();
+        /**
+         * 设置确认按钮状态
+         *
+         * @param isEnable
+         */
+        void setSureBtEnabled(boolean isEnable);
     }
 
     /**

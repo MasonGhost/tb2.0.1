@@ -56,6 +56,7 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
     private boolean isPassEdited;
     private boolean mIsVertifyCodeEnalbe = true;
     private Animatable mVertifyAnimationDrawable;
+    private boolean isSureLoading;
 
     public static FindPasswordFragment newInstance() {
         FindPasswordFragment fragment = new FindPasswordFragment();
@@ -85,7 +86,7 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
 
     @Override
     protected void initView(View rootView) {
-        mVertifyAnimationDrawable= (Animatable) mIvVertifyLoading.getDrawable();
+        mVertifyAnimationDrawable = (Animatable) mIvVertifyLoading.getDrawable();
         // 电话号码观察
         RxTextView.textChanges(mEtPhone)
                 .compose(this.<CharSequence>bindToLifecycle())
@@ -202,6 +203,7 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
         mIsVertifyCodeEnalbe = isEnable;
         mBtSendVertifyCode.setEnabled(isEnable);
     }
+
     @Override
     public void setVertifyCodeLoading(boolean isEnable) {
         if (isEnable) {
@@ -225,12 +227,18 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
         getActivity().finish();
     }
 
+    @Override
+    public void setSureBtEnabled(boolean isEnable) {
+        mBtSure.handleAnimation(!isEnable);
+        isSureLoading = !isEnable;
+    }
+
 
     /**
      * 设置确定按钮是否可点击
      */
     private void setConfirmEnable() {
-        if (isPhoneEdited && isCodeEdited && isPassEdited) {
+        if (isPhoneEdited && isCodeEdited && isPassEdited && !isSureLoading) {
             mBtSure.setEnabled(true);
         } else {
             mBtSure.setEnabled(false);
