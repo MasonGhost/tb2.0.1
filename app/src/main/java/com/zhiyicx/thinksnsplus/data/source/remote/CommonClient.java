@@ -64,7 +64,7 @@ public interface CommonClient {
      * @return 成功后自动调用auth接口，返回信息和login一样
      */
     @PATCH("api/v1/auth")
-    Observable<AuthBean> refreshToken(@Query("refresh_token") String refrshToken, @Query("device_code") String deviceCode);
+    Observable<BaseJson<AuthBean>> refreshToken(@Query("refresh_token") String refrshToken, @Query("device_code") String deviceCode);
 
 
     ///////////////////////////////////////文件上传////////////////////////////////////////////////////

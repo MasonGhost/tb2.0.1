@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.zhiyicx.baseproject.base.TSApplication;
+import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.net.HttpsSSLFactroyUtils;
 import com.zhiyicx.common.net.intercept.CommonRequestIntercept;
 import com.zhiyicx.common.net.listener.RequestInterceptListener;
@@ -189,18 +190,33 @@ public class AppApplication extends TSApplication {
     /**
      * 尝试通过refreshToken
      */
-    private void refreshToken() {
+    private void attemptToRefreshToken() {
+        if (!isNeededRefreshToken()) {
+            return;
+        }
         CommonClient commonClient = AppComponentHolder.getAppComponent().serviceManager().getCommonClient();
         String imei = DeviceUtils.getIMEI(this);
-        commonClient.refreshToken("fdsaf",imei)
+        commonClient.refreshToken("fdsaf", imei)
                 .subscribeOn(Schedulers.io())
-                .retryWhen(new RetryWithDelay(2,2))
+                .retryWhen(new RetryWithDelay(2, 2))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<AuthBean>() {
+                .subscribe(new Action1<BaseJson<AuthBean>>() {
                     @Override
-                    public void call(AuthBean authBean) {
+                    public void call(BaseJson<AuthBean> authBeanBaseJson) {
+                        if (authBeanBaseJson.isStatus() || authBeanBaseJson.getCode() == 0) {
+                            // 获取了最新的token，将这些信息保存起来
 
+                        }
                     }
                 });
+    }
+
+    /**
+     * 是否需要刷新token
+     *
+     * @return
+     */
+    private boolean isNeededRefreshToken() {
+        return false;
     }
 }
