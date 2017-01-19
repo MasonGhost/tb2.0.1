@@ -13,6 +13,7 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.password.findpassword.FindPasswordActivity;
+import com.zhiyicx.thinksnsplus.modules.register.RegisterActivity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -108,6 +109,12 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     @Override
     protected boolean showToolBarDivider() {
         return true;
+    }
+
+    @Override
+    protected void setRightClick() {
+        super.setRightClick();
+        startActivity(new Intent(getActivity(), RegisterActivity.class));
     }
 
     @Override

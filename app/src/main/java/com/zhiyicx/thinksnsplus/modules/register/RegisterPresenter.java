@@ -102,7 +102,6 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
         if (checkPasswordLength(password)) {
             return;
         }
-        mRootView.setVertifyCodeBtEnabled(false);
         Subscription registerSub = mRepository.register(phone, name, vertifyCode, password)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<BaseJson<CacheBean>>() {
@@ -121,7 +120,6 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
                     public void call(Throwable throwable) {
                         throwable.printStackTrace();
                         mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
-                        mRootView.setVertifyCodeBtEnabled(true);
                     }
                 });
         // 代表检测成功
