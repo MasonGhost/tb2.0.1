@@ -44,4 +44,10 @@ public class RegisterRepository implements RegisterContract.Repository {
         return mRegisterClient.register("success", phone, name, vertifyCode, password, DeviceUtils.getIMEI(mContext))
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
+
+    @Override
+    public boolean saveAuthBean(AuthBean authBean) {
+
+        return false;
+    }
 }
