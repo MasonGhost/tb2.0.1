@@ -194,7 +194,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         // 如果toolbar背景是白色的，就将文字颜色设置成黑色
         if (showToolbar() && ContextCompat.getColor(getContext(),setToolBarBackgroud()) == Color.WHITE) {
             mToolbarCenter.setTextColor(ContextCompat.getColor(getContext(),R.color.important_for_content));
-            mToolbarRight.setTextColor(ContextCompat.getColor(getContext(),R.color.selector_text_color));
+            mToolbarRight.setTextColor(ContextCompat.getColorStateList(getContext(),R.color.selector_text_color));
 
             mToolbarLeft.setTextColor(ContextCompat.getColor(getContext(),R.color.important_for_content));
             StatusBarUtils.statusBarLightMode(getActivity());

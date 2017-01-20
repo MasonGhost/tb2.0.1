@@ -1,3 +1,4 @@
+2017年1月20日15:51:10
 # 网络请求说明
 
 ##  1.概述
@@ -69,6 +70,8 @@ Inject
 ServiceManager mServiceManager;
 
 ```
+
+#### 5. 网络数据请求，请查看[API](../app/API.md)
 **注：**
 如需很好的了解这一过程，必须对[Dagger2](DAGGER2.md)有很好的了解
 ## 4.逻辑描述
@@ -76,8 +79,6 @@ ServiceManager mServiceManager;
  - 扩展实现：
  1.拦截器
 实现`Interceptor`接口，重新内部方法即可，并重写`BaseApplicaiton`的`getInterceptors`方法即可
-
-2016年12月23日 11:20:49
 
 
 

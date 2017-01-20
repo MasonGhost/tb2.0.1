@@ -125,10 +125,22 @@ public abstract class BaseSubscribe<T> extends Subscriber<BaseJson<T>> {
         }
     }
 
+    /**
+     * 服务器正确处理返回正确数据
+     * @param data 正确的数据
+     */
     protected abstract void onSuccess(T data);
 
+    /**
+     * 服务器正确接收到请求，主动返回错误状态以及数据
+     * @param message 错误信息
+     */
     protected abstract void onFailure(String message);
 
+    /**
+     *  系统级错误，网络错误，系统内核错误等
+     * @param throwable
+     */
     protected abstract void onException(Throwable throwable);
 
 }
