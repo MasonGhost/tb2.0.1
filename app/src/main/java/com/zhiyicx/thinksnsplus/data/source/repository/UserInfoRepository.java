@@ -141,6 +141,11 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                 });
     }
 
+    @Override
+    public Observable<BaseJson> changeUserInfo(HashMap<String, String> userInfos) {
+        return mUserInfoClient.changeUserInfo(userInfos);
+    }
+
     /**
      * 上传文件，构造参数
      */

@@ -8,6 +8,7 @@ import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.LoginRepository;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterContract;
 
@@ -16,6 +17,7 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -34,6 +36,9 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
         super(repository, rootView);
     }
 
+    @Inject
+    IAuthRepository mAuthRepository;
+
     /**
      * 将Presenter从传入fragment
      */
@@ -49,7 +54,8 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
             mRootView.showErrorTips(mContext.getString(R.string.phone_number_toast_hint));
             return;
         }
-        mRepository.login(mContext, phone, password)
+        mRootView.setLogining();
+        Subscription subscription = mRepository.login(mContext, phone, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<BaseJson<AuthBean>>() {
@@ -57,10 +63,11 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
                     public void call(BaseJson<AuthBean> integerBaseJson) {
                         if (integerBaseJson.isStatus()) {
                             // 登录成功跳转
-                            mRootView.setLoginSuccess();
+                            mAuthRepository.saveAuthBean(integerBaseJson.getData());// 保存auth信息
+                            mRootView.setLoginState(true);
                         } else {
                             // 登录失败
-                            mRootView.setLoginFailure();
+                            mRootView.setLoginState(false);
                             mRootView.showErrorTips(integerBaseJson.getMessage());
                         }
                     }
@@ -69,9 +76,10 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
                     public void call(Throwable e) {
                         LogUtils.e(e, "login_error" + e.getMessage());
                         mRootView.showErrorTips(mContext.getString(R.string.err_net_not_work));
-                        mRootView.setLoginFailure();
+                        mRootView.setLoginState(false);
                     }
                 });
+        addSubscrebe(subscription);
     }
 
     @Override
@@ -79,8 +87,4 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
 
     }
 
-    @Override
-    public void onDestroy() {
-
-    }
 }

@@ -48,6 +48,12 @@ public abstract class BasePresenter<R, V extends IBaseView> implements IBasePres
     void setupListeners() {
         mRootView.setPresenter(this);
     }
+
+    @Override
+    public void onDestroy() {
+        unSubscribe();
+    }
+
     /**
      * 是否使用 eventBus,默认为使用(true)，
      *
@@ -74,6 +80,7 @@ public abstract class BasePresenter<R, V extends IBaseView> implements IBasePres
             mCompositeSubscription.unsubscribe();// 保证 activity 结束时取消所有正在执行的订阅
         }
     }
+
 
 
 }

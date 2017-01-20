@@ -22,8 +22,8 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
     public static final long serialVersionUID = 536871008l;
     public static final String SHAREPREFERENCE_TAG = "authBean";
     @Id
-    private Long created_at;
-    private int expires;
+    private Long created_at;// 用户权限token开始时间(单位秒的时间戳)
+    private int expires;// 用户token的有效期(单位:秒)
     private String token;
     private String refresh_token;
 

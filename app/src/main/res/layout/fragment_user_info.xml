@@ -63,6 +63,8 @@
             android:layout_height="match_parent"
             android:background="@color/white"
             android:paddingRight="@dimen/spacing_mid"
+            android:hint="@string/edit_user_name"
+            android:textColorHint="@color/normal_for_assist_text"
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_sub_title"/>
     </LinearLayout>
@@ -164,6 +166,7 @@
             android:textSize="@dimen/size_sub_title"/>
         <!--简介编辑框-->
         <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
+            android:id="@+id/et_user_introduce"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:limitSize="@integer/introduce_input_max_size"

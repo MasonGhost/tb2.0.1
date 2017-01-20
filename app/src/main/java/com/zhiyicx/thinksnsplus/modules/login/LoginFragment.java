@@ -12,6 +12,7 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity;
 import com.zhiyicx.thinksnsplus.modules.password.findpassword.FindPasswordActivity;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterActivity;
 
@@ -117,21 +118,22 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         startActivity(new Intent(getActivity(), RegisterActivity.class));
     }
 
+
     @Override
     public void setLogining() {
+        mBtLoginLogin.handleAnimation(true);
+        mBtLoginLogin.setEnabled(false);
     }
 
     @Override
-    public void setLoginSuccess() {
-        Toast.makeText(getActivity(), "登录成功", Toast.LENGTH_SHORT).show();
-        /*Intent it = new Intent();
-        it.setClass(getActivity(), GuideActivity.class);
-        startActivity(it);*/
-    }
-
-    @Override
-    public void setLoginFailure() {
-
+    public void setLoginState(boolean loginState) {
+        mBtLoginLogin.handleAnimation(loginState);
+        mBtLoginLogin.setEnabled(loginState);
+        if (loginState) {
+            Intent it = new Intent();
+            it.setClass(getActivity(), GuideActivity.class);
+            startActivity(it);
+        }
     }
 
     @Override

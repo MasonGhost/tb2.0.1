@@ -1,8 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,6 +27,8 @@ import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -60,6 +66,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     TextView mTvCity;
     @BindView(R.id.ll_city_container)
     LinearLayout mLlCityContainer;
+    @BindView(R.id.et_user_introduce)
+    UserInfoInroduceInputView mEtUserIntroduce;
 
     private ArrayList<AreaBean> options1Items;
     private ArrayList<ArrayList<AreaBean>> options2Items;
@@ -82,7 +90,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
         mPhotoSelector = DaggerPhotoSelectorImplComponent
                 .builder()
-                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this,PhotoSelectorImpl.SHAPE_RCTANGLE))
+                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl.SHAPE_RCTANGLE))
                 .build().photoSelectorImpl();
         initCityPickerView();
     }
@@ -143,6 +151,12 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 mAreaPickerView.show();
                 break;
         }
+    }
+
+    @Override
+    protected void setRightClick() {
+        // 点击完成，修改用户信息
+        mPresenter.changUserInfo(packageUserInfo());
     }
 
     @Override
@@ -323,6 +337,25 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 break;
             default: // 没有该性别
         }
+
+    }
+
+    /**
+     * 封装编辑用户信息的提交信息
+     */
+    private HashMap<String, String> packageUserInfo() {
+
+        return null;
+    }
+
+    /**
+     * 判断是否需要修改信息：如果头像，用户名，性别。。。其中任意一项发生变化，都可以提交修改
+     */
+    private void canChangerUserInfo(UserInfoBean userInfoBean) {
+        String currentUserName = mEtUserName.getText().toString();
+        String currentGender = mTvSex.getText().toString();
+        String currentCity = mTvCity.getText().toString();
+        String currentIntroduce = mEtUserIntroduce.getInputContent();
 
     }
 

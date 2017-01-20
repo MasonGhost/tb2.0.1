@@ -26,14 +26,9 @@ public interface LoginContract {
         void setLogining();
 
         /**
-         * 登录成功
+         * 设置登陆状态 true 登陆成功  false 登录失败
          */
-        void setLoginSuccess();
-
-        /**
-         * 登录失败
-         */
-        void setLoginFailure();
+        void setLoginState(boolean loginState);
 
         /**
          * 登录异常提示

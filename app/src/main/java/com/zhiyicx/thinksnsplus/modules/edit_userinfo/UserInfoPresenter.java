@@ -5,10 +5,12 @@ import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.imsdk.utils.common.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.BaseJsonAction;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +20,7 @@ import javax.inject.Inject;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -50,13 +53,8 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
     }
 
     @Override
-    public void onDestroy() {
-
-    }
-
-    @Override
     public void getAreaData() {
-        mRepository.getAreaList()
+        Subscription subscription = mRepository.getAreaList()
                 .subscribe(new Action1<ArrayList<AreaBean>>() {
                     @Override
                     public void call(ArrayList<AreaBean> areaBeen) {
@@ -72,11 +70,12 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                         com.zhiyicx.common.utils.log.LogUtils.e(throwable, mContext.getString(R.string.data_load_error));
                     }
                 });
+        addSubscrebe(subscription);
     }
 
     @Override
     public void changeUserHeadIcon(String hash, String fileName, Map<String, String> filePathList) {
-        mRepository.changeUserHeadIcon(hash, fileName, filePathList)
+        Subscription subscription = mRepository.changeUserHeadIcon(hash, fileName, filePathList)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<BaseJson>() {
@@ -91,10 +90,36 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        com.zhiyicx.common.utils.log.LogUtils.e(throwable,"headIcon");
+                        com.zhiyicx.common.utils.log.LogUtils.e(throwable, "headIcon");
                         //ToastUtils.showToast("-->" + throwable.getMessage());
                     }
                 });
+        addSubscrebe(subscription);
+    }
+
+    @Override
+    public void changUserInfo(HashMap<String, String> userInfos) {
+        Subscription subscription = mRepository.changeUserInfo(userInfos)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseJsonAction() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        // 修改成功后，关闭页面
+
+                    }
+
+                    @Override
+                    protected void onFailure(String message) {
+                        // 修改失败，好尴尬
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
+                    }
+                });
+        addSubscrebe(subscription);
     }
 
 }

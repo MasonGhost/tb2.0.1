@@ -174,13 +174,14 @@ public class TimeUtils {
      * @param timesamp 输入时间
      * @return 输入时间和当前时间间隔的天数
      */
-    private static int getifferenceDays(long timesamp) {
+    public static int getifferenceDays(long timesamp) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd");
         Date today = new Date(System.currentTimeMillis());
         Date otherDay = new Date(timesamp);
         return Integer.parseInt(sdf.format(today))
                 - Integer.parseInt(sdf.format(otherDay));
     }
+
 
     /**
      * 获取几分钟前、和几小时前
