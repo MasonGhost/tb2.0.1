@@ -85,8 +85,4 @@ public class SettingsPresenter extends BasePresenter<SettingsContract.Repository
 
     }
 
-    @Override
-    public void onDestroy() {
-        unSubscribe();
-    }
 }

@@ -53,11 +53,6 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
 
     }
 
-    @Override
-    public void onDestroy() {
-        unSubscribe();
-    }
-
     /**
      * 找回密码
      *

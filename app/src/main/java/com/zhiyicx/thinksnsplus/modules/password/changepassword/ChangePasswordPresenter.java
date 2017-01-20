@@ -32,12 +32,6 @@ public class ChangePasswordPresenter extends BasePresenter<ChangePasswordContrac
     }
 
     @Override
-    public void onDestroy() {
-        unSubscribe();
-    }
-
-
-    @Override
     public void changePassword(String oldPassword, String newPassword, String sureNessword) {
         if (checkPasswordLength(oldPassword, mContext.getString(R.string.old_password_toast_hint))) {
             return;
