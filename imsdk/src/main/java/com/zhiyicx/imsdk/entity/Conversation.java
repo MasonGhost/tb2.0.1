@@ -1,5 +1,7 @@
 package com.zhiyicx.imsdk.entity;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 /**
@@ -37,6 +39,7 @@ public class Conversation implements Serializable {
     private String last_message_text;
     private String usids;//聊天对方的usids
     private boolean is_del;
+    @SerializedName("user_id")
     private int im_uid;
     private int mc;
 
