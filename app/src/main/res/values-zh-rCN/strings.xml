@@ -24,6 +24,7 @@
     <string name="user_info">个人资料</string>
     <string name="change_head_icon">更换头像</string>
     <string name="user_name">用户</string>
+    <string name="edit_user_name">设置用户名</string>
     <string name="sex">性别</string>
     <string name="select_sex">选择性别</string>
     <string name="city">城市</string>
