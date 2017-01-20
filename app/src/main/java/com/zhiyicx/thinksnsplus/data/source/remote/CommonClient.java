@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 
 import java.util.HashMap;
@@ -64,6 +65,8 @@ public interface CommonClient {
     @PATCH("api/v1/auth")
     Observable<BaseJson<AuthBean>> refreshToken(@Query("refresh_token") String refrshToken, @Query("device_code") String deviceCode);
 
+    @GET
+    Observable<BaseJson<IMBean>> getIMInfo();
 
     ///////////////////////////////////////文件上传////////////////////////////////////////////////////
 

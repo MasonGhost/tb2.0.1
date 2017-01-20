@@ -20,7 +20,7 @@ import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.MessageItem;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
@@ -54,7 +54,7 @@ public class MessageCommentFragment extends TSFragment implements BGARefreshLayo
     BGARefreshLayout mRefreshlayoutMessageComment;
 
     private ImageLoader mImageLoader;
-    private List<MessageItem> mMessageItems;
+    private List<MessageItemBean> mMessageItemBeen;
 
     public MessageCommentFragment() {
     }
@@ -97,17 +97,17 @@ public class MessageCommentFragment extends TSFragment implements BGARefreshLayo
     protected void initData() {
         mRefreshlayoutMessageComment.setDelegate(this);
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        mMessageItems = new ArrayList<>();
-        initCommentAndLike(mMessageItems);
+        mMessageItemBeen = new ArrayList<>();
+        initCommentAndLike(mMessageItemBeen);
         mRvLikeList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvLikeList.addItemDecoration(new LinearDecoration(0, ConvertUtils.dp2px(getContext(), LIST_ITEM_SPACING), 0, 0));//设置Item的间隔
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
         mRvLikeList.setHasFixedSize(true);
         mRvLikeList.setItemAnimator(new DefaultItemAnimator());//设置动画
-        mRvLikeList.setAdapter(new CommonAdapter<MessageItem>(getActivity(), R.layout.item_message_comment_list, mMessageItems) {
+        mRvLikeList.setAdapter(new CommonAdapter<MessageItemBean>(getActivity(), R.layout.item_message_comment_list, mMessageItemBeen) {
             @Override
-            protected void convert(ViewHolder holder, MessageItem messageItem, int position) {
-                setItemData(holder, messageItem, position);
+            protected void convert(ViewHolder holder, MessageItemBean messageItemBean, int position) {
+                setItemData(holder, messageItemBean, position);
             }
 
         });
@@ -117,12 +117,12 @@ public class MessageCommentFragment extends TSFragment implements BGARefreshLayo
     /**
      * 评论的和点赞的数据
      */
-    private void initCommentAndLike(List<MessageItem> messageItems) {
+    private void initCommentAndLike(List<MessageItemBean> messageItemBeen) {
         UserInfoBean testUserinfo = new UserInfoBean();
         testUserinfo.setUserIcon("http://image.xinmin.cn/2017/01/11/bedca80cdaa44849a813e7820fff8a26.jpg");
         testUserinfo.setUserName("颤三");
         testUserinfo.setUserId("123");
-        MessageItem commentItem = new MessageItem();
+        MessageItemBean commentItem = new MessageItemBean();
         commentItem.setUserInfo(testUserinfo);
         Message commentMessage = new Message();
         commentMessage.setTxt("默默的小红大家来到江苏高考加分临时价格来看大幅减少了国家法律的世界观浪费时间管理方式的建立各级地方楼市困局"
@@ -130,18 +130,18 @@ public class MessageCommentFragment extends TSFragment implements BGARefreshLayo
         commentMessage.setCreate_time(System.currentTimeMillis());
         commentItem.setLastMessage(commentMessage);
         commentItem.setUnReadMessageNums(Math.round(15));
-        messageItems.add(commentItem);
+        messageItemBeen.add(commentItem);
 
-        MessageItem likedmessageItem = new MessageItem();
-        likedmessageItem.setUserInfo(testUserinfo);
+        MessageItemBean likedmessageItemBean = new MessageItemBean();
+        likedmessageItemBean.setUserInfo(testUserinfo);
         Message likeMessage = new Message();
         likeMessage.setTxt("一叶之秋、晴天色"
                 + getString(R.string.like_me));
         likeMessage.setCreate_time(System.currentTimeMillis());
-        likedmessageItem.setLastMessage(likeMessage);
-        likedmessageItem.setUnReadMessageNums(Math.round(15));
-        messageItems.add(likedmessageItem);
-        MessageItem test = new MessageItem();
+        likedmessageItemBean.setLastMessage(likeMessage);
+        likedmessageItemBean.setUnReadMessageNums(Math.round(15));
+        messageItemBeen.add(likedmessageItemBean);
+        MessageItemBean test = new MessageItemBean();
 
         test.setUserInfo(testUserinfo);
         Message testMessage = new Message();
@@ -151,7 +151,7 @@ public class MessageCommentFragment extends TSFragment implements BGARefreshLayo
         test.setLastMessage(likeMessage);
         test.setUnReadMessageNums((int) (Math.random() * 10));
         for (int i = 0; i < 10; i++) {
-            messageItems.add(test);
+            messageItemBeen.add(test);
         }
     }
 
@@ -159,14 +159,14 @@ public class MessageCommentFragment extends TSFragment implements BGARefreshLayo
      * 设置item 数据
      *
      * @param holder      控件管理器
-     * @param messageItem 当前数据
+     * @param messageItemBean 当前数据
      * @param position    当前数据位置
      */
 
-    private void setItemData(ViewHolder holder, final MessageItem messageItem, int position) {
+    private void setItemData(ViewHolder holder, final MessageItemBean messageItemBean, int position) {
 
         mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url(messageItem.getUserInfo().getUserIcon())
+                .url(messageItemBean.getUserInfo().getUserIcon())
                 .transformation(new GlideCircleTransform(getContext()))
                 .imagerView((ImageView) holder.getView(R.id.iv_headpic))
                 .build());
@@ -174,18 +174,18 @@ public class MessageCommentFragment extends TSFragment implements BGARefreshLayo
             holder.setVisible(R.id.tv_deatil, View.GONE);
             holder.setVisible(R.id.iv_detail_image, View.VISIBLE);
             mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                    .url(messageItem.getUserInfo().getUserIcon())
+                    .url(messageItemBean.getUserInfo().getUserIcon())
                     .imagerView((ImageView) holder.getView(R.id.iv_detail_image))
                     .build());
         } else {
             holder.setVisible(R.id.iv_detail_image, View.GONE);
             holder.setVisible(R.id.tv_deatil, View.VISIBLE);
-            holder.setText(R.id.tv_deatil, messageItem.getLastMessage().getTxt());
+            holder.setText(R.id.tv_deatil, messageItemBean.getLastMessage().getTxt());
         }
 
-        holder.setText(R.id.tv_name, messageItem.getUserInfo().getUserName());
-        holder.setText(R.id.tv_content, messageItem.getLastMessage().getTxt());
-        holder.setText(R.id.tv_time, ConvertUtils.millis2FitTimeSpan(messageItem.getLastMessage().getCreate_time(), 3));
+        holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getUserName());
+        holder.setText(R.id.tv_content, messageItemBean.getLastMessage().getTxt());
+        holder.setText(R.id.tv_time, ConvertUtils.millis2FitTimeSpan(messageItemBean.getLastMessage().getCreate_time(), 3));
         // 响应事件
         RxView.clicks(holder.getView(R.id.tv_name))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
@@ -208,7 +208,7 @@ public class MessageCommentFragment extends TSFragment implements BGARefreshLayo
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        toChat(messageItem);
+                        toChat(messageItemBean);
                     }
                 });
         RxView.clicks(holder.getView(R.id.iv_detail_image))
@@ -216,7 +216,7 @@ public class MessageCommentFragment extends TSFragment implements BGARefreshLayo
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        toChat(messageItem);
+                        toChat(messageItemBean);
                     }
                 });
         RxView.clicks(holder.getView(R.id.tv_deatil))
@@ -224,7 +224,7 @@ public class MessageCommentFragment extends TSFragment implements BGARefreshLayo
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        toChat(messageItem);
+                        toChat(messageItemBean);
                     }
                 });
     }
@@ -232,12 +232,12 @@ public class MessageCommentFragment extends TSFragment implements BGARefreshLayo
     /**
      * 进入聊天页
      *
-     * @param messageItem
+     * @param messageItemBean
      */
-    private void toChat(MessageItem messageItem) {
+    private void toChat(MessageItemBean messageItemBean) {
         Intent to = new Intent(getActivity(), ChatActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(ChatFragment.BUNDLE_USERID, messageItem.getUserInfo().getUserId());
+        bundle.putString(ChatFragment.BUNDLE_USERID, messageItemBean.getUserInfo().getUserId());
         to.putExtras(bundle);
         startActivity(to);
     }

@@ -13,7 +13,7 @@ import com.zhiyicx.imsdk.entity.Message;
  * @Contact master.jungle68@gmail.com
  */
 
-public class MessageItem extends CacheBean implements Parcelable {
+public class MessageItemBean extends CacheBean implements Parcelable {
 
     private UserInfoBean userInfo;
     private Message lastMessage; // 最后一条消息
@@ -55,30 +55,30 @@ public class MessageItem extends CacheBean implements Parcelable {
         dest.writeInt(this.unReadMessageNums);
     }
 
-    public MessageItem() {
+    public MessageItemBean() {
     }
 
-    protected MessageItem(Parcel in) {
+    protected MessageItemBean(Parcel in) {
         this.userInfo = in.readParcelable(UserInfoBean.class.getClassLoader());
         this.lastMessage = (Message) in.readSerializable();
         this.unReadMessageNums = in.readInt();
     }
 
-    public static final Creator<MessageItem> CREATOR = new Creator<MessageItem>() {
+    public static final Creator<MessageItemBean> CREATOR = new Creator<MessageItemBean>() {
         @Override
-        public MessageItem createFromParcel(Parcel source) {
-            return new MessageItem(source);
+        public MessageItemBean createFromParcel(Parcel source) {
+            return new MessageItemBean(source);
         }
 
         @Override
-        public MessageItem[] newArray(int size) {
-            return new MessageItem[size];
+        public MessageItemBean[] newArray(int size) {
+            return new MessageItemBean[size];
         }
     };
 
     @Override
     public String toString() {
-        return "MessageItem{" +
+        return "MessageItemBean{" +
                 "userInfo=" + userInfo +
                 ", lastMessage=" + lastMessage +
                 ", unReadMessageNums=" + unReadMessageNums +

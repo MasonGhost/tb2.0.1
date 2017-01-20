@@ -26,7 +26,6 @@ import okio.BufferedSource;
  * @Date 2016/12/15
  * @Contact 335891510@qq.com
  */
-
 public class RequestIntercept implements Interceptor {
     private static final String TAG = "RequestIntercept";
     private RequestInterceptListener mListener;
@@ -56,7 +55,7 @@ public class RequestIntercept implements Interceptor {
         long t1 = System.nanoTime();
         Response originalResponse = chain.proceed(request);
         long t2 = System.nanoTime();
-        //打赢响应时间
+        //打印响应时间
         LogUtils.d(TAG, "Received response  in %.1fms%n%s", (t2 - t1) / 1e6d, originalResponse.headers());
 
         //读取服务器返回的结果

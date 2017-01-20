@@ -7,16 +7,15 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.BaseJsonAction;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
 
 import javax.inject.Inject;
 
 import rx.Subscription;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 /**
  * @Describe
@@ -63,31 +62,30 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
         mRootView.setVertifyCodeBtEnabled(false);
         mRootView.setVertifyCodeLoadin(true);
         Subscription getVertifySub = mRepository.getVertifyCode(phone, CommonClient.VERTIFY_CODE_TYPE_REGISTER)
-                .subscribeOn(Schedulers.io())
-                .subscribe(new BaseJsonAction<CacheBean>() {
-                               @Override
-                               protected void onSuccess(CacheBean data) {
-                                   mRootView.hideLoading();//隐藏loading
-                                   timer.start();//开始倒计时
-                                   mRootView.setVertifyCodeLoadin(false);
-                               }
+                .subscribe(new BaseSubscribe<CacheBean>() {
+                    @Override
+                    protected void onSuccess(CacheBean data) {
+                        mRootView.hideLoading();//隐藏loading
+//                                   timer.start();//开始倒计时
+                        mRootView.setVertifyCodeLoadin(false);
+                    }
 
-                               @Override
-                               protected void onFailure(String message) {
-                                   mRootView.showMessage(message);
-                                   mRootView.setVertifyCodeBtEnabled(true);
-                                   mRootView.setVertifyCodeLoadin(false);
-                               }
-                           }
-                        , new Action1<Throwable>() {
-                            @Override
-                            public void call(Throwable throwable) {
-                                throwable.printStackTrace();
-                                mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
-                                mRootView.setVertifyCodeBtEnabled(true);
-                                mRootView.setVertifyCodeLoadin(false);
-                            }
-                        });
+                    @Override
+                    protected void onFailure(String message) {
+                        mRootView.showMessage(message);
+                        mRootView.setVertifyCodeBtEnabled(true);
+                        mRootView.setVertifyCodeLoadin(false);
+                    }
+
+                    @Override
+                    protected void onException(Throwable e) {
+                        e.printStackTrace();
+                        mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
+                        mRootView.setVertifyCodeBtEnabled(true);
+                        mRootView.setVertifyCodeLoadin(false);
+                    }
+                });
+
         // 代表检测成功
         mRootView.showMessage("");
         addSubscrebe(getVertifySub);
@@ -110,25 +108,43 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
         }
         mRootView.setRegisterBtEnabled(false);
         Subscription registerSub = mRepository.register(phone, name, vertifyCode, password)
-                .subscribe(new BaseJsonAction<AuthBean>() {
+                .subscribe(new BaseSubscribe<AuthBean>() {
                     @Override
-                    protected void onSuccess(AuthBean data) {
+                    public void onSuccess(AuthBean data) {
                         mRootView.setRegisterBtEnabled(true);
                         mAuthRepository.saveAuthBean(data);
+                        mAuthRepository.getImInfo()
+                                .subscribe(new BaseSubscribe<IMBean>() {
+                                    @Override
+                                    protected void onSuccess(IMBean data) {
+
+                                    }
+
+                                    @Override
+                                    protected void onFailure(String message) {
+
+                                    }
+
+                                    @Override
+                                    protected void onException(Throwable throwable) {
+                                        mRootView.showMessage(throwable.getMessage());
+                                    }
+                                });
                     }
 
                     @Override
                     protected void onFailure(String message) {
                         mRootView.setRegisterBtEnabled(true);
                     }
-                }, new Action1<Throwable>() {
+
                     @Override
-                    public void call(Throwable throwable) {
+                    protected void onException(Throwable throwable) {
                         throwable.printStackTrace();
                         mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
                         mRootView.setRegisterBtEnabled(true);
                     }
                 });
+
         // 代表检测成功
         mRootView.showMessage("");
         addSubscrebe(registerSub);
