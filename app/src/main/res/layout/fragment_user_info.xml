@@ -166,6 +166,7 @@
             android:textSize="@dimen/size_sub_title"/>
         <!--简介编辑框-->
         <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
+            android:id="@+id/et_user_introduce"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:limitSize="@integer/introduce_input_max_size"
