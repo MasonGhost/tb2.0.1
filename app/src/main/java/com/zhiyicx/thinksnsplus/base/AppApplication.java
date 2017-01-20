@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.base;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -10,7 +11,11 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.net.HttpsSSLFactroyUtils;
 import com.zhiyicx.common.net.intercept.CommonRequestIntercept;
 import com.zhiyicx.common.net.listener.RequestInterceptListener;
+import com.zhiyicx.common.utils.ActivityHandler;
+import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.SharePreferenceUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
@@ -20,6 +25,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -77,13 +83,15 @@ public class AppApplication extends TSApplication {
         return new RequestInterceptListener() {
             @Override
             public Response onHttpResponse(String httpResult, Interceptor.Chain chain, Response response) {
-                //这里可以先客户端一步拿到每一次http请求的结果,可以解析成json,做一些操作,如检测到token过期后
-                //token过期，调到登陆页面重新请求token,
+                // 这里可以先客户端一步拿到每一次http请求的结果,可以解析成json,做一些操作,如检测到token过期后
+                // token过期，调到登陆页面重新请求token,
                 BaseJson baseJson = new Gson().fromJson(httpResult, BaseJson.class);
                 if (baseJson.getCode() == ErrorCodeConfig.TOKEN_EXPIERD
                         || baseJson.getCode() == ErrorCodeConfig.NEED_RELOGIN
                         || baseJson.getCode() == ErrorCodeConfig.OTHER_DEVICE_LOGIN
                         || baseJson.getCode() == ErrorCodeConfig.TOKEN_NOT_EXIST) {
+                    // 跳到登陆页面，销毁之前的所有页面
+                    ActivityHandler.getInstance().finishAllActivity();
                     startActivity(new Intent(AppApplication.this, LoginActivity.class));
                 }
                 return response;
@@ -175,15 +183,16 @@ public class AppApplication extends TSApplication {
     }
 
     /**
-     * 在启动页面尝试通过refreshToken,同时需要刷新im的token
+     * 在启动页面尝试刷新Token,同时需要刷新im的token
      */
     private void attemptToRefreshToken() {
-        if (!isNeededRefreshToken()) {
+        AuthBean authBean = SharePreferenceUtils.getObject(this, AuthBean.SHAREPREFERENCE_TAG);
+        if (!isNeededRefreshToken(authBean)) {
             return;
         }
         CommonClient commonClient = AppComponentHolder.getAppComponent().serviceManager().getCommonClient();
         String imei = DeviceUtils.getIMEI(this);
-        commonClient.refreshToken("fdsaf", imei)
+        commonClient.refreshToken(authBean.getRefresh_token(), imei)
                 .subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithDelay(2, 2))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -192,7 +201,7 @@ public class AppApplication extends TSApplication {
                     public void call(BaseJson<AuthBean> authBeanBaseJson) {
                         if (authBeanBaseJson.isStatus() || authBeanBaseJson.getCode() == 0) {
                             // 获取了最新的token，将这些信息保存起来
-
+                            SharePreferenceUtils.saveObject(AppApplication.this, AuthBean.SHAREPREFERENCE_TAG, authBeanBaseJson.getData());
                         }
                     }
                 });
@@ -203,7 +212,15 @@ public class AppApplication extends TSApplication {
      *
      * @return
      */
-    private boolean isNeededRefreshToken() {
+    private boolean isNeededRefreshToken(AuthBean authBean) {
+        long createTime = authBean.getCreated_at();
+        int expiers = authBean.getExpires();
+        int days = TimeUtils.getifferenceDays((createTime + expiers) * 1000);//表示token过期时间距离现在的时间
+        if (expiers == 0) {// 永不过期,不需要刷新token
+            return false;
+        } else if (days >= -1) {// 表示当前时间是过期时间的前一天,或者已经过期,需要尝试刷新token
+            return true;
+        }
         return false;
     }
 }
