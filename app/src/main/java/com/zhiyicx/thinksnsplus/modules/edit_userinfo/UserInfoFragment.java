@@ -82,7 +82,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
         mPhotoSelector = DaggerPhotoSelectorImplComponent
                 .builder()
-                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this,PhotoSelectorImpl.SHAPE_RCTANGLE))
+                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl.SHAPE_RCTANGLE))
                 .build().photoSelectorImpl();
         initCityPickerView();
     }
@@ -143,6 +143,12 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 mAreaPickerView.show();
                 break;
         }
+    }
+
+    @Override
+    protected void setRightClick() {
+        // 点击完成，修改用户信息
+        mPresenter.changUserInfo(packageUserInfo());
     }
 
     @Override
@@ -326,4 +332,10 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     }
 
+    /**
+     * 封装编辑用户信息的提交信息
+     */
+    private HashMap<String, String> packageUserInfo() {
+        return null;
+    }
 }

@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 import com.zhiyicx.thinksnsplus.modules.login.LoginContract;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,11 +40,20 @@ public interface UserInfoContract {
          * 修改用户头像
          */
         Observable<BaseJson> changeUserHeadIcon(String hash, String fileName, Map<String, String> filePathList);
+
+        /**
+         * 编辑用户信息
+         *
+         * @param userInfos 用户需要修改的信息，通过hashMap传递，key表示请求字段，value表示修改的值
+         */
+        Observable<BaseJson> changeUserInfo(HashMap<String, String> userInfos);
     }
 
     interface Presenter extends IBasePresenter {
         void getAreaData();
 
         void changeUserHeadIcon(String hash, String fileName, Map<String, String> filePathList);
+
+        void changUserInfo(HashMap<String, String> userInfos);
     }
 }
