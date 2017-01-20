@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import android.app.Application;
 import android.content.Context;
 
 import com.zhiyicx.common.base.BaseJson;
@@ -10,6 +11,8 @@ import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -29,7 +32,8 @@ public class AuthRepository implements IAuthRepository {
     private RegisterClient mRegisterClient;
     private Context mContext;
 
-    public AuthRepository(ServiceManager serviceManager, Context context) {
+    @Inject
+    public AuthRepository(ServiceManager serviceManager, Application context) {
         mCommonClient = serviceManager.getCommonClient();
         mRegisterClient = serviceManager.getRegisterClient();
         mContext = context;
@@ -38,7 +42,13 @@ public class AuthRepository implements IAuthRepository {
 
     @Override
     public boolean saveAuthBean(AuthBean authBean) {
+        System.out.println("authBean = " + authBean);
         return SharePreferenceUtils.saveObject(mContext, AuthBean.SHAREPREFERENCE_TAG, authBean);
+    }
+
+    @Override
+    public AuthBean getAuthBean() {
+        return SharePreferenceUtils.getObject(mContext, AuthBean.SHAREPREFERENCE_TAG);
     }
 
     public Observable<BaseJson<IMBean>> getImInfo() {

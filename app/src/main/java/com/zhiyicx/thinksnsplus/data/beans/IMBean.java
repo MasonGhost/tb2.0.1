@@ -65,4 +65,12 @@ public class IMBean extends CacheBean implements Serializable, Parcelable {
             return new IMBean[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "IMBean{" +
+                "user_id=" + user_id +
+                ", im_password='" + im_password + '\'' +
+                '}';
+    }
 }

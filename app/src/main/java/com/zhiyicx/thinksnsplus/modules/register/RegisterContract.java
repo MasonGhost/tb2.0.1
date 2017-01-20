@@ -44,6 +44,11 @@ public interface RegisterContract {
          * @param isEnable
          */
         void setRegisterBtEnabled(boolean isEnable);
+
+        /**
+         * 跳转主页
+         */
+        void goHome();
     }
 
     /**

@@ -6,6 +6,8 @@ import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
+import com.zhiyicx.imsdk.entity.IMConfig;
+import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
@@ -53,7 +55,11 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
         super(repository, rootView);
     }
 
-
+    /**
+     * 获取验证码
+     *
+     * @param phone 电话号码
+     */
     @Override
     public void getVertifyCode(String phone) {
         if (checkPhone(phone)) {
@@ -66,7 +72,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
                     @Override
                     protected void onSuccess(CacheBean data) {
                         mRootView.hideLoading();//隐藏loading
-//                                   timer.start();//开始倒计时
+                        timer.start();//开始倒计时
                         mRootView.setVertifyCodeLoadin(false);
                     }
 
@@ -79,8 +85,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
 
                     @Override
                     protected void onException(Throwable e) {
-                        e.printStackTrace();
-                        mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
+                        handleException(e);
                         mRootView.setVertifyCodeBtEnabled(true);
                         mRootView.setVertifyCodeLoadin(false);
                     }
@@ -91,7 +96,14 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
         addSubscrebe(getVertifySub);
     }
 
-
+    /**
+     * 注册
+     *
+     * @param name        用户名
+     * @param phone       电话号码
+     * @param vertifyCode 验证码
+     * @param password    密码
+     */
     @Override
     public void register(String name, String phone, String vertifyCode, String password) {
         if (checkUsername(name)) {
@@ -112,35 +124,48 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
                     @Override
                     public void onSuccess(AuthBean data) {
                         mRootView.setRegisterBtEnabled(true);
-                        mAuthRepository.saveAuthBean(data);
-                        mAuthRepository.getImInfo()
-                                .subscribe(new BaseSubscribe<IMBean>() {
-                                    @Override
-                                    protected void onSuccess(IMBean data) {
+                        mAuthRepository.saveAuthBean(data);// 保存登录认证信息IM
+                        // TODO: 2017/1/20 IM是否开启
+                        boolean imIsOpen = true;
+                        if (imIsOpen) {
+                            //获取  信息
+                            mAuthRepository.getImInfo()
+                                    .subscribe(new BaseSubscribe<IMBean>() {
+                                        @Override
+                                        protected void onSuccess(IMBean data) {
+                                            System.out.println("data = " + data.toString());
+                                            IMConfig imConfig = new IMConfig();
+                                            imConfig.setImUid(data.getUser_id());
+                                            imConfig.setToken(data.getIm_password());
+                                            imConfig.setWeb_socket_authority("ws://192.168.10.222:9900"); // TODO: 2017/1/20  服务器统一配置接口返回数据
+                                            ZBIMClient.getInstance().login(imConfig);
+                                            mRootView.goHome();
+                                        }
 
-                                    }
+                                        @Override
+                                        protected void onFailure(String message) {
+                                            mRootView.showMessage(message);
+                                        }
 
-                                    @Override
-                                    protected void onFailure(String message) {
-
-                                    }
-
-                                    @Override
-                                    protected void onException(Throwable throwable) {
-                                        mRootView.showMessage(throwable.getMessage());
-                                    }
-                                });
+                                        @Override
+                                        protected void onException(Throwable throwable) {
+                                            handleException(throwable);
+                                        }
+                                    });
+                        } else {
+                            mRootView.goHome();
+                        }
                     }
 
                     @Override
                     protected void onFailure(String message) {
                         mRootView.setRegisterBtEnabled(true);
+                        mRootView.showMessage(message);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        throwable.printStackTrace();
-                        mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
+                        handleException(throwable);
                         mRootView.setRegisterBtEnabled(true);
                     }
                 });
@@ -151,14 +176,19 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
     }
 
     @Override
-    public void onStart() {
-
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
         timer.cancel();
+    }
+
+    /**
+     * 错误处理
+     *
+     * @param throwable 错误内容
+     */
+    private void handleException(Throwable throwable) {
+        throwable.printStackTrace();
+        mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
     }
 
     /**

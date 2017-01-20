@@ -65,7 +65,7 @@ public interface CommonClient {
     @PATCH("api/v1/auth")
     Observable<BaseJson<AuthBean>> refreshToken(@Query("refresh_token") String refrshToken, @Query("device_code") String deviceCode);
 
-    @GET
+    @GET("/api/v1/im/users")
     Observable<BaseJson<IMBean>> getIMInfo();
 
     ///////////////////////////////////////文件上传////////////////////////////////////////////////////

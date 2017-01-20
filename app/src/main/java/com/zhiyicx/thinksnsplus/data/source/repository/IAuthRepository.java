@@ -22,6 +22,13 @@ public interface IAuthRepository {
      */
     boolean saveAuthBean(AuthBean authBean);
 
+    /**
+     * 获取保存登录后获取到的认证信息
+     *
+     * @return
+     */
+    AuthBean getAuthBean();
+
 
     /**
      * 注册

@@ -50,6 +50,10 @@ public abstract class BasePresenter<R, V extends IBaseView> implements IBasePres
     }
 
     @Override
+    public void onStart() {
+    }
+
+    @Override
     public void onDestroy() {
         unSubscribe();
     }
@@ -80,7 +84,6 @@ public abstract class BasePresenter<R, V extends IBaseView> implements IBasePres
             mCompositeSubscription.unsubscribe();// 保证 activity 结束时取消所有正在执行的订阅
         }
     }
-
 
 
 }

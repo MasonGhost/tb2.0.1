@@ -38,4 +38,5 @@ public class RegisterPresenterModule {
     IAuthRepository provideIAuthRepository(ServiceManager serviceManager, Application application){
         return new AuthRepository(serviceManager,application);
     }
+
 }

@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.base;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -12,20 +11,20 @@ import com.zhiyicx.common.net.HttpsSSLFactroyUtils;
 import com.zhiyicx.common.net.intercept.CommonRequestIntercept;
 import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.utils.ActivityHandler;
-import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.imsdk.manage.ZBIMSDK;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
+import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -48,14 +47,14 @@ import rx.schedulers.Schedulers;
  */
 
 public class AppApplication extends TSApplication {
-    public static int gThemeCorlor = 0; //主题色
 
+    AuthRepository mAuthRepository;
 
     @Override
     public void onCreate() {
         super.onCreate();
         initComponent();
-        setThemeCorlor(getResources().getColor(R.color.themeColor));
+        ZBIMSDK.init(getContext());
     }
 
     /**
@@ -100,9 +99,12 @@ public class AppApplication extends TSApplication {
             @Override
             public Request onHttpRequestBefore(Interceptor.Chain chain, Request request) {
                 //如果需要再请求服务器之前做一些操作,则重新返回一个做过操作的的requeat如增加header,不做操作则返回request
+                AuthBean authBean = mAuthRepository.getAuthBean();
+                if (authBean != null) {
+                    return chain.request().newBuilder().header("ACCESS-TOKEN", authBean.getToken())
+                            .build();
+                }
 
-                //return chain.request().newBuilder().header("token", tokenId)
-//                .build();
                 return request;
             }
         };
@@ -124,15 +126,6 @@ public class AppApplication extends TSApplication {
     }
 
     /**
-     * 设置主题色
-     *
-     * @param themeCorlor
-     */
-    protected void setThemeCorlor(int themeCorlor) {
-        AppApplication.gThemeCorlor = themeCorlor;
-    }
-
-    /**
      * 初始化Component
      */
     public void initComponent() {
@@ -146,6 +139,7 @@ public class AppApplication extends TSApplication {
                 .cacheModule(getCacheModule())// 需自行创建
                 .build();
         AppComponentHolder.setAppComponent(appComponent);
+        mAuthRepository = appComponent.authRepository();
     }
 
     @NonNull
