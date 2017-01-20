@@ -8,6 +8,7 @@ import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.LoginRepository;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterContract;
 
@@ -35,6 +36,9 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
         super(repository, rootView);
     }
 
+    @Inject
+    IAuthRepository mAuthRepository;
+
     /**
      * 将Presenter从传入fragment
      */
@@ -59,6 +63,7 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
                     public void call(BaseJson<AuthBean> integerBaseJson) {
                         if (integerBaseJson.isStatus()) {
                             // 登录成功跳转
+                            mAuthRepository.saveAuthBean(integerBaseJson.getData());// 保存auth信息
                             mRootView.setLoginState(true);
                         } else {
                             // 登录失败
