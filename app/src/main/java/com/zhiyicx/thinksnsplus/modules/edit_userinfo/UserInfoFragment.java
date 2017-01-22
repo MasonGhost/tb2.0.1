@@ -31,6 +31,8 @@ import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
+import com.zhiyicx.thinksnsplus.data.beans.EditConfigBean;
+import com.zhiyicx.thinksnsplus.data.beans.EditConfigBeanDaoImpl;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 
@@ -88,6 +90,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     private boolean userNameChanged, sexChanged, cityChanged, introduceChanged;
 
     private List<String> selectedPhotos = new ArrayList<>();// 被选择的图片
+    private EditConfigBeanDaoImpl mEditConfigBeanDao;
 
     @Override
     protected int getBodyLayoutId() {
@@ -102,6 +105,10 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl.SHAPE_RCTANGLE))
                 .build().photoSelectorImpl();
         initCityPickerView();
+        mEditConfigBeanDao = new EditConfigBeanDaoImpl(getContext());
+        EditConfigBean editConfigBean = new EditConfigBean(0L, "school", "学校", "EditText");
+        mEditConfigBeanDao.saveSingleData(editConfigBean);
+
         ////////////////////////监听所有的用户信息变化///////////////////////////////
         RxTextView.textChanges(mEtUserName)
                 .subscribe(new Action1<CharSequence>() {
