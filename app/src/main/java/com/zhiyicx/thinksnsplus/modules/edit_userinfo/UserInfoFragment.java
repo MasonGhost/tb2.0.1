@@ -235,6 +235,9 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         // 上传成功，可以进行修改
         if (upLoadState) {
             upLoadCount++;
+            ToastUtils.showToast("头像上传成功");
+        } else {
+            ToastUtils.showToast("头像上传失败");
         }
         canChangerUserInfo();
     }
@@ -261,10 +264,9 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     public void getPhotoSuccess(List<ImageBean> photoList) {
         String filePath = photoList.get(0).getImgUrl();
         File file = new File(filePath);
-        Map<String, String> map = new HashMap<>();
-        map.put("file1", filePath);
-        mPresenter.changeUserHeadIcon(FileUtils.getFileMD5ToString(file), file.getName(), map);
-
+        // 开始上传
+        mPresenter.changeUserHeadIcon(FileUtils.getFileMD5ToString(file), file.getName(), filePath);
+        // 加载本地图片
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
                 .url(photoList.get(0).getImgUrl())
@@ -431,7 +433,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
      * 判断是否需要修改信息：如果头像，用户名，性别。。。其中任意一项发生变化，都可以提交修改
      */
     private void canChangerUserInfo() {
-        if (userNameChanged || sexChanged ||cityChanged || introduceChanged
+        if (userNameChanged || sexChanged || cityChanged || introduceChanged
                 || upLoadCount > 0) {
             mToolbarRight.setEnabled(true);
         } else {

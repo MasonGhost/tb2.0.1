@@ -84,14 +84,14 @@ public interface CommonClient {
      */
     @Multipart
     @POST
-    Observable<String> upLoadFileByPost(@Url String url, @HeaderMap HashMap<String, String> headers, @Part List<MultipartBody.Part> partList);
+    Observable<String> upLoadFileByPost(@Url String url, @HeaderMap HashMap<String, String> headers, @Part MultipartBody.Part partList);
 
     /**
      * 通过Put方法上传文件
      */
     @Multipart
     @PUT
-    Observable<String> upLoadFileByPut(@Url String url, @HeaderMap HashMap<String, String> headers, @Part List<MultipartBody.Part> partList);
+    Observable<String> upLoadFileByPut(@Url String url, @HeaderMap HashMap<String, String> headers, @Part MultipartBody.Part partList);
 
 
     /**

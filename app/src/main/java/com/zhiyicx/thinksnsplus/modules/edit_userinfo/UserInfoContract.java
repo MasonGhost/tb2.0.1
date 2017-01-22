@@ -57,9 +57,9 @@ public interface UserInfoContract {
          *
          * @param hash
          * @param fileName
-         * @param filePathList
+         * @param filePath
          */
-        void changeUserHeadIcon(String hash, String fileName, Map<String, String> filePathList);
+        void changeUserHeadIcon(String hash, String fileName, String filePath);
 
         void changUserInfo(HashMap<String, String> userInfos);
     }

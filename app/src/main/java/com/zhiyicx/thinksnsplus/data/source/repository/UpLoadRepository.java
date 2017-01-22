@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.net.UpLoadFile;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
@@ -45,7 +46,7 @@ public class UpLoadRepository implements IUploadRepository {
     }
 
     @Override
-    public Observable<BaseJson> upLoadSingleFile(String hash, String fileName, final Map<String, String> filePathList) {
+    public Observable<BaseJson> upLoadSingleFile(String hash, String fileName, final String params, final String filePath) {
         return mCommonClient.createStorageTask(hash, fileName, null)
                 // 处理创建存储任务到上传文件的过程
                 .flatMap(new Func1<BaseJson<StorageTaskBean>, Observable<String[]>>() {
@@ -68,7 +69,7 @@ public class UpLoadRepository implements IUploadRepository {
                                 HashMap<String, String> headerMap = parseJSONObject(headers);
                                 if (method.equalsIgnoreCase("put")) {
                                     // 使用map操作符携带任务id，继续向下传递
-                                    return mCommonClient.upLoadFileByPut(uri, headerMap, upLoadFile(filePathList, null)).map(new Func1<String, String[]>() {
+                                    return mCommonClient.upLoadFileByPut(uri, headerMap, UpLoadFile.uploadSingleFile(params, filePath)).map(new Func1<String, String[]>() {
                                         @Override
                                         public String[] call(String s) {
                                             return new String[]{s, storageTaskId + ""};
@@ -76,7 +77,7 @@ public class UpLoadRepository implements IUploadRepository {
                                     });
                                 } else if (method.equalsIgnoreCase("post")) {
                                     // 使用map操作符携带任务id，继续向下传递
-                                    return mCommonClient.upLoadFileByPost(uri, headerMap, upLoadFile(filePathList, null)).map(new Func1<String, String[]>() {
+                                    return mCommonClient.upLoadFileByPost(uri, headerMap, UpLoadFile.uploadSingleFile(params, filePath)).map(new Func1<String, String[]>() {
                                         @Override
                                         public String[] call(String s) {
                                             return new String[]{s, storageTaskId + ""};
@@ -110,34 +111,6 @@ public class UpLoadRepository implements IUploadRepository {
                         }
                     }
                 });
-    }
-
-    /**
-     * 上传文件，构造参数
-     */
-    private List<MultipartBody.Part> upLoadFile(Map<String, String> filePathList, Map<String, String> params) {
-        MultipartBody.Builder builder = new MultipartBody.Builder();
-        builder.setType(MultipartBody.FORM);//表单类型
-        if (params != null) {
-            Set<String> keys = params.keySet();
-            for (String key : keys) {
-                builder.addFormDataPart(key, params.get(key));//ParamKey.TOKEN 自定义参数key常量类，即参数名
-            }
-        }
-        if (filePathList != null) {
-            Set<String> filePathKey = filePathList.keySet();
-            for (String fileParam : filePathKey) {
-                try {
-                    File file = new File(filePathList.get(fileParam));//filePath 图片地址
-                    RequestBody imageBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-                    builder.addFormDataPart(fileParam, file.getName(), imageBody);//imgfile 后台接收图片流的参数名
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        List<MultipartBody.Part> parts = builder.build().parts();
-        return parts;
     }
 
     /**
