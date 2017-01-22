@@ -120,8 +120,8 @@ public class MessageCommentFragment extends TSFragment implements BGARefreshLayo
     private void initCommentAndLike(List<MessageItem> messageItems) {
         UserInfoBean testUserinfo = new UserInfoBean();
         testUserinfo.setUserIcon("http://image.xinmin.cn/2017/01/11/bedca80cdaa44849a813e7820fff8a26.jpg");
-        testUserinfo.setUserName("颤三");
-        testUserinfo.setUserId("123");
+        testUserinfo.setName("颤三");
+       // testUserinfo.setUserId("123");
         MessageItem commentItem = new MessageItem();
         commentItem.setUserInfo(testUserinfo);
         Message commentMessage = new Message();
@@ -183,7 +183,7 @@ public class MessageCommentFragment extends TSFragment implements BGARefreshLayo
             holder.setText(R.id.tv_deatil, messageItem.getLastMessage().getTxt());
         }
 
-        holder.setText(R.id.tv_name, messageItem.getUserInfo().getUserName());
+       // holder.setText(R.id.tv_name, messageItem.getUserInfo().getUserName());
         holder.setText(R.id.tv_content, messageItem.getLastMessage().getTxt());
         holder.setText(R.id.tv_time, ConvertUtils.millis2FitTimeSpan(messageItem.getLastMessage().getCreate_time(), 3));
         // 响应事件
@@ -237,7 +237,7 @@ public class MessageCommentFragment extends TSFragment implements BGARefreshLayo
     private void toChat(MessageItem messageItem) {
         Intent to = new Intent(getActivity(), ChatActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(ChatFragment.BUNDLE_USERID, messageItem.getUserInfo().getUserId());
+       // bundle.putString(ChatFragment.BUNDLE_USERID, messageItem.getUserInfo().getUserId());
         to.putExtras(bundle);
         startActivity(to);
     }

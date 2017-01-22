@@ -2,6 +2,8 @@ package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bigkoo.pickerview.OptionsPickerView;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
@@ -39,6 +42,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.functions.Action1;
 
 /**
  * @author LiuChao
@@ -78,6 +82,9 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
     private PhotoSelectorImpl mPhotoSelector;
 
+    private UserInfoBean mUserInfoBean;// 用户未修改前的用户信息
+    private int upLoadCount = 0;// 当前文件上传的次数，>0表示已经上传成功，但是还没有提交修改用户信息
+
     private List<String> selectedPhotos = new ArrayList<>();// 被选择的图片
 
     @Override
@@ -93,6 +100,20 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl.SHAPE_RCTANGLE))
                 .build().photoSelectorImpl();
         initCityPickerView();
+        RxTextView.textChanges(mEtUserName)
+                .subscribe(new Action1<CharSequence>() {
+                    @Override
+                    public void call(CharSequence charSequence) {
+                        canChangerUserInfo(mUserInfoBean);
+                    }
+                });
+        RxTextView.textChanges(mEtUserIntroduce.getEtContent())
+                .subscribe(new Action1<CharSequence>() {
+                    @Override
+                    public void call(CharSequence charSequence) {
+                        canChangerUserInfo(mUserInfoBean);
+                    }
+                });
     }
 
     @Override
@@ -168,6 +189,15 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     }
 
     @Override
+    public void setUpLoadHeadIconState(boolean upLoadState) {
+        // 上传成功，可以进行修改
+        if (upLoadState) {
+            upLoadCount++;
+        }
+        canChangerUserInfo(mUserInfoBean);
+    }
+
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // 处理pickerView和返回键的逻辑
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -225,7 +255,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 String areaText = options1Items.get(options1).getPickerViewText();
                 String city = options2Items.get(options1).get(option2).getPickerViewText();
                 city = city.equals("全部") ? areaText : city;//如果为全部则不显示
-                mTvCity.setText(city);//更新位置
+                setCity(city);
                 mCityOption1 = options1;
                 mCityOption2 = option2;
             }
@@ -319,9 +349,18 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     }
 
     /**
+     * 设置城市
+     */
+    private void setCity(String city) {
+        mTvCity.setText(city);//更新位置
+        canChangerUserInfo(mUserInfoBean);
+    }
+
+    /**
      * 设置用户性别
      */
     private void setGender(int genderType) {
+        canChangerUserInfo(mUserInfoBean);
         switch (genderType) {
             case GENDER_MALE:
                 mTvSex.setText(R.string.male);
@@ -356,7 +395,16 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         String currentGender = mTvSex.getText().toString();
         String currentCity = mTvCity.getText().toString();
         String currentIntroduce = mEtUserIntroduce.getInputContent();
-
+        if (userInfoBean.getName().equals(currentUserName)
+                && userInfoBean.getSex().equals(currentGender)
+                && userInfoBean.getLocation().equals(currentCity)
+                && userInfoBean.getIntro().equals(currentIntroduce)
+                && upLoadCount > 0
+                ) {
+            mToolbarRight.setEnabled(true);
+        } else {
+            mToolbarRight.setEnabled(false);
+        }
     }
 
 }
