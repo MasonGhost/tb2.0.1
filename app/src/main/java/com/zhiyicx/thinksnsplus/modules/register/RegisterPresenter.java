@@ -6,14 +6,12 @@ import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
-import com.zhiyicx.imsdk.entity.IMConfig;
-import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
-import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import javax.inject.Inject;
 
@@ -35,6 +33,8 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
 
     @Inject
     IAuthRepository mAuthRepository;
+    @Inject
+    UserInfoRepository mUserInfoRepository;
 
     CountDownTimer timer = new CountDownTimer(mTimeOut, S_TO_MS_SPACING) {
 
@@ -125,36 +125,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
                     public void onSuccess(AuthBean data) {
                         mRootView.setRegisterBtEnabled(true);
                         mAuthRepository.saveAuthBean(data);// 保存登录认证信息IM
-                        // TODO: 2017/1/20 IM是否开启
-                        boolean imIsOpen = true;
-                        if (imIsOpen) {
-                            //获取  信息
-                            mAuthRepository.getImInfo()
-                                    .subscribe(new BaseSubscribe<IMBean>() {
-                                        @Override
-                                        protected void onSuccess(IMBean data) {
-                                            System.out.println("data = " + data.toString());
-                                            IMConfig imConfig = new IMConfig();
-                                            imConfig.setImUid(data.getUser_id());
-                                            imConfig.setToken(data.getIm_password());
-                                            imConfig.setWeb_socket_authority("ws://192.168.10.222:9900"); // TODO: 2017/1/20  服务器统一配置接口返回数据
-                                            ZBIMClient.getInstance().login(imConfig);
-                                            mRootView.goHome();
-                                        }
-
-                                        @Override
-                                        protected void onFailure(String message) {
-                                            mRootView.showMessage(message);
-                                        }
-
-                                        @Override
-                                        protected void onException(Throwable throwable) {
-                                            handleException(throwable);
-                                        }
-                                    });
-                        } else {
-                            mRootView.goHome();
-                        }
+                        mRootView.goHome();
                     }
 
                     @Override

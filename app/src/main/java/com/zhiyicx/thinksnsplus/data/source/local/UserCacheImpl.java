@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.content.Context;
 
-import com.zhiyicx.thinksnsplus.data.beans.User;
 import com.zhiyicx.thinksnsplus.data.beans.UserDao;
 
 import java.util.List;

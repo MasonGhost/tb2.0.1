@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.RegisterRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -31,12 +32,18 @@ public class RegisterPresenterModule {
 
 
     @Provides
-    RegisterContract.Repository provideRegisterContractRepository(ServiceManager serviceManager, Application application){
-        return new RegisterRepository(serviceManager,application);
+    RegisterContract.Repository provideRegisterContractRepository(ServiceManager serviceManager, Application application) {
+        return new RegisterRepository(serviceManager, application);
     }
+
     @Provides
-    IAuthRepository provideIAuthRepository(ServiceManager serviceManager, Application application){
-        return new AuthRepository(serviceManager,application);
+    IAuthRepository provideIAuthRepository(ServiceManager serviceManager, Application application) {
+        return new AuthRepository(serviceManager, application);
+    }
+
+    @Provides
+    UserInfoRepository provideUserInfoRepository(UserInfoRepository userInfoRepository) {
+        return userInfoRepository;
     }
 
 }

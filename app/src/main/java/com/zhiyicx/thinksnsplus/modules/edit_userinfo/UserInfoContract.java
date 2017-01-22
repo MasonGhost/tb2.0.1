@@ -4,12 +4,10 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
-import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
-import com.zhiyicx.thinksnsplus.modules.login.LoginContract;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
@@ -44,9 +42,17 @@ public interface UserInfoContract {
         /**
          * 编辑用户信息
          *
-         * @param userInfos 用户需要修改的信息，通过hashMap传递，key表示请求字段，value表示修改的值
+         * @param userInfos 用户需要修改的信息，通过 hashMap 传递，key 表示请求字段，value 表示修改的值
          */
         Observable<BaseJson> changeUserInfo(HashMap<String, String> userInfos);
+
+        /**
+         * 获取用户信息
+         * @param user_id 用户 id
+         * @return
+         */
+        Observable<BaseJson<UserInfoBean>> getUserInfo(String user_id);
+
     }
 
     interface Presenter extends IBasePresenter {

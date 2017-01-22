@@ -2,14 +2,17 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.imsdk.entity.Conversation;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import java.util.HashMap;
 
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -44,4 +47,12 @@ public interface UserInfoClient {
     @FormUrlEncoded
     @POST("/api/v1/im/conversations")
     Observable<BaseJson<Conversation>> createConversaiton(@Field("type") String type, @Field("name") String name, @Field("pwd") String pwd, @Field("uids") String uids);
+
+    /**
+     * 获取用户信息
+     * @param user_id
+     * @return
+     */
+    @GET("/api/v1/users")
+    Observable<BaseJson<UserInfoBean>> getUserInfo(@Query("user") String user_id);
 }
