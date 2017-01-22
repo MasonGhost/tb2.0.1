@@ -138,7 +138,7 @@ public class MessageFragment extends TSFragment {
         MessageItemBean test = new MessageItemBean();
         UserInfoBean testUserinfo = new UserInfoBean();
         testUserinfo.setUserIcon("http://192.168.10.222/i.php");
-        testUserinfo.setUserName("颤三");
+        testUserinfo.setName("颤三");
         testUserinfo.setUserId("123");
         test.setUserInfo(testUserinfo);
         Message testMessage = new Message();
@@ -205,7 +205,7 @@ public class MessageFragment extends TSFragment {
                         .build()
                 );
                 setViewEnable(holder, true);
-                holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getUserName());
+                holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getName());
                 // 响应事件
                 RxView.clicks(holder.getView(R.id.tv_name))
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作

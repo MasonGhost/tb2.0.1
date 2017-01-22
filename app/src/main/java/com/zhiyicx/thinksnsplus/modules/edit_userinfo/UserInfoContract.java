@@ -40,11 +40,6 @@ public interface UserInfoContract {
         Observable<ArrayList<AreaBean>> getAreaList();
 
         /**
-         * 修改用户头像
-         */
-        Observable<BaseJson> changeUserHeadIcon(String hash, String fileName, Map<String, String> filePathList);
-
-        /**
          * 编辑用户信息
          *
          * @param userInfos 用户需要修改的信息，通过 hashMap 传递，key 表示请求字段，value 表示修改的值
@@ -63,7 +58,14 @@ public interface UserInfoContract {
     interface Presenter extends IBasePresenter {
         void getAreaData();
 
-        void changeUserHeadIcon(String hash, String fileName, Map<String, String> filePathList);
+        /**
+         * 上传用户头像
+         *
+         * @param hash
+         * @param fileName
+         * @param filePath
+         */
+        void changeUserHeadIcon(String hash, String fileName, String filePath);
 
         void changUserInfo(HashMap<String, String> userInfos);
     }

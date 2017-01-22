@@ -45,8 +45,9 @@
     <string name="change">更改</string>
 
     <!--裁剪-->
-<string name="crop_head_icon">更换头像</string>
+    <string name="crop_head_icon">更换头像</string>
 
 
     <!--代码中的string-->
+    <string name="token_expiers">token过期，请重新登陆</string>
 </resources>

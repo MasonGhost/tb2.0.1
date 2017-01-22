@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.base;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
@@ -89,9 +91,17 @@ public class AppApplication extends TSApplication {
                         || baseJson.getCode() == ErrorCodeConfig.NEED_RELOGIN
                         || baseJson.getCode() == ErrorCodeConfig.OTHER_DEVICE_LOGIN
                         || baseJson.getCode() == ErrorCodeConfig.TOKEN_NOT_EXIST) {
-                    // 跳到登陆页面，销毁之前的所有页面
-                    ActivityHandler.getInstance().finishAllActivity();
-                    startActivity(new Intent(AppApplication.this, LoginActivity.class));
+                    // 跳到登陆页面，销毁之前的所有页面,添加弹框处理提示
+                    new AlertDialog.Builder(AppApplication.this)
+                            .setTitle(R.string.token_expiers)
+                            .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    ActivityHandler.getInstance().finishAllActivity();
+                                    startActivity(new Intent(AppApplication.this, LoginActivity.class));
+                                }
+                            })
+                            .create().show();
                 }
                 return response;
             }

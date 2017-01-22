@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -30,6 +31,8 @@ import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
+import com.zhiyicx.thinksnsplus.data.beans.EditConfigBean;
+import com.zhiyicx.thinksnsplus.data.beans.EditConfigBeanDaoImpl;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 
@@ -84,8 +87,10 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     private UserInfoBean mUserInfoBean;// 用户未修改前的用户信息
     private int upLoadCount = 0;// 当前文件上传的次数，>0表示已经上传成功，但是还没有提交修改用户信息
+    private boolean userNameChanged, sexChanged, cityChanged, introduceChanged;
 
     private List<String> selectedPhotos = new ArrayList<>();// 被选择的图片
+    private EditConfigBeanDaoImpl mEditConfigBeanDao;
 
     @Override
     protected int getBodyLayoutId() {
@@ -94,26 +99,70 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     @Override
     protected void initView(View rootView) {
-
+        mUserInfoBean = new UserInfoBean();
         mPhotoSelector = DaggerPhotoSelectorImplComponent
                 .builder()
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl.SHAPE_RCTANGLE))
                 .build().photoSelectorImpl();
         initCityPickerView();
+        mEditConfigBeanDao = new EditConfigBeanDaoImpl(getContext());
+        EditConfigBean editConfigBean = new EditConfigBean(0L, "school", "学校", "EditText");
+        mEditConfigBeanDao.saveSingleData(editConfigBean);
+
+        ////////////////////////监听所有的用户信息变化///////////////////////////////
         RxTextView.textChanges(mEtUserName)
                 .subscribe(new Action1<CharSequence>() {
                     @Override
                     public void call(CharSequence charSequence) {
-                        canChangerUserInfo(mUserInfoBean);
+                        String oldUserName = mUserInfoBean.getName();
+                        if (TextUtils.isEmpty(oldUserName)) {
+                            userNameChanged = !TextUtils.isEmpty(charSequence);
+                        } else {
+                            userNameChanged = !mUserInfoBean.getName().equals(charSequence);
+                        }
+                        canChangerUserInfo();
+                    }
+                });
+        RxTextView.textChanges(mTvSex)
+                .subscribe(new Action1<CharSequence>() {
+                    @Override
+                    public void call(CharSequence charSequence) {
+                        String oldSex = mUserInfoBean.getSex();
+                        if (TextUtils.isEmpty(oldSex)) {
+                            sexChanged = !TextUtils.isEmpty(charSequence);
+                        } else {
+                            sexChanged = !oldSex.equals(charSequence);
+                        }
+                        canChangerUserInfo();
+                    }
+                });
+        RxTextView.textChanges(mTvCity)
+                .subscribe(new Action1<CharSequence>() {
+                    @Override
+                    public void call(CharSequence charSequence) {
+                        String oldLocation = mUserInfoBean.getLocation();
+                        if (TextUtils.isEmpty(oldLocation)) {
+                            cityChanged = !TextUtils.isEmpty(charSequence);
+                        } else {
+                            cityChanged = !oldLocation.equals(charSequence);
+                        }
+                        canChangerUserInfo();
                     }
                 });
         RxTextView.textChanges(mEtUserIntroduce.getEtContent())
                 .subscribe(new Action1<CharSequence>() {
                     @Override
                     public void call(CharSequence charSequence) {
-                        canChangerUserInfo(mUserInfoBean);
+                        String oldIntroduce = mUserInfoBean.getIntro();
+                        if (TextUtils.isEmpty(oldIntroduce)) {
+                            introduceChanged = !TextUtils.isEmpty(charSequence);
+                        } else {
+                            introduceChanged = !oldIntroduce.equals(charSequence);
+                        }
+                        canChangerUserInfo();
                     }
                 });
+
     }
 
     @Override
@@ -193,8 +242,11 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         // 上传成功，可以进行修改
         if (upLoadState) {
             upLoadCount++;
+            ToastUtils.showToast("头像上传成功");
+        } else {
+            ToastUtils.showToast("头像上传失败");
         }
-        canChangerUserInfo(mUserInfoBean);
+        canChangerUserInfo();
     }
 
     @Override
@@ -219,10 +271,9 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     public void getPhotoSuccess(List<ImageBean> photoList) {
         String filePath = photoList.get(0).getImgUrl();
         File file = new File(filePath);
-        Map<String, String> map = new HashMap<>();
-        map.put("file1", filePath);
-        mPresenter.changeUserHeadIcon(FileUtils.getFileMD5ToString(file), file.getName(), map);
-
+        // 开始上传
+        mPresenter.changeUserHeadIcon(FileUtils.getFileMD5ToString(file), file.getName(), filePath);
+        // 加载本地图片
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
                 .url(photoList.get(0).getImgUrl())
@@ -353,14 +404,12 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
      */
     private void setCity(String city) {
         mTvCity.setText(city);//更新位置
-        canChangerUserInfo(mUserInfoBean);
     }
 
     /**
      * 设置用户性别
      */
     private void setGender(int genderType) {
-        canChangerUserInfo(mUserInfoBean);
         switch (genderType) {
             case GENDER_MALE:
                 mTvSex.setText(R.string.male);
@@ -390,17 +439,9 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     /**
      * 判断是否需要修改信息：如果头像，用户名，性别。。。其中任意一项发生变化，都可以提交修改
      */
-    private void canChangerUserInfo(UserInfoBean userInfoBean) {
-        String currentUserName = mEtUserName.getText().toString();
-        String currentGender = mTvSex.getText().toString();
-        String currentCity = mTvCity.getText().toString();
-        String currentIntroduce = mEtUserIntroduce.getInputContent();
-        if (userInfoBean.getName().equals(currentUserName)
-                && userInfoBean.getSex().equals(currentGender)
-                && userInfoBean.getLocation().equals(currentCity)
-                && userInfoBean.getIntro().equals(currentIntroduce)
-                && upLoadCount > 0
-                ) {
+    private void canChangerUserInfo() {
+        if (userNameChanged || sexChanged || cityChanged || introduceChanged
+                || upLoadCount > 0) {
             mToolbarRight.setEnabled(true);
         } else {
             mToolbarRight.setEnabled(false);

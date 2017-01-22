@@ -78,74 +78,6 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     }
 
     @Override
-    public Observable<BaseJson> changeUserHeadIcon(String hash, String fileName, final Map<String, String> filePathList) {
-        return mCommonClient.createStorageTask(hash, fileName, null)
-                // 处理创建存储任务到上传文件的过程
-                .flatMap(new Func1<BaseJson<StorageTaskBean>, Observable<String[]>>() {
-                    @Override
-                    public Observable<String[]> call(BaseJson<StorageTaskBean> storageTaskBeanBaseJson) {
-                        // 服务器获取成功
-                        if (storageTaskBeanBaseJson.isStatus()) {
-                            StorageTaskBean storageTaskBean = storageTaskBeanBaseJson.getData();
-                            int storageId = storageTaskBean.getStorage_id();
-                            final int storageTaskId = storageTaskBean.getStorage_task_id();
-                            if (storageId > 0) {
-                                // 表示服务器已经存在该附件,已经成功上传，不需要做其他事情了
-                                return Observable.just(new String[]{"success", storageTaskId + ""});
-                            } else {
-                                // 创建上传任务成功，开始上传
-                                String method = storageTaskBean.getMethod();
-                                String uri = storageTaskBean.getUri();
-                                // 处理headers
-                                JSONObject headers = storageTaskBean.getHeaders();
-                                HashMap<String, String> headerMap = parseJSONObject(headers);
-                                if (method.equalsIgnoreCase("put")) {
-                                    // 使用map操作符携带任务id，继续向下传递
-                                    return mCommonClient.upLoadFileByPut(uri, headerMap, upLoadFile(filePathList, null)).map(new Func1<String, String[]>() {
-                                        @Override
-                                        public String[] call(String s) {
-                                            return new String[]{s, storageTaskId + ""};
-                                        }
-                                    });
-                                } else if (method.equalsIgnoreCase("post")) {
-                                    // 使用map操作符携带任务id，继续向下传递
-                                    return mCommonClient.upLoadFileByPost(uri, headerMap, upLoadFile(filePathList, null)).map(new Func1<String, String[]>() {
-                                        @Override
-                                        public String[] call(String s) {
-                                            return new String[]{s, storageTaskId + ""};
-                                        }
-                                    });
-                                } else {
-                                    return Observable.just(new String[]{"failure", ""});// 没有合适的方法上传文件，这一般是不会发生的
-                                }
-                            }
-                        } else {
-                            // 表示服务器创建存储任务失败
-                            return Observable.just(new String[]{"failure", ""});
-                        }
-                    }
-                })
-                // 处理上传文件到获取任务通知的过程
-                .flatMap(new Func1<String[], Observable<BaseJson>>() {
-                    @Override
-                    public Observable<BaseJson> call(String[] s) {
-                        switch (s[0]) {
-                            case "success":// 直接成功
-                                BaseJson success = new BaseJson();
-                                success.setStatus(true);
-                                return Observable.just(success);
-                            case "failure":// 失败
-                                BaseJson failure = new BaseJson();
-                                failure.setStatus(false);
-                                return Observable.just(failure);
-                            default:// 调用通知任务
-                                return mCommonClient.notifyStorageTask(s[1], s[0], null);
-                        }
-                    }
-                });
-    }
-
-    @Override
     public Observable<BaseJson> changeUserInfo(HashMap<String, String> userInfos) {
         return mUserInfoClient.changeUserInfo(userInfos);
     }
@@ -208,4 +140,5 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         }
         return jsonMap;
     }
+
 }

@@ -121,7 +121,7 @@ public class MessageLikeFragment extends TSFragment implements BGARefreshLayout.
     private void initCommentAndLike(List<MessageItemBean> messageItemBeen) {
         UserInfoBean testUserinfo = new UserInfoBean();
         testUserinfo.setUserIcon("http://image.xinmin.cn/2017/01/11/bedca80cdaa44849a813e7820fff8a26.jpg");
-        testUserinfo.setUserName("颤三");
+        testUserinfo.setName("颤三");
         testUserinfo.setUserId("123");
         MessageItemBean commentItem = new MessageItemBean();
         commentItem.setUserInfo(testUserinfo);
@@ -181,7 +181,7 @@ public class MessageLikeFragment extends TSFragment implements BGARefreshLayout.
             holder.setText(R.id.tv_deatil, messageItemBean.getLastMessage().getTxt());
         }
 
-        holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getUserName());
+        holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getName());
         holder.setText(R.id.tv_time, ConvertUtils.millis2FitTimeSpan(messageItemBean.getLastMessage().getCreate_time(), 3));
         // 响应事件
         RxView.clicks(holder.getView(R.id.tv_name))

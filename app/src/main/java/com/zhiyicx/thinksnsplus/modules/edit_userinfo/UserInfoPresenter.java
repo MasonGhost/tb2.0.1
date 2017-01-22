@@ -6,6 +6,7 @@ import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +27,9 @@ import rx.schedulers.Schedulers;
  */
 
 public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository, UserInfoContract.View> implements UserInfoContract.Presenter {
+
+    @Inject
+    private IUploadRepository mIUploadRepository;
 
     @Inject
     public UserInfoPresenter(UserInfoContract.Repository repository, UserInfoContract.View rootView) {
@@ -67,24 +71,24 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
     }
 
     @Override
-    public void changeUserHeadIcon(String hash, String fileName, Map<String, String> filePathList) {
-        Subscription subscription = mRepository.changeUserHeadIcon(hash, fileName, filePathList)
+    public void changeUserHeadIcon(String hash, String fileName, String filePathList) {
+        Subscription subscription = mIUploadRepository.upLoadSingleFile(hash, fileName, "", filePathList)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<BaseJson>() {
+                .subscribe(new BaseSubscribe() {
                     @Override
-                    public void call(BaseJson baseJson) {
-                        if (baseJson.isStatus()) {
-                            ToastUtils.showToast("头像上传成功");
-                        } else {
-                            ToastUtils.showToast("头像上传失败");
-                        }
+                    protected void onSuccess(Object data) {
+                        mRootView.setUpLoadHeadIconState(true);
                     }
-                }, new Action1<Throwable>() {
+
                     @Override
-                    public void call(Throwable throwable) {
-                        com.zhiyicx.common.utils.log.LogUtils.e(throwable, "headIcon");
-                        //ToastUtils.showToast("-->" + throwable.getMessage());
+                    protected void onFailure(String message) {
+                        mRootView.setUpLoadHeadIconState(false);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        mRootView.setUpLoadHeadIconState(false);
                     }
                 });
         addSubscrebe(subscription);
@@ -105,6 +109,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                     @Override
                     protected void onFailure(String message) {
                         // 修改失败，好尴尬
+
                     }
 
                     @Override

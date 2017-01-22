@@ -66,6 +66,7 @@ public class UserInfoBean implements Parcelable {
         this.userId = userId;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
