@@ -2,9 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +22,7 @@ import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplCompone
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
+import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.ToastUtils;
@@ -40,7 +39,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -75,6 +73,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     LinearLayout mLlCityContainer;
     @BindView(R.id.et_user_introduce)
     UserInfoInroduceInputView mEtUserIntroduce;
+    @BindView(R.id.view_container)
+    LinearLayout mViewContainer;
 
     private ArrayList<AreaBean> options1Items;
     private ArrayList<ArrayList<AreaBean>> options2Items;
@@ -97,6 +97,41 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         return R.layout.fragment_user_info;
     }
 
+    private void initConfig() {
+        mEditConfigBeanDao = new EditConfigBeanDaoImpl(getContext());
+        EditConfigBean editConfigBean = new EditConfigBean(1021L, "school", "学校", "TextView");
+        mEditConfigBeanDao.saveSingleData(editConfigBean);
+    }
+
+    private void initUI() {
+        List<EditConfigBean> editConfigBeanList = mEditConfigBeanDao.getMultiDataFromCache();
+        for (EditConfigBean editConfigBean : editConfigBeanList) {
+            String itemName = editConfigBean.getItemName();
+            String itemType = editConfigBean.getItemType();
+            String itemField = editConfigBean.getItemField();
+            if (itemType.equals("TextView")) {
+                CombinationButton combinationButton = new CombinationButton(getContext(), null);
+                ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 100);
+                combinationButton.setLayoutParams(layoutParams);
+                combinationButton.setLeftText(itemName);
+                combinationButton.setTag(editConfigBean);
+                mViewContainer.removeAllViews();
+                mViewContainer.addView(combinationButton);
+            }
+
+        }
+    }
+
+    private HashMap<String, String> getNetParams() {
+        HashMap<String, String> hashMap = new HashMap<>();
+        for (int i = 0; i < mViewContainer.getChildCount(); i++) {
+            View view = mViewContainer.getChildAt(i);
+            EditConfigBean editConfigBean = (EditConfigBean) view.getTag();
+            hashMap.put(editConfigBean.getItemField(), "");// 通过自定义view接口获取要传递的值
+        }
+        return hashMap;
+    }
+
     @Override
     protected void initView(View rootView) {
         mUserInfoBean = new UserInfoBean();
@@ -105,10 +140,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl.SHAPE_RCTANGLE))
                 .build().photoSelectorImpl();
         initCityPickerView();
-        mEditConfigBeanDao = new EditConfigBeanDaoImpl(getContext());
-        EditConfigBean editConfigBean = new EditConfigBean(0L, "school", "学校", "EditText");
-        mEditConfigBeanDao.saveSingleData(editConfigBean);
-
+        initConfig();
+        initUI();
         ////////////////////////监听所有的用户信息变化///////////////////////////////
         RxTextView.textChanges(mEtUserName)
                 .subscribe(new Action1<CharSequence>() {
@@ -448,4 +481,11 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         }
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: inflate a fragment view
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        ButterKnife.bind(this, rootView);
+        return rootView;
+    }
 }

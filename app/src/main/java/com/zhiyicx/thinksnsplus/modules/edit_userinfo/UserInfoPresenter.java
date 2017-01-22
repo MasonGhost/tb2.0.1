@@ -29,7 +29,7 @@ import rx.schedulers.Schedulers;
 public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository, UserInfoContract.View> implements UserInfoContract.Presenter {
 
     @Inject
-    private IUploadRepository mIUploadRepository;
+    IUploadRepository mIUploadRepository;
 
     @Inject
     public UserInfoPresenter(UserInfoContract.Repository repository, UserInfoContract.View rootView) {
