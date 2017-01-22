@@ -155,7 +155,7 @@ public class BackgroundTaskManager {
                         .subscribe(new BaseSubscribe<UserInfoBean>() {
                             @Override
                             protected void onSuccess(UserInfoBean data) {
-                                // TODO: 2017/1/22 存储用户信息
+//                                UserInfoBeanGreenDaoImpl
 
                             }
 
