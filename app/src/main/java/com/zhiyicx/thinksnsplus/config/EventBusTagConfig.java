@@ -1,11 +1,14 @@
 package com.zhiyicx.thinksnsplus.config;
 
 /**
- * @Describe  存储所有android-eventbus Tag 标识
+ * @Describe 存储所有android-eventbus Tag 标识
  * @Author Jungle68
  * @Date 2016/12/16
  * @Contact 335891510@qq.com
  */
 
 public class EventBusTagConfig {
+    public static final String EVENT_BACKGROUND_TASK = "event_background_task";// 后台任务处理
+    public static final String EVENT_BACKGROUND_TASK_CANT_NOT_DEAL = "event_background_task_cant_not_deal";// 后台任务处理
+    public static final String EVENT_USERINFO_UPDATE = "event_userinfo_update";// 后台刷新用户信息
 }

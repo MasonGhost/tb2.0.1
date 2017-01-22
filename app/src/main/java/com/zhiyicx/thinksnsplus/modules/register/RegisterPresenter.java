@@ -126,6 +126,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
                         mRootView.setRegisterBtEnabled(true);
                         mAuthRepository.saveAuthBean(data);// 保存登录认证信息IM
                         mRootView.goHome();
+
                     }
 
                     @Override
