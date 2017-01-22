@@ -6,6 +6,7 @@ import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +27,9 @@ import rx.schedulers.Schedulers;
  */
 
 public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository, UserInfoContract.View> implements UserInfoContract.Presenter {
+
+    @Inject
+    private IUploadRepository mIUploadRepository;
 
     @Inject
     public UserInfoPresenter(UserInfoContract.Repository repository, UserInfoContract.View rootView) {
@@ -68,7 +72,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
 
     @Override
     public void changeUserHeadIcon(String hash, String fileName, Map<String, String> filePathList) {
-        Subscription subscription = mRepository.changeUserHeadIcon(hash, fileName, filePathList)
+        Subscription subscription = mIUploadRepository.upLoadSingleFile(hash, fileName, filePathList)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<BaseJson>() {
