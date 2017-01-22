@@ -1,8 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
@@ -10,7 +8,6 @@ import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -29,7 +26,7 @@ import rx.schedulers.Schedulers;
 public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository, UserInfoContract.View> implements UserInfoContract.Presenter {
 
     @Inject
-    private IUploadRepository mIUploadRepository;
+    IUploadRepository mIUploadRepository;
 
     @Inject
     public UserInfoPresenter(UserInfoContract.Repository repository, UserInfoContract.View rootView) {

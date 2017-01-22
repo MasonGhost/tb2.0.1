@@ -2,12 +2,7 @@ package com.zhiyicx.thinksnsplus.dagger;
 
 import android.content.Context;
 
-import com.zhiyicx.thinksnsplus.data.source.local.UserCacheImpl;
-
-import javax.inject.Singleton;
-
 import dagger.Module;
-import dagger.Provides;
 
 /**
  * @author LiuChao
@@ -23,9 +18,5 @@ public class GreenDaoModule {
         mContext = context;
     }
 
-    @Singleton
-    @Provides
-    UserCacheImpl provideUserCacheImpl() {
-        return new UserCacheImpl(mContext);
-    }
+
 }

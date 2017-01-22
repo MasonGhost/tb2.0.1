@@ -1,9 +1,9 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
-import android.content.Context;
-
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Keep;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * @author LiuChao
@@ -23,6 +23,7 @@ public class EditConfigBean {
 
     }
 
+    @Keep
     public EditConfigBean(Long itemId, String itemField, String itemName, String itemType) {
         this.itemId = itemId;
         this.itemField = itemField;
@@ -52,5 +53,13 @@ public class EditConfigBean {
 
     public void setItemType(String itemType) {
         this.itemType = itemType;
+    }
+
+    public String getItemField() {
+        return this.itemField;
+    }
+
+    public void setItemField(String itemField) {
+        this.itemField = itemField;
     }
 }

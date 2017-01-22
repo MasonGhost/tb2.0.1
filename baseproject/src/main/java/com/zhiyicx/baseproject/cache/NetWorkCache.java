@@ -12,5 +12,5 @@ import rx.Observable;
  */
 
 public interface NetWorkCache<T extends CacheBean> {
-    Observable<BaseJson<T>> get(String key);
+    Observable<BaseJson<T>> get(Long key);
 }

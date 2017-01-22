@@ -1,8 +1,5 @@
 package com.zhiyicx.thinksnsplus.dagger;
 
-import com.zhiyicx.common.dagger.scope.ActivityScoped;
-import com.zhiyicx.thinksnsplus.data.source.local.UserCacheImpl;
-
 import javax.inject.Singleton;
 
 import dagger.Component;
@@ -16,5 +13,4 @@ import dagger.Component;
 @Singleton
 @Component(modules = {GreenDaoModule.class})
 public interface GreenDaoComponent {
-    UserCacheImpl provideUserCacheImpl();
 }

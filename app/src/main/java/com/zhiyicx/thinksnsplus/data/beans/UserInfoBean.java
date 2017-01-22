@@ -3,6 +3,10 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Generated;
+
 /**
  * @author LiuChao
  * @describe 用户信息的实体类
@@ -10,13 +14,16 @@ import android.os.Parcelable;
  * @contact email:450127106@qq.com
  */
 
+
+@Entity
 public class UserInfoBean implements Parcelable {
     private String name;
     private String userIcon;
     private String location;
     private String intro;
     private String sex;
-    private String userId;
+    @Id
+    private Long user_id;
 
     public String getName() {
         return name;
@@ -58,14 +65,13 @@ public class UserInfoBean implements Parcelable {
         this.sex = sex;
     }
 
-    public String getUserId() {
-        return userId;
+    public Long getUser_id() {
+        return user_id;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUser_id(Long user_id) {
+        this.user_id = user_id;
     }
-
 
     @Override
     public int describeContents() {
@@ -79,7 +85,7 @@ public class UserInfoBean implements Parcelable {
         dest.writeString(this.location);
         dest.writeString(this.intro);
         dest.writeString(this.sex);
-        dest.writeString(this.userId);
+        dest.writeValue(this.user_id);
     }
 
     public UserInfoBean() {
@@ -91,7 +97,18 @@ public class UserInfoBean implements Parcelable {
         this.location = in.readString();
         this.intro = in.readString();
         this.sex = in.readString();
-        this.userId = in.readString();
+        this.user_id = (Long) in.readValue(Long.class.getClassLoader());
+    }
+
+    @Generated(hash = 194228155)
+    public UserInfoBean(String name, String userIcon, String location, String intro,
+            String sex, Long user_id) {
+        this.name = name;
+        this.userIcon = userIcon;
+        this.location = location;
+        this.intro = intro;
+        this.sex = sex;
+        this.user_id = user_id;
     }
 
     public static final Creator<UserInfoBean> CREATOR = new Creator<UserInfoBean>() {
@@ -105,4 +122,16 @@ public class UserInfoBean implements Parcelable {
             return new UserInfoBean[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "UserInfoBean{" +
+                "name='" + name + '\'' +
+                ", userIcon='" + userIcon + '\'' +
+                ", location='" + location + '\'' +
+                ", intro='" + intro + '\'' +
+                ", sex='" + sex + '\'' +
+                ", user_id=" + user_id +
+                '}';
+    }
 }

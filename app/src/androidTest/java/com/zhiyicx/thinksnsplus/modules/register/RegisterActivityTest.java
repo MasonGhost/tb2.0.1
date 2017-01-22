@@ -4,12 +4,12 @@ import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
 import com.zhiyicx.thinksnsplus.modules.RxUnitTestTools;
 
@@ -67,12 +67,12 @@ public class RegisterActivityTest {
      */
     @Test
     public void registerFailure() throws Exception {
-        mRegisterClient.register("failure", USER_PHONE, USER_NAME, "12344", "dsafdsa")
+        mRegisterClient.register("failure", USER_PHONE, USER_NAME, "12344", "dsafdsa","12313")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<BaseJson<CacheBean>>() {
+                .subscribe(new Action1<BaseJson<AuthBean>>() {
                     @Override
-                    public void call(BaseJson<CacheBean> integerBaseJson) {
+                    public void call(BaseJson<AuthBean> integerBaseJson) {
                         LogUtils.d(integerBaseJson.toString());
                         if (integerBaseJson.isStatus()) {
                             // 成功跳转:当前不可能发生
@@ -99,12 +99,12 @@ public class RegisterActivityTest {
      */
     @Test
     public void registerSuccess() throws Exception {
-        mRegisterClient.register("success", USER_PHONE, USER_NAME, "1244", "dsafdsa")
+        mRegisterClient.register("success", USER_PHONE, USER_NAME, "1244", "dsafdsa","12321456")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<BaseJson<CacheBean>>() {
+                .subscribe(new Action1<BaseJson<AuthBean>>() {
                     @Override
-                    public void call(BaseJson<CacheBean> integerBaseJson) {
+                    public void call(BaseJson<AuthBean> integerBaseJson) {
                         LogUtils.d(integerBaseJson.toString());
                         if (integerBaseJson.isStatus()) {
                             // 成功跳转:当前不可能发生

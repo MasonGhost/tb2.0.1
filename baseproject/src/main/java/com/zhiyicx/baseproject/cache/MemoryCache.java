@@ -1,12 +1,8 @@
 package com.zhiyicx.baseproject.cache;
 
-import android.provider.Settings;
 import android.util.LruCache;
 
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.common.utils.log.LogUtils;
-
-import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -36,7 +32,7 @@ public class MemoryCache<T extends CacheBean> implements ICache<T> {
     }
 
     @Override
-    public Observable<BaseJson<T>> get(final String key) {
+    public Observable<BaseJson<T>> get(final Long key) {
         Observable<BaseJson<T>> observable = Observable.create(new Observable.OnSubscribe<BaseJson<T>>() {
             @Override
             public void call(Subscriber<? super BaseJson<T>> subscriber) {
@@ -45,7 +41,7 @@ public class MemoryCache<T extends CacheBean> implements ICache<T> {
                     return;
                 }
                 // 获取缓存数据
-                T t = mLruCache.get(key);
+                T t = mLruCache.get(String.valueOf(key));
                 // 发射缓存数据
                 BaseJson<T> baseJson = new BaseJson<T>();
                 baseJson.setCode(0);
@@ -59,7 +55,7 @@ public class MemoryCache<T extends CacheBean> implements ICache<T> {
     }
 
     @Override
-    public void put(String key, T t) {
-        mLruCache.put(key, t);
+    public void put(Long key, T t) {
+        mLruCache.put(String.valueOf(key), t);
     }
 }

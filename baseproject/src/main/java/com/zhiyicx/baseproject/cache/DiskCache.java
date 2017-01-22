@@ -2,8 +2,6 @@ package com.zhiyicx.baseproject.cache;
 
 import com.zhiyicx.common.base.BaseJson;
 
-import java.util.List;
-
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -26,7 +24,7 @@ public class DiskCache<T extends CacheBean> implements ICache<T> {
     }
 
     @Override
-    public Observable<BaseJson<T>> get(final String key) {
+    public Observable<BaseJson<T>> get(final Long key) {
         Observable<BaseJson<T>> observable = Observable.create(new Observable.OnSubscribe<BaseJson<T>>() {
             @Override
             public void call(Subscriber<? super BaseJson<T>> subscriber) {
@@ -46,7 +44,7 @@ public class DiskCache<T extends CacheBean> implements ICache<T> {
     }
 
     @Override
-    public void put(String key, T t) {
+    public void put(Long key, T t) {
         mDataBaseOperate.saveSingleData(t);
     }
 }

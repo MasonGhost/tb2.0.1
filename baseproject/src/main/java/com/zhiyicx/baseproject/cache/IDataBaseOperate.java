@@ -2,8 +2,6 @@ package com.zhiyicx.baseproject.cache;
 
 import java.util.List;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
-
 /**
  * @Describe 数据库保存服务器数据，实现本地缓存
  * @Author Jungle68
@@ -15,7 +13,7 @@ public interface IDataBaseOperate<T> {
     /**
      * 保存服务器单条数据
      */
-    void saveSingleData(T singleData);
+    long saveSingleData(T singleData);
 
     /**
      * 保存服务器多条数据
@@ -30,7 +28,7 @@ public interface IDataBaseOperate<T> {
     /**
      * 根据key(比如userID)，从缓存中获取单条数据
      */
-    T getSingleDataFromCache(String key);
+    T getSingleDataFromCache(Long primaryKey);
 
     /**
      * 获取表中所有的数据，（比如所有的好友）
@@ -45,11 +43,14 @@ public interface IDataBaseOperate<T> {
     /**
      * 根据key，删除缓存中的某条数据
      */
-    void deleteSingleCache(String key);
+    void deleteSingleCache(Long primaryKey);
 
     /**
      * 更新缓存中的某条数据
      */
     void updateSingleData(T newData);
-
+    /**
+     * 插入或者替换缓存中的某条数据
+     */
+    long insertOrReplace(T newData);
 }

@@ -41,9 +41,5 @@ public class RegisterPresenterModule {
         return new AuthRepository(serviceManager, application);
     }
 
-    @Provides
-    UserInfoRepository provideUserInfoRepository(UserInfoRepository userInfoRepository) {
-        return userInfoRepository;
-    }
 
 }

@@ -20,16 +20,16 @@ public class AuthBeanGreenDaoImpl extends CommonCacheImpl<AuthBean> {
     }
 
     @Override
-    public void saveSingleData(AuthBean singleData) {
-        AuthBeanDao AuthBeanDao = getWDaoSession().getAuthBeanDao();
-        AuthBeanDao.insert(singleData);
-       AuthBeanDao.save(singleData);
+    public long saveSingleData(AuthBean singleData) {
+        AuthBeanDao authBeanDao = getWDaoSession().getAuthBeanDao();
+     return    authBeanDao.insert(singleData);
+//        authBeanDao.save(singleData);
     }
 
     @Override
     public void saveMultiData(List<AuthBean> multiData) {
-        AuthBeanDao AuthBeanDao = getWDaoSession().getAuthBeanDao();
-        AuthBeanDao.saveInTx(multiData);
+        AuthBeanDao authBeanDao = getWDaoSession().getAuthBeanDao();
+        authBeanDao.saveInTx(multiData);
     }
 
     @Override
@@ -38,15 +38,15 @@ public class AuthBeanGreenDaoImpl extends CommonCacheImpl<AuthBean> {
     }
 
     @Override
-    public AuthBean getSingleDataFromCache(String key) {
-        AuthBeanDao AuthBeanDao = getRDaoSession().getAuthBeanDao();
-        return AuthBeanDao.load(Long.parseLong(key));
+    public AuthBean getSingleDataFromCache(Long primaryKey) {
+        AuthBeanDao authBeanDao = getRDaoSession().getAuthBeanDao();
+        return authBeanDao.load(primaryKey);
     }
 
     @Override
     public List<AuthBean> getMultiDataFromCache() {
-        AuthBeanDao AuthBeanDao = getRDaoSession().getAuthBeanDao();
-        return AuthBeanDao.loadAll();
+        AuthBeanDao authBeanDao = getRDaoSession().getAuthBeanDao();
+        return authBeanDao.loadAll();
     }
 
     @Override
@@ -55,12 +55,20 @@ public class AuthBeanGreenDaoImpl extends CommonCacheImpl<AuthBean> {
     }
 
     @Override
-    public void deleteSingleCache(String key) {
-        AuthBeanDao AuthBeanDao = getWDaoSession().getAuthBeanDao();
+    public void deleteSingleCache(Long primaryKey) {
+        AuthBeanDao authBeanDao = getWDaoSession().getAuthBeanDao();
+        authBeanDao.deleteByKey(primaryKey);
     }
 
     @Override
     public void updateSingleData(AuthBean newData) {
-        AuthBeanDao AuthBeanDao = getWDaoSession().getAuthBeanDao();
+        AuthBeanDao authBeanDao = getWDaoSession().getAuthBeanDao();
+        authBeanDao.update(newData);
+    }
+
+    @Override
+    public long insertOrReplace(AuthBean newData) {
+        AuthBeanDao authBeanDao = getWDaoSession().getAuthBeanDao();
+        return authBeanDao.insertOrReplace(newData);
     }
 }

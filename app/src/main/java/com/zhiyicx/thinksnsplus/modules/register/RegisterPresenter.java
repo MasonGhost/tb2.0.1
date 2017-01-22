@@ -33,8 +33,6 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
 
     @Inject
     IAuthRepository mAuthRepository;
-    @Inject
-    UserInfoRepository mUserInfoRepository;
 
     CountDownTimer timer = new CountDownTimer(mTimeOut, S_TO_MS_SPACING) {
 
