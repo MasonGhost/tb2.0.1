@@ -26,6 +26,11 @@ public interface UserInfoContract {
          */
         void setAreaData(ArrayList<AreaBean> options1Items, ArrayList<ArrayList<AreaBean>> options2Items);
 
+        /**
+         * 设置头像上传的状态
+         */
+        void setUpLoadHeadIconState(boolean upLoadState);
+
     }
 
     interface Repository {

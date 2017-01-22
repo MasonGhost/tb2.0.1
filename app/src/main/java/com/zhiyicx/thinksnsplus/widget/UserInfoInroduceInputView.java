@@ -32,6 +32,10 @@ public class UserInfoInroduceInputView extends FrameLayout {
 
     private String mLimitTipStr = "{}/";// 添加格式符号，用户ColorPhrase
 
+    public EditText getEtContent() {
+        return mEtContent;
+    }
+
     public UserInfoInroduceInputView(Context context) {
         super(context);
         init(context, null);

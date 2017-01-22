@@ -120,7 +120,7 @@ public class MessageCommentFragment extends TSFragment implements BGARefreshLayo
     private void initCommentAndLike(List<MessageItemBean> messageItemBeen) {
         UserInfoBean testUserinfo = new UserInfoBean();
         testUserinfo.setUserIcon("http://image.xinmin.cn/2017/01/11/bedca80cdaa44849a813e7820fff8a26.jpg");
-        testUserinfo.setUserName("颤三");
+        testUserinfo.setName("颤三");
         testUserinfo.setUserId("123");
         MessageItemBean commentItem = new MessageItemBean();
         commentItem.setUserInfo(testUserinfo);
@@ -158,15 +158,15 @@ public class MessageCommentFragment extends TSFragment implements BGARefreshLayo
     /**
      * 设置item 数据
      *
-     * @param holder      控件管理器
-     * @param messageItemBean 当前数据
-     * @param position    当前数据位置
+     * @param holder          控件管理器
+     * @param messageItem     当前数据
+     * @param position        当前数据位置
      */
 
-    private void setItemData(ViewHolder holder, final MessageItemBean messageItemBean, int position) {
+    private void setItemData(ViewHolder holder, final MessageItemBean messageItem, int position) {
 
         mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url(messageItemBean.getUserInfo().getUserIcon())
+                .url(messageItem.getUserInfo().getUserIcon())
                 .transformation(new GlideCircleTransform(getContext()))
                 .imagerView((ImageView) holder.getView(R.id.iv_headpic))
                 .build());
@@ -174,18 +174,19 @@ public class MessageCommentFragment extends TSFragment implements BGARefreshLayo
             holder.setVisible(R.id.tv_deatil, View.GONE);
             holder.setVisible(R.id.iv_detail_image, View.VISIBLE);
             mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                    .url(messageItemBean.getUserInfo().getUserIcon())
+                    .url(messageItem.getUserInfo().getUserIcon())
                     .imagerView((ImageView) holder.getView(R.id.iv_detail_image))
                     .build());
         } else {
             holder.setVisible(R.id.iv_detail_image, View.GONE);
             holder.setVisible(R.id.tv_deatil, View.VISIBLE);
-            holder.setText(R.id.tv_deatil, messageItemBean.getLastMessage().getTxt());
+            holder.setText(R.id.tv_deatil, messageItem.getLastMessage().getTxt());
         }
 
-        holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getUserName());
-        holder.setText(R.id.tv_content, messageItemBean.getLastMessage().getTxt());
-        holder.setText(R.id.tv_time, ConvertUtils.millis2FitTimeSpan(messageItemBean.getLastMessage().getCreate_time(), 3));
+        // holder.setText(R.id.tv_name, messageItem.getUserInfo().getUserName());
+        holder.setText(R.id.tv_content, messageItem.getLastMessage().getTxt());
+        holder.setText(R.id.tv_time, ConvertUtils.millis2FitTimeSpan(messageItem.getLastMessage().getCreate_time(), 3));
+
         // 响应事件
         RxView.clicks(holder.getView(R.id.tv_name))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
@@ -208,7 +209,7 @@ public class MessageCommentFragment extends TSFragment implements BGARefreshLayo
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        toChat(messageItemBean);
+                        toChat(messageItem);
                     }
                 });
         RxView.clicks(holder.getView(R.id.iv_detail_image))
@@ -216,7 +217,7 @@ public class MessageCommentFragment extends TSFragment implements BGARefreshLayo
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        toChat(messageItemBean);
+                        toChat(messageItem);
                     }
                 });
         RxView.clicks(holder.getView(R.id.tv_deatil))
@@ -224,7 +225,7 @@ public class MessageCommentFragment extends TSFragment implements BGARefreshLayo
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        toChat(messageItemBean);
+                        toChat(messageItem);
                     }
                 });
     }
