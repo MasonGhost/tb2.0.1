@@ -16,6 +16,7 @@ public class UserInfoBean implements Parcelable {
     private String location;
     private String intro;
     private String sex;
+    private String userId;
 
     public String getName() {
         return name;
@@ -57,6 +58,14 @@ public class UserInfoBean implements Parcelable {
         this.sex = sex;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -69,6 +78,7 @@ public class UserInfoBean implements Parcelable {
         dest.writeString(this.location);
         dest.writeString(this.intro);
         dest.writeString(this.sex);
+        dest.writeString(this.userId);
     }
 
     public UserInfoBean() {
@@ -80,6 +90,7 @@ public class UserInfoBean implements Parcelable {
         this.location = in.readString();
         this.intro = in.readString();
         this.sex = in.readString();
+        this.userId = in.readString();
     }
 
     public static final Creator<UserInfoBean> CREATOR = new Creator<UserInfoBean>() {

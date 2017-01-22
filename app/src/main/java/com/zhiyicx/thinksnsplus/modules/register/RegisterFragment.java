@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.register;
 
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.text.Editable;
 import android.text.Selection;
@@ -16,6 +17,7 @@ import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.edittext.PasswordEditText;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -224,6 +226,11 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
         mBtRegistRegist.handleAnimation(!isEnable);
         isRegisting = !isEnable;
         setConfirmEnable();
+    }
+
+    @Override
+    public void goHome() {
+        startActivity(new Intent(getActivity(), HomeActivity.class));
     }
 
     @Override

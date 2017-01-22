@@ -29,7 +29,9 @@ public class LogUtils {
     public static void d(String tag, Object object) {
         Logger.t(tag).d(object);
     }
-
+    public static void d(String tag,String message, Object... args) {
+        Logger.t(tag).d(message, args);
+    }
     public static void d(String message, Object... args) {
         Logger.d(message, args);
     }

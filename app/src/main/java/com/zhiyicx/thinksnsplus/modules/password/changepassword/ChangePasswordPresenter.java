@@ -4,12 +4,11 @@ import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.BaseJsonAction;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 
 import javax.inject.Inject;
 
 import rx.Subscription;
-import rx.functions.Action1;
 
 /**
  * @Describe
@@ -33,12 +32,6 @@ public class ChangePasswordPresenter extends BasePresenter<ChangePasswordContrac
     }
 
     @Override
-    public void onDestroy() {
-        unSubscribe();
-    }
-
-
-    @Override
     public void changePassword(String oldPassword, String newPassword, String sureNessword) {
         if (checkPasswordLength(oldPassword, mContext.getString(R.string.old_password_toast_hint))) {
             return;
@@ -54,7 +47,7 @@ public class ChangePasswordPresenter extends BasePresenter<ChangePasswordContrac
             return;
         }
         Subscription changePasswordSub = mRepository.changePassword(oldPassword, newPassword)
-                .subscribe(new BaseJsonAction<CacheBean>() {
+                .subscribe(new BaseSubscribe<CacheBean>() {
                     @Override
                     protected void onSuccess(CacheBean data) {
                         mRootView.showMessage(mContext.getString(R.string.change_password_success));
@@ -65,9 +58,9 @@ public class ChangePasswordPresenter extends BasePresenter<ChangePasswordContrac
                     protected void onFailure(String message) {
                         mRootView.showMessage(message);
                     }
-                }, new Action1<Throwable>() {
+
                     @Override
-                    public void call(Throwable throwable) {
+                    protected void onException(Throwable throwable) {
                         throwable.printStackTrace();
                         mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
                     }
