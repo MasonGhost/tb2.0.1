@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.imsdk.entity.Conversation;
+import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import java.util.HashMap;
@@ -14,6 +15,11 @@ import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 import rx.Observable;
+
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHANGE_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CREATE_CONVERSAITON;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_IM_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_INFO;
 
 /**
  * @author LiuChao
@@ -31,9 +37,21 @@ public interface UserInfoClient {
      * @param userFieldMap 用户需要修改哪那些信息不确定
      */
     @FormUrlEncoded
-    @PATCH("api/v1/users")
+    @PATCH(APP_PATH_CHANGE_USER_INFO)
     Observable<BaseJson> changeUserInfo(@FieldMap HashMap<String, String> userFieldMap);
 
+    /**
+     * 获取用户信息
+     *
+     * @param user_id
+     * @return
+     */
+    @GET(APP_PATH_GET_USER_INFO)
+    Observable<BaseJson<UserInfoBean>> getUserInfo(@Query("user") int user_id);
+
+
+    @GET(APP_PATH_GET_IM_INFO)
+    Observable<BaseJson<IMBean>> getIMInfo();
 
     /**
      * 创建对话
@@ -45,14 +63,8 @@ public interface UserInfoClient {
      * @return
      */
     @FormUrlEncoded
-    @POST("/api/v1/im/conversations")
+    @POST(APP_PATH_CREATE_CONVERSAITON)
     Observable<BaseJson<Conversation>> createConversaiton(@Field("type") String type, @Field("name") String name, @Field("pwd") String pwd, @Field("uids") String uids);
 
-    /**
-     * 获取用户信息
-     * @param user_id
-     * @return
-     */
-    @GET("/api/v1/users")
-    Observable<BaseJson<UserInfoBean>> getUserInfo(@Query("user") int user_id);
+
 }

@@ -9,11 +9,15 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 import rx.Observable;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHANGE_PASSWORD;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_FIND_PASSWORD;
+
+
 /**
- * @author LiuChao
- * @describe 登录相关的网络请求
- * @date 2017/1/3
- * @contact email:450127106@qq.com
+ * @Describe 密码相关
+ * @Author Jungle68
+ * @Date 2017/1/
+ * @Contact master.jungle68@gmail.com
  */
 
 public interface PasswordClient {
@@ -25,7 +29,7 @@ public interface PasswordClient {
      * @return
      */
     @FormUrlEncoded
-    @POST("api/v1/auth")
+    @POST(APP_PATH_CHANGE_PASSWORD)
     Observable<BaseJson<CacheBean>> changePassword(@Query("requestState") String requestState, @Field("password") String password
             , @Field("new_password") String newPassword);
 
@@ -37,7 +41,7 @@ public interface PasswordClient {
      * @return
      */
     @FormUrlEncoded
-    @POST("api/v1/auth")
+    @POST(APP_PATH_FIND_PASSWORD)
     Observable<BaseJson<CacheBean>> findPassword(@Query("requestState") String requestState, @Field("phone") String phone
           , @Field("code") String vertifyCode, @Field("password") String newPassword);
 }

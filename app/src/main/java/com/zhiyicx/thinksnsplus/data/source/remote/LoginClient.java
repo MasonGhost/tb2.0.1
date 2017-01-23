@@ -9,6 +9,8 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 import rx.Observable;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_LOGIN;
+
 /**
  * @author LiuChao
  * @describe 登录相关的网络请求
@@ -23,7 +25,7 @@ public interface LoginClient {
      * @return
      */
     @FormUrlEncoded
-    @POST("api/v1/auth")
+    @POST(APP_PATH_LOGIN)
     Observable<BaseJson<AuthBean>> login(@Query("requestState") String requestState, @Field("phone") String phone
-            , @Field("password") String password,@Field("device_code") String device_code);
+            , @Field("password") String password, @Field("device_code") String device_code);
 }

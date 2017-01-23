@@ -178,10 +178,10 @@ public class BackgroundTaskManager {
              * 获取用户信息
              */
             case GET_USER_INFO:
-                if (backgroundRequestTask.getParams() == null || backgroundRequestTask.getParams().get("user_id") == null) {
+                if (backgroundRequestTask.getParams() == null || backgroundRequestTask.getParams().get("user") == null) {
                     return;
                 }
-                mServiceManager.getUserInfoClient().getUserInfo((Integer) backgroundRequestTask.getParams().get("user_id"))
+                mServiceManager.getUserInfoClient().getUserInfo((Integer) backgroundRequestTask.getParams().get("user"))
                         .subscribe(new BaseSubscribe<UserInfoBean>() {
                             @Override
                             protected void onSuccess(UserInfoBean data) {
