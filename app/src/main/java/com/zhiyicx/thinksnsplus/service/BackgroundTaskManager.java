@@ -9,11 +9,16 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
+import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 
 import org.simple.eventbus.EventBus;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import javax.inject.Inject;
 
 /**
  * @Describe
@@ -28,6 +33,13 @@ public class BackgroundTaskManager {
     private static volatile BackgroundTaskManager sBackgroundTaskManager;
     private Queue<BackgroundRequestTask> mBackgroundRequestTasks = new ConcurrentLinkedQueue<>();// 线程安全的队列
     private boolean mIsExit = false; // 是否关闭
+
+    @Inject
+    ServiceManager mServiceManager;
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    AuthRepository mAuthRepository;
 
     public BackgroundTaskManager() {
         init();
@@ -57,6 +69,7 @@ public class BackgroundTaskManager {
     }
 
     private void init() {
+        AppApplication.AppComponentHolder.getAppComponent().inject(this);
         new Thread(handleTaskRunnable).start();
     }
 
@@ -101,7 +114,7 @@ public class BackgroundTaskManager {
         AppComponent appComponent = AppApplication.AppComponentHolder.getAppComponent();
         switch (backgroundRequestTask.getMethodType()) {
             case POST:
-                appComponent.serviceManager().getCommonClient().handleTask(backgroundRequestTask.getPath(), backgroundRequestTask.getParams())
+                mServiceManager.getCommonClient().handleTask(backgroundRequestTask.getPath(), backgroundRequestTask.getParams())
                         .subscribe(new BaseSubscribe<CacheBean>() {
                             @Override
                             protected void onSuccess(CacheBean data) {
@@ -125,7 +138,7 @@ public class BackgroundTaskManager {
                 break;
 
             case GET_IM_INFO:
-                appComponent.authRepository().getImInfo()
+                mAuthRepository.getImInfo()
                         .subscribe(new BaseSubscribe<IMBean>() {
                             @Override
                             protected void onSuccess(IMBean data) {
@@ -151,12 +164,11 @@ public class BackgroundTaskManager {
                 break;
 
             case GET_USER_INFO:
-                appComponent.serviceManager().getUserInfoClient().getUserInfo("")
+                mServiceManager.getUserInfoClient().getUserInfo("")
                         .subscribe(new BaseSubscribe<UserInfoBean>() {
                             @Override
                             protected void onSuccess(UserInfoBean data) {
-//                                UserInfoBeanGreenDaoImpl
-
+                                mUserInfoBeanGreenDao.insertOrReplace(data);
                             }
 
                             @Override

@@ -1,8 +1,11 @@
 package com.zhiyicx.thinksnsplus.dagger;
 
-import android.content.Context;
+import android.app.Application;
+
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 
 import dagger.Module;
+import dagger.Provides;
 
 /**
  * @author LiuChao
@@ -12,11 +15,12 @@ import dagger.Module;
  */
 @Module
 public class GreenDaoModule {
-    private Context mContext;
 
-    public GreenDaoModule(Context context) {
-        mContext = context;
+    public GreenDaoModule() {
     }
 
-
+    @Provides
+    public UserInfoBeanGreenDaoImpl provideUserInfoBeanGreenDaoImpl(Application application) {
+        return new UserInfoBeanGreenDaoImpl(application);
+    }
 }
