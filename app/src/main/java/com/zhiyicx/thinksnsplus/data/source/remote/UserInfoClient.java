@@ -54,5 +54,5 @@ public interface UserInfoClient {
      * @return
      */
     @GET("/api/v1/users")
-    Observable<BaseJson<UserInfoBean>> getUserInfo(@Query("user") String user_id);
+    Observable<BaseJson<UserInfoBean>> getUserInfo(@Query("user") int user_id);
 }

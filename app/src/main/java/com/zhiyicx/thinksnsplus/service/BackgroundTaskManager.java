@@ -4,7 +4,6 @@ import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.base.AppComponent;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
@@ -41,7 +40,7 @@ public class BackgroundTaskManager {
     @Inject
     AuthRepository mAuthRepository;
 
-    public BackgroundTaskManager() {
+    private BackgroundTaskManager() {
         init();
     }
 
@@ -57,7 +56,15 @@ public class BackgroundTaskManager {
         return sBackgroundTaskManager;
     }
 
+    /**
+     * 加入任务
+     * @param backgroundRequestTask 任务
+     * @return 如果任务为 null，返回 false,否者返回 true
+     */
     public boolean addBackgroundRequestTask(BackgroundRequestTask backgroundRequestTask) {
+        if (backgroundRequestTask == null) {
+            return false;
+        }
         return mBackgroundRequestTasks.add(backgroundRequestTask);
     }
 
@@ -102,17 +109,20 @@ public class BackgroundTaskManager {
     }
 
     /**
-     * 处理后台任务
+     * 处理后台任务，用户信息和 IM 需要对返回数据处理，其他请求只是通知服务器，不需要做后续操作
      *
-     * @param backgroundRequestTask
+     * @param backgroundRequestTask 后台任务
      */
     private void handleTask(final BackgroundRequestTask backgroundRequestTask) {
         if (backgroundRequestTask.getMax_retry_count() - 1 <= 0) {
             EventBus.getDefault().post(backgroundRequestTask, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
+            return;
         }
         backgroundRequestTask.setMax_retry_count(backgroundRequestTask.getMax_retry_count() - 1);
-        AppComponent appComponent = AppApplication.AppComponentHolder.getAppComponent();
         switch (backgroundRequestTask.getMethodType()) {
+            /**
+             * 通用接口处理
+             */
             case POST:
                 mServiceManager.getCommonClient().handleTask(backgroundRequestTask.getPath(), backgroundRequestTask.getParams())
                         .subscribe(new BaseSubscribe<CacheBean>() {
@@ -123,12 +133,12 @@ public class BackgroundTaskManager {
 
                             @Override
                             protected void onFailure(String message) {
-
+                                addBackgroundRequestTask(backgroundRequestTask);
                             }
 
                             @Override
                             protected void onException(Throwable throwable) {
-
+                                addBackgroundRequestTask(backgroundRequestTask);
                             }
                         });
                 break;
@@ -136,7 +146,9 @@ public class BackgroundTaskManager {
 
 
                 break;
-
+            /**
+             * 获取 IM 信息，必须保证 header 中已经加入了权限 token
+             */
             case GET_IM_INFO:
                 mAuthRepository.getImInfo()
                         .subscribe(new BaseSubscribe<IMBean>() {
@@ -162,9 +174,14 @@ public class BackgroundTaskManager {
                         });
 
                 break;
-
+            /**
+             * 获取用户信息
+             */
             case GET_USER_INFO:
-                mServiceManager.getUserInfoClient().getUserInfo("")
+                if (backgroundRequestTask.getParams() == null || backgroundRequestTask.getParams().get("user_id") == null) {
+                    return;
+                }
+                mServiceManager.getUserInfoClient().getUserInfo((Integer) backgroundRequestTask.getParams().get("user_id"))
                         .subscribe(new BaseSubscribe<UserInfoBean>() {
                             @Override
                             protected void onSuccess(UserInfoBean data) {
