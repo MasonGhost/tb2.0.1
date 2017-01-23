@@ -21,7 +21,7 @@ public class EditConfigBeanDaoImpl extends CommonCacheImpl<EditConfigBean> {
     @Override
     public long saveSingleData(EditConfigBean singleData) {
         EditConfigBeanDao editConfigBeanDao = getWDaoSession().getEditConfigBeanDao();
-        return editConfigBeanDao.insert(singleData);
+        return editConfigBeanDao.insertOrReplace(singleData);
     }
 
     @Override

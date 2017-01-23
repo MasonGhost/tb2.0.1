@@ -56,6 +56,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     private static final int GENDER_MALE = 0;// 性别男
     private static final int GENDER_FEMALE = 1;// 性别女
     private static final int GENDER_SECRET = 2;// 性别保密
+    private static final int LOCATION_2LEVEL = 2;// 地区选择可选的级数为2，2级联动
+    private static final int LOCATION_3LEVEL = 3;// 地区选择可选的级数为3
 
     @BindView(R.id.iv_head_icon)
     ImageView mIvHeadIcon;
@@ -78,8 +80,10 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     private ArrayList<AreaBean> options1Items;
     private ArrayList<ArrayList<AreaBean>> options2Items;
+    private ArrayList<ArrayList<ArrayList<AreaBean>>> options3Items;
     private int mCityOption1;//用来记录地区中滚轮的位置
     private int mCityOption2;
+    private int mCityOption3;
     private OptionsPickerView mAreaPickerView;// 地域选择器
     private ActionPopupWindow mGenderPopupWindow;// 性别选择弹框
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
@@ -91,6 +95,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     private List<String> selectedPhotos = new ArrayList<>();// 被选择的图片
     private EditConfigBeanDaoImpl mEditConfigBeanDao;
+    private int locationLevel =2;
 
     @Override
     protected int getBodyLayoutId() {
@@ -250,7 +255,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 mGenderPopupWindow.show();
                 break;
             case R.id.ll_city_container:
-                mAreaPickerView.setSelectOptions(mCityOption1, mCityOption2);
+                mAreaPickerView.setSelectOptions(mCityOption1, mCityOption2, mCityOption3);
                 mAreaPickerView.show();
                 break;
         }
@@ -263,10 +268,16 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     }
 
     @Override
-    public void setAreaData(ArrayList<AreaBean> options1Items, ArrayList<ArrayList<AreaBean>> options2Items) {
+    public void setAreaData(ArrayList<AreaBean> options1Items, ArrayList<ArrayList<AreaBean>> options2Items, ArrayList<ArrayList<ArrayList<AreaBean>>> options3Items) {
         this.options1Items = options1Items;
         this.options2Items = options2Items;
-        mAreaPickerView.setPicker(options1Items, options2Items, true);
+        this.options3Items = options3Items;
+        if (locationLevel == LOCATION_2LEVEL) {
+            mAreaPickerView.setPicker(options1Items, options2Items, true);
+        } else if (locationLevel == LOCATION_3LEVEL) {
+            mAreaPickerView.setPicker(options1Items, options2Items, options3Items, true);
+        }
+
         mAreaPickerView.setCyclic(false);// 设置是否可以循环滚动
     }
 
@@ -321,6 +332,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     }
 
     /**
+     *
      * 初始化城市选择器
      */
     private void initCityPickerView() {
@@ -332,16 +344,25 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         mAreaPickerView.setTitle("请选择城市");
         mAreaPickerView.setOnoptionsSelectListener(new OptionsPickerView.OnOptionsSelectListener() {
             @Override
-            public void onOptionsSelect(int options1, int option2, int options3) {
-                if (options2Items.size() <= options1 || options2Items.get(options1).size() <= option2) {
+            public void onOptionsSelect(int options1, int options2, int options3) {
+                /*if (options2Items.size() <= options1 || options2Items.get(options1).size() <= options2) {
                     return;//避免pickview控件的bug
+                }*/
+                String areaText1 = options1Items.get(options1).getPickerViewText();
+                String areaText2 = "", areaText3 = "";
+                if (locationLevel == LOCATION_2LEVEL) {
+                    areaText2 = options2Items.get(options1).get(options2).getPickerViewText();
                 }
-                String areaText = options1Items.get(options1).getPickerViewText();
-                String city = options2Items.get(options1).get(option2).getPickerViewText();
-                city = city.equals("全部") ? areaText : city;//如果为全部则不显示
-                setCity(city);
+                if (locationLevel == LOCATION_3LEVEL) {
+                    areaText2 = options2Items.get(options1).get(options2).getPickerViewText();
+                    areaText3 = options3Items.get(options1).get(options2).get(options3).getPickerViewText();
+                }
+                areaText2 = areaText2.equals("全部") ? "" : areaText2;//如果为全部则不显示
+                areaText3 = areaText3.equals("全部") ? "" : areaText3;//如果为全部则不显示
+                setCity(areaText1 + areaText2 + areaText3);
                 mCityOption1 = options1;
-                mCityOption2 = option2;
+                mCityOption2 = options2;
+                mCityOption3 = options3;
             }
         });
         mPresenter.getAreaData();
@@ -481,11 +502,4 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate a fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        ButterKnife.bind(this, rootView);
-        return rootView;
-    }
 }

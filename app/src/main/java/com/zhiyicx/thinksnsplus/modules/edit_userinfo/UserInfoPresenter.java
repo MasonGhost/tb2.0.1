@@ -51,12 +51,24 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
         Subscription subscription = mRepository.getAreaList()
                 .subscribe(new Action1<ArrayList<AreaBean>>() {
                     @Override
-                    public void call(ArrayList<AreaBean> areaBeen) {
+                    public void call(ArrayList<AreaBean> areaBean) {
                         ArrayList<ArrayList<AreaBean>> areaBeenChildList = new ArrayList<ArrayList<AreaBean>>();
-                        for (AreaBean areaBean : areaBeen) {
-                            areaBeenChildList.add(areaBean.getChild());
+                        ArrayList<ArrayList<ArrayList<AreaBean>>> areaBeenChildList1 = new ArrayList<ArrayList<ArrayList<AreaBean>>>();
+                        // 处理第二级联动
+                        for (AreaBean areaBean1 : areaBean) {
+                            ArrayList<AreaBean> areaBean1List = areaBean1.getChild();
+                            areaBeenChildList.add(areaBean1List);
+                            // 处理第三级连动
+                            if (areaBean1List != null) {
+                                ArrayList<ArrayList<AreaBean>> arrayListArrayList = new ArrayList<ArrayList<AreaBean>>();
+                                for (AreaBean areaBean2 : areaBean1List) {
+                                    ArrayList<AreaBean> areaBean2List = areaBean2.getChild();
+                                    arrayListArrayList.add(areaBean2List);
+                                }
+                                areaBeenChildList1.add(arrayListArrayList);
+                            }
                         }
-                        mRootView.setAreaData(areaBeen, areaBeenChildList);
+                        mRootView.setAreaData(areaBean, areaBeenChildList, areaBeenChildList1);
                     }
                 }, new Action1<Throwable>() {
                     @Override

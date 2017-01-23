@@ -24,7 +24,7 @@ public interface UserInfoContract {
         /**
          * 设置地域选择的数据
          */
-        void setAreaData(ArrayList<AreaBean> options1Items, ArrayList<ArrayList<AreaBean>> options2Items);
+        void setAreaData(ArrayList<AreaBean> options1Items, ArrayList<ArrayList<AreaBean>> options2Items, ArrayList<ArrayList<ArrayList<AreaBean>>> options3Items);
 
         /**
          * 设置头像上传的状态
@@ -48,6 +48,7 @@ public interface UserInfoContract {
 
         /**
          * 获取用户信息
+         *
          * @param user_id 用户 id
          * @return
          */
