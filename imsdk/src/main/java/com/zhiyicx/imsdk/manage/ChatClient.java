@@ -104,8 +104,6 @@ public class ChatClient implements ChatSoupport, ImMsgReceveListener, ImStatusLi
         ZBIMClient.getInstance().removeImTimeoutListener(this);
     }
 
-
-
     /**
      * 消息监听
      *
@@ -217,7 +215,7 @@ public class ChatClient implements ChatSoupport, ImMsgReceveListener, ImStatusLi
      */
     private boolean isNeedAbandon(int cid) {
         Conversation conversation = ConversationDao.getInstance(mContext).getConversationByCid(cid);
-        if (conversation == null || conversation.getType() == Conversation.CONVERSATION_TYPE_CHAROOM) {
+        if (conversation == null || conversation.getType() != Conversation.CONVERSATION_TYPE_PRIVATE) {
             return true;
         }
         return false;
