@@ -10,9 +10,11 @@ import com.zhiyicx.common.dagger.module.ShareModule;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.rxerrorhandler.RxErrorHandler;
+import com.zhiyicx.thinksnsplus.dagger.GreenDaoModule;
 import com.zhiyicx.thinksnsplus.data.source.local.CacheManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
 
 import javax.inject.Singleton;
 
@@ -27,10 +29,11 @@ import okhttp3.OkHttpClient;
  */
 
 @Singleton
-@Component(modules = {AppModule.class, HttpClientModule.class, ServiceModule.class, CacheModule.class, ImageModule.class, ShareModule.class})
+@Component(modules = {AppModule.class, HttpClientModule.class, ServiceModule.class, CacheModule.class, ImageModule.class, ShareModule.class, GreenDaoModule.class})
 public interface AppComponent {
 
-   void inject(AppApplication appApplication);
+    void inject(AppApplication appApplication);
+    void inject(BackgroundTaskHandler backgroundTaskHandler);
 
     Application Application();
 

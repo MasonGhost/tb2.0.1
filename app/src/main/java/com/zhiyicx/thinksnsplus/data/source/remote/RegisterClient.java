@@ -9,6 +9,8 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 import rx.Observable;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REGISTER;
+
 /**
  * @author LiuChao
  * @describe 登录相关的网络请求
@@ -27,7 +29,7 @@ public interface RegisterClient {
      * @return
      */
     @FormUrlEncoded
-    @POST("api/v1/auth/register")
+    @POST(APP_PATH_REGISTER)
     Observable<BaseJson<AuthBean>> register(@Query("requestState") String requestState, @Field("phone") String phone
             , @Field("name") String name, @Field("code") String vertifyCode, @Field("password") String password,@Field("device_code") String deviceCode);
 }

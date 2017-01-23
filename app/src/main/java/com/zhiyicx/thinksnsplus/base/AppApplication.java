@@ -26,12 +26,14 @@ import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
+import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.inject.Inject;
 import javax.net.ssl.SSLSocketFactory;
 
 import okhttp3.Interceptor;
@@ -51,7 +53,7 @@ import rx.schedulers.Schedulers;
  */
 
 public class AppApplication extends TSApplication {
-
+    @Inject
     AuthRepository mAuthRepository;
 
     @Override
@@ -59,6 +61,7 @@ public class AppApplication extends TSApplication {
         super.onCreate();
         initComponent();
         ZBIMSDK.init(getContext());
+        BackgroundTaskManager.getInstance(getContext()).startBackgroundTask();// 开启后台任务
     }
 
     /**
@@ -161,7 +164,7 @@ public class AppApplication extends TSApplication {
                 .cacheModule(getCacheModule())// 需自行创建
                 .build();
         AppComponentHolder.setAppComponent(appComponent);
-        mAuthRepository = appComponent.authRepository();
+        appComponent.inject(this);
     }
 
     @NonNull

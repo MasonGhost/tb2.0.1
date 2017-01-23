@@ -8,7 +8,6 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
-import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -36,7 +35,6 @@ import okhttp3.RequestBody;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -89,7 +87,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      * @return
      */
     @Override
-    public Observable<BaseJson<UserInfoBean>> getUserInfo(String user_id) {
+    public Observable<BaseJson<UserInfoBean>> getUserInfo(int user_id) {
         return mUserInfoClient.getUserInfo(user_id)
                 .subscribeOn(Schedulers.io()).
                         observeOn(AndroidSchedulers.mainThread());

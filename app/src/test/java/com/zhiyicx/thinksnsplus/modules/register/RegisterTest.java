@@ -1,11 +1,12 @@
 package com.zhiyicx.thinksnsplus.modules.register;
 
 import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
+import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
-
-import static junit.framework.Assert.assertFalse;
+import org.junit.Test;
 
 /**
  * @Describe
@@ -13,9 +14,10 @@ import static junit.framework.Assert.assertFalse;
  * @Date 2017/1/7
  * @Contact master.jungle68@gmail.com
  */
-public class RegisterTest{
+public class RegisterTest {
 
     private LoginClient mLoginClient;
+
     @Before
     public void setUp() throws Exception {
     }
@@ -23,6 +25,14 @@ public class RegisterTest{
     @After
     public void tearDown() throws Exception {
 
+    }
+
+    @Test
+    public void finalTest() {
+        final BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
+        backgroundRequestTaskBean.setMax_retry_count(1);
+        System.out.println("backgroundRequestTaskBean = " + backgroundRequestTaskBean.getMax_retry_count());
+        Assert.assertTrue(backgroundRequestTaskBean.getMax_retry_count() == 1);
     }
 
 }

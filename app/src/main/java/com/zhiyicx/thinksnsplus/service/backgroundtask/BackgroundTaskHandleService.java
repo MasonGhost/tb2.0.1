@@ -1,9 +1,11 @@
-package com.zhiyicx.thinksnsplus.service;
+package com.zhiyicx.thinksnsplus.service.backgroundtask;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+
+import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
@@ -18,7 +20,9 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_BACKGROUND
  * @Contact master.jungle68@gmail.com
  */
 
-public class CommonHandleService extends Service {
+public class BackgroundTaskHandleService extends Service {
+
+    private BackgroundTaskHandler mBackgroundTaskHandler;
 
     @Override
     public void onCreate() {
@@ -31,7 +35,7 @@ public class CommonHandleService extends Service {
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-        BackgroundTaskManager.getInstance().stopTask();
+        mBackgroundTaskHandler.stopTask();
     }
 
     @Nullable
@@ -41,11 +45,12 @@ public class CommonHandleService extends Service {
     }
 
     @Subscriber(tag = EVENT_BACKGROUND_TASK, mode = ThreadMode.POST)
-    public boolean addBackgroundRequestTask(BackgroundRequestTask backgroundRequestTask) {
-        return BackgroundTaskManager.getInstance().addBackgroundRequestTask(backgroundRequestTask);
+    public boolean addBackgroundRequestTask(BackgroundRequestTaskBean backgroundRequestTaskBean) {
+        return mBackgroundTaskHandler.addBackgroundRequestTask(backgroundRequestTaskBean);
     }
 
     private void init() {
+        mBackgroundTaskHandler = new BackgroundTaskHandler();
     }
 
 }

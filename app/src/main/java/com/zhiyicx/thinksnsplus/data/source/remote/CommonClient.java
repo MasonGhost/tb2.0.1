@@ -3,11 +3,9 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
-import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
@@ -26,6 +24,14 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.Url;
 import rx.Observable;
+
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CREATE_STORAGE_TASK;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DELETE_STORAGE_TASK;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_VERTIFYCODE;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_HANDLE_BACKGROUND_TASK;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_NOTIFY_STORAGE_TASK;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFRESH_TOKEN;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_TOKEN_EXPIERD;
 
 /**
  * @Describe
@@ -47,28 +53,28 @@ public interface CommonClient {
     public static final String VERTIFY_CODE_TYPE_CHANGE = "change";
 
     /**
+     * 获取验证码
+     *
      * @param requestState {requestState}=success/fasle
      * @param phone        需要被发送验证码的手机号
      * @param type         发送验证码的类型，固定三个值(register、login、change) register: 注
      * @return
      */
     @FormUrlEncoded
-    @POST("api/v1/auth/phone/send-code")
+    @POST(APP_PATH_GET_VERTIFYCODE)
     Observable<BaseJson<CacheBean>> getVertifyCode(@Query("requestState") String requestState, @Field("phone") String phone
             , @Field("type") String type);
 
     /**
-     * 刷新token
+     * 刷新 token
      *
      * @param deviceCode  设备号
      * @param refrshToken 刷新token
      * @return 成功后自动调用auth接口，返回信息和login一样
      */
-    @PATCH("api/v1/auth")
+    @PATCH(APP_PATH_REFRESH_TOKEN)
     Observable<BaseJson<AuthBean>> refreshToken(@Query("refresh_token") String refrshToken, @Query("device_code") String deviceCode);
 
-    @GET("/api/v1/im/users")
-    Observable<BaseJson<IMBean>> getIMInfo();
 
     ///////////////////////////////////////文件上传////////////////////////////////////////////////////
 
@@ -78,7 +84,7 @@ public interface CommonClient {
      * @param hash            待上传文件hash值，hash方式md5
      * @param origin_filename 原始文件名称
      */
-    @GET("api/v1/storages/task/{hash}/{origin_filename}")
+    @GET(APP_PATH_CREATE_STORAGE_TASK)
     Observable<BaseJson<StorageTaskBean>> createStorageTask(@Path("hash") String hash, @Path("origin_filename") String origin_filename, @Query("requestState") String requestState);
 
     /**
@@ -104,7 +110,7 @@ public interface CommonClient {
      * @return 返回将以通用message格式返回上传的附件是成功还是失败等状态信息。
      */
     @FormUrlEncoded
-    @PATCH("api/v1/storages/task/{storage_task_id}")
+    @PATCH(APP_PATH_NOTIFY_STORAGE_TASK)
     Observable<BaseJson> notifyStorageTask(@Path("storage_task_id") String storage_task_id, @Field("message") String message, @Query("requestState") String requestState);
 
     /**
@@ -112,7 +118,7 @@ public interface CommonClient {
      *
      * @param storage_task_id 任务ID
      */
-    @DELETE("api/v1/storages/task/{storage_task_id}")
+    @DELETE(APP_PATH_DELETE_STORAGE_TASK)
     Observable<BaseJson> deleteStorageTask(@Path("storage_task_id") String storage_task_id, @Query("requestState") String requestState);
 
 
@@ -122,15 +128,17 @@ public interface CommonClient {
      * 后台任务处理
      */
     @Multipart
-    @POST("{path}")
-    Observable<BaseJson<CacheBean>> handleTask(@Path("path") String path, @PartMap Map<String, Object> bodyMap);
+
+    @POST(APP_PATH_HANDLE_BACKGROUND_TASK)
+    Observable<BaseJson<CacheBean>> handleBackGroundTask(@Path("path") String path, @PartMap Map<String, Object> bodyMap);
+
 
     /**
      * rap接口，用来测试token过期,当前返回token过期
      *
      * @return
      */
-    @POST("api/test-token")
+    @POST(APP_PATH_TOKEN_EXPIERD)
     Observable<BaseJson> testTokenExpierd(@Query("requestState") String requestState);
 
 }

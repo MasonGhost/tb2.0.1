@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.view.View;
 
 import com.zhiyicx.common.config.ConstantConfig;
@@ -18,6 +19,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
@@ -600,7 +603,7 @@ public class ConvertUtils {
      * @param pxValue px值
      * @return dp值
      */
-    public static int px2dp(Context context,float pxValue) {
+    public static int px2dp(Context context, float pxValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }
@@ -611,7 +614,7 @@ public class ConvertUtils {
      * @param spValue sp值
      * @return px值
      */
-    public static int sp2px(Context context,float spValue) {
+    public static int sp2px(Context context, float spValue) {
         final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (spValue * fontScale + 0.5f);
     }
@@ -622,8 +625,46 @@ public class ConvertUtils {
      * @param pxValue px值
      * @return sp值
      */
-    public static int px2sp(Context context,float pxValue) {
-        final float fontScale =context.getResources().getDisplayMetrics().scaledDensity;
+    public static int px2sp(Context context, float pxValue) {
+        final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (pxValue / fontScale + 0.5f);
     }
+
+    public static <T> T base64Str2Object(String productBase64) {
+        T device = null;
+        if (productBase64 == null) {
+            return null;
+        }
+        // 读取字节
+        byte[] base64 = Base64.decode(productBase64.getBytes(), Base64.DEFAULT);
+
+        // 封装到字节流
+        ByteArrayInputStream bais = new ByteArrayInputStream(base64);
+        try {
+            // 再次封装
+            ObjectInputStream bis = new ObjectInputStream(bais);
+            // 读取对象
+            device = (T) bis.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return device;
+    }
+
+    public static <T> String object2Base64Str(T object) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {   //Device为自定义类
+            // 创建对象输出流，并封装字节流
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            // 将对象写入字节流
+            oos.writeObject(object);
+            // 将字节流编码成base64的字符串
+            return new String(Base64.encode(baos
+                    .toByteArray(), Base64.DEFAULT));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

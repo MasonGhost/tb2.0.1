@@ -8,9 +8,8 @@ import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
-import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
-import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
+import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 
 import javax.inject.Inject;
 
@@ -28,21 +27,18 @@ import rx.schedulers.Schedulers;
 public class AuthRepository implements IAuthRepository {
     public static final int MAX_RETRY_COUNTS = 1;//重试次数
     public static final int RETRY_DELAY_TIME = 1;// 重试间隔时间,单位 s
-    private CommonClient mCommonClient;
-    private RegisterClient mRegisterClient;
+    private UserInfoClient mUserInfoClient;
     private Context mContext;
 
     @Inject
     public AuthRepository(ServiceManager serviceManager, Application context) {
-        mCommonClient = serviceManager.getCommonClient();
-        mRegisterClient = serviceManager.getRegisterClient();
+        mUserInfoClient = serviceManager.getUserInfoClient();
         mContext = context;
     }
 
 
     @Override
     public boolean saveAuthBean(AuthBean authBean) {
-        System.out.println("authBean = " + authBean);
         return SharePreferenceUtils.saveObject(mContext, AuthBean.SHAREPREFERENCE_TAG, authBean);
     }
 
@@ -52,7 +48,7 @@ public class AuthRepository implements IAuthRepository {
     }
 
     public Observable<BaseJson<IMBean>> getImInfo() {
-        return mCommonClient.getIMInfo()
+        return mUserInfoClient.getIMInfo()
                 .retryWhen(new RetryWithDelay(MAX_RETRY_COUNTS, RETRY_DELAY_TIME))
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
