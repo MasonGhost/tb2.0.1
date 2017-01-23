@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.service;
+package com.zhiyicx.thinksnsplus.service.backgroundtask;
 
 
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
@@ -6,20 +6,26 @@ import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import java.util.Map;
 
 /**
- * @Describe
+ * @Describe 后台任务模型
  * @Author Jungle68
  * @Date 2017/1/22
  * @Contact master.jungle68@gmail.com
  */
 
 public class BackgroundRequestTask {
-    public static final int DEFAULT_MAX_RETRY_COUNT = 5;
+    private static final int DEFAULT_MAX_RETRY_COUNT = 5;
     private int max_retry_count = DEFAULT_MAX_RETRY_COUNT; // 最大重新请求次数
     private BackgroundTaskRequestMethodConfig methodType = BackgroundTaskRequestMethodConfig.POST;
     private String path;
     private Map<String, Object> params;
 
-    public BackgroundRequestTask() {
+    public BackgroundRequestTask(BackgroundTaskRequestMethodConfig methodType) {
+        this.methodType = methodType;
+    }
+
+    public BackgroundRequestTask(BackgroundTaskRequestMethodConfig methodType, Map<String, Object> params) {
+        this.methodType = methodType;
+        this.params = params;
     }
 
     public BackgroundRequestTask(String path, Map<String, Object> params) {

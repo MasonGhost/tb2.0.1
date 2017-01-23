@@ -14,7 +14,7 @@ import com.zhiyicx.thinksnsplus.dagger.GreenDaoModule;
 import com.zhiyicx.thinksnsplus.data.source.local.CacheManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
-import com.zhiyicx.thinksnsplus.service.BackgroundTaskManager;
+import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
 
 import javax.inject.Singleton;
 
@@ -33,7 +33,7 @@ import okhttp3.OkHttpClient;
 public interface AppComponent {
 
     void inject(AppApplication appApplication);
-    void inject(BackgroundTaskManager backgroundTaskManager);
+    void inject(BackgroundTaskHandler backgroundTaskHandler);
 
     Application Application();
 

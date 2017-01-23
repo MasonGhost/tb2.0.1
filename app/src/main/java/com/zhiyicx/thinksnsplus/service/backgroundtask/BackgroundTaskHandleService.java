@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.service;
+package com.zhiyicx.thinksnsplus.service.backgroundtask;
 
 import android.app.Service;
 import android.content.Intent;
@@ -18,7 +18,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_BACKGROUND
  * @Contact master.jungle68@gmail.com
  */
 
-public class CommonHandleService extends Service {
+public class BackgroundTaskHandleService extends Service {
 
     @Override
     public void onCreate() {
@@ -31,7 +31,7 @@ public class CommonHandleService extends Service {
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-        BackgroundTaskManager.getInstance().stopTask();
+        BackgroundTaskHandler.getInstance().stopTask();
     }
 
     @Nullable
@@ -42,7 +42,7 @@ public class CommonHandleService extends Service {
 
     @Subscriber(tag = EVENT_BACKGROUND_TASK, mode = ThreadMode.POST)
     public boolean addBackgroundRequestTask(BackgroundRequestTask backgroundRequestTask) {
-        return BackgroundTaskManager.getInstance().addBackgroundRequestTask(backgroundRequestTask);
+        return BackgroundTaskHandler.getInstance().addBackgroundRequestTask(backgroundRequestTask);
     }
 
     private void init() {

@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.service;
+package com.zhiyicx.thinksnsplus.service.backgroundtask;
 
 import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.imsdk.entity.IMConfig;
@@ -26,10 +26,10 @@ import javax.inject.Inject;
  * @Contact master.jungle68@gmail.com
  */
 
-public class BackgroundTaskManager {
+public class BackgroundTaskHandler {
     private static final long MESSAGE_SEND_INTERVAL_FOR_CPU = 100;// 消息发送间隔时间，防止 cpu 占用过高
 
-    private static volatile BackgroundTaskManager sBackgroundTaskManager;
+    private static volatile BackgroundTaskHandler sBackgroundTaskHandler;
     private Queue<BackgroundRequestTask> mBackgroundRequestTasks = new ConcurrentLinkedQueue<>();// 线程安全的队列
     private boolean mIsExit = false; // 是否关闭
 
@@ -40,20 +40,20 @@ public class BackgroundTaskManager {
     @Inject
     AuthRepository mAuthRepository;
 
-    private BackgroundTaskManager() {
+    private BackgroundTaskHandler() {
         init();
     }
 
-    public static BackgroundTaskManager getInstance() {
+    public static BackgroundTaskHandler getInstance() {
 
-        if (sBackgroundTaskManager == null) {
-            synchronized (BackgroundTaskManager.class) {
-                if (sBackgroundTaskManager == null) {
-                    sBackgroundTaskManager = new BackgroundTaskManager();
+        if (sBackgroundTaskHandler == null) {
+            synchronized (BackgroundTaskHandler.class) {
+                if (sBackgroundTaskHandler == null) {
+                    sBackgroundTaskHandler = new BackgroundTaskHandler();
                 }
             }
         }
-        return sBackgroundTaskManager;
+        return sBackgroundTaskHandler;
     }
 
     /**
@@ -124,7 +124,7 @@ public class BackgroundTaskManager {
              * 通用接口处理
              */
             case POST:
-                mServiceManager.getCommonClient().handleTask(backgroundRequestTask.getPath(), backgroundRequestTask.getParams())
+                mServiceManager.getCommonClient().handleBackGroundTask(backgroundRequestTask.getPath(), backgroundRequestTask.getParams())
                         .subscribe(new BaseSubscribe<CacheBean>() {
                             @Override
                             protected void onSuccess(CacheBean data) {

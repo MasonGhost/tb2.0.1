@@ -46,7 +46,7 @@
         </activity>
 
         <service
-            android:name=".service.CommonHandleService"
+            android:name=".service.backgroundtask.BackgroundTaskHandleService"
             android:exported="false">
         </service>
     </application>

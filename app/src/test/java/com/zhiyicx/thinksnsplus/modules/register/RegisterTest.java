@@ -1,7 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.register;
 
 import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
-import com.zhiyicx.thinksnsplus.service.BackgroundRequestTask;
+import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundRequestTask;
 
 import org.junit.After;
 import org.junit.Assert;
