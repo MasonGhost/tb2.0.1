@@ -120,11 +120,17 @@ public interface CommonClient {
 
     /**
      * 后台任务处理
-     *
      */
     @Multipart
     @POST("{path}")
-    Observable<BaseJson<CacheBean>> handleTask(@Path("path") String path, @PartMap Map<String, Object> bodyMap) ;
+    Observable<BaseJson<CacheBean>> handleTask(@Path("path") String path, @PartMap Map<String, Object> bodyMap);
 
+    /**
+     * rap接口，用来测试token过期,当前返回token过期
+     *
+     * @return
+     */
+    @POST("api/test-token")
+    Observable<BaseJson> testTokenExpierd(@Query("requestState") String requestState);
 
 }
