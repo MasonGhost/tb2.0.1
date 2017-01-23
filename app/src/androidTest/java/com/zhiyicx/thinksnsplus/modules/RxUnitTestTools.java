@@ -8,6 +8,7 @@ import rx.plugins.RxJavaHooks;
 import rx.plugins.RxJavaPlugins;
 import rx.plugins.RxJavaSchedulersHook;
 import rx.schedulers.Schedulers;
+import rx.schedulers.TestScheduler;
 
 /**
  * @author LiuChao
@@ -42,5 +43,13 @@ public class RxUnitTestTools {
 
         RxAndroidPlugins.getInstance().reset();
         RxAndroidPlugins.getInstance().registerSchedulersHook(rxAndroidSchedulersHook);
+    }
+
+    /**
+     * 回复异步
+     */
+    public static void closeRxTools(){
+        RxJavaHooks.reset();
+        RxAndroidPlugins.getInstance().reset();
     }
 }
