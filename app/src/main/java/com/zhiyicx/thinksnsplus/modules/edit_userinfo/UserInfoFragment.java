@@ -95,7 +95,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     private List<String> selectedPhotos = new ArrayList<>();// 被选择的图片
     private EditConfigBeanDaoImpl mEditConfigBeanDao;
-    private int locationLevel =2;
+    private int locationLevel = 2;
 
     @Override
     protected int getBodyLayoutId() {
@@ -145,8 +145,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl.SHAPE_RCTANGLE))
                 .build().photoSelectorImpl();
         initCityPickerView();
-        initConfig();
-        initUI();
+      /*  initConfig();
+        initUI();*/
         ////////////////////////监听所有的用户信息变化///////////////////////////////
         RxTextView.textChanges(mEtUserName)
                 .subscribe(new Action1<CharSequence>() {
@@ -332,7 +332,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     }
 
     /**
-     *
      * 初始化城市选择器
      */
     private void initCityPickerView() {
@@ -486,8 +485,25 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
      * 封装编辑用户信息的提交信息
      */
     private HashMap<String, String> packageUserInfo() {
+        HashMap<String, String> fieldMap = new HashMap<>();
+        // 图片上传的任务id，姓名。。。
+        // 只上传改变的信息
+        if (userNameChanged) {
 
-        return null;
+        }
+        if (sexChanged) {
+            fieldMap.put("sex", mTvSex.getText().toString());
+        }
+        if (cityChanged) {
+            
+        }
+        if (introduceChanged) {
+
+        }
+        if (upLoadCount > 0) {
+
+        }
+        return fieldMap;
     }
 
     /**
