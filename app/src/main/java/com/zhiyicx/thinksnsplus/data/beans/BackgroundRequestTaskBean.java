@@ -11,6 +11,7 @@ import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.util.HashMap;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * @Describe 后台任务模型
