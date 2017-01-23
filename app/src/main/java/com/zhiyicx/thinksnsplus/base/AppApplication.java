@@ -39,7 +39,9 @@ import javax.net.ssl.SSLSocketFactory;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
@@ -95,16 +97,26 @@ public class AppApplication extends TSApplication {
                         || baseJson.getCode() == ErrorCodeConfig.OTHER_DEVICE_LOGIN
                         || baseJson.getCode() == ErrorCodeConfig.TOKEN_NOT_EXIST) {
                     // 跳到登陆页面，销毁之前的所有页面,添加弹框处理提示
-                    new AlertDialog.Builder(AppApplication.this)
-                            .setTitle(R.string.token_expiers)
-                            .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
+                    // 通过rxjava在主线程处理弹框
+                    Observable.empty()
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnCompleted(new Action0() {
                                 @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    ActivityHandler.getInstance().finishAllActivity();
-                                    startActivity(new Intent(AppApplication.this, LoginActivity.class));
+                                public void call() {
+                                    System.out.println("currentActivity" + ActivityHandler.getInstance().currentActivity().getLocalClassName());
+                                    new AlertDialog.Builder(ActivityHandler.getInstance().currentActivity())
+                                            .setTitle(R.string.token_expiers)
+                                            .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    ActivityHandler.getInstance().finishAllActivity();
+                                                    startActivity(new Intent(AppApplication.this, LoginActivity.class));
+                                                }
+                                            })
+                                            .create().show();
                                 }
                             })
-                            .create().show();
+                            .subscribe();
                 }
                 return response;
             }
@@ -193,41 +205,7 @@ public class AppApplication extends TSApplication {
      * 在启动页面尝试刷新Token,同时需要刷新im的token
      */
     private void attemptToRefreshToken() {
-        AuthBean authBean = SharePreferenceUtils.getObject(this, AuthBean.SHAREPREFERENCE_TAG);
-        if (!isNeededRefreshToken(authBean)) {
-            return;
-        }
-        CommonClient commonClient = AppComponentHolder.getAppComponent().serviceManager().getCommonClient();
-        String imei = DeviceUtils.getIMEI(this);
-        commonClient.refreshToken(authBean.getRefresh_token(), imei)
-                .subscribeOn(Schedulers.io())
-                .retryWhen(new RetryWithDelay(2, 2))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<BaseJson<AuthBean>>() {
-                    @Override
-                    public void call(BaseJson<AuthBean> authBeanBaseJson) {
-                        if (authBeanBaseJson.isStatus() || authBeanBaseJson.getCode() == 0) {
-                            // 获取了最新的token，将这些信息保存起来
-                            SharePreferenceUtils.saveObject(AppApplication.this, AuthBean.SHAREPREFERENCE_TAG, authBeanBaseJson.getData());
-                        }
-                    }
-                });
+        mAuthRepository.refreshToken();
     }
 
-    /**
-     * 是否需要刷新token
-     *
-     * @return
-     */
-    private boolean isNeededRefreshToken(AuthBean authBean) {
-        long createTime = authBean.getCreated_at();
-        int expiers = authBean.getExpires();
-        int days = TimeUtils.getifferenceDays((createTime + expiers) * 1000);//表示token过期时间距离现在的时间
-        if (expiers == 0) {// 永不过期,不需要刷新token
-            return false;
-        } else if (days >= -1) {// 表示当前时间是过期时间的前一天,或者已经过期,需要尝试刷新token
-            return true;
-        }
-        return false;
-    }
 }

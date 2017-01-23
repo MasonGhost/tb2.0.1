@@ -62,10 +62,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/white"
-            android:paddingRight="@dimen/spacing_mid"
             android:hint="@string/edit_user_name"
-            android:textColorHint="@color/normal_for_assist_text"
+            android:paddingRight="@dimen/spacing_mid"
             android:textColor="@color/important_for_content"
+            android:textColorHint="@color/normal_for_assist_text"
             android:textSize="@dimen/size_sub_title"/>
     </LinearLayout>
 
@@ -171,6 +171,14 @@
             android:layout_height="wrap_content"
             app:limitSize="@integer/introduce_input_max_size"
             app:showLimitSize="@integer/show_introduce_input_size"></com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView>
+
+    </LinearLayout>
+    <!--布局容器-->
+    <LinearLayout
+        android:id="@+id/view_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
     </LinearLayout>
 </LinearLayout>

@@ -56,7 +56,7 @@ public class EditConfigBean {
     }
 
     public String getItemField() {
-        return this.itemField;
+        return itemField;
     }
 
     public void setItemField(String itemField) {

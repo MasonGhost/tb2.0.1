@@ -61,7 +61,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
             @Override
             public void call(Subscriber<? super ArrayList<AreaBean>> subscriber) {
                 try {
-                    InputStream inputStream = AppApplication.getContext().getAssets().open("area.txt");//读取本地assets数据
+                    InputStream inputStream = AppApplication.getContext().getAssets().open("testArea.txt");//读取本地assets数据
                     String jsonString = ConvertUtils.inputStream2String(inputStream, "utf-8");
                     ArrayList<AreaBean> areaBeanList = new Gson().fromJson(jsonString, new TypeToken<ArrayList<AreaBean>>() {
                     }.getType());

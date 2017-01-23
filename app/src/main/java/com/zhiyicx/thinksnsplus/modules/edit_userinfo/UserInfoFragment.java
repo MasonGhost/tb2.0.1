@@ -2,9 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +22,7 @@ import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplCompone
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
+import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.ToastUtils;
@@ -40,7 +39,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,6 +56,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     private static final int GENDER_MALE = 0;// 性别男
     private static final int GENDER_FEMALE = 1;// 性别女
     private static final int GENDER_SECRET = 2;// 性别保密
+    private static final int LOCATION_2LEVEL = 2;// 地区选择可选的级数为2，2级联动
+    private static final int LOCATION_3LEVEL = 3;// 地区选择可选的级数为3
 
     @BindView(R.id.iv_head_icon)
     ImageView mIvHeadIcon;
@@ -75,11 +75,15 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     LinearLayout mLlCityContainer;
     @BindView(R.id.et_user_introduce)
     UserInfoInroduceInputView mEtUserIntroduce;
+    @BindView(R.id.view_container)
+    LinearLayout mViewContainer;
 
     private ArrayList<AreaBean> options1Items;
     private ArrayList<ArrayList<AreaBean>> options2Items;
+    private ArrayList<ArrayList<ArrayList<AreaBean>>> options3Items;
     private int mCityOption1;//用来记录地区中滚轮的位置
     private int mCityOption2;
+    private int mCityOption3;
     private OptionsPickerView mAreaPickerView;// 地域选择器
     private ActionPopupWindow mGenderPopupWindow;// 性别选择弹框
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
@@ -91,10 +95,46 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     private List<String> selectedPhotos = new ArrayList<>();// 被选择的图片
     private EditConfigBeanDaoImpl mEditConfigBeanDao;
+    private int locationLevel = 2;
 
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_user_info;
+    }
+
+    private void initConfig() {
+        mEditConfigBeanDao = new EditConfigBeanDaoImpl(getContext());
+        EditConfigBean editConfigBean = new EditConfigBean(1021L, "school", "学校", "TextView");
+        mEditConfigBeanDao.saveSingleData(editConfigBean);
+    }
+
+    private void initUI() {
+        List<EditConfigBean> editConfigBeanList = mEditConfigBeanDao.getMultiDataFromCache();
+        for (EditConfigBean editConfigBean : editConfigBeanList) {
+            String itemName = editConfigBean.getItemName();
+            String itemType = editConfigBean.getItemType();
+            String itemField = editConfigBean.getItemField();
+            if (itemType.equals("TextView")) {
+                CombinationButton combinationButton = new CombinationButton(getContext(), null);
+                ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 100);
+                combinationButton.setLayoutParams(layoutParams);
+                combinationButton.setLeftText(itemName);
+                combinationButton.setTag(editConfigBean);
+                mViewContainer.removeAllViews();
+                mViewContainer.addView(combinationButton);
+            }
+
+        }
+    }
+
+    private HashMap<String, String> getNetParams() {
+        HashMap<String, String> hashMap = new HashMap<>();
+        for (int i = 0; i < mViewContainer.getChildCount(); i++) {
+            View view = mViewContainer.getChildAt(i);
+            EditConfigBean editConfigBean = (EditConfigBean) view.getTag();
+            hashMap.put(editConfigBean.getItemField(), "");// 通过自定义view接口获取要传递的值
+        }
+        return hashMap;
     }
 
     @Override
@@ -105,10 +145,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl.SHAPE_RCTANGLE))
                 .build().photoSelectorImpl();
         initCityPickerView();
-        mEditConfigBeanDao = new EditConfigBeanDaoImpl(getContext());
-        EditConfigBean editConfigBean = new EditConfigBean(0L, "school", "学校", "EditText");
-        mEditConfigBeanDao.saveSingleData(editConfigBean);
-
+      /*  initConfig();
+        initUI();*/
         ////////////////////////监听所有的用户信息变化///////////////////////////////
         RxTextView.textChanges(mEtUserName)
                 .subscribe(new Action1<CharSequence>() {
@@ -217,7 +255,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 mGenderPopupWindow.show();
                 break;
             case R.id.ll_city_container:
-                mAreaPickerView.setSelectOptions(mCityOption1, mCityOption2);
+                mAreaPickerView.setSelectOptions(mCityOption1, mCityOption2, mCityOption3);
                 mAreaPickerView.show();
                 break;
         }
@@ -230,10 +268,16 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     }
 
     @Override
-    public void setAreaData(ArrayList<AreaBean> options1Items, ArrayList<ArrayList<AreaBean>> options2Items) {
+    public void setAreaData(ArrayList<AreaBean> options1Items, ArrayList<ArrayList<AreaBean>> options2Items, ArrayList<ArrayList<ArrayList<AreaBean>>> options3Items) {
         this.options1Items = options1Items;
         this.options2Items = options2Items;
-        mAreaPickerView.setPicker(options1Items, options2Items, true);
+        this.options3Items = options3Items;
+        if (locationLevel == LOCATION_2LEVEL) {
+            mAreaPickerView.setPicker(options1Items, options2Items, true);
+        } else if (locationLevel == LOCATION_3LEVEL) {
+            mAreaPickerView.setPicker(options1Items, options2Items, options3Items, true);
+        }
+
         mAreaPickerView.setCyclic(false);// 设置是否可以循环滚动
     }
 
@@ -299,16 +343,25 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         mAreaPickerView.setTitle("请选择城市");
         mAreaPickerView.setOnoptionsSelectListener(new OptionsPickerView.OnOptionsSelectListener() {
             @Override
-            public void onOptionsSelect(int options1, int option2, int options3) {
-                if (options2Items.size() <= options1 || options2Items.get(options1).size() <= option2) {
+            public void onOptionsSelect(int options1, int options2, int options3) {
+                /*if (options2Items.size() <= options1 || options2Items.get(options1).size() <= options2) {
                     return;//避免pickview控件的bug
+                }*/
+                String areaText1 = options1Items.get(options1).getPickerViewText();
+                String areaText2 = "", areaText3 = "";
+                if (locationLevel == LOCATION_2LEVEL) {
+                    areaText2 = options2Items.get(options1).get(options2).getPickerViewText();
                 }
-                String areaText = options1Items.get(options1).getPickerViewText();
-                String city = options2Items.get(options1).get(option2).getPickerViewText();
-                city = city.equals("全部") ? areaText : city;//如果为全部则不显示
-                setCity(city);
+                if (locationLevel == LOCATION_3LEVEL) {
+                    areaText2 = options2Items.get(options1).get(options2).getPickerViewText();
+                    areaText3 = options3Items.get(options1).get(options2).get(options3).getPickerViewText();
+                }
+                areaText2 = areaText2.equals("全部") ? "" : areaText2;//如果为全部则不显示
+                areaText3 = areaText3.equals("全部") ? "" : areaText3;//如果为全部则不显示
+                setCity(areaText1 + areaText2 + areaText3);
                 mCityOption1 = options1;
-                mCityOption2 = option2;
+                mCityOption2 = options2;
+                mCityOption3 = options3;
             }
         });
         mPresenter.getAreaData();
@@ -432,8 +485,25 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
      * 封装编辑用户信息的提交信息
      */
     private HashMap<String, String> packageUserInfo() {
+        HashMap<String, String> fieldMap = new HashMap<>();
+        // 图片上传的任务id，姓名。。。
+        // 只上传改变的信息
+        if (userNameChanged) {
 
-        return null;
+        }
+        if (sexChanged) {
+            fieldMap.put("sex", mTvSex.getText().toString());
+        }
+        if (cityChanged) {
+            
+        }
+        if (introduceChanged) {
+
+        }
+        if (upLoadCount > 0) {
+
+        }
+        return fieldMap;
     }
 
     /**

@@ -31,6 +31,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_VERTIFYCODE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_HANDLE_BACKGROUND_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_NOTIFY_STORAGE_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFRESH_TOKEN;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_TOKEN_EXPIERD;
 
 /**
  * @Describe
@@ -53,6 +54,7 @@ public interface CommonClient {
 
     /**
      * 获取验证码
+     *
      * @param requestState {requestState}=success/fasle
      * @param phone        需要被发送验证码的手机号
      * @param type         发送验证码的类型，固定三个值(register、login、change) register: 注
@@ -124,11 +126,19 @@ public interface CommonClient {
 
     /**
      * 后台任务处理
-     *
      */
     @Multipart
-    @POST(APP_PATH_HANDLE_BACKGROUND_TASK)
-    Observable<BaseJson<CacheBean>> handleBackGroundTask(@Path("path") String path, @PartMap Map<String, Object> bodyMap) ;
 
+    @POST(APP_PATH_HANDLE_BACKGROUND_TASK)
+    Observable<BaseJson<CacheBean>> handleBackGroundTask(@Path("path") String path, @PartMap Map<String, Object> bodyMap);
+
+
+    /**
+     * rap接口，用来测试token过期,当前返回token过期
+     *
+     * @return
+     */
+    @POST(APP_PATH_TOKEN_EXPIERD)
+    Observable<BaseJson> testTokenExpierd(@Query("requestState") String requestState);
 
 }

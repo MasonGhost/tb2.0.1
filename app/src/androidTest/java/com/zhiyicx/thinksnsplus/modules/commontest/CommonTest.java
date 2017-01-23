@@ -1,18 +1,26 @@
 package com.zhiyicx.thinksnsplus.modules.commontest;
 
+import android.support.test.espresso.ViewInteraction;
+import android.support.test.rule.ActivityTestRule;
 import android.text.TextUtils;
 
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
 import com.zhiyicx.thinksnsplus.modules.AcitivityTest;
+import com.zhiyicx.thinksnsplus.modules.MyViewMatchers;
+import com.zhiyicx.thinksnsplus.modules.RxUnitTestTools;
+import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
+import com.zhiyicx.thinksnsplus.modules.register.RegisterActivity;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.File;
@@ -25,6 +33,11 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.RootMatchers.isDialog;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
@@ -37,9 +50,12 @@ import static junit.framework.Assert.assertTrue;
 
 public class CommonTest extends AcitivityTest {
     private CommonClient mCommonClient;
+    @Rule
+    public ActivityTestRule<RegisterActivity> mLoginActivityActivityTestRule=new ActivityTestRule<RegisterActivity>(RegisterActivity.class);
 
     @Before
     public void init() {
+        RxUnitTestTools.openRxTools();
         mCommonClient = AppApplication.AppComponentHolder.getAppComponent().serviceManager().getCommonClient();
     }
 
@@ -176,5 +192,34 @@ public class CommonTest extends AcitivityTest {
                     }
                 });
 
+    }
+
+    /**
+     * summary token过期，跳转到登陆页面
+     * steps  1.请求rap测试接口，返回token过期  2.判断是登陆界面上的界面是否可见
+     * expected  登陆界面的控件可见
+     */
+    @Test
+    public void tokenExpierd() throws Exception {
+        RxUnitTestTools.closeRxTools();
+        mCommonClient.testTokenExpierd("needRefresh")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<BaseJson>() {
+                    @Override
+                    public void call(BaseJson baseJson) {
+
+                    }
+                });
+        Thread.sleep(3000);
+       // System.out.println("tokenTest==>"+baseJson);
+        int titleId = AppApplication.getContext().getResources()
+                .getIdentifier("alertTitle", "id", "android");
+        findViewById(titleId)
+                .inRoot(isDialog())
+                .check(matches(withText(R.string.token_expiers)))
+                .check(matches(isDisplayed()));
+                        /*ViewInteraction etPhone = findViewById(R.id.et_login_phone);
+                        etPhone.check(matches(isDisplayed()));*/
     }
 }

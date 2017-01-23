@@ -16,6 +16,7 @@ public class ApiConfig {
     public static final String APP_DOMAIN = "http://192.168.10.222/";// 测试服务器
 //    public static final String APP_DOMAIN = "http://192.168.10.222:8080/mockjs/2/";// rap 测试服务器
 
+
     public static final String URL_ABOUT_US = "http:www.baidu.com";// 关于我们网站
 
 
@@ -32,7 +33,7 @@ public class ApiConfig {
     /**
      * 注册 RegitstClient
      */
-    public static final String APP_PATH_REGISTER= "api/v1/auth/register";// 找回密码
+    public static final String APP_PATH_REGISTER = "api/v1/auth/register";// 找回密码
     /**
      * 用户 UserInfoClient
      */
@@ -50,4 +51,9 @@ public class ApiConfig {
     public static final String APP_PATH_NOTIFY_STORAGE_TASK = "api/v1/storages/task/{storage_task_id}";//  储存任务通知
     public static final String APP_PATH_DELETE_STORAGE_TASK = "api/v1/storages/task/{storage_task_id}";// 通知服务器，删除当前上传文件
     public static final String APP_PATH_HANDLE_BACKGROUND_TASK = "{path}";// 处理后台任务
+
+    /**
+     * 仅仅测试使用
+     */
+    public static final String APP_PATH_TOKEN_EXPIERD = "api/test-token";// token过期处理
 }
