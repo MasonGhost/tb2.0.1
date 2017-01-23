@@ -37,7 +37,9 @@ import javax.net.ssl.SSLSocketFactory;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
@@ -92,16 +94,26 @@ public class AppApplication extends TSApplication {
                         || baseJson.getCode() == ErrorCodeConfig.OTHER_DEVICE_LOGIN
                         || baseJson.getCode() == ErrorCodeConfig.TOKEN_NOT_EXIST) {
                     // 跳到登陆页面，销毁之前的所有页面,添加弹框处理提示
-                    new AlertDialog.Builder(AppApplication.this)
-                            .setTitle(R.string.token_expiers)
-                            .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
+                    // 通过rxjava在主线程处理弹框
+                    Observable.empty()
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnCompleted(new Action0() {
                                 @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    ActivityHandler.getInstance().finishAllActivity();
-                                    startActivity(new Intent(AppApplication.this, LoginActivity.class));
+                                public void call() {
+                                    System.out.println("currentActivity" + ActivityHandler.getInstance().currentActivity().getLocalClassName());
+                                    new AlertDialog.Builder(ActivityHandler.getInstance().currentActivity())
+                                            .setTitle(R.string.token_expiers)
+                                            .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    ActivityHandler.getInstance().finishAllActivity();
+                                                    startActivity(new Intent(AppApplication.this, LoginActivity.class));
+                                                }
+                                            })
+                                            .create().show();
                                 }
                             })
-                            .create().show();
+                            .subscribe();
                 }
                 return response;
             }
