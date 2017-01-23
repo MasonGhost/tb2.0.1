@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
+
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 import org.simple.eventbus.ThreadMode;
@@ -41,8 +43,8 @@ public class BackgroundTaskHandleService extends Service {
     }
 
     @Subscriber(tag = EVENT_BACKGROUND_TASK, mode = ThreadMode.POST)
-    public boolean addBackgroundRequestTask(BackgroundRequestTask backgroundRequestTask) {
-        return BackgroundTaskHandler.getInstance().addBackgroundRequestTask(backgroundRequestTask);
+    public boolean addBackgroundRequestTask(BackgroundRequestTaskBean backgroundRequestTaskBean) {
+        return BackgroundTaskHandler.getInstance().addBackgroundRequestTask(backgroundRequestTaskBean);
     }
 
     private void init() {

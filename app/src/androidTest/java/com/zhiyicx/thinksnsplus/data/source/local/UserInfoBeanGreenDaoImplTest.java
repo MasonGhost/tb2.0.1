@@ -39,10 +39,6 @@ public class UserInfoBeanGreenDaoImplTest {
 
     }
 
-    @Test
-    public void isInvalide() throws Exception {
-
-    }
 
     @Test
     public void getSingleDataFromCache() throws Exception {
@@ -64,11 +60,6 @@ public class UserInfoBeanGreenDaoImplTest {
 
     @Test
     public void deleteSingleCache() throws Exception {
-
-    }
-
-    @Test
-    public void updateSingleData() throws Exception {
 
     }
 

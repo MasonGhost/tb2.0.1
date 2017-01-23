@@ -1,7 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.register;
 
 import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
-import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundRequestTask;
+import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -29,10 +29,10 @@ public class RegisterTest {
 
     @Test
     public void finalTest() {
-        final BackgroundRequestTask backgroundRequestTask = new BackgroundRequestTask();
-        backgroundRequestTask.setMax_retry_count(1);
-        System.out.println("backgroundRequestTask = " + backgroundRequestTask.getMax_retry_count());
-        Assert.assertTrue(backgroundRequestTask.getMax_retry_count() == 1);
+        final BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
+        backgroundRequestTaskBean.setMax_retry_count(1);
+        System.out.println("backgroundRequestTaskBean = " + backgroundRequestTaskBean.getMax_retry_count());
+        Assert.assertTrue(backgroundRequestTaskBean.getMax_retry_count() == 1);
     }
 
 }

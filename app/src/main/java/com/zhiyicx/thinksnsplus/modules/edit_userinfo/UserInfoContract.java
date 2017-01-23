@@ -8,7 +8,6 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import rx.Observable;
 
@@ -51,7 +50,7 @@ public interface UserInfoContract {
          * @param user_id 用户 id
          * @return
          */
-        Observable<BaseJson<UserInfoBean>> getUserInfo(String user_id);
+        Observable<BaseJson<UserInfoBean>> getUserInfo(int user_id);
 
     }
 

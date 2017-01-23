@@ -6,6 +6,7 @@ import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -30,7 +31,7 @@ public class BackgroundTaskHandler {
     private static final long MESSAGE_SEND_INTERVAL_FOR_CPU = 100;// 消息发送间隔时间，防止 cpu 占用过高
 
     private static volatile BackgroundTaskHandler sBackgroundTaskHandler;
-    private Queue<BackgroundRequestTask> mBackgroundRequestTasks = new ConcurrentLinkedQueue<>();// 线程安全的队列
+    private Queue<BackgroundRequestTaskBean> mBackgroundRequestTaskBeen = new ConcurrentLinkedQueue<>();// 线程安全的队列
     private boolean mIsExit = false; // 是否关闭
 
     @Inject
@@ -58,14 +59,14 @@ public class BackgroundTaskHandler {
 
     /**
      * 加入任务
-     * @param backgroundRequestTask 任务
+     * @param backgroundRequestTaskBean 任务
      * @return 如果任务为 null，返回 false,否者返回 true
      */
-    public boolean addBackgroundRequestTask(BackgroundRequestTask backgroundRequestTask) {
-        if (backgroundRequestTask == null) {
+    public boolean addBackgroundRequestTask(BackgroundRequestTaskBean backgroundRequestTaskBean) {
+        if (backgroundRequestTaskBean == null) {
             return false;
         }
-        return mBackgroundRequestTasks.add(backgroundRequestTask);
+        return mBackgroundRequestTaskBeen.add(backgroundRequestTaskBean);
     }
 
     /**
@@ -87,9 +88,9 @@ public class BackgroundTaskHandler {
         @Override
         public void run() {
             if (!mIsExit) {
-                if (!mBackgroundRequestTasks.isEmpty()) {
-                    BackgroundRequestTask backgroundRequestTask = mBackgroundRequestTasks.poll();
-                    handleTask(backgroundRequestTask);
+                if (!mBackgroundRequestTaskBeen.isEmpty()) {
+                    BackgroundRequestTaskBean backgroundRequestTaskBean = mBackgroundRequestTaskBeen.poll();
+                    handleTask(backgroundRequestTaskBean);
                 }
                 threadSleep();
             }
@@ -111,20 +112,20 @@ public class BackgroundTaskHandler {
     /**
      * 处理后台任务，用户信息和 IM 需要对返回数据处理，其他请求只是通知服务器，不需要做后续操作
      *
-     * @param backgroundRequestTask 后台任务
+     * @param backgroundRequestTaskBean 后台任务
      */
-    private void handleTask(final BackgroundRequestTask backgroundRequestTask) {
-        if (backgroundRequestTask.getMax_retry_count() - 1 <= 0) {
-            EventBus.getDefault().post(backgroundRequestTask, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
+    private void handleTask(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
+        if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
+            EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
             return;
         }
-        backgroundRequestTask.setMax_retry_count(backgroundRequestTask.getMax_retry_count() - 1);
-        switch (backgroundRequestTask.getMethodType()) {
+        backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
+        switch (backgroundRequestTaskBean.getMethodType()) {
             /**
              * 通用接口处理
              */
             case POST:
-                mServiceManager.getCommonClient().handleBackGroundTask(backgroundRequestTask.getPath(), backgroundRequestTask.getParams())
+                mServiceManager.getCommonClient().handleBackGroundTask(backgroundRequestTaskBean.getPath(), backgroundRequestTaskBean.getParams())
                         .subscribe(new BaseSubscribe<CacheBean>() {
                             @Override
                             protected void onSuccess(CacheBean data) {
@@ -133,12 +134,12 @@ public class BackgroundTaskHandler {
 
                             @Override
                             protected void onFailure(String message) {
-                                addBackgroundRequestTask(backgroundRequestTask);
+                                addBackgroundRequestTask(backgroundRequestTaskBean);
                             }
 
                             @Override
                             protected void onException(Throwable throwable) {
-                                addBackgroundRequestTask(backgroundRequestTask);
+                                addBackgroundRequestTask(backgroundRequestTaskBean);
                             }
                         });
                 break;
@@ -164,12 +165,12 @@ public class BackgroundTaskHandler {
 
                             @Override
                             protected void onFailure(String message) {
-                                addBackgroundRequestTask(backgroundRequestTask);
+                                addBackgroundRequestTask(backgroundRequestTaskBean);
                             }
 
                             @Override
                             protected void onException(Throwable throwable) {
-                                addBackgroundRequestTask(backgroundRequestTask);
+                                addBackgroundRequestTask(backgroundRequestTaskBean);
                             }
                         });
 
@@ -178,10 +179,10 @@ public class BackgroundTaskHandler {
              * 获取用户信息
              */
             case GET_USER_INFO:
-                if (backgroundRequestTask.getParams() == null || backgroundRequestTask.getParams().get("user") == null) {
+                if (backgroundRequestTaskBean.getParams() == null || backgroundRequestTaskBean.getParams().get("user") == null) {
                     return;
                 }
-                mServiceManager.getUserInfoClient().getUserInfo((Integer) backgroundRequestTask.getParams().get("user"))
+                mServiceManager.getUserInfoClient().getUserInfo((Integer) backgroundRequestTaskBean.getParams().get("user"))
                         .subscribe(new BaseSubscribe<UserInfoBean>() {
                             @Override
                             protected void onSuccess(UserInfoBean data) {
@@ -190,12 +191,12 @@ public class BackgroundTaskHandler {
 
                             @Override
                             protected void onFailure(String message) {
-                                addBackgroundRequestTask(backgroundRequestTask);
+                                addBackgroundRequestTask(backgroundRequestTaskBean);
                             }
 
                             @Override
                             protected void onException(Throwable throwable) {
-                                addBackgroundRequestTask(backgroundRequestTask);
+                                addBackgroundRequestTask(backgroundRequestTaskBean);
                             }
                         });
                 break;

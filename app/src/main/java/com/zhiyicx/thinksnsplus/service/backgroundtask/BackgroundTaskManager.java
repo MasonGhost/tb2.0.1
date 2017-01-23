@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.service.backgroundtask;
 import android.content.Context;
 import android.content.Intent;
 
+import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
+
 import org.simple.eventbus.EventBus;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_BACKGROUND_TASK;
@@ -39,14 +41,14 @@ public class BackgroundTaskManager {
     /**
      * 加入任务队列
      *
-     * @param backgroundRequestTask 任务
+     * @param backgroundRequestTaskBean 任务
      */
-    public void addBackgroundRequestTask(BackgroundRequestTask backgroundRequestTask) {
+    public void addBackgroundRequestTask(BackgroundRequestTaskBean backgroundRequestTaskBean) {
         if (!mIsServiceStart) {
             mContext.startService(new Intent(mContext, BackgroundTaskHandleService.class));
             mIsServiceStart = true;
         }
-        EventBus.getDefault().post(backgroundRequestTask, EVENT_BACKGROUND_TASK);
+        EventBus.getDefault().post(backgroundRequestTaskBean, EVENT_BACKGROUND_TASK);
     }
 
     /**

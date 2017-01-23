@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.config;
 
+
 /**
  * @Describe
  * @Author Jungle68
@@ -8,8 +9,14 @@ package com.zhiyicx.thinksnsplus.config;
  */
 
 public enum BackgroundTaskRequestMethodConfig {
-    POST,
-    GET,
-    GET_IM_INFO,
-    GET_USER_INFO
+    POST(0),
+    GET(1),
+    GET_IM_INFO(2),
+    GET_USER_INFO(3);
+   public final int id;
+
+    BackgroundTaskRequestMethodConfig(int id) {
+        this.id = id;
+    }
+
 }
