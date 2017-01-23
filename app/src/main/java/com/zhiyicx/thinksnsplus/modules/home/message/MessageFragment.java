@@ -137,9 +137,9 @@ public class MessageFragment extends TSFragment {
         messageItemBeen.add(likedmessageItemBean);
         MessageItemBean test = new MessageItemBean();
         UserInfoBean testUserinfo = new UserInfoBean();
-        testUserinfo.setUserIcon("http://image.xinmin.cn/2017/01/11/bedca80cdaa44849a813e7820fff8a26.jpg");
+        testUserinfo.setUserIcon("http://192.168.10.222/i.php");
         testUserinfo.setName("颤三");
-        testUserinfo.setUserId("123");
+        testUserinfo.setUser_id(123l);
         test.setUserInfo(testUserinfo);
         Message testMessage = new Message();
         testMessage.setTxt("一叶之秋、晴天色"
@@ -253,7 +253,7 @@ public class MessageFragment extends TSFragment {
     private void toChat(MessageItemBean messageItemBean) {
         Intent to = new Intent(getActivity(), ChatActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(ChatFragment.BUNDLE_USERID, messageItemBean.getUserInfo().getUserId());
+        bundle.putString(ChatFragment.BUNDLE_USERID, String.valueOf(messageItemBean.getUserInfo().getUser_id()));
         to.putExtras(bundle);
         startActivity(to);
     }

@@ -1,7 +1,5 @@
 package com.zhiyicx.baseproject.cache;
 
-import android.util.Log;
-
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.log.LogUtils;
 
@@ -25,7 +23,7 @@ public class CacheImp<T extends CacheBean> {
         mDiskCache = new DiskCache(iDataBaseOperate);
     }
 
-    public Observable<BaseJson<T>> load(String key, NetWorkCache<T> networkCache) {
+    public Observable<BaseJson<T>> load(Long key, NetWorkCache<T> networkCache) {
         return Observable.concat(
                 loadFromDisk(key)
                 , loadFromNetWork(key, networkCache)
@@ -47,13 +45,13 @@ public class CacheImp<T extends CacheBean> {
         });
     }
 
-    private Observable<BaseJson<T>> loadFromDisk(final String key) {
+    private Observable<BaseJson<T>> loadFromDisk(final Long key) {
         Observable.Transformer<BaseJson<T>, BaseJson<T>> transformer = log("load from Disk: " + key);
         return mDiskCache.get(key)
                 .compose(transformer);
     }
 
-    private Observable<BaseJson<T>> loadFromNetWork(final String key, NetWorkCache<T> networkCache) {
+    private Observable<BaseJson<T>> loadFromNetWork(final Long key, NetWorkCache<T> networkCache) {
         Observable.Transformer<BaseJson<T>, BaseJson<T>> transformer = log("load from NetWork: " + key);
         return networkCache.get(key)
                 .compose(transformer)

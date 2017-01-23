@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
-import android.content.Context;
-
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Keep;

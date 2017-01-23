@@ -6,8 +6,8 @@ import com.zhiyicx.baseproject.cache.CacheImp;
 import com.zhiyicx.baseproject.cache.NetWorkCache;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
-import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
 import com.zhiyicx.thinksnsplus.data.source.local.AuthBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.login.LoginContract;
 
@@ -35,9 +35,9 @@ public class LoginRepository implements LoginContract.Repository {
         if(cacheImp==null){
             cacheImp = new CacheImp<>(new AuthBeanGreenDaoImpl(context));
         }
-        return cacheImp.load("1483098241", new NetWorkCache<AuthBean>() {
+        return cacheImp.load(1483098241l, new NetWorkCache<AuthBean>() {
             @Override
-            public Observable<BaseJson<AuthBean>> get(String key) {
+            public Observable<BaseJson<AuthBean>> get(Long key) {
                 return mLoginClient.login("success", phone, password, "dfsafds").subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
             }
         });

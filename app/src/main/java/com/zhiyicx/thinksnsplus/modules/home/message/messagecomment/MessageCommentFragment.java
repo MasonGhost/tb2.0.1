@@ -121,7 +121,7 @@ public class MessageCommentFragment extends TSFragment implements BGARefreshLayo
         UserInfoBean testUserinfo = new UserInfoBean();
         testUserinfo.setUserIcon("http://image.xinmin.cn/2017/01/11/bedca80cdaa44849a813e7820fff8a26.jpg");
         testUserinfo.setName("颤三");
-        testUserinfo.setUserId("123");
+        testUserinfo.setUser_id(123l);
         MessageItemBean commentItem = new MessageItemBean();
         commentItem.setUserInfo(testUserinfo);
         Message commentMessage = new Message();
@@ -238,7 +238,7 @@ public class MessageCommentFragment extends TSFragment implements BGARefreshLayo
     private void toChat(MessageItemBean messageItemBean) {
         Intent to = new Intent(getActivity(), ChatActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(ChatFragment.BUNDLE_USERID, messageItemBean.getUserInfo().getUserId());
+        bundle.putString(ChatFragment.BUNDLE_USERID, String.valueOf(messageItemBean.getUserInfo().getUser_id()));
         to.putExtras(bundle);
         startActivity(to);
     }

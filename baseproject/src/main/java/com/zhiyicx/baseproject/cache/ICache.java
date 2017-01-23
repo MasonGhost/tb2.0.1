@@ -2,8 +2,6 @@ package com.zhiyicx.baseproject.cache;
 
 import com.zhiyicx.common.base.BaseJson;
 
-import java.util.List;
-
 import rx.Observable;
 
 /**
@@ -19,7 +17,7 @@ public interface ICache<T extends CacheBean> {
      *
      * @param key 缓存标识符
      */
-    Observable<BaseJson<T>> get(String key);
+    Observable<BaseJson<T>> get(Long key);
 
     /**
      * 保存数据到缓存
@@ -27,6 +25,6 @@ public interface ICache<T extends CacheBean> {
      * @param key 缓存标识符
      * @param t   需要缓存的对象
      */
-    void put(String key, T t);
+    void put(Long key, T t);
 
 }

@@ -19,10 +19,9 @@ public class EditConfigBeanDaoImpl extends CommonCacheImpl<EditConfigBean> {
     }
 
     @Override
-    public void saveSingleData(EditConfigBean singleData) {
+    public long saveSingleData(EditConfigBean singleData) {
         EditConfigBeanDao editConfigBeanDao = getWDaoSession().getEditConfigBeanDao();
-        editConfigBeanDao.insert(singleData);
-        //editConfigBeanDao.save(singleData);
+        return editConfigBeanDao.insert(singleData);
     }
 
     @Override
@@ -36,10 +35,10 @@ public class EditConfigBeanDaoImpl extends CommonCacheImpl<EditConfigBean> {
     }
 
     @Override
-    public EditConfigBean getSingleDataFromCache(String key) {
-        EditConfigBeanDao editConfigBeanDao = getRDaoSession().getEditConfigBeanDao();
-        return editConfigBeanDao.load(Long.parseLong(key));
+    public EditConfigBean getSingleDataFromCache(Long primaryKey) {
+        return null;
     }
+
 
     @Override
     public List<EditConfigBean> getMultiDataFromCache() {
@@ -53,12 +52,18 @@ public class EditConfigBeanDaoImpl extends CommonCacheImpl<EditConfigBean> {
     }
 
     @Override
-    public void deleteSingleCache(String key) {
+    public void deleteSingleCache(Long primaryKey) {
 
     }
+
 
     @Override
     public void updateSingleData(EditConfigBean newData) {
 
+    }
+
+    @Override
+    public long insertOrReplace(EditConfigBean newData) {
+        return 0;
     }
 }

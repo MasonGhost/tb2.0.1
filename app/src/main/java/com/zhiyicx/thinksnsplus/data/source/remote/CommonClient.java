@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.MultipartBody;
 import retrofit2.http.DELETE;
@@ -20,6 +21,7 @@ import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
+import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.Url;
@@ -112,5 +114,17 @@ public interface CommonClient {
      */
     @DELETE("api/v1/storages/task/{storage_task_id}")
     Observable<BaseJson> deleteStorageTask(@Path("storage_task_id") String storage_task_id, @Query("requestState") String requestState);
+
+
+    /*******************************************  后台任务处理  *********************************************/
+
+    /**
+     * 后台任务处理
+     *
+     */
+    @Multipart
+    @POST("{path}")
+    Observable<BaseJson<CacheBean>> handleTask(@Path("path") String path, @PartMap Map<String, Object> bodyMap) ;
+
 
 }
