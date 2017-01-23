@@ -13,7 +13,7 @@ import com.zhiyicx.common.BuildConfig;
 
 public class LogUtils {
     private static final String APPLICATION_TAG = "LogUtils";
-    public static final int LOGGER_METHODCOUNT = 3;
+    public static final int LOGGER_METHODCOUNT = 5;
     public static final int LOGGER_METHODOFFSET = 2;
 
     public static void init() {
