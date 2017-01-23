@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.inject.Inject;
 
 /**
- * @Describe
+ * @Describe 后台任务处理逻辑
  * @Author Jungle68
  * @Date 2017/1/22
  * @Contact master.jungle68@gmail.com

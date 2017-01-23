@@ -26,6 +26,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
+import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -58,6 +59,7 @@ public class AppApplication extends TSApplication {
         super.onCreate();
         initComponent();
         ZBIMSDK.init(getContext());
+        BackgroundTaskManager.getInstance(getContext()).startBackgroundTask();// 开启后台任务
     }
 
     /**
