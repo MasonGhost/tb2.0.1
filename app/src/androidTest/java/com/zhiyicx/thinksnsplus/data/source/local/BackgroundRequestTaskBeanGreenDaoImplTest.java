@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -42,7 +43,23 @@ public class BackgroundRequestTaskBeanGreenDaoImplTest {
 
     @Test
     public void saveMultiData() throws Exception {
-
+        BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
+        backgroundRequestTaskBean.setBackgroundtask_id(100L);
+        backgroundRequestTaskBean.setPath("saveMultiData/1000");
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("user", "saveMultiData占三");
+        backgroundRequestTaskBean.setParams(params);
+        BackgroundRequestTaskBean backgroundRequestTaskBean2 = new BackgroundRequestTaskBean();
+        backgroundRequestTaskBean2.setBackgroundtask_id(101L);
+        backgroundRequestTaskBean2.setPath("saveMultiData/1002");
+        HashMap<String, Object> params2 = new HashMap<>();
+        params2.put("user", "saveMultiData占三2");
+        backgroundRequestTaskBean2.setParams(params2);
+        List<BackgroundRequestTaskBean> list = new ArrayList<>();
+        list.add(backgroundRequestTaskBean);
+        list.add(backgroundRequestTaskBean2);
+        mBackgroundTaskBeanGreenDao.saveMultiData(list);
+        Assert.assertTrue(mBackgroundTaskBeanGreenDao.getSingleDataFromCache(100L) != null);
     }
 
     @Test

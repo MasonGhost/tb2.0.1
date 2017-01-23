@@ -22,6 +22,8 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_BACKGROUND
 
 public class BackgroundTaskHandleService extends Service {
 
+    private BackgroundTaskHandler mBackgroundTaskHandler;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -33,7 +35,7 @@ public class BackgroundTaskHandleService extends Service {
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-        BackgroundTaskHandler.getInstance().stopTask();
+        mBackgroundTaskHandler.stopTask();
     }
 
     @Nullable
@@ -44,10 +46,11 @@ public class BackgroundTaskHandleService extends Service {
 
     @Subscriber(tag = EVENT_BACKGROUND_TASK, mode = ThreadMode.POST)
     public boolean addBackgroundRequestTask(BackgroundRequestTaskBean backgroundRequestTaskBean) {
-        return BackgroundTaskHandler.getInstance().addBackgroundRequestTask(backgroundRequestTaskBean);
+        return mBackgroundTaskHandler.addBackgroundRequestTask(backgroundRequestTaskBean);
     }
 
     private void init() {
+        mBackgroundTaskHandler = new BackgroundTaskHandler();
     }
 
 }

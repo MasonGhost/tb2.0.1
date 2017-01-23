@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.dagger;
 
 import android.app.Application;
 
+import com.zhiyicx.thinksnsplus.data.source.local.BackgroundRequestTaskBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 
 import dagger.Module;
@@ -22,5 +23,10 @@ public class GreenDaoModule {
     @Provides
     public UserInfoBeanGreenDaoImpl provideUserInfoBeanGreenDaoImpl(Application application) {
         return new UserInfoBeanGreenDaoImpl(application);
+    }
+
+    @Provides
+    public BackgroundRequestTaskBeanGreenDaoImpl provideBackgroundRequestTaskBeanGreenDaoImpl(Application application) {
+        return new BackgroundRequestTaskBeanGreenDaoImpl(application);
     }
 }

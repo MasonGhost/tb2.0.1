@@ -29,7 +29,7 @@ public class AuthBeanGreenDaoImpl extends CommonCacheImpl<AuthBean> {
     @Override
     public void saveMultiData(List<AuthBean> multiData) {
         AuthBeanDao authBeanDao = getWDaoSession().getAuthBeanDao();
-        authBeanDao.saveInTx(multiData);
+        authBeanDao.insertInTx(multiData);
     }
 
     @Override

@@ -28,7 +28,7 @@ public class BackgroundRequestTaskBeanGreenDaoImpl extends CommonCacheImpl<Backg
     @Override
     public void saveMultiData(List<BackgroundRequestTaskBean> multiData) {
         BackgroundRequestTaskBeanDao backgroundRequestTaskBeanDao = getWDaoSession().getBackgroundRequestTaskBeanDao();
-        backgroundRequestTaskBeanDao.saveInTx(multiData);
+        backgroundRequestTaskBeanDao.insertOrReplaceInTx(multiData);
     }
 
     @Override

@@ -44,11 +44,18 @@ public class BackgroundTaskManager {
      * @param backgroundRequestTaskBean 任务
      */
     public void addBackgroundRequestTask(BackgroundRequestTaskBean backgroundRequestTaskBean) {
+        startBackgroundTask();
+        EventBus.getDefault().post(backgroundRequestTaskBean, EVENT_BACKGROUND_TASK);
+    }
+
+    /**
+     * 开启后台任务，主要处理缓存任务
+     */
+    public void startBackgroundTask() {
         if (!mIsServiceStart) {
             mContext.startService(new Intent(mContext, BackgroundTaskHandleService.class));
             mIsServiceStart = true;
         }
-        EventBus.getDefault().post(backgroundRequestTaskBean, EVENT_BACKGROUND_TASK);
     }
 
     /**

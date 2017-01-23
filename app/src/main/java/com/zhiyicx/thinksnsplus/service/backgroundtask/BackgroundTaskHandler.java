@@ -1,6 +1,9 @@
 package com.zhiyicx.thinksnsplus.service.backgroundtask;
 
+import android.app.Application;
+
 import com.zhiyicx.baseproject.cache.CacheBean;
+import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -9,12 +12,15 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.BackgroundRequestTaskBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 
 import org.simple.eventbus.EventBus;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -28,37 +34,31 @@ import javax.inject.Inject;
  */
 
 public class BackgroundTaskHandler {
-    private static final long MESSAGE_SEND_INTERVAL_FOR_CPU = 100;// 消息发送间隔时间，防止 cpu 占用过高
-
-    private static volatile BackgroundTaskHandler sBackgroundTaskHandler;
-    private Queue<BackgroundRequestTaskBean> mBackgroundRequestTaskBeen = new ConcurrentLinkedQueue<>();// 线程安全的队列
-    private boolean mIsExit = false; // 是否关闭
-
+    private static final long MESSAGE_SEND_INTERVAL_FOR_CPU = 500;// 消息发送间隔时间，防止 cpu 占用过高
+    @Inject
+    Application mContext;
     @Inject
     ServiceManager mServiceManager;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
+    BackgroundRequestTaskBeanGreenDaoImpl mBackgroundRequestTaskBeanGreenDao;
+    @Inject
     AuthRepository mAuthRepository;
 
-    private BackgroundTaskHandler() {
+    private Queue<BackgroundRequestTaskBean> mTaskBeanConcurrentLinkedQueue = new ConcurrentLinkedQueue<>();// 线程安全的队列
+
+    private List<BackgroundRequestTaskBean> mBackgroundRequestTaskBeanCaches = new ArrayList<>();
+
+    private boolean mIsExit = false; // 是否关闭
+
+    public BackgroundTaskHandler() {
         init();
-    }
-
-    public static BackgroundTaskHandler getInstance() {
-
-        if (sBackgroundTaskHandler == null) {
-            synchronized (BackgroundTaskHandler.class) {
-                if (sBackgroundTaskHandler == null) {
-                    sBackgroundTaskHandler = new BackgroundTaskHandler();
-                }
-            }
-        }
-        return sBackgroundTaskHandler;
     }
 
     /**
      * 加入任务
+     *
      * @param backgroundRequestTaskBean 任务
      * @return 如果任务为 null，返回 false,否者返回 true
      */
@@ -66,7 +66,11 @@ public class BackgroundTaskHandler {
         if (backgroundRequestTaskBean == null) {
             return false;
         }
-        return mBackgroundRequestTaskBeen.add(backgroundRequestTaskBean);
+        if (mTaskBeanConcurrentLinkedQueue.add(backgroundRequestTaskBean)) {
+            mBackgroundRequestTaskBeanCaches.add(backgroundRequestTaskBean);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -78,7 +82,20 @@ public class BackgroundTaskHandler {
 
     private void init() {
         AppApplication.AppComponentHolder.getAppComponent().inject(this);
+        getCacheData();
         new Thread(handleTaskRunnable).start();
+    }
+
+    /**
+     * 获取缓存中没有被执行的数据
+     */
+    private void getCacheData() {
+        List<BackgroundRequestTaskBean> cacheDatas = mBackgroundRequestTaskBeanGreenDao.getMultiDataFromCache();
+        if (cacheDatas != null) {
+            for (BackgroundRequestTaskBean tmp : cacheDatas) {
+                mTaskBeanConcurrentLinkedQueue.add(tmp);
+            }
+        }
     }
 
     /**
@@ -87,12 +104,16 @@ public class BackgroundTaskHandler {
     private Runnable handleTaskRunnable = new Runnable() {
         @Override
         public void run() {
-            if (!mIsExit) {
-                if (!mBackgroundRequestTaskBeen.isEmpty()) {
-                    BackgroundRequestTaskBean backgroundRequestTaskBean = mBackgroundRequestTaskBeen.poll();
+            while (!mIsExit) {
+                if (NetUtils.netIsConnected(mContext) && !mTaskBeanConcurrentLinkedQueue.isEmpty()) {
+                    BackgroundRequestTaskBean backgroundRequestTaskBean = mTaskBeanConcurrentLinkedQueue.poll();
                     handleTask(backgroundRequestTaskBean);
                 }
                 threadSleep();
+            }
+            // 存储未执行的数据到数据库，下次执行
+            if (mBackgroundRequestTaskBeanCaches.size() > 0) {
+                mBackgroundRequestTaskBeanGreenDao.saveMultiData(mBackgroundRequestTaskBeanCaches);
             }
         }
     };
@@ -129,7 +150,7 @@ public class BackgroundTaskHandler {
                         .subscribe(new BaseSubscribe<CacheBean>() {
                             @Override
                             protected void onSuccess(CacheBean data) {
-
+                                mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
                             }
 
                             @Override
@@ -155,6 +176,7 @@ public class BackgroundTaskHandler {
                         .subscribe(new BaseSubscribe<IMBean>() {
                             @Override
                             protected void onSuccess(IMBean data) {
+                                mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
                                 System.out.println("data = " + data.toString());
                                 IMConfig imConfig = new IMConfig();
                                 imConfig.setImUid(data.getUser_id());
@@ -186,6 +208,7 @@ public class BackgroundTaskHandler {
                         .subscribe(new BaseSubscribe<UserInfoBean>() {
                             @Override
                             protected void onSuccess(UserInfoBean data) {
+                                mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
                                 mUserInfoBeanGreenDao.insertOrReplace(data);
                             }
 
