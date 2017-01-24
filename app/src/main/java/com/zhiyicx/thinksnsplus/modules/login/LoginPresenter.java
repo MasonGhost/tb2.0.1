@@ -7,10 +7,13 @@ import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.LoginRepository;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterContract;
+import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.logging.Logger;
 
@@ -64,6 +67,8 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
                         if (integerBaseJson.isStatus()) {
                             // 登录成功跳转
                             mAuthRepository.saveAuthBean(integerBaseJson.getData());// 保存auth信息
+                            // 刷新im信息
+                            BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_IM_INFO));
                             mRootView.setLoginState(true);
                         } else {
                             // 登录失败

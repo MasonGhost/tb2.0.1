@@ -126,8 +126,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
 
     @Override
     public void setLoginState(boolean loginState) {
-        mBtLoginLogin.handleAnimation(loginState);
-        mBtLoginLogin.setEnabled(loginState);
+        mBtLoginLogin.handleAnimation(false);
+        mBtLoginLogin.setEnabled(true);
         if (loginState) {
             Intent it = new Intent();
             it.setClass(getActivity(), GuideActivity.class);
