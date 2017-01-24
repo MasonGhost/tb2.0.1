@@ -4,7 +4,8 @@ apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'jacoco' //测试报告
 
 jacoco {
-    toolVersion = "0.7.5.201505241946"
+    toolVersion = "0.7.8"
+    reportsDir = file("$buildDir/customJacocoReportDir")
 }
 android {
     def gConfig = rootProject.extensions.getByName("ext")
@@ -83,8 +84,12 @@ android {
             // All the usual Gradle options.
             jvmArgs '-XX:MaxPermSize=256m'
             // resolve "Method ... not mocked."
+            jacoco {
+                includeNoLocationClasses = true
+            }
         }
         unitTests.returnDefaultValues = true
+
     }
 }
 greendao {
@@ -149,39 +154,6 @@ dependencies {
     compile 'com.android.support:support-v4:25.0.1'
 }
 
-task jacocoAndroidTestReport(type:JacocoReport,dependsOn:"connectedAndroidTest"){
-    group="Reporting"
-    description = "Generate Jacoco coverage reports"
-
-    //exclude auto-generated classes and tests
-    def fileFilter=['**/R.class',
-                    '**/R$*.class',
-                    '**/Manifest*.*',
-                    '**/BuildConfig.*',
-                    'android/**/*.*',
-    ]
-    def debugTree=fileTree(dir:
-            "${rootDir}/app/build/intermediates/classes/debug",
-            excludes: fileFilter)
-    def sdkSrc="${rootDir}/app/src/main/java"
-
-    //指明对哪个目录下的代码进行绘制覆盖率统计图标
-    sourceDirectories=files([sdkSrc])
-    //指明对哪个目录下的代码进行覆盖率统计
-    classDirectories=files([debugTree])
-    additionalSourceDirs=files([
-            "${buildDir}/generated/source/buildConfig/debug",
-            "${buildDir}/generated/source/r/debug"
-    ])
-    executionData=fileTree(dir:project.projectDir,includes:['**/*.exec','**/*.ec'])
-    reports{
-        xml.enabled=true
-        xml.destination="${buildDir}/jacocoTestReport.xml"
-        csv.enabled=false
-        html.enabled=true
-        html.destination="${buildDir}/reports/jacoco"
-    }
-}
 
 task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
     group = "Reporting"
