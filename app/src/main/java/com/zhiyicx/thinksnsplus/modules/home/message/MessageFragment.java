@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -14,9 +15,16 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
+import com.zhiyicx.imsdk.entity.ChatRoomContainer;
+import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
+import com.zhiyicx.imsdk.manage.ChatClient;
+import com.zhiyicx.imsdk.manage.listener.ImMsgReceveListener;
+import com.zhiyicx.imsdk.manage.listener.ImStatusListener;
+import com.zhiyicx.imsdk.manage.listener.ImTimeoutListener;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
@@ -28,6 +36,7 @@ import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageComme
 import com.zhiyicx.thinksnsplus.modules.home.message.messagelike.MessageLikeActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +53,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/5
  * @Contact master.jungle68@gmail.com
  */
-public class MessageFragment extends TSFragment {
+public class MessageFragment extends TSFragment implements ImMsgReceveListener, ImStatusListener, ImTimeoutListener {
     private static final float LIST_ITEM_SPACING = 1f;
     private static final int ITEM_TYPE_COMMNETED = 0;
     private static final int ITEM_TYPE_LIKED = 1;
@@ -55,8 +64,10 @@ public class MessageFragment extends TSFragment {
     private ImageLoader mImageLoader;
     private List<MessageItemBean> mMessageItemBeen;
 
-    public MessageFragment() {
-    }
+    /**
+     * IM 聊天
+     */
+    private ChatClient mChatClient;
 
     public static MessageFragment newInstance() {
         MessageFragment fragment = new MessageFragment();
@@ -92,11 +103,6 @@ public class MessageFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
-    }
-
-
-    @Override
-    protected void initData() {
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         mMessageItemBeen = new ArrayList<>();
         initCommentAndLike(mMessageItemBeen);
@@ -105,13 +111,37 @@ public class MessageFragment extends TSFragment {
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
         mRvMessageList.setHasFixedSize(true);
         mRvMessageList.setItemAnimator(new DefaultItemAnimator());//设置动画
-        mRvMessageList.setAdapter(new CommonAdapter<MessageItemBean>(getActivity(), R.layout.item_message_list, mMessageItemBeen) {
+        CommonAdapter messageListAdapter = new CommonAdapter<MessageItemBean>(getActivity(), R.layout.item_message_list, mMessageItemBeen) {
             @Override
             protected void convert(ViewHolder holder, MessageItemBean messageItemBean, int position) {
                 setItemData(holder, messageItemBean, position);
             }
 
+        };
+        HeaderAndFooterWrapper mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(messageListAdapter);
+        TextView t2 = new TextView(getContext());
+        t2.setText("Header 2");
+        t2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ToastUtils.showToast("nihao header");
+            }
         });
+        mHeaderAndFooterWrapper.addHeaderView(t2);
+        mRvMessageList.setAdapter(mHeaderAndFooterWrapper);
+        mHeaderAndFooterWrapper.notifyDataSetChanged();
+    }
+    @Override
+    protected void initData() {
+        initIM();
+
+    }
+
+    private void initIM() {
+        mChatClient = new ChatClient(getActivity());
+        mChatClient.setImMsgReceveListener(this);
+        mChatClient.setImStatusListener(this);
+        mChatClient.setImTimeoutListener(this);
     }
 
     /**
@@ -131,23 +161,26 @@ public class MessageFragment extends TSFragment {
         Message likeMessage = new Message();
         likeMessage.setTxt("一叶之秋、晴天色"
                 + getString(R.string.like_me));
+        UserInfoBean userinfo = new UserInfoBean();
+        userinfo.setUserIcon("http://192.168.10.222/i.php");
+        likedmessageItemBean.setUserInfo(userinfo);
         likeMessage.setCreate_time(System.currentTimeMillis());
         likedmessageItemBean.setLastMessage(likeMessage);
         likedmessageItemBean.setUnReadMessageNums(Math.round(15));
         messageItemBeen.add(likedmessageItemBean);
-        MessageItemBean test = new MessageItemBean();
-        UserInfoBean testUserinfo = new UserInfoBean();
-        testUserinfo.setUserIcon("http://192.168.10.222/i.php");
-        testUserinfo.setName("颤三");
-        testUserinfo.setUser_id(123l);
-        test.setUserInfo(testUserinfo);
-        Message testMessage = new Message();
-        testMessage.setTxt("一叶之秋、晴天色"
-                + getString(R.string.like_me));
-        testMessage.setCreate_time(System.currentTimeMillis());
-        test.setLastMessage(likeMessage);
-        test.setUnReadMessageNums((int) (Math.random() * 10));
         for (int i = 0; i < 10; i++) {
+            MessageItemBean test = new MessageItemBean();
+            UserInfoBean testUserinfo = new UserInfoBean();
+            testUserinfo.setUserIcon("http://192.168.10.222/i.php");
+            testUserinfo.setName("颤三");
+            testUserinfo.setUser_id((long) (10+i));
+            test.setUserInfo(testUserinfo);
+            Message testMessage = new Message();
+            testMessage.setTxt("一叶之秋、晴天色"+i
+                    + getString(R.string.like_me));
+            testMessage.setCreate_time(System.currentTimeMillis());
+            test.setLastMessage(likeMessage);
+            test.setUnReadMessageNums((int) (Math.random() * 10));
             messageItemBeen.add(test);
         }
 
@@ -156,9 +189,9 @@ public class MessageFragment extends TSFragment {
     /**
      * 设置item 数据
      *
-     * @param holder      控件管理器
+     * @param holder          控件管理器
      * @param messageItemBean 当前数据
-     * @param position    当前数据位置
+     * @param position        当前数据位置
      */
 
     private void setItemData(ViewHolder holder, final MessageItemBean messageItemBean, int position) {
@@ -280,5 +313,70 @@ public class MessageFragment extends TSFragment {
     private void toLikeList() {
         Intent to = new Intent(getActivity(), MessageLikeActivity.class);
         startActivity(to);
+    }
+
+    @Override
+    public void onMessageReceived(Message message) {
+
+    }
+
+    @Override
+    public void onMessageACKReceived(Message message) {
+
+    }
+
+    @Override
+    public void onConversationJoinACKReceived(ChatRoomContainer chatRoomContainer) {
+
+    }
+
+    @Override
+    public void onConversationLeaveACKReceived(ChatRoomContainer chatRoomContainer) {
+
+    }
+
+    @Override
+    public void onConversationMCACKReceived(List<Conversation> conversations) {
+
+    }
+
+    @Override
+    public void synchronousInitiaMessage(int limit) {
+
+    }
+
+    @Override
+    public void onConnected() {
+
+    }
+
+    @Override
+    public void onDisconnect(int code, String reason) {
+
+    }
+
+    @Override
+    public void onError(Exception error) {
+
+    }
+
+    @Override
+    public void onMessageTimeout(Message message) {
+
+    }
+
+    @Override
+    public void onConversationJoinTimeout(int roomId) {
+
+    }
+
+    @Override
+    public void onConversationLeaveTimeout(int roomId) {
+
+    }
+
+    @Override
+    public void onConversationMcTimeout(List<Integer> roomIds) {
+
     }
 }
