@@ -247,11 +247,9 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     public void showMessage(String message) {
         if (TextUtils.isEmpty(message)) {
             mTvErrorTip.setVisibility(View.INVISIBLE);
-            System.out.println(" =INVISIBLE ");
         } else {
             mTvErrorTip.setVisibility(View.VISIBLE);
             mTvErrorTip.setText(message);
-            System.out.println(" =VISIBLE " + message);
         }
     }
 

@@ -49,7 +49,7 @@ public class BackgroundRequestTaskBeanGreenDaoImplTest {
         backgroundRequestTaskBean.setBackgroundtask_id(100L);
         backgroundRequestTaskBean.setPath(APP_PATH_LOGIN);
         HashMap<String, Object> params = new HashMap<>();
-        params.put("user",3);
+        params.put("user", 3);
         backgroundRequestTaskBean.setParams(params);
         BackgroundRequestTaskBean backgroundRequestTaskBean2 = new BackgroundRequestTaskBean();
         backgroundRequestTaskBean2.setBackgroundtask_id(101L);
@@ -66,7 +66,7 @@ public class BackgroundRequestTaskBeanGreenDaoImplTest {
 
     @Test
     public void getSingleDataFromCache() throws Exception {
-
+        insertOrReplace();
         Assert.assertTrue(mBackgroundTaskBeanGreenDao.getSingleDataFromCache(1L) != null);
     }
 

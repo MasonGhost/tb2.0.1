@@ -63,6 +63,7 @@ public class LoadingButton extends FrameLayout {
 
     @Override
     public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
         mContainer.setEnabled(enabled);
     }
 

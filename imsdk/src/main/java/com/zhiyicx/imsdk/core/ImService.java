@@ -72,7 +72,7 @@ public class ImService {
     /**
      * 认证事件
      */
-    public static final String AUTH="auth";
+    public static final String AUTH = "auth";
 
     /**
      * 会话
@@ -111,6 +111,8 @@ public class ImService {
 
     private ImListener mListener;
     private String mUri;
+
+
     /**
      * 请求参数
      */
@@ -170,6 +172,10 @@ public class ImService {
     public void setUrl(String url) {
         this.mUri = url;
 
+    }
+
+    public String getUri() {
+        return mUri;
     }
 
     /**

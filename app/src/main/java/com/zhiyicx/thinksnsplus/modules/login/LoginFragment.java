@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -137,8 +136,13 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     }
 
     @Override
-    public void showErrorTips(String error) {
-        mTvErrorTip.setText(error);
+    public void showErrorTips(String message) {
+        if (TextUtils.isEmpty(message)) {
+            mTvErrorTip.setVisibility(View.INVISIBLE);
+        } else {
+            mTvErrorTip.setVisibility(View.VISIBLE);
+            mTvErrorTip.setText(message);
+        }
     }
 
     @Override

@@ -9,6 +9,8 @@ import com.zhiyicx.thinksnsplus.R;
 
 import org.junit.runner.RunWith;
 
+import static android.R.attr.description;
+import static android.R.attr.type;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.replaceText;

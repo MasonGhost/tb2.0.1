@@ -42,6 +42,7 @@ public class UserInfoBeanGreenDaoImplTest {
 
     @Test
     public void getSingleDataFromCache() throws Exception {
+        insertOrReplace();
         UserInfoBean userINfo = mUserInfoBeanGreenDao.getSingleDataFromCache(100L);
         Assert.assertFalse(TextUtils.isEmpty(userINfo.getName()));
     }

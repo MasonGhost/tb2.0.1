@@ -25,8 +25,8 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static com.zhiyicx.thinksnsplus.modules.MyViewMatchers.isUnClickable;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static com.zhiyicx.thinksnsplus.modules.MyViewMatchers.disEnabled;
 import static junit.framework.Assert.assertFalse;
 
 /**
@@ -61,9 +61,8 @@ public class LoginActivityTest extends AcitivityTest {
      */
     @Test
     public void clickableWhenNoPhone() throws Exception {
-        clearEditText(etPhone, etPass);
         etPass.perform(replaceText("123456"), closeSoftKeyboard());
-        btnLogin.check(matches(isUnClickable()));
+        btnLogin.check(matches(disEnabled()));
     }
 
     /**
@@ -73,9 +72,8 @@ public class LoginActivityTest extends AcitivityTest {
      */
     @Test
     public void clickableWhenNoPassword() throws Exception {
-        clearEditText(etPhone, etPass);
         etPhone.perform(replaceText("15928856596"), closeSoftKeyboard());
-        btnLogin.check(matches(isUnClickable()));
+        btnLogin.check(matches(disEnabled()));
     }
 
     /**
@@ -116,11 +114,10 @@ public class LoginActivityTest extends AcitivityTest {
      */
     @Test
     public void loginSuccess() throws Exception {
-        clearEditText(etPhone, etPass);
         etPhone.perform(replaceText("15928856596"), closeSoftKeyboard());
         etPass.perform(replaceText("123456"), closeSoftKeyboard());
         btnLogin.perform(click());
         Thread.sleep(1000);
-        tvErrorTip.check(matches(withText("登录失败")));
+        tvErrorTip.check(matches((isDisplayed())));
     }
 }

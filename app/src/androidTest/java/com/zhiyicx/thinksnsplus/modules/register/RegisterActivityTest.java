@@ -135,7 +135,7 @@ public class RegisterActivityTest {
     @Test
     public void inputUsernameCheck() throws Exception {
         onView(withId(R.id.et_regist_username)).perform(replaceText(USER_NAME), closeSoftKeyboard());
-        onView(withId(R.id.bt_regist_regist)).perform(click()).check(matches(disEnabled()));
+        onView(withId(R.id.bt_regist_regist)).check(matches(disEnabled()));
     }
 
     /**

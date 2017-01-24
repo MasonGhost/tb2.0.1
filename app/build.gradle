@@ -1,8 +1,11 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'org.greenrobot.greendao'
+apply plugin: 'jacoco' //测试报告
 
-
+jacoco {
+    toolVersion = "0.7.5.201505241946"
+}
 android {
     def gConfig = rootProject.extensions.getByName("ext")
     compileSdkVersion gConfig.getAt("compileSdkVersion")
@@ -55,8 +58,8 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.debug
+            testCoverageEnabled true
         }
-
         release {
             minifyEnabled false
             shrinkResources true
@@ -144,4 +147,57 @@ dependencies {
     //compile dataDependences.greendaoGenerator
     compile 'com.android.support:appcompat-v7:25.0.1'
     compile 'com.android.support:support-v4:25.0.1'
+}
+
+task jacocoAndroidTestReport(type:JacocoReport,dependsOn:"connectedAndroidTest"){
+    group="Reporting"
+    description = "Generate Jacoco coverage reports"
+
+    //exclude auto-generated classes and tests
+    def fileFilter=['**/R.class',
+                    '**/R$*.class',
+                    '**/Manifest*.*',
+                    '**/BuildConfig.*',
+                    'android/**/*.*',
+    ]
+    def debugTree=fileTree(dir:
+            "${rootDir}/app/build/intermediates/classes/debug",
+            excludes: fileFilter)
+    def sdkSrc="${rootDir}/app/src/main/java"
+
+    //指明对哪个目录下的代码进行绘制覆盖率统计图标
+    sourceDirectories=files([sdkSrc])
+    //指明对哪个目录下的代码进行覆盖率统计
+    classDirectories=files([debugTree])
+    additionalSourceDirs=files([
+            "${buildDir}/generated/source/buildConfig/debug",
+            "${buildDir}/generated/source/r/debug"
+    ])
+    executionData=fileTree(dir:project.projectDir,includes:['**/*.exec','**/*.ec'])
+    reports{
+        xml.enabled=true
+        xml.destination="${buildDir}/jacocoTestReport.xml"
+        csv.enabled=false
+        html.enabled=true
+        html.destination="${buildDir}/reports/jacoco"
+    }
+}
+
+task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports"    // exclude auto-generated classes and tests
+    def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', 'android/**/*.*']
+    def debugTree = fileTree(dir: "${project.buildDir}/intermediates/classes/debug", excludes: fileFilter)
+    def mainSrc = "${project.projectDir}/src/main/java"
+    sourceDirectories = files([mainSrc])
+    classDirectories = files([debugTree])
+    additionalSourceDirs = files(["${buildDir}/generated/source/buildConfig/debug", "${buildDir}/generated/source/r/debug"])
+    executionData = fileTree(dir: project.projectDir, includes: ['**/*.exec', '**/*.ec'])
+    reports {
+        xml.enabled = true
+        xml.destination = "${buildDir}/jacocoTestReport.xml"
+        csv.enabled = false
+        html.enabled = true
+        html.destination = "${buildDir}/reports/jacoco"
+    }
 }
