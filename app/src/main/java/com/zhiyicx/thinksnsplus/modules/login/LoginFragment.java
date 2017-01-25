@@ -12,6 +12,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity;
+import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.password.findpassword.FindPasswordActivity;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterActivity;
 
@@ -134,7 +135,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         mBtLoginLogin.setEnabled(true);
         if (loginState) {
             Intent it = new Intent();
-            it.setClass(getActivity(), GuideActivity.class);
+            it.setClass(getActivity(), HomeActivity.class);
             startActivity(it);
         }
     }
