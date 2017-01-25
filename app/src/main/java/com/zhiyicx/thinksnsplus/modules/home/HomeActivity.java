@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.home;
 import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.common.utils.ActivityUtils;
 
 /**
  * @Describe
@@ -29,5 +30,8 @@ public class HomeActivity extends TSActivity {
         return HomeFragment.newInstance();
     }
 
-
+    @Override
+    public void onBackPressed() {
+        ActivityUtils.goHome(this);
+    }
 }
