@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.zhiyicx.thinksnsplus">
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
@@ -13,17 +14,19 @@
         <activity
             android:name=".modules.guide.GuideActivity"
             android:theme="@style/BackGroundLauncherTheme">
-        </activity>
-        <activity android:name=".modules.register.RegisterActivity">
-        </activity>
-        <activity
-            android:name=".modules.home.HomeActivity"
-            android:windowSoftInputMode="adjustPan|stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity android:name=".modules.register.RegisterActivity">
+        </activity>
+        <activity
+            android:name=".modules.home.HomeActivity"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden">
+
         </activity>
         <activity android:name=".modules.settings.SettingsActivity">
         </activity>
@@ -31,7 +34,9 @@
         </activity>
         <activity android:name=".modules.password.findpassword.FindPasswordActivity">
         </activity>
-        <activity android:name=".modules.login.LoginActivity">
+        <activity
+            android:name=".modules.login.LoginActivity"
+            android:launchMode="singleTask">
         </activity>
         <activity android:name=".modules.chat.ChatActivity">
         </activity>

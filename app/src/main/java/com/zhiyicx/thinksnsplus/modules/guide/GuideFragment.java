@@ -5,7 +5,7 @@ import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.register.RegisterActivity;
+import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 
 public class GuideFragment extends TSFragment {
 
@@ -21,7 +21,8 @@ public class GuideFragment extends TSFragment {
 
     @Override
     protected void initData() {
-        startActivity(new Intent(getActivity(), RegisterActivity.class));
+        startActivity(new Intent(getActivity(), LoginActivity.class));
+        getActivity().finish();
     }
 
 }

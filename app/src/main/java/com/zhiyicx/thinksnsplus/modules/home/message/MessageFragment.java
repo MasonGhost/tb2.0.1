@@ -7,7 +7,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -15,7 +14,6 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.imsdk.entity.ChatRoomContainer;
@@ -36,7 +34,6 @@ import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageComme
 import com.zhiyicx.thinksnsplus.modules.home.message.messagelike.MessageLikeActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
-import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -118,18 +115,19 @@ public class MessageFragment extends TSFragment implements ImMsgReceveListener, 
             }
 
         };
-        HeaderAndFooterWrapper mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(messageListAdapter);
-        TextView t2 = new TextView(getContext());
-        t2.setText("Header 2");
-        t2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ToastUtils.showToast("nihao header");
-            }
-        });
-        mHeaderAndFooterWrapper.addHeaderView(t2);
-        mRvMessageList.setAdapter(mHeaderAndFooterWrapper);
-        mHeaderAndFooterWrapper.notifyDataSetChanged();
+//        HeaderAndFooterWrapper mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(messageListAdapter);
+//        TextView t2 = new TextView(getContext());
+//        t2.setText("Header 2");
+//        t2.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                ToastUtils.showToast("nihao header");
+//            }
+//        });
+//        mHeaderAndFooterWrapper.addHeaderView(t2);
+//        mRvMessageList.setAdapter(mHeaderAndFooterWrapper);
+//        mHeaderAndFooterWrapper.notifyDataSetChanged();
+        mRvMessageList.setAdapter(messageListAdapter);
     }
     @Override
     protected void initData() {

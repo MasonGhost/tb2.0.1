@@ -117,6 +117,10 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         startActivity(new Intent(getActivity(), RegisterActivity.class));
     }
 
+    @Override
+    protected int setLeftImg() {
+        return 0;
+    }
 
     @Override
     public void setLogining() {

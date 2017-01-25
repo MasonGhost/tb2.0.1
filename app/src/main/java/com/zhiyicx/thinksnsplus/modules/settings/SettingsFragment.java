@@ -218,6 +218,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                         if(mPresenter.loginOut()){
                             startActivity(new Intent(getActivity(), LoginActivity.class));
                         }
+                        mLoginOutPopupWindow.hide();
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
