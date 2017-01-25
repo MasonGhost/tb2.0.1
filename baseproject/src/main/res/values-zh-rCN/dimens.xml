@@ -26,6 +26,8 @@
     <dimen name="userinfo_btn_height">60dp</dimen>
     <!--宽度为整个屏幕宽的按钮高度-->
     <dimen name="full_button_height">50dp</dimen>
+    <!--个人中心粉丝，关注高度-->
+    <dimen name="fans_container_height">60dp</dimen>
 
 
     <!-- 光标宽度 -->

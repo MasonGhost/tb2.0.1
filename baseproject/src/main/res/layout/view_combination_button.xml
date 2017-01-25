@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="@dimen/spacing_mid"
         tools:src="@mipmap/login_ico_closeye"/>
 
     <TextView
@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="@dimen/spacing_normal"
         android:layout_toRightOf="@id/iv_left_img"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_content_assist"
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="@dimen/spacing_mid"
         tools:src="@mipmap/login_ico_closeye"/>
 
     <TextView
@@ -43,7 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="@dimen/spacing_normal"
         android:layout_toLeftOf="@id/iv_right_img"
         android:paddingRight="@dimen/spacing_small"
         android:textColor="@color/normal_for_assist_text"
