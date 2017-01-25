@@ -41,4 +41,10 @@
         <attr name="text" format="reference|string"></attr>
 
     </declare-styleable>
+    <!--顶部错误提示指示器-->
+    <declare-styleable name="topTipView">
+        <!--文字-->
+        <attr name="text" format="reference|string"></attr>
+
+    </declare-styleable>
 </resources>
