@@ -7,6 +7,7 @@ import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
@@ -61,25 +62,26 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
         Subscription subscription = mRepository.login(mContext, phone, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<BaseJson<AuthBean>>() {
+                .subscribe(new BaseSubscribe<AuthBean>() {
                     @Override
-                    public void call(BaseJson<AuthBean> integerBaseJson) {
-                        if (integerBaseJson.isStatus()) {
-                            // 登录成功跳转
-                            mAuthRepository.saveAuthBean(integerBaseJson.getData());// 保存auth信息
-                            // 刷新im信息
-                            BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_IM_INFO));
-                            mRootView.setLoginState(true);
-                        } else {
-                            // 登录失败
-                            mRootView.setLoginState(false);
-                            mRootView.showErrorTips(integerBaseJson.getMessage());
-                        }
+                    protected void onSuccess(AuthBean data) {
+                        // 登录成功跳转
+                        mAuthRepository.saveAuthBean(data);// 保存auth信息
+                        // 刷新im信息
+                        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_IM_INFO));
+                        mRootView.setLoginState(true);
                     }
-                }, new Action1<Throwable>() {
+
                     @Override
-                    public void call(Throwable e) {
-                        LogUtils.e(e, "login_error" + e.getMessage());
+                    protected void onFailure(String message) {
+                        // 登录失败
+                        mRootView.setLoginState(false);
+                        mRootView.showErrorTips(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        LogUtils.e(throwable, "login_error" + throwable.getMessage());
                         mRootView.showErrorTips(mContext.getString(R.string.err_net_not_work));
                         mRootView.setLoginState(false);
                     }

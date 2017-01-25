@@ -31,11 +31,12 @@ public class LoginPresenterModule {
     }
 
     @Provides
-    LoginContract.Repository  provideLoginRepository(ServiceManager serviceManager) {
-        return new LoginRepository(serviceManager);
+    LoginContract.Repository provideLoginRepository(ServiceManager serviceManager, Application application) {
+        return new LoginRepository(serviceManager, application);
     }
+
     @Provides
-    IAuthRepository provideIAuthRepository(ServiceManager serviceManager, Application application){
-        return new AuthRepository(serviceManager,application);
+    IAuthRepository provideIAuthRepository(ServiceManager serviceManager, Application application) {
+        return new AuthRepository(serviceManager, application);
     }
 }

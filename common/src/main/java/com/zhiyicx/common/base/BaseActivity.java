@@ -62,7 +62,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends SkinBaseActi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ActivityHandler.getInstance().finishActivity(this);
+        ActivityHandler.getInstance().removeActivity(this);
         if (mUnbinder != Unbinder.EMPTY) mUnbinder.unbind();
         if (useEventBus())// 如果要使用 eventbus 请将此方法返回 true
             EventBus.getDefault().unregister(this);
