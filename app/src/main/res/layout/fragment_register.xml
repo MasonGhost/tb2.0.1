@@ -20,7 +20,7 @@
             android:maxLength="@integer/username_max_length"/>
     </LinearLayout>
 
-    <ImageView style="@style/style_divider_horizontal"/>
+    <ImageView style="@style/style_divider_horizontal_light"/>
 
     <RelativeLayout style="@style/style_edit_white_container">
 
@@ -77,7 +77,7 @@
 
     </RelativeLayout>
 
-    <ImageView style="@style/style_divider_horizontal"/>
+    <ImageView style="@style/style_divider_horizontal_light"/>
 
     <LinearLayout style="@style/style_edit_white_container">
 
@@ -93,7 +93,7 @@
             android:maxLength="@integer/vertiry_code_lenght"/>
     </LinearLayout>
 
-    <ImageView style="@style/style_divider_horizontal"/>
+    <ImageView style="@style/style_divider_horizontal_light"/>
 
     <LinearLayout
         style="@style/style_edit_white_container">
@@ -111,7 +111,6 @@
 
     </LinearLayout>
 
-    <ImageView style="@style/style_divider_horizontal"/>
 
 
     <include
