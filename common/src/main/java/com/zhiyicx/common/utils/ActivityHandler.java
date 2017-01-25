@@ -56,18 +56,17 @@ public class ActivityHandler {
     /**
      * 结束当前Activity（堆栈中最后一个压入的）
      */
-    public void finishActivity() {
+    public void removeActivity() {
         Activity activity = activityStack.lastElement();
-        finishActivity(activity);
+        removeActivity(activity);
     }
 
     /**
      * 结束指定的Activity
      */
-    public void finishActivity(Activity activity) {
+    public void removeActivity(Activity activity) {
         if (activity != null) {
             activityStack.remove(activity);
-            activity.finish();
             activity = null;
         }
     }
@@ -75,10 +74,10 @@ public class ActivityHandler {
     /**
      * 结束指定类名的Activity
      */
-    public void finishActivity(Class<?> cls) {
+    public void removeActivity(Class<?> cls) {
         for (Activity activity : activityStack) {
             if (activity.getClass().equals(cls)) {
-                finishActivity(activity);
+                removeActivity(activity);
             }
         }
     }
