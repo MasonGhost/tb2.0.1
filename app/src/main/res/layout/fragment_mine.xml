@@ -53,7 +53,7 @@
             android:src="@mipmap/ic_arrow_smallgrey"/>
     </RelativeLayout>
 
-    <ImageView style="@style/style_divider_horizontal"/>
+    <ImageView style="@style/style_divider_horizontal_light"/>
     <!--粉丝，关注-->
     <LinearLayout
         android:layout_width="match_parent"
@@ -81,7 +81,7 @@
                 android:text="粉丝"/>
         </LinearLayout>
 
-        <ImageView style="@style/style_divider_veitical"/>
+        <ImageView style="@style/style_divider_veitical_light"/>
         <!--关注-->
         <LinearLayout
             android:id="@+id/ll_follow_container"

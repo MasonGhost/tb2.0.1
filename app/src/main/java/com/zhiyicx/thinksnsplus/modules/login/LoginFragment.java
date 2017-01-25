@@ -10,9 +10,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.LoadingButton;
-import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.password.findpassword.FindPasswordActivity;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterActivity;
@@ -132,13 +130,13 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
 
     @Override
     public void setLoginState(boolean loginState) {
+        long a = System.currentTimeMillis();
         mBtLoginLogin.handleAnimation(false);
         mBtLoginLogin.setEnabled(true);
         // if (loginState) {
         Intent it = new Intent();
         it.setClass(getActivity(), HomeActivity.class);
         startActivity(it);
-        getActivity().finish();
         // }
     }
 

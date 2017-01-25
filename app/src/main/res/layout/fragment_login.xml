@@ -20,7 +20,7 @@
             />
     </LinearLayout>
 
-    <ImageView style="@style/style_divider_horizontal"/>
+    <ImageView style="@style/style_divider_horizontal_light"/>
 
     <LinearLayout
         style="@style/style_edit_white_container">
