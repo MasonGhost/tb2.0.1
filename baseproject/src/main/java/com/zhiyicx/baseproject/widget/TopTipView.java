@@ -36,7 +36,7 @@ public class TopTipView extends FrameLayout {
         if (attrs != null) {
             TypedArray array = context.obtainStyledAttributes(attrs,
                     R.styleable.topTipView);
-            mTipStr = array.getString(R.styleable.topTipView_text);
+            mTipStr = array.getString(R.styleable.topTipView_tipText);
             array.recycle();
         }
         mTvTipText.setText(mTipStr);
