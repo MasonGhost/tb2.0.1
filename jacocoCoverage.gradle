@@ -1,0 +1,76 @@
+apply plugin: 'jacoco'
+
+/**
+ * The correct path of the report is $rootProjectDir/app/build/reports/jacocoCoverage/index.html
+ * to run this task use: ./gradlew clean jacocoTestReport
+ */
+task jacocoAndroidTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) { //we use "debug" build type for test coverage (can be other)
+    group = "reporting"
+    description = "Generate unified Jacoco code coverage report"
+
+    reports {
+        xml.enabled = false
+        html.enabled = true
+        csv.enabled = false
+        xml.destination = "${buildDir}/reports/androidTest/jacocoTestReport.xml"
+        html.destination = "${buildDir}/reports/androidTest/jacoco"
+        csv.destination = "${buildDir}/reports/androidTest/jacocoTestReport.csv"
+    }
+
+    def fileFilter = [
+            '**/*Test*.*',
+            '**/AutoValue_*.*',
+            '**/*JavascriptBridge.class',
+            '**/R.class',
+            '**/R$*.class',
+            '**/Manifest*.*',
+            'android/**/*.*',
+            '**/BuildConfig.*',
+            '**/*$ViewBinder*.*',
+            '**/*$ViewInjector*.*',
+            '**/Lambda$*.class',
+            '**/Lambda.class',
+            '**/*Lambda.class',
+            '**/*Lambda*.class',
+            '**/*$InjectAdapter.class',
+            '**/*$ModuleAdapter.class',
+            '**/*$ViewInjector*.class',
+            '**/*_MembersInjector.class', //Dagger2 generated code
+            '*/*_MembersInjector*.*', //Dagger2 generated code
+            '**/*_*Factory*.*', //Dagger2 generated code
+            '*/*Component*.*', //Dagger2 generated code
+            '**/*Module*.*' //Dagger2 generated code
+    ]
+    def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter) //we use "debug" build type for test coverage (can be other)
+    def mainSrc = "${project.projectDir}/src/main/java"
+
+    sourceDirectories = files([mainSrc])
+    classDirectories = files([debugTree])
+    executionData = fileTree(dir: "$buildDir", includes: [
+            "jacoco/testDebugUnitTest.exec", //we use "debug" build type for test coverage (can be other)
+            "outputs/code-coverage/connected/*coverage.ec"
+    ])
+}
+
+task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports"    // exclude auto-generated classes and tests
+    def fileFilter = ['**/R.class',
+                      '**/R$*.class',
+                      '**/BuildConfig.*',
+                      '**/Manifest*.*',
+                      'android/**/*.*']
+    def debugTree = fileTree(dir: "${project.buildDir}/intermediates/classes/debug", excludes: fileFilter)
+    def mainSrc = "${project.projectDir}/src/main/java"
+    sourceDirectories = files([mainSrc])
+    classDirectories = files([debugTree])
+    additionalSourceDirs = files(["${buildDir}/generated/source/buildConfig/debug", "${buildDir}/generated/source/r/debug"])
+    executionData = fileTree(dir: project.projectDir, includes: ['**/*.exec', '**/*.ec'])
+    reports {
+        xml.enabled = true
+        xml.destination = "${buildDir}/test/jacocoTestReport.xml"
+        csv.enabled = false
+        html.enabled = true
+        html.destination = "${buildDir}/reports/test/jacoco"
+    }
+}
