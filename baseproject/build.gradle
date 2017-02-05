@@ -53,6 +53,11 @@ dependencies {
         exclude module: 'support-annotations'
     }
     testCompile testDependences.robolectric
+    testCompile "org.mockito:mockito-core:1.9.5"
+    androidTestCompile "org.mockito:mockito-core:1.9.5"
+    androidTestCompile 'com.google.dexmaker:dexmaker:1.1'
+    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.1'
+
 
     apt dataDependences.daggerCompiler
     // Project

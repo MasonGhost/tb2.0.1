@@ -26,6 +26,7 @@ public abstract class TSWebFragment extends TSFragment {
     private ProgressBar mProgressBar;
     private boolean mIsNeedProgress = true;// 是否需要进度条
 
+
     WebViewClient webViewClient = new WebViewClient() {
 
         /**
@@ -164,10 +165,26 @@ public abstract class TSWebFragment extends TSFragment {
     /**
      * 是否需要进度条
      *
-     * @param isNeedProgress
+     * @param needProgress
      */
-    public void showProgress(boolean isNeedProgress) {
-        mIsNeedProgress = isNeedProgress;
+    public void setNeedProgress(boolean needProgress) {
+        mIsNeedProgress = needProgress;
+    }
+
+    /**
+     * @return
+     */
+    public boolean isNeedProgress() {
+        return mIsNeedProgress;
+    }
+
+    /**
+     * 获取当前进度
+     *
+     * @return
+     */
+    public int getCurrentProgress() {
+        return mProgressBar.getProgress();
     }
 
     @Override
