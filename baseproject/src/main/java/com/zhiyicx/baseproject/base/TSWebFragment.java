@@ -2,6 +2,7 @@ package com.zhiyicx.baseproject.base;
 
 import android.graphics.Bitmap;
 import android.os.Message;
+import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.GeolocationPermissions;
 import android.webkit.WebChromeClient;
@@ -68,11 +69,18 @@ public abstract class TSWebFragment extends TSFragment {
     };
 
     @Override
-    protected void initData() {
-        initWebView();
+    protected void initView(View rootView) {
+        mWebView = initWebView(rootView);
     }
 
-    private void initWebView() {
+    @Override
+    protected void initData() {
+        initWebViewData();
+    }
+
+    protected abstract WebView initWebView(View rootView);
+
+    private void initWebViewData() {
         WebSettings mWebSettings = mWebView.getSettings();
         mWebSettings.setSupportZoom(true);
         mWebSettings.setLoadWithOverviewMode(true);

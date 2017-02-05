@@ -57,9 +57,10 @@ public class AboutUsFragment extends TSWebFragment {
         return getString(R.string.about_us);
     }
 
+
     @Override
-    protected void initView(View rootView) {
-        mWebView = (WebView) rootView.findViewById(R.id.wv_about_us);
+    protected WebView initWebView(View rootView) {
+        return (WebView)rootView.findViewById(R.id.wv_about_us);
     }
 
     /**
@@ -76,4 +77,6 @@ public class AboutUsFragment extends TSWebFragment {
         }
         return false;
     }
+
+
 }
