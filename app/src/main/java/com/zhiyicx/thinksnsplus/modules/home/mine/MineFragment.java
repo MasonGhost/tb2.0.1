@@ -10,13 +10,13 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
-import com.zhiyicx.baseproject.widget.infohint.ShowHintInfo;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
+import com.zhiyicx.thinksnsplus.widget.LoadingDialogUtils;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -140,7 +140,7 @@ public class MineFragment extends TSFragment {
                 });
                 break;
             case R.id.bt_gold:
-                ShowHintInfo.showSendError();
+                LoadingDialogUtils.showStateError(getContext());
                 break;
             case R.id.bt_suggestion:
                 break;
