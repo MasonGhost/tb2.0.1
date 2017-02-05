@@ -26,6 +26,7 @@
 
         <LinearLayout
             style="@style/style_edit_white_container"
+            android:layout_toStartOf="@+id/rl_send_vertify_code_container"
             android:layout_toLeftOf="@+id/rl_send_vertify_code_container">
 
             <TextView
@@ -35,7 +36,6 @@
             <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
                 android:id="@+id/et_regist_phone"
                 style="@style/style_edit"
-                android:layout_centerVertical="true"
                 android:hint="@string/phone_number_input_hint"
                 android:inputType="phone"
                 android:maxLength="@integer/phone_number_length"/>
@@ -46,7 +46,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:paddingRight="@dimen/spacing_mid"
+            android:paddingLeft="@dimen/spacing_mid"
             >
 
             <Button

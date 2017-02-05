@@ -4,7 +4,7 @@
     <dimen name="toolbar_height">44dp</dimen>
     <dimen name="toolbar_padding_left">15dp</dimen>
     <dimen name="toolbar_padding_right">15dp</dimen>
-    <dimen name="toolbar_left_text_size">14sp</dimen>
+    <dimen name="toolbar_left_text_size">@dimen/size_sub_title</dimen>
     <dimen name="toolbar_center_text_size">@dimen/size_primary_title</dimen>
     <dimen name="toolbar_right_text_size">@dimen/size_sub_title</dimen>
     <!-- custom navigationbar -->
@@ -28,8 +28,8 @@
     <dimen name="full_button_height">50dp</dimen>
     <!--个人中心粉丝，关注高度-->
     <dimen name="fans_container_height">60dp</dimen>
-
-
+    <!--进度条高度-->
+    <dimen name="pb_height">2dp</dimen>
     <!-- 光标宽度 -->
     <dimen name="cursor_with">1dp</dimen>
 

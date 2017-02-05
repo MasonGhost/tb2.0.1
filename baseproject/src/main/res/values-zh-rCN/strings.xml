@@ -6,6 +6,7 @@
     <string name="data_load_error">数据加载失败</string>
     <!-- 通用 -->
     <string name="cancel">取消</string>
+    <string name="close">关闭</string>
     <string name="seconds">秒后重发</string>
     <string name="username">用户名</string>
     <string name="password">密码</string>

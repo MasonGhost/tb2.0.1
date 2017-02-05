@@ -2,9 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.settings.aboutus;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.KeyEvent;
 import android.view.View;
-import android.webkit.WebView;
 
 import com.zhiyicx.baseproject.base.TSWebFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -38,42 +36,9 @@ public class AboutUsFragment extends TSWebFragment {
     }
 
     @Override
-    protected int getBodyLayoutId() {
-        return R.layout.fragment_about_us;
-    }
-
-    @Override
-    protected boolean showToolBarDivider() {
-        return true;
-    }
-
-    @Override
-    protected int setToolBarBackgroud() {
-        return R.color.white;
-    }
-
-    @Override
     protected String setCenterTitle() {
         return getString(R.string.about_us);
     }
 
-    @Override
-    protected void initView(View rootView) {
-        mWebView = (WebView) rootView.findViewById(R.id.wv_about_us);
-    }
 
-    /**
-     * 覆盖系统的回退键
-     *
-     * @param keyCode
-     * @param event
-     * @return
-     */
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && mWebView.canGoBack()) {
-            mWebView.goBack();
-            return true;
-        }
-        return false;
-    }
 }

@@ -2,14 +2,27 @@ package com.zhiyicx.baseproject.base;
 
 import android.graphics.Bitmap;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
+import android.view.KeyEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.GeolocationPermissions;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.utils.FileUtils;
+
+import java.util.concurrent.TimeUnit;
+
+import rx.functions.Action1;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Describe H5 基类
@@ -20,6 +33,11 @@ import com.zhiyicx.common.utils.FileUtils;
 
 public abstract class TSWebFragment extends TSFragment {
     protected WebView mWebView;
+    protected TextView mCloseView;
+    private ProgressBar mProgressBar;
+    private boolean mIsNeedProgress = true;// 是否需要进度条
+
+
     WebViewClient webViewClient = new WebViewClient() {
 
         /**
@@ -39,24 +57,44 @@ public abstract class TSWebFragment extends TSFragment {
         //<uses-permission android:name="android.permission.INTERNET"/>
         //<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
         //<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
+        /**
+         * 网站图标回调
+         * @param view
+         * @param icon
+         */
         @Override
         public void onReceivedIcon(WebView view, Bitmap icon) {
             super.onReceivedIcon(view, icon);
         }
 
+        /**
+         * HTML5定位
+         */
         @Override
         public void onGeolocationPermissionsHidePrompt() {
             super.onGeolocationPermissionsHidePrompt();
         }
 
+        /**
+         * HTML5定位
+         * @param origin
+         * @param callback
+         */
         @Override
         public void onGeolocationPermissionsShowPrompt(final String origin, final GeolocationPermissions.Callback callback) {
             callback.invoke(origin, true, false);//注意个函数，第二个参数就是是否同意定位权限，第三个是是否希望内核记住
             super.onGeolocationPermissionsShowPrompt(origin, callback);
         }
-        //=========HTML5定位==========================================================
 
-        //=========多窗口的问题==========================================================
+        /**
+         * 多窗口的问题
+         * @param view
+         * @param isDialog
+         * @param isUserGesture
+         * @param resultMsg
+         * @return
+         */
         @Override
         public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
             WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
@@ -64,15 +102,94 @@ public abstract class TSWebFragment extends TSFragment {
             resultMsg.sendToTarget();
             return true;
         }
-        //=========多窗口的问题==========================================================
+
+        /**
+         * 进度条
+         * @param view
+         * @param newProgress
+         */
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            setProgress(newProgress);
+            super.onProgressChanged(view, newProgress);
+        }
+
+        private void setProgress(int newProgress) {
+            if (!mIsNeedProgress) {
+                return;
+            }
+            if (newProgress == getResources().getInteger(R.integer.progressbar_max)) {
+                mProgressBar.setVisibility(View.GONE);
+            } else {
+                if (View.GONE == mProgressBar.getVisibility()) {
+                    mProgressBar.setVisibility(View.VISIBLE);
+                }
+                mProgressBar.setProgress(newProgress);
+            }
+        }
     };
 
     @Override
-    protected void initData() {
-        initWebView();
+    protected int getToolBarLayoutId() {
+        return R.layout.toolbar_for_web;
     }
 
-    private void initWebView() {
+    @Override
+    protected int getBodyLayoutId() {
+        return R.layout.fragme_ts_web;
+    }
+
+    @Override
+    protected void initDefaultToolBar(View toolBarContainer) {
+        super.initDefaultToolBar(toolBarContainer);
+        mCloseView = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_left_right);
+        mCloseView.setVisibility(View.INVISIBLE);
+        mCloseView.setTextColor(ContextCompat.getColor(getContext(),android.R.color.black));
+        mCloseView.setText(getString(R.string.close));
+        RxView.clicks(mCloseView)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        getActivity().finish();
+                    }
+                });
+    }
+
+    @Override
+    protected int setToolBarBackgroud() {
+        return R.color.white;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+
+    @Override
+    protected void setLeftClick() {
+        if (mWebView.canGoBack()) {
+            mWebView.goBack();
+            mCloseView.setVisibility(View.VISIBLE);
+        } else {
+            super.setLeftClick();
+        }
+    }
+
+    @Override
+    protected void initView(View rootView) {
+        mWebView = (WebView) rootView.findViewById(R.id.wv_about_us);
+        mProgressBar = (ProgressBar) rootView.findViewById(R.id.pb_bar);
+    }
+
+
+    @Override
+    protected void initData() {
+        initWebViewData();
+    }
+
+    private void initWebViewData() {
         WebSettings mWebSettings = mWebView.getSettings();
         mWebSettings.setSupportZoom(true);
         mWebSettings.setLoadWithOverviewMode(true);
@@ -95,8 +212,33 @@ public abstract class TSWebFragment extends TSFragment {
      *
      * @param url 网页地址
      */
-    protected void loadUrl(String url) {
+    public void loadUrl(String url) {
         mWebView.loadUrl(url);
+    }
+
+    /**
+     * 是否需要进度条
+     *
+     * @param needProgress
+     */
+    public void setNeedProgress(boolean needProgress) {
+        mIsNeedProgress = needProgress;
+    }
+
+    /**
+     * @return
+     */
+    public boolean isNeedProgress() {
+        return mIsNeedProgress;
+    }
+
+    /**
+     * 获取当前进度
+     *
+     * @return
+     */
+    public int getCurrentProgress() {
+        return mProgressBar.getProgress();
     }
 
     @Override
@@ -148,5 +290,21 @@ public abstract class TSWebFragment extends TSFragment {
             mWebView.destroy();
             mWebView = null;
         }
+    }
+
+    /**
+     * 覆盖系统的回退键
+     *
+     * @param keyCode
+     * @param event
+     * @return
+     */
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && mWebView.canGoBack()) {
+            mWebView.goBack();
+            mCloseView.setVisibility(View.VISIBLE);
+            return true;
+        }
+        return false;
     }
 }

@@ -4,36 +4,21 @@ import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
-import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.AcitivityTest;
-import com.zhiyicx.thinksnsplus.modules.MyViewMatchers;
 import com.zhiyicx.thinksnsplus.modules.RxUnitTestTools;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoFragment;
-import com.zhiyicx.thinksnsplus.modules.register.RegisterActivity;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.action.ViewActions.typeText;
+import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.RootMatchers.isDialog;
-import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static junit.framework.Assert.assertTrue;
-import static android.support.test.espresso.action.ViewActions.replaceText;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.core.Is.is;
 
 /**
  * @author LiuChao
@@ -103,7 +88,7 @@ public class UserInfoTest extends AcitivityTest {
 
     @Test
     public void changeCity() throws Exception {
-        findViewById(R.id.ll_city_container).perform(click());
+        findViewById(R.id.ll_city_container).perform(click(),closeSoftKeyboard());
         findViewById(com.bigkoo.pickerview.R.id.btnSubmit).perform(click());
         mRightBtn.check(matches(isEnabled()));
     }
