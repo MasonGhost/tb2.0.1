@@ -13,7 +13,8 @@ import com.zhiyicx.common.base.BaseApplication;
 
 
 public class ToastUtils {
-    private static Toast toast;
+    private static Toast toastText;
+    private static Toast toastView;
 
     public static void showToast(int resID) {
         showToast(BaseApplication.getContext(), Toast.LENGTH_SHORT, resID);
@@ -69,13 +70,13 @@ public class ToastUtils {
      */
     public static void showToast(final Context ctx, final int duration,
                                  final String text) {
-        if (toast != null) {
-            toast.setText(text);
-            toast.show();
+        if (toastText != null) {
+            toastText.setText(text);
+            toastText.show();
         } else {
-            toast = Toast.makeText(ctx, text, duration);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
+            toastText = Toast.makeText(ctx, text, duration);
+            toastText.setGravity(Gravity.CENTER, 0, 0);
+            toastText.show();
         }
     }
 
@@ -83,16 +84,16 @@ public class ToastUtils {
      * toast一个自定义布局
      */
     public static void showToast(View v, Context context) {
-        if (toast != null) {
-            toast.setView(v);
-            toast.setDuration(Toast.LENGTH_SHORT);
-            toast.show();
+        if (toastView != null) {
+            toastView.setView(v);
+            toastView.setDuration(Toast.LENGTH_SHORT);
+            toastView.show();
         } else {
-            toast = new Toast(context);
-            toast.setView(v);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.setDuration(Toast.LENGTH_SHORT);
-            toast.show();
+            toastView = Toast.makeText(context, "", Toast.LENGTH_SHORT);
+            toastView.setView(v);
+            toastView.setGravity(Gravity.CENTER, 0, 0);
+            toastView.setDuration(Toast.LENGTH_SHORT);
+            toastView.show();
         }
     }
 
