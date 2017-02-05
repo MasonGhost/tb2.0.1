@@ -9,7 +9,9 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
+import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.utils.FileUtils;
 
 /**
@@ -21,6 +23,8 @@ import com.zhiyicx.common.utils.FileUtils;
 
 public abstract class TSWebFragment extends TSFragment {
     protected WebView mWebView;
+    private ProgressBar mProgressBar;
+
     WebViewClient webViewClient = new WebViewClient() {
 
         /**
@@ -40,24 +44,44 @@ public abstract class TSWebFragment extends TSFragment {
         //<uses-permission android:name="android.permission.INTERNET"/>
         //<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
         //<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
+        /**
+         * 网站图标回调
+         * @param view
+         * @param icon
+         */
         @Override
         public void onReceivedIcon(WebView view, Bitmap icon) {
             super.onReceivedIcon(view, icon);
         }
 
+        /**
+         * HTML5定位
+         */
         @Override
         public void onGeolocationPermissionsHidePrompt() {
             super.onGeolocationPermissionsHidePrompt();
         }
 
+        /**
+         * HTML5定位
+         * @param origin
+         * @param callback
+         */
         @Override
         public void onGeolocationPermissionsShowPrompt(final String origin, final GeolocationPermissions.Callback callback) {
             callback.invoke(origin, true, false);//注意个函数，第二个参数就是是否同意定位权限，第三个是是否希望内核记住
             super.onGeolocationPermissionsShowPrompt(origin, callback);
         }
-        //=========HTML5定位==========================================================
 
-        //=========多窗口的问题==========================================================
+        /**
+         * 多窗口的问题
+         * @param view
+         * @param isDialog
+         * @param isUserGesture
+         * @param resultMsg
+         * @return
+         */
         @Override
         public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
             WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
@@ -65,20 +89,41 @@ public abstract class TSWebFragment extends TSFragment {
             resultMsg.sendToTarget();
             return true;
         }
-        //=========多窗口的问题==========================================================
+
+        /**
+         * 进度条
+         * @param view
+         * @param newProgress
+         */
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            if (newProgress == 100) {
+                mProgressBar.setVisibility(View.GONE);
+            } else {
+                if (View.GONE == mProgressBar.getVisibility()) {
+                    mProgressBar.setVisibility(View.VISIBLE);
+                }
+                mProgressBar.setProgress(newProgress);
+            }
+            super.onProgressChanged(view, newProgress);
+        }
     };
 
     @Override
+    protected int getBodyLayoutId() {
+        return R.layout.fragme_ts_web;
+    }
+
+    @Override
     protected void initView(View rootView) {
-        mWebView = initWebView(rootView);
+        mWebView = (WebView) rootView.findViewById(R.id.wv_about_us);
+        mProgressBar = (ProgressBar) rootView.findViewById(R.id.pb_bar);
     }
 
     @Override
     protected void initData() {
         initWebViewData();
     }
-
-    protected abstract WebView initWebView(View rootView);
 
     private void initWebViewData() {
         WebSettings mWebSettings = mWebView.getSettings();

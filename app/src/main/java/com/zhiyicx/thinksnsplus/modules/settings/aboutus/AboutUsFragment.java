@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.KeyEvent;
 import android.view.View;
-import android.webkit.WebView;
 
 import com.zhiyicx.baseproject.base.TSWebFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -37,10 +36,6 @@ public class AboutUsFragment extends TSWebFragment {
         loadUrl(mUrl);
     }
 
-    @Override
-    protected int getBodyLayoutId() {
-        return R.layout.fragment_about_us;
-    }
 
     @Override
     protected boolean showToolBarDivider() {
@@ -55,12 +50,6 @@ public class AboutUsFragment extends TSWebFragment {
     @Override
     protected String setCenterTitle() {
         return getString(R.string.about_us);
-    }
-
-
-    @Override
-    protected WebView initWebView(View rootView) {
-        return (WebView)rootView.findViewById(R.id.wv_about_us);
     }
 
     /**

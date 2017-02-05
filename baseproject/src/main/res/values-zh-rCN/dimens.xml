@@ -28,8 +28,8 @@
     <dimen name="full_button_height">50dp</dimen>
     <!--个人中心粉丝，关注高度-->
     <dimen name="fans_container_height">60dp</dimen>
-
-
+    <!--进度条高度-->
+    <dimen name="pb_height">4dp</dimen>
     <!-- 光标宽度 -->
     <dimen name="cursor_with">1dp</dimen>
 
