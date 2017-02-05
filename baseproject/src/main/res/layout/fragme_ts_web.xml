@@ -2,7 +2,6 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent">
 
-
     <WebView
         android:id="@+id/wv_about_us"
         android:layout_width="match_parent"
@@ -14,6 +13,6 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="@dimen/pb_height"
-        android:max="100"
+        android:max="@integer/progressbar_max"
         android:progressDrawable="@drawable/pb_webview_style"/>
 </FrameLayout>

@@ -29,10 +29,14 @@
     <integer name="show_comment_input_size">20</integer>
     <!-- 线性输入框的最大行数 -->
     <integer name="max_lines">4</integer>
-    <!--简介最多输入字符数量-->
+    <!-- 简介最多输入字符数量 -->
     <integer name="introduce_input_max_size">50</integer>
-    <!--简介输入到多少字符的时候显示提示 -->
+    <!-- 简介输入到多少字符的时候显示提示 -->
     <integer name="show_introduce_input_size">25</integer>
 
+
+    <!--#########################################      浏览器相关       ################################-->
+    <!-- 浏览器最大长度-->
+    <integer name="progressbar_max">100</integer>
 
 </resources>

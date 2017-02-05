@@ -24,6 +24,7 @@ import com.zhiyicx.common.utils.FileUtils;
 public abstract class TSWebFragment extends TSFragment {
     protected WebView mWebView;
     private ProgressBar mProgressBar;
+    private boolean mIsNeedProgress = true;// 是否需要进度条
 
     WebViewClient webViewClient = new WebViewClient() {
 
@@ -97,7 +98,15 @@ public abstract class TSWebFragment extends TSFragment {
          */
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
-            if (newProgress == 100) {
+            setProgress(newProgress);
+            super.onProgressChanged(view, newProgress);
+        }
+
+        private void setProgress(int newProgress) {
+            if (!mIsNeedProgress) {
+                return;
+            }
+            if (newProgress == getResources().getInteger(R.integer.progressbar_max)) {
                 mProgressBar.setVisibility(View.GONE);
             } else {
                 if (View.GONE == mProgressBar.getVisibility()) {
@@ -105,7 +114,6 @@ public abstract class TSWebFragment extends TSFragment {
                 }
                 mProgressBar.setProgress(newProgress);
             }
-            super.onProgressChanged(view, newProgress);
         }
     };
 
@@ -119,6 +127,7 @@ public abstract class TSWebFragment extends TSFragment {
         mWebView = (WebView) rootView.findViewById(R.id.wv_about_us);
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.pb_bar);
     }
+
 
     @Override
     protected void initData() {
@@ -148,8 +157,17 @@ public abstract class TSWebFragment extends TSFragment {
      *
      * @param url 网页地址
      */
-    protected void loadUrl(String url) {
+    public void loadUrl(String url) {
         mWebView.loadUrl(url);
+    }
+
+    /**
+     * 是否需要进度条
+     *
+     * @param isNeedProgress
+     */
+    public void showProgress(boolean isNeedProgress) {
+        mIsNeedProgress = isNeedProgress;
     }
 
     @Override
