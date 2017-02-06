@@ -1,4 +1,4 @@
-2017年2月6日 16:59:29
+2017年2月6日 17:23:00
 # 基础浏览器说明
 
 ## 1. 概述
@@ -18,18 +18,24 @@ public class AboutUsFragment extends TSWebFragment {
 ...
 }
 // 或者
-TSWebFragment mTSWebFragment=new TSWebFragment();
+TSWebFragment mTSWebFragment=new TSWebFragment(){
+    @Override
+    protected void onWebImageClick(String clickUrl, List<String> images) {
+
+    }
+
+    @Override
+    protected void onWebImageLongClick(String longClickUrl) {
+
+    }
+};
 
 ```
 2. 显示隐藏进度
 ```java
 mTSWebFragment.setNeedProgress(boolean needProgress);
 ```
-3. 单击和长按图片的响应事件
-```java
-mTSWebFragment.setNeedProgress(boolean needProgress);
-```
 4. 修改缺省图
 ```java
-mTSWebFragment.setNeedProgress(boolean needProgress);
+mTSWebFragment.setTipImage(int resId);
 ```

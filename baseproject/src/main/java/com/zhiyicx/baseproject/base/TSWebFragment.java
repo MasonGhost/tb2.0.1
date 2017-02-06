@@ -16,7 +16,6 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.R;
@@ -41,7 +40,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 
-public class TSWebFragment extends TSFragment {
+public abstract class TSWebFragment extends TSFragment {
     // 获取img标签正则
     private static final String IMAGE_URL_TAG = "<img.*src=(.*?)[^>]*?>";
     // 获取src路径的正则
@@ -397,50 +396,6 @@ public class TSWebFragment extends TSFragment {
         return false;
     }
 
-    /**
-     * 多窗口的问题
-     */
-    private void newWin(WebSettings mWebSettings) {
-        //html中的_bank标签就是新建窗口打开，有时会打不开，需要加以下
-        //然后 复写 WebChromeClient的onCreateWindow方法
-        mWebSettings.setSupportMultipleWindows(false);
-        mWebSettings.setJavaScriptCanOpenWindowsAutomatically(true);
-    }
-
-    /**
-     * HTML5数据存储
-     */
-    private void saveData(WebSettings mWebSettings) {
-        //有时候网页需要自己保存一些关键数据,Android WebView 需要自己设置
-        mWebSettings.setDomStorageEnabled(true);
-        mWebSettings.setDatabaseEnabled(true);
-        mWebSettings.setAppCacheEnabled(true);
-        if(NetUtils.netIsConnected(getContext())){
-            mWebSettings.setCacheMode(WebSettings.LOAD_DEFAULT);//网络不可用时只使用缓存
-        }else {
-            mWebSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);//网络不可用时只使用缓存
-        }
-        String appCachePath = FileUtils.getCacheFilePath(getContext());
-        mWebSettings.setAppCachePath(appCachePath);
-    }
-
-    /**
-     * 响应长按点击事件
-     *
-     * @param v
-     */
-    private void setWebImageLongClickListener(View v) {
-        if (v instanceof WebView) {
-            WebView.HitTestResult result = ((WebView) v).getHitTestResult();
-            if (result != null) {
-                int type = result.getType();
-                if (type == WebView.HitTestResult.IMAGE_TYPE || type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE) {
-                    mLongClickUrl = result.getExtra();
-                    onWebImageLongClick(mLongClickUrl);
-                }
-            }
-        }
-    }
 
     /**
      * 网页图片单击
@@ -448,17 +403,55 @@ public class TSWebFragment extends TSFragment {
      * @param clickUrl 单击的当前图片地址
      * @param images   页面中所有的图片地址
      */
-    protected void onWebImageClick(String clickUrl, List<String> images) {
-        Toast.makeText(getActivity(), "单击图片", Toast.LENGTH_SHORT).show();
-    }
+    protected abstract void onWebImageClick(String clickUrl, List<String> images);
 
     /**
      * 网页图片长按
      *
      * @param longClickUrl 长按当前图片地址
      */
-    protected void onWebImageLongClick(String longClickUrl) {
-        Toast.makeText(getActivity(), "长按图片", Toast.LENGTH_SHORT).show();
+    protected abstract void onWebImageLongClick(String longClickUrl);
+
+    /**
+     *  设置网页错误提示图片
+     * @param resId
+     */
+    public void setTipImage( int resId) {
+        mIvTip.setImageResource(resId);
+    }
+
+    /***
+     * 获取页面所有图片对应的地址对象，
+     * 例如 <img src="http://sc1.hao123img.com/data/f44d0aab7bc35b8767de3c48706d429e" />
+     *
+     * @param html WebView 加载的 html 文本
+     * @return
+     */
+    public List<String> getAllImageUrlFromHtml(String html) {
+        Matcher matcher = Pattern.compile(IMAGE_URL_TAG).matcher(html);
+        List<String> listImgUrl = new ArrayList<String>();
+        while (matcher.find()) {
+            listImgUrl.add(matcher.group());
+        }
+        //从图片对应的地址对象中解析出 src 标签对应的内容
+        return getAllImageUrlFormSrcObject(listImgUrl);
+    }
+
+    /***
+     * 从图片对应的地址对象中解析出 src 标签对应的内容,即 url
+     * 例如 "http://sc1.hao123img.com/data/f44d0aab7bc35b8767de3c48706d429e"
+     *
+     * @param listImageUrl 图片地址对象，
+     *                     例如 <img src="http://sc1.hao123img.com/data/f44d0aab7bc35b8767de3c48706d429e" />
+     */
+    private List<String> getAllImageUrlFormSrcObject(List<String> listImageUrl) {
+        for (String image : listImageUrl) {
+            Matcher matcher = Pattern.compile(IMAGE_URL_CONTENT).matcher(image);
+            while (matcher.find()) {
+                mImageList.add(matcher.group().substring(0, matcher.group().length() - 1));
+            }
+        }
+        return mImageList;
     }
 
     /**
@@ -489,38 +482,48 @@ public class TSWebFragment extends TSFragment {
                 "})()");
     }
 
-    /***
-     * 获取页面所有图片对应的地址对象，
-     * 例如 <img src="http://sc1.hao123img.com/data/f44d0aab7bc35b8767de3c48706d429e" />
-     *
-     * @param html WebView 加载的 html 文本
-     * @return
+    /**
+     * 多窗口的问题
      */
-    public List<String> getAllImageUrlFromHtml(String html) {
-        Matcher matcher = Pattern.compile(IMAGE_URL_TAG).matcher(html);
-        List<String> listImgUrl = new ArrayList<String>();
-        while (matcher.find()) {
-            listImgUrl.add(matcher.group());
-        }
-        //从图片对应的地址对象中解析出 src 标签对应的内容
-        return  getAllImageUrlFormSrcObject(listImgUrl);
+    private void newWin(WebSettings mWebSettings) {
+        //html中的_bank标签就是新建窗口打开，有时会打不开，需要加以下
+        //然后 复写 WebChromeClient的onCreateWindow方法
+        mWebSettings.setSupportMultipleWindows(false);
+        mWebSettings.setJavaScriptCanOpenWindowsAutomatically(true);
     }
 
-    /***
-     * 从图片对应的地址对象中解析出 src 标签对应的内容,即 url
-     * 例如 "http://sc1.hao123img.com/data/f44d0aab7bc35b8767de3c48706d429e"
-     *
-     * @param listImageUrl 图片地址对象，
-     *                     例如 <img src="http://sc1.hao123img.com/data/f44d0aab7bc35b8767de3c48706d429e" />
+    /**
+     * HTML5数据存储
      */
-    private List<String> getAllImageUrlFormSrcObject(List<String> listImageUrl) {
-        for (String image : listImageUrl) {
-            Matcher matcher = Pattern.compile(IMAGE_URL_CONTENT).matcher(image);
-            while (matcher.find()) {
-                mImageList.add(matcher.group().substring(0, matcher.group().length() - 1));
+    private void saveData(WebSettings mWebSettings) {
+        //有时候网页需要自己保存一些关键数据,Android WebView 需要自己设置
+        mWebSettings.setDomStorageEnabled(true);
+        mWebSettings.setDatabaseEnabled(true);
+        mWebSettings.setAppCacheEnabled(true);
+        if (NetUtils.netIsConnected(getContext())) {
+            mWebSettings.setCacheMode(WebSettings.LOAD_DEFAULT);//网络不可用时只使用缓存
+        } else {
+            mWebSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);//网络不可用时只使用缓存
+        }
+        String appCachePath = FileUtils.getCacheFilePath(getContext());
+        mWebSettings.setAppCachePath(appCachePath);
+    }
+
+    /**
+     * 响应长按点击事件
+     *
+     * @param v
+     */
+    private void setWebImageLongClickListener(View v) {
+        if (v instanceof WebView) {
+            WebView.HitTestResult result = ((WebView) v).getHitTestResult();
+            if (result != null) {
+                int type = result.getType();
+                if (type == WebView.HitTestResult.IMAGE_TYPE || type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE) {
+                    mLongClickUrl = result.getExtra();
+                    onWebImageLongClick(mLongClickUrl);
+                }
             }
         }
-        return mImageList;
     }
-
 }

@@ -16,6 +16,7 @@ public class AboutUsActivity extends TSActivity<RegisterPresenter, AboutUsFragme
 
     @Override
     protected void componentInject() {
+
     }
 
     @Override
