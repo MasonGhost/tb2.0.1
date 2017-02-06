@@ -96,7 +96,6 @@ public class TSWebFragment extends TSFragment {
                 //解析 HTML
                 parseHTML(view);
             }
-            System.out.println("onPageFinished     url = " + url);
         }
 
         @Override
@@ -497,15 +496,14 @@ public class TSWebFragment extends TSFragment {
      * @param html WebView 加载的 html 文本
      * @return
      */
-    private List<String> getAllImageUrlFromHtml(String html) {
+    public List<String> getAllImageUrlFromHtml(String html) {
         Matcher matcher = Pattern.compile(IMAGE_URL_TAG).matcher(html);
         List<String> listImgUrl = new ArrayList<String>();
         while (matcher.find()) {
             listImgUrl.add(matcher.group());
         }
         //从图片对应的地址对象中解析出 src 标签对应的内容
-        getAllImageUrlFormSrcObject(listImgUrl);
-        return listImgUrl;
+        return  getAllImageUrlFormSrcObject(listImgUrl);
     }
 
     /***
