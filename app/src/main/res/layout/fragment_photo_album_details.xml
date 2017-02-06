@@ -27,7 +27,7 @@
 
         <Button
             android:id="@+id/bt_complete"
-            android:layout_width="@dimen/button_send_with"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/button_send_height"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
