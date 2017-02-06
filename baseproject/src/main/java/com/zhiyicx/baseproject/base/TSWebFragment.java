@@ -4,14 +4,15 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Message;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.GeolocationPermissions;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,9 +39,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 
-public abstract class TSWebFragment extends TSFragment {
-
-
+public class TSWebFragment extends TSFragment {
     // 获取img标签正则
     private static final String IMAGE_URL_TAG = "<img.*src=(.*?)[^>]*?>";
     // 获取src路径的正则
@@ -49,12 +48,15 @@ public abstract class TSWebFragment extends TSFragment {
     protected WebView mWebView;
     protected TextView mCloseView;
     private ProgressBar mProgressBar;
+    private ImageView mIvTip;// 错误提示
+
+    private String mUrl = "";// 网页地址
     private boolean mIsNeedProgress = true;// 是否需要进度条
-    private List<String> listImgSrc = new ArrayList<>();// 网页内图片地址
-    private String longClickUrl;// 长按图片的地址
+    private List<String> mImageList = new ArrayList<>();// 网页内图片地址
+    private String mLongClickUrl;// 长按图片的地址
+    private boolean mIsLoadError;// 加载错误
 
-    WebViewClient webViewClient = new WebViewClient() {
-
+    WebViewClient mWebViewClient = new WebViewClient() {
         /**
          * 多页面在同一个 WebView 中打开，就是不新建 activity 或者调用系统浏览器打开
          */
@@ -64,28 +66,52 @@ public abstract class TSWebFragment extends TSFragment {
             return true;
         }
 
-        // 网页加载结束
+        /**
+         * 网页开始加载
+         * @param view
+         * @param url
+         * @param favicon
+         */
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+            mWebView.setEnabled(false);// 当加载网页的时候将网页进行隐藏
+        }
+
+        /**
+         *   网页加载结束
+         */
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            // web 页面加载完成，添加监听图片的点击 js 函数
-            setImageClickListner(view);
-            //解析 HTML
-            parseHTML(view);
-            System.out.println("url = " + url);
+            if (mIsLoadError) {
+
+            } else {
+                mWebView.setEnabled(true);
+                // web 页面加载完成，添加监听图片的点击 js 函数
+                setImageClickListner(view);
+                //解析 HTML
+                parseHTML(view);
+            }
+            System.out.println("onPageFinished     url = " + url);
         }
 
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-            Toast.makeText(getActivity(), "请检查您的网络设置", Toast.LENGTH_SHORT).show();
+            System.out.println("errorCode = " + errorCode);
+            mIsLoadError = true;
+            super.onReceivedError(view, errorCode, description, failingUrl);
         }
     };
 
-    // js 通信接口，定义供 JavaScript 调用的交互接口
-    private class MyJavascriptInterface {
+    /**
+     * js 通信接口处理图片单击，定义供 JavaScript 调用的交互接口
+     */
+
+    private class JavascriptInterfaceForImageClick {
         private Context context;
 
-        public MyJavascriptInterface(Context context) {
+        public JavascriptInterfaceForImageClick(Context context) {
             this.context = context;
         }
 
@@ -97,13 +123,7 @@ public abstract class TSWebFragment extends TSFragment {
          */
         @android.webkit.JavascriptInterface
         public void startShowImageActivity(String url) {
-//            Intent intent = new Intent();
-//            intent.putExtra(Constant.IMAGE_URL, url);
-//            intent.putStringArrayListExtra(Constant.IMAGE_URL_ALL, (ArrayList<String>) listImgSrc);
-//            intent.setClass(context, ShowImageFromWebActivity.class);
-//            context.startActivity(intent);
-            Toast.makeText(getActivity(), "单击图片", Toast.LENGTH_SHORT).show();
-            System.out.println("listImgSrc = " + listImgSrc);
+            onWebImageClick(url, mImageList);
         }
     }
 
@@ -112,7 +132,7 @@ public abstract class TSWebFragment extends TSFragment {
      * 然后 getAllImageUrlFromHtml(HTML)
      * 从 HTML 文件中提取页面所有图片对应的地址对象
      **/
-    private class InJavaScriptLocalObj {
+    private class JavaScriptForHandleHtml {
         /**
          * 获取 WebView 加载对应的 HTML 文本
          *
@@ -126,45 +146,11 @@ public abstract class TSWebFragment extends TSFragment {
 
     }
 
-    WebChromeClient webChromeClient = new WebChromeClient() {
-
-        //=========HTML5定位==========================================================
-        //需要先加入权限
-        //<uses-permission android:name="android.permission.INTERNET"/>
-        //<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-        //<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-
-        /**
-         * 网站图标回调
-         * @param view
-         * @param icon
-         */
-        @Override
-        public void onReceivedIcon(WebView view, Bitmap icon) {
-            super.onReceivedIcon(view, icon);
-        }
-
-        /**
-         * HTML5定位
-         */
-        @Override
-        public void onGeolocationPermissionsHidePrompt() {
-            super.onGeolocationPermissionsHidePrompt();
-        }
-
-        /**
-         * HTML5定位
-         * @param origin
-         * @param callback
-         */
-        @Override
-        public void onGeolocationPermissionsShowPrompt(final String origin, final GeolocationPermissions.Callback callback) {
-            callback.invoke(origin, true, false);//注意个函数，第二个参数就是是否同意定位权限，第三个是是否希望内核记住
-            super.onGeolocationPermissionsShowPrompt(origin, callback);
-        }
+    WebChromeClient mWebChromeClient = new WebChromeClient() {
 
         /**
          * 多窗口的问题
+         *
          * @param view
          * @param isDialog
          * @param isUserGesture
@@ -181,6 +167,7 @@ public abstract class TSWebFragment extends TSFragment {
 
         /**
          * 进度条
+         *
          * @param view
          * @param newProgress
          */
@@ -192,6 +179,7 @@ public abstract class TSWebFragment extends TSFragment {
 
         private void setProgress(int newProgress) {
             System.out.println("newProgress = " + newProgress);
+
             if (!mIsNeedProgress) {
                 return;
             }
@@ -205,6 +193,21 @@ public abstract class TSWebFragment extends TSFragment {
             }
         }
 
+        /**
+         * 当WebView加载之后，返回 HTML 页面的标题 Title
+         *
+         * @param view
+         * @param title
+         */
+        @Override
+        public void onReceivedTitle(WebView view, String title) {
+            //判断标题 title 中是否包含有“error”字段，如果包含“error”字段，则设置加载失败，显示加载失败的视图
+            if (!TextUtils.isEmpty(title) && title.toLowerCase().contains("error")) {
+                mIsLoadError = true;
+            }
+
+
+        }
     };
 
     @Override
@@ -259,6 +262,17 @@ public abstract class TSWebFragment extends TSFragment {
     protected void initView(View rootView) {
         mWebView = (WebView) rootView.findViewById(R.id.wv_about_us);
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.pb_bar);
+        mIvTip = (ImageView) rootView.findViewById(R.id.iv_tip);
+        RxView.clicks(mIvTip)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        loadUrl(mUrl);
+
+                    }
+                });
     }
 
 
@@ -279,14 +293,14 @@ public abstract class TSWebFragment extends TSFragment {
         mWebSettings.setJavaScriptEnabled(true);
 
         //载入js
-        mWebView.addJavascriptInterface(new MyJavascriptInterface(context), "imageListener");
+        mWebView.addJavascriptInterface(new JavascriptInterfaceForImageClick(context), "imageListener");
         //获取 html
-        mWebView.addJavascriptInterface(new InJavaScriptLocalObj(), "local_obj");
+        mWebView.addJavascriptInterface(new JavaScriptForHandleHtml(), "handleHtml");
 
         saveData(mWebSettings);
         newWin(mWebSettings);
-        mWebView.setWebChromeClient(webChromeClient);
-        mWebView.setWebViewClient(webViewClient);
+        mWebView.setWebChromeClient(mWebChromeClient);
+        mWebView.setWebViewClient(mWebViewClient);
         mWebView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -302,6 +316,7 @@ public abstract class TSWebFragment extends TSFragment {
      * @param url 网页地址
      */
     public void loadUrl(String url) {
+        mUrl = url;
         mWebView.loadUrl(url);
     }
 
@@ -408,12 +423,30 @@ public abstract class TSWebFragment extends TSFragment {
             if (result != null) {
                 int type = result.getType();
                 if (type == WebView.HitTestResult.IMAGE_TYPE || type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE) {
-                    longClickUrl = result.getExtra();
-                    Toast.makeText(getActivity(), "长按图片", Toast.LENGTH_SHORT).show();
-                    System.out.println("longClickUrl = " + longClickUrl);
+                    mLongClickUrl = result.getExtra();
+                    onWebImageLongClick(mLongClickUrl);
                 }
             }
         }
+    }
+
+    /**
+     * 网页图片单击
+     *
+     * @param clickUrl 单击的当前图片地址
+     * @param images   页面中所有的图片地址
+     */
+    protected void onWebImageClick(String clickUrl, List<String> images) {
+        Toast.makeText(getActivity(), "单击图片", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * 网页图片长按
+     *
+     * @param longClickUrl 长按当前图片地址
+     */
+    protected void onWebImageLongClick(String longClickUrl) {
+        Toast.makeText(getActivity(), "长按图片", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -422,7 +455,7 @@ public abstract class TSWebFragment extends TSFragment {
      * @param view
      */
     private void parseHTML(WebView view) {
-        view.loadUrl("javascript:window.local_obj.showSource('<head>'+"
+        view.loadUrl("javascript:window.handleHtml.showSource('<head>'+"
                 + "document.getElementsByTagName('html')[0].innerHTML+'</head>');");
     }
 
@@ -473,11 +506,10 @@ public abstract class TSWebFragment extends TSFragment {
         for (String image : listImageUrl) {
             Matcher matcher = Pattern.compile(IMAGE_URL_CONTENT).matcher(image);
             while (matcher.find()) {
-                listImgSrc.add(matcher.group().substring(0, matcher.group().length() - 1));
+                mImageList.add(matcher.group().substring(0, matcher.group().length() - 1));
             }
         }
-        return listImgSrc;
+        return mImageList;
     }
-
 
 }
