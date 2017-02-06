@@ -112,6 +112,7 @@ public class MineFragment extends TSFragment {
             case R.id.ll_fans_container:
                 break;
             case R.id.ll_follow_container:
+                LoadingDialogUtils.showStateIng(getContext());
                 break;
             case R.id.bt_personal_page:
                 SkinManager.getInstance().restoreDefaultTheme();
@@ -143,6 +144,7 @@ public class MineFragment extends TSFragment {
                 LoadingDialogUtils.showStateError(getContext());
                 break;
             case R.id.bt_suggestion:
+                LoadingDialogUtils.showStateSuccess(getContext());
                 break;
             case R.id.bt_question_answer:
                 startActivity(new Intent(getActivity(), LoginActivity.class));

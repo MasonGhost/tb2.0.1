@@ -13,10 +13,10 @@
         android:id="@+id/iv_hint_img"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_mid"
         android:layout_marginLeft="@dimen/spacing_mid"
         android:layout_marginRight="@dimen/spacing_small"
         android:layout_marginTop="@dimen/spacing_mid"
-        android:layout_marginBottom="@dimen/spacing_mid"
         tools:src="@mipmap/login_ico_closeye"/>
 
     <TextView
