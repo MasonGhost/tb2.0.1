@@ -58,7 +58,7 @@ public class LoadingDialogUtils {
      * @param context
      */
     public static void showStateIng(Context context) {
-        initDialog(R.drawable.frame_loading_white, "发送中...", context, false);
+        initDialog(R.drawable.frame_loading_grey, "发送中...", context, false);
         handleAnimation(true);
     }
 
