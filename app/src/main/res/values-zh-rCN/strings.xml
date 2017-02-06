@@ -48,6 +48,8 @@
     <string name="crop_head_icon">更换头像</string>
     <!--相册-->
     <string name="album_list">相册</string>
+    <string name="preview">预览</string>
+    <string name="album_selected_count" formatted="false">完成(%d/%d)</string>
 
     <!--代码中的string-->
     <string name="token_expiers">token过期，请重新登陆</string>

@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.photopicker;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -40,11 +41,17 @@ import static me.iwf.photopicker.PhotoPicker.EXTRA_SHOW_GIF;
  */
 
 public class PhotoAlbumListFragment extends TSFragment {
+    // 相册列表被选中的位置
+    public static final String SELECTED_DIRECTORY_NUMBER = "selected_directory_number";
+    // 相册列表被选中的名称
+    public static final String SELECTED_DIRECTORY_NAME = "selected_directory_name";
+    // 相册列表的内容
+    public static final String ALL_PHOTOS = "all_photos";
     @BindView(R.id.rv_photo_album_list)
     RecyclerView mRvPhotoAlbumList;
     private CommonAdapter<PhotoDirectory> listAdapter;
     // 所有 photos 的路径
-    private List<PhotoDirectory> directories;
+    private ArrayList<PhotoDirectory> directories;
     private final static String EXTRA_GIF = "gif";
 
     @Override
@@ -74,7 +81,7 @@ public class PhotoAlbumListFragment extends TSFragment {
 
     @Override
     protected void setRightClick() {
-       getActivity().finish();
+        getActivity().finish();
     }
 
     @Override
@@ -85,7 +92,7 @@ public class PhotoAlbumListFragment extends TSFragment {
         directories = new ArrayList<>();
         listAdapter = new CommonAdapter<PhotoDirectory>(getContext(), me.iwf.photopicker.R.layout.__picker_item_directory, directories) {
             @Override
-            protected void convert(ViewHolder holder, PhotoDirectory photoDirectory, int position) {
+            protected void convert(ViewHolder holder, final PhotoDirectory photoDirectory, final int position) {
                 ImageView ivCover = holder.getView(me.iwf.photopicker.R.id.iv_dir_cover);
                 TextView tvName = holder.getView(me.iwf.photopicker.R.id.tv_dir_name);
                 TextView tvCount = holder.getView(me.iwf.photopicker.R.id.tv_dir_count);
@@ -96,6 +103,18 @@ public class PhotoAlbumListFragment extends TSFragment {
                         .build());
                 tvName.setText(photoDirectory.getName());
                 tvCount.setText(tvCount.getContext().getString(me.iwf.photopicker.R.string.__picker_image_count, photoDirectory.getPhotos().size()));
+                holder.getConvertView().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(SELECTED_DIRECTORY_NUMBER, position);
+                        bundle.putParcelableArrayList(ALL_PHOTOS, directories);
+                        bundle.putString(SELECTED_DIRECTORY_NAME, photoDirectory.getName());
+                        Intent intent = new Intent(getActivity(), PhotoAlbumDetailsActivity.class);
+                        intent.putExtras(bundle);
+                        PhotoAlbumListFragment.this.startActivity(intent);
+                    }
+                });
             }
         };
 
