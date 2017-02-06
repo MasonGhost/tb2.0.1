@@ -1,0 +1,35 @@
+2017年2月6日 16:59:29
+# 基础浏览器说明
+
+## 1. 概述
+
+基于 WebView 封装的基础浏览器。支持
+- 显示隐藏进度
+- 单击和长按图片的响应事件
+- 仿微信的多级关闭按钮
+- 支持错误缺省图提示，单击重新加载
+- 支持修改缺省图
+- 支持网页缓存
+
+## 2. 使用说明
+1. 通过继承或者new 创建使用
+```java
+public class AboutUsFragment extends TSWebFragment {
+...
+}
+// 或者
+TSWebFragment mTSWebFragment=new TSWebFragment();
+
+```
+2. 显示隐藏进度
+```java
+mTSWebFragment.setNeedProgress(boolean needProgress);
+```
+3. 单击和长按图片的响应事件
+```java
+mTSWebFragment.setNeedProgress(boolean needProgress);
+```
+4. 修改缺省图
+```java
+mTSWebFragment.setNeedProgress(boolean needProgress);
+```
