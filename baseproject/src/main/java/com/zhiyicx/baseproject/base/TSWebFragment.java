@@ -2,6 +2,7 @@ package com.zhiyicx.baseproject.base;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.common.utils.NetUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +52,6 @@ public class TSWebFragment extends TSFragment {
     private ProgressBar mProgressBar;
     private ImageView mIvTip;// 错误提示
 
-    private String mUrl = "";// 网页地址
     private boolean mIsNeedProgress = true;// 是否需要进度条
     private List<String> mImageList = new ArrayList<>();// 网页内图片地址
     private String mLongClickUrl;// 长按图片的地址
@@ -75,7 +76,9 @@ public class TSWebFragment extends TSFragment {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
-            mWebView.setEnabled(false);// 当加载网页的时候将网页进行隐藏
+            mIsLoadError = false;
+            mWebView.setVisibility(View.INVISIBLE);// 当加载网页的时候将网页进行隐藏
+            mIvTip.setVisibility(View.INVISIBLE);
         }
 
         /**
@@ -85,9 +88,9 @@ public class TSWebFragment extends TSFragment {
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             if (mIsLoadError) {
-
+                mIvTip.setVisibility(View.VISIBLE);
             } else {
-                mWebView.setEnabled(true);
+                mWebView.setVisibility(View.VISIBLE);
                 // web 页面加载完成，添加监听图片的点击 js 函数
                 setImageClickListner(view);
                 //解析 HTML
@@ -269,8 +272,8 @@ public class TSWebFragment extends TSFragment {
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        loadUrl(mUrl);
-
+                        mWebView.clearCache(true);
+                        mWebView.reload();
                     }
                 });
     }
@@ -287,7 +290,13 @@ public class TSWebFragment extends TSFragment {
         mWebSettings.setLoadWithOverviewMode(true);
         mWebSettings.setUseWideViewPort(true);
         mWebSettings.setDefaultTextEncodingName("utf-8");
-        mWebSettings.setLoadsImagesAutomatically(true);
+        //支持自动加载图片
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            mWebSettings.setLoadsImagesAutomatically(true);
+        } else {
+            mWebSettings.setLoadsImagesAutomatically(false);
+        }
+        mWebSettings.setAllowFileAccess(true);
 
         //调用JS方法.安卓版本大于17,加上注解 @JavascriptInterface
         mWebSettings.setJavaScriptEnabled(true);
@@ -316,7 +325,6 @@ public class TSWebFragment extends TSFragment {
      * @param url 网页地址
      */
     public void loadUrl(String url) {
-        mUrl = url;
         mWebView.loadUrl(url);
     }
 
@@ -408,6 +416,11 @@ public class TSWebFragment extends TSFragment {
         mWebSettings.setDomStorageEnabled(true);
         mWebSettings.setDatabaseEnabled(true);
         mWebSettings.setAppCacheEnabled(true);
+        if(NetUtils.netIsConnected(getContext())){
+            mWebSettings.setCacheMode(WebSettings.LOAD_DEFAULT);//网络不可用时只使用缓存
+        }else {
+            mWebSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);//网络不可用时只使用缓存
+        }
         String appCachePath = FileUtils.getCacheFilePath(getContext());
         mWebSettings.setAppCachePath(appCachePath);
     }
