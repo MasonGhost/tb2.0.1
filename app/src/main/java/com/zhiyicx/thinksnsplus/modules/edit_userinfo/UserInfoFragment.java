@@ -432,7 +432,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                     @Override
                     public void onItem1Clicked() {
                         // 选择相册，单张
-                        mPhotoSelector.getPhotoListFromSelector(1);
+                        mPhotoSelector.getPhotoListFromSelector(5);
                         mPhotoPopupWindow.hide();
                     }
                 })

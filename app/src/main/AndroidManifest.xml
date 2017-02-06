@@ -26,7 +26,6 @@
             android:name=".modules.home.HomeActivity"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden">
-
         </activity>
         <activity android:name=".modules.settings.SettingsActivity">
         </activity>
@@ -55,6 +54,9 @@
             android:name=".service.backgroundtask.BackgroundTaskHandleService"
             android:exported="false">
         </service>
+
+        <activity android:name=".modules.photopicker.PhotoAlbumListActivity">
+        </activity>
     </application>
 
 </manifest>
