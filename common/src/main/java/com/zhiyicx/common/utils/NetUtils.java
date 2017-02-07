@@ -60,6 +60,11 @@ public class NetUtils {
             return false;
     }
 
+    /**
+     * 网络是否连接
+     * @param context
+     * @return
+     */
     public static boolean netIsConnected(Context context) {
         ConnectivityManager connectMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         //手机网络连接状态

@@ -1,8 +1,9 @@
-2016年12月24日17:07:52
+2017年2月6日 16:52:14
 # baseproject module
 结构目录
  ```
  --base
+    TSWebFragment.java
     ...
  --cache
  --config
@@ -17,8 +18,11 @@
 
 
 
-### [base目录：](BASEACTIVITY.md)
-    包含项目主工程中的所有activity和fragment的父类
+### base目录：
+
+    - [包含项目主工程中的所有activity和fragment的父类](BASEACTIVITY.md)
+    - [基础浏览器](TSWEBFRAGMENT.md)
+
 ### [cache目录](CACHE.md)
       通过Rxjava实现多级缓存
 ### config目录：

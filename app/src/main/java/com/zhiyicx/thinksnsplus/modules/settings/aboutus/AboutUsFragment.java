@@ -8,6 +8,8 @@ import com.zhiyicx.baseproject.base.TSWebFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.R;
 
+import java.util.List;
+
 
 /**
  * @Describe 关于我们
@@ -41,4 +43,13 @@ public class AboutUsFragment extends TSWebFragment {
     }
 
 
+    @Override
+    protected void onWebImageClick(String clickUrl, List<String> images) {
+
+    }
+
+    @Override
+    protected void onWebImageLongClick(String longClickUrl) {
+
+    }
 }
