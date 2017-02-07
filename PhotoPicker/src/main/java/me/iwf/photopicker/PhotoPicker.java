@@ -84,7 +84,7 @@ public class PhotoPicker {
      * @return Intent for {@link PhotoPickerActivity}
      */
     public Intent getIntent(@NonNull Context context) {
-      mPickerIntent.setClass(context, PhotoPickerActivity.class);
+      mPickerIntent.setClassName(context,"com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsActivity");
       mPickerIntent.putExtras(mPickerOptionsBundle);
       return mPickerIntent;
     }

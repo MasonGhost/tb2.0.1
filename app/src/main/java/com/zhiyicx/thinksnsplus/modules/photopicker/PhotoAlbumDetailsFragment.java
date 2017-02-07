@@ -56,8 +56,8 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
     public static final String EXTRA_VIEW_LOCATION = "view_location";
     public static final String EXTRA_VIEW_ALL_PHOTOS = "view_photos";
     public static final String EXTRA_VIEW_SELECTED_PHOTOS = "view_selected_photos";
-    public static final String EXTRA_MAX_COUNT = "max_count";
-    private static final int maxCount = DEFAULT_MAX_COUNT;
+    public final static String EXTRA_MAX_COUNT = "MAX_COUNT";
+    private int maxCount = DEFAULT_MAX_COUNT;
 
     @BindView(R.id.rv_album_details)
     RecyclerView mRvAlbumDetails;
@@ -110,6 +110,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         column = getArguments().getInt(EXTRA_COLUMN, DEFAULT_COLUMN_NUMBER);
         originalPhotos = getArguments().getStringArrayList(EXTRA_ORIGIN);
         selected_directory = getArguments().getInt(SELECTED_DIRECTORY_NUMBER, 0);
+        maxCount = getArguments().getInt(EXTRA_MAX_COUNT, DEFAULT_MAX_COUNT);
 
         photoGridAdapter = new PhotoGridAdapter(getActivity(), mGlideRequestManager, directories, originalPhotos, column);
         photoGridAdapter.setShowCamera(false);
