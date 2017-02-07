@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.photopicker;
 
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.utils.ActivityHandler;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 
@@ -136,10 +138,12 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         photoGridAdapter = new PhotoGridAdapter(getActivity(), mGlideRequestManager, directories, originalPhotos, column);
         photoGridAdapter.setShowCamera(false);
         photoGridAdapter.setPreviewEnable(true);
+
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(column, OrientationHelper.VERTICAL);
         layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
         mRvAlbumDetails.setLayoutManager(layoutManager);
         mRvAlbumDetails.setAdapter(photoGridAdapter);
+        mRvAlbumDetails.addItemDecoration(new PhotoGridLine());
         photoGridAdapter.setCurrentDirectoryIndex(selected_directory);
         photoGridAdapter.notifyDataSetChanged();
         // 设置图片选择的监听
@@ -264,6 +268,43 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         // 设置预览按钮的状态
         mTvPreview.setEnabled(selectedCount > 0);
         mBtComplete.setText(getString(R.string.album_selected_count, selectedCount, maxCount));
+    }
+
+    private class PhotoGridLine extends RecyclerView.ItemDecoration {
+        @Override
+        public void getItemOffsets(Rect outRect, int itemPosition, RecyclerView parent) {
+            LogUtils.d("itemPosition","itemPosition-->"+itemPosition);
+            int position =itemPosition;
+            // 第一列item，左边距为0
+            if (position % 4 == 0) {
+                outRect.left = 0;
+            } else {
+                // 其余的列的左边距为5dp
+                outRect.left = 50;
+            }
+            // 所有的item的右边距为0
+            outRect.right = 0;
+            outRect.top = 50;
+            outRect.bottom = 0;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            super.getItemOffsets(outRect, view, parent, state);
+    /*        int position = parent.getChildAdapterPosition(view);
+            // 第一列item，左边距为0
+            if (position % 4 == 0) {
+                outRect.left = 0;
+            } else {
+                // 其余的列的左边距为5dp
+                outRect.left = 50;
+            }
+            // 所有的item的右边距为0
+            outRect.right = 0;
+            outRect.top = 50;
+            outRect.bottom = 0;*/
+
+        }
     }
 
 }
