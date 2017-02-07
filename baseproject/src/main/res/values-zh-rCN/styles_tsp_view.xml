@@ -80,6 +80,7 @@
     </style>
 
     <!--###################### 按钮 ################################-->
+
     <!--继承自没有阴影的按钮style，如果需要阴影，取消parent-->
     <style name="style_login_button" parent="@style/Widget.AppCompat.Button.Borderless">
         <item name="android:layout_width">match_parent</item>
@@ -92,7 +93,6 @@
         <item name="android:textSize">@dimen/size_primary_title</item>
     </style>
 
-
     <style name="style_action_list_item">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/action_button_list_item_height</item>
@@ -104,9 +104,21 @@
     </style>
 
     <!--#########################################      popwindow       ################################-->
+
     <style name="style_actionPopupAnimation" mce_bogus="1" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/slide_in_bottom</item>
         <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
+    </style>
+
+
+    <!--#########################################      加载样式       ################################-->
+
+    <!-- 加载滚动条样式 -->
+    <style name="style_loading">
+        <item name="android:indeterminate">true</item>
+        <item name="android:indeterminateDrawable">@drawable/frame_loading_grey</item>
+        <item name="android:indeterminateDuration">500</item>
+        <item name="android:indeterminateOnly">true</item>
     </style>
 
 </resources>

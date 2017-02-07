@@ -422,7 +422,7 @@ public abstract class TSWebFragment extends TSFragment {
 
     /***
      * 获取页面所有图片对应的地址对象，
-     * 例如 <img src="http://sc1.hao123img.com/data/f44d0aab7bc35b8767de3c48706d429e" />
+     * 例如 <mIvError src="http://sc1.hao123img.com/data/f44d0aab7bc35b8767de3c48706d429e" />
      *
      * @param html WebView 加载的 html 文本
      * @return
@@ -442,7 +442,7 @@ public abstract class TSWebFragment extends TSFragment {
      * 例如 "http://sc1.hao123img.com/data/f44d0aab7bc35b8767de3c48706d429e"
      *
      * @param listImageUrl 图片地址对象，
-     *                     例如 <img src="http://sc1.hao123img.com/data/f44d0aab7bc35b8767de3c48706d429e" />
+     *                     例如 <mIvError src="http://sc1.hao123img.com/data/f44d0aab7bc35b8767de3c48706d429e" />
      */
     private List<String> getAllImageUrlFormSrcObject(List<String> listImageUrl) {
         for (String image : listImageUrl) {
@@ -471,7 +471,7 @@ public abstract class TSWebFragment extends TSFragment {
     private void setImageClickListner(WebView view) {
         // 这段js函数的功能就是，遍历所有的img几点，并添加onclick函数，函数的功能是在图片点击的时候调用本地java接口并传递url过去
         view.loadUrl("javascript:(function(){" +
-                "var objs = document.getElementsByTagName(\"img\"); " +
+                "var objs = document.getElementsByTagName(\"mIvError\"); " +
                 "for(var i=0;i<objs.length;i++)  " +
                 "{"
                 + "    objs[i].onclick=function()  " +

@@ -44,7 +44,7 @@ public class TSWebFragmentTest {
                 ".en-markup-crop-options div div:first-of-type {\n" +
                 "    margin-left: 0px !important;\n" +
                 "}\n" +
-                "</style></head><body style=\"margin: 0px;\"><img style=\"user-select: none; cursor: zoom-in;\" src=\"http://img.blog.csdn.net/20160123213356259\" width=\"500\" height=\"400\"></body></html>";
+                "</style></head><body style=\"margin: 0px;\"><mIvError style=\"user-select: none; cursor: zoom-in;\" src=\"http://mIvError.blog.csdn.net/20160123213356259\" width=\"500\" height=\"400\"></body></html>";
         List<String> images = mTSWebFragment.getAllImageUrlFromHtml(html);
         System.out.println("images = " + images);
         Assert.assertFalse(images.isEmpty());
