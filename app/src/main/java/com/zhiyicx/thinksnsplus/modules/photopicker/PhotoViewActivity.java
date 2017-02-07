@@ -36,8 +36,8 @@ public class PhotoViewActivity extends TSActivity {
         int[] screenLocation = bundle.getIntArray(EXTRA_VIEW_LOCATION);
         int width = bundle.getInt(EXTRA_VIEW_WIDTH);
         int height = bundle.getInt(EXTRA_VIEW_HEIGHT);
-        ImagePagerFragment imagePagerFragment =
-                ImagePagerFragment.newInstance(photos, index, screenLocation, width,
+        PhotoViewFragment imagePagerFragment =
+                PhotoViewFragment.newInstance(photos, index, screenLocation, width,
                         height);
         return imagePagerFragment;
     }
