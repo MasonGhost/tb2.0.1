@@ -1,6 +1,7 @@
 package com.zhiyicx.baseproject.widget;
 
 import android.content.Context;
+import android.support.annotation.DrawableRes;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -105,37 +106,44 @@ public class EmptyView extends LinearLayout {
 
     /**
      * 隐藏当前 view
-     * public void dismiss() {
-     * mErrorState = HIDE_LAYOUT;
-     * setVisibility(View.GONE);
-     * }
-     * <p>
-     * public int getErrorState() {
-     * return mErrorState;
-     * }
-     * <p>
-     * /**
+     */
+    public void dismiss() {
+        mErrorState = HIDE_LAYOUT;
+        setVisibility(View.GONE);
+    }
+
+
+    public int getErrorState() {
+        return mErrorState;
+    }
+
+    /**
+     * 设置错误提示信息内容
      *
-     * @param msg   信息内容，not null
-     *              public void setErrorMessage(@NotNull String msg) {
-     *              mTvError.setText(msg);
-     *              }
-     *              <p>
-     *              /**
-     *              设置提示图片
+     * @param msg 信息内容，not null
+     */
+    public void setErrorMessage(@NotNull String msg) {
+        mTvError.setText(msg);
+    }
+
+    /**
+     * 当前是否在加载状态
+     *
+     * @return true, 当前处于加载状态
+     */
+    public boolean isLoading() {
+        return mErrorState == NETWORK_LOADING;
+    }
+
+
+    /**
+     * 设置提示图片
+     *
      * @param resId 资源引用 id
      * @return true, 加载中
-     * public boolean isLoading() {
-     * return mErrorState == NETWORK_LOADING;
-     * }
-     * <p>
-     * public void setDayNight(boolean flag) {
-     * }
-     * <p>
-     * /**
-     * 设置错误提示信息内容
      */
-    public void setErrorImag(int resId) {
+    public void setErrorImag(@DrawableRes int resId) {
+        mIvError.setVisibility(View.VISIBLE);
         mIvError.setImageResource(resId);
     }
 
@@ -150,6 +158,7 @@ public class EmptyView extends LinearLayout {
             case NETWORK_ERROR:
                 mErrorState = NETWORK_ERROR;
                 mAnimProgress.setVisibility(View.GONE);
+                setErrorImag(R.mipmap.img_default_internet);
                 setTvNoDataContent(mContext.getString(R.string.err_net_not_work));
                 mClickEnable = true;
                 break;
@@ -163,15 +172,19 @@ public class EmptyView extends LinearLayout {
             case NODATA:
                 mErrorState = NODATA;
                 mAnimProgress.setVisibility(View.GONE);
+                setErrorImag(R.mipmap.img_default_nothing);
                 setTvNoDataContent(mContext.getString(R.string.no_data));
                 mClickEnable = false;
                 break;
             case HIDE_LAYOUT:
                 setVisibility(View.GONE);
+                mIvError.setVisibility(View.GONE);
+                mAnimProgress.setVisibility(View.GONE);
                 break;
             case NODATA_ENABLE_CLICK:
                 mErrorState = NODATA_ENABLE_CLICK;
                 mAnimProgress.setVisibility(View.GONE);
+                setErrorImag(R.mipmap.img_default_nothing);
                 setTvNoDataContent(mContext.getString(R.string.no_data));
                 mClickEnable = true;
                 break;
