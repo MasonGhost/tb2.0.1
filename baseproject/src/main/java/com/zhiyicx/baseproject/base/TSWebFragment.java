@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Message;
+import android.support.annotation.DrawableRes;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -13,12 +14,12 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.R;
+import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.NetUtils;
 
@@ -49,12 +50,13 @@ public abstract class TSWebFragment extends TSFragment {
     protected WebView mWebView;
     protected TextView mCloseView;
     private ProgressBar mProgressBar;
-    private ImageView mIvTip;// 错误提示
+    private EmptyView mEmptyView;// 错误提示
 
     private boolean mIsNeedProgress = true;// 是否需要进度条
     private List<String> mImageList = new ArrayList<>();// 网页内图片地址
     private String mLongClickUrl;// 长按图片的地址
     private boolean mIsLoadError;// 加载错误
+
 
     WebViewClient mWebViewClient = new WebViewClient() {
         /**
@@ -77,7 +79,7 @@ public abstract class TSWebFragment extends TSFragment {
             super.onPageStarted(view, url, favicon);
             mIsLoadError = false;
             mWebView.setVisibility(View.INVISIBLE);// 当加载网页的时候将网页进行隐藏
-            mIvTip.setVisibility(View.INVISIBLE);
+            mEmptyView.setErrorType(EmptyView.HIDE_LAYOUT);
         }
 
         /**
@@ -87,7 +89,7 @@ public abstract class TSWebFragment extends TSFragment {
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             if (mIsLoadError) {
-                mIvTip.setVisibility(View.VISIBLE);
+                mEmptyView.setErrorType(EmptyView.NETWORK_ERROR);
             } else {
                 mWebView.setVisibility(View.VISIBLE);
                 // web 页面加载完成，添加监听图片的点击 js 函数
@@ -141,7 +143,7 @@ public abstract class TSWebFragment extends TSFragment {
          */
         @android.webkit.JavascriptInterface
         public void showSource(String html) {
-            //从 HTML 文件中提取页面所有图片对应的地址对象
+            // 从 HTML 文件中提取页面所有图片对应的地址对象
             getAllImageUrlFromHtml(html);
         }
 
@@ -202,7 +204,7 @@ public abstract class TSWebFragment extends TSFragment {
          */
         @Override
         public void onReceivedTitle(WebView view, String title) {
-            //判断标题 title 中是否包含有“error”字段，如果包含“error”字段，则设置加载失败，显示加载失败的视图
+            // 判断标题 title 中是否包含有“error”字段，如果包含“error”字段，则设置加载失败，显示加载失败的视图
             if (!TextUtils.isEmpty(title) && title.toLowerCase().contains("error")) {
                 mIsLoadError = true;
             }
@@ -263,9 +265,11 @@ public abstract class TSWebFragment extends TSFragment {
     protected void initView(View rootView) {
         mWebView = (WebView) rootView.findViewById(R.id.wv_about_us);
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.pb_bar);
-        mIvTip = (ImageView) rootView.findViewById(R.id.iv_tip);
-        RxView.clicks(mIvTip)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+        mEmptyView = (EmptyView) rootView.findViewById(R.id.emptyview);
+        mEmptyView.setNeedTextTip(false);
+        mEmptyView.setNeedClickLoadState(false);
+        RxView.clicks(mEmptyView)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   // 两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.<Void>bindToLifecycle())
                 .subscribe(new Action1<Void>() {
                     @Override
@@ -288,7 +292,7 @@ public abstract class TSWebFragment extends TSFragment {
         mWebSettings.setLoadWithOverviewMode(true);
         mWebSettings.setUseWideViewPort(true);
         mWebSettings.setDefaultTextEncodingName("utf-8");
-        //支持自动加载图片
+        // 支持自动加载图片
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             mWebSettings.setLoadsImagesAutomatically(true);
         } else {
@@ -296,12 +300,12 @@ public abstract class TSWebFragment extends TSFragment {
         }
         mWebSettings.setAllowFileAccess(true);
 
-        //调用JS方法.安卓版本大于17,加上注解 @JavascriptInterface
+        //调用 JS 方法.安卓版本大于 17,加上注解 @JavascriptInterface
         mWebSettings.setJavaScriptEnabled(true);
 
-        //载入js
+        // 载入 js
         mWebView.addJavascriptInterface(new JavascriptInterfaceForImageClick(context), "imageListener");
-        //获取 html
+        // 获取 html
         mWebView.addJavascriptInterface(new JavaScriptForHandleHtml(), "handleHtml");
 
         saveData(mWebSettings);
@@ -413,11 +417,12 @@ public abstract class TSWebFragment extends TSFragment {
     protected abstract void onWebImageLongClick(String longClickUrl);
 
     /**
-     *  设置网页错误提示图片
+     * 设置网页错误提示图片
+     *
      * @param resId
      */
-    public void setTipImage( int resId) {
-        mIvTip.setImageResource(resId);
+    public void setTipImage(@DrawableRes int resId) {
+        mEmptyView.setErrorImag(resId);
     }
 
     /***
@@ -466,7 +471,7 @@ public abstract class TSWebFragment extends TSFragment {
 
     /**
      * 注入 js 函数监听，这段 js 函数的功能就是，遍历所有的图片，并添加 onclick 函数，实现点击事件，
-     * 函数的功能是在图片点击的时候调用本地java接口并传递 url 过去
+     * 函数的功能是在图片点击的时候调用本地 java 接口并传递 url 过去
      */
     private void setImageClickListner(WebView view) {
         // 这段js函数的功能就是，遍历所有的img几点，并添加onclick函数，函数的功能是在图片点击的时候调用本地java接口并传递url过去
@@ -493,7 +498,7 @@ public abstract class TSWebFragment extends TSFragment {
     }
 
     /**
-     * HTML5数据存储
+     * HTML5 数据存储
      */
     private void saveData(WebSettings mWebSettings) {
         //有时候网页需要自己保存一些关键数据,Android WebView 需要自己设置

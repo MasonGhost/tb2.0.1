@@ -9,9 +9,16 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.R;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.TimeUnit;
+
+import rx.functions.Action1;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Describe 空置页面或错误提示
@@ -52,6 +59,11 @@ public class EmptyView extends LinearLayout {
     private OnClickListener mOnClickListener;
     private int mErrorState;
     private boolean mClickEnable = true;
+
+    private boolean mIsNeedClickLoadState = true;// 是否需要点击响应时自动 load 状态
+
+
+    private boolean mIsNeedTextTip = true;// 是否需要文字提示
     private Context mContext;
 
     public EmptyView(Context context) {
@@ -67,24 +79,25 @@ public class EmptyView extends LinearLayout {
     }
 
     private void init() {
-        View view = View.inflate(mContext, R.layout.view_empty, null);
+        View view = View.inflate(mContext, R.layout.view_empty, this);
         mLlContent = view.findViewById(R.id.ll_content);
         mIvError = (ImageView) view.findViewById(R.id.iv_error_layout);
         mTvError = (TextView) view.findViewById(R.id.tv_error_layout);
         mAnimProgress = (ProgressBar) view.findViewById(R.id.pb_animation_bar);
-        mLlContent.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                if (mClickEnable) {
-                    setErrorType(NETWORK_LOADING);
-                    if (mOnClickListener != null)
-                        mOnClickListener.onClick(v);
-                }
-            }
-        });
-
-        addView(view);
+        RxView.clicks(mLlContent)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        if (mClickEnable) {
+                            if (mIsNeedClickLoadState) {
+                                setErrorType(NETWORK_LOADING);
+                            }
+                            if (mOnClickListener != null)
+                                mOnClickListener.onClick(mLlContent);
+                        }
+                    }
+                });
     }
 
     @Override
@@ -98,10 +111,6 @@ public class EmptyView extends LinearLayout {
             mErrorState = HIDE_LAYOUT;
         }
         super.setVisibility(visibility);
-    }
-
-    public void setTvNoDataContent(@NotNull String text) {
-        mTvError.setText(text);
     }
 
     /**
@@ -123,7 +132,10 @@ public class EmptyView extends LinearLayout {
      * @param msg 信息内容，not null
      */
     public void setErrorMessage(@NotNull String msg) {
-        mTvError.setText(msg);
+        if (mIsNeedTextTip) {
+            mTvError.setVisibility(VISIBLE);
+            mTvError.setText(msg);
+        }
     }
 
     /**
@@ -135,6 +147,34 @@ public class EmptyView extends LinearLayout {
         return mErrorState == NETWORK_LOADING;
     }
 
+    /**
+     * @return
+     */
+    public boolean isNeedClickLoadState() {
+        return mIsNeedClickLoadState;
+    }
+
+    /**
+     * 是否自动添加加载状态
+     *
+     * @param needClickLoadState
+     */
+    public void setNeedClickLoadState(boolean needClickLoadState) {
+        mIsNeedClickLoadState = needClickLoadState;
+    }
+
+    public boolean isNeedTextTip() {
+        return mIsNeedTextTip;
+    }
+
+    /**
+     * 设置文字提示
+     *
+     * @param needTextTip
+     */
+    public void setNeedTextTip(boolean needTextTip) {
+        mIsNeedTextTip = needTextTip;
+    }
 
     /**
      * 设置提示图片
@@ -159,21 +199,21 @@ public class EmptyView extends LinearLayout {
                 mErrorState = NETWORK_ERROR;
                 mAnimProgress.setVisibility(View.GONE);
                 setErrorImag(R.mipmap.img_default_internet);
-                setTvNoDataContent(mContext.getString(R.string.err_net_not_work));
+                setErrorMessage(mContext.getString(R.string.err_net_not_work));
                 mClickEnable = true;
                 break;
             case NETWORK_LOADING:
                 mErrorState = NETWORK_LOADING;
                 mAnimProgress.setVisibility(View.VISIBLE);
                 mIvError.setVisibility(View.GONE);
-                setTvNoDataContent("");
+                setErrorMessage("");
                 mClickEnable = false;
                 break;
             case NODATA:
                 mErrorState = NODATA;
                 mAnimProgress.setVisibility(View.GONE);
                 setErrorImag(R.mipmap.img_default_nothing);
-                setTvNoDataContent(mContext.getString(R.string.no_data));
+                setErrorMessage(mContext.getString(R.string.no_data));
                 mClickEnable = false;
                 break;
             case HIDE_LAYOUT:
@@ -185,7 +225,7 @@ public class EmptyView extends LinearLayout {
                 mErrorState = NODATA_ENABLE_CLICK;
                 mAnimProgress.setVisibility(View.GONE);
                 setErrorImag(R.mipmap.img_default_nothing);
-                setTvNoDataContent(mContext.getString(R.string.no_data));
+                setErrorMessage(mContext.getString(R.string.no_data));
                 mClickEnable = true;
                 break;
             default:
