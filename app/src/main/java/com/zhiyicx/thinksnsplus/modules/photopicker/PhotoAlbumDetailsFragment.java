@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.photopicker;
 
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +14,13 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.utils.ActivityHandler;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+
+import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,14 +52,18 @@ import static me.iwf.photopicker.PhotoPicker.KEY_SELECTED_PHOTOS;
  */
 
 public class PhotoAlbumDetailsFragment extends TSFragment {
-    private final static String EXTRA_ORIGIN = "origin";
+    public final static String EXTRA_ORIGIN = "ORIGINAL_PHOTOS";
     private final static String EXTRA_COLUMN = "column";
     public final static String EXTRA_VIEW_INDEX = "view_index";
     public static final String EXTRA_VIEW_WIDTH = "view_width";
     public static final String EXTRA_VIEW_HEIGHT = "view_height";
     public static final String EXTRA_VIEW_LOCATION = "view_location";
-    public static final String EXTRA_VIEW_PHOTOS = "view_photos";
-    private static final int maxCount = DEFAULT_MAX_COUNT;
+    public static final String EXTRA_VIEW_ALL_PHOTOS = "view_photos";
+    public static final String EXTRA_VIEW_SELECTED_PHOTOS = "view_selected_photos";
+    //public static final String EXTRA_OLD_SELECTED_PHOTOS = "view_selected_photos";
+
+    public final static String EXTRA_MAX_COUNT = "MAX_COUNT";
+    private int maxCount = DEFAULT_MAX_COUNT;
 
     @BindView(R.id.rv_album_details)
     RecyclerView mRvAlbumDetails;
@@ -91,6 +102,28 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
     }
 
     @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    @Override
+    protected void setLeftClick() {
+        // 回到相册列表页面，同时将当前数据传递过去
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList(EXTRA_ORIGIN, photoGridAdapter.getSelectedPhotoPaths());
+        Intent intent = new Intent();
+        intent.setClass(getContext(), PhotoAlbumListActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        getActivity().finish();
+    }
+
+    @Override
+    protected void setRightClick() {
+        getActivity().finish();
+    }
+
+    @Override
     protected void initView(View rootView) {
         mGlideRequestManager = Glide.with(this);
         directories = getArguments().getParcelableArrayList(ALL_PHOTOS);
@@ -100,14 +133,17 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         column = getArguments().getInt(EXTRA_COLUMN, DEFAULT_COLUMN_NUMBER);
         originalPhotos = getArguments().getStringArrayList(EXTRA_ORIGIN);
         selected_directory = getArguments().getInt(SELECTED_DIRECTORY_NUMBER, 0);
+        maxCount = getArguments().getInt(EXTRA_MAX_COUNT, DEFAULT_MAX_COUNT);
 
         photoGridAdapter = new PhotoGridAdapter(getActivity(), mGlideRequestManager, directories, originalPhotos, column);
         photoGridAdapter.setShowCamera(false);
         photoGridAdapter.setPreviewEnable(true);
+
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(column, OrientationHelper.VERTICAL);
         layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
         mRvAlbumDetails.setLayoutManager(layoutManager);
         mRvAlbumDetails.setAdapter(photoGridAdapter);
+        mRvAlbumDetails.addItemDecoration(new PhotoGridLine());
         photoGridAdapter.setCurrentDirectoryIndex(selected_directory);
         photoGridAdapter.notifyDataSetChanged();
         // 设置图片选择的监听
@@ -115,7 +151,8 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
             @Override
             public boolean onItemCheck(int position, Photo photo, int selectedItemCount) {
                 mBtComplete.setEnabled(selectedItemCount > 0);
-
+                // 设置预览按钮的状态
+                mTvPreview.setEnabled(selectedItemCount > 0);
                 if (maxCount <= 1) {
                     List<String> photos = photoGridAdapter.getSelectedPhotos();
                     // 已经选择过的图片，取消选择
@@ -136,21 +173,23 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 return true;
             }
         });
-        // 设置图片预览的点击事件
+        // 设置图片item的点击事件
         photoGridAdapter.setOnPhotoClickListener(new OnPhotoClickListener() {
             @Override
             public void onClick(View v, int position, boolean showCamera) {
                 int index = showCamera ? position - 1 : position;
-                List<String> photos = photoGridAdapter.getCurrentPhotoPaths();
+                List<String> allPhotos = photoGridAdapter.getCurrentPhotoPaths();
+                ArrayList<String> selectedPhotos = photoGridAdapter.getSelectedPhotoPaths();
                 int[] screenLocation = new int[2];
                 v.getLocationOnScreen(screenLocation);
-
                 Bundle bundle = new Bundle();
                 bundle.putInt(EXTRA_VIEW_INDEX, index);
                 bundle.putInt(EXTRA_VIEW_WIDTH, v.getWidth());
                 bundle.putInt(EXTRA_VIEW_HEIGHT, v.getHeight());
                 bundle.putIntArray(EXTRA_VIEW_LOCATION, screenLocation);
-                bundle.putStringArrayList(EXTRA_VIEW_PHOTOS, (ArrayList<String>) photos);
+                bundle.putStringArrayList(EXTRA_VIEW_ALL_PHOTOS, (ArrayList<String>) allPhotos);
+                bundle.putStringArrayList(EXTRA_VIEW_SELECTED_PHOTOS, selectedPhotos);
+                bundle.putInt(EXTRA_MAX_COUNT, maxCount);
                 Intent intent = new Intent(getContext(), PhotoViewActivity.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
@@ -177,6 +216,11 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                         }
                     });
         }
+        int selectedCount = photoGridAdapter.getSelectedPhotoPaths().size();
+        // 初始化数据
+        mBtComplete.setEnabled(selectedCount > 0);
+        mTvPreview.setEnabled(selectedCount > 0);
+        mBtComplete.setText(getString(R.string.album_selected_count, selectedCount, maxCount));
     }
 
     public static PhotoAlbumDetailsFragment initFragment(Bundle bundle) {
@@ -190,25 +234,76 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         switch (view.getId()) {
             case R.id.tv_preview:
                 //int index = showCamera ? position - 1 : position;
-                List<String> photos = photoGridAdapter.getSelectedPhotoPaths();
+                ArrayList<String> allPhotos = photoGridAdapter.getSelectedPhotoPaths();
+                ArrayList<String> selectedPhoto = photoGridAdapter.getSelectedPhotoPaths();
                 int[] screenLocation = new int[2];
                 Bundle bundle = new Bundle();
                 bundle.putInt(EXTRA_VIEW_INDEX, 0);
                 bundle.putInt(EXTRA_VIEW_WIDTH, 0);
-                bundle.putInt(EXTRA_VIEW_HEIGHT,0);
+                bundle.putInt(EXTRA_VIEW_HEIGHT, 0);
                 bundle.putIntArray(EXTRA_VIEW_LOCATION, screenLocation);
-                bundle.putStringArrayList(EXTRA_VIEW_PHOTOS, (ArrayList<String>) photos);
+                bundle.putStringArrayList(EXTRA_VIEW_ALL_PHOTOS, allPhotos);
+                bundle.putStringArrayList(EXTRA_VIEW_SELECTED_PHOTOS, selectedPhoto);
+                bundle.putInt(EXTRA_MAX_COUNT, maxCount);
                 Intent intent1 = new Intent(getContext(), PhotoViewActivity.class);
                 intent1.putExtras(bundle);
                 startActivity(intent1);
                 break;
             case R.id.bt_complete:
-                Intent intent = new Intent();
                 ArrayList<String> selectedPhotos = photoGridAdapter.getSelectedPhotoPaths();
-                intent.putStringArrayListExtra(KEY_SELECTED_PHOTOS, selectedPhotos);
-                getActivity().setResult(RESULT_OK, intent);
                 getActivity().finish();
+                EventBus.getDefault().post(selectedPhotos, EventBusTagConfig.EVENT_COMPLETE_PHOTO_SELECT);
                 break;
+        }
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_SELECTED_PHOTO_UPDATE)
+    public void refreshDataAndUI(List<String> selectedPhoto) {
+        int selectedCount = selectedPhoto.size();
+        List<String> oldSelectedPhotos = photoGridAdapter.getSelectedPhotos();
+        oldSelectedPhotos.clear();
+        oldSelectedPhotos.addAll(selectedPhoto);
+        photoGridAdapter.notifyDataSetChanged();
+        mBtComplete.setEnabled(selectedCount > 0);
+        // 设置预览按钮的状态
+        mTvPreview.setEnabled(selectedCount > 0);
+        mBtComplete.setText(getString(R.string.album_selected_count, selectedCount, maxCount));
+    }
+
+    private class PhotoGridLine extends RecyclerView.ItemDecoration {
+        @Override
+        public void getItemOffsets(Rect outRect, int itemPosition, RecyclerView parent) {
+            LogUtils.d("itemPosition","itemPosition-->"+itemPosition);
+            int position =itemPosition;
+            // 第一列item，左边距为0
+            if (position % 4 == 0) {
+                outRect.left = 0;
+            } else {
+                // 其余的列的左边距为5dp
+                outRect.left = 50;
+            }
+            // 所有的item的右边距为0
+            outRect.right = 0;
+            outRect.top = 50;
+            outRect.bottom = 0;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            super.getItemOffsets(outRect, view, parent, state);
+    /*        int position = parent.getChildAdapterPosition(view);
+            // 第一列item，左边距为0
+            if (position % 4 == 0) {
+                outRect.left = 0;
+            } else {
+                // 其余的列的左边距为5dp
+                outRect.left = 50;
+            }
+            // 所有的item的右边距为0
+            outRect.right = 0;
+            outRect.top = 50;
+            outRect.bottom = 0;*/
+
         }
     }
 

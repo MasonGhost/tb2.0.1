@@ -1,5 +1,6 @@
 package com.zhiyicx.baseproject.impl.photoselector;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,10 +14,11 @@ public interface IPhotoSelector<T> {
     /**
      * 从本地相册中获取图片
      *
-     * @param maxCount 每次能够获取的最大图片数量
+     * @param maxCount       每次能够获取的最大图片数量
+     * @param selectedPhotos 已经选择过的图片
      * @return
      */
-    void getPhotoListFromSelector(int maxCount);
+    void getPhotoListFromSelector(int maxCount, ArrayList<String> selectedPhotos);
 
     /**
      * 通过拍照的方式获取图片

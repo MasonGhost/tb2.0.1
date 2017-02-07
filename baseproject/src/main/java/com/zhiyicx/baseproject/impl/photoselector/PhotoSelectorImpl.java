@@ -21,6 +21,8 @@ import com.zhiyicx.common.utils.UIUtils;
 
 
 import org.json.JSONArray;
+import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -55,6 +57,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
     private File takePhotoFolder;// 拍照后照片的存放目录
     private Uri mTakePhotoUri;// 拍照后照片的uri
     private int mCropShape;
+    private int maxCount;// 可选的最大图片数量
 
     public PhotoSelectorImpl(IPhotoBackListener iPhotoBackListener, Fragment mFragment, int cropShape) {
         takePhotoFolder = new File(Environment.getExternalStorageDirectory(), "/DCIM/" + "TSPlusPhotoFolder/");
@@ -62,22 +65,25 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
         this.mFragment = mFragment;
         this.mContext = mFragment.getContext();
         this.mCropShape = cropShape;
+        EventBus.getDefault().register(this);
     }
 
     @Override
-    public void getPhotoListFromSelector(int maxCount) {
+    public void getPhotoListFromSelector(int maxCount, ArrayList<String> selectedPhotos) {
+        this.maxCount = maxCount;
         // 选择相册
         PhotoPicker.builder()
                 .setPreviewEnabled(true) // 是否可预览
-                .setGridColumnCount(3)      // 每行的图片数量
+                .setGridColumnCount(4)      // 每行的图片数量
                 .setPhotoCount(maxCount)    //  每次能够选择的最
-                .setShowCamera(true)        // 是否需要展示相机
+                .setShowCamera(false)        // 是否需要展示相机
+                .setSelected(selectedPhotos)// 已经选择的图片
                 .start(mContext, mFragment);
     }
 
     @Override
     public void getPhotoFromCamera() {
-
+        this.maxCount = 1;// 从相机拿到的是单张的图片
         boolean suc = FileUtils.createOrExistsDir(takePhotoFolder);
         File toFile = new File(takePhotoFolder, "IMG" + format() + ".jpg");
         if (suc) {
@@ -114,13 +120,14 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
 
 
     /**
-     * 统一的判断是否需要进行裁剪的逻辑
+     * 统一的判断是否需要进行裁剪的逻辑:单张需要裁剪，多张不需要裁剪
      *
      * @return
      */
     @Override
     public boolean isNeededCraft() {
-        return true;
+
+        return maxCount <= 1;
     }
 
     /**
@@ -132,23 +139,6 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
      */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            // 从本地相册选择图片
-            if ((requestCode == PhotoPicker.REQUEST_CODE || requestCode == PhotoPreview.REQUEST_CODE)) {
-                List<String> photos = null;
-                if (data != null) {
-                    photos = data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS);
-                }
-                // 是否需要剪裁，不需要就直接返回结果
-                if (isNeededCraft()) {
-                    startToCraft(photos.get(0));
-                } else {
-                    List<ImageBean> imageBeanList = new ArrayList<>();
-                    ImageBean imageBean = new ImageBean();
-                    imageBean.setImgUrl(photos.get(0));
-                    imageBeanList.add(imageBean);
-                    mTIPhotoBackListener.getPhotoSuccess(imageBeanList);
-                }
-            }
             // 从相机中获取照片
             if (requestCode == CAMERA_PHOTO_CODE && mTakePhotoUri != null) {
                 String path = mTakePhotoUri.getPath();
@@ -190,6 +180,24 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                 }
                 mTIPhotoBackListener.getPhotoFailure(cropError.getMessage());
             }
+        }
+    }
+
+    /**
+     * 通过eventBus获取选择的图片
+     */
+    @Subscriber(tag = "event_complete_photo_select")
+    public void getLocalSelectedPhotos(List<String> photos) {
+        // 从本地相册选择图片
+        // 是否需要剪裁，不需要就直接返回结果
+        if (isNeededCraft()) {
+            startToCraft(photos.get(0));
+        } else {
+            List<ImageBean> imageBeanList = new ArrayList<>();
+            ImageBean imageBean = new ImageBean();
+            imageBean.setImgUrl(photos.get(0));
+            imageBeanList.add(imageBean);
+            mTIPhotoBackListener.getPhotoSuccess(imageBeanList);
         }
     }
 
@@ -237,14 +245,21 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
         switch (mCropShape) {
             case SHAPE_SQUARE:
                 uCrop.withAspectRatio(1, 1);
-                options.setCropViewPadding(ConvertUtils.dp2px(mContext,SQUARE_LEFT_MARGIN),0);
+                options.setCropViewPadding(ConvertUtils.dp2px(mContext, SQUARE_LEFT_MARGIN), 0);
                 break;
             case SHAPE_RCTANGLE:
                 uCrop.withAspectRatio(1, 0.5f);// 矩形高度为屏幕宽度的一半
-                options.setCropViewPadding(0,0);
+                options.setCropViewPadding(0, 0);
                 break;
             default:
         }
+    }
+
+    /**
+     * 做一些回收工作
+     */
+    public void onDestory() {
+        EventBus.getDefault().unregister(this);
     }
 
 }

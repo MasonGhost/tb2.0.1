@@ -2,16 +2,18 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_photo_album_details"
+    android:id="@+id/activity_photo_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_album_details"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_photos"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"></android.support.v7.widget.RecyclerView>
+        android:layout_weight="1"
+        android:background="@android:color/white"
+        />
 
     <include layout="@layout/include_horizontal_divider"></include>
 
@@ -20,16 +22,15 @@
         android:layout_height="50dp"
         android:background="@color/white">
 
-        <TextView
-            android:id="@+id/tv_preview"
+        <CheckBox
+            android:id="@+id/rb_select_photo"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:enabled="false"
+            android:layout_marginLeft="10dp"
+            android:button="@drawable/selector_button_select_stated"
             android:gravity="center"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="@string/preview"
-            android:textColor="@color/selector_text_color"/>
+            android:text="@string/album_selected"/>
 
         <Button
             android:id="@+id/bt_complete"

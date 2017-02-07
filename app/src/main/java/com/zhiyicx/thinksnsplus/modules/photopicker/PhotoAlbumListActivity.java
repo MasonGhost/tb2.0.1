@@ -16,6 +16,6 @@ public class PhotoAlbumListActivity extends TSActivity {
 
     @Override
     protected Fragment getFragment() {
-        return PhotoAlbumListFragment.initFragment(null);
+        return PhotoAlbumListFragment.initFragment(getIntent().getExtras());
     }
 }

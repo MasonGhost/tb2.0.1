@@ -18,7 +18,7 @@ public class PhotoPicker {
   public static final int REQUEST_CODE             = 233;
 
   public final static int DEFAULT_MAX_COUNT        = 9;
-  public final static int DEFAULT_COLUMN_NUMBER    = 3;
+  public final static int DEFAULT_COLUMN_NUMBER    = 4;
 
   public final static String KEY_SELECTED_PHOTOS   = "SELECTED_PHOTOS";
 
@@ -84,7 +84,7 @@ public class PhotoPicker {
      * @return Intent for {@link PhotoPickerActivity}
      */
     public Intent getIntent(@NonNull Context context) {
-      mPickerIntent.setClass(context, PhotoPickerActivity.class);
+      mPickerIntent.setClassName(context,"com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsActivity");
       mPickerIntent.putExtras(mPickerOptionsBundle);
       return mPickerIntent;
     }

@@ -10,10 +10,12 @@ import java.util.List;
 
 import me.iwf.photopicker.fragment.ImagePagerFragment;
 
+import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment.EXTRA_MAX_COUNT;
+import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment.EXTRA_VIEW_ALL_PHOTOS;
 import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment.EXTRA_VIEW_HEIGHT;
 import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment.EXTRA_VIEW_INDEX;
 import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment.EXTRA_VIEW_LOCATION;
-import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment.EXTRA_VIEW_PHOTOS;
+import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment.EXTRA_VIEW_SELECTED_PHOTOS;
 import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment.EXTRA_VIEW_WIDTH;
 
 public class PhotoViewActivity extends TSActivity {
@@ -31,14 +33,15 @@ public class PhotoViewActivity extends TSActivity {
     @Override
     protected Fragment getFragment() {
         Bundle bundle = getIntent().getExtras();
-        List<String> photos = bundle.getStringArrayList(EXTRA_VIEW_PHOTOS);
+        List<String> allPhotos = bundle.getStringArrayList(EXTRA_VIEW_ALL_PHOTOS);
+        List<String> selectedPhotos = bundle.getStringArrayList(EXTRA_VIEW_SELECTED_PHOTOS);
         int index = bundle.getInt(EXTRA_VIEW_INDEX);
         int[] screenLocation = bundle.getIntArray(EXTRA_VIEW_LOCATION);
         int width = bundle.getInt(EXTRA_VIEW_WIDTH);
         int height = bundle.getInt(EXTRA_VIEW_HEIGHT);
-        ImagePagerFragment imagePagerFragment =
-                ImagePagerFragment.newInstance(photos, index, screenLocation, width,
-                        height);
+        int maxCount = bundle.getInt(EXTRA_MAX_COUNT);
+        PhotoViewFragment imagePagerFragment =
+                PhotoViewFragment.newInstance(selectedPhotos, allPhotos, index, maxCount);
         return imagePagerFragment;
     }
 }
