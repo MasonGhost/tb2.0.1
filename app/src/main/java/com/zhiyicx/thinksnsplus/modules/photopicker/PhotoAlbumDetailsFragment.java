@@ -115,7 +115,8 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
             @Override
             public boolean onItemCheck(int position, Photo photo, int selectedItemCount) {
                 mBtComplete.setEnabled(selectedItemCount > 0);
-
+                // 设置预览按钮的状态
+                mTvPreview.setEnabled(selectedItemCount > 0);
                 if (maxCount <= 1) {
                     List<String> photos = photoGridAdapter.getSelectedPhotos();
                     // 已经选择过的图片，取消选择
@@ -195,7 +196,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 Bundle bundle = new Bundle();
                 bundle.putInt(EXTRA_VIEW_INDEX, 0);
                 bundle.putInt(EXTRA_VIEW_WIDTH, 0);
-                bundle.putInt(EXTRA_VIEW_HEIGHT,0);
+                bundle.putInt(EXTRA_VIEW_HEIGHT, 0);
                 bundle.putIntArray(EXTRA_VIEW_LOCATION, screenLocation);
                 bundle.putStringArrayList(EXTRA_VIEW_PHOTOS, (ArrayList<String>) photos);
                 Intent intent1 = new Intent(getContext(), PhotoViewActivity.class);

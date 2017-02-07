@@ -13,6 +13,8 @@
         android:layout_height="0dp"
         android:layout_weight="1"></android.support.v7.widget.RecyclerView>
 
+    <include layout="@layout/include_horizontal_divider"></include>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -22,10 +24,12 @@
             android:id="@+id/tv_preview"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:enabled="false"
             android:gravity="center"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:text="@string/preview"/>
+            android:text="@string/preview"
+            android:textColor="@color/selector_text_color"/>
 
         <Button
             android:id="@+id/bt_complete"
