@@ -2,19 +2,16 @@ package com.zhiyicx.thinksnsplus.modules.home.message.messagelike;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
+import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
-import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -30,9 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import butterknife.BindView;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
-import cn.bingoogolapple.refreshlayout.TSPRefreshViewHolder;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -43,16 +38,10 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/17
  * @Contact master.jungle68@gmail.com
  */
-public class MessageLikeFragment extends TSFragment implements BGARefreshLayout.BGARefreshLayoutDelegate {
-    private static final float LIST_ITEM_SPACING = 1f;
-
-    @BindView(R.id.rv_like_list)
-    RecyclerView mRvLikeList;
-    @BindView(R.id.refreshlayout_message_like)
-    BGARefreshLayout mRefreshlayoutMessageLike;
+public class MessageLikeFragment<P extends IBasePresenter> extends TSListFragment<P, MessageItemBean> {
 
     private ImageLoader mImageLoader;
-    private List<MessageItemBean> mMessageItemBeen;
+    private List<MessageItemBean> mMessageItemBeen= new ArrayList<>();
 
     public MessageLikeFragment() {
     }
@@ -65,50 +54,31 @@ public class MessageLikeFragment extends TSFragment implements BGARefreshLayout.
     }
 
     @Override
-    protected int getBodyLayoutId() {
-        return R.layout.fragment_message_like;
-    }
-
-    @Override
-    protected int setToolBarBackgroud() {
-        return R.color.white;
-    }
-
-
-    @Override
     protected String setCenterTitle() {
         return getString(R.string.like);
     }
 
     @Override
-    protected boolean showToolBarDivider() {
-        return true;
-    }
-
-    @Override
     protected void initView(View rootView) {
+        super.initView(rootView);
     }
-
 
     @Override
     protected void initData() {
-        mRefreshlayoutMessageLike.setDelegate(this);
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        mMessageItemBeen = new ArrayList<>();
         initCommentAndLike(mMessageItemBeen);
-        mRvLikeList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRvLikeList.addItemDecoration(new LinearDecoration(0, ConvertUtils.dp2px(getContext(), LIST_ITEM_SPACING), 0, 0));//设置Item的间隔
-        //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
-        mRvLikeList.setHasFixedSize(true);
-        mRvLikeList.setItemAnimator(new DefaultItemAnimator());//设置动画
-        mRvLikeList.setAdapter(new CommonAdapter<MessageItemBean>(getActivity(), R.layout.item_message_like_list, mMessageItemBeen) {
+        refreshData();
+    }
+
+    @Override
+    protected CommonAdapter<MessageItemBean> getAdapter() {
+        return new CommonAdapter<MessageItemBean>(getActivity(), R.layout.item_message_like_list, mMessageItemBeen) {
             @Override
             protected void convert(ViewHolder holder, MessageItemBean messageItemBean, int position) {
                 setItemData(holder, messageItemBean, position);
             }
 
-        });
-        mRefreshlayoutMessageLike.setRefreshViewHolder(new TSPRefreshViewHolder(getActivity(), true));
+        };
     }
 
     /**
@@ -153,9 +123,9 @@ public class MessageLikeFragment extends TSFragment implements BGARefreshLayout.
     /**
      * 设置item 数据
      *
-     * @param holder      控件管理器
+     * @param holder          控件管理器
      * @param messageItemBean 当前数据
-     * @param position    当前数据位置
+     * @param position        当前数据位置
      */
 
     private void setItemData(ViewHolder holder, final MessageItemBean messageItemBean, int position) {
