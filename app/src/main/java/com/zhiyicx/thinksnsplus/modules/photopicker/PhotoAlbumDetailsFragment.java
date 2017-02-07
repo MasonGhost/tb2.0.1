@@ -14,6 +14,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,6 +93,11 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
     @Override
     protected String setCenterTitle() {
         return getArguments().getString(SELECTED_DIRECTORY_NAME);
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
     }
 
     @Override
@@ -218,6 +226,19 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 getActivity().finish();
                 break;
         }
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_SELECTED_PHOTO_UPDATE)
+    public void refreshDataAndUI(List<String> selectedPhoto) {
+        int selectedCount = selectedPhoto.size();
+        List<String> oldSelectedPhotos = photoGridAdapter.getSelectedPhotos();
+        oldSelectedPhotos.clear();
+        oldSelectedPhotos.addAll(selectedPhoto);
+        photoGridAdapter.notifyDataSetChanged();
+        mBtComplete.setEnabled(selectedCount > 0);
+        // 设置预览按钮的状态
+        mTvPreview.setEnabled(selectedCount > 0);
+        mBtComplete.setText(getString(R.string.album_selected_count, selectedCount, maxCount));
     }
 
 }

@@ -22,6 +22,9 @@ import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+
+import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -111,13 +114,15 @@ public class PhotoViewFragment extends TSFragment {
         // 初始化设置当前选择的数量
         mBtComplete.setEnabled(seletedPaths.size() > 0);
         mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(), maxCount));
+        // 初始化选择checkbox
+        mRbSelectPhoto.setChecked(seletedPaths.contains(mPagerAdapter.getPathAtPosition(currentItem)));
         mRbSelectPhoto.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 String path = mPagerAdapter.getPathAtPosition(mViewPager.getCurrentItem());
                 // 达到最大选择数量，添加新的图片，进行提示
-                if (seletedPaths.size() >= maxCount && !seletedPaths.contains(path)&&isChecked) {
+                if (seletedPaths.size() >= maxCount && !seletedPaths.contains(path) && isChecked) {
                     Toast.makeText(getActivity(), getString(me.iwf.photopicker.R.string.__picker_over_max_count_tips, maxCount),
                             LENGTH_LONG).show();
                     mRbSelectPhoto.setChecked(false);
@@ -134,6 +139,8 @@ public class PhotoViewFragment extends TSFragment {
                 // 重置当前的选择数量
                 mBtComplete.setEnabled(seletedPaths.size() > 0);
                 mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(), maxCount));
+                // 通知图片列表进行刷新
+                EventBus.getDefault().post(seletedPaths, EventBusTagConfig.EVENT_SELECTED_PHOTO_UPDATE);
             }
         });
     }
@@ -146,6 +153,11 @@ public class PhotoViewFragment extends TSFragment {
     @Override
     protected void initData() {
 
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
     }
 
     public static PhotoViewFragment newInstance(List<String> selectedPaths, List<String> allPhotos, int currentItem, int maxCount) {
