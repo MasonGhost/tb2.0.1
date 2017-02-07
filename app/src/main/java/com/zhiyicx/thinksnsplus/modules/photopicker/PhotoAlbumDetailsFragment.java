@@ -51,7 +51,9 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
     public static final String EXTRA_VIEW_WIDTH = "view_width";
     public static final String EXTRA_VIEW_HEIGHT = "view_height";
     public static final String EXTRA_VIEW_LOCATION = "view_location";
-    public static final String EXTRA_VIEW_PHOTOS = "view_photos";
+    public static final String EXTRA_VIEW_ALL_PHOTOS = "view_photos";
+    public static final String EXTRA_VIEW_SELECTED_PHOTOS = "view_selected_photos";
+    public static final String EXTRA_MAX_COUNT = "max_count";
     private static final int maxCount = DEFAULT_MAX_COUNT;
 
     @BindView(R.id.rv_album_details)
@@ -137,21 +139,23 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 return true;
             }
         });
-        // 设置图片预览的点击事件
+        // 设置图片item的点击事件
         photoGridAdapter.setOnPhotoClickListener(new OnPhotoClickListener() {
             @Override
             public void onClick(View v, int position, boolean showCamera) {
                 int index = showCamera ? position - 1 : position;
-                List<String> photos = photoGridAdapter.getCurrentPhotoPaths();
+                List<String> allPhotos = photoGridAdapter.getCurrentPhotoPaths();
+                ArrayList<String> selectedPhotos = photoGridAdapter.getSelectedPhotoPaths();
                 int[] screenLocation = new int[2];
                 v.getLocationOnScreen(screenLocation);
-
                 Bundle bundle = new Bundle();
                 bundle.putInt(EXTRA_VIEW_INDEX, index);
                 bundle.putInt(EXTRA_VIEW_WIDTH, v.getWidth());
                 bundle.putInt(EXTRA_VIEW_HEIGHT, v.getHeight());
                 bundle.putIntArray(EXTRA_VIEW_LOCATION, screenLocation);
-                bundle.putStringArrayList(EXTRA_VIEW_PHOTOS, (ArrayList<String>) photos);
+                bundle.putStringArrayList(EXTRA_VIEW_ALL_PHOTOS, (ArrayList<String>) allPhotos);
+                bundle.putStringArrayList(EXTRA_VIEW_SELECTED_PHOTOS, selectedPhotos);
+                bundle.putInt(EXTRA_MAX_COUNT, maxCount);
                 Intent intent = new Intent(getContext(), PhotoViewActivity.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
@@ -191,14 +195,17 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         switch (view.getId()) {
             case R.id.tv_preview:
                 //int index = showCamera ? position - 1 : position;
-                List<String> photos = photoGridAdapter.getSelectedPhotoPaths();
+                ArrayList<String> allPhotos = photoGridAdapter.getSelectedPhotoPaths();
+                ArrayList<String> selectedPhoto = photoGridAdapter.getSelectedPhotoPaths();
                 int[] screenLocation = new int[2];
                 Bundle bundle = new Bundle();
                 bundle.putInt(EXTRA_VIEW_INDEX, 0);
                 bundle.putInt(EXTRA_VIEW_WIDTH, 0);
                 bundle.putInt(EXTRA_VIEW_HEIGHT, 0);
                 bundle.putIntArray(EXTRA_VIEW_LOCATION, screenLocation);
-                bundle.putStringArrayList(EXTRA_VIEW_PHOTOS, (ArrayList<String>) photos);
+                bundle.putStringArrayList(EXTRA_VIEW_ALL_PHOTOS, allPhotos);
+                bundle.putStringArrayList(EXTRA_VIEW_SELECTED_PHOTOS, selectedPhoto);
+                bundle.putInt(EXTRA_MAX_COUNT, maxCount);
                 Intent intent1 = new Intent(getContext(), PhotoViewActivity.class);
                 intent1.putExtras(bundle);
                 startActivity(intent1);

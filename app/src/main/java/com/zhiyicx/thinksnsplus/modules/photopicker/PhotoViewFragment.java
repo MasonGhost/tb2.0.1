@@ -3,14 +3,15 @@ package com.zhiyicx.thinksnsplus.modules.photopicker;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import com.bumptech.glide.Glide;
 import com.nineoldandroids.animation.Animator;
@@ -18,6 +19,7 @@ import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import me.iwf.photopicker.adapter.PhotoPagerAdapter;
 
 /**
@@ -39,10 +42,16 @@ public class PhotoViewFragment extends TSFragment {
     @BindView(R.id.vp_photos)
     ViewPager mViewPager;
 
-    public final static String ARG_PATH = "PATHS";
+    public final static String ARG_SELCTED_PATH = "ARG_SELECTED_PATHS";// 传进来的已经被选择的图片
+    public final static String ARG_ALL_PATH = "ARG_ALL_PATHS";// 传进来的所有的图片路径
     public final static String ARG_CURRENT_ITEM = "ARG_CURRENT_ITEM";
+    @BindView(R.id.rb_select_photo)
+    CheckBox mRbSelectPhoto;
+    @BindView(R.id.bt_complete)
+    Button mBtComplete;
 
-    private ArrayList<String> paths;
+    private ArrayList<String> seletedPaths;
+    private ArrayList<String> allPaths;
     private PhotoPagerAdapter mPagerAdapter;
 
     public final static long ANIM_DURATION = 200L;
@@ -52,17 +61,19 @@ public class PhotoViewFragment extends TSFragment {
     public final static String ARG_THUMBNAIL_WIDTH = "THUMBNAIL_WIDTH";
     public final static String ARG_THUMBNAIL_HEIGHT = "THUMBNAIL_HEIGHT";
     public final static String ARG_HAS_ANIM = "HAS_ANIM";
+    public final static String ARG_MAX_COUNT = "MAX_COUNT";
 
     private int thumbnailTop = 0;
     private int thumbnailLeft = 0;
     private int thumbnailWidth = 0;
     private int thumbnailHeight = 0;
+    private int maxCount = 0;
 
     private boolean hasAnim = false;
 
     private final ColorMatrix colorizerMatrix = new ColorMatrix();
 
-    private int currentItem = 0;
+    private int currentItem = 0;// 点击第几张图片进入的预览界面
 
     @Override
     protected int getBodyLayoutId() {
@@ -83,11 +94,34 @@ public class PhotoViewFragment extends TSFragment {
             @Override
             public void onPageSelected(int position) {
                 hasAnim = currentItem == position;
+                ToastUtils.showToast("页数--》position" + position + "currentItem-->" + currentItem + "---" + mViewPager.getCurrentItem());
+                // 是否包含了已经选中的图片该图片
+                mRbSelectPhoto.setChecked(seletedPaths.contains(mPagerAdapter.getPathAtPosition(position)));
+
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
 
+            }
+        });
+        // 初始化设置当前选择的数量
+        mBtComplete.setEnabled(seletedPaths.size() > 0);
+        mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(), maxCount));
+        mRbSelectPhoto.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                String path = mPagerAdapter.getPathAtPosition(mViewPager.getCurrentItem());
+                if (isChecked) {
+                    if (!seletedPaths.contains(path)) {
+                        seletedPaths.add(path);
+                    }
+                } else {
+                    seletedPaths.remove(path);
+                }
+                // 重置当前的选择数量
+                mBtComplete.setEnabled(seletedPaths.size() > 0);
+                mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(), maxCount));
             }
         });
     }
@@ -102,24 +136,25 @@ public class PhotoViewFragment extends TSFragment {
 
     }
 
-    public static PhotoViewFragment newInstance(List<String> paths, int currentItem) {
+    public static PhotoViewFragment newInstance(List<String> selectedPaths, List<String> allPhotos, int currentItem, int maxCount) {
 
         PhotoViewFragment f = new PhotoViewFragment();
 
         Bundle args = new Bundle();
-        args.putStringArray(ARG_PATH, paths.toArray(new String[paths.size()]));
+        args.putStringArrayList(ARG_SELCTED_PATH, (ArrayList<String>) selectedPaths);
+        args.putStringArrayList(ARG_ALL_PATH, (ArrayList<String>) allPhotos);
         args.putInt(ARG_CURRENT_ITEM, currentItem);
         args.putBoolean(ARG_HAS_ANIM, false);
-
+        args.putInt(ARG_MAX_COUNT, maxCount);
         f.setArguments(args);
 
         return f;
     }
 
 
-    public static PhotoViewFragment newInstance(List<String> paths, int currentItem, int[] screenLocation, int thumbnailWidth, int thumbnailHeight) {
+    public static PhotoViewFragment newInstance(List<String> selectedPaths, List<String> allPhotos, int currentItem, int[] screenLocation, int thumbnailWidth, int thumbnailHeight, int maxCount) {
 
-        PhotoViewFragment f = newInstance(paths, currentItem);
+        PhotoViewFragment f = newInstance(selectedPaths, allPhotos, currentItem, maxCount);
 
         f.getArguments().putInt(ARG_THUMBNAIL_LEFT, screenLocation[0]);
         f.getArguments().putInt(ARG_THUMBNAIL_TOP, screenLocation[1]);
@@ -130,161 +165,46 @@ public class PhotoViewFragment extends TSFragment {
         return f;
     }
 
-
     public void setPhotos(List<String> paths, int currentItem) {
-        this.paths.clear();
-        this.paths.addAll(paths);
+        this.allPaths.clear();
+        this.allPaths.addAll(paths);
         this.currentItem = currentItem;
 
         mViewPager.setCurrentItem(currentItem);
         mViewPager.getAdapter().notifyDataSetChanged();
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        paths = new ArrayList<>();
-
         Bundle bundle = getArguments();
 
         if (bundle != null) {
-            String[] pathArr = bundle.getStringArray(ARG_PATH);
-            paths.clear();
-            if (pathArr != null) {
-
-                paths = new ArrayList<>(Arrays.asList(pathArr));
-            }
-
+            seletedPaths = bundle.getStringArrayList(ARG_SELCTED_PATH);
+            seletedPaths = (ArrayList<String>) seletedPaths.clone();// 克隆一份，防止改变数据源
+            allPaths = bundle.getStringArrayList(ARG_ALL_PATH);
             hasAnim = bundle.getBoolean(ARG_HAS_ANIM);
             currentItem = bundle.getInt(ARG_CURRENT_ITEM);
             thumbnailTop = bundle.getInt(ARG_THUMBNAIL_TOP);
             thumbnailLeft = bundle.getInt(ARG_THUMBNAIL_LEFT);
             thumbnailWidth = bundle.getInt(ARG_THUMBNAIL_WIDTH);
             thumbnailHeight = bundle.getInt(ARG_THUMBNAIL_HEIGHT);
+            maxCount = bundle.getInt(ARG_MAX_COUNT);
         }
-
-        mPagerAdapter = new PhotoPagerAdapter(Glide.with(this), paths);
-    }
-
-    /**
-     * The enter animation scales the picture in from its previous thumbnail
-     * size/location, colorizing it in parallel. In parallel, the background of the
-     * activity is fading in. When the pictue is in place, the text description
-     * drops down.
-     */
-    private void runEnterAnimation() {
-        final long duration = ANIM_DURATION;
-
-        // Set starting values for properties we're going to animate. These
-        // values scale and position the full size version down to the thumbnail
-        // size/location, from which we'll animate it back up
-        ViewHelper.setPivotX(mViewPager, 0);
-        ViewHelper.setPivotY(mViewPager, 0);
-        ViewHelper.setScaleX(mViewPager, (float) thumbnailWidth / mViewPager.getWidth());
-        ViewHelper.setScaleY(mViewPager, (float) thumbnailHeight / mViewPager.getHeight());
-        ViewHelper.setTranslationX(mViewPager, thumbnailLeft);
-        ViewHelper.setTranslationY(mViewPager, thumbnailTop);
-
-        // Animate scale and translation to go from thumbnail to full size
-        ViewPropertyAnimator.animate(mViewPager)
-                .setDuration(duration)
-                .scaleX(1)
-                .scaleY(1)
-                .translationX(0)
-                .translationY(0)
-                .setInterpolator(new DecelerateInterpolator());
-
-        // Fade in the black background
-        ObjectAnimator bgAnim = ObjectAnimator.ofInt(mViewPager.getBackground(), "alpha", 0, 255);
-        bgAnim.setDuration(duration);
-        bgAnim.start();
-
-        // Animate a color filter to take the image from grayscale to full color.
-        // This happens in parallel with the image scaling and moving into place.
-        ObjectAnimator colorizer = ObjectAnimator.ofFloat(PhotoViewFragment.this,
-                "saturation", 0, 1);
-        colorizer.setDuration(duration);
-        colorizer.start();
-
-    }
-
-    /**
-     * The exit animation is basically a reverse of the enter animation, except that if
-     * the orientation has changed we simply scale the picture back into the center of
-     * the screen.
-     *
-     * @param endAction This action gets run after the animation completes (this is
-     *                  when we actually switch activities)
-     */
-    public void runExitAnimation(final Runnable endAction) {
-
-        if (!getArguments().getBoolean(ARG_HAS_ANIM, false) || !hasAnim) {
-            endAction.run();
-            return;
-        }
-
-        final long duration = ANIM_DURATION;
-
-        // Animate image back to thumbnail size/location
-        ViewPropertyAnimator.animate(mViewPager)
-                .setDuration(duration)
-                .setInterpolator(new AccelerateInterpolator())
-                .scaleX((float) thumbnailWidth / mViewPager.getWidth())
-                .scaleY((float) thumbnailHeight / mViewPager.getHeight())
-                .translationX(thumbnailLeft)
-                .translationY(thumbnailTop)
-                .setListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        endAction.run();
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-                    }
-                });
-
-        // Fade out background
-        ObjectAnimator bgAnim = ObjectAnimator.ofInt(mViewPager.getBackground(), "alpha", 0);
-        bgAnim.setDuration(duration);
-        bgAnim.start();
-
-        // Animate a color filter to take the image back to grayscale,
-        // in parallel with the image scaling and moving into place.
-        ObjectAnimator colorizer =
-                ObjectAnimator.ofFloat(PhotoViewFragment.this, "saturation", 1, 0);
-        colorizer.setDuration(duration);
-        colorizer.start();
-    }
-
-    /**
-     * This is called by the colorizing animator. It sets a saturation factor that is then
-     * passed onto a filter on the picture's drawable.
-     *
-     * @param value saturation
-     */
-    public void setSaturation(float value) {
-        colorizerMatrix.setSaturation(value);
-        ColorMatrixColorFilter colorizerFilter = new ColorMatrixColorFilter(colorizerMatrix);
-        mViewPager.getBackground().setColorFilter(colorizerFilter);
+        mPagerAdapter = new PhotoPagerAdapter(Glide.with(this), allPaths);
     }
 
     public ViewPager getViewPager() {
         return mViewPager;
     }
 
-    public ArrayList<String> getPaths() {
-        return paths;
+    public ArrayList<String> getAllPaths() {
+        return allPaths;
+    }
+
+    public ArrayList<String> getSeletedPaths() {
+        return seletedPaths;
     }
 
     public int getCurrentItem() {
@@ -295,11 +215,16 @@ public class PhotoViewFragment extends TSFragment {
     public void onDestroy() {
         super.onDestroy();
 
-        paths.clear();
-        paths = null;
-
+        allPaths.clear();
+        seletedPaths.clear();
+        allPaths = null;
+        seletedPaths = null;
         if (mViewPager != null) {
             mViewPager.setAdapter(null);
         }
+    }
+
+    @OnClick(R.id.bt_complete)
+    public void onClick() {
     }
 }
