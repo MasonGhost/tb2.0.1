@@ -69,7 +69,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
     }
 
     @Override
-    public void getPhotoListFromSelector(int maxCount) {
+    public void getPhotoListFromSelector(int maxCount, ArrayList<String> selectedPhotos) {
         this.maxCount = maxCount;
         // 选择相册
         PhotoPicker.builder()
@@ -77,6 +77,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                 .setGridColumnCount(4)      // 每行的图片数量
                 .setPhotoCount(maxCount)    //  每次能够选择的最
                 .setShowCamera(false)        // 是否需要展示相机
+                .setSelected(selectedPhotos)// 已经选择的图片
                 .start(mContext, mFragment);
     }
 
@@ -138,22 +139,6 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
      */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-/*            if ((requestCode == PhotoPicker.REQUEST_CODE || requestCode == PhotoPreview.REQUEST_CODE)) {
-                List<String> photos = null;
-                if (data != null) {
-                    photos = data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS);
-                }
-                // 是否需要剪裁，不需要就直接返回结果
-                if (isNeededCraft()) {
-                    startToCraft(photos.get(0));
-                } else {
-                    List<ImageBean> imageBeanList = new ArrayList<>();
-                    ImageBean imageBean = new ImageBean();
-                    imageBean.setImgUrl(photos.get(0));
-                    imageBeanList.add(imageBean);
-                    mTIPhotoBackListener.getPhotoSuccess(imageBeanList);
-                }
-            }*/
             // 从相机中获取照片
             if (requestCode == CAMERA_PHOTO_CODE && mTakePhotoUri != null) {
                 String path = mTakePhotoUri.getPath();

@@ -50,7 +50,7 @@ import static me.iwf.photopicker.PhotoPicker.KEY_SELECTED_PHOTOS;
  */
 
 public class PhotoAlbumDetailsFragment extends TSFragment {
-    public final static String EXTRA_ORIGIN = "origin";
+    public final static String EXTRA_ORIGIN = "ORIGINAL_PHOTOS";
     private final static String EXTRA_COLUMN = "column";
     public final static String EXTRA_VIEW_INDEX = "view_index";
     public static final String EXTRA_VIEW_WIDTH = "view_width";
