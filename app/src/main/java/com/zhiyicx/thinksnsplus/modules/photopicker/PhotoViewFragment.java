@@ -12,6 +12,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.nineoldandroids.animation.Animator;
@@ -30,6 +31,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.iwf.photopicker.adapter.PhotoPagerAdapter;
+
+import static android.widget.Toast.LENGTH_LONG;
 
 /**
  * @author LiuChao
@@ -111,7 +114,15 @@ public class PhotoViewFragment extends TSFragment {
         mRbSelectPhoto.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
                 String path = mPagerAdapter.getPathAtPosition(mViewPager.getCurrentItem());
+                // 达到最大选择数量，添加新的图片，进行提示
+                if (seletedPaths.size() >= maxCount && !seletedPaths.contains(path)&&isChecked) {
+                    Toast.makeText(getActivity(), getString(me.iwf.photopicker.R.string.__picker_over_max_count_tips, maxCount),
+                            LENGTH_LONG).show();
+                    mRbSelectPhoto.setChecked(false);
+                    return;
+                }
                 if (isChecked) {
                     if (!seletedPaths.contains(path)) {
                         seletedPaths.add(path);
@@ -119,6 +130,7 @@ public class PhotoViewFragment extends TSFragment {
                 } else {
                     seletedPaths.remove(path);
                 }
+
                 // 重置当前的选择数量
                 mBtComplete.setEnabled(seletedPaths.size() > 0);
                 mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(), maxCount));
