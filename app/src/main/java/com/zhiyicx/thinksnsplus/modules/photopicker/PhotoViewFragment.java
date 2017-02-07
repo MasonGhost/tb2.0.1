@@ -21,6 +21,7 @@ import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -253,9 +254,7 @@ public class PhotoViewFragment extends TSFragment {
 
     @OnClick(R.id.bt_complete)
     public void onClick() {
-        Intent intent = new Intent();
-        intent.putStringArrayListExtra(KEY_SELECTED_PHOTOS, seletedPaths);
-        getActivity().setResult(RESULT_OK, intent);
+        ActivityHandler.getInstance().getActivity(PhotoAlbumDetailsActivity.class).finish();
         getActivity().finish();
         EventBus.getDefault().post(seletedPaths, EventBusTagConfig.EVENT_COMPLETE_PHOTO_SELECT);
     }

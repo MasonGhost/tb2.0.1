@@ -57,6 +57,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
     private File takePhotoFolder;// 拍照后照片的存放目录
     private Uri mTakePhotoUri;// 拍照后照片的uri
     private int mCropShape;
+    private int maxCount;// 可选的最大图片数量
 
     public PhotoSelectorImpl(IPhotoBackListener iPhotoBackListener, Fragment mFragment, int cropShape) {
         takePhotoFolder = new File(Environment.getExternalStorageDirectory(), "/DCIM/" + "TSPlusPhotoFolder/");
@@ -69,6 +70,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
 
     @Override
     public void getPhotoListFromSelector(int maxCount) {
+        this.maxCount = maxCount;
         // 选择相册
         PhotoPicker.builder()
                 .setPreviewEnabled(true) // 是否可预览
@@ -80,7 +82,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
 
     @Override
     public void getPhotoFromCamera() {
-
+        this.maxCount = 1;// 从相机拿到的是单张的图片
         boolean suc = FileUtils.createOrExistsDir(takePhotoFolder);
         File toFile = new File(takePhotoFolder, "IMG" + format() + ".jpg");
         if (suc) {
@@ -117,13 +119,14 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
 
 
     /**
-     * 统一的判断是否需要进行裁剪的逻辑
+     * 统一的判断是否需要进行裁剪的逻辑:单张需要裁剪，多张不需要裁剪
      *
      * @return
      */
     @Override
     public boolean isNeededCraft() {
-        return true;
+
+        return maxCount <= 1;
     }
 
     /**
@@ -270,7 +273,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
     /**
      * 做一些回收工作
      */
-    public void onDestory(){
+    public void onDestory() {
         EventBus.getDefault().unregister(this);
     }
 

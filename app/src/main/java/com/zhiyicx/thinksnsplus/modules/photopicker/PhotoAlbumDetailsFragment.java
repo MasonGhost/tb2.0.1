@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 
@@ -213,7 +214,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         }
         int selectedCount = photoGridAdapter.getSelectedPhotoPaths().size();
         // 初始化数据
-        mBtComplete.setEnabled( selectedCount> 0);
+        mBtComplete.setEnabled(selectedCount > 0);
         mTvPreview.setEnabled(selectedCount > 0);
         mBtComplete.setText(getString(R.string.album_selected_count, selectedCount, maxCount));
     }
@@ -245,10 +246,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 startActivity(intent1);
                 break;
             case R.id.bt_complete:
-                Intent intent = new Intent();
                 ArrayList<String> selectedPhotos = photoGridAdapter.getSelectedPhotoPaths();
-                intent.putStringArrayListExtra(KEY_SELECTED_PHOTOS, selectedPhotos);
-                getActivity().setResult(RESULT_OK, intent);
                 getActivity().finish();
                 EventBus.getDefault().post(selectedPhotos, EventBusTagConfig.EVENT_COMPLETE_PHOTO_SELECT);
                 break;
