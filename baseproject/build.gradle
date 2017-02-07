@@ -53,10 +53,6 @@ dependencies {
         exclude group: 'javax.inject'
     }
     testCompile testDependences.robolectric
-    testCompile "org.mockito:mockito-core:1.9.5"
-    androidTestCompile "org.mockito:mockito-core:1.9.5"
-    androidTestCompile 'com.google.dexmaker:dexmaker:1.1'
-    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.1'
     androidTestApt dataDependences.daggerCompiler
     // Dagger dependencies
     compile dataDependences.dagger
@@ -71,4 +67,9 @@ dependencies {
     compile project(':ucrop')
     compile project(':pickerview')
     compile project(':PhotoPicker')
+    compile 'com.android.support:support-v4:25.0.1'
+    testCompile 'org.mockito:mockito-core:1.9.5'
+    androidTestCompile 'org.mockito:mockito-core:1.9.5'
+    androidTestCompile 'com.google.dexmaker:dexmaker:1.1'
+    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.1'
 }

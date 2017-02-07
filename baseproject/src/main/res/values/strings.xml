@@ -4,4 +4,7 @@
 
     <!--error print content-->
     <string name="err_share_no_content">share content not null</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
