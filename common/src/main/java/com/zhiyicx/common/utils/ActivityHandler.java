@@ -53,6 +53,15 @@ public class ActivityHandler {
         return activity;
     }
 
+    public Activity getActivity(Class<?> cls) {
+        for (Activity activity : activityStack) {
+            if (activity.getClass().equals(cls)) {
+                return activity;
+            }
+        }
+        return null;
+    }
+
     /**
      * 结束当前Activity（堆栈中最后一个压入的）
      */
