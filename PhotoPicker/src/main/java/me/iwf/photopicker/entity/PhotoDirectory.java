@@ -1,5 +1,7 @@
 package me.iwf.photopicker.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
@@ -8,7 +10,7 @@ import java.util.List;
 /**
  * Created by donglua on 15/6/28.
  */
-public class PhotoDirectory {
+public class PhotoDirectory implements Parcelable{
 
   private String id;
   private String coverPath;
@@ -107,4 +109,41 @@ public class PhotoDirectory {
     photos.add(new Photo(id, path));
   }
 
+
+  @Override
+  public int describeContents() {
+    return 0;
+  }
+
+  @Override
+  public void writeToParcel(Parcel dest, int flags) {
+    dest.writeString(this.id);
+    dest.writeString(this.coverPath);
+    dest.writeString(this.name);
+    dest.writeLong(this.dateAdded);
+    dest.writeTypedList(this.photos);
+  }
+
+  public PhotoDirectory() {
+  }
+
+  protected PhotoDirectory(Parcel in) {
+    this.id = in.readString();
+    this.coverPath = in.readString();
+    this.name = in.readString();
+    this.dateAdded = in.readLong();
+    this.photos = in.createTypedArrayList(Photo.CREATOR);
+  }
+
+  public static final Creator<PhotoDirectory> CREATOR = new Creator<PhotoDirectory>() {
+    @Override
+    public PhotoDirectory createFromParcel(Parcel source) {
+      return new PhotoDirectory(source);
+    }
+
+    @Override
+    public PhotoDirectory[] newArray(int size) {
+      return new PhotoDirectory[size];
+    }
+  };
 }
