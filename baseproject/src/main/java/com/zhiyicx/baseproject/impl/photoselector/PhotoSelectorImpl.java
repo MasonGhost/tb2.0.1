@@ -21,6 +21,8 @@ import com.zhiyicx.common.utils.UIUtils;
 
 
 import org.json.JSONArray;
+import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -62,6 +64,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
         this.mFragment = mFragment;
         this.mContext = mFragment.getContext();
         this.mCropShape = cropShape;
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -132,8 +135,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
      */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            // 从本地相册选择图片
-            if ((requestCode == PhotoPicker.REQUEST_CODE || requestCode == PhotoPreview.REQUEST_CODE)) {
+/*            if ((requestCode == PhotoPicker.REQUEST_CODE || requestCode == PhotoPreview.REQUEST_CODE)) {
                 List<String> photos = null;
                 if (data != null) {
                     photos = data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS);
@@ -148,7 +150,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                     imageBeanList.add(imageBean);
                     mTIPhotoBackListener.getPhotoSuccess(imageBeanList);
                 }
-            }
+            }*/
             // 从相机中获取照片
             if (requestCode == CAMERA_PHOTO_CODE && mTakePhotoUri != null) {
                 String path = mTakePhotoUri.getPath();
@@ -190,6 +192,24 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                 }
                 mTIPhotoBackListener.getPhotoFailure(cropError.getMessage());
             }
+        }
+    }
+
+    /**
+     * 通过eventBus获取选择的图片
+     */
+    @Subscriber(tag = "event_complete_photo_select")
+    public void getLocalSelectedPhotos(List<String> photos) {
+        // 从本地相册选择图片
+        // 是否需要剪裁，不需要就直接返回结果
+        if (isNeededCraft()) {
+            startToCraft(photos.get(0));
+        } else {
+            List<ImageBean> imageBeanList = new ArrayList<>();
+            ImageBean imageBean = new ImageBean();
+            imageBean.setImgUrl(photos.get(0));
+            imageBeanList.add(imageBean);
+            mTIPhotoBackListener.getPhotoSuccess(imageBeanList);
         }
     }
 
@@ -237,14 +257,21 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
         switch (mCropShape) {
             case SHAPE_SQUARE:
                 uCrop.withAspectRatio(1, 1);
-                options.setCropViewPadding(ConvertUtils.dp2px(mContext,SQUARE_LEFT_MARGIN),0);
+                options.setCropViewPadding(ConvertUtils.dp2px(mContext, SQUARE_LEFT_MARGIN), 0);
                 break;
             case SHAPE_RCTANGLE:
                 uCrop.withAspectRatio(1, 0.5f);// 矩形高度为屏幕宽度的一半
-                options.setCropViewPadding(0,0);
+                options.setCropViewPadding(0, 0);
                 break;
             default:
         }
+    }
+
+    /**
+     * 做一些回收工作
+     */
+    public void onDestory(){
+        EventBus.getDefault().unregister(this);
     }
 
 }

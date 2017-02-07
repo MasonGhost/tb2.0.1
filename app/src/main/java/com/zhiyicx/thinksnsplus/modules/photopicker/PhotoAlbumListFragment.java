@@ -31,6 +31,7 @@ import me.iwf.photopicker.adapter.PopupDirectoryListAdapter;
 import me.iwf.photopicker.entity.PhotoDirectory;
 import me.iwf.photopicker.utils.MediaStoreHelper;
 
+import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment.EXTRA_ORIGIN;
 import static me.iwf.photopicker.PhotoPicker.EXTRA_SHOW_GIF;
 
 /**
@@ -110,9 +111,11 @@ public class PhotoAlbumListFragment extends TSFragment {
                         bundle.putInt(SELECTED_DIRECTORY_NUMBER, position);
                         bundle.putParcelableArrayList(ALL_PHOTOS, directories);
                         bundle.putString(SELECTED_DIRECTORY_NAME, photoDirectory.getName());
+                        bundle.putStringArrayList(EXTRA_ORIGIN,getArguments().getStringArrayList(EXTRA_ORIGIN));
                         Intent intent = new Intent(getActivity(), PhotoAlbumDetailsActivity.class);
                         intent.putExtras(bundle);
                         PhotoAlbumListFragment.this.startActivity(intent);
+                        getActivity().finish();
                     }
                 });
             }

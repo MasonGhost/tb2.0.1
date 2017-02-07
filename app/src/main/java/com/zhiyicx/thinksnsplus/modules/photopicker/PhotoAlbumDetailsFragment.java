@@ -16,6 +16,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 
+import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ import static me.iwf.photopicker.PhotoPicker.KEY_SELECTED_PHOTOS;
  */
 
 public class PhotoAlbumDetailsFragment extends TSFragment {
-    private final static String EXTRA_ORIGIN = "origin";
+    public final static String EXTRA_ORIGIN = "origin";
     private final static String EXTRA_COLUMN = "column";
     public final static String EXTRA_VIEW_INDEX = "view_index";
     public static final String EXTRA_VIEW_WIDTH = "view_width";
@@ -56,6 +57,8 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
     public static final String EXTRA_VIEW_LOCATION = "view_location";
     public static final String EXTRA_VIEW_ALL_PHOTOS = "view_photos";
     public static final String EXTRA_VIEW_SELECTED_PHOTOS = "view_selected_photos";
+    //public static final String EXTRA_OLD_SELECTED_PHOTOS = "view_selected_photos";
+
     public final static String EXTRA_MAX_COUNT = "MAX_COUNT";
     private int maxCount = DEFAULT_MAX_COUNT;
 
@@ -98,6 +101,23 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
     @Override
     protected boolean useEventBus() {
         return true;
+    }
+
+    @Override
+    protected void setLeftClick() {
+        // 回到相册列表页面，同时将当前数据传递过去
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList(EXTRA_ORIGIN, photoGridAdapter.getSelectedPhotoPaths());
+        Intent intent = new Intent();
+        intent.setClass(getContext(), PhotoAlbumListActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        getActivity().finish();
+    }
+
+    @Override
+    protected void setRightClick() {
+        getActivity().finish();
     }
 
     @Override
@@ -191,6 +211,11 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                         }
                     });
         }
+        int selectedCount = photoGridAdapter.getSelectedPhotoPaths().size();
+        // 初始化数据
+        mBtComplete.setEnabled( selectedCount> 0);
+        mTvPreview.setEnabled(selectedCount > 0);
+        mBtComplete.setText(getString(R.string.album_selected_count, selectedCount, maxCount));
     }
 
     public static PhotoAlbumDetailsFragment initFragment(Bundle bundle) {
@@ -225,6 +250,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 intent.putStringArrayListExtra(KEY_SELECTED_PHOTOS, selectedPhotos);
                 getActivity().setResult(RESULT_OK, intent);
                 getActivity().finish();
+                EventBus.getDefault().post(selectedPhotos, EventBusTagConfig.EVENT_COMPLETE_PHOTO_SELECT);
                 break;
         }
     }

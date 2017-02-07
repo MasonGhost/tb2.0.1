@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.photopicker;
 
+import android.content.Intent;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.os.Bundle;
@@ -35,7 +36,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.iwf.photopicker.adapter.PhotoPagerAdapter;
 
+import static android.app.Activity.RESULT_OK;
 import static android.widget.Toast.LENGTH_LONG;
+import static me.iwf.photopicker.PhotoPicker.KEY_SELECTED_PHOTOS;
 
 /**
  * @author LiuChao
@@ -250,5 +253,10 @@ public class PhotoViewFragment extends TSFragment {
 
     @OnClick(R.id.bt_complete)
     public void onClick() {
+        Intent intent = new Intent();
+        intent.putStringArrayListExtra(KEY_SELECTED_PHOTOS, seletedPaths);
+        getActivity().setResult(RESULT_OK, intent);
+        getActivity().finish();
+        EventBus.getDefault().post(seletedPaths, EventBusTagConfig.EVENT_COMPLETE_PHOTO_SELECT);
     }
 }
