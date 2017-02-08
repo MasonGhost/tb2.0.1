@@ -41,7 +41,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class MessageLikeFragment<P extends IBasePresenter> extends TSListFragment<P, MessageItemBean> {
 
     private ImageLoader mImageLoader;
-    private List<MessageItemBean> mMessageItemBeen= new ArrayList<>();
+    private List<MessageItemBean> mMessageItemBeen = new ArrayList<>();
 
     public MessageLikeFragment() {
     }
@@ -222,6 +222,6 @@ public class MessageLikeFragment<P extends IBasePresenter> extends TSListFragmen
 
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
-        return false;
+        return true;
     }
 }

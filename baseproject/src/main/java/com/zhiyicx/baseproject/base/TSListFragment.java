@@ -7,26 +7,34 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.widget.EmptyView;
-import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.wrapper.EmptyWrapper;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import cn.bingoogolapple.refreshlayout.TSPRefreshViewHolder;
+import rx.functions.Action1;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 
 /**
  * @Describe 基础列表类
  * @Author Jungle68
- * @Date 2017/1/
+ * @Date 2017/2/7
  * @Contact master.jungle68@gmail.com
  */
 
-public abstract class TSListFragment<P extends IBasePresenter, T> extends TSFragment<P> implements BGARefreshLayout.BGARefreshLayoutDelegate {
+public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFragment<P> implements BGARefreshLayout.BGARefreshLayoutDelegate, ITSListView<T> {
     private static final float DEFAULT_LIST_ITEM_SPACING = 1f;
 
     protected CommonAdapter<T> mAdapter;
@@ -61,6 +69,16 @@ public abstract class TSListFragment<P extends IBasePresenter, T> extends TSFrag
         mRefreshlayout = (BGARefreshLayout) rootView.findViewById(R.id.refreshlayout);
         mRvList = (RecyclerView) rootView.findViewById(R.id.rv_list);
         mEmptyView = (EmptyView) rootView.findViewById(R.id.emptyview);
+        mEmptyView.setNeedTextTip(false);
+        mEmptyView.setNeedClickLoadState(false);
+        RxView.clicks(mEmptyView)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        mRefreshlayout.beginRefreshing();
+                    }
+                });
         mRefreshlayout.setDelegate(this);
         mRvList.setLayoutManager(getLayoutManager());
         mRvList.addItemDecoration(getItemDecoration());//设置Item的间隔
@@ -119,21 +137,62 @@ public abstract class TSListFragment<P extends IBasePresenter, T> extends TSFrag
 
     protected abstract CommonAdapter<T> getAdapter();
 
-
-    @Override
-    public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-
-    }
-
-    @Override
-    public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
-        return false;
-    }
-
     /**
      * 刷新数据
      */
     public void refreshData() {
         mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
+        mPresenter.requestData(false);
+    }
+
+    @Override
+    public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
+        mPresenter.requestData(true);
+        return true;
+    }
+
+    /**
+     * @param data       内容信息
+     * @param isLoadMore 加载状态
+     */
+    @Override
+    public void onResponseSuccess(@NotNull List<T> data, boolean isLoadMore) {
+        handleRefreshState(isLoadMore);
+
+
+    }
+
+    /**
+     * @param throwable  具体错误信息
+     * @param isLoadMore 加载状态
+     */
+    @Override
+    public void onResponseError(Throwable throwable, boolean isLoadMore) {
+        handleRefreshState(isLoadMore);
+
+        if (!isLoadMore) { // 刷新
+            mAdapter.clear();
+
+        } else { // 加载更多
+
+        }
+
+    }
+
+    /**
+     * 处理关闭加载、刷新状态
+     *
+     * @param isLoadMore
+     */
+    private void handleRefreshState(boolean isLoadMore) {
+        if (isLoadMore) {
+            mRefreshlayout.endLoadingMore();
+        } else {
+            mRefreshlayout.endRefreshing();
+        }
     }
 }
