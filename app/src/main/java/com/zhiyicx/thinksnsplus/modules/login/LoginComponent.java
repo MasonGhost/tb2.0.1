@@ -1,10 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.login;
 
-import com.zhiyicx.common.dagger.module.AppModule;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;
-
-import javax.inject.Scope;
+import com.zhiyicx.thinksnsplus.base.InjectComponent;
 
 import dagger.Component;
 
@@ -16,6 +14,5 @@ import dagger.Component;
  */
 @FragmentScoped
 @Component(dependencies = AppComponent.class, modules = LoginPresenterModule.class)
-public interface LoginComponent {
-    void inject(LoginActivity loginActivity);
+public interface LoginComponent extends InjectComponent<LoginActivity> {
 }

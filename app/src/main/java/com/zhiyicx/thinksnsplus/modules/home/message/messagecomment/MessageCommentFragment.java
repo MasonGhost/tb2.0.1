@@ -2,21 +2,15 @@ package com.zhiyicx.thinksnsplus.modules.home.message.messagecomment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
-import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -28,14 +22,12 @@ import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
-import cn.bingoogolapple.refreshlayout.TSPRefreshViewHolder;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -46,15 +38,11 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/17
  * @Contact master.jungle68@gmail.com
  */
-public class MessageCommentFragment extends TSFragment implements BGARefreshLayout.BGARefreshLayoutDelegate {
-    private static final float LIST_ITEM_SPACING = 1f;
-    @BindView(R.id.rv_comment_list)
-    RecyclerView mRvLikeList;
-    @BindView(R.id.refreshlayout_message_comment)
-    BGARefreshLayout mRefreshlayoutMessageComment;
+public class MessageCommentFragment extends TSListFragment<MessageCommentContract.Presenter, MessageItemBean> implements MessageCommentContract.View {
+
 
     private ImageLoader mImageLoader;
-    private List<MessageItemBean> mMessageItemBeen;
+    private List<MessageItemBean> mMessageItemBeen = new ArrayList<>();
 
     public MessageCommentFragment() {
     }
@@ -66,53 +54,36 @@ public class MessageCommentFragment extends TSFragment implements BGARefreshLayo
         return fragment;
     }
 
-    @Override
-    protected int getBodyLayoutId() {
-        return R.layout.fragment_message_comment;
-    }
-
-    @Override
-    protected int setToolBarBackgroud() {
-        return R.color.white;
-    }
-
 
     @Override
     protected String setCenterTitle() {
         return getString(R.string.comment);
     }
 
-    @Override
-    protected boolean showToolBarDivider() {
-        return true;
-    }
 
     @Override
     protected void initView(View rootView) {
-//        mToolbarCenter.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
+        super.initView(rootView);
+    }
+
+    @Override
+    protected CommonAdapter<MessageItemBean> getAdapter() {
+        return new CommonAdapter<MessageItemBean>(getActivity(), R.layout.item_message_comment_list, mMessageItemBeen) {
+            @Override
+            protected void convert(ViewHolder holder, MessageItemBean messageItemBean, int position) {
+                setItemData(holder, messageItemBean, position);
+            }
+        };
     }
 
 
     @Override
     protected void initData() {
-        mRefreshlayoutMessageComment.setDelegate(this);
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        mMessageItemBeen = new ArrayList<>();
         initCommentAndLike(mMessageItemBeen);
-        mRvLikeList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRvLikeList.addItemDecoration(new LinearDecoration(0, ConvertUtils.dp2px(getContext(), LIST_ITEM_SPACING), 0, 0));//设置Item的间隔
-        //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
-        mRvLikeList.setHasFixedSize(true);
-        mRvLikeList.setItemAnimator(new DefaultItemAnimator());//设置动画
-        mRvLikeList.setAdapter(new CommonAdapter<MessageItemBean>(getActivity(), R.layout.item_message_comment_list, mMessageItemBeen) {
-            @Override
-            protected void convert(ViewHolder holder, MessageItemBean messageItemBean, int position) {
-                setItemData(holder, messageItemBean, position);
-            }
-
-        });
-        mRefreshlayoutMessageComment.setRefreshViewHolder(new TSPRefreshViewHolder(getActivity(), true));
+        refreshData();
     }
+
 
     /**
      * 评论的和点赞的数据
@@ -158,9 +129,9 @@ public class MessageCommentFragment extends TSFragment implements BGARefreshLayo
     /**
      * 设置item 数据
      *
-     * @param holder          控件管理器
-     * @param messageItem     当前数据
-     * @param position        当前数据位置
+     * @param holder      控件管理器
+     * @param messageItem 当前数据
+     * @param position    当前数据位置
      */
 
     private void setItemData(ViewHolder holder, final MessageItemBean messageItem, int position) {
@@ -252,32 +223,33 @@ public class MessageCommentFragment extends TSFragment implements BGARefreshLayo
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate a fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        ButterKnife.bind(this, rootView);
-        return rootView;
+    protected boolean insertOrUpdateData(@NotNull List<MessageItemBean> data) {
+        return false;
     }
 
-    /**
-     * 上拉刷新
-     *
-     * @param refreshLayout
-     */
     @Override
-    public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
+    protected List<MessageItemBean> getCacheData(int maxId) {
+        return new ArrayList<>();
+    }
+
+
+    @Override
+    public void setPresenter(MessageCommentContract.Presenter presenter) {
+        mPresenter = presenter;
+    }
+
+    @Override
+    public void showLoading() {
 
     }
 
-    /**
-     * 下拉加载
-     *
-     * @param refreshLayout
-     * @return
-     */
     @Override
-    public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
+    public void hideLoading() {
 
-        return true;
+    }
+
+    @Override
+    public void showMessage(String message) {
+
     }
 }

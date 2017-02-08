@@ -434,7 +434,7 @@ public abstract class TSWebFragment extends TSFragment {
      */
     public List<String> getAllImageUrlFromHtml(String html) {
         Matcher matcher = Pattern.compile(IMAGE_URL_TAG).matcher(html);
-        List<String> listImgUrl = new ArrayList<String>();
+        List<String> listImgUrl = new ArrayList<>();
         while (matcher.find()) {
             listImgUrl.add(matcher.group());
         }

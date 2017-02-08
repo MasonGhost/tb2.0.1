@@ -50,7 +50,7 @@ public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     }
 
     public void convert(ViewHolder holder, T t, T lastT) {
-        mItemViewDelegateManager.convert(holder, t,lastT, holder.getAdapterPosition());
+        mItemViewDelegateManager.convert(holder, t, lastT, holder.getAdapterPosition());
     }
 
     protected boolean isEnabled(int viewType) {
@@ -96,6 +96,23 @@ public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
 
     public List<T> getDatas() {
         return mDatas;
+    }
+
+    /**
+     * 新增清除数据
+     */
+    public void clear() {
+        mDatas.clear();
+        notifyDataSetChanged();
+    }
+
+    /**
+     * 新增数据添加
+     *
+     * @param datas
+     */
+    public void addAllData(List<T> datas) {
+        mDatas.addAll(datas);
     }
 
     public T getItem(int position) {

@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.password.changepassword;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;
+import com.zhiyicx.thinksnsplus.base.InjectComponent;
 
 import dagger.Component;
 
@@ -13,6 +14,5 @@ import dagger.Component;
  */
 @FragmentScoped
 @Component(dependencies = AppComponent.class, modules = ChangePasswordPresenterModule.class)
-public interface ChangePasswordComponent {
-    void inject(ChangePasswordActivity changePasswordActivity);
+public interface ChangePasswordComponent extends InjectComponent<ChangePasswordActivity> {
 }

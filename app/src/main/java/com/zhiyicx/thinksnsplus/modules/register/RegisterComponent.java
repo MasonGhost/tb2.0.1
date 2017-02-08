@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.register;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;
+import com.zhiyicx.thinksnsplus.base.InjectComponent;
 
 import dagger.Component;
 
@@ -13,6 +14,5 @@ import dagger.Component;
  */
 @FragmentScoped
 @Component(dependencies = AppComponent.class, modules = RegisterPresenterModule.class)
-public interface RegisterComponent {
-    void inject(RegisterActivity registerActivity);
+public interface RegisterComponent extends InjectComponent<RegisterActivity>{
 }

@@ -23,7 +23,17 @@ public class TSWebFragmentTest {
 
     @Before
     public void init() {
-        mTSWebFragment = new TSWebFragment();
+        mTSWebFragment = new TSWebFragment() {
+            @Override
+            protected void onWebImageClick(String clickUrl, List<String> images) {
+
+            }
+
+            @Override
+            protected void onWebImageLongClick(String longClickUrl) {
+
+            }
+        };
     }
 
     /**
@@ -31,7 +41,7 @@ public class TSWebFragmentTest {
      */
     @Test
     public void getAllImageUrlFromHtml() {
-        String html = "<html class=\"\"><head><meta name=\"viewport\" content=\"width=device-width, minimum-scale=0.1\"><title>20160123213356259 (513×411)</title><style type=\"text/css\">.fancybox-margin{margin-right:0px;}</style><style id=\"style-1-cropbar-clipper\">/* Copyright 2014 Evernote Corporation. All rights reserved. */\n" +
+        String html = "<html class=\"\"><head><meta name=\"viewport\" content=\"width=device-width, minimum-scale=0.1\"><title>20150821150205086 (368×364)</title><style type=\"text/css\">.fancybox-margin{margin-right:0px;}</style><style id=\"style-1-cropbar-clipper\">/* Copyright 2014 Evernote Corporation. All rights reserved. */\n" +
                 ".en-markup-crop-options {\n" +
                 "    top: 18px !important;\n" +
                 "    left: 50% !important;\n" +
@@ -44,7 +54,7 @@ public class TSWebFragmentTest {
                 ".en-markup-crop-options div div:first-of-type {\n" +
                 "    margin-left: 0px !important;\n" +
                 "}\n" +
-                "</style></head><body style=\"margin: 0px;\"><mIvError style=\"user-select: none; cursor: zoom-in;\" src=\"http://mIvError.blog.csdn.net/20160123213356259\" width=\"500\" height=\"400\"></body></html>";
+                "</style></head><body style=\"margin: 0px;\"><img style=\"-webkit-user-select: none\" src=\"http://img.blog.csdn.net/20150821150205086\"></body></html>";
         List<String> images = mTSWebFragment.getAllImageUrlFromHtml(html);
         System.out.println("images = " + images);
         Assert.assertFalse(images.isEmpty());

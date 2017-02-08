@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.password.findpassword;
+package com.zhiyicx.thinksnsplus.modules.home.message.messagelike;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;
@@ -13,6 +13,6 @@ import dagger.Component;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-@Component(dependencies = AppComponent.class, modules =  FindPasswordPresenterModule.class)
-public interface FindPasswordComponent extends InjectComponent<FindPasswordActivity> {
+@Component(dependencies = AppComponent.class, modules = MessageLikePresenterModule.class)
+public interface MessageLikeComponent extends InjectComponent<MessageLikeActivity>{
 }
