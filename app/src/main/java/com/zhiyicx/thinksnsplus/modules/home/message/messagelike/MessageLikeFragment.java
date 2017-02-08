@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -214,17 +213,6 @@ public class MessageLikeFragment<P extends ITSListPresenter> extends TSListFragm
     private void toUserCenter() {
         Intent to = new Intent(getActivity(), UserInfoActivity.class);
         startActivity(to);
-    }
-
-
-    @Override
-    public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-
-    }
-
-    @Override
-    public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
-        return true;
     }
 
     @Override

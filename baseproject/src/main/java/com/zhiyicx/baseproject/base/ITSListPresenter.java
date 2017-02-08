@@ -12,9 +12,10 @@ public interface ITSListPresenter extends IBasePresenter {
     /**
      * 请求列表数据
      *
+     * @param maxId 当前获取到数据的最大 id
      * @param isLoadMore 加载状态
      */
-    void requestData(boolean isLoadMore);
+    void requestData(int maxId,boolean isLoadMore);
 
 
 }

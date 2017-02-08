@@ -13,17 +13,12 @@ import com.zhiyicx.common.net.HttpsSSLFactroyUtils;
 import com.zhiyicx.common.net.intercept.CommonRequestIntercept;
 import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.utils.ActivityHandler;
-import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.SharePreferenceUtils;
-import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.manage.ZBIMSDK;
-import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
-import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
@@ -42,8 +37,6 @@ import okhttp3.Response;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 /**
  * @Describe
@@ -55,6 +48,7 @@ import rx.schedulers.Schedulers;
 public class AppApplication extends TSApplication {
     @Inject
     AuthRepository mAuthRepository;
+    private AlertDialog alertDialog; // token 过期弹框
 
     @Override
     public void onCreate() {
@@ -103,17 +97,21 @@ public class AppApplication extends TSApplication {
                             .doOnCompleted(new Action0() {
                                 @Override
                                 public void call() {
-                                    System.out.println("currentActivity" + ActivityHandler.getInstance().currentActivity().getLocalClassName());
-                                    new AlertDialog.Builder(ActivityHandler.getInstance().currentActivity())
-                                            .setTitle(R.string.token_expiers)
-                                            .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialogInterface, int i) {
-                                                    ActivityHandler.getInstance().finishAllActivity();
-                                                    startActivity(new Intent(AppApplication.this, LoginActivity.class));
-                                                }
-                                            })
-                                            .create().show();
+                                    if (alertDialog == null) {
+                                        alertDialog = new AlertDialog.Builder(ActivityHandler.getInstance().currentActivity())
+                                                .setTitle(R.string.token_expiers)
+                                                .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                                        Intent intent = new Intent(getContext(), LoginActivity.class);
+                                                        ActivityHandler.getInstance().currentActivity().startActivity(intent);
+                                                        alertDialog.dismiss();
+                                                    }
+                                                })
+                                                .create();
+                                    }
+                                    alertDialog.show();
+
                                 }
                             })
                             .subscribe();

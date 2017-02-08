@@ -149,14 +149,24 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
         mAdapter.notifyDataSetChanged();
     }
 
+    /**
+     *  刷新
+     * @param refreshLayout 刷新控件
+     */
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-        mPresenter.requestData(false);
+        mMaxId = DEFAULT_PAGE_MAX_ID;
+        mPresenter.requestData(mMaxId,false);
     }
 
+    /**
+     * 加载更多
+     * @param refreshLayout 刷新控件
+     * @return
+     */
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
-        mPresenter.requestData(true);
+        mPresenter.requestData(mMaxId,true);
         return true;
     }
 
@@ -175,6 +185,7 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
                 // 内存处理数据
                 mAdapter.addAllData(data);
                 mRefreshlayout.setIsShowLoadingMoreView(true);
+//                mMaxId=data.get(data.size()-1).getmaxid;
             } else {
                 mRefreshlayout.setIsShowLoadingMoreView(false);
             }
@@ -186,6 +197,7 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
                 // 内存处理数据
                 mAdapter.addAllData(data);
                 refreshData();
+                //                mMaxId=data.get(data.size()-1).getmaxid;
             } else {
                 ToastUtils.showToast("没有更多数据了");
                 mRefreshlayout.setIsShowLoadingMoreView(false);
