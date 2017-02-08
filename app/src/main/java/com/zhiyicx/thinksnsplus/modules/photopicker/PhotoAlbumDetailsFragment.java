@@ -3,9 +3,8 @@ package com.zhiyicx.thinksnsplus.modules.photopicker;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.v7.widget.OrientationHelper;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -14,8 +13,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.common.utils.ActivityHandler;
-import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 
@@ -34,7 +32,6 @@ import me.iwf.photopicker.event.OnItemCheckListener;
 import me.iwf.photopicker.event.OnPhotoClickListener;
 import me.iwf.photopicker.utils.MediaStoreHelper;
 
-import static android.app.Activity.RESULT_OK;
 import static android.widget.Toast.LENGTH_LONG;
 import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumListFragment.ALL_PHOTOS;
 import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumListFragment.SELECTED_DIRECTORY_NAME;
@@ -42,7 +39,6 @@ import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumListFragmen
 import static me.iwf.photopicker.PhotoPicker.DEFAULT_COLUMN_NUMBER;
 import static me.iwf.photopicker.PhotoPicker.DEFAULT_MAX_COUNT;
 import static me.iwf.photopicker.PhotoPicker.EXTRA_SHOW_GIF;
-import static me.iwf.photopicker.PhotoPicker.KEY_SELECTED_PHOTOS;
 
 /**
  * @author LiuChao
@@ -139,11 +135,11 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         photoGridAdapter.setShowCamera(false);
         photoGridAdapter.setPreviewEnable(true);
 
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(column, OrientationHelper.VERTICAL);
-        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), column);
+        //layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
         mRvAlbumDetails.setLayoutManager(layoutManager);
         mRvAlbumDetails.setAdapter(photoGridAdapter);
-        mRvAlbumDetails.addItemDecoration(new PhotoGridLine());
+        mRvAlbumDetails.addItemDecoration(new GridDecoration(getContext(), com.zhiyicx.baseproject.R.drawable.shape_recyclerview_divider_white_small));
         photoGridAdapter.setCurrentDirectoryIndex(selected_directory);
         photoGridAdapter.notifyDataSetChanged();
         // 设置图片选择的监听
@@ -177,6 +173,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         photoGridAdapter.setOnPhotoClickListener(new OnPhotoClickListener() {
             @Override
             public void onClick(View v, int position, boolean showCamera) {
+                // ToastUtils.showToast("位置--》"+position);
                 int index = showCamera ? position - 1 : position;
                 List<String> allPhotos = photoGridAdapter.getCurrentPhotoPaths();
                 ArrayList<String> selectedPhotos = photoGridAdapter.getSelectedPhotoPaths();
@@ -193,7 +190,6 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 Intent intent = new Intent(getContext(), PhotoViewActivity.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
-
             }
         });
     }
@@ -271,27 +267,11 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
     }
 
     private class PhotoGridLine extends RecyclerView.ItemDecoration {
-        @Override
-        public void getItemOffsets(Rect outRect, int itemPosition, RecyclerView parent) {
-            LogUtils.d("itemPosition","itemPosition-->"+itemPosition);
-            int position =itemPosition;
-            // 第一列item，左边距为0
-            if (position % 4 == 0) {
-                outRect.left = 0;
-            } else {
-                // 其余的列的左边距为5dp
-                outRect.left = 50;
-            }
-            // 所有的item的右边距为0
-            outRect.right = 0;
-            outRect.top = 50;
-            outRect.bottom = 0;
-        }
 
         @Override
         public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
             super.getItemOffsets(outRect, view, parent, state);
-    /*        int position = parent.getChildAdapterPosition(view);
+            int position = parent.getChildLayoutPosition(view);
             // 第一列item，左边距为0
             if (position % 4 == 0) {
                 outRect.left = 0;
@@ -299,10 +279,11 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 // 其余的列的左边距为5dp
                 outRect.left = 50;
             }
+
             // 所有的item的右边距为0
             outRect.right = 0;
             outRect.top = 50;
-            outRect.bottom = 0;*/
+            outRect.bottom = 0;
 
         }
     }

@@ -1,6 +1,7 @@
 package me.iwf.photopicker.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -67,7 +68,8 @@ public class PhotoGridAdapter extends SelectableAdapter<PhotoGridAdapter.PhotoVi
         DisplayMetrics metrics = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(metrics);
         int widthPixels = metrics.widthPixels;
-        imageSize = widthPixels / columnNumber;
+        int dividerWidths = context.getResources().getDimensionPixelSize(R.dimen.__picker_spacing_very_small);
+        imageSize = (widthPixels - dividerWidths * (columnNumber - 1)) / columnNumber;
     }
 
     @Override
