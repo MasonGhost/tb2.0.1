@@ -56,4 +56,6 @@
     <string name="bt_login">登录</string>
     <string name="no_login">不登录，先随便逛逛</string>
 
+    <string name="see_origin_photo">查看原图</string>
+
 </resources>

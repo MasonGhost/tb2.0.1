@@ -26,6 +26,6 @@ public class GalleryActivity extends TSActivity {
 
     @Override
     protected Fragment getFragment() {
-        return null;
+        return GalleryFragment.initFragment(null);
     }
 }
