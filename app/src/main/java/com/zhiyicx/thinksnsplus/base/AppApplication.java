@@ -55,7 +55,11 @@ public class AppApplication extends TSApplication {
         super.onCreate();
         initComponent();
         ZBIMSDK.init(getContext());
-        BackgroundTaskManager.getInstance(getContext()).startBackgroundTask();// 开启后台任务
+        // token 没有过期直接开启
+        AuthBean authBean = mAuthRepository.getAuthBean();
+        if (authBean != null) {
+            BackgroundTaskManager.getInstance(getContext()).startBackgroundTask();// 开启后台任务
+        }
     }
 
     /**
@@ -103,6 +107,8 @@ public class AppApplication extends TSApplication {
                                                 .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
                                                     @Override
                                                     public void onClick(DialogInterface dialogInterface, int i) {
+                                                        // TODO: 2017/2/8  清理登录信息 token 信息
+                                                        BackgroundTaskManager.getInstance(getContext()).closeBackgroundTask();// 关闭后台任务
                                                         Intent intent = new Intent(getContext(), LoginActivity.class);
                                                         ActivityHandler.getInstance().currentActivity().startActivity(intent);
                                                         alertDialog.dismiss();
