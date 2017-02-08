@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.home.message.messagelike;
+package com.zhiyicx.thinksnsplus.modules.home.message.messagecomment;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
@@ -11,7 +11,7 @@ import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
  * @Contact master.jungle68@gmail.com
  */
 
-public interface MessageLikeContract {
+public interface MessageCommentContract {
     /**
      * 对于经常使用的关于 UI 的方法可以定义到 BaseView 中,如显示隐藏进度条,和显示文字消息
      */

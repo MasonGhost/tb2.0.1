@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagelike;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 /**
  * @Describe  消息赞
@@ -14,12 +15,12 @@ public class MessageLikeActivity extends TSActivity<MessageLikePresenter,Message
 
     @Override
     protected void componentInject() {
-//       DaggerRegisterComponent
-//               .builder()
-//               .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-//               .registerPresenterModule(new RegisterPresenterModule((RegisterContract.View) mContanierFragment))
-//               .build()
-//               .inject(this);
+       DaggerMessageLikeComponent
+               .builder()
+               .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+               .messageLikePresenterModule(new MessageLikePresenterModule(mContanierFragment))
+               .build()
+               .inject(this);
     }
     @Override
     protected MessageLikeFragment getFragment() {

@@ -38,7 +38,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/17
  * @Contact master.jungle68@gmail.com
  */
-public class MessageLikeFragment extends TSListFragment<MessageLikePresenter, MessageItemBean> {
+public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Presenter, MessageItemBean> implements MessageLikeContract.View {
 
     private ImageLoader mImageLoader;
     private List<MessageItemBean> mMessageItemBeen = new ArrayList<>();
@@ -220,7 +220,7 @@ public class MessageLikeFragment extends TSListFragment<MessageLikePresenter, Me
     }
 
     @Override
-    public void setPresenter(MessageLikePresenter presenter) {
+    public void setPresenter(MessageLikeContract.Presenter presenter) {
         mPresenter = presenter;
     }
 
