@@ -104,7 +104,7 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
 
     @Override
     protected void initData() {
-        getCacheData(mMaxId); // 获取缓存数据
+        onCacheResponseSuccess(getCacheData(mMaxId), false); // 获取缓存数据
     }
 
     /**
@@ -164,7 +164,7 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
      *
      * @param maxId
      */
-    protected abstract void getCacheData(int maxId);
+    protected abstract List<T> getCacheData(int maxId);
 
     /**
      * 刷新数据
@@ -193,7 +193,7 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
         if (mIsGetNetData) { // 如果没有获取过网络数据，加载更多就是获取本地数据，如果加载了网络数据了，加载更多就是获取网络数据
-            getCacheData(mMaxId);
+            onCacheResponseSuccess(getCacheData(mMaxId), true);
         } else {
             mPresenter.requestData(mMaxId, true);
         }
@@ -208,6 +208,41 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
     public void onNetResponseSuccess(@NotNull List<T> data, boolean isLoadMore) {
         mIsGetNetData = true;
         handleRefreshState(isLoadMore);
+        handleReceiveData(data, isLoadMore);
+    }
+
+    /**
+     * 处理获取到的缓存数据
+     * @param data       内容信息
+     * @param isLoadMore 加载状态
+     */
+    @Override
+    public void onCacheResponseSuccess(@NotNull List<T> data, boolean isLoadMore) {
+        handleReceiveData(data, isLoadMore);
+    }
+
+    /**
+     * @param throwable  具体错误信息
+     * @param isLoadMore 加载状态
+     */
+    @Override
+    public void onResponseError(Throwable throwable, boolean isLoadMore) {
+        handleRefreshState(isLoadMore);
+        if (!isLoadMore) { // 刷新
+            mEmptyView.setErrorType(EmptyView.STATE_NETWORK_ERROR);
+        } else { // 加载更多
+            ToastUtils.showToast("加载错误");
+
+        }
+    }
+
+    /**
+     * 处理服务器或者缓存中拿到的数据
+     *
+     * @param data       返回的数据
+     * @param isLoadMore 是否是加载更多
+     */
+    private void handleReceiveData(@NotNull List<T> data, boolean isLoadMore) {
         if (!isLoadMore) { // 刷新
             mAdapter.clear();
             if (data.size() != 0) {
@@ -233,26 +268,6 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
                 ToastUtils.showToast("没有更多数据了");
                 mRefreshlayout.setIsShowLoadingMoreView(false);
             }
-        }
-    }
-
-    @Override
-    public void onCacheResponseSuccess(List<T> data, boolean isLoadMore) {
-
-    }
-
-    /**
-     * @param throwable  具体错误信息
-     * @param isLoadMore 加载状态
-     */
-    @Override
-    public void onResponseError(Throwable throwable, boolean isLoadMore) {
-        handleRefreshState(isLoadMore);
-        if (!isLoadMore) { // 刷新
-            mEmptyView.setErrorType(EmptyView.STATE_NETWORK_ERROR);
-        } else { // 加载更多
-            ToastUtils.showToast("加载错误");
-
         }
     }
 

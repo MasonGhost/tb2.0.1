@@ -220,6 +220,11 @@ public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Pres
     }
 
     @Override
+    protected List<MessageItemBean> getCacheData(int maxId) {
+        return new ArrayList<>();
+    }
+
+    @Override
     public void setPresenter(MessageLikeContract.Presenter presenter) {
         mPresenter = presenter;
     }

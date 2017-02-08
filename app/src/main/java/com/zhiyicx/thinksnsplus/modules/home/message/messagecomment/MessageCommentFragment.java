@@ -228,6 +228,12 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
     }
 
     @Override
+    protected List<MessageItemBean> getCacheData(int maxId) {
+        return new ArrayList<>();
+    }
+
+
+    @Override
     public void setPresenter(MessageCommentContract.Presenter presenter) {
         mPresenter = presenter;
     }
