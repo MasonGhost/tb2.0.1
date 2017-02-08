@@ -11,6 +11,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.wrapper.EmptyWrapper;
@@ -35,6 +36,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 
 public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFragment<P> implements BGARefreshLayout.BGARefreshLayoutDelegate, ITSListView<T> {
+    public static final int DEFAULT_PAGE_MAX_ID = 0;// 默认初始化列表 id
+
     private static final float DEFAULT_LIST_ITEM_SPACING = 1f;
 
     protected CommonAdapter<T> mAdapter;
@@ -45,8 +48,10 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
 
     protected EmptyView mEmptyView;
 
-    //当前数据加载状态
+    // 当前数据加载状态
     protected int mEmptyState = EmptyView.STATE_DEFAULT;
+
+    protected int mMaxId = DEFAULT_PAGE_MAX_ID;// 纪录当前列表 item id 最大值，用于分页
 
 
     @Override
@@ -162,9 +167,38 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
     @Override
     public void onResponseSuccess(@NotNull List<T> data, boolean isLoadMore) {
         handleRefreshState(isLoadMore);
+        if (!isLoadMore) { // 刷新
+            mAdapter.clear();
+            if (data.size() != 0) {
+                // 更新缓存
+                insertOrUpdateData(data);
+                // 内存处理数据
+                mAdapter.addAllData(data);
+                mRefreshlayout.setIsShowLoadingMoreView(true);
+            } else {
+                mRefreshlayout.setIsShowLoadingMoreView(false);
+            }
+            refreshData();
+        } else { // 加载更多
+            if (data.size() != 0) {
+                // 更新缓存
+                insertOrUpdateData(data);
+                // 内存处理数据
+                mAdapter.addAllData(data);
+                refreshData();
+            } else {
+                ToastUtils.showToast("没有更多数据了");
+                mRefreshlayout.setIsShowLoadingMoreView(false);
+            }
+        }
 
 
     }
+
+    /**
+     * 插入或者更新缓存
+     */
+    protected abstract boolean insertOrUpdateData(@NotNull List<T> data);
 
     /**
      * @param throwable  具体错误信息
@@ -173,14 +207,12 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
     @Override
     public void onResponseError(Throwable throwable, boolean isLoadMore) {
         handleRefreshState(isLoadMore);
-
         if (!isLoadMore) { // 刷新
-            mAdapter.clear();
-
+            mEmptyView.setErrorType(EmptyView.STATE_NETWORK_ERROR);
         } else { // 加载更多
+            ToastUtils.showToast("加载错误");
 
         }
-
     }
 
     /**

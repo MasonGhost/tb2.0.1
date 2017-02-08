@@ -106,6 +106,15 @@ public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
         notifyDataSetChanged();
     }
 
+    /**
+     * 新增数据添加
+     *
+     * @param datas
+     */
+    public void addAllData(List<T> datas) {
+        mDatas.addAll(datas);
+    }
+
     public T getItem(int position) {
         return mDatas.get(position);
     }
