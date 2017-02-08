@@ -6,22 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
-import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhy.adapter.recyclerview.CommonAdapter;
-import com.zhy.adapter.recyclerview.base.ViewHolder;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import me.iwf.photopicker.adapter.PhotoPagerAdapter;
 
 /**
  * @author LiuChao
@@ -47,13 +38,7 @@ public class GalleryFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
-        mPagerAdapter = new GalleryPhotoAdapter(new ArrayList<String>());
-        mVpPhotos.setAdapter(mPagerAdapter);
-    }
-
-    @Override
-    protected void initData() {
-        mPagerAdapter.getPhotos().addAll(Arrays.asList(
+        mPagerAdapter = new GalleryPhotoAdapter(getChildFragmentManager(), Arrays.asList(
                 "http://cdn.duitang.com/uploads/item/201507/29/20150729112737_waACF.thumb.700_0.jpeg",
                 "http://pic1.5442.com/2015/0604/07/05.jpg",
                 "http://t-1.tuzhan.com/0f50dee8f485/c-2/l/2016/02/23/18/341ec1822a524c9eb30f5b615a1f8b3a.jpg",
@@ -61,7 +46,12 @@ public class GalleryFragment extends TSFragment {
                 "http://pic1.win4000.com/wallpaper/a/565bdbdac0dc4.jpg",
                 "http://pic1.5442.com/2015/0715/05/09.jpg"
         ));
-        mPagerAdapter.notifyDataSetChanged();
+        mVpPhotos.setAdapter(mPagerAdapter);
+    }
+
+    @Override
+    protected void initData() {
+
     }
 
     public static GalleryFragment initFragment(Bundle bundle) {
