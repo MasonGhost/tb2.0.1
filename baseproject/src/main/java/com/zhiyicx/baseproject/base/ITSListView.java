@@ -1,5 +1,7 @@
 package com.zhiyicx.baseproject.base;
 
+import com.zhiyicx.common.mvp.i.IBaseView;
+
 import java.util.List;
 
 /**
@@ -9,7 +11,7 @@ import java.util.List;
  * @Contact master.jungle68@gmail.com
  */
 
-public interface ITSListView<T> {
+public interface ITSListView<T,P> extends IBaseView<P> {
     /**
      * 服务器返回数据
      *

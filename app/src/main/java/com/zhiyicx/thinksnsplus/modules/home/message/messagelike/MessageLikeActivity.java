@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagelike;
 
-import android.support.v4.app.Fragment;
-
 import com.zhiyicx.baseproject.base.TSActivity;
 
 /**
@@ -11,7 +9,7 @@ import com.zhiyicx.baseproject.base.TSActivity;
  * @Contact master.jungle68@gmail.com
  */
 
-public class MessageLikeActivity extends TSActivity {
+public class MessageLikeActivity extends TSActivity<MessageLikePresenter,MessageLikeFragment> {
 
 
     @Override
@@ -24,7 +22,7 @@ public class MessageLikeActivity extends TSActivity {
 //               .inject(this);
     }
     @Override
-    protected Fragment getFragment() {
+    protected MessageLikeFragment getFragment() {
         return MessageLikeFragment.newInstance();
     }
 

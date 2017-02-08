@@ -7,8 +7,8 @@ package com.zhiyicx.common.mvp.i;
  * @Contact 335891510@qq.com
  */
 
-public interface IBaseView<T>{
-    void setPresenter(T presenter);
+public interface IBaseView<P>{
+    void setPresenter(P presenter);
     /**
      * 显示加载
      */

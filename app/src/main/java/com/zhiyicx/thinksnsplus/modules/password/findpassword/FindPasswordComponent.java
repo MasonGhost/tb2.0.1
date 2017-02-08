@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.password.findpassword;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;
+import com.zhiyicx.thinksnsplus.base.InjectComponent;
 
 import dagger.Component;
 
@@ -13,7 +14,5 @@ import dagger.Component;
  */
 @FragmentScoped
 @Component(dependencies = AppComponent.class, modules =  FindPasswordPresenterModule.class)
-public interface FindPasswordComponent {
-
-    void inject(FindPasswordActivity findPasswordActivity);
+public interface FindPasswordComponent extends InjectComponent<FindPasswordActivity> {
 }

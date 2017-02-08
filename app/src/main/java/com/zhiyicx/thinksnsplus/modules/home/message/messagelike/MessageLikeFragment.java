@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
@@ -39,7 +38,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/17
  * @Contact master.jungle68@gmail.com
  */
-public class MessageLikeFragment<P extends ITSListPresenter> extends TSListFragment<P, MessageItemBean> {
+public class MessageLikeFragment extends TSListFragment<MessageLikePresenter, MessageItemBean> {
 
     private ImageLoader mImageLoader;
     private List<MessageItemBean> mMessageItemBeen = new ArrayList<>();
@@ -218,5 +217,25 @@ public class MessageLikeFragment<P extends ITSListPresenter> extends TSListFragm
     @Override
     protected boolean insertOrUpdateData(@NotNull List<MessageItemBean> data) {
         return false;
+    }
+
+    @Override
+    public void setPresenter(MessageLikePresenter presenter) {
+        mPresenter = presenter;
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
+    }
+
+    @Override
+    public void showMessage(String message) {
+
     }
 }

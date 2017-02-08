@@ -30,9 +30,7 @@ import okhttp3.OkHttpClient;
 
 @Singleton
 @Component(modules = {AppModule.class, HttpClientModule.class, ServiceModule.class, CacheModule.class, ImageModule.class, ShareModule.class, GreenDaoModule.class})
-public interface AppComponent {
-
-    void inject(AppApplication appApplication);
+public interface AppComponent extends InjectComponent<AppApplication>{
     void inject(BackgroundTaskHandler backgroundTaskHandler);
 
     Application Application();
