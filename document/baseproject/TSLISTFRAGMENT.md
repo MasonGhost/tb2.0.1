@@ -14,6 +14,9 @@
   ## 2. 使用说明
 
   1. 使用条件
-  - 继承`TSListFragment<P extends ITSListPresenter,T>` 并提供相应的泛型支持；
-  - 实现相应的抽象方法和接口方法；
+
+      - 继承`TSListFragment<P extends ITSListPresenter,T>` 并提供相应的泛型支持；
+      - 实现相应的抽象方法和接口方法；
+
   2. 示例，请参考[MessageLikeFragment](../../app/src/main/java/com/zhiyicx/thinksnsplus/modules/home/message/messagelike/MessageLikeFragment.java)
+  
