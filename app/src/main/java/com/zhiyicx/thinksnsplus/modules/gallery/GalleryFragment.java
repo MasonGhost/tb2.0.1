@@ -1,18 +1,25 @@
 package com.zhiyicx.thinksnsplus.modules.gallery;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
+
+import net.lucode.hackware.magicindicator.MagicIndicator;
+import net.lucode.hackware.magicindicator.ViewPagerHelper;
+import net.lucode.hackware.magicindicator.buildins.circlenavigator.CircleNavigator;
 
 import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * @author LiuChao
@@ -24,6 +31,10 @@ import butterknife.ButterKnife;
 public class GalleryFragment extends TSFragment {
     @BindView(R.id.vp_photos)
     ViewPager mVpPhotos;
+    @BindView(R.id.mi_indicator)
+    MagicIndicator mMiIndicator;
+    @BindView(R.id.tv_origin_photo)
+    TextView mTvOriginPhoto;
     private GalleryPhotoAdapter mPagerAdapter;
 
     @Override
@@ -38,6 +49,7 @@ public class GalleryFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
+
         mPagerAdapter = new GalleryPhotoAdapter(getChildFragmentManager(), Arrays.asList(
                 "http://cdn.duitang.com/uploads/item/201507/29/20150729112737_waACF.thumb.700_0.jpeg",
                 "http://pic1.5442.com/2015/0604/07/05.jpg",
@@ -47,6 +59,19 @@ public class GalleryFragment extends TSFragment {
                 "http://pic1.5442.com/2015/0715/05/09.jpg"
         ));
         mVpPhotos.setAdapter(mPagerAdapter);
+
+        CircleNavigator circleNavigator = new CircleNavigator(getContext());
+        circleNavigator.setCircleCount(mPagerAdapter.getCount());
+        circleNavigator.setCircleColor(Color.GRAY);
+        circleNavigator.setFollowTouch(false);
+        circleNavigator.setCircleClickListener(new CircleNavigator.OnCircleClickListener() {
+            @Override
+            public void onClick(int index) {
+                mVpPhotos.setCurrentItem(index);
+            }
+        });
+        mMiIndicator.setNavigator(circleNavigator);
+        ViewPagerHelper.bind(mMiIndicator, mVpPhotos);
     }
 
     @Override
@@ -66,5 +91,9 @@ public class GalleryFragment extends TSFragment {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         ButterKnife.bind(this, rootView);
         return rootView;
+    }
+
+    @OnClick(R.id.tv_origin_photo)
+    public void onClick() {
     }
 }

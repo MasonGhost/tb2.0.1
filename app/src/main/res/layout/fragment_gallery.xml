@@ -12,14 +12,22 @@
         android:layout_height="match_parent"
         android:background="@android:color/black"
         />
+
+    <net.lucode.hackware.magicindicator.MagicIndicator
+        android:id="@+id/mi_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_big_large"
+        android:layout_gravity="center_horizontal|top"
+        ></net.lucode.hackware.magicindicator.MagicIndicator>
     <!--查看全屏-->
     <TextView
         android:id="@+id/tv_origin_photo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="@dimen/spacing_big_large"
         android:background="@drawable/shape_bg_button_see_origin_photo"
-        android:layout_marginBottom="@dimen/spacing_large"
         android:paddingBottom="@dimen/spacing_tiny"
         android:paddingLeft="@dimen/spacing_small"
         android:paddingRight="@dimen/spacing_small"
