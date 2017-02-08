@@ -35,7 +35,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 
-public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFragment<P> implements BGARefreshLayout.BGARefreshLayoutDelegate, ITSListView<T,P> {
+public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFragment<P> implements BGARefreshLayout.BGARefreshLayoutDelegate, ITSListView<T, P> {
     public static final int DEFAULT_PAGE_MAX_ID = 0;// 默认初始化列表 id
 
     private static final float DEFAULT_LIST_ITEM_SPACING = 1f;
@@ -51,7 +51,9 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
     // 当前数据加载状态
     protected int mEmptyState = EmptyView.STATE_DEFAULT;
 
-    protected int mMaxId = DEFAULT_PAGE_MAX_ID;// 纪录当前列表 item id 最大值，用于分页
+    protected int mMaxId = DEFAULT_PAGE_MAX_ID; // 纪录当前列表 item id 最大值，用于分页
+
+    protected boolean mIsGetNetData = false; //  是否请求了网络数据
 
 
     @Override
@@ -100,6 +102,11 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
         mRefreshlayout.setPullDownRefreshEnable(getPullDownRefreshEnable());
     }
 
+    @Override
+    protected void initData() {
+        getCacheData(mMaxId); // 获取缓存数据
+    }
+
     /**
      * 设置 LayoutManager 区分列表样式
      *
@@ -140,7 +147,24 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
         return true;
     }
 
+    /**
+     * 适配器
+     *
+     * @return
+     */
     protected abstract CommonAdapter<T> getAdapter();
+
+    /**
+     * 插入或者更新缓存
+     */
+    protected abstract boolean insertOrUpdateData(@NotNull List<T> data);
+
+    /**
+     * 获取缓存数据
+     *
+     * @param maxId
+     */
+    protected abstract void getCacheData(int maxId);
 
     /**
      * 刷新数据
@@ -150,23 +174,29 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
     }
 
     /**
-     *  刷新
+     * 刷新
+     *
      * @param refreshLayout 刷新控件
      */
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
         mMaxId = DEFAULT_PAGE_MAX_ID;
-        mPresenter.requestData(mMaxId,false);
+        mPresenter.requestData(mMaxId, false);
     }
 
     /**
      * 加载更多
+     *
      * @param refreshLayout 刷新控件
      * @return
      */
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
-        mPresenter.requestData(mMaxId,true);
+        if (mIsGetNetData) { // 如果没有获取过网络数据，加载更多就是获取本地数据，如果加载了网络数据了，加载更多就是获取网络数据
+            getCacheData(mMaxId);
+        } else {
+            mPresenter.requestData(mMaxId, true);
+        }
         return true;
     }
 
@@ -175,7 +205,8 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
      * @param isLoadMore 加载状态
      */
     @Override
-    public void onResponseSuccess(@NotNull List<T> data, boolean isLoadMore) {
+    public void onNetResponseSuccess(@NotNull List<T> data, boolean isLoadMore) {
+        mIsGetNetData = true;
         handleRefreshState(isLoadMore);
         if (!isLoadMore) { // 刷新
             mAdapter.clear();
@@ -203,14 +234,12 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
                 mRefreshlayout.setIsShowLoadingMoreView(false);
             }
         }
-
-
     }
 
-    /**
-     * 插入或者更新缓存
-     */
-    protected abstract boolean insertOrUpdateData(@NotNull List<T> data);
+    @Override
+    public void onCacheResponseSuccess(List<T> data, boolean isLoadMore) {
+
+    }
 
     /**
      * @param throwable  具体错误信息

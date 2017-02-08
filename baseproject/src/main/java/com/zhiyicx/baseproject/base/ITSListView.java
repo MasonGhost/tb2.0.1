@@ -18,8 +18,14 @@ public interface ITSListView<T,P> extends IBaseView<P> {
      * @param data       内容信息
      * @param isLoadMore 加载状态
      */
-    void onResponseSuccess(List<T> data, boolean isLoadMore);
-
+    void onNetResponseSuccess(List<T> data, boolean isLoadMore);
+    /**
+     * 数据库返回数据
+     *
+     * @param data       内容信息
+     * @param isLoadMore 加载状态
+     */
+    void onCacheResponseSuccess(List<T> data, boolean isLoadMore);
     /**
      * 错误信息
      *
