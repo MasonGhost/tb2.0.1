@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -31,7 +33,7 @@ import me.iwf.photopicker.adapter.PhotoPagerAdapter;
 public class GalleryFragment extends TSFragment {
     @BindView(R.id.vp_photos)
     ViewPager mVpPhotos;
-    private PhotoPagerAdapter mPagerAdapter;
+    private GalleryPhotoAdapter mPagerAdapter;
 
     @Override
     protected int getBodyLayoutId() {
@@ -45,7 +47,7 @@ public class GalleryFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
-        mPagerAdapter = new PhotoPagerAdapter(Glide.with(this), new ArrayList<String>());
+        mPagerAdapter = new GalleryPhotoAdapter(new ArrayList<String>());
         mVpPhotos.setAdapter(mPagerAdapter);
     }
 
