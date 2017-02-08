@@ -79,7 +79,7 @@ public abstract class TSWebFragment extends TSFragment {
             super.onPageStarted(view, url, favicon);
             mIsLoadError = false;
             mWebView.setVisibility(View.INVISIBLE);// 当加载网页的时候将网页进行隐藏
-            mEmptyView.setErrorType(EmptyView.HIDE_LAYOUT);
+            mEmptyView.setErrorType(EmptyView.STATE_HIDE_LAYOUT);
         }
 
         /**
@@ -89,7 +89,7 @@ public abstract class TSWebFragment extends TSFragment {
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             if (mIsLoadError) {
-                mEmptyView.setErrorType(EmptyView.NETWORK_ERROR);
+                mEmptyView.setErrorType(EmptyView.STATE_NETWORK_ERROR);
             } else {
                 mWebView.setVisibility(View.VISIBLE);
                 // web 页面加载完成，添加监听图片的点击 js 函数

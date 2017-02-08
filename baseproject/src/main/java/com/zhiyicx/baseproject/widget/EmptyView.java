@@ -30,25 +30,29 @@ public class EmptyView extends LinearLayout {
 
     // view 当前状态
     /**
+     * default
+     */
+    public static final int STATE_DEFAULT = 0;
+    /**
      * net error
      */
-    public static final int NETWORK_ERROR = 1;
+    public static final int STATE_NETWORK_ERROR = 1;
     /**
      * loading
      */
-    public static final int NETWORK_LOADING = 2;
+    public static final int STATE_NETWORK_LOADING = 2;
     /**
      * no data and clickable is false
      */
-    public static final int NODATA = 3;
+    public static final int STATE_NODATA = 3;
     /**
      * no data and clickable is true
      */
-    public static final int NODATA_ENABLE_CLICK = 4;
+    public static final int STATE_NODATA_ENABLE_CLICK = 4;
     /**
      * hide this view
      */
-    public static final int HIDE_LAYOUT = 5;
+    public static final int STATE_HIDE_LAYOUT = 5;
 
 
     private ProgressBar mAnimProgress;
@@ -91,7 +95,7 @@ public class EmptyView extends LinearLayout {
                     public void call(Void aVoid) {
                         if (mClickEnable) {
                             if (mIsNeedClickLoadState) {
-                                setErrorType(NETWORK_LOADING);
+                                setErrorType(STATE_NETWORK_LOADING);
                             }
                             if (mOnClickListener != null)
                                 mOnClickListener.onClick(mLlContent);
@@ -108,7 +112,7 @@ public class EmptyView extends LinearLayout {
     @Override
     public void setVisibility(int visibility) {
         if (visibility == View.GONE) {
-            mErrorState = HIDE_LAYOUT;
+            mErrorState = STATE_HIDE_LAYOUT;
         }
         super.setVisibility(visibility);
     }
@@ -117,7 +121,7 @@ public class EmptyView extends LinearLayout {
      * 隐藏当前 view
      */
     public void dismiss() {
-        mErrorState = HIDE_LAYOUT;
+        mErrorState = STATE_HIDE_LAYOUT;
         setVisibility(View.GONE);
     }
 
@@ -144,7 +148,7 @@ public class EmptyView extends LinearLayout {
      * @return true, 当前处于加载状态
      */
     public boolean isLoading() {
-        return mErrorState == NETWORK_LOADING;
+        return mErrorState == STATE_NETWORK_LOADING;
     }
 
     /**
@@ -195,34 +199,34 @@ public class EmptyView extends LinearLayout {
     public void setErrorType(int type) {
         setVisibility(View.VISIBLE);
         switch (type) {
-            case NETWORK_ERROR:
-                mErrorState = NETWORK_ERROR;
+            case STATE_NETWORK_ERROR:
+                mErrorState = STATE_NETWORK_ERROR;
                 mAnimProgress.setVisibility(View.GONE);
                 setErrorImag(R.mipmap.img_default_internet);
                 setErrorMessage(mContext.getString(R.string.err_net_not_work));
                 mClickEnable = true;
                 break;
-            case NETWORK_LOADING:
-                mErrorState = NETWORK_LOADING;
+            case STATE_NETWORK_LOADING:
+                mErrorState = STATE_NETWORK_LOADING;
                 mAnimProgress.setVisibility(View.VISIBLE);
                 mIvError.setVisibility(View.GONE);
                 setErrorMessage("");
                 mClickEnable = false;
                 break;
-            case NODATA:
-                mErrorState = NODATA;
+            case STATE_NODATA:
+                mErrorState = STATE_NODATA;
                 mAnimProgress.setVisibility(View.GONE);
                 setErrorImag(R.mipmap.img_default_nothing);
                 setErrorMessage(mContext.getString(R.string.no_data));
                 mClickEnable = false;
                 break;
-            case HIDE_LAYOUT:
+            case STATE_HIDE_LAYOUT:
                 setVisibility(View.GONE);
                 mIvError.setVisibility(View.GONE);
                 mAnimProgress.setVisibility(View.GONE);
                 break;
-            case NODATA_ENABLE_CLICK:
-                mErrorState = NODATA_ENABLE_CLICK;
+            case STATE_NODATA_ENABLE_CLICK:
+                mErrorState = STATE_NODATA_ENABLE_CLICK;
                 mAnimProgress.setVisibility(View.GONE);
                 setErrorImag(R.mipmap.img_default_nothing);
                 setErrorMessage(mContext.getString(R.string.no_data));
