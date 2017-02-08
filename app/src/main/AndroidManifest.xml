@@ -61,6 +61,8 @@
         </activity>
         <activity android:name=".modules.photopicker.PhotoViewActivity">
         </activity>
+        <activity android:name=".modules.gallery.GalleryActivity">
+        </activity>
     </application>
 
 </manifest>
