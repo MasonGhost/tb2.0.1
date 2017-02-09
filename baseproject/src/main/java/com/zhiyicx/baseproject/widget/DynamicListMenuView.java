@@ -55,7 +55,7 @@ public class DynamicListMenuView extends FrameLayout {
     private OnItemClickListener mOnItemListener;
 
 
-    private
+    protected
     @DrawableRes
     int[] mImageNormalResourceIds = new int[]{
             R.mipmap.home_ico_good_normal,
@@ -63,7 +63,7 @@ public class DynamicListMenuView extends FrameLayout {
             R.mipmap.home_ico_eye_normal,
             R.mipmap.home_ico_more
     };// 图片 ids 正常状态
-    private
+    protected
     @DrawableRes
     int[] mImageCheckedResourceIds = new int[]{
             R.mipmap.home_ico_good_high,
@@ -71,7 +71,7 @@ public class DynamicListMenuView extends FrameLayout {
             R.mipmap.home_ico_eye_normal,
             R.mipmap.home_ico_more
     };// 图片 ids 选中状态
-    private
+    protected
     @StringRes
     int[] mTexts = new int[]{
             R.string.zero,
@@ -79,10 +79,10 @@ public class DynamicListMenuView extends FrameLayout {
             R.string.zero,
     };// 文字 ids
 
-    private
+    protected
     @ColorRes
     int mTextNormalColor = R.color.normal_for_disable_button_text;// 正常文本颜色
-    private
+    protected
     @ColorRes
     int mTextCheckedColor = R.color.normal_for_disable_button_text;// 选中文本颜色
 
