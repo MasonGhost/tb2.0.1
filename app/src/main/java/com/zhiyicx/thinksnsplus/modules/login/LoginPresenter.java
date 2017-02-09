@@ -1,8 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.login;
 
-import android.widget.Toast;
-
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -12,18 +9,14 @@ import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.LoginRepository;
-import com.zhiyicx.thinksnsplus.modules.register.RegisterContract;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
-import java.util.logging.Logger;
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -67,8 +60,10 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
                     protected void onSuccess(AuthBean data) {
                         // 登录成功跳转
                         mAuthRepository.saveAuthBean(data);// 保存auth信息
-                        // 刷新im信息
-                        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_IM_INFO));
+                        // 获取用户信息
+                        getUserInfo(data);
+                        // IM 登录 需要 token ,所以需要先保存登录信息
+                        handleIMLogin();
                         mRootView.setLoginState(true);
                     }
 
@@ -87,6 +82,16 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
                     }
                 });
         addSubscrebe(subscription);
+    }
+
+    private void handleIMLogin() {
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_IM_INFO));
+    }
+
+    private void getUserInfo(AuthBean data) {
+        HashMap<String, Object> userInfoParams = new HashMap<>();
+        userInfoParams.put("user", data.getUser_id());
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_USER_INFO, userInfoParams));
     }
 
     @Override
