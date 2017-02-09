@@ -33,6 +33,9 @@ buildscript {
     repositories {
         jcenter()
         mavenCentral()
+        maven {
+            url "https://jitpack.io"
+        }
     }
     dependencies {
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
@@ -110,4 +113,6 @@ dependencies {
     compile dataDependences.multidex
     testCompile testDependencies.multidexTest
     compile project(':skinlibrary')
+    // 指示器
+    compile dataDependences.magicIndicator
 }

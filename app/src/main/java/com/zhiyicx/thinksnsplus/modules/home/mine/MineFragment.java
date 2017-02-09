@@ -14,6 +14,7 @@ import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
+import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumListActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
@@ -143,7 +144,7 @@ public class MineFragment extends TSFragment {
                 });
                 break;
             case R.id.bt_gold:
-                LoadingDialogUtils.showStateError(getContext());
+                startActivity(new Intent(getActivity(), GalleryActivity.class));
                 break;
             case R.id.bt_suggestion:
                 LoadingDialogUtils.showStateSuccess(getContext());

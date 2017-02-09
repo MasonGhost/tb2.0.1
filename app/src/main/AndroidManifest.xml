@@ -61,6 +61,9 @@
         </activity>
         <activity android:name=".modules.photopicker.PhotoViewActivity">
         </activity>
+        <activity android:name=".modules.gallery.GalleryActivity"
+            android:theme="@style/FullScreenTheme">
+        </activity>
     </application>
 
 </manifest>

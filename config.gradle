@@ -84,7 +84,9 @@ ext {
             butterknifeApt               : "com.jakewharton:butterknife-compiler:${butterKnifeVersion}",
             // log
             timber                       : "com.jakewharton.timber:timber:4.1.2",
-            logger                       : "com.orhanobut:logger:1.15"
+            logger                       : "com.orhanobut:logger:1.15",
+            //包含各种指示器
+            magicIndicator               : "com.github.hackware1993:MagicIndicator:1.5.0"
 
 
     ]

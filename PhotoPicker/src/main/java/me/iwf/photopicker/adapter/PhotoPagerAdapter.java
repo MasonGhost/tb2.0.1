@@ -109,4 +109,8 @@ public class PhotoPagerAdapter extends PagerAdapter {
         return paths.get(position);
     }
 
+    public List<String> getPhotos() {
+        return paths;
+    }
+
 }
