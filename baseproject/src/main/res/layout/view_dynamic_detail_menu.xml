@@ -5,7 +5,6 @@
     android:id="@+id/ll_container"
     android:layout_width="match_parent"
     android:layout_height="@dimen/custom_navigationbar_height"
-    android:background="@color/colorAccent"
     android:orientation="horizontal">
 
     <LinearLayout
@@ -18,14 +17,14 @@
         >
 
         <com.zhiyicx.common.widget.FilterImageView
-            android:id="@+id/iv_dynamic_detial_like"
+            android:id="@+id/iv_dynamic_detail_like"
             android:layout_width="@dimen/icon_for_home_bottom"
             android:layout_height="@dimen/icon_for_home_bottom"
-            tool:src="@mipmap/home_ico_good_normal"
+            android:src="@mipmap/home_ico_good_normal"
             />
 
         <TextView
-            android:id="@+id/tv_dynamic_detial_like"
+            android:id="@+id/tv_dynamic_detail_like"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/icon_for_home_bottom_text_margin"
@@ -45,14 +44,14 @@
         android:orientation="vertical">
 
         <com.zhiyicx.common.widget.FilterImageView
-            android:id="@+id/iv_dynamic_detial_comment"
+            android:id="@+id/iv_dynamic_detail_comment"
             android:layout_width="@dimen/icon_for_home_bottom"
             android:layout_height="@dimen/icon_for_home_bottom"
-            tool:src="@mipmap/home_ico_comment_normal"
+            android:src="@mipmap/home_ico_comment_normal"
             />
 
         <TextView
-            android:id="@+id/tv_dynamic_detial_comment"
+            android:id="@+id/tv_dynamic_detail_comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/icon_for_home_bottom_text_margin"
@@ -74,7 +73,7 @@
             android:id="@+id/iv_dynamic_detail_share"
             android:layout_width="@dimen/icon_for_home_bottom"
             android:layout_height="@dimen/icon_for_home_bottom"
-            tool:src="@mipmap/detail_ico_share_normal"
+            android:src="@mipmap/detail_ico_share_normal"
             />
 
         <TextView
@@ -101,7 +100,7 @@
             android:layout_width="@dimen/icon_for_home_bottom"
             android:layout_height="@dimen/icon_for_home_bottom"
             android:layout_gravity="center"
-            tool:src="@mipmap/home_ico_more"
+            android:src="@mipmap/home_ico_more"
             />
 
         <TextView
