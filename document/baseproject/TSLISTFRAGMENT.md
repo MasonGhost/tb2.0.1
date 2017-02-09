@@ -19,4 +19,3 @@
       - 实现相应的抽象方法和接口方法；
 
   2. 示例，请参考[MessageLikeFragment](../../app/src/main/java/com/zhiyicx/thinksnsplus/modules/home/message/messagelike/MessageLikeFragment.java)
-  

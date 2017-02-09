@@ -47,4 +47,9 @@
     <dimen name="chat_message_bubble_stroke_width">0.5dp</dimen>
 
 
+    <!--#########################################      动态相关       ################################-->
+
+    <dimen name="dynamic_menu_text_with">50dp</dimen>
+
+
 </resources>
