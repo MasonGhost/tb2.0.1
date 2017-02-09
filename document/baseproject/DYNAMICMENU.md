@@ -1,7 +1,7 @@
-2017年2月8日17:46:13
-# # 动态工具栏类说明
+2017年2月9日 18:00:39
+# 动态工具栏类说明
 
-  ## 1. 概述
+## 1. 概述
 
   编写公共工具栏，方便后续开发快速引用
 
@@ -10,11 +10,12 @@
   - 支持样式
 
     ![动态详情工具栏](../image/dynamic_detail.png)
-    动态列表工具栏 <img src="../image/dynamic_list.png">
 
-  ## 2. 使用说明
+    ![动态详情工具栏](../image/dynamic_list.png)
 
-  1. extends DynamicDetailMenuView 自定义自己的资源类容
+## 2. 使用说明
+
+1. extends DynamicDetailMenuView 自定义自己的资源类容
   ```java
 public class MyView extends DynamicDetailMenuView {
 
