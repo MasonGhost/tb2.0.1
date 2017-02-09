@@ -28,12 +28,12 @@ public class ApiConfig {
     /**
      * 密码 PasswordClient
      */
-    public static final String APP_PATH_CHANGE_PASSWORD = "api/v1/auth";// 修改密码
-    public static final String APP_PATH_FIND_PASSWORD = "api/v1/auth";// 找回密码
+    public static final String APP_PATH_CHANGE_PASSWORD = "api/v1/users/password";// 修改密码
+    public static final String APP_PATH_FIND_PASSWORD = "api/v1/auth/forgot";// 找回密码
     /**
      * 注册 RegitstClient
      */
-    public static final String APP_PATH_REGISTER = "api/v1/auth/register";// 找回密码
+    public static final String APP_PATH_REGISTER = "api/v1/auth/register";// 注册
     /**
      * 用户 UserInfoClient
      */
