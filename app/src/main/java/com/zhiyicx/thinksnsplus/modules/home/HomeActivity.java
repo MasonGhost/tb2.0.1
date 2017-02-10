@@ -24,7 +24,7 @@ public class HomeActivity extends TSActivity {
 //               .registerPresenterModule(new RegisterPresenterModule((RegisterContract.View) mContanierFragment))
 //               .build()
 //               .inject(this);
-        //BackgroundTaskManager.getInstance(this).startBackgroundTask();// 开启后台任务
+        BackgroundTaskManager.getInstance(this).startBackgroundTask();// 开启后台任务
     }
 
     @Override

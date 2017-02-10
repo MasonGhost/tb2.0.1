@@ -58,7 +58,7 @@ public class AppApplication extends TSApplication {
         // token 没有过期直接开启
         AuthBean authBean = mAuthRepository.getAuthBean();
         if (authBean != null) {
-            //BackgroundTaskManager.getInstance(getContext()).startBackgroundTask();// 开启后台任务
+            BackgroundTaskManager.getInstance(getContext()).startBackgroundTask();// 开启后台任务
         }
     }
 
