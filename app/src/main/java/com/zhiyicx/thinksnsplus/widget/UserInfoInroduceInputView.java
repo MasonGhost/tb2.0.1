@@ -104,4 +104,8 @@ public class UserInfoInroduceInputView extends FrameLayout {
     public String getInputContent() {
         return mEtContent.getText().toString().trim();
     }
+
+    public void setText(String content){
+        mEtContent.setText(content);
+    }
 }

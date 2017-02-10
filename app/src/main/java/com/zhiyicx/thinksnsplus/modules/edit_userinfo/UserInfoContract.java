@@ -30,6 +30,16 @@ public interface UserInfoContract {
          */
         void setUpLoadHeadIconState(boolean upLoadState);
 
+        /**
+         * 设置信息修改提交状态
+         */
+        void setChangeUserInfoState();
+
+        /**
+         * 初始化界面数据
+         */
+        void initUserInfo(UserInfoBean mUserInfoBean);
+
     }
 
     interface Repository {
@@ -68,5 +78,11 @@ public interface UserInfoContract {
         void changeUserHeadIcon(String hash, String fileName, String filePath);
 
         void changUserInfo(HashMap<String, String> userInfos);
+
+        /**
+         * 初始化用户界面数据
+         */
+        void initUserInfo();
+
     }
 }
