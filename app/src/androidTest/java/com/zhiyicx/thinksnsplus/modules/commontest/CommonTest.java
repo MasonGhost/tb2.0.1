@@ -33,12 +33,43 @@ import static junit.framework.Assert.assertTrue;
 public class CommonTest extends AcitivityTest {
     private CommonClient mCommonClient;
     @Rule
-    public ActivityTestRule<RegisterActivity> mLoginActivityActivityTestRule=new ActivityTestRule<RegisterActivity>(RegisterActivity.class);
+    public ActivityTestRule<RegisterActivity> mLoginActivityActivityTestRule = new ActivityTestRule<RegisterActivity>(RegisterActivity.class);
 
     @Before
     public void init() {
         RxUnitTestTools.openRxTools();
         mCommonClient = AppApplication.AppComponentHolder.getAppComponent().serviceManager().getCommonClient();
+    }
+
+    /**
+     * 备注：此方法单独测试可行，一起运行会
+     * 出现错误 Waited for the root of the view hierarchy to have window focus and not be requesting layout for over 10 seconds
+     * summary token过期，跳转到登陆页面
+     * steps  1.请求rap测试接口，返回token过期  2.判断是登陆界面上的界面是否可见
+     * expected  登陆界面的控件可见
+     */
+    @Test
+    public void tokenExpierd() throws Exception {
+//        RxUnitTestTools.closeRxTools();
+//        mCommonClient.testTokenExpierd("needRefresh")
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Action1<BaseJson>() {
+//                    @Override
+//                    public void call(BaseJson baseJson) {
+//
+//                    }
+//                });
+//        Thread.sleep(3000);
+//        // System.out.println("tokenTest==>"+baseJson);
+//        int titleId = AppApplication.getContext().getResources()
+//                .getIdentifier("alertTitle", "id", "android");
+//        findViewById(titleId)
+//                .inRoot(isDialog())
+//                .check(matches(withText(R.string.token_expiers)))
+//                .check(matches(isDisplayed()));
+                        /*ViewInteraction etPhone = findViewById(R.id.et_login_phone);
+                        etPhone.check(matches(isDisplayed()));*/
     }
 
     /**
@@ -176,32 +207,4 @@ public class CommonTest extends AcitivityTest {
 
     }
 
-    /**
-     * summary token过期，跳转到登陆页面
-     * steps  1.请求rap测试接口，返回token过期  2.判断是登陆界面上的界面是否可见
-     * expected  登陆界面的控件可见
-     */
-    @Test
-    public void tokenExpierd() throws Exception {
-//        RxUnitTestTools.closeRxTools();
-//        mCommonClient.testTokenExpierd("needRefresh")
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Action1<BaseJson>() {
-//                    @Override
-//                    public void call(BaseJson baseJson) {
-//
-//                    }
-//                });
-//        Thread.sleep(3000);
-//       // System.out.println("tokenTest==>"+baseJson);
-//        int titleId = AppApplication.getContext().getResources()
-//                .getIdentifier("alertTitle", "id", "android");
-//        findViewById(titleId)
-//                .inRoot(isDialog())
-//                .check(matches(withText(R.string.token_expiers)))
-//                .check(matches(isDisplayed()));
-//                        /*ViewInteraction etPhone = findViewById(R.id.et_login_phone);
-//                        etPhone.check(matches(isDisplayed()));*/
-    }
 }

@@ -1,5 +1,11 @@
 apply plugin: 'com.android.library'
+//apply plugin: 'jacoco' //测试报告
+//apply from: "$rootDir/jacocoCoverage.gradle"
 
+//jacoco {
+//    toolVersion = "0.7.8"
+//    reportsDir = file("$buildDir/customJacocoReportDir")
+//}
 android {
     def gConfig = rootProject.extensions.getByName("ext")
     compileSdkVersion 23
@@ -24,6 +30,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            testCoverageEnabled true
         }
         debug {
             minifyEnabled false
@@ -90,21 +97,3 @@ task proguardMyLib(type: proguard.gradle.ProGuardTask, dependsOn: ['jarMyLib']) 
     configuration 'proguard-rules.pro'
 }
 
-task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
-    group = "Reporting"
-    description = "Generate Jacoco coverage reports"    // exclude auto-generated classes and tests
-    def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', 'android/**/*.*']
-    def debugTree = fileTree(dir: "${project.buildDir}/intermediates/classes/debug", excludes: fileFilter)
-    def mainSrc = "${project.projectDir}/src/main/java"
-    sourceDirectories = files([mainSrc])
-    classDirectories = files([debugTree])
-    additionalSourceDirs = files(["${buildDir}/generated/source/buildConfig/debug", "${buildDir}/generated/source/r/debug"])
-    executionData = fileTree(dir: project.projectDir, includes: ['**/*.exec', '**/*.ec'])
-    reports {
-        xml.enabled = true
-        xml.destination = "${buildDir}/jacocoTestReport.xml"
-        csv.enabled = false
-        html.enabled = true
-        html.destination = "${buildDir}/reports/jacoco"
-    }
-}

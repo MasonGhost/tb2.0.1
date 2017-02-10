@@ -60,6 +60,7 @@ public class LoginActivityTest extends AcitivityTest {
      */
     @Test
     public void clickableWhenNoPhone() throws Exception {
+        etPhone.perform(replaceText(""), closeSoftKeyboard());
         etPass.perform(replaceText("123456"), closeSoftKeyboard());
         btnLogin.check(matches(disEnabled()));
     }
@@ -71,6 +72,7 @@ public class LoginActivityTest extends AcitivityTest {
      */
     @Test
     public void clickableWhenNoPassword() throws Exception {
+        etPass.perform(replaceText(""), closeSoftKeyboard());
         etPhone.perform(replaceText("15928856596"), closeSoftKeyboard());
         btnLogin.check(matches(disEnabled()));
     }
