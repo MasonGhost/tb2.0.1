@@ -4,7 +4,6 @@ import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.common.utils.ActivityUtils;
-import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 /**
  * @Describe
@@ -24,7 +23,6 @@ public class HomeActivity extends TSActivity {
 //               .registerPresenterModule(new RegisterPresenterModule((RegisterContract.View) mContanierFragment))
 //               .build()
 //               .inject(this);
-        BackgroundTaskManager.getInstance(this).startBackgroundTask();// 开启后台任务
     }
 
     @Override
