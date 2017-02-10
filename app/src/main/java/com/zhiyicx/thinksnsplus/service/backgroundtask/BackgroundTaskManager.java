@@ -17,7 +17,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_BACKGROUND
  */
 
 public class BackgroundTaskManager {
-    private static volatile BackgroundTaskManager sBackgroundTaskManager;
+    private static volatile BackgroundTaskManager sBackgroundTaskManager; // context 必须使用 application 否者会造成内存泄漏
     private Context mContext;
     private boolean mIsServiceStart;// Service 是否开启
 

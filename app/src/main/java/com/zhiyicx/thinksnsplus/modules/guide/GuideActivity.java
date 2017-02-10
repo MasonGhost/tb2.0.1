@@ -1,27 +1,23 @@
 package com.zhiyicx.thinksnsplus.modules.guide;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.modules.settings.SettingsPresenterModule;
 
-public class GuideActivity extends TSActivity {
-
-    @Nullable
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-
-        super.onCreate(savedInstanceState);
-    }
+public class GuideActivity extends TSActivity<GuidePresenter,GuideFragment> {
 
     @Override
-    protected Fragment getFragment() {
+    protected GuideFragment getFragment() {
         return new GuideFragment();
     }
 
     @Override
     protected void componentInject() {
-
+        DaggerGuideComponent
+                .builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .guidePresenterModule(new GuidePresenterModule(mContanierFragment))
+                .build()
+                .inject(this);
     }
 }

@@ -5,9 +5,8 @@ import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 
-public class GuideFragment extends TSFragment {
+public class GuideFragment extends TSFragment<GuideContract.Presenter> implements GuideContract.View {
 
     @Override
     protected int getBodyLayoutId() {
@@ -21,8 +20,32 @@ public class GuideFragment extends TSFragment {
 
     @Override
     protected void initData() {
-        startActivity(new Intent(getActivity(), LoginActivity.class));
-        getActivity().finish();
+
     }
 
+    @Override
+    public void setPresenter(GuideContract.Presenter presenter) {
+        mPresenter = presenter;
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
+    }
+
+    @Override
+    public void showMessage(String message) {
+
+    }
+
+    @Override
+    public void startActivity(Class aClass) {
+        startActivity(new Intent(getActivity(), aClass));
+        getActivity().finish();
+    }
 }

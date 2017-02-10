@@ -23,7 +23,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -58,6 +57,7 @@ public class AuthRepository implements IAuthRepository {
         return SharePreferenceUtils.getObject(mContext, AuthBean.SHAREPREFERENCE_TAG);
     }
 
+    @Override
     public Observable<BaseJson<IMBean>> getImInfo() {
         return mUserInfoClient.getIMInfo()
                 .retryWhen(new RetryWithDelay(MAX_RETRY_COUNTS, RETRY_DELAY_TIME))
@@ -67,6 +67,7 @@ public class AuthRepository implements IAuthRepository {
     /**
      * 刷新token
      */
+    @Override
     public void refreshToken() {
         AuthBean authBean = getAuthBean();
         if (!isNeededRefreshToken(authBean)) {
@@ -97,6 +98,26 @@ public class AuthRepository implements IAuthRepository {
 
                     }
                 });
+    }
+
+    /**
+     * 删除认证信息
+     *
+     * @return
+     */
+    @Override
+    public boolean clearAuthBean() {
+        return SharePreferenceUtils.remove(mContext, AuthBean.SHAREPREFERENCE_TAG);
+    }
+
+    /**
+     * 是否登录过成功了，Token 并未过期
+     *
+     * @return
+     */
+    @Override
+    public boolean isLogin() {
+        return getAuthBean() != null;
     }
 
     /**

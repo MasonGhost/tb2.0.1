@@ -109,6 +109,7 @@ public class AppApplication extends TSApplication {
                                                     @Override
                                                     public void onClick(DialogInterface dialogInterface, int i) {
                                                         // TODO: 2017/2/8  清理登录信息 token 信息
+                                                        mAuthRepository.clearAuthBean();
                                                         BackgroundTaskManager.getInstance(getContext()).closeBackgroundTask();// 关闭后台任务
                                                         Intent intent = new Intent(getContext(), LoginActivity.class);
                                                         ActivityHandler.getInstance().currentActivity().startActivity(intent);

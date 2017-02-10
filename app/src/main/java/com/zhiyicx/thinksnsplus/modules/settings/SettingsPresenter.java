@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import javax.inject.Inject;
@@ -21,6 +22,9 @@ import rx.schedulers.Schedulers;
  */
 
 public class SettingsPresenter extends BasePresenter<SettingsContract.Repository, SettingsContract.View> implements SettingsContract.Presenter {
+
+    @Inject
+    IAuthRepository mIAuthRepository;
 
     @Inject
     public SettingsPresenter(SettingsContract.Repository repository, SettingsContract.View rootView) {
@@ -79,6 +83,7 @@ public class SettingsPresenter extends BasePresenter<SettingsContract.Repository
     @Override
     public boolean loginOut() {
         // TODO: 2017/2/8  清理登录信息 token 信息
+        mIAuthRepository.clearAuthBean();
         BackgroundTaskManager.getInstance(mContext).closeBackgroundTask();// 关闭后台任务
         return true;
     }

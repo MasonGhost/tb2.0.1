@@ -13,8 +13,8 @@ public class ApiConfig {
      * 测试服务器：http://192.168.2.222:8080/mockjs/2/test-get-repose-head-normal?
      */
 
-//    public static final String APP_DOMAIN = "http://192.168.2.222/";// 测试服务器
-    public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
+    public static final String APP_DOMAIN = "http://192.168.2.222/";// 测试服务器
+//    public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
 
 
     public static final String URL_ABOUT_US = "http://blog.csdn.net/hellohhj/article/details/50467502";// 关于我们网站

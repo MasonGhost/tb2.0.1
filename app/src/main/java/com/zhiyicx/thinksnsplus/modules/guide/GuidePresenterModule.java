@@ -1,9 +1,9 @@
-package com.zhiyicx.thinksnsplus.modules.settings;
+package com.zhiyicx.thinksnsplus.modules.guide;
 
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.GuideRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.SettingsRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -11,26 +11,27 @@ import dagger.Provides;
 /**
  * @Describe
  * @Author Jungle68
- * @Date 2017/1/10
+ * @Date 2017/2/10
  * @Contact master.jungle68@gmail.com
  */
 @Module
-public class SettingsPresenterModule {
-    private final SettingsContract.View mView;
+public class GuidePresenterModule {
 
-    public SettingsPresenterModule(SettingsContract.View view) {
+    private final GuideContract.View mView;
+
+    public GuidePresenterModule(GuideContract.View view) {
         mView = view;
     }
 
     @Provides
-    SettingsContract.View provideSettingsContractView() {
+    GuideContract.View provideGuideContractView() {
         return mView;
     }
 
 
     @Provides
-    SettingsContract.Repository provideRegisterContractRepository(ServiceManager serviceManager) {
-        return new SettingsRepository(serviceManager);
+    GuideContract.Repository provideGuideContractRepository(ServiceManager serviceManager){
+        return new GuideRepository(serviceManager);
     }
 
     @Provides

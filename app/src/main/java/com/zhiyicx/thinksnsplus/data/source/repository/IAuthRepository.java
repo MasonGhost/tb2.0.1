@@ -36,4 +36,23 @@ public interface IAuthRepository {
      * @return
      */
     Observable<BaseJson<IMBean>> getImInfo();
+
+    /**
+     * 刷新 Token
+     */
+    void refreshToken();
+
+    /**
+     * 删除认证信息
+     *
+     * @return
+     */
+    boolean clearAuthBean();
+
+    /**
+     * 是否登录过成功了，Token 并未过期
+     *
+     * @return
+     */
+    boolean isLogin();
 }

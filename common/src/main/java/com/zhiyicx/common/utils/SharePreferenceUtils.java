@@ -69,11 +69,11 @@ public class SharePreferenceUtils {
     /**
      * 清除某个内容
      */
-    public static void remove(Context context, String key) {
+    public static boolean remove(Context context, String key) {
         if (mSharedPreferences == null) {
             mSharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         }
-        mSharedPreferences.edit().remove(key).commit();
+       return mSharedPreferences.edit().remove(key).commit();
     }
 
     /**
