@@ -4,6 +4,8 @@ import android.app.Application;
 
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
+import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
@@ -38,5 +40,9 @@ public class UserInfoPresenterModule {
     @Provides
     IUploadRepository provideIUploadRepository(ServiceManager serviceManager, Application application) {
         return new UpLoadRepository(serviceManager, application);
+    }
+    @Provides
+    IAuthRepository provideIAuthRepository(ServiceManager serviceManager, Application application) {
+        return new AuthRepository(serviceManager, application);
     }
 }

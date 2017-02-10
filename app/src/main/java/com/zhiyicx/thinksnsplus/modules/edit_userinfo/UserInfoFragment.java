@@ -31,10 +31,12 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.DaggerAppComponent;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.EditConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.EditConfigBeanDaoImpl;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 
 import java.io.File;
@@ -99,7 +101,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     private List<String> selectedPhotos = new ArrayList<>();// 被选择的图片
     private EditConfigBeanDaoImpl mEditConfigBeanDao;
-    public UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+
     private int locationLevel = 2;
 
     @Override
@@ -149,12 +151,15 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .builder()
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl.SHAPE_RCTANGLE))
                 .build().photoSelectorImpl();
-        mUserInfoBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao();
 
-       // mUserInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache();
         initCityPickerView();
       /*  initConfig();
         initUI();*/
+    }
+
+    @Override
+    protected void initData() {
+        mPresenter.initUserInfo();
         ////////////////////////监听所有的用户信息变化///////////////////////////////
         RxTextView.textChanges(mEtUserName)
                 .subscribe(new Action1<CharSequence>() {
@@ -208,12 +213,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                         canChangerUserInfo();
                     }
                 });
-
-    }
-
-    @Override
-    protected void initData() {
-
     }
 
     @Override
@@ -299,6 +298,21 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
             ToastUtils.showToast("头像上传失败");
         }
         canChangerUserInfo();
+    }
+
+    @Override
+    public void setChangeUserInfoState() {
+        getActivity().finish();
+    }
+
+    @Override
+    public void initUserInfo(UserInfoBean mUserInfoBean) {
+        this.mUserInfoBean = mUserInfoBean;
+        // 初始化界面数据
+        mEtUserName.setText(mUserInfoBean.getName());
+        mTvSex.setText(mUserInfoBean.getSex());
+        mTvCity.setText(mUserInfoBean.getLocation());
+        mEtUserIntroduce.setText(mUserInfoBean.getIntro());
     }
 
     @Override
@@ -497,16 +511,16 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         // 图片上传的任务id，姓名。。。
         // 只上传改变的信息
         if (userNameChanged) {
-
+            fieldMap.put("name", mEtUserName.getText().toString());
         }
         if (sexChanged) {
             fieldMap.put("sex", mTvSex.getText().toString());
         }
         if (cityChanged) {
-
+            fieldMap.put("location", mTvCity.getText().toString());
         }
         if (introduceChanged) {
-
+            fieldMap.put("intro", mEtUserIntroduce.getInputContent());
         }
         if (upLoadCount > 0) {
 
