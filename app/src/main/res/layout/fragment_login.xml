@@ -16,7 +16,7 @@
             android:id="@+id/et_login_phone"
             style="@style/style_edit"
             android:hint="@string/phone_number_input_hint"
-            android:text="15694005009"
+            android:text=""
             android:inputType="phone"
             />
     </LinearLayout>
@@ -35,7 +35,7 @@
             style="@style/style_edit"
             android:hint="@string/password_input_hint"
             android:inputType="text"
-            android:text="123456"/>
+            android:text=""/>
     </LinearLayout>
 
     <!--登录异常相关提示-->
