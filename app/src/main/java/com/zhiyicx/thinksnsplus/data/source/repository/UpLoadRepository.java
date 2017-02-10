@@ -55,7 +55,6 @@ public class UpLoadRepository implements IUploadRepository {
                 .flatMap(new Func1<BaseJson<StorageTaskBean>, Observable<String[]>>() {
                     @Override
                     public Observable<String[]> call(BaseJson<StorageTaskBean> storageTaskBeanBaseJson) {
-                        LogUtils.d("upload", storageTaskBeanBaseJson.getData());
                         // 服务器获取成功
                         if (storageTaskBeanBaseJson.isStatus()) {
                             StorageTaskBean storageTaskBean = storageTaskBeanBaseJson.getData();
@@ -71,7 +70,6 @@ public class UpLoadRepository implements IUploadRepository {
                                 // 处理headers
                                 Object headers = storageTaskBean.getHeaders();
                                 HashMap<String, String> headerMap = parseJSONObject(headers);
-                                LogUtils.d("result-->0", headerMap);
                                 HashMap<String, String> fileMap = new HashMap<String, String>();
                                 fileMap.put(params, filePath);
                                 if (method.equalsIgnoreCase("put")) {
@@ -89,7 +87,6 @@ public class UpLoadRepository implements IUploadRepository {
                                             .map(new Func1<String, String[]>() {
                                                 @Override
                                                 public String[] call(String s) {
-                                                    LogUtils.d("result-->string", s.toString());
                                                     return new String[]{s.toString(), storageTaskId + ""};
                                                 }
                                             });
@@ -98,7 +95,6 @@ public class UpLoadRepository implements IUploadRepository {
                                 }
                             }
                         } else {
-                            LogUtils.d("result-->3", "jjjjjjjj");
                             // 表示服务器创建存储任务失败
                             return Observable.just(new String[]{"failure", ""});
                         }
@@ -108,7 +104,6 @@ public class UpLoadRepository implements IUploadRepository {
                 .flatMap(new Func1<String[], Observable<BaseJson>>() {
                     @Override
                     public Observable<BaseJson> call(String[] s) {
-                        LogUtils.i("result-->2"+s[0]+"--"+s[1]);
                         switch (s[0]) {
                             case "success":// 直接成功
                                 BaseJson success = new BaseJson();
