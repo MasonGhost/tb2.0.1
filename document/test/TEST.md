@@ -1,4 +1,4 @@
-﻿2016年12月30日 18:44:25
+﻿2017年2月10日 10:46:48
 # app测试概述
 按照测试用例，进行单元测试编写。为什么要写单元测试：
 - 提高代码质量，写出良好的单元测试对代码有较高的要求
@@ -40,7 +40,7 @@ src目录下：
 
 ## 在项目中使用上述的框架进行单元测试
 
-   ### AndroidTest  依赖于android环境
+### AndroidTest  依赖于android环境
    在app目录下的androidTest中，当前定义了如下的一些类：
    ```
    @RunWith(AndroidJUnit4.class)
@@ -216,13 +216,12 @@ public class LoginActivityTest extends AcitivityTest {
 ```
 在上面的方法中，直接调用了界面的登陆点击事件，主线程沉睡1s后（使用的rap，内部网络一般都在几百ms内），直接通过某些变化条件（比如提示信息内容）进行断言
 
-  ## javaTest 直接在jvm上运行
+## javaTest 直接在jvm上运行
    在app目录下的test中，我们会进行一些工具类的测试，比如字符串，手机号。。。的格式验证
 
 
 如果对单元测试想要更全面的了解，推荐一篇博客:[关于安卓单元测试，你需要知道的一切](http://www.jianshu.com/p/dc30338a3e84)
 
-2017年1月24日15:15:21
-
+## [测试报告](TESTREPPORT.md)
 
 

@@ -8,7 +8,7 @@
     <dimen name="toolbar_center_text_size">@dimen/size_primary_title</dimen>
     <dimen name="toolbar_right_text_size">@dimen/size_sub_title</dimen>
     <!-- custom navigationbar -->
-    <dimen name="custom_navigationbar_height">46dp</dimen>
+    <dimen name="custom_navigationbar_height">48dp</dimen>
     <dimen name="edit_line_height">55dp</dimen>
 
     <!--view高度-->
@@ -45,6 +45,11 @@
     <dimen name="chat_message_bubble_paddingBottom">7.5dp</dimen>// 去掉行高所占的位置
     <dimen name="chat_message_bubble_radus">10dp</dimen>
     <dimen name="chat_message_bubble_stroke_width">0.5dp</dimen>
+
+
+    <!--#########################################      动态相关       ################################-->
+
+    <dimen name="dynamic_menu_text_with">50dp</dimen>
 
 
 </resources>

@@ -1,4 +1,4 @@
-2017年1月12日14:23:55
+2017年2月9日 14:05:37
 # thinksns-plus-android
 
 整个项目相关的决策工作安排等记录在[thinksns-plus-document](https://github.com/zhiyicx/thinksns-plus-document).
@@ -54,8 +54,9 @@ master_future_add_image_lip ( 作者分支 )
 
 为了方便后续使用自动化工具筛检`commit`内容,规定每次提交和`issues`相关的代码时,使用统一格式: 在提交信息末尾空一格,空一格后记录下`commit`类型,然后再在英文符号的括号内填写`issues code`.默认的 commit 类型为: 代码,文档以及测试
 
-    示例代码:```(#9527) 文档 提交信息```
-    示例代码:```(#12 #30 #78) 测试 提交了测试信息```
+     示例代码:```(#9527) code 提交信息```
+    示例代码:```(#9527) doc 提交信息```
+    示例代码:```(#12 #30 #78) test 提交了测试信息```
     
 ## 框架选型
 
@@ -79,9 +80,9 @@ master_future_add_image_lip ( 作者分支 )
 
 [app](document/app/APP.md) app 主工程
 
-[baseproject](document/baseproject/BASEPROJECT.md) 项目基类定义，和各种配置信息
+[baseproject](document/baseproject/BASEPROJECT.md) 项目基类定义，和各种配置信息,接入人员可修改，包涵资源文件
 
-[common](document/common/COMMON.md) 基础框架包
+[common](document/common/COMMON.md) 基础框架包，基础公用累，接入人员不用修改，不包含资源文件，可打成`jar`
 
 [test](document/test/TEST.md)测试框架
 
