@@ -13,6 +13,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
@@ -47,7 +48,7 @@ public interface UserInfoClient {
      * @return
      */
     @GET(APP_PATH_GET_USER_INFO)
-    Observable<BaseJson<UserInfoBean>> getUserInfo(@Query("user") int user_id);
+    Observable<BaseJson<UserInfoBean>> getUserInfo(@Path("user") int user_id);
 
 
     @GET(APP_PATH_GET_IM_INFO)

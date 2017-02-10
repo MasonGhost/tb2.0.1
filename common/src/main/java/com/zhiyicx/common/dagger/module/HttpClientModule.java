@@ -195,8 +195,8 @@ public class HttpClientModule {
                 .baseUrl(httpUrl)// 域名
                 .client(client)// 设置 okhttp
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())// 使用 rxjava
-                .addConverterFactory(GsonConverterFactory.create())// 使用 Gson
                 .addConverterFactory(ScalarsConverterFactory.create())// 使用Scalars
+                .addConverterFactory(GsonConverterFactory.create())// 使用 Gson
                 .build();
     }
 

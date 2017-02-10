@@ -6,9 +6,11 @@ import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -84,7 +86,7 @@ public interface CommonClient {
      * @param hash            待上传文件hash值，hash方式md5
      * @param origin_filename 原始文件名称
      */
-    @GET(APP_PATH_CREATE_STORAGE_TASK)
+    @POST(APP_PATH_CREATE_STORAGE_TASK)
     Observable<BaseJson<StorageTaskBean>> createStorageTask(@Path("hash") String hash, @Path("origin_filename") String origin_filename, @Query("requestState") String requestState);
 
     /**
@@ -92,14 +94,14 @@ public interface CommonClient {
      */
     @Multipart
     @POST
-    Observable<String> upLoadFileByPost(@Url String url, @HeaderMap HashMap<String, String> headers, @Part MultipartBody.Part partList);
+    Observable<String> upLoadFileByPost(@Url String url, @HeaderMap HashMap<String, String> headers,@Part List<MultipartBody.Part> params);
 
     /**
      * 通过Put方法上传文件
      */
     @Multipart
     @PUT
-    Observable<String> upLoadFileByPut(@Url String url, @HeaderMap HashMap<String, String> headers, @Part MultipartBody.Part partList);
+    Observable<String> upLoadFileByPut(@Url String url, @HeaderMap HashMap<String, String> headers, @Part List<MultipartBody.Part> params);
 
 
     /**

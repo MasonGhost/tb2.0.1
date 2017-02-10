@@ -1,6 +1,7 @@
 package com.zhiyicx.common.net;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,16 +24,20 @@ public class UpLoadFile {
      * @param params   上传文件的参数
      * @param filePath 文件的本地路径
      */
-    public static MultipartBody.Part uploadSingleFile(String params, String filePath) {
+    public static Map<String, RequestBody> uploadSingleFile(String params, String filePath) {
         return uploadSingleFile(params, new File(filePath));
     }
 
-    public static MultipartBody.Part uploadSingleFile(String params, File file) {
-        MultipartBody.Builder builder = new MultipartBody.Builder();
+    public static Map<String, RequestBody> uploadSingleFile(String params, File file) {
+        /*MultipartBody.Builder builder = new MultipartBody.Builder();
         builder.setType(MultipartBody.FORM);//表单类型
         RequestBody imageBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
         builder.addFormDataPart(params, file.getName(), imageBody);//imgfile 后台接收图片流的参数名
-        return builder.build().part(0);
+        return builder.build().part(0);*/
+        RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        HashMap<String, RequestBody> map = new HashMap<>();
+        map.put("pic", requestBody);
+        return map;
     }
 
     /**

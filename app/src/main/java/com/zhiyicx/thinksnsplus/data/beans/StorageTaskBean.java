@@ -19,8 +19,8 @@ public class StorageTaskBean {
     private int storage_task_id;
     private String uri; // 上传附件的地址
     private String method;// 请求附件上传的方式
-    private JSONObject headers; // 请求头
-    private List<JSONObject> options;// 请求体，不能是JsonArray
+    private Object headers; // 请求头
+    private List<Object> options;// 请求体
 
     public int getStorage_id() {
         return storage_id;
@@ -54,19 +54,31 @@ public class StorageTaskBean {
         this.method = method;
     }
 
-    public JSONObject getHeaders() {
+    public Object getHeaders() {
         return headers;
     }
 
-    public void setHeaders(JSONObject headers) {
+    public void setHeaders(Object headers) {
         this.headers = headers;
     }
 
-    public List<JSONObject> getOptions() {
+    public List<Object> getOptions() {
         return options;
     }
 
-    public void setOptions(List<JSONObject> options) {
+    public void setOptions(List<Object> options) {
         this.options = options;
+    }
+
+    @Override
+    public String toString() {
+        return "StorageTaskBean{" +
+                "storage_id=" + storage_id +
+                ", storage_task_id=" + storage_task_id +
+                ", uri='" + uri + '\'' +
+                ", method='" + method + '\'' +
+                ", headers=" + headers.toString() +
+                ", options=" + options.toString() +
+                '}';
     }
 }
