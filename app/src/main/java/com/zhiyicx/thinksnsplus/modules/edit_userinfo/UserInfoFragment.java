@@ -27,6 +27,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.DaggerAppComponent;
@@ -165,11 +166,12 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .subscribe(new Action1<CharSequence>() {
                     @Override
                     public void call(CharSequence charSequence) {
+                        LogUtils.i("userName-->"+charSequence);
                         String oldUserName = mUserInfoBean.getName();
                         if (TextUtils.isEmpty(oldUserName)) {
                             userNameChanged = !TextUtils.isEmpty(charSequence);
                         } else {
-                            userNameChanged = !mUserInfoBean.getName().equals(charSequence);
+                            userNameChanged = !oldUserName.equals(charSequence.toString());
                         }
                         canChangerUserInfo();
                     }
@@ -182,7 +184,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                         if (TextUtils.isEmpty(oldSex)) {
                             sexChanged = !TextUtils.isEmpty(charSequence);
                         } else {
-                            sexChanged = !oldSex.equals(charSequence);
+                            sexChanged = !oldSex.equals(charSequence.toString());
                         }
                         canChangerUserInfo();
                     }
@@ -195,7 +197,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                         if (TextUtils.isEmpty(oldLocation)) {
                             cityChanged = !TextUtils.isEmpty(charSequence);
                         } else {
-                            cityChanged = !oldLocation.equals(charSequence);
+                            cityChanged = !oldLocation.equals(charSequence.toString());
                         }
                         canChangerUserInfo();
                     }
@@ -208,7 +210,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                         if (TextUtils.isEmpty(oldIntroduce)) {
                             introduceChanged = !TextUtils.isEmpty(charSequence);
                         } else {
-                            introduceChanged = !oldIntroduce.equals(charSequence);
+                            introduceChanged = !oldIntroduce.equals(charSequence.toString());
                         }
                         canChangerUserInfo();
                     }
