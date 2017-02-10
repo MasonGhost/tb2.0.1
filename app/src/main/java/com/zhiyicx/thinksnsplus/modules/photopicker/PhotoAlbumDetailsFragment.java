@@ -250,6 +250,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 getActivity().finish();
                 EventBus.getDefault().post(selectedPhotos, EventBusTagConfig.EVENT_COMPLETE_PHOTO_SELECT);
                 break;
+            default:
         }
     }
 

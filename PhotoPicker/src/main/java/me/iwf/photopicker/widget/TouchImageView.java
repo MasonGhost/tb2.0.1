@@ -833,6 +833,7 @@ public class TouchImageView extends ImageView {
           case MotionEvent.ACTION_POINTER_UP:
             setState(State.NONE);
             break;
+          default:
         }
       }
 

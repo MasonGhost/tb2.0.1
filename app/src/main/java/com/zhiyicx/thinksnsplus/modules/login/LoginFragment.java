@@ -189,6 +189,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
             case R.id.tv_forget_password:
                 startActivity(new Intent(getActivity(), FindPasswordActivity.class));
                 break;
+            default:
         }
     }
 

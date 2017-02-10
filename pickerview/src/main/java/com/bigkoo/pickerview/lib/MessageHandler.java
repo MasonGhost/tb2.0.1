@@ -28,6 +28,7 @@ final class MessageHandler extends Handler {
             case WHAT_ITEM_SELECTED:
                 loopview.onItemSelected();
                 break;
+            default:
         }
     }
 

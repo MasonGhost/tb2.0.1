@@ -1,10 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -41,7 +39,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.functions.Action1;
 
@@ -258,6 +255,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 mAreaPickerView.setSelectOptions(mCityOption1, mCityOption2, mCityOption3);
                 mAreaPickerView.show();
                 break;
+            default:
         }
     }
 

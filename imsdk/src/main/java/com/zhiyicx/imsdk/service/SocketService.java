@@ -767,7 +767,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
             case AUTH_FAILED_ERR_UID_OR_PWD:
                 setNeedReConnected(false);
                 break;
-
+            default:
         }
         LogUtils.debugInfo(TAG, "errcode : " + eventContainer.err + "---errMsg : " + eventContainer.errMsg);
         return true;
@@ -841,7 +841,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                     eventContainer.mConver = conver;
 
                     break;
-
+                default:
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -1233,7 +1233,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                 }
                 eventContainer.mConver = conver;
                 break;
-
+            default:
         }
         return eventContainer;
     }

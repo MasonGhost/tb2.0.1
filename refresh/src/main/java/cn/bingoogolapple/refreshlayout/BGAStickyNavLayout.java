@@ -312,6 +312,7 @@ public class BGAStickyNavLayout extends LinearLayout {
                 }
                 recycleVelocityTracker();
                 break;
+            default:
         }
         return true;
     }

@@ -155,6 +155,7 @@ public class MineFragment extends TSFragment {
             case R.id.bt_setting:
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
                 break;
+            default:
         }
     }
 }

@@ -409,6 +409,7 @@ public class BGARefreshLayout extends LinearLayout {
                 mInterceptTouchDownX = -1;
                 mInterceptTouchDownY = -1;
                 break;
+            default:
         }
 
         return super.onInterceptTouchEvent(event);

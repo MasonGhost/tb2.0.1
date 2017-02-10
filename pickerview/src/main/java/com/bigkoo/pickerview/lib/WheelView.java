@@ -18,8 +18,6 @@ import com.bigkoo.pickerview.adapter.WheelAdapter;
 import com.bigkoo.pickerview.listener.OnItemSelectedListener;
 import com.bigkoo.pickerview.model.IPickerViewData;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -469,6 +467,7 @@ public class WheelView extends View {
             case Gravity.RIGHT:
                 drawCenterContentStart = measuredWidth - rect.width();
                 break;
+            default:
         }
     }
 
@@ -485,6 +484,7 @@ public class WheelView extends View {
             case Gravity.RIGHT:
                 drawOutContentStart = measuredWidth - rect.width();
                 break;
+            default:
         }
     }
 
