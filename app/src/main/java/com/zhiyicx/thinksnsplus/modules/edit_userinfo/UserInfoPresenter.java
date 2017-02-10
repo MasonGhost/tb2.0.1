@@ -146,6 +146,9 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
     public void initUserInfo() {
         AuthBean authBean = mIAuthRepository.getAuthBean();
         UserInfoBean mUserInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache((long) authBean.getUser_id());
+        if (mUserInfoBean == null) {
+            mUserInfoBean = new UserInfoBean();
+        }
         mRootView.initUserInfo(mUserInfoBean);
     }
 
