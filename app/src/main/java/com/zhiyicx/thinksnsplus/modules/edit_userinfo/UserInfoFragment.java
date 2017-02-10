@@ -27,16 +27,20 @@ import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.DaggerAppComponent;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 import com.zhiyicx.thinksnsplus.data.beans.EditConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.EditConfigBeanDaoImpl;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -92,6 +96,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     private List<String> selectedPhotos = new ArrayList<>();// 被选择的图片
     private EditConfigBeanDaoImpl mEditConfigBeanDao;
+    public UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     private int locationLevel = 2;
 
     @Override
@@ -136,11 +141,14 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     @Override
     protected void initView(View rootView) {
-        mUserInfoBean = new UserInfoBean();
+
         mPhotoSelector = DaggerPhotoSelectorImplComponent
                 .builder()
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl.SHAPE_RCTANGLE))
                 .build().photoSelectorImpl();
+        mUserInfoBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao();
+
+       // mUserInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache();
         initCityPickerView();
       /*  initConfig();
         initUI();*/
@@ -430,7 +438,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                     @Override
                     public void onItem1Clicked() {
                         // 选择相册，单张
-                        mPhotoSelector.getPhotoListFromSelector(5,null);
+                        mPhotoSelector.getPhotoListFromSelector(9, null);
                         mPhotoPopupWindow.hide();
                     }
                 })
@@ -493,7 +501,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
             fieldMap.put("sex", mTvSex.getText().toString());
         }
         if (cityChanged) {
-            
+
         }
         if (introduceChanged) {
 

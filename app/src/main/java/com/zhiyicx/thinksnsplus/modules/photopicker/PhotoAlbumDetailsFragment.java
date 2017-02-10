@@ -3,6 +3,9 @@ package com.zhiyicx.thinksnsplus.modules.photopicker;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -138,6 +141,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), column);
         //layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
         mRvAlbumDetails.setLayoutManager(layoutManager);
+        mRvAlbumDetails.setItemAnimator(new DefaultItemAnimator());
         mRvAlbumDetails.setAdapter(photoGridAdapter);
         mRvAlbumDetails.addItemDecoration(new GridDecoration(getContext(), com.zhiyicx.baseproject.R.drawable.shape_recyclerview_divider_white_small));
         photoGridAdapter.setCurrentDirectoryIndex(selected_directory);
@@ -187,9 +191,16 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 bundle.putStringArrayList(EXTRA_VIEW_ALL_PHOTOS, (ArrayList<String>) allPhotos);
                 bundle.putStringArrayList(EXTRA_VIEW_SELECTED_PHOTOS, selectedPhotos);
                 bundle.putInt(EXTRA_MAX_COUNT, maxCount);
-                Intent intent = new Intent(getContext(), PhotoViewActivity.class);
+                /*Intent intent = new Intent(getContext(), PhotoViewActivity.class);
                 intent.putExtras(bundle);
-                startActivity(intent);
+                startActivity(intent);*/
+
+                Intent intent = new Intent(getContext(), PhotoViewActivity.class);
+                ActivityOptionsCompat options =
+                        ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
+                                v, "trans_photo");
+                intent.putExtras(bundle);
+                ActivityCompat.startActivity(getContext(),intent, options.toBundle());
             }
         });
     }

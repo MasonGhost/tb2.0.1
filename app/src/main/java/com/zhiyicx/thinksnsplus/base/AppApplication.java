@@ -89,6 +89,7 @@ public class AppApplication extends TSApplication {
             public Response onHttpResponse(String httpResult, Interceptor.Chain chain, Response response) {
                 // 这里可以先客户端一步拿到每一次http请求的结果,可以解析成json,做一些操作,如检测到token过期后
                 // token过期，调到登陆页面重新请求token,
+                LogUtils.i("baseJson-->"+httpResult);
                 BaseJson baseJson = new Gson().fromJson(httpResult, BaseJson.class);
                 if (baseJson.getCode() == ErrorCodeConfig.TOKEN_EXPIERD
                         || baseJson.getCode() == ErrorCodeConfig.NEED_RELOGIN

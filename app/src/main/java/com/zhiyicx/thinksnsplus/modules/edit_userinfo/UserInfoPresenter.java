@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
@@ -81,7 +82,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
 
     @Override
     public void changeUserHeadIcon(String hash, String fileName, String filePathList) {
-        Subscription subscription = mIUploadRepository.upLoadSingleFile(hash, fileName, "", filePathList)
+        Subscription subscription = mIUploadRepository.upLoadSingleFile(hash, fileName, "pic", filePathList)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribe() {
@@ -98,6 +99,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                     @Override
                     protected void onException(Throwable throwable) {
                         mRootView.setUpLoadHeadIconState(false);
+                        LogUtils.e(throwable,"result");
                     }
                 });
         addSubscrebe(subscription);

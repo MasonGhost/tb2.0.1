@@ -28,16 +28,16 @@ public class ApiConfig {
     /**
      * 密码 PasswordClient
      */
-    public static final String APP_PATH_CHANGE_PASSWORD = "api/v1/auth";// 修改密码
-    public static final String APP_PATH_FIND_PASSWORD = "api/v1/auth";// 找回密码
+    public static final String APP_PATH_CHANGE_PASSWORD = "api/v1/users/password";// 修改密码
+    public static final String APP_PATH_FIND_PASSWORD = "api/v1/auth/forgot";// 找回密码
     /**
      * 注册 RegitstClient
      */
-    public static final String APP_PATH_REGISTER = "api/v1/auth/register";// 找回密码
+    public static final String APP_PATH_REGISTER = "api/v1/auth/register";// 注册
     /**
      * 用户 UserInfoClient
      */
-    public static final String APP_PATH_GET_USER_INFO = "/api/v1/users";// 获取用户信息
+    public static final String APP_PATH_GET_USER_INFO = "/api/v1/users/{user}";// 获取用户信息
     public static final String APP_PATH_CHANGE_USER_INFO = "/api/v1/users";// 修改用户信息
     public static final String APP_PATH_GET_IM_INFO = "/api/v1/im/users";// 获取 IM 帐号信息
     public static final String APP_PATH_CREATE_CONVERSAITON = "/api/v1/im/conversations";// 创建对话

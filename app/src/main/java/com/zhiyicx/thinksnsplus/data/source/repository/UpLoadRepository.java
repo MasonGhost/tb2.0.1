@@ -2,9 +2,12 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
 import android.content.Context;
+import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.net.UpLoadFile;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
@@ -52,6 +55,7 @@ public class UpLoadRepository implements IUploadRepository {
                 .flatMap(new Func1<BaseJson<StorageTaskBean>, Observable<String[]>>() {
                     @Override
                     public Observable<String[]> call(BaseJson<StorageTaskBean> storageTaskBeanBaseJson) {
+                        LogUtils.d("upload", storageTaskBeanBaseJson.getData());
                         // 服务器获取成功
                         if (storageTaskBeanBaseJson.isStatus()) {
                             StorageTaskBean storageTaskBean = storageTaskBeanBaseJson.getData();
@@ -65,29 +69,36 @@ public class UpLoadRepository implements IUploadRepository {
                                 String method = storageTaskBean.getMethod();
                                 String uri = storageTaskBean.getUri();
                                 // 处理headers
-                                JSONObject headers = storageTaskBean.getHeaders();
+                                Object headers = storageTaskBean.getHeaders();
                                 HashMap<String, String> headerMap = parseJSONObject(headers);
+                                LogUtils.d("result-->0", headerMap);
+                                HashMap<String, String> fileMap = new HashMap<String, String>();
+                                fileMap.put(params, filePath);
                                 if (method.equalsIgnoreCase("put")) {
                                     // 使用map操作符携带任务id，继续向下传递
-                                    return mCommonClient.upLoadFileByPut(uri, headerMap, UpLoadFile.uploadSingleFile(params, filePath)).map(new Func1<String, String[]>() {
-                                        @Override
-                                        public String[] call(String s) {
-                                            return new String[]{s, storageTaskId + ""};
-                                        }
-                                    });
+                                    return mCommonClient.upLoadFileByPut(uri, headerMap, UpLoadFile.upLoadMultiFile(fileMap))
+                                            .map(new Func1<String, String[]>() {
+                                                @Override
+                                                public String[] call(String s) {
+                                                    return new String[]{s.toString(), storageTaskId + ""};
+                                                }
+                                            });
                                 } else if (method.equalsIgnoreCase("post")) {
                                     // 使用map操作符携带任务id，继续向下传递
-                                    return mCommonClient.upLoadFileByPost(uri, headerMap, UpLoadFile.uploadSingleFile(params, filePath)).map(new Func1<String, String[]>() {
-                                        @Override
-                                        public String[] call(String s) {
-                                            return new String[]{s, storageTaskId + ""};
-                                        }
-                                    });
+                                    return mCommonClient.upLoadFileByPost(uri, headerMap, UpLoadFile.upLoadMultiFile(fileMap))
+                                            .map(new Func1<String, String[]>() {
+                                                @Override
+                                                public String[] call(String s) {
+                                                    LogUtils.d("result-->string", s.toString());
+                                                    return new String[]{s.toString(), storageTaskId + ""};
+                                                }
+                                            });
                                 } else {
                                     return Observable.just(new String[]{"failure", ""});// 没有合适的方法上传文件，这一般是不会发生的
                                 }
                             }
                         } else {
+                            LogUtils.d("result-->3", "jjjjjjjj");
                             // 表示服务器创建存储任务失败
                             return Observable.just(new String[]{"failure", ""});
                         }
@@ -97,6 +108,7 @@ public class UpLoadRepository implements IUploadRepository {
                 .flatMap(new Func1<String[], Observable<BaseJson>>() {
                     @Override
                     public Observable<BaseJson> call(String[] s) {
+                        LogUtils.i("result-->2"+s[0]+"--"+s[1]);
                         switch (s[0]) {
                             case "success":// 直接成功
                                 BaseJson success = new BaseJson();
@@ -116,24 +128,31 @@ public class UpLoadRepository implements IUploadRepository {
     /**
      * 处理header，传入retrofit中
      *
-     * @param jsonObject
+     * @param object
      * @return
      */
-    private HashMap<String, String> parseJSONObject(JSONObject jsonObject) {
+    private HashMap<String, String> parseJSONObject(Object object) {
 
-        if (jsonObject == null) {
+        if (object == null) {
             return null;
         }
-        HashMap<String, String> jsonMap = new HashMap<>();
-        Iterator<String> iterator = jsonObject.keys();
-        while (iterator.hasNext()) {
-            try {
-                String key = iterator.next();
-                jsonMap.put(key, jsonObject.getString(key));
-            } catch (JSONException e) {
-                e.printStackTrace();
+        String jsonString = object.toString();
+        try {
+            JSONObject jsonObject = new JSONObject(jsonString);
+            HashMap<String, String> jsonMap = new HashMap<>();
+            Iterator<String> iterator = jsonObject.keys();
+            while (iterator.hasNext()) {
+                try {
+                    String key = iterator.next();
+                    jsonMap.put(key, jsonObject.getString(key));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
+            return jsonMap;
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        return jsonMap;
+        return null;
     }
 }

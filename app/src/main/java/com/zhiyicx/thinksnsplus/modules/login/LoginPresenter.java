@@ -84,6 +84,11 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
         addSubscrebe(subscription);
     }
 
+    @Override
+    public void onStart() {
+
+    }
+
     private void handleIMLogin() {
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_IM_INFO));
     }
@@ -92,11 +97,6 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
         HashMap<String, Object> userInfoParams = new HashMap<>();
         userInfoParams.put("user", data.getUser_id());
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_USER_INFO, userInfoParams));
-    }
-
-    @Override
-    public void onStart() {
-
     }
 
 }
