@@ -5,11 +5,6 @@
              android:background="@color/themeColor"
              tools:context="com.zhiyicx.thinksnsplus.modules.guide.GuideFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/iv_bg"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment"/>
+
 
 </FrameLayout>
