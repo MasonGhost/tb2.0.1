@@ -12,6 +12,7 @@ import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.rxerrorhandler.RxErrorHandler;
 import com.zhiyicx.thinksnsplus.dagger.GreenDaoModule;
 import com.zhiyicx.thinksnsplus.data.source.local.CacheManager;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
@@ -30,7 +31,7 @@ import okhttp3.OkHttpClient;
 
 @Singleton
 @Component(modules = {AppModule.class, HttpClientModule.class, ServiceModule.class, CacheModule.class, ImageModule.class, ShareModule.class, GreenDaoModule.class})
-public interface AppComponent extends InjectComponent<AppApplication>{
+public interface AppComponent extends InjectComponent<AppApplication> {
     void inject(BackgroundTaskHandler backgroundTaskHandler);
 
     Application Application();
@@ -56,4 +57,5 @@ public interface AppComponent extends InjectComponent<AppApplication>{
 
     AuthRepository authRepository();
 
+    UserInfoBeanGreenDaoImpl userInfoBeanGreenDao();
 }

@@ -16,6 +16,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.LoginRepository;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterContract;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -67,8 +68,10 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
                     protected void onSuccess(AuthBean data) {
                         // 登录成功跳转
                         mAuthRepository.saveAuthBean(data);// 保存auth信息
-                        // 刷新im信息
-                        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_IM_INFO));
+                        // 获取用户信息
+                        getUserInfo(data);
+                        // IM 登录 需要 token ,所以需要先保存登录信息
+                        handleIMLogin();
                         mRootView.setLoginState(true);
                     }
 
@@ -92,6 +95,16 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
     @Override
     public void onStart() {
 
+    }
+
+    private void handleIMLogin() {
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_IM_INFO));
+    }
+
+    private void getUserInfo(AuthBean data) {
+        HashMap<String, Object> userInfoParams = new HashMap<>();
+        userInfoParams.put("user", data.getUser_id());
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_USER_INFO, userInfoParams));
     }
 
 }
