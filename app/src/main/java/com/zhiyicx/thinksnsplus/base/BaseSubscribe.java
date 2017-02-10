@@ -101,13 +101,13 @@ public abstract class BaseSubscribe<T> extends Subscriber<BaseJson<T>> {
         if (tBaseJson != null) {
             boolean status = tBaseJson.isStatus();
             int code = tBaseJson.getCode();
-            String message = tBaseJson.getMessage();
+            String message;
 
             if (status) {
                 onSuccess(tBaseJson.getData());
             } else {
-                // 状态值为 false 或者 code 不为 0，并且此时的消息为空，需要尝试从映射表中查找消息
-                if (code != 0 && TextUtils.isEmpty(message)) {
+                // 状态值为 false 或者 code 不为 0 需要尝试从映射表中查找消息
+                if (code != 0) {
                     String codeName = String.format(BaseApplication.getContext().getString(R.string.code_identify), code);
                     int id = UIUtils.getResourceByName(codeName, "string", BaseApplication.getContext());
                     if (id != 0) { // 没找到，返回 0
@@ -115,9 +115,13 @@ public abstract class BaseSubscribe<T> extends Subscriber<BaseJson<T>> {
                     } else {
                         message = BaseApplication.getContext().getString(R.string.code_not_define);
                     }
+                } else {
+                    message = tBaseJson.getMessage();
                 }
-                if (TextUtils.isEmpty(tBaseJson.getMessage())) {
+                if (TextUtils.isEmpty(message)) {
                     // 重新设置 message
+                    tBaseJson.setMessage(BaseApplication.getContext().getString(R.string.code_not_define));
+                } else {
                     tBaseJson.setMessage(message);
                 }
                 onFailure(tBaseJson.getMessage());
@@ -127,18 +131,21 @@ public abstract class BaseSubscribe<T> extends Subscriber<BaseJson<T>> {
 
     /**
      * 服务器正确处理返回正确数据
+     *
      * @param data 正确的数据
      */
     protected abstract void onSuccess(T data);
 
     /**
      * 服务器正确接收到请求，主动返回错误状态以及数据
+     *
      * @param message 错误信息
      */
     protected abstract void onFailure(String message);
 
     /**
-     *  系统级错误，网络错误，系统内核错误等
+     * 系统级错误，网络错误，系统内核错误等
+     *
      * @param throwable
      */
     protected abstract void onException(Throwable throwable);
