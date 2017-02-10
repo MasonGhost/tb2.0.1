@@ -9,6 +9,8 @@ package com.zhiyicx.thinksnsplus.config;
 
 public class EventBusTagConfig {
     public static final String EVENT_BACKGROUND_TASK = "event_background_task";// 后台任务处理
+    public static final String EVENT_STOP_BACKGROUND_TASK = "event_stop_background_task";// 暂停后台任务处理
+    public static final String EVENT_START_BACKGROUND_TASK = "event_start_background_task";// 开始后台任务处理
     public static final String EVENT_BACKGROUND_TASK_CANT_NOT_DEAL = "event_background_task_cant_not_deal";// 后台任务处理
     public static final String EVENT_USERINFO_UPDATE = "event_userinfo_update";// 后台刷新用户信息
     public static final String EVENT_SELECTED_PHOTO_UPDATE = "event_selected_photo_update";// 刷新相册图片列表

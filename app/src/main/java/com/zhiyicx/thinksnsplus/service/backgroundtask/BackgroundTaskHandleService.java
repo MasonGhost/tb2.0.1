@@ -12,6 +12,8 @@ import org.simple.eventbus.Subscriber;
 import org.simple.eventbus.ThreadMode;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_BACKGROUND_TASK;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_START_BACKGROUND_TASK;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_STOP_BACKGROUND_TASK;
 
 /**
  * @Describe 后台任务处理服务
@@ -47,6 +49,16 @@ public class BackgroundTaskHandleService extends Service {
     @Subscriber(tag = EVENT_BACKGROUND_TASK, mode = ThreadMode.POST)
     public boolean addBackgroundRequestTask(BackgroundRequestTaskBean backgroundRequestTaskBean) {
         return mBackgroundTaskHandler.addBackgroundRequestTask(backgroundRequestTaskBean);
+    }
+
+    @Subscriber(tag = EVENT_STOP_BACKGROUND_TASK, mode = ThreadMode.POST)
+    public void stopBackgroundRequestTask() {
+        mBackgroundTaskHandler.stopTask();
+    }
+
+    @Subscriber(tag = EVENT_START_BACKGROUND_TASK, mode = ThreadMode.POST)
+    public void startBackgroundRequestTask() {
+        init();
     }
 
     private void init() {
