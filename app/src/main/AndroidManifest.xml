@@ -65,7 +65,8 @@
             android:name=".modules.gallery.GalleryActivity"
             android:theme="@style/FullScreenTheme">
         </activity>
-        <activity android:name=".modules.music_fm.MusicListActivity">
+        <activity android:name=".modules.music_fm.MusicListActivity"/>
+        <activity android:name=".modules.follow_fans.FollowFansListActivity">
         </activity>
     </application>
 

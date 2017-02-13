@@ -14,6 +14,7 @@ import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
+import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumListActivity;
@@ -111,10 +112,10 @@ public class MineFragment extends TSFragment {
                 startActivity(new Intent(getActivity(), UserInfoActivity.class));
                 break;
             case R.id.ll_fans_container:
-                startActivity(new Intent(getActivity(), PhotoAlbumListActivity.class));
+                startActivity(new Intent(getActivity(), FollowFansListActivity.class));
                 break;
             case R.id.ll_follow_container:
-                //LoadingDialogUtils.showStateIng(getContext());
+                startActivity(new Intent(getActivity(), FollowFansListActivity.class));
                 break;
             case R.id.bt_personal_page:
                 SkinManager.getInstance().restoreDefaultTheme();

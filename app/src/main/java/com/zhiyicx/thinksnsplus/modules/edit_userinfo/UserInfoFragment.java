@@ -52,11 +52,9 @@ import rx.functions.Action1;
  * @date 2017/1/9
  * @contact email:450127106@qq.com
  */
-public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> implements UserInfoContract.View, PhotoSelectorImpl.IPhotoBackListener {
+public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> implements
+        UserInfoContract.View, PhotoSelectorImpl.IPhotoBackListener {
 
-    private static final int GENDER_MALE = 0;// 性别男
-    private static final int GENDER_FEMALE = 1;// 性别女
-    private static final int GENDER_SECRET = 2;// 性别保密
     private static final int LOCATION_2LEVEL = 2;// 地区选择可选的级数为2，2级联动
     private static final int LOCATION_3LEVEL = 3;// 地区选择可选的级数为3
 
@@ -118,7 +116,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
             String itemField = editConfigBean.getItemField();
             if (itemType.equals("TextView")) {
                 CombinationButton combinationButton = new CombinationButton(getContext(), null);
-                ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 100);
+                ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup
+                        .LayoutParams.MATCH_PARENT, 100);
                 combinationButton.setLayoutParams(layoutParams);
                 combinationButton.setLeftText(itemName);
                 combinationButton.setTag(editConfigBean);
@@ -144,7 +143,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
         mPhotoSelector = DaggerPhotoSelectorImplComponent
                 .builder()
-                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl.SHAPE_RCTANGLE))
+                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
+                        .SHAPE_RCTANGLE))
                 .build().photoSelectorImpl();
 
         initCityPickerView();
@@ -160,7 +160,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .subscribe(new Action1<CharSequence>() {
                     @Override
                     public void call(CharSequence charSequence) {
-                        LogUtils.i("userName-->"+charSequence);
+                        LogUtils.i("userName-->" + charSequence);
                         String oldUserName = mUserInfoBean.getName();
                         if (TextUtils.isEmpty(oldUserName)) {
                             userNameChanged = !TextUtils.isEmpty(charSequence);
@@ -174,7 +174,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .subscribe(new Action1<CharSequence>() {
                     @Override
                     public void call(CharSequence charSequence) {
-                        String oldSex = mUserInfoBean.getSex()+"";
+                        String oldSex = mUserInfoBean.getSexString();
                         if (TextUtils.isEmpty(oldSex)) {
                             sexChanged = !TextUtils.isEmpty(charSequence);
                         } else {
@@ -272,7 +272,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     }
 
     @Override
-    public void setAreaData(ArrayList<AreaBean> options1Items, ArrayList<ArrayList<AreaBean>> options2Items, ArrayList<ArrayList<ArrayList<AreaBean>>> options3Items) {
+    public void setAreaData(ArrayList<AreaBean> options1Items, ArrayList<ArrayList<AreaBean>>
+            options2Items, ArrayList<ArrayList<ArrayList<AreaBean>>> options3Items) {
         this.options1Items = options1Items;
         this.options2Items = options2Items;
         this.options3Items = options3Items;
@@ -307,9 +308,11 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         this.mUserInfoBean = mUserInfoBean;
         // 初始化界面数据
         mEtUserName.setText(mUserInfoBean.getName());
-        mTvSex.setText(mUserInfoBean.getSex());
+        mTvSex.setText(mUserInfoBean.getSexString());
+        mTvSex.setTag(R.id.view_data, mUserInfoBean.getSex());// 设置性别编号
         mTvCity.setText(mUserInfoBean.getLocation());
         mEtUserIntroduce.setText(mUserInfoBean.getIntro());
+
     }
 
     @Override
@@ -363,7 +366,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         mAreaPickerView.setOnoptionsSelectListener(new OptionsPickerView.OnOptionsSelectListener() {
             @Override
             public void onOptionsSelect(int options1, int options2, int options3) {
-                /*if (options2Items.size() <= options1 || options2Items.get(options1).size() <= options2) {
+                /*if (options2Items.size() <= options1 || options2Items.get(options1).size() <=
+                options2) {
                     return;//避免pickview控件的bug
                 }*/
                 String areaText1 = options1Items.get(options1).getPickerViewText();
@@ -373,7 +377,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 }
                 if (locationLevel == LOCATION_3LEVEL) {
                     areaText2 = options2Items.get(options1).get(options2).getPickerViewText();
-                    areaText3 = options3Items.get(options1).get(options2).get(options3).getPickerViewText();
+                    areaText3 = options3Items.get(options1).get(options2).get(options3)
+                            .getPickerViewText();
                 }
                 areaText2 = areaText2.equals("全部") ? "" : areaText2;//如果为全部则不显示
                 areaText3 = areaText3.equals("全部") ? "" : areaText3;//如果为全部则不显示
@@ -405,21 +410,21 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
                     public void onItem1Clicked() {
-                        setGender(GENDER_MALE);
+                        setGender(UserInfoBean.MALE);
                         mGenderPopupWindow.hide();
                     }
                 })
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
                     public void onItem2Clicked() {
-                        setGender(GENDER_FEMALE);
+                        setGender(UserInfoBean.FEMALE);
                         mGenderPopupWindow.hide();
                     }
                 })
                 .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
                     @Override
                     public void onItem3Clicked() {
-                        setGender(GENDER_SECRET);
+                        setGender(UserInfoBean.SECRET);
                         mGenderPopupWindow.hide();
                     }
                 })
@@ -483,21 +488,18 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
      */
     private void setGender(int genderType) {
         switch (genderType) {
-            case GENDER_MALE:
+            case UserInfoBean.MALE:
                 mTvSex.setText(R.string.male);
-                //mTvSex.setTag();
                 break;
-            case GENDER_FEMALE:
+            case UserInfoBean.FEMALE:
                 mTvSex.setText(R.string.female);
-                //mTvSex.setTag();
                 break;
-            case GENDER_SECRET:
+            case UserInfoBean.SECRET:
                 mTvSex.setText(R.string.keep_secret);
-                // mTvSex.setTag();
                 break;
             default: // 没有该性别
         }
-
+        mTvSex.setTag(R.id.view_data, genderType);// 设置性别编号
     }
 
     /**
@@ -511,7 +513,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
             fieldMap.put("name", mEtUserName.getText().toString());
         }
         if (sexChanged) {
-            fieldMap.put("sex", mTvSex.getText().toString());
+            fieldMap.put("sex", (int) mTvSex.getTag(R.id.view_data) + "");
         }
         if (cityChanged) {
             fieldMap.put("location", mTvCity.getText().toString());
