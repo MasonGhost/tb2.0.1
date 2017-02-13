@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * @author LiuChao
@@ -17,13 +16,81 @@ import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
 public class UserInfoBean implements Parcelable {
+    @Id
+    private Long user_id;
+    private int sex;
     private String name;
     private String userIcon;
     private String location;
+    private int province;
+    private int city;
+    private int area;
+    private String education;
     private String intro;
-    private String sex;
-    @Id
-    private Long user_id;
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.user_id);
+        dest.writeInt(this.sex);
+        dest.writeString(this.name);
+        dest.writeString(this.userIcon);
+        dest.writeString(this.location);
+        dest.writeInt(this.province);
+        dest.writeInt(this.city);
+        dest.writeInt(this.area);
+        dest.writeString(this.education);
+        dest.writeString(this.intro);
+    }
+
+    public UserInfoBean() {
+    }
+
+    protected UserInfoBean(Parcel in) {
+        this.user_id = (Long) in.readValue(Long.class.getClassLoader());
+        this.sex = in.readInt();
+        this.name = in.readString();
+        this.userIcon = in.readString();
+        this.location = in.readString();
+        this.province = in.readInt();
+        this.city = in.readInt();
+        this.area = in.readInt();
+        this.education = in.readString();
+        this.intro = in.readString();
+    }
+
+    public static final Parcelable.Creator<UserInfoBean> CREATOR = new Parcelable.Creator<UserInfoBean>() {
+        @Override
+        public UserInfoBean createFromParcel(Parcel source) {
+            return new UserInfoBean(source);
+        }
+
+        @Override
+        public UserInfoBean[] newArray(int size) {
+            return new UserInfoBean[size];
+        }
+    };
+
+    public Long getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(Long user_id) {
+        this.user_id = user_id;
+    }
+
+    public int getSex() {
+        return sex;
+    }
+
+    public void setSex(int sex) {
+        this.sex = sex;
+    }
 
     public String getName() {
         return name;
@@ -49,6 +116,38 @@ public class UserInfoBean implements Parcelable {
         this.location = location;
     }
 
+    public int getProvince() {
+        return province;
+    }
+
+    public void setProvince(int province) {
+        this.province = province;
+    }
+
+    public int getCity() {
+        return city;
+    }
+
+    public void setCity(int city) {
+        this.city = city;
+    }
+
+    public int getArea() {
+        return area;
+    }
+
+    public void setArea(int area) {
+        this.area = area;
+    }
+
+    public String getEducation() {
+        return education;
+    }
+
+    public void setEducation(String education) {
+        this.education = education;
+    }
+
     public String getIntro() {
         return intro;
     }
@@ -57,81 +156,19 @@ public class UserInfoBean implements Parcelable {
         this.intro = intro;
     }
 
-    public String getSex() {
-        return sex;
-    }
-
-    public void setSex(String sex) {
-        this.sex = sex;
-    }
-
-    public Long getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(Long user_id) {
-        this.user_id = user_id;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.name);
-        dest.writeString(this.userIcon);
-        dest.writeString(this.location);
-        dest.writeString(this.intro);
-        dest.writeString(this.sex);
-        dest.writeValue(this.user_id);
-    }
-
-    public UserInfoBean() {
-    }
-
-    protected UserInfoBean(Parcel in) {
-        this.name = in.readString();
-        this.userIcon = in.readString();
-        this.location = in.readString();
-        this.intro = in.readString();
-        this.sex = in.readString();
-        this.user_id = (Long) in.readValue(Long.class.getClassLoader());
-    }
-
-    @Generated(hash = 194228155)
-    public UserInfoBean(String name, String userIcon, String location, String intro,
-            String sex, Long user_id) {
-        this.name = name;
-        this.userIcon = userIcon;
-        this.location = location;
-        this.intro = intro;
-        this.sex = sex;
-        this.user_id = user_id;
-    }
-
-    public static final Creator<UserInfoBean> CREATOR = new Creator<UserInfoBean>() {
-        @Override
-        public UserInfoBean createFromParcel(Parcel source) {
-            return new UserInfoBean(source);
-        }
-
-        @Override
-        public UserInfoBean[] newArray(int size) {
-            return new UserInfoBean[size];
-        }
-    };
-
     @Override
     public String toString() {
         return "UserInfoBean{" +
-                "name='" + name + '\'' +
+                "user_id=" + user_id +
+                ", sex='" + sex + '\'' +
+                ", name='" + name + '\'' +
                 ", userIcon='" + userIcon + '\'' +
                 ", location='" + location + '\'' +
+                ", province=" + province +
+                ", city=" + city +
+                ", area=" + area +
+                ", education='" + education + '\'' +
                 ", intro='" + intro + '\'' +
-                ", sex='" + sex + '\'' +
-                ", user_id=" + user_id +
                 '}';
     }
 }
