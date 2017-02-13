@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * @author LiuChao
@@ -62,6 +63,21 @@ public class UserInfoBean implements Parcelable {
         this.area = in.readInt();
         this.education = in.readString();
         this.intro = in.readString();
+    }
+
+    @Generated(hash = 306771050)
+    public UserInfoBean(Long user_id, int sex, String name, String userIcon, String location, int province,
+            int city, int area, String education, String intro) {
+        this.user_id = user_id;
+        this.sex = sex;
+        this.name = name;
+        this.userIcon = userIcon;
+        this.location = location;
+        this.province = province;
+        this.city = city;
+        this.area = area;
+        this.education = education;
+        this.intro = intro;
     }
 
     public static final Parcelable.Creator<UserInfoBean> CREATOR = new Parcelable.Creator<UserInfoBean>() {

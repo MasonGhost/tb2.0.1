@@ -95,7 +95,7 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
 
     private void getUserInfo(AuthBean data) {
         HashMap<String, Object> userInfoParams = new HashMap<>();
-        userInfoParams.put("user", data.getUser_id());
+        userInfoParams.put("user_id", data.getUser_id());
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_USER_INFO, userInfoParams));
     }
 

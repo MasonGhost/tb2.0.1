@@ -201,13 +201,14 @@ public class BackgroundTaskHandler {
              * 获取用户信息
              */
             case GET_USER_INFO:
-                if (backgroundRequestTaskBean.getParams() == null || backgroundRequestTaskBean.getParams().get("user") == null) {
+                if (backgroundRequestTaskBean.getParams() == null || backgroundRequestTaskBean.getParams().get("user_id") == null) {
                     return;
                 }
-                mServiceManager.getUserInfoClient().getUserInfo((Integer) backgroundRequestTaskBean.getParams().get("user"))
+                mServiceManager.getUserInfoClient().getUserInfo((Integer) backgroundRequestTaskBean.getParams().get("user_id"))
                         .subscribe(new BaseSubscribe<UserInfoBean>() {
                             @Override
                             protected void onSuccess(UserInfoBean data) {
+                                data.setUser_id((Long) backgroundRequestTaskBean.getParams().get("user_id"));
                                 mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
                                 mUserInfoBeanGreenDao.insertOrReplace(data);
                             }
