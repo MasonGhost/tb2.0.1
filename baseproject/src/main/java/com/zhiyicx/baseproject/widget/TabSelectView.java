@@ -69,7 +69,7 @@ public class TabSelectView extends FrameLayout {
     }
 
     private void initMagicIndicator(Context context) {
-        mMagicIndicator.setBackgroundColor(Color.BLACK);
+        mMagicIndicator.setBackgroundColor(Color.WHITE);
         CommonNavigator commonNavigator = new CommonNavigator(context);
         commonNavigator.setAdapter(new CommonNavigatorAdapter() {
 
@@ -84,7 +84,7 @@ public class TabSelectView extends FrameLayout {
                 simplePagerTitleView.setNormalColor(ContextCompat.getColor(context, R.color.normal_for_dynamic_list_content));
                 simplePagerTitleView.setSelectedColor(ContextCompat.getColor(context, R.color.important_for_content));
                 simplePagerTitleView.setText(mStringList.get(index));
-                simplePagerTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                simplePagerTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
                 simplePagerTitleView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
