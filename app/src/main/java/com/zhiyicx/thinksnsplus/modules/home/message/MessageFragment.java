@@ -2,20 +2,16 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
-import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.imsdk.entity.ChatRoomContainer;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
@@ -35,11 +31,12 @@ import com.zhiyicx.thinksnsplus.modules.home.message.messagelike.MessageLikeActi
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import butterknife.BindView;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -50,16 +47,13 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/5
  * @Contact master.jungle68@gmail.com
  */
-public class MessageFragment extends TSFragment implements ImMsgReceveListener, ImStatusListener, ImTimeoutListener {
+public class MessageFragment extends TSListFragment<MessageContract.Presenter, MessageItemBean> implements MessageContract.View, ImMsgReceveListener, ImStatusListener, ImTimeoutListener {
     private static final float LIST_ITEM_SPACING = 1f;
     private static final int ITEM_TYPE_COMMNETED = 0;
     private static final int ITEM_TYPE_LIKED = 1;
 
-    @BindView(R.id.rv_message_list)
-    RecyclerView mRvMessageList;
-
     private ImageLoader mImageLoader;
-    private List<MessageItemBean> mMessageItemBeen;
+    private List<MessageItemBean> mMessageItemBeen = new ArrayList<>();
 
     /**
      * IM 聊天
@@ -73,15 +67,6 @@ public class MessageFragment extends TSFragment implements ImMsgReceveListener, 
         return fragment;
     }
 
-    @Override
-    protected int getBodyLayoutId() {
-        return R.layout.fragment_message;
-    }
-
-    @Override
-    protected int setToolBarBackgroud() {
-        return R.color.white;
-    }
 
     @Override
     protected int setLeftImg() {
@@ -94,27 +79,9 @@ public class MessageFragment extends TSFragment implements ImMsgReceveListener, 
     }
 
     @Override
-    protected boolean showToolBarDivider() {
-        return true;
-    }
-
-    @Override
     protected void initView(View rootView) {
-        mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        mMessageItemBeen = new ArrayList<>();
-        initCommentAndLike(mMessageItemBeen);
-        mRvMessageList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRvMessageList.addItemDecoration(new LinearDecoration(0, ConvertUtils.dp2px(getContext(), LIST_ITEM_SPACING), 0, 0));//设置Item的间隔
-        //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
-        mRvMessageList.setHasFixedSize(true);
-        mRvMessageList.setItemAnimator(new DefaultItemAnimator());//设置动画
-        CommonAdapter messageListAdapter = new CommonAdapter<MessageItemBean>(getActivity(), R.layout.item_message_list, mMessageItemBeen) {
-            @Override
-            protected void convert(ViewHolder holder, MessageItemBean messageItemBean, int position) {
-                setItemData(holder, messageItemBean, position);
-            }
+        super.initView(rootView);
 
-        };
 //        HeaderAndFooterWrapper mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(messageListAdapter);
 //        TextView t2 = new TextView(getContext());
 //        t2.setText("Header 2");
@@ -127,12 +94,36 @@ public class MessageFragment extends TSFragment implements ImMsgReceveListener, 
 //        mHeaderAndFooterWrapper.addHeaderView(t2);
 //        mRvMessageList.setAdapter(mHeaderAndFooterWrapper);
 //        mHeaderAndFooterWrapper.notifyDataSetChanged();
-        mRvMessageList.setAdapter(messageListAdapter);
     }
+
     @Override
     protected void initData() {
+        mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
+        initCommentAndLike(mMessageItemBeen);
+        refreshData();
         initIM();
 
+    }
+
+    @Override
+    protected CommonAdapter getAdapter() {
+        return new CommonAdapter<MessageItemBean>(getActivity(), R.layout.item_message_list, mMessageItemBeen) {
+            @Override
+            protected void convert(ViewHolder holder, MessageItemBean messageItemBean, int position) {
+                setItemData(holder, messageItemBean, position);
+            }
+
+        };
+    }
+
+    @Override
+    protected boolean insertOrUpdateData(@NotNull List data) {
+        return false;
+    }
+
+    @Override
+    protected List getCacheData(int maxId) {
+        return null;
     }
 
     private void initIM() {
@@ -171,10 +162,10 @@ public class MessageFragment extends TSFragment implements ImMsgReceveListener, 
             UserInfoBean testUserinfo = new UserInfoBean();
             testUserinfo.setUserIcon("http://192.168.10.222/i.php");
             testUserinfo.setName("颤三");
-            testUserinfo.setUser_id((long) (10+i));
+            testUserinfo.setUser_id((long) (10 + i));
             test.setUserInfo(testUserinfo);
             Message testMessage = new Message();
-            testMessage.setTxt("一叶之秋、晴天色"+i
+            testMessage.setTxt("一叶之秋、晴天色" + i
                     + getString(R.string.like_me));
             testMessage.setCreate_time(System.currentTimeMillis());
             test.setLastMessage(likeMessage);
@@ -314,6 +305,34 @@ public class MessageFragment extends TSFragment implements ImMsgReceveListener, 
     }
 
     @Override
+    public void setPresenter(MessageContract.Presenter presenter) {
+        mPresenter = presenter;
+
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
+    }
+
+    @Override
+    public void showMessage(String message) {
+
+    }
+
+    /*******************************************  聊天相关  *********************************************/
+
+
+    /**
+     * @param message
+     */
+
+    @Override
     public void onMessageReceived(Message message) {
 
     }
@@ -377,4 +396,5 @@ public class MessageFragment extends TSFragment implements ImMsgReceveListener, 
     public void onConversationMcTimeout(List<Integer> roomIds) {
 
     }
+
 }
