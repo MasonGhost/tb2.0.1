@@ -37,6 +37,7 @@ public class TabSelectView extends FrameLayout {
     private ViewPager mViewPager;
     private List<String> mStringList;// tab列表的文字
     private Context mContext;
+    private View divider;
 
     public TabSelectView(Context context) {
         super(context);
@@ -56,6 +57,7 @@ public class TabSelectView extends FrameLayout {
     private void initView(Context context) {
         LayoutInflater.from(context).inflate(R.layout.toolbar_for_viewpager, this);
         mMagicIndicator = (MagicIndicator) findViewById(R.id.mg_indicator);
+        divider = findViewById(R.id.divider);
         mContext = context;
     }
 
@@ -66,6 +68,15 @@ public class TabSelectView extends FrameLayout {
             mStringList = new ArrayList<>();
         }
         initMagicIndicator(mContext);
+    }
+
+    /**
+     * 是否需要展示toolbar分割线
+     *
+     * @param showDivider
+     */
+    public void showDivider(boolean showDivider) {
+        divider.setVisibility(showDivider ? GONE : VISIBLE);
     }
 
     private void initMagicIndicator(Context context) {
@@ -107,5 +118,6 @@ public class TabSelectView extends FrameLayout {
         mMagicIndicator.setNavigator(commonNavigator);
         ViewPagerHelper.bind(mMagicIndicator, mViewPager);
     }
+
 
 }

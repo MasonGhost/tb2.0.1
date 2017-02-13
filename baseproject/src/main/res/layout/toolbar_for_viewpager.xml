@@ -44,5 +44,12 @@
             android:textSize="@dimen/toolbar_right_text_size"
             tools:text="右边"
             />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_line"
+            android:layout_alignParentBottom="true"
+            android:background="@color/general_for_line"></View>
     </RelativeLayout>
 </android.support.v7.widget.Toolbar>
