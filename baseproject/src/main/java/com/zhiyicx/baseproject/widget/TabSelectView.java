@@ -2,6 +2,7 @@ package com.zhiyicx.baseproject.widget;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -9,8 +10,12 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.R;
+import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.utils.UIUtils;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
@@ -24,6 +29,11 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.Simple
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import rx.functions.Action1;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @author LiuChao
@@ -35,9 +45,11 @@ import java.util.List;
 public class TabSelectView extends FrameLayout {
     private MagicIndicator mMagicIndicator;
     private ViewPager mViewPager;
+    private View divider;
+    private TextView tvToolbarLeft, tvToolbarRight;
     private List<String> mStringList;// tab列表的文字
     private Context mContext;
-    private View divider;
+
 
     public TabSelectView(Context context) {
         super(context);
@@ -58,7 +70,11 @@ public class TabSelectView extends FrameLayout {
         LayoutInflater.from(context).inflate(R.layout.toolbar_for_viewpager, this);
         mMagicIndicator = (MagicIndicator) findViewById(R.id.mg_indicator);
         divider = findViewById(R.id.divider);
+        tvToolbarLeft = (TextView) findViewById(R.id.tv_toolbar_left);
+        tvToolbarRight = (TextView) findViewById(R.id.tv_toolbar_right);
         mContext = context;
+        showDivider(true);// 默认展示分割线
+        setLeftImg(R.mipmap.topbar_back);// 默认左边为箭头
     }
 
     public void initTabView(ViewPager viewPager, List<String> stringList) {
@@ -77,6 +93,55 @@ public class TabSelectView extends FrameLayout {
      */
     public void showDivider(boolean showDivider) {
         divider.setVisibility(showDivider ? GONE : VISIBLE);
+    }
+
+    public void setLeftText(String text) {
+        tvToolbarLeft.setText(text);
+        tvToolbarLeft.setVisibility(View.VISIBLE);
+    }
+
+    public void setLeftImg(int imgRes) {
+        tvToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), imgRes), null, null, null);
+        tvToolbarLeft.setVisibility(View.VISIBLE);
+    }
+
+    public void setRightText(String text) {
+        tvToolbarRight.setText(text);
+    }
+
+    /**
+     * 一般没有，暂时不开放，等需要再写
+     */
+    private void setRightImg() {
+
+    }
+
+    public void setLeftClickListener(final TSFragment fragment, final TabLeftRightClickListener tabLeftClickListener) {
+        RxView.clicks(tvToolbarLeft)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .compose(fragment.<Void>bindToLifecycle())
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        if (tabLeftClickListener != null) {
+                            tabLeftClickListener.buttonClick();
+                        }
+                    }
+                });
+    }
+
+    public void setRightClickListener(TSFragment fragment, final TabLeftRightClickListener tabRightClickListener) {
+        RxView.clicks(tvToolbarRight)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .compose(fragment.<Void>bindToLifecycle())
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        if (tabRightClickListener != null) {
+                            tabRightClickListener.buttonClick();
+                        }
+                    }
+                });
     }
 
     private void initMagicIndicator(Context context) {
@@ -119,5 +184,8 @@ public class TabSelectView extends FrameLayout {
         ViewPagerHelper.bind(mMagicIndicator, mViewPager);
     }
 
+    public interface TabLeftRightClickListener {
+        void buttonClick();
+    }
 
 }

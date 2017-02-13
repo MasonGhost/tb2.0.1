@@ -9,7 +9,7 @@
     <com.zhiyicx.baseproject.widget.TabSelectView
         android:id="@+id/tsv_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/toolbar_height">
 
     </com.zhiyicx.baseproject.widget.TabSelectView>
 

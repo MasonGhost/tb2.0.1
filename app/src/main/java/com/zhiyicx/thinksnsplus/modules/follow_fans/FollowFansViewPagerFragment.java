@@ -37,6 +37,12 @@ public class FollowFansViewPagerFragment extends TSFragment<FollowFansListContra
     protected void initView(View rootView) {
         initViewPager();
         mTsvToolbar.initTabView(mVpFragment, initTitles());
+        mTsvToolbar.setLeftClickListener(this, new TabSelectView.TabLeftRightClickListener() {
+            @Override
+            public void buttonClick() {
+                getActivity().finish();
+            }
+        });
     }
 
     @Override
