@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 
-public class FollowFansListActivity extends TSActivity<FollowFansListPresenter,FollowFansListFragment> {
+public class FollowFansListActivity extends TSActivity<FollowFansListPresenter, FollowFansViewPagerFragment> {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,7 +17,7 @@ public class FollowFansListActivity extends TSActivity<FollowFansListPresenter,F
     }
 
     @Override
-    protected FollowFansListFragment getFragment() {
-        return null;
+    protected FollowFansViewPagerFragment getFragment() {
+        return FollowFansViewPagerFragment.initFragment(getIntent().getExtras());
     }
 }
