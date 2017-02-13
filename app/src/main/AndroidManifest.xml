@@ -61,8 +61,11 @@
         </activity>
         <activity android:name=".modules.photopicker.PhotoViewActivity">
         </activity>
-        <activity android:name=".modules.gallery.GalleryActivity"
+        <activity
+            android:name=".modules.gallery.GalleryActivity"
             android:theme="@style/FullScreenTheme">
+        </activity>
+        <activity android:name=".modules.music_fm.MusicListActivity">
         </activity>
     </application>
 
