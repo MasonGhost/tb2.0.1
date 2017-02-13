@@ -22,15 +22,25 @@ public class GridDecoration extends RecyclerView.ItemDecoration {
 
     private Drawable mDivider;
 
+    private int[] mSpace;
+
     public GridDecoration(Context context, int drawableRes) {
         mDivider = ContextCompat.getDrawable(context, drawableRes);
     }
 
+    public GridDecoration(int width, int height) {
+        mSpace = new int[]{width, height};
+    }
+
     @Override
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+        if (mDivider != null) {
+            drawHorizontal(c, parent);
+            drawVertical(c, parent);
+        } else {
+            super.onDraw(c, parent, state);
+        }
 
-        drawHorizontal(c, parent);
-        drawVertical(c, parent);
 
     }
 
@@ -139,15 +149,23 @@ public class GridDecoration extends RecyclerView.ItemDecoration {
                                RecyclerView parent) {
         int spanCount = getSpanCount(parent);
         int childCount = parent.getAdapter().getItemCount();
+        int width = mSpace[0];
+        int height = mSpace[1];
+        if (mDivider != null) {
+            width = mDivider.getIntrinsicWidth();
+            height = mDivider.getIntrinsicHeight();
+        }
+
         if (isLastRaw(parent, itemPosition, spanCount, childCount))// 如果是最后一行，则不需要绘制底部
         {
-            outRect.set(0, 0, mDivider.getIntrinsicWidth(), 0);
+            outRect.set(0, 0, width, 0);
         } else if (isLastColum(parent, itemPosition, spanCount, childCount))// 如果是最后一列，则不需要绘制右边
         {
-            outRect.set(0, 0, 0, mDivider.getIntrinsicHeight());
+            outRect.set(0, 0, 0, height);
         } else {
-            outRect.set(0, 0, mDivider.getIntrinsicWidth(),
-                    mDivider.getIntrinsicHeight());
+            outRect.set(0, 0, width,
+                    height);
         }
     }
+
 }

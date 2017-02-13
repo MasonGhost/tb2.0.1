@@ -55,8 +55,8 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     @Override
     protected void initData() {
         super.initData();
-        mRvList.setPadding(20,20,20,0);
-        mRvList.addItemDecoration(new GridDecoration(20,20));
+        mRvList.setPadding(20, 20, 20, 0);
+        mRvList.addItemDecoration(new GridDecoration(20, 20));
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         mMusicListBeen.add(new MusicListBean());
         mMusicListBeen.add(new MusicListBean());
