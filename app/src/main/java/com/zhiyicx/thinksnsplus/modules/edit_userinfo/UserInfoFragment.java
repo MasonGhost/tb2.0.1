@@ -174,7 +174,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .subscribe(new Action1<CharSequence>() {
                     @Override
                     public void call(CharSequence charSequence) {
-                        String oldSex = mUserInfoBean.getSex();
+                        String oldSex = mUserInfoBean.getSex()+"";
                         if (TextUtils.isEmpty(oldSex)) {
                             sexChanged = !TextUtils.isEmpty(charSequence);
                         } else {
