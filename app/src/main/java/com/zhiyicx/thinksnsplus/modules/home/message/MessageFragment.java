@@ -12,6 +12,7 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircle
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.entity.ChatRoomContainer;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
@@ -37,6 +38,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -48,12 +51,14 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 public class MessageFragment extends TSListFragment<MessageContract.Presenter, MessageItemBean> implements MessageContract.View, ImMsgReceveListener, ImStatusListener, ImTimeoutListener {
-    private static final float LIST_ITEM_SPACING = 1f;
     private static final int ITEM_TYPE_COMMNETED = 0;
     private static final int ITEM_TYPE_LIKED = 1;
 
+    @Inject
+    protected MessagePresenter mPresenter;
     private ImageLoader mImageLoader;
     private List<MessageItemBean> mMessageItemBeen = new ArrayList<>();
+
 
     /**
      * IM 聊天
@@ -98,6 +103,12 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     @Override
     protected void initData() {
+//        DaggerMessageComponent
+//                .builder()
+//                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+//                .messagePresenterModule(new MessagePresenterModule(this))
+//                .build()
+//                .inject(this);
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         initCommentAndLike(mMessageItemBeen);
         refreshData();
@@ -304,10 +315,10 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         startActivity(to);
     }
 
+    // Fragment 注入 ,不需要该方法
     @Override
     public void setPresenter(MessageContract.Presenter presenter) {
-        mPresenter = presenter;
-
+        LogUtils.d("-------------------------------------->"+presenter);
     }
 
     @Override
@@ -325,7 +336,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     }
 
-    /*******************************************  聊天相关  *********************************************/
+    /*******************************************  聊天相关回调  *********************************************/
 
 
     /**
