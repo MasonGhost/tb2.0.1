@@ -18,6 +18,7 @@ public class ServiceManager {
     private RegisterClient mRegisterClient;
     private PasswordClient mPasswordClient;
     private UserInfoClient mUserInfoClient;
+    private MusicClient mMusicClient;
 
     /**
      * 如果需要添加 service 只需在构造方法中添加对应的 service,在提供 get 方法返回出去,只要在 ServiceModule 提供了该 service
@@ -30,12 +31,14 @@ public class ServiceManager {
             , LoginClient loginClient
             , RegisterClient registerClient
             , PasswordClient passwordClient
-            , UserInfoClient userInfoClient) {
+            , UserInfoClient userInfoClient
+            , MusicClient mMusicClient) {
         this.mCommonClient = commonClient;
         this.mLoginClient = loginClient;
         this.mRegisterClient = registerClient;
         this.mUserInfoClient = userInfoClient;
         this.mPasswordClient = passwordClient;
+        this.mMusicClient = mMusicClient;
     }
 
     public CommonClient getCommonClient() {
@@ -56,5 +59,9 @@ public class ServiceManager {
 
     public PasswordClient getPasswordClient() {
         return mPasswordClient;
+    }
+
+    public MusicClient getMusicClient() {
+        return mMusicClient;
     }
 }

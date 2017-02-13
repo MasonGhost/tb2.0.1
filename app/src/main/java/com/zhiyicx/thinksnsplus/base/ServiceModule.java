@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.base;
 
 import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
+import com.zhiyicx.thinksnsplus.data.source.remote.MusicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.PasswordClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
@@ -77,4 +78,17 @@ public class ServiceModule {
     RegisterClient provideRegisterClient(Retrofit retrofit) {
         return retrofit.create(RegisterClient.class);
     }
+
+    /**
+     * 音乐FM
+     *
+     * @param retrofit 网络框架
+     * @return
+     */
+    @Singleton
+    @Provides
+    MusicClient provideMusicClient(Retrofit retrofit){
+        return retrofit.create(MusicClient.class);
+    }
+
 }
