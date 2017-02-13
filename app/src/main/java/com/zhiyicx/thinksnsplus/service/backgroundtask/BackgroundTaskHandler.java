@@ -180,7 +180,7 @@ public class BackgroundTaskHandler {
                                 IMConfig imConfig = new IMConfig();
                                 imConfig.setImUid(data.getUser_id());
                                 imConfig.setToken(data.getIm_password());
-                                imConfig.setWeb_socket_authority("ws://192.168.10.222:9900"); // TODO: 2017/1/20  服务器统一配置接口返回数据
+                                imConfig.setWeb_socket_authority("ws://192.168.2.222:9900"); // TODO: 2017/1/20  服务器统一配置接口返回数据 ws://218.244.149.144:9900
                                 ZBIMClient.getInstance().login(imConfig);
                             }
 
