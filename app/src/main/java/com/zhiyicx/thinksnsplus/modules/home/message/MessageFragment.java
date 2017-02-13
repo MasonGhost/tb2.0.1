@@ -12,7 +12,6 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircle
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.entity.ChatRoomContainer;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
@@ -102,13 +101,18 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     @Override
+    protected boolean isLoadingMoreEnable() {
+        return false;
+    }
+
+    @Override
     protected void initData() {
-//        DaggerMessageComponent
-//                .builder()
-//                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-//                .messagePresenterModule(new MessagePresenterModule(this))
-//                .build()
-//                .inject(this);
+        DaggerMessageComponent
+                .builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .messagePresenterModule(new MessagePresenterModule(this))
+                .build()
+                .inject(this);
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         initCommentAndLike(mMessageItemBeen);
         refreshData();
@@ -318,7 +322,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     // Fragment 注入 ,不需要该方法
     @Override
     public void setPresenter(MessageContract.Presenter presenter) {
-        LogUtils.d("-------------------------------------->"+presenter);
     }
 
     @Override

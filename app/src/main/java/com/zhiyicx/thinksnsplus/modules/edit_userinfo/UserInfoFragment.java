@@ -29,12 +29,9 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
-import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.EditConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.EditConfigBeanDaoImpl;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 
 import java.io.File;
@@ -480,7 +477,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     /**
      * 设置用户性别
      */
-    private void setGender(int genderType) {
+    private void setGender(String genderType) {
         switch (genderType) {
             case UserInfoBean.MALE:
                 mTvSex.setText(R.string.male);

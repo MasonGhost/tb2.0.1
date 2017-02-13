@@ -94,13 +94,14 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
         mRvList.setItemAnimator(new DefaultItemAnimator());//设置动画
         mAdapter = getAdapter();
         mRvList.setAdapter(mAdapter);
-        mRefreshlayout.setRefreshViewHolder(new TSPRefreshViewHolder(getActivity(), true));
+        mRefreshlayout.setRefreshViewHolder(new TSPRefreshViewHolder(getActivity(), isLoadingMoreEnable()));
         EmptyWrapper mEmptyWrapper = new EmptyWrapper(mAdapter);
         mEmptyWrapper.setEmptyView(mEmptyView);
         mRvList.setAdapter(mEmptyWrapper);
         mRefreshlayout.setIsShowLoadingMoreView(getIsShowLoadingMore());
         mRefreshlayout.setPullDownRefreshEnable(getPullDownRefreshEnable());
     }
+
 
     @Override
     protected void initData() {
@@ -137,6 +138,10 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
      */
     protected RecyclerView.ItemDecoration getItemDecoration() {
         return new LinearDecoration(0, ConvertUtils.dp2px(getContext(), getItemDecorationSpacing()), 0, 0);
+    }
+
+    protected boolean isLoadingMoreEnable() {
+        return true;
     }
 
     protected boolean getIsShowLoadingMore() {
@@ -213,6 +218,7 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
 
     /**
      * 处理获取到的缓存数据
+     *
      * @param data       内容信息
      * @param isLoadMore 加载状态
      */

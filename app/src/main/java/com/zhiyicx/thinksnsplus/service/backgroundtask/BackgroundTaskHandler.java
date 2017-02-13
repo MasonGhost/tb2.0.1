@@ -177,7 +177,6 @@ public class BackgroundTaskHandler {
                             @Override
                             protected void onSuccess(IMBean data) {
                                 mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
-                                System.out.println("data = " + data.toString());
                                 IMConfig imConfig = new IMConfig();
                                 imConfig.setImUid(data.getUser_id());
                                 imConfig.setToken(data.getIm_password());
@@ -208,7 +207,6 @@ public class BackgroundTaskHandler {
                         .subscribe(new BaseSubscribe<UserInfoBean>() {
                             @Override
                             protected void onSuccess(UserInfoBean data) {
-                                data.setUser_id((Long) backgroundRequestTaskBean.getParams().get("user_id"));
                                 mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
                                 mUserInfoBeanGreenDao.insertOrReplace(data);
                             }
