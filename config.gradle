@@ -39,7 +39,8 @@ ext {
     //Development
     leakCanaryVersion = '1.5'
 
-
+    //conflict package
+    guavaVwesion = '19.0'
 
 
     dataDependencies = [
@@ -86,7 +87,9 @@ ext {
             timber                       : "com.jakewharton.timber:timber:4.1.2",
             logger                       : "com.orhanobut:logger:1.15",
             //包含各种指示器
-            magicIndicator               : "com.github.hackware1993:MagicIndicator:1.5.0"
+            magicIndicator               : "com.github.hackware1993:MagicIndicator:1.5.0",
+            //robolectric与dagger中间接依赖的冲突，故锁定版本
+            guava                        : "com.google.guava:guava:${guavaVwesion}"
 
 
     ]
