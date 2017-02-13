@@ -196,7 +196,7 @@ public class MessageFragment extends TSFragment implements ImMsgReceveListener, 
         switch (position) {
             case ITEM_TYPE_COMMNETED:// 评论图标
                 mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                        .resourceId(R.mipmap.login_ico_copeneye)
+                        .resourceId(R.mipmap.ico_message_comment)
                         .imagerView((ImageView) holder.getView(R.id.iv_headpic)).build()
                 );
                 holder.setText(R.id.tv_name, getString(R.string.critical));
@@ -212,7 +212,7 @@ public class MessageFragment extends TSFragment implements ImMsgReceveListener, 
                 break;
             case ITEM_TYPE_LIKED:// 点赞图标
                 mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                        .resourceId(R.mipmap.login_ico_copeneye)
+                        .resourceId(R.mipmap.ico_message_good)
                         .imagerView((ImageView) holder.getView(R.id.iv_headpic)).build()
                 );
 
