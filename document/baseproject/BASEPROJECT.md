@@ -1,4 +1,3 @@
-2017年2月9日 17:27:42
 # baseproject module
 结构目录
  ```
@@ -35,7 +34,10 @@
    - share目录：实现SharePolicy接口，当前完成[友盟分享的功能](THIRDSHARE.md)
    - imageloader：试下你ImageLoaderStrategy接口，当前完成[gilde加载图片](IMAGELOADER.md)的功能
    - [photoselector图片选择的整合](PHOTOSELECTOR.md)：本地图片的选择，通过相册或者相机拍照获取图片，并进行裁剪，整合了[ucrop裁剪](UCROP.md)和[photoPicker图片选择](PHOTOPICKER.md)
+### widget目录：
+    一些为TS+项目定制的常用组件
 ### 其他：
    - [app启动优化](APPLAUNCHEROPTIMIZE.md)
    - [动态工具栏](DYNAMICMENU.md)
 
+2017年2月13日10:44:50

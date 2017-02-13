@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.widget;
+package com.zhiyicx.baseproject.widget.dialog;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -14,7 +14,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.baseproject.R;
+
 
 /**
  * @author LiuChao
