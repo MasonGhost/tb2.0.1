@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.login;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 /**
@@ -22,5 +23,10 @@ public class LoginActivity extends TSActivity<LoginPresenter, LoginFragment> {
                 .loginPresenterModule(new LoginPresenterModule(mContanierFragment))
                 .build()
                 .inject(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        ActivityUtils.goHome(this);
     }
 }

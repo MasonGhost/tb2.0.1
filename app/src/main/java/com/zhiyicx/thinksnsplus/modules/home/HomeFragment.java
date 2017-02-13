@@ -12,9 +12,6 @@ import android.widget.TextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
 import com.zhiyicx.common.widget.NoPullViewPager;
-import com.zhiyicx.imsdk.entity.IMConfig;
-import com.zhiyicx.imsdk.manage.ZBIMClient;
-import com.zhiyicx.imsdk.manage.ZBIMSDK;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
@@ -104,13 +101,6 @@ public class HomeFragment extends TSFragment {
 
     @Override
     protected void initData() {
-        ZBIMSDK.init(getContext());
-        // 测试 IM
-        IMConfig imConfig = new IMConfig();
-        imConfig.setImUid(1002);
-        imConfig.setToken("PgbSQKRm3EXEtZFrzjMI_uoDAAA");
-        imConfig.setWeb_socket_authority("ws://192.168.10.222:9900");
-        ZBIMClient.getInstance().login(imConfig);
     }
 
     @Override
