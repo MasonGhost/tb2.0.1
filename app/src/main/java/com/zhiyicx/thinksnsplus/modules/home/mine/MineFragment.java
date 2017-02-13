@@ -18,7 +18,6 @@ import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumListActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
-import com.zhiyicx.thinksnsplus.widget.LoadingDialogUtils;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -115,7 +114,7 @@ public class MineFragment extends TSFragment {
                 startActivity(new Intent(getActivity(), PhotoAlbumListActivity.class));
                 break;
             case R.id.ll_follow_container:
-                LoadingDialogUtils.showStateIng(getContext());
+                //LoadingDialogUtils.showStateIng(getContext());
                 break;
             case R.id.bt_personal_page:
                 SkinManager.getInstance().restoreDefaultTheme();
@@ -147,7 +146,7 @@ public class MineFragment extends TSFragment {
                 startActivity(new Intent(getActivity(), GalleryActivity.class));
                 break;
             case R.id.bt_suggestion:
-                LoadingDialogUtils.showStateSuccess(getContext());
+                //LoadingDialogUtils.showStateSuccess(getContext());
                 break;
             case R.id.bt_question_answer:
                 startActivity(new Intent(getActivity(), LoginActivity.class));

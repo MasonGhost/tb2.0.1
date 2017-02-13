@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.widget;
+package com.zhiyicx.baseproject.widget.dialog;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -14,7 +14,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.baseproject.R;
+
 
 /**
  * @author LiuChao
@@ -23,7 +24,7 @@ import com.zhiyicx.thinksnsplus.R;
  * @contact email:450127106@qq.com
  */
 
-public class LoadingDialogUtils {
+public class LoadingDialog{
     private static AlertDialog sLoadingDialog;
     private static AnimationDrawable mAnimationDrawable;
     private static View layoutView;
@@ -36,9 +37,10 @@ public class LoadingDialogUtils {
      * 显示错误的状态
      *
      * @param context
+     * @param text    错误或失败状态的提示消息
      */
-    public static void showStateError(Context context) {
-        initDialog(R.mipmap.msg_box_remind, "发送失败", context, false);
+    public static void showStateError(Context context, String text) {
+        initDialog(R.mipmap.msg_box_remind, text, context, false);
         sendHideMessage(context);
     }
 
@@ -46,9 +48,10 @@ public class LoadingDialogUtils {
      * 显示成功的状态
      *
      * @param context
+     * @param text    正确或成功状态的提示消息
      */
-    public static void showStateSuccess(Context context) {
-        initDialog(R.mipmap.msg_box_succeed, "发送成功", context, false);
+    public static void showStateSuccess(Context context, String text) {
+        initDialog(R.mipmap.msg_box_succeed, text, context, false);
         sendHideMessage(context);
     }
 
@@ -56,9 +59,10 @@ public class LoadingDialogUtils {
      * 显示进行中的状态
      *
      * @param context
+     * @param text    进行中的提示消息
      */
-    public static void showStateIng(Context context) {
-        initDialog(R.drawable.frame_loading_grey, "发送中...", context, false);
+    public static void showStateIng(Context context, String text) {
+        initDialog(R.drawable.frame_loading_grey, text, context, false);
         handleAnimation(true);
     }
 

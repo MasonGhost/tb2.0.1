@@ -11,7 +11,7 @@
 [github中的地址](https://github.com/Yalantis/uCrop)
 
 
-## 如何使用
+## 1.如何使用
 
 以module的形式导入uCrop库，方便界面的修改
 
@@ -75,4 +75,13 @@
 要注意uCrop.start(getActivity(), UserInfoFragment.this) 方法;跳转裁剪页面，当前页面是activity还是fragment，
 在fragment中，以activity启动startActivity,是无法接受到onActivityResult结果的。
 
-2017年1月12日13:41:23
+## 2.在库的基础上进行修改
+在主工程app的modules目录下，在UCROP库的基础上对逻辑和界面进行了一定的修改。
+
+- 继承TSActivity和TSFragment，统一界面和代码风格。
+- 抽取库的裁剪界面核心逻辑，在CropFragment中实现核心功能。
+- 修改界面布局，样式，包括蒙层，背景，toolbar。。。
+- UCrop类的跳转目标发生变化，使用隐式跳转。
+
+当前已经将UCrop的裁剪功能，封装到[图片选择器](PHOTOSELECTOR.md)
+2017年2月13日09:48:52
