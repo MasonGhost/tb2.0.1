@@ -19,6 +19,7 @@ import com.zhiyicx.common.utils.UIUtils;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
+import net.lucode.hackware.magicindicator.buildins.UIUtil;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator;
@@ -43,13 +44,21 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 
 public class TabSelectView extends FrameLayout {
+    // 定义默认样式值
+    private static final int DEFAULT_TAB_UNSELECTED_TEXTCOLOR = R.color.normal_for_dynamic_list_content;// 缺省的tab未选择文字
+    private static final int DEFAULT_TAB_SELECTED_TEXTCOLOR = R.color.important_for_content;// 缺省的tab被选择文字
+    private static final int DEFAULT_TAB_TEXTSIZE = R.integer.tab_text_size;// 缺省的tab文字大小
+    private static final int DEFAULT_TAB_MARGIN = R.integer.tab_margin;// 缺省的tab之间的空白间距
+    private static final int DEFAULT_TAB_PADDING = R.integer.tab_padding;// 缺省的tab的线和文字的边缘距离
+    private static final int DEFAULT_TAB_LINE_COLOR = R.color.themeColor;// 缺省的tab的线的颜色
+    private static final int DEFAULT_TAB_LINE_HEGIHT = R.integer.line_height;// 缺省的tab的线的高度
+
     private MagicIndicator mMagicIndicator;
     private ViewPager mViewPager;
     private View divider;
     private TextView tvToolbarLeft, tvToolbarRight;
     private List<String> mStringList;// tab列表的文字
     private Context mContext;
-
 
     public TabSelectView(Context context) {
         super(context);
@@ -83,7 +92,7 @@ public class TabSelectView extends FrameLayout {
         if (mStringList == null) {
             mStringList = new ArrayList<>();
         }
-        initMagicIndicator(mContext);
+        initMagicIndicator();
     }
 
     /**
@@ -92,7 +101,7 @@ public class TabSelectView extends FrameLayout {
      * @param showDivider
      */
     public void showDivider(boolean showDivider) {
-        divider.setVisibility(showDivider ? GONE : VISIBLE);
+        divider.setVisibility(showDivider ? VISIBLE : GONE);
     }
 
     public void setLeftText(String text) {
@@ -114,6 +123,28 @@ public class TabSelectView extends FrameLayout {
      */
     private void setRightImg() {
 
+    }
+
+    /**
+     * 设置文字颜色
+     *
+     * @param leftColor  文字的颜色值，不是颜色resID
+     * @param rightColor
+     */
+    public void setTextColor(int leftColor, int rightColor) {
+        tvToolbarLeft.setTextColor(leftColor);
+        tvToolbarLeft.setTextColor(rightColor);
+    }
+
+    /**
+     * 设置文字大小
+     *
+     * @param leftSize
+     * @param rightSize
+     */
+    public void setTextSize(int leftSize, int rightSize) {
+        tvToolbarLeft.setTextSize(TypedValue.COMPLEX_UNIT_SP, leftSize);
+        tvToolbarRight.setTextSize(TypedValue.COMPLEX_UNIT_SP, rightSize);
     }
 
     public void setLeftClickListener(final TSFragment fragment, final TabLeftRightClickListener tabLeftClickListener) {
@@ -144,9 +175,9 @@ public class TabSelectView extends FrameLayout {
                 });
     }
 
-    private void initMagicIndicator(Context context) {
+    private void initMagicIndicator() {
         mMagicIndicator.setBackgroundColor(Color.WHITE);
-        CommonNavigator commonNavigator = new CommonNavigator(context);
+        CommonNavigator commonNavigator = new CommonNavigator(mContext);
         commonNavigator.setAdapter(new CommonNavigatorAdapter() {
 
             @Override
@@ -157,10 +188,10 @@ public class TabSelectView extends FrameLayout {
             @Override
             public IPagerTitleView getTitleView(Context context, final int index) {
                 SimplePagerTitleView simplePagerTitleView = new ColorTransitionPagerTitleView(context);
-                simplePagerTitleView.setNormalColor(ContextCompat.getColor(context, R.color.normal_for_dynamic_list_content));
-                simplePagerTitleView.setSelectedColor(ContextCompat.getColor(context, R.color.important_for_content));
+                simplePagerTitleView.setNormalColor(ContextCompat.getColor(context, DEFAULT_TAB_UNSELECTED_TEXTCOLOR));
+                simplePagerTitleView.setSelectedColor(ContextCompat.getColor(context, DEFAULT_TAB_SELECTED_TEXTCOLOR));
                 simplePagerTitleView.setText(mStringList.get(index));
-                simplePagerTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+                simplePagerTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, context.getResources().getInteger(DEFAULT_TAB_TEXTSIZE));
                 simplePagerTitleView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -173,13 +204,15 @@ public class TabSelectView extends FrameLayout {
             @Override
             public IPagerIndicator getIndicator(Context context) {
                 LinePagerIndicator linePagerIndicator = new LinePagerIndicator(context);
-                linePagerIndicator.setMode(LinePagerIndicator.MODE_WRAP_CONTENT);// 适应文字长度
-                linePagerIndicator.setLineHeight(5);
-                linePagerIndicator.setColors(ContextCompat.getColor(context, R.color.themeColor));
+                //linePagerIndicator.setMode(LinePagerIndicator.MODE_WRAP_CONTENT);// 适应文字长度
+                linePagerIndicator.setMode(LinePagerIndicator.MODE_MATCH_EDGE);// 占满
+                linePagerIndicator.setXOffset(UIUtil.dip2px(context, context.getResources().getInteger(DEFAULT_TAB_PADDING)));// 每个item边缘到指示器的边缘距离
+                linePagerIndicator.setLineHeight(UIUtil.dip2px(context, context.getResources().getInteger(DEFAULT_TAB_LINE_HEGIHT)));
+                linePagerIndicator.setColors(ContextCompat.getColor(context, DEFAULT_TAB_LINE_COLOR));
                 return linePagerIndicator;
             }
         });
-        commonNavigator.setRightPadding(25);
+        commonNavigator.setRightPadding(mContext.getResources().getInteger(DEFAULT_TAB_MARGIN));
         mMagicIndicator.setNavigator(commonNavigator);
         ViewPagerHelper.bind(mMagicIndicator, mViewPager);
     }

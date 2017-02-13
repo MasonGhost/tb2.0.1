@@ -39,4 +39,14 @@
     <!-- 浏览器最大长度-->
     <integer name="progressbar_max">100</integer>
 
+    <!--#########################################      viewpager的tab切换相关      ################################-->
+    <!--tab的间距,单位dp-->
+    <integer name="tab_margin">40</integer>
+    <!--tab的指示器边缘和文字边缘的距离，单位dp-->
+    <integer name="tab_padding">7</integer>
+    <!--tab的指示器高度，单位dp-->
+    <integer name="line_height">3</integer>
+    <!--tab的文字大小，单位sp-->
+    <integer name="tab_text_size">18</integer>
+
 </resources>
