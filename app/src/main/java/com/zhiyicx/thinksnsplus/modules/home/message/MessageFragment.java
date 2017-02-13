@@ -2,8 +2,10 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
@@ -29,6 +31,7 @@ import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageComme
 import com.zhiyicx.thinksnsplus.modules.home.message.messagelike.MessageLikeActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -52,6 +55,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     private static final int ITEM_TYPE_COMMNETED = 0;
     private static final int ITEM_TYPE_LIKED = 1;
 
+    private View mHeaderView;
     @Inject
     protected MessagePresenter mMessagePresenter;
     private ImageLoader mImageLoader;
@@ -84,23 +88,13 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-
-//        HeaderAndFooterWrapper mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(messageListAdapter);
-//        TextView t2 = new TextView(getContext());
-//        t2.setText("Header 2");
-//        t2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                ToastUtils.showToast("nihao header");
-//            }
-//        });
-//        mHeaderAndFooterWrapper.addHeaderView(t2);
-//        mRvMessageList.setAdapter(mHeaderAndFooterWrapper);
-//        mHeaderAndFooterWrapper.notifyDataSetChanged();
+        initHeaderView();
     }
+
 
     /**
      * 是否需要上拉加载
+     *
      * @return true 是需要
      */
     @Override
@@ -119,6 +113,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         initIM();
         super.initData();// 需要在 dagger 注入后
+        updateHeaderViewData(mHeaderView,mPresenter.updateCommnetItemData(),mPresenter.updateLikeItemData());
     }
 
     @Override
@@ -144,6 +139,65 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         mChatClient.setImTimeoutListener(this);
     }
 
+    private void initHeaderView() {
+        HeaderAndFooterWrapper mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
+        mHeaderView = LayoutInflater.from(getContext()).inflate(R.layout.view_header_message_list, null);
+        mHeaderAndFooterWrapper.addHeaderView(mHeaderView);
+        mRvList.setAdapter(mHeaderAndFooterWrapper);
+        mHeaderAndFooterWrapper.notifyDataSetChanged();
+    }
+
+    /**
+     * 更新 hederview 数据
+     *
+     * @param headerview
+     */
+    private void updateHeaderViewData(View headerview, MessageItemBean commentItemData, MessageItemBean likedItemData) {
+        View rlCritical = null;
+        View liked;
+        TextView tvHeaderCommentContent = null;
+        TextView tvHeaderCommentTime = null;
+        BadgeView tvHeaderCommentTip = null;
+        TextView tvHeaderLikeContent = null;
+        TextView tvHeaderLikeTime = null;
+        BadgeView tvHeaderLikeTip = null;
+        if (rlCritical == null) {
+            rlCritical = headerview.findViewById(R.id.rl_critical);
+            RxView.clicks(rlCritical)
+                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                    .subscribe(new Action1<Void>() {
+                        @Override
+                        public void call(Void aVoid) {
+                            toCommentList();
+                        }
+                    });
+            liked = headerview.findViewById(R.id.rl_liked);
+            RxView.clicks(liked)
+                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                    .subscribe(new Action1<Void>() {
+                        @Override
+                        public void call(Void aVoid) {
+                            toLikeList();
+                        }
+                    });
+            tvHeaderCommentContent = (TextView) headerview.findViewById(R.id.tv_header_comment_content);
+            tvHeaderCommentTime = (TextView) headerview.findViewById(R.id.tv_header_comment_time);
+            tvHeaderCommentTip = (BadgeView) headerview.findViewById(R.id.tv_header_comment_tip);
+
+            tvHeaderLikeContent = (TextView) headerview.findViewById(R.id.tv_header_like_content);
+            tvHeaderLikeTime = (TextView) headerview.findViewById(R.id.tv_header_like_time);
+            tvHeaderLikeTip = (BadgeView) headerview.findViewById(R.id.tv_header_like_tip);
+        }
+        tvHeaderCommentContent.setText(commentItemData.getLastMessage().getTxt());
+        tvHeaderCommentTime.setText(ConvertUtils.millis2FitTimeSpan(commentItemData.getLastMessage().getCreate_time(), 3));
+        tvHeaderCommentTip.setBadgeCount(commentItemData.getUnReadMessageNums());
+
+        tvHeaderLikeContent.setText(likedItemData.getLastMessage().getTxt());
+        tvHeaderLikeTime.setText(ConvertUtils.millis2FitTimeSpan(likedItemData.getLastMessage().getCreate_time(), 3));
+        tvHeaderLikeTip.setBadgeCount(likedItemData.getUnReadMessageNums());
+        refreshData();
+    }
+
     /**
      * 设置item 数据
      *
@@ -153,42 +207,42 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
      */
 
     private void setItemData(ViewHolder holder, final MessageItemBean messageItemBean, int position) {
-        switch (position) {
-            case ITEM_TYPE_COMMNETED:// 评论图标
-                mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                        .resourceId(R.mipmap.ico_message_comment)
-                        .imagerView((ImageView) holder.getView(R.id.iv_headpic)).build()
-                );
-                holder.setText(R.id.tv_name, getString(R.string.critical));
-                setViewEnable(holder, false);
-                RxView.clicks(holder.getConvertView())
-                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                        .subscribe(new Action1<Void>() {
-                            @Override
-                            public void call(Void aVoid) {
-                                toCommentList();
-                            }
-                        });
-                break;
-            case ITEM_TYPE_LIKED:// 点赞图标
-                mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                        .resourceId(R.mipmap.ico_message_good)
-                        .imagerView((ImageView) holder.getView(R.id.iv_headpic)).build()
-                );
-
-                holder.setText(R.id.tv_name, getString(R.string.liked));
-                setViewEnable(holder, false);
-                RxView.clicks(holder.getConvertView())
-                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                        .subscribe(new Action1<Void>() {
-                            @Override
-                            public void call(Void aVoid) {
-                                toLikeList();
-                            }
-                        });
-                break;
-
-            default:// 网络头像
+//        switch (position) {
+//            case ITEM_TYPE_COMMNETED:// 评论图标
+//                mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
+//                        .resourceId(R.mipmap.ico_message_comment)
+//                        .imagerView((ImageView) holder.getView(R.id.iv_headpic)).build()
+//                );
+//                holder.setText(R.id.tv_name, getString(R.string.critical));
+//                setViewEnable(holder, false);
+//                RxView.clicks(holder.getConvertView())
+//                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+//                        .subscribe(new Action1<Void>() {
+//                            @Override
+//                            public void call(Void aVoid) {
+//                                toCommentList();
+//                            }
+//                        });
+//                break;
+//            case ITEM_TYPE_LIKED:// 点赞图标
+//                mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
+//                        .resourceId(R.mipmap.ico_message_good)
+//                        .imagerView((ImageView) holder.getView(R.id.iv_headpic)).build()
+//                );
+//
+//                holder.setText(R.id.tv_name, getString(R.string.liked));
+//                setViewEnable(holder, false);
+//                RxView.clicks(holder.getConvertView())
+//                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+//                        .subscribe(new Action1<Void>() {
+//                            @Override
+//                            public void call(Void aVoid) {
+//                                toLikeList();
+//                            }
+//                        });
+//                break;
+//
+//            default:// 网络头像
                 mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
                         .url(messageItemBean.getUserInfo().getUserIcon())
                         .transformation(new GlideCircleTransform(getContext()))
@@ -222,12 +276,11 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                                 toChat(messageItemBean);
                             }
                         });
-        }
+//        }
 
         holder.setText(R.id.tv_content, messageItemBean.getLastMessage().getTxt());
         holder.setText(R.id.tv_time, ConvertUtils.millis2FitTimeSpan(messageItemBean.getLastMessage().getCreate_time(), 3));
         ((BadgeView) holder.getView(R.id.tv_tip)).setBadgeCount(messageItemBean.getUnReadMessageNums());
-
 
     }
 

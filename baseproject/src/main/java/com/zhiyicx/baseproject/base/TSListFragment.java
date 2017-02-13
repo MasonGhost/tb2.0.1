@@ -95,17 +95,17 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
         mAdapter = getAdapter();
         mRvList.setAdapter(mAdapter);
         mRefreshlayout.setRefreshViewHolder(new TSPRefreshViewHolder(getActivity(), isLoadingMoreEnable()));
+        mRefreshlayout.setIsShowLoadingMoreView(getIsShowLoadingMore());
+        mRefreshlayout.setPullDownRefreshEnable(getPullDownRefreshEnable());
         EmptyWrapper mEmptyWrapper = new EmptyWrapper(mAdapter);
         mEmptyWrapper.setEmptyView(mEmptyView);
         mRvList.setAdapter(mEmptyWrapper);
-        mRefreshlayout.setIsShowLoadingMoreView(getIsShowLoadingMore());
-        mRefreshlayout.setPullDownRefreshEnable(getPullDownRefreshEnable());
     }
 
 
     @Override
     protected void initData() {
-        onCacheResponseSuccess(mPresenter.requestCacheData(mMaxId, false),false); // 获取缓存数据
+        onCacheResponseSuccess(mPresenter.requestCacheData(mMaxId, false), false); // 获取缓存数据
     }
 
     /**
@@ -191,7 +191,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
         if (mIsGetNetData) { // 如果没有获取过网络数据，加载更多就是获取本地数据，如果加载了网络数据了，加载更多就是获取网络数据
-            onCacheResponseSuccess(mPresenter.requestCacheData(mMaxId, true),true);
+            onCacheResponseSuccess(mPresenter.requestCacheData(mMaxId, true), true);
         } else {
             mPresenter.requestNetData(mMaxId, true);
         }
