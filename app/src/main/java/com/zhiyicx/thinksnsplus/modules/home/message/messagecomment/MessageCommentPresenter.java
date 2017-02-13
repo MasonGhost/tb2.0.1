@@ -2,6 +2,9 @@ package com.zhiyicx.thinksnsplus.modules.home.message.messagecomment;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -20,7 +23,12 @@ public class MessageCommentPresenter extends BasePresenter<MessageCommentContrac
     }
 
     @Override
-    public void requestData(int maxId, boolean isLoadMore) {
+    public void requestNetData(int maxId, boolean isLoadMore) {
 
+    }
+
+    @Override
+    public List<MessageItemBean> requestCacheData(int maxId, boolean isLoadMore) {
+        return null;
     }
 }

@@ -35,7 +35,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 
-public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFragment<P> implements BGARefreshLayout.BGARefreshLayoutDelegate, ITSListView<T, P> {
+public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends TSFragment<P> implements BGARefreshLayout.BGARefreshLayoutDelegate, ITSListView<T, P> {
     public static final int DEFAULT_PAGE_MAX_ID = 0;// 默认初始化列表 id
 
     private static final float DEFAULT_LIST_ITEM_SPACING = 1f;
@@ -75,7 +75,7 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
     protected void initView(View rootView) {
         mRefreshlayout = (BGARefreshLayout) rootView.findViewById(R.id.refreshlayout);
         mRvList = (RecyclerView) rootView.findViewById(R.id.rv_list);
-        mEmptyView = (EmptyView) rootView.findViewById(R.id.emptyview);
+        mEmptyView = new EmptyView(getContext());
         mEmptyView.setNeedTextTip(false);
         mEmptyView.setNeedClickLoadState(false);
         RxView.clicks(mEmptyView)
@@ -105,7 +105,7 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
 
     @Override
     protected void initData() {
-        onCacheResponseSuccess(getCacheData(mMaxId), false); // 获取缓存数据
+        onCacheResponseSuccess(mPresenter.requestCacheData(mMaxId, false),false); // 获取缓存数据
     }
 
     /**
@@ -165,13 +165,6 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
     protected abstract boolean insertOrUpdateData(@NotNull List<T> data);
 
     /**
-     * 获取缓存数据
-     *
-     * @param maxId
-     */
-    protected abstract List<T> getCacheData(int maxId);
-
-    /**
      * 刷新数据
      */
     public void refreshData() {
@@ -186,7 +179,7 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
         mMaxId = DEFAULT_PAGE_MAX_ID;
-        mPresenter.requestData(mMaxId, false);
+        mPresenter.requestNetData(mMaxId, false);
     }
 
     /**
@@ -198,9 +191,9 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
         if (mIsGetNetData) { // 如果没有获取过网络数据，加载更多就是获取本地数据，如果加载了网络数据了，加载更多就是获取网络数据
-            onCacheResponseSuccess(getCacheData(mMaxId), true);
+            onCacheResponseSuccess(mPresenter.requestCacheData(mMaxId, true),true);
         } else {
-            mPresenter.requestData(mMaxId, true);
+            mPresenter.requestNetData(mMaxId, true);
         }
         return true;
     }

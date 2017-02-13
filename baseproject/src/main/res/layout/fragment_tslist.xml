@@ -18,6 +18,4 @@
         </android.support.v7.widget.RecyclerView>
     </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
 
-    <include
-        layout="@layout/include_empty_view"/>
 </FrameLayout>

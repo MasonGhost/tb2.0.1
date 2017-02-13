@@ -25,7 +25,7 @@ public interface MessageLikeContract {
     interface Repository {
     }
 
-    interface Presenter extends ITSListPresenter {
+    interface Presenter extends ITSListPresenter<MessageItemBean> {
 
 
     }

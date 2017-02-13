@@ -22,7 +22,6 @@ import com.zhiyicx.imsdk.manage.listener.ImTimeoutListener;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
@@ -54,7 +53,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     private static final int ITEM_TYPE_LIKED = 1;
 
     @Inject
-    protected MessagePresenter mPresenter;
+    protected MessagePresenter mMessagePresenter;
     private ImageLoader mImageLoader;
     private List<MessageItemBean> mMessageItemBeen = new ArrayList<>();
 
@@ -100,6 +99,10 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 //        mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
+    /**
+     * 是否需要上拉加载
+     * @return true 是需要
+     */
     @Override
     protected boolean isLoadingMoreEnable() {
         return false;
@@ -114,10 +117,8 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                 .build()
                 .inject(this);
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        initCommentAndLike(mMessageItemBeen);
-        refreshData();
         initIM();
-
+        super.initData();// 需要在 dagger 注入后
     }
 
     @Override
@@ -136,58 +137,11 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         return false;
     }
 
-    @Override
-    protected List getCacheData(int maxId) {
-        return null;
-    }
-
     private void initIM() {
         mChatClient = new ChatClient(getActivity());
         mChatClient.setImMsgReceveListener(this);
         mChatClient.setImStatusListener(this);
         mChatClient.setImTimeoutListener(this);
-    }
-
-    /**
-     * 评论的和点赞的数据
-     */
-    private void initCommentAndLike(List<MessageItemBean> messageItemBeen) {
-        MessageItemBean commentItem = new MessageItemBean();
-        Message commentMessage = new Message();
-        commentMessage.setTxt("默默的小红大家来到江苏高考加分临时价格来看大幅减少了国家法律的世界观浪费时间管理方式的建立各级地方楼市困局"
-                + getString(R.string.comment_me));
-        commentMessage.setCreate_time(System.currentTimeMillis());
-        commentItem.setLastMessage(commentMessage);
-        commentItem.setUnReadMessageNums(Math.round(15));
-        messageItemBeen.add(commentItem);
-
-        MessageItemBean likedmessageItemBean = new MessageItemBean();
-        Message likeMessage = new Message();
-        likeMessage.setTxt("一叶之秋、晴天色"
-                + getString(R.string.like_me));
-        UserInfoBean userinfo = new UserInfoBean();
-        userinfo.setUserIcon("http://192.168.10.222/i.php");
-        likedmessageItemBean.setUserInfo(userinfo);
-        likeMessage.setCreate_time(System.currentTimeMillis());
-        likedmessageItemBean.setLastMessage(likeMessage);
-        likedmessageItemBean.setUnReadMessageNums(Math.round(15));
-        messageItemBeen.add(likedmessageItemBean);
-        for (int i = 0; i < 10; i++) {
-            MessageItemBean test = new MessageItemBean();
-            UserInfoBean testUserinfo = new UserInfoBean();
-            testUserinfo.setUserIcon("http://192.168.10.222/i.php");
-            testUserinfo.setName("颤三");
-            testUserinfo.setUser_id((long) (10 + i));
-            test.setUserInfo(testUserinfo);
-            Message testMessage = new Message();
-            testMessage.setTxt("一叶之秋、晴天色" + i
-                    + getString(R.string.like_me));
-            testMessage.setCreate_time(System.currentTimeMillis());
-            test.setLastMessage(likeMessage);
-            test.setUnReadMessageNums((int) (Math.random() * 10));
-            messageItemBeen.add(test);
-        }
-
     }
 
     /**
@@ -322,6 +276,17 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     // Fragment 注入 ,不需要该方法
     @Override
     public void setPresenter(MessageContract.Presenter presenter) {
+        mPresenter = presenter;
+    }
+
+    @Override
+    public void updateCommnetItemData(MessageItemBean messageItemBean) {
+        mMessageItemBeen.set(ITEM_TYPE_COMMNETED, messageItemBean);
+    }
+
+    @Override
+    public void updateLikeItemData(MessageItemBean messageItemBean) {
+        mMessageItemBeen.set(ITEM_TYPE_LIKED, messageItemBean);
     }
 
     @Override
