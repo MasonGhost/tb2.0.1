@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
+                android:background="@drawable/shape_bg_music_list_item"
+                android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/music_list_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/img_default_nobody"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/music_list_image"
+        android:layout_margin="10dp"
+        android:text="2333"
+        android:textColor="#fff"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_below="@+id/music_list_image"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="15dp"
+        android:text="一壶清酒，一曲离殇"/>
+
+</RelativeLayout>

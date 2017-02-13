@@ -19,6 +19,8 @@
     <string name="suggetion">意见反馈</string>
     <string name="question_answer">Q&amp;A</string>
     <string name="setting">设置</string>
+    <string name="follow">follow</string>
+    <string name="fans">fans</string>
 
     <!--个人资料-->
     <string name="user_info">个人资料</string>

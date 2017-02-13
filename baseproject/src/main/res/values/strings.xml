@@ -68,4 +68,7 @@
 
     <string name="see_origin_photo">查看原图</string>
 
+    <!--音乐FM-->
+    <string name="music_fm">音乐FM</string>
+
 </resources>

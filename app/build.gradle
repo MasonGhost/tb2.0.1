@@ -148,6 +148,8 @@ dependencies {
 
     // database
     compile dataDependences.greendao
+    compile dataDependences.guava
+
     compile dataDependences.greendaoSqlcipher
     //compile dataDependences.greendaoGenerator
     compile 'com.android.support:appcompat-v7:25.0.1'
