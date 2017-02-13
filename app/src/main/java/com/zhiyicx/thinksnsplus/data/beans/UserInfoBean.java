@@ -3,9 +3,13 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Transient;
 
 /**
  * @author LiuChao
@@ -17,9 +21,16 @@ import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
 public class UserInfoBean implements Parcelable {
+    // 定义四种性别状态
+    public static final int NOT_DEFINE = 0;
+    public static final int MALE = 1;
+    public static final int FEMALE = 2;
+    public static final int SECRET = 3;
     @Id
     private Long user_id;
-    private int sex;
+    private int sex = 0;// 1 2 3  1男 2女 3其他
+    @Transient
+    private String sexString;// sex编号对应的具体值，不保存到数据库中
     private String name;
     private String userIcon;
     private String location;
@@ -39,6 +50,7 @@ public class UserInfoBean implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(this.user_id);
         dest.writeInt(this.sex);
+        dest.writeString(this.sexString);
         dest.writeString(this.name);
         dest.writeString(this.userIcon);
         dest.writeString(this.location);
@@ -55,6 +67,7 @@ public class UserInfoBean implements Parcelable {
     protected UserInfoBean(Parcel in) {
         this.user_id = (Long) in.readValue(Long.class.getClassLoader());
         this.sex = in.readInt();
+        this.sexString = in.readString();
         this.name = in.readString();
         this.userIcon = in.readString();
         this.location = in.readString();
@@ -66,8 +79,8 @@ public class UserInfoBean implements Parcelable {
     }
 
     @Generated(hash = 306771050)
-    public UserInfoBean(Long user_id, int sex, String name, String userIcon, String location, int province,
-            int city, int area, String education, String intro) {
+    public UserInfoBean(Long user_id, int sex, String name, String userIcon, String location,
+            int province, int city, int area, String education, String intro) {
         this.user_id = user_id;
         this.sex = sex;
         this.name = name;
@@ -80,7 +93,7 @@ public class UserInfoBean implements Parcelable {
         this.intro = intro;
     }
 
-    public static final Parcelable.Creator<UserInfoBean> CREATOR = new Parcelable.Creator<UserInfoBean>() {
+    public static final Creator<UserInfoBean> CREATOR = new Creator<UserInfoBean>() {
         @Override
         public UserInfoBean createFromParcel(Parcel source) {
             return new UserInfoBean(source);
@@ -106,6 +119,27 @@ public class UserInfoBean implements Parcelable {
 
     public void setSex(int sex) {
         this.sex = sex;
+    }
+
+    public String getSexString() {
+        switch (sex) {
+            case NOT_DEFINE:
+                sexString = "";
+                break;
+            case MALE:
+                sexString = AppApplication.getContext().getString(R.string.male);
+                break;
+            case FEMALE:
+                sexString = AppApplication.getContext().getString(R.string.female);
+                break;
+            case SECRET:
+                sexString = AppApplication.getContext().getString(R.string.keep_secret);
+                break;
+            default:
+                sexString = "";
+                break;
+        }
+        return sexString;
     }
 
     public String getName() {
@@ -170,21 +204,5 @@ public class UserInfoBean implements Parcelable {
 
     public void setIntro(String intro) {
         this.intro = intro;
-    }
-
-    @Override
-    public String toString() {
-        return "UserInfoBean{" +
-                "user_id=" + user_id +
-                ", sex='" + sex + '\'' +
-                ", name='" + name + '\'' +
-                ", userIcon='" + userIcon + '\'' +
-                ", location='" + location + '\'' +
-                ", province=" + province +
-                ", city=" + city +
-                ", area=" + area +
-                ", education='" + education + '\'' +
-                ", intro='" + intro + '\'' +
-                '}';
     }
 }

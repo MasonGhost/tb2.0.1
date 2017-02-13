@@ -54,9 +54,6 @@ import rx.functions.Action1;
  */
 public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> implements UserInfoContract.View, PhotoSelectorImpl.IPhotoBackListener {
 
-    private static final int GENDER_MALE = 0;// 性别男
-    private static final int GENDER_FEMALE = 1;// 性别女
-    private static final int GENDER_SECRET = 2;// 性别保密
     private static final int LOCATION_2LEVEL = 2;// 地区选择可选的级数为2，2级联动
     private static final int LOCATION_3LEVEL = 3;// 地区选择可选的级数为3
 
@@ -160,7 +157,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .subscribe(new Action1<CharSequence>() {
                     @Override
                     public void call(CharSequence charSequence) {
-                        LogUtils.i("userName-->"+charSequence);
+                        LogUtils.i("userName-->" + charSequence);
                         String oldUserName = mUserInfoBean.getName();
                         if (TextUtils.isEmpty(oldUserName)) {
                             userNameChanged = !TextUtils.isEmpty(charSequence);
@@ -174,7 +171,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .subscribe(new Action1<CharSequence>() {
                     @Override
                     public void call(CharSequence charSequence) {
-                        String oldSex = mUserInfoBean.getSex();
+                        String oldSex = mUserInfoBean.getSexString();
                         if (TextUtils.isEmpty(oldSex)) {
                             sexChanged = !TextUtils.isEmpty(charSequence);
                         } else {
@@ -307,9 +304,11 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         this.mUserInfoBean = mUserInfoBean;
         // 初始化界面数据
         mEtUserName.setText(mUserInfoBean.getName());
-        mTvSex.setText(mUserInfoBean.getSex());
+        mTvSex.setText(mUserInfoBean.getSexString());
+        mTvSex.setTag(R.id.view_data, mUserInfoBean.getSex());// 设置性别编号
         mTvCity.setText(mUserInfoBean.getLocation());
         mEtUserIntroduce.setText(mUserInfoBean.getIntro());
+
     }
 
     @Override
@@ -405,21 +404,21 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
                     public void onItem1Clicked() {
-                        setGender(GENDER_MALE);
+                        setGender(UserInfoBean.MALE);
                         mGenderPopupWindow.hide();
                     }
                 })
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
                     public void onItem2Clicked() {
-                        setGender(GENDER_FEMALE);
+                        setGender(UserInfoBean.FEMALE);
                         mGenderPopupWindow.hide();
                     }
                 })
                 .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
                     @Override
                     public void onItem3Clicked() {
-                        setGender(GENDER_SECRET);
+                        setGender(UserInfoBean.SECRET);
                         mGenderPopupWindow.hide();
                     }
                 })
@@ -483,21 +482,18 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
      */
     private void setGender(int genderType) {
         switch (genderType) {
-            case GENDER_MALE:
+            case UserInfoBean.MALE:
                 mTvSex.setText(R.string.male);
-                //mTvSex.setTag();
                 break;
-            case GENDER_FEMALE:
+            case UserInfoBean.FEMALE:
                 mTvSex.setText(R.string.female);
-                //mTvSex.setTag();
                 break;
-            case GENDER_SECRET:
+            case UserInfoBean.SECRET:
                 mTvSex.setText(R.string.keep_secret);
-                // mTvSex.setTag();
                 break;
             default: // 没有该性别
         }
-
+        mTvSex.setTag(R.id.view_data, genderType);// 设置性别编号
     }
 
     /**
@@ -511,7 +507,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
             fieldMap.put("name", mEtUserName.getText().toString());
         }
         if (sexChanged) {
-            fieldMap.put("sex", mTvSex.getText().toString());
+            fieldMap.put("sex", (int)mTvSex.getTag(R.id.view_data)+"");
         }
         if (cityChanged) {
             fieldMap.put("location", mTvCity.getText().toString());

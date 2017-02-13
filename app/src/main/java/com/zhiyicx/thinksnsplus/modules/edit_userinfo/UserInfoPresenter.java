@@ -164,7 +164,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
             mUserInfoBean.setName(changeUserInfo.get("name"));
         }
         if (changeUserInfo.containsKey("sex")) {
-            mUserInfoBean.setSex(changeUserInfo.get("sex"));
+            mUserInfoBean.setSex(Integer.parseInt(changeUserInfo.get("sex")));
         }
         if (changeUserInfo.containsKey("location")) {
             mUserInfoBean.setLocation(changeUserInfo.get("location"));
