@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.chat;
 
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.imsdk.entity.Message;
+import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     }
 
     @Override
-    public List<Message> getHistoryMessages(int cid, long mid) {
-        return mRepository.;
+    public List<ChatItemBean> getHistoryMessages(int cid, long mid) {
+        return mRepository.getChatListData(cid,mid);
     }
 }

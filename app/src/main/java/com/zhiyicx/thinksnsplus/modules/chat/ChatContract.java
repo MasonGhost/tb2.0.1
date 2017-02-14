@@ -4,7 +4,8 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.imsdk.entity.Conversation;
-import com.zhiyicx.imsdk.entity.Message;
+import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 
 import java.util.List;
 
@@ -43,6 +44,22 @@ public interface ChatContract {
          */
         boolean insertOrUpdateConversation(Conversation conversation);
 
+        /**
+         * 获取聊天对话列表信息
+         * @param userId
+
+         * @return
+         */
+        List<MessageItemBean> getConversionListData(long userId);
+
+        /**
+         *
+         * @param cid
+         * @param mid
+         * @return
+         */
+        List<ChatItemBean> getChatListData(int  cid,long mid);
+
     }
 
     interface Presenter extends IBasePresenter {
@@ -60,7 +77,7 @@ public interface ChatContract {
          * @param mid 聊天内容创建时间
          * @return 聊天信息
          */
-        List<Message> getHistoryMessages(int cid, long mid);
+        List<ChatItemBean> getHistoryMessages(int cid, long mid);
 
     }
 }

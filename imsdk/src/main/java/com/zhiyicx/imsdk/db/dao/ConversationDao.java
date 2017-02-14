@@ -215,6 +215,54 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
     }
 
     /**
+     *
+     * @param im_uid 聊天 id
+     * @return
+     */
+    @Override
+    public List<Conversation> getConversationListbyImUid(long im_uid) {
+        SQLiteDatabase database = mHelper.getWritableDatabase();
+        Cursor cursor = database.query(
+                TABLE_NAME,
+                null,
+                COLUMN_NAME_CONVERSATION_IM_UID + " = ?", new String[]{String.valueOf(im_uid)}, null, null,
+                null);
+        List<Conversation> conversations = new ArrayList<>();
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                Conversation conversation = new Conversation();
+                conversation.setCid(cursor.getInt(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_CID)));
+                conversation.setType(cursor.getInt(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_TYPE)));
+                conversation.setName(cursor.getString(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_NAME)));
+                conversation.setPair(cursor.getString(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_PAIR)));
+                conversation.setPwd(cursor.getString(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_PWD)));
+                conversation.setLast_message_time(cursor.getLong(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_LAST_MESSAGE_TIME)));
+                conversation.setLast_message_text(cursor.getString(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_LAST_MESSAGE_TEXT)));
+                conversation.setUsids(cursor.getString(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_USIDS)));
+                conversation.setIm_uid(cursor.getInt(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_IM_UID)));
+                conversation.setIs_del(isDel(cursor.getInt(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_IS_DEL))));
+                conversation.setDisa(cursor.getInt(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_DISABLE)));
+                conversation.setMc(cursor.getInt(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_MC)));
+                conversations.add(conversation);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return conversations;
+    }
+
+    /**
      * 删除对话信息
      *
      * @param cid

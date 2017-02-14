@@ -11,6 +11,7 @@ import com.zhiyicx.imsdk.core.ChatType;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     public static final String BUNDLE_USERID = "userId";
     public static final String BUNDLE_CONVERSATION = "conversation";
 
-    protected List<Message> mDatas = new ArrayList<>();
+    protected List<ChatItemBean> mDatas = new ArrayList<>();
     @BindView(R.id.message_list)
     ChatMessageList mMessageList;
     @BindView(R.id.ilv_container)

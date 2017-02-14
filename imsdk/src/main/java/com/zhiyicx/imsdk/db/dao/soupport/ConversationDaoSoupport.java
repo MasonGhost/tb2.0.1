@@ -22,6 +22,7 @@ public interface ConversationDaoSoupport {
 
     /**
      * 通过cid获取对话信息
+     *
      * @param cid
      * @return
      */
@@ -35,6 +36,14 @@ public interface ConversationDaoSoupport {
      */
     List<Conversation> getConversationList(int page);
 
+    /**
+     * 获取对话列表
+     *
+     * @param im_uid 聊天 id
+     * @return
+     */
+    List<Conversation> getConversationListbyImUid(long im_uid);
+
 
     /**
      * 删除对话信息
@@ -47,6 +56,7 @@ public interface ConversationDaoSoupport {
 
     /**
      * 对话是否存在
+     *
      * @param cid
      * @return
      */
@@ -54,12 +64,15 @@ public interface ConversationDaoSoupport {
 
     /**
      * 更新对话
+     *
      * @param conversation
      * @return
      */
     boolean updateConversation(Conversation conversation);
+
     /**
      * 插入或者更新对话
+     *
      * @param conversation
      * @return
      */

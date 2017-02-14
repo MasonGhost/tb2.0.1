@@ -4,11 +4,20 @@ import android.app.Application;
 import android.content.Context;
 
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.db.dao.ConversationDao;
 import com.zhiyicx.imsdk.entity.Conversation;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatContract;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -22,6 +31,8 @@ import rx.schedulers.Schedulers;
  */
 
 public class ChatRepository implements ChatContract.Repository {
+    private static final String TAG = "ChatRepository";
+    private final UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     private UserInfoClient mUserInfoClient;
     private Context mContext;
 
@@ -29,6 +40,8 @@ public class ChatRepository implements ChatContract.Repository {
         super();
         mContext = context;
         mUserInfoClient = serviceManager.getUserInfoClient();
+        mUserInfoBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent()
+                .userInfoBeanGreenDao();
     }
 
     /**
@@ -57,4 +70,36 @@ public class ChatRepository implements ChatContract.Repository {
     public boolean insertOrUpdateConversation(Conversation conversation) {
         return ConversationDao.getInstance(mContext).insertOrUpdateConversation(conversation);
     }
+
+    @Override
+    public List<MessageItemBean> getConversionListData(long userId) {
+        List<MessageItemBean> messageItemBeens = new ArrayList<>();
+        UserInfoBean toChatUserInfo;
+        List<Conversation> conversations = ConversationDao.getInstance(mContext).getConversationListbyImUid(userId);
+        if (conversations == null || conversations.size() == 0) {
+            return messageItemBeens;
+        }
+        try {
+            toChatUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache(Long.valueOf(conversations.get(0).getUsids().split(",")[1]));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogUtils.d(TAG, "对话信息中的 userid 有误");
+            return messageItemBeens;
+        }
+        for (int i = 0; i < conversations.size(); i++) {
+            MessageItemBean itemBean = new MessageItemBean();
+            itemBean.setUserInfo(toChatUserInfo);
+            itemBean.setConversation(conversations.get(i));
+            messageItemBeens.add(itemBean);
+        }
+        return messageItemBeens;
+    }
+
+    @Override
+    public List<ChatItemBean> getChatListData(int cid, long mid) {
+        return new ArrayList<>();
+    }
+
+
 }
