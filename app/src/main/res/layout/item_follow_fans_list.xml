@@ -1,58 +1,70 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:paddingBottom="@dimen/spacing_normal"
+    android:paddingLeft="@dimen/spacing_small"
+    android:paddingRight="@dimen/spacing_mid"
+    android:paddingTop="@dimen/spacing_normal">
 
-    <ImageView
-        android:id="@+id/iv_head_icon"
+    <com.zhiyicx.common.widget.FilterImageView
+        android:id="@+id/iv_headpic"
         android:layout_width="@dimen/headpic_for_list"
         android:layout_height="@dimen/headpic_for_list"
-        android:layout_alignBottom="@id/tv_user_signature"
-        android:layout_marginLeft="@dimen/spacing_small"
-        android:layout_marginTop="@dimen/spacing_mid"
         tools:src="@mipmap/ic_launcher"/>
+
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/iv_headpic"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:textColor="@color/important_for_content"
+        android:textSize="@dimen/size_content_comment"
+        tools:text="张三 "/>
 
     <TextView
         android:id="@+id/tv_user_signature"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/spacing_mid"
-        android:layout_marginRight="@dimen/spacing_mid"
-        android:layout_toLeftOf="@+id/iv_follow_user"
-        android:layout_toRightOf="@id/iv_head_icon"
-        android:singleLine="true"
-        tools:text="走在风中今天阳光突然很温柔,天的温柔地的温柔，像你抱着我"/>
-
-
-    <TextView
-        android:id="@+id/tv_user_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/tv_user_signature"
-        android:layout_alignLeft="@id/tv_user_signature"
-        android:layout_marginBottom="@dimen/spacing_normal"
-        tools:text="五月天"/>
+        android:layout_below="@id/tv_name"
+        android:layout_toLeftOf="@+id/iv_user_follow"
+        android:layout_toRightOf="@id/iv_headpic"
+        android:ellipsize="end"
+        android:gravity="bottom"
+        android:maxLines="1"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:paddingTop="@dimen/spacing_small"
+        android:textColor="@color/normal_for_assist_text"
+        android:textSize="@dimen/size_content"
+        tools:text="走在风中今天阳光突然好温柔，天的温柔地的温柔想你抱着我"/>
 
     <TextView
         android:id="@+id/tv_dig_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/tv_user_signature"
         android:layout_below="@id/tv_user_signature"
-        android:layout_marginBottom="@dimen/spacing_mid"
-        android:layout_marginTop="@dimen/spacing_normal"
-        tools:text="点赞 56k"/>
+        android:layout_toRightOf="@id/iv_headpic"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:paddingTop="@dimen/spacing_small"
+        android:textColor="@color/general_for_hint"
+        android:textSize="@dimen/size_content_assist"
+        tools:text="点赞 56万"/>
 
     <ImageView
-        android:id="@+id/iv_follow_user"
+        android:id="@+id/iv_user_follow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/spacing_mid"
-        tools:src="@mipmap/ico_me_followed"/>
+        android:layout_marginLeft="@dimen/spacing_mid"
+        tools:src="@mipmap/ico_me_follow"/>
 
 </RelativeLayout>
