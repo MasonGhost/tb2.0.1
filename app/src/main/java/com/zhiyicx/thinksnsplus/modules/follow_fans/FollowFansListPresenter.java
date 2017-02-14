@@ -1,6 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.follow_fans;
 
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansItemBean;
+
+import java.util.List;
 
 /**
  * @author LiuChao
@@ -10,4 +13,13 @@ import com.zhiyicx.common.mvp.BasePresenter;
  */
 
 public class FollowFansListPresenter extends BasePresenter implements FollowFansListContract.Presenter {
+    @Override
+    public void requestNetData(int maxId, boolean isLoadMore) {
+
+    }
+
+    @Override
+    public List<FollowFansItemBean> requestCacheData(int maxId, boolean isLoadMore) {
+        return null;
+    }
 }
