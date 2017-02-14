@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:paddingBottom="@dimen/spacing_normal"
-    android:paddingLeft="@dimen/spacing_small"
+    android:paddingLeft="@dimen/spacing_normal"
     android:paddingRight="@dimen/spacing_mid"
     android:paddingTop="@dimen/spacing_normal">
 
@@ -54,7 +54,7 @@
         android:maxLines="1"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingTop="@dimen/spacing_small"
-        android:textColor="@color/general_for_hint"
+        android:textColor="@color/normal_for_assist_text"
         android:textSize="@dimen/size_content_assist"
         tools:text="点赞 56万"/>
 
