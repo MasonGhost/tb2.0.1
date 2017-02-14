@@ -4,10 +4,15 @@ import android.os.Handler;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.modules.chat.ChatContract;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +28,10 @@ import javax.inject.Inject;
 @FragmentScoped
 public class MessagePresenter extends BasePresenter<MessageContract.Repository, MessageContract.View> implements MessageContract.Presenter {
 
+    @Inject
+    ChatContract.Repository mChatRepository;
+    @Inject
+    AuthRepository mAuthRepository;
     private MessageItemBean mItemBeanComment;
     private MessageItemBean mItemBeanLike;
 
@@ -60,7 +69,9 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                mRootView.onNetResponseSuccess(data, false);
+//                mRootView.onNetResponseSuccess(data, false);
+                mRootView.hideLoading();
+                mRootView.showMessage("网络不加。。。。。");
             }
         }, 2000);
     }
@@ -125,5 +136,25 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
             mItemBeanLike.setUnReadMessageNums(Math.round(15));
         }
         return mItemBeanLike;
+    }
+
+    public void createChat() {
+        mChatRepository.createConveration(0, "七夜和超超", "", mAuthRepository.getAuthBean().getUser_id() + ",4")
+                .subscribe(new BaseSubscribe<Conversation>() {
+                    @Override
+                    protected void onSuccess(Conversation data) {
+
+                    }
+
+                    @Override
+                    protected void onFailure(String message) {
+                        LogUtils.d(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        LogUtils.e("error",throwable);
+                    }
+                });
     }
 }

@@ -30,7 +30,7 @@ public interface ChatContract {
          * @param uids 会话初始成员，数组集合或字符串列表``"1,2,3,4"` type=`0`时需要两个uid、type=`1`时需要至少一个、type=`2`时此参数将忽略;注意：如果不合法的uid或uid未注册到IM,将直接忽略
          * @return
          */
-        Observable<BaseJson<Conversation>> createConveration(String type, String name, String pwd, String uids);
+        Observable<BaseJson<Conversation>> createConveration(int type, String name, String pwd, String uids);
 
     }
 

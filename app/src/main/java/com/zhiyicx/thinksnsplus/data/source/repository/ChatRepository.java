@@ -37,7 +37,7 @@ public class ChatRepository implements ChatContract.Repository {
      * @return
      */
     @Override
-    public Observable<BaseJson<Conversation>> createConveration(String type, String name, String pwd, String uids) {
+    public Observable<BaseJson<Conversation>> createConveration(int type, String name, String pwd, String uids) {
         return mUserInfoClient.createConversaiton(type,name,pwd,uids)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

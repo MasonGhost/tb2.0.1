@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.music_fm;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.MusicListBean;
 
@@ -23,7 +22,7 @@ public interface MusicContract {
 
     }
 
-    interface Presenter extends ITSListPresenter {
+    interface Presenter extends ITSListPresenter<MusicListBean> {
         void getMusicList();
     }
 

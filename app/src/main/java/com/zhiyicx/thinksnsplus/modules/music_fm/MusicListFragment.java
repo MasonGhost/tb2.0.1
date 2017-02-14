@@ -47,10 +47,6 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
         return false;
     }
 
-    @Override
-    protected List<MusicListBean> getCacheData(int maxId) {
-        return new ArrayList<>();
-    }
 
     @Override
     protected void initData() {

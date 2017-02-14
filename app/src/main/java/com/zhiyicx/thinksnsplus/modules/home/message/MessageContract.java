@@ -31,6 +31,7 @@ public interface MessageContract {
         MessageItemBean updateCommnetItemData();
 
         MessageItemBean updateLikeItemData();
+        void createChat();
 
     }
 }

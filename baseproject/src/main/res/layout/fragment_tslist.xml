@@ -8,14 +8,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_list"
-            android:background="@color/white"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:overScrollMode="never"
-            android:layout_weight="1">
-        </android.support.v7.widget.RecyclerView>
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <include
+                layout="@layout/view_top_tip"
+                />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:overScrollMode="never">
+            </android.support.v7.widget.RecyclerView>
+        </LinearLayout>
     </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
 
 </FrameLayout>

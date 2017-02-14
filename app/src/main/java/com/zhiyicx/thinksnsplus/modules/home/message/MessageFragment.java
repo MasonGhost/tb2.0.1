@@ -61,7 +61,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     private ImageLoader mImageLoader;
     private List<MessageItemBean> mMessageItemBeen = new ArrayList<>();
 
-
     /**
      * IM 聊天
      */
@@ -81,6 +80,17 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     @Override
+    protected String setRightTitle() {
+        return "创建对话";//测试使用
+    }
+
+    @Override
+    protected void setRightClick() {
+        super.setRightClick();
+        mPresenter.createChat();
+    }
+
+    @Override
     protected String setCenterTitle() {
         return getString(R.string.message);
     }
@@ -90,7 +100,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         super.initView(rootView);
         initHeaderView();
     }
-
 
     /**
      * 是否需要上拉加载
@@ -113,7 +122,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         initIM();
         super.initData();// 需要在 dagger 注入后
-        updateHeaderViewData(mHeaderView,mPresenter.updateCommnetItemData(),mPresenter.updateLikeItemData());
+        updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter.updateLikeItemData());
     }
 
     @Override
@@ -141,6 +150,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     private void initHeaderView() {
         HeaderAndFooterWrapper mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
+
         mHeaderView = LayoutInflater.from(getContext()).inflate(R.layout.view_header_message_list, null);
         mHeaderAndFooterWrapper.addHeaderView(mHeaderView);
         mRvList.setAdapter(mHeaderAndFooterWrapper);
@@ -207,75 +217,39 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
      */
 
     private void setItemData(ViewHolder holder, final MessageItemBean messageItemBean, int position) {
-//        switch (position) {
-//            case ITEM_TYPE_COMMNETED:// 评论图标
-//                mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-//                        .resourceId(R.mipmap.ico_message_comment)
-//                        .imagerView((ImageView) holder.getView(R.id.iv_headpic)).build()
-//                );
-//                holder.setText(R.id.tv_name, getString(R.string.critical));
-//                setViewEnable(holder, false);
-//                RxView.clicks(holder.getConvertView())
-//                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-//                        .subscribe(new Action1<Void>() {
-//                            @Override
-//                            public void call(Void aVoid) {
-//                                toCommentList();
-//                            }
-//                        });
-//                break;
-//            case ITEM_TYPE_LIKED:// 点赞图标
-//                mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-//                        .resourceId(R.mipmap.ico_message_good)
-//                        .imagerView((ImageView) holder.getView(R.id.iv_headpic)).build()
-//                );
-//
-//                holder.setText(R.id.tv_name, getString(R.string.liked));
-//                setViewEnable(holder, false);
-//                RxView.clicks(holder.getConvertView())
-//                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-//                        .subscribe(new Action1<Void>() {
-//                            @Override
-//                            public void call(Void aVoid) {
-//                                toLikeList();
-//                            }
-//                        });
-//                break;
-//
-//            default:// 网络头像
-                mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                        .url(messageItemBean.getUserInfo().getUserIcon())
-                        .transformation(new GlideCircleTransform(getContext()))
-                        .imagerView((ImageView) holder.getView(R.id.iv_headpic))
-                        .build()
-                );
-                setViewEnable(holder, true);
-                holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getName());
-                // 响应事件
-                RxView.clicks(holder.getView(R.id.tv_name))
-                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                        .subscribe(new Action1<Void>() {
-                            @Override
-                            public void call(Void aVoid) {
-                                toUserCenter();
-                            }
-                        });
-                RxView.clicks(holder.getView(R.id.iv_headpic))
-                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                        .subscribe(new Action1<Void>() {
-                            @Override
-                            public void call(Void aVoid) {
-                                toUserCenter();
-                            }
-                        });
-                RxView.clicks(holder.getConvertView())
-                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                        .subscribe(new Action1<Void>() {
-                            @Override
-                            public void call(Void aVoid) {
-                                toChat(messageItemBean);
-                            }
-                        });
+        mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
+                .url(messageItemBean.getUserInfo().getUserIcon())
+                .transformation(new GlideCircleTransform(getContext()))
+                .imagerView((ImageView) holder.getView(R.id.iv_headpic))
+                .build()
+        );
+        setViewEnable(holder, true);
+        holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getName());
+        // 响应事件
+        RxView.clicks(holder.getView(R.id.tv_name))
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        toUserCenter();
+                    }
+                });
+        RxView.clicks(holder.getView(R.id.iv_headpic))
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        toUserCenter();
+                    }
+                });
+        RxView.clicks(holder.getConvertView())
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        toChat(messageItemBean);
+                    }
+                });
 //        }
 
         holder.setText(R.id.tv_content, messageItemBean.getLastMessage().getTxt());
@@ -349,12 +323,12 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     @Override
     public void hideLoading() {
-
+        mRefreshlayout.endRefreshing();
     }
 
     @Override
     public void showMessage(String message) {
-
+        showMessageNotSticky(message);
     }
 
     /*******************************************  聊天相关回调  *********************************************/

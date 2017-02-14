@@ -1,7 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.home.message;
 
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
+import com.zhiyicx.thinksnsplus.data.source.repository.ChatRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository;
+import com.zhiyicx.thinksnsplus.modules.chat.ChatContract;
 
 import dagger.Module;
 import dagger.Provides;
@@ -29,5 +31,9 @@ public class MessagePresenterModule {
     @Provides
     MessageContract.Repository provideMessageContractRepository(ServiceManager serviceManager) {
         return new MessageRepository(serviceManager);
+    }
+    @Provides
+    ChatContract.Repository provideChatContractRepository(ServiceManager serviceManager){
+        return new ChatRepository(serviceManager);
     }
 }
