@@ -87,6 +87,9 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
                     }
                 });
         mRefreshlayout.setDelegate(this);
+        if (setListBackColor()!=-1){
+            mRvList.setBackgroundColor(getResources().getColor(setListBackColor()));
+        }
         mRvList.setLayoutManager(getLayoutManager());
         mRvList.addItemDecoration(getItemDecoration());//设置Item的间隔
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
@@ -145,6 +148,14 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
 
     protected boolean getPullDownRefreshEnable() {
         return true;
+    }
+
+    /**
+     * 设置 list 背景色
+     * @return
+     */
+    protected int setListBackColor(){
+        return -1;
     }
 
     /**
