@@ -49,12 +49,6 @@
         </activity>
         <activity android:name=".modules.crop.CropActivity">
         </activity>
-
-        <service
-            android:name=".service.backgroundtask.BackgroundTaskHandleService"
-            android:exported="false">
-        </service>
-
         <activity android:name=".modules.photopicker.PhotoAlbumListActivity">
         </activity>
         <activity android:name=".modules.photopicker.PhotoAlbumDetailsActivity">
@@ -68,6 +62,24 @@
         <activity android:name=".modules.music_fm.MusicListActivity"/>
         <activity android:name=".modules.follow_fans.FollowFansListActivity">
         </activity>
+
+        <service
+            android:name=".service.backgroundtask.BackgroundTaskHandleService"
+            android:exported="false">
+        </service>
+
+        <!--#########################################      IM 相关       ################################-->
+
+        <service android:name="com.zhiyicx.imsdk.service.SocketService"/>
+        <!-- 网络监听广播 -->
+        <receiver
+            android:name="com.zhiyicx.imsdk.receiver.NetChangeReceiver"
+            android:label="NetworkConnection">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -32,6 +32,13 @@ public interface ChatContract {
          */
         Observable<BaseJson<Conversation>> createConveration(int type, String name, String pwd, String uids);
 
+        /**
+         * 插入或者更新数据库
+         * @param conversation 对话信息
+         * @return
+         */
+        boolean insertOrUpdateConversation(Conversation conversation);
+
     }
 
     interface Presenter extends IBasePresenter {

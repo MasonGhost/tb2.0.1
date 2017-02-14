@@ -66,14 +66,15 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
             test.setUnReadMessageNums((int) (Math.random() * 10));
             data.add(test);
         }
+        mRootView.hideLoading();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
 //                mRootView.onNetResponseSuccess(data, false);
-                mRootView.hideLoading();
+
                 mRootView.showMessage("网络不加。。。。。");
             }
-        }, 2000);
+        }, 500);
     }
 
     @Override
@@ -115,11 +116,11 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         if (mItemBeanComment == null) {
             mItemBeanComment = new MessageItemBean();
             Message commentMessage = new Message();
-            commentMessage.setTxt("默默的小红大家来到江苏高考加分临时价格来看大幅减少了国家法律的世界观浪费时间管理方式的建立各级地方楼市困局"
+            commentMessage.setTxt("还没有人"
                     + mContext.getString(R.string.comment_me));
             commentMessage.setCreate_time(System.currentTimeMillis());
             mItemBeanComment.setLastMessage(commentMessage);
-            mItemBeanComment.setUnReadMessageNums(Math.round(15));
+            mItemBeanComment.setUnReadMessageNums(Math.round(0));
         }
         return mItemBeanComment;
     }
@@ -129,31 +130,37 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         if (mItemBeanLike == null) {
             mItemBeanLike = new MessageItemBean();
             Message likeMessage = new Message();
-            likeMessage.setTxt("默默的小红大家来到江苏高考加分临时价格来看大幅减少了国家法律的世界观浪费时间管理方式的建立各级地方楼市困局"
+            likeMessage.setTxt("还没有人"
                     + mContext.getString(R.string.comment_me));
             likeMessage.setCreate_time(System.currentTimeMillis());
             mItemBeanLike.setLastMessage(likeMessage);
-            mItemBeanLike.setUnReadMessageNums(Math.round(15));
+            mItemBeanLike.setUnReadMessageNums(Math.round(0));
         }
         return mItemBeanLike;
     }
 
+    @Override
     public void createChat() {
-        mChatRepository.createConveration(0, "七夜和超超", "", mAuthRepository.getAuthBean().getUser_id() + ",4")
+        final String uids = mAuthRepository.getAuthBean().getUser_id() + ",4";
+        mChatRepository.createConveration(0, "七夜和超超", "", uids)
                 .subscribe(new BaseSubscribe<Conversation>() {
                     @Override
                     protected void onSuccess(Conversation data) {
-
+                        data.setUsids(uids);
+                        mChatRepository.insertOrUpdateConversation(data);
+                        mRootView.showMessage("创建对话成功");
                     }
 
                     @Override
                     protected void onFailure(String message) {
                         LogUtils.d(message);
+                        mRootView.showMessage(message);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        LogUtils.e("error",throwable);
+                        LogUtils.e("error", throwable);
+                        mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
                     }
                 });
     }

@@ -258,11 +258,17 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
 
     }
 
+    /**
+     * 更新
+     *
+     * @param conversation
+     * @return
+     */
     @Override
     public boolean updateConversation(Conversation conversation) {
         if (conversation == null)
             throw new IllegalArgumentException("conversation can not be null");
-        int rows = 0;
+        long rows = 0;
         SQLiteDatabase database = mHelper.getWritableDatabase();
         database.beginTransaction();
         try {
@@ -297,6 +303,28 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
             e.printStackTrace();
         } finally {
             database.endTransaction();
+        }
+        if (rows > 0)
+            return true;
+        else
+            return false;
+    }
+
+    /**
+     * 更新或者插入数据库
+     *
+     * @param conversation
+     * @return
+     */
+    @Override
+    public boolean insertOrUpdateConversation(Conversation conversation) {
+        if (conversation == null)
+            throw new IllegalArgumentException("conversation can not be null");
+        long rows = 0;
+        if (!hasConversation(conversation.getCid())) {// 插入
+            rows = insertConversation(conversation);
+        } else {//更新
+            return updateConversation(conversation);
         }
         if (rows > 0)
             return true;

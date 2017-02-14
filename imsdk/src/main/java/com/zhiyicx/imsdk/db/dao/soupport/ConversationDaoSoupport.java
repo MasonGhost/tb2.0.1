@@ -58,6 +58,11 @@ public interface ConversationDaoSoupport {
      * @return
      */
     boolean updateConversation(Conversation conversation);
-
+    /**
+     * 插入或者更新对话
+     * @param conversation
+     * @return
+     */
+    boolean insertOrUpdateConversation(Conversation conversation);
 
 }

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="@dimen/view_top_tip_height"
              android:alpha="0.7"
-             android:visibility="gone"
              android:id="@+id/fl_top_tip_container"
              android:background="@color/themeColor"
+             android:visibility="gone"
              android:orientation="horizontal">
 
     <TextView
@@ -14,7 +13,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginRight="@dimen/spacing_large"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/white"

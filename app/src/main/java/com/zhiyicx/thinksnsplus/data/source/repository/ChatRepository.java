@@ -1,8 +1,11 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import android.app.Application;
+import android.content.Context;
+
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.imsdk.db.dao.ConversationDao;
 import com.zhiyicx.imsdk.entity.Conversation;
-import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatContract;
@@ -19,17 +22,18 @@ import rx.schedulers.Schedulers;
  */
 
 public class ChatRepository implements ChatContract.Repository {
-    private CommonClient mCommonClient;
     private UserInfoClient mUserInfoClient;
+    private Context mContext;
 
-    public ChatRepository(ServiceManager serviceManager) {
+    public ChatRepository(ServiceManager serviceManager, Application context) {
         super();
-        mCommonClient = serviceManager.getCommonClient();
-        mUserInfoClient=serviceManager.getUserInfoClient();
+        mContext = context;
+        mUserInfoClient = serviceManager.getUserInfoClient();
     }
 
     /**
      * 创建对话
+     *
      * @param type 会话类型 `0` 私有会话 `1` 群组会话 `2`聊天室会话
      * @param name 会话名称
      * @param pwd  会话加入密码,type=`0`时该参数无效
@@ -38,8 +42,19 @@ public class ChatRepository implements ChatContract.Repository {
      */
     @Override
     public Observable<BaseJson<Conversation>> createConveration(int type, String name, String pwd, String uids) {
-        return mUserInfoClient.createConversaiton(type,name,pwd,uids)
+        return mUserInfoClient.createConversaiton(type, name, pwd, uids)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 插入或者更新数据库
+     *
+     * @param conversation 对话信息
+     * @return
+     */
+    @Override
+    public boolean insertOrUpdateConversation(Conversation conversation) {
+        return ConversationDao.getInstance(mContext).insertOrUpdateConversation(conversation);
     }
 }
