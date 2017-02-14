@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.follow_fans;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
@@ -17,6 +19,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -24,8 +27,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+
+import rx.functions.Action1;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @author LiuChao
@@ -112,26 +120,59 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
 
     private void setItemData(ViewHolder holder, FollowFansItemBean followFansItemBean, int position) {
         UserInfoBean userInfoBean = followFansItemBean.getUserInfoBean();
-
+        // 设置用户名，用户简介
         holder.setText(R.id.tv_name, userInfoBean.getName());
         holder.setText(R.id.tv_user_signature, userInfoBean.getIntro());
-
+        // 修改点赞数量颜色
         String digContent = "点赞 " + "<" + 56 + ">";
         CharSequence charSequence = ColorPhrase.from(digContent).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(getContext(), R.color.themeColor))
-                .outerColor(ContextCompat.getColor(getContext(),R.color.normal_for_assist_text))
+                .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
                 .format();
         TextView digCount = holder.getView(R.id.tv_dig_count);
         digCount.setText(charSequence);
-
+        // 头像加载
+        ImageView headPic = holder.getView(R.id.iv_headpic);
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
                 .url(userInfoBean.getUserIcon())
                 .transformation(new GlideCircleTransform(getContext()))
-                .imagerView((ImageView) holder.getView(R.id.iv_headpic))
+                .imagerView(headPic)
                 .build()
         );
         holder.setImageResource(R.id.iv_user_follow, R.mipmap.ico_me_followed);
+        // 添加点击事件
+        RxView.clicks(holder.getView(R.id.tv_name))
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        toUserCenter();
+                    }
+                });
+        RxView.clicks(holder.getView(R.id.iv_headpic))
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        toUserCenter();
+                    }
+                });
+        RxView.clicks(holder.getView(R.id.iv_user_follow))
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        // 添加关注，或者取消关注
+                    }
+                });
+    }
 
+    /**
+     * 前往用户个人中心
+     */
+    private void toUserCenter() {
+        Intent to = new Intent(getActivity(), UserInfoActivity.class);
+        startActivity(to);
     }
 }
