@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white">
+
+    <ImageView
+        android:id="@+id/iv_head_icon"
+        android:layout_width="@dimen/headpic_for_list"
+        android:layout_height="@dimen/headpic_for_list"
+        android:layout_alignBottom="@id/tv_user_signature"
+        android:layout_marginLeft="@dimen/spacing_small"
+        android:layout_marginTop="@dimen/spacing_mid"
+        tools:src="@mipmap/ic_launcher"/>
+
+    <TextView
+        android:id="@+id/tv_user_signature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/spacing_mid"
+        android:layout_marginRight="@dimen/spacing_mid"
+        android:layout_toLeftOf="@+id/iv_follow_user"
+        android:layout_toRightOf="@id/iv_head_icon"
+        android:singleLine="true"
+        tools:text="走在风中今天阳光突然很温柔,天的温柔地的温柔，像你抱着我"/>
+
+
+    <TextView
+        android:id="@+id/tv_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/tv_user_signature"
+        android:layout_alignLeft="@id/tv_user_signature"
+        android:layout_marginBottom="@dimen/spacing_normal"
+        tools:text="五月天"/>
+
+    <TextView
+        android:id="@+id/tv_dig_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/tv_user_signature"
+        android:layout_below="@id/tv_user_signature"
+        android:layout_marginBottom="@dimen/spacing_mid"
+        android:layout_marginTop="@dimen/spacing_normal"
+        tools:text="点赞 56k"/>
+
+    <ImageView
+        android:id="@+id/iv_follow_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/spacing_mid"
+        tools:src="@mipmap/ico_me_followed"/>
+
+</RelativeLayout>

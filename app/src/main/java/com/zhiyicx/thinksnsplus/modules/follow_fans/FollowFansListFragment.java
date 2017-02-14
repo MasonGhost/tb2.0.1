@@ -8,9 +8,11 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansItemBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,29 +23,22 @@ import java.util.List;
  */
 
 public class FollowFansListFragment extends TSListFragment<FollowFansListContract.Presenter, FollowFansItemBean> {
-    @Override
-    protected int getBodyLayoutId() {
-        return R.layout.fragment_follow_fans_list;
-    }
-
-    @Override
-    protected boolean showToolbar() {
-        return false;
-    }
-
-    @Override
-    protected void initView(View rootView) {
-
-    }
-
-    @Override
-    protected void initData() {
-
-    }
 
     @Override
     protected CommonAdapter<FollowFansItemBean> getAdapter() {
-        return null;
+        List<FollowFansItemBean> datas = new ArrayList<>();
+        datas.add(new FollowFansItemBean());
+        datas.add(new FollowFansItemBean());
+        datas.add(new FollowFansItemBean());
+        datas.add(new FollowFansItemBean());
+        datas.add(new FollowFansItemBean());
+        datas.add(new FollowFansItemBean());
+        return new CommonAdapter<FollowFansItemBean>(getContext(), R.layout.item_follow_fans_list, datas) {
+            @Override
+            protected void convert(ViewHolder holder, FollowFansItemBean followFansItemBean, int position) {
+
+            }
+        };
     }
 
     @Override
@@ -51,15 +46,9 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
         return false;
     }
 
-    public static FollowFansListFragment initFragment(Bundle bundle) {
-        FollowFansListFragment followFansListFragment = new FollowFansListFragment();
-        followFansListFragment.setArguments(bundle);
-        return followFansListFragment;
-    }
-
     @Override
     public void setPresenter(FollowFansListContract.Presenter presenter) {
-
+        mPresenter = presenter;
     }
 
     @Override
@@ -75,5 +64,11 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
     @Override
     public void showMessage(String message) {
 
+    }
+
+    public static FollowFansListFragment initFragment(Bundle bundle) {
+        FollowFansListFragment followFansListFragment = new FollowFansListFragment();
+        followFansListFragment.setArguments(bundle);
+        return followFansListFragment;
     }
 }
