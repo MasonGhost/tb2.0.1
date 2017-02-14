@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.zhiyicx.baseproject.cache.CacheBean;
-import com.zhiyicx.imsdk.entity.Message;
+import com.zhiyicx.imsdk.entity.Conversation;
 
 /**
  * @Describe
@@ -16,7 +16,7 @@ import com.zhiyicx.imsdk.entity.Message;
 public class MessageItemBean extends CacheBean implements Parcelable {
 
     private UserInfoBean userInfo;
-    private Message lastMessage; // 最后一条消息
+    private Conversation conversation; // 最后一条消息
     private int unReadMessageNums; // 未读消息数
 
     public UserInfoBean getUserInfo() {
@@ -27,12 +27,12 @@ public class MessageItemBean extends CacheBean implements Parcelable {
         this.userInfo = userInfo;
     }
 
-    public Message getLastMessage() {
-        return lastMessage;
+    public Conversation getConversation() {
+        return conversation;
     }
 
-    public void setLastMessage(Message lastMessage) {
-        this.lastMessage = lastMessage;
+    public void setConversation(Conversation conversation) {
+        this.conversation = conversation;
     }
 
     public int getUnReadMessageNums() {
@@ -51,7 +51,7 @@ public class MessageItemBean extends CacheBean implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(this.userInfo, flags);
-        dest.writeSerializable(this.lastMessage);
+        dest.writeSerializable(this.conversation);
         dest.writeInt(this.unReadMessageNums);
     }
 
@@ -60,7 +60,7 @@ public class MessageItemBean extends CacheBean implements Parcelable {
 
     protected MessageItemBean(Parcel in) {
         this.userInfo = in.readParcelable(UserInfoBean.class.getClassLoader());
-        this.lastMessage = (Message) in.readSerializable();
+        this.conversation = (Conversation) in.readSerializable();
         this.unReadMessageNums = in.readInt();
     }
 
@@ -80,7 +80,7 @@ public class MessageItemBean extends CacheBean implements Parcelable {
     public String toString() {
         return "MessageItemBean{" +
                 "userInfo=" + userInfo +
-                ", lastMessage=" + lastMessage +
+                ", conversation=" + conversation +
                 ", unReadMessageNums=" + unReadMessageNums +
                 '}';
     }

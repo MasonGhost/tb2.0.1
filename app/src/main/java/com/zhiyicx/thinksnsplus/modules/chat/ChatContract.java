@@ -4,6 +4,9 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.imsdk.entity.Conversation;
+import com.zhiyicx.imsdk.entity.Message;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -34,6 +37,7 @@ public interface ChatContract {
 
         /**
          * 插入或者更新数据库
+         *
          * @param conversation 对话信息
          * @return
          */
@@ -42,6 +46,21 @@ public interface ChatContract {
     }
 
     interface Presenter extends IBasePresenter {
+        /**
+         * 获取用户信息
+         *
+         * @param user_id 用户 id
+         */
+        void getUserInfo(long user_id);
+
+        /**
+         * 获取房间历史信息
+         *
+         * @param cid 对话 id
+         * @param mid 聊天内容创建时间
+         * @return 聊天信息
+         */
+        List<Message> getHistoryMessages(int cid, long mid);
 
     }
 }

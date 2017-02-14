@@ -7,6 +7,8 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.chat.ChatMessageList;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.imsdk.core.ChatType;
+import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.R;
 
@@ -24,19 +26,22 @@ import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
  */
 public class ChatFragment extends TSFragment<ChatContract.Presenter> implements ChatContract.View, BGARefreshLayout.BGARefreshLayoutDelegate, ChatMessageList.MessageListItemClickListener {
     public static final String BUNDLE_USERID = "userId";
+    public static final String BUNDLE_CONVERSATION = "conversation";
 
-    protected List<Message> mDatas;
+    protected List<Message> mDatas = new ArrayList<>();
     @BindView(R.id.message_list)
     ChatMessageList mMessageList;
     @BindView(R.id.ilv_container)
     InputLimitView mIlvContainer;
 
-    private String mTochatUsreId;// 聊天对方用户的id
+    private Conversation mConversation;
+    private long mTochatUsreId;// 聊天对方用户的id
 
-    public static ChatFragment newInstance(String userId) {
+    public static ChatFragment newInstance(long userId, Conversation conversation) {
 
         Bundle args = new Bundle();
-        args.putString(BUNDLE_USERID, userId);
+        args.putSerializable(BUNDLE_CONVERSATION, conversation);
+        args.putLong(BUNDLE_USERID, userId);
         ChatFragment fragment = new ChatFragment();
         fragment.setArguments(args);
         return fragment;
@@ -69,26 +74,32 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     @Override
     protected void initData() {
-        mDatas = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            Message message = new Message();
-            message.setMid(System.currentTimeMillis());
-            message.setId(i);
-            message.setCreate_time(System.currentTimeMillis());
-            message.setTxt("测试消息，我的看了个的空间广阔疯狂的疯狂付款的流沙看到了 " + i);
-            if (i % 2 == 0) {
-                message.setType(-1);
-            }
-            mDatas.add(message);
-        }
+        getIntentData();
+        mDatas.addAll(mPresenter.getHistoryMessages(mConversation.getCid(), 0));
+//        for (int i = 0; i < 10; i++) {
+//            Message message = new Message();
+//            message.setMid(System.currentTimeMillis());
+//            message.setId(i);
+//            message.setCreate_time(System.currentTimeMillis());
+//            message.setTxt("测试消息，我的看了个的空间广阔疯狂的疯狂付款的流沙看到了 " + i);
+//            if (i % 2 == 0) {
+//                message.setType(-1);
+//            }
+//            mDatas.add(message);
+//        }
         mMessageList.setMessageListItemClickListener(this);
-        mMessageList.init("张三", 0, mDatas);
+        mMessageList.init("张三", ChatType.CHAT_TYPE_PRIVATE, mDatas);
         mMessageList.setBGARefreshLayoutDelegate(this);
+    }
+
+    private void getIntentData() {
+        mTochatUsreId = getArguments().getLong(BUNDLE_USERID);
+        mConversation = (Conversation) getArguments().getSerializable(BUNDLE_CONVERSATION);
     }
 
     @Override
     public void setPresenter(ChatContract.Presenter presenter) {
-
+        mPresenter = presenter;
     }
 
     @Override

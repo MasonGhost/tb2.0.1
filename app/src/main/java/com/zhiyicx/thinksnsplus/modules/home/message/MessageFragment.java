@@ -198,12 +198,12 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
             tvHeaderLikeTime = (TextView) headerview.findViewById(R.id.tv_header_like_time);
             tvHeaderLikeTip = (BadgeView) headerview.findViewById(R.id.tv_header_like_tip);
         }
-        tvHeaderCommentContent.setText(commentItemData.getLastMessage().getTxt());
-        tvHeaderCommentTime.setText(ConvertUtils.millis2FitTimeSpan(commentItemData.getLastMessage().getCreate_time(), 3));
+        tvHeaderCommentContent.setText(commentItemData.getConversation().getLast_message_text());
+        tvHeaderCommentTime.setText(ConvertUtils.millis2FitTimeSpan(commentItemData.getConversation().getLast_message_time(), 3));
         tvHeaderCommentTip.setBadgeCount(commentItemData.getUnReadMessageNums());
 
-        tvHeaderLikeContent.setText(likedItemData.getLastMessage().getTxt());
-        tvHeaderLikeTime.setText(ConvertUtils.millis2FitTimeSpan(likedItemData.getLastMessage().getCreate_time(), 3));
+        tvHeaderLikeContent.setText(likedItemData.getConversation().getLast_message_text());
+        tvHeaderLikeTime.setText(ConvertUtils.millis2FitTimeSpan(likedItemData.getConversation().getLast_message_time(), 3));
         tvHeaderLikeTip.setBadgeCount(likedItemData.getUnReadMessageNums());
         refreshData();
     }
@@ -252,8 +252,8 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                 });
 //        }
 
-        holder.setText(R.id.tv_content, messageItemBean.getLastMessage().getTxt());
-        holder.setText(R.id.tv_time, ConvertUtils.millis2FitTimeSpan(messageItemBean.getLastMessage().getCreate_time(), 3));
+        holder.setText(R.id.tv_content, messageItemBean.getConversation().getLast_message_text());
+        holder.setText(R.id.tv_time, ConvertUtils.millis2FitTimeSpan(messageItemBean.getConversation().getLast_message_time(), 3));
         ((BadgeView) holder.getView(R.id.tv_tip)).setBadgeCount(messageItemBean.getUnReadMessageNums());
 
     }
@@ -271,7 +271,8 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     private void toChat(MessageItemBean messageItemBean) {
         Intent to = new Intent(getActivity(), ChatActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(ChatFragment.BUNDLE_USERID, String.valueOf(messageItemBean.getUserInfo().getUser_id()));
+        bundle.putLong(ChatFragment.BUNDLE_USERID,messageItemBean.getUserInfo().getUser_id());
+        bundle.putSerializable(ChatFragment.BUNDLE_CONVERSATION,messageItemBean.getConversation());
         to.putExtras(bundle);
         startActivity(to);
     }

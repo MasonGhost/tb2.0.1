@@ -5,6 +5,7 @@ import android.os.Handler;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.imsdk.core.ChatType;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.R;
@@ -43,13 +44,13 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     @Override
     public void requestNetData(int maxId, boolean isLoadMore) {
         final List<MessageItemBean> data = new ArrayList<>();
-        Message likeMessage = new Message();
-        likeMessage.setTxt("一叶之秋、晴天色"
+        Conversation likeMessage = new Conversation();
+        likeMessage.setLast_message_text("一叶之秋、晴天色"
                 + mContext.getString(R.string.like_me));
         UserInfoBean userinfo = new UserInfoBean();
         userinfo.setUserIcon("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1486986007059&di=f53cac87e3dfa7572c8a9f2a06227631&" +
                 "imgtype=0&src=http%3A%2F%2Fimg17.3lian.com%2Fd%2Ffile%2F201701%2F20%2F70ac16a3c3336a3bc2fb28c147bf2049.jpg");
-        likeMessage.setCreate_time(System.currentTimeMillis());
+        likeMessage.setLast_message_time(System.currentTimeMillis());
         for (int i = 0; i < 10; i++) {
             MessageItemBean test = new MessageItemBean();
             UserInfoBean testUserinfo = new UserInfoBean();
@@ -62,7 +63,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
             testMessage.setTxt("一叶之秋、晴天色" + i
                     + mContext.getString(R.string.like_me));
             testMessage.setCreate_time(System.currentTimeMillis());
-            test.setLastMessage(likeMessage);
+            test.setConversation(likeMessage);
             test.setUnReadMessageNums((int) (Math.random() * 10));
             data.add(test);
         }
@@ -80,13 +81,13 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     @Override
     public List<MessageItemBean> requestCacheData(int maxId, boolean isLoadMore) {
         final List<MessageItemBean> data = new ArrayList<>();
-        Message likeMessage = new Message();
-        likeMessage.setTxt("一叶之秋、晴天色"
+        Conversation likeMessage = new Conversation();
+        likeMessage.setLast_message_text("一叶之秋、晴天色"
                 + mContext.getString(R.string.like_me));
         UserInfoBean userinfo = new UserInfoBean();
         userinfo.setUserIcon("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1486986007059&di=f53cac87e3dfa7572c8a9f2a06227631&" +
                 "imgtype=0&src=http%3A%2F%2Fimg17.3lian.com%2Fd%2Ffile%2F201701%2F20%2F70ac16a3c3336a3bc2fb28c147bf2049.jpg");
-        likeMessage.setCreate_time(System.currentTimeMillis());
+        likeMessage.setLast_message_time(System.currentTimeMillis());
         for (int i = 0; i < 5; i++) {
             MessageItemBean test = new MessageItemBean();
             UserInfoBean testUserinfo = new UserInfoBean();
@@ -99,7 +100,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
             testMessage.setTxt("一叶之秋、晴天色" + i
                     + mContext.getString(R.string.like_me));
             testMessage.setCreate_time(System.currentTimeMillis());
-            test.setLastMessage(likeMessage);
+            test.setConversation(likeMessage);
             test.setUnReadMessageNums((int) (Math.random() * 10));
             data.add(test);
         }
@@ -115,11 +116,11 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     public MessageItemBean updateCommnetItemData() {
         if (mItemBeanComment == null) {
             mItemBeanComment = new MessageItemBean();
-            Message commentMessage = new Message();
-            commentMessage.setTxt("还没有人"
+            Conversation commentMessage = new Conversation();
+            commentMessage.setLast_message_text("还没有人"
                     + mContext.getString(R.string.comment_me));
-            commentMessage.setCreate_time(System.currentTimeMillis());
-            mItemBeanComment.setLastMessage(commentMessage);
+            commentMessage.setLast_message_time(System.currentTimeMillis());
+            mItemBeanComment.setConversation(commentMessage);
             mItemBeanComment.setUnReadMessageNums(Math.round(0));
         }
         return mItemBeanComment;
@@ -129,11 +130,11 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     public MessageItemBean updateLikeItemData() {
         if (mItemBeanLike == null) {
             mItemBeanLike = new MessageItemBean();
-            Message likeMessage = new Message();
-            likeMessage.setTxt("还没有人"
+            Conversation likeMessage = new Conversation();
+            likeMessage.setLast_message_text("还没有人"
                     + mContext.getString(R.string.comment_me));
-            likeMessage.setCreate_time(System.currentTimeMillis());
-            mItemBeanLike.setLastMessage(likeMessage);
+            likeMessage.setLast_message_time(System.currentTimeMillis());
+            mItemBeanLike.setConversation(likeMessage);
             mItemBeanLike.setUnReadMessageNums(Math.round(0));
         }
         return mItemBeanLike;
@@ -142,7 +143,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     @Override
     public void createChat() {
         final String uids = mAuthRepository.getAuthBean().getUser_id() + ",4";
-        mChatRepository.createConveration(0, "七夜和超超", "", uids)
+        mChatRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "七夜和超超", "", uids)
                 .subscribe(new BaseSubscribe<Conversation>() {
                     @Override
                     protected void onSuccess(Conversation data) {
