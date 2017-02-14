@@ -68,6 +68,8 @@
         <activity android:name=".modules.music_fm.MusicListActivity"/>
         <activity android:name=".modules.follow_fans.FollowFansListActivity">
         </activity>
+        <activity android:name=".modules.music_fm.music_detail.MusicDetailActivity">
+        </activity>
     </application>
 
 </manifest>
