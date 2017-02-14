@@ -7,7 +7,7 @@
     android:animateLayoutChanges="true"
     android:background="@color/white">
 
-    <com.zhiyicx.baseproject.widget.chat.ChatMessageList
+    <com.zhiyicx.thinksnsplus.widget.chat.ChatMessageList
         android:id="@+id/message_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

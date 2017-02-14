@@ -1,4 +1,4 @@
-package com.zhiyicx.baseproject.widget.chat;
+package com.zhiyicx.thinksnsplus.widget.chat;
 
 /**
  * @Describe
