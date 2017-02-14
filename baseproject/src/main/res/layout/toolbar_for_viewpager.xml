@@ -4,8 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/toolbar_height"
-    android:background="@color/white">
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:minHeight="@dimen/toolbar_height"
+    android:titleMargin="0dp">
     <!--用于viewpager页面切换的tab选项卡-->
     <RelativeLayout
         android:layout_width="match_parent"

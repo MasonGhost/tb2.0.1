@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/toolbar_height"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/toolbar_height"
+    android:titleMargin="0dp"
     android:background="@color/themeColor">
 
     <RelativeLayout

@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.login;
 
+import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -25,7 +26,7 @@ import rx.schedulers.Schedulers;
  * @date 2016/12/30
  * @contact email:450127106@qq.com
  */
-
+@FragmentScoped
 public class LoginPresenter extends BasePresenter<LoginContract.Repository, LoginContract.View> implements LoginContract.Presenter {
 
     @Inject

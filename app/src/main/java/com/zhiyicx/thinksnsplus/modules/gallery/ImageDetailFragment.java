@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,7 +61,6 @@ public class ImageDetailFragment extends Fragment {
         View v = inflater.inflate(R.layout.item_gallery_photo, container, false);
         mImageView = (ImageView) v.findViewById(R.id.iv_pager);
         mProgressBar = (ProgressBar) v.findViewById(R.id.pb_progress);
-
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
