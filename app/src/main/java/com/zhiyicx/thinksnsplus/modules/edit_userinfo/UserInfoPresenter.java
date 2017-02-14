@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -30,7 +29,8 @@ import rx.schedulers.Schedulers;
  * @contact email:450127106@qq.com
  */
 
-public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository, UserInfoContract.View> implements UserInfoContract.Presenter {
+public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository,
+        UserInfoContract.View> implements UserInfoContract.Presenter {
 
     @Inject
     IUploadRepository mIUploadRepository;
@@ -39,9 +39,11 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
     public UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
-    public UserInfoPresenter(UserInfoContract.Repository repository, UserInfoContract.View rootView) {
+    public UserInfoPresenter(UserInfoContract.Repository repository, UserInfoContract.View
+            rootView) {
         super(repository, rootView);
-        mUserInfoBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao();
+        mUserInfoBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent()
+                .userInfoBeanGreenDao();
     }
 
     /**
@@ -63,15 +65,18 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                 .subscribe(new Action1<ArrayList<AreaBean>>() {
                     @Override
                     public void call(ArrayList<AreaBean> areaBean) {
-                        ArrayList<ArrayList<AreaBean>> areaBeenChildList = new ArrayList<ArrayList<AreaBean>>();
-                        ArrayList<ArrayList<ArrayList<AreaBean>>> areaBeenChildList1 = new ArrayList<ArrayList<ArrayList<AreaBean>>>();
+                        ArrayList<ArrayList<AreaBean>> areaBeenChildList = new
+                                ArrayList<ArrayList<AreaBean>>();
+                        ArrayList<ArrayList<ArrayList<AreaBean>>> areaBeenChildList1 = new
+                                ArrayList<ArrayList<ArrayList<AreaBean>>>();
                         // 处理第二级联动
                         for (AreaBean areaBean1 : areaBean) {
                             ArrayList<AreaBean> areaBean1List = areaBean1.getChild();
                             areaBeenChildList.add(areaBean1List);
                             // 处理第三级连动
                             if (areaBean1List != null) {
-                                ArrayList<ArrayList<AreaBean>> arrayListArrayList = new ArrayList<ArrayList<AreaBean>>();
+                                ArrayList<ArrayList<AreaBean>> arrayListArrayList = new
+                                        ArrayList<ArrayList<AreaBean>>();
                                 for (AreaBean areaBean2 : areaBean1List) {
                                     ArrayList<AreaBean> areaBean2List = areaBean2.getChild();
                                     arrayListArrayList.add(areaBean2List);
@@ -84,7 +89,8 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        com.zhiyicx.common.utils.log.LogUtils.e(throwable, mContext.getString(R.string.data_load_error));
+                        com.zhiyicx.common.utils.log.LogUtils.e(throwable, mContext.getString(R
+                                .string.data_load_error));
                     }
                 });
         addSubscrebe(subscription);
@@ -92,7 +98,8 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
 
     @Override
     public void changeUserHeadIcon(String hash, String fileName, String filePathList) {
-        Subscription subscription = mIUploadRepository.upLoadSingleFile(hash, fileName, "pic", filePathList)
+        Subscription subscription = mIUploadRepository.upLoadSingleFile(hash, fileName, "pic",
+                filePathList)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribe() {
@@ -145,7 +152,8 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
     @Override
     public void initUserInfo() {
         AuthBean authBean = mIAuthRepository.getAuthBean();
-        UserInfoBean mUserInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache((long) authBean.getUser_id());
+        UserInfoBean mUserInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache((long) authBean
+                .getUser_id());
         if (mUserInfoBean == null) {
             mUserInfoBean = new UserInfoBean();
         }
@@ -159,12 +167,13 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
      */
     private void upDateUserInfo(HashMap<String, String> changeUserInfo) {
         AuthBean authBean = mIAuthRepository.getAuthBean();
-        UserInfoBean mUserInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache((long) authBean.getUser_id());
+        UserInfoBean mUserInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache((long) authBean
+                .getUser_id());
         if (changeUserInfo.containsKey("name")) {
             mUserInfoBean.setName(changeUserInfo.get("name"));
         }
         if (changeUserInfo.containsKey("sex")) {
-            mUserInfoBean.setSex(Integer.parseInt(changeUserInfo.get("sex")));
+            mUserInfoBean.setSex(changeUserInfo.get("sex"));
         }
         if (changeUserInfo.containsKey("location")) {
             mUserInfoBean.setLocation(changeUserInfo.get("location"));

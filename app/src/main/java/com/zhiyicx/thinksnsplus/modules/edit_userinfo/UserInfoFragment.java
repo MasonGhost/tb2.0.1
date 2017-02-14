@@ -29,12 +29,9 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
-import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.EditConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.EditConfigBeanDaoImpl;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 
 import java.io.File;
@@ -52,7 +49,8 @@ import rx.functions.Action1;
  * @date 2017/1/9
  * @contact email:450127106@qq.com
  */
-public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> implements UserInfoContract.View, PhotoSelectorImpl.IPhotoBackListener {
+public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> implements
+        UserInfoContract.View, PhotoSelectorImpl.IPhotoBackListener {
 
     private static final int LOCATION_2LEVEL = 2;// 地区选择可选的级数为2，2级联动
     private static final int LOCATION_3LEVEL = 3;// 地区选择可选的级数为3
@@ -115,7 +113,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
             String itemField = editConfigBean.getItemField();
             if (itemType.equals("TextView")) {
                 CombinationButton combinationButton = new CombinationButton(getContext(), null);
-                ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 100);
+                ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup
+                        .LayoutParams.MATCH_PARENT, 100);
                 combinationButton.setLayoutParams(layoutParams);
                 combinationButton.setLeftText(itemName);
                 combinationButton.setTag(editConfigBean);
@@ -141,7 +140,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
         mPhotoSelector = DaggerPhotoSelectorImplComponent
                 .builder()
-                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl.SHAPE_RCTANGLE))
+                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
+                        .SHAPE_RCTANGLE))
                 .build().photoSelectorImpl();
 
         initCityPickerView();
@@ -269,7 +269,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     }
 
     @Override
-    public void setAreaData(ArrayList<AreaBean> options1Items, ArrayList<ArrayList<AreaBean>> options2Items, ArrayList<ArrayList<ArrayList<AreaBean>>> options3Items) {
+    public void setAreaData(ArrayList<AreaBean> options1Items, ArrayList<ArrayList<AreaBean>>
+            options2Items, ArrayList<ArrayList<ArrayList<AreaBean>>> options3Items) {
         this.options1Items = options1Items;
         this.options2Items = options2Items;
         this.options3Items = options3Items;
@@ -362,7 +363,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         mAreaPickerView.setOnoptionsSelectListener(new OptionsPickerView.OnOptionsSelectListener() {
             @Override
             public void onOptionsSelect(int options1, int options2, int options3) {
-                /*if (options2Items.size() <= options1 || options2Items.get(options1).size() <= options2) {
+                /*if (options2Items.size() <= options1 || options2Items.get(options1).size() <=
+                options2) {
                     return;//避免pickview控件的bug
                 }*/
                 String areaText1 = options1Items.get(options1).getPickerViewText();
@@ -372,7 +374,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 }
                 if (locationLevel == LOCATION_3LEVEL) {
                     areaText2 = options2Items.get(options1).get(options2).getPickerViewText();
-                    areaText3 = options3Items.get(options1).get(options2).get(options3).getPickerViewText();
+                    areaText3 = options3Items.get(options1).get(options2).get(options3)
+                            .getPickerViewText();
                 }
                 areaText2 = areaText2.equals("全部") ? "" : areaText2;//如果为全部则不显示
                 areaText3 = areaText3.equals("全部") ? "" : areaText3;//如果为全部则不显示
@@ -480,7 +483,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     /**
      * 设置用户性别
      */
-    private void setGender(int genderType) {
+    private void setGender(String genderType) {
         switch (genderType) {
             case UserInfoBean.MALE:
                 mTvSex.setText(R.string.male);
@@ -507,7 +510,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
             fieldMap.put("name", mEtUserName.getText().toString());
         }
         if (sexChanged) {
-            fieldMap.put("sex", (int)mTvSex.getTag(R.id.view_data)+"");
+            fieldMap.put("sex", (int) mTvSex.getTag(R.id.view_data) + "");
         }
         if (cityChanged) {
             fieldMap.put("location", mTvCity.getText().toString());

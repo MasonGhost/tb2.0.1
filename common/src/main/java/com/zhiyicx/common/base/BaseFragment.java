@@ -28,7 +28,6 @@ public abstract class BaseFragment<P extends IBasePresenter> extends SkinBaseFra
 
     protected View mRootView;
     protected Activity mActivity;
-    @Inject
     protected P mPresenter;
     private Unbinder mUnbinder;
     protected LayoutInflater mLayoutInflater;

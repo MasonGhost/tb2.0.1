@@ -8,8 +8,8 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Transient;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * @author LiuChao
@@ -22,13 +22,13 @@ import org.greenrobot.greendao.annotation.Transient;
 @Entity
 public class UserInfoBean implements Parcelable {
     // 定义四种性别状态
-    public static final int NOT_DEFINE = 0;
-    public static final int MALE = 1;
-    public static final int FEMALE = 2;
-    public static final int SECRET = 3;
+    public static final String NOT_DEFINE = "0";
+    public static final String MALE = "1";
+    public static final String FEMALE = "2";
+    public static final String SECRET = "3";
     @Id
     private Long user_id;
-    private int sex = 0;// 1 2 3  1男 2女 3其他
+    private String sex = NOT_DEFINE;// 1 2 3  1男 2女 3其他
     @Transient
     private String sexString;// sex编号对应的具体值，不保存到数据库中
     private String name;
@@ -49,7 +49,7 @@ public class UserInfoBean implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(this.user_id);
-        dest.writeInt(this.sex);
+        dest.writeString(this.sex);
         dest.writeString(this.sexString);
         dest.writeString(this.name);
         dest.writeString(this.userIcon);
@@ -66,7 +66,7 @@ public class UserInfoBean implements Parcelable {
 
     protected UserInfoBean(Parcel in) {
         this.user_id = (Long) in.readValue(Long.class.getClassLoader());
-        this.sex = in.readInt();
+        this.sex = in.readString();
         this.sexString = in.readString();
         this.name = in.readString();
         this.userIcon = in.readString();
@@ -78,9 +78,10 @@ public class UserInfoBean implements Parcelable {
         this.intro = in.readString();
     }
 
-    @Generated(hash = 306771050)
-    public UserInfoBean(Long user_id, int sex, String name, String userIcon, String location,
-            int province, int city, int area, String education, String intro) {
+    @Generated(hash = 1499218000)
+    public UserInfoBean(Long user_id, String sex, String name, String userIcon,
+                        String location, int province, int city, int area, String education,
+                        String intro) {
         this.user_id = user_id;
         this.sex = sex;
         this.name = name;
@@ -113,11 +114,11 @@ public class UserInfoBean implements Parcelable {
         this.user_id = user_id;
     }
 
-    public int getSex() {
+    public String getSex() {
         return sex;
     }
 
-    public void setSex(int sex) {
+    public void setSex(String sex) {
         this.sex = sex;
     }
 
