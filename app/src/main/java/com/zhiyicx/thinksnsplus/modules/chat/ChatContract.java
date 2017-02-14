@@ -4,6 +4,10 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.imsdk.entity.Conversation;
+import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -30,11 +34,50 @@ public interface ChatContract {
          * @param uids 会话初始成员，数组集合或字符串列表``"1,2,3,4"` type=`0`时需要两个uid、type=`1`时需要至少一个、type=`2`时此参数将忽略;注意：如果不合法的uid或uid未注册到IM,将直接忽略
          * @return
          */
-        Observable<BaseJson<Conversation>> createConveration(String type, String name, String pwd, String uids);
+        Observable<BaseJson<Conversation>> createConveration(int type, String name, String pwd, String uids);
+
+        /**
+         * 插入或者更新数据库
+         *
+         * @param conversation 对话信息
+         * @return
+         */
+        boolean insertOrUpdateConversation(Conversation conversation);
+
+        /**
+         * 获取聊天对话列表信息
+         * @param userId
+
+         * @return
+         */
+        List<MessageItemBean> getConversionListData(long userId);
+
+        /**
+         *
+         * @param cid
+         * @param mid
+         * @return
+         */
+        List<ChatItemBean> getChatListData(int  cid,long mid);
 
     }
 
     interface Presenter extends IBasePresenter {
+        /**
+         * 获取用户信息
+         *
+         * @param user_id 用户 id
+         */
+        void getUserInfo(long user_id);
+
+        /**
+         * 获取房间历史信息
+         *
+         * @param cid 对话 id
+         * @param mid 聊天内容创建时间
+         * @return 聊天信息
+         */
+        List<ChatItemBean> getHistoryMessages(int cid, long mid);
 
     }
 }

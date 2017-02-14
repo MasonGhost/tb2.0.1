@@ -5,10 +5,13 @@ import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.InputLimitView;
-import com.zhiyicx.baseproject.widget.chat.ChatMessageList;
+import com.zhiyicx.thinksnsplus.widget.chat.ChatMessageList;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.imsdk.core.ChatType;
+import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,19 +27,22 @@ import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
  */
 public class ChatFragment extends TSFragment<ChatContract.Presenter> implements ChatContract.View, BGARefreshLayout.BGARefreshLayoutDelegate, ChatMessageList.MessageListItemClickListener {
     public static final String BUNDLE_USERID = "userId";
+    public static final String BUNDLE_CONVERSATION = "conversation";
 
-    protected List<Message> mDatas;
+    protected List<ChatItemBean> mDatas = new ArrayList<>();
     @BindView(R.id.message_list)
     ChatMessageList mMessageList;
     @BindView(R.id.ilv_container)
     InputLimitView mIlvContainer;
 
-    private String mTochatUsreId;// 聊天对方用户的id
+    private Conversation mConversation;
+    private long mTochatUsreId;// 聊天对方用户的id
 
-    public static ChatFragment newInstance(String userId) {
+    public static ChatFragment newInstance(long userId, Conversation conversation) {
 
         Bundle args = new Bundle();
-        args.putString(BUNDLE_USERID, userId);
+        args.putSerializable(BUNDLE_CONVERSATION, conversation);
+        args.putLong(BUNDLE_USERID, userId);
         ChatFragment fragment = new ChatFragment();
         fragment.setArguments(args);
         return fragment;
@@ -69,8 +75,10 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     @Override
     protected void initData() {
-        mDatas = new ArrayList<>();
+        getIntentData();
+        mDatas.addAll(mPresenter.getHistoryMessages(mConversation.getCid(), 0));
         for (int i = 0; i < 10; i++) {
+            ChatItemBean chatItemBean=new ChatItemBean();
             Message message = new Message();
             message.setMid(System.currentTimeMillis());
             message.setId(i);
@@ -79,16 +87,22 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
             if (i % 2 == 0) {
                 message.setType(-1);
             }
-            mDatas.add(message);
+            chatItemBean.setLastMessage(message);
+            mDatas.add(chatItemBean);
         }
         mMessageList.setMessageListItemClickListener(this);
-        mMessageList.init("张三", 0, mDatas);
+        mMessageList.init("张三", ChatType.CHAT_TYPE_PRIVATE, mDatas);
         mMessageList.setBGARefreshLayoutDelegate(this);
+    }
+
+    private void getIntentData() {
+        mTochatUsreId = getArguments().getLong(BUNDLE_USERID);
+        mConversation = (Conversation) getArguments().getSerializable(BUNDLE_CONVERSATION);
     }
 
     @Override
     public void setPresenter(ChatContract.Presenter presenter) {
-
+        mPresenter = presenter;
     }
 
     @Override
@@ -118,19 +132,19 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     // 聊天 item 点击事件
 
     @Override
-    public void onStatusClick(Message message) {
-        showMessage(message.getTxt());
+    public void onStatusClick(ChatItemBean message) {
+        showMessage(message.getLastMessage().getTxt());
     }
 
     @Override
-    public void onBubbleClick(Message message) {
-        showMessage(message.getTxt());
+    public void onBubbleClick(ChatItemBean message) {
+        showMessage(message.getLastMessage().getTxt());
 
     }
 
     @Override
-    public boolean onBubbleLongClick(Message message) {
-        showMessage(message.getTxt());
+    public boolean onBubbleLongClick(ChatItemBean message) {
+        showMessage(message.getLastMessage().getTxt());
         return true;
     }
 
@@ -146,13 +160,13 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     }
 
     @Override
-    public void onItemClickListener(Message message) {
-        showMessage(message.getTxt());
+    public void onItemClickListener(ChatItemBean message) {
+        showMessage(message.getLastMessage().getTxt());
     }
 
     @Override
-    public boolean onItemLongClickListener(Message message) {
-        showMessage(message.getTxt());
+    public boolean onItemLongClickListener(ChatItemBean message) {
+        showMessage(message.getLastMessage().getTxt());
         return true;
     }
 }

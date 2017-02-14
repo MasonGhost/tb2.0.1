@@ -9,6 +9,7 @@
         android:id="@+id/rv_chat_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:overScrollMode="never"
         android:layout_weight="1"
         />
 </cn.bingoogolapple.refreshlayout.BGARefreshLayout>

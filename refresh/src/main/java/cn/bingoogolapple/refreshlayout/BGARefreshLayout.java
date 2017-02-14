@@ -832,6 +832,15 @@ public class BGARefreshLayout extends LinearLayout {
     }
 
     /**
+     * 上拉加载更多时是否显示加载更多控件
+     *
+     * @return isShowLoadingMoreView
+     */
+    public boolean getIsShowLoadingMoreView() {
+        return mIsShowLoadingMoreView;
+    }
+
+    /**
      * 设置下拉刷新是否可用
      *
      * @param pullDownRefreshEnable

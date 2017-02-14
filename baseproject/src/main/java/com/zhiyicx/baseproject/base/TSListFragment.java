@@ -2,16 +2,17 @@ package com.zhiyicx.baseproject.base;
 
 
 import android.graphics.Canvas;
+import android.os.Handler;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.wrapper.EmptyWrapper;
@@ -35,9 +36,10 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 
-public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFragment<P> implements BGARefreshLayout.BGARefreshLayoutDelegate, ITSListView<T, P> {
+public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends TSFragment<P> implements BGARefreshLayout.BGARefreshLayoutDelegate, ITSListView<T, P> {
     public static final int DEFAULT_PAGE_MAX_ID = 0;// 默认初始化列表 id
 
+    private static final int DEFAULT_TIP_STICKY_TIME = 3000;
     private static final float DEFAULT_LIST_ITEM_SPACING = 1f;
 
     protected CommonAdapter<T> mAdapter;
@@ -45,6 +47,10 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
     protected BGARefreshLayout mRefreshlayout;
 
     protected RecyclerView mRvList;
+
+    protected View mFlTopTipContainer;
+    protected TextView mTvTopTip;
+
 
     protected EmptyView mEmptyView;
 
@@ -75,7 +81,18 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
     protected void initView(View rootView) {
         mRefreshlayout = (BGARefreshLayout) rootView.findViewById(R.id.refreshlayout);
         mRvList = (RecyclerView) rootView.findViewById(R.id.rv_list);
-        mEmptyView = (EmptyView) rootView.findViewById(R.id.emptyview);
+
+        mFlTopTipContainer = rootView.findViewById(R.id.fl_top_tip_container);
+        RxView.clicks(mFlTopTipContainer)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        onTopTipClick();
+                    }
+                });
+        mTvTopTip = (TextView) rootView.findViewById(R.id.tv_top_tip_text);
+        mEmptyView = new EmptyView(getContext());
         mEmptyView.setNeedTextTip(false);
         mEmptyView.setNeedClickLoadState(false);
         RxView.clicks(mEmptyView)
@@ -97,17 +114,18 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
         mRvList.setItemAnimator(new DefaultItemAnimator());//设置动画
         mAdapter = getAdapter();
         mRvList.setAdapter(mAdapter);
-        mRefreshlayout.setRefreshViewHolder(new TSPRefreshViewHolder(getActivity(), true));
+        mRefreshlayout.setRefreshViewHolder(new TSPRefreshViewHolder(getActivity(), isLoadingMoreEnable()));
+        mRefreshlayout.setIsShowLoadingMoreView(getIsShowLoadingMore());
+        mRefreshlayout.setPullDownRefreshEnable(getPullDownRefreshEnable());
         EmptyWrapper mEmptyWrapper = new EmptyWrapper(mAdapter);
         mEmptyWrapper.setEmptyView(mEmptyView);
         mRvList.setAdapter(mEmptyWrapper);
-        mRefreshlayout.setIsShowLoadingMoreView(getIsShowLoadingMore());
-        mRefreshlayout.setPullDownRefreshEnable(getPullDownRefreshEnable());
     }
+
 
     @Override
     protected void initData() {
-        onCacheResponseSuccess(getCacheData(mMaxId), false); // 获取缓存数据
+        onCacheResponseSuccess(mPresenter.requestCacheData(mMaxId, false), false); // 获取缓存数据
     }
 
     /**
@@ -142,6 +160,15 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
         return new LinearDecoration(0, ConvertUtils.dp2px(getContext(), getItemDecorationSpacing()), 0, 0);
     }
 
+    /**
+     * 是否需要下拉加载
+     *
+     * @return true 需要
+     */
+    protected boolean isLoadingMoreEnable() {
+        return true;
+    }
+
     protected boolean getIsShowLoadingMore() {
         return true;
     }
@@ -171,11 +198,46 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
     protected abstract boolean insertOrUpdateData(@NotNull List<T> data);
 
     /**
-     * 获取缓存数据
-     *
-     * @param maxId
+     * 提示信息被点击了
      */
-    protected abstract List<T> getCacheData(int maxId);
+    protected void onTopTipClick() {
+    }
+
+    /**
+     * 设置提示文本信息
+     *
+     * @param text 文本内容
+     */
+
+    protected void setTopTipText(@NotNull String text) {
+        mTvTopTip.setText(text);
+    }
+
+    /**
+     * Set the visibility state of this view.
+     *
+     * @param visibility One of {@link View.VISIBLE}, {@link View.INVISIBLE}, or {@link View.GONE}.
+     * @attr ref android.R.styleable#View_visibility
+     */
+    protected void setTopTipVisible(int visibility) {
+        mFlTopTipContainer.setVisibility(visibility);
+    }
+
+    /**
+     * 显示提示信息，并消息
+     *
+     * @param text
+     */
+    protected void showMessageNotSticky(@NotNull String text) {
+        setTopTipVisible(View.VISIBLE);
+        setTopTipText(text);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setTopTipVisible(View.GONE);
+            }
+        }, DEFAULT_TIP_STICKY_TIME);
+    }
 
     /**
      * 刷新数据
@@ -192,7 +254,7 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
         mMaxId = DEFAULT_PAGE_MAX_ID;
-        mPresenter.requestData(mMaxId, false);
+        mPresenter.requestNetData(mMaxId, false);
     }
 
     /**
@@ -204,9 +266,9 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
         if (mIsGetNetData) { // 如果没有获取过网络数据，加载更多就是获取本地数据，如果加载了网络数据了，加载更多就是获取网络数据
-            onCacheResponseSuccess(getCacheData(mMaxId), true);
+            onCacheResponseSuccess(mPresenter.requestCacheData(mMaxId, true), true);
         } else {
-            mPresenter.requestData(mMaxId, true);
+            mPresenter.requestNetData(mMaxId, true);
         }
         return true;
     }
@@ -224,6 +286,7 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
 
     /**
      * 处理获取到的缓存数据
+     *
      * @param data       内容信息
      * @param isLoadMore 加载状态
      */
@@ -239,10 +302,11 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
     @Override
     public void onResponseError(Throwable throwable, boolean isLoadMore) {
         handleRefreshState(isLoadMore);
-        if (!isLoadMore) { // 刷新
+        if (!isLoadMore && (mAdapter.getDatas() == null || mAdapter.getDatas().size() == 0)) { // 刷新
             mEmptyView.setErrorType(EmptyView.STATE_NETWORK_ERROR);
+            mAdapter.notifyDataSetChanged();
         } else { // 加载更多
-            ToastUtils.showToast("加载错误");
+            showMessageNotSticky(getString(R.string.err_net_not_work));
 
         }
     }
@@ -276,7 +340,6 @@ public abstract class TSListFragment<P extends ITSListPresenter, T> extends TSFr
                 refreshData();
                 //                mMaxId=data.get(data.size()-1).getmaxid;
             } else {
-                ToastUtils.showToast("没有更多数据了");
                 mRefreshlayout.setIsShowLoadingMoreView(false);
             }
         }

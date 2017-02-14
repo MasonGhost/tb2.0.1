@@ -7,7 +7,7 @@ import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 /**
  * @Describe
  * @Author Jungle68
- * @Date 2017/2/8
+ * @Date 2017/2/13
  * @Contact master.jungle68@gmail.com
  */
 
@@ -25,7 +25,7 @@ public interface MessageLikeContract {
     interface Repository {
     }
 
-    interface Presenter extends ITSListPresenter {
+    interface Presenter extends ITSListPresenter<MessageItemBean> {
 
 
     }

@@ -60,7 +60,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
-
+                e.printStackTrace();
             }
             //退出程序
             android.os.Process.killProcess(android.os.Process.myPid());
@@ -84,7 +84,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
      * @return true:如果处理了该异常信息;否则返回false.
      */
     private boolean handleException(Throwable ex) {
-        LogUtils.e(ex,TAG);
+        LogUtils.e(ex, TAG);
         if (ex == null) {
             return false;
         }

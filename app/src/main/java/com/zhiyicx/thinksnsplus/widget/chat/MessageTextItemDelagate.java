@@ -1,4 +1,4 @@
-package com.zhiyicx.baseproject.widget.chat;
+package com.zhiyicx.thinksnsplus.widget.chat;
 
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -11,8 +11,8 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageLoaderStrategy;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.TimeUtils;
-import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.entity.MessageType;
+import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -23,7 +23,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
  * @Contact master.jungle68@gmail.com
  */
 
-public class MessageTextItemDelagate implements ItemViewDelegate<Message> {
+public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
 
     public static final int MAX_SPACING_TIME = 6;// 显示时间的，最大间隔时间；当两条消息间隔 > MAX_SPACING_TIME 时显示时间
     protected GlideImageLoaderStrategy mImageLoader;
@@ -66,16 +66,16 @@ public class MessageTextItemDelagate implements ItemViewDelegate<Message> {
      * @return
      */
     @Override
-    public boolean isForViewType(Message item, int position) {
+    public boolean isForViewType(ChatItemBean item, int position) {
         // TODO: 2017/1/6 需要添加是否是我的消息的判断
-        return item.getType() == MessageType.MESSAGE_TYPE_TEXT;
+        return item.getLastMessage().getType() == MessageType.MESSAGE_TYPE_TEXT;
     }
 
     @Override
-    public void convert(ViewHolder holder, final Message message, Message lastMessage, int position) {
+    public void convert(ViewHolder holder, final ChatItemBean message, ChatItemBean lastMessage, int position) {
         // 显示时间的，最大间隔时间；当两条消息间隔 > MAX_SPACING_TIME 时显示时间
-        if (lastMessage == null || (message.getCreate_time() - lastMessage.getCreate_time()) >= MAX_SPACING_TIME * ConstantConfig.MIN) {
-            holder.setText(R.id.tv_chat_time, TimeUtils.getTimeFriendlyForDetail(message.getCreate_time() / 1000));// 测试数据，暂时使用
+        if (lastMessage == null || (message.getLastMessage().getCreate_time() - lastMessage.getLastMessage().getCreate_time()) >= MAX_SPACING_TIME * ConstantConfig.MIN) {
+            holder.setText(R.id.tv_chat_time, TimeUtils.getTimeFriendlyForDetail(message.getLastMessage().getCreate_time() / 1000));// 测试数据，暂时使用
             holder.setVisible(R.id.tv_chat_time, View.VISIBLE);
 
         } else {
@@ -109,7 +109,7 @@ public class MessageTextItemDelagate implements ItemViewDelegate<Message> {
         } else {
             holder.getView(R.id.rl_chat_bubble).setBackgroundDrawable(mBubbleBg);
         }
-        holder.setText(R.id.tv_chat_content, message.getTxt());
+        holder.setText(R.id.tv_chat_content, message.getLastMessage().getTxt());
         // 响应事件
         if (mMessageListItemClickListener != null) {
             View.OnClickListener mStatusClick = new View.OnClickListener() {

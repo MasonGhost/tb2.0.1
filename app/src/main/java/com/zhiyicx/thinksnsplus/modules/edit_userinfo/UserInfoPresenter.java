@@ -1,6 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 
-import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -29,7 +29,7 @@ import rx.schedulers.Schedulers;
  * @date 2017/1/9
  * @contact email:450127106@qq.com
  */
-
+@FragmentScoped
 public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository,
         UserInfoContract.View> implements UserInfoContract.Presenter {
 
@@ -174,8 +174,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
             mUserInfoBean.setName(changeUserInfo.get("name"));
         }
         if (changeUserInfo.containsKey("sex")) {
-
-            mUserInfoBean.setSex(Integer.parseInt(changeUserInfo.get("sex")));
+            mUserInfoBean.setSex(changeUserInfo.get("sex"));
         }
         if (changeUserInfo.containsKey("location")) {
             mUserInfoBean.setLocation(changeUserInfo.get("location"));

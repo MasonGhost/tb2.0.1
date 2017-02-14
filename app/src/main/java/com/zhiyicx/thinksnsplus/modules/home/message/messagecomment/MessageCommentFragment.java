@@ -11,6 +11,7 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -95,21 +96,21 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
         testUserinfo.setUser_id(123l);
         MessageItemBean commentItem = new MessageItemBean();
         commentItem.setUserInfo(testUserinfo);
-        Message commentMessage = new Message();
-        commentMessage.setTxt("默默的小红大家来到江苏高考加分临时价格来看大幅减少了国家法律的世界观浪费时间管理方式的建立各级地方楼市困局"
+        Conversation commentMessage = new Conversation();
+        commentMessage.setLast_message_text("默默的小红大家来到江苏高考加分临时价格来看大幅减少了国家法律的世界观浪费时间管理方式的建立各级地方楼市困局"
                 + getString(R.string.comment_me));
-        commentMessage.setCreate_time(System.currentTimeMillis());
-        commentItem.setLastMessage(commentMessage);
+        commentMessage.setLast_message_time(System.currentTimeMillis());
+        commentItem.setConversation(commentMessage);
         commentItem.setUnReadMessageNums(Math.round(15));
         messageItemBeen.add(commentItem);
 
         MessageItemBean likedmessageItemBean = new MessageItemBean();
         likedmessageItemBean.setUserInfo(testUserinfo);
-        Message likeMessage = new Message();
-        likeMessage.setTxt("一叶之秋、晴天色"
+        Conversation likeMessage = new Conversation();
+        likeMessage.setLast_message_text("一叶之秋、晴天色"
                 + getString(R.string.like_me));
-        likeMessage.setCreate_time(System.currentTimeMillis());
-        likedmessageItemBean.setLastMessage(likeMessage);
+        likeMessage.setLast_message_time(System.currentTimeMillis());
+        likedmessageItemBean.setConversation(likeMessage);
         likedmessageItemBean.setUnReadMessageNums(Math.round(15));
         messageItemBeen.add(likedmessageItemBean);
         MessageItemBean test = new MessageItemBean();
@@ -119,7 +120,7 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
         testMessage.setTxt("一叶之秋、晴天色"
                 + getString(R.string.like_me));
         testMessage.setCreate_time(System.currentTimeMillis());
-        test.setLastMessage(likeMessage);
+        test.setConversation(likeMessage);
         test.setUnReadMessageNums((int) (Math.random() * 10));
         for (int i = 0; i < 10; i++) {
             messageItemBeen.add(test);
@@ -151,12 +152,12 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
         } else {
             holder.setVisible(R.id.iv_detail_image, View.GONE);
             holder.setVisible(R.id.tv_deatil, View.VISIBLE);
-            holder.setText(R.id.tv_deatil, messageItem.getLastMessage().getTxt());
+            holder.setText(R.id.tv_deatil, messageItem.getConversation().getLast_message_text());
         }
 
         // holder.setText(R.id.tv_name, messageItem.getUserInfo().getUserName());
-        holder.setText(R.id.tv_content, messageItem.getLastMessage().getTxt());
-        holder.setText(R.id.tv_time, ConvertUtils.millis2FitTimeSpan(messageItem.getLastMessage().getCreate_time(), 3));
+        holder.setText(R.id.tv_content, messageItem.getConversation().getLast_message_text());
+        holder.setText(R.id.tv_time, ConvertUtils.millis2FitTimeSpan(messageItem.getConversation().getLast_message_time(), 3));
 
         // 响应事件
         RxView.clicks(holder.getView(R.id.tv_name))
@@ -226,12 +227,6 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
     protected boolean insertOrUpdateData(@NotNull List<MessageItemBean> data) {
         return false;
     }
-
-    @Override
-    protected List<MessageItemBean> getCacheData(int maxId) {
-        return new ArrayList<>();
-    }
-
 
     @Override
     public void setPresenter(MessageCommentContract.Presenter presenter) {

@@ -1,6 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.imsdk.entity.Message;
+import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -12,6 +16,7 @@ import javax.inject.Inject;
  */
 
 public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatContract.View> implements ChatContract.Presenter {
+
 
     @Inject
     public ChatPresenter(ChatContract.Repository repository, ChatContract.View rootView) {
@@ -26,5 +31,15 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     @Override
     public void onDestroy() {
 
+    }
+
+    @Override
+    public void getUserInfo(long user_id) {
+
+    }
+
+    @Override
+    public List<ChatItemBean> getHistoryMessages(int cid, long mid) {
+        return mRepository.getChatListData(cid,mid);
     }
 }

@@ -135,6 +135,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         if (loginState) {
             mTvErrorTip.setVisibility(View.INVISIBLE);
             mTvErrorTip.setText("");
+            mEtLoginPassword.setText("");
+            mEtLoginPhone.setText("");
             Intent it = new Intent();
             it.setClass(getActivity(), HomeActivity.class);
             startActivity(it);
