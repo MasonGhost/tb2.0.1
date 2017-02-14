@@ -1,8 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm;
 
 
+import android.content.Intent;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -10,7 +12,9 @@ import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MusicListBean;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_detail.MusicDetailActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import org.jetbrains.annotations.NotNull;
@@ -24,7 +28,6 @@ import java.util.List;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-
 public class MusicListFragment extends TSListFragment<MusicContract.Presenter, MusicListBean>
         implements
         MusicContract.View {
@@ -55,6 +58,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     @Override
     protected void initData() {
         super.initData();
+        mRvList.setOverScrollMode(View.OVER_SCROLL_NEVER);
         mRvList.setPadding(20, 20, 20, 0);
         mRvList.addItemDecoration(new GridDecoration(20, 20));
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
@@ -62,6 +66,19 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
         mMusicListBeen.add(new MusicListBean());
         mMusicListBeen.add(new MusicListBean());
         mMusicListBeen.add(new MusicListBean());
+
+        mAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                startActivity(new Intent(getActivity(), MusicDetailActivity.class));
+            }
+
+            @Override
+            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int
+                    position) {
+                return false;
+            }
+        });
     }
 
     @Override
@@ -92,5 +109,10 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     @Override
     public void showMessage(String message) {
 
+    }
+
+    @Override
+    protected int setListBackColor() {
+        return R.color.white;
     }
 }
