@@ -14,6 +14,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/divider_line"
         android:padding="@dimen/spacing_normal">
+        <!--用来抢占焦点，并无其他作用-->
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="0dp"/>
 
         <EditText
             android:id="@+id/et_content"

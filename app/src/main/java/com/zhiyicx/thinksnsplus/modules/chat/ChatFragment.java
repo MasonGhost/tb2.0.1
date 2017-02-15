@@ -1,13 +1,19 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.RelativeLayout;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.imsdk.core.ChatType;
+import com.zhiyicx.imsdk.entity.Message;
+import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
@@ -29,12 +35,16 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     public static final String BUNDLE_MESSAGEITEMBEAN = "MessageItemBean";
 
     @BindView(R.id.message_list)
-    ChatMessageList mMessageList;
+    ChatMessageList mMessageList; // 聊天列表
     @BindView(R.id.ilv_container)
-    InputLimitView mIlvContainer;
+    InputLimitView mIlvContainer; // 输入控件
+    @BindView(R.id.rl_container)
+    RelativeLayout mRlContainer;  // 页面容器
 
-    protected List<ChatItemBean> mDatas = new ArrayList<>();
+
+    private List<ChatItemBean> mDatas = new ArrayList<>();
     private MessageItemBean mMessageItemBean;
+    private boolean mKeyboradIsOpen;// 软键盘是否打开
 
     public static ChatFragment newInstance(MessageItemBean messageItemBean) {
         Bundle args = new Bundle();
@@ -67,25 +77,49 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     @Override
     protected void initView(View rootView) {
         mIlvContainer.setOnSendClickListener(this);
+        // 软键盘控制区
+        mRlContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+                Rect rect = new Rect();
+                //获取root在窗体的可视区域
+                mRlContainer.getWindowVisibleDisplayFrame(rect);
+                //获取root在窗体的不可视区域高度(被其他View遮挡的区域高度)
+                int rootInvisibleHeight = mRlContainer.getRootView().getHeight() - rect.bottom;
+                int dispayHeight = UIUtils.getWindowHeight(getContext());
+                //若不可视区域高度大于1/3屏幕高度，则键盘显示
+                if (rootInvisibleHeight > (1 / 3 * dispayHeight)) {
+                    mKeyboradIsOpen = true;
+                    mMessageList.smoothScrollToBottom();
+                } else {
+                    //键盘隐藏
+                    mKeyboradIsOpen = false;
+                    mIlvContainer.clearFocus();// 主动失去焦点
+                }
+                mIlvContainer.setSendButtonVisiable(mKeyboradIsOpen);
+            }
+        });
+
     }
 
     @Override
     protected void initData() {
         getIntentData();
         mDatas.addAll(mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), 0));
-//        for (int i = 0; i < 10; i++) {
-//            ChatItemBean chatItemBean = new ChatItemBean();
-//            Message message = new Message();
-//            message.setMid(System.currentTimeMillis());
-//            message.setId(i);
-//            message.setCreate_time(System.currentTimeMillis());
-//            message.setTxt("测试消息，我的看了个 " + i);
-//            if (i % 2 == 0) {
-//                message.setType(-1);
-//            }
-//            chatItemBean.setLastMessage(message);
-//            mDatas.add(chatItemBean);
-//        }
+        for (int i = 0; i < 10; i++) {
+            ChatItemBean chatItemBean = new ChatItemBean();
+            Message message = new Message();
+            message.setMid(System.currentTimeMillis());
+            message.setId(i);
+            message.setCreate_time(System.currentTimeMillis());
+            message.setTxt("测试消息，我的看了个 " + i);
+            if (i % 2 == 0) {
+                message.setType(-1);
+            }
+            chatItemBean.setLastMessage(message);
+            mDatas.add(chatItemBean);
+        }
         mMessageList.setMessageListItemClickListener(this);
         mMessageList.init(mMessageItemBean.getConversation().getType() == ChatType.CHAT_TYPE_PRIVATE ? mMessageItemBean.getUserInfo().getName() : getString(R.string.default_message_group)
                 , mMessageItemBean.getConversation().getType(), mDatas);
@@ -203,7 +237,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
      */
     @Override
     public void onItemClickListener(ChatItemBean message) {
-        showMessage(message.getLastMessage().getTxt());
+        DeviceUtils.hideSoftKeyboard(getContext(),mRootView);
     }
 
     /**

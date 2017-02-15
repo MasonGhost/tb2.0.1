@@ -365,7 +365,21 @@ public class DeviceUtils {
                 Context.INPUT_METHOD_SERVICE)).toggleSoftInput(0,
                 InputMethodManager.HIDE_NOT_ALWAYS);
     }
-
+    /**
+     * 隐藏软键盘
+     *
+     * @param context
+     * @param view
+     */
+    public static void hideSoftKeyboard(Context context, View view) {
+        if (view == null)
+            return;
+        InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        if (inputMethodManager.isActive())
+            inputMethodManager.hideSoftInputFromWindow(
+                    view.getWindowToken(), 0);
+    }
     /**
      * 是否是横屏
      *

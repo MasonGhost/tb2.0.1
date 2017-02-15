@@ -37,7 +37,12 @@
             android:name=".modules.login.LoginActivity"
             android:launchMode="singleTask">
         </activity>
-        <activity android:name=".modules.chat.ChatActivity">
+        <activity
+            android:name=".modules.chat.ChatActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
+            >
         </activity>
         <activity android:name=".modules.settings.aboutus.AboutUsActivity">
         </activity>
@@ -78,11 +83,11 @@
             android:name="com.zhiyicx.imsdk.receiver.NetChangeReceiver"
             android:label="NetworkConnection">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="android.intent.action.USER_PRESENT"/>
             </intent-filter>
         </receiver>
->>>>>>> b4666b7e216a92bf8b96506e40961b3554f87014
+        >>>>>>> b4666b7e216a92bf8b96506e40961b3554f87014
     </application>
 
 </manifest>

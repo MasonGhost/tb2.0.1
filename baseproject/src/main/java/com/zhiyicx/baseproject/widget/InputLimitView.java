@@ -116,8 +116,33 @@ public class InputLimitView extends FrameLayout {
 
     }
 
+    /**
+     * 设置发送按钮点击监听
+     *
+     * @param onSendClickListener
+     */
     public void setOnSendClickListener(OnSendClickListener onSendClickListener) {
         mOnSendClickListener = onSendClickListener;
+    }
+
+    /**
+     * 设置发送按钮是否显示
+     *
+     * @param isVisiable true 显示
+     */
+    public void setSendButtonVisiable(boolean isVisiable) {
+        if (isVisiable) {
+            mBtSend.setVisibility(VISIBLE);
+        } else {
+            mBtSend.setVisibility(GONE);
+        }
+    }
+
+    /**
+     * 清除焦点
+     */
+    public void clearFocus() {
+        mEtContent.clearFocus();
     }
 
     /**
