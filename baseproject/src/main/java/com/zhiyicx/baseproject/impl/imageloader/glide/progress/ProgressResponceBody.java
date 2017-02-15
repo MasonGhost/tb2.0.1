@@ -1,5 +1,7 @@
 package com.zhiyicx.baseproject.impl.imageloader.glide.progress;
 
+import com.zhiyicx.common.utils.log.LogUtils;
+
 import java.io.IOException;
 
 import okhttp3.MediaType;
@@ -49,6 +51,7 @@ public class ProgressResponceBody extends ResponseBody {
                 public long read(Buffer sink, long byteCount) throws IOException {
                     long readBytes = super.read(sink, byteCount);// 当前读的字节
                     totalReadBytes += readBytes != -1 ? readBytes : 0;
+                    LogUtils.i("progress:" + "totalReadBytes-->" + totalReadBytes + "   readBytes-->" + readBytes + "  length-->" + mResponseBody.contentLength());
                     mProgressListener.progress(totalReadBytes, mResponseBody.contentLength(), readBytes == -1);
                     return readBytes;
                 }

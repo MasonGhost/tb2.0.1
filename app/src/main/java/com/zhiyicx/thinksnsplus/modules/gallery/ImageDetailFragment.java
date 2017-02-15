@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.gallery;
 
 import android.app.Activity;
 import android.content.Context;
+import android.databinding.repacked.treelayout.internal.util.java.lang.string.StringUtil;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressListener;
 import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressModelLoader;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 import java.io.File;
@@ -161,7 +163,11 @@ public class ImageDetailFragment extends Fragment {
             if (msg.what == ProgressListener.SEND_LOAD_PROGRESS) {
                 int totalReadBytes = msg.arg1;
                 int lengthBytes = msg.arg2;
-                loadProgress.setText((int)(totalReadBytes / lengthBytes * 100) + "%/" + "100%");
+                String progressResult = (((float) totalReadBytes / lengthBytes) * 100) + "";
+                String[] result = progressResult.split(".");
+                loadProgress.setText(result[0] + "%/" + "100%");
+                LogUtils.i("progress-result:" + " msg.arg1-->" + msg.arg1 + "  msg.arg2-->" +
+                        msg.arg2 + " 比例-->" + (totalReadBytes / lengthBytes * 100) + "%/" + "100%");
             }
         }
     };

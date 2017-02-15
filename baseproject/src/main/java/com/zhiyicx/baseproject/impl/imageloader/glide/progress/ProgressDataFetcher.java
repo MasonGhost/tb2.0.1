@@ -37,10 +37,11 @@ public class ProgressDataFetcher implements DataFetcher<InputStream> {
     public InputStream loadData(Priority priority) {
         // 重写Glide图片加载方法
         Request requst = new Request.Builder().url(photoUrl).build();
-        OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
-        okHttpClient.interceptors().add(new ProgressIntercept(getProgressListener()));
-        progressCall = okHttpClient.newCall(requst);
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(new ProgressIntercept(getProgressListener()))
+                .build();
         try {
+            progressCall = okHttpClient.newCall(requst);
             Response response = progressCall.execute();
             if (isCancel) {
                 return null;

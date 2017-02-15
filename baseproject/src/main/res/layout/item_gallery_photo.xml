@@ -30,7 +30,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="50dp"
         android:textColor="@color/white"
-        tools:text="0%/100%"
+        android:text="0%/100%"
         />
 
 </FrameLayout>
