@@ -1,4 +1,4 @@
-package com.zhiyicx.baseproject.widget.chat;
+package com.zhiyicx.thinksnsplus.widget.chat;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -17,6 +17,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
+import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.List;
@@ -118,7 +119,7 @@ public class ChatMessageList extends FrameLayout {
      * @param toChatUsername
      * @param chatType
      */
-    public void init(String toChatUsername, int chatType, List<Message> datas) {
+    public void init(String toChatUsername, int chatType, List<ChatItemBean> datas) {
         this.chatType = chatType;
         this.toChatUsername = toChatUsername;
         messageAdapter = new MultiItemTypeAdapter(mContext, datas);
@@ -194,7 +195,7 @@ public class ChatMessageList extends FrameLayout {
     }
 
     public interface MessageListItemClickListener {
-        void onStatusClick(Message message);
+        void onStatusClick(ChatItemBean message);
 
         /**
          * there is default handling when bubble is clicked, if you want handle it, return true
@@ -203,17 +204,17 @@ public class ChatMessageList extends FrameLayout {
          * @param message
          * @return
          */
-        void onBubbleClick(Message message);
+        void onBubbleClick(ChatItemBean message);
 
-        boolean onBubbleLongClick(Message message);
+        boolean onBubbleLongClick(ChatItemBean message);
 
         void onUserInfoClick(String username);
 
         boolean onUserInfoLongClick(String username);
 
-        void onItemClickListener(Message message);
+        void onItemClickListener(ChatItemBean message);
 
-        boolean onItemLongClickListener(Message message);
+        boolean onItemLongClickListener(ChatItemBean message);
     }
 
     public void setMessageListItemClickListener(MessageListItemClickListener messageListItemClickListener) {

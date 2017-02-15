@@ -1,10 +1,10 @@
-package com.zhiyicx.baseproject.widget.chat;
+package com.zhiyicx.thinksnsplus.widget.chat;
 
 import android.graphics.drawable.Drawable;
 
 import com.zhiyicx.baseproject.R;
-import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.entity.MessageType;
+import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 
 /**
  * @Describe 我发送的文本消息
@@ -13,15 +13,15 @@ import com.zhiyicx.imsdk.entity.MessageType;
  * @Contact master.jungle68@gmail.com
  */
 
-public class MessageSendItemDelagate extends MessageTextItemDelagate {
+public class MessageReceiveItemDelagate extends MessageTextItemDelagate {
 
-    public MessageSendItemDelagate(boolean showName, boolean showAvatar, Drawable myBubbleBg) {
-        super(showName, showAvatar, myBubbleBg, null);
+    public MessageReceiveItemDelagate(boolean showName, boolean showAvatar, Drawable otherBuddleBg) {
+        super(showName, showAvatar, null, otherBuddleBg);
     }
 
     @Override
     public int getItemViewLayoutId() {
-        return R.layout.item_chat_list_send_text;
+        return R.layout.item_chat_list_receive_text;
     }
 
     /**
@@ -32,10 +32,9 @@ public class MessageSendItemDelagate extends MessageTextItemDelagate {
      * @return
      */
     @Override
-    public boolean isForViewType(Message item, int position) {
+    public boolean isForViewType(ChatItemBean item, int position) {
         // TODO: 2017/1/6 需要添加是否是我的消息的判断
-        return item.getType() == MessageType.MESSAGE_TYPE_TEXT;
+        return item.getLastMessage().getType() == MessageType.MESSAGE_TYPE_TIP;
     }
-
 
 }

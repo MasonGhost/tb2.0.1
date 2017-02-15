@@ -61,7 +61,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     private ImageLoader mImageLoader;
     private List<MessageItemBean> mMessageItemBeen = new ArrayList<>();
 
-
     /**
      * IM 聊天
      */
@@ -81,6 +80,17 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     @Override
+    protected String setRightTitle() {
+        return "创建对话";//测试使用
+    }
+
+    @Override
+    protected void setRightClick() {
+        super.setRightClick();
+        mPresenter.createChat();
+    }
+
+    @Override
     protected String setCenterTitle() {
         return getString(R.string.message);
     }
@@ -90,7 +100,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         super.initView(rootView);
         initHeaderView();
     }
-
 
     /**
      * 是否需要上拉加载
@@ -113,7 +122,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         initIM();
         super.initData();// 需要在 dagger 注入后
-        updateHeaderViewData(mHeaderView,mPresenter.updateCommnetItemData(),mPresenter.updateLikeItemData());
+        updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter.updateLikeItemData());
     }
 
     @Override
@@ -141,6 +150,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     private void initHeaderView() {
         HeaderAndFooterWrapper mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
+
         mHeaderView = LayoutInflater.from(getContext()).inflate(R.layout.view_header_message_list, null);
         mHeaderAndFooterWrapper.addHeaderView(mHeaderView);
         mRvList.setAdapter(mHeaderAndFooterWrapper);
@@ -188,12 +198,12 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
             tvHeaderLikeTime = (TextView) headerview.findViewById(R.id.tv_header_like_time);
             tvHeaderLikeTip = (BadgeView) headerview.findViewById(R.id.tv_header_like_tip);
         }
-        tvHeaderCommentContent.setText(commentItemData.getLastMessage().getTxt());
-        tvHeaderCommentTime.setText(ConvertUtils.millis2FitTimeSpan(commentItemData.getLastMessage().getCreate_time(), 3));
+        tvHeaderCommentContent.setText(commentItemData.getConversation().getLast_message_text());
+        tvHeaderCommentTime.setText(ConvertUtils.millis2FitTimeSpan(commentItemData.getConversation().getLast_message_time(), 3));
         tvHeaderCommentTip.setBadgeCount(commentItemData.getUnReadMessageNums());
 
-        tvHeaderLikeContent.setText(likedItemData.getLastMessage().getTxt());
-        tvHeaderLikeTime.setText(ConvertUtils.millis2FitTimeSpan(likedItemData.getLastMessage().getCreate_time(), 3));
+        tvHeaderLikeContent.setText(likedItemData.getConversation().getLast_message_text());
+        tvHeaderLikeTime.setText(ConvertUtils.millis2FitTimeSpan(likedItemData.getConversation().getLast_message_time(), 3));
         tvHeaderLikeTip.setBadgeCount(likedItemData.getUnReadMessageNums());
         refreshData();
     }
@@ -207,79 +217,43 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
      */
 
     private void setItemData(ViewHolder holder, final MessageItemBean messageItemBean, int position) {
-//        switch (position) {
-//            case ITEM_TYPE_COMMNETED:// 评论图标
-//                mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-//                        .resourceId(R.mipmap.ico_message_comment)
-//                        .imagerView((ImageView) holder.getView(R.id.iv_headpic)).build()
-//                );
-//                holder.setText(R.id.tv_name, getString(R.string.critical));
-//                setViewEnable(holder, false);
-//                RxView.clicks(holder.getConvertView())
-//                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-//                        .subscribe(new Action1<Void>() {
-//                            @Override
-//                            public void call(Void aVoid) {
-//                                toCommentList();
-//                            }
-//                        });
-//                break;
-//            case ITEM_TYPE_LIKED:// 点赞图标
-//                mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-//                        .resourceId(R.mipmap.ico_message_good)
-//                        .imagerView((ImageView) holder.getView(R.id.iv_headpic)).build()
-//                );
-//
-//                holder.setText(R.id.tv_name, getString(R.string.liked));
-//                setViewEnable(holder, false);
-//                RxView.clicks(holder.getConvertView())
-//                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-//                        .subscribe(new Action1<Void>() {
-//                            @Override
-//                            public void call(Void aVoid) {
-//                                toLikeList();
-//                            }
-//                        });
-//                break;
-//
-//            default:// 网络头像
-                mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                        .url(messageItemBean.getUserInfo().getUserIcon())
-                        .transformation(new GlideCircleTransform(getContext()))
-                        .imagerView((ImageView) holder.getView(R.id.iv_headpic))
-                        .build()
-                );
-                setViewEnable(holder, true);
-                holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getName());
-                // 响应事件
-                RxView.clicks(holder.getView(R.id.tv_name))
-                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                        .subscribe(new Action1<Void>() {
-                            @Override
-                            public void call(Void aVoid) {
-                                toUserCenter();
-                            }
-                        });
-                RxView.clicks(holder.getView(R.id.iv_headpic))
-                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                        .subscribe(new Action1<Void>() {
-                            @Override
-                            public void call(Void aVoid) {
-                                toUserCenter();
-                            }
-                        });
-                RxView.clicks(holder.getConvertView())
-                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                        .subscribe(new Action1<Void>() {
-                            @Override
-                            public void call(Void aVoid) {
-                                toChat(messageItemBean);
-                            }
-                        });
+        mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
+                .url(messageItemBean.getUserInfo().getUserIcon())
+                .transformation(new GlideCircleTransform(getContext()))
+                .imagerView((ImageView) holder.getView(R.id.iv_headpic))
+                .build()
+        );
+        setViewEnable(holder, true);
+        holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getName());
+        // 响应事件
+        RxView.clicks(holder.getView(R.id.tv_name))
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        toUserCenter();
+                    }
+                });
+        RxView.clicks(holder.getView(R.id.iv_headpic))
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        toUserCenter();
+                    }
+                });
+        RxView.clicks(holder.getConvertView())
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        toChat(messageItemBean);
+                    }
+                });
 //        }
 
-        holder.setText(R.id.tv_content, messageItemBean.getLastMessage().getTxt());
-        holder.setText(R.id.tv_time, ConvertUtils.millis2FitTimeSpan(messageItemBean.getLastMessage().getCreate_time(), 3));
+        holder.setText(R.id.tv_content, messageItemBean.getConversation().getLast_message_text());
+        holder.setText(R.id.tv_time, ConvertUtils.millis2FitTimeSpan(messageItemBean.getConversation().getLast_message_time(), 3));
         ((BadgeView) holder.getView(R.id.tv_tip)).setBadgeCount(messageItemBean.getUnReadMessageNums());
 
     }
@@ -297,7 +271,8 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     private void toChat(MessageItemBean messageItemBean) {
         Intent to = new Intent(getActivity(), ChatActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(ChatFragment.BUNDLE_USERID, String.valueOf(messageItemBean.getUserInfo().getUser_id()));
+        bundle.putLong(ChatFragment.BUNDLE_USERID,messageItemBean.getUserInfo().getUser_id());
+        bundle.putSerializable(ChatFragment.BUNDLE_CONVERSATION,messageItemBean.getConversation());
         to.putExtras(bundle);
         startActivity(to);
     }
@@ -349,12 +324,12 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     @Override
     public void hideLoading() {
-
+        mRefreshlayout.endRefreshing();
     }
 
     @Override
     public void showMessage(String message) {
-
+        showMessageNotSticky(message);
     }
 
     /*******************************************  聊天相关回调  *********************************************/

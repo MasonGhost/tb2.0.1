@@ -64,7 +64,7 @@ public interface UserInfoClient {
      */
     @FormUrlEncoded
     @POST(APP_PATH_CREATE_CONVERSAITON)
-    Observable<BaseJson<Conversation>> createConversaiton(@Field("type") String type, @Field("name") String name, @Field("pwd") String pwd, @Field("uids") String uids);
+    Observable<BaseJson<Conversation>> createConversaiton(@Field("type") int type, @Field("name") String name, @Field("pwd") String pwd, @Field("uids") String uids);
 
 
 }

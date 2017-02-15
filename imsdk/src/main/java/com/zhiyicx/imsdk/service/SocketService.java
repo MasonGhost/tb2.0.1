@@ -444,6 +444,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                  */
                 case TAG_IM_LOGIN:
                     result = login((IMConfig) bundle.getSerializable(BUNDLE_IMCONFIG));
+                    System.out.println("im  login = " + (IMConfig) bundle.getSerializable(BUNDLE_IMCONFIG));
                     break;
                 /**
                  * IM登出

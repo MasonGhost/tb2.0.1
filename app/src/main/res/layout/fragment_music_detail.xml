@@ -1,0 +1,32 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/fragment_music_detail_back"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="#89000000"
+        android:drawableLeft="@mipmap/topbar_back_white"
+        android:drawablePadding="10dp"
+        android:gravity="center"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:textSize="@dimen/toolbar_center_text_size"/>
+
+    <com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout
+        android:id="@+id/fragment_music_detail_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_music_detail_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="never"/>
+
+    </com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout>
+
+</FrameLayout>

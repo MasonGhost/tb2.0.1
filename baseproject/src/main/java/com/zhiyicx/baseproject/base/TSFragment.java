@@ -57,7 +57,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
         View bodyContainer = mLayoutInflater.inflate(getBodyLayoutId(), null);
         bodyContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        if (mIscUseSatusbar) {
+        if (setUseSatusbar()) {
             //顶上去
             StatusBarUtils.transparencyBar(getActivity());
             linearLayout.setFitsSystemWindows(false);
@@ -69,6 +69,15 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
         linearLayout.addView(bodyContainer);
         return linearLayout;
+    }
+
+    /**
+     * 状态栏是否可用
+     *
+     * @return 默认不可用
+     */
+    protected boolean setUseSatusbar(){
+        return false;
     }
 
     /**

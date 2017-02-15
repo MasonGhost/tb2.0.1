@@ -1,7 +1,7 @@
-package com.zhiyicx.thinksnsplus.modules.music_fm;
+package com.zhiyicx.thinksnsplus.modules.music_fm.music_detail;
 
-import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.MusicListBean;
 
@@ -11,19 +11,17 @@ import rx.Observable;
 
 /**
  * @Author Jliuer
- * @Date 2017/02/13
+ * @Date 2017/02/14
  * @Email Jliuer@aliyun.com
- * @Description 音乐FM 契约类
+ * @Description
  */
-
-public interface MusicContract {
-
+public interface MusicDetailContract {
     interface View extends IBaseView<Presenter> {
 
     }
 
-    interface Presenter extends ITSListPresenter<MusicListBean> {
-        void getMusicList();
+    interface Presenter extends IBasePresenter {
+
     }
 
     interface Repository {

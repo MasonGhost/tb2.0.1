@@ -47,4 +47,12 @@
         <attr name="tipText" format="reference|string"></attr>
 
     </declare-styleable>
+
+    <declare-styleable name="IconTextView">
+        <!--图片资源-->
+        <attr name="srcIcon" format="reference"/>
+        <!--图片与文字间隔-->
+        <attr name="space" format="dimension"/>
+
+    </declare-styleable>
 </resources>
