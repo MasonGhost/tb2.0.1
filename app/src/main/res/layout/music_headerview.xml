@@ -51,6 +51,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                tym:direction="bottom"
                 android:gravity="center"
                 android:text="@string/share"
                 android:textColor="@color/white"/>
@@ -61,6 +62,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
+                tym:direction="bottom"
                 android:text="@string/comment"
                 android:textColor="@color/white"/>
 
@@ -71,8 +73,8 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/favorite"
-                android:textColor="@color/white"
-                tym:srcIcon="@+id/npc"/>
+                tym:direction="bottom"
+                android:textColor="@color/white"/>
 
         </LinearLayout>
 
