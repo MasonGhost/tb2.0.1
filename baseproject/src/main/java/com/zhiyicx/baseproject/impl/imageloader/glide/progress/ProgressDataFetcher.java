@@ -1,6 +1,7 @@
 package com.zhiyicx.baseproject.impl.imageloader.glide.progress;
 
 import android.os.Handler;
+import android.os.Message;
 
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.data.DataFetcher;
@@ -37,7 +38,7 @@ public class ProgressDataFetcher implements DataFetcher<InputStream> {
         // 重写Glide图片加载方法
         Request requst = new Request.Builder().url(photoUrl).build();
         OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
-        okHttpClient.interceptors().add(new ProgressIntercept());
+        okHttpClient.interceptors().add(new ProgressIntercept(getProgressListener()));
         progressCall = okHttpClient.newCall(requst);
         try {
             Response response = progressCall.execute();
@@ -80,6 +81,18 @@ public class ProgressDataFetcher implements DataFetcher<InputStream> {
     }
 
     private ProgressListener getProgressListener() {
-        return null;
+        return new ProgressListener() {
+            @Override
+            public void progress(long readBytes, long length, boolean done) {
+                // 通过handler持续发送消息，直到完成
+                if (mHandler != null && !done) {
+                    Message message = Message.obtain();
+                    message.what = SEND_LOAD_PROGRESS;
+                    message.arg1 = (int) readBytes;
+                    message.arg2 = (int) length;
+                    mHandler.sendMessage(message);
+                }
+            }
+        };
     }
 }

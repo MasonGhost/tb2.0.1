@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -13,11 +15,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.ImageViewTarget;
+import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressListener;
+import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressModelLoader;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -36,6 +41,7 @@ import me.iwf.photopicker.utils.AndroidLifecycleUtils;
 public class ImageDetailFragment extends Fragment {
     private String mImageUrl;
     private ImageView mImageView;
+    private TextView loadProgress;
     private ProgressBar mProgressBar;
     private ActionPopupWindow mActionPopupWindow;
     private Context context;
@@ -61,6 +67,7 @@ public class ImageDetailFragment extends Fragment {
         View v = inflater.inflate(R.layout.item_gallery_photo, container, false);
         mImageView = (ImageView) v.findViewById(R.id.iv_pager);
         mProgressBar = (ProgressBar) v.findViewById(R.id.pb_progress);
+        loadProgress = (TextView) v.findViewById(R.id.tv_load_progress);
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -119,10 +126,9 @@ public class ImageDetailFragment extends Fragment {
 
             if (canLoadImage) {
                 Glide.with(context)
+                        .using(new ProgressModelLoader(mHandler))
                         .load(mImageUrl)
                         .thumbnail(0.1f)
-                        .dontAnimate()
-                        .dontTransform()
                         .override(800, 800)
                         .placeholder(me.iwf.photopicker.R.drawable.__picker_ic_photo_black_48dp)
                         .error(me.iwf.photopicker.R.drawable.__picker_ic_broken_image_black_48dp)
@@ -147,7 +153,16 @@ public class ImageDetailFragment extends Fragment {
                         });
             }
         }
-
-
     }
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == ProgressListener.SEND_LOAD_PROGRESS) {
+                int totalReadBytes = msg.arg1;
+                int lengthBytes = msg.arg2;
+                loadProgress.setText((int)(totalReadBytes / lengthBytes * 100) + "%/" + "100%");
+            }
+        }
+    };
 }
