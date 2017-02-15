@@ -256,9 +256,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                 break;
             default:
         }
-//        setViewEnable(holder, true);
-
-
         RxView.clicks(holder.getConvertView())
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(new Action1<Void>() {
@@ -275,11 +272,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     }
 
-    private void setViewEnable(ViewHolder holder, boolean isEnable) {
-        holder.getView(R.id.tv_name).setEnabled(isEnable);
-        holder.getView(R.id.iv_headpic).setEnabled(isEnable);
-    }
-
     /**
      * 进入聊天页
      *
@@ -288,8 +280,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     private void toChat(MessageItemBean messageItemBean) {
         Intent to = new Intent(getActivity(), ChatActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putLong(ChatFragment.BUNDLE_USERID, messageItemBean.getUserInfo().getUser_id());
-        bundle.putSerializable(ChatFragment.BUNDLE_CONVERSATION, messageItemBean.getConversation());
+        bundle.putParcelable(ChatFragment.BUNDLE_MESSAGEITEMBEAN, messageItemBean);
         to.putExtras(bundle);
         startActivity(to);
     }
