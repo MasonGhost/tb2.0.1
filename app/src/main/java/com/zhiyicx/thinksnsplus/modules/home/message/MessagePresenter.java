@@ -78,38 +78,46 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         }, 500);
     }
 
+    /**
+     * 没有加载更多，一次全部取出
+     *
+     * @param maxId
+     * @param isLoadMore 加载状态
+     * @return
+     */
     @Override
     public List<MessageItemBean> requestCacheData(int maxId, boolean isLoadMore) {
-        final List<MessageItemBean> data = new ArrayList<>();
-        Conversation likeMessage = new Conversation();
-        likeMessage.setLast_message_text("一叶之秋、晴天色"
-                + mContext.getString(R.string.like_me));
-        UserInfoBean userinfo = new UserInfoBean();
-        userinfo.setUserIcon("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1486986007059&di=f53cac87e3dfa7572c8a9f2a06227631&" +
-                "imgtype=0&src=http%3A%2F%2Fimg17.3lian.com%2Fd%2Ffile%2F201701%2F20%2F70ac16a3c3336a3bc2fb28c147bf2049.jpg");
-        likeMessage.setLast_message_time(System.currentTimeMillis());
-        for (int i = 0; i < 5; i++) {
-            MessageItemBean test = new MessageItemBean();
-            UserInfoBean testUserinfo = new UserInfoBean();
-            testUserinfo.setUserIcon("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1486986007059&di=f53cac87e3dfa7572c8a9f2a06227631&imgtype=0&src=http%3A%2F%2Fimg17.3lian.com" +
-                    "%2Fd%2Ffile%2F201701%2F20%2F70ac16a3c3336a3bc2fb28c147bf2049.jpg");
-            testUserinfo.setName("颤三");
-            testUserinfo.setUser_id((long) (10 + i));
-            test.setUserInfo(testUserinfo);
-            Message testMessage = new Message();
-            testMessage.setTxt("一叶之秋、晴天色" + i
-                    + mContext.getString(R.string.like_me));
-            testMessage.setCreate_time(System.currentTimeMillis());
-            test.setConversation(likeMessage);
-            test.setUnReadMessageNums((int) (Math.random() * 10));
-            data.add(test);
-        }
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return data;
+//         List<MessageItemBean> data = new ArrayList<>();
+//        Conversation likeMessage = new Conversation();
+//        likeMessage.setLast_message_text("一叶之秋、晴天色"
+//                + mContext.getString(R.string.like_me));
+//        UserInfoBean userinfo = new UserInfoBean();
+//        userinfo.setUserIcon("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1486986007059&di=f53cac87e3dfa7572c8a9f2a06227631&" +
+//                "imgtype=0&src=http%3A%2F%2Fimg17.3lian.com%2Fd%2Ffile%2F201701%2F20%2F70ac16a3c3336a3bc2fb28c147bf2049.jpg");
+//        likeMessage.setLast_message_time(System.currentTimeMillis());
+//        for (int i = 0; i < 5; i++) {
+//            MessageItemBean test = new MessageItemBean();
+//            UserInfoBean testUserinfo = new UserInfoBean();
+//            testUserinfo.setUserIcon("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1486986007059&di=f53cac87e3dfa7572c8a9f2a06227631&imgtype=0&src=http%3A%2F%2Fimg17.3lian.com" +
+//                    "%2Fd%2Ffile%2F201701%2F20%2F70ac16a3c3336a3bc2fb28c147bf2049.jpg");
+//            testUserinfo.setName("颤三");
+//            testUserinfo.setUser_id((long) (10 + i));
+//            test.setUserInfo(testUserinfo);
+//            Message testMessage = new Message();
+//            testMessage.setTxt("一叶之秋、晴天色" + i
+//                    + mContext.getString(R.string.like_me));
+//            testMessage.setCreate_time(System.currentTimeMillis());
+//            test.setConversation(likeMessage);
+//            test.setUnReadMessageNums((int) (Math.random() * 10));
+//            data.add(test);
+//        }
+//        try {
+//            Thread.sleep(2000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        return mChatRepository.getConversionListData(mAuthRepository.getAuthBean().getUser_id());
+
     }
 
     @Override
@@ -119,7 +127,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
             Conversation commentMessage = new Conversation();
             commentMessage.setLast_message_text("还没有人"
                     + mContext.getString(R.string.comment_me));
-            commentMessage.setLast_message_time(System.currentTimeMillis());
+            commentMessage.setLast_message_time(System.currentTimeMillis() / 1000);
             mItemBeanComment.setConversation(commentMessage);
             mItemBeanComment.setUnReadMessageNums(Math.round(0));
         }
@@ -132,8 +140,8 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
             mItemBeanLike = new MessageItemBean();
             Conversation likeMessage = new Conversation();
             likeMessage.setLast_message_text("还没有人"
-                    + mContext.getString(R.string.comment_me));
-            likeMessage.setLast_message_time(System.currentTimeMillis());
+                    + mContext.getString(R.string.like_me));
+            likeMessage.setLast_message_time(System.currentTimeMillis() / 1000);
             mItemBeanLike.setConversation(likeMessage);
             mItemBeanLike.setUnReadMessageNums(Math.round(0));
         }
@@ -143,11 +151,13 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     @Override
     public void createChat() {
         final String uids = mAuthRepository.getAuthBean().getUser_id() + ",4";
+        final String pair = mAuthRepository.getAuthBean().getUser_id() + "&4";// "pair":null,   // type=0时此项为两个uid：min_uid&max_uid
         mChatRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "七夜和超超", "", uids)
                 .subscribe(new BaseSubscribe<Conversation>() {
                     @Override
                     protected void onSuccess(Conversation data) {
                         data.setUsids(uids);
+                        data.setPair(pair);
                         mChatRepository.insertOrUpdateConversation(data);
                         mRootView.showMessage("创建对话成功");
                     }

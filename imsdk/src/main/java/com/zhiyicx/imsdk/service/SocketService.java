@@ -135,6 +135,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
     private SocketRetryReceiver mSocketRetryReceiver;
     private TimeOutTaskPool timeOutTaskPool;
 
+    private IMConfig mIMConfig;
 
     private boolean isNeedReConnected = true;//是否需要重连
     private boolean connected = false;//当前连接状态
@@ -336,6 +337,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param imConfig
      */
     private boolean login(IMConfig imConfig) {
+        mIMConfig=imConfig;
         isNeedReConnected = true;
         mService.setParams(imConfig.getWeb_socket_authority(), imConfig.getToken(),
                 imConfig.getSerial(), imConfig.getComprs());
@@ -1330,6 +1332,13 @@ public class SocketService extends BaseService implements ImService.ImListener {
         return eventContainer;
     }
 
+    /**
+     * 处理对话信息
+     * @param eventContainer
+     * @param gson
+     * @param msg
+     * @return
+     */
     private EventContainer dealConversation(EventContainer eventContainer, Gson gson, String msg) {
         List<Conversation> conversations = gson.fromJson(msg, new TypeToken<List<Conversation>>() {
         }.getType());
@@ -1339,6 +1348,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
             if (mEventContainerCache.containsKey(tmp.getCid())) {
                 eventContainer = mEventContainerCache.get(tmp.getCid());
                 tmp.setLast_message_time((eventContainer.mMessageContainer.msg.mid >> 23) + BaseDao.TIME_DEFAULT_ADD);
+                tmp.setIm_uid(mIMConfig.getImUid());
                 tmp.setUsids(String.valueOf(eventContainer.mMessageContainer.msg.uid));
                 tmp.setLast_message_text(eventContainer.mMessageContainer.msg.getTxt());
                 ConversationDao.getInstance(getApplicationContext()).insertConversation(tmp);

@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,6 +15,7 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircle
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.imsdk.core.ChatType;
 import com.zhiyicx.imsdk.entity.ChatRoomContainer;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
@@ -148,6 +150,9 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         mChatClient.setImTimeoutListener(this);
     }
 
+    /**
+     * 初始化头信息（评论的、赞过的）
+     */
     private void initHeaderView() {
         HeaderAndFooterWrapper mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
 
@@ -217,31 +222,43 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
      */
 
     private void setItemData(ViewHolder holder, final MessageItemBean messageItemBean, int position) {
-        mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url(messageItemBean.getUserInfo().getUserIcon())
-                .transformation(new GlideCircleTransform(getContext()))
-                .imagerView((ImageView) holder.getView(R.id.iv_headpic))
-                .build()
-        );
-        setViewEnable(holder, true);
-        holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getName());
-        // 响应事件
-        RxView.clicks(holder.getView(R.id.tv_name))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        toUserCenter();
-                    }
-                });
-        RxView.clicks(holder.getView(R.id.iv_headpic))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        toUserCenter();
-                    }
-                });
+        switch (messageItemBean.getConversation().getType()) {
+            case ChatType.CHAT_TYPE_PRIVATE:// 私聊
+                mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
+                        .url(messageItemBean.getUserInfo().getUserIcon())
+                        .transformation(new GlideCircleTransform(getContext()))
+                        .imagerView((ImageView) holder.getView(R.id.iv_headpic))
+                        .build()
+                );
+                holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getName());     // 响应事件
+                RxView.clicks(holder.getView(R.id.tv_name))
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                        .subscribe(new Action1<Void>() {
+                            @Override
+                            public void call(Void aVoid) {
+                                toUserCenter();
+                            }
+                        });
+                RxView.clicks(holder.getView(R.id.iv_headpic))
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                        .subscribe(new Action1<Void>() {
+                            @Override
+                            public void call(Void aVoid) {
+                                toUserCenter();
+                            }
+                        });
+
+                break;
+            case ChatType.CHAT_TYPE_GROUP:// 群组
+                holder.setImageResource(R.id.iv_headpic, R.mipmap.ico_message_good);
+                holder.setText(R.id.tv_name, TextUtils.isEmpty(messageItemBean.getConversation().getName())
+                        ? getString(R.string.default_message_group) : messageItemBean.getConversation().getName());
+                break;
+            default:
+        }
+//        setViewEnable(holder, true);
+
+
         RxView.clicks(holder.getConvertView())
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(new Action1<Void>() {
@@ -271,8 +288,8 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     private void toChat(MessageItemBean messageItemBean) {
         Intent to = new Intent(getActivity(), ChatActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putLong(ChatFragment.BUNDLE_USERID,messageItemBean.getUserInfo().getUser_id());
-        bundle.putSerializable(ChatFragment.BUNDLE_CONVERSATION,messageItemBean.getConversation());
+        bundle.putLong(ChatFragment.BUNDLE_USERID, messageItemBean.getUserInfo().getUser_id());
+        bundle.putSerializable(ChatFragment.BUNDLE_CONVERSATION, messageItemBean.getConversation());
         to.putExtras(bundle);
         startActivity(to);
     }
