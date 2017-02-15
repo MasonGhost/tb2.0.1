@@ -21,8 +21,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:limitSize="@integer/comment_input_max_size"
-        app:showLimitSize="@integer/show_comment_input_size">
+        app:limitSize="@integer/chat_input_max_size"
+        app:showLimitSize="@integer/show_chat_input_size">
 
     </com.zhiyicx.baseproject.widget.InputLimitView>
 

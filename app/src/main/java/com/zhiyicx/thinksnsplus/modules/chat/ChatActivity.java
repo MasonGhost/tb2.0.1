@@ -1,8 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
 import com.zhiyicx.baseproject.base.TSActivity;
-import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 
 /**
  * @Describe
@@ -26,13 +26,10 @@ public class ChatActivity extends TSActivity<ChatPresenter, ChatFragment> {
 
     @Override
     protected ChatFragment getFragment() {
-        long userId = getIntent().getExtras().getLong(ChatFragment.BUNDLE_USERID);
-        Conversation conversation = (Conversation) getIntent().getExtras().getSerializable(ChatFragment.BUNDLE_CONVERSATION);
-        if (userId == 0)
-            throw new IllegalArgumentException("userId is must");
-        if (conversation ==null)
-            throw new IllegalArgumentException("conversation not be null ");
-        return ChatFragment.newInstance(4L,conversation);
+        MessageItemBean messageItemBean =  getIntent().getExtras().getParcelable(ChatFragment.BUNDLE_MESSAGEITEMBEAN);
+        if (messageItemBean ==null)
+            throw new IllegalArgumentException("messageItemBean not be null ");
+        return ChatFragment.newInstance(messageItemBean);
     }
 
 }

@@ -91,7 +91,7 @@
         android:id="@+id/rl_liked"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_tiny"
+        android:layout_marginTop="@dimen/spacing_big_line"
         android:background="@color/white"
         android:paddingBottom="@dimen/spacing_normal"
         android:paddingLeft="@dimen/spacing_small"

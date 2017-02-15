@@ -18,7 +18,6 @@
         <EditText
             android:id="@+id/et_content"
             style="@style/style_edit_bg_line"
-            android:layout_marginRight="@dimen/spacing_normal"
             android:layout_toLeftOf="@+id/bt_send"
             tools:text="视卡鼓励进口大幅拉升刚刚加息公积金阿哥电视卡鼓励进口大幅拉刚刚加息公积金阿哥电视卡鼓励进口大幅拉刚刚加"
             />
@@ -29,12 +28,14 @@
             android:layout_height="@dimen/button_send_height"
             android:layout_alignBottom="@id/et_content"
             android:layout_alignParentRight="true"
+            android:layout_marginLeft="@dimen/spacing_normal"
             android:background="@drawable/selector_button_corner_solid_small"
+            android:enabled="false"
             android:imeOptions="actionSend"
             android:text="@string/send"
-            android:enabled="false"
             android:textColor="@color/white"
-            android:textSize="@dimen/button_text_size_small"/>
+            android:textSize="@dimen/button_text_size_small"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/tv_limit_tip"

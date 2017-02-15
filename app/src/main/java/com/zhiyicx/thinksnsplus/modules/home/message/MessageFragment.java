@@ -227,6 +227,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                 mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
                         .url(messageItemBean.getUserInfo().getUserIcon())
                         .transformation(new GlideCircleTransform(getContext()))
+                        .errorPic(R.drawable.shape_default_image_circle)
                         .imagerView((ImageView) holder.getView(R.id.iv_headpic))
                         .build()
                 );
@@ -250,7 +251,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
                 break;
             case ChatType.CHAT_TYPE_GROUP:// 群组
-                holder.setImageResource(R.id.iv_headpic, R.mipmap.ico_message_good);
+                holder.setImageResource(R.id.iv_headpic, R.drawable.shape_default_image_circle);
                 holder.setText(R.id.tv_name, TextUtils.isEmpty(messageItemBean.getConversation().getName())
                         ? getString(R.string.default_message_group) : messageItemBean.getConversation().getName());
                 break;

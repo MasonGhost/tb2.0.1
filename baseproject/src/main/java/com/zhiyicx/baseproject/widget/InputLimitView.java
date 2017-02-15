@@ -2,6 +2,7 @@ package com.zhiyicx.baseproject.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -19,7 +20,7 @@ import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.utils.ColorPhrase;
 
 /**
- * @Describe
+ * @Describe 限制输入控件 view
  * @Author Jungle68
  * @Date 2017/1/12
  * @Contact master.jungle68@gmail.com
@@ -35,11 +36,9 @@ public class InputLimitView extends FrameLayout {
     private int mshowLimitSize;// 当输入值达到 mshowLimitSize 时，显示提示
 
     private String mLimitTipStr = "{}/";// 添加格式符号，用户ColorPhrase
-    private OnSendClickListener mOnSendClickListener;
 
-    public void setTvLimitTip(TextView tvLimitTip) {
-        mTvLimitTip = tvLimitTip;
-    }
+
+    private OnSendClickListener mOnSendClickListener;
 
     public InputLimitView(Context context) {
         super(context);
@@ -110,11 +109,24 @@ public class InputLimitView extends FrameLayout {
             @Override
             public void onClick(View v) {
                 if (mOnSendClickListener != null) {
-                    mOnSendClickListener.onSendClick();
+                    mOnSendClickListener.onSendClick(getInputContent());
                 }
             }
         });
 
+    }
+
+    public void setOnSendClickListener(OnSendClickListener onSendClickListener) {
+        mOnSendClickListener = onSendClickListener;
+    }
+
+    /**
+     * 设置输入提示
+     *
+     * @param hint
+     */
+    public void setTvLimitHint(@StringRes int hint) {
+        mTvLimitTip.setHint(hint);
     }
 
     /**
@@ -126,8 +138,8 @@ public class InputLimitView extends FrameLayout {
         return mEtContent.getText().toString().trim();
     }
 
-    interface OnSendClickListener {
-        void onSendClick();
+    public interface OnSendClickListener {
+        void onSendClick(String text);
 
     }
 }

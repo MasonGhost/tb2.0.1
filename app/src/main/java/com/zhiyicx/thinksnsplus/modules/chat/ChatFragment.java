@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -24,7 +25,7 @@ import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
  * @Date 2017/01/06
  * @Contact master.jungle68@gmail.com
  */
-public class ChatFragment extends TSFragment<ChatContract.Presenter> implements ChatContract.View, BGARefreshLayout.BGARefreshLayoutDelegate, ChatMessageList.MessageListItemClickListener {
+public class ChatFragment extends TSFragment<ChatContract.Presenter> implements ChatContract.View, InputLimitView.OnSendClickListener, BGARefreshLayout.BGARefreshLayoutDelegate, ChatMessageList.MessageListItemClickListener {
     public static final String BUNDLE_MESSAGEITEMBEAN = "MessageItemBean";
 
     @BindView(R.id.message_list)
@@ -65,7 +66,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     @Override
     protected void initView(View rootView) {
-
+        mIlvContainer.setOnSendClickListener(this);
     }
 
     @Override
@@ -117,7 +118,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-
+        mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), 0);
     }
 
     @Override
@@ -125,10 +126,24 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
         return true;
     }
 
+    /**
+     * 发送按钮被点击
+     *
+     * @param text
+     */
+    @Override
+    public void onSendClick(String text) {
+        if (TextUtils.isEmpty(text)) {
+            return;
+        }
+
+    }
+
     /*******************************************  聊天 item 点击事件 *********************************************/
 
     /**
      * 发送状态点击
+     *
      * @param message
      */
     @Override
@@ -138,6 +153,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     /**
      * 聊天气泡点击
+     *
      * @param message
      */
     @Override
@@ -148,6 +164,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     /**
      * 聊天气泡长按
+     *
      * @param message
      * @return
      */
@@ -159,6 +176,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     /**
      * 用户信息点击
+     *
      * @param username
      */
     @Override
@@ -168,6 +186,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     /**
      * 用户信息长按
+     *
      * @param username
      * @return
      */
@@ -178,7 +197,8 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     }
 
     /**
-     *  item 点击
+     * item 点击
+     *
      * @param message
      */
     @Override
@@ -188,6 +208,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     /**
      * item 长按
+     *
      * @param message
      * @return
      */
@@ -196,4 +217,6 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
         showMessage(message.getLastMessage().getTxt());
         return true;
     }
+
+
 }
