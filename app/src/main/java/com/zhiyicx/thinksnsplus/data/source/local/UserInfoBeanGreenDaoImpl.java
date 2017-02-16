@@ -75,6 +75,11 @@ public class UserInfoBeanGreenDaoImpl extends CommonCacheImpl<UserInfoBean> {
         return userInfoBeanDao.insertOrReplace(newData);
     }
 
+    public void insertOrReplace(List<UserInfoBean> newData) {
+        UserInfoBeanDao userInfoBeanDao = getWDaoSession().getUserInfoBeanDao();
+        userInfoBeanDao.insertOrReplaceInTx(newData);
+    }
+
     /**
      * 获取某个人的粉丝列表的用户信息:谁关注了我
      */
