@@ -4,6 +4,8 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -30,5 +32,10 @@ public class MessageLikePresenter extends BasePresenter<MessageLikeContract.Repo
     @Override
     public List<MessageItemBean> requestCacheData(int maxId, boolean isLoadMore) {
         return null;
+    }
+
+    @Override
+    public boolean insertOrUpdateData(@NotNull List<MessageItemBean> data) {
+        return false;
     }
 }

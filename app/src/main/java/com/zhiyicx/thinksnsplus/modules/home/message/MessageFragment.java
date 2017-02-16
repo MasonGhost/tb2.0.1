@@ -136,11 +136,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         };
     }
 
-    @Override
-    protected boolean insertOrUpdateData(@NotNull List data) {
-        return false;
-    }
-
     private void initIM() {
         mChatClient = new ChatClient(getActivity());
         mChatClient.setImMsgReceveListener(this);

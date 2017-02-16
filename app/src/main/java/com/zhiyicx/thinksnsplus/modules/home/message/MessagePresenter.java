@@ -15,6 +15,8 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatContract;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,6 +112,11 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
             e.printStackTrace();
         }
         return data;
+    }
+
+    @Override
+    public boolean insertOrUpdateData(@NotNull List<MessageItemBean> data) {
+        return false;
     }
 
     @Override

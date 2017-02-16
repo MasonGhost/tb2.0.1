@@ -217,11 +217,6 @@ public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Pres
     }
 
     @Override
-    protected boolean insertOrUpdateData(@NotNull List<MessageItemBean> data) {
-        return false;
-    }
-
-    @Override
     public void setPresenter(MessageLikeContract.Presenter presenter) {
         mPresenter = presenter;
     }
