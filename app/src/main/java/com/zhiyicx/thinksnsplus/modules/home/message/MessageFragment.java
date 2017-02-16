@@ -310,7 +310,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     @Override
     public void showLoading() {
-
     }
 
     @Override
@@ -322,8 +321,5 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     public void showMessage(String message) {
         showMessageNotSticky(message);
     }
-
-
-
 
 }

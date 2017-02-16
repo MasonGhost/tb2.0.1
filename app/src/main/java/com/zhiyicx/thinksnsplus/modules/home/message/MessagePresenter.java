@@ -33,7 +33,6 @@ import javax.inject.Inject;
  */
 @FragmentScoped
 public class MessagePresenter extends BasePresenter<MessageContract.Repository, MessageContract.View> implements MessageContract.Presenter {
-
     @Inject
     ChatContract.Repository mChatRepository;
     @Inject
@@ -196,7 +195,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         if (!(ActivityHandler.getInstance().currentActivity() instanceof HomeActivity)) {
             return;
         }
-
+        LogUtils.d(TAG,"------onMessageReceived------->"+message);
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGEACKRECEIVED)
@@ -204,22 +203,23 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         if (!(ActivityHandler.getInstance().currentActivity() instanceof HomeActivity)) {
             return;
         }
+        LogUtils.d(TAG,"-------onMessageACKReceived------------>"+message);
     }
 
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONNECTED)
     private void onConnected() {
-
+        mRootView.hideStickyMessage();
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONDISCONNECT)
     private void onDisconnect(int code, String reason) {
-
+        mRootView.showStickyMessage(reason);
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONERROR)
     private void onError(Exception error) {
-
+        mRootView.showMessage(error.toString());
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGETIMEOUT)

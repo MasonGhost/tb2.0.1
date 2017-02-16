@@ -166,8 +166,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
      */
     @Override
     public void onSendClick(String text) {
-
-        mPresenter.sendTextMessage(text);
+        mPresenter.sendTextMessage(text, mMessageItemBean.getConversation().getCid());
     }
 
     /*******************************************  聊天 item 点击事件 *********************************************/

@@ -61,6 +61,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
 
     protected boolean mIsGetNetData = false; //  是否请求了网络数据
 
+    private boolean mIsTipMessageSticky;// 提示信息是否需要常驻
+
 
     @Override
     protected int getBodyLayoutId() {
@@ -104,7 +106,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
                     }
                 });
         mRefreshlayout.setDelegate(this);
-        if (setListBackColor()!=-1){
+        if (setListBackColor() != -1) {
             mRvList.setBackgroundColor(getResources().getColor(setListBackColor()));
         }
         mRvList.setLayoutManager(getLayoutManager());
@@ -179,9 +181,10 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
 
     /**
      * 设置 list 背景色
+     *
      * @return
      */
-    protected int setListBackColor(){
+    protected int setListBackColor() {
         return -1;
     }
 
@@ -228,7 +231,31 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
      *
      * @param text
      */
+    @Override
+    public void showStickyMessage(@NotNull String text) {
+        mIsTipMessageSticky = true;
+        setTopTipVisible(View.VISIBLE);
+        setTopTipText(text);
+    }
+
+    /**
+     * 隐藏常驻提示信息
+     */
+    @Override
+    public void hideStickyMessage() {
+        mIsTipMessageSticky = false;
+        setTopTipVisible(View.GONE);
+    }
+
+    /**
+     * 显示提示信息，并消息
+     *
+     * @param text
+     */
     protected void showMessageNotSticky(@NotNull String text) {
+        if (mIsTipMessageSticky) {// 如果有常驻信息在，忽略此条提示
+            return;
+        }
         setTopTipVisible(View.VISIBLE);
         setTopTipText(text);
         new Handler().postDelayed(new Runnable() {

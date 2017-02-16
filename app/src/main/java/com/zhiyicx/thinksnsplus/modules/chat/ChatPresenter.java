@@ -3,11 +3,11 @@ package com.zhiyicx.thinksnsplus.modules.chat;
 import android.text.TextUtils;
 
 import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.common.utils.ActivityHandler;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.entity.Message;
+import com.zhiyicx.imsdk.manage.ChatClient;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
-import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 
 import org.simple.eventbus.Subscriber;
 
@@ -61,49 +61,46 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     /**
      * 发送文本消息
      *
-     * @param text
+     * @param text 文本内容
+     * @param cid  对话 id
      */
     @Override
-    public void sendTextMessage(String text) {
+    public void sendTextMessage(String text, int cid) {
         if (TextUtils.isEmpty(text)) {
             return;
         }
-
+        Message message = ChatClient.getInstance(mContext).sendTextMsg(text, cid, "", 0);
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED)
     private void onMessageReceived(Message message) {
-        if (!(ActivityHandler.getInstance().currentActivity() instanceof HomeActivity)) {
-            return;
-        }
+        LogUtils.d(TAG, "------onMessageReceived------->" + message);
 
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGEACKRECEIVED)
     private void onMessageACKReceived(Message message) {
-        if (!(ActivityHandler.getInstance().currentActivity() instanceof HomeActivity)) {
-            return;
-        }
+        LogUtils.d(TAG, "------onMessageACKReceived------->" + message);
     }
 
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONNECTED)
     private void onConnected() {
-
+        mRootView.showMessage("IM 聊天加载成功");
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONDISCONNECT)
     private void onDisconnect(int code, String reason) {
-
+        mRootView.showMessage("IM 聊天断开" + reason);
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONERROR)
     private void onError(Exception error) {
-
+        mRootView.showMessage("IM 聊天错误" + error.toString());
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGETIMEOUT)
     private void onMessageTimeout(Message message) {
-
+        mRootView.showMessage("IM 聊天超时" + message);
     }
 }

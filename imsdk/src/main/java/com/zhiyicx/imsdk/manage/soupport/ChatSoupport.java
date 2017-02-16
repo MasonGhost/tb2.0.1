@@ -18,7 +18,7 @@ public interface ChatSoupport {
      *
      * @param text
      */
-    void sendTextMsg(String text, int cid, String ZBUSID, int msgid);
+    Message sendTextMsg(String text, int cid, String ZBUSID, int msgid);
 
 
     /**

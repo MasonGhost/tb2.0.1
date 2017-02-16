@@ -81,8 +81,10 @@ public class ChatClient implements ChatSoupport, ImMsgReceveListener, ImStatusLi
      * @param text
      */
     @Override
-    public void sendTextMsg(String text, int cid, String ZBUSID, int msgid) {
-        sendMessage(MessageBuilder.createTextMessage(msgid, cid, ZBUSID, text, rt));
+    public Message sendTextMsg(String text, int cid, String ZBUSID, int msgid) {
+        Message message=MessageBuilder.createTextMessage(msgid, cid, ZBUSID, text, rt);
+        sendMessage(message);
+        return message;
     }
 
     /**

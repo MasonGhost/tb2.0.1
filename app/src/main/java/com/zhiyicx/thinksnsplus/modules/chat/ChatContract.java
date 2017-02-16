@@ -80,10 +80,10 @@ public interface ChatContract {
 
         /**
          * 发送文本消息
-         *
-         * @param text
+         * @param text 文本内容
+         * @param cid  对话 id
          */
-        void sendTextMessage(String text);
+        void sendTextMessage(String text, int cid);
 
     }
 }
