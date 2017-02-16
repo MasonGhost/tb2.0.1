@@ -11,4 +11,13 @@ import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListContract;
 
 public class FollowFansListRepository implements FollowFansListContract.Repository {
 
+    @Override
+    public void getFansList() {
+
+    }
+
+    @Override
+    public void getFollowedList() {
+
+    }
 }

@@ -14,14 +14,18 @@ import com.zhiyicx.thinksnsplus.data.beans.FollowFansItemBean;
  */
 
 public interface FollowFansListContract {
-    interface View extends ITSListView<FollowFansItemBean,Presenter>{
+    interface View extends ITSListView<FollowFansItemBean, Presenter> {
 
     }
-    interface Presenter extends ITSListPresenter<FollowFansItemBean>{
+
+    interface Presenter extends ITSListPresenter<FollowFansItemBean> {
 
     }
+
     interface Repository {
+        void getFansList();
 
+        void getFollowedList();
     }
 
 }
