@@ -2,13 +2,9 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.content.Context;
 
-
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBeanDao;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
-
-import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.List;
@@ -16,12 +12,12 @@ import java.util.List;
 /**
  * @author LiuChao
  * @describe
- * @date 2017/2/15
+ * @date 2017/2/16
  * @contact email:450127106@qq.com
  */
 
-public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> {
-    public FollowFansBeanGreenDaoImpl(Context context) {
+public class FollowFansBeanGreenDao extends CommonCacheImpl<FollowFansBean> {
+    public FollowFansBeanGreenDao(Context context) {
         super(context);
     }
 
@@ -70,7 +66,6 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
         FollowFansBeanDao followFansBeanDao = getWDaoSession().getFollowFansBeanDao();
         return followFansBeanDao.insertOrReplace(newData);
     }
-
     /**
      * 获取某个人的粉丝列表的用户信息:谁关注了我
      */
@@ -106,5 +101,4 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
                 .Properties.UserId.eq(userId), FollowFansBeanDao.Properties.FollowState.eq(FollowFansBean.FOLLOWED_EACHOTHER_STATE));
         return qb.list();
     }
-
 }
