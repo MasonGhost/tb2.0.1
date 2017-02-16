@@ -2,12 +2,13 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.content.Context;
 
-import com.zhiyicx.thinksnsplus.data.beans.DaoMaster;
+
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBeanDao;
 
+
+import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.List;
@@ -65,15 +66,45 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
     }
 
     @Override
-    public long insertOrReplace(FollowFansBean newData) {
+    public long insertOrReplace(@NotNull FollowFansBean newData) {
         FollowFansBeanDao followFansBeanDao = getWDaoSession().getFollowFansBeanDao();
         return followFansBeanDao.insertOrReplace(newData);
     }
 
+    /**
+     * 获取某个人的粉丝列表的用户信息:谁关注了我
+     */
+    public List<FollowFansBean> getSomeOneFans(int userId) {
+        FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
+        QueryBuilder<FollowFansBean> qb = followFansBeanDao.queryBuilder();
+        // 粉丝关注表中，FollowedUserId为当前id，且不包含状态值为未关注的数据
+        qb.where(FollowFansBeanDao
+                .Properties.FollowedUserId.eq(userId), FollowFansBeanDao.Properties.FollowState.notEq(FollowFansBean.UNFOLLOWED_STATE));
+        return qb.list();
+    }
 
+    /**
+     * 获取某个人的关注列表的用户信息
+     */
+    public List<FollowFansBean> getSomeOneFollower(int userId) {
+        FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
+        QueryBuilder<FollowFansBean> qb = followFansBeanDao.queryBuilder();
+        // 粉丝关注表中，userID为当前id，且不包含状态值为未关注的数据
+        qb.where(FollowFansBeanDao
+                .Properties.UserId.eq(userId), FollowFansBeanDao.Properties.FollowState.notEq(FollowFansBean.UNFOLLOWED_STATE));
+        return qb.list();
+    }
 
-
-
-
+    /**
+     * 获取某个人的相互关注列表的用户信息
+     */
+    public List<FollowFansBean> getSomeOneFollowEachOther(int userId) {
+        FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
+        QueryBuilder<FollowFansBean> qb = followFansBeanDao.queryBuilder();
+        // 粉丝关注表中，userID为当前id，且不包含状态值为未关注的数据
+        qb.where(FollowFansBeanDao
+                .Properties.UserId.eq(userId), FollowFansBeanDao.Properties.FollowState.eq(FollowFansBean.FOLLOWED_EACHOTHER_STATE));
+        return qb.list();
+    }
 
 }
