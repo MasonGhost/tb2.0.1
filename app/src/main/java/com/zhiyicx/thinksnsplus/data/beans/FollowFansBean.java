@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.ToOne;
@@ -23,6 +24,8 @@ public class FollowFansBean {
     public static final int UNFOLLOWED_STATE = 0;// 未关注的状态
     public static final int IFOLLOWED_STATE = 1;// 我关注了他，他没有关注我
     public static final int FOLLOWED_EACHOTHER_STATE = 2;// 互相关注的状态
+    @Id
+    private Long id;
     // 当前并未找到greenDao设置联合唯一性的方案，所以使用该字段，拼接userId和followedUserId
     // ，作为唯一的标识
     @Unique
@@ -49,17 +52,18 @@ public class FollowFansBean {
     @Generated(hash = 1121137644)
     private transient Long fllowedUser__resolvedKey;
 
-    public FollowFansBean() {
-        userFollowedId = userId + "$" + followedUserId;
-    }
-
-    @Generated(hash = 909200570)
-    public FollowFansBean(String userFollowedId, long userId, int followState,
-                          long followedUserId) {
+    @Generated(hash = 1665209293)
+    public FollowFansBean(Long id, String userFollowedId, long userId, int followState,
+            long followedUserId) {
+        this.id = id;
         this.userFollowedId = userFollowedId;
         this.userId = userId;
         this.followState = followState;
         this.followedUserId = followedUserId;
+    }
+
+    @Generated(hash = 258062586)
+    public FollowFansBean() {
     }
 
     public long getUserId() {
@@ -144,12 +148,20 @@ public class FollowFansBean {
 
     // greenDao生成该方法，应该用不到
     public String getUserFollowedId() {
-        return this.userFollowedId;
+        return userId + "$" + followedUserId;
     }
 
     // greenDao生成该方法，防止外界修改该值，修改了获取userFollowedId的方法
     public void setUserFollowedId(String userFollowedId) {
         this.userFollowedId = userId + "$" + followedUserId;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     /** called by internal mechanisms, do not call yourself. */
