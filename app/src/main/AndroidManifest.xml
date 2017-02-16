@@ -62,8 +62,10 @@
         <activity android:name=".modules.music_fm.MusicListActivity"/>
         <activity android:name=".modules.follow_fans.FollowFansListActivity">
         </activity>
-        <activity android:name=".modules.music_fm.music_detail.MusicDetailActivity">
-        </activity>
+        <activity android:name=".modules.music_fm.music_detail.MusicDetailActivity"/>
+        <activity android:name=".modules.music_fm.music_play.MusicPlayActivity"/>
+
+        <service android:name=".modules.music_fm.music_play.MusicPlayService"/>
 
         <service
             android:name=".service.backgroundtask.BackgroundTaskHandleService"
@@ -78,11 +80,10 @@
             android:name="com.zhiyicx.imsdk.receiver.NetChangeReceiver"
             android:label="NetworkConnection">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="android.intent.action.USER_PRESENT"/>
             </intent-filter>
         </receiver>
->>>>>>> b4666b7e216a92bf8b96506e40961b3554f87014
     </application>
 
 </manifest>

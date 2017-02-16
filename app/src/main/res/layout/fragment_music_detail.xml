@@ -3,23 +3,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/fragment_music_detail_back"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:background="#89000000"
-        android:drawableLeft="@mipmap/topbar_back_white"
-        android:drawablePadding="10dp"
-        android:gravity="center"
-        android:paddingLeft="10dp"
-        android:paddingTop="10dp"
-        android:textSize="@dimen/toolbar_center_text_size"/>
-
     <com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout
         android:id="@+id/fragment_music_detail_scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <TextView
+            android:text="歌曲列表"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_music_detail_list"
@@ -28,5 +24,36 @@
             android:overScrollMode="never"/>
 
     </com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout>
+
+    <RelativeLayout
+        android:id="@+id/fragment_music_detail_title"
+        android:fitsSystemWindows="true"
+        android:layout_width="match_parent"
+        android:layout_height="64dp">
+
+        <TextView
+            android:paddingLeft="10dp"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/fragment_music_detail_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="#fff"
+            android:drawableLeft="@mipmap/topbar_back_white"
+            android:gravity="center"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:id="@+id/fragment_music_detail_center"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textColor="#fff"
+            android:textSize="16sp"/>
+
+    </RelativeLayout>
+
+
 
 </FrameLayout>

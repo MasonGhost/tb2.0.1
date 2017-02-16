@@ -53,6 +53,21 @@
         <attr name="srcIcon" format="reference"/>
         <!--图片与文字间隔-->
         <attr name="space" format="dimension"/>
+        <!--方向-->
+        <attr name="direction" format="enum">
+            <enum name="left" value="1"/>
+            <enum name="top" value="2"/>
+            <enum name="right" value="3"/>
+            <enum name="bottom" value="4"/>
+        </attr>
 
     </declare-styleable>
+
+    <declare-styleable name="HorizontationRecyclerView">
+        <!--每页显示个数-->
+        <attr name="item_count" format="integer"/>
+
+    </declare-styleable>
+
+
 </resources>
