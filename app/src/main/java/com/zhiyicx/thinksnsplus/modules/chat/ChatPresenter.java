@@ -1,13 +1,16 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
 import android.text.TextUtils;
+import android.util.SparseArray;
 
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.manage.ChatClient;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import org.simple.eventbus.Subscriber;
 
@@ -23,6 +26,8 @@ import javax.inject.Inject;
  */
 
 public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatContract.View> implements ChatContract.Presenter {
+
+    private SparseArray<UserInfoBean> mUserInfoBeanSparseArray;// 把用户信息存入内存，方便下次使用
 
 
     @Inject
@@ -70,6 +75,8 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
             return;
         }
         Message message = ChatClient.getInstance(mContext).sendTextMsg(text, cid, "", 0);
+        message.setUid(AppApplication.getmCurrentLoginAuth().getUser_id());
+        onMessageReceived(message);
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED)
@@ -81,6 +88,19 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGEACKRECEIVED)
     private void onMessageACKReceived(Message message) {
         LogUtils.d(TAG, "------onMessageACKReceived------->" + message);
+        ChatItemBean chatItemBean = new ChatItemBean();
+        chatItemBean.setLastMessage(message);
+        UserInfoBean userInfoBean = mUserInfoBeanSparseArray.get(message.getUid());
+        if (userInfoBean == null) {
+            userInfoBean = AppApplication.AppComponentHolder.getAppComponent()
+                    .userInfoBeanGreenDao().getSingleDataFromCache((long) message.getUid());
+
+            if (userInfoBean == null) {
+                //网络请求
+            }
+        }
+        chatItemBean.setUserInfo(userInfoBean);
+        mRootView.reFreshMessage(chatItemBean);
     }
 
 

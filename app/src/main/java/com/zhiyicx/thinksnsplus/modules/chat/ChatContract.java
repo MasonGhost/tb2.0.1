@@ -21,6 +21,11 @@ import rx.Observable;
 public interface ChatContract {
 
     interface View extends IBaseView<Presenter> {
+        /**
+         * 刷新聊天内容
+         * @param chatItemBean 消息内容
+         */
+        void reFreshMessage(ChatItemBean chatItemBean);
 
     }
 

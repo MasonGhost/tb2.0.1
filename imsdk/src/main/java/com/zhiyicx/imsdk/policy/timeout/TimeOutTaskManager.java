@@ -65,8 +65,8 @@ public class TimeOutTaskManager {
         int id = Integer.valueOf(str_id);
         MessageContainer messageConteainer = null;
         if (mOutTaskHashMapCache.containsKey(id)) {
-            mOutTaskHashMapCache.get(id).end();
             messageConteainer = mOutTaskHashMapCache.get(id).getMessageContainer();
+            mOutTaskHashMapCache.get(id).end();
             mOutTaskHashMapCache.remove(id);
         }
         return messageConteainer;

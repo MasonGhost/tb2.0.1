@@ -123,6 +123,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
         mMessageList.init(mMessageItemBean.getConversation().getType() == ChatType.CHAT_TYPE_PRIVATE ? mMessageItemBean.getUserInfo().getName() : getString(R.string.default_message_group)
                 , mMessageItemBean.getConversation().getType(), mDatas);
         mMessageList.setBGARefreshLayoutDelegate(this);
+        mMessageList.smoothScrollToBottom();
     }
 
     private void getIntentData() {
@@ -249,4 +250,9 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     }
 
 
+    @Override
+    public void reFreshMessage(ChatItemBean chatItemBean) {
+        mDatas.add(chatItemBean);
+        mMessageList.refresh();
+    }
 }

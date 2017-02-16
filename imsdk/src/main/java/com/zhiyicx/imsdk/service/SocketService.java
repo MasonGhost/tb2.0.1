@@ -269,12 +269,12 @@ public class SocketService extends BaseService implements ImService.ImListener {
         TimeOutTask timeOutTask = new TimeOutTask(messageContainer, System.currentTimeMillis(), new TimeOutListener() {
             @Override
             public void timeOut(MessageContainer messageContainer) {
-                if (messageContainer.reSendCounts > MAX_RESEND_COUNT) {
-                    sendTimeOutMsg(messageContainer);
-                } else {
-                    mMessageContainers.add(messageContainer);
-                }
-
+                sendTimeOutMsg(messageContainer);
+//                if (messageContainer.reSendCounts > MAX_RESEND_COUNT) {
+//                    sendTimeOutMsg(messageContainer);
+//                } else {
+//                    mMessageContainers.add(messageContainer);
+//                }
             }
         });
         TimeOutTaskManager.getInstance().addTimeoutTask(timeOutTask);

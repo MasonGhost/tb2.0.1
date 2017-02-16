@@ -86,7 +86,7 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
 
     @Override
     public void onDisconnect(int code, String reason) {
-        EventBus.getDefault().post(reason,EventBusTagConfig.EVENT_IM_ONDISCONNECT);
+        EventBus.getDefault().post(code,EventBusTagConfig.EVENT_IM_ONDISCONNECT);
     }
 
     @Override
