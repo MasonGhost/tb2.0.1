@@ -36,7 +36,6 @@ public class AuthRepository implements IAuthRepository {
     public static final int MAX_RETRY_COUNTS = 1;//重试次数
     public static final int RETRY_DELAY_TIME = 1;// 重试间隔时间,单位 s
     private UserInfoClient mUserInfoClient;
-    private CommonClient mCommonClient;
     private Context mContext;
 
     @Inject
@@ -49,12 +48,14 @@ public class AuthRepository implements IAuthRepository {
 
     @Override
     public boolean saveAuthBean(AuthBean authBean) {
+        AppApplication.setmCurrentLoginAuth(authBean);
         return SharePreferenceUtils.saveObject(mContext, AuthBean.SHAREPREFERENCE_TAG, authBean);
     }
 
     @Override
     public AuthBean getAuthBean() {
-        return SharePreferenceUtils.getObject(mContext, AuthBean.SHAREPREFERENCE_TAG);
+        AppApplication.setmCurrentLoginAuth((AuthBean) SharePreferenceUtils.getObject(mContext, AuthBean.SHAREPREFERENCE_TAG));
+        return AppApplication.getmCurrentLoginAuth();
     }
 
     @Override
