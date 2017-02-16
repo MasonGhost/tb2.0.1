@@ -5,6 +5,8 @@ import android.app.Application;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 
+import org.simple.eventbus.EventBus;
+
 import javax.inject.Inject;
 
 import rx.Subscription;
@@ -30,10 +32,8 @@ public abstract class BasePresenter<R, V extends IBaseView> implements IBasePres
     public BasePresenter(R repository, V rootView) {
         this.mRepository = repository;
         this.mRootView = rootView;
-    }
-
-    public BasePresenter(V rootView) {
-        this.mRootView = rootView;
+        if (useEventBus())// 如果要使用 eventbus 请将此方法返回 true
+            EventBus.getDefault().register(this);// 注册到事件主线
     }
 
     public BasePresenter() {
@@ -56,6 +56,8 @@ public abstract class BasePresenter<R, V extends IBaseView> implements IBasePres
     @Override
     public void onDestroy() {
         unSubscribe();
+        if (useEventBus())// 如果要使用 eventbus 请将此方法返回 true
+            EventBus.getDefault().unregister(this);
     }
 
     /**

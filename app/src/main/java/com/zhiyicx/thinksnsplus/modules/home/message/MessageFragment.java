@@ -16,13 +16,6 @@ import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.imsdk.core.ChatType;
-import com.zhiyicx.imsdk.entity.ChatRoomContainer;
-import com.zhiyicx.imsdk.entity.Conversation;
-import com.zhiyicx.imsdk.entity.Message;
-import com.zhiyicx.imsdk.manage.ChatClient;
-import com.zhiyicx.imsdk.manage.listener.ImMsgReceveListener;
-import com.zhiyicx.imsdk.manage.listener.ImStatusListener;
-import com.zhiyicx.imsdk.manage.listener.ImTimeoutListener;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
@@ -53,7 +46,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/5
  * @Contact master.jungle68@gmail.com
  */
-public class MessageFragment extends TSListFragment<MessageContract.Presenter, MessageItemBean> implements MessageContract.View, ImMsgReceveListener, ImStatusListener, ImTimeoutListener {
+public class MessageFragment extends TSListFragment<MessageContract.Presenter, MessageItemBean> implements MessageContract.View{
     private static final int ITEM_TYPE_COMMNETED = 0;
     private static final int ITEM_TYPE_LIKED = 1;
 
@@ -62,11 +55,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     protected MessagePresenter mMessagePresenter;
     private ImageLoader mImageLoader;
     private List<MessageItemBean> mMessageItemBeen = new ArrayList<>();
-
-    /**
-     * IM 聊天
-     */
-    private ChatClient mChatClient;
 
     public static MessageFragment newInstance() {
         MessageFragment fragment = new MessageFragment();
@@ -122,7 +110,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                 .build()
                 .inject(this);
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        initIM();
         super.initData();// 需要在 dagger 注入后
         updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter.updateLikeItemData());
     }
@@ -143,12 +130,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         return false;
     }
 
-    private void initIM() {
-        mChatClient = new ChatClient(getActivity());
-        mChatClient.setImMsgReceveListener(this);
-        mChatClient.setImStatusListener(this);
-        mChatClient.setImTimeoutListener(this);
-    }
+
 
     /**
      * 初始化头信息（评论的、赞过的）
@@ -341,76 +323,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         showMessageNotSticky(message);
     }
 
-    /*******************************************  聊天相关回调  *********************************************/
 
 
-    /**
-     * @param message
-     */
-
-    @Override
-    public void onMessageReceived(Message message) {
-
-    }
-
-    @Override
-    public void onMessageACKReceived(Message message) {
-
-    }
-
-    @Override
-    public void onConversationJoinACKReceived(ChatRoomContainer chatRoomContainer) {
-
-    }
-
-    @Override
-    public void onConversationLeaveACKReceived(ChatRoomContainer chatRoomContainer) {
-
-    }
-
-    @Override
-    public void onConversationMCACKReceived(List<Conversation> conversations) {
-
-    }
-
-    @Override
-    public void synchronousInitiaMessage(int limit) {
-
-    }
-
-    @Override
-    public void onConnected() {
-
-    }
-
-    @Override
-    public void onDisconnect(int code, String reason) {
-
-    }
-
-    @Override
-    public void onError(Exception error) {
-
-    }
-
-    @Override
-    public void onMessageTimeout(Message message) {
-
-    }
-
-    @Override
-    public void onConversationJoinTimeout(int roomId) {
-
-    }
-
-    @Override
-    public void onConversationLeaveTimeout(int roomId) {
-
-    }
-
-    @Override
-    public void onConversationMcTimeout(List<Integer> roomIds) {
-
-    }
 
 }

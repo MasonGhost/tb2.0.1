@@ -1,8 +1,15 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
+import android.text.TextUtils;
+
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.imsdk.entity.Message;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
+import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
+
+import org.simple.eventbus.Subscriber;
 
 import java.util.List;
 
@@ -24,13 +31,18 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     }
 
     @Override
-    public void onStart() {
+    protected boolean useEventBus() {
+        return true;
+    }
 
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     @Override
     public void onDestroy() {
-
+        super.onDestroy();
     }
 
     @Override
@@ -40,6 +52,58 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
 
     @Override
     public List<ChatItemBean> getHistoryMessages(int cid, long mid) {
-        return mRepository.getChatListData(cid,mid);
+        return mRepository.getChatListData(cid, mid);
+    }
+
+    /*******************************************
+     * IM 相关
+     *********************************************/
+    /**
+     * 发送文本消息
+     *
+     * @param text
+     */
+    @Override
+    public void sendTextMessage(String text) {
+        if (TextUtils.isEmpty(text)) {
+            return;
+        }
+
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED)
+    private void onMessageReceived(Message message) {
+        if (!(ActivityHandler.getInstance().currentActivity() instanceof HomeActivity)) {
+            return;
+        }
+
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGEACKRECEIVED)
+    private void onMessageACKReceived(Message message) {
+        if (!(ActivityHandler.getInstance().currentActivity() instanceof HomeActivity)) {
+            return;
+        }
+    }
+
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONNECTED)
+    private void onConnected() {
+
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONDISCONNECT)
+    private void onDisconnect(int code, String reason) {
+
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONERROR)
+    private void onError(Exception error) {
+
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGETIMEOUT)
+    private void onMessageTimeout(Message message) {
+
     }
 }

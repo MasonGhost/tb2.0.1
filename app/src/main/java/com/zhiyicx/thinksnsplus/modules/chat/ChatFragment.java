@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.chat;
 
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
@@ -167,10 +166,8 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
      */
     @Override
     public void onSendClick(String text) {
-        if (TextUtils.isEmpty(text)) {
-            return;
-        }
 
+        mPresenter.sendTextMessage(text);
     }
 
     /*******************************************  聊天 item 点击事件 *********************************************/
@@ -237,7 +234,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
      */
     @Override
     public void onItemClickListener(ChatItemBean message) {
-        DeviceUtils.hideSoftKeyboard(getContext(),mRootView);
+        DeviceUtils.hideSoftKeyboard(getContext(), mRootView);
     }
 
     /**

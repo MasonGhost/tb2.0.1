@@ -46,19 +46,18 @@ public interface ChatContract {
 
         /**
          * 获取聊天对话列表信息
+         *
          * @param userId
-
          * @return
          */
         List<MessageItemBean> getConversionListData(long userId);
 
         /**
-         *
          * @param cid
          * @param mid
          * @return
          */
-        List<ChatItemBean> getChatListData(int  cid,long mid);
+        List<ChatItemBean> getChatListData(int cid, long mid);
 
     }
 
@@ -78,6 +77,13 @@ public interface ChatContract {
          * @return 聊天信息
          */
         List<ChatItemBean> getHistoryMessages(int cid, long mid);
+
+        /**
+         * 发送文本消息
+         *
+         * @param text
+         */
+        void sendTextMessage(String text);
 
     }
 }

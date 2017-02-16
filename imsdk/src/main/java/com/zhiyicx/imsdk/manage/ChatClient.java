@@ -27,20 +27,32 @@ public class ChatClient implements ChatSoupport, ImMsgReceveListener, ImStatusLi
     private static final String TAG = "ChatClient";
     private boolean rt = false;
 
+    private volatile static ChatClient sChatClient;
     private Context mContext;
     private ImMsgReceveListener mImMsgReceveListener;
     private ImStatusListener mImStatusListener;
-
     private ImTimeoutListener mImTimeoutListener;
 
 
-    public ChatClient(Context mContext) {
-        this.mContext = mContext.getApplicationContext();
+    private ChatClient(Context mContext) {
+        this.mContext = mContext.getApplicationContext();// 防止内存泄漏，使用 Application Context
         ZBIMClient.getInstance().addImMsgReceveListener(this);
         ZBIMClient.getInstance().addImStatusListener(this);
         ZBIMClient.getInstance().addImTimeoutListener(this);
 
 
+    }
+
+    public static ChatClient getInstance(Context context) {
+
+        if (sChatClient == null) {
+            synchronized (ChatClient.class) {
+                if (sChatClient == null) {
+                    sChatClient = new ChatClient(context);
+                }
+            }
+        }
+        return sChatClient;
     }
 
     public boolean isRt() {
@@ -69,8 +81,8 @@ public class ChatClient implements ChatSoupport, ImMsgReceveListener, ImStatusLi
      * @param text
      */
     @Override
-    public void sendTextMsg(String text, int cid, String ZBUSID,int msgid) {
-        sendMessage(MessageBuilder.createTextMessage(msgid,cid, ZBUSID, text, rt));
+    public void sendTextMsg(String text, int cid, String ZBUSID, int msgid) {
+        sendMessage(MessageBuilder.createTextMessage(msgid, cid, ZBUSID, text, rt));
     }
 
     /**
@@ -82,13 +94,14 @@ public class ChatClient implements ChatSoupport, ImMsgReceveListener, ImStatusLi
     @Override
     public void sendMessage(boolean isEnable, Map jsonstr, int cid, String ZBUSID, int customID, int msgid) {
 
-        sendMessage(MessageBuilder.createCustomMessage(msgid,cid, ZBUSID,customID, isEnable, jsonstr, rt));
+        sendMessage(MessageBuilder.createCustomMessage(msgid, cid, ZBUSID, customID, isEnable, jsonstr, rt));
     }
 
     @Override
-    public void sendMessage(boolean isEnable, int cid, MessageExt ext,int msgid) {
-        sendMessage(MessageBuilder.createCustomMessage(msgid,cid, isEnable,ext, rt));
+    public void sendMessage(boolean isEnable, int cid, MessageExt ext, int msgid) {
+        sendMessage(MessageBuilder.createCustomMessage(msgid, cid, isEnable, ext, rt));
     }
+
     @Override
     public void sendMessage(Message message) {
         ZBIMClient.getInstance().sendMessage(message);
