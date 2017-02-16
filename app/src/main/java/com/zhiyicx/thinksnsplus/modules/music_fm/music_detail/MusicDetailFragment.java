@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.graphics.Palette;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideStokeTransform;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
@@ -84,6 +87,15 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
     @Override
     protected void initView(View rootView) {
+        ViewGroup.LayoutParams titleParam;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            titleParam = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
+                    .MATCH_PARENT, ConvertUtils.dp2px(getActivity(), 64));
+        } else {
+            titleParam = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
+                    .MATCH_PARENT, ConvertUtils.dp2px(getActivity(), 44));
+        }
+        mFragmentMusicDetailTitle.setLayoutParams(titleParam);
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         mAdapter = getCommonAdapter();
 
