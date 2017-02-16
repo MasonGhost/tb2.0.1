@@ -23,6 +23,6 @@ public class ProgressModelLoader implements StreamModelLoader<String> {
 
     @Override
     public DataFetcher<InputStream> getResourceFetcher(String model, int width, int height) {
-        return null;
+        return new ProgressDataFetcher(model,mHandler);
     }
 }

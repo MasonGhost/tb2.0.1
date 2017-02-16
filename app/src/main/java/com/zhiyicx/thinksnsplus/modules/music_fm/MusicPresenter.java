@@ -1,9 +1,12 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm;
 
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.thinksnsplus.data.beans.MusicListBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicRepository;
 
 import java.util.ArrayList;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -48,4 +51,6 @@ public class MusicPresenter extends BasePresenter<MusicContract.Repository, Musi
     public List requestCacheData(int maxId, boolean isLoadMore) {
         return new ArrayList();
     }
+
+    
 }

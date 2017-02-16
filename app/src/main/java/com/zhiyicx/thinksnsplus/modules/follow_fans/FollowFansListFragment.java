@@ -17,6 +17,7 @@ import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
@@ -42,17 +43,17 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @contact email:450127106@qq.com
  */
 
-public class FollowFansListFragment extends TSListFragment<FollowFansListContract.Presenter, FollowFansItemBean> implements FollowFansListContract.View {
+public class FollowFansListFragment extends TSListFragment<FollowFansListContract.Presenter, FollowFansBean> implements FollowFansListContract.View {
 
     @Inject
     FollowFansListPresenter mFollowFansListPresenter;
-    private List<FollowFansItemBean> datas = new ArrayList<>();
+    private List<FollowFansBean> datas = new ArrayList<>();
 
     @Override
-    protected CommonAdapter<FollowFansItemBean> getAdapter() {
-        return new CommonAdapter<FollowFansItemBean>(getContext(), R.layout.item_follow_fans_list, datas) {
+    protected CommonAdapter<FollowFansBean> getAdapter() {
+        return new CommonAdapter<FollowFansBean>(getContext(), R.layout.item_follow_fans_list, datas) {
             @Override
-            protected void convert(ViewHolder holder, FollowFansItemBean followFansItemBean, int position) {
+            protected void convert(ViewHolder holder, FollowFansBean followFansItemBean, int position) {
                 setItemData(holder, followFansItemBean, position);
             }
         };
@@ -64,17 +65,6 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .followFansListPresenterModule(new FollowFansListPresenterModule(FollowFansListFragment.this))
                 .build().inject(this);
-        for (int i = 0; i < 10; i++) {
-            FollowFansItemBean followFansItemBean = new FollowFansItemBean();
-            followFansItemBean.setFollowState(0);
-            UserInfoBean userInfoBean = new UserInfoBean();
-            userInfoBean.setUserIcon("http://image.xinmin.cn/2017/01/11/bedca80cdaa44849a813e7820fff8a26.jpg");
-            userInfoBean.setName("魂行道");
-            userInfoBean.setIntro("走在风中今天阳光突然好温柔，天的温柔地的温柔像你抱着我");
-            followFansItemBean.setUserInfoBean(userInfoBean);
-            datas.add(followFansItemBean);
-        }
-        refreshData();
     }
 
     @Override
@@ -84,11 +74,6 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
 
     @Override
     protected boolean showToolBarDivider() {
-        return false;
-    }
-
-    @Override
-    protected boolean insertOrUpdateData(@NotNull List<FollowFansItemBean> data) {
         return false;
     }
 
@@ -112,14 +97,24 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
 
     }
 
+    @Override
+    protected void requestNetData(int maxId, boolean isLoadMore) {
+        mPresenter.requestNetData(maxId, isLoadMore, 10000, true);
+    }
+
+    @Override
+    protected List<FollowFansBean> requestCacheData(int maxId, boolean isLoadMore) {
+       return mPresenter.requestCacheData(maxId, isLoadMore, 10000, true);
+    }
+
     public static FollowFansListFragment initFragment(Bundle bundle) {
         FollowFansListFragment followFansListFragment = new FollowFansListFragment();
         followFansListFragment.setArguments(bundle);
         return followFansListFragment;
     }
 
-    private void setItemData(ViewHolder holder, FollowFansItemBean followFansItemBean, int position) {
-        UserInfoBean userInfoBean = followFansItemBean.getUserInfoBean();
+    private void setItemData(ViewHolder holder, FollowFansBean followFansItemBean, int position) {
+        UserInfoBean userInfoBean = followFansItemBean.getFllowedUser();
         // 设置用户名，用户简介
         holder.setText(R.id.tv_name, userInfoBean.getName());
         holder.setText(R.id.tv_user_signature, userInfoBean.getIntro());

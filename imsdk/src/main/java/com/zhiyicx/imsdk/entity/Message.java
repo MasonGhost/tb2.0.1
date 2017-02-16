@@ -12,7 +12,7 @@ import java.util.List;
  */
 @org.msgpack.annotation.Message
 public class Message implements Serializable {
-    public int uid;
+    public int uid;//用户ID，一个32bits整型数字，由APP SERVER提供；为什么不用string？用integer的好处是存储空间更小，速度可以更快。而且大部分系统都有一个integer的用户ID，就算没有，也可以很简单的实现一个和原UID对应关系。
     public int cid;
     public List<Integer> to;
     public int id;//每一条消息对应的单独的idint

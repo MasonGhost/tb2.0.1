@@ -13,8 +13,16 @@ import okhttp3.Response;
  */
 
 public class ProgressIntercept implements Interceptor {
+    private ProgressListener mProgressListener;
+
+    public ProgressIntercept(ProgressListener progressListener) {
+        mProgressListener = progressListener;
+    }
+
     @Override
     public Response intercept(Chain chain) throws IOException {
-        return null;
+        Response response = chain.proceed(chain.request());
+        // 拦截器替换response Body对象
+        return response.newBuilder().body(new ProgressResponceBody(response.body(),mProgressListener)).build();
     }
 }

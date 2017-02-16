@@ -8,5 +8,7 @@ package com.zhiyicx.baseproject.impl.imageloader.glide.progress;
  */
 
 public interface ProgressListener {
-    void progress(int readBytes, int length, boolean done);
+    int SEND_LOAD_PROGRESS = 100;
+
+    void progress(long readBytes, long length, boolean done);
 }

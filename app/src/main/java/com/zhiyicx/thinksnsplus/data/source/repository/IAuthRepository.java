@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 
@@ -55,4 +56,17 @@ public interface IAuthRepository {
      * @return
      */
     boolean isLogin();
+
+    /**
+     * 保存IM 登录配置信息
+     * @param imConfig 配置信息
+     * @return true,保存成功
+     */
+    boolean saveIMConfig(IMConfig imConfig);
+
+    /**
+     * 获取 IM 配置信息
+     * @return 配置信息
+     */
+    IMConfig getIMConfig();
 }

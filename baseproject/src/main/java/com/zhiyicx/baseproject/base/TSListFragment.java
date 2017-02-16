@@ -61,6 +61,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
 
     protected boolean mIsGetNetData = false; //  是否请求了网络数据
 
+    private boolean mIsTipMessageSticky;// 提示信息是否需要常驻
+
 
     @Override
     protected int getBodyLayoutId() {
@@ -104,7 +106,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
                     }
                 });
         mRefreshlayout.setDelegate(this);
-        if (setListBackColor()!=-1){
+        if (setListBackColor() != -1) {
             mRvList.setBackgroundColor(getResources().getColor(setListBackColor()));
         }
         mRvList.setLayoutManager(getLayoutManager());
@@ -179,9 +181,10 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
 
     /**
      * 设置 list 背景色
+     *
      * @return
      */
-    protected int setListBackColor(){
+    protected int setListBackColor() {
         return -1;
     }
 
@@ -191,11 +194,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
      * @return
      */
     protected abstract CommonAdapter<T> getAdapter();
-
-    /**
-     * 插入或者更新缓存
-     */
-    protected abstract boolean insertOrUpdateData(@NotNull List<T> data);
 
     /**
      * 提示信息被点击了
@@ -216,7 +214,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
     /**
      * Set the visibility state of this view.
      *
-     * @param visibility One of {@link View.VISIBLE}, {@link View.INVISIBLE}, or {@link View.GONE}.
+     * @param visibility
      * @attr ref android.R.styleable#View_visibility
      */
     protected void setTopTipVisible(int visibility) {
@@ -228,7 +226,31 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
      *
      * @param text
      */
+    @Override
+    public void showStickyMessage(@NotNull String text) {
+        mIsTipMessageSticky = true;
+        setTopTipVisible(View.VISIBLE);
+        setTopTipText(text);
+    }
+
+    /**
+     * 隐藏常驻提示信息
+     */
+    @Override
+    public void hideStickyMessage() {
+        mIsTipMessageSticky = false;
+        setTopTipVisible(View.GONE);
+    }
+
+    /**
+     * 显示提示信息，并消息
+     *
+     * @param text
+     */
     protected void showMessageNotSticky(@NotNull String text) {
+        if (mIsTipMessageSticky) {// 如果有常驻信息在，忽略此条提示
+            return;
+        }
         setTopTipVisible(View.VISIBLE);
         setTopTipText(text);
         new Handler().postDelayed(new Runnable() {
@@ -237,6 +259,14 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
                 setTopTipVisible(View.GONE);
             }
         }, DEFAULT_TIP_STICKY_TIME);
+    }
+
+    protected void requestNetData(int maxId, boolean isLoadMore) {
+        mPresenter.requestNetData(maxId, isLoadMore);
+    }
+
+    protected List<T> requestCacheData(int maxId, boolean isLoadMore) {
+        return mPresenter.requestCacheData(maxId, isLoadMore);
     }
 
     /**
@@ -254,7 +284,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
         mMaxId = DEFAULT_PAGE_MAX_ID;
-        mPresenter.requestNetData(mMaxId, false);
+        requestNetData(mMaxId, false);
     }
 
     /**
@@ -266,9 +296,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
         if (mIsGetNetData) { // 如果没有获取过网络数据，加载更多就是获取本地数据，如果加载了网络数据了，加载更多就是获取网络数据
-            onCacheResponseSuccess(mPresenter.requestCacheData(mMaxId, true), true);
+            onCacheResponseSuccess(requestCacheData(mMaxId, true), true);
         } else {
-            mPresenter.requestNetData(mMaxId, true);
+            requestNetData(mMaxId, true);
         }
         return true;
     }
@@ -322,7 +352,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
             mAdapter.clear();
             if (data.size() != 0) {
                 // 更新缓存
-                insertOrUpdateData(data);
+                mPresenter.insertOrUpdateData(data);
                 // 内存处理数据
                 mAdapter.addAllData(data);
                 mRefreshlayout.setIsShowLoadingMoreView(true);
@@ -334,7 +364,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
         } else { // 加载更多
             if (data.size() != 0) {
                 // 更新缓存
-                insertOrUpdateData(data);
+                mPresenter.insertOrUpdateData(data);
                 // 内存处理数据
                 mAdapter.addAllData(data);
                 refreshData();

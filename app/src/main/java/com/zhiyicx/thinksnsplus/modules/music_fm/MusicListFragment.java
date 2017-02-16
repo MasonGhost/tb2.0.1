@@ -46,12 +46,6 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     }
 
     @Override
-    protected boolean insertOrUpdateData(@NotNull List<MusicListBean> data) {
-        return false;
-    }
-
-
-    @Override
     protected void initData() {
         super.initData();
         mRvList.setOverScrollMode(View.OVER_SCROLL_NEVER);

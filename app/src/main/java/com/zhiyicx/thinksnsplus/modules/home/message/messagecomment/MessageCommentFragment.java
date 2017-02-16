@@ -210,7 +210,7 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
     private void toChat(MessageItemBean messageItemBean) {
         Intent to = new Intent(getActivity(), ChatActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(ChatFragment.BUNDLE_USERID, String.valueOf(messageItemBean.getUserInfo().getUser_id()));
+        bundle.putParcelable(ChatFragment.BUNDLE_MESSAGEITEMBEAN,messageItemBean);
         to.putExtras(bundle);
         startActivity(to);
     }
@@ -221,11 +221,6 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
     private void toUserCenter() {
         Intent to = new Intent(getActivity(), UserInfoActivity.class);
         startActivity(to);
-    }
-
-    @Override
-    protected boolean insertOrUpdateData(@NotNull List<MessageItemBean> data) {
-        return false;
     }
 
     @Override

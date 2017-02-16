@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.base;
 
 
+import com.bumptech.glide.request.Request;
+import com.zhiyicx.thinksnsplus.data.source.remote.FollowFansClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.MusicClient;
@@ -87,8 +89,20 @@ public class ServiceModule {
      */
     @Singleton
     @Provides
-    MusicClient provideMusicClient(Retrofit retrofit){
+    MusicClient provideMusicClient(Retrofit retrofit) {
         return retrofit.create(MusicClient.class);
+    }
+
+    /**
+     * 获取粉丝关注列表网络接口
+     *
+     * @param retrofit
+     * @return
+     */
+    @Singleton
+    @Provides
+    FollowFansClient provideFollowFansClient(Retrofit retrofit) {
+        return retrofit.create(FollowFansClient.class);
     }
 
 }

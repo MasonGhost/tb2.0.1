@@ -11,7 +11,7 @@ import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.modules.AcitivityTest;
 import com.zhiyicx.thinksnsplus.modules.RxUnitTestTools;
-import com.zhiyicx.thinksnsplus.modules.register.RegisterActivity;
+import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -21,6 +21,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 /**
@@ -33,7 +34,7 @@ import static junit.framework.Assert.assertTrue;
 public class CommonTest extends AcitivityTest {
     private CommonClient mCommonClient;
     @Rule
-    public ActivityTestRule<RegisterActivity> mLoginActivityActivityTestRule = new ActivityTestRule<RegisterActivity>(RegisterActivity.class);
+    public ActivityTestRule<GuideActivity> mLoginActivityActivityTestRule = new ActivityTestRule<>(GuideActivity.class);
 
     @Before
     public void init() {
@@ -205,6 +206,24 @@ public class CommonTest extends AcitivityTest {
                     }
                 });
 
+    }
+    /**
+     * summary  判空测试
+     * steps
+     * expected String.isEmpty() 不能判断对象空，只能判断内容为空
+     */
+    @Test
+    public void testStringEmpty() throws Exception {
+        String a = null;
+        assertTrue(TextUtils.isEmpty(a));
+        try {
+            assertTrue(a.isEmpty());
+        } catch (NullPointerException e) {
+            assertFalse(false);
+        }
+        String b = "";
+        assertTrue(TextUtils.isEmpty(b));
+        assertTrue(b.isEmpty());
     }
 
 }

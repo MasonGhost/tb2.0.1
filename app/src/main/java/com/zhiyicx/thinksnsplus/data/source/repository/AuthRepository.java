@@ -7,10 +7,12 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
+import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
@@ -36,25 +38,25 @@ public class AuthRepository implements IAuthRepository {
     public static final int MAX_RETRY_COUNTS = 1;//重试次数
     public static final int RETRY_DELAY_TIME = 1;// 重试间隔时间,单位 s
     private UserInfoClient mUserInfoClient;
-    private CommonClient mCommonClient;
     private Context mContext;
 
     @Inject
     public AuthRepository(ServiceManager serviceManager, Application context) {
         mUserInfoClient = serviceManager.getUserInfoClient();
-        mCommonClient = serviceManager.getCommonClient();
         mContext = context;
     }
 
 
     @Override
     public boolean saveAuthBean(AuthBean authBean) {
-        return SharePreferenceUtils.saveObject(mContext, AuthBean.SHAREPREFERENCE_TAG, authBean);
+        AppApplication.setmCurrentLoginAuth(authBean);
+        return SharePreferenceUtils.saveObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_AUTHBEAN, authBean);
     }
 
     @Override
     public AuthBean getAuthBean() {
-        return SharePreferenceUtils.getObject(mContext, AuthBean.SHAREPREFERENCE_TAG);
+        AppApplication.setmCurrentLoginAuth((AuthBean) SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_AUTHBEAN));
+        return AppApplication.getmCurrentLoginAuth();
     }
 
     @Override
@@ -107,7 +109,8 @@ public class AuthRepository implements IAuthRepository {
      */
     @Override
     public boolean clearAuthBean() {
-        return SharePreferenceUtils.remove(mContext, AuthBean.SHAREPREFERENCE_TAG);
+        return SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_AUTHBEAN)
+                && SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_IMCONFIG);
     }
 
     /**
@@ -117,7 +120,17 @@ public class AuthRepository implements IAuthRepository {
      */
     @Override
     public boolean isLogin() {
-        return getAuthBean() != null;
+        return getAuthBean() != null && getIMConfig() != null;
+    }
+
+    @Override
+    public boolean saveIMConfig(IMConfig imConfig) {
+        return SharePreferenceUtils.saveObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_IMCONFIG, imConfig);
+    }
+
+    @Override
+    public IMConfig getIMConfig() {
+        return SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_IMCONFIG);
     }
 
     /**

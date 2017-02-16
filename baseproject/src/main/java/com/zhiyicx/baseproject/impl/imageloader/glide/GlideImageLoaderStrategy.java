@@ -8,6 +8,7 @@ import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.utils.imageloader.loadstrategy.ImageLoaderStrategy;
 
 /**
@@ -29,19 +30,21 @@ public class GlideImageLoaderStrategy implements ImageLoaderStrategy<GlideImageC
         boolean isFromNet = !TextUtils.isEmpty(imgUrl) && imgUrl.startsWith("http");// 是否来源于网络
         DrawableRequestBuilder requestBuilder = manager.load(TextUtils.isEmpty(imgUrl) ? config.getResourceId() : isFromNet ? imgUrl : "file://" + imgUrl)
                 .diskCacheStrategy(isFromNet ? DiskCacheStrategy.ALL : DiskCacheStrategy.NONE)
-                .skipMemoryCache(isFromNet?false:true)
+                .skipMemoryCache(isFromNet ? false : true)
                 .crossFade()
                 .centerCrop();
+        if (config.getErrorPic() != 0)// 设置错误的图片
+        {
+            requestBuilder.error(config.getErrorPic());
+        } else {
+            requestBuilder.error(R.drawable.shape_default_image);
+        }
         if (config.getTransformation() != null) {
             requestBuilder.transform(config.getTransformation());
         }
         if (config.getPlaceholder() != 0)// 设置占位符
         {
             requestBuilder.placeholder(config.getPlaceholder());
-        }
-        if (config.getErrorPic() != 0)// 设置错误的图片
-        {
-            requestBuilder.error(config.getErrorPic());
         }
         requestBuilder
                 .into(config.getImageView());

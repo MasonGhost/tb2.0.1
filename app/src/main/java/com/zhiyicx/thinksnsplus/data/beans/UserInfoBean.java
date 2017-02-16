@@ -80,8 +80,8 @@ public class UserInfoBean implements Parcelable {
 
     @Generated(hash = 1499218000)
     public UserInfoBean(Long user_id, String sex, String name, String userIcon,
-                        String location, int province, int city, int area, String education,
-                        String intro) {
+            String location, int province, int city, int area, String education,
+            String intro) {
         this.user_id = user_id;
         this.sex = sex;
         this.name = name;
@@ -93,7 +93,7 @@ public class UserInfoBean implements Parcelable {
         this.education = education;
         this.intro = intro;
     }
-
+    
     public static final Creator<UserInfoBean> CREATOR = new Creator<UserInfoBean>() {
         @Override
         public UserInfoBean createFromParcel(Parcel source) {
