@@ -23,7 +23,11 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
 
     private NestedScrollingParentHelper parentHelper;
     private LayoutInflater inflater;
-    private View headerView;//
+    private View headerView;
+    private int mTopViewHeight;
+    private OverScroller mScroller;
+    private boolean addHeight;
+    private OnHeadFlingListener mOnHeadFlingListener;
 
     public NestedScrollLineayLayout(Context context) {
         super(context);
@@ -45,7 +49,15 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
         parentHelper = new NestedScrollingParentHelper(this);
         inflater = LayoutInflater.from(context);
         headerView = inflater.inflate(R.layout.music_headerview, null, false);
+        setOrientation(LinearLayout.VERTICAL);
+        mScroller = new OverScroller(context);
         this.addView(headerView);
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        mTopViewHeight = headerView.getMeasuredHeight();
     }
 
     @Override
@@ -63,59 +75,34 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
         parentHelper.onStopNestedScroll(child);
     }
 
-    private boolean addHeight;
-
     @Override
     public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
         //处理子view传上来的事件
         //头部高度
-        int headerHeight = headerView.getHeight();
-
-        if (dy > 0) {
-            //向上滑动
-
-            if ( Math.abs(  this.getTop() - dy ) <= headerHeight) {
-                //header 在向上滑动的过程
-                this.layout(this.getLeft(), this.getTop() - dy, this.getRight(), this.getBottom() - dy);
-                if (!addHeight) {
-                    //只增加一次 高度 height
-                    addHeight = true;
-                    ViewGroup.LayoutParams params = this.getLayoutParams();
-                    params.height = headerHeight+this.getHeight();
-                    this.setLayoutParams(params);
-                    requestLayout();
-                }
-                consumed[1] += dy;
+        mTopViewHeight = headerView.getHeight();
+        boolean hiddenTop = dy > 0 && getScrollY() < mTopViewHeight;
+        boolean showTop = dy < 0 && getScrollY() >= 0 && !ViewCompat.canScrollVertically(target,
+                -1);
+        if (hiddenTop || showTop) {
+            if (!addHeight) {//只增加一次 高度 height
+                addHeight = true;
+                ViewGroup.LayoutParams params = this.getLayoutParams();
+                params.height = mTopViewHeight + this.getHeight();
+                this.setLayoutParams(params);
+                requestLayout();
             }
-            else{
-                //当用户滑动动作太大，一次位移太大就会把parentview滑动脱离底部屏幕
-                if((this.getTop() + headerHeight) > 0){
-                    int offsetY  = headerHeight + this.getTop();
-                    this.layout(this.getLeft(), this.getTop() - offsetY, this.getRight(), this.getBottom() - offsetY);
-                    consumed[1] += offsetY;
-                }
+            if (mOnHeadFlingListener != null && getScrollY() <= mTopViewHeight) {
+                mOnHeadFlingListener.onHeadFling(getScrollY());
             }
+            scrollBy(0, dy);
+            consumed[1] = dy;
         }
-        if (dy < 0) {
-            //向下滑动
-            if ((this.getTop() + Math.abs(dy)) <= 0) {
-                //header在向下滑动的过程
-                //this.gettop是负数dy也是负数所以需要+dy的绝对值
-                this.layout(this.getLeft(), this.getTop() + Math.abs(dy), this.getRight(), this.getBottom() + Math.abs(dy));
-                consumed[1] += dy;
-            }
-            else{
-                if(this.getTop() < 0){
-                    int offsetY = Math.abs(this.getTop());
-                    this.layout(this.getLeft(), this.getTop() +offsetY, this.getRight(), this.getBottom() + offsetY);
-                    consumed[1] += offsetY;
-                }
-            }
-        }
+
     }
 
     @Override
-    public void onNestedScroll(View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
+    public void onNestedScroll(View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int
+            dyUnconsumed) {
 //        super.onNestedScroll(target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
     }
 
@@ -129,5 +116,42 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
     public boolean onNestedPreFling(View target, float velocityX, float velocityY) {
         return false;
 //        return super.onNestedPreFling(target, velocityX, velocityY);
+    }
+
+    @Override
+    public void scrollTo(int x, int y) {
+        if (y < 0) {
+            y = 0;
+        }
+        if (y > mTopViewHeight) {
+            y = mTopViewHeight;
+        }
+        if (y != getScrollY()) {
+            super.scrollTo(x, y);
+        }
+    }
+
+    @Override
+    public void computeScroll() {
+        if (mScroller.computeScrollOffset()) {
+            scrollTo(0, mScroller.getCurrY());
+            invalidate();
+        }
+    }
+
+    public void setOnHeadFlingListener(OnHeadFlingListener onHeadFlingListener) {
+        mOnHeadFlingListener = onHeadFlingListener;
+    }
+
+    public int getTopViewHeight() {
+        return mTopViewHeight;
+    }
+
+    public View getHeaderView() {
+        return headerView;
+    }
+
+    public interface OnHeadFlingListener {
+        void onHeadFling(int scrollY);
     }
 }

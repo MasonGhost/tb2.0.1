@@ -1,12 +1,18 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_detail;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -19,15 +25,18 @@ import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MusicListBean;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 import com.zhiyicx.thinksnsplus.widget.IconTextView;
+import com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout;
 import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
-import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -57,8 +66,13 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     RecyclerView mRvMusicDetailList;
     @BindView(R.id.fragment_music_detail_back)
     TextView mFragmentMusicDetailBack;
-    //    @BindView(R.id.fragment_music_detail_scrollview)
-//    NestedScrollLineayLayout mFragmentMusicDetailScrollview;
+    @BindView(R.id.fragment_music_detail_scrollview)
+    NestedScrollLineayLayout mFragmentMusicDetailScrollview;
+    @BindView(R.id.fragment_music_detail_center)
+    TextView mFragmentMusicDetailCenter;
+    @BindView(R.id.fragment_music_detail_title)
+    RelativeLayout mFragmentMusicDetailTitle;
+
     private CommonAdapter mAdapter;
     private List<MusicListBean> mMusicListBeen = new ArrayList<>();
     private ImageLoader mImageLoader;
@@ -72,13 +86,34 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     protected void initView(View rootView) {
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         mAdapter = getCommonAdapter();
-//        mFragmentMusicDetailScrollview.setOnFlingistener(new NestedScrollLineayLayout
-//                .OnFlingistener() {
-//            @Override
-//            public void onFling(int velocityY) {
-//                LogUtils.e("滑动："+velocityY,velocityY);
-//            }
-//        });
+
+        Bitmap bitmap = BitmapFactory
+                .decodeResource(getResources(), R.mipmap.npc);
+        final Palette palette = Palette.from(bitmap).generate();
+        BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap(bitmap, bitmap.getWidth
+                (), bitmap.getHeight()));
+        mFragmentMusicDetailHeadInfo.setBackgroundDrawable(drawable);
+
+        mImageLoader.loadImage(getActivity(), GlideImageConfig.builder().transformation(new
+                GlideStokeTransform(getActivity(), 20)).imagerView(mFragmentMusicDetailHeadIamge)
+                .resourceId(R.mipmap.npc).build());
+
+        mFragmentMusicDetailScrollview.setOnHeadFlingListener(new NestedScrollLineayLayout
+                .OnHeadFlingListener() {
+
+            @Override
+            public void onHeadFling(int scrollY) {
+                int titleHeight = mFragmentMusicDetailTitle.getHeight();
+                int scrollHeight = mFragmentMusicDetailScrollview.getTopViewHeight();
+
+                int distance = scrollHeight - titleHeight;
+                int alpha = 255 * scrollY / distance;
+                alpha = alpha > 255 ? 255 : alpha;
+                mFragmentMusicDetailTitle.setBackgroundColor(palette.getVibrantColor(0xe3e3e3));
+                mFragmentMusicDetailTitle.getBackground().setAlpha(alpha);
+
+            }
+        });
     }
 
     @Override
@@ -98,21 +133,9 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         mMusicListBeen.add(new MusicListBean());
         mMusicListBeen.add(new MusicListBean());
         mMusicListBeen.add(new MusicListBean());
-        Bitmap bitmap = BitmapFactory
-                .decodeResource(getResources(), R.mipmap.npc);
-        BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap(bitmap, bitmap.getWidth
-                (), bitmap.getHeight()));
-        mFragmentMusicDetailHeadInfo.setBackgroundDrawable(drawable);
 
-        mImageLoader.loadImage(getActivity(), GlideImageConfig.builder().transformation(new
-                GlideStokeTransform(getActivity(), 20)).imagerView(mFragmentMusicDetailHeadIamge)
-                .resourceId(R.mipmap.npc).build());
-        HeaderAndFooterWrapper wrapper = new HeaderAndFooterWrapper(mAdapter);
-        TextView textView = new IconTextView(getActivity());
-        textView.setText("head");
 
-        wrapper.addHeaderView(textView);
-        mRvMusicDetailList.setAdapter(wrapper);
+        mRvMusicDetailList.setAdapter(mAdapter);
         mRvMusicDetailList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
     }
@@ -164,13 +187,28 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
     @NonNull
     private CommonAdapter<MusicListBean> getCommonAdapter() {
-        return new CommonAdapter<MusicListBean>(getActivity(), R.layout.item_music_detail_list,
+        mAdapter = new CommonAdapter<MusicListBean>(getActivity(), R.layout.item_music_detail_list,
                 mMusicListBeen) {
             @Override
             protected void convert(ViewHolder holder, MusicListBean o, int position) {
 
             }
         };
+
+        mAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                startActivity(new Intent(getActivity(), MusicPlayActivity.class));
+            }
+
+            @Override
+            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int
+                    position) {
+                return false;
+            }
+        });
+
+        return mAdapter;
     }
 
 }
