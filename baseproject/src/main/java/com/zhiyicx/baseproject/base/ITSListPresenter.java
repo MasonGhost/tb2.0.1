@@ -2,6 +2,8 @@ package com.zhiyicx.baseproject.base;
 
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 /**
@@ -14,10 +16,11 @@ public interface ITSListPresenter<T> extends IBasePresenter {
     /**
      * 请求列表数据
      *
-     * @param maxId 当前获取到数据的最大 id
+     * @param maxId      当前获取到数据的最大 id
      * @param isLoadMore 加载状态
      */
     void requestNetData(int maxId, boolean isLoadMore);
+
     /**
      * 请求缓存列表数据
      *
@@ -27,5 +30,8 @@ public interface ITSListPresenter<T> extends IBasePresenter {
      */
     List<T> requestCacheData(int minTime, boolean isLoadMore);
 
-
+    /**
+     * 插入或者更新缓存
+     */
+    boolean insertOrUpdateData(@NotNull List<T> data);
 }

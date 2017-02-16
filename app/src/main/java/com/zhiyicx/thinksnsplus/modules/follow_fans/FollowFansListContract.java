@@ -2,9 +2,15 @@ package com.zhiyicx.thinksnsplus.modules.follow_fans;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
+import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansItemBean;
+
+import java.util.List;
+
+import rx.Observable;
 
 /**
  * @author LiuChao
@@ -14,18 +20,26 @@ import com.zhiyicx.thinksnsplus.data.beans.FollowFansItemBean;
  */
 
 public interface FollowFansListContract {
-    interface View extends ITSListView<FollowFansItemBean, Presenter> {
+    interface View extends ITSListView<FollowFansBean, Presenter> {
 
     }
 
-    interface Presenter extends ITSListPresenter<FollowFansItemBean> {
+    interface Presenter extends ITSListPresenter<FollowFansBean> {
+        /**
+         * 重写获取网络数据的方法，添加方法参数
+         *
+         * @param maxId
+         * @param isLoadMore
+         * @param userId     用户id
+         * @param isFollowed true ：是关注  false：还是粉丝
+         */
+        void requestNetData(int maxId, boolean isLoadMore, int userId, boolean isFollowed);
 
+        List<FollowFansBean> requestCacheData(int maxId, boolean isLoadMore, int userId, boolean isFollowed);
     }
 
     interface Repository {
-        void getFansList();
-
-        void getFollowedList();
+        Observable<BaseJson<List<FollowFansBean>>> getFollowFansListFromNet(int userId, boolean isFollowed);
     }
 
 }

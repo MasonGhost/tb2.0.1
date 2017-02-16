@@ -125,13 +125,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         };
     }
 
-    @Override
-    protected boolean insertOrUpdateData(@NotNull List data) {
-        return false;
-    }
-
-
-
     /**
      * 初始化头信息（评论的、赞过的）
      */

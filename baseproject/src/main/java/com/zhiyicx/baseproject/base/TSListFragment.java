@@ -196,11 +196,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
     protected abstract CommonAdapter<T> getAdapter();
 
     /**
-     * 插入或者更新缓存
-     */
-    protected abstract boolean insertOrUpdateData(@NotNull List<T> data);
-
-    /**
      * 提示信息被点击了
      */
     protected void onTopTipClick() {
@@ -219,7 +214,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
     /**
      * Set the visibility state of this view.
      *
-     * @param visibility One of {@link View.VISIBLE}, {@link View.INVISIBLE}, or {@link View.GONE}.
+     * @param visibility
      * @attr ref android.R.styleable#View_visibility
      */
     protected void setTopTipVisible(int visibility) {
@@ -266,6 +261,14 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
         }, DEFAULT_TIP_STICKY_TIME);
     }
 
+    protected void requestNetData(int maxId, boolean isLoadMore) {
+        mPresenter.requestNetData(maxId, isLoadMore);
+    }
+
+    protected List<T> requestCacheData(int maxId, boolean isLoadMore) {
+        return mPresenter.requestCacheData(maxId, isLoadMore);
+    }
+
     /**
      * 刷新数据
      */
@@ -281,7 +284,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
         mMaxId = DEFAULT_PAGE_MAX_ID;
-        mPresenter.requestNetData(mMaxId, false);
+        requestNetData(mMaxId, false);
     }
 
     /**
@@ -293,9 +296,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
         if (mIsGetNetData) { // 如果没有获取过网络数据，加载更多就是获取本地数据，如果加载了网络数据了，加载更多就是获取网络数据
-            onCacheResponseSuccess(mPresenter.requestCacheData(mMaxId, true), true);
+            onCacheResponseSuccess(requestCacheData(mMaxId, true), true);
         } else {
-            mPresenter.requestNetData(mMaxId, true);
+            requestNetData(mMaxId, true);
         }
         return true;
     }
@@ -349,7 +352,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
             mAdapter.clear();
             if (data.size() != 0) {
                 // 更新缓存
-                insertOrUpdateData(data);
+                mPresenter.insertOrUpdateData(data);
                 // 内存处理数据
                 mAdapter.addAllData(data);
                 mRefreshlayout.setIsShowLoadingMoreView(true);
@@ -361,7 +364,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
         } else { // 加载更多
             if (data.size() != 0) {
                 // 更新缓存
-                insertOrUpdateData(data);
+                mPresenter.insertOrUpdateData(data);
                 // 内存处理数据
                 mAdapter.addAllData(data);
                 refreshData();

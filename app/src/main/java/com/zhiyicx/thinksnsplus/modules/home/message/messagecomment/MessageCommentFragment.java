@@ -224,11 +224,6 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
     }
 
     @Override
-    protected boolean insertOrUpdateData(@NotNull List<MessageItemBean> data) {
-        return false;
-    }
-
-    @Override
     public void setPresenter(MessageCommentContract.Presenter presenter) {
         mPresenter = presenter;
     }
