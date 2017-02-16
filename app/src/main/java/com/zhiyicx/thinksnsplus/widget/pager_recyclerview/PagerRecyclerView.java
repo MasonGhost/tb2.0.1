@@ -98,9 +98,9 @@ public class PagerRecyclerView extends RecyclerView {
         final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PagerRecyclerView,
                 defStyle,
                 0);
-        mFlingFactor = a.getFloat(R.styleable.PagerRecyclerView_rvp_flingFactor, 0.15f);
-        mTriggerOffset = a.getFloat(R.styleable.PagerRecyclerView_rvp_triggerOffset, 0.25f);
-        mSinglePageFling = a.getBoolean(R.styleable.PagerRecyclerView_rvp_singlePageFling,
+        mFlingFactor = a.getFloat(R.styleable.PagerRecyclerView_flingFactor, 0.15f);
+        mTriggerOffset = a.getFloat(R.styleable.PagerRecyclerView_triggerOffset, 0.25f);
+        mSinglePageFling = a.getBoolean(R.styleable.PagerRecyclerView_singlePageFling,
                 mSinglePageFling);
         a.recycle();
     }

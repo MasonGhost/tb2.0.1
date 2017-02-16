@@ -20,6 +20,7 @@
         android:textColor="#fff"/>
 
     <TextView
+        android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_below="@+id/music_list_image"
