@@ -3,7 +3,10 @@ package com.zhiyicx.thinksnsplus.modules.follow_fans;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.AppComponent;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansItemBean;
+import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDao;
 
 import java.util.List;
 
@@ -16,10 +19,16 @@ import javax.inject.Inject;
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class FollowFansListPresenter extends BasePresenter<FollowFansListContract.Repository, FollowFansListContract.View> implements FollowFansListContract.Presenter {
+public class FollowFansListPresenter extends BasePresenter<FollowFansListContract.Repository,
+        FollowFansListContract.View> implements FollowFansListContract.Presenter {
+    private FollowFansBeanGreenDao mFollowFansBeanGreenDao;
+
     @Inject
-    public FollowFansListPresenter(FollowFansListContract.Repository repository, FollowFansListContract.View rootView) {
+    public FollowFansListPresenter(FollowFansListContract.Repository repository,
+                                   FollowFansListContract.View rootView) {
         super(repository, rootView);
+        mFollowFansBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent()
+                .followFansBeanGreenDao();
     }
 
     @Override
@@ -29,6 +38,8 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
 
     @Override
     public List<FollowFansItemBean> requestCacheData(int maxId, boolean isLoadMore) {
+        int userID = 0;
+        mFollowFansBeanGreenDao.getSomeOneFans(userID);
         return null;
     }
 }
