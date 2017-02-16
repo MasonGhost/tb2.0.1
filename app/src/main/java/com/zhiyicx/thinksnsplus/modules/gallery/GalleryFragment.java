@@ -53,7 +53,7 @@ public class GalleryFragment extends TSFragment {
     protected void initView(View rootView) {
 
         mPagerAdapter = new GalleryPhotoAdapter(getChildFragmentManager(), Arrays.asList(
-                "http://img2.niutuku.com/desk/1208/2052/ntk-2052-26328.jpg",
+                "http://pic11.nipic.com/20101214/213291_155243023914_2.jpg",
                 "http://pic1.5442.com/2015/0604/07/05.jpg",
                 "http://t-1.tuzhan.com/0f50dee8f485/c-2/l/2016/02/23/18/341ec1822a524c9eb30f5b615a1f8b3a.jpg",
                 "http://pic1.5442.com/2015/0916/06/08.jpg",

@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.gallery;
 
 import android.app.Activity;
 import android.content.Context;
-import android.databinding.repacked.treelayout.internal.util.java.lang.string.StringUtil;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -163,11 +162,13 @@ public class ImageDetailFragment extends Fragment {
             if (msg.what == ProgressListener.SEND_LOAD_PROGRESS) {
                 int totalReadBytes = msg.arg1;
                 int lengthBytes = msg.arg2;
-                String progressResult = (((float) totalReadBytes / lengthBytes) * 100) + "";
-                String[] result = progressResult.split(".");
-                loadProgress.setText(result[0] + "%/" + "100%");
-                LogUtils.i("progress-result:" + " msg.arg1-->" + msg.arg1 + "  msg.arg2-->" +
-                        msg.arg2 + " 比例-->" + (totalReadBytes / lengthBytes * 100) + "%/" + "100%");
+                String progressResult = (((float) totalReadBytes / (float) lengthBytes) * 100) + "";
+                String[] results = progressResult.split(".");
+                if (results != null && results.length > 0) {
+                    loadProgress.setText(results[0] + "%/" + "100%");
+                    LogUtils.i("progress-result:-->"+progressResult + " msg.arg1-->" + msg.arg1 + "  msg.arg2-->" +
+                            msg.arg2 + " 比例-->" + results[0] + "%/" + "100%");
+                }
             }
         }
     };
