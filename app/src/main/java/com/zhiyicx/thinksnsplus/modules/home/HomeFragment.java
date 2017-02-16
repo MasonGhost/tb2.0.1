@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.home;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -13,6 +12,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageFragment;
@@ -20,6 +20,8 @@ import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -30,7 +32,7 @@ import butterknife.OnClick;
  * @Date 2017/1/4
  * @Contact master.jungle68@gmail.com
  */
-public class HomeFragment extends TSFragment {
+public class HomeFragment extends TSFragment<HomeContract.Presenter> implements HomeContract.View {
     public static final int PAGE_NUMS = 4; // 页数
 
     public static final int PAGE_HOME = 0; // 对应在 viewpager 中的位置
@@ -57,22 +59,15 @@ public class HomeFragment extends TSFragment {
     @BindView(R.id.vp_home)
     NoPullViewPager mVpHome;
 
+    @Inject
+    HomePresenter mHomePresenter;  // 仅用于构造
     private TSViewPagerAdapter mHomePager;
-
-
-    public HomeFragment() {
-    }
 
     public static HomeFragment newInstance() {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     /**
@@ -101,6 +96,12 @@ public class HomeFragment extends TSFragment {
 
     @Override
     protected void initData() {
+        DaggerHomeComponent
+                .builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .homePresenterModule(new HomePresenterModule(this))
+                .build()
+                .inject(this);
     }
 
     @Override
@@ -193,4 +194,23 @@ public class HomeFragment extends TSFragment {
     }
 
 
+    @Override
+    public void setPresenter(HomeContract.Presenter presenter) {
+        mPresenter = presenter;
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
+    }
+
+    @Override
+    public void showMessage(String message) {
+
+    }
 }

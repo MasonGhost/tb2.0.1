@@ -41,7 +41,6 @@ public class AuthRepository implements IAuthRepository {
     @Inject
     public AuthRepository(ServiceManager serviceManager, Application context) {
         mUserInfoClient = serviceManager.getUserInfoClient();
-        mCommonClient = serviceManager.getCommonClient();
         mContext = context;
     }
 

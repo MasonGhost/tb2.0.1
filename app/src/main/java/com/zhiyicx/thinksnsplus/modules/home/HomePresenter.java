@@ -31,6 +31,11 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
     @Inject
     public HomePresenter(HomeContract.Repository repository, HomeContract.View rootView) {
         super(repository, rootView);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         initIM();
     }
 
@@ -76,7 +81,7 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
 
     @Override
     public void onConnected() {
-        EventBus.getDefault().post(null,EventBusTagConfig.EVENT_IM_ONCONNECTED);
+        EventBus.getDefault().post("",EventBusTagConfig.EVENT_IM_ONCONNECTED);
     }
 
     @Override
