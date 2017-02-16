@@ -65,6 +65,7 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .followFansListPresenterModule(new FollowFansListPresenterModule(FollowFansListFragment.this))
                 .build().inject(this);
+        super.initData();
     }
 
     @Override
@@ -99,12 +100,12 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
 
     @Override
     protected void requestNetData(int maxId, boolean isLoadMore) {
-        mPresenter.requestNetData(maxId, isLoadMore, 10000, true);
+        mPresenter.requestNetData(maxId, isLoadMore, 20000, true);
     }
 
     @Override
     protected List<FollowFansBean> requestCacheData(int maxId, boolean isLoadMore) {
-       return mPresenter.requestCacheData(maxId, isLoadMore, 10000, true);
+        return mPresenter.requestCacheData(maxId, isLoadMore, 20000, true);
     }
 
     public static FollowFansListFragment initFragment(Bundle bundle) {
@@ -115,6 +116,9 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
 
     private void setItemData(ViewHolder holder, FollowFansBean followFansItemBean, int position) {
         UserInfoBean userInfoBean = followFansItemBean.getFllowedUser();
+        if (userInfoBean == null) {
+            return;
+        }
         // 设置用户名，用户简介
         holder.setText(R.id.tv_name, userInfoBean.getName());
         holder.setText(R.id.tv_user_signature, userInfoBean.getIntro());
