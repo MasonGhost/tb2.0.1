@@ -125,7 +125,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
 
     @Override
     protected void initData() {
-        onCacheResponseSuccess(mPresenter.requestCacheData(mMaxId, false), false); // 获取缓存数据
+        onCacheResponseSuccess(requestCacheData(mMaxId, false), false); // 获取缓存数据
     }
 
     /**
@@ -269,7 +269,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
      */
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
-        if (mIsGetNetData) { // 如果没有获取过网络数据，加载更多就是获取本地数据，如果加载了网络数据了，加载更多就是获取网络数据
+        if (!mIsGetNetData) { // 如果没有获取过网络数据，加载更多就是获取本地数据，如果加载了网络数据了，加载更多就是获取网络数据
             onCacheResponseSuccess(requestCacheData(mMaxId, true), true);
         } else {
             requestNetData(mMaxId, true);
