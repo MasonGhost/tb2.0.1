@@ -66,7 +66,7 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
     }
 
     @Override
-    public long insertOrReplace(@NotNull FollowFansBean newData) {
+    public long insertOrReplace(FollowFansBean newData) {
         FollowFansBeanDao followFansBeanDao = getWDaoSession().getFollowFansBeanDao();
         return followFansBeanDao.insertOrReplace(newData);
     }
