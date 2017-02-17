@@ -52,5 +52,8 @@ public class MusicPresenter extends BasePresenter<MusicContract.Repository, Musi
         return new ArrayList();
     }
 
-
+    @Override
+    public boolean insertOrUpdateData(@NotNull List<MusicListBean> data) {
+        return false;
+    }
 }

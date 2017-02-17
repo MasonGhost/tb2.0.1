@@ -106,8 +106,4 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
         return R.color.white;
     }
 
-    @Override
-    protected boolean insertOrUpdateData(@NotNull List<MusicListBean> data) {
-        return false;
-    }
 }

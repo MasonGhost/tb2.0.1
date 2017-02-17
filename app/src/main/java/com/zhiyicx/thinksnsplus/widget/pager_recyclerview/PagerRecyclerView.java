@@ -307,9 +307,8 @@ public class PagerRecyclerView extends RecyclerView {
                         for (OnPageChangedListener onPageChangedListener :
                                 mOnPageChangedListeners) {
                             if (onPageChangedListener != null) {
-                                onPageChangedListener.OnPageChanged(mPositionBeforeScroll %
-                                        getActualItemCount(),
-                                        getCurrentPosition() % getActualItemCount());
+                                onPageChangedListener.OnPageChanged(mPositionBeforeScroll ,
+                                        getCurrentPosition());
                             }
                         }
                     }
@@ -327,6 +326,14 @@ public class PagerRecyclerView extends RecyclerView {
                     : RecyclerViewUtils.getCenterYChildPosition(this);
 
             mLastY = ev.getRawY();
+        }else if(ev.getAction() == MotionEvent.ACTION_MOVE && getLayoutManager() != null){
+            if (mOnPageChangedListeners != null) {
+                for (OnPageChangedListener onPageChangedListener : mOnPageChangedListeners) {
+                    if (onPageChangedListener != null) {
+                        onPageChangedListener.OnDragging(mPositionOnTouchDown);
+                    }
+                }
+            }
         }
         return super.dispatchTouchEvent(ev);
     }
@@ -412,19 +419,28 @@ public class PagerRecyclerView extends RecyclerView {
                 }
                 smoothScrollToPosition(safeTargetPosition(targetPosition, getItemCount()));
                 mCurView = null;
-            } else if (mSmoothScrollTargetPosition != mPositionBeforeScroll) {
-                //发生了滚动
+            } else{
+                if (mSmoothScrollTargetPosition != mPositionBeforeScroll) {
+                    //发生了滚动
+                    if (mOnPageChangedListeners != null) {
+                        for (OnPageChangedListener onPageChangedListener : mOnPageChangedListeners) {
+                            if (onPageChangedListener != null) {
+                                onPageChangedListener.OnPageChanged(mPositionBeforeScroll ,
+                                        mSmoothScrollTargetPosition);
+                            }
+                        }
+                    }
+                    mHasCalledOnPageChanged = true;
+                    mPositionBeforeScroll = mSmoothScrollTargetPosition;
+                }
+
                 if (mOnPageChangedListeners != null) {
                     for (OnPageChangedListener onPageChangedListener : mOnPageChangedListeners) {
                         if (onPageChangedListener != null) {
-                            onPageChangedListener.OnPageChanged(mPositionBeforeScroll %
-                                            getActualItemCount(),
-                                    mSmoothScrollTargetPosition % getActualItemCount());
+                            onPageChangedListener.OnIdle();
                         }
                     }
                 }
-                mHasCalledOnPageChanged = true;
-                mPositionBeforeScroll = mSmoothScrollTargetPosition;
             }
 
             // reset
@@ -601,6 +617,8 @@ public class PagerRecyclerView extends RecyclerView {
 
     public interface OnPageChangedListener {
         void OnPageChanged(int oldPosition, int newPosition);
+        void OnDragging(int downPosition);
+        void OnIdle();
     }
 
 }

@@ -80,6 +80,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     private MusicPlayService mMusicPlayService;
     private Palette mPalette;
+    private ImageView mCurrentImageView;
 
     @Override
     protected int getBodyLayoutId() {
@@ -110,12 +111,12 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         mAdapter = new CommonAdapter<String>(getActivity(), R.layout.item_music_play, mStringList) {
             @Override
             protected void convert(ViewHolder holder, String o, final int position) {
-                final ImageView imageView = holder.getView(R.id.fragment_music_paly_phonograph);
-                imageView.setOnClickListener(new View.OnClickListener() {
+                mCurrentImageView = holder.getView(R.id.fragment_music_paly_phonograph);
+                mCurrentImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         ToastUtils.showToast(position+"");
-                        imageView.startAnimation(rotateAnimation);
+                        mCurrentImageView.startAnimation(rotateAnimation);
                     }
                 });
             }
@@ -133,6 +134,16 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
             @Override
             public void OnPageChanged(int oldPosition, int newPosition) {
+                mFragmentMusicPalyRv.getChildAt(newPosition);
+            }
+
+            @Override
+            public void OnDragging(int downPosition) {
+                mCurrentImageView.clearAnimation();
+            }
+
+            @Override
+            public void OnIdle() {
 
             }
         });
