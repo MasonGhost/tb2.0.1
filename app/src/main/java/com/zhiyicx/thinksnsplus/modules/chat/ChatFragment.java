@@ -105,20 +105,6 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     protected void initData() {
         getIntentData();
         mDatas.addAll(mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), System.currentTimeMillis()));
-//        for (int i = 0; i < 10; i++) {
-//            ChatItemBean chatItemBean = new ChatItemBean();
-//            Message message = new Message();
-//            message.setMid(System.currentTimeMillis());
-//            message.setId(i);
-//            message.setCreate_time(System.currentTimeMillis());
-//            message.setTxt("测试消息，我的看了个 " + i);
-//            if (i % 2 == 0) {
-//                message.setType(-1);
-//            }
-//            chatItemBean.setUserInfo(new UserInfoBean());
-//            chatItemBean.setLastMessage(message);
-//            mDatas.add(chatItemBean);
-//        }
         mMessageList.setMessageListItemClickListener(this);
         mMessageList.init(mMessageItemBean.getConversation().getType() == ChatType.CHAT_TYPE_PRIVATE ? mMessageItemBean.getUserInfo().getName() : getString(R.string.default_message_group)
                 , mMessageItemBean.getConversation().getType(), mDatas);
@@ -142,9 +128,8 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     @Override
     public void hideLoading() {
-    mMessageList.getRefreshLayout().endRefreshing();
+        mMessageList.getRefreshLayout().endRefreshing();
     }
-
     @Override
     public void showMessage(String message) {
         ToastUtils.showToast(message);
@@ -152,7 +137,11 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-        mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), mDatas.size() > 0 ? mDatas.get(mDatas.size() - 1).getLastMessage().getMid() : System.currentTimeMillis());
+        List<ChatItemBean> chatItemBeen = mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), mDatas.size() > 0 ? mDatas.get(mDatas.size() - 1).getLastMessage().getCreate_time() : System.currentTimeMillis());
+        chatItemBeen.addAll(mDatas);
+        mDatas.clear();
+        mDatas.addAll(chatItemBeen);
+        mMessageList.refresh();
     }
 
     @Override
