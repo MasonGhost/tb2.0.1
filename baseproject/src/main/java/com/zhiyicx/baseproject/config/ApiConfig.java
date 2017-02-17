@@ -54,9 +54,7 @@ public class ApiConfig {
     public static final String APP_PATH_FOLLOW_LIST = "api/v1/follows/follows/{user_id}/{max_id}";// 获取用户关注列表
     //api/v1/follows/followeds/{user_id}/{max_id}
     public static final String APP_PATH_FANS_LIST = "api/v1/follows/followeds/{user_id}/{max_id}";// 获取用户粉丝列表
-    //api/v1/users/follow/{user_id}
     public static final String APP_PATH_FOLLOW_USER = "api/v1/users/follow";// 关注用户
-    // api/v1/users/unFollow/{user_id}
     public static final String APP_PATH_CANCEL_FOLLOW_USER = "api/v1/users/unFollow";// 取消用户关注
 
     /**

@@ -8,6 +8,8 @@ import com.zhiyicx.thinksnsplus.data.beans.GsonFollowFansBean;
 import java.util.List;
 
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -49,8 +51,9 @@ public interface FollowFansClient {
      * @param user_id
      * @return
      */
+    @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_FOLLOW_USER)
-    Observable<BaseJson> followUser(@Path("user_id") long user_id);
+    Observable<BaseJson> followUser(@Field("user_id") long user_id);
 
     /**
      * 取消用户关注
@@ -58,7 +61,8 @@ public interface FollowFansClient {
      * @param user_id
      * @return
      */
+    @FormUrlEncoded
     @DELETE(ApiConfig.APP_PATH_CANCEL_FOLLOW_USER)
-    Observable<BaseJson> cancelFollowUser(@Path("user_id") long user_id);
+    Observable<BaseJson> cancelFollowUser(@Field("user_id") long user_id);
 
 }

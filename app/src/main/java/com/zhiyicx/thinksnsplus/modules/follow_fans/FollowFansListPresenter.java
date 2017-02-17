@@ -15,6 +15,7 @@ import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -107,7 +108,10 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
         // 后台通知服务器关注
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST);
-        backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_FOLLOW_USER + "/" + followFansBean.getFollowedUserId());
+        backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_FOLLOW_USER);
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("user_id", followFansBean.getFollowedUserId() + "");
+        backgroundRequestTaskBean.setParams(hashMap);
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
         // 本地数据库和ui进行刷新
         int followState = mFollowFansBeanGreenDao.setStateToFollowed(followFansBean);
@@ -119,7 +123,10 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
     public void cancleFollowUser(int index, FollowFansBean followFansBean) {
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
-        backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_CANCEL_FOLLOW_USER + "/" + followFansBean.getFollowedUserId());
+        backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_CANCEL_FOLLOW_USER);
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("user_id", followFansBean.getFollowedUserId() + "");
+        backgroundRequestTaskBean.setParams(hashMap);
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
         // 本地数据库和ui进行刷新
         int followState = mFollowFansBeanGreenDao.setStateToUnFollowed(followFansBean);
