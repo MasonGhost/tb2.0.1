@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.guide;
 
 import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
@@ -27,12 +26,13 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
 
     @Override
     public void onStart() {
+        super.onStart();
         if (mIAuthRepository.isLogin()) {
             // TODO: 2017/2/10 刷新 Token 时间，过期前一天刷新
 //        mIAuthRepository.refreshToken();
             // IM login
-            ZBIMClient.getInstance().login(mIAuthRepository.getIMConfig());
             mRootView.startActivity(HomeActivity.class);
+
         } else {
             mRootView.startActivity(LoginActivity.class);
 

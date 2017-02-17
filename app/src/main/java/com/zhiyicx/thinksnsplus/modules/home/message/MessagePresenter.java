@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.home.message;
 
-import android.os.Handler;
-
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.ActivityHandler;
@@ -10,19 +8,17 @@ import com.zhiyicx.imsdk.core.ChatType;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatContract;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 
+import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.Subscriber;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -54,39 +50,26 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
 
     @Override
     public void requestNetData(int maxId, boolean isLoadMore) {
-        final List<MessageItemBean> data = new ArrayList<>();
-        Conversation likeMessage = new Conversation();
-        likeMessage.setLast_message_text("一叶之秋、晴天色"
-                + mContext.getString(R.string.like_me));
-        UserInfoBean userinfo = new UserInfoBean();
-        userinfo.setUserIcon("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1486986007059&di=f53cac87e3dfa7572c8a9f2a06227631&" +
-                "imgtype=0&src=http%3A%2F%2Fimg17.3lian.com%2Fd%2Ffile%2F201701%2F20%2F70ac16a3c3336a3bc2fb28c147bf2049.jpg");
-        likeMessage.setLast_message_time(System.currentTimeMillis());
-        for (int i = 0; i < 10; i++) {
-            MessageItemBean test = new MessageItemBean();
-            UserInfoBean testUserinfo = new UserInfoBean();
-            testUserinfo.setUserIcon("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1486986007059&di=f53cac87e3dfa7572c8a9f2a06227631&imgtype=0&src=http%3A%2F%2Fimg17.3lian.com" +
-                    "%2Fd%2Ffile%2F201701%2F20%2F70ac16a3c3336a3bc2fb28c147bf2049.jpg");
-            testUserinfo.setName("颤三");
-            testUserinfo.setUser_id((long) (10 + i));
-            test.setUserInfo(testUserinfo);
-            Message testMessage = new Message();
-            testMessage.setTxt("一叶之秋、晴天色" + i
-                    + mContext.getString(R.string.like_me));
-            testMessage.setCreate_time(System.currentTimeMillis());
-            test.setConversation(likeMessage);
-            test.setUnReadMessageNums((int) (Math.random() * 10));
-            data.add(test);
-        }
-        mRootView.hideLoading();
-        new Handler().postDelayed(new Runnable() {
+        mRepository.getMessageList(AppApplication.getmCurrentLoginAuth().getUser_id())
+        .subscribe(new BaseSubscribe<List<MessageItemBean>>() {
             @Override
-            public void run() {
-//                mRootView.onNetResponseSuccess(data, false);
+            protected void onSuccess(List<MessageItemBean> data) {
+                mRootView.hideLoading();
+                mRootView.onNetResponseSuccess(data, false);
+            }
 
+            @Override
+            protected void onFailure(String message) {
+                mRootView.hideLoading();
+                mRootView.showMessage(message);
+            }
+
+            @Override
+            protected void onException(Throwable throwable) {
+                mRootView.hideLoading();
                 mRootView.showMessage("网络不加。。。。。");
             }
-        }, 500);
+        });
     }
 
     /**
@@ -98,42 +81,12 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
      */
     @Override
     public List<MessageItemBean> requestCacheData(int maxId, boolean isLoadMore) {
-//         List<MessageItemBean> data = new ArrayList<>();
-//        Conversation likeMessage = new Conversation();
-//        likeMessage.setLast_message_text("一叶之秋、晴天色"
-//                + mContext.getString(R.string.like_me));
-//        UserInfoBean userinfo = new UserInfoBean();
-//        userinfo.setUserIcon("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1486986007059&di=f53cac87e3dfa7572c8a9f2a06227631&" +
-//                "imgtype=0&src=http%3A%2F%2Fimg17.3lian.com%2Fd%2Ffile%2F201701%2F20%2F70ac16a3c3336a3bc2fb28c147bf2049.jpg");
-//        likeMessage.setLast_message_time(System.currentTimeMillis());
-//        for (int i = 0; i < 5; i++) {
-//            MessageItemBean test = new MessageItemBean();
-//            UserInfoBean testUserinfo = new UserInfoBean();
-//            testUserinfo.setUserIcon("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1486986007059&di=f53cac87e3dfa7572c8a9f2a06227631&imgtype=0&src=http%3A%2F%2Fimg17.3lian.com" +
-//                    "%2Fd%2Ffile%2F201701%2F20%2F70ac16a3c3336a3bc2fb28c147bf2049.jpg");
-//            testUserinfo.setName("颤三");
-//            testUserinfo.setUser_id((long) (10 + i));
-//            test.setUserInfo(testUserinfo);
-//            Message testMessage = new Message();
-//            testMessage.setTxt("一叶之秋、晴天色" + i
-//                    + mContext.getString(R.string.like_me));
-//            testMessage.setCreate_time(System.currentTimeMillis());
-//            test.setConversation(likeMessage);
-//            test.setUnReadMessageNums((int) (Math.random() * 10));
-//            data.add(test);
-//        }
-//        try {
-//            Thread.sleep(2000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
         return mChatRepository.getConversionListData(mAuthRepository.getAuthBean().getUser_id());
-
     }
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<MessageItemBean> data) {
-        return false;
+        return mChatRepository.insertOrUpdateMessageItemBean(data);
     }
 
     @Override
@@ -202,7 +155,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         if (!(ActivityHandler.getInstance().currentActivity() instanceof HomeActivity)) {
             return;
         }
-        LogUtils.d(TAG,"------onMessageReceived------->"+message);
+        LogUtils.d(TAG, "------onMessageReceived------->" + message);
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGEACKRECEIVED)
@@ -210,7 +163,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         if (!(ActivityHandler.getInstance().currentActivity() instanceof HomeActivity)) {
             return;
         }
-        LogUtils.d(TAG,"-------onMessageACKReceived------------>"+message);
+        LogUtils.d(TAG, "-------onMessageACKReceived------------>" + message);
     }
 
 

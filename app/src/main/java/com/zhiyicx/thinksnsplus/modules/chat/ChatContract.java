@@ -50,6 +50,13 @@ public interface ChatContract {
         boolean insertOrUpdateConversation(Conversation conversation);
 
         /**
+         *  插入或者更新数据库
+         * @param data 对话列表
+         * @return
+         */
+        boolean insertOrUpdateMessageItemBean(List<MessageItemBean> data);
+
+        /**
          * 获取聊天对话列表信息
          *
          * @param userId

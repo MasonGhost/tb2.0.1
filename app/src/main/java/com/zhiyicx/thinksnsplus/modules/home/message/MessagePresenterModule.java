@@ -31,11 +31,12 @@ public class MessagePresenterModule {
 
 
     @Provides
-    MessageContract.Repository provideMessageContractRepository(ServiceManager serviceManager) {
-        return new MessageRepository(serviceManager);
+    MessageContract.Repository provideMessageContractRepository(ServiceManager serviceManager, Application application) {
+        return new MessageRepository(serviceManager, application);
     }
+
     @Provides
-    ChatContract.Repository provideChatContractRepository(ServiceManager serviceManager, Application application){
-        return new ChatRepository(serviceManager,application);
+    ChatContract.Repository provideChatContractRepository(ServiceManager serviceManager, Application application) {
+        return new ChatRepository(serviceManager, application);
     }
 }

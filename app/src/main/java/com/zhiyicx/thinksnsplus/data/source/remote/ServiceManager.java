@@ -18,6 +18,7 @@ public class ServiceManager {
     private RegisterClient mRegisterClient;
     private PasswordClient mPasswordClient;
     private UserInfoClient mUserInfoClient;
+    private ChatInfoClient mChatInfoClient;
     private MusicClient mMusicClient;
     private FollowFansClient mFollowFansClient;
 
@@ -33,12 +34,14 @@ public class ServiceManager {
             , RegisterClient registerClient
             , PasswordClient passwordClient
             , UserInfoClient userInfoClient
+            , ChatInfoClient chatInfoClient
             , MusicClient mMusicClient
             , FollowFansClient followFansClient) {
         this.mCommonClient = commonClient;
         this.mLoginClient = loginClient;
         this.mRegisterClient = registerClient;
         this.mUserInfoClient = userInfoClient;
+        this.mChatInfoClient = chatInfoClient;
         this.mPasswordClient = passwordClient;
         this.mMusicClient = mMusicClient;
         this.mFollowFansClient = followFansClient;
@@ -60,6 +63,10 @@ public class ServiceManager {
         return mUserInfoClient;
     }
 
+    public ChatInfoClient getChatInfoClient() {
+        return mChatInfoClient;
+    }
+
     public PasswordClient getPasswordClient() {
         return mPasswordClient;
     }
@@ -71,4 +78,6 @@ public class ServiceManager {
     public FollowFansClient getFollowFansClient() {
         return mFollowFansClient;
     }
+
+
 }

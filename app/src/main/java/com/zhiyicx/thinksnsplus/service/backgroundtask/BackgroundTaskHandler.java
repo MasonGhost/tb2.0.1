@@ -5,7 +5,6 @@ import android.app.Application;
 import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.imsdk.entity.IMConfig;
-import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -201,7 +200,8 @@ public class BackgroundTaskHandler {
                                 imConfig.setImUid(data.getUser_id());
                                 imConfig.setToken(data.getIm_password());
                                 imConfig.setWeb_socket_authority("ws://192.168.2.222:9900"); // TODO: 2017/1/20  服务器统一配置接口返回数据 ws://218.244.149.144:9900
-                                ZBIMClient.getInstance().login(imConfig);
+                                mAuthRepository.saveIMConfig(imConfig);
+                                mAuthRepository.loginIM();
                             }
 
                             @Override

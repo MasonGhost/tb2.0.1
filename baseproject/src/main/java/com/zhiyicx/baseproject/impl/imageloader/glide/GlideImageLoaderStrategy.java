@@ -45,6 +45,8 @@ public class GlideImageLoaderStrategy implements ImageLoaderStrategy<GlideImageC
         if (config.getPlaceholder() != 0)// 设置占位符
         {
             requestBuilder.placeholder(config.getPlaceholder());
+        }else {// 设置默认占位符
+            requestBuilder.placeholder(R.drawable.shape_default_image);
         }
         requestBuilder
                 .into(config.getImageView());

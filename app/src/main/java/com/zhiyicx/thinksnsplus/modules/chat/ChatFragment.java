@@ -11,7 +11,6 @@ import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.imsdk.core.ChatType;
-import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
@@ -105,20 +104,21 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     @Override
     protected void initData() {
         getIntentData();
-        mDatas.addAll(mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), 0));
-        for (int i = 0; i < 10; i++) {
-            ChatItemBean chatItemBean = new ChatItemBean();
-            Message message = new Message();
-            message.setMid(System.currentTimeMillis());
-            message.setId(i);
-            message.setCreate_time(System.currentTimeMillis());
-            message.setTxt("测试消息，我的看了个 " + i);
-            if (i % 2 == 0) {
-                message.setType(-1);
-            }
-            chatItemBean.setLastMessage(message);
-            mDatas.add(chatItemBean);
-        }
+        mDatas.addAll(mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), System.currentTimeMillis()));
+//        for (int i = 0; i < 10; i++) {
+//            ChatItemBean chatItemBean = new ChatItemBean();
+//            Message message = new Message();
+//            message.setMid(System.currentTimeMillis());
+//            message.setId(i);
+//            message.setCreate_time(System.currentTimeMillis());
+//            message.setTxt("测试消息，我的看了个 " + i);
+//            if (i % 2 == 0) {
+//                message.setType(-1);
+//            }
+//            chatItemBean.setUserInfo(new UserInfoBean());
+//            chatItemBean.setLastMessage(message);
+//            mDatas.add(chatItemBean);
+//        }
         mMessageList.setMessageListItemClickListener(this);
         mMessageList.init(mMessageItemBean.getConversation().getType() == ChatType.CHAT_TYPE_PRIVATE ? mMessageItemBean.getUserInfo().getName() : getString(R.string.default_message_group)
                 , mMessageItemBean.getConversation().getType(), mDatas);
@@ -152,7 +152,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-        mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), 0);
+        mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), mDatas.get(mDatas.size() - 1).getLastMessage().getMid());
     }
 
     @Override
@@ -208,22 +208,22 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     /**
      * 用户信息点击
      *
-     * @param username
+     * @param chatItemBean
      */
     @Override
-    public void onUserInfoClick(String username) {
-        showMessage(username);
+    public void onUserInfoClick(ChatItemBean chatItemBean) {
+        showMessage(chatItemBean.getUserInfo().getName());
     }
 
     /**
      * 用户信息长按
      *
-     * @param username
+     * @param chatItemBean
      * @return
      */
     @Override
-    public boolean onUserInfoLongClick(String username) {
-        showMessage(username);
+    public boolean onUserInfoLongClick(ChatItemBean chatItemBean) {
+        showMessage(chatItemBean.getUserInfo().getName());
         return true;
     }
 
