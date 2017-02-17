@@ -37,6 +37,14 @@ public interface MessageDaoSoupport {
      */
     List<Message> getMessageListByCid(int cid, int page);
 
+    /**
+     * 通过会话cid获取消息数据
+     * @param cid
+     * @param mid
+     * @return
+     */
+    List<Message> getMessageListByCidAndMid(int cid, long mid);
+
 
     /**
      * 获取最新的一条消息

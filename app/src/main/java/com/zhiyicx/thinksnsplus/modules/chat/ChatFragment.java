@@ -104,7 +104,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     @Override
     protected void initData() {
         getIntentData();
-        mDatas.addAll(mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), 0));
+        mDatas.addAll(mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), System.currentTimeMillis()));
 //        for (int i = 0; i < 10; i++) {
 //            ChatItemBean chatItemBean = new ChatItemBean();
 //            Message message = new Message();
@@ -152,7 +152,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-        mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), 0);
+        mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), mDatas.get(mDatas.size() - 1).getLastMessage().getMid());
     }
 
     @Override

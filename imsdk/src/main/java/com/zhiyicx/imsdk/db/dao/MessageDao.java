@@ -148,46 +148,7 @@ public class MessageDao extends BaseDao implements MessageDaoSoupport {
         List<Message> messages = new ArrayList<>();
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                Message message = new Message();
-                message.setUid(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_UID)));
-                message.setCid(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_CID)));
-                message.setId(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_ID)));
-                message.setType(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_TYPE)));
-                message.setType(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_TYPE)));
-                message.setTxt(cursor.getString(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_TXT)));
-                message.setRt(isRt(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_RT))));
-                message.setErr(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_ERR)));
-                message.setExpire(cursor.getLong(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_GAG)));
-                message.setMid(cursor.getLong(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_MID)));
-                message.setCreate_time(cursor.getLong(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_CREATE_TIME)));
-                message.setIs_read(isRead(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_IS_READ))));
-                message.setIs_del(isDel(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_IS_DEL))));
-                String uid = cursor.getString(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_TO));
-                try {
-                    if (!TextUtils.isEmpty(uid))
-                        message.setTo((List<Integer>) new Gson().fromJson(uid, new TypeToken<List<Integer>>() {
-                        }.getType()));
-                    String ext = cursor.getString(cursor
-                            .getColumnIndex(COLUMN_NAME_MESSAGE_EXT));
-                    if (!TextUtils.isEmpty(ext))
-                        message.setExt(new Gson().fromJson(ext, MessageExt.class));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                Message message = setMessageValue(cursor);
 
                 messages.add(message);
             } while (cursor.moveToNext());
@@ -195,6 +156,82 @@ public class MessageDao extends BaseDao implements MessageDaoSoupport {
         cursor.close();
 
         return messages;
+    }
+
+    /**
+     * 通过会话id,和时间获取会话的消息,
+     *
+     * @param mid
+     * @return
+     */
+    @Override
+    public List<Message> getMessageListByCidAndMid(int cid, long mid) {
+
+        SQLiteDatabase database = mHelper.getReadableDatabase();
+        Cursor cursor = database.query(
+                TABLE_NAME,
+                null,
+                COLUMN_NAME_MESSAGE_CID + " = ? and "+COLUMN_NAME_MESSAGE_MID+" < ? ", new String[]{String.valueOf(cid), String.valueOf(mid)}, null, null,
+                COLUMN_NAME_MESSAGE_MID + "  DESC", (mid - DEFAULT_PAGEE) * DEFAULT_PAGESIZE + "," + DEFAULT_PAGESIZE);// 时间降序
+        List<Message> messages = new ArrayList<>();
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                Message message = setMessageValue(cursor);
+                messages.add(message);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+
+        return messages;
+    }
+
+    /**
+     * Messge 赋值
+     * @param cursor
+     * @return
+     */
+    private Message setMessageValue(Cursor cursor) {
+        Message message = new Message();
+        message.setUid(cursor.getInt(cursor
+                .getColumnIndex(COLUMN_NAME_MESSAGE_UID)));
+        message.setCid(cursor.getInt(cursor
+                .getColumnIndex(COLUMN_NAME_MESSAGE_CID)));
+        message.setId(cursor.getInt(cursor
+                .getColumnIndex(COLUMN_NAME_MESSAGE_ID)));
+        message.setType(cursor.getInt(cursor
+                .getColumnIndex(COLUMN_NAME_MESSAGE_TYPE)));
+        message.setType(cursor.getInt(cursor
+                .getColumnIndex(COLUMN_NAME_MESSAGE_TYPE)));
+        message.setTxt(cursor.getString(cursor
+                .getColumnIndex(COLUMN_NAME_MESSAGE_TXT)));
+        message.setRt(isRt(cursor.getInt(cursor
+                .getColumnIndex(COLUMN_NAME_MESSAGE_RT))));
+        message.setErr(cursor.getInt(cursor
+                .getColumnIndex(COLUMN_NAME_MESSAGE_ERR)));
+        message.setExpire(cursor.getLong(cursor
+                .getColumnIndex(COLUMN_NAME_MESSAGE_GAG)));
+        message.setMid(cursor.getLong(cursor
+                .getColumnIndex(COLUMN_NAME_MESSAGE_MID)));
+        message.setCreate_time(cursor.getLong(cursor
+                .getColumnIndex(COLUMN_NAME_MESSAGE_CREATE_TIME)));
+        message.setIs_read(isRead(cursor.getInt(cursor
+                .getColumnIndex(COLUMN_NAME_MESSAGE_IS_READ))));
+        message.setIs_del(isDel(cursor.getInt(cursor
+                .getColumnIndex(COLUMN_NAME_MESSAGE_IS_DEL))));
+        String uid = cursor.getString(cursor
+                .getColumnIndex(COLUMN_NAME_MESSAGE_TO));
+        try {
+            if (!TextUtils.isEmpty(uid))
+                message.setTo((List<Integer>) new Gson().fromJson(uid, new TypeToken<List<Integer>>() {
+                }.getType()));
+            String ext = cursor.getString(cursor
+                    .getColumnIndex(COLUMN_NAME_MESSAGE_EXT));
+            if (!TextUtils.isEmpty(ext))
+                message.setExt(new Gson().fromJson(ext, MessageExt.class));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return message;
     }
 
     /**
@@ -214,47 +251,7 @@ public class MessageDao extends BaseDao implements MessageDaoSoupport {
         List<Message> messages = new ArrayList<>();
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                Message message = new Message();
-                message.setUid(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_UID)));
-                message.setCid(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_CID)));
-                message.setId(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_ID)));
-                message.setType(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_TYPE)));
-                message.setType(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_TYPE)));
-                message.setTxt(cursor.getString(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_TXT)));
-                message.setRt(isRt(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_RT))));
-                message.setErr(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_ERR)));
-                message.setExpire(cursor.getLong(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_GAG)));
-                message.setMid(cursor.getLong(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_MID)));
-                message.setCreate_time(cursor.getLong(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_CREATE_TIME)));
-                message.setIs_read(isRead(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_IS_READ))));
-                message.setIs_del(isDel(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_IS_DEL))));
-                String uid = cursor.getString(cursor
-                        .getColumnIndex(COLUMN_NAME_MESSAGE_TO));
-                try {
-                    if (!TextUtils.isEmpty(uid))
-                        message.setTo((List<Integer>) new Gson().fromJson(uid, new TypeToken<List<Integer>>() {
-                        }.getType()));
-                    String ext = cursor.getString(cursor
-                            .getColumnIndex(COLUMN_NAME_MESSAGE_EXT));
-                    if (!TextUtils.isEmpty(ext))
-                        message.setExt(new Gson().fromJson(ext, MessageExt.class));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
+                Message message = setMessageValue(cursor);
                 messages.add(message);
             } while (cursor.moveToNext());
         }

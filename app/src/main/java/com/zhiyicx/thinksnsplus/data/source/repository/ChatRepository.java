@@ -7,7 +7,9 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.ChatType;
 import com.zhiyicx.imsdk.db.dao.ConversationDao;
+import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.Conversation;
+import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
@@ -128,7 +130,20 @@ public class ChatRepository implements ChatContract.Repository {
 
     @Override
     public List<ChatItemBean> getChatListData(int cid, long mid) {
-        return new ArrayList<>();
+        List<ChatItemBean> chatItemBeen = new ArrayList<>();
+        List<Message> messages = MessageDao.getInstance(mContext).getMessageListByCidAndMid(cid, mid);
+        if (messages == null || messages.size() == 0) {
+            return chatItemBeen;
+        }
+        for (int i = 0; i < messages.size(); i++) {
+            Message tmp = messages.get(i);
+            UserInfoBean toChatUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long) tmp.getUid());
+            ChatItemBean itemBean = new ChatItemBean();
+            itemBean.setUserInfo(toChatUserInfo);
+            itemBean.setLastMessage(tmp);
+            chatItemBeen.add(itemBean);
+        }
+        return chatItemBeen;
     }
 
 

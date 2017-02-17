@@ -3,7 +3,7 @@ package com.zhiyicx.thinksnsplus.widget.chat;
 import android.graphics.drawable.Drawable;
 
 import com.zhiyicx.baseproject.R;
-import com.zhiyicx.imsdk.entity.MessageType;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 
 /**
@@ -34,7 +34,7 @@ public class MessageSendItemDelagate extends MessageTextItemDelagate {
     @Override
     public boolean isForViewType(ChatItemBean item, int position) {
         // TODO: 2017/1/6 需要添加是否是我的消息的判断
-        return item.getLastMessage().getType() == MessageType.MESSAGE_TYPE_TEXT;
+        return item.getUserInfo().getUser_id() != AppApplication.getmCurrentLoginAuth().getUser_id();
     }
 
 
