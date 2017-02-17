@@ -161,18 +161,18 @@ public class MessageDao extends BaseDao implements MessageDaoSoupport {
     /**
      * 通过会话id,和时间获取会话的消息,
      *
-     * @param mid
+     * @param crateTime
      * @return
      */
     @Override
-    public List<Message> getMessageListByCidAndMid(int cid, long mid) {
+    public List<Message> getMessageListByCidAndMid(int cid, long crateTime) {
 
         SQLiteDatabase database = mHelper.getReadableDatabase();
         Cursor cursor = database.query(
                 TABLE_NAME,
                 null,
-                COLUMN_NAME_MESSAGE_CID + " = ? and "+COLUMN_NAME_MESSAGE_MID+" < ? ", new String[]{String.valueOf(cid), String.valueOf(mid)}, null, null,
-                COLUMN_NAME_MESSAGE_MID + "  DESC", (mid - DEFAULT_PAGEE) * DEFAULT_PAGESIZE + "," + DEFAULT_PAGESIZE);// 时间降序
+                COLUMN_NAME_MESSAGE_CID + " = ? and "+COLUMN_NAME_MESSAGE_CREATE_TIME+" < ? ", new String[]{String.valueOf(cid), String.valueOf(crateTime)}, null, null,
+                COLUMN_NAME_MESSAGE_CREATE_TIME + "  DESC", (DEFAULT_PAGEE - DEFAULT_PAGEE) * DEFAULT_PAGESIZE + "," + DEFAULT_PAGESIZE);// 时间降序
         List<Message> messages = new ArrayList<>();
         if (cursor != null && cursor.moveToFirst()) {
             do {

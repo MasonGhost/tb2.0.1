@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.widget.chat;
 
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -39,8 +38,6 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
         mMessageListItemClickListener = messageListItemClickListener;
     }
 
-    public MessageTextItemDelagate() {
-    }
 
     public MessageTextItemDelagate(boolean showName, boolean showAvatar, Drawable myBubbleBg, Drawable otherBuddleBg) {
         this.mIsShowName = showName;
@@ -73,6 +70,8 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
 
     @Override
     public void convert(ViewHolder holder, final ChatItemBean chatItemBean, ChatItemBean lastChatItemBean, int position) {
+//        holder.getView(R.id.rl_chat_bubble).setBackgroundDrawable(mBubbleBg);
+//        holder.getView(R.id.rl_chat_bubble).setBackgroundResource(R.drawable.shape_message_bubble_my);
         // 显示时间的，最大间隔时间；当两条消息间隔 > MAX_SPACING_TIME 时显示时间
         if (lastChatItemBean == null || (chatItemBean.getLastMessage().getCreate_time() - lastChatItemBean.getLastMessage().getCreate_time()) >= MAX_SPACING_TIME * ConstantConfig.MIN) {
             holder.setText(R.id.tv_chat_time, TimeUtils.getTimeFriendlyForDetail(chatItemBean.getLastMessage().getCreate_time() / 1000));// 测试数据，暂时使用
@@ -101,11 +100,7 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
         } else {
             holder.setVisible(R.id.iv_chat_headpic, View.GONE);
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            holder.getView(R.id.rl_chat_bubble).setBackground(mBubbleBg);
-        } else {
-            holder.getView(R.id.rl_chat_bubble).setBackgroundDrawable(mBubbleBg);
-        }
+
         holder.setText(R.id.tv_chat_content, chatItemBean.getLastMessage().getTxt());
         // 响应事件
         if (mMessageListItemClickListener != null) {
@@ -126,7 +121,7 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
             View.OnLongClickListener mUserInfoLongClick = new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    return  mMessageListItemClickListener.onUserInfoLongClick(chatItemBean);
+                    return mMessageListItemClickListener.onUserInfoLongClick(chatItemBean);
                 }
             };
             View.OnClickListener mBubbleClick = new View.OnClickListener() {
@@ -139,7 +134,7 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
             View.OnLongClickListener mBubbleLongClick = new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                   return mMessageListItemClickListener.onBubbleLongClick(chatItemBean);
+                    return mMessageListItemClickListener.onBubbleLongClick(chatItemBean);
 
                 }
             };
@@ -153,7 +148,7 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
             View.OnLongClickListener mOnItemLongClick = new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    return  mMessageListItemClickListener.onItemLongClickListener(chatItemBean);
+                    return mMessageListItemClickListener.onItemLongClickListener(chatItemBean);
                 }
             };
             holder.setOnClickListener(R.id.msg_status, mStatusClick);

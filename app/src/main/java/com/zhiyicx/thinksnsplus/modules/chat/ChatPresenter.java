@@ -57,7 +57,9 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
 
     @Override
     public List<ChatItemBean> getHistoryMessages(int cid, long mid) {
-        return mRepository.getChatListData(cid, mid);
+        List<ChatItemBean> data=mRepository.getChatListData(cid, mid);
+        mRootView.hideLoading();
+        return data;
     }
 
     /*******************************************
@@ -75,6 +77,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
             return;
         }
         Message message = ChatClient.getInstance(mContext).sendTextMsg(text, cid, "", 0);
+        message.setCreate_time(System.currentTimeMillis());
         message.setUid(AppApplication.getmCurrentLoginAuth().getUser_id());
         onMessageReceived(message);
     }
@@ -88,7 +91,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGEACKRECEIVED)
     private void onMessageACKReceived(Message message) {
         LogUtils.d(TAG, "------onMessageACKReceived------->" + message);
-        updateMessage(message);
+//        updateMessage(message);
     }
 
     private void updateMessage(Message message) {

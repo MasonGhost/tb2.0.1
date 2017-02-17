@@ -142,7 +142,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     @Override
     public void hideLoading() {
-
+    mMessageList.getRefreshLayout().endRefreshing();
     }
 
     @Override
@@ -152,7 +152,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-        mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), mDatas.get(mDatas.size() - 1).getLastMessage().getMid());
+        mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), mDatas.size() > 0 ? mDatas.get(mDatas.size() - 1).getLastMessage().getMid() : System.currentTimeMillis());
     }
 
     @Override
