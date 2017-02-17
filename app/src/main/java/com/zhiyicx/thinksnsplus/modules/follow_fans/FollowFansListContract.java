@@ -47,11 +47,11 @@ public interface FollowFansListContract {
          * 关注用户
          *
          * @param index      item所在的列表位置
-         * @param followedId 被关注的用户id
+         * @param followFansBean 被关注的用户id
          */
-        void followUser(int index, long followedId);
+        void followUser(int index, FollowFansBean followFansBean);
 
-        void cancleFollowUser(int index, long followedId);
+        void cancleFollowUser(int index, FollowFansBean followFansBean);
     }
 
     interface Repository {

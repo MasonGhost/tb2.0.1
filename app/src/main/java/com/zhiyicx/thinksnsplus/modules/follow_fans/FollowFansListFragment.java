@@ -192,13 +192,13 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
                         switch (followFansItemBean.getFollowState()) {
                             // 当前已经关注状态
                             case FollowFansBean.IFOLLOWED_STATE:
-                                mPresenter.cancleFollowUser(position, followFansItemBean.getFollowedUserId());
+                                mPresenter.cancleFollowUser(position, followFansItemBean);
                                 break;
                             case FollowFansBean.UNFOLLOWED_STATE:
-                                mPresenter.followUser(position, followFansItemBean.getFollowedUserId());
+                                mPresenter.followUser(position, followFansItemBean);
                                 break;
                             case FollowFansBean.FOLLOWED_EACHOTHER_STATE:
-                                mPresenter.cancleFollowUser(position, followFansItemBean.getFollowedUserId());
+                                mPresenter.cancleFollowUser(position, followFansItemBean);
                                 break;
                             default:
 

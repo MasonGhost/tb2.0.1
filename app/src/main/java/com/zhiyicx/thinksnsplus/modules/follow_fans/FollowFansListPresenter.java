@@ -103,23 +103,26 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
     }
 
     @Override
-    public void followUser(int index, long followedId) {
+    public void followUser(int index, FollowFansBean followFansBean) {
         // 后台通知服务器关注
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST);
-        backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_FOLLOW_USER + "/" + followedId);
+        backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_FOLLOW_USER + "/" + followFansBean.getFollowedUserId());
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
         // 本地数据库和ui进行刷新
-
+        int followState = mFollowFansBeanGreenDao.setStateToFollowed(followFansBean);
+        mRootView.upDateFollowFansState(index, followState);
 
     }
 
     @Override
-    public void cancleFollowUser(int index, long followedId) {
+    public void cancleFollowUser(int index, FollowFansBean followFansBean) {
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
-        backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_CANCEL_FOLLOW_USER + "/" + followedId);
+        backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_CANCEL_FOLLOW_USER + "/" + followFansBean.getFollowedUserId());
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
         // 本地数据库和ui进行刷新
+        int followState = mFollowFansBeanGreenDao.setStateToUnFollowed(followFansBean);
+        mRootView.upDateFollowFansState(index, followState);
     }
 }
