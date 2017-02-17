@@ -8,6 +8,7 @@ import android.view.View;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
 import com.zhiyicx.baseproject.widget.TabSelectView;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 import java.util.ArrayList;
@@ -35,14 +36,9 @@ public class FollowFansViewPagerFragment extends TSFragment<FollowFansListContra
 
     @Override
     protected void initView(View rootView) {
+
         initViewPager();
-        mTsvToolbar.initTabView(mVpFragment, initTitles());
-        mTsvToolbar.setLeftClickListener(this, new TabSelectView.TabLeftRightClickListener() {
-            @Override
-            public void buttonClick() {
-                getActivity().finish();
-            }
-        });
+
     }
 
     @Override
@@ -57,18 +53,28 @@ public class FollowFansViewPagerFragment extends TSFragment<FollowFansListContra
 
     private List<String> initTitles() {
         List<String> titles = new ArrayList<>();
-        titles.add(getString(R.string.follow));
         titles.add(getString(R.string.fans));
+        titles.add(getString(R.string.follow));
         return titles;
     }
 
     private void initViewPager() {
+        Bundle bundle = getArguments();
         TSViewPagerAdapter tsViewPagerAdapter = new TSViewPagerAdapter(getFragmentManager());
-        List<Fragment> fragmentList=new ArrayList<>();
-        fragmentList.add(FollowFansListFragment.initFragment(null));
-        fragmentList.add(FollowFansListFragment.initFragment(null));
+        List<Fragment> fragmentList = new ArrayList<>();
+        fragmentList.add(FollowFansListFragment.initFragment(bundle));
+        fragmentList.add(FollowFansListFragment.initFragment(bundle));
         tsViewPagerAdapter.bindData(fragmentList);
         mVpFragment.setAdapter(tsViewPagerAdapter);
+        mTsvToolbar.initTabView(mVpFragment, initTitles());
+        mTsvToolbar.setLeftClickListener(this, new TabSelectView.TabLeftRightClickListener() {
+            @Override
+            public void buttonClick() {
+                getActivity().finish();
+            }
+        });
+        int pageType = bundle.getInt(FollowFansListFragment.PAGE_TYPE);// 当前进入的是关注还是粉丝列表
+        mVpFragment.setCurrentItem(pageType);// 设置进入页面时，切换到关注还是粉丝列表
     }
 
     public static FollowFansViewPagerFragment initFragment(Bundle bundle) {

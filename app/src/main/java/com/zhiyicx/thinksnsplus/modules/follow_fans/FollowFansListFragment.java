@@ -45,8 +45,9 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 public class FollowFansListFragment extends TSListFragment<FollowFansListContract.Presenter, FollowFansBean> implements FollowFansListContract.View {
     // 当前页面是关注页面还是粉丝页面:pageType
-    public static final int FOLLOW_FRAGMENT_PAGE = 0;
-    public static final int FANS_FRAGMENT_PAGE = 1;
+    public static final int FANS_FRAGMENT_PAGE = 0;
+    public static final int FOLLOW_FRAGMENT_PAGE = 1;
+
     // 获取页面类型的key
     public static final String PAGE_TYPE = "page_type";
     @Inject
