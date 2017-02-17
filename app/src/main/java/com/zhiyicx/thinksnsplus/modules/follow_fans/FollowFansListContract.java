@@ -21,7 +21,13 @@ import rx.Observable;
 
 public interface FollowFansListContract {
     interface View extends ITSListView<FollowFansBean, Presenter> {
-
+        /**
+         * 更新列表的关注状态
+         *
+         * @param index       需要更新的item位置
+         * @param followState 详见FollowFansBean.class的三种状态值
+         */
+        void upDateFollowFansState(int index, int followState);
     }
 
     interface Presenter extends ITSListPresenter<FollowFansBean> {
@@ -31,15 +37,21 @@ public interface FollowFansListContract {
          * @param maxId
          * @param isLoadMore
          * @param userId     用户id
-         * @param isFollowed true ：是关注  false：还是粉丝
+         * @param pageType   详见FollowFansListFragment.class定义的页面类型
          */
-        void requestNetData(int maxId, boolean isLoadMore, int userId, boolean isFollowed);
+        void requestNetData(int maxId, boolean isLoadMore, int userId, int pageType);
 
-        List<FollowFansBean> requestCacheData(int maxId, boolean isLoadMore, int userId, boolean isFollowed);
+        List<FollowFansBean> requestCacheData(int maxId, boolean isLoadMore, int userId, int pageType);
 
-        void followUser(long userId);
+        /**
+         * 关注用户
+         *
+         * @param index      item所在的列表位置
+         * @param followedId 被关注的用户id
+         */
+        void followUser(int index, long followedId);
 
-        void cancleFollowUser(long userId);
+        void cancleFollowUser(int index, long followedId);
     }
 
     interface Repository {
@@ -48,9 +60,9 @@ public interface FollowFansListContract {
 
         Observable<BaseJson<List<FollowFansBean>>> getFansListFromNet(long userId, int maxId);
 
-        Observable<BaseJson> followUser(long userId);
+        Observable<BaseJson> followUser(long followedId);
 
-        Observable<BaseJson> cancleFollowUser(long userId);
+        Observable<BaseJson> cancleFollowUser(long followedId);
 
     }
 

@@ -44,10 +44,15 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 
 public class FollowFansListFragment extends TSListFragment<FollowFansListContract.Presenter, FollowFansBean> implements FollowFansListContract.View {
-
+    // 当前页面是关注页面还是粉丝页面:pageType
+    public static final int FOLLOW_FRAGMENT_PAGE = 0;
+    public static final int FANS_FRAGMENT_PAGE = 1;
+    // 获取页面类型的key
+    public static final String PAGE_TYPE = "page_type";
     @Inject
     FollowFansListPresenter mFollowFansListPresenter;
     private List<FollowFansBean> datas = new ArrayList<>();
+    private int pageType;// 页面类型，由上一个页面决定
 
     @Override
     protected CommonAdapter<FollowFansBean> getAdapter() {
@@ -65,6 +70,7 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .followFansListPresenterModule(new FollowFansListPresenterModule(FollowFansListFragment.this))
                 .build().inject(this);
+        pageType = getArguments().getInt(PAGE_TYPE, FOLLOW_FRAGMENT_PAGE);
         super.initData();
     }
 
@@ -100,12 +106,12 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
 
     @Override
     protected void requestNetData(int maxId, boolean isLoadMore) {
-        mPresenter.requestNetData(maxId, isLoadMore, 20000, true);
+        mPresenter.requestNetData(maxId, isLoadMore, 20000, pageType);
     }
 
     @Override
     protected List<FollowFansBean> requestCacheData(int maxId, boolean isLoadMore) {
-        return mPresenter.requestCacheData(maxId, isLoadMore, 20000, true);
+        return mPresenter.requestCacheData(maxId, isLoadMore, 20000, pageType);
     }
 
     public static FollowFansListFragment initFragment(Bundle bundle) {
@@ -114,7 +120,7 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
         return followFansListFragment;
     }
 
-    private void setItemData(ViewHolder holder, FollowFansBean followFansItemBean, int position) {
+    private void setItemData(final ViewHolder holder, final FollowFansBean followFansItemBean, final int position) {
         UserInfoBean userInfoBean = followFansItemBean.getFllowedUser();
         if (userInfoBean == null) {
             return;
@@ -139,7 +145,21 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
                 .imagerView(headPic)
                 .build()
         );
-        holder.setImageResource(R.id.iv_user_follow, R.mipmap.ico_me_followed);
+        // 设置关注状态
+        switch (followFansItemBean.getFollowState()) {
+            case FollowFansBean.IFOLLOWED_STATE:
+                holder.setImageResource(R.id.iv_user_follow, R.mipmap.ico_me_followed);
+                break;
+            case FollowFansBean.UNFOLLOWED_STATE:
+                holder.setImageResource(R.id.iv_user_follow, R.mipmap.ico_me_follow);
+                break;
+            case FollowFansBean.FOLLOWED_EACHOTHER_STATE:
+                holder.setImageResource(R.id.iv_user_follow, R.mipmap.ico_me_followed_eachother);
+                break;
+            default:
+                holder.setImageResource(R.id.iv_user_follow, R.mipmap.ico_me_follow);
+        }
+
         // 添加点击事件
         RxView.clicks(holder.getView(R.id.tv_name))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
@@ -163,6 +183,22 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
                     @Override
                     public void call(Void aVoid) {
                         // 添加关注，或者取消关注
+                        // 关注列表的逻辑操作：关注，互相关注 ---》未关注
+                        // 粉丝列表的逻辑操作：互相关注 ---》未关注
+                        switch (followFansItemBean.getFollowState()) {
+                            // 当前已经关注状态
+                            case FollowFansBean.IFOLLOWED_STATE:
+                                mPresenter.cancleFollowUser(position, followFansItemBean.getFollowedUserId());
+                                break;
+                            case FollowFansBean.UNFOLLOWED_STATE:
+                                mPresenter.followUser(position, followFansItemBean.getFollowedUserId());
+                                break;
+                            case FollowFansBean.FOLLOWED_EACHOTHER_STATE:
+                                mPresenter.cancleFollowUser(position, followFansItemBean.getFollowedUserId());
+                                break;
+                            default:
+
+                        }
                     }
                 });
     }
@@ -173,5 +209,13 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
     private void toUserCenter() {
         Intent to = new Intent(getActivity(), UserInfoActivity.class);
         startActivity(to);
+    }
+
+    @Override
+    public void upDateFollowFansState(int index, int followState) {
+        List<FollowFansBean> followFansBeanList = mAdapter.getDatas();
+        FollowFansBean followFansBean = followFansBeanList.get(index);
+        followFansBean.setFollowState(followState);
+        mAdapter.notifyItemChanged(index);
     }
 }
