@@ -10,7 +10,8 @@ import java.util.List;
  */
 
 public class GsonFollowFansBean {
-    private List<GsonFollowsBean> follows;
+    private List<GsonFollowsBean> follows;// 关注列表
+    private List<GsonFollowsBean> followeds;// 粉丝列表
 
     public List<GsonFollowsBean> getFollows() {
         return follows;
@@ -18,6 +19,14 @@ public class GsonFollowFansBean {
 
     public void setFollows(List<GsonFollowsBean> follows) {
         this.follows = follows;
+    }
+
+    public List<GsonFollowsBean> getFolloweds() {
+        return followeds;
+    }
+
+    public void setFolloweds(List<GsonFollowsBean> followeds) {
+        this.followeds = followeds;
     }
 
     public class GsonFollowsBean {

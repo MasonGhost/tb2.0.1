@@ -5,6 +5,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppComponent;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
@@ -76,6 +77,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
+                        LogUtils.e(throwable,throwable.getMessage());
                         mRootView.onResponseError(throwable, isLoadMore);
                     }
                 });

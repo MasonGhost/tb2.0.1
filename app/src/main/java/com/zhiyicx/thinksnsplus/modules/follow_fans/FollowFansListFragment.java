@@ -17,6 +17,7 @@ import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -54,6 +55,7 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
     FollowFansListPresenter mFollowFansListPresenter;
     private List<FollowFansBean> datas = new ArrayList<>();
     private int pageType;// 页面类型，由上一个页面决定
+    private AuthBean mAuthBean;
 
     @Override
     protected CommonAdapter<FollowFansBean> getAdapter() {
@@ -72,6 +74,7 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
                 .followFansListPresenterModule(new FollowFansListPresenterModule(FollowFansListFragment.this))
                 .build().inject(this);
         pageType = getArguments().getInt(PAGE_TYPE, FOLLOW_FRAGMENT_PAGE);
+        mAuthBean = AppApplication.getmCurrentLoginAuth();
         super.initData();
     }
 
@@ -107,12 +110,12 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
 
     @Override
     protected void requestNetData(int maxId, boolean isLoadMore) {
-        mPresenter.requestNetData(maxId, isLoadMore, 20000, pageType);
+        mPresenter.requestNetData(maxId, isLoadMore, mAuthBean.getUser_id(), pageType);
     }
 
     @Override
     protected List<FollowFansBean> requestCacheData(int maxId, boolean isLoadMore) {
-        return mPresenter.requestCacheData(maxId, isLoadMore, 20000, pageType);
+        return mPresenter.requestCacheData(maxId, isLoadMore, mAuthBean.getUser_id(), pageType);
     }
 
     public static FollowFansListFragment initFragment(Bundle bundle) {

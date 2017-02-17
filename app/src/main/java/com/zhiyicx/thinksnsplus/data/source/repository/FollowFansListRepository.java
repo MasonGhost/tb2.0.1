@@ -93,7 +93,7 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
                     public BaseJson<List<FollowFansBean>> call(BaseJson<GsonFollowFansBean> gsonFollowFansBeanBaseJson) {
                         GsonFollowFansBean gsonFollowFansBean = gsonFollowFansBeanBaseJson.getData();
                         List<FollowFansBean> followFansBeanList = new ArrayList<FollowFansBean>();
-                        for (GsonFollowFansBean.GsonFollowsBean gsonFollowsBean : gsonFollowFansBean.getFollows()) {
+                        for (GsonFollowFansBean.GsonFollowsBean gsonFollowsBean : gsonFollowFansBean.getFolloweds()) {
                             FollowFansBean followFansBean = new FollowFansBean();
                             // 关注主体是当前从服务器获取到的user_id
                             followFansBean.setUserId(gsonFollowsBean.getUser_id());
