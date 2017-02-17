@@ -105,4 +105,5 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     protected int setListBackColor() {
         return R.color.white;
     }
+
 }

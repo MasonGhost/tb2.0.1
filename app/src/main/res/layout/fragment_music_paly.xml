@@ -11,17 +11,17 @@
         android:layout_height="0dp"
         android:layout_weight="2">
 
-        <android.support.v7.widget.RecyclerView
-            android:layout_centerInParent="true"
-            android:id="@+id/fragment_music_paly_phonographs"
+        <com.zhiyicx.thinksnsplus.widget.pager_recyclerview.LoopPagerRecyclerView
+            android:id="@+id/fragment_music_paly_rv"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
 
         <ImageView
             android:id="@+id/fragment_music_paly_phonograph_point"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/fragment_music_paly_phonographs"
+            android:layout_alignBottom="@+id/fragment_music_paly_rv"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_marginBottom="24dp"
@@ -116,6 +116,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:rotation="180"
                 android:src="@mipmap/music_ico_next"/>
 
             <ImageView

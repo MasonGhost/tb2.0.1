@@ -10,13 +10,10 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
@@ -25,9 +22,13 @@ import android.widget.SeekBar;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.utils.FastBlur;
+import com.zhiyicx.common.utils.StatusBarUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.widget.pager_recyclerview.LoopPagerRecyclerView;
+import com.zhiyicx.thinksnsplus.widget.pager_recyclerview.PagerRecyclerView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -46,8 +47,7 @@ import butterknife.OnClick;
 public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> implements
         MusicPlayContract.View {
 
-    @BindView(R.id.fragment_music_paly_phonographs)
-    RecyclerView mFragmentMusicPalyPhonographs;
+
     @BindView(R.id.fragment_music_paly_phonograph_point)
     ImageView mFragmentMusicPalyPhonographPoint;
     @BindView(R.id.fragment_music_paly_share)
@@ -72,11 +72,15 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     ImageView mFragmentMusicPalyList;
     @BindView(R.id.fragment_music_paly_bg)
     LinearLayout mFragmentMusicPalyBg;
+    @BindView(R.id.fragment_music_paly_rv)
+    LoopPagerRecyclerView mFragmentMusicPalyRv;
     private ImageLoader mImageLoader;
     private CommonAdapter mAdapter;
     private List<String> mStringList = new ArrayList<>();
 
     private MusicPlayService mMusicPlayService;
+    private Palette mPalette;
+    private ImageView mCurrentImageView;
 
     @Override
     protected int getBodyLayoutId() {
@@ -89,32 +93,9 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         mStringList.add("");
         mStringList.add("");
         mStringList.add("");
-        bindServiceConnection();
+//        bindServiceConnection();
 
-        mAdapter = new CommonAdapter<String>(getActivity(), R.layout.item_music_play, mStringList) {
-            @Override
-            protected void convert(ViewHolder holder, String o, int position) {
-                ImageView imageView = holder.getView(R.id.fragment_music_paly_phonograph);
-            }
-
-        };
-
-        mFragmentMusicPalyPhonographs.setLayoutManager(new LinearLayoutManager(getActivity(),
-                LinearLayoutManager.HORIZONTAL, false));
-        mFragmentMusicPalyPhonographs.setAdapter(mAdapter);
-        mFragmentMusicPalyPhonographs.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-            }
-        });
-        RotateAnimation rotateAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF,
+        final RotateAnimation rotateAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF,
                 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         rotateAnimation.setRepeatCount(Animation.INFINITE);
         rotateAnimation.setDuration(20000);
@@ -127,11 +108,56 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         animation.setDuration(500);
         animation.setFillAfter(false);
 
+        mAdapter = new CommonAdapter<String>(getActivity(), R.layout.item_music_play, mStringList) {
+            @Override
+            protected void convert(ViewHolder holder, String o, final int position) {
+                mCurrentImageView = holder.getView(R.id.fragment_music_paly_phonograph);
+                mCurrentImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ToastUtils.showToast(position+"");
+                        mCurrentImageView.startAnimation(rotateAnimation);
+                    }
+                });
+            }
+        };
+
+        mFragmentMusicPalyRv.setLayoutManager(new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.HORIZONTAL, false));
+        mFragmentMusicPalyRv.setTriggerOffset(0.4f);
+        mFragmentMusicPalyRv.setFlingFactor(3f);
+        mFragmentMusicPalyRv.setAdapter(mAdapter);
+        mFragmentMusicPalyRv.setHasFixedSize(true);
+
+        mFragmentMusicPalyRv.addOnPageChangedListener(new PagerRecyclerView.OnPageChangedListener
+                () {
+
+            @Override
+            public void OnPageChanged(int oldPosition, int newPosition) {
+                mFragmentMusicPalyRv.getChildAt(newPosition);
+            }
+
+            @Override
+            public void OnDragging(int downPosition) {
+                mCurrentImageView.clearAnimation();
+            }
+
+            @Override
+            public void OnIdle() {
+
+            }
+        });
+
+
+
 //        mFragmentMusicPalyPhonographPoint.startAnimation(animation);
 //        mFragmentMusicPalyPhonograph.startAnimation(rotateAnimation);
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         Bitmap bitmap = BitmapFactory
                 .decodeResource(getResources(), R.mipmap.npc).copy(Bitmap.Config.ARGB_8888, true);
+
+//        mPalette = Palette.from(bitmap).generate();
+//        StatusBarUtils.setStatusBarColor(getActivity(), mPalette.getVibrantColor(0xe3e3e3));
         Canvas canvas = new Canvas(bitmap);
         Paint paint = new Paint();
         ColorMatrix cm = new ColorMatrix();
@@ -200,7 +226,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             case R.id.fragment_music_paly_preview:
                 break;
             case R.id.fragment_music_paly_palyer:
-                mMusicPlayService.playOrPause();
+//                mMusicPlayService.playOrPause();
                 break;
             case R.id.fragment_music_paly_nextview:
                 break;

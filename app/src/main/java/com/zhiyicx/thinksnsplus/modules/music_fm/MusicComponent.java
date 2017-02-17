@@ -14,5 +14,5 @@ import dagger.Component;
  */
 @FragmentScoped
 @Component(dependencies = AppComponent.class,modules = MusicPresenterModule.class)
-public interface MusicComponent extends InjectComponent<MusicListActivity>{
+interface MusicComponent extends InjectComponent<MusicListActivity>{
 }

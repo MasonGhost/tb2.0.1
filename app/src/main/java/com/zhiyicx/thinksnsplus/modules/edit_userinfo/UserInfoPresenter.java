@@ -15,6 +15,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -159,6 +160,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
             mUserInfoBean = new UserInfoBean();
         }
         mRootView.initUserInfo(mUserInfoBean);
+        initUserInfoGreenDao();
     }
 
     /**
@@ -183,6 +185,22 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
             mUserInfoBean.setIntro(changeUserInfo.get("intro"));
         }
         mUserInfoBeanGreenDao.insertOrReplace(mUserInfoBean);
+    }
+
+    /**
+     * 添加用户信息的测试数据
+     */
+    public void initUserInfoGreenDao() {
+        List<UserInfoBean> datas = new ArrayList<>();
+        for (int i = 0; i < 20; i++) {
+            UserInfoBean userInfoBean = new UserInfoBean();
+            userInfoBean.setUser_id(10000l + i);
+            userInfoBean.setUserIcon("http://image.xinmin.cn/2017/01/11/bedca80cdaa44849a813e7820fff8a26.jpg");
+            userInfoBean.setName("魂行道" + (i + 1) + "号");
+            userInfoBean.setIntro("走在风中今天阳光突然好温柔，天的温柔地的温柔像你抱着我");
+            datas.add(userInfoBean);
+        }
+        mUserInfoBeanGreenDao.insertOrReplace(datas);
     }
 
 }

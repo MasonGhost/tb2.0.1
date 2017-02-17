@@ -16,7 +16,7 @@ import dagger.Provides;
 class MusicPresenterModule {
     private MusicContract.View view;
 
-    public MusicPresenterModule(MusicContract.View view) {
+    MusicPresenterModule(MusicContract.View view) {
         this.view = view;
     }
 

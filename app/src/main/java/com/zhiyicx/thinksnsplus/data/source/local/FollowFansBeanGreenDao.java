@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.content.Context;
+import android.util.SparseArray;
 
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBeanDao;
@@ -48,7 +49,6 @@ public class FollowFansBeanGreenDao extends CommonCacheImpl<FollowFansBean> {
 
     @Override
     public void clearTable() {
-
     }
 
     @Override
@@ -66,6 +66,12 @@ public class FollowFansBeanGreenDao extends CommonCacheImpl<FollowFansBean> {
         FollowFansBeanDao followFansBeanDao = getWDaoSession().getFollowFansBeanDao();
         return followFansBeanDao.insertOrReplace(newData);
     }
+
+    public void insertOrReplace(List<FollowFansBean> newData) {
+        FollowFansBeanDao followFansBeanDao = getWDaoSession().getFollowFansBeanDao();
+        followFansBeanDao.insertOrReplaceInTx(newData);
+    }
+
     /**
      * 获取某个人的粉丝列表的用户信息:谁关注了我
      */
@@ -83,11 +89,13 @@ public class FollowFansBeanGreenDao extends CommonCacheImpl<FollowFansBean> {
      */
     public List<FollowFansBean> getSomeOneFollower(int userId) {
         FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
-        QueryBuilder<FollowFansBean> qb = followFansBeanDao.queryBuilder();
+        ;
+        return followFansBeanDao.queryDeep("");
+       /* QueryBuilder<FollowFansBean> qb = followFansBeanDao.queryBuilder();
         // 粉丝关注表中，userID为当前id，且不包含状态值为未关注的数据
         qb.where(FollowFansBeanDao
                 .Properties.UserId.eq(userId), FollowFansBeanDao.Properties.FollowState.notEq(FollowFansBean.UNFOLLOWED_STATE));
-        return qb.list();
+        return qb.list();*/
     }
 
     /**
