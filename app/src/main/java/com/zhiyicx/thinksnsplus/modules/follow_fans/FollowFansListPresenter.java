@@ -6,6 +6,7 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
@@ -55,7 +56,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<FollowFansBean> data) {
-//        mFollowFansBeanGreenDao.insertOrReplace(data);
+        mFollowFansBeanGreenDao.insertOrReplace(data);
         return true;
     }
 
@@ -70,14 +71,20 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
         Subscription subscription = observable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<BaseJson<List<FollowFansBean>>>() {
+                .subscribe(new BaseSubscribe<List<FollowFansBean>>() {
                     @Override
-                    public void call(BaseJson<List<FollowFansBean>> listBaseJson) {
-                        mRootView.onNetResponseSuccess(listBaseJson.getData(), isLoadMore);
+                    protected void onSuccess(List<FollowFansBean> data) {
+                        mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
-                }, new Action1<Throwable>() {
+
                     @Override
-                    public void call(Throwable throwable) {
+                    protected void onFailure(String message) {
+                        Throwable throwable = new Throwable(message);
+                        mRootView.onResponseError(throwable, isLoadMore);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
                         LogUtils.e(throwable, throwable.getMessage());
                         mRootView.onResponseError(throwable, isLoadMore);
                     }
@@ -105,6 +112,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
         // 本地数据库和ui进行刷新
 
+
     }
 
     @Override
@@ -113,5 +121,6 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
         backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
         backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_CANCEL_FOLLOW_USER + "/" + followedId);
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+        // 本地数据库和ui进行刷新
     }
 }
