@@ -50,6 +50,8 @@ public class AppApplication extends TSApplication {
     AuthRepository mAuthRepository;
     private AlertDialog alertDialog; // token 过期弹框
 
+    private static AuthBean mCurrentLoginAuth; //当前登录用户的信息
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -208,6 +210,14 @@ public class AppApplication extends TSApplication {
      */
     private void attemptToRefreshToken() {
         mAuthRepository.refreshToken();
+    }
+
+    public static AuthBean getmCurrentLoginAuth() {
+        return mCurrentLoginAuth;
+    }
+
+    public static void setmCurrentLoginAuth(AuthBean mCurrentLoginAuth) {
+        AppApplication.mCurrentLoginAuth = mCurrentLoginAuth;
     }
 
 }

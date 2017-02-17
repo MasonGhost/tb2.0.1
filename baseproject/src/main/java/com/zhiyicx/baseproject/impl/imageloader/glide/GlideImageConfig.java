@@ -18,11 +18,11 @@ public class GlideImageConfig extends ImageConfig {
 
     private GlideImageConfig(Buidler builder) {
         this.url = builder.url;
-        this.resourceId =builder.resourceId;
+        this.resourceId = builder.resourceId;
         this.imageView = builder.imageView;
         this.placeholder = builder.placeholder;
         this.errorPic = builder.errorPic;
-        this.transformation=builder.transformation;
+        this.transformation = builder.transformation;
     }
 
     public BitmapTransformation getTransformation() {
@@ -76,8 +76,6 @@ public class GlideImageConfig extends ImageConfig {
         }
 
         public GlideImageConfig build() {
-            if (url == null && resourceId == 0)
-                throw new IllegalStateException("url or resourceId is required");
             if (imageView == null) throw new IllegalStateException("imageview is required");
             return new GlideImageConfig(this);
         }

@@ -53,7 +53,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<FollowFansBean> data) {
-        mFollowFansBeanGreenDao.insertOrReplace(data);
+//        mFollowFansBeanGreenDao.insertOrReplace(data);
         return true;
     }
 

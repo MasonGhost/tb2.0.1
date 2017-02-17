@@ -63,10 +63,10 @@
 
     </declare-styleable>
 
-    <declare-styleable name="HorizontationRecyclerView">
-        <!--每页显示个数-->
-        <attr name="item_count" format="integer"/>
-
+    <declare-styleable name="PagerRecyclerView">
+        <attr name="triggerOffset" format="float" />
+        <attr name="flingFactor" format="float" />
+        <attr name="singlePageFling" format="boolean" />
     </declare-styleable>
 
 

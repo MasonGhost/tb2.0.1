@@ -24,10 +24,11 @@ public interface ITSListPresenter<T> extends IBasePresenter {
     /**
      * 请求缓存列表数据
      *
-     * @param maxId      当前获取到数据的最大 id
+     * @param minTime 当前获取到数据的最小时间
      * @param isLoadMore 加载状态
+     * @return  返回数据按时间排序
      */
-    List<T> requestCacheData(int maxId, boolean isLoadMore);
+    List<T> requestCacheData(int minTime, boolean isLoadMore);
 
     /**
      * 插入或者更新缓存

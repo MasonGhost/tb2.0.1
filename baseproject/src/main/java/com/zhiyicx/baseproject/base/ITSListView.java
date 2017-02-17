@@ -35,4 +35,15 @@ public interface ITSListView<T,P> extends IBaseView<P> {
     void onResponseError(Throwable throwable, boolean isLoadMore);
 
 
+    /**
+     * 显示常驻信息
+     *
+     * @param msg 信息内容
+     */
+    void showStickyMessage(String msg);
+
+    /**
+     * 隐藏常驻信息
+     */
+    void hideStickyMessage();
 }

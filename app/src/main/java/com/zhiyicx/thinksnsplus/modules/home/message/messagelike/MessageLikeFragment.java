@@ -202,8 +202,7 @@ public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Pres
     private void toChat(MessageItemBean messageItemBean) {
         Intent to = new Intent(getActivity(), ChatActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putLong(ChatFragment.BUNDLE_USERID, messageItemBean.getUserInfo().getUser_id());
-        bundle.putSerializable(ChatFragment.BUNDLE_CONVERSATION, messageItemBean.getConversation());
+        bundle.putParcelable(ChatFragment.BUNDLE_MESSAGEITEMBEAN, messageItemBean);
         to.putExtras(bundle);
         startActivity(to);
     }

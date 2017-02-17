@@ -44,6 +44,14 @@ public interface ConversationDaoSoupport {
      */
     List<Conversation> getConversationListbyImUid(long im_uid);
 
+    /**
+     * 获取私有和群组对话列表
+     *
+     * @param im_uid 聊天 id
+     * @return
+     */
+    List<Conversation> getPrivateAndGroupConversationListbyImUid(long im_uid);
+
 
     /**
      * 删除对话信息

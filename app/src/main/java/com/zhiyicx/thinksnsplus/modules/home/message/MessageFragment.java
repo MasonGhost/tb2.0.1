@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,13 +15,7 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircle
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
-import com.zhiyicx.imsdk.entity.ChatRoomContainer;
-import com.zhiyicx.imsdk.entity.Conversation;
-import com.zhiyicx.imsdk.entity.Message;
-import com.zhiyicx.imsdk.manage.ChatClient;
-import com.zhiyicx.imsdk.manage.listener.ImMsgReceveListener;
-import com.zhiyicx.imsdk.manage.listener.ImStatusListener;
-import com.zhiyicx.imsdk.manage.listener.ImTimeoutListener;
+import com.zhiyicx.imsdk.core.ChatType;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
@@ -51,7 +46,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/5
  * @Contact master.jungle68@gmail.com
  */
-public class MessageFragment extends TSListFragment<MessageContract.Presenter, MessageItemBean> implements MessageContract.View, ImMsgReceveListener, ImStatusListener, ImTimeoutListener {
+public class MessageFragment extends TSListFragment<MessageContract.Presenter, MessageItemBean> implements MessageContract.View{
     private static final int ITEM_TYPE_COMMNETED = 0;
     private static final int ITEM_TYPE_LIKED = 1;
 
@@ -60,11 +55,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     protected MessagePresenter mMessagePresenter;
     private ImageLoader mImageLoader;
     private List<MessageItemBean> mMessageItemBeen = new ArrayList<>();
-
-    /**
-     * IM 聊天
-     */
-    private ChatClient mChatClient;
 
     public static MessageFragment newInstance() {
         MessageFragment fragment = new MessageFragment();
@@ -120,7 +110,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                 .build()
                 .inject(this);
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        initIM();
         super.initData();// 需要在 dagger 注入后
         updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter.updateLikeItemData());
     }
@@ -136,13 +125,9 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         };
     }
 
-    private void initIM() {
-        mChatClient = new ChatClient(getActivity());
-        mChatClient.setImMsgReceveListener(this);
-        mChatClient.setImStatusListener(this);
-        mChatClient.setImTimeoutListener(this);
-    }
-
+    /**
+     * 初始化头信息（评论的、赞过的）
+     */
     private void initHeaderView() {
         HeaderAndFooterWrapper mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
 
@@ -212,31 +197,41 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
      */
 
     private void setItemData(ViewHolder holder, final MessageItemBean messageItemBean, int position) {
-        mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url(messageItemBean.getUserInfo().getUserIcon())
-                .transformation(new GlideCircleTransform(getContext()))
-                .imagerView((ImageView) holder.getView(R.id.iv_headpic))
-                .build()
-        );
-        setViewEnable(holder, true);
-        holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getName());
-        // 响应事件
-        RxView.clicks(holder.getView(R.id.tv_name))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        toUserCenter();
-                    }
-                });
-        RxView.clicks(holder.getView(R.id.iv_headpic))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        toUserCenter();
-                    }
-                });
+        switch (messageItemBean.getConversation().getType()) {
+            case ChatType.CHAT_TYPE_PRIVATE:// 私聊
+                mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
+                        .url(messageItemBean.getUserInfo().getUserIcon())
+                        .transformation(new GlideCircleTransform(getContext()))
+                        .errorPic(R.drawable.shape_default_image_circle)
+                        .imagerView((ImageView) holder.getView(R.id.iv_headpic))
+                        .build()
+                );
+                holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getName());     // 响应事件
+                RxView.clicks(holder.getView(R.id.tv_name))
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                        .subscribe(new Action1<Void>() {
+                            @Override
+                            public void call(Void aVoid) {
+                                toUserCenter();
+                            }
+                        });
+                RxView.clicks(holder.getView(R.id.iv_headpic))
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                        .subscribe(new Action1<Void>() {
+                            @Override
+                            public void call(Void aVoid) {
+                                toUserCenter();
+                            }
+                        });
+
+                break;
+            case ChatType.CHAT_TYPE_GROUP:// 群组
+                holder.setImageResource(R.id.iv_headpic, R.drawable.shape_default_image_circle);
+                holder.setText(R.id.tv_name, TextUtils.isEmpty(messageItemBean.getConversation().getName())
+                        ? getString(R.string.default_message_group) : messageItemBean.getConversation().getName());
+                break;
+            default:
+        }
         RxView.clicks(holder.getConvertView())
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(new Action1<Void>() {
@@ -253,11 +248,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     }
 
-    private void setViewEnable(ViewHolder holder, boolean isEnable) {
-        holder.getView(R.id.tv_name).setEnabled(isEnable);
-        holder.getView(R.id.iv_headpic).setEnabled(isEnable);
-    }
-
     /**
      * 进入聊天页
      *
@@ -266,8 +256,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     private void toChat(MessageItemBean messageItemBean) {
         Intent to = new Intent(getActivity(), ChatActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putLong(ChatFragment.BUNDLE_USERID,messageItemBean.getUserInfo().getUser_id());
-        bundle.putSerializable(ChatFragment.BUNDLE_CONVERSATION,messageItemBean.getConversation());
+        bundle.putParcelable(ChatFragment.BUNDLE_MESSAGEITEMBEAN, messageItemBean);
         to.putExtras(bundle);
         startActivity(to);
     }
@@ -314,7 +303,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     @Override
     public void showLoading() {
-
     }
 
     @Override
@@ -325,78 +313,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     public void showMessage(String message) {
         showMessageNotSticky(message);
-    }
-
-    /*******************************************  聊天相关回调  *********************************************/
-
-
-    /**
-     * @param message
-     */
-
-    @Override
-    public void onMessageReceived(Message message) {
-
-    }
-
-    @Override
-    public void onMessageACKReceived(Message message) {
-
-    }
-
-    @Override
-    public void onConversationJoinACKReceived(ChatRoomContainer chatRoomContainer) {
-
-    }
-
-    @Override
-    public void onConversationLeaveACKReceived(ChatRoomContainer chatRoomContainer) {
-
-    }
-
-    @Override
-    public void onConversationMCACKReceived(List<Conversation> conversations) {
-
-    }
-
-    @Override
-    public void synchronousInitiaMessage(int limit) {
-
-    }
-
-    @Override
-    public void onConnected() {
-
-    }
-
-    @Override
-    public void onDisconnect(int code, String reason) {
-
-    }
-
-    @Override
-    public void onError(Exception error) {
-
-    }
-
-    @Override
-    public void onMessageTimeout(Message message) {
-
-    }
-
-    @Override
-    public void onConversationJoinTimeout(int roomId) {
-
-    }
-
-    @Override
-    public void onConversationLeaveTimeout(int roomId) {
-
-    }
-
-    @Override
-    public void onConversationMcTimeout(List<Integer> roomIds) {
-
     }
 
 }

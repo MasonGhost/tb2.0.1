@@ -21,6 +21,11 @@ import rx.Observable;
 public interface ChatContract {
 
     interface View extends IBaseView<Presenter> {
+        /**
+         * 刷新聊天内容
+         * @param chatItemBean 消息内容
+         */
+        void reFreshMessage(ChatItemBean chatItemBean);
 
     }
 
@@ -46,19 +51,18 @@ public interface ChatContract {
 
         /**
          * 获取聊天对话列表信息
+         *
          * @param userId
-
          * @return
          */
         List<MessageItemBean> getConversionListData(long userId);
 
         /**
-         *
          * @param cid
          * @param mid
          * @return
          */
-        List<ChatItemBean> getChatListData(int  cid,long mid);
+        List<ChatItemBean> getChatListData(int cid, long mid);
 
     }
 
@@ -78,6 +82,13 @@ public interface ChatContract {
          * @return 聊天信息
          */
         List<ChatItemBean> getHistoryMessages(int cid, long mid);
+
+        /**
+         * 发送文本消息
+         * @param text 文本内容
+         * @param cid  对话 id
+         */
+        void sendTextMessage(String text, int cid);
 
     }
 }
