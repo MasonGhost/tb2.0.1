@@ -17,8 +17,8 @@ import java.util.List;
  * @contact email:450127106@qq.com
  */
 
-public class FollowFansBeanGreenDao extends CommonCacheImpl<FollowFansBean> {
-    public FollowFansBeanGreenDao(Context context) {
+public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> {
+    public FollowFansBeanGreenDaoImpl(Context context) {
         super(context);
     }
 

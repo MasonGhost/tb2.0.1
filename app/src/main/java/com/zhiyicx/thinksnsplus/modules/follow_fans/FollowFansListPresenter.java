@@ -10,7 +10,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
-import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDao;
+import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +22,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -34,7 +33,7 @@ import rx.schedulers.Schedulers;
 @FragmentScoped
 public class FollowFansListPresenter extends BasePresenter<FollowFansListContract.Repository,
         FollowFansListContract.View> implements FollowFansListContract.Presenter {
-    private FollowFansBeanGreenDao mFollowFansBeanGreenDao;
+    private FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
 
     @Inject
     public FollowFansListPresenter(FollowFansListContract.Repository repository,
