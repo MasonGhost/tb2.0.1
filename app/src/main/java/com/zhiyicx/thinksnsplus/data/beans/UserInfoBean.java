@@ -80,8 +80,8 @@ public class UserInfoBean implements Parcelable {
 
     @Generated(hash = 1499218000)
     public UserInfoBean(Long user_id, String sex, String name, String userIcon,
-            String location, int province, int city, int area, String education,
-            String intro) {
+                        String location, int province, int city, int area, String education,
+                        String intro) {
         this.user_id = user_id;
         this.sex = sex;
         this.name = name;
@@ -93,7 +93,7 @@ public class UserInfoBean implements Parcelable {
         this.education = education;
         this.intro = intro;
     }
-    
+
     public static final Creator<UserInfoBean> CREATOR = new Creator<UserInfoBean>() {
         @Override
         public UserInfoBean createFromParcel(Parcel source) {
@@ -115,6 +115,9 @@ public class UserInfoBean implements Parcelable {
     }
 
     public String getSex() {
+        if (sex == null) {
+            return "";
+        }
         return sex;
     }
 
@@ -144,6 +147,9 @@ public class UserInfoBean implements Parcelable {
     }
 
     public String getName() {
+        if (name == null) {
+            return "";
+        }
         return name;
     }
 
@@ -152,6 +158,9 @@ public class UserInfoBean implements Parcelable {
     }
 
     public String getUserIcon() {
+        if (userIcon == null) {
+            return "";
+        }
         return userIcon;
     }
 
@@ -160,6 +169,9 @@ public class UserInfoBean implements Parcelable {
     }
 
     public String getLocation() {
+        if (location == null) {
+            return "";
+        }
         return location;
     }
 
@@ -192,6 +204,9 @@ public class UserInfoBean implements Parcelable {
     }
 
     public String getEducation() {
+        if (education == null) {
+            return "";
+        }
         return education;
     }
 
@@ -200,6 +215,9 @@ public class UserInfoBean implements Parcelable {
     }
 
     public String getIntro() {
+        if (intro == null) {
+            return "";
+        }
         return intro;
     }
 

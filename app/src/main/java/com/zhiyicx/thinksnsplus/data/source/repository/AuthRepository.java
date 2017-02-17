@@ -8,6 +8,7 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.imsdk.entity.IMConfig;
+import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
@@ -131,6 +132,11 @@ public class AuthRepository implements IAuthRepository {
     @Override
     public IMConfig getIMConfig() {
         return SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_IMCONFIG);
+    }
+
+    @Override
+    public void loginIM() {
+        ZBIMClient.getInstance().login(getIMConfig());
     }
 
     /**

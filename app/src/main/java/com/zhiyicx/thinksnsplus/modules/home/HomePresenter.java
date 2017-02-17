@@ -10,6 +10,7 @@ import com.zhiyicx.imsdk.manage.listener.ImMsgReceveListener;
 import com.zhiyicx.imsdk.manage.listener.ImStatusListener;
 import com.zhiyicx.imsdk.manage.listener.ImTimeoutListener;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 
 import org.simple.eventbus.EventBus;
 
@@ -26,9 +27,11 @@ import javax.inject.Inject;
  */
 @FragmentScoped
 class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.View> implements HomeContract.Presenter, ImMsgReceveListener, ImStatusListener, ImTimeoutListener {
-
+    @Inject
+    AuthRepository mAuthRepository;
 
     @Inject
+
     public HomePresenter(HomeContract.Repository repository, HomeContract.View rootView) {
         super(repository, rootView);
     }
@@ -40,6 +43,7 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
     }
 
     private void initIM() {
+        mAuthRepository.loginIM();
         ChatClient.getInstance(mContext).setImMsgReceveListener(this);
         ChatClient.getInstance(mContext).setImStatusListener(this);
         ChatClient.getInstance(mContext).setImTimeoutListener(this);
@@ -81,22 +85,22 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
 
     @Override
     public void onConnected() {
-        EventBus.getDefault().post("",EventBusTagConfig.EVENT_IM_ONCONNECTED);
+        EventBus.getDefault().post("", EventBusTagConfig.EVENT_IM_ONCONNECTED);
     }
 
     @Override
     public void onDisconnect(int code, String reason) {
-        EventBus.getDefault().post(code,EventBusTagConfig.EVENT_IM_ONDISCONNECT);
+        EventBus.getDefault().post(code, EventBusTagConfig.EVENT_IM_ONDISCONNECT);
     }
 
     @Override
     public void onError(Exception error) {
-        EventBus.getDefault().post(error,EventBusTagConfig.EVENT_IM_ONERROR);
+        EventBus.getDefault().post(error, EventBusTagConfig.EVENT_IM_ONERROR);
     }
 
     @Override
     public void onMessageTimeout(Message message) {
-        EventBus.getDefault().post(message,EventBusTagConfig.EVENT_IM_ONMESSAGETIMEOUT);
+        EventBus.getDefault().post(message, EventBusTagConfig.EVENT_IM_ONMESSAGETIMEOUT);
     }
 
     @Override

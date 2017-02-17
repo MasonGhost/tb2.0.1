@@ -27,7 +27,7 @@ import javax.inject.Inject;
 
 public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatContract.View> implements ChatContract.Presenter {
 
-    private SparseArray<UserInfoBean> mUserInfoBeanSparseArray;// 把用户信息存入内存，方便下次使用
+    private SparseArray<UserInfoBean> mUserInfoBeanSparseArray=new SparseArray<>();// 把用户信息存入内存，方便下次使用
 
 
     @Inject
@@ -82,12 +82,17 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED)
     private void onMessageReceived(Message message) {
         LogUtils.d(TAG, "------onMessageReceived------->" + message);
-
+        updateMessage(message);
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGEACKRECEIVED)
     private void onMessageACKReceived(Message message) {
         LogUtils.d(TAG, "------onMessageACKReceived------->" + message);
+        updateMessage(message);
+    }
+
+    private void updateMessage(Message message) {
+        message.setUid(AppApplication.getmCurrentLoginAuth().getUser_id());
         ChatItemBean chatItemBean = new ChatItemBean();
         chatItemBean.setLastMessage(message);
         UserInfoBean userInfoBean = mUserInfoBeanSparseArray.get(message.getUid());
@@ -97,6 +102,8 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
 
             if (userInfoBean == null) {
                 //网络请求
+            }else {
+                mUserInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(),userInfoBean);
             }
         }
         chatItemBean.setUserInfo(userInfoBean);

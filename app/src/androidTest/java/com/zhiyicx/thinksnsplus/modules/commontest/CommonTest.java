@@ -207,6 +207,7 @@ public class CommonTest extends AcitivityTest {
                 });
 
     }
+
     /**
      * summary  判空测试
      * steps
@@ -226,4 +227,15 @@ public class CommonTest extends AcitivityTest {
         assertTrue(b.isEmpty());
     }
 
+    /**
+     * Long Convert to int
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testLong2Int() throws Exception {
+        Long a = 10000L;
+        int b=10000;
+        assertTrue(b==a.intValue());
+    }
 }

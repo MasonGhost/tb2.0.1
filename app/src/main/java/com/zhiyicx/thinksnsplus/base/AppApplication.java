@@ -55,8 +55,8 @@ public class AppApplication extends TSApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        initComponent();
         ZBIMSDK.init(getContext());
+        initComponent();
         BackgroundTaskManager.getInstance(getContext()).startBackgroundTask();// 开启后台任务
     }
 

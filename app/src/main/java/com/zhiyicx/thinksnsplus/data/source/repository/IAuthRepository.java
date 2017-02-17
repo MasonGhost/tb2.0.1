@@ -69,4 +69,6 @@ public interface IAuthRepository {
      * @return 配置信息
      */
     IMConfig getIMConfig();
+
+    void loginIM();
 }

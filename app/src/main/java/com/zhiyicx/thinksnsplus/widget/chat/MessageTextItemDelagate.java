@@ -72,21 +72,18 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
     }
 
     @Override
-    public void convert(ViewHolder holder, final ChatItemBean message, ChatItemBean lastMessage, int position) {
+    public void convert(ViewHolder holder, final ChatItemBean chatItemBean, ChatItemBean lastChatItemBean, int position) {
         // 显示时间的，最大间隔时间；当两条消息间隔 > MAX_SPACING_TIME 时显示时间
-        if (lastMessage == null || (message.getLastMessage().getCreate_time() - lastMessage.getLastMessage().getCreate_time()) >= MAX_SPACING_TIME * ConstantConfig.MIN) {
-            holder.setText(R.id.tv_chat_time, TimeUtils.getTimeFriendlyForDetail(message.getLastMessage().getCreate_time() / 1000));// 测试数据，暂时使用
+        if (lastChatItemBean == null || (chatItemBean.getLastMessage().getCreate_time() - lastChatItemBean.getLastMessage().getCreate_time()) >= MAX_SPACING_TIME * ConstantConfig.MIN) {
+            holder.setText(R.id.tv_chat_time, TimeUtils.getTimeFriendlyForDetail(chatItemBean.getLastMessage().getCreate_time() / 1000));// 测试数据，暂时使用
             holder.setVisible(R.id.tv_chat_time, View.VISIBLE);
-
         } else {
-
             holder.setVisible(R.id.tv_chat_time, View.GONE);
         }
-
         // 是否需要显示名字
         if (mIsShowName) {
             holder.setVisible(R.id.tv_chat_name, View.VISIBLE);
-            holder.setText(R.id.tv_chat_name, "占三");// 测试数据，暂时使用
+            holder.setText(R.id.tv_chat_name, chatItemBean.getUserInfo().getName());// 测试数据，暂时使用
         } else {
             holder.setVisible(R.id.tv_chat_name, View.GONE);
         }
@@ -94,10 +91,10 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
         if (mIsShowAvatar) {
             holder.setVisible(R.id.iv_chat_headpic, View.VISIBLE);
             mImageLoader.loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
-                    .placeholder(R.mipmap.login_inputbox_clean)
-                    .url("http://image.xinmin.cn/2017/01/11/bedca80cdaa44849a813e7820fff8a26.jpg")
-                    .errorPic(R.mipmap.login_inputbox_clean)
+                    .url(chatItemBean.getUserInfo().getUserIcon())
+                    .placeholder(R.drawable.shape_default_image_circle)
                     .transformation(new GlideCircleTransform(holder.getConvertView().getContext()))
+                    .errorPic(R.drawable.shape_default_image_circle)
                     .imagerView((ImageView) holder.getView(R.id.iv_chat_headpic))
                     .build()
             );
@@ -109,54 +106,54 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
         } else {
             holder.getView(R.id.rl_chat_bubble).setBackgroundDrawable(mBubbleBg);
         }
-        holder.setText(R.id.tv_chat_content, message.getLastMessage().getTxt());
+        holder.setText(R.id.tv_chat_content, chatItemBean.getLastMessage().getTxt());
         // 响应事件
         if (mMessageListItemClickListener != null) {
             View.OnClickListener mStatusClick = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mMessageListItemClickListener.onStatusClick(message);
+                    mMessageListItemClickListener.onStatusClick(chatItemBean);
                 }
             };
 
             View.OnClickListener mUserInfoClick = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mMessageListItemClickListener.onUserInfoClick("张三");
+                    mMessageListItemClickListener.onUserInfoClick(chatItemBean);
                 }
             };
 
             View.OnLongClickListener mUserInfoLongClick = new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    return  mMessageListItemClickListener.onUserInfoLongClick("张三");
+                    return  mMessageListItemClickListener.onUserInfoLongClick(chatItemBean);
                 }
             };
             View.OnClickListener mBubbleClick = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mMessageListItemClickListener.onBubbleClick(message);
+                    mMessageListItemClickListener.onBubbleClick(chatItemBean);
                 }
             };
 
             View.OnLongClickListener mBubbleLongClick = new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                   return mMessageListItemClickListener.onBubbleLongClick(message);
+                   return mMessageListItemClickListener.onBubbleLongClick(chatItemBean);
 
                 }
             };
             View.OnClickListener mOnItemClick = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mMessageListItemClickListener.onItemClickListener(message);
+                    mMessageListItemClickListener.onItemClickListener(chatItemBean);
                 }
             };
 
             View.OnLongClickListener mOnItemLongClick = new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    return  mMessageListItemClickListener.onItemLongClickListener(message);
+                    return  mMessageListItemClickListener.onItemLongClickListener(chatItemBean);
                 }
             };
             holder.setOnClickListener(R.id.msg_status, mStatusClick);

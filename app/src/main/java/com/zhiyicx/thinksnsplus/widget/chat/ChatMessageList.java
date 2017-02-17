@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -94,13 +95,13 @@ public class ChatMessageList extends FrameLayout {
     }
 
     private void init(Context context) {
+        this.mContext = context;
         if (myBubbleBg == null) {
-            myBubbleBg = getResources().getDrawable(R.drawable.shape_message_bubble_my);
+            myBubbleBg = ContextCompat.getDrawable(mContext,R.drawable.shape_message_bubble_my);
         }
         if (otherBuddleBg == null) {
-            otherBuddleBg = getResources().getDrawable(R.drawable.shape_message_bubble_other);
+            otherBuddleBg =  ContextCompat.getDrawable(mContext,R.drawable.shape_message_bubble_other);
         }
-        this.mContext = context;
         LayoutInflater.from(context).inflate(R.layout.view_chat_message_list, this);
         mRefreshLayout = (BGARefreshLayout) findViewById(R.id.rl_chat_refresh_layout);
 
@@ -202,26 +203,26 @@ public class ChatMessageList extends FrameLayout {
     }
 
     public interface MessageListItemClickListener {
-        void onStatusClick(ChatItemBean message);
+        void onStatusClick(ChatItemBean chatItemBean);
 
         /**
          * there is default handling when bubble is clicked, if you want handle it, return true
          * another way is you implement in onBubbleClick() of chat row
          *
-         * @param message
+         * @param chatItemBean
          * @return
          */
-        void onBubbleClick(ChatItemBean message);
+        void onBubbleClick(ChatItemBean chatItemBean);
 
-        boolean onBubbleLongClick(ChatItemBean message);
+        boolean onBubbleLongClick(ChatItemBean chatItemBean);
 
-        void onUserInfoClick(String username);
+        void onUserInfoClick(ChatItemBean chatItemBean);
 
-        boolean onUserInfoLongClick(String username);
+        boolean onUserInfoLongClick(ChatItemBean chatItemBean);
 
-        void onItemClickListener(ChatItemBean message);
+        void onItemClickListener(ChatItemBean chatItemBean);
 
-        boolean onItemLongClickListener(ChatItemBean message);
+        boolean onItemLongClickListener(ChatItemBean chatItemBean);
     }
 
     public void setMessageListItemClickListener(MessageListItemClickListener messageListItemClickListener) {
