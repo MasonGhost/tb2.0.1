@@ -36,10 +36,22 @@ public interface FollowFansListContract {
         void requestNetData(int maxId, boolean isLoadMore, int userId, boolean isFollowed);
 
         List<FollowFansBean> requestCacheData(int maxId, boolean isLoadMore, int userId, boolean isFollowed);
+
+        void followUser(long userId);
+
+        void cancleFollowUser(long userId);
     }
 
     interface Repository {
-        Observable<BaseJson<List<FollowFansBean>>> getFollowFansListFromNet(int userId, boolean isFollowed);
+
+        Observable<BaseJson<List<FollowFansBean>>> getFollowListFromNet(long userId, int maxId);
+
+        Observable<BaseJson<List<FollowFansBean>>> getFansListFromNet(long userId, int maxId);
+
+        Observable<BaseJson> followUser(long userId);
+
+        Observable<BaseJson> cancleFollowUser(long userId);
+
     }
 
 }

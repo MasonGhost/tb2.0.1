@@ -6,9 +6,11 @@ import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppComponent;
+import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansItemBean;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDao;
+import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -16,6 +18,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action1;
 
@@ -56,7 +59,13 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
 
     @Override
     public void requestNetData(int maxId, final boolean isLoadMore, int userId, boolean isFollowed) {
-        Subscription subscription = mRepository.getFollowFansListFromNet(userId, isFollowed)
+        Observable<BaseJson<List<FollowFansBean>>> observable = null;
+        if (isFollowed) {
+            observable = mRepository.getFollowListFromNet(userId, maxId);
+        } else {
+            observable = mRepository.getFansListFromNet(userId, maxId);
+        }
+        Subscription subscription = observable
                 .subscribe(new Action1<BaseJson<List<FollowFansBean>>>() {
                     @Override
                     public void call(BaseJson<List<FollowFansBean>> listBaseJson) {
@@ -80,5 +89,16 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
             followFansBeanList = mFollowFansBeanGreenDao.getSomeOneFans(userId);
         }
         return followFansBeanList;
+    }
+
+    @Override
+    public void followUser(long userId) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean=new BackgroundRequestTaskBean()
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask();
+    }
+
+    @Override
+    public void cancleFollowUser(long userId) {
+
     }
 }

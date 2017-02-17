@@ -29,7 +29,7 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
         mFollowFansClient = serviceManager.getFollowFansClient();
     }
 
-    @Override
+/*    @Override
     public Observable<BaseJson<List<FollowFansBean>>> getFollowFansListFromNet(int userId, boolean isFollowed) {
         return Observable.create(new Observable.OnSubscribe<BaseJson<List<FollowFansBean>>>() {
             @Override
@@ -52,5 +52,25 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }*/
+
+    @Override
+    public Observable<BaseJson<List<FollowFansBean>>> getFollowListFromNet(long userId, int maxId) {
+        return mFollowFansClient.getUserFollowsList(userId, maxId);
+    }
+
+    @Override
+    public Observable<BaseJson<List<FollowFansBean>>> getFansListFromNet(long userId, int maxId) {
+        return mFollowFansClient.getUserFansList(userId, maxId);
+    }
+
+    @Override
+    public Observable<BaseJson> followUser(long userId) {
+        return mFollowFansClient.followUser(userId);
+    }
+
+    @Override
+    public Observable<BaseJson> cancleFollowUser(long userId) {
+        return mFollowFansClient.cancelFollowUser(userId);
     }
 }
