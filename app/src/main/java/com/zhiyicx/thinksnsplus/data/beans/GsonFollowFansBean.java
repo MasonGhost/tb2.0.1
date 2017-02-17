@@ -20,7 +20,7 @@ public class GsonFollowFansBean {
         this.follows = follows;
     }
 
-    class GsonFollowsBean {
+    public class GsonFollowsBean {
         private int id;
         private int user_id;
 

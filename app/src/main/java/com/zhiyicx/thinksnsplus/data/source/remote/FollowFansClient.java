@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.GsonFollowFansBean;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public interface FollowFansClient {
      * @return
      */
     @GET(ApiConfig.APP_PATH_FANS_LIST)
-    Observable<BaseJson<List<FollowFansBean>>> getUserFansList(@Path("user_id") long user_id, @Path("max_id") long max_id);
+    Observable<BaseJson<GsonFollowFansBean>> getUserFansList(@Path("user_id") long user_id, @Path("max_id") long max_id);
 
     /**
      * 获取用户关注列表
@@ -40,7 +41,7 @@ public interface FollowFansClient {
      * @return
      */
     @GET(ApiConfig.APP_PATH_FANS_LIST)
-    Observable<BaseJson<List<FollowFansBean>>> getUserFollowsList(@Path("user_id") long user_id, @Path("max_id") long max_id);
+    Observable<BaseJson<GsonFollowFansBean>> getUserFollowsList(@Path("user_id") long user_id, @Path("max_id") long max_id);
 
     /**
      * 关注用户操作
