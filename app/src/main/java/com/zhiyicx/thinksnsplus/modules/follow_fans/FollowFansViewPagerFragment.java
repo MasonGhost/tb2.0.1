@@ -62,8 +62,12 @@ public class FollowFansViewPagerFragment extends TSFragment<FollowFansListContra
         Bundle bundle = getArguments();
         TSViewPagerAdapter tsViewPagerAdapter = new TSViewPagerAdapter(getFragmentManager());
         List<Fragment> fragmentList = new ArrayList<>();
-        fragmentList.add(FollowFansListFragment.initFragment(bundle));
-        fragmentList.add(FollowFansListFragment.initFragment(bundle));
+        Bundle bundle1=new Bundle();
+        bundle1.putInt(FollowFansListFragment.PAGE_TYPE,FollowFansListFragment.FANS_FRAGMENT_PAGE);
+        fragmentList.add(FollowFansListFragment.initFragment(bundle1));
+        Bundle bundle2=new Bundle();
+        bundle2.putInt(FollowFansListFragment.PAGE_TYPE,FollowFansListFragment.FOLLOW_FRAGMENT_PAGE);
+        fragmentList.add(FollowFansListFragment.initFragment(bundle2));
         tsViewPagerAdapter.bindData(fragmentList);
         mVpFragment.setAdapter(tsViewPagerAdapter);
         mTsvToolbar.initTabView(mVpFragment, initTitles());

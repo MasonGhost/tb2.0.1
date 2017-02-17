@@ -20,7 +20,9 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * @author LiuChao
@@ -66,6 +68,8 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
             observable = mRepository.getFansListFromNet(userId, maxId);
         }
         Subscription subscription = observable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<BaseJson<List<FollowFansBean>>>() {
                     @Override
                     public void call(BaseJson<List<FollowFansBean>> listBaseJson) {
@@ -74,7 +78,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        LogUtils.e(throwable,throwable.getMessage());
+                        LogUtils.e(throwable, throwable.getMessage());
                         mRootView.onResponseError(throwable, isLoadMore);
                     }
                 });

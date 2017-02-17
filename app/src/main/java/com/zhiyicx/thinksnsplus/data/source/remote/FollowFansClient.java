@@ -40,7 +40,7 @@ public interface FollowFansClient {
      * @param max_id
      * @return
      */
-    @GET(ApiConfig.APP_PATH_FANS_LIST)
+    @GET(ApiConfig.APP_PATH_FOLLOW_LIST)
     Observable<BaseJson<GsonFollowFansBean>> getUserFollowsList(@Path("user_id") long user_id, @Path("max_id") long max_id);
 
     /**
