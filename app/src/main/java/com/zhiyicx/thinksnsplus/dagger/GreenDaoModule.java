@@ -3,7 +3,7 @@ package com.zhiyicx.thinksnsplus.dagger;
 import android.app.Application;
 
 import com.zhiyicx.thinksnsplus.data.source.local.BackgroundRequestTaskBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDao;
+import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 
 import dagger.Module;
@@ -32,7 +32,7 @@ public class GreenDaoModule {
     }
 
     @Provides
-    public FollowFansBeanGreenDao provideFollowFansBeanGreenDaoImpl(Application application) {
-        return new FollowFansBeanGreenDao(application);
+    public FollowFansBeanGreenDaoImpl provideFollowFansBeanGreenDaoImpl(Application application) {
+        return new FollowFansBeanGreenDaoImpl(application);
     }
 }

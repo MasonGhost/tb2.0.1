@@ -3,10 +3,13 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.GsonFollowFansBean;
 
 import java.util.List;
 
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -30,7 +33,7 @@ public interface FollowFansClient {
      * @return
      */
     @GET(ApiConfig.APP_PATH_FANS_LIST)
-    Observable<BaseJson<List<FollowFansBean>>> getUserFansList(@Path("user_id") long user_id, @Path("max_id") long max_id);
+    Observable<BaseJson<GsonFollowFansBean>> getUserFansList(@Path("user_id") long user_id, @Path("max_id") long max_id);
 
     /**
      * 获取用户关注列表
@@ -39,8 +42,8 @@ public interface FollowFansClient {
      * @param max_id
      * @return
      */
-    @GET(ApiConfig.APP_PATH_FANS_LIST)
-    Observable<BaseJson<List<FollowFansBean>>> getUserFollowsList(@Path("user_id") long user_id, @Path("max_id") long max_id);
+    @GET(ApiConfig.APP_PATH_FOLLOW_LIST)
+    Observable<BaseJson<GsonFollowFansBean>> getUserFollowsList(@Path("user_id") long user_id, @Path("max_id") long max_id);
 
     /**
      * 关注用户操作
@@ -48,8 +51,9 @@ public interface FollowFansClient {
      * @param user_id
      * @return
      */
+    @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_FOLLOW_USER)
-    Observable<BaseJson> followUser(@Path("user_id") long user_id);
+    Observable<BaseJson> followUser(@Field("user_id") long user_id);
 
     /**
      * 取消用户关注
@@ -57,7 +61,8 @@ public interface FollowFansClient {
      * @param user_id
      * @return
      */
+    @FormUrlEncoded
     @DELETE(ApiConfig.APP_PATH_CANCEL_FOLLOW_USER)
-    Observable<BaseJson> cancelFollowUser(@Path("user_id") long user_id);
+    Observable<BaseJson> cancelFollowUser(@Field("user_id") long user_id);
 
 }

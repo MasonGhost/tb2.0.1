@@ -17,8 +17,8 @@ import java.util.List;
  * @contact email:450127106@qq.com
  */
 
-public class FollowFansBeanGreenDao extends CommonCacheImpl<FollowFansBean> {
-    public FollowFansBeanGreenDao(Context context) {
+public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> {
+    public FollowFansBeanGreenDaoImpl(Context context) {
         super(context);
     }
 
@@ -108,5 +108,69 @@ public class FollowFansBeanGreenDao extends CommonCacheImpl<FollowFansBean> {
         qb.where(FollowFansBeanDao
                 .Properties.UserId.eq(userId), FollowFansBeanDao.Properties.FollowState.eq(FollowFansBean.FOLLOWED_EACHOTHER_STATE));
         return qb.list();
+    }
+
+    /**
+     * 将某条数据设为关注状态
+     *
+     * @return 返回更新后的状态
+     */
+    public int setStateToFollowed(FollowFansBean newData) {
+        if (newData == null) {
+            return newData.getFollowState();
+        }
+        long userId = newData.getUserId();
+        long followedId = newData.getFollowedUserId();
+        FollowFansBeanDao followFansBeanDao = getWDaoSession().getFollowFansBeanDao();
+        QueryBuilder<FollowFansBean> qb = followFansBeanDao.queryBuilder();
+        // 看看数据库这个人是否关注了我
+        qb.where(FollowFansBeanDao
+                .Properties.UserFollowedId.eq(followedId + "$" + userId), FollowFansBeanDao
+                .Properties.FollowState.notEq(FollowFansBean.UNFOLLOWED_STATE));
+        if (qb.list().isEmpty()) {// 看来没有关注我
+            newData.setFollowState(FollowFansBean.IFOLLOWED_STATE);
+        } else {// 关注我了，那就互相关注吧
+            newData.setFollowState(FollowFansBean.FOLLOWED_EACHOTHER_STATE);
+            // 将另外一条数据设为互相关注
+            FollowFansBean followedPerson = new FollowFansBean();
+            followedPerson.setFollowState(FollowFansBean.FOLLOWED_EACHOTHER_STATE);
+            followedPerson.setUserId(followedId);
+            followedPerson.setFollowedUserId(userId);
+            followedPerson.setUserFollowedId(null);
+            insertOrReplace(followedPerson);
+        }
+        insertOrReplace(newData);
+        return newData.getFollowState();
+    }
+
+    /**
+     * 取消某条数据的关注状态
+     */
+    public int setStateToUnFollowed(FollowFansBean newData) {
+        if (newData == null) {
+            return newData.getFollowState();
+        }
+        long userId = newData.getUserId();
+        long followedId = newData.getFollowedUserId();
+        FollowFansBeanDao followFansBeanDao = getWDaoSession().getFollowFansBeanDao();
+        QueryBuilder<FollowFansBean> qb = followFansBeanDao.queryBuilder();
+        // 看看数据库这个人和我是否互相关注
+        qb.where(FollowFansBeanDao
+                .Properties.UserFollowedId.eq(followedId + "$" + userId), FollowFansBeanDao
+                .Properties.FollowState.notEq(FollowFansBean.FOLLOWED_EACHOTHER_STATE));
+        if (qb.list().isEmpty()) {// 看来没有互相关注
+            newData.setFollowState(FollowFansBean.UNFOLLOWED_STATE);
+        } else {// 关注我了，那就互相关注吧
+            newData.setFollowState(FollowFansBean.UNFOLLOWED_STATE);
+            // 将另外一条数据设为关注了我
+            FollowFansBean followedPerson = new FollowFansBean();
+            followedPerson.setFollowState(FollowFansBean.IFOLLOWED_STATE);
+            followedPerson.setUserId(followedId);
+            followedPerson.setFollowedUserId(userId);
+            followedPerson.setUserFollowedId(null);
+            insertOrReplace(followedPerson);
+        }
+        insertOrReplace(newData);
+        return newData.getFollowState();
     }
 }

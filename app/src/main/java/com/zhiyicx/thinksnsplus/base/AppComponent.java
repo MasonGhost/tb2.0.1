@@ -12,7 +12,7 @@ import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.rxerrorhandler.RxErrorHandler;
 import com.zhiyicx.thinksnsplus.dagger.GreenDaoModule;
 import com.zhiyicx.thinksnsplus.data.source.local.CacheManager;
-import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDao;
+import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
@@ -60,5 +60,5 @@ public interface AppComponent extends InjectComponent<AppApplication> {
 
     UserInfoBeanGreenDaoImpl userInfoBeanGreenDao();
 
-    FollowFansBeanGreenDao followFansBeanGreenDao();
+    FollowFansBeanGreenDaoImpl followFansBeanGreenDao();
 }

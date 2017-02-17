@@ -145,7 +145,7 @@ public class BackgroundTaskHandler {
              * 通用接口处理
              */
             case POST:
-                mServiceManager.getCommonClient().handleBackGroundTask(backgroundRequestTaskBean.getPath(), backgroundRequestTaskBean.getParams())
+                mServiceManager.getCommonClient().handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), backgroundRequestTaskBean.getParams())
                         .subscribe(new BaseSubscribe<CacheBean>() {
                             @Override
                             protected void onSuccess(CacheBean data) {
@@ -166,6 +166,26 @@ public class BackgroundTaskHandler {
             case GET:
 
 
+                break;
+            case DELETE:
+                mServiceManager.getCommonClient().handleBackGroudTaskDelete(backgroundRequestTaskBean.getPath()
+                        , backgroundRequestTaskBean.getParams())
+                        .subscribe(new BaseSubscribe<CacheBean>() {
+                            @Override
+                            protected void onSuccess(CacheBean data) {
+                                mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                            }
+
+                            @Override
+                            protected void onFailure(String message) {
+                                addBackgroundRequestTask(backgroundRequestTaskBean);
+                            }
+
+                            @Override
+                            protected void onException(Throwable throwable) {
+                                addBackgroundRequestTask(backgroundRequestTaskBean);
+                            }
+                        });
                 break;
             /**
              * 获取 IM 信息，必须保证 header 中已经加入了权限 token

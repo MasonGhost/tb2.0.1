@@ -15,6 +15,7 @@ import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
+import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumListActivity;
@@ -86,10 +87,12 @@ public class MineFragment extends TSFragment {
     protected String setCenterTitle() {
         return getString(R.string.mine);
     }
+
     @Override
     protected int setLeftImg() {
         return 0;
     }
+
     @Override
     protected boolean showToolBarDivider() {
         return true;
@@ -105,6 +108,7 @@ public class MineFragment extends TSFragment {
         StatusBarUtils.statusBarLightMode(getActivity());//当状态栏颜色为白色时使用，Activity 中最后一次调用确定状态栏背景颜色和图标颜色
         return R.color.white;
     }
+
     @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_gold, R.id.bt_suggestion, R.id.bt_question_answer, R.id.bt_setting})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -112,10 +116,18 @@ public class MineFragment extends TSFragment {
                 startActivity(new Intent(getActivity(), UserInfoActivity.class));
                 break;
             case R.id.ll_fans_container:
-                startActivity(new Intent(getActivity(), FollowFansListActivity.class));
+                Bundle bundleFans = new Bundle();
+                bundleFans.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment.FANS_FRAGMENT_PAGE);
+                Intent itFans = new Intent(getActivity(), FollowFansListActivity.class);
+                itFans.putExtras(bundleFans);
+                startActivity(itFans);
                 break;
             case R.id.ll_follow_container:
-                startActivity(new Intent(getActivity(), FollowFansListActivity.class));
+                Bundle bundleFollow = new Bundle();
+                bundleFollow.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment.FOLLOW_FRAGMENT_PAGE);
+                Intent itFollow = new Intent(getActivity(), FollowFansListActivity.class);
+                itFollow.putExtras(bundleFollow);
+                startActivity(itFollow);
                 break;
             case R.id.bt_personal_page:
                 SkinManager.getInstance().restoreDefaultTheme();
