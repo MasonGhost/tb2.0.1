@@ -3,12 +3,9 @@ package com.zhiyicx.thinksnsplus.modules.follow_fans;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.base.AppComponent;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansItemBean;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDao;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
@@ -93,8 +90,8 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
 
     @Override
     public void followUser(long userId) {
-        BackgroundRequestTaskBean backgroundRequestTaskBean=new BackgroundRequestTaskBean()
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask();
+        BackgroundRequestTaskBean backgroundRequestTaskBean=new BackgroundRequestTaskBean();
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
     }
 
     @Override

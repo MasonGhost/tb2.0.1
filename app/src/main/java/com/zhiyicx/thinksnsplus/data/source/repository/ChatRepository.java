@@ -81,7 +81,7 @@ public class ChatRepository implements ChatContract.Repository {
     public boolean insertOrUpdateMessageItemBean(List<MessageItemBean> data) {
         for (MessageItemBean entity : data) {
             ConversationDao.getInstance(mContext).insertOrUpdateConversation(entity.getConversation());
-            mUserInfoBeanGreenDao.saveSingleData(entity.getUserInfo());
+            mUserInfoBeanGreenDao.insertOrReplace(entity.getUserInfo());
         }
         return true;
     }
