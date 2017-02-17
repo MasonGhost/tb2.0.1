@@ -2,7 +2,12 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
+import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+
+import java.util.List;
+
+import rx.Observable;
 
 /**
  * @Describe
@@ -26,6 +31,12 @@ public interface MessageContract {
      * Model 层定义接口,外部只需关心 model 返回的数据,无需关心内部细节,及是否使用缓存
      */
     interface Repository {
+        /**
+         * 获取对话列表信息
+         * @param user_id 用户 id
+          * @return
+         */
+        Observable<BaseJson<List<MessageItemBean>>> getMessageList(int user_id);
     }
 
     interface Presenter extends ITSListPresenter<MessageItemBean> {

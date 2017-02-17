@@ -40,7 +40,12 @@ public class ApiConfig {
     public static final String APP_PATH_GET_USER_INFO = "api/v1/users/{user_id}";// 获取用户信息
     public static final String APP_PATH_CHANGE_USER_INFO = "api/v1/users";// 修改用户信息
     public static final String APP_PATH_GET_IM_INFO = "api/v1/im/users";// 获取 IM 帐号信息
+
+    /**
+     * 聊天相关
+     */
     public static final String APP_PATH_CREATE_CONVERSAITON = "api/v1/im/conversations";// 创建对话
+    public static final String APP_PATH_GET_CONVERSAITON_LIST = "api/v1/im/conversations/list/all";// 创建对话
 
     /**
      * 通用 CommonClient

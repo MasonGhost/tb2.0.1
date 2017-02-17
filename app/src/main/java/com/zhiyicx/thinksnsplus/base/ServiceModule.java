@@ -1,10 +1,10 @@
 package com.zhiyicx.thinksnsplus.base;
 
 
-import com.bumptech.glide.request.Request;
+import com.zhiyicx.thinksnsplus.data.source.remote.ChatInfoClient;
+import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.FollowFansClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
-import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.MusicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.PasswordClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
@@ -67,6 +67,18 @@ public class ServiceModule {
     @Provides
     UserInfoClient provideUserInfoClient(Retrofit retrofit) {
         return retrofit.create(UserInfoClient.class);
+    }
+
+  /**
+     * 聊天信息的网络接口
+     *
+     * @param retrofit 网络框架
+     * @return
+     */
+    @Singleton
+    @Provides
+    ChatInfoClient provideChatInfoClient(Retrofit retrofit) {
+        return retrofit.create(ChatInfoClient.class);
     }
 
     /**
