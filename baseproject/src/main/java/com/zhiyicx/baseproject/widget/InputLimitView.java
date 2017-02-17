@@ -110,6 +110,7 @@ public class InputLimitView extends FrameLayout {
             public void onClick(View v) {
                 if (mOnSendClickListener != null) {
                     mOnSendClickListener.onSendClick(getInputContent());
+                    mEtContent.setText("");
                 }
             }
         });

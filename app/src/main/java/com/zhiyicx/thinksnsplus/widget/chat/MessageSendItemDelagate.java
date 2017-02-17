@@ -34,7 +34,7 @@ public class MessageSendItemDelagate extends MessageTextItemDelagate {
     @Override
     public boolean isForViewType(ChatItemBean item, int position) {
         // TODO: 2017/1/6 需要添加是否是我的消息的判断
-        return item.getUserInfo().getUser_id() != AppApplication.getmCurrentLoginAuth().getUser_id();
+        return item.getUserInfo().getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
     }
 
 
