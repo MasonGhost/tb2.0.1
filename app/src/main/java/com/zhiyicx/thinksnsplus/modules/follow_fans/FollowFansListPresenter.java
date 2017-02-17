@@ -93,8 +93,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
 
     @Override
     public void followUser(long userId) {
-        BackgroundRequestTaskBean backgroundRequestTaskBean=new BackgroundRequestTaskBean()
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask();
+
     }
 
     @Override

@@ -13,6 +13,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.HeaderMap;
@@ -24,6 +25,7 @@ import retrofit2.http.Part;
 import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
 import rx.Observable;
 
@@ -94,7 +96,7 @@ public interface CommonClient {
      */
     @Multipart
     @POST
-    Observable<String> upLoadFileByPost(@Url String url, @HeaderMap HashMap<String, String> headers,@Part List<MultipartBody.Part> params);
+    Observable<String> upLoadFileByPost(@Url String url, @HeaderMap HashMap<String, String> headers, @Part List<MultipartBody.Part> params);
 
     /**
      * 通过Put方法上传文件
@@ -130,9 +132,11 @@ public interface CommonClient {
      * 后台任务处理
      */
     @Multipart
-
     @POST(APP_PATH_HANDLE_BACKGROUND_TASK)
-    Observable<BaseJson<CacheBean>> handleBackGroundTask(@Path("path") String path, @PartMap Map<String, Object> bodyMap);
+    Observable<BaseJson<CacheBean>> handleBackGroundTaskPost(@Path("path") String path, @PartMap Map<String, Object> bodyMap);
+
+    @DELETE(APP_PATH_HANDLE_BACKGROUND_TASK)
+    Observable<BaseJson<CacheBean>> handleBackGroudTaskDelete(@Path("path") String path, @QueryMap Map<String, Object> queryMap);
 
 
     /**
