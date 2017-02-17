@@ -66,6 +66,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
 
             @Override
             protected void onException(Throwable throwable) {
+                throwable.printStackTrace();
                 mRootView.hideLoading();
                 mRootView.showMessage("网络不加。。。。。");
             }
@@ -121,7 +122,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     public void createChat() {
         final String uids = mAuthRepository.getAuthBean().getUser_id() + ",4";
         final String pair = mAuthRepository.getAuthBean().getUser_id() + "&4";// "pair":null,   // type=0时此项为两个uid：min_uid&max_uid
-        mChatRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "七夜和超超", "", uids)
+        mChatRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "七夜和超超", "", "4")
                 .subscribe(new BaseSubscribe<Conversation>() {
                     @Override
                     protected void onSuccess(Conversation data) {
