@@ -8,13 +8,18 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.Subscriber;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -45,6 +50,11 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
     }
 
     @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    @Override
     public void requestNetData(int maxId, boolean isLoadMore) {
 
     }
@@ -61,7 +71,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
     }
 
     @Override
-    public void requestNetData(int maxId, final boolean isLoadMore, int userId, int pageType) {
+    public void requestNetData(final int maxId, final boolean isLoadMore, final int userId, final int pageType) {
         Observable<BaseJson<List<FollowFansBean>>> observable = null;
         if (pageType == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
             observable = mRepository.getFollowListFromNet(userId, maxId);
@@ -74,7 +84,16 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
                 .subscribe(new BaseSubscribe<List<FollowFansBean>>() {
                     @Override
                     protected void onSuccess(List<FollowFansBean> data) {
+                        insertOrUpdateData(data);// 保存到数据库
+                        // 多表连查，获取用户信息
+                        if (pageType == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
+                            data = mFollowFansBeanGreenDao.getSomeOneFollower(userId);
+                        } else if (pageType == FollowFansListFragment.FANS_FRAGMENT_PAGE) {
+                            data = mFollowFansBeanGreenDao.getSomeOneFans(userId);
+                        }
                         mRootView.onNetResponseSuccess(data, isLoadMore);
+                        // 处理用户信息缺失
+                        dealWithUserInfo(pageType, data);
                     }
 
                     @Override
@@ -100,6 +119,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
         } else if (pageType == FollowFansListFragment.FANS_FRAGMENT_PAGE) {
             followFansBeanList = mFollowFansBeanGreenDao.getSomeOneFans(userId);
         }
+        dealWithUserInfo(pageType, followFansBeanList);
         return followFansBeanList;
     }
 
@@ -115,6 +135,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
         // 本地数据库和ui进行刷新
         int followState = mFollowFansBeanGreenDao.setStateToFollowed(followFansBean);
+        followFansBean.setFollowState(followState);
         mRootView.upDateFollowFansState(index, followState);
 
     }
@@ -130,6 +151,46 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
         // 本地数据库和ui进行刷新
         int followState = mFollowFansBeanGreenDao.setStateToUnFollowed(followFansBean);
+        followFansBean.setFollowState(followState);
         mRootView.upDateFollowFansState(index, followState);
+    }
+
+    /**
+     * 在后台任务获取到最新的用户信息后，更新界面的用户信息
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_USERINFO_UPDATE)
+    public void upDateUserInfo(List<UserInfoBean> userInfoBeanList) {
+        mRootView.upDateUserInfo(userInfoBeanList);
+    }
+
+    // 当数据库获取用户信息为空时，需要尝试从网络拉去信息
+    private void dealWithUserInfo(int pageType, List<FollowFansBean> followFansBeanList) {
+        List<Integer> userIdList = new ArrayList<>();
+        // 统一处理获取用户信息
+        for (FollowFansBean followFansBean : followFansBeanList) {
+            UserInfoBean userInfoBean = null;
+            if (pageType == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
+               /* userInfoBean = followFansBean.getFllowedUser();
+                if (userInfoBean == null) {
+                    userIdList.add((int) followFansBean.getFollowedUserId());
+                }*/
+                userIdList.add((int) followFansBean.getFollowedUserId());
+            } else if (pageType == FollowFansListFragment.FANS_FRAGMENT_PAGE) {
+               /* userInfoBean = followFansBean.getUser();
+                if (userInfoBean == null) {
+                    userIdList.add((int) followFansBean.getUserId());
+                }*/
+                userIdList.add((int) followFansBean.getUserId());
+            }
+
+        }
+        if (!userIdList.isEmpty()) {
+            HashMap<String, Object> hashMap = new HashMap<>();
+            hashMap.put("user_id", userIdList);
+            BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
+            backgroundRequestTaskBean.setParams(hashMap);
+            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.GET_USER_INFO);
+            BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+        }
     }
 }

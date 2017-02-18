@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBeanDao;
+import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.List;
 

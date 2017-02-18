@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.data.source.local;
+package com.zhiyicx.thinksnsplus.data.source.local.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,7 +17,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DaoSession;
  */
 
 public abstract class CommonCacheImpl<T> implements IDataBaseOperate<T> {
-    private static final DaoMaster.DevOpenHelper sDevOpenHelper = new DaoMaster.DevOpenHelper(AppApplication.getContext(), DBConfig.DB_NAME);
+    private static final UpDBHelper sUpDBHelper = new UpDBHelper(AppApplication.getContext(), DBConfig.DB_NAME);
     private Context mContext;
 
     public CommonCacheImpl(Context context) {
@@ -29,7 +29,7 @@ public abstract class CommonCacheImpl<T> implements IDataBaseOperate<T> {
      * 获取可读数据库
      */
     protected SQLiteDatabase getReadableDatabase() {
-        SQLiteDatabase db = sDevOpenHelper.getReadableDatabase();
+        SQLiteDatabase db = sUpDBHelper.getReadableDatabase();
         return db;
     }
 
@@ -37,7 +37,7 @@ public abstract class CommonCacheImpl<T> implements IDataBaseOperate<T> {
      * 获取可写数据库
      */
     protected SQLiteDatabase getWritableDatabase() {
-        SQLiteDatabase db = sDevOpenHelper.getWritableDatabase();
+        SQLiteDatabase db = sUpDBHelper.getWritableDatabase();
         return db;
     }
 

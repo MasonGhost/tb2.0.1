@@ -11,12 +11,15 @@ import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.HTTP;
 import retrofit2.http.HeaderMap;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
@@ -135,8 +138,9 @@ public interface CommonClient {
     @POST(APP_PATH_HANDLE_BACKGROUND_TASK)
     Observable<BaseJson<CacheBean>> handleBackGroundTaskPost(@Path("path") String path, @PartMap Map<String, Object> bodyMap);
 
-    @DELETE(APP_PATH_HANDLE_BACKGROUND_TASK)
-    Observable<BaseJson<CacheBean>> handleBackGroudTaskDelete(@Path("path") String path, @QueryMap Map<String, Object> queryMap);
+    @Headers({"Content-type:application/json;charset=UTF-8"})
+    @HTTP(method = "DELETE", path = APP_PATH_HANDLE_BACKGROUND_TASK, hasBody = true)
+    Observable<BaseJson<CacheBean>> handleBackGroudTaskDelete(@Path("path") String path, @Body RequestBody requestBody);
 
 
     /**

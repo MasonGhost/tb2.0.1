@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBeanDao;
+import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 

@@ -31,31 +31,6 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
         mFollowFansClient = serviceManager.getFollowFansClient();
     }
 
-/*    @Override
-    public Observable<BaseJson<List<FollowFansBean>>> getFollowFansListFromNet(int userId, boolean isFollowed) {
-        return Observable.create(new Observable.OnSubscribe<BaseJson<List<FollowFansBean>>>() {
-            @Override
-            public void call(Subscriber<? super BaseJson<List<FollowFansBean>>> subscriber) {
-                List<FollowFansBean> datas = new ArrayList<FollowFansBean>();
-                for (int i = 0; i < 10; i++) {
-                    FollowFansBean followFansItemBean = new FollowFansBean();
-                    followFansItemBean.setFollowState(1);
-                    followFansItemBean.setUserId(20000l);
-                    followFansItemBean.setFollowedUserId(10002l + i);
-                    followFansItemBean.setUserFollowedId("");
-                    datas.add(followFansItemBean);
-                }
-                BaseJson<List<FollowFansBean>> baseJson = new BaseJson<List<FollowFansBean>>();
-                baseJson.setStatus(true);
-                baseJson.setData(datas);
-                baseJson.setCode(0);
-                baseJson.setMessage("数据获取成功");
-                subscriber.onNext(baseJson);
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }*/
-
     @Override
     public Observable<BaseJson<List<FollowFansBean>>> getFollowListFromNet(final long userId, int maxId) {
         // 将网络请求获取的数据，通过map转换

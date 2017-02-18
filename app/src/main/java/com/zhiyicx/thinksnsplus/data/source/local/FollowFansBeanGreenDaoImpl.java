@@ -1,10 +1,10 @@
 package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.content.Context;
-import android.util.SparseArray;
 
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBeanDao;
+import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 

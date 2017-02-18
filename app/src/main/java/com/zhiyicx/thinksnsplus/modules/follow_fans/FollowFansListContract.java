@@ -7,6 +7,7 @@ import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import java.util.List;
 
@@ -28,6 +29,13 @@ public interface FollowFansListContract {
          * @param followState 详见FollowFansBean.class的三种状态值
          */
         void upDateFollowFansState(int index, int followState);
+
+        /**
+         * 后台任务提示用户信息更新，刷新列表
+         *
+         * @param userInfoBeanList
+         */
+        void upDateUserInfo(List<UserInfoBean> userInfoBeanList);
     }
 
     interface Presenter extends ITSListPresenter<FollowFansBean> {
@@ -46,7 +54,7 @@ public interface FollowFansListContract {
         /**
          * 关注用户
          *
-         * @param index      item所在的列表位置
+         * @param index          item所在的列表位置
          * @param followFansBean 被关注的用户id
          */
         void followUser(int index, FollowFansBean followFansBean);

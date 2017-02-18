@@ -15,6 +15,7 @@ import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.EmptyWrapper;
 
 import org.jetbrains.annotations.NotNull;
@@ -42,7 +43,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
     private static final int DEFAULT_TIP_STICKY_TIME = 3000;
     private static final float DEFAULT_LIST_ITEM_SPACING = 1f;
 
-    protected CommonAdapter<T> mAdapter;
+    protected MultiItemTypeAdapter<T> mAdapter;
+    private EmptyWrapper mEmptyWrapper;
 
     protected BGARefreshLayout mRefreshlayout;
 
@@ -119,7 +121,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
         mRefreshlayout.setRefreshViewHolder(new TSPRefreshViewHolder(getActivity(), isLoadingMoreEnable()));
         mRefreshlayout.setIsShowLoadingMoreView(getIsShowLoadingMore());
         mRefreshlayout.setPullDownRefreshEnable(getPullDownRefreshEnable());
-        EmptyWrapper mEmptyWrapper = new EmptyWrapper(mAdapter);
+        mEmptyWrapper = new EmptyWrapper(mAdapter);
         mEmptyWrapper.setEmptyView(mEmptyView);
         mRvList.setAdapter(mEmptyWrapper);
     }
@@ -273,7 +275,14 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
      * 刷新数据
      */
     public void refreshData() {
-        mAdapter.notifyDataSetChanged();
+        mEmptyWrapper.notifyDataSetChanged();
+    }
+
+    /**
+     * 刷新单条数据
+     */
+    public void refreshData(int index){
+        mEmptyWrapper.notifyItemChanged(index);
     }
 
     /**
