@@ -53,6 +53,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     protected MessagePresenter mMessagePresenter;
     private ImageLoader mImageLoader;
     private List<MessageItemBean> mMessageItemBeen = new ArrayList<>();
+    private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
 
     public static MessageFragment newInstance() {
         MessageFragment fragment = new MessageFragment();
@@ -127,7 +128,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
      * 初始化头信息（评论的、赞过的）
      */
     private void initHeaderView() {
-        HeaderAndFooterWrapper mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
+         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
 
         mHeaderView = LayoutInflater.from(getContext()).inflate(R.layout.view_header_message_list, null);
         mHeaderAndFooterWrapper.addHeaderView(mHeaderView);
@@ -177,11 +178,11 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
             tvHeaderLikeTip = (BadgeView) headerview.findViewById(R.id.tv_header_like_tip);
         }
         tvHeaderCommentContent.setText(commentItemData.getConversation().getLast_message_text());
-        tvHeaderCommentTime.setText(TimeUtils.getTimeFriendlyNormal(commentItemData.getConversation().getLast_message_time()));
+        tvHeaderCommentTime.setText(TimeUtils.getTimeFriendlyNormal(commentItemData.getConversation().getLast_message_time()/1000));
         tvHeaderCommentTip.setBadgeCount(commentItemData.getUnReadMessageNums());
 
         tvHeaderLikeContent.setText(likedItemData.getConversation().getLast_message_text());
-        tvHeaderLikeTime.setText(TimeUtils.getTimeFriendlyNormal(commentItemData.getConversation().getLast_message_time()));
+        tvHeaderLikeTime.setText(TimeUtils.getTimeFriendlyNormal(commentItemData.getConversation().getLast_message_time()/1000));
         tvHeaderLikeTip.setBadgeCount(likedItemData.getUnReadMessageNums());
         refreshData();
     }
@@ -241,7 +242,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 //        }
 
         holder.setText(R.id.tv_content, messageItemBean.getConversation().getLast_message_text());
-        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(messageItemBean.getConversation().getLast_message_time()));
+        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(messageItemBean.getConversation().getLast_message_time()/1000));
         ((BadgeView) holder.getView(R.id.tv_tip)).setBadgeCount(messageItemBean.getUnReadMessageNums());
 
     }
@@ -306,6 +307,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     public void hideLoading() {
         mRefreshlayout.endRefreshing();
+        mHeaderAndFooterWrapper.notifyDataSetChanged();
         System.out.println("mMessageItemBeen =--------------------- " + mMessageItemBeen.toString());
     }
 

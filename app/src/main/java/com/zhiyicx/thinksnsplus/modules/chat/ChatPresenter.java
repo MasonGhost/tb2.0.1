@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.manage.ChatClient;
@@ -57,9 +58,13 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     }
 
     @Override
-    public List<ChatItemBean> getHistoryMessages(int cid, long mid) {
-        List<ChatItemBean> data = mRepository.getChatListData(cid, mid);
+    public List<ChatItemBean> getHistoryMessages(int cid, long creat_time) {
+        List<ChatItemBean> data = mRepository.getChatListData(cid, creat_time);
         Collections.reverse(data);
+        System.out.println("creat_time = " + TimeUtils.getStandardTimeWithYeay(creat_time));
+        for (ChatItemBean chatItemBean:data){
+            System.out.println("chatItemBean = " + TimeUtils.getStandardTimeWithYeay(chatItemBean.getLastMessage().create_time));
+        }
         mRootView.hideLoading();
         return data;
     }
@@ -112,8 +117,8 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         }
         chatItemBean.setUserInfo(userInfoBean);
         mRootView.reFreshMessage(chatItemBean);
+        mRootView.smoothScrollToBottom();
     }
-
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONNECTED)
     private void onConnected() {

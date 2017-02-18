@@ -140,6 +140,7 @@ public class MessageDao extends BaseDao implements MessageDaoSoupport {
         if (page < DEFAULT_PAGEE)
             page = DEFAULT_PAGEE;
         SQLiteDatabase database = mHelper.getReadableDatabase();
+        database.beginTransaction();
         Cursor cursor = database.query(
                 TABLE_NAME,
                 null,
@@ -154,7 +155,8 @@ public class MessageDao extends BaseDao implements MessageDaoSoupport {
             } while (cursor.moveToNext());
         }
         cursor.close();
-
+        database.setTransactionSuccessful();
+        database.endTransaction();
         return messages;
     }
 
@@ -165,14 +167,15 @@ public class MessageDao extends BaseDao implements MessageDaoSoupport {
      * @return
      */
     @Override
-    public List<Message> getMessageListByCidAndMid(int cid, long crateTime) {
+    public List<Message> getMessageListByCidAndCreateTime(int cid, long crateTime) {
 
         SQLiteDatabase database = mHelper.getReadableDatabase();
+        database.beginTransaction();
         Cursor cursor = database.query(
                 TABLE_NAME,
                 null,
-                COLUMN_NAME_MESSAGE_CID + " = ? and "+COLUMN_NAME_MESSAGE_CREATE_TIME+" < ? ", new String[]{String.valueOf(cid), String.valueOf(crateTime)}, null, null,
-                COLUMN_NAME_MESSAGE_CREATE_TIME + "  DESC", (DEFAULT_PAGEE - DEFAULT_PAGEE) * DEFAULT_PAGESIZE + "," + DEFAULT_PAGESIZE);// 时间降序
+                COLUMN_NAME_MESSAGE_CID + " = ? and " + COLUMN_NAME_MESSAGE_CREATE_TIME + " < ? ", new String[]{String.valueOf(cid), String.valueOf(crateTime)}, null, null,
+                COLUMN_NAME_MESSAGE_CREATE_TIME + "  DESC", 0 + "," + DEFAULT_PAGESIZE);// 时间降序
         List<Message> messages = new ArrayList<>();
         if (cursor != null && cursor.moveToFirst()) {
             do {
@@ -181,12 +184,14 @@ public class MessageDao extends BaseDao implements MessageDaoSoupport {
             } while (cursor.moveToNext());
         }
         cursor.close();
-
+        database.setTransactionSuccessful();
+        database.endTransaction();
         return messages;
     }
 
     /**
      * Messge 赋值
+     *
      * @param cursor
      * @return
      */
@@ -243,11 +248,12 @@ public class MessageDao extends BaseDao implements MessageDaoSoupport {
     @Override
     public Message getLastMessageByCid(int cid) {
         SQLiteDatabase database = mHelper.getReadableDatabase();
+        database.beginTransaction();
         Cursor cursor = database.query(
                 TABLE_NAME,
                 null,
                 COLUMN_NAME_MESSAGE_CID + " = ?", new String[]{cid + ""}, null, null,
-                COLUMN_NAME_MESSAGE_CREATE_TIME + "  DESC", "1");
+                COLUMN_NAME_MESSAGE_CREATE_TIME + "  DESC", "0,1");// 时间降序
         List<Message> messages = new ArrayList<>();
         if (cursor != null && cursor.moveToFirst()) {
             do {
@@ -256,6 +262,8 @@ public class MessageDao extends BaseDao implements MessageDaoSoupport {
             } while (cursor.moveToNext());
         }
         cursor.close();
+        database.setTransactionSuccessful();
+        database.endTransaction();
         if (messages.size() > 0)
             return messages.get(0);
         else
@@ -325,7 +333,7 @@ public class MessageDao extends BaseDao implements MessageDaoSoupport {
      */
     public long getCounts() {
         SQLiteDatabase database = mHelper.getWritableDatabase();
-        String sql = "select count(*) from "+TABLE_NAME;
+        String sql = "select count(*) from " + TABLE_NAME;
         Cursor cursor = database.rawQuery(sql, null);
         cursor.moveToFirst();
         long count = cursor.getLong(0);

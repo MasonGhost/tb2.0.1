@@ -63,7 +63,6 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                     @Override
                     protected void onSuccess(final List<MessageItemBean> data) {
                         mRootView.onNetResponseSuccess(data, false);
-
                     }
 
                     @Override

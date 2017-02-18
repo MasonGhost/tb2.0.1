@@ -23,9 +23,12 @@ public interface ChatContract {
     interface View extends IBaseView<Presenter> {
         /**
          * 刷新聊天内容
+         *
          * @param chatItemBean 消息内容
          */
         void reFreshMessage(ChatItemBean chatItemBean);
+
+        void smoothScrollToBottom();
 
     }
 
@@ -50,7 +53,8 @@ public interface ChatContract {
         boolean insertOrUpdateConversation(Conversation conversation);
 
         /**
-         *  插入或者更新数据库
+         * 插入或者更新数据库
+         *
          * @param data 对话列表
          * @return
          */
@@ -92,6 +96,7 @@ public interface ChatContract {
 
         /**
          * 发送文本消息
+         *
          * @param text 文本内容
          * @param cid  对话 id
          */

@@ -40,10 +40,10 @@ public interface MessageDaoSoupport {
     /**
      * 通过会话cid获取消息数据
      * @param cid
-     * @param mid
+     * @param create_time
      * @return
      */
-    List<Message> getMessageListByCidAndMid(int cid, long mid);
+    List<Message> getMessageListByCidAndCreateTime(int cid, long create_time);
 
 
     /**

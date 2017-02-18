@@ -129,9 +129,9 @@ public class ChatRepository implements ChatContract.Repository {
     }
 
     @Override
-    public List<ChatItemBean> getChatListData(int cid, long mid) {
+    public List<ChatItemBean> getChatListData(int cid, long creat_time) {
         List<ChatItemBean> chatItemBeen = new ArrayList<>();
-        List<Message> messages = MessageDao.getInstance(mContext).getMessageListByCidAndMid(cid, mid);
+        List<Message> messages = MessageDao.getInstance(mContext).getMessageListByCidAndCreateTime(cid, creat_time);
         if (messages == null || messages.size() == 0) {
             return chatItemBeen;
         }

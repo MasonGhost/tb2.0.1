@@ -265,6 +265,7 @@ public class CommonTest extends AcitivityTest {
         a.add(2);
 
         List<Integer> b=a;
+        b.clear();
         b.add(3);
         System.out.println("a = " + a);
         System.out.println("b = " + b);
