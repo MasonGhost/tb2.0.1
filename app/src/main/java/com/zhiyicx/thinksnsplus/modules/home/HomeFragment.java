@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
-import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -51,6 +50,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     TextView mTvFind;
     @BindView(R.id.iv_message)
     ImageView mIvMessage;
+    @BindView(R.id.v_message_tip)
+    View mVMessageTip;
     @BindView(R.id.tv_message)
     TextView mTvMessage;
     @BindView(R.id.iv_mine)
@@ -216,9 +217,12 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     }
 
     @Override
-    public void addNewMessageTip() {
-        BadgeView badgeView=new BadgeView(getContext());
-        badgeView.setHideOnNull(false);
-        badgeView.setTargetView(mIvMessage);
+    public void setMessageTipVisable(boolean tipVisable) {
+        if (tipVisable) {
+            mVMessageTip.setVisibility(View.VISIBLE);
+        } else {
+            mVMessageTip.setVisibility(View.INVISIBLE);
+        }
+
     }
 }

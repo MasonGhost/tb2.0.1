@@ -157,6 +157,8 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED)
     private void onMessageReceived(Message message) {
+
+
         if (!(ActivityHandler.getInstance().currentActivity() instanceof HomeActivity)) {
             return;
         }else {

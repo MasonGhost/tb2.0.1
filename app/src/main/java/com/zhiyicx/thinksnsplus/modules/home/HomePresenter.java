@@ -57,7 +57,7 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
     @Override
     public void onMessageReceived(Message message) {
         if ((ActivityHandler.getInstance().currentActivity() instanceof HomeActivity)) {
-            mRootView.addNewMessageTip();
+            mRootView.setMessageTipVisable(true);
         }
         EventBus.getDefault().post(message, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED);
     }

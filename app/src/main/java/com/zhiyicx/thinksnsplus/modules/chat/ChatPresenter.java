@@ -61,9 +61,6 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         List<ChatItemBean> data = mRepository.getChatListData(cid, mid);
         Collections.reverse(data);
         mRootView.hideLoading();
-        for (ChatItemBean tm: data){
-            System.out.println("tm = " + tm.getLastMessage().create_time);
-        }
         return data;
     }
 
@@ -100,7 +97,6 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     }
 
     private void updateMessage(Message message) {
-        message.setUid(AppApplication.getmCurrentLoginAuth().getUser_id());
         ChatItemBean chatItemBean = new ChatItemBean();
         chatItemBean.setLastMessage(message);
         UserInfoBean userInfoBean = mUserInfoBeanSparseArray.get(message.getUid());
@@ -136,6 +132,6 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGETIMEOUT)
     private void onMessageTimeout(Message message) {
-        mRootView.showMessage("IM 聊天超时" + message);
+//        mRootView.showMessage("IM 聊天超时" + message);
     }
 }
