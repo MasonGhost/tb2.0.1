@@ -1,9 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_play;
 
 
-import java.io.File;
-import java.io.FileDescriptor;
-
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
@@ -14,203 +11,229 @@ import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.SeekBar;
+import android.widget.TextView;
+
+import com.zhiyicx.common.utils.TimeUtils;
+
+import java.io.File;
+import java.io.FileDescriptor;
 
 /**
- * 
- * @ClassName:	MyMediaPlayer 
- * @Description:TODO(这里用一句话描述这个类的作用) 
- * @author:	legendary_tym
- * @date:	2016-6-16 下午1:49:21 
- *
+ * @Author Jliuer
+ * @Date 2017/2/17/18:16
+ * @Email Jliuer@aliyun.com
+ * @Description 音乐播放器
  */
 public class MyAudioPlayer implements OnBufferingUpdateListener,
-OnCompletionListener, MediaPlayer.OnPreparedListener{
+        OnCompletionListener, MediaPlayer.OnPreparedListener {
 
-	public MediaPlayer mediaPlayer;
-	private SeekBar skbProgress;
-	private Context mContext;
-	public static boolean isPrepared=false;
+    private MediaPlayer mMediaPlayer;
+    private SeekBar mSeekBar;
+    private TextView curTime;
+    private TextView totalTime;
+    private Context mContext;
+    private boolean isPrepared = false;
 
-	private OnAudioPlayerStatusChangeLitener mPlayerLitener;
+    private OnAudioPlayerStatusChangeLitener mPlayerLitener;
 
-	public interface OnAudioPlayerStatusChangeLitener{
+    public MyAudioPlayer(SeekBar skbProgress, TextView curTime, TextView totalTime, Context
+            mContext) {
+        mMediaPlayer = new MediaPlayer();
+        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mMediaPlayer.setOnBufferingUpdateListener(this);
+        mMediaPlayer.setOnPreparedListener(this);
+        mMediaPlayer.setOnCompletionListener(this);
+        this.mSeekBar = skbProgress;
+        this.mContext = mContext;
+        this.curTime = curTime;
+        this.totalTime = totalTime;
+        mSeekBar.setOnSeekBarChangeListener(new SeekBarChangeEvent());
+    }
 
-		void onPlayeronCompletion();
-		
-		void onPlayerPrepared();
+    @Override
+    public void onPrepared(MediaPlayer arg0) {
+        if (mPlayerLitener != null) {
+            mPlayerLitener.onPlayerPrepared();
+            mSeekBar.setMax(100);
+        }
+        totalTime.setText(TimeUtils.getStandardTimeWithMinAndSec((long) mMediaPlayer.getDuration
+                ()));
+        isPrepared = true;
+    }
 
-		void isPlaying(int progress);
+    @Override
+    public void onCompletion(MediaPlayer arg0) {
+        if (mPlayerLitener != null) {
+            mPlayerLitener.onPlayeronCompletion();
+        }
+    }
 
-	}
+    @Override
+    public void onBufferingUpdate(MediaPlayer arg0, int bufferingProgress) {
+        mSeekBar.setSecondaryProgress(bufferingProgress);
+        int duration = arg0.getDuration();
+        int currentProgress = mSeekBar.getMax() * arg0.getCurrentPosition() / duration;
+        Log.e(currentProgress + "% play", bufferingProgress + "% buffer");
 
-	public void setOnPlayerStatusChangeLitener(OnAudioPlayerStatusChangeLitener mPlayerLitener){
-		this.mPlayerLitener=mPlayerLitener;
-	}
+    }
 
-	public MyAudioPlayer(SeekBar skbProgress,Context mContext)
-	{
+    public void PrepareAudiofromAssets(String res) {
+        try {
+            mediaPlayerPrepare();
+            AssetFileDescriptor aFD = mContext.getAssets().openFd(res);
+            FileDescriptor fileDescriptor = aFD.getFileDescriptor();
+            this.mMediaPlayer.setDataSource(fileDescriptor, aFD.getStartOffset(), aFD.getLength());
+            aFD.close();
+            PlayAudio(false);
+        } catch (Exception e) {
 
-		mediaPlayer = new MediaPlayer();
-		mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-		mediaPlayer.setOnBufferingUpdateListener(this);
-		mediaPlayer.setOnPreparedListener(this);
-		mediaPlayer.setOnCompletionListener(this);
+        }
+    }
 
-		this.skbProgress=skbProgress;
-		this.mContext=mContext;
-	}
+    public void PrepareAudiofromSDCard(String path) {
+        try {
+            mediaPlayerPrepare();
+            //sdFile.getAbsoluteFile() + File.separator + "welcome.3gp"
+            File sdFile = Environment.getExternalStorageDirectory();
+            this.mMediaPlayer.setDataSource(path);
+            PlayAudio(false);
+        } catch (Exception e) {
 
-	public void playAudiofromAssets(String res){
+        }
+    }
 
-		try { 
-			mediaPlayerPrepare();
-			AssetFileDescriptor aFD = mContext.getAssets().openFd(res);  
-			FileDescriptor fileDescriptor = aFD.getFileDescriptor();  
-			this.mediaPlayer.setDataSource(fileDescriptor, aFD.getStartOffset(), aFD.getLength());  
-			aFD.close(); 
-			PlayAudio(false);
+    public void PrepareAudiofromInternet(String url, boolean isAsync) {
+        try {
+            mediaPlayerPrepare();
+            this.mMediaPlayer.setDataSource(mContext, Uri.parse(url));
+            PlayAudio(isAsync);
+        } catch (Exception e) {
 
+        }
+    }
 
-		}catch (Exception e) {  
-			// TODO: handle exception  
-		}  
-	}
+    public void PrepareAudiofromResource(int resID) {
+        try {
+            mediaPlayerPrepare();
+            this.mMediaPlayer = MediaPlayer.create(mContext, resID);
+            PlayAudio(false);
+        } catch (Exception e) {
 
-	public void playAudiofromSDCard(String path){
+        }
+    }
 
-		try {  
-			mediaPlayerPrepare();
-			//sdFile.getAbsoluteFile() + File.separator + "welcome.3gp"
-			File sdFile = Environment.getExternalStorageDirectory();  
-			this.mediaPlayer.setDataSource(path);  
-			PlayAudio(false);
-		}catch (Exception e) {  
-			// TODO: handle exception  
-		}  
-	}
+    private void mediaPlayerPrepare() {
+        mMediaPlayer.reset();
+//        if (mMediaPlayer == null) {
+//            mMediaPlayer = new MediaPlayer();
+//            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+//            mMediaPlayer.setOnBufferingUpdateListener(this);
+//            mMediaPlayer.setOnPreparedListener(this);
+//            mMediaPlayer.setOnCompletionListener(this);
+//        }
+    }
 
-	public void playAudiofromInternet(String url,boolean isAsync){
+    private void PlayAudio(boolean isLargeRes) {
+        try {
+            //准备完成后才可以播放,另外如果文件特别大或者从网上获得的资源
+            //会在这里等待时间过长,造成堵塞,这样的话就得用
+            if (isLargeRes) {
+                this.mMediaPlayer.prepareAsync();
+            } else {
+                this.mMediaPlayer.prepare();
+            }
+        } catch (Exception e) {
+            if (mPlayerLitener != null) {
+                mPlayerLitener.onFailure();
+            }
+        }
+    }
 
-		try {  
-			mediaPlayerPrepare();
-			this.mediaPlayer.setDataSource(mContext,Uri.parse(url));  
-			PlayAudio(isAsync);
-		}catch (Exception e) {  
-			// TODO: handle exception  
-		}  
-	}
+    public void start() {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.start();
+        }
+    }
 
-	public void playAudiofromResource(int resID){
+    public void pause() {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.pause();
+        }
+    }
 
-		try {  
-			mediaPlayerPrepare();
-			this.mediaPlayer = MediaPlayer.create(mContext, resID);
-			PlayAudio(false);
-		}catch (Exception e) {  
-			// TODO: handle exception  
-		}  
-	}
+    public void startOrpause() {
+        if (isPlaying()) {
+            mMediaPlayer.pause();
+        } else {
+            mMediaPlayer.start();
+        }
+    }
 
-	public void PlayAudio(boolean isLargeRes){  
+    public void stop() {
+        if (mMediaPlayer != null) {
+            isPrepared = false;
+            mSeekBar.setProgress(0);
+            mSeekBar.setSecondaryProgress(0);
+            mMediaPlayer.stop();
+            mMediaPlayer.release();
+            mMediaPlayer = null;
+        }
+    }
 
-		try {  
+    public void reStart() {
+        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+            mMediaPlayer.seekTo(0);
+        }
+    }
 
-			//准备完成后才可以播放,另外如果文件特别大或者从网上获得的资源  
-			//会在这里等待时间过长,造成堵塞,这样的话就得用  
-			if(isLargeRes){
-				this.mediaPlayer.prepareAsync();
-			}else{
-				this.mediaPlayer.prepare();
-			}               
+    public void setPlayerLitener(OnAudioPlayerStatusChangeLitener playerLitener) {
+        mPlayerLitener = playerLitener;
+    }
 
-		} catch (Exception e) {  
-			// TODO: handle exception  
-		}  
-	}
-	
-	
-	public void mediaPlayerPrepare(){
-		if(mediaPlayer==null){
-			mediaPlayer = new MediaPlayer();
-			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-			mediaPlayer.setOnBufferingUpdateListener(this);
-			mediaPlayer.setOnPreparedListener(this);
-			mediaPlayer.setOnCompletionListener(this);
-		}
-	}
+    public boolean isPrepared() {
+        return isPrepared;
+    }
 
+    public void setOnPlayerStatusChangeLitener(OnAudioPlayerStatusChangeLitener mPlayerLitener) {
+        this.mPlayerLitener = mPlayerLitener;
+    }
 
-	public boolean isPlaying(){
+    public boolean isPlaying() {
+        return mMediaPlayer != null && mMediaPlayer.isPlaying();
+    }
 
-		if(mediaPlayer!=null){
-			return mediaPlayer.isPlaying();
-		}
-		return false;
+    class SeekBarChangeEvent implements SeekBar.OnSeekBarChangeListener {
 
-	}
+        private int progress;
+        private boolean fromUser;
 
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress,
+                                      boolean fromUser) {
+            this.progress = (progress / seekBar.getMax()) * mMediaPlayer.getDuration();
+        }
 
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+            fromUser = true;
+        }
 
-	public void reStart(){
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+            // seekTo()的参数是相对与媒体时间的数字，而不是与seekBar.getMax()相对的数字
+            if (fromUser) {
+                mMediaPlayer.seekTo(progress);
+            }
+            fromUser = false;
+        }
+    }
 
-		if (mediaPlayer!=null&&mediaPlayer.isPlaying()) {
-			mediaPlayer.seekTo(0);
-		}else {
+    public interface OnAudioPlayerStatusChangeLitener {
+        void onPlayeronCompletion();
 
-		}
+        void onPlayerPrepared();
 
-	}
-
-	public void start(){
-		if(mediaPlayer!=null){
-			mediaPlayer.start();
-		}
-	}
-
-	public void pause()
-	{
-		if(mediaPlayer!=null){
-			mediaPlayer.pause();
-		}
-	}
-
-	public void stop()
-	{
-		if (mediaPlayer != null) { 
-			isPrepared=false;
-			skbProgress.setProgress(0);
-			skbProgress.setSecondaryProgress(0);
-			mediaPlayer.stop();
-			mediaPlayer.release(); 
-			mediaPlayer = null; 
-		} 
-	}
-
-	@Override
-	public void onPrepared(MediaPlayer arg0) {
-		arg0.start();
-		mPlayerLitener.onPlayerPrepared();
-		isPrepared=true;
-		Log.e("MyAudioPlayer", "onPrepared");
-	}
-
-	@Override
-	public void onCompletion(MediaPlayer arg0) {
-		mPlayerLitener.onPlayeronCompletion();
-		skbProgress.setProgress(100);
-		Log.e("MyAudioPlayer", "onCompletion");
-	}
-
-	@Override
-	public void onBufferingUpdate(MediaPlayer arg0, int bufferingProgress) {
-		skbProgress.setSecondaryProgress(bufferingProgress);
-		int duration=arg0.getDuration();
-		if(duration!=0){
-			int currentProgress=skbProgress.getMax()*arg0.getCurrentPosition()/duration;
-			//		int currentProgress=skbProgress.getMax()*mediaPlayer.getCurrentPosition()/mediaPlayer.getDuration();
-			skbProgress.setProgress(currentProgress);
-			Log.e(currentProgress+"% play", bufferingProgress + "% buffer");
-		}
-	}
+        void onFailure();
+    }
 
 }
