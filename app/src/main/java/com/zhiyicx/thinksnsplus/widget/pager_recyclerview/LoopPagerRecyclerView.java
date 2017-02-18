@@ -39,7 +39,7 @@ public class LoopPagerRecyclerView extends PagerRecyclerView {
     }
 
     /**
-     * 如果目标位置小于最大个数，将被转换为正确值
+     * 如果目标位置小于实际最大个数，将被转换为正确值
      *
      * @param position 目标位置
      */
@@ -69,7 +69,6 @@ public class LoopPagerRecyclerView extends PagerRecyclerView {
     }
 
     private int transformInnerPositionIfNeed(int position) {
-
         final int actualItemCount = getActualItemCountFromAdapter();//正确的item个数
 
         final int actualCurrentPosition = getCurrentPosition() % actualItemCount;//正确的当前位置
@@ -104,6 +103,7 @@ public class LoopPagerRecyclerView extends PagerRecyclerView {
             }
             return bakPosition1;
         }
+
     }
 
     /**

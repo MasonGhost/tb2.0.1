@@ -260,4 +260,11 @@ public class TimeUtils {
     public static String getStandardTimeWithMothAndDay(long timestamp) {
         return getTime(timestamp, "MM-dd");
     }
+
+    /**
+     * 通过时间戳获取 mm:ss
+     */
+    public static String getStandardTimeWithMinAndSec(long timestamp) {
+        return getTime(timestamp, "mm:ss");
+    }
 }

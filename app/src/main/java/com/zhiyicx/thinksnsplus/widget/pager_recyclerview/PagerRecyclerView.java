@@ -269,7 +269,7 @@ public class PagerRecyclerView extends RecyclerView {
 
                         @Override
                         protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
-                            return setSpeed(50f) / displayMetrics.densityDpi;
+                            return setSpeed(100f) / displayMetrics.densityDpi;
                         }
                     };
             linearSmoothScroller.setTargetPosition(position);
@@ -307,7 +307,7 @@ public class PagerRecyclerView extends RecyclerView {
                         for (OnPageChangedListener onPageChangedListener :
                                 mOnPageChangedListeners) {
                             if (onPageChangedListener != null) {
-                                onPageChangedListener.OnPageChanged(mPositionBeforeScroll ,
+                                onPageChangedListener.OnPageChanged(mPositionBeforeScroll,
                                         getCurrentPosition());
                             }
                         }
@@ -326,7 +326,7 @@ public class PagerRecyclerView extends RecyclerView {
                     : RecyclerViewUtils.getCenterYChildPosition(this);
 
             mLastY = ev.getRawY();
-        }else if(ev.getAction() == MotionEvent.ACTION_MOVE && getLayoutManager() != null){
+        } else if (ev.getAction() == MotionEvent.ACTION_MOVE && getLayoutManager() != null) {
             if (mOnPageChangedListeners != null) {
                 for (OnPageChangedListener onPageChangedListener : mOnPageChangedListeners) {
                     if (onPageChangedListener != null) {
@@ -419,13 +419,14 @@ public class PagerRecyclerView extends RecyclerView {
                 }
                 smoothScrollToPosition(safeTargetPosition(targetPosition, getItemCount()));
                 mCurView = null;
-            } else{
+            } else {
                 if (mSmoothScrollTargetPosition != mPositionBeforeScroll) {
                     //发生了滚动
                     if (mOnPageChangedListeners != null) {
-                        for (OnPageChangedListener onPageChangedListener : mOnPageChangedListeners) {
+                        for (OnPageChangedListener onPageChangedListener :
+                                mOnPageChangedListeners) {
                             if (onPageChangedListener != null) {
-                                onPageChangedListener.OnPageChanged(mPositionBeforeScroll ,
+                                onPageChangedListener.OnPageChanged(mPositionBeforeScroll,
                                         mSmoothScrollTargetPosition);
                             }
                         }
@@ -437,19 +438,21 @@ public class PagerRecyclerView extends RecyclerView {
                 if (mOnPageChangedListeners != null) {
                     for (OnPageChangedListener onPageChangedListener : mOnPageChangedListeners) {
                         if (onPageChangedListener != null) {
-                            onPageChangedListener.OnIdle();
+                            onPageChangedListener.OnIdle(mSmoothScrollTargetPosition);
                         }
                     }
                 }
             }
 
-            // reset
-            mMaxLeftWhenDragging = Integer.MIN_VALUE;
-            mMinLeftWhenDragging = Integer.MAX_VALUE;
-            mMaxTopWhenDragging = Integer.MIN_VALUE;
-            mMinTopWhenDragging = Integer.MAX_VALUE;
+
         }
+        // reset
+        mMaxLeftWhenDragging = Integer.MIN_VALUE;
+        mMinLeftWhenDragging = Integer.MAX_VALUE;
+        mMaxTopWhenDragging = Integer.MIN_VALUE;
+        mMinTopWhenDragging = Integer.MAX_VALUE;
     }
+
 
     private int getItemCount() {
         return mViewPagerAdapter == null ? 0 : mViewPagerAdapter.getItemCount();
@@ -617,8 +620,11 @@ public class PagerRecyclerView extends RecyclerView {
 
     public interface OnPageChangedListener {
         void OnPageChanged(int oldPosition, int newPosition);
-        void OnDragging(int downPosition);
-        void OnIdle();
-    }
 
+        void OnDragging(int downPosition);
+
+        void OnIdle(int position);
+
+    }
 }
+

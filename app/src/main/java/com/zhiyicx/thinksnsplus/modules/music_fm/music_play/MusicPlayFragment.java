@@ -11,24 +11,26 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.IBinder;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
+import com.nineoldandroids.animation.ObjectAnimator;
+import com.nineoldandroids.animation.ValueAnimator;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.common.utils.FastBlur;
-import com.zhiyicx.common.utils.StatusBarUtils;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.widget.pager_recyclerview.LoopPagerRecyclerView;
 import com.zhiyicx.thinksnsplus.widget.pager_recyclerview.PagerRecyclerView;
+import com.zhiyicx.thinksnsplus.widget.pager_recyclerview.RecyclerViewUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -46,7 +48,6 @@ import butterknife.OnClick;
  */
 public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> implements
         MusicPlayContract.View {
-
 
     @BindView(R.id.fragment_music_paly_phonograph_point)
     ImageView mFragmentMusicPalyPhonographPoint;
@@ -74,13 +75,46 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     LinearLayout mFragmentMusicPalyBg;
     @BindView(R.id.fragment_music_paly_rv)
     LoopPagerRecyclerView mFragmentMusicPalyRv;
+    @BindView(R.id.fragment_music_paly_cur_time)
+    TextView mFragmentMusicPalyCurTime;
+    @BindView(R.id.fragment_music_paly_total_time)
+    TextView mFragmentMusicPalyTotalTime;
+
     private ImageLoader mImageLoader;
+
     private CommonAdapter mAdapter;
     private List<String> mStringList = new ArrayList<>();
 
     private MusicPlayService mMusicPlayService;
-    private Palette mPalette;
-    private ImageView mCurrentImageView;
+
+    /**
+     * 指针位置flag
+     */
+    private boolean isPointOutPhonograph;
+
+    /**
+     * 指针动画
+     */
+    private ObjectAnimator mPointAnimate;
+
+    /**
+     * 磁盘动画
+     */
+    private ObjectAnimator mPhonographAnimate;
+
+    /**
+     * 两个动画的暂停位置记录
+     */
+    private float[] points = new float[2];
+
+    /**
+     * 当前动画view
+     */
+    private ViewGroup mCurrentView;
+
+    private int mPointDuration = 500;
+    private int mPointDegree = 25;
+    private String url = "http://hd.xiaotimi.com/2016/myxc/ok1/GKL.mp4?#.mp3";
 
     @Override
     protected int getBodyLayoutId() {
@@ -93,30 +127,26 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         mStringList.add("");
         mStringList.add("");
         mStringList.add("");
-//        bindServiceConnection();
+        bindServiceConnection();
 
-        final RotateAnimation rotateAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF,
-                0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rotateAnimation.setRepeatCount(Animation.INFINITE);
-        rotateAnimation.setDuration(20000);
-        rotateAnimation.setFillAfter(true);
-
-        RotateAnimation animation = new RotateAnimation(0, -30, Animation.RELATIVE_TO_SELF, 1f,
-                Animation
-                        .RELATIVE_TO_SELF, 1f);
-        animation.setRepeatCount(Animation.INFINITE);
-        animation.setDuration(500);
-        animation.setFillAfter(false);
+        mFragmentMusicPalyPhonographPoint.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int w = mFragmentMusicPalyPhonographPoint.getWidth();
+                int h = mFragmentMusicPalyPhonographPoint.getHeight();
+                mFragmentMusicPalyPhonographPoint.setPivotX(9 * w / 10);
+                mFragmentMusicPalyPhonographPoint.setPivotY(h / 2);
+            }
+        });
 
         mAdapter = new CommonAdapter<String>(getActivity(), R.layout.item_music_play, mStringList) {
             @Override
             protected void convert(ViewHolder holder, String o, final int position) {
-                mCurrentImageView = holder.getView(R.id.fragment_music_paly_phonograph);
-                mCurrentImageView.setOnClickListener(new View.OnClickListener() {
+                ImageView imageView = holder.getView(R.id.fragment_music_paly_phonograph);
+                imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ToastUtils.showToast(position+"");
-                        mCurrentImageView.startAnimation(rotateAnimation);
+
                     }
                 });
             }
@@ -124,8 +154,8 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
         mFragmentMusicPalyRv.setLayoutManager(new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
-        mFragmentMusicPalyRv.setTriggerOffset(0.4f);
         mFragmentMusicPalyRv.setFlingFactor(3f);
+        mFragmentMusicPalyRv.setTriggerOffset(0.25f);
         mFragmentMusicPalyRv.setAdapter(mAdapter);
         mFragmentMusicPalyRv.setHasFixedSize(true);
 
@@ -134,30 +164,45 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
             @Override
             public void OnPageChanged(int oldPosition, int newPosition) {
-                mFragmentMusicPalyRv.getChildAt(newPosition);
+                points[1] = 0f;
+                stopAnimation(mCurrentView);
+                if (mMusicPlayService != null) {
+                    mMusicPlayService.PrepareAudiofromInternet(url, true);
+                }
+
             }
 
             @Override
             public void OnDragging(int downPosition) {
-                mCurrentImageView.clearAnimation();
+                if (!isPointOutPhonograph) {
+                    isPointOutPhonograph = true;
+                    pauseAnimation(mCurrentView);
+                    doPointAnimation(0, mPointDuration);
+                }
+
             }
 
             @Override
-            public void OnIdle() {
-
+            public void OnIdle(int position) {
+                mCurrentView = (ViewGroup) RecyclerViewUtils.getCenterXChild(mFragmentMusicPalyRv);
+                if (mCurrentView != null) {
+                    mCurrentView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            doPhonographAnimation(360, 10000);
+                        }
+                    }, 500);
+                }
+                doPointAnimation(mPointDegree, mPointDuration);
+                isPointOutPhonograph = false;
             }
+
         });
 
-
-
-//        mFragmentMusicPalyPhonographPoint.startAnimation(animation);
-//        mFragmentMusicPalyPhonograph.startAnimation(rotateAnimation);
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         Bitmap bitmap = BitmapFactory
                 .decodeResource(getResources(), R.mipmap.npc).copy(Bitmap.Config.ARGB_8888, true);
 
-//        mPalette = Palette.from(bitmap).generate();
-//        StatusBarUtils.setStatusBarColor(getActivity(), mPalette.getVibrantColor(0xe3e3e3));
         Canvas canvas = new Canvas(bitmap);
         Paint paint = new Paint();
         ColorMatrix cm = new ColorMatrix();
@@ -165,9 +210,10 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         ColorMatrixColorFilter grayColorFilter = new ColorMatrixColorFilter(cm);
         paint.setColorFilter(grayColorFilter);
         canvas.drawBitmap(bitmap, 0, 0, paint);
+        canvas.drawARGB(200, 255, 255, 255);
 
-        BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap(bitmap, bitmap.getWidth
-                (), bitmap.getHeight()));
+        BitmapDrawable drawable = new BitmapDrawable(bitmap);
+        drawable.setFilterBitmap(true);
         mFragmentMusicPalyBg.setBackgroundDrawable(drawable);
     }
 
@@ -223,12 +269,18 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 break;
             case R.id.fragment_music_paly_order:
                 break;
-            case R.id.fragment_music_paly_preview:
+            case R.id.fragment_music_paly_preview:// 上一首歌
+                mFragmentMusicPalyRv.smoothScrollToPosition(mFragmentMusicPalyRv
+                        .getActualCurrentPosition() - 1);
+                doPointAnimation(0, mPointDuration);
                 break;
             case R.id.fragment_music_paly_palyer:
-//                mMusicPlayService.playOrPause();
+                mMusicPlayService.playOrPause();
                 break;
-            case R.id.fragment_music_paly_nextview:
+            case R.id.fragment_music_paly_nextview:// 下一首歌
+                mFragmentMusicPalyRv.smoothScrollToPosition(mFragmentMusicPalyRv
+                        .getActualCurrentPosition() + 1);
+                doPointAnimation(0, mPointDuration);
                 break;
             case R.id.fragment_music_paly_list:
                 break;
@@ -237,19 +289,111 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         }
     }
 
-    //  在Activity中调用 bindService 保持与 Service 的通信
+    /**
+     * 指针动画
+     *
+     * @param targetDegree 目标角度
+     * @param duration     时长
+     */
+    public void doPointAnimation(int targetDegree, int duration) {
+        mPointAnimate = ObjectAnimator.ofFloat(mFragmentMusicPalyPhonographPoint, "Rotation",
+                points[0],
+                targetDegree);
+        // 设置持续时间
+        mPointAnimate.setDuration(duration);
+        mPointAnimate.setInterpolator(new AccelerateDecelerateInterpolator());
+        // 设置动画监听
+        mPointAnimate.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                // TODO Auto-generated method stub
+                // 监听动画执行的位置，以便下次开始时，从当前位置开始
+                points[0] = (float) animation.getAnimatedValue();
+            }
+        });
+
+        mPointAnimate.start();
+    }
+
+
+    /**
+     * 磁盘动画
+     *
+     * @param targetDegree 目标角度
+     * @param duration     时长
+     */
+    public void doPhonographAnimation(int targetDegree, int duration) {
+        View target;
+        if (mCurrentView == null) {
+            ViewGroup group = (ViewGroup) RecyclerViewUtils.getCenterXChild
+                    (mFragmentMusicPalyRv);
+            target = group.getChildAt(0);
+        } else {
+            target = mCurrentView.getChildAt(0);
+        }
+
+        mPhonographAnimate = ObjectAnimator.ofFloat(target, "Rotation",
+                points[1],
+                targetDegree);
+        // 设置持续时间
+        mPhonographAnimate.setDuration(duration);
+
+        mPhonographAnimate.setInterpolator(new LinearInterpolator());
+        mPhonographAnimate.setRepeatCount(ObjectAnimator.INFINITE);
+        // 设置动画监听
+        mPhonographAnimate.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                // TODO Auto-generated method stub
+                // 监听动画执行的位置，以便下次开始时，从当前位置开始
+                points[1] = (float) animation.getAnimatedValue();
+            }
+        });
+        mPhonographAnimate.start();
+    }
+
+    /**
+     * 停止转盘动画
+     */
+    public void stopAnimation(View target) {
+        if (target != null && mPhonographAnimate != null) {
+            mPhonographAnimate.setDuration(0);
+            mPhonographAnimate.reverse();
+            mPhonographAnimate.end();
+            target.clearAnimation();
+            points[1] = 0;// 重置起始位置
+        }
+    }
+
+    /**
+     * 暂停转盘动画 *
+     */
+    public void pauseAnimation(View target) {
+        if (target == null) target = RecyclerViewUtils.getCenterXChild(mFragmentMusicPalyRv);
+        if (target != null && mPhonographAnimate != null) {
+            mPhonographAnimate.cancel();
+            target.clearAnimation();// 清除此ImageView身上的动画
+        }
+
+    }
+
+    /**
+     * 绑定播放服务
+     */
     private void bindServiceConnection() {
         Intent intent = new Intent(getActivity(), MusicPlayService.class);
         getActivity().startService(intent);
         getActivity().bindService(intent, serviceConnection, getActivity().BIND_AUTO_CREATE);
     }
 
-    //  回调onServiceConnected 函数，通过IBinder 获取 Service对象，实现Activity与 Service的绑定
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            mMusicPlayService = ((MusicPlayService.MyBinder) (service)).getService();
-            //mMusicPlayService.mediaPlayer.getDuration()
+            mMusicPlayService = ((MusicPlayService.MUsicBinder) (service)).getService
+                    (mFragmentMusicPalyProgress, mFragmentMusicPalyCurTime,
+                            mFragmentMusicPalyTotalTime);
+            mMusicPlayService.setPrepareMusiListener(new MusiPrepareListener());
+            mMusicPlayService.PrepareAudiofromInternet(url, true);
         }
 
         @Override
@@ -257,4 +401,22 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             mMusicPlayService = null;
         }
     };
+
+    class MusiPrepareListener implements MusicPlayService.OnPrepareMusiListener {
+        @Override
+        public void OnPrepareed() {
+            mMusicPlayService.playOrPause();
+        }
+
+        @Override
+        public void OnFailure() {
+
+        }
+
+        @Override
+        public void OnPlayeronComplet() {
+
+        }
+    }
+
 }

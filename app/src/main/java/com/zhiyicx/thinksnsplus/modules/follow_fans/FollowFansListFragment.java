@@ -18,6 +18,7 @@ import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansItemBean;
@@ -27,6 +28,7 @@ import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -231,4 +233,11 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
         followFansBean.setFollowState(followState);
         refreshData(index);
     }
+
+    @Override
+    public void upDateUserInfo(List<UserInfoBean> userInfoBeanList) {
+        onCacheResponseSuccess(requestCacheData(mMaxId, false), false);
+        refreshData();
+    }
+
 }
