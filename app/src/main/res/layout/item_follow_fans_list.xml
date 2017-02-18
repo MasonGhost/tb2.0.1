@@ -13,7 +13,7 @@
         android:id="@+id/iv_headpic"
         android:layout_width="@dimen/headpic_for_list"
         android:layout_height="@dimen/headpic_for_list"
-        tools:src="@mipmap/ic_launcher"/>
+        android:src="@mipmap/ic_launcher"/>
 
 
     <TextView
@@ -26,7 +26,7 @@
         android:paddingLeft="@dimen/spacing_normal"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_content_comment"
-        tools:text="张三 "/>
+        android:text="张三 "/>
 
     <TextView
         android:id="@+id/tv_user_signature"
@@ -42,7 +42,7 @@
         android:paddingTop="@dimen/spacing_small"
         android:textColor="@color/normal_for_assist_text"
         android:textSize="@dimen/size_content"
-        tools:text="走在风中今天阳光突然好温柔，天的温柔地的温柔想你抱着我"/>
+        android:text="走在风中今天阳光突然好温柔，天的温柔地的温柔想你抱着我"/>
 
     <TextView
         android:id="@+id/tv_dig_count"
@@ -56,7 +56,7 @@
         android:paddingTop="@dimen/spacing_small"
         android:textColor="@color/normal_for_assist_text"
         android:textSize="@dimen/size_content_assist"
-        tools:text="点赞 56万"/>
+        android:text="点赞 56万"/>
 
     <ImageView
         android:id="@+id/iv_user_follow"
@@ -65,6 +65,6 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/spacing_mid"
-        tools:src="@mipmap/ico_me_follow"/>
+        android:src="@mipmap/ico_me_follow"/>
 
 </RelativeLayout>

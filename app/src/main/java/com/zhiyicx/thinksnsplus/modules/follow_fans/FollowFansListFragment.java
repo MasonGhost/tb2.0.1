@@ -125,30 +125,6 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
     }
 
     private void setItemData(final ViewHolder holder, final FollowFansBean followFansItemBean, final int position) {
-        UserInfoBean userInfoBean = followFansItemBean.getFllowedUser();
-        if (userInfoBean == null) {
-            return;
-        }
-        // 设置用户名，用户简介
-        holder.setText(R.id.tv_name, userInfoBean.getName());
-        holder.setText(R.id.tv_user_signature, userInfoBean.getIntro());
-        // 修改点赞数量颜色
-        String digContent = "点赞 " + "<" + 56 + ">";
-        CharSequence charSequence = ColorPhrase.from(digContent).withSeparator("<>")
-                .innerColor(ContextCompat.getColor(getContext(), R.color.themeColor))
-                .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
-                .format();
-        TextView digCount = holder.getView(R.id.tv_dig_count);
-        digCount.setText(charSequence);
-        // 头像加载
-        ImageView headPic = holder.getView(R.id.iv_headpic);
-        ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        imageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url(userInfoBean.getUserIcon())
-                .transformation(new GlideCircleTransform(getContext()))
-                .imagerView(headPic)
-                .build()
-        );
         // 设置关注状态
         switch (followFansItemBean.getFollowState()) {
             case FollowFansBean.IFOLLOWED_STATE:
@@ -163,24 +139,6 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
             default:
                 holder.setImageResource(R.id.iv_user_follow, R.mipmap.ico_me_follow);
         }
-
-        // 添加点击事件
-        RxView.clicks(holder.getView(R.id.tv_name))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        toUserCenter();
-                    }
-                });
-        RxView.clicks(holder.getView(R.id.iv_headpic))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        toUserCenter();
-                    }
-                });
         RxView.clicks(holder.getView(R.id.iv_user_follow))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(new Action1<Void>() {
@@ -205,6 +163,49 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
                         }
                     }
                 });
+        UserInfoBean userInfoBean = followFansItemBean.getFllowedUser();
+        if (userInfoBean == null) {
+            return;
+        }
+        // 设置用户名，用户简介
+        holder.setText(R.id.tv_name, userInfoBean.getName());
+        holder.setText(R.id.tv_user_signature, userInfoBean.getIntro());
+        // 修改点赞数量颜色
+        String digContent = "点赞 " + "<" + 56 + ">";
+        CharSequence charSequence = ColorPhrase.from(digContent).withSeparator("<>")
+                .innerColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
+                .format();
+        TextView digCount = holder.getView(R.id.tv_dig_count);
+        digCount.setText(charSequence);
+        // 头像加载
+        ImageView headPic = holder.getView(R.id.iv_headpic);
+        ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
+        imageLoader.loadImage(getContext(), GlideImageConfig.builder()
+                .url(userInfoBean.getUserIcon())
+                .transformation(new GlideCircleTransform(getContext()))
+                .imagerView(headPic)
+                .build()
+        );
+
+        // 添加点击事件
+        RxView.clicks(holder.getView(R.id.tv_name))
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        toUserCenter();
+                    }
+                });
+        RxView.clicks(holder.getView(R.id.iv_headpic))
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        toUserCenter();
+                    }
+                });
+
     }
 
     /**
