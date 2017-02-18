@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.base;
 
 
 import com.zhiyicx.baseproject.cache.CacheImp;
-import com.zhiyicx.baseproject.cache.IDataBaseOperate;
 
 import javax.inject.Singleton;
 
