@@ -57,7 +57,7 @@ public class MessageRepository implements MessageContract.Repository {
                             if (uids.length() > 0) {
                                 uids = uids.substring(0, uids.length() - 1);
                             }
-//                            return mUserInfoClient.getUserInfo(uids).
+//                            return mUserInfoClient.getUserInfo(user_id).
 //                                    flatMap(new Func1<BaseJson<UserInfoBean>, Observable<BaseJson<List<MessageItemBean>>>>() {
 //                                        @Override
 //                                        public Observable<BaseJson<List<MessageItemBean>>> call(BaseJson<UserInfoBean> userInfoBeanBaseJson) {
