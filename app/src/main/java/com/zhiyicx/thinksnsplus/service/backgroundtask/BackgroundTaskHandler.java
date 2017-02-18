@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.service.backgroundtask;
 
 import android.app.Application;
 
+import com.google.gson.Gson;
 import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.imsdk.entity.IMConfig;
@@ -21,11 +22,14 @@ import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.inject.Inject;
+
+import okhttp3.RequestBody;
 
 /**
  * @Describe 后台任务处理逻辑
@@ -172,8 +176,10 @@ public class BackgroundTaskHandler {
 
                 break;
             case DELETE:
+                HashMap<String, Object> datas = backgroundRequestTaskBean.getParams();
+                RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(datas));
                 mServiceManager.getCommonClient().handleBackGroudTaskDelete(backgroundRequestTaskBean.getPath()
-                        , backgroundRequestTaskBean.getParams())
+                        , body)
                         .subscribe(new BaseSubscribe<CacheBean>() {
                             @Override
                             protected void onSuccess(CacheBean data) {
