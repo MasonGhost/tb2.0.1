@@ -17,6 +17,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -238,11 +241,32 @@ public class CommonTest extends AcitivityTest {
         int b=10000;
         assertTrue(b==a.intValue());
     }
+
+    /**
+     *  equestest
+     * @throws Exception
+     */
     @Test
     public void testEques() throws Exception {
         String  a = "123";
         int b=123;
         assertFalse(a.equals(b));
-        assertFalse(a.equals(b+""));
+        assertTrue(a.equals(String.valueOf(b)));
+    }
+
+    /**
+     * 引用测试
+     * @throws Exception
+     */
+    @Test
+    public void testyinyong() throws Exception {
+        List<Integer> a = new ArrayList<>();
+        a.add(1);
+        a.add(2);
+
+        List<Integer> b=a;
+        b.add(3);
+        System.out.println("a = " + a);
+        System.out.println("b = " + b);
     }
 }

@@ -61,14 +61,16 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                 })
                 .subscribe(new BaseSubscribe<List<MessageItemBean>>() {
                     @Override
-                    protected void onSuccess(List<MessageItemBean> data) {
+                    protected void onSuccess(final List<MessageItemBean> data) {
                         mRootView.onNetResponseSuccess(data, false);
+
                     }
 
                     @Override
                     protected void onFailure(String message) {
                         mRootView.showMessage(message);
                     }
+
                     @Override
                     protected void onException(Throwable throwable) {
                         throwable.printStackTrace();
@@ -161,7 +163,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
 
         if (!(ActivityHandler.getInstance().currentActivity() instanceof HomeActivity)) {
             return;
-        }else {
+        } else {
 
         }
         LogUtils.d(TAG, "------onMessageReceived------->" + message);

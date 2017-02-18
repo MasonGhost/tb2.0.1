@@ -90,11 +90,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     @Override
     protected void initView(View rootView) {
         initViewPager();
-        initListener();
-        changeNavigationButton(PAGE_HOME);
-        mVpHome.setCurrentItem(PAGE_HOME, false);
     }
-
 
     @Override
     protected void initData() {
@@ -104,6 +100,9 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 .homePresenterModule(new HomePresenterModule(this))
                 .build()
                 .inject(this);
+        initListener();
+        changeNavigationButton(PAGE_HOME);
+        mVpHome.setCurrentItem(PAGE_HOME, false);
     }
 
     @Override
@@ -175,6 +174,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
             public void onPageScrollStateChanged(int state) {
             }
         });
+        // 设置 IM 监听
+        mPresenter.initIM();
     }
 
     /**

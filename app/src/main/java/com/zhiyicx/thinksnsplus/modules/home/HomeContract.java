@@ -31,6 +31,6 @@ public interface HomeContract {
     }
 
     interface Presenter extends IBasePresenter {
-
+        void initIM();
     }
 }
