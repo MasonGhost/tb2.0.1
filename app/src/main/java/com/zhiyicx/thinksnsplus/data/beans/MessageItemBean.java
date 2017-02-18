@@ -20,7 +20,7 @@ public class MessageItemBean extends CacheBean implements Parcelable {
     private int unReadMessageNums; // 未读消息数
 
     public UserInfoBean getUserInfo() {
-        return userInfo;
+        return userInfo==null?new UserInfoBean():userInfo;
     }
 
     public void setUserInfo(UserInfoBean userInfo) {
