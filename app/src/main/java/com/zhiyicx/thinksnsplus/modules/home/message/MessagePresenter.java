@@ -159,6 +159,8 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     private void onMessageReceived(Message message) {
         if (!(ActivityHandler.getInstance().currentActivity() instanceof HomeActivity)) {
             return;
+        }else {
+
         }
         LogUtils.d(TAG, "------onMessageReceived------->" + message);
     }
