@@ -72,12 +72,19 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
     public void convert(ViewHolder holder, final ChatItemBean chatItemBean, ChatItemBean lastChatItemBean, int position) {
 //        holder.getView(R.id.rl_chat_bubble).setBackgroundDrawable(mBubbleBg);
         // 显示时间的，最大间隔时间；当两条消息间隔 > MAX_SPACING_TIME 时显示时间
-        if (lastChatItemBean == null || (chatItemBean.getLastMessage().getCreate_time() - lastChatItemBean.getLastMessage().getCreate_time()) >= MAX_SPACING_TIME * ConstantConfig.MIN) {
-            holder.setText(R.id.tv_chat_time, TimeUtils.getTimeFriendlyForDetail(chatItemBean.getLastMessage().getCreate_time() / 1000));// 测试数据，暂时使用
+        if(lastChatItemBean!=null){
+            System.out.println("lastChatItemBean = " +TimeUtils.getStandardTimeWithYeay(lastChatItemBean.getLastMessage().getCreate_time()));
+
+            System.out.println("chatItemBean = " + TimeUtils.getStandardTimeWithYeay(chatItemBean.getLastMessage().getCreate_time()));
+        }
+        if (lastChatItemBean == null || (chatItemBean.getLastMessage().getCreate_time() - lastChatItemBean.getLastMessage().getCreate_time()) >= (MAX_SPACING_TIME * ConstantConfig.MIN)) {
+//            holder.setText(R.id.tv_chat_time, TimeUtils.getTimeFriendlyForDetail(chatItemBean.getLastMessage().getCreate_time() / 1000));// 测试数据，暂时使用
+            holder.setText(R.id.tv_chat_time, TimeUtils.getStandardTimeWithYeay(chatItemBean.getLastMessage().getCreate_time()));// 测试数据，暂时使用
             holder.setVisible(R.id.tv_chat_time, View.VISIBLE);
         } else {
             holder.setVisible(R.id.tv_chat_time, View.GONE);
         }
+
         // 是否需要显示名字
         if (mIsShowName) {
             holder.setVisible(R.id.tv_chat_name, View.VISIBLE);

@@ -44,16 +44,18 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/5
  * @Contact master.jungle68@gmail.com
  */
-public class MessageFragment extends TSListFragment<MessageContract.Presenter, MessageItemBean> implements MessageContract.View{
+public class MessageFragment extends TSListFragment<MessageContract.Presenter, MessageItemBean> implements MessageContract.View {
     private static final int ITEM_TYPE_COMMNETED = 0;
     private static final int ITEM_TYPE_LIKED = 1;
 
     private View mHeaderView;
+
     @Inject
     protected MessagePresenter mMessagePresenter;
     private ImageLoader mImageLoader;
     private List<MessageItemBean> mMessageItemBeen = new ArrayList<>();
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
+    private int mLastClickPostion = -1;// 纪录上次聊天 item ,用于单条刷新
 
     public static MessageFragment newInstance() {
         MessageFragment fragment = new MessageFragment();
@@ -114,6 +116,16 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (mLastClickPostion != -1) {
+            // 刷新当条信息内容
+            mPresenter.refreshLastClicikPostion(mLastClickPostion, mMessageItemBeen.get(mLastClickPostion));
+        }
+
+    }
+
+    @Override
     protected CommonAdapter getAdapter() {
         return new CommonAdapter<MessageItemBean>(getActivity(), R.layout.item_message_list, mMessageItemBeen) {
             @Override
@@ -128,7 +140,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
      * 初始化头信息（评论的、赞过的）
      */
     private void initHeaderView() {
-         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
+        mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
 
         mHeaderView = LayoutInflater.from(getContext()).inflate(R.layout.view_header_message_list, null);
         mHeaderAndFooterWrapper.addHeaderView(mHeaderView);
@@ -178,11 +190,11 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
             tvHeaderLikeTip = (BadgeView) headerview.findViewById(R.id.tv_header_like_tip);
         }
         tvHeaderCommentContent.setText(commentItemData.getConversation().getLast_message_text());
-        tvHeaderCommentTime.setText(TimeUtils.getTimeFriendlyNormal(commentItemData.getConversation().getLast_message_time()/1000));
+        tvHeaderCommentTime.setText(TimeUtils.getTimeFriendlyNormal(commentItemData.getConversation().getLast_message_time() / 1000));
         tvHeaderCommentTip.setBadgeCount(commentItemData.getUnReadMessageNums());
 
         tvHeaderLikeContent.setText(likedItemData.getConversation().getLast_message_text());
-        tvHeaderLikeTime.setText(TimeUtils.getTimeFriendlyNormal(commentItemData.getConversation().getLast_message_time()/1000));
+        tvHeaderLikeTime.setText(TimeUtils.getTimeFriendlyNormal(commentItemData.getConversation().getLast_message_time() / 1000));
         tvHeaderLikeTip.setBadgeCount(likedItemData.getUnReadMessageNums());
         refreshData();
     }
@@ -195,7 +207,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
      * @param position        当前数据位置
      */
 
-    private void setItemData(ViewHolder holder, final MessageItemBean messageItemBean, int position) {
+    private void setItemData(ViewHolder holder, final MessageItemBean messageItemBean, final int position) {
         switch (messageItemBean.getConversation().getType()) {
             case ChatType.CHAT_TYPE_PRIVATE:// 私聊
                 mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
@@ -236,13 +248,13 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        toChat(messageItemBean);
+                        toChat(messageItemBean, position);
                     }
                 });
 //        }
 
         holder.setText(R.id.tv_content, messageItemBean.getConversation().getLast_message_text());
-        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(messageItemBean.getConversation().getLast_message_time()/1000));
+        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(messageItemBean.getConversation().getLast_message_time() / 1000));
         ((BadgeView) holder.getView(R.id.tv_tip)).setBadgeCount(messageItemBean.getUnReadMessageNums());
 
     }
@@ -250,14 +262,16 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     /**
      * 进入聊天页
      *
-     * @param messageItemBean
+     * @param messageItemBean 当前 item 内容
+     * @param positon         当前点击位置
      */
-    private void toChat(MessageItemBean messageItemBean) {
+    private void toChat(MessageItemBean messageItemBean, int positon) {
         Intent to = new Intent(getActivity(), ChatActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(ChatFragment.BUNDLE_MESSAGEITEMBEAN, messageItemBean);
         to.putExtras(bundle);
         startActivity(to);
+        mLastClickPostion = positon - 1;// 减去 heder 占用的 1 个位置
     }
 
     /**
@@ -298,6 +312,13 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     public void updateLikeItemData(MessageItemBean messageItemBean) {
         mMessageItemBeen.set(ITEM_TYPE_LIKED, messageItemBean);
+    }
+
+    @Override
+    public void refreshLastClicikPostion(int position, MessageItemBean messageItemBean) {
+        mMessageItemBeen.set(position, messageItemBean);
+        mHeaderAndFooterWrapper.notifyDataSetChanged();
+        mLastClickPostion = -1;
     }
 
     @Override

@@ -20,6 +20,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.zhiyicx.imsdk.db.base.BaseDao.TIME_DEFAULT_ADD;
+
 /**
  * @Describe
  * @Author Jungle68
@@ -62,7 +64,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         List<ChatItemBean> data = mRepository.getChatListData(cid, creat_time);
         Collections.reverse(data);
         System.out.println("creat_time = " + TimeUtils.getStandardTimeWithYeay(creat_time));
-        for (ChatItemBean chatItemBean:data){
+        for (ChatItemBean chatItemBean : data) {
             System.out.println("chatItemBean = " + TimeUtils.getStandardTimeWithYeay(chatItemBean.getLastMessage().create_time));
         }
         mRootView.hideLoading();
@@ -92,6 +94,9 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED)
     private void onMessageReceived(Message message) {
         LogUtils.d(TAG, "------onMessageReceived------->" + message);
+        if (message.getMid() > 0) {
+            message.setCreate_time((message.mid >> 23) + TIME_DEFAULT_ADD);
+        }
         updateMessage(message);
     }
 

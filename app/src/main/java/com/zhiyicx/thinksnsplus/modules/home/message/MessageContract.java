@@ -25,6 +25,7 @@ public interface MessageContract {
 
         void updateLikeItemData(MessageItemBean messageItemBean);
 
+        void refreshLastClicikPostion(int position,MessageItemBean messageItemBean);
     }
 
     /**
@@ -46,5 +47,6 @@ public interface MessageContract {
 
         void createChat();
 
+        void refreshLastClicikPostion(int position,MessageItemBean messageItemBean);
     }
 }

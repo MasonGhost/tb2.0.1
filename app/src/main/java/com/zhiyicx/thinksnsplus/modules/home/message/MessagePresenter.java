@@ -5,6 +5,7 @@ import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.ChatType;
+import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.R;
@@ -149,6 +150,14 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                         mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
                     }
                 });
+    }
+
+    @Override
+    public void refreshLastClicikPostion(int positon, MessageItemBean messageItemBean) {
+        Message message = MessageDao.getInstance(mContext).getLastMessageByCid(messageItemBean.getConversation().getCid());
+        messageItemBean.getConversation().setLast_message_time(message.getCreate_time());
+        messageItemBean.getConversation().setLast_message_text(message.getTxt());
+        mRootView.refreshLastClicikPostion(positon, messageItemBean);
     }
 
     /*******************************************
