@@ -247,6 +247,8 @@ public class BackgroundTaskHandler {
                             protected void onSuccess(List<UserInfoBean> data) {
                                 mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
                                 mUserInfoBeanGreenDao.insertOrReplace(data);
+                                // 用户信息获取成功后就可以通知界面刷新了
+                                EventBus.getDefault().post(data, EventBusTagConfig.EVENT_USERINFO_UPDATE);
                             }
 
                             @Override
