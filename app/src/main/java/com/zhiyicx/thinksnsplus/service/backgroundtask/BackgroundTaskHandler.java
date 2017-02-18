@@ -15,10 +15,12 @@ import com.zhiyicx.thinksnsplus.data.source.local.BackgroundRequestTaskBeanGreen
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -44,6 +46,8 @@ public class BackgroundTaskHandler {
     BackgroundRequestTaskBeanGreenDaoImpl mBackgroundRequestTaskBeanGreenDao;
     @Inject
     AuthRepository mAuthRepository;
+    @Inject
+    UserInfoRepository mUserInfoRepository;
 
     private Queue<BackgroundRequestTaskBean> mTaskBeanConcurrentLinkedQueue = new ConcurrentLinkedQueue<>();// 线程安全的队列
 
@@ -224,10 +228,17 @@ public class BackgroundTaskHandler {
                 if (backgroundRequestTaskBean.getParams() == null || backgroundRequestTaskBean.getParams().get("user_id") == null) {
                     return;
                 }
-                mServiceManager.getUserInfoClient().getUserInfo((Integer) backgroundRequestTaskBean.getParams().get("user_id"))
-                        .subscribe(new BaseSubscribe<UserInfoBean>() {
+                List<Integer> integers = new ArrayList<>();
+                if (backgroundRequestTaskBean.getParams().get("user_id") instanceof List) {
+                    integers.addAll((Collection<? extends Integer>) backgroundRequestTaskBean.getParams().get("user_id"));
+                } else {
+                    integers.add((Integer) backgroundRequestTaskBean.getParams().get("user_id"));
+                }
+
+                mUserInfoRepository.getUserInfo(integers)
+                        .subscribe(new BaseSubscribe<List<UserInfoBean>>() {
                             @Override
-                            protected void onSuccess(UserInfoBean data) {
+                            protected void onSuccess(List<UserInfoBean> data) {
                                 mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
                                 mUserInfoBeanGreenDao.insertOrReplace(data);
                             }
@@ -239,6 +250,7 @@ public class BackgroundTaskHandler {
 
                             @Override
                             protected void onException(Throwable throwable) {
+                                throwable.printStackTrace();
                                 addBackgroundRequestTask(backgroundRequestTaskBean);
                             }
                         });

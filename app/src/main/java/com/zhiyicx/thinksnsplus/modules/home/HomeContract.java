@@ -16,6 +16,7 @@ public interface HomeContract {
      */
     interface View extends IBaseView<Presenter> {
 
+        void addNewMessageTip();
 
     }
 

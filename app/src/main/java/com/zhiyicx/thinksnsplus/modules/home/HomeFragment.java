@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
+import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -212,5 +213,12 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     @Override
     public void showMessage(String message) {
 
+    }
+
+    @Override
+    public void addNewMessageTip() {
+        BadgeView badgeView=new BadgeView(getContext());
+        badgeView.setHideOnNull(false);
+        badgeView.setTargetView(mIvMessage);
     }
 }

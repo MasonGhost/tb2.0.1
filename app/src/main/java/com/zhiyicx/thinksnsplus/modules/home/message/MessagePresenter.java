@@ -23,6 +23,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.functions.Action0;
+
 /**
  * @Describe
  * @Author Jungle68
@@ -51,26 +53,28 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     @Override
     public void requestNetData(int maxId, boolean isLoadMore) {
         mRepository.getMessageList(AppApplication.getmCurrentLoginAuth().getUser_id())
-        .subscribe(new BaseSubscribe<List<MessageItemBean>>() {
-            @Override
-            protected void onSuccess(List<MessageItemBean> data) {
-                mRootView.hideLoading();
-                mRootView.onNetResponseSuccess(data, false);
-            }
+                .doAfterTerminate(new Action0() {
+                    @Override
+                    public void call() {
+                        mRootView.hideLoading();
+                    }
+                })
+                .subscribe(new BaseSubscribe<List<MessageItemBean>>() {
+                    @Override
+                    protected void onSuccess(List<MessageItemBean> data) {
+                        mRootView.onNetResponseSuccess(data, false);
+                    }
 
-            @Override
-            protected void onFailure(String message) {
-                mRootView.hideLoading();
-                mRootView.showMessage(message);
-            }
-
-            @Override
-            protected void onException(Throwable throwable) {
-                throwable.printStackTrace();
-                mRootView.hideLoading();
-                mRootView.showMessage("网络不加。。。。。");
-            }
-        });
+                    @Override
+                    protected void onFailure(String message) {
+                        mRootView.showMessage(message);
+                    }
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        throwable.printStackTrace();
+                        mRootView.showMessage(mContext.getResources().getString(R.string.err_net_not_work));
+                    }
+                });
     }
 
     /**
@@ -155,6 +159,8 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     private void onMessageReceived(Message message) {
         if (!(ActivityHandler.getInstance().currentActivity() instanceof HomeActivity)) {
             return;
+        }else {
+
         }
         LogUtils.d(TAG, "------onMessageReceived------->" + message);
     }

@@ -13,7 +13,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.BadgeView;
-import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.imsdk.core.ChatType;
 import com.zhiyicx.thinksnsplus.R;
@@ -27,8 +27,6 @@ import com.zhiyicx.thinksnsplus.modules.home.message.messagelike.MessageLikeActi
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -179,11 +177,11 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
             tvHeaderLikeTip = (BadgeView) headerview.findViewById(R.id.tv_header_like_tip);
         }
         tvHeaderCommentContent.setText(commentItemData.getConversation().getLast_message_text());
-        tvHeaderCommentTime.setText(ConvertUtils.millis2FitTimeSpan(commentItemData.getConversation().getLast_message_time(), 3));
+        tvHeaderCommentTime.setText(TimeUtils.getTimeFriendlyNormal(commentItemData.getConversation().getLast_message_time()));
         tvHeaderCommentTip.setBadgeCount(commentItemData.getUnReadMessageNums());
 
         tvHeaderLikeContent.setText(likedItemData.getConversation().getLast_message_text());
-        tvHeaderLikeTime.setText(ConvertUtils.millis2FitTimeSpan(likedItemData.getConversation().getLast_message_time(), 3));
+        tvHeaderLikeTime.setText(TimeUtils.getTimeFriendlyNormal(commentItemData.getConversation().getLast_message_time()));
         tvHeaderLikeTip.setBadgeCount(likedItemData.getUnReadMessageNums());
         refreshData();
     }
@@ -243,7 +241,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 //        }
 
         holder.setText(R.id.tv_content, messageItemBean.getConversation().getLast_message_text());
-        holder.setText(R.id.tv_time, ConvertUtils.millis2FitTimeSpan(messageItemBean.getConversation().getLast_message_time(), 3));
+        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(messageItemBean.getConversation().getLast_message_time()));
         ((BadgeView) holder.getView(R.id.tv_tip)).setBadgeCount(messageItemBean.getUnReadMessageNums());
 
     }
