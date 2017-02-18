@@ -37,6 +37,7 @@ public class Conversation implements Serializable {
     private String pwd;
     private long last_message_time;
     private String last_message_text;
+    @SerializedName("uids")
     private String usids;//聊天对方的usids
     private boolean is_del;
     @SerializedName("user_id")
