@@ -83,12 +83,15 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     /**
      * 获取用户信息
      *
-     * @param user_id 用户 id
+     * @param user_ids 用户 id 数组
      * @return
      */
     @Override
-    public Observable<BaseJson<UserInfoBean>> getUserInfo(int user_id) {
-        return mUserInfoClient.getUserInfo(user_id)
+    public Observable<BaseJson<List<UserInfoBean>>> getUserInfo(List<Integer> user_ids) {
+        HashMap<String, Object> datas = new HashMap<>();
+        datas.put("user_ids", user_ids);
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(datas));
+        return mUserInfoClient.getUserInfo(body)
                 .subscribeOn(Schedulers.io()).
                         observeOn(AndroidSchedulers.mainThread());
     }

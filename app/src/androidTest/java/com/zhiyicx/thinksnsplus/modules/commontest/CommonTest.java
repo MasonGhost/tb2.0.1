@@ -238,4 +238,11 @@ public class CommonTest extends AcitivityTest {
         int b=10000;
         assertTrue(b==a.intValue());
     }
+    @Test
+    public void testEques() throws Exception {
+        String  a = "123";
+        int b=123;
+        assertFalse(a.equals(b));
+        assertFalse(a.equals(b+""));
+    }
 }

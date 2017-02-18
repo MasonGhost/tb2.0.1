@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
@@ -27,6 +28,7 @@ public class UserInfoBean implements Parcelable {
     public static final String FEMALE = "2";
     public static final String SECRET = "3";
     @Id
+    @SerializedName("id")
     private Long user_id;
     private String sex = NOT_DEFINE;// 1 2 3  1男 2女 3其他
     @Transient

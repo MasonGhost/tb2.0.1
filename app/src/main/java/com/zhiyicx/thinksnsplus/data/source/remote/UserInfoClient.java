@@ -5,12 +5,16 @@ import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import java.util.HashMap;
+import java.util.List;
 
+import okhttp3.RequestBody;
+import retrofit2.http.Body;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.PATCH;
-import retrofit2.http.Path;
+import retrofit2.http.POST;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHANGE_USER_INFO;
@@ -39,11 +43,11 @@ public interface UserInfoClient {
     /**
      * 获取用户信息
      *
-     * @param user_id
      * @return
      */
-    @GET(APP_PATH_GET_USER_INFO)
-    Observable<BaseJson<UserInfoBean>> getUserInfo(@Path("user_id") int user_id);
+    @Headers({"Content-type:application/json;charset=UTF-8"})
+    @POST(APP_PATH_GET_USER_INFO)
+    Observable<BaseJson<List<UserInfoBean>>> getUserInfo(@Body RequestBody requestBody);
 
 
     @GET(APP_PATH_GET_IM_INFO)
