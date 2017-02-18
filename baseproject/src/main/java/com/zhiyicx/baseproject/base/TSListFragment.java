@@ -44,6 +44,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
     private static final float DEFAULT_LIST_ITEM_SPACING = 1f;
 
     protected MultiItemTypeAdapter<T> mAdapter;
+    private EmptyWrapper mEmptyWrapper;
 
     protected BGARefreshLayout mRefreshlayout;
 
@@ -120,7 +121,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
         mRefreshlayout.setRefreshViewHolder(new TSPRefreshViewHolder(getActivity(), isLoadingMoreEnable()));
         mRefreshlayout.setIsShowLoadingMoreView(getIsShowLoadingMore());
         mRefreshlayout.setPullDownRefreshEnable(getPullDownRefreshEnable());
-        EmptyWrapper mEmptyWrapper = new EmptyWrapper(mAdapter);
+        mEmptyWrapper = new EmptyWrapper(mAdapter);
         mEmptyWrapper.setEmptyView(mEmptyView);
         mRvList.setAdapter(mEmptyWrapper);
     }
@@ -274,7 +275,14 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
      * 刷新数据
      */
     public void refreshData() {
-        mAdapter.notifyDataSetChanged();
+        mEmptyWrapper.notifyDataSetChanged();
+    }
+
+    /**
+     * 刷新单条数据
+     */
+    public void refreshData(int index){
+        mEmptyWrapper.notifyItemChanged(index);
     }
 
     /**

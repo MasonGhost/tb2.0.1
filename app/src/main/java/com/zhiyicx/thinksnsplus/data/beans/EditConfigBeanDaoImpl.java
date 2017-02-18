@@ -2,7 +2,7 @@ package com.zhiyicx.thinksnsplus.data.beans;
 
 import android.content.Context;
 
-import com.zhiyicx.thinksnsplus.data.source.local.CommonCacheImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.List;
 

@@ -115,6 +115,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
         // 本地数据库和ui进行刷新
         int followState = mFollowFansBeanGreenDao.setStateToFollowed(followFansBean);
+        followFansBean.setFollowState(followState);
         mRootView.upDateFollowFansState(index, followState);
 
     }
@@ -130,6 +131,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
         // 本地数据库和ui进行刷新
         int followState = mFollowFansBeanGreenDao.setStateToUnFollowed(followFansBean);
+        followFansBean.setFollowState(followState);
         mRootView.upDateFollowFansState(index, followState);
     }
 }
