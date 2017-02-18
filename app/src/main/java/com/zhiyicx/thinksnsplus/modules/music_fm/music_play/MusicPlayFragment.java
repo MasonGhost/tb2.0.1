@@ -193,7 +193,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                         }
                     }, 500);
                 }
-
                 doPointAnimation(mPointDegree, mPointDuration);
                 isPointOutPhonograph = false;
             }
@@ -324,7 +323,15 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
      * @param duration     时长
      */
     public void doPhonographAnimation(int targetDegree, int duration) {
-        final View target = mCurrentView.getChildAt(0);
+        View target;
+        if (mCurrentView == null) {
+            ViewGroup group = (ViewGroup) RecyclerViewUtils.getCenterXChild
+                    (mFragmentMusicPalyRv);
+            target = group.getChildAt(0);
+        } else {
+            target = mCurrentView.getChildAt(0);
+        }
+
         mPhonographAnimate = ObjectAnimator.ofFloat(target, "Rotation",
                 points[1],
                 targetDegree);
@@ -362,6 +369,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
      * 暂停转盘动画 *
      */
     public void pauseAnimation(View target) {
+        if (target == null) target = RecyclerViewUtils.getCenterXChild(mFragmentMusicPalyRv);
         if (target != null && mPhonographAnimate != null) {
             mPhonographAnimate.cancel();
             target.clearAnimation();// 清除此ImageView身上的动画
