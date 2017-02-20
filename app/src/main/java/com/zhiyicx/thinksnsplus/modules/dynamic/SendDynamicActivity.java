@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 
@@ -11,7 +12,7 @@ public class SendDynamicActivity extends TSActivity<SendDynamicPresenter, SendDy
 
     @Override
     protected SendDynamicFragment getFragment() {
-        return null;
+        return SendDynamicFragment.initFragment(null);
     }
 
     @Override

@@ -30,6 +30,7 @@
     <string name="send">发送</string>
     <string name="sure">确认</string>
     <string name="change_head_icon">更换头像</string>
+    <string name="publish">发布</string>
 
     <!-- 注册 -->
     <string name="regist">注册</string>
