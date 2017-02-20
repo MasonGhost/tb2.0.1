@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.zhiyicx.baseproject.base.BaseListBean;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
@@ -20,7 +22,7 @@ import org.greenrobot.greendao.annotation.Unique;
  * @contact email:450127106@qq.com
  */
 @Entity
-public class FollowFansBean implements Cloneable {
+public class FollowFansBean extends BaseListBean {
     public static final int UNFOLLOWED_STATE = 0;// 未关注的状态
     public static final int IFOLLOWED_STATE = 1;// 我关注了他，他没有关注我
     public static final int FOLLOWED_EACHOTHER_STATE = 2;// 互相关注的状态

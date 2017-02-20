@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.imsdk.entity.Conversation;
 
@@ -13,7 +14,7 @@ import com.zhiyicx.imsdk.entity.Conversation;
  * @Contact master.jungle68@gmail.com
  */
 
-public class MessageItemBean extends CacheBean implements Parcelable {
+public class MessageItemBean extends BaseListBean implements Parcelable {
 
     private UserInfoBean userInfo;
     private Conversation conversation; // 最后一条消息

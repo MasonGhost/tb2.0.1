@@ -37,7 +37,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 
-public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends TSFragment<P> implements BGARefreshLayout.BGARefreshLayoutDelegate, ITSListView<T, P> {
+public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends BaseListBean> extends TSFragment<P> implements BGARefreshLayout.BGARefreshLayoutDelegate, ITSListView<T, P> {
     public static final int DEFAULT_PAGE_MAX_ID = 0;// 默认初始化列表 id
 
     private static final int DEFAULT_TIP_STICKY_TIME = 3000;
@@ -281,7 +281,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
     /**
      * 刷新单条数据
      */
-    public void refreshData(int index){
+    public void refreshData(int index) {
         mEmptyWrapper.notifyItemChanged(index);
     }
 
@@ -365,7 +365,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
                 // 内存处理数据
                 mAdapter.addAllData(data);
                 mRefreshlayout.setIsShowLoadingMoreView(true);
-//                mMaxId=data.get(data.size()-1).getmaxid;
+                mMaxId = data.get(data.size() - 1).getMaxId();
             } else {
                 mRefreshlayout.setIsShowLoadingMoreView(false);
             }
@@ -377,7 +377,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T> extends T
                 // 内存处理数据
                 mAdapter.addAllData(data);
                 refreshData();
-                //                mMaxId=data.get(data.size()-1).getmaxid;
+                mMaxId = data.get(data.size() - 1).getMaxId();
             } else {
                 mRefreshlayout.setIsShowLoadingMoreView(false);
             }
