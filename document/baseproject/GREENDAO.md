@@ -1,8 +1,48 @@
 # GreenDao3.0+的使用
 
+## 1.建立多表关联
+使用greenDao建立表之间的关联关系，方便数据的查询；
+###  1*1关系：
+以项目中的粉丝关注列表和用户信息表为例，来说明该关系：
+关注列表存储的主要类容：
+```
+    private long userId;// 主体用户：将要关注别人的人
+    private int followState;// 关注状态 包含关注和相互关注
+    private long followedUserId;// 被关注的用户
+```
+**我们在获取用户关注列表时，通过表关联能够同时返回用户信息表对应的用户信息；**
+
+在关注的实体类中,添加关注用户信息实体，以及粉丝用户信息实体，也就是关联表：
+```
+@Entity
+public class FollowFansBean implements Cloneable {
+
+    // 存储服务器返回的maxId
+    @Id
+    private Long id;
+    ...
+    @ToOne(joinProperty = "userId")
+    private UserInfoBean user;
+    @ToOne(joinProperty = "followedUserId")
+    private UserInfoBean fllowedUser;
+```
 
 
-## 数据库升级
+**注意：关联表的查询：如果我想要FollowFansBean中携带用户信息，普通的查询方式返回的总是空的用户信息，需要使用queryDeep或者loadDeep方式查询**
+以获取关注列表为例：
+```
+    /**
+     * 获取某个人的关注列表的用户信息
+     */
+    public List<FollowFansBean> getSomeOneFollower(int userId) {
+        FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
+
+        return followFansBeanDao.queryDeep("where " + FollowFansBeanDao
+                .Properties.UserId.columnName + " = ? and " + FollowFansBeanDao.Properties.FollowState.columnName + " != ? ", userId + "", FollowFansBean.UNFOLLOWED_STATE + "");
+    }
+```
+
+## 2.数据库升级
 
 ```
 public class UpDBHelper extends DaoMaster.OpenHelper {
@@ -45,4 +85,4 @@ public class UpDBHelper extends DaoMaster.OpenHelper {
     xxx表示该表的Dao
       MigrationHelper.getInstance().migrate(db, xxxDao.class);
 
-2017年2月18日10:42:47
+2017年2月20日11:39:17
