@@ -92,7 +92,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
                 //若不可视区域高度大于1/3屏幕高度，则键盘显示
                 if (rootInvisibleHeight > (1 / 3 * dispayHeight)) {
                     mKeyboradIsOpen = true;
-                    smoothScrollToBottom();
+                    mMessageList.scrollToBottom();
                 } else {
                     //键盘隐藏
                     mKeyboradIsOpen = false;
@@ -107,12 +107,12 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     @Override
     protected void initData() {
         getIntentData();
-        mDatas.addAll(mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), (System.currentTimeMillis()+ ConstantConfig.DAY)));
+        mDatas.addAll(mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), (System.currentTimeMillis() + ConstantConfig.DAY)));
         mMessageList.setMessageListItemClickListener(this);
         mMessageList.init(mMessageItemBean.getConversation().getType() == ChatType.CHAT_TYPE_PRIVATE ? mMessageItemBean.getUserInfo().getName() : getString(R.string.default_message_group)
                 , mMessageItemBean.getConversation().getType(), mDatas);
         mMessageList.setBGARefreshLayoutDelegate(this);
-        smoothScrollToBottom();
+        mMessageList.scrollToBottom();
     }
 
     private void getIntentData() {
@@ -142,7 +142,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-        List<ChatItemBean> chatItemBeen = mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), mDatas.size() > 0 ? mDatas.get(0).getLastMessage().getCreate_time() : (System.currentTimeMillis()+ ConstantConfig.DAY));
+        List<ChatItemBean> chatItemBeen = mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), mDatas.size() > 0 ? mDatas.get(0).getLastMessage().getCreate_time() : (System.currentTimeMillis() + ConstantConfig.DAY));
         chatItemBeen.addAll(mDatas);
         mDatas.clear();
         mDatas.addAll(chatItemBeen);
