@@ -120,9 +120,11 @@ public class ChatRepository implements ChatContract.Repository {
             } else {// 群聊
                 toChatUserInfo = new UserInfoBean();
             }
+            int unreadMessageCount = MessageDao.getInstance(mContext).getUnReadMessageCount(tmp.getCid());
             MessageItemBean itemBean = new MessageItemBean();
             itemBean.setUserInfo(toChatUserInfo);
             itemBean.setConversation(tmp);
+            itemBean.setUnReadMessageNums(unreadMessageCount);
             messageItemBeens.add(itemBean);
         }
         return messageItemBeens;

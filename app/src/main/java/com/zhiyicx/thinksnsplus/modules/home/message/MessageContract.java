@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 
 import java.util.List;
@@ -26,6 +27,12 @@ public interface MessageContract {
         void updateLikeItemData(MessageItemBean messageItemBean);
 
         void refreshLastClicikPostion(int position,MessageItemBean messageItemBean);
+
+        /**
+         * 更新未读消息数量
+         * @param message 对话信息
+         */
+        void refreshMessageUnreadNum(Message message);
     }
 
     /**

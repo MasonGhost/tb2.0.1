@@ -167,16 +167,14 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
      * IM 相关
      *********************************************/
 
-
+    /**
+     * 收到聊天消息
+     *
+     * @param message 聊天类容
+     */
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED)
     private void onMessageReceived(Message message) {
-
-
-        if (!(ActivityHandler.getInstance().currentActivity() instanceof HomeActivity)) {
-            return;
-        } else {
-
-        }
+        mRootView.refreshMessageUnreadNum(message);
         LogUtils.d(TAG, "------onMessageReceived------->" + message);
     }
 

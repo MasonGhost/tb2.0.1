@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.InputLimitView;
+import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.imsdk.core.ChatType;
@@ -106,7 +107,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     @Override
     protected void initData() {
         getIntentData();
-        mDatas.addAll(mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), System.currentTimeMillis()));
+        mDatas.addAll(mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), (System.currentTimeMillis()+ ConstantConfig.DAY)));
         mMessageList.setMessageListItemClickListener(this);
         mMessageList.init(mMessageItemBean.getConversation().getType() == ChatType.CHAT_TYPE_PRIVATE ? mMessageItemBean.getUserInfo().getName() : getString(R.string.default_message_group)
                 , mMessageItemBean.getConversation().getType(), mDatas);
@@ -141,7 +142,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-        List<ChatItemBean> chatItemBeen = mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), mDatas.size() > 0 ? mDatas.get(0).getLastMessage().getCreate_time() : System.currentTimeMillis());
+        List<ChatItemBean> chatItemBeen = mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), mDatas.size() > 0 ? mDatas.get(0).getLastMessage().getCreate_time() : (System.currentTimeMillis()+ ConstantConfig.DAY));
         chatItemBeen.addAll(mDatas);
         mDatas.clear();
         mDatas.addAll(chatItemBeen);
@@ -257,5 +258,10 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     @Override
     public void smoothScrollToBottom() {
         mMessageList.smoothScrollToBottom();
+    }
+
+    @Override
+    public int getCurrentChatCid() {
+        return mMessageItemBean.getConversation().getCid();
     }
 }

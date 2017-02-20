@@ -2,6 +2,7 @@ package com.zhiyicx.imsdk.db.dao;
 
 import android.test.AndroidTestCase;
 
+import com.zhiyicx.imsdk.db.dao.soupport.MessageDaoSoupport;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.entity.MessageExt;
 import com.zhiyicx.imsdk.utils.common.LogUtils;
@@ -32,6 +33,19 @@ public class MessageDaoTest extends AndroidTestCase {
         dbs.close();
     }
 
+    /**
+     * instanceof 测试，可是使用于接口
+     *
+     * @throws Exception
+     */
+    public void testIntstanceOf() throws Exception {
+        if (dbs instanceof MessageDaoSoupport) {
+            org.junit.Assert.assertTrue(true);
+        } else {
+            org.junit.Assert.assertTrue(false);
+        }
+    }
+
     public void testInsertMessage() throws Exception {
         for (int i = 10100; i < 11100; i++) {
             Message message = new Message();
@@ -40,7 +54,7 @@ public class MessageDaoTest extends AndroidTestCase {
             MessageExt ext = new MessageExt("zbuser_11", null);
             message.ext = ext;
             message.txt = "你好" + i;
-            dbs.insertMessage(message);
+            dbs.insertOrUpdateMessage(message);
             Assert.assertEquals(true, dbs.hasMessage(0));
         }
 
@@ -83,7 +97,7 @@ public class MessageDaoTest extends AndroidTestCase {
         System.out.println("end--------------- = " + end);
 
         System.out.println("rows = " + rows);
-        System.out.println("times = " + (end-start));
+        System.out.println("times = " + (end - start));
 
         Assert.assertEquals(true, rows > 1000);
 

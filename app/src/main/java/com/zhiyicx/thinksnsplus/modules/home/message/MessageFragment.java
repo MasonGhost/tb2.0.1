@@ -11,6 +11,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
@@ -225,6 +226,25 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         mMessageItemBeen.set(position, messageItemBean);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
         mLastClickPostion = -1;
+    }
+
+    /**
+     * 更新未读消息
+     *
+     * @param message 对话信息
+     */
+    @Override
+    public void refreshMessageUnreadNum(Message message) {
+        int size = mMessageItemBeen.size();
+        for (int i = 0; i < size; i++) {
+            if (mMessageItemBeen.get(i).getConversation().getCid() == message.getCid()) {
+                mMessageItemBeen.get(i).setUnReadMessageNums(mMessageItemBeen.get(i).getUnReadMessageNums() + 1);
+                mMessageItemBeen.get(i).getConversation().setLast_message_text(message.getTxt());
+                mMessageItemBeen.get(i).getConversation().setLast_message_time(message.getCreate_time());
+                refreshLastClicikPostion(i, mMessageItemBeen.get(i));
+                break;
+            }
+        }
     }
 
     @Override

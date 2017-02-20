@@ -42,6 +42,12 @@ public interface ChatContract {
          */
         void smoothScrollToBottom();
 
+        /**
+         * 获取当前对话 id
+         * @return 当前对话 id
+         */
+        int getCurrentChatCid();
+
     }
 
     interface Repository {

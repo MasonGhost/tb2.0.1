@@ -1,9 +1,14 @@
 package com.zhiyicx.jungle;
 
+import com.zhiyicx.imsdk.entity.Message;
+
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import static com.zhiyicx.imsdk.db.base.BaseDao.TIME_DEFAULT_ADD;
@@ -19,11 +24,33 @@ public class CommonTest {
 
     @Test
     public void getConvertMid() throws Exception {
-        long mid = 301823785684697221L;
+        long mid = 301921060704485376L;
         long result = (mid >> 23) + TIME_DEFAULT_ADD;
         System.out.println("result = " + result);
 
         System.out.println("getStandardTimeWithYeay(result) = " + getStandardTimeWithYeay(result));
+    }
+
+    /**
+     * 测试增强 for 循环
+     * @throws Exception
+     */
+    @Test
+    public void testfor() throws Exception {
+        List<Message> data=new ArrayList<>();
+        data.add(new Message(1));
+        data.add(new Message(2));
+        data.add(new Message(3));
+        for (Message message : data) {
+            if (message.getId()==2){
+                message.setId(40);
+                message.setTxt("niaho");
+                data.add(message);
+                break;
+            }
+        }
+        System.out.println("data = " + data.get(1).getTxt());
+        Assert.assertTrue(40==data.get(1).getId());
     }
 
     /**

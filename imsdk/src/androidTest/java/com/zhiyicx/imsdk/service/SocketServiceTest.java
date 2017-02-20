@@ -183,7 +183,7 @@ public class SocketServiceTest extends ServiceTestCase<SocketService> {
             ConversationDao.getInstance(getContext()).insertConversation(newConversation);
         }
         if (!MessageDao.getInstance(getContext()).hasMessage(messageContainer.msg.mid)) {
-            MessageDao.getInstance(getContext()).insertMessage(messageContainer.msg);
+            MessageDao.getInstance(getContext()).insertOrUpdateMessage(messageContainer.msg);
         }
         result = getService().checkDuplicateMessages(eventContanter);
         Assert.assertTrue(result);

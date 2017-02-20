@@ -69,35 +69,27 @@ public class MessageDao extends BaseDao implements MessageDaoSoupport {
      * @return
      */
     @Override
+    public long insertOrUpdateMessage(Message message) {
+
+        if (message == null)
+            throw new IllegalArgumentException("message can not be null");
+        long rows = 0;
+        if (!hasMessageById(message.getId())) {// 插入
+            rows = insertMessage(message);
+        } else {//更新
+            return updateMessage(message);
+        }
+        return rows;
+    }
+
+    @Override
     public long insertMessage(Message message) {
         if (message == null) throw new IllegalArgumentException("message can't be null");
         long resut = -1;
         SQLiteDatabase database = mHelper.getWritableDatabase();
         database.beginTransaction();
         try {
-            ContentValues map = new ContentValues();
-            map.put(COLUMN_NAME_MESSAGE_ID, message.id);
-            map.put(COLUMN_NAME_MESSAGE_MID, message.mid);
-            map.put(COLUMN_NAME_MESSAGE_UID, message.uid);
-            map.put(COLUMN_NAME_MESSAGE_CID, message.cid);
-            map.put(COLUMN_NAME_MESSAGE_TXT, message.txt);
-            map.put(COLUMN_NAME_MESSAGE_TYPE, message.type);
-            map.put(COLUMN_NAME_MESSAGE_RT, isRt(message.rt));
-            map.put(COLUMN_NAME_MESSAGE_ERR, message.err);
-            map.put(COLUMN_NAME_MESSAGE_GAG, message.expire);
-            map.put(COLUMN_NAME_MESSAGE_IS_READ, isRead(message.is_read));
-            map.put(COLUMN_NAME_MESSAGE_IS_DEL, isDel(message.is_del));
-            if (message.create_time == 0)//  消息的MID，`(mid >> 23) + 1451577600000` 为毫秒时间戳
-                message.create_time = (message.mid >> 23) + TIME_DEFAULT_ADD;
-            map.put(COLUMN_NAME_MESSAGE_CREATE_TIME, message.create_time);
-            String uid = null;
-            if (message.to != null)
-                uid = new Gson().toJson(message.to);
-            map.put(COLUMN_NAME_MESSAGE_TO, uid);
-            String ext = null;
-            if (message.ext != null)
-                ext = new Gson().toJson(message.ext);
-            map.put(COLUMN_NAME_MESSAGE_EXT, ext);
+            ContentValues map = getContentValues(message);
             resut = database.insert(
                     TABLE_NAME, null, map);
             database.setTransactionSuccessful();
@@ -109,6 +101,79 @@ public class MessageDao extends BaseDao implements MessageDaoSoupport {
         }
 
         return resut;
+    }
+
+    /**
+     * 更新的消息
+     *
+     * @param message
+     * @return
+     */
+    public long updateMessage(Message message) {
+        if (message == null) throw new IllegalArgumentException("message can't be null");
+        long resut = -1;
+        SQLiteDatabase database = mHelper.getWritableDatabase();
+        database.beginTransaction();
+        try {
+            ContentValues map = getContentValues(message);
+            resut = database.update(TABLE_NAME,
+                    map,
+                    COLUMN_NAME_MESSAGE_ID + " = ?",
+                    new String[]{message.getId() + ""});
+            database.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        } finally {
+            database.endTransaction();
+        }
+
+        return resut;
+    }
+
+    private ContentValues getContentValues(Message message) {
+        ContentValues map = new ContentValues();
+        map.put(COLUMN_NAME_MESSAGE_ID, message.id);
+        map.put(COLUMN_NAME_MESSAGE_MID, message.mid);
+        map.put(COLUMN_NAME_MESSAGE_UID, message.uid);
+        map.put(COLUMN_NAME_MESSAGE_CID, message.cid);
+        map.put(COLUMN_NAME_MESSAGE_TXT, message.txt);
+        map.put(COLUMN_NAME_MESSAGE_TYPE, message.type);
+        map.put(COLUMN_NAME_MESSAGE_RT, isRt(message.rt));
+        map.put(COLUMN_NAME_MESSAGE_ERR, message.err);
+        map.put(COLUMN_NAME_MESSAGE_GAG, message.expire);
+        map.put(COLUMN_NAME_MESSAGE_IS_READ, isRead(message.is_read));
+        map.put(COLUMN_NAME_MESSAGE_IS_DEL, isDel(message.is_del));
+        if (message.create_time == 0)//  消息的MID，`(mid >> 23) + 1451577600000` 为毫秒时间戳
+            message.create_time = (message.mid >> 23) + TIME_DEFAULT_ADD;
+        map.put(COLUMN_NAME_MESSAGE_CREATE_TIME, message.create_time);
+        String uid = null;
+        if (message.to != null)
+            uid = new Gson().toJson(message.to);
+        map.put(COLUMN_NAME_MESSAGE_TO, uid);
+        String ext = null;
+        if (message.ext != null)
+            ext = new Gson().toJson(message.ext);
+        map.put(COLUMN_NAME_MESSAGE_EXT, ext);
+        return map;
+    }
+
+    /**
+     * 通过 id 查找消息是否存在
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public boolean hasMessageById(long id) {
+        SQLiteDatabase database = mHelper.getReadableDatabase();
+        String sql = "select * from " + TABLE_NAME + " where "
+                + COLUMN_NAME_MESSAGE_ID + " = ?";
+        Cursor cursor = database.rawQuery(sql,
+                new String[]{String.valueOf(id)});
+        boolean result = cursor.moveToFirst();
+        cursor.close();
+        return result;
     }
 
     /**
@@ -268,6 +333,22 @@ public class MessageDao extends BaseDao implements MessageDaoSoupport {
             return messages.get(0);
         else
             return null;
+    }
+
+    @Override
+    public int getUnReadMessageCount(int cid) {
+        int counts;
+        SQLiteDatabase database = mHelper.getReadableDatabase();
+        database.beginTransaction();
+        Cursor cursor = database.query(
+                TABLE_NAME,
+                null,
+                COLUMN_NAME_MESSAGE_CID + " = ? And " + COLUMN_NAME_MESSAGE_IS_READ + " = ?", new String[]{String.valueOf(cid), String.valueOf(isRead(false))}, null, null, null);
+        counts = cursor.getCount();
+        cursor.close();
+        database.setTransactionSuccessful();
+        database.endTransaction();
+        return counts;
     }
 
     /**

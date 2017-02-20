@@ -4,8 +4,8 @@ import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.manage.ChatClient;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -19,8 +19,6 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import static com.zhiyicx.imsdk.db.base.BaseDao.TIME_DEFAULT_ADD;
 
 /**
  * @Describe
@@ -53,10 +51,6 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     public List<ChatItemBean> getHistoryMessages(int cid, long creat_time) {
         List<ChatItemBean> data = mRepository.getChatListData(cid, creat_time);
         Collections.reverse(data);
-        System.out.println("creat_time = " + TimeUtils.getStandardTimeWithYeay(creat_time));
-        for (ChatItemBean chatItemBean : data) {
-            System.out.println("chatItemBean = " + TimeUtils.getStandardTimeWithYeay(chatItemBean.getLastMessage().create_time));
-        }
         mRootView.hideLoading();
         return data;
     }
@@ -75,25 +69,33 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         if (TextUtils.isEmpty(text)) {
             return;
         }
-        Message message = ChatClient.getInstance(mContext).sendTextMsg(text, cid, "", 0);
+        Message message = ChatClient.getInstance(mContext).sendTextMsg(text, cid, "");// usid 暂不使用
         message.setCreate_time(System.currentTimeMillis());
         message.setUid(AppApplication.getmCurrentLoginAuth().getUser_id());
-        onMessageReceived(message);
+        message.setIs_read(true);
+        updateMessage(message);
     }
 
+    /**
+     * 收到消息
+     *
+     * @param message
+     */
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED)
     private void onMessageReceived(Message message) {
         LogUtils.d(TAG, "------onMessageReceived------->" + message);
-        if (message.getMid() > 0) {
-            message.setCreate_time((message.mid >> 23) + TIME_DEFAULT_ADD); //  消息的MID，`(mid >> 23) + 1451577600000` 为毫秒时间戳
+        if (message.cid != mRootView.getCurrentChatCid()) {// 丢弃非当前房间的消息
+            return;
         }
         updateMessage(message);
+        // 把消息更新为已经读
+        MessageDao.getInstance(mContext).readMessage(message.getMid());
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGEACKRECEIVED)
     private void onMessageACKReceived(Message message) {
         LogUtils.d(TAG, "------onMessageACKReceived------->" + message);
-//        updateMessage(message);
+
     }
 
     private void updateMessage(Message message) {
