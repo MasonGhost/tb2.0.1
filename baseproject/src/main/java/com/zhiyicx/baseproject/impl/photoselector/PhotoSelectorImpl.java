@@ -194,9 +194,11 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
             startToCraft(photos.get(0));
         } else {
             List<ImageBean> imageBeanList = new ArrayList<>();
-            ImageBean imageBean = new ImageBean();
-            imageBean.setImgUrl(photos.get(0));
-            imageBeanList.add(imageBean);
+            for (String imgUrl : photos) {
+                ImageBean imageBean = new ImageBean();
+                imageBean.setImgUrl(imgUrl);
+                imageBeanList.add(imageBean);
+            }
             mTIPhotoBackListener.getPhotoSuccess(imageBeanList);
         }
     }
