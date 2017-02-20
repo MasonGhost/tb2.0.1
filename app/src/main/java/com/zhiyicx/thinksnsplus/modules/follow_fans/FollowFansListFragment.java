@@ -172,8 +172,15 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
                     }
                 });
 
-        UserInfoBean userInfoBean = followFansItemBean.getFllowedUser();
+        // 设置用户信息
+        UserInfoBean userInfoBean = null;
+        if (pageType == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
+            userInfoBean = followFansItemBean.getFllowedUser();
+        } else if (pageType == FollowFansListFragment.FANS_FRAGMENT_PAGE) {
+            userInfoBean = followFansItemBean.getUser();
+        }
         if (userInfoBean == null) {
+            // 这种情况一般不会发生，为了防止崩溃，做处理
             return;
         }
         // 设置用户名，用户简介
