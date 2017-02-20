@@ -77,11 +77,14 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
      */
     public List<FollowFansBean> getSomeOneFans(int userId) {
         FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
-        QueryBuilder<FollowFansBean> qb = followFansBeanDao.queryBuilder();
+        return followFansBeanDao.queryDeep("where " + FollowFansBeanDao
+                .Properties.FollowedUserId.columnName + " = ? and " + FollowFansBeanDao.Properties.FollowState.columnName + " != ? ", userId + "", FollowFansBean.UNFOLLOWED_STATE + "");
+
+        /*QueryBuilder<FollowFansBean> qb = followFansBeanDao.queryBuilder();
         // 粉丝关注表中，FollowedUserId为当前id，且不包含状态值为未关注的数据
         qb.where(FollowFansBeanDao
                 .Properties.FollowedUserId.eq(userId), FollowFansBeanDao.Properties.FollowState.notEq(FollowFansBean.UNFOLLOWED_STATE));
-        return qb.list();
+        return qb.list();*/
     }
 
     /**
@@ -90,7 +93,8 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
     public List<FollowFansBean> getSomeOneFollower(int userId) {
         FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
         ;
-        return followFansBeanDao.queryDeep("");
+        return followFansBeanDao.queryDeep("where " + FollowFansBeanDao
+                .Properties.UserId.columnName + " = ? and " + FollowFansBeanDao.Properties.FollowState.columnName + " != ? ", userId + "", FollowFansBean.UNFOLLOWED_STATE + "");
        /* QueryBuilder<FollowFansBean> qb = followFansBeanDao.queryBuilder();
         // 粉丝关注表中，userID为当前id，且不包含状态值为未关注的数据
         qb.where(FollowFansBeanDao
@@ -103,11 +107,13 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
      */
     public List<FollowFansBean> getSomeOneFollowEachOther(int userId) {
         FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
-        QueryBuilder<FollowFansBean> qb = followFansBeanDao.queryBuilder();
+        return followFansBeanDao.queryDeep("where " + FollowFansBeanDao
+                .Properties.UserId.columnName + " = ? and " + FollowFansBeanDao.Properties.FollowState.columnName + " = ? ", userId + "", FollowFansBean.FOLLOWED_EACHOTHER_STATE + "");
+       /* QueryBuilder<FollowFansBean> qb = followFansBeanDao.queryBuilder();
         // 粉丝关注表中，userID为当前id，且不包含状态值为未关注的数据
         qb.where(FollowFansBeanDao
                 .Properties.UserId.eq(userId), FollowFansBeanDao.Properties.FollowState.eq(FollowFansBean.FOLLOWED_EACHOTHER_STATE));
-        return qb.list();
+        return qb.list();*/
     }
 
     /**
