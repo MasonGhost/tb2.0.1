@@ -69,18 +69,13 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
 
     @Override
     protected void initView(View rootView) {
-        pageType = getArguments().getInt(PAGE_TYPE, FOLLOW_FRAGMENT_PAGE);
-        mAuthBean = AppApplication.getmCurrentLoginAuth();
-        super.initView(rootView);
-    }
-
-    @Override
-    protected void initData() {
         DaggerFollowFansListPresenterComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .followFansListPresenterModule(new FollowFansListPresenterModule(FollowFansListFragment.this))
                 .build().inject(this);
-        super.initData();
+        pageType = getArguments().getInt(PAGE_TYPE, FOLLOW_FRAGMENT_PAGE);
+        mAuthBean = AppApplication.getmCurrentLoginAuth();
+        super.initView(rootView);
     }
 
     @Override
