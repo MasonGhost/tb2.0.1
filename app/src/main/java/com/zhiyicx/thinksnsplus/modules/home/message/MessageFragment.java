@@ -2,30 +2,24 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.TimeUtils;
-import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
-import com.zhiyicx.imsdk.core.ChatType;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagelike.MessageLikeActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
-import com.zhy.adapter.recyclerview.base.ViewHolder;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import java.util.ArrayList;
@@ -44,7 +38,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/5
  * @Contact master.jungle68@gmail.com
  */
-public class MessageFragment extends TSListFragment<MessageContract.Presenter, MessageItemBean> implements MessageContract.View {
+public class MessageFragment extends TSListFragment<MessageContract.Presenter, MessageItemBean> implements MessageContract.View, MultiItemTypeAdapter.OnItemClickListener {
     private static final int ITEM_TYPE_COMMNETED = 0;
     private static final int ITEM_TYPE_LIKED = 1;
 
@@ -52,7 +46,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     @Inject
     protected MessagePresenter mMessagePresenter;
-    private ImageLoader mImageLoader;
     private List<MessageItemBean> mMessageItemBeen = new ArrayList<>();
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     private int mLastClickPostion = -1;// 纪录上次聊天 item ,用于单条刷新
@@ -110,7 +103,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                 .messagePresenterModule(new MessagePresenterModule(this))
                 .build()
                 .inject(this);
-        mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         super.initData();// 需要在 dagger 注入后
         updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter.updateLikeItemData());
     }
@@ -127,13 +119,9 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     @Override
     protected CommonAdapter getAdapter() {
-        return new CommonAdapter<MessageItemBean>(getActivity(), R.layout.item_message_list, mMessageItemBeen) {
-            @Override
-            protected void convert(ViewHolder holder, MessageItemBean messageItemBean, int position) {
-                setItemData(holder, messageItemBean, position);
-            }
-
-        };
+        CommonAdapter commonAdapter = new MessageAdapter(getActivity(), R.layout.item_message_list, mMessageItemBeen);
+        commonAdapter.setOnItemClickListener(this);
+        return commonAdapter;
     }
 
     /**
@@ -199,88 +187,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         refreshData();
     }
 
-    /**
-     * 设置item 数据
-     *
-     * @param holder          控件管理器
-     * @param messageItemBean 当前数据
-     * @param position        当前数据位置
-     */
-
-    private void setItemData(ViewHolder holder, final MessageItemBean messageItemBean, final int position) {
-        switch (messageItemBean.getConversation().getType()) {
-            case ChatType.CHAT_TYPE_PRIVATE:// 私聊
-                mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                        .url(messageItemBean.getUserInfo().getUserIcon())
-                        .transformation(new GlideCircleTransform(getContext()))
-                        .errorPic(R.drawable.shape_default_image_circle)
-                        .imagerView((ImageView) holder.getView(R.id.iv_headpic))
-                        .build()
-                );
-                holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getName());     // 响应事件
-                RxView.clicks(holder.getView(R.id.tv_name))
-                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                        .subscribe(new Action1<Void>() {
-                            @Override
-                            public void call(Void aVoid) {
-                                toUserCenter();
-                            }
-                        });
-                RxView.clicks(holder.getView(R.id.iv_headpic))
-                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                        .subscribe(new Action1<Void>() {
-                            @Override
-                            public void call(Void aVoid) {
-                                toUserCenter();
-                            }
-                        });
-
-                break;
-            case ChatType.CHAT_TYPE_GROUP:// 群组
-                holder.setImageResource(R.id.iv_headpic, R.drawable.shape_default_image_circle);
-                holder.setText(R.id.tv_name, TextUtils.isEmpty(messageItemBean.getConversation().getName())
-                        ? getString(R.string.default_message_group) : messageItemBean.getConversation().getName());
-                break;
-            default:
-        }
-        RxView.clicks(holder.getConvertView())
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        toChat(messageItemBean, position);
-                    }
-                });
-//        }
-
-        holder.setText(R.id.tv_content, messageItemBean.getConversation().getLast_message_text());
-        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(messageItemBean.getConversation().getLast_message_time() / 1000));
-        ((BadgeView) holder.getView(R.id.tv_tip)).setBadgeCount(messageItemBean.getUnReadMessageNums());
-
-    }
-
-    /**
-     * 进入聊天页
-     *
-     * @param messageItemBean 当前 item 内容
-     * @param positon         当前点击位置
-     */
-    private void toChat(MessageItemBean messageItemBean, int positon) {
-        Intent to = new Intent(getActivity(), ChatActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ChatFragment.BUNDLE_MESSAGEITEMBEAN, messageItemBean);
-        to.putExtras(bundle);
-        startActivity(to);
-        mLastClickPostion = positon - 1;// 减去 heder 占用的 1 个位置
-    }
-
-    /**
-     * 前往用户个人中心
-     */
-    private void toUserCenter() {
-        Intent to = new Intent(getActivity(), UserInfoActivity.class);
-        startActivity(to);
-    }
 
     /**
      * 前往评论列表
@@ -337,4 +243,29 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         showMessageNotSticky(message);
     }
 
+    @Override
+    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        position = position - 1;//  减去 heder 占用的 1 个位置
+        toChat(mMessageItemBeen.get(position), position);
+    }
+
+    @Override
+    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+        return false;
+    }
+
+    /**
+     * 进入聊天页
+     *
+     * @param messageItemBean 当前 item 内容
+     * @param positon         当前点击位置
+     */
+    private void toChat(MessageItemBean messageItemBean, int positon) {
+        Intent to = new Intent(getActivity(), ChatActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ChatFragment.BUNDLE_MESSAGEITEMBEAN, messageItemBean);
+        to.putExtras(bundle);
+        startActivity(to);
+        mLastClickPostion = positon;//
+    }
 }
