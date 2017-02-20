@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +11,18 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
+import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.imageloader.config.ImageConfig;
+import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -27,7 +39,7 @@ import butterknife.ButterKnife;
  * @contact email:450127106@qq.com
  */
 
-public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presenter> {
+public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presenter> implements PhotoSelectorImpl.IPhotoBackListener {
     @BindView(R.id.et_dynamic_title)
     EditText mEtDynamicTitle;
     @BindView(R.id.et_dynamic_content)
@@ -36,6 +48,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     RecyclerView mRvPhotoList;
     private List<ImageBean> selectedPhotos;
     private CommonAdapter<ImageBean> mCommonAdapter;
+    private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
+    private PhotoSelectorImpl mPhotoSelector;
 
     @Override
     protected int getBodyLayoutId() {
@@ -69,15 +83,43 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     protected void initView(View rootView) {
+        initPhotoSelector();
         selectedPhotos = new ArrayList<>(9);
+        // 占位缺省图
         ImageBean camera = new ImageBean();
         selectedPhotos.add(camera);
         mCommonAdapter = new CommonAdapter<ImageBean>(getContext(), R.layout.item_send_dynamic_photo_list, selectedPhotos) {
             @Override
-            protected void convert(ViewHolder holder, ImageBean imageBean, int position) {
+            protected void convert(ViewHolder holder, ImageBean imageBean, final int position) {
+                ImageView imageView = holder.getView(R.id.iv_dynamic_img);
+                if (position == selectedPhotos.size() - 1) {
+                    // 最后一项作为占位图
+                    imageView.setImageResource(R.mipmap.img_edit_photo_frame);
+                } else {
+                    ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
+                    imageLoader.loadImage(getContext(), GlideImageConfig.builder()
+                            .imagerView(imageView)
+                            .url(imageBean.getImgUrl())
+                            .build());
+
+                }
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (position == selectedPhotos.size() - 1) {
+                            initPhotoPopupWindow();
+                            mPhotoPopupWindow.show();
+                        }
+                    }
+                });
 
             }
         };
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 4);
+        mRvPhotoList.setLayoutManager(gridLayoutManager);
+        int witdh = ConvertUtils.dp2px(getContext(), 5);
+        mRvPhotoList.addItemDecoration(new GridDecoration(witdh,witdh));
+        mRvPhotoList.setAdapter(mCommonAdapter);
     }
 
     @Override
@@ -91,4 +133,79 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         return sendDynamicFragment;
     }
 
+    /**
+     * 初始化图片选择弹框
+     */
+    private void initPhotoPopupWindow() {
+        if (mPhotoPopupWindow != null) {
+            return;
+        }
+        mPhotoPopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.choose_from_photo))
+                .item2Str(getString(R.string.choose_from_camera))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(0.8f)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+                        ArrayList<String> photos = new ArrayList<String>();
+                        // 最后一张是占位图
+                        for (int i = 0; i < selectedPhotos.size() - 1; i++) {
+                            ImageBean imageBean = selectedPhotos.get(i);
+                            photos.add(imageBean.getImgUrl());
+                        }
+                        mPhotoSelector.getPhotoListFromSelector(9, photos);
+                        mPhotoPopupWindow.hide();
+                    }
+                })
+                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
+                    @Override
+                    public void onItem2Clicked() {
+                        // 选择相机，拍照
+                        mPhotoSelector.getPhotoFromCamera();
+                        mPhotoPopupWindow.hide();
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mPhotoPopupWindow.hide();
+                    }
+                }).build();
+    }
+
+    /**
+     * 初始化图片选择器
+     */
+    private void initPhotoSelector() {
+        mPhotoSelector = DaggerPhotoSelectorImplComponent
+                .builder()
+                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
+                        .SHAPE_RCTANGLE))
+                .build().photoSelectorImpl();
+    }
+
+    @Override
+    public void getPhotoSuccess(List<ImageBean> photoList) {
+        selectedPhotos.clear();
+        selectedPhotos.addAll(photoList);
+        // 占位缺省图
+        ImageBean camera = new ImageBean();
+        selectedPhotos.add(camera);
+        mCommonAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void getPhotoFailure(String errorMsg) {
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPhotoSelector.onActivityResult(requestCode, resultCode, data);
+    }
 }
