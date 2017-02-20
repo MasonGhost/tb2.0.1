@@ -35,15 +35,16 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
 
     public HomePresenter(HomeContract.Repository repository, HomeContract.View rootView) {
         super(repository, rootView);
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        initIM();
     }
 
-    private void initIM() {
+    @Override
+    public void initIM() {
         mAuthRepository.loginIM();
         ChatClient.getInstance(mContext).setImMsgReceveListener(this);
         ChatClient.getInstance(mContext).setImStatusListener(this);
@@ -57,7 +58,7 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
     @Override
     public void onMessageReceived(Message message) {
         if ((ActivityHandler.getInstance().currentActivity() instanceof HomeActivity)) {
-            mRootView.addNewMessageTip();
+            mRootView.setMessageTipVisable(true);
         }
         EventBus.getDefault().post(message, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED);
     }

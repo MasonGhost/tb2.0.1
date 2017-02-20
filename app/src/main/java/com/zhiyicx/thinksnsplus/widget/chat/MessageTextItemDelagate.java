@@ -64,21 +64,20 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
      */
     @Override
     public boolean isForViewType(ChatItemBean item, int position) {
-        // TODO: 2017/1/6 需要添加是否是我的消息的判断
         return item.getLastMessage().getType() == MessageType.MESSAGE_TYPE_TEXT;
     }
 
     @Override
     public void convert(ViewHolder holder, final ChatItemBean chatItemBean, ChatItemBean lastChatItemBean, int position) {
 //        holder.getView(R.id.rl_chat_bubble).setBackgroundDrawable(mBubbleBg);
-//        holder.getView(R.id.rl_chat_bubble).setBackgroundResource(R.drawable.shape_message_bubble_my);
         // 显示时间的，最大间隔时间；当两条消息间隔 > MAX_SPACING_TIME 时显示时间
-        if (lastChatItemBean == null || (chatItemBean.getLastMessage().getCreate_time() - lastChatItemBean.getLastMessage().getCreate_time()) >= MAX_SPACING_TIME * ConstantConfig.MIN) {
+        if (lastChatItemBean == null || (chatItemBean.getLastMessage().getCreate_time() - lastChatItemBean.getLastMessage().getCreate_time()) >= (MAX_SPACING_TIME * ConstantConfig.MIN)) {
             holder.setText(R.id.tv_chat_time, TimeUtils.getTimeFriendlyForDetail(chatItemBean.getLastMessage().getCreate_time() / 1000));// 测试数据，暂时使用
             holder.setVisible(R.id.tv_chat_time, View.VISIBLE);
         } else {
             holder.setVisible(R.id.tv_chat_time, View.GONE);
         }
+
         // 是否需要显示名字
         if (mIsShowName) {
             holder.setVisible(R.id.tv_chat_name, View.VISIBLE);

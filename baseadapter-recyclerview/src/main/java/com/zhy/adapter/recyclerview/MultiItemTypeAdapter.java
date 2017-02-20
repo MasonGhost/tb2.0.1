@@ -103,7 +103,6 @@ public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
      */
     public void clear() {
         mDatas.clear();
-        notifyDataSetChanged();
     }
 
     /**

@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.InputLimitView;
+import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.imsdk.core.ChatType;
@@ -16,6 +17,8 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.widget.chat.ChatMessageList;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +67,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     @Override
     protected String setCenterTitle() {
-        return getString(R.string.message);
+        return "";
     }
 
     @Override
@@ -89,7 +92,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
                 //若不可视区域高度大于1/3屏幕高度，则键盘显示
                 if (rootInvisibleHeight > (1 / 3 * dispayHeight)) {
                     mKeyboradIsOpen = true;
-                    mMessageList.smoothScrollToBottom();
+                    mMessageList.scrollToBottom();
                 } else {
                     //键盘隐藏
                     mKeyboradIsOpen = false;
@@ -104,16 +107,17 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     @Override
     protected void initData() {
         getIntentData();
-        mDatas.addAll(mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), System.currentTimeMillis()));
+        mDatas.addAll(mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), (System.currentTimeMillis() + ConstantConfig.DAY)));
         mMessageList.setMessageListItemClickListener(this);
         mMessageList.init(mMessageItemBean.getConversation().getType() == ChatType.CHAT_TYPE_PRIVATE ? mMessageItemBean.getUserInfo().getName() : getString(R.string.default_message_group)
                 , mMessageItemBean.getConversation().getType(), mDatas);
         mMessageList.setBGARefreshLayoutDelegate(this);
-        mMessageList.smoothScrollToBottom();
+        mMessageList.scrollToBottom();
     }
 
     private void getIntentData() {
         mMessageItemBean = getArguments().getParcelable(BUNDLE_MESSAGEITEMBEAN);
+        setChatTitle(mMessageItemBean.getUserInfo().getName());
     }
 
     @Override
@@ -130,6 +134,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     public void hideLoading() {
         mMessageList.getRefreshLayout().endRefreshing();
     }
+
     @Override
     public void showMessage(String message) {
         ToastUtils.showToast(message);
@@ -137,7 +142,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-        List<ChatItemBean> chatItemBeen = mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), mDatas.size() > 0 ? mDatas.get(mDatas.size() - 1).getLastMessage().getCreate_time() : System.currentTimeMillis());
+        List<ChatItemBean> chatItemBeen = mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), mDatas.size() > 0 ? mDatas.get(0).getLastMessage().getCreate_time() : (System.currentTimeMillis() + ConstantConfig.DAY));
         chatItemBeen.addAll(mDatas);
         mDatas.clear();
         mDatas.addAll(chatItemBeen);
@@ -240,8 +245,23 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
 
     @Override
+    public void setChatTitle(@NotNull String titleStr) {
+        setCenterText(titleStr);
+    }
+
+    @Override
     public void reFreshMessage(ChatItemBean chatItemBean) {
         mDatas.add(chatItemBean);
         mMessageList.refresh();
+    }
+
+    @Override
+    public void smoothScrollToBottom() {
+        mMessageList.smoothScrollToBottom();
+    }
+
+    @Override
+    public int getCurrentChatCid() {
+        return mMessageItemBean.getConversation().getCid();
     }
 }

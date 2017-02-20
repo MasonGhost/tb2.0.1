@@ -3,6 +3,7 @@ package com.zhiyicx.imsdk.manage;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.zhiyicx.imsdk.core.ImService;
 import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
 import com.zhiyicx.imsdk.entity.EventContainer;
 import com.zhiyicx.imsdk.entity.GiftMessage;
@@ -15,7 +16,6 @@ import com.zhiyicx.imsdk.manage.listener.ImMsgReceveListener;
 import com.zhiyicx.imsdk.manage.listener.ImStatusListener;
 import com.zhiyicx.imsdk.manage.listener.ImTimeoutListener;
 import com.zhiyicx.imsdk.manage.soupport.IMSoupport;
-import com.zhiyicx.imsdk.core.ImService;
 import com.zhiyicx.imsdk.service.SocketService;
 import com.zhiyicx.imsdk.utils.common.LogUtils;
 
@@ -29,7 +29,7 @@ import java.util.List;
 
 /**
  * Im
- * 用于im通信
+ * 用于im通信   , 消息的 id 默认当前时间戳
  * Created by jungle on 16/7/6.
  * com.zhiyicx.imsdk.manage
  * zhibo_android
@@ -46,10 +46,6 @@ public class ZBIMClient implements IMSoupport {
     private List<ImMsgReceveListener> mImMsgReceveListener = new ArrayList<>();
     private List<ImStatusListener> mImStatusListener = new ArrayList<>();
     private List<ImTimeoutListener> mImTimeOutListener = new ArrayList<>();
-
-    private int DEFAULT_MSGID = 20000;//当传入的消息id为0时，赋予默认值并自增长
-
-
     public void addImTimeoutListener(ImTimeoutListener imTimeoutListener) {
         mImTimeOutListener.add(imTimeoutListener);
     }
@@ -256,7 +252,7 @@ public class ZBIMClient implements IMSoupport {
     /**
      * 获取房间中已有的最新几条消息消息
      *
-     * @param cid  房间号
+     * @param cid   房间号
      * @param limit 消息数量
      */
     @Override
@@ -290,7 +286,7 @@ public class ZBIMClient implements IMSoupport {
     private void doSendMessage(Message message) {
         if (message == null) return;
         if (message.id == 0)
-            message.id = ++DEFAULT_MSGID;
+            message.id = (int) System.currentTimeMillis();
         Bundle bundle = new Bundle();
         bundle.putInt(SocketService.EVENT_SOCKET_TAG, SocketService.TAG_IM_SEND_MESSAGE);
         bundle.putSerializable(SocketService.BUNDLE_MESSAGECONTAINER, new MessageContainer(ImService.MSG, message));

@@ -58,6 +58,7 @@ import static com.zhiyicx.imsdk.core.ErroCode.PACKET_EXCEPTION_ERR_KEY_TYPE;
 import static com.zhiyicx.imsdk.core.ErroCode.PACKET_EXCEPTION_ERR_PACKET_TYPE;
 import static com.zhiyicx.imsdk.core.ErroCode.PACKET_EXCEPTION_ERR_SERILIZE_TYPE;
 import static com.zhiyicx.imsdk.core.ErroCode.SERVER_EXCEPTION;
+import static com.zhiyicx.imsdk.db.base.BaseDao.TIME_DEFAULT_ADD;
 
 /**
  * Created by jungle68 on 16/7/6.
@@ -337,7 +338,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param imConfig
      */
     private boolean login(IMConfig imConfig) {
-        mIMConfig=imConfig;
+        mIMConfig = imConfig;
         isNeedReConnected = true;
         mService.setParams(imConfig.getWeb_socket_authority(), imConfig.getToken(),
                 imConfig.getSerial(), imConfig.getComprs());
@@ -470,8 +471,8 @@ public class SocketService extends BaseService implements ImService.ImListener {
                  * 加入消息队列
                  */
                 case TAG_IM_SEND_MESSAGE:
-
-                    result = mMessageContainers.add((MessageContainer) bundle.getSerializable(BUNDLE_MESSAGECONTAINER));
+                    MessageContainer messageContainer = (MessageContainer) bundle.getSerializable(BUNDLE_MESSAGECONTAINER);
+                    result = mMessageContainers.add(messageContainer);
                     break;
                 /***
                  * 离开会话
@@ -1150,6 +1151,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
         messageContainer.mEvent = eventContainer.mEvent;
         try {
             messageContainer.msg = gson.fromJson(content, Message.class);
+            messageContainer.msg.setCreate_time((messageContainer.msg.mid >> 23) + TIME_DEFAULT_ADD); //  消息的MID，`(mid >> 23) + 1451577600000` 为毫秒时间戳
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1334,6 +1336,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
 
     /**
      * 处理对话信息
+     *
      * @param eventContainer
      * @param gson
      * @param msg
@@ -1476,7 +1479,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                     return true;
                 } else {
                     if (conversation.getType() != Conversation.CONVERSATION_TYPE_CHAROOM)
-                        MessageDao.getInstance(getApplicationContext()).insertMessage(eventContainer.mMessageContainer.msg);
+                        MessageDao.getInstance(getApplicationContext()).insertOrUpdateMessage(eventContainer.mMessageContainer.msg);
                 }
                 return false;
             }

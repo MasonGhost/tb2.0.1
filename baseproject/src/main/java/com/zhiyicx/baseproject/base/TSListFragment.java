@@ -331,7 +331,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void onCacheResponseSuccess(@NotNull List<T> data, boolean isLoadMore) {
-        handleReceiveData(data, isLoadMore);
+        if (data == null) {// 如果没有缓存，直接拉取服务器数据
+            onBGARefreshLayoutBeginRefreshing(mRefreshlayout);
+        } else {
+            handleReceiveData(data, isLoadMore);
+        }
     }
 
     /**

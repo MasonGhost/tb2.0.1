@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.zhiyicx.imsdk.builder.MessageBuilder;
 import com.zhiyicx.imsdk.db.dao.ConversationDao;
+import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.ChatRoomContainer;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
@@ -81,8 +82,8 @@ public class ChatClient implements ChatSoupport, ImMsgReceveListener, ImStatusLi
      * @param text
      */
     @Override
-    public Message sendTextMsg(String text, int cid, String ZBUSID, int msgid) {
-        Message message=MessageBuilder.createTextMessage(msgid, cid, ZBUSID, text, rt);
+    public Message sendTextMsg(String text, int cid, String ZBUSID) {
+        Message message=MessageBuilder.createTextMessage((int) System.currentTimeMillis(), cid, ZBUSID, text, rt);
         sendMessage(message);
         return message;
     }
@@ -94,19 +95,21 @@ public class ChatClient implements ChatSoupport, ImMsgReceveListener, ImStatusLi
      * @param jsonstr
      */
     @Override
-    public void sendMessage(boolean isEnable, Map jsonstr, int cid, String ZBUSID, int customID, int msgid) {
+    public void sendMessage(boolean isEnable, Map jsonstr, int cid, String ZBUSID, int customID) {
 
-        sendMessage(MessageBuilder.createCustomMessage(msgid, cid, ZBUSID, customID, isEnable, jsonstr, rt));
+        sendMessage(MessageBuilder.createCustomMessage((int) System.currentTimeMillis(), cid, ZBUSID, customID, isEnable, jsonstr, rt));
     }
 
     @Override
-    public void sendMessage(boolean isEnable, int cid, MessageExt ext, int msgid) {
-        sendMessage(MessageBuilder.createCustomMessage(msgid, cid, isEnable, ext, rt));
+    public void sendMessage(boolean isEnable, int cid, MessageExt ext) {
+        sendMessage(MessageBuilder.createCustomMessage((int) System.currentTimeMillis(), cid, isEnable, ext, rt));
     }
 
     @Override
     public void sendMessage(Message message) {
         ZBIMClient.getInstance().sendMessage(message);
+        message.setIs_read(true);// 标记为已经读消息
+        MessageDao.getInstance(mContext).insertMessage(message);// 单聊保存到数据库
     }
 
     /**

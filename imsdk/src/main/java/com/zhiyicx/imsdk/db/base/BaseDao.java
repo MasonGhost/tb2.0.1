@@ -14,7 +14,7 @@ public abstract class BaseDao {
     protected static final int VERSION = 4;
     protected static final String DB_NAME = "zycxMessage.db";
 
-    public static final long TIME_DEFAULT_ADD = 1451577600000l;
+    public static final long TIME_DEFAULT_ADD = 1451577600000L; //  消息的MID，`(mid >> 23) + 1451577600000` 为毫秒时间戳
     protected final int DEFAULT_PAGEE = 1;
     protected final int DEFAULT_PAGESIZE = 20;
 

@@ -76,7 +76,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      *
      * @return 默认不可用
      */
-    protected boolean setUseSatusbar(){
+    protected boolean setUseSatusbar() {
         return false;
     }
 
@@ -201,11 +201,11 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      */
     protected void setToolBarTextColor() {
         // 如果toolbar背景是白色的，就将文字颜色设置成黑色
-        if (showToolbar() && ContextCompat.getColor(getContext(),setToolBarBackgroud()) == Color.WHITE) {
-            mToolbarCenter.setTextColor(ContextCompat.getColor(getContext(),R.color.important_for_content));
-            mToolbarRight.setTextColor(ContextCompat.getColorStateList(getContext(),R.color.selector_text_color));
+        if (showToolbar() && ContextCompat.getColor(getContext(), setToolBarBackgroud()) == Color.WHITE) {
+            mToolbarCenter.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
+            mToolbarRight.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.selector_text_color));
 
-            mToolbarLeft.setTextColor(ContextCompat.getColor(getContext(),R.color.important_for_content));
+            mToolbarLeft.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
             StatusBarUtils.statusBarLightMode(getActivity());
         }
     }
@@ -219,5 +219,38 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      */
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         return false;
+    }
+
+    /**
+     * 设置右侧文字
+     * @param rightText 设置右侧文字 ，文字内容
+     */
+    protected void setRightText(String rightText) {
+        changeText(mToolbarRight, rightText);
+    }
+
+    /**
+     *  设置左侧文字内容
+     * @param leftText 左侧文字内容
+     */
+    protected void setLeftText(String leftText) {
+        changeText(mToolbarLeft, leftText);
+    }
+
+    /**
+     * 设置中间文字内容
+     * @param centerText 中间文字内容
+     */
+    protected void setCenterText(String centerText) {
+        changeText(mToolbarCenter, centerText);
+    }
+
+    private void changeText(TextView view, String string) {
+        if (TextUtils.isEmpty(string)) {
+            view.setVisibility(View.GONE);
+        } else {
+            view.setText(string);
+            view.setVisibility(View.VISIBLE);
+        }
     }
 }

@@ -5,6 +5,7 @@ import android.util.SparseArray;
 
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.manage.ChatClient;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -42,28 +43,15 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
     public void getUserInfo(long user_id) {
 
     }
 
     @Override
-    public List<ChatItemBean> getHistoryMessages(int cid, long mid) {
-        List<ChatItemBean> data = mRepository.getChatListData(cid, mid);
+    public List<ChatItemBean> getHistoryMessages(int cid, long creat_time) {
+        List<ChatItemBean> data = mRepository.getChatListData(cid, creat_time);
         Collections.reverse(data);
         mRootView.hideLoading();
-        for (ChatItemBean tm: data){
-            System.out.println("tm = " + tm.getLastMessage().create_time);
-        }
         return data;
     }
 
@@ -81,26 +69,36 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         if (TextUtils.isEmpty(text)) {
             return;
         }
-        Message message = ChatClient.getInstance(mContext).sendTextMsg(text, cid, "", 0);
+        Message message = ChatClient.getInstance(mContext).sendTextMsg(text, cid, "");// usid 暂不使用
         message.setCreate_time(System.currentTimeMillis());
         message.setUid(AppApplication.getmCurrentLoginAuth().getUser_id());
-        onMessageReceived(message);
+        message.setIs_read(true);
+        updateMessage(message);
     }
 
+    /**
+     * 收到消息
+     *
+     * @param message
+     */
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED)
     private void onMessageReceived(Message message) {
         LogUtils.d(TAG, "------onMessageReceived------->" + message);
+        if (message.cid != mRootView.getCurrentChatCid()) {// 丢弃非当前房间的消息
+            return;
+        }
         updateMessage(message);
+        // 把消息更新为已经读
+        MessageDao.getInstance(mContext).readMessage(message.getMid());
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGEACKRECEIVED)
     private void onMessageACKReceived(Message message) {
         LogUtils.d(TAG, "------onMessageACKReceived------->" + message);
-//        updateMessage(message);
+
     }
 
     private void updateMessage(Message message) {
-        message.setUid(AppApplication.getmCurrentLoginAuth().getUser_id());
         ChatItemBean chatItemBean = new ChatItemBean();
         chatItemBean.setLastMessage(message);
         UserInfoBean userInfoBean = mUserInfoBeanSparseArray.get(message.getUid());
@@ -116,8 +114,8 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         }
         chatItemBean.setUserInfo(userInfoBean);
         mRootView.reFreshMessage(chatItemBean);
+        mRootView.smoothScrollToBottom();
     }
-
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONNECTED)
     private void onConnected() {
@@ -136,6 +134,6 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGETIMEOUT)
     private void onMessageTimeout(Message message) {
-        mRootView.showMessage("IM 聊天超时" + message);
+//        mRootView.showMessage("IM 聊天超时" + message);
     }
 }
