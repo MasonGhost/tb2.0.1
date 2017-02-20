@@ -155,6 +155,9 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     @Override
     public void refreshLastClicikPostion(int positon, MessageItemBean messageItemBean) {
         Message message = MessageDao.getInstance(mContext).getLastMessageByCid(messageItemBean.getConversation().getCid());
+        if (message == null) {
+            return;
+        }
         messageItemBean.getConversation().setLast_message_time(message.getCreate_time());
         messageItemBean.getConversation().setLast_message_text(message.getTxt());
         mRootView.refreshLastClicikPostion(positon, messageItemBean);

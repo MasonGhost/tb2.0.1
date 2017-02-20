@@ -17,6 +17,8 @@ import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.widget.chat.ChatMessageList;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,7 +66,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     @Override
     protected String setCenterTitle() {
-        return getString(R.string.message);
+        return "";
     }
 
     @Override
@@ -114,6 +116,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     private void getIntentData() {
         mMessageItemBean = getArguments().getParcelable(BUNDLE_MESSAGEITEMBEAN);
+        setChatTitle(mMessageItemBean.getUserInfo().getName());
     }
 
     @Override
@@ -130,6 +133,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     public void hideLoading() {
         mMessageList.getRefreshLayout().endRefreshing();
     }
+
     @Override
     public void showMessage(String message) {
         ToastUtils.showToast(message);
@@ -238,6 +242,11 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
         return true;
     }
 
+
+    @Override
+    public void setChatTitle(@NotNull String titleStr) {
+        setCenterText(titleStr);
+    }
 
     @Override
     public void reFreshMessage(ChatItemBean chatItemBean) {

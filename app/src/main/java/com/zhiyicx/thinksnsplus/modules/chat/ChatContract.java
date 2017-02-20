@@ -7,6 +7,8 @@ import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import rx.Observable;
@@ -22,12 +24,22 @@ public interface ChatContract {
 
     interface View extends IBaseView<Presenter> {
         /**
+         * 设置聊天头信息
+         *
+         * @param titleStr 头内容
+         */
+        void setChatTitle(@NotNull String titleStr);
+
+        /**
          * 刷新聊天内容
          *
          * @param chatItemBean 消息内容
          */
         void reFreshMessage(ChatItemBean chatItemBean);
 
+        /**
+         * 滑动内容到底部
+         */
         void smoothScrollToBottom();
 
     }

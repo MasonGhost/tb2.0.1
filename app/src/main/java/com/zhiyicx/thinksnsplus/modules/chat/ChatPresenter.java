@@ -45,16 +45,6 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
     public void getUserInfo(long user_id) {
 
     }
@@ -95,7 +85,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     private void onMessageReceived(Message message) {
         LogUtils.d(TAG, "------onMessageReceived------->" + message);
         if (message.getMid() > 0) {
-            message.setCreate_time((message.mid >> 23) + TIME_DEFAULT_ADD);
+            message.setCreate_time((message.mid >> 23) + TIME_DEFAULT_ADD); //  消息的MID，`(mid >> 23) + 1451577600000` 为毫秒时间戳
         }
         updateMessage(message);
     }
