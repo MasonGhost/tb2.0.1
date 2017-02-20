@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.content.Context;
 
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
@@ -74,46 +75,50 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
 
     /**
      * 获取某个人的粉丝列表的用户信息:谁关注了我
+     *
+     * @param maxId 当前页面的最小id
      */
-    public List<FollowFansBean> getSomeOneFans(int userId) {
+    public List<FollowFansBean> getSomeOneFans(int userId, int maxId) {
         FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
-        return followFansBeanDao.queryDeep("where " + FollowFansBeanDao
-                .Properties.FollowedUserId.columnName + " = ? and " + FollowFansBeanDao.Properties.FollowState.columnName + " != ? ", userId + "", FollowFansBean.UNFOLLOWED_STATE + "");
-
-        /*QueryBuilder<FollowFansBean> qb = followFansBeanDao.queryBuilder();
-        // 粉丝关注表中，FollowedUserId为当前id，且不包含状态值为未关注的数据
-        qb.where(FollowFansBeanDao
-                .Properties.FollowedUserId.eq(userId), FollowFansBeanDao.Properties.FollowState.notEq(FollowFansBean.UNFOLLOWED_STATE));
-        return qb.list();*/
+        return followFansBeanDao.queryDeep(" where " + FollowFansBeanDao
+                        .Properties.FollowedUserId.columnName + " = ? and "
+                        + FollowFansBeanDao.Properties.FollowState.columnName + " != ?"
+                        + " order by " +"T.\"" + FollowFansBeanDao.Properties.Id.columnName + "\"" + " ASC"
+                        + " limit ?"
+                , userId + ""
+                , FollowFansBean.UNFOLLOWED_STATE + ""
+                , ApiConfig.MAX_NUMBER_PER_PAGE + "");
     }
 
     /**
      * 获取某个人的关注列表的用户信息
      */
-    public List<FollowFansBean> getSomeOneFollower(int userId) {
+    public List<FollowFansBean> getSomeOneFollower(int userId, int maxId) {
         FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
-        ;
-        return followFansBeanDao.queryDeep("where " + FollowFansBeanDao
-                .Properties.UserId.columnName + " = ? and " + FollowFansBeanDao.Properties.FollowState.columnName + " != ? ", userId + "", FollowFansBean.UNFOLLOWED_STATE + "");
-       /* QueryBuilder<FollowFansBean> qb = followFansBeanDao.queryBuilder();
-        // 粉丝关注表中，userID为当前id，且不包含状态值为未关注的数据
-        qb.where(FollowFansBeanDao
-                .Properties.UserId.eq(userId), FollowFansBeanDao.Properties.FollowState.notEq(FollowFansBean.UNFOLLOWED_STATE));
-        return qb.list();*/
+        return followFansBeanDao.queryDeep(" where " + FollowFansBeanDao
+                        .Properties.UserId.columnName + " = ? and "
+                        + FollowFansBeanDao.Properties.FollowState.columnName + " != ?"
+                        + " order by " + "T.\"" + FollowFansBeanDao.Properties.Id.columnName + "\"" + " ASC"
+                        + " limit ?"
+                , userId + ""
+                , FollowFansBean.UNFOLLOWED_STATE + ""
+                , ApiConfig.MAX_NUMBER_PER_PAGE + "");
     }
 
     /**
      * 获取某个人的相互关注列表的用户信息
      */
-    public List<FollowFansBean> getSomeOneFollowEachOther(int userId) {
+    public List<FollowFansBean> getSomeOneFollowEachOther(int userId, int maxId) {
         FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
-        return followFansBeanDao.queryDeep("where " + FollowFansBeanDao
-                .Properties.UserId.columnName + " = ? and " + FollowFansBeanDao.Properties.FollowState.columnName + " = ? ", userId + "", FollowFansBean.FOLLOWED_EACHOTHER_STATE + "");
-       /* QueryBuilder<FollowFansBean> qb = followFansBeanDao.queryBuilder();
-        // 粉丝关注表中，userID为当前id，且不包含状态值为未关注的数据
-        qb.where(FollowFansBeanDao
-                .Properties.UserId.eq(userId), FollowFansBeanDao.Properties.FollowState.eq(FollowFansBean.FOLLOWED_EACHOTHER_STATE));
-        return qb.list();*/
+        return followFansBeanDao.queryDeep(" where " + FollowFansBeanDao
+                        .Properties.UserId.columnName + " = ? and "
+                        + FollowFansBeanDao.Properties.FollowState.columnName + " = ?"
+                        + " limit ?"
+                        + " order by " + FollowFansBeanDao.Properties.Id.columnName + " ASC"
+                , userId + ""
+                , FollowFansBean.FOLLOWED_EACHOTHER_STATE + ""
+                , ApiConfig.MAX_NUMBER_PER_PAGE + "");
+
     }
 
     /**

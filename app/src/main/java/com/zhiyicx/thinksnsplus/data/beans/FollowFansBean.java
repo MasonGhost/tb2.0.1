@@ -20,10 +20,11 @@ import org.greenrobot.greendao.annotation.Unique;
  * @contact email:450127106@qq.com
  */
 @Entity
-public class FollowFansBean implements Cloneable{
+public class FollowFansBean implements Cloneable {
     public static final int UNFOLLOWED_STATE = 0;// 未关注的状态
     public static final int IFOLLOWED_STATE = 1;// 我关注了他，他没有关注我
     public static final int FOLLOWED_EACHOTHER_STATE = 2;// 互相关注的状态
+    // 存储服务器返回的maxId
     @Id
     private Long id;
     // 当前并未找到greenDao设置联合唯一性的方案，所以使用该字段，拼接userId和followedUserId
@@ -54,7 +55,7 @@ public class FollowFansBean implements Cloneable{
 
     @Generated(hash = 1665209293)
     public FollowFansBean(Long id, String userFollowedId, long userId, int followState,
-            long followedUserId) {
+                          long followedUserId) {
         this.id = id;
         this.userFollowedId = userFollowedId;
         this.userId = userId;

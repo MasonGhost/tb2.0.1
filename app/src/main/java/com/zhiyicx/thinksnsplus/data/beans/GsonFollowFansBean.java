@@ -30,7 +30,7 @@ public class GsonFollowFansBean {
     }
 
     public class GsonFollowsBean {
-        private int id;
+        private int id;// maxId
         private int user_id;
 
         public int getId() {
