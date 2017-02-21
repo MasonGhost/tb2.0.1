@@ -20,6 +20,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
+
 /**
  * @Describe
  * @Author Jungle68
@@ -49,8 +53,21 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
 
     @Override
     public List<ChatItemBean> getHistoryMessages(int cid, long creat_time) {
-        List<ChatItemBean> data = mRepository.getChatListData(cid, creat_time);
+        final List<ChatItemBean> data = mRepository.getChatListData(cid, creat_time);
         Collections.reverse(data);
+        Observable.just(data)
+                .observeOn(Schedulers.io())
+                .subscribe(new Action1<List<ChatItemBean>>() {
+                    @Override
+                    public void call(List<ChatItemBean> chatItemBeen) {
+                        for (ChatItemBean chatItemBean : chatItemBeen) {
+                            if (!chatItemBean.getLastMessage().getIs_read()) {
+                                // 把消息更新为已经读
+                                MessageDao.getInstance(mContext).readMessage(chatItemBean.getLastMessage().getMid());
+                            }
+                        }
+                    }
+                });
         mRootView.hideLoading();
         return data;
     }
@@ -77,6 +94,18 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     }
 
     /**
+     * 消息重发
+     *
+     * @param chatItemBean
+     */
+    @Override
+    public void reSendText(ChatItemBean chatItemBean) {
+        chatItemBean.getLastMessage().setCreate_time(System.currentTimeMillis());
+        ChatClient.getInstance(mContext).sendMessage( chatItemBean.getLastMessage());
+        mRootView.reFreshMessage(chatItemBean);
+    }
+
+    /**
      * 收到消息
      *
      * @param message
@@ -95,22 +124,23 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGEACKRECEIVED)
     private void onMessageACKReceived(Message message) {
         LogUtils.d(TAG, "------onMessageACKReceived------->" + message);
-
+        mRootView.updateMessageStatus(message);
     }
 
     private void updateMessage(Message message) {
         ChatItemBean chatItemBean = new ChatItemBean();
         chatItemBean.setLastMessage(message);
+        if (message.getUid() == 0) {// 如果没有 uid, 则表明是当前用户发的消息
+            message.setUid(AppApplication.getmCurrentLoginAuth().getUser_id());
+        }
         UserInfoBean userInfoBean = mUserInfoBeanSparseArray.get(message.getUid());
         if (userInfoBean == null) {
             userInfoBean = AppApplication.AppComponentHolder.getAppComponent()
                     .userInfoBeanGreenDao().getSingleDataFromCache((long) message.getUid());
-
             if (userInfoBean == null) {
-                //网络请求
-            } else {
-                mUserInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                // TODO: 2017/2/21    //网络请求
             }
+            mUserInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
         }
         chatItemBean.setUserInfo(userInfoBean);
         mRootView.reFreshMessage(chatItemBean);
@@ -134,6 +164,6 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGETIMEOUT)
     private void onMessageTimeout(Message message) {
-//        mRootView.showMessage("IM 聊天超时" + message);
+        mRootView.updateMessageStatus(message);
     }
 }

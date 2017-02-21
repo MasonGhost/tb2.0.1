@@ -169,10 +169,8 @@ public class ChatMessageList extends FrameLayout {
      *
      * @param position
      */
-    public void refreshSeekTo(int position) {
-        if (messageAdapter != null) {
-            mRecyclerView.scrollToPosition(position);
-        }
+    public void refresh(int position) {
+        messageAdapter.notifyItemChanged(position);
     }
 
     /**

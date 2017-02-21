@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.widget.chat;
 
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
@@ -10,6 +11,7 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageLoaderStrategy;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.imsdk.entity.MessageStatus;
 import com.zhiyicx.imsdk.entity.MessageType;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
@@ -76,6 +78,26 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
             holder.setVisible(R.id.tv_chat_time, View.VISIBLE);
         } else {
             holder.setVisible(R.id.tv_chat_time, View.GONE);
+        }
+        // 消息状态
+        switch (chatItemBean.getLastMessage().getSend_status()) {
+            case MessageStatus.SENDING:
+                holder.setImageResource(R.id.msg_status, R.drawable.frame_loading_grey);
+                holder.setVisible(R.id.msg_status, View.VISIBLE);
+                ((AnimationDrawable) ((ImageView) holder.getView(R.id.msg_status)).getDrawable()).start();
+                break;
+            case MessageStatus.SEND_SUCCESS:
+                AnimationDrawable animationD = (AnimationDrawable) ((ImageView) holder.getView(R.id.msg_status)).getDrawable();
+                if (animationD != null) {
+                    animationD.stop();
+                }
+                holder.setVisible(R.id.msg_status, View.GONE);
+                break;
+            case MessageStatus.SEND_FAIL:
+                holder.setImageResource(R.id.msg_status, R.mipmap.msg_box_remind);
+                holder.setVisible(R.id.msg_status, View.VISIBLE);
+                break;
+            default:
         }
 
         // 是否需要显示名字

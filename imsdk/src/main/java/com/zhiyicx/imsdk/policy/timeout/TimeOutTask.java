@@ -14,6 +14,7 @@ public class TimeOutTask implements Runnable {
     private MessageContainer mMessageContainer;
     private long begin_time;
     public static final long OUT_TIME = 10 * 1000;//超时时间
+    public static final long SLEEP_TIME = 1 * 1000;//超时时间
     private boolean isEnd;
     private TimeOutListener mListener;
 
@@ -23,6 +24,7 @@ public class TimeOutTask implements Runnable {
         this.begin_time = begin_time;
         this.mListener = l;
         mMessageContainer.reSendCounts++;
+
     }
 
     @Override
@@ -31,7 +33,7 @@ public class TimeOutTask implements Runnable {
         while (!isEnd) {
             //防止cpu占用过高
             try {
-                Thread.sleep(OUT_TIME);
+                Thread.sleep(SLEEP_TIME);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -39,6 +41,7 @@ public class TimeOutTask implements Runnable {
                 timeout();
                 isEnd = true;
             }
+
         }
     }
 

@@ -160,7 +160,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         }
         messageItemBean.getConversation().setLast_message_time(message.getCreate_time());
         messageItemBean.getConversation().setLast_message_text(message.getTxt());
-        messageItemBean.setUnReadMessageNums(MessageDao.getInstance(mContext).getUnReadMessageCount(messageItemBean.getConversation().getCid()));
+        messageItemBean.setUnReadMessageNums(0);
         mRootView.refreshLastClicikPostion(positon, messageItemBean);
     }
 

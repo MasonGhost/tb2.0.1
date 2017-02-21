@@ -12,6 +12,7 @@ import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.imsdk.core.ChatType;
+import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
@@ -63,6 +64,12 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     @Override
     protected int setToolBarBackgroud() {
         return R.color.white;
+    }
+
+
+    @Override
+    protected void setRightClick() {
+        super.setRightClick();
     }
 
     @Override
@@ -169,11 +176,11 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     /**
      * 发送状态点击
      *
-     * @param message
+     * @param chatItemBean
      */
     @Override
-    public void onStatusClick(ChatItemBean message) {
-        showMessage(message.getLastMessage().getTxt());
+    public void onStatusClick(ChatItemBean chatItemBean) {
+        mPresenter.reSendText(chatItemBean);
     }
 
     /**
@@ -263,5 +270,17 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     @Override
     public int getCurrentChatCid() {
         return mMessageItemBean.getConversation().getCid();
+    }
+
+    @Override
+    public void updateMessageStatus(Message message) {
+        int size = mDatas.size();
+        for (int i = 0; i < size; i++) {
+            if (mDatas.get(i).getLastMessage().getId() == message.getId()) {
+                mDatas.get(i).setLastMessage(message);
+                mMessageList.refresh(i);
+                break;
+            }
+        }
     }
 }
