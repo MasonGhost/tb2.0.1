@@ -31,7 +31,7 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
     }
 
     @Override
-    public void sendDynamic(HashMap<String,Object> params) {
+    public void sendDynamic(HashMap<String, Object> params) {
         // 发送动态
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.SEND_DYNAMIC);

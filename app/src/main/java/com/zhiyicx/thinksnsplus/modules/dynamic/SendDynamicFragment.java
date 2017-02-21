@@ -257,7 +257,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     public void setPresenter(SendDynamicContract.Presenter presenter) {
-        mPresenter=presenter;
+        mPresenter = presenter;
     }
 
     @Override
@@ -273,5 +273,10 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     @Override
     public void showMessage(String message) {
 
+    }
+
+    @Override
+    public void sendDynamicComplete() {
+        getActivity().finish();
     }
 }
