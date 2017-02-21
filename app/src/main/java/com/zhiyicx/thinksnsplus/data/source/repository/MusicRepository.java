@@ -4,7 +4,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.MusicListBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.MusicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.modules.music_fm.MusicContract;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_album.MusicContract;
 
 import java.util.Map;
 
