@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -13,6 +14,7 @@ import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.modules.dynamic.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageFragment;
@@ -124,6 +126,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
             // 点击增加
             case R.id.fl_add:
                 //// TODO: 2017/1/5  添加动态
+                startActivity(new Intent(getContext(), SendDynamicActivity.class));
                 break;
             // 点击消息
             case R.id.ll_message:

@@ -58,7 +58,10 @@
 
     <!--音乐FM-->
     <string name="music_fm">音乐FM</string>
-
+    <!--发布动态-->
+    <string name="send_dynamic">发布动态</string>
+    <string name="dynamic_title_hint">有标题更吸引人</string>
+    <string name="dynamic_content_hint">输入要说的话，图文结合更精彩哦</string>
     <!--代码中的string-->
     <string name="token_expiers">token过期，请重新登陆</string>
     <string name="share">分享</string>

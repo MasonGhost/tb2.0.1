@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/et_dynamic_title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="@string/dynamic_title_hint"/>
+
+
+    <EditText
+        android:id="@+id/et_dynamic_content"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:hint="@string/dynamic_content_hint"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_photo_list"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"></android.support.v7.widget.RecyclerView>
+</LinearLayout>

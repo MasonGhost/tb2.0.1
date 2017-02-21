@@ -41,8 +41,7 @@
             android:name=".modules.chat.ChatActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
-            >
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
         </activity>
         <activity android:name=".modules.settings.aboutus.AboutUsActivity">
         </activity>
@@ -71,13 +70,12 @@
         <activity android:name=".modules.music_fm.music_play.MusicPlayActivity"/>
 
         <service android:name=".modules.music_fm.music_play.MusicPlayService"/>
-
         <service
             android:name=".service.backgroundtask.BackgroundTaskHandleService"
             android:exported="false">
         </service>
 
-        <!--#########################################      IM 相关       ################################-->
+        <!-- #########################################      IM 相关       ################################ -->
 
         <service android:name="com.zhiyicx.imsdk.service.SocketService"/>
         <!-- 网络监听广播 -->
@@ -89,6 +87,9 @@
                 <action android:name="android.intent.action.USER_PRESENT"/>
             </intent-filter>
         </receiver>
+
+        <activity android:name=".modules.dynamic.SendDynamicActivity">
+        </activity>
     </application>
 
 </manifest>

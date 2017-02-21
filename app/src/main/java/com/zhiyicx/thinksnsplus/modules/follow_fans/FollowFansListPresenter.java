@@ -87,9 +87,9 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
                         insertOrUpdateData(data);// 保存到数据库
                         // 多表连查，获取用户信息
                         if (pageType == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
-                            data = mFollowFansBeanGreenDao.getSomeOneFollower(userId);
+                            data = mFollowFansBeanGreenDao.getSomeOneFollower(userId,maxId);
                         } else if (pageType == FollowFansListFragment.FANS_FRAGMENT_PAGE) {
-                            data = mFollowFansBeanGreenDao.getSomeOneFans(userId);
+                            data = mFollowFansBeanGreenDao.getSomeOneFans(userId,maxId);
                         }
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                         // 处理用户信息缺失
@@ -115,9 +115,9 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
     public List<FollowFansBean> requestCacheData(int maxId, boolean isLoadMore, int userId, int pageType) {
         List<FollowFansBean> followFansBeanList = null;
         if (pageType == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
-            followFansBeanList = mFollowFansBeanGreenDao.getSomeOneFollower(userId);
+            followFansBeanList = mFollowFansBeanGreenDao.getSomeOneFollower(userId,maxId);
         } else if (pageType == FollowFansListFragment.FANS_FRAGMENT_PAGE) {
-            followFansBeanList = mFollowFansBeanGreenDao.getSomeOneFans(userId);
+            followFansBeanList = mFollowFansBeanGreenDao.getSomeOneFans(userId,maxId);
         }
         dealWithUserInfo(pageType, followFansBeanList);
         return followFansBeanList;

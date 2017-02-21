@@ -19,6 +19,8 @@ public class ApiConfig {
 
     public static final String URL_ABOUT_US = "http://blog.csdn.net/hellohhj/article/details/50467502";// 关于我们网站
 
+    // 每次从服务器获取数据，一页的最大数量
+    public static final int MAX_NUMBER_PER_PAGE = 3;
 
     /*******************************************  接口 Path  *********************************************/
     /**
