@@ -7,22 +7,20 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.imageloader.config.ImageConfig;
-import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -40,12 +38,12 @@ import butterknife.ButterKnife;
  */
 
 public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presenter> implements PhotoSelectorImpl.IPhotoBackListener {
-    @BindView(R.id.et_dynamic_title)
-    EditText mEtDynamicTitle;
-    @BindView(R.id.et_dynamic_content)
-    EditText mEtDynamicContent;
     @BindView(R.id.rv_photo_list)
     RecyclerView mRvPhotoList;
+    @BindView(R.id.et_dynamic_title)
+    UserInfoInroduceInputView mEtDynamicTitle;
+    @BindView(R.id.et_dynamic_content)
+    UserInfoInroduceInputView mEtDynamicContent;
     private List<ImageBean> selectedPhotos;
     private CommonAdapter<ImageBean> mCommonAdapter;
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
@@ -96,11 +94,16 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     // 最后一项作为占位图
                     imageView.setImageResource(R.mipmap.img_edit_photo_frame);
                 } else {
-                    ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
+                    /*ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
                     imageLoader.loadImage(getContext(), GlideImageConfig.builder()
                             .imagerView(imageView)
                             .url(imageBean.getImgUrl())
-                            .build());
+                            .build());*/
+                    int width = UIUtils.getWindowWidth(getContext()) - getResources().getDimensionPixelSize(R.dimen.spacing_large) * 2 - ConvertUtils.dp2px(getContext(), 5) * 3;
+                    Glide.with(getContext())
+                            .load(imageBean.getImgUrl())
+                            .override(width / 4, width / 4)
+                            .into(imageView);
 
                 }
                 imageView.setOnClickListener(new View.OnClickListener() {
@@ -118,7 +121,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 4);
         mRvPhotoList.setLayoutManager(gridLayoutManager);
         int witdh = ConvertUtils.dp2px(getContext(), 5);
-        mRvPhotoList.addItemDecoration(new GridDecoration(witdh,witdh));
+        mRvPhotoList.addItemDecoration(new GridDecoration(witdh, witdh));
         mRvPhotoList.setAdapter(mCommonAdapter);
     }
 
@@ -207,5 +210,13 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mPhotoSelector.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: inflate a fragment view
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        ButterKnife.bind(this, rootView);
+        return rootView;
     }
 }
