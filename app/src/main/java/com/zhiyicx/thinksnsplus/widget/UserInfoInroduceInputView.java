@@ -29,6 +29,8 @@ public class UserInfoInroduceInputView extends FrameLayout {
     protected EditText mEtContent;
     private int mLimitMaxSize;// 最大输入值
     private int mshowLimitSize;// 当输入值达到 mshowLimitSize 时，显示提示
+    private String mHintContent;// 编辑框的hint提示文字
+    private int mShowLines;// 编辑框显示最大行数，超过改行数就滚动
 
     private String mLimitTipStr = "{}/";// 添加格式符号，用户ColorPhrase
 
@@ -60,14 +62,23 @@ public class UserInfoInroduceInputView extends FrameLayout {
                     com.zhiyicx.baseproject.R.styleable.inputLimitView);
             mLimitMaxSize = array.getInteger(com.zhiyicx.baseproject.R.styleable.inputLimitView_limitSize, context.getResources().getInteger(com.zhiyicx.baseproject.R.integer.comment_input_max_size));
             mshowLimitSize = array.getInteger(com.zhiyicx.baseproject.R.styleable.inputLimitView_showLimitSize, context.getResources().getInteger(com.zhiyicx.baseproject.R.integer.show_comment_input_size));
+            mHintContent = array.getString(com.zhiyicx.baseproject.R.styleable.inputLimitView_hintContent);
+            mShowLines = array.getInteger(com.zhiyicx.baseproject.R.styleable.inputLimitView_showLines, 0);// 如果为0就不要设置maxLine了
             array.recycle();
         } else {
             mLimitMaxSize = context.getResources().getInteger(com.zhiyicx.baseproject.R.integer.comment_input_max_size);
             mshowLimitSize = context.getResources().getInteger(com.zhiyicx.baseproject.R.integer.show_comment_input_size);
+            mHintContent = context.getResources().getString(R.string.edit_introduce);
+            mShowLines = 0;
         }
 
+        // 初始化控件属性
         mEtContent.setFilters(new InputFilter[]{new InputFilter.LengthFilter(mLimitMaxSize)});
-
+        mEtContent.setHint(mHintContent);
+        if (mShowLines > 0) {
+            mEtContent.setLines(mShowLines);
+        }
+        mTvLimitTip.setVisibility(GONE);
         mEtContent.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -105,7 +116,7 @@ public class UserInfoInroduceInputView extends FrameLayout {
         return mEtContent.getText().toString().trim();
     }
 
-    public void setText(String content){
+    public void setText(String content) {
         mEtContent.setText(content);
     }
 }
