@@ -255,17 +255,4 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         mPhotoSelector.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Subscriber(tag = EventBusTagConfig.EVENT_SELECTED_PHOTO_UPDATE)
-    public void refreshDataAndUI(List<String> selectedPhoto) {
-        // 尝试刷新图片列表
-        selectedPhotos.clear();
-        List<ImageBean> imageBeanList = new ArrayList<>();
-        for (String photo : selectedPhoto) {
-            ImageBean imageBean = new ImageBean();
-            imageBean.setImgUrl(photo);
-            imageBeanList.add(imageBean);
-        }
-        selectedPhotos.addAll(imageBeanList);
-        mCommonAdapter.notifyDataSetChanged();
-    }
 }
