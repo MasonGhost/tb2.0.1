@@ -263,6 +263,8 @@ public class BackgroundTaskHandler {
                             }
                         });
                 break;
+            case SEND_DYNAMIC:
+
 
             default:
         }
