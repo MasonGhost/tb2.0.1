@@ -31,6 +31,7 @@ public class UserInfoInroduceInputView extends FrameLayout {
     private int mshowLimitSize;// 当输入值达到 mshowLimitSize 时，显示提示
     private String mHintContent;// 编辑框的hint提示文字
     private int mShowLines;// 编辑框显示最大行数，超过改行数就滚动
+    private ContentChangedListener mContentChangedListener;
 
     private String mLimitTipStr = "{}/";// 添加格式符号，用户ColorPhrase
 
@@ -87,7 +88,9 @@ public class UserInfoInroduceInputView extends FrameLayout {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                if (mContentChangedListener != null) {
+                    mContentChangedListener.contentChanged(s);
+                }
             }
 
             @Override
@@ -118,5 +121,17 @@ public class UserInfoInroduceInputView extends FrameLayout {
 
     public void setText(String content) {
         mEtContent.setText(content);
+    }
+
+    /**
+     * 因为控件使用了TextChangedListener，无法在外面再次创建一个监听
+     * 获取控件，在某些时候需要用到
+     */
+    public void setContentChangedListener(ContentChangedListener contentChangedListener) {
+        mContentChangedListener = contentChangedListener;
+    }
+
+    public interface ContentChangedListener {
+        void contentChanged(CharSequence s);
     }
 }
