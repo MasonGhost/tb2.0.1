@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.base;
 
 import com.zhiyicx.thinksnsplus.data.source.remote.ChatInfoClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
+import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.FollowFansClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.MusicClient;
@@ -115,6 +116,11 @@ public class ServiceModule {
     @Provides
     FollowFansClient provideFollowFansClient(Retrofit retrofit) {
         return retrofit.create(FollowFansClient.class);
+    }
+    @Singleton
+    @Provides
+    DynamicClient provideDynamicClient(Retrofit retrofit){
+        return retrofit.create(DynamicClient.class);
     }
 
 }

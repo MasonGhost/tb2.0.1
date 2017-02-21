@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +64,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     private CommonAdapter<ImageBean> mCommonAdapter;
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
     private PhotoSelectorImpl mPhotoSelector;
+    private boolean hasTitle, hasContent, hasPics;
 
 
     @Override
@@ -96,7 +99,9 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     protected void initView(View rootView) {
-        initPhotoSelector();
+        initSendDynamicBtnState();// 设置右边发布文字监听
+        setLeftTextColor();// 设置左边取消文字的颜色为主题色
+        initPhotoSelector();// 初始化图片选择器
         selectedPhotos = new ArrayList<>(MAX_PHOTOS);
         // 占位缺省图
         ImageBean camera = new ImageBean();
@@ -163,6 +168,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         };
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), ITEM_COLUM);
         mRvPhotoList.setLayoutManager(gridLayoutManager);
+        // 设置recyclerview的item之间的空白
         int witdh = ConvertUtils.dp2px(getContext(), 5);
         mRvPhotoList.addItemDecoration(new GridDecoration(witdh, witdh));
         mRvPhotoList.setAdapter(mCommonAdapter);
@@ -241,6 +247,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         // 占位缺省图
         ImageBean camera = new ImageBean();
         selectedPhotos.add(camera);
+        setSendDynamicState();// 每次刷新图片后都要判断发布按钮状态
         mCommonAdapter.notifyDataSetChanged();
     }
 
@@ -278,5 +285,41 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     @Override
     public void sendDynamicComplete() {
         getActivity().finish();
+    }
+
+    private void setLeftTextColor() {
+        mToolbarLeft.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
+    }
+
+    /**
+     * 发布按钮的状态监听
+     */
+    private void initSendDynamicBtnState() {
+        mEtDynamicTitle.setContentChangedListener(new UserInfoInroduceInputView.ContentChangedListener() {
+            @Override
+            public void contentChanged(CharSequence s) {
+                hasTitle = !TextUtils.isEmpty(s);
+                setSendDynamicState();
+            }
+        });
+        mEtDynamicContent.setContentChangedListener(new UserInfoInroduceInputView.ContentChangedListener() {
+            @Override
+            public void contentChanged(CharSequence s) {
+                hasContent = !TextUtils.isEmpty(s);
+                setSendDynamicState();
+            }
+        });
+
+    }
+
+    /**
+     * 设置动态发布按钮的点击状态
+     */
+    private void setSendDynamicState() {
+        if (!hasTitle && !hasContent && !selectedPhotos.isEmpty()) {
+            mToolbarRight.setEnabled(false);
+        } else {
+            mToolbarRight.setEnabled(true);
+        }
     }
 }

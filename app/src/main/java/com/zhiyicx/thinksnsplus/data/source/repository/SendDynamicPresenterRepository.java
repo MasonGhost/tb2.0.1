@@ -7,6 +7,8 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.SendDynamicContract;
 
 import java.util.HashMap;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -19,6 +21,7 @@ import rx.Observable;
 public class SendDynamicPresenterRepository implements SendDynamicContract.Repository {
     private DynamicClient mDynamicClient;
 
+    @Inject
     public SendDynamicPresenterRepository(ServiceManager serviceManager) {
         mDynamicClient = serviceManager.getDynamicClient();
     }
