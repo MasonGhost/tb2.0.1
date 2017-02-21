@@ -26,5 +26,5 @@ public interface DynamicClient {
      */
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_SEND_DYNAMIC)
-    Observable<BaseJson> sendDynamic(@FieldMap HashMap<String, String> fieldMap);
+    Observable<BaseJson<Object>> sendDynamic(@FieldMap HashMap<String, Object> fieldMap);
 }

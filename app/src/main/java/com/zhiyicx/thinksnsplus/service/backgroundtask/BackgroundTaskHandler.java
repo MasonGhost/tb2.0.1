@@ -16,6 +16,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.BackgroundRequestTaskBeanGreen
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.SendDynamicPresenterRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.simple.eventbus.EventBus;
@@ -30,6 +31,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.inject.Inject;
 
 import okhttp3.RequestBody;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * @Describe 后台任务处理逻辑
@@ -52,6 +55,8 @@ public class BackgroundTaskHandler {
     AuthRepository mAuthRepository;
     @Inject
     UserInfoRepository mUserInfoRepository;
+    @Inject
+    SendDynamicPresenterRepository mSendDynamicPresenterRepository;
 
     private Queue<BackgroundRequestTaskBean> mTaskBeanConcurrentLinkedQueue = new ConcurrentLinkedQueue<>();// 线程安全的队列
 
@@ -265,6 +270,26 @@ public class BackgroundTaskHandler {
                 break;
             case SEND_DYNAMIC:
 
+                mSendDynamicPresenterRepository.sendDynamic(backgroundRequestTaskBean.getParams())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new BaseSubscribe<Object>() {
+                            @Override
+                            protected void onSuccess(Object data) {
+                                // 动态发送成功
+                            }
+
+                            @Override
+                            protected void onFailure(String message) {
+                                // 动态发送失败
+                            }
+
+                            @Override
+                            protected void onException(Throwable throwable) {
+                                // 动态发送失败
+
+                            }
+                        });
 
             default:
         }

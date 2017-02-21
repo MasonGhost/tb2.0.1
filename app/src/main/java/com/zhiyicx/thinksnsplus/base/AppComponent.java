@@ -16,6 +16,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.SendDynamicPresenterRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
 
@@ -62,5 +63,8 @@ public interface AppComponent extends InjectComponent<AppApplication> {
     UserInfoBeanGreenDaoImpl userInfoBeanGreenDao();
 
     FollowFansBeanGreenDaoImpl followFansBeanGreenDao();
+
     UserInfoRepository userInfoRepository();
+
+    SendDynamicPresenterRepository dynamicPresenterRepository();
 }

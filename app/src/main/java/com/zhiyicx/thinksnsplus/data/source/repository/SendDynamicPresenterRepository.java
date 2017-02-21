@@ -24,7 +24,7 @@ public class SendDynamicPresenterRepository implements SendDynamicContract.Repos
     }
 
     @Override
-    public Observable<BaseJson> sendDynamic(HashMap<String, String> params) {
+    public Observable<BaseJson<Object>> sendDynamic(HashMap<String, Object> params) {
         return mDynamicClient.sendDynamic(params);
     }
 }
