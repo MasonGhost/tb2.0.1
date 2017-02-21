@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.google.gson.Gson;
 import com.zhiyicx.baseproject.cache.CacheBean;
+import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -17,11 +18,13 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SendDynamicPresenterRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +34,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.inject.Inject;
 
 import okhttp3.RequestBody;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
 /**
@@ -57,6 +64,8 @@ public class BackgroundTaskHandler {
     UserInfoRepository mUserInfoRepository;
     @Inject
     SendDynamicPresenterRepository mSendDynamicPresenterRepository;
+    @Inject
+    UpLoadRepository mUpLoadRepository;
 
     private Queue<BackgroundRequestTaskBean> mTaskBeanConcurrentLinkedQueue = new ConcurrentLinkedQueue<>();// 线程安全的队列
 
@@ -269,30 +278,64 @@ public class BackgroundTaskHandler {
                         });
                 break;
             case SEND_DYNAMIC:
-
-                mSendDynamicPresenterRepository.sendDynamic(backgroundRequestTaskBean.getParams())
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new BaseSubscribe<Object>() {
-                            @Override
-                            protected void onSuccess(Object data) {
-                                // 动态发送成功
-                            }
-
-                            @Override
-                            protected void onFailure(String message) {
-                                // 动态发送失败
-                            }
-
-                            @Override
-                            protected void onException(Throwable throwable) {
-                                // 动态发送失败
-
-                            }
-                        });
+                sendDynamic(backgroundRequestTaskBean);
 
             default:
         }
+
+    }
+
+    /**
+     * 处理动态发送的后台任务
+     */
+    private void sendDynamic(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
+        // 先处理图片上传，图片上传成功后，在进行动态发布
+        List<Observable<BaseJson<Integer>>> upLoadPics = new ArrayList<>();
+        for (int i = 0; i < 9; i++) {
+            upLoadPics.add(mUpLoadRepository.upLoadSingleFile(null, null, null, null));
+        }
+        Observable.combineLatest(upLoadPics, new FuncN<List<Integer>>() {
+            @Override
+            public List<Integer> call(Object... args) {
+                List<Integer> integers = new ArrayList<Integer>();
+                for (Object obj : args) {
+                    BaseJson<Integer> baseJson = (BaseJson<Integer>) obj;
+                    if (baseJson.isStatus()) {
+                        integers.add(baseJson.getData());
+                    } else {
+                        throw new NullPointerException();// 某一次失败就抛出异常，重传
+                    }
+                }
+                return integers;
+            }
+        }).flatMap(new Func1<List<Integer>, Observable<BaseJson<Object>>>() {
+            @Override
+            public Observable<BaseJson<Object>> call(List<Integer> integers) {
+                return mSendDynamicPresenterRepository.sendDynamic(backgroundRequestTaskBean.getParams());
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribe<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        // 动态发送成功
+                        
+                    }
+
+                    @Override
+                    protected void onFailure(String message) {
+                        // 动态发送失败
+                        addBackgroundRequestTask(backgroundRequestTaskBean);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        // 动态发送失败
+                        throwable.printStackTrace();
+                        addBackgroundRequestTask(backgroundRequestTaskBean);
+                    }
+                });
+
 
     }
 
