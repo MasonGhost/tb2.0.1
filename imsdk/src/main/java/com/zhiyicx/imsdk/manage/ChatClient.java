@@ -108,10 +108,10 @@ public class ChatClient implements ChatSoupport, ImMsgReceveListener, ImStatusLi
 
     @Override
     public void sendMessage(Message message) {
-        ZBIMClient.getInstance().sendMessage(message);
         message.setIs_read(true);// 标记为已经读消息
         message.setSend_status(MessageStatus.SENDING);//发送状态
         MessageDao.getInstance(mContext).insertMessage(message);// 单聊保存到数据库
+        ZBIMClient.getInstance().sendMessage(message);
     }
 
     /**

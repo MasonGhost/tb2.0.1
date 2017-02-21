@@ -164,6 +164,6 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGETIMEOUT)
     private void onMessageTimeout(Message message) {
-//        mRootView.showMessage("IM 聊天超时" + message);
+        mRootView.updateMessageStatus(message);
     }
 }
