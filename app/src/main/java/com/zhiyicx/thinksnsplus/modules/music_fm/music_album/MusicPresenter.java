@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.music_fm;
+package com.zhiyicx.thinksnsplus.modules.music_fm.music_album;
 
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.data.beans.MusicListBean;

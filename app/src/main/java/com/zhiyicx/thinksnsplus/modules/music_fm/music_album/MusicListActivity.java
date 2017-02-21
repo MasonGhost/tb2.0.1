@@ -1,7 +1,8 @@
-package com.zhiyicx.thinksnsplus.modules.music_fm;
+package com.zhiyicx.thinksnsplus.modules.music_fm.music_album;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+
 /**
  * @Author Jliuer
  * @Date 2017/2/13/17:04
