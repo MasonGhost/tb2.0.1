@@ -340,7 +340,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         // hashMap.put("latitude",); // 唯独
         // hashMap.put("longtitude",);// 精度
         // hashMap.put("geohash", ); // GEOhash值
-        // hashMap.put("storage_task_ids", );// 动态相关图片：图片任务id的数组
+        hashMap.put("photo_list", selectedPhotos);// 将图片路径传递过去，进行上传文件的处理
         hashMap.put("feed_from", ApiConfig.ANDROID_PLATFORM);
         return hashMap;
     }

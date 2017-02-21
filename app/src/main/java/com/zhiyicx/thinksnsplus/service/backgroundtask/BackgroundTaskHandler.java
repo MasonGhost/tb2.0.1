@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.NetUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
@@ -289,6 +290,8 @@ public class BackgroundTaskHandler {
      * 处理动态发送的后台任务
      */
     private void sendDynamic(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
+        final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
+        List<String> photos = (List<String>) params.get("photo_list");
         // 先处理图片上传，图片上传成功后，在进行动态发布
         List<Observable<BaseJson<Integer>>> upLoadPics = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
@@ -311,7 +314,8 @@ public class BackgroundTaskHandler {
         }).flatMap(new Func1<List<Integer>, Observable<BaseJson<Object>>>() {
             @Override
             public Observable<BaseJson<Object>> call(List<Integer> integers) {
-                return mSendDynamicPresenterRepository.sendDynamic(backgroundRequestTaskBean.getParams());
+                params.put("storage_task_ids", integers);// 动态相关图片：图片任务id的数组
+                return mSendDynamicPresenterRepository.sendDynamic(params);
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -319,7 +323,7 @@ public class BackgroundTaskHandler {
                     @Override
                     protected void onSuccess(Object data) {
                         // 动态发送成功
-                        
+                        ToastUtils.showToast("动态发布成功");
                     }
 
                     @Override
@@ -335,8 +339,8 @@ public class BackgroundTaskHandler {
                         addBackgroundRequestTask(backgroundRequestTaskBean);
                     }
                 });
-
-
     }
+
+
 
 }
