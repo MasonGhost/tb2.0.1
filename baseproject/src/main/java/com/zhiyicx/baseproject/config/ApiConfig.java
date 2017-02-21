@@ -9,6 +9,12 @@ package com.zhiyicx.baseproject.config;
 
 public class ApiConfig {
     /**
+     * 添加平台名称，用于接口
+     * 1:pc 2:h5 3:ios 4:android 5:其他
+     */
+    public static final int ANDROID_PLATFORM = 4;
+
+    /**
      * 网络根地址  http://192.168.10.222/
      * 测试服务器：http://192.168.2.222:8080/mockjs/2/test-get-repose-head-normal?
      */
