@@ -9,6 +9,12 @@ package com.zhiyicx.baseproject.config;
 
 public class ApiConfig {
     /**
+     * 添加平台名称，用于接口
+     * 1:pc 2:h5 3:ios 4:android 5:其他
+     */
+    public static final int ANDROID_PLATFORM = 4;
+
+    /**
      * 网络根地址  http://192.168.10.222/
      * 测试服务器：http://192.168.2.222:8080/mockjs/2/test-get-repose-head-normal?
      */
@@ -19,6 +25,8 @@ public class ApiConfig {
 
     public static final String URL_ABOUT_US = "http://blog.csdn.net/hellohhj/article/details/50467502";// 关于我们网站
 
+    // 每次从服务器获取数据，一页的最大数量
+    public static final int MAX_NUMBER_PER_PAGE = 3;
 
     /*******************************************  接口 Path  *********************************************/
     /**
@@ -56,6 +64,11 @@ public class ApiConfig {
     public static final String APP_PATH_FANS_LIST = "api/v1/follows/followeds/{user_id}/{max_id}";// 获取用户粉丝列表
     public static final String APP_PATH_FOLLOW_USER = "api/v1/users/follow";// 关注用户
     public static final String APP_PATH_CANCEL_FOLLOW_USER = "api/v1/users/unFollow";// 取消用户关注
+
+    /**
+     * 动态相关
+     */
+    public static final String APP_PATH_SEND_DYNAMIC = "api/v1/feeds";// 发布动态
 
     /**
      * 通用 CommonClient

@@ -149,8 +149,11 @@ public class GridDecoration extends RecyclerView.ItemDecoration {
                                RecyclerView parent) {
         int spanCount = getSpanCount(parent);
         int childCount = parent.getAdapter().getItemCount();
-        int width = mSpace[0];
-        int height = mSpace[1];
+        int width = 0, height = 0;
+        if (mSpace != null) {
+            width = mSpace[0];
+            height = mSpace[1];
+        }
         if (mDivider != null) {
             width = mDivider.getIntrinsicWidth();
             height = mDivider.getIntrinsicHeight();

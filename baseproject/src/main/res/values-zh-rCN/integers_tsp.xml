@@ -39,6 +39,17 @@
     <!-- 简介输入到多少字符的时候显示提示 -->
     <integer name="show_introduce_input_size">25</integer>
 
+    <!--发布动态标题最大字数30-->
+    <integer name="dynamic_title_max_size">30</integer>
+    <!--发布动态标题字数在20时提示-->
+    <integer name="dynamic_title_input_size">20</integer>
+    <!--发布动态内容最大字数30-->
+    <integer name="dynamic_content_max_size">250</integer>
+    <!--发布动态内容字数在200时提示-->
+    <integer name="dynamic_content_input_size">200</integer>
+    <!--发布动态内容的显示行数-->
+    <integer name="dynamic_content_show_lines">8</integer>
+
 
     <!--#########################################      浏览器相关       ################################-->
     <!-- 浏览器最大长度-->

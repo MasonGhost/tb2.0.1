@@ -169,6 +169,9 @@
             android:id="@+id/et_user_introduce"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_mid"
+            android:layout_marginRight="@dimen/spacing_mid"
+            android:layout_marginBottom="@dimen/spacing_mid"
             app:limitSize="@integer/introduce_input_max_size"
             app:showLimitSize="@integer/show_introduce_input_size"></com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView>
 

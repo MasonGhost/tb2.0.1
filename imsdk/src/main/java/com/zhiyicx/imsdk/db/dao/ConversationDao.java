@@ -112,6 +112,7 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
     public Conversation getConversationByCid(int cid) {
 
         SQLiteDatabase database = mHelper.getWritableDatabase();
+        database.beginTransaction();
         Cursor cursor = database.query(
                 TABLE_NAME,
                 null,
@@ -149,6 +150,8 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
             } while (cursor.moveToNext());
         }
         cursor.close();
+        database.setTransactionSuccessful();
+        database.endTransaction();
         if (conversations.size() > 0) return conversations.get(0);
         else return null;
     }
@@ -165,6 +168,7 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
         if (page < DEFAULT_PAGEE)
             page = DEFAULT_PAGEE;
         SQLiteDatabase database = mHelper.getWritableDatabase();
+        database.beginTransaction();
         Cursor cursor = database.query(
                 TABLE_NAME,
                 null,
@@ -203,6 +207,8 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
             } while (cursor.moveToNext());
         }
         cursor.close();
+        database.setTransactionSuccessful();
+        database.endTransaction();
         int size = conversations.size();
         for (int i = 0; i < size; i++) {
             Message tmp = MessageDao.getInstance(context).getLastMessageByCid(conversations.get(i).getCid());
@@ -223,6 +229,7 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
     @Override
     public List<Conversation> getConversationListbyImUid(long im_uid) {
         SQLiteDatabase database = mHelper.getWritableDatabase();
+        database.beginTransaction();
         Cursor cursor = database.query(
                 TABLE_NAME,
                 null,
@@ -260,6 +267,8 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
             } while (cursor.moveToNext());
         }
         cursor.close();
+        database.setTransactionSuccessful();
+        database.endTransaction();
         return conversations;
     }
 
@@ -271,6 +280,7 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
     @Override
     public List<Conversation> getPrivateAndGroupConversationListbyImUid(long im_uid) {
         SQLiteDatabase database = mHelper.getWritableDatabase();
+        database.beginTransaction();
         Cursor cursor = database.query(
                 TABLE_NAME,
                 null,
@@ -308,6 +318,8 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
             } while (cursor.moveToNext());
         }
         cursor.close();
+        database.setTransactionSuccessful();
+        database.endTransaction();
         return conversations;
     }
     /**
@@ -344,12 +356,15 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
     @Override
     public boolean hasConversation(int cid) {
         SQLiteDatabase database = mHelper.getReadableDatabase();
+        database.beginTransaction();
         String sql = "select * from " + TABLE_NAME + " where "
                 + COLUMN_NAME_CONVERSATION_CID + " = ?";
         Cursor cursor = database.rawQuery(sql,
                 new String[]{String.valueOf(cid)});
         boolean result = cursor.moveToFirst();
         cursor.close();
+        database.setTransactionSuccessful();
+        database.endTransaction();
         return result;
 
     }

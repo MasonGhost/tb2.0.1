@@ -22,6 +22,7 @@ import com.zhiyicx.imsdk.entity.EventContainer;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.entity.MessageContainer;
+import com.zhiyicx.imsdk.entity.MessageStatus;
 import com.zhiyicx.imsdk.entity.MessageType;
 import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.imsdk.policy.timeout.TimeOutListener;
@@ -58,8 +59,10 @@ import static com.zhiyicx.imsdk.core.ErroCode.PACKET_EXCEPTION_ERR_KEY_TYPE;
 import static com.zhiyicx.imsdk.core.ErroCode.PACKET_EXCEPTION_ERR_PACKET_TYPE;
 import static com.zhiyicx.imsdk.core.ErroCode.PACKET_EXCEPTION_ERR_SERILIZE_TYPE;
 import static com.zhiyicx.imsdk.core.ErroCode.SERVER_EXCEPTION;
+import static com.zhiyicx.imsdk.db.base.BaseDao.TIME_DEFAULT_ADD;
 
 /**
+ * 聊天服务
  * Created by jungle68 on 16/7/6.
  */
 public class SocketService extends BaseService implements ImService.ImListener {
@@ -115,6 +118,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
 
     private static final long HEART_PING_PONG_RATE = 10 * 1000;//间隔10s重连,10秒没有收到服务器回应
     private static final long DISCONNECT_NOTIFY_TIME = 10 * 1000;//IM超过10s没有连上，通知下发
+    private static final long HEART_BEAT_RATE_INTERVAL_FOR_CPU = 500;//心跳，防止cpu占用过高
     private static final long MESSAGE_SEND_INTERVAL_FOR_CPU = 100;//消息发送间隔时间，防止cpu占用过高
     private long disconnect_start_time = 0;//重连开始时间
     private int MAX_RESEND_COUNT = 3;//最大的重发次数
@@ -177,7 +181,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                          * 防止cpu占用过高卡顿
                          */
                         try {
-                            Thread.sleep(HEART_BEAT_RATE);
+                            Thread.sleep(HEART_BEAT_RATE_INTERVAL_FOR_CPU);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -245,7 +249,9 @@ public class SocketService extends BaseService implements ImService.ImListener {
 
                     if (messageContainer != null) {
                         if (messageContainer.msg.ext.customID != MessageType.MESSAGE_CUSTOM_ID_ZAN)//点赞不处理超时
+                        {
                             addTimeoutTask(messageContainer);
+                        }
                         sendMessage(messageContainer);
                     }
                 }
@@ -269,12 +275,11 @@ public class SocketService extends BaseService implements ImService.ImListener {
         TimeOutTask timeOutTask = new TimeOutTask(messageContainer, System.currentTimeMillis(), new TimeOutListener() {
             @Override
             public void timeOut(MessageContainer messageContainer) {
-                sendTimeOutMsg(messageContainer);
-//                if (messageContainer.reSendCounts > MAX_RESEND_COUNT) {
-//                    sendTimeOutMsg(messageContainer);
-//                } else {
-//                    mMessageContainers.add(messageContainer);
-//                }
+                if (messageContainer.reSendCounts > MAX_RESEND_COUNT) {
+                    sendTimeOutMsg(messageContainer);
+                } else {
+                    mMessageContainers.add(messageContainer);
+                }
             }
         });
         TimeOutTaskManager.getInstance().addTimeoutTask(timeOutTask);
@@ -288,6 +293,9 @@ public class SocketService extends BaseService implements ImService.ImListener {
     private void sendTimeOutMsg(MessageContainer messageContainer) {
         EventContainer eventContainer = new EventContainer();
         eventContainer.mMessageContainer = messageContainer;
+        if (eventContainer.mMessageContainer.msg != null) {
+            eventContainer.mMessageContainer.msg.setSend_status(MessageStatus.SEND_FAIL);
+        }
         eventContainer.mEvent = messageContainer.mEvent;
         if (messageContainer.mEvent.equals(ImService.MSG)) {
             eventContainer.mEvent = ImService.WEBSOCKET_SENDMESSAGE_TIMEOUT;
@@ -337,7 +345,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param imConfig
      */
     private boolean login(IMConfig imConfig) {
-        mIMConfig=imConfig;
+        mIMConfig = imConfig;
         isNeedReConnected = true;
         mService.setParams(imConfig.getWeb_socket_authority(), imConfig.getToken(),
                 imConfig.getSerial(), imConfig.getComprs());
@@ -470,8 +478,8 @@ public class SocketService extends BaseService implements ImService.ImListener {
                  * 加入消息队列
                  */
                 case TAG_IM_SEND_MESSAGE:
-
-                    result = mMessageContainers.add((MessageContainer) bundle.getSerializable(BUNDLE_MESSAGECONTAINER));
+                    MessageContainer messageContainer = (MessageContainer) bundle.getSerializable(BUNDLE_MESSAGECONTAINER);
+                    result = mMessageContainers.add(messageContainer);
                     break;
                 /***
                  * 离开会话
@@ -1150,6 +1158,8 @@ public class SocketService extends BaseService implements ImService.ImListener {
         messageContainer.mEvent = eventContainer.mEvent;
         try {
             messageContainer.msg = gson.fromJson(content, Message.class);
+            messageContainer.msg.setCreate_time((messageContainer.msg.mid >> 23) + TIME_DEFAULT_ADD); //  消息的MID，`(mid >> 23) + 1451577600000` 为毫秒时间戳
+            messageContainer.msg.setSend_status(MessageStatus.SEND_SUCCESS);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1334,6 +1344,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
 
     /**
      * 处理对话信息
+     *
      * @param eventContainer
      * @param gson
      * @param msg
@@ -1368,6 +1379,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
         if (messageContainer != null && messageContainer.msg != null && eventContainer != null && eventContainer.mMessageContainer != null & eventContainer.mMessageContainer.msg != null) {
             messageContainer.msg.mid = eventContainer.mMessageContainer.msg.mid;
             messageContainer.msg.seq = eventContainer.mMessageContainer.msg.seq;
+            messageContainer.msg.setSend_status(eventContainer.mMessageContainer.msg.send_status);
             eventContainer.mMessageContainer.msg = messageContainer.msg;
             //发送的消息插入数据库
             checkDuplicateMessages(eventContainer);
@@ -1398,10 +1410,20 @@ public class SocketService extends BaseService implements ImService.ImListener {
         LogUtils.debugInfo(TAG, "-------1------" + dst1.get(1).toString());
         eventContainer.mEvent = dst1.get(0).toString();
         eventContainer.mEvent = eventContainer.mEvent.replace("\"", "");
-        MessageContainer messageContainer = new MessageContainer();
-        Message message = new Message();
-        messageContainer.msg = message;
-        eventContainer.mMessageContainer = messageContainer;
+        MessageContainer messageContainer = null;
+        if (dst1.size() >= 3) {
+            messageContainer = cancleTimeoutListen(dst1.get(2).toString());
+            LogUtils.debugInfo("messageContainer = " + messageContainer);
+        } else {
+            messageContainer = cancleTimeoutListen(0 + "");
+        }
+        if (messageContainer != null) {
+            eventContainer.mMessageContainer = messageContainer;
+        } else {
+            eventContainer.mMessageContainer = new MessageContainer();
+            eventContainer.mMessageContainer.msg = new Message();
+        }
+        eventContainer.mMessageContainer.msg.setSend_status(MessageStatus.SEND_FAIL);// 标记发送失败
         try {
             JSONObject jsonObject = new JSONObject(dst1.get(1).toString());
             if (jsonObject.has("code")) {
@@ -1426,7 +1448,6 @@ public class SocketService extends BaseService implements ImService.ImListener {
             cancleTimeoutListen(0 + "");
         if (eventContainer != null && eventContainer.mEvent != null && eventContainer.mEvent.equals(ImService.MSG)) {
             eventContainer.mEvent = ImService.MSG_ACK;
-
         }
 
         return eventContainer;
@@ -1476,7 +1497,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                     return true;
                 } else {
                     if (conversation.getType() != Conversation.CONVERSATION_TYPE_CHAROOM)
-                        MessageDao.getInstance(getApplicationContext()).insertMessage(eventContainer.mMessageContainer.msg);
+                        MessageDao.getInstance(getApplicationContext()).insertOrUpdateMessage(eventContainer.mMessageContainer.msg);
                 }
                 return false;
             }

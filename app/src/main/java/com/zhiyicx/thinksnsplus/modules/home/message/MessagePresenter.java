@@ -5,6 +5,7 @@ import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.ChatType;
+import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.R;
@@ -61,7 +62,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                 })
                 .subscribe(new BaseSubscribe<List<MessageItemBean>>() {
                     @Override
-                    protected void onSuccess(List<MessageItemBean> data) {
+                    protected void onSuccess(final List<MessageItemBean> data) {
                         mRootView.onNetResponseSuccess(data, false);
                     }
 
@@ -69,6 +70,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                     protected void onFailure(String message) {
                         mRootView.showMessage(message);
                     }
+
                     @Override
                     protected void onException(Throwable throwable) {
                         throwable.printStackTrace();
@@ -150,18 +152,30 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                 });
     }
 
+    @Override
+    public void refreshLastClicikPostion(int positon, MessageItemBean messageItemBean) {
+        Message message = MessageDao.getInstance(mContext).getLastMessageByCid(messageItemBean.getConversation().getCid());
+        if (message == null) {
+            return;
+        }
+        messageItemBean.getConversation().setLast_message_time(message.getCreate_time());
+        messageItemBean.getConversation().setLast_message_text(message.getTxt());
+        messageItemBean.setUnReadMessageNums(0);
+        mRootView.refreshLastClicikPostion(positon, messageItemBean);
+    }
+
     /*******************************************
      * IM 相关
      *********************************************/
 
-
+    /**
+     * 收到聊天消息
+     *
+     * @param message 聊天类容
+     */
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED)
     private void onMessageReceived(Message message) {
-        if (!(ActivityHandler.getInstance().currentActivity() instanceof HomeActivity)) {
-            return;
-        }else {
-
-        }
+        mRootView.refreshMessageUnreadNum(message);
         LogUtils.d(TAG, "------onMessageReceived------->" + message);
     }
 

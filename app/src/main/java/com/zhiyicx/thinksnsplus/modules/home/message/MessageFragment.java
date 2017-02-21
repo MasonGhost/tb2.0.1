@@ -2,30 +2,25 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.TimeUtils;
-import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
-import com.zhiyicx.imsdk.core.ChatType;
+import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagelike.MessageLikeActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
-import com.zhy.adapter.recyclerview.base.ViewHolder;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import java.util.ArrayList;
@@ -44,15 +39,17 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/5
  * @Contact master.jungle68@gmail.com
  */
-public class MessageFragment extends TSListFragment<MessageContract.Presenter, MessageItemBean> implements MessageContract.View{
+public class MessageFragment extends TSListFragment<MessageContract.Presenter, MessageItemBean> implements MessageContract.View, MultiItemTypeAdapter.OnItemClickListener {
     private static final int ITEM_TYPE_COMMNETED = 0;
     private static final int ITEM_TYPE_LIKED = 1;
 
     private View mHeaderView;
+
     @Inject
     protected MessagePresenter mMessagePresenter;
-    private ImageLoader mImageLoader;
     private List<MessageItemBean> mMessageItemBeen = new ArrayList<>();
+    private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
+    private int mLastClickPostion = -1;// 纪录上次聊天 item ,用于单条刷新
 
     public static MessageFragment newInstance() {
         MessageFragment fragment = new MessageFragment();
@@ -107,27 +104,32 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                 .messagePresenterModule(new MessagePresenterModule(this))
                 .build()
                 .inject(this);
-        mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         super.initData();// 需要在 dagger 注入后
         updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter.updateLikeItemData());
     }
 
     @Override
-    protected CommonAdapter getAdapter() {
-        return new CommonAdapter<MessageItemBean>(getActivity(), R.layout.item_message_list, mMessageItemBeen) {
-            @Override
-            protected void convert(ViewHolder holder, MessageItemBean messageItemBean, int position) {
-                setItemData(holder, messageItemBean, position);
-            }
+    public void onResume() {
+        super.onResume();
+        if (mLastClickPostion != -1) {
+            // 刷新当条信息内容
+            mPresenter.refreshLastClicikPostion(mLastClickPostion, mMessageItemBeen.get(mLastClickPostion));
+        }
 
-        };
+    }
+
+    @Override
+    protected CommonAdapter getAdapter() {
+        CommonAdapter commonAdapter = new MessageAdapter(getActivity(), R.layout.item_message_list, mMessageItemBeen);
+        commonAdapter.setOnItemClickListener(this);
+        return commonAdapter;
     }
 
     /**
      * 初始化头信息（评论的、赞过的）
      */
     private void initHeaderView() {
-        HeaderAndFooterWrapper mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
+        mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
 
         mHeaderView = LayoutInflater.from(getContext()).inflate(R.layout.view_header_message_list, null);
         mHeaderAndFooterWrapper.addHeaderView(mHeaderView);
@@ -177,95 +179,15 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
             tvHeaderLikeTip = (BadgeView) headerview.findViewById(R.id.tv_header_like_tip);
         }
         tvHeaderCommentContent.setText(commentItemData.getConversation().getLast_message_text());
-        tvHeaderCommentTime.setText(TimeUtils.getTimeFriendlyNormal(commentItemData.getConversation().getLast_message_time()));
+        tvHeaderCommentTime.setText(TimeUtils.getTimeFriendlyNormal(commentItemData.getConversation().getLast_message_time() / 1000));
         tvHeaderCommentTip.setBadgeCount(commentItemData.getUnReadMessageNums());
 
         tvHeaderLikeContent.setText(likedItemData.getConversation().getLast_message_text());
-        tvHeaderLikeTime.setText(TimeUtils.getTimeFriendlyNormal(commentItemData.getConversation().getLast_message_time()));
+        tvHeaderLikeTime.setText(TimeUtils.getTimeFriendlyNormal(commentItemData.getConversation().getLast_message_time() / 1000));
         tvHeaderLikeTip.setBadgeCount(likedItemData.getUnReadMessageNums());
         refreshData();
     }
 
-    /**
-     * 设置item 数据
-     *
-     * @param holder          控件管理器
-     * @param messageItemBean 当前数据
-     * @param position        当前数据位置
-     */
-
-    private void setItemData(ViewHolder holder, final MessageItemBean messageItemBean, int position) {
-        switch (messageItemBean.getConversation().getType()) {
-            case ChatType.CHAT_TYPE_PRIVATE:// 私聊
-                mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                        .url(messageItemBean.getUserInfo().getUserIcon())
-                        .transformation(new GlideCircleTransform(getContext()))
-                        .errorPic(R.drawable.shape_default_image_circle)
-                        .imagerView((ImageView) holder.getView(R.id.iv_headpic))
-                        .build()
-                );
-                holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getName());     // 响应事件
-                RxView.clicks(holder.getView(R.id.tv_name))
-                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                        .subscribe(new Action1<Void>() {
-                            @Override
-                            public void call(Void aVoid) {
-                                toUserCenter();
-                            }
-                        });
-                RxView.clicks(holder.getView(R.id.iv_headpic))
-                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                        .subscribe(new Action1<Void>() {
-                            @Override
-                            public void call(Void aVoid) {
-                                toUserCenter();
-                            }
-                        });
-
-                break;
-            case ChatType.CHAT_TYPE_GROUP:// 群组
-                holder.setImageResource(R.id.iv_headpic, R.drawable.shape_default_image_circle);
-                holder.setText(R.id.tv_name, TextUtils.isEmpty(messageItemBean.getConversation().getName())
-                        ? getString(R.string.default_message_group) : messageItemBean.getConversation().getName());
-                break;
-            default:
-        }
-        RxView.clicks(holder.getConvertView())
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        toChat(messageItemBean);
-                    }
-                });
-//        }
-
-        holder.setText(R.id.tv_content, messageItemBean.getConversation().getLast_message_text());
-        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(messageItemBean.getConversation().getLast_message_time()));
-        ((BadgeView) holder.getView(R.id.tv_tip)).setBadgeCount(messageItemBean.getUnReadMessageNums());
-
-    }
-
-    /**
-     * 进入聊天页
-     *
-     * @param messageItemBean
-     */
-    private void toChat(MessageItemBean messageItemBean) {
-        Intent to = new Intent(getActivity(), ChatActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ChatFragment.BUNDLE_MESSAGEITEMBEAN, messageItemBean);
-        to.putExtras(bundle);
-        startActivity(to);
-    }
-
-    /**
-     * 前往用户个人中心
-     */
-    private void toUserCenter() {
-        Intent to = new Intent(getActivity(), UserInfoActivity.class);
-        startActivity(to);
-    }
 
     /**
      * 前往评论列表
@@ -300,12 +222,40 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     @Override
+    public void refreshLastClicikPostion(int position, MessageItemBean messageItemBean) {
+        mMessageItemBeen.set(position, messageItemBean);
+        mHeaderAndFooterWrapper.notifyDataSetChanged();
+        mLastClickPostion = -1;
+    }
+
+    /**
+     * 更新未读消息
+     *
+     * @param message 对话信息
+     */
+    @Override
+    public void refreshMessageUnreadNum(Message message) {
+        int size = mMessageItemBeen.size();
+        for (int i = 0; i < size; i++) {
+            if (mMessageItemBeen.get(i).getConversation().getCid() == message.getCid()) {
+                mMessageItemBeen.get(i).setUnReadMessageNums(mMessageItemBeen.get(i).getUnReadMessageNums() + 1);
+                mMessageItemBeen.get(i).getConversation().setLast_message_text(message.getTxt());
+                mMessageItemBeen.get(i).getConversation().setLast_message_time(message.getCreate_time());
+                refreshLastClicikPostion(i, mMessageItemBeen.get(i));
+                break;
+            }
+        }
+    }
+
+    @Override
     public void showLoading() {
     }
 
     @Override
     public void hideLoading() {
         mRefreshlayout.endRefreshing();
+        mHeaderAndFooterWrapper.notifyDataSetChanged();
+        System.out.println("mMessageItemBeen =--------------------- " + mMessageItemBeen.toString());
     }
 
     @Override
@@ -313,4 +263,29 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         showMessageNotSticky(message);
     }
 
+    @Override
+    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        position = position - 1;//  减去 heder 占用的 1 个位置
+        toChat(mMessageItemBeen.get(position), position);
+    }
+
+    @Override
+    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+        return false;
+    }
+
+    /**
+     * 进入聊天页
+     *
+     * @param messageItemBean 当前 item 内容
+     * @param positon         当前点击位置
+     */
+    private void toChat(MessageItemBean messageItemBean, int positon) {
+        Intent to = new Intent(getActivity(), ChatActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ChatFragment.BUNDLE_MESSAGEITEMBEAN, messageItemBean);
+        to.putExtras(bundle);
+        startActivity(to);
+        mLastClickPostion = positon;//
+    }
 }

@@ -60,17 +60,21 @@ public class MessageRepository implements MessageContract.Repository {
                             List<Integer> integers = new ArrayList<>();
                             for (Conversation tmp : listBaseJson.getData()) {
                                 MessageItemBean messageItemBean = new MessageItemBean();
-                                Message message= MessageDao.getInstance(mContext).getLastMessageByCid(tmp.getCid());
-                                if(message!=null){
+                                Message message = MessageDao.getInstance(mContext).getLastMessageByCid(tmp.getCid());
+                                if (message != null) {
                                     tmp.setLast_message_text(message.getTxt());
                                     tmp.setLast_message_time(message.getCreate_time());
                                 }
-                                messageItemBean.setConversation(tmp);
-                                baseJson.getData().add(messageItemBean);
+
                                 // 存储对话信息
                                 ConversationDao.getInstance(mContext).insertOrUpdateConversation(tmp);
                                 String[] uidsTmp = tmp.getUsids().split(",");
                                 integers.add(Integer.parseInt((uidsTmp[0].equals(AppApplication.getmCurrentLoginAuth().getUser_id() + "")) ? uidsTmp[1] : uidsTmp[0]));
+                                // 获取未读消息数量
+                                int unreadMessageCount = MessageDao.getInstance(mContext).getUnReadMessageCount(tmp.getCid());
+                                messageItemBean.setConversation(tmp);
+                                messageItemBean.setUnReadMessageNums(unreadMessageCount);
+                                baseJson.getData().add(messageItemBean);
                             }
                             return mUserInfoRepository.getUserInfo(integers).
                                     map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<MessageItemBean>>>() {

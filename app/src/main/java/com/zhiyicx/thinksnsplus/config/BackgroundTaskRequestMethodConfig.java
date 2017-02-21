@@ -15,8 +15,9 @@ public enum BackgroundTaskRequestMethodConfig {
     GET(1),
     GET_IM_INFO(2),
     GET_USER_INFO(3),
-    DELETE(4);
-   public final int id;
+    DELETE(4),
+    SEND_DYNAMIC(5);
+    public final int id;
 
     BackgroundTaskRequestMethodConfig(int id) {
         this.id = id;

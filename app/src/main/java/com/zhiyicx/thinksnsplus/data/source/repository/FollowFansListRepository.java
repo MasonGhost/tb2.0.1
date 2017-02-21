@@ -42,6 +42,7 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
                         List<FollowFansBean> followFansBeanList = new ArrayList<FollowFansBean>();
                         for (GsonFollowFansBean.GsonFollowsBean gsonFollowsBean : gsonFollowFansBean.getFollows()) {
                             FollowFansBean followFansBean = new FollowFansBean();
+                            followFansBean.setMaxId(gsonFollowsBean.getId());// 存入maxId
                             // 关注主体是当前传入的userId
                             followFansBean.setUserId(userId);
                             followFansBean.setFollowedUserId(gsonFollowsBean.getUser_id());
@@ -70,6 +71,7 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
                         List<FollowFansBean> followFansBeanList = new ArrayList<FollowFansBean>();
                         for (GsonFollowFansBean.GsonFollowsBean gsonFollowsBean : gsonFollowFansBean.getFolloweds()) {
                             FollowFansBean followFansBean = new FollowFansBean();
+                            followFansBean.setMaxId(gsonFollowsBean.getId());// 存入maxId
                             // 关注主体是当前从服务器获取到的user_id
                             followFansBean.setUserId(gsonFollowsBean.getUser_id());
                             followFansBean.setFollowedUserId(userId);

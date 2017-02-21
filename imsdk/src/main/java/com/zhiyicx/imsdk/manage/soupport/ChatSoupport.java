@@ -18,7 +18,7 @@ public interface ChatSoupport {
      *
      * @param text
      */
-    Message sendTextMsg(String text, int cid, String ZBUSID, int msgid);
+    Message sendTextMsg(String text, int cid, String ZBUSID);
 
 
     /**
@@ -30,7 +30,7 @@ public interface ChatSoupport {
      * @param ZBUSID
      * @param customID
      */
-    void sendMessage(boolean isEnable, Map jsonstr, int cid, String ZBUSID, int customID, int msgid);
+    void sendMessage(boolean isEnable, Map jsonstr, int cid, String ZBUSID, int customID);
 
     /**
      * 发送自定义消息
@@ -39,7 +39,7 @@ public interface ChatSoupport {
      * @param cid
      * @param ext
      */
-    void sendMessage(boolean isEnable, int cid, MessageExt ext, int msgid);
+    void sendMessage(boolean isEnable, int cid, MessageExt ext);
 
     /**
      * @param message

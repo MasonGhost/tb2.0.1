@@ -42,8 +42,7 @@
             android:name=".modules.chat.ChatActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
-            >
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
         </activity>
         <activity android:name=".modules.settings.aboutus.AboutUsActivity">
         </activity>
@@ -80,19 +79,13 @@
             </intent-filter>
         </service>
 
-        <service
-            android:name=".service.backgroundtask.BackgroundTaskHandleService"
-            android:exported="false">
-        </service>
-
         <receiver android:name="android.support.v4.media.session.MediaButtonReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
 
-        <!--#########################################      IM 相关       ################################-->
-
+        <!-- #########################################      IM 相关       ################################ -->
         <service android:name="com.zhiyicx.imsdk.service.SocketService"/>
         <!-- 网络监听广播 -->
         <receiver
@@ -103,6 +96,9 @@
                 <action android:name="android.intent.action.USER_PRESENT"/>
             </intent-filter>
         </receiver>
+
+        <activity android:name=".modules.dynamic.SendDynamicActivity">
+        </activity>
     </application>
 
 </manifest>

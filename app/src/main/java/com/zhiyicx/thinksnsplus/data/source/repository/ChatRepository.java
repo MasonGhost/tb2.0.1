@@ -103,6 +103,11 @@ public class ChatRepository implements ChatContract.Repository {
         }
         for (int i = 0; i < conversations.size(); i++) {
             Conversation tmp = conversations.get(i);
+            Message message = MessageDao.getInstance(mContext).getLastMessageByCid(tmp.getCid());
+            if (message != null) {
+                tmp.setLast_message_text(message.getTxt());
+                tmp.setLast_message_time(message.getCreate_time());
+            }
             UserInfoBean toChatUserInfo;
             if (tmp.getType() == ChatType.CHAT_TYPE_PRIVATE) {// 私聊
                 try {
@@ -120,24 +125,31 @@ public class ChatRepository implements ChatContract.Repository {
             } else {// 群聊
                 toChatUserInfo = new UserInfoBean();
             }
+            int unreadMessageCount = MessageDao.getInstance(mContext).getUnReadMessageCount(tmp.getCid());
             MessageItemBean itemBean = new MessageItemBean();
             itemBean.setUserInfo(toChatUserInfo);
             itemBean.setConversation(tmp);
+            itemBean.setUnReadMessageNums(unreadMessageCount);
             messageItemBeens.add(itemBean);
         }
         return messageItemBeens;
     }
 
     @Override
-    public List<ChatItemBean> getChatListData(int cid, long mid) {
+    public List<ChatItemBean> getChatListData(int cid, long creat_time) {
         List<ChatItemBean> chatItemBeen = new ArrayList<>();
-        List<Message> messages = MessageDao.getInstance(mContext).getMessageListByCidAndMid(cid, mid);
+        List<Message> messages = MessageDao.getInstance(mContext).getMessageListByCidAndCreateTime(cid, creat_time);
         if (messages == null || messages.size() == 0) {
             return chatItemBeen;
         }
         for (int i = 0; i < messages.size(); i++) {
             Message tmp = messages.get(i);
-            UserInfoBean toChatUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long) tmp.getUid());
+            UserInfoBean toChatUserInfo;
+            if (tmp.getUid() == 0) {
+                toChatUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+            } else {
+                toChatUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long) tmp.getUid());
+            }
             ChatItemBean itemBean = new ChatItemBean();
             itemBean.setUserInfo(toChatUserInfo);
             itemBean.setLastMessage(tmp);

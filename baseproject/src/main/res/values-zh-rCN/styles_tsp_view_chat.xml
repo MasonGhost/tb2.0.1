@@ -45,8 +45,8 @@
     </style>
     <!-- 发送状态 -->
     <style name="style_chat_status">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">@dimen/icon_for_assist_small</item>
+        <item name="android:layout_height">@dimen/icon_for_assist_small</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:clickable">true</item>
         <item name="android:visibility">gone</item>

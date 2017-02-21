@@ -12,7 +12,7 @@ import java.util.List;
  * @Date 2017/2/8
  * @Contact master.jungle68@gmail.com
  */
-public interface ITSListPresenter<T> extends IBasePresenter {
+public interface ITSListPresenter<T extends BaseListBean> extends IBasePresenter {
     /**
      * 请求列表数据
      *

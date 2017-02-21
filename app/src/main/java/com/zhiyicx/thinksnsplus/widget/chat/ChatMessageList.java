@@ -169,19 +169,23 @@ public class ChatMessageList extends FrameLayout {
      *
      * @param position
      */
-    public void refreshSeekTo(int position) {
-        if (messageAdapter != null) {
-            mRecyclerView.scrollToPosition(position);
-        }
+    public void refresh(int position) {
+        messageAdapter.notifyItemChanged(position);
     }
 
     /**
-     * 滑动到底部
+     * 平滑的滑动到底部
      */
     public void smoothScrollToBottom() {
-        mRecyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
+        mRecyclerView.smoothScrollToPosition(messageAdapter.getItemCount() - 1);
     }
 
+    /**
+     * 直接滑动到底部
+     */
+    public void scrollToBottom() {
+        mRecyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
+    }
     public RecyclerView getListView() {
         return mRecyclerView;
     }

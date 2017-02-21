@@ -103,7 +103,6 @@ public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
      */
     public void clear() {
         mDatas.clear();
-        notifyDataSetChanged();
     }
 
     /**
@@ -142,5 +141,9 @@ public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.mOnItemClickListener = onItemClickListener;
+    }
+
+    public Context getContext() {
+        return mContext;
     }
 }

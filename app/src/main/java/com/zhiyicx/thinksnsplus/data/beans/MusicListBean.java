@@ -7,6 +7,7 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.zhiyicx.baseproject.base.BaseListBean;
 
 /**
  * @Author Jliuer
