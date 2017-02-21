@@ -15,6 +15,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -38,6 +39,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -287,6 +289,11 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         getActivity().finish();
     }
 
+    @Override
+    protected void setRightClick() {
+        mPresenter.sendDynamic(packageDynamicData());
+    }
+
     private void setLeftTextColor() {
         mToolbarLeft.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
     }
@@ -321,5 +328,20 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         } else {
             mToolbarRight.setEnabled(true);
         }
+    }
+
+    /**
+     * 封装动态上传的数据
+     */
+    private HashMap<String, Object> packageDynamicData() {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("feed_content", mEtDynamicContent.getInputContent());
+        hashMap.put("feed_title", mEtDynamicTitle.getInputContent());
+        // hashMap.put("latitude",); // 唯独
+        // hashMap.put("longtitude",);// 精度
+        // hashMap.put("geohash", ); // GEOhash值
+        hashMap.put("photo_list", selectedPhotos);// 将图片路径传递过去，进行上传文件的处理
+        hashMap.put("feed_from", ApiConfig.ANDROID_PLATFORM);
+        return hashMap;
     }
 }

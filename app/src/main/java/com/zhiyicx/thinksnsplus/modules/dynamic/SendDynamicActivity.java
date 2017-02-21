@@ -21,6 +21,6 @@ public class SendDynamicActivity extends TSActivity<SendDynamicPresenter, SendDy
         DaggerSendDynamicPresenterComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .sendDynamicPresenterModule(new SendDynamicPresenterModule(mContanierFragment))
-                .build();
+                .build().inject(this);
     }
 }

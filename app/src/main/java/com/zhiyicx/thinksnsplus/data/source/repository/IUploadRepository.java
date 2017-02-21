@@ -19,5 +19,5 @@ public interface IUploadRepository {
      *
      * @return
      */
-    Observable<BaseJson> upLoadSingleFile(String hash, String fileName, String params, String filePath);
+    Observable<BaseJson<Integer>> upLoadSingleFile(String hash, String fileName, String params, String filePath);
 }

@@ -49,7 +49,7 @@ public class UpLoadRepository implements IUploadRepository {
     }
 
     @Override
-    public Observable<BaseJson> upLoadSingleFile(String hash, String fileName, final String params, final String filePath) {
+    public Observable<BaseJson<Integer>> upLoadSingleFile(String hash, String fileName, final String params, final String filePath) {
         return mCommonClient.createStorageTask(hash, fileName, null)
                 // 处理创建存储任务到上传文件的过程
                 .flatMap(new Func1<BaseJson<StorageTaskBean>, Observable<String[]>>() {
@@ -101,20 +101,33 @@ public class UpLoadRepository implements IUploadRepository {
                     }
                 })
                 // 处理上传文件到获取任务通知的过程
-                .flatMap(new Func1<String[], Observable<BaseJson>>() {
+                .flatMap(new Func1<String[], Observable<BaseJson<Integer>>>() {
                     @Override
-                    public Observable<BaseJson> call(String[] s) {
+                    public Observable<BaseJson<Integer>> call(final String[] s) {
                         switch (s[0]) {
                             case "success":// 直接成功
-                                BaseJson success = new BaseJson();
+                                BaseJson<Integer> success = new BaseJson<Integer>();
+                                success.setData(Integer.parseInt(s[1]));
                                 success.setStatus(true);
                                 return Observable.just(success);
                             case "failure":// 失败
-                                BaseJson failure = new BaseJson();
+                                BaseJson<Integer> failure = new BaseJson<Integer>();
+                                failure.setData(Integer.parseInt(s[1]));
                                 failure.setStatus(false);
                                 return Observable.just(failure);
                             default:// 调用通知任务
-                                return mCommonClient.notifyStorageTask(s[1], s[0], null);
+                                return mCommonClient.notifyStorageTask(s[1], s[0], null)
+                                        .map(new Func1<BaseJson, BaseJson<Integer>>() {
+                                            @Override
+                                            public BaseJson<Integer> call(BaseJson baseJson) {
+                                                BaseJson<Integer> newBaseJson = new BaseJson<Integer>();
+                                                newBaseJson.setCode(baseJson.getCode());
+                                                newBaseJson.setStatus(baseJson.isStatus());
+                                                newBaseJson.setMessage(baseJson.getMessage());
+                                                newBaseJson.setData(Integer.parseInt(s[1]));
+                                                return newBaseJson;
+                                            }
+                                        });
                         }
                     }
                 });

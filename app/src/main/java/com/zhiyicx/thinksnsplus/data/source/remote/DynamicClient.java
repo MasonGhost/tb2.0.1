@@ -5,8 +5,11 @@ import com.zhiyicx.common.base.BaseJson;
 
 import java.util.HashMap;
 
+import okhttp3.RequestBody;
+import retrofit2.http.Body;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import rx.Observable;
 
@@ -21,10 +24,9 @@ public interface DynamicClient {
     /**
      * 发布动态
      *
-     * @param fieldMap
      * @return
      */
-    @FormUrlEncoded
+    @Headers({"Content-type:application/json;charset=UTF-8"})
     @POST(ApiConfig.APP_PATH_SEND_DYNAMIC)
-    Observable<BaseJson<Object>> sendDynamic(@FieldMap HashMap<String, Object> fieldMap);
+    Observable<BaseJson<Object>> sendDynamic(@Body RequestBody body);
 }
