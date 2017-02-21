@@ -1,6 +1,13 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
+import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.dynamic.SendDynamicContract;
+
+import java.util.HashMap;
+
+import rx.Observable;
 
 /**
  * @author LiuChao
@@ -10,4 +17,14 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.SendDynamicContract;
  */
 
 public class SendDynamicPresenterRepository implements SendDynamicContract.Repository {
+    private DynamicClient mDynamicClient;
+
+    public SendDynamicPresenterRepository(ServiceManager serviceManager) {
+        mDynamicClient = serviceManager.getDynamicClient();
+    }
+
+    @Override
+    public Observable<BaseJson> sendDynamic(HashMap<String, String> params) {
+        return mDynamicClient.sendDynamic(params);
+    }
 }

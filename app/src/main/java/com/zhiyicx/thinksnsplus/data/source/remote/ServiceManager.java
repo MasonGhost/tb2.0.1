@@ -21,6 +21,7 @@ public class ServiceManager {
     private ChatInfoClient mChatInfoClient;
     private MusicClient mMusicClient;
     private FollowFansClient mFollowFansClient;
+    private DynamicClient mDynamicClient;
 
     /**
      * 如果需要添加 service 只需在构造方法中添加对应的 service,在提供 get 方法返回出去,只要在 ServiceModule 提供了该 service
@@ -36,7 +37,8 @@ public class ServiceManager {
             , UserInfoClient userInfoClient
             , ChatInfoClient chatInfoClient
             , MusicClient mMusicClient
-            , FollowFansClient followFansClient) {
+            , FollowFansClient followFansClient
+            , DynamicClient mDynamicClient) {
         this.mCommonClient = commonClient;
         this.mLoginClient = loginClient;
         this.mRegisterClient = registerClient;
@@ -45,6 +47,7 @@ public class ServiceManager {
         this.mPasswordClient = passwordClient;
         this.mMusicClient = mMusicClient;
         this.mFollowFansClient = followFansClient;
+        this.mDynamicClient = mDynamicClient;
     }
 
     public CommonClient getCommonClient() {
@@ -79,5 +82,7 @@ public class ServiceManager {
         return mFollowFansClient;
     }
 
-
+    public DynamicClient getDynamicClient() {
+        return mDynamicClient;
+    }
 }

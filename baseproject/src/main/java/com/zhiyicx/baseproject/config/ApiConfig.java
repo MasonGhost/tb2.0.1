@@ -60,6 +60,11 @@ public class ApiConfig {
     public static final String APP_PATH_CANCEL_FOLLOW_USER = "api/v1/users/unFollow";// 取消用户关注
 
     /**
+     * 动态相关
+     */
+    public static final String APP_PATH_SEND_DYNAMIC = "api/v1/feeds";// 发布动态
+
+    /**
      * 通用 CommonClient
      */
     public static final String APP_PATH_GET_VERTIFYCODE = "api/v1/auth/phone/send-code";// 获取验证码

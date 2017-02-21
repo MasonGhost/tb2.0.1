@@ -8,6 +8,8 @@ import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.modules.login.LoginContract;
 
+import java.util.HashMap;
+
 import rx.Observable;
 
 /**
@@ -25,10 +27,10 @@ public interface SendDynamicContract {
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
     interface Repository {
-
+        Observable<BaseJson> sendDynamic(HashMap<String, String> params);
     }
 
     interface Presenter extends IBasePresenter {
-
+        void sendDynamic();
     }
 }

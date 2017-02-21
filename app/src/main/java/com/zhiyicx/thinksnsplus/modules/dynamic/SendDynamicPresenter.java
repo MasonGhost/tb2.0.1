@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
 
 import javax.inject.Inject;
@@ -24,4 +25,9 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
         super(repository, rootView);
     }
 
+    @Override
+    public void sendDynamic() {
+      /*  BackgroundRequestTaskBean backgroundRequestTaskBean=new BackgroundRequestTaskBean();
+        backgroundRequestTaskBean.setMethodType();*/
+    }
 }
