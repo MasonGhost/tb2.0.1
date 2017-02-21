@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 public class SendDynamicActivity extends TSActivity<SendDynamicPresenter, SendDynamicFragment> {
 
@@ -17,6 +18,9 @@ public class SendDynamicActivity extends TSActivity<SendDynamicPresenter, SendDy
 
     @Override
     protected void componentInject() {
-
+        DaggerSendDynamicPresenterComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .sendDynamicPresenterModule(new SendDynamicPresenterModule(mContanierFragment))
+                .build();
     }
 }
