@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import com.google.gson.Gson;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -9,6 +10,7 @@ import java.util.HashMap;
 
 import javax.inject.Inject;
 
+import okhttp3.RequestBody;
 import rx.Observable;
 
 /**
@@ -28,6 +30,7 @@ public class SendDynamicPresenterRepository implements SendDynamicContract.Repos
 
     @Override
     public Observable<BaseJson<Object>> sendDynamic(HashMap<String, Object> params) {
-        return mDynamicClient.sendDynamic(params);
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(params));
+        return mDynamicClient.sendDynamic(body);
     }
 }

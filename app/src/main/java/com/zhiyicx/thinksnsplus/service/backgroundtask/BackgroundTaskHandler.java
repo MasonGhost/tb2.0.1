@@ -4,7 +4,9 @@ import android.app.Application;
 
 import com.google.gson.Gson;
 import com.zhiyicx.baseproject.cache.CacheBean;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.imsdk.entity.IMConfig;
@@ -24,6 +26,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.simple.eventbus.EventBus;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -291,11 +294,12 @@ public class BackgroundTaskHandler {
      */
     private void sendDynamic(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
         final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
-        List<String> photos = (List<String>) params.get("photo_list");
+        List<ImageBean> photos = (List<ImageBean>) params.get("photo_list");
         // 先处理图片上传，图片上传成功后，在进行动态发布
         List<Observable<BaseJson<Integer>>> upLoadPics = new ArrayList<>();
-        for (int i = 0; i < 9; i++) {
-            upLoadPics.add(mUpLoadRepository.upLoadSingleFile(null, null, null, null));
+        for (int i = 0; i < photos.size()-1; i++) {
+            File file = new File(photos.get(i).getImgUrl());
+            upLoadPics.add(mUpLoadRepository.upLoadSingleFile(FileUtils.getFileMD5ToString(file), file.getName(), file + "i",photos.get(i).getImgUrl()));
         }
         Observable.combineLatest(upLoadPics, new FuncN<List<Integer>>() {
             @Override
@@ -340,7 +344,6 @@ public class BackgroundTaskHandler {
                     }
                 });
     }
-
 
 
 }
