@@ -48,27 +48,54 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_name"
         android:layout_toRightOf="@+id/iv_headpic"
+        android:paddingBottom="@dimen/spacing_small"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingStart="@dimen/spacing_normal"
-        android:paddingBottom="@dimen/spacing_small"
+        android:text="了解到富士康垃圾管理的高考了了"
         android:textColor="@color/themeColor"
-        android:textSize="@dimen/size_sub_title"
-        android:text="了解到富士康垃圾管理的高考了了"/>
+        android:textSize="@dimen/size_sub_title"/>
 
     <TextView
         android:id="@+id/tv_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_title"
+        android:layout_toRightOf="@+id/iv_headpic"
         android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_big"
         android:maxLength="@integer/dynamic_list_content_max_show_size"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingTop="@dimen/spacing_small"
-        android:layout_toRightOf="@+id/iv_headpic"
         android:textColor="@color/normal_for_assist_text"
         android:textSize="@dimen/size_content_assist"
         tools:text="了解到富士康垃圾管理的高考了了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送"
         />
 
+    <FrameLayout
+        android:id="@+id/fl_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_content"
+        android:layout_toRightOf="@+id/iv_headpic">
+
+
+    </FrameLayout>
+
+    <com.zhiyicx.baseproject.widget.DynamicListMenuView
+        android:id="@+id/dlmv_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fl_image"
+        android:layout_toRightOf="@+id/iv_headpic">
+
+    </com.zhiyicx.baseproject.widget.DynamicListMenuView>
+
+    <FrameLayout
+        android:id="@+id/fl_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dlmv_menu"
+        android:layout_toRightOf="@+id/iv_headpic">
+
+    </FrameLayout>
 
 </RelativeLayout>
