@@ -24,8 +24,6 @@ import java.util.List;
  * email:335891510@qq.com
  */
 public class MessageDao extends BaseDao implements MessageDaoSoupport {
-
-    private static final String TAG = "MessageDao";
     public static final String TABLE_NAME = "message";
     public static final String COLUMN_NAME_AUTO_INCREMENT_ID = "message_id";//自增长id
     public static final String COLUMN_NAME_MESSAGE_ID = "id";
@@ -42,6 +40,7 @@ public class MessageDao extends BaseDao implements MessageDaoSoupport {
     public static final String COLUMN_NAME_MESSAGE_CREATE_TIME = "create_time";
     public static final String COLUMN_NAME_MESSAGE_IS_DEL = "is_del";//'是否被删除 1:是 0:否',
     public static final String COLUMN_NAME_MESSAGE_IS_READ = "is_read";//'消息阅读状态 1:是 0:否',
+    public static final String COLUMN_NAME_MESSAGE_SEND_STATUS = "send_status";//发送状态 0,发送中，1发成功，2发送失败,
 
     private volatile static MessageDao instance;
 
@@ -74,10 +73,10 @@ public class MessageDao extends BaseDao implements MessageDaoSoupport {
         if (message == null)
             throw new IllegalArgumentException("message can not be null");
         long rows = 0;
-        if (!hasMessageById(message.getId())) {// 插入
-            rows = insertMessage(message);
-        } else {//更新
+        if ((message.getId() != 0 && hasMessageById(message.getId()))||(message.getMid()!=0)&& hasMessage(message.mid)) {// 插入
             return updateMessage(message);
+        }else{//更新
+            rows = insertMessage(message);
         }
         return rows;
     }
@@ -143,6 +142,7 @@ public class MessageDao extends BaseDao implements MessageDaoSoupport {
         map.put(COLUMN_NAME_MESSAGE_ERR, message.err);
         map.put(COLUMN_NAME_MESSAGE_GAG, message.expire);
         map.put(COLUMN_NAME_MESSAGE_IS_READ, isRead(message.is_read));
+        map.put(COLUMN_NAME_MESSAGE_SEND_STATUS, message.send_status);
         map.put(COLUMN_NAME_MESSAGE_IS_DEL, isDel(message.is_del));
         if (message.create_time == 0)//  消息的MID，`(mid >> 23) + 1451577600000` 为毫秒时间戳
             message.create_time = (message.mid >> 23) + TIME_DEFAULT_ADD;
@@ -286,6 +286,8 @@ public class MessageDao extends BaseDao implements MessageDaoSoupport {
                 .getColumnIndex(COLUMN_NAME_MESSAGE_CREATE_TIME)));
         message.setIs_read(isRead(cursor.getInt(cursor
                 .getColumnIndex(COLUMN_NAME_MESSAGE_IS_READ))));
+        message.setSend_status(cursor.getInt(cursor
+                .getColumnIndex(COLUMN_NAME_MESSAGE_SEND_STATUS)));
         message.setIs_del(isDel(cursor.getInt(cursor
                 .getColumnIndex(COLUMN_NAME_MESSAGE_IS_DEL))));
         String uid = cursor.getString(cursor
@@ -365,6 +367,37 @@ public class MessageDao extends BaseDao implements MessageDaoSoupport {
             // update message set COLUMN_NAME_MESSAGE_IS_READ = true where mid = mid
             ContentValues cv = new ContentValues();
             cv.put(COLUMN_NAME_MESSAGE_IS_READ, isRead(true));
+            rows = database.update(TABLE_NAME,
+                    cv,
+                    "mid = ?",
+                    new String[]{mid + ""});
+            database.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            database.endTransaction();
+        }
+        if (rows > 0)
+            return true;
+        else
+            return false;
+    }
+
+    /**
+     * 修改消息状态
+     *
+     * @param mid        消息 mid
+     * @param sendStatus 发送状态 0,发送中，1发成功，2发送失败,
+     * @return
+     */
+    @Override
+    public boolean changeMessageSendStausByMid(long mid, int sendStatus) {
+        int rows = 0;
+        SQLiteDatabase database = mHelper.getWritableDatabase();
+        database.beginTransaction();
+        try {
+            ContentValues cv = new ContentValues();
+            cv.put(COLUMN_NAME_MESSAGE_SEND_STATUS, sendStatus);
             rows = database.update(TABLE_NAME,
                     cv,
                     "mid = ?",

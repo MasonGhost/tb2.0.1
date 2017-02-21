@@ -4,6 +4,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.imsdk.entity.Conversation;
+import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 
@@ -44,9 +45,17 @@ public interface ChatContract {
 
         /**
          * 获取当前对话 id
+         *
          * @return 当前对话 id
          */
         int getCurrentChatCid();
+
+        /**
+         * 刷新消息状态
+         *
+         * @param message
+         */
+        void updateMessageStatus(Message message);
 
     }
 
@@ -119,6 +128,13 @@ public interface ChatContract {
          * @param cid  对话 id
          */
         void sendTextMessage(String text, int cid);
+
+        /**
+         * 消息重发
+         *
+         * @param chatItemBean
+         */
+        void reSendText(ChatItemBean chatItemBean);
 
     }
 }

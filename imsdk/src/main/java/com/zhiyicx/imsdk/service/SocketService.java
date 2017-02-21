@@ -22,6 +22,7 @@ import com.zhiyicx.imsdk.entity.EventContainer;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.entity.MessageContainer;
+import com.zhiyicx.imsdk.entity.MessageStatus;
 import com.zhiyicx.imsdk.entity.MessageType;
 import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.imsdk.policy.timeout.TimeOutListener;
@@ -1152,6 +1153,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
         try {
             messageContainer.msg = gson.fromJson(content, Message.class);
             messageContainer.msg.setCreate_time((messageContainer.msg.mid >> 23) + TIME_DEFAULT_ADD); //  消息的MID，`(mid >> 23) + 1451577600000` 为毫秒时间戳
+            messageContainer.msg.setSend_status(MessageStatus.SEND_SUCCESS);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1371,6 +1373,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
         if (messageContainer != null && messageContainer.msg != null && eventContainer != null && eventContainer.mMessageContainer != null & eventContainer.mMessageContainer.msg != null) {
             messageContainer.msg.mid = eventContainer.mMessageContainer.msg.mid;
             messageContainer.msg.seq = eventContainer.mMessageContainer.msg.seq;
+            messageContainer.msg.setSend_status(eventContainer.mMessageContainer.msg.send_status);
             eventContainer.mMessageContainer.msg = messageContainer.msg;
             //发送的消息插入数据库
             checkDuplicateMessages(eventContainer);
@@ -1401,10 +1404,20 @@ public class SocketService extends BaseService implements ImService.ImListener {
         LogUtils.debugInfo(TAG, "-------1------" + dst1.get(1).toString());
         eventContainer.mEvent = dst1.get(0).toString();
         eventContainer.mEvent = eventContainer.mEvent.replace("\"", "");
-        MessageContainer messageContainer = new MessageContainer();
-        Message message = new Message();
-        messageContainer.msg = message;
-        eventContainer.mMessageContainer = messageContainer;
+        MessageContainer messageContainer = null;
+        if (dst1.size() >= 3) {
+            messageContainer = cancleTimeoutListen(dst1.get(2).toString());
+            LogUtils.debugInfo("messageContainer = " + messageContainer);
+        } else {
+            messageContainer = cancleTimeoutListen(0 + "");
+        }
+        if (messageContainer != null) {
+            eventContainer.mMessageContainer = messageContainer;
+        } else {
+            eventContainer.mMessageContainer = new MessageContainer();
+            eventContainer.mMessageContainer.msg = new Message();
+        }
+        eventContainer.mMessageContainer.msg.setSend_status(MessageStatus.SEND_FAIL);// 标记发送失败
         try {
             JSONObject jsonObject = new JSONObject(dst1.get(1).toString());
             if (jsonObject.has("code")) {
@@ -1429,7 +1442,6 @@ public class SocketService extends BaseService implements ImService.ImListener {
             cancleTimeoutListen(0 + "");
         if (eventContainer != null && eventContainer.mEvent != null && eventContainer.mEvent.equals(ImService.MSG)) {
             eventContainer.mEvent = ImService.MSG_ACK;
-
         }
 
         return eventContainer;

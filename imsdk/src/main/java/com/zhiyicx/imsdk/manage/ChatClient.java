@@ -9,6 +9,7 @@ import com.zhiyicx.imsdk.entity.ChatRoomContainer;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.entity.MessageExt;
+import com.zhiyicx.imsdk.entity.MessageStatus;
 import com.zhiyicx.imsdk.manage.listener.ImMsgReceveListener;
 import com.zhiyicx.imsdk.manage.listener.ImStatusListener;
 import com.zhiyicx.imsdk.manage.listener.ImTimeoutListener;
@@ -83,7 +84,7 @@ public class ChatClient implements ChatSoupport, ImMsgReceveListener, ImStatusLi
      */
     @Override
     public Message sendTextMsg(String text, int cid, String ZBUSID) {
-        Message message=MessageBuilder.createTextMessage((int) System.currentTimeMillis(), cid, ZBUSID, text, rt);
+        Message message = MessageBuilder.createTextMessage((int) System.currentTimeMillis(), cid, ZBUSID, text, rt);
         sendMessage(message);
         return message;
     }
@@ -109,6 +110,7 @@ public class ChatClient implements ChatSoupport, ImMsgReceveListener, ImStatusLi
     public void sendMessage(Message message) {
         ZBIMClient.getInstance().sendMessage(message);
         message.setIs_read(true);// 标记为已经读消息
+        message.setSend_status(MessageStatus.SENDING);//发送状态
         MessageDao.getInstance(mContext).insertMessage(message);// 单聊保存到数据库
     }
 

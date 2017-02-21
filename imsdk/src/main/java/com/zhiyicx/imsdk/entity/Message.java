@@ -13,20 +13,29 @@ import java.util.List;
 @org.msgpack.annotation.Message
 public class Message implements Serializable {
     public int uid;//用户ID，一个32bits整型数字，由APP SERVER提供；为什么不用string？用integer的好处是存储空间更小，速度可以更快。而且大部分系统都有一个integer的用户ID，就算没有，也可以很简单的实现一个和原UID对应关系。
-    public int cid;
+    public int cid;// 对话 id
     public List<Integer> to;
     public int id;//每一条消息对应的单独的idint
-    public int type;
+    public int type; // 消息类型，文本、图片、语音等
     public String txt;//对应推送时显示的信息，和消息文本一致
-    public MessageExt ext;
+    public MessageExt ext; // 额外消息
     public boolean rt;//是否是实时消息（Real-time Message），如果有此项且值为true时为实时消息，否则为普通消息
     public int err;//socket错误事件
     public long expire = -1;
     public long mid;//mid 服务端消息ID。mid >> 23 + 1451577600000 = 消息的毫秒时间戳
-    public long create_time;
+    public long create_time; // 消息创建时间
     public boolean is_del;//'是否被删除 1:是 0:否',
     public boolean is_read;//'消息阅读状态 1:是 0:否',
     public int seq;//消息序号，实时消息没有
+    public int send_status = MessageStatus.SEND_SUCCESS;// 发送状态
+
+    public int getSend_status() {
+        return send_status;
+    }
+
+    public void setSend_status(int send_status) {
+        this.send_status = send_status;
+    }
 
     public boolean is_del() {
         return is_del;
@@ -183,6 +192,7 @@ public class Message implements Serializable {
                 ", is_del=" + is_del +
                 ", is_read=" + is_read +
                 ", seq=" + seq +
+                ", send_status=" + send_status +
                 '}';
     }
 }

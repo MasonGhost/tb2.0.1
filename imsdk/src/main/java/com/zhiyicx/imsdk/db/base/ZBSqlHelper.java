@@ -55,6 +55,7 @@ public class ZBSqlHelper extends SQLiteOpenHelper {
                     MessageDao.COLUMN_NAME_MESSAGE_GAG + INTEGER_TYPE + COMMA_SEP +
                     MessageDao.COLUMN_NAME_MESSAGE_CREATE_TIME + INTEGER_TYPE + COMMA_SEP +
                     MessageDao.COLUMN_NAME_MESSAGE_IS_READ + INTEGER_TYPE + COMMA_SEP +
+                    MessageDao.COLUMN_NAME_MESSAGE_SEND_STATUS + INTEGER_TYPE + COMMA_SEP +
                     MessageDao.COLUMN_NAME_MESSAGE_IS_DEL + INTEGER_TYPE +
                     " )";
 

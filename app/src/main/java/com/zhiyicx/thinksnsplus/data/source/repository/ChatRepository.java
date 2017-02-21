@@ -103,6 +103,11 @@ public class ChatRepository implements ChatContract.Repository {
         }
         for (int i = 0; i < conversations.size(); i++) {
             Conversation tmp = conversations.get(i);
+            Message message = MessageDao.getInstance(mContext).getLastMessageByCid(tmp.getCid());
+            if (message != null) {
+                tmp.setLast_message_text(message.getTxt());
+                tmp.setLast_message_time(message.getCreate_time());
+            }
             UserInfoBean toChatUserInfo;
             if (tmp.getType() == ChatType.CHAT_TYPE_PRIVATE) {// 私聊
                 try {
@@ -139,7 +144,12 @@ public class ChatRepository implements ChatContract.Repository {
         }
         for (int i = 0; i < messages.size(); i++) {
             Message tmp = messages.get(i);
-            UserInfoBean toChatUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long) tmp.getUid());
+            UserInfoBean toChatUserInfo;
+            if (tmp.getUid() == 0) {
+                toChatUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+            } else {
+                toChatUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long) tmp.getUid());
+            }
             ChatItemBean itemBean = new ChatItemBean();
             itemBean.setUserInfo(toChatUserInfo);
             itemBean.setLastMessage(tmp);
