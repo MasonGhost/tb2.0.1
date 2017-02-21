@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.photopicker;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
@@ -254,7 +255,10 @@ public class PhotoViewFragment extends TSFragment {
 
     @OnClick(R.id.bt_complete)
     public void onClick() {
-        ActivityHandler.getInstance().getActivity(PhotoAlbumDetailsActivity.class).finish();
+        Activity activity = ActivityHandler.getInstance().getActivity(PhotoAlbumDetailsActivity.class);
+        if (activity != null) {
+            activity.finish();
+        }
         getActivity().finish();
         EventBus.getDefault().post(seletedPaths, EventBusTagConfig.EVENT_COMPLETE_PHOTO_SELECT);
     }

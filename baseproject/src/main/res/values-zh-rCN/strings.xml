@@ -52,7 +52,7 @@
     <!-- 拍照相关 -->
     <string name="choose_from_photo">从相册选取</string>
     <string name="choose_from_camera">拍照</string>
-
+    <string name="choose_max_photos">你最多可以选择%1$d张图片</string>
     <!--  登录  -->
     <string name="bt_login">登录</string>
     <string name="no_login">不登录，先随便逛逛</string>
