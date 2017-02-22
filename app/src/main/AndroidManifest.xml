@@ -97,7 +97,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".modules.dynamic.SendDynamicActivity">
+        <activity android:name=".modules.dynamic.send.SendDynamicActivity">
         </activity>
     </application>
 

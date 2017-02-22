@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic;
+package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 
 import android.app.Application;
 

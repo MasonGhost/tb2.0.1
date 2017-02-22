@@ -171,122 +171,152 @@ public class BackgroundTaskHandler {
              * 通用接口处理
              */
             case POST:
-                mServiceManager.getCommonClient().handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), backgroundRequestTaskBean.getParams())
-                        .subscribe(new BaseSubscribe<CacheBean>() {
-                            @Override
-                            protected void onSuccess(CacheBean data) {
-                                mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
-                            }
-
-                            @Override
-                            protected void onFailure(String message) {
-                                addBackgroundRequestTask(backgroundRequestTaskBean);
-                            }
-
-                            @Override
-                            protected void onException(Throwable throwable) {
-                                addBackgroundRequestTask(backgroundRequestTaskBean);
-                            }
-                        });
+                postMethod(backgroundRequestTaskBean);
                 break;
             case GET:
 
 
                 break;
             case DELETE:
-                HashMap<String, Object> datas = backgroundRequestTaskBean.getParams();
-                RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(datas));
-                mServiceManager.getCommonClient().handleBackGroudTaskDelete(backgroundRequestTaskBean.getPath()
-                        , body)
-                        .subscribe(new BaseSubscribe<CacheBean>() {
-                            @Override
-                            protected void onSuccess(CacheBean data) {
-                                mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
-                            }
-
-                            @Override
-                            protected void onFailure(String message) {
-                                addBackgroundRequestTask(backgroundRequestTaskBean);
-                            }
-
-                            @Override
-                            protected void onException(Throwable throwable) {
-                                addBackgroundRequestTask(backgroundRequestTaskBean);
-                            }
-                        });
+                deleteMethod(backgroundRequestTaskBean);
                 break;
             /**
              * 获取 IM 信息，必须保证 header 中已经加入了权限 token
              */
             case GET_IM_INFO:
-                mAuthRepository.getImInfo()
-                        .subscribe(new BaseSubscribe<IMBean>() {
-                            @Override
-                            protected void onSuccess(IMBean data) {
-                                mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
-                                IMConfig imConfig = new IMConfig();
-                                imConfig.setImUid(data.getUser_id());
-                                imConfig.setToken(data.getIm_password());
-                                imConfig.setWeb_socket_authority("ws://192.168.2.222:9900"); // TODO: 2017/1/20  服务器统一配置接口返回数据 ws://218.244.149.144:9900
-                                mAuthRepository.saveIMConfig(imConfig);
-                                mAuthRepository.loginIM();
-                            }
-
-                            @Override
-                            protected void onFailure(String message) {
-                                addBackgroundRequestTask(backgroundRequestTaskBean);
-                            }
-
-                            @Override
-                            protected void onException(Throwable throwable) {
-                                addBackgroundRequestTask(backgroundRequestTaskBean);
-                            }
-                        });
-
+                getIMInfo(backgroundRequestTaskBean);
                 break;
-
             /**
              * 获取用户信息
              */
             case GET_USER_INFO:
-                if (backgroundRequestTaskBean.getParams() == null || backgroundRequestTaskBean.getParams().get("user_id") == null) {
-                    return;
-                }
-                List<Integer> integers = new ArrayList<>();
-                if (backgroundRequestTaskBean.getParams().get("user_id") instanceof List) {
-                    integers.addAll((Collection<? extends Integer>) backgroundRequestTaskBean.getParams().get("user_id"));
-                } else {
-                    integers.add((Integer) backgroundRequestTaskBean.getParams().get("user_id"));
-                }
-
-                mUserInfoRepository.getUserInfo(integers)
-                        .subscribe(new BaseSubscribe<List<UserInfoBean>>() {
-                            @Override
-                            protected void onSuccess(List<UserInfoBean> data) {
-                                mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
-                                mUserInfoBeanGreenDao.insertOrReplace(data);
-                                // 用户信息获取成功后就可以通知界面刷新了
-                                EventBus.getDefault().post(data, EventBusTagConfig.EVENT_USERINFO_UPDATE);
-                            }
-
-                            @Override
-                            protected void onFailure(String message) {
-                                addBackgroundRequestTask(backgroundRequestTaskBean);
-                            }
-
-                            @Override
-                            protected void onException(Throwable throwable) {
-                                throwable.printStackTrace();
-                                addBackgroundRequestTask(backgroundRequestTaskBean);
-                            }
-                        });
+                getUserInfo(backgroundRequestTaskBean);
                 break;
+            /**
+             * 发送动态
+             */
             case SEND_DYNAMIC:
                 sendDynamic(backgroundRequestTaskBean);
-
+                break;
             default:
         }
 
+    }
+
+    /**
+     * 处理Post请求类型的后台任务
+     */
+    private void postMethod(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
+        mServiceManager.getCommonClient().handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), backgroundRequestTaskBean.getParams())
+                .subscribe(new BaseSubscribe<CacheBean>() {
+                    @Override
+                    protected void onSuccess(CacheBean data) {
+                        mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                    }
+
+                    @Override
+                    protected void onFailure(String message) {
+                        addBackgroundRequestTask(backgroundRequestTaskBean);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        addBackgroundRequestTask(backgroundRequestTaskBean);
+                    }
+                });
+    }
+
+    /**
+     * 处理Delete请求类型的后台任务
+     */
+    private void deleteMethod(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
+        HashMap<String, Object> datas = backgroundRequestTaskBean.getParams();
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(datas));
+        mServiceManager.getCommonClient().handleBackGroudTaskDelete(backgroundRequestTaskBean.getPath()
+                , body)
+                .subscribe(new BaseSubscribe<CacheBean>() {
+                    @Override
+                    protected void onSuccess(CacheBean data) {
+                        mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                    }
+
+                    @Override
+                    protected void onFailure(String message) {
+                        addBackgroundRequestTask(backgroundRequestTaskBean);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        addBackgroundRequestTask(backgroundRequestTaskBean);
+                    }
+                });
+    }
+
+    /**
+     * 获取im信息
+     */
+    private void getIMInfo(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
+        mAuthRepository.getImInfo()
+                .subscribe(new BaseSubscribe<IMBean>() {
+                    @Override
+                    protected void onSuccess(IMBean data) {
+                        mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                        IMConfig imConfig = new IMConfig();
+                        imConfig.setImUid(data.getUser_id());
+                        imConfig.setToken(data.getIm_password());
+                        imConfig.setWeb_socket_authority("ws://192.168.2.222:9900"); // TODO: 2017/1/20  服务器统一配置接口返回数据 ws://218.244.149.144:9900
+                        mAuthRepository.saveIMConfig(imConfig);
+                        mAuthRepository.loginIM();
+                    }
+
+                    @Override
+                    protected void onFailure(String message) {
+                        addBackgroundRequestTask(backgroundRequestTaskBean);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        addBackgroundRequestTask(backgroundRequestTaskBean);
+                    }
+                });
+    }
+
+    /**
+     * 处理用户信息的后台任务
+     */
+
+    private void getUserInfo(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
+        if (backgroundRequestTaskBean.getParams() == null || backgroundRequestTaskBean.getParams().get("user_id") == null) {
+            return;
+        }
+        List<Integer> integers = new ArrayList<>();
+        if (backgroundRequestTaskBean.getParams().get("user_id") instanceof List) {
+            integers.addAll((Collection<? extends Integer>) backgroundRequestTaskBean.getParams().get("user_id"));
+        } else {
+            integers.add((Integer) backgroundRequestTaskBean.getParams().get("user_id"));
+        }
+
+        mUserInfoRepository.getUserInfo(integers)
+                .subscribe(new BaseSubscribe<List<UserInfoBean>>() {
+                    @Override
+                    protected void onSuccess(List<UserInfoBean> data) {
+                        mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                        mUserInfoBeanGreenDao.insertOrReplace(data);
+                        // 用户信息获取成功后就可以通知界面刷新了
+                        EventBus.getDefault().post(data, EventBusTagConfig.EVENT_USERINFO_UPDATE);
+                    }
+
+                    @Override
+                    protected void onFailure(String message) {
+                        addBackgroundRequestTask(backgroundRequestTaskBean);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        throwable.printStackTrace();
+                        addBackgroundRequestTask(backgroundRequestTaskBean);
+                    }
+                });
     }
 
     /**
@@ -297,20 +327,22 @@ public class BackgroundTaskHandler {
         List<ImageBean> photos = (List<ImageBean>) params.get("photo_list");
         // 先处理图片上传，图片上传成功后，在进行动态发布
         List<Observable<BaseJson<Integer>>> upLoadPics = new ArrayList<>();
-        for (int i = 0; i < photos.size()-1; i++) {
+        for (int i = 0; i < photos.size() - 1; i++) {
             File file = new File(photos.get(i).getImgUrl());
-            upLoadPics.add(mUpLoadRepository.upLoadSingleFile(FileUtils.getFileMD5ToString(file), file.getName(), file + "i",photos.get(i).getImgUrl()));
+            upLoadPics.add(mUpLoadRepository.upLoadSingleFile(FileUtils.getFileMD5ToString(file), file.getName(), file + "i", photos.get(i).getImgUrl()));
         }
+        // 组合多个图片上传任务
         Observable.combineLatest(upLoadPics, new FuncN<List<Integer>>() {
             @Override
             public List<Integer> call(Object... args) {
+                // 得到图片上传的结果
                 List<Integer> integers = new ArrayList<Integer>();
                 for (Object obj : args) {
                     BaseJson<Integer> baseJson = (BaseJson<Integer>) obj;
                     if (baseJson.isStatus()) {
-                        integers.add(baseJson.getData());
+                        integers.add(baseJson.getData());// 将返回的图片上传任务id封装好
                     } else {
-                        throw new NullPointerException();// 某一次失败就抛出异常，重传
+                        throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
                     }
                 }
                 return integers;
@@ -318,8 +350,9 @@ public class BackgroundTaskHandler {
         }).flatMap(new Func1<List<Integer>, Observable<BaseJson<Object>>>() {
             @Override
             public Observable<BaseJson<Object>> call(List<Integer> integers) {
-                params.put("storage_task_ids", integers);// 动态相关图片：图片任务id的数组
-                return mSendDynamicPresenterRepository.sendDynamic(params);
+                // 动态相关图片：图片任务id的数组，将它作为发布动态的参数
+                params.put("storage_task_ids", integers);
+                return mSendDynamicPresenterRepository.sendDynamic(params);// 进行动态发布的请求
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -344,6 +377,5 @@ public class BackgroundTaskHandler {
                     }
                 });
     }
-
 
 }
