@@ -72,7 +72,7 @@ public class IconTextView extends TextView {
                 mSpace = array.getDimension(com.zhiyicx.baseproject.R.styleable.IconTextView_space,
                         0);
                 direction = array.getInteger(com.zhiyicx.baseproject.R.styleable
-                        .IconTextView_direction,
+                                .IconTextView_direction,
                         DIRECTION_LEFT);
             }
             array.recycle();
@@ -129,5 +129,34 @@ public class IconTextView extends TextView {
         }
         super.onDraw(canvas);
     }
+
+    public int getIconID() {
+        return mIconID;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        mBitmap = bitmap;
+        invalidate();
+    }
+
+    public void setSpace(float space) {
+        mSpace = space;
+        invalidate();
+    }
+
+    public float getSpace() {
+        return mSpace;
+    }
+
+    public Bitmap getBitmap() {
+        return mBitmap;
+    }
+
+    public void setIconID(int iconID) {
+        mBitmap = BitmapFactory.decodeResource(getResources(), mIconID);
+        setBitmap(mBitmap);
+    }
+
+
 
 }
