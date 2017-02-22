@@ -57,6 +57,7 @@
 
     <!--音乐FM-->
     <string name="music_fm">音乐FM</string>
+    <string name="cancle">取消</string>
 
     <!--代码中的string-->
     <string name="token_expiers">token过期，请重新登陆</string>
