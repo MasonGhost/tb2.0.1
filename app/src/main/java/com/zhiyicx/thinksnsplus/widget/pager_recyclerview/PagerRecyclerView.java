@@ -78,6 +78,8 @@ public class PagerRecyclerView extends RecyclerView {
      */
     private boolean reverseLayout = false;
 
+    private float mLastX;
+
     private float mLastY;
 
     public PagerRecyclerView(Context context) {
@@ -326,8 +328,9 @@ public class PagerRecyclerView extends RecyclerView {
                     : RecyclerViewUtils.getCenterYChildPosition(this);
 
             mLastY = ev.getRawY();
+            mLastX = ev.getRawX();
         } else if (ev.getAction() == MotionEvent.ACTION_MOVE && getLayoutManager() != null) {
-            if (mOnPageChangedListeners != null) {
+            if (mOnPageChangedListeners != null && mNeedAdjust) {// 决定最小距离和recyclerview 一致
                 for (OnPageChangedListener onPageChangedListener : mOnPageChangedListeners) {
                     if (onPageChangedListener != null) {
                         onPageChangedListener.OnDragging(mPositionOnTouchDown);
@@ -583,10 +586,6 @@ public class PagerRecyclerView extends RecyclerView {
             return count - 1;
         }
         return position;
-    }
-
-    public float getlLastY() {
-        return mLastY;
     }
 
     /**

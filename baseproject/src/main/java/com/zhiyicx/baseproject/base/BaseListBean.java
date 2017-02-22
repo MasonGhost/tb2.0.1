@@ -1,5 +1,8 @@
 package com.zhiyicx.baseproject.base;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -9,7 +12,7 @@ import com.google.gson.annotations.SerializedName;
  * @contact email:450127106@qq.com
  */
 
-public class BaseListBean {
+public class BaseListBean implements Parcelable {
     @SerializedName("id")
     protected int maxId;
 
@@ -20,4 +23,34 @@ public class BaseListBean {
     public void setMaxId(int maxId) {
         this.maxId = maxId;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.maxId);
+    }
+
+    public BaseListBean() {
+    }
+
+    protected BaseListBean(Parcel in) {
+        this.maxId = in.readInt();
+    }
+
+    public static final Creator<BaseListBean> CREATOR = new Creator<BaseListBean>() {
+        @Override
+        public BaseListBean createFromParcel(Parcel source) {
+            return new BaseListBean(source);
+        }
+
+        @Override
+        public BaseListBean[] newArray(int size) {
+            return new BaseListBean[size];
+        }
+    };
 }

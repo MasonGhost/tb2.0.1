@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.modules.dynamic.SendDynamicContract;
+import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicContract;
 
 import java.util.HashMap;
 

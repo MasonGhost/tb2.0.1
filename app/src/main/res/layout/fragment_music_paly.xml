@@ -131,7 +131,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@mipmap/music_ico_next"/>
+                android:src="@mipmap/music_ico_last"/>
 
             <ImageView
                 android:id="@+id/fragment_music_paly_palyer"
@@ -145,7 +145,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:rotation="180"
                 android:src="@mipmap/music_ico_next"/>
 
             <ImageView

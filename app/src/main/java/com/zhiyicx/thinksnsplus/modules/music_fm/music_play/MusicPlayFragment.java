@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.animation.ValueAnimator;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -85,8 +86,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     private CommonAdapter mAdapter;
     private List<String> mStringList = new ArrayList<>();
 
-    private MusicPlayService mMusicPlayService;
-
     /**
      * 指针位置flag
      */
@@ -114,7 +113,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     private int mPointDuration = 500;
     private int mPointDegree = 25;
-    private String url = "http://hd.xiaotimi.com/2016/myxc/ok1/GKL.mp4?#.mp3";
 
     @Override
     protected int getBodyLayoutId() {
@@ -127,17 +125,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         mStringList.add("");
         mStringList.add("");
         mStringList.add("");
-        bindServiceConnection();
-
-        mFragmentMusicPalyPhonographPoint.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                int w = mFragmentMusicPalyPhonographPoint.getWidth();
-                int h = mFragmentMusicPalyPhonographPoint.getHeight();
-                mFragmentMusicPalyPhonographPoint.setPivotX(9 * w / 10);
-                mFragmentMusicPalyPhonographPoint.setPivotY(h / 2);
-            }
-        });
+        initListener();
 
         mAdapter = new CommonAdapter<String>(getActivity(), R.layout.item_music_play, mStringList) {
             @Override
@@ -158,46 +146,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         mFragmentMusicPalyRv.setTriggerOffset(0.25f);
         mFragmentMusicPalyRv.setAdapter(mAdapter);
         mFragmentMusicPalyRv.setHasFixedSize(true);
-
-        mFragmentMusicPalyRv.addOnPageChangedListener(new PagerRecyclerView.OnPageChangedListener
-                () {
-
-            @Override
-            public void OnPageChanged(int oldPosition, int newPosition) {
-                points[1] = 0f;
-                stopAnimation(mCurrentView);
-                if (mMusicPlayService != null) {
-                    mMusicPlayService.PrepareAudiofromInternet(url, true);
-                }
-
-            }
-
-            @Override
-            public void OnDragging(int downPosition) {
-                if (!isPointOutPhonograph) {
-                    isPointOutPhonograph = true;
-                    pauseAnimation(mCurrentView);
-                    doPointAnimation(0, mPointDuration);
-                }
-
-            }
-
-            @Override
-            public void OnIdle(int position) {
-                mCurrentView = (ViewGroup) RecyclerViewUtils.getCenterXChild(mFragmentMusicPalyRv);
-                if (mCurrentView != null) {
-                    mCurrentView.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            doPhonographAnimation(360, 10000);
-                        }
-                    }, 500);
-                }
-                doPointAnimation(mPointDegree, mPointDuration);
-                isPointOutPhonograph = false;
-            }
-
-        });
 
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         Bitmap bitmap = BitmapFactory
@@ -275,7 +223,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 doPointAnimation(0, mPointDuration);
                 break;
             case R.id.fragment_music_paly_palyer:
-                mMusicPlayService.playOrPause();
+//                mMusicPlayService.playOrPause();
                 break;
             case R.id.fragment_music_paly_nextview:// 下一首歌
                 mFragmentMusicPalyRv.smoothScrollToPosition(mFragmentMusicPalyRv
@@ -377,46 +325,54 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     }
 
-    /**
-     * 绑定播放服务
-     */
-    private void bindServiceConnection() {
-        Intent intent = new Intent(getActivity(), MusicPlayService.class);
-        getActivity().startService(intent);
-        getActivity().bindService(intent, serviceConnection, getActivity().BIND_AUTO_CREATE);
-    }
+    private void initListener(){
+        mFragmentMusicPalyPhonographPoint.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int w = mFragmentMusicPalyPhonographPoint.getWidth();
+                int h = mFragmentMusicPalyPhonographPoint.getHeight();
+                mFragmentMusicPalyPhonographPoint.setPivotX(9 * w / 10);
+                mFragmentMusicPalyPhonographPoint.setPivotY(h / 2);
+            }
+        });
 
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            mMusicPlayService = ((MusicPlayService.MUsicBinder) (service)).getService
-                    (mFragmentMusicPalyProgress, mFragmentMusicPalyCurTime,
-                            mFragmentMusicPalyTotalTime);
-            mMusicPlayService.setPrepareMusiListener(new MusiPrepareListener());
-            mMusicPlayService.PrepareAudiofromInternet(url, true);
-        }
+        mFragmentMusicPalyRv.addOnPageChangedListener(new PagerRecyclerView.OnPageChangedListener
+                () {
 
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            mMusicPlayService = null;
-        }
-    };
+            @Override
+            public void OnPageChanged(int oldPosition, int newPosition) {
+                points[1] = 0f;
+                stopAnimation(mCurrentView);
 
-    class MusiPrepareListener implements MusicPlayService.OnPrepareMusiListener {
-        @Override
-        public void OnPrepareed() {
-            mMusicPlayService.playOrPause();
-        }
+            }
 
-        @Override
-        public void OnFailure() {
+            @Override
+            public void OnDragging(int downPosition) {
+                if (!isPointOutPhonograph) {
+                    isPointOutPhonograph = true;
+                    pauseAnimation(mCurrentView);
+                    doPointAnimation(0, mPointDuration);
+                }
 
-        }
+            }
 
-        @Override
-        public void OnPlayeronComplet() {
+            @Override
+            public void OnIdle(int position) {
+                ToastUtils.showToast("OnIdle");
+                mCurrentView = (ViewGroup) RecyclerViewUtils.getCenterXChild(mFragmentMusicPalyRv);
+                if (mCurrentView != null) {
+                    mCurrentView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            doPhonographAnimation(360, 10000);
+                        }
+                    }, 500);
+                }
+                doPointAnimation(mPointDegree, mPointDuration);
+                isPointOutPhonograph = false;
+            }
 
-        }
+        });
     }
 
 }
