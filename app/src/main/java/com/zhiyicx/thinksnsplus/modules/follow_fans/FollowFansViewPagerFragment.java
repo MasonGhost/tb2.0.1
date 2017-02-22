@@ -36,9 +36,7 @@ public class FollowFansViewPagerFragment extends TSFragment<FollowFansListContra
 
     @Override
     protected void initView(View rootView) {
-
         initViewPager();
-
     }
 
     @Override
