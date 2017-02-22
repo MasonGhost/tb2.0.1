@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.greenrobot.greendao.annotation.Generated;
+
 /**
  * @author LiuChao
  * @describe 动态内容的实体类
@@ -27,7 +29,9 @@ public class DynamicDetailBean implements Parcelable {
     @Id(autoincrement = true)
     private Long id;
     @Unique
-    private Long feed_id;// 属于哪条动态
+    private Long feed_id;// 服务器返回的feed_id
+    @Unique
+    private String feed_mark;// 属于哪条动态
     private String title;// 动态标题
     private String content;// 动态内容
     private long created_at;// 创建时间
@@ -37,7 +41,15 @@ public class DynamicDetailBean implements Parcelable {
     @Transient
     private List<String> localPhotos;// 本地图片的路径
     private int state;// 动态发送状态 0 发送失败 1 正在发送 2 发送成功
-    
+
+    public String getFeed_mark() {
+        return feed_mark;
+    }
+
+    public void setFeed_mark(String feed_mark) {
+        this.feed_mark = feed_mark;
+    }
+
     public Long getFeed_id() {
         return feed_id;
     }
@@ -124,6 +136,32 @@ public class DynamicDetailBean implements Parcelable {
         }
     }
 
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+
+    public DynamicDetailBean() {
+    }
+
+    @Generated(hash = 643557137)
+    public DynamicDetailBean(Long id, Long feed_id, String feed_mark, String title, String content,
+            long created_at, int feed_from, List<Integer> storage, int state) {
+        this.id = id;
+        this.feed_id = feed_id;
+        this.feed_mark = feed_mark;
+        this.title = title;
+        this.content = content;
+        this.created_at = created_at;
+        this.feed_from = feed_from;
+        this.storage = storage;
+        this.state = state;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -133,6 +171,7 @@ public class DynamicDetailBean implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(this.id);
         dest.writeValue(this.feed_id);
+        dest.writeString(this.feed_mark);
         dest.writeString(this.title);
         dest.writeString(this.content);
         dest.writeLong(this.created_at);
@@ -142,12 +181,10 @@ public class DynamicDetailBean implements Parcelable {
         dest.writeInt(this.state);
     }
 
-    public DynamicDetailBean() {
-    }
-
     protected DynamicDetailBean(Parcel in) {
         this.id = (Long) in.readValue(Long.class.getClassLoader());
         this.feed_id = (Long) in.readValue(Long.class.getClassLoader());
+        this.feed_mark = in.readString();
         this.title = in.readString();
         this.content = in.readString();
         this.created_at = in.readLong();
