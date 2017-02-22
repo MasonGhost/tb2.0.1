@@ -53,7 +53,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected MultiItemTypeAdapter<DynamicBean> getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mDynamicBeens);
-        adapter.addItemViewDelegate(new DynamicListRecycleItem());
+        adapter.addItemViewDelegate(new DynamicListRecycleItem(getContext()));
         return adapter;
     }
 

@@ -9,6 +9,7 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -44,7 +45,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
     }
 
     @Override
-    public void convert(ViewHolder holder, DynamicBean dynamicBean, DynamicBean lastT, int position) {
+    public void convert(ViewHolder holder, DynamicBean dynamicBean, DynamicBean lastT, final int position) {
         mImageLoader.loadImage(mContext, GlideImageConfig.builder()
                 .url("http://tva2.sinaimg.cn/crop.0.0.1002.1002.50/d710166ajw8fbw38t1do7j20ru0ru0v4.jpg")
                 .transformation(new GlideCircleTransform(mContext))
@@ -59,7 +60,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
         dynamicListMenuView.setItemOnClick(new DynamicListMenuView.OnItemClickListener() {
             @Override
             public void onItemClick(ViewGroup parent, View v, int postion) {
-
+                ToastUtils.showToast("image click :"+postion);
             }
         });
 

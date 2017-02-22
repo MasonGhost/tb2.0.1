@@ -28,9 +28,6 @@ import static com.umeng.socialize.utils.DeviceConfig.context;
 
 public class DynamicListRecycleItem extends DynamicListBaseItem {
 
-//    protected List<String> mImagUrls = new ArrayList<>();
-//
-//    protected MultiItemTypeAdapter mAdapter;
 
     public DynamicListRecycleItem(Context context) {
         super(context);
