@@ -7,6 +7,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -96,6 +97,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 });
         mTvTopTip = (TextView) rootView.findViewById(R.id.tv_top_tip_text);
         mEmptyView = new EmptyView(getContext());
+        mEmptyView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT));
+        mEmptyView.setErrorImag(setEmptView());
         mEmptyView.setNeedTextTip(false);
         mEmptyView.setNeedClickLoadState(false);
         RxView.clicks(mEmptyView)
@@ -123,6 +126,10 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mEmptyWrapper = new EmptyWrapper(mAdapter);
         mEmptyWrapper.setEmptyView(mEmptyView);
         mRvList.setAdapter(mEmptyWrapper);
+    }
+
+    private int setEmptView() {
+        return R.mipmap.img_default_nothing;
     }
 
 
@@ -173,7 +180,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     }
 
     protected boolean getIsShowLoadingMore() {
-        return true;
+        return false;
     }
 
     protected boolean getPullDownRefreshEnable() {
@@ -367,10 +374,10 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 mPresenter.insertOrUpdateData(data);
                 // 内存处理数据
                 mAdapter.addAllData(data);
-                mRefreshlayout.setIsShowLoadingMoreView(true);
+//                mRefreshlayout.setIsShowLoadingMoreView(true);
                 mMaxId = data.get(data.size() - 1).getMaxId();
             } else {
-                mRefreshlayout.setIsShowLoadingMoreView(false);
+//                mRefreshlayout.setIsShowLoadingMoreView(false);
             }
             refreshData();
         } else { // 加载更多
@@ -382,7 +389,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 refreshData();
                 mMaxId = data.get(data.size() - 1).getMaxId();
             } else {
-                mRefreshlayout.setIsShowLoadingMoreView(false);
+//                mRefreshlayout.setIsShowLoadingMoreView(false);
             }
         }
     }

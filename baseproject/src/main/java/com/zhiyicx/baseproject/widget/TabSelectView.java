@@ -2,9 +2,9 @@ package com.zhiyicx.baseproject.widget;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -110,8 +110,12 @@ public class TabSelectView extends FrameLayout {
     }
 
     public void setLeftImg(int imgRes) {
-        tvToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), imgRes), null, null, null);
-        tvToolbarLeft.setVisibility(View.VISIBLE);
+        if (imgRes == 0 && TextUtils.isEmpty(tvToolbarLeft.getText())) {
+            tvToolbarLeft.setVisibility(INVISIBLE);
+        } else {
+            tvToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), imgRes), null, null, null);
+            tvToolbarLeft.setVisibility(View.VISIBLE);
+        }
     }
 
     public void setRightText(String text) {

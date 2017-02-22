@@ -7,6 +7,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -35,7 +36,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
 
     @Override
     public List<DynamicBean> requestCacheData(int minTime, boolean isLoadMore) {
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
