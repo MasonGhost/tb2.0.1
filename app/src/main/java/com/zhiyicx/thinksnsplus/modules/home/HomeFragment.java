@@ -18,12 +18,15 @@ import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageFragment;
 import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsActivity;
+
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,6 +104,11 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     @Override
     protected int setToolBarBackgroud() {
         return R.color.white;
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
     }
 
     @Override
@@ -265,18 +273,25 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
      * 点击动态发送按钮，进入文字图片的动态发布
      */
     private void clickSendPhotoTextDynamic() {
-        Intent it = new Intent(getContext(), SendDynamicActivity.class);
+        Intent it = new Intent(getContext(), PhotoAlbumDetailsActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putInt(SendDynamicActivity.DYNAMIC_TYPE, SendDynamicActivity.PHOTO_TEXT_DYNAMIC);
         it.putExtras(bundle);
         startActivity(it);
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate a fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        ButterKnife.bind(this, rootView);
-        return rootView;
+    /**
+     * 发送带图片的动态时，接受图片选择界面发送过来的图片路径
+     *
+     * @param selectedPhoto
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_COMPLETE_DYNAMIC_PHOTO_SELECT)
+    public void refreshDataAndUI(List<String> selectedPhoto) {
+        // 跳转到发送动态页面
+        Intent it = new Intent(getContext(), SendDynamicActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList(SendDynamicActivity.DYNAMIC_PHOTOS, (ArrayList<String>) selectedPhoto);
+        bundle.putInt(SendDynamicActivity.DYNAMIC_TYPE, SendDynamicActivity.PHOTO_TEXT_DYNAMIC);
+        it.putExtras(bundle);
+        startActivity(it);
     }
 }

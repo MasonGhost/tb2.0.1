@@ -260,6 +260,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 ArrayList<String> selectedPhotos = photoGridAdapter.getSelectedPhotoPaths();
                 getActivity().finish();
                 EventBus.getDefault().post(selectedPhotos, EventBusTagConfig.EVENT_COMPLETE_PHOTO_SELECT);
+                EventBus.getDefault().post(selectedPhotos, EventBusTagConfig.EVENT_COMPLETE_DYNAMIC_PHOTO_SELECT);
                 break;
             default:
         }

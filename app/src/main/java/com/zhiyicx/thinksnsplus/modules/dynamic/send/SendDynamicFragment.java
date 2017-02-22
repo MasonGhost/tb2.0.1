@@ -293,8 +293,10 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     /**
      * 初始化图片列表
      */
-    private void initPhotoList() {
-        selectedPhotos = new ArrayList<>(MAX_PHOTOS);
+    private void initPhotoList(Bundle bundle) {
+        if (selectedPhotos == null) {
+            selectedPhotos = new ArrayList<>();
+        }
         // 占位缺省图
         ImageBean camera = new ImageBean();
         selectedPhotos.add(camera);
@@ -373,12 +375,21 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         Bundle bundle = getArguments();
         if (bundle != null) {
             dynamicType = bundle.getInt(SendDynamicActivity.DYNAMIC_TYPE);
+            List<String> originPhotos = bundle.getStringArrayList(SendDynamicActivity.DYNAMIC_PHOTOS);
+            if (originPhotos != null) {
+                selectedPhotos = new ArrayList<>(MAX_PHOTOS);
+                for (String photo : originPhotos) {
+                    ImageBean imageBean = new ImageBean();
+                    imageBean.setImgUrl(photo);
+                    selectedPhotos.add(imageBean);
+                }
+            }
         }
         switch (dynamicType) {
             case SendDynamicActivity.PHOTO_TEXT_DYNAMIC:
                 // 没有图片就初始化这些
                 initPhotoSelector();
-                initPhotoList();
+                initPhotoList(bundle);
                 break;
             case SendDynamicActivity.TEXT_ONLY_DYNAMIC:
                 mRvPhotoList.setVisibility(View.GONE);// 隐藏图片控件
