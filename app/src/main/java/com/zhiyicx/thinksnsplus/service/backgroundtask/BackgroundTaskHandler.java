@@ -14,6 +14,8 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.BackgroundRequestTaskBeanGreenDaoImpl;
@@ -324,43 +326,54 @@ public class BackgroundTaskHandler {
      */
     private void sendDynamic(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
         final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
-        List<ImageBean> photos = (List<ImageBean>) params.get("photo_list");
-        // 先处理图片上传，图片上传成功后，在进行动态发布
-        List<Observable<BaseJson<Integer>>> upLoadPics = new ArrayList<>();
-        for (int i = 0; i < photos.size() - 1; i++) {
-            File file = new File(photos.get(i).getImgUrl());
-            upLoadPics.add(mUpLoadRepository.upLoadSingleFile(FileUtils.getFileMD5ToString(file), file.getName(), file + "i", photos.get(i).getImgUrl()));
+        DynamicBean dynamicBean = (DynamicBean) params.get("params");
+        final DynamicDetailBean dynamicDetailBean = dynamicBean.getFeed();
+        List<String> photos = dynamicDetailBean.getLocalPhotos();
+        Observable<BaseJson<Object>> observable = null;
+        // 没有图片需要上传时：
+        if (photos == null || photos.isEmpty()) {
+            // 先处理图片上传，图片上传成功后，在进行动态发布
+            List<Observable<BaseJson<Integer>>> upLoadPics = new ArrayList<>();
+            for (int i = 0; i < photos.size() - 1; i++) {
+                File file = new File(photos.get(i));
+                upLoadPics.add(mUpLoadRepository.upLoadSingleFile(FileUtils.getFileMD5ToString(file), file.getName(), file + "i", photos.get(i)));
+            }
+            observable = // 组合多个图片上传任务
+                    Observable.combineLatest(upLoadPics, new FuncN<List<Integer>>() {
+                        @Override
+                        public List<Integer> call(Object... args) {
+                            // 得到图片上传的结果
+                            List<Integer> integers = new ArrayList<Integer>();
+                            for (Object obj : args) {
+                                BaseJson<Integer> baseJson = (BaseJson<Integer>) obj;
+                                if (baseJson.isStatus()) {
+                                    integers.add(baseJson.getData());// 将返回的图片上传任务id封装好
+                                } else {
+                                    throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
+                                }
+                            }
+                            return integers;
+                        }
+                    }).flatMap(new Func1<List<Integer>, Observable<BaseJson<Object>>>() {
+                        @Override
+                        public Observable<BaseJson<Object>> call(List<Integer> integers) {
+                            // 动态相关图片：图片任务id的数组，将它作为发布动态的参数
+                            dynamicDetailBean.setStorage(integers);
+                            return mSendDynamicPresenterRepository.sendDynamic(dynamicDetailBean);// 进行动态发布的请求
+                        }
+                    });
+        } else {
+            observable = mSendDynamicPresenterRepository.sendDynamic(dynamicDetailBean);// 进行动态发布的请求
+
         }
-        // 组合多个图片上传任务
-        Observable.combineLatest(upLoadPics, new FuncN<List<Integer>>() {
-            @Override
-            public List<Integer> call(Object... args) {
-                // 得到图片上传的结果
-                List<Integer> integers = new ArrayList<Integer>();
-                for (Object obj : args) {
-                    BaseJson<Integer> baseJson = (BaseJson<Integer>) obj;
-                    if (baseJson.isStatus()) {
-                        integers.add(baseJson.getData());// 将返回的图片上传任务id封装好
-                    } else {
-                        throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
-                    }
-                }
-                return integers;
-            }
-        }).flatMap(new Func1<List<Integer>, Observable<BaseJson<Object>>>() {
-            @Override
-            public Observable<BaseJson<Object>> call(List<Integer> integers) {
-                // 动态相关图片：图片任务id的数组，将它作为发布动态的参数
-                params.put("storage_task_ids", integers);
-                return mSendDynamicPresenterRepository.sendDynamic(params);// 进行动态发布的请求
-            }
-        }).subscribeOn(Schedulers.io())
+        observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribe<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
                         // 动态发送成功
                         ToastUtils.showToast("动态发布成功");
+                        mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
                     }
 
                     @Override
@@ -376,6 +389,7 @@ public class BackgroundTaskHandler {
                         addBackgroundRequestTask(backgroundRequestTaskBean);
                     }
                 });
+
     }
 
 }
