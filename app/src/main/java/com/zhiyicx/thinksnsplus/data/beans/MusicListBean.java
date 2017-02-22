@@ -7,6 +7,7 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.zhiyicx.baseproject.base.BaseListBean;
 
 /**
@@ -15,7 +16,7 @@ import com.zhiyicx.baseproject.base.BaseListBean;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class MusicListBean implements Parcelable {
+public class MusicListBean extends BaseListBean implements Parcelable {
 
     private List<Music> music;
     private String descrip;
