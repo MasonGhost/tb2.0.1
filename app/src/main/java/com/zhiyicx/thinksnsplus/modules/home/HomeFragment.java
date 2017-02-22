@@ -5,8 +5,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -19,6 +23,7 @@ import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageFragment;
 import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment;
+import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +31,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -65,6 +71,14 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 
     @Inject
     HomePresenter mHomePresenter;  // 仅用于构造
+    @BindView(R.id.fl_add)
+    FrameLayout mFlAdd;
+    @BindView(R.id.ll_message)
+    LinearLayout mLlMessage;
+    @BindView(R.id.ll_mine)
+    LinearLayout mLlMine;
+    @BindView(R.id.ll_bottom_container)
+    LinearLayout mLlBottomContainer;
     private TSViewPagerAdapter mHomePager;
 
     public static HomeFragment newInstance() {
@@ -92,6 +106,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     @Override
     protected void initView(View rootView) {
         initViewPager();
+        longClickSendTextDynamic();
     }
 
     @Override
@@ -123,10 +138,9 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
             case R.id.ll_find:
                 mVpHome.setCurrentItem(PAGE_FIND, false);
                 break;
-            // 点击增加
+            // 添加动态
             case R.id.fl_add:
-                //// TODO: 2017/1/5  添加动态
-                startActivity(new Intent(getContext(), SendDynamicActivity.class));
+                clickSendPhotoTextDynamic();
                 break;
             // 点击消息
             case R.id.ll_message:
@@ -228,5 +242,41 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
             mVMessageTip.setVisibility(View.INVISIBLE);
         }
 
+    }
+
+    /**
+     * 长按动态发送按钮，进入纯文字的动态发布
+     */
+    private void longClickSendTextDynamic() {
+        mFlAdd.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent it = new Intent(getContext(), SendDynamicActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt(SendDynamicActivity.DYNAMIC_TYPE, SendDynamicActivity.TEXT_ONLY_DYNAMIC);
+                it.putExtras(bundle);
+                startActivity(it);
+                return true;
+            }
+        });
+    }
+
+    /**
+     * 点击动态发送按钮，进入文字图片的动态发布
+     */
+    private void clickSendPhotoTextDynamic() {
+        Intent it = new Intent(getContext(), SendDynamicActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(SendDynamicActivity.DYNAMIC_TYPE, SendDynamicActivity.PHOTO_TEXT_DYNAMIC);
+        it.putExtras(bundle);
+        startActivity(it);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: inflate a fragment view
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        ButterKnife.bind(this, rootView);
+        return rootView;
     }
 }
