@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic;
+package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;

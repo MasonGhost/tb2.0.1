@@ -1,12 +1,8 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic;
-
-import android.content.Context;
+package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
-import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
-import com.zhiyicx.thinksnsplus.modules.login.LoginContract;
 
 import java.util.HashMap;
 

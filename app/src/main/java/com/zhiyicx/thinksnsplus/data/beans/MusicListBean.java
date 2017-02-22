@@ -15,7 +15,7 @@ import com.zhiyicx.baseproject.base.BaseListBean;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class MusicListBean implements Parcelable {
+public class MusicListBean extends BaseListBean implements Parcelable {
 
     private List<Music> music;
     private String descrip;

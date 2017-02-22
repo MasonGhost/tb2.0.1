@@ -1,11 +1,10 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic;
+package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
-import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.HashMap;

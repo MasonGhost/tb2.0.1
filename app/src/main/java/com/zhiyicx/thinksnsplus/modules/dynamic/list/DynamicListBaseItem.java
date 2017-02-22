@@ -1,7 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
-import com.zhiyicx.baseproject.R;
+
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageLoaderStrategy;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
