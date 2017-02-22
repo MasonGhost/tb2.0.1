@@ -5,11 +5,14 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 
 public class SendDynamicActivity extends TSActivity<SendDynamicPresenter, SendDynamicFragment> {
+    public static final String DYNAMIC_TYPE = "dynamic_type";// 动态类型
+    public static final int PHOTO_TEXT_DYNAMIC = 0;// 图片文字动态
+    public static final int TEXT_ONLY_DYNAMIC = 1;// 纯文字动态
 
 
     @Override
     protected SendDynamicFragment getFragment() {
-        return SendDynamicFragment.initFragment(null);
+        return SendDynamicFragment.initFragment(getIntent().getExtras());
     }
 
     @Override
