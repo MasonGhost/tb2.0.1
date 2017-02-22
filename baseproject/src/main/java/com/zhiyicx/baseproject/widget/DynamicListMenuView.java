@@ -78,6 +78,7 @@ public class DynamicListMenuView extends FrameLayout {
             R.string.zero,
             R.string.zero,
             R.string.zero,
+            R.string.zero,
     };// 文字 ids
     private
     String[] mText = new String[mTextIds.length];// 文字内容
@@ -273,7 +274,7 @@ public class DynamicListMenuView extends FrameLayout {
                 textView.setTextColor(ContextCompat.getColor(getContext(), mTextNormalColor));
             }
         }
-        if (isNeedSetText) {
+        if (textView!=null&&isNeedSetText&&mText[position]!=null) {
             textView.setText(mText[position]);
         }
     }

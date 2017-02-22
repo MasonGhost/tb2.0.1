@@ -12,13 +12,10 @@ import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
-import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.umeng.socialize.utils.DeviceConfig.context;
 
 /**
  * @Describe  动态列表 1、2、3、4、9张图片使用的 item 适配器
@@ -44,7 +41,7 @@ public class DynamicListRecycleItem extends DynamicListBaseItem {
         mGridDecoration = new GridDecoration(mImageItemSpacing, mImageItemSpacing);
     }
 
-    private MultiItemTypeAdapter getadaper(final Context context, List<String> mImagUrls) {
+    private CommonAdapter getadaper(final Context context, List<String> mImagUrls) {
         return new CommonAdapter<String>(context, R.layout.item_dynamic_list_image, mImagUrls) {
             @Override
             protected void convert(ViewHolder holder, String String, int position) {
@@ -52,7 +49,7 @@ public class DynamicListRecycleItem extends DynamicListBaseItem {
                         .url(String)
                         .transformation(new GlideCircleTransform(mContext))
                         .errorPic(R.drawable.shape_default_image_circle)
-                        .imagerView((ImageView) holder.getView(R.id.iv_image))
+                        .imagerView((ImageView) holder.getView(R.id.iv_item_image))
                         .build());
             }
         };
@@ -65,11 +62,12 @@ public class DynamicListRecycleItem extends DynamicListBaseItem {
 
     @Override
     public boolean isForViewType(DynamicBean item, int position) {
-        return item.getFeed().getStorage().size() == IMAGE_COUNTS_1
-                || item.getFeed().getStorage().size() == IMAGE_COUNTS_2
-                || item.getFeed().getStorage().size() == IMAGE_COUNTS_3
-                || item.getFeed().getStorage().size() == IMAGE_COUNTS_4
-                || item.getFeed().getStorage().size() == IMAGE_COUNTS_9;
+//        return item.getFeed().getStorage().size() == IMAGE_COUNTS_1
+//                || item.getFeed().getStorage().size() == IMAGE_COUNTS_2
+//                || item.getFeed().getStorage().size() == IMAGE_COUNTS_3
+//                || item.getFeed().getStorage().size() == IMAGE_COUNTS_4
+//                || item.getFeed().getStorage().size() == IMAGE_COUNTS_9;
+       return item.getFeed().getStorage().size() != 5;
     }
 
     @Override
@@ -108,7 +106,7 @@ public class DynamicListRecycleItem extends DynamicListBaseItem {
         testdata.add("http://tva2.sinaimg.cn/crop.0.0.1002.1002.50/d710166ajw8fbw38t1do7j20ru0ru0v4.jpg");
         testdata.add("http://tva2.sinaimg.cn/crop.0.0.1002.1002.50/d710166ajw8fbw38t1do7j20ru0ru0v4.jpg");
         testdata.add("http://tva2.sinaimg.cn/crop.0.0.1002.1002.50/d710166ajw8fbw38t1do7j20ru0ru0v4.jpg");
-        recyclerView.setAdapter(getadaper(context, testdata));
+        recyclerView.setAdapter(getadaper(recyclerView.getContext(), testdata));
     }
 
 

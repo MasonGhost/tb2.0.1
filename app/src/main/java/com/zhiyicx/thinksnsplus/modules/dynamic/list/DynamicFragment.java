@@ -67,7 +67,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .dynamicPresenterModule(new DynamicPresenterModule(this))
                 .build().inject(this);
-
         super.initData();
     }
 
@@ -104,7 +103,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void hideLoading() {
-
+        mRefreshlayout.endLoadingMore();
     }
 
     @Override

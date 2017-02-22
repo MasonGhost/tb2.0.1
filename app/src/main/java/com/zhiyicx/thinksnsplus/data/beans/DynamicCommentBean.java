@@ -16,30 +16,27 @@ import org.greenrobot.greendao.annotation.Generated;
  */
 @Entity
 public class DynamicCommentBean implements Parcelable {
-
-    @Id(autoincrement = true)
-    private Long id;
-    @Unique
-    private int comment_id;// 评论的id
-    private String feed_mark;// 属于哪条动态
+    @Id
+    private Long comment_id;// 评论的id
+    private Long feed_mark;// 属于哪条动态
     private long create_at;// 评论创建的时间
     private String comment_content;// 评论内容
     private long user_id;// 谁发的这条屁股论
     private long reply_to_user_id;// 评论要发给谁
 
-    public int getComment_id() {
+    public Long getComment_id() {
         return comment_id;
     }
 
-    public void setComment_id(int comment_id) {
+    public void setComment_id(Long comment_id) {
         this.comment_id = comment_id;
     }
 
-    public String getFeed_mark() {
+    public Long getFeed_mark() {
         return feed_mark;
     }
 
-    public void setFeed_mark(String feed_mark) {
+    public void setFeed_mark(Long feed_mark) {
         this.feed_mark = feed_mark;
     }
 
@@ -75,13 +72,6 @@ public class DynamicCommentBean implements Parcelable {
         this.reply_to_user_id = reply_to_user_id;
     }
 
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     @Override
     public int describeContents() {
@@ -90,9 +80,8 @@ public class DynamicCommentBean implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.id);
-        dest.writeInt(this.comment_id);
-        dest.writeString(this.feed_mark);
+        dest.writeValue(this.comment_id);
+        dest.writeValue(this.feed_mark);
         dest.writeLong(this.create_at);
         dest.writeString(this.comment_content);
         dest.writeLong(this.user_id);
@@ -103,19 +92,17 @@ public class DynamicCommentBean implements Parcelable {
     }
 
     protected DynamicCommentBean(Parcel in) {
-        this.id = (Long) in.readValue(Long.class.getClassLoader());
-        this.comment_id = in.readInt();
-        this.feed_mark = in.readString();
+        this.comment_id = (Long) in.readValue(Long.class.getClassLoader());
+        this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
         this.create_at = in.readLong();
         this.comment_content = in.readString();
         this.user_id = in.readLong();
         this.reply_to_user_id = in.readLong();
     }
 
-    @Generated(hash = 1282883843)
-    public DynamicCommentBean(Long id, int comment_id, String feed_mark, long create_at,
-            String comment_content, long user_id, long reply_to_user_id) {
-        this.id = id;
+    @Generated(hash = 131676871)
+    public DynamicCommentBean(Long comment_id, Long feed_mark, long create_at, String comment_content,
+            long user_id, long reply_to_user_id) {
         this.comment_id = comment_id;
         this.feed_mark = feed_mark;
         this.create_at = create_at;
@@ -135,4 +122,5 @@ public class DynamicCommentBean implements Parcelable {
             return new DynamicCommentBean[size];
         }
     };
+
 }

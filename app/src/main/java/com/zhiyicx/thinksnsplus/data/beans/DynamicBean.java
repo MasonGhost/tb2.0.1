@@ -11,7 +11,7 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.Keep;
-import org.greenrobot.greendao.annotation.NotNull;
+
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Unique;
@@ -31,24 +31,40 @@ public class DynamicBean extends BaseListBean {
     @Unique
     private Long feed_id;// 动态的唯一id，暂时没作用
     @Unique
-    private String feed_mark;// 动态的唯一标识，由本地创建 用户id+时间戳
+    private Long feed_mark;// 动态的唯一标识，由本地创建 用户id+时间戳
     private long user_id;// 发送动态的人id
     @ToOne(joinProperty = "feed_mark")// DynamicBean的feed_id作为外键
     private DynamicDetailBean feed;
     @ToOne(joinProperty = "feed_mark")// DynamicBean的feed_id作为外键
     private DynamicToolBean tool;
+    @ToOne(joinProperty = "user_id")// DynamicBean 的 user_id作为外键
+    private UserInfoBean userInfoBean;
     // DynamicBean的feed_id与DynamicCommentBean的feed_id关联
     @ToMany(joinProperties = {@JoinProperty(name = "feed_mark", referencedName = "feed_mark")})
     private List<DynamicCommentBean> comments;
-    @ToOne(joinProperty = "user_id")// DynamicBean 的 user_id作为外键
-    private UserInfoBean mUserInfoBean;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Long getFeed_id() {
-        return feed.getFeed_id();
+        return feed_id;
     }
 
     public void setFeed_id(Long feed_id) {
         this.feed_id = feed_id;
+    }
+
+    public Long getFeed_mark() {
+        return feed_mark;
+    }
+
+    public void setFeed_mark(Long feed_mark) {
+        this.feed_mark = feed_mark;
     }
 
     public long getUser_id() {
@@ -58,45 +74,62 @@ public class DynamicBean extends BaseListBean {
     public void setUser_id(long user_id) {
         this.user_id = user_id;
     }
+
     @Keep
     public DynamicDetailBean getFeed() {
         return feed;
     }
+
     @Keep
     public void setFeed(DynamicDetailBean feed) {
         this.feed = feed;
     }
+
     @Keep
     public DynamicToolBean getTool() {
         return tool;
     }
+
     @Keep
     public void setTool(DynamicToolBean tool) {
         this.tool = tool;
     }
+
     @Keep
+    public UserInfoBean getUserInfoBean() {
+        return userInfoBean;
+    }
+
+    @Keep
+    public void setUserInfoBean(UserInfoBean userInfoBean) {
+        this.userInfoBean = userInfoBean;
+    }
+
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 618015855)
     public List<DynamicCommentBean> getComments() {
+        if (comments == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            DynamicCommentBeanDao targetDao = daoSession.getDynamicCommentBeanDao();
+            List<DynamicCommentBean> commentsNew = targetDao._queryDynamicBean_Comments(feed_mark);
+            synchronized (this) {
+                if (comments == null) {
+                    comments = commentsNew;
+                }
+            }
+        }
         return comments;
     }
+
     @Keep
     public void setComments(List<DynamicCommentBean> comments) {
         this.comments = comments;
-    }
-
-    public UserInfoBean getUserInfoBean() {
-        return mUserInfoBean;
-    }
-
-    public void setUserInfoBean(UserInfoBean userInfoBean) {
-        mUserInfoBean = userInfoBean;
-    }
-
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     @Override
@@ -109,53 +142,12 @@ public class DynamicBean extends BaseListBean {
         super.writeToParcel(dest, flags);
         dest.writeValue(this.id);
         dest.writeValue(this.feed_id);
-        dest.writeString(this.feed_mark);
+        dest.writeValue(this.feed_mark);
         dest.writeLong(this.user_id);
         dest.writeParcelable(this.feed, flags);
         dest.writeParcelable(this.tool, flags);
+        dest.writeParcelable(this.userInfoBean, flags);
         dest.writeTypedList(this.comments);
-        dest.writeParcelable(this.mUserInfoBean, flags);
-    }
-
-    public String getFeed_mark() {
-        return this.feed_mark;
-    }
-
-    public void setFeed_mark(String feed_mark) {
-        this.feed_mark = feed_mark;
-    }
-
-    /** To-one relationship, resolved on first access. */
-    @Generated(hash = 1262958292)
-    public UserInfoBean getMUserInfoBean() {
-        long __key = this.user_id;
-        if (mUserInfoBean__resolvedKey == null || !mUserInfoBean__resolvedKey.equals(__key)) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            UserInfoBeanDao targetDao = daoSession.getUserInfoBeanDao();
-            UserInfoBean mUserInfoBeanNew = targetDao.load(__key);
-            synchronized (this) {
-                mUserInfoBean = mUserInfoBeanNew;
-                mUserInfoBean__resolvedKey = __key;
-            }
-        }
-        return mUserInfoBean;
-    }
-
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1065715559)
-    public void setMUserInfoBean(@NotNull UserInfoBean mUserInfoBean) {
-        if (mUserInfoBean == null) {
-            throw new DaoException(
-                    "To-one property 'user_id' has not-null constraint; cannot set to-one to null");
-        }
-        synchronized (this) {
-            this.mUserInfoBean = mUserInfoBean;
-            user_id = mUserInfoBean.getUser_id();
-            mUserInfoBean__resolvedKey = user_id;
-        }
     }
 
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */
@@ -214,16 +206,16 @@ public class DynamicBean extends BaseListBean {
         super(in);
         this.id = (Long) in.readValue(Long.class.getClassLoader());
         this.feed_id = (Long) in.readValue(Long.class.getClassLoader());
-        this.feed_mark = in.readString();
+        this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
         this.user_id = in.readLong();
         this.feed = in.readParcelable(DynamicDetailBean.class.getClassLoader());
         this.tool = in.readParcelable(DynamicToolBean.class.getClassLoader());
+        this.userInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
         this.comments = in.createTypedArrayList(DynamicCommentBean.CREATOR);
-        this.mUserInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
     }
 
-    @Generated(hash = 1387774396)
-    public DynamicBean(Long id, Long feed_id, String feed_mark, long user_id) {
+    @Generated(hash = 131058427)
+    public DynamicBean(Long id, Long feed_id, Long feed_mark, long user_id) {
         this.id = id;
         this.feed_id = feed_id;
         this.feed_mark = feed_mark;
@@ -247,10 +239,11 @@ public class DynamicBean extends BaseListBean {
     /** Used for active entity operations. */
     @Generated(hash = 476616020)
     private transient DynamicBeanDao myDao;
-    @Generated(hash = 1505457169)
-    private transient String feed__resolvedKey;
-    @Generated(hash = 333830307)
-    private transient String tool__resolvedKey;
-    @Generated(hash = 2004141746)
-    private transient Long mUserInfoBean__resolvedKey;
+    @Generated(hash = 1613724019)
+    private transient Long feed__resolvedKey;
+    @Generated(hash = 297170499)
+    private transient Long tool__resolvedKey;
+    @Generated(hash = 1005780391)
+    private transient Long userInfoBean__resolvedKey;
+
 }

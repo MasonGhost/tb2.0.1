@@ -16,6 +16,8 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import static com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean.STATUS_DIGG_FEED_CHECKED;
+
 /**
  * @Describe 动态列表适配器基类
  * requirement document :{@see https://github.com/zhiyicx/thinksns-plus-document/blob/master/document/%E5%8A%A8%E6%80%81%E6%A8%A1%E5%9D%97.md}
@@ -64,7 +66,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                 .url(dynamicBean.getUserInfoBean().getUserIcon())
                 .transformation(new GlideCircleTransform(mContext))
                 .errorPic(R.drawable.shape_default_image_circle)
-                .imagerView((ImageView) holder.getView(R.id.iv_image))
+                .imagerView((ImageView) holder.getView(R.id.iv_headpic))
                 .build());
         holder.setText(R.id.tv_name, dynamicBean.getUserInfoBean().getName());
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicBean.getFeed().getCreated_at()));
@@ -84,9 +86,9 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
             holder.setText(R.id.tv_content, content);
         }
         DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
-        dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicBean.getTool().getFeed_digg_count()), true, 0);
-        dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicBean.getTool().getFeed_comment_count()), false, 1);
-        dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicBean.getTool().getFeed_view_count()), true, 2);
+        dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicBean.getTool().getFeed_digg_count()), dynamicBean.getTool().getIs_digg_feed()==STATUS_DIGG_FEED_CHECKED, 0);
+        dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicBean.getTool().getFeed_comment_count()),  false, 1);
+        dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicBean.getTool().getFeed_view_count()),  false, 2);
         if (mOnMenuClick != null) {
             dynamicListMenuView.setItemOnClick(mOnMenuClick);
         }
