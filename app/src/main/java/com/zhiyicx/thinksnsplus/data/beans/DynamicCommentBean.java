@@ -15,7 +15,10 @@ import org.greenrobot.greendao.annotation.Unique;
  */
 @Entity
 public class DynamicCommentBean implements Parcelable {
-    @Id
+
+    @Id(autoincrement = true)
+    private Long id;
+    @Unique
     private int comment_id;// 评论的id
     private long feed_id;// 属于哪条动态
     private long create_at;// 评论创建的时间

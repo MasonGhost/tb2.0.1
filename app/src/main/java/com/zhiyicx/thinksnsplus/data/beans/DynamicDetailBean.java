@@ -8,8 +8,11 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Transient;
+import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,55 +24,20 @@ import java.util.List;
  */
 @Entity
 public class DynamicDetailBean implements Parcelable {
-    @Id
+    @Id(autoincrement = true)
+    private Long id;
+    @Unique
     private Long feed_id;// 属于哪条动态
     private String title;// 动态标题
     private String content;// 动态内容
     private long created_at;// 创建时间
     private int feed_from;// 来自哪个平台 //[1:pc 2:h5 3:ios 4:android 5:其他]
     @Convert(converter = ParamsConverter.class, columnType = String.class)
-    private List<String> storage;// 图片的云端存储id
-
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.feed_id);
-        dest.writeString(this.title);
-        dest.writeString(this.content);
-        dest.writeLong(this.created_at);
-        dest.writeInt(this.feed_from);
-        dest.writeStringList(this.storage);
-    }
-
-    public DynamicDetailBean() {
-    }
-
-    protected DynamicDetailBean(Parcel in) {
-        this.feed_id = (Long) in.readValue(Long.class.getClassLoader());
-        this.title = in.readString();
-        this.content = in.readString();
-        this.created_at = in.readLong();
-        this.feed_from = in.readInt();
-        this.storage = in.createStringArrayList();
-    }
-
-    public static final Creator<DynamicDetailBean> CREATOR = new Creator<DynamicDetailBean>() {
-        @Override
-        public DynamicDetailBean createFromParcel(Parcel source) {
-            return new DynamicDetailBean(source);
-        }
-
-        @Override
-        public DynamicDetailBean[] newArray(int size) {
-            return new DynamicDetailBean[size];
-        }
-    };
-
+    private List<Integer> storage;// 图片的云端存储id
+    @Transient
+    private List<String> localPhotos;// 本地图片的路径
+    private int state;// 动态发送状态 0 发送失败 1 正在发送 2 发送成功
+    
     public Long getFeed_id() {
         return feed_id;
     }
@@ -110,21 +78,37 @@ public class DynamicDetailBean implements Parcelable {
         this.feed_from = feed_from;
     }
 
-    public List<String> getStorage() {
+    public List<Integer> getStorage() {
         return storage;
     }
 
-    public void setStorage(List<String> storage) {
+    public void setStorage(List<Integer> storage) {
         this.storage = storage;
+    }
+
+    public List<String> getLocalPhotos() {
+        return localPhotos;
+    }
+
+    public void setLocalPhotos(List<String> localPhotos) {
+        this.localPhotos = localPhotos;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 
     /**
      * list<String> 转 String 形式存入数据库
      */
-    public static class ParamsConverter implements PropertyConverter<List<String>, String> {
+    public static class ParamsConverter implements PropertyConverter<List<Integer>, String> {
 
         @Override
-        public List<String> convertToEntityProperty(String databaseValue) {
+        public List<Integer> convertToEntityProperty(String databaseValue) {
             if (databaseValue == null) {
                 return null;
             }
@@ -132,11 +116,57 @@ public class DynamicDetailBean implements Parcelable {
         }
 
         @Override
-        public String convertToDatabaseValue(List<String> entityProperty) {
+        public String convertToDatabaseValue(List<Integer> entityProperty) {
             if (entityProperty == null) {
                 return null;
             }
             return ConvertUtils.object2Base64Str(entityProperty);
         }
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.id);
+        dest.writeValue(this.feed_id);
+        dest.writeString(this.title);
+        dest.writeString(this.content);
+        dest.writeLong(this.created_at);
+        dest.writeInt(this.feed_from);
+        dest.writeList(this.storage);
+        dest.writeStringList(this.localPhotos);
+        dest.writeInt(this.state);
+    }
+
+    public DynamicDetailBean() {
+    }
+
+    protected DynamicDetailBean(Parcel in) {
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.feed_id = (Long) in.readValue(Long.class.getClassLoader());
+        this.title = in.readString();
+        this.content = in.readString();
+        this.created_at = in.readLong();
+        this.feed_from = in.readInt();
+        this.storage = new ArrayList<Integer>();
+        in.readList(this.storage, Integer.class.getClassLoader());
+        this.localPhotos = in.createStringArrayList();
+        this.state = in.readInt();
+    }
+
+    public static final Creator<DynamicDetailBean> CREATOR = new Creator<DynamicDetailBean>() {
+        @Override
+        public DynamicDetailBean createFromParcel(Parcel source) {
+            return new DynamicDetailBean(source);
+        }
+
+        @Override
+        public DynamicDetailBean[] newArray(int size) {
+            return new DynamicDetailBean[size];
+        }
+    };
 }

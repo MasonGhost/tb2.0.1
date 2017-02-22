@@ -7,8 +7,10 @@ import com.zhiyicx.baseproject.base.BaseListBean;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.ToOne;
+import org.greenrobot.greendao.annotation.Unique;
 
 import java.util.List;
 
@@ -20,14 +22,17 @@ import java.util.List;
  */
 @Entity
 public class DynamicBean extends BaseListBean {
-    @Id
+    @Id(autoincrement = true)
+    private Long id;
+    @Unique
     private Long feed_id;// 动态的唯一id
     private long user_id;// 发送动态的人id
     @ToOne(joinProperty = "feed_id")// DynamicBean的feed_id作为外键
     private DynamicDetailBean feed;
     @ToOne(joinProperty = "feed_id")// DynamicBean的feed_id作为外键
     private DynamicToolBean tool;
-    @ToMany(referencedJoinProperty = "feed_id")// DynamicBean与DynamicCommentBean的feed_id关联
+    // DynamicBean的feed_id与DynamicCommentBean的feed_id关联
+    @ToMany(joinProperties = {@JoinProperty(name = "feed_id", referencedName = "feed_id")})
     private List<DynamicCommentBean> comments;
 
     public Long getFeed_id() {

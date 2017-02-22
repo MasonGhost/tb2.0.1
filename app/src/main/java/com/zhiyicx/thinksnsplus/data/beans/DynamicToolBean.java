@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Unique;
 
 /**
  * @author LiuChao
@@ -14,7 +15,9 @@ import org.greenrobot.greendao.annotation.Id;
  */
 @Entity
 public class DynamicToolBean implements Parcelable {
-    @Id
+    @Id(autoincrement = true)
+    private Long id;
+    @Unique
     private long feed_id;// 属于哪条动态
     private int feed_digg_count;// 点赞数
     private int feed_view_count;// 浏览量
