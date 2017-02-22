@@ -18,7 +18,6 @@ import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SendDynamicPresenterRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository_Factory;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
 

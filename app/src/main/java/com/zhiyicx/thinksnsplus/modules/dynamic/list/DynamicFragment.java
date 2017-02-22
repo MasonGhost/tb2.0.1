@@ -6,17 +6,19 @@ import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.ToastUtils;
-import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListRecycleItem;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * @Describe 消息评论
@@ -26,12 +28,10 @@ import java.util.List;
  */
 public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicContract.View {
 
+    @Inject
+    DynamicPresenter mDynamicPresenter;  // 仅用于构造
 
-    private ImageLoader mImageLoader;
     private List<DynamicBean> mDynamicBeens = new ArrayList<>();
-
-    public DynamicFragment() {
-    }
 
     public static DynamicFragment newInstance() {
         DynamicFragment fragment = new DynamicFragment();
@@ -60,7 +60,13 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     protected void initData() {
-        mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
+        DaggerDynamicComponent // 在 super.initData();之前，因为initdata 会使用到 presenter
+                .builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .dynamicPresenterModule(new DynamicPresenterModule(this))
+                .build().inject(this);
+
+        super.initData();
     }
 
     /**

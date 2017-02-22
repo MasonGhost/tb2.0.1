@@ -22,7 +22,7 @@ public class DynamicPresenterModule {
     }
 
     @Provides
-    DynamicContract.View provideMessageContractView() {
+    DynamicContract.View provideDynamicContractView() {
         return mView;
     }
 
