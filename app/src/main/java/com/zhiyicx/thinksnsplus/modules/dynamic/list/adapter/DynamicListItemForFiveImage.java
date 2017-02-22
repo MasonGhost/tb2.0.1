@@ -24,7 +24,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 
 public class DynamicListItemForFiveImage extends DynamicListBaseItem {
-
+    private static final int IMAGE_COUNTS = 5;// 动态列表图片数量
 
     public DynamicListItemForFiveImage(Context context) {
         super(context);
@@ -38,7 +38,7 @@ public class DynamicListItemForFiveImage extends DynamicListBaseItem {
 
     @Override
     public boolean isForViewType(DynamicBean item, int position) {
-        return true;
+        return item.getFeed().getStorage().size() == IMAGE_COUNTS;
     }
 
     @Override
@@ -53,9 +53,10 @@ public class DynamicListItemForFiveImage extends DynamicListBaseItem {
 
     /**
      * 设置 imageview 点击事件，以及显示
-     * @param view  the target
+     *
+     * @param view        the target
      * @param dynamicBean item data
-     * @param positon item position
+     * @param positon     item position
      */
     private void initImageView(ImageView view, final DynamicBean dynamicBean, final int positon) {
         RxView.clicks(view)
@@ -69,7 +70,7 @@ public class DynamicListItemForFiveImage extends DynamicListBaseItem {
                     }
                 });
         mImageLoader.loadImage(mContext, GlideImageConfig.builder()
-                .url("http://tva2.sinaimg.cn/crop.0.0.1002.1002.50/d710166ajw8fbw38t1do7j20ru0ru0v4.jpg")
+                .url(dynamicBean.getFeed().getStorage().get(positon)+"") // TODO: 2017/2/22 需要添加图片前最地址
                 .transformation(new GlideCircleTransform(mContext))
                 .imagerView(view)
                 .build());

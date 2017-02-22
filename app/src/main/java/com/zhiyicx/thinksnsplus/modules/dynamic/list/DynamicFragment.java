@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForFiveImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListRecycleItem;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -54,6 +55,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     protected MultiItemTypeAdapter<DynamicBean> getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mDynamicBeens);
         adapter.addItemViewDelegate(new DynamicListRecycleItem(getContext()));
+        adapter.addItemViewDelegate(new DynamicListItemForFiveImage(getContext()));
         return adapter;
     }
 
