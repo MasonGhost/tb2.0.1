@@ -16,20 +16,17 @@ import org.greenrobot.greendao.annotation.Generated;
  */
 @Entity
 public class DynamicToolBean implements Parcelable {
-    @Id(autoincrement = true)
-    private Long id;
-    @Unique
-    private String feed_mark;// 属于哪条动态
+    @Id
+    private Long feed_mark;// 属于哪条动态
     private int feed_digg_count;// 点赞数
     private int feed_view_count;// 浏览量
     private int feed_comment_count;// 评论数
 
-
-    public String getFeed_mark() {
+    public Long getFeed_mark() {
         return feed_mark;
     }
 
-    public void setFeed_mark(String feed_mark) {
+    public void setFeed_mark(Long feed_mark) {
         this.feed_mark = feed_mark;
     }
 
@@ -57,14 +54,6 @@ public class DynamicToolBean implements Parcelable {
         this.feed_comment_count = feed_comment_count;
     }
 
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -72,33 +61,29 @@ public class DynamicToolBean implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.id);
-        dest.writeString(this.feed_mark);
+        dest.writeValue(this.feed_mark);
         dest.writeInt(this.feed_digg_count);
         dest.writeInt(this.feed_view_count);
         dest.writeInt(this.feed_comment_count);
     }
 
+    public DynamicToolBean() {
+    }
+
     protected DynamicToolBean(Parcel in) {
-        this.id = (Long) in.readValue(Long.class.getClassLoader());
-        this.feed_mark = in.readString();
+        this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
         this.feed_digg_count = in.readInt();
         this.feed_view_count = in.readInt();
         this.feed_comment_count = in.readInt();
     }
 
-    @Generated(hash = 1638296577)
-    public DynamicToolBean(Long id, String feed_mark, int feed_digg_count,
-            int feed_view_count, int feed_comment_count) {
-        this.id = id;
+    @Generated(hash = 483754181)
+    public DynamicToolBean(Long feed_mark, int feed_digg_count, int feed_view_count,
+            int feed_comment_count) {
         this.feed_mark = feed_mark;
         this.feed_digg_count = feed_digg_count;
         this.feed_view_count = feed_view_count;
         this.feed_comment_count = feed_comment_count;
-    }
-
-    @Generated(hash = 1118422400)
-    public DynamicToolBean() {
     }
 
     public static final Creator<DynamicToolBean> CREATOR = new Creator<DynamicToolBean>() {
