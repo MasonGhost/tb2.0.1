@@ -1,15 +1,12 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 
 import android.content.Context;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.common.utils.TimeUtils;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -28,6 +25,12 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
 
     protected ImageLoader mImageLoader;
     protected Context mContext;
+    protected OnImageClickListener mOnImageClickListener;
+    protected DynamicListMenuView.OnItemClickListener mOnMenuClick;
+
+    public void setImageLoader(ImageLoader imageLoader) {
+        mImageLoader = imageLoader;
+    }
 
     public DynamicListBaseItem(Context context) {
         mContext = context;
@@ -56,14 +59,16 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(System.currentTimeMillis() / 1000));
         holder.setText(R.id.tv_title, "这个是结构说明投币给大家发给大家");
         holder.setText(R.id.tv_content, "这个是价格肯定就是公开经典福克斯价格开飞机事故雷锋精神的老公就是分开了几个发链接啊过来看对方就是看了感觉法兰克");
-        DynamicListMenuView dynamicListMenuView=holder.getView(R.id.dlmv_menu);
-        dynamicListMenuView.setItemOnClick(new DynamicListMenuView.OnItemClickListener() {
-            @Override
-            public void onItemClick(ViewGroup parent, View v, int postion) {
-                ToastUtils.showToast("image click :"+postion);
-            }
-        });
+        DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
+        if (mOnMenuClick != null) {
+            dynamicListMenuView.setItemOnClick(mOnMenuClick);
+        }
+    }
 
+
+    public interface OnImageClickListener {
+
+        void onImageClick(DynamicBean dynamicBean,int position);
     }
 
 }
