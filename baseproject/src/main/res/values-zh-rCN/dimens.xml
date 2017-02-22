@@ -51,6 +51,7 @@
     <!--#########################################      动态相关       ################################-->
 
     <dimen name="dynamic_menu_text_with">50dp</dimen>
+    <dimen name="dynamic_list_image_marginright">48dp</dimen>
 
 
 </resources>

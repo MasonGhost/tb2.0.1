@@ -123,14 +123,15 @@ public class MyAudioPlayer implements OnBufferingUpdateListener,
     }
 
     private void mediaPlayerPrepare() {
-        mMediaPlayer.reset();
-//        if (mMediaPlayer == null) {
-//            mMediaPlayer = new MediaPlayer();
-//            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-//            mMediaPlayer.setOnBufferingUpdateListener(this);
-//            mMediaPlayer.setOnPreparedListener(this);
-//            mMediaPlayer.setOnCompletionListener(this);
-//        }
+        if (mMediaPlayer == null) {
+            mMediaPlayer = new MediaPlayer();
+            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mMediaPlayer.setOnBufferingUpdateListener(this);
+            mMediaPlayer.setOnPreparedListener(this);
+            mMediaPlayer.setOnCompletionListener(this);
+        }else{
+            mMediaPlayer.reset();
+        }
     }
 
     private void PlayAudio(boolean isLargeRes) {

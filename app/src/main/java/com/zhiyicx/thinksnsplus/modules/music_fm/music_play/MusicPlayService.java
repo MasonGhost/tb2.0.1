@@ -1,97 +1,217 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_play;
 
-import android.app.Service;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.media.MediaPlayer;
-import android.os.Binder;
-import android.os.IBinder;
-import android.widget.SeekBar;
-import android.widget.TextView;
+import android.media.MediaRouter;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.RemoteException;
+import android.support.annotation.NonNull;
+import android.support.v4.media.MediaBrowserCompat;
+import android.support.v4.media.MediaBrowserServiceCompat;
+import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.MediaButtonReceiver;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 
-import com.zhiyicx.common.base.BaseApplication;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaNotificationManager;
+import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProvider;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.LocalPlayback;
+import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager;
+import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.QueueManager;
 
-public class MusicPlayService extends Service {
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
-    private String url = "http://hd.xiaotimi.com/2016/myxc/ok1/GKL.mp4?#.mp3";
-    private OnPrepareMusiListener mPrepareMusiListener;
-    private MyAudioPlayer mAudioPlayer;
-    public MUsicBinder mBinder = new MUsicBinder();
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper.MEDIA_ID_EMPTY_ROOT;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper.MEDIA_ID_ROOT;
+
+/**
+ * @Author Jliuer
+ * @Date 2017/2/21/19:00
+ * @Email Jliuer@aliyun.com
+ * @Description 音乐的后台Service
+ */
+public class MusicPlayService extends MediaBrowserServiceCompat implements
+        PlaybackManager.PlaybackServiceCallback {
+
+    public static final String EXTRA_CONNECTED_CAST = "com.zhiyicx.thinksnsplus.CAST_NAME";
+    public static final String ACTION_CMD = "com.zhiyicx.thinksnsplus.ACTION_CMD";
+    public static final String CMD_NAME = "CMD_NAME";
+    public static final String CMD_PAUSE = "CMD_PAUSE";
+    public static final String CMD_STOP_CASTING = "CMD_STOP_CASTING";
+    private static final int STOP_DELAY = 30000;
+
+    private MusicProvider mMusicProvider;
+    private PlaybackManager mPlaybackManager;
+
+    private MediaSessionCompat mSession;
+    private MediaNotificationManager mMediaNotificationManager;
+    private Bundle mSessionExtras;
+    private final DelayedStopHandler mDelayedStopHandler = new DelayedStopHandler(this);
 
     @Override
-    public boolean onUnbind(Intent intent) {
-        return super.onUnbind(intent);
+    public void onCreate() {
+        super.onCreate();
+
+        mMusicProvider = new MusicProvider();
+        mMusicProvider.retrieveMediaAsync(null /* Callback */);
+
+        QueueManager queueManager = new QueueManager(mMusicProvider, getResources(),
+                new QueueManager.MetadataUpdateListener() {
+                    @Override
+                    public void onMetadataChanged(MediaMetadataCompat metadata) {
+                        mSession.setMetadata(metadata);
+                    }
+
+                    @Override
+                    public void onMetadataRetrieveError() {
+                        mPlaybackManager.updatePlaybackState(
+                                "error_no_metadata");
+                    }
+
+                    @Override
+                    public void onCurrentQueueIndexUpdated(int queueIndex) {
+                        mPlaybackManager.handlePlayRequest();
+                    }
+
+                    @Override
+                    public void onQueueUpdated(String title,
+                                               List<MediaSessionCompat.QueueItem> newQueue) {
+                        mSession.setQueue(newQueue);
+                        mSession.setQueueTitle(title);
+                    }
+                });
+
+        LocalPlayback playback = new LocalPlayback(this, mMusicProvider);
+        mPlaybackManager = new PlaybackManager(this, getResources(), mMusicProvider, queueManager,
+                playback);
+
+        mSession = new MediaSessionCompat(this, "MusicService");
+        setSessionToken(mSession.getSessionToken());
+        mSession.setCallback(mPlaybackManager.getMediaSessionCallback());
+        mSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
+                MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
+
+        Context context = getApplicationContext();
+        Intent intent = new Intent(context, MusicDetailActivity.class);
+        PendingIntent pi = PendingIntent.getActivity(context, 99 /*request code*/,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mSession.setSessionActivity(pi);
+
+        mSessionExtras = new Bundle();
+        mSession.setExtras(mSessionExtras);
+
+        mPlaybackManager.updatePlaybackState(null);
+
+        try {
+            mMediaNotificationManager = new MediaNotificationManager(this);
+        } catch (RemoteException e) {
+            throw new IllegalStateException("Could not create a MediaNotificationManager", e);
+        }
     }
 
     @Override
-    public IBinder onBind(Intent intent) {
-        return mBinder;
-    }
-
-    public void playAudiofromSDCard(String path) {
-        mAudioPlayer.PrepareAudiofromSDCard(path);
-    }
-
-    public void PrepareAudiofromInternet(String url, boolean isAsync) {
-        mAudioPlayer.PrepareAudiofromInternet(url, isAsync);
-    }
-
-    public void playOrPause() {
-        mAudioPlayer.startOrpause();
-    }
-
-    public boolean isPlaying() {
-        return mAudioPlayer.isPlaying();
-    }
-
-    public void stop() {
-        mAudioPlayer.stop();
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public void setPrepareMusiListener(OnPrepareMusiListener prepareMusiListener) {
-        mPrepareMusiListener = prepareMusiListener;
-    }
-
-    public class MUsicBinder extends Binder {
-        MusicPlayService getService(SeekBar seekBar, TextView curTime, TextView totalTime) {
-            if (mAudioPlayer==null){
-                mAudioPlayer = new MyAudioPlayer(seekBar, curTime, totalTime, BaseApplication
-                        .getContext());
-                mAudioPlayer.setOnPlayerStatusChangeLitener(new AudioPrepare());
-            }
-            return MusicPlayService.this;
-        }
-    }
-
-    public interface OnPrepareMusiListener {
-        void OnPrepareed();
-        void OnFailure();
-        void OnPlayeronComplet();
-    }
-
-    class AudioPrepare implements MyAudioPlayer.OnAudioPlayerStatusChangeLitener {
-        @Override
-        public void onPlayeronCompletion() {
-            if (mPrepareMusiListener != null) {
-                mPrepareMusiListener.OnPlayeronComplet();
+    public int onStartCommand(Intent startIntent, int flags, int startId) {
+        if (startIntent != null) {
+            String action = startIntent.getAction();
+            String command = startIntent.getStringExtra(CMD_NAME);
+            if (ACTION_CMD.equals(action)) {
+                if (CMD_PAUSE.equals(command)) {
+                    mPlaybackManager.handlePauseRequest();
+                } else if (CMD_STOP_CASTING.equals(command)) {
+                }
+            } else {
+                MediaButtonReceiver.handleIntent(mSession, startIntent);
             }
         }
+        mDelayedStopHandler.removeCallbacksAndMessages(null);
+        mDelayedStopHandler.sendEmptyMessageDelayed(0, STOP_DELAY);
+        return START_STICKY;
+    }
 
-        @Override
-        public void onPlayerPrepared() {
-            if (mPrepareMusiListener != null) {
-                mPrepareMusiListener.OnPrepareed();
-            }
-        }
+    @Override
+    public void onDestroy() {
+        mPlaybackManager.handleStopRequest(null);
+        mMediaNotificationManager.stopNotification();
+        mDelayedStopHandler.removeCallbacksAndMessages(null);
+        mSession.release();
+    }
 
-        @Override
-        public void onFailure() {
-            mPrepareMusiListener.OnFailure();
+    @Override
+    public BrowserRoot onGetRoot(@NonNull String clientPackageName, int clientUid,
+                                 Bundle rootHints) {
+
+        return new BrowserRoot(MEDIA_ID_ROOT, null);
+    }
+
+    @Override
+    public void onLoadChildren(@NonNull final String parentMediaId,
+                               @NonNull final Result<List<MediaBrowserCompat.MediaItem>> result) {
+        if (MEDIA_ID_EMPTY_ROOT.equals(parentMediaId)) {
+            result.sendResult(new ArrayList<MediaBrowserCompat.MediaItem>());
+        } else if (mMusicProvider.isInitialized()) {
+            result.sendResult(mMusicProvider.getChildren(parentMediaId, getResources()));
+        } else {
+            result.detach();
+            mMusicProvider.retrieveMediaAsync(new MusicProvider.Callback() {
+                @Override
+                public void onMusicCatalogReady(boolean success) {
+                    result.sendResult(mMusicProvider.getChildren(parentMediaId, getResources()));
+                }
+            });
         }
     }
 
+    @Override
+    public void onPlaybackStart() {
+        mSession.setActive(true);
+
+        mDelayedStopHandler.removeCallbacksAndMessages(null);
+
+        startService(new Intent(getApplicationContext(), MusicPlayService.class));
+    }
+
+    @Override
+    public void onPlaybackStop() {
+        mSession.setActive(false);
+        mDelayedStopHandler.removeCallbacksAndMessages(null);
+        mDelayedStopHandler.sendEmptyMessageDelayed(0, STOP_DELAY);
+        stopForeground(true);
+    }
+
+    @Override
+    public void onNotificationRequired() {
+        mMediaNotificationManager.startNotification();
+    }
+
+    @Override
+    public void onPlaybackStateUpdated(PlaybackStateCompat newState) {
+        mSession.setPlaybackState(newState);
+    }
+
+    private static class DelayedStopHandler extends Handler {
+        private final WeakReference<MusicPlayService> mWeakReference;
+
+        private DelayedStopHandler(MusicPlayService service) {
+            mWeakReference = new WeakReference<>(service);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            MusicPlayService service = mWeakReference.get();
+            if (service != null && service.mPlaybackManager.getPlayback() != null) {
+                if (service.mPlaybackManager.getPlayback().isPlaying()) {
+                    return;
+                }
+                service.stopSelf();
+            }
+        }
+    }
 }
 

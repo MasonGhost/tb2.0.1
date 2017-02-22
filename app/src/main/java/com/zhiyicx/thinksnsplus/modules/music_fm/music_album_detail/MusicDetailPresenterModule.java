@@ -1,9 +1,7 @@
-package com.zhiyicx.thinksnsplus.modules.music_fm.music_detail;
+package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail;
 
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicDetailRepository;
-
-import javax.inject.Inject;
 
 import dagger.Module;
 import dagger.Provides;

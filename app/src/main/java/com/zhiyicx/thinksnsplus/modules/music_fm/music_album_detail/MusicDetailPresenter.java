@@ -1,4 +1,6 @@
-package com.zhiyicx.thinksnsplus.modules.music_fm.music_detail;
+package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail;
+
+import android.support.v4.media.MediaBrowserCompat;
 
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicDetailRepository;
@@ -29,5 +31,10 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
     @Inject
     void setupListeners() {
         mRootView.setPresenter(this);
+    }
+
+    @Override
+    public void getMediaList() {
+        mRootView.setMediaList(null);
     }
 }

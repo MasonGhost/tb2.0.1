@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="com.zhiyicx.thinksnsplus">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -63,20 +64,28 @@
             android:name=".modules.gallery.GalleryActivity"
             android:theme="@style/FullScreenTheme">
         </activity>
-        <activity android:name=".modules.music_fm.MusicListActivity"/>
+        <activity android:name=".modules.music_fm.music_album.MusicListActivity"/>
         <activity android:name=".modules.follow_fans.FollowFansListActivity">
         </activity>
-        <activity android:name=".modules.music_fm.music_detail.MusicDetailActivity"/>
+        <activity android:name=".modules.music_fm.music_album_detail.MusicDetailActivity"/>
         <activity android:name=".modules.music_fm.music_play.MusicPlayActivity"/>
 
-        <service android:name=".modules.music_fm.music_play.MusicPlayService"/>
         <service
-            android:name=".service.backgroundtask.BackgroundTaskHandleService"
-            android:exported="false">
+            android:name=".modules.music_fm.music_play.MusicPlayService"
+            android:exported="true"
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService"/>
+            </intent-filter>
         </service>
 
-        <!-- #########################################      IM 相关       ################################ -->
+        <receiver android:name="android.support.v4.media.session.MediaButtonReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
 
+        <!-- #########################################      IM 相关       ################################ -->
         <service android:name="com.zhiyicx.imsdk.service.SocketService"/>
         <!-- 网络监听广播 -->
         <receiver

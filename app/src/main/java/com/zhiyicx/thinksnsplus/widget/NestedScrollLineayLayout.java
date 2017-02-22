@@ -25,6 +25,7 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
     private LayoutInflater inflater;
     private View headerView;
     private int mTopViewHeight;
+    private int mNotConsumeHeight;
     private OverScroller mScroller;
     private boolean addHeight;
     private OnHeadFlingListener mOnHeadFlingListener;
@@ -79,7 +80,7 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
     public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
         //处理子view传上来的事件
         //头部高度
-        mTopViewHeight = headerView.getHeight();
+        mTopViewHeight = headerView.getHeight() - mNotConsumeHeight;
         boolean hiddenTop = dy > 0 && getScrollY() < mTopViewHeight;
         boolean showTop = dy < 0 && getScrollY() >= 0 && !ViewCompat.canScrollVertically(target,
                 -1);
@@ -91,11 +92,12 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
                 this.setLayoutParams(params);
                 requestLayout();
             }
-            if (mOnHeadFlingListener != null && getScrollY() <= mTopViewHeight) {
-                mOnHeadFlingListener.onHeadFling(getScrollY());
-            }
             scrollBy(0, dy);
             consumed[1] = dy;
+        }
+
+        if (mOnHeadFlingListener != null && getScrollY() <= mTopViewHeight) {
+            mOnHeadFlingListener.onHeadFling(getScrollY());
         }
 
     }
@@ -149,6 +151,10 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
 
     public View getHeaderView() {
         return headerView;
+    }
+
+    public void setNotConsumeHeight(int notConsumeHeight) {
+        mNotConsumeHeight = notConsumeHeight;
     }
 
     public interface OnHeadFlingListener {

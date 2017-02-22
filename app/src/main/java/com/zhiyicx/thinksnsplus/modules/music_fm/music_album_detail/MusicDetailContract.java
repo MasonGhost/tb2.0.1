@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.music_fm.music_detail;
+package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail;
 
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
@@ -17,11 +17,11 @@ import rx.Observable;
  */
 public interface MusicDetailContract {
     interface View extends IBaseView<Presenter> {
-
+        void setMediaList(MusicListBean mediaItemList);
     }
 
     interface Presenter extends IBasePresenter {
-
+        void getMediaList();
     }
 
     interface Repository {

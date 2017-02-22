@@ -14,7 +14,6 @@ import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
-import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.EmptyWrapper;
 
@@ -41,7 +40,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     public static final int DEFAULT_PAGE_MAX_ID = 0;// 默认初始化列表 id
 
     private static final int DEFAULT_TIP_STICKY_TIME = 3000;
-    private static final float DEFAULT_LIST_ITEM_SPACING = 1f;
+    private static final float DEFAULT_LIST_ITEM_SPACING = 0.5f;
 
     protected MultiItemTypeAdapter<T> mAdapter;
     private EmptyWrapper mEmptyWrapper;
@@ -195,7 +194,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      *
      * @return
      */
-    protected abstract CommonAdapter<T> getAdapter();
+    protected abstract MultiItemTypeAdapter<T> getAdapter();
 
     /**
      * 提示信息被点击了

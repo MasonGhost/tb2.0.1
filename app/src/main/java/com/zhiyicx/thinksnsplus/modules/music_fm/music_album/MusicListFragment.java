@@ -1,7 +1,8 @@
-package com.zhiyicx.thinksnsplus.modules.music_fm;
+package com.zhiyicx.thinksnsplus.modules.music_fm.music_album;
 
 
 import android.content.Intent;
+import android.support.v4.media.MediaBrowserCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -12,12 +13,10 @@ import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MusicListBean;
-import com.zhiyicx.thinksnsplus.modules.music_fm.music_detail.MusicDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +29,10 @@ import java.util.List;
  */
 public class MusicListFragment extends TSListFragment<MusicContract.Presenter, MusicListBean>
         implements
-        MusicContract.View {
+        MusicContract.View{
+
     private ImageLoader mImageLoader;
+
     private List<MusicListBean> mMusicListBeen = new ArrayList<>();
 
     @Override
@@ -79,6 +80,11 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     @Override
     public void setPresenter(MusicContract.Presenter presenter) {
         mPresenter = presenter;
+    }
+
+    @Override
+    public void setMediaBrowserCompat(MediaBrowserCompat mediaBrowserCompat) {
+
     }
 
     @Override
