@@ -260,15 +260,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
      * 封装动态上传的数据
      */
     private DynamicBean packageDynamicData() {
-
-        /*HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("feed_content", mEtDynamicContent.getInputContent());
-        hashMap.put("feed_title", mEtDynamicTitle.getInputContent());
-        // hashMap.put("latitude",); // 唯独
-        // hashMap.put("longtitude",);// 精度
-        // hashMap.put("geohash", ); // GEOhash值
-        hashMap.put("photo_list", selectedPhotos);// 将图片路径传递过去，进行上传文件的处理
-        hashMap.put("feed_from", ApiConfig.ANDROID_PLATFORM);*/
         long userId = AppApplication.getmCurrentLoginAuth().getUser_id();
         long feedMark = userId + System.currentTimeMillis();
         DynamicDetailBean dynamicDetailBean = new DynamicDetailBean();

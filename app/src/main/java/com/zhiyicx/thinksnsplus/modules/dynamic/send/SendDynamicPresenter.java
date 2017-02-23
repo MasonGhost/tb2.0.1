@@ -39,5 +39,6 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
         params.put("params", dynamicBean);
         backgroundRequestTaskBean.setParams(params);
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+        mRootView.sendDynamicComplete();// 发送动态放到后台任务处理，关闭当前的动态发送页面
     }
 }
