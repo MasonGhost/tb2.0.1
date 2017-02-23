@@ -8,16 +8,23 @@ import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForEightImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForFiveImage;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForFourImage;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForNineImage;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForOneImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForSevenImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForSixImage;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListRecycleItem;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForThreeImage;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForTwoImage;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 
 /**
  * @Describe 消息评论
@@ -57,23 +64,24 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mDynamicBeens);
-        DynamicListRecycleItem dynamicListBaseItem = new DynamicListRecycleItem(getContext());
+        setAdapter(adapter, new DynamicListBaseItem(getContext()));
+        setAdapter(adapter, new DynamicListItemForOneImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForTwoImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForThreeImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForFourImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForFiveImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForSixImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForSevenImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForEightImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForNineImage(getContext()));
+        return adapter;
+    }
+
+    private void setAdapter(MultiItemTypeAdapter adapter, DynamicListBaseItem dynamicListBaseItem) {
+
         dynamicListBaseItem.setOnImageClickListener(this);
         dynamicListBaseItem.setOnUserInfoClickListener(this);
         adapter.addItemViewDelegate(dynamicListBaseItem);
-        DynamicListItemForFiveImage dynamicListItemForFiveImage = new DynamicListItemForFiveImage(getContext());
-        dynamicListItemForFiveImage.setOnImageClickListener(this);
-        dynamicListItemForFiveImage.setOnUserInfoClickListener(this);
-        adapter.addItemViewDelegate(dynamicListItemForFiveImage);
-        DynamicListItemForSixImage dynamicListItemForSixImage = new DynamicListItemForSixImage(getContext());
-        dynamicListItemForSixImage.setOnImageClickListener(this);
-        dynamicListItemForSixImage.setOnUserInfoClickListener(this);
-        adapter.addItemViewDelegate(dynamicListItemForSixImage);
-        DynamicListItemForSevenImage dynamicListItemForSevenImage = new DynamicListItemForSevenImage(getContext());
-        dynamicListItemForSevenImage.setOnImageClickListener(this);
-        dynamicListItemForSevenImage.setOnUserInfoClickListener(this);
-        adapter.addItemViewDelegate(dynamicListItemForSevenImage);
-        return adapter;
     }
 
 
@@ -116,5 +124,10 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     public void onUserInfoClick(DynamicBean dynamicBean) {
         showMessage(dynamicBean.getUserInfoBean().getName());
+    }
+
+    @Override
+    public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
+        return false;
     }
 }

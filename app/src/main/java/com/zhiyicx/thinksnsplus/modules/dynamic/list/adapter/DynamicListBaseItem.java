@@ -63,12 +63,12 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
 
     @Override
     public int getItemViewLayoutId() {
-        return R.layout.item_dynamic_list;
+        return R.layout.item_dynamic_list_zero_image;
     }
 
     @Override
     public boolean isForViewType(DynamicBean item, int position) {
-        return false;
+        return item.getFeed().getStorage().size()==0;
     }
 
     @Override

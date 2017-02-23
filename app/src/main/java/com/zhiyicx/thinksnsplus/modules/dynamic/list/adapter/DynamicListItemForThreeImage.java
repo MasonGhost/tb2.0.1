@@ -22,16 +22,17 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 
-public class DynamicListItemForSevenImage extends DynamicListBaseItem {
-    private static final int IMAGE_COUNTS = 7;// 动态列表图片数量
+public class DynamicListItemForThreeImage extends DynamicListBaseItem {
+    private static final int IMAGE_COUNTS = 3;// 动态列表图片数量
 
-    public DynamicListItemForSevenImage(Context context) {
+    public DynamicListItemForThreeImage(Context context) {
         super(context);
+
     }
 
     @Override
     public int getItemViewLayoutId() {
-        return R.layout.item_dynamic_list_seven_image;
+        return R.layout.item_dynamic_list_three_image;
     }
 
     @Override
@@ -39,17 +40,12 @@ public class DynamicListItemForSevenImage extends DynamicListBaseItem {
         return item.getFeed().getStorage().size() == IMAGE_COUNTS;
     }
 
-
     @Override
     public void convert(ViewHolder holder, final DynamicBean dynamicBean, DynamicBean lastT, int position) {
         super.convert(holder, dynamicBean, lastT, position);
         initImageView((ImageView) holder.getView(R.id.siv_0), dynamicBean, 0);
         initImageView((ImageView) holder.getView(R.id.siv_1), dynamicBean, 1);
         initImageView((ImageView) holder.getView(R.id.siv_2), dynamicBean, 2);
-        initImageView((ImageView) holder.getView(R.id.siv_3), dynamicBean, 3);
-        initImageView((ImageView) holder.getView(R.id.siv_4), dynamicBean, 4);
-        initImageView((ImageView) holder.getView(R.id.siv_5), dynamicBean, 5);
-        initImageView((ImageView) holder.getView(R.id.siv_6), dynamicBean, 6);
     }
 
     /**
@@ -71,7 +67,7 @@ public class DynamicListItemForSevenImage extends DynamicListBaseItem {
                     }
                 });
         mImageLoader.loadImage(mContext, GlideImageConfig.builder()
-                .url("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1487853874862&di=c2ed09b893dca22d5cf8fe2c228e6ed1&imgtype=0&src=http%3A%2F%2Fg.hiphotos.baidu.com%2Fimage%2Fpic%2Fitem%2Fd1160924ab18972bca5ff505e4cd7b899f510a93.jpg") // TODO: 2017/2/22 需要添加图片前最地址dynamicBean.getFeed().getStorage().get(positon)+
+                .url("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1487853874863&di=3681a20179e26eb2458df1649e19554b&imgtype=0&src=http%3A%2F%2Fh.hiphotos.baidu.com%2Fimage%2Fpic%2Fitem%2F5366d0160924ab1860e1322f37fae6cd7b890b37.jpg") // TODO: 2017/2/22 需要添加图片前最地址dynamicBean.getFeed().getStorage().get(positon)+
                 .imagerView(view)
                 .build());
     }

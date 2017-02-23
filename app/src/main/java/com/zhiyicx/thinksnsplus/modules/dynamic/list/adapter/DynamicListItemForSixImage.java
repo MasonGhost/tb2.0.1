@@ -70,7 +70,7 @@ public class DynamicListItemForSixImage extends DynamicListBaseItem {
                     }
                 });
         mImageLoader.loadImage(mContext, GlideImageConfig.builder()
-                .url("http://wx4.sinaimg.cn/thumbnail/6c2fc79ely1fcss6ufxbaj20do0i8n4a.jpg") // TODO: 2017/2/22 需要添加图片前最地址dynamicBean.getFeed().getStorage().get(positon)+
+                .url("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1487853914515&di=1c31f412c758c1636f6037dc624988f5&imgtype=0&src=http%3A%2F%2Fh.hiphotos.baidu.com%2Fimage%2Fpic%2Fitem%2Fa5c27d1ed21b0ef4d46bac96d9c451da80cb3e72.jpg") // TODO: 2017/2/22 需要添加图片前最地址dynamicBean.getFeed().getStorage().get(positon)+
                 .imagerView(view)
                 .build());
     }

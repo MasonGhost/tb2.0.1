@@ -22,16 +22,16 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 
-public class DynamicListItemForSevenImage extends DynamicListBaseItem {
-    private static final int IMAGE_COUNTS = 7;// 动态列表图片数量
+public class DynamicListItemForNineImage extends DynamicListBaseItem {
+    private static final int IMAGE_COUNTS = 9;// 动态列表图片数量
 
-    public DynamicListItemForSevenImage(Context context) {
+    public DynamicListItemForNineImage(Context context) {
         super(context);
     }
 
     @Override
     public int getItemViewLayoutId() {
-        return R.layout.item_dynamic_list_seven_image;
+        return R.layout.item_dynamic_list_nine_image;
     }
 
     @Override
@@ -50,6 +50,8 @@ public class DynamicListItemForSevenImage extends DynamicListBaseItem {
         initImageView((ImageView) holder.getView(R.id.siv_4), dynamicBean, 4);
         initImageView((ImageView) holder.getView(R.id.siv_5), dynamicBean, 5);
         initImageView((ImageView) holder.getView(R.id.siv_6), dynamicBean, 6);
+        initImageView((ImageView) holder.getView(R.id.siv_7), dynamicBean, 7);
+        initImageView((ImageView) holder.getView(R.id.siv_8), dynamicBean, 8);
     }
 
     /**
@@ -71,7 +73,7 @@ public class DynamicListItemForSevenImage extends DynamicListBaseItem {
                     }
                 });
         mImageLoader.loadImage(mContext, GlideImageConfig.builder()
-                .url("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1487853874862&di=c2ed09b893dca22d5cf8fe2c228e6ed1&imgtype=0&src=http%3A%2F%2Fg.hiphotos.baidu.com%2Fimage%2Fpic%2Fitem%2Fd1160924ab18972bca5ff505e4cd7b899f510a93.jpg") // TODO: 2017/2/22 需要添加图片前最地址dynamicBean.getFeed().getStorage().get(positon)+
+                .url("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1487853874862&di=1783b319156309b01646d42f481e6239&imgtype=0&src=http%3A%2F%2Fa.hiphotos.baidu.com%2Fimage%2Fpic%2Fitem%2F6a63f6246b600c33375d7f6b1f4c510fd9f9a169.jpg") // TODO: 2017/2/22 需要添加图片前最地址dynamicBean.getFeed().getStorage().get(positon)+
                 .imagerView(view)
                 .build());
     }

@@ -5,9 +5,10 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.bumptech.glide.Glide;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.recycleviewdecoration.DynamicGridDecoration;
+import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @Describe 动态列表 1、2、3、4、9张图片使用的 item 适配器
+ * @Describe 动态列表 1、2、3、4、9张图片使用的 item 适配器   由于间距问题，暂不使用
  * document : {@see https://github.com/zhiyicx/thinksns-plus-document/blob/master/document/TS%2B%E8%A7%86%E8%A7%89%E8%A7%84%E8%8C%83%202.0/TS%2B%E8%A7%86%E8%A7%89%E8%A7%84%E8%8C%83%202.0.pdf}
  * @Author Jungle68
  * @Date 2017/1/6
@@ -25,6 +26,7 @@ import java.util.List;
  */
 
 public class DynamicListRecycleItem extends DynamicListBaseItem {
+    private static final int IMAGE_COUNTS_0 = 0;// 动态列表图片数量 ,一张图片
     private static final int IMAGE_COUNTS_1 = 1;// 动态列表图片数量 ,一张图片
     private static final int IMAGE_COUNTS_2 = 2;// 动态列表图片数量 ,两张图片
     private static final int IMAGE_COUNTS_3 = 3;// 动态列表图片数量 ,三张图片
@@ -39,14 +41,23 @@ public class DynamicListRecycleItem extends DynamicListBaseItem {
 
     }
 
-    private CommonAdapter getadaper(final Context context, List<String> mImagUrls) {
+    private CommonAdapter getadaper(final Context context, List<String> mImagUrls, int colums) {
+        int widthPixels = DeviceUtils.getScreenWidth(context);
+        int margin = context.getResources().getDimensionPixelSize(R.dimen.dynamic_list_image_marginright);
+        int diverwith = context.getResources().getDimensionPixelSize(R.dimen.spacing_small);
+        final int imageSize = (widthPixels - diverwith * (colums - 1) - margin * 2) / colums;
         return new CommonAdapter<String>(context, R.layout.item_dynamic_list_image, mImagUrls) {
             @Override
             protected void convert(ViewHolder holder, String String, int position) {
-                mImageLoader.loadImage(mContext, GlideImageConfig.builder()
-                        .url(String)
-                        .imagerView((ImageView) holder.getView(R.id.iv_item_image))
-                        .build());
+//                mImageLoader.loadImage(mContext, GlideImageConfig.builder()
+//                        .url(String)
+//                        .imagerView((ImageView) holder.getView(R.id.iv_item_image))
+//                        .build());
+                System.out.println("imageSize  = " + imageSize+ "       poisiton  -----"+position);
+                Glide.with(mContext)
+                        .load(String)
+                        .override(imageSize,imageSize)
+                        .into((ImageView) holder.getView(R.id.iv_item_image));
             }
         };
     }
@@ -58,7 +69,8 @@ public class DynamicListRecycleItem extends DynamicListBaseItem {
 
     @Override
     public boolean isForViewType(DynamicBean item, int position) {
-        return item.getFeed().getStorage().size() == IMAGE_COUNTS_1
+        return item.getFeed().getStorage().size() == IMAGE_COUNTS_0
+                || item.getFeed().getStorage().size() == IMAGE_COUNTS_1
                 || item.getFeed().getStorage().size() == IMAGE_COUNTS_2
                 || item.getFeed().getStorage().size() == IMAGE_COUNTS_3
                 || item.getFeed().getStorage().size() == IMAGE_COUNTS_4
@@ -71,7 +83,6 @@ public class DynamicListRecycleItem extends DynamicListBaseItem {
         RecyclerView recyclerView = holder.getView(R.id.nrv_image);
         int colums;
         switch (dynamicBean.getFeed().getStorage().size()) { // 根据设计规范，计算出当前数量图片应该分成几列
-
             case IMAGE_COUNTS_1:
                 colums = 1;
                 break;
@@ -92,16 +103,16 @@ public class DynamicListRecycleItem extends DynamicListBaseItem {
             default:
                 colums = 3;
         }
-        System.out.println("dynamicBean.getFeed().getStorage().size() = " + dynamicBean.getFeed().getStorage().size());
+
         GridLayoutManager gridLayoutManager = new GridLayoutManager(holder.getConvertView().getContext(), colums);
         recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.addItemDecoration(new DynamicGridDecoration(mContext))
+        recyclerView.addItemDecoration(new GridDecoration(mContext, R.drawable.shape_recyclerview_divider_white_small))
         ;//设置Item的间隔
         List<String> testdata = new ArrayList<>();
         for (int i = 0; i < dynamicBean.getFeed().getStorage().size(); i++) {
             testdata.add("http://wx4.sinaimg.cn/thumbnail/6c2fc79ely1fcss6ufxbaj20do0i8n4a.jpg");
         }
-        recyclerView.setAdapter(getadaper(recyclerView.getContext(), testdata));
+        recyclerView.setAdapter(getadaper(recyclerView.getContext(), testdata, colums));
     }
 
 
