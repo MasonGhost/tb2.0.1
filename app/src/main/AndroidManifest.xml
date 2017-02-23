@@ -69,6 +69,8 @@
         </activity>
         <activity android:name=".modules.music_fm.music_album_detail.MusicDetailActivity"/>
         <activity android:name=".modules.music_fm.music_play.MusicPlayActivity"/>
+        <activity android:name=".modules.dynamic.send.SendDynamicActivity">
+        </activity>
 
         <service
             android:name=".modules.music_fm.music_play.MusicPlayService"
@@ -79,9 +81,9 @@
             </intent-filter>
         </service>
 
-        <receiver android:name="android.support.v4.media.session.MediaButtonReceiver" >
+        <receiver android:name="android.support.v4.media.session.MediaButtonReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.MEDIA_BUTTON" />
+                <action android:name="android.intent.action.MEDIA_BUTTON"/>
             </intent-filter>
         </receiver>
 
@@ -97,8 +99,8 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".modules.dynamic.send.SendDynamicActivity">
-        </activity>
+        <!-- #########################################      后台任务相关service       ################################ -->
+        <service android:name=".service.backgroundtask.BackgroundTaskHandleService"></service>
     </application>
 
 </manifest>
