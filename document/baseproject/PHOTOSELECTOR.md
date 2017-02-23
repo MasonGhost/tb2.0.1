@@ -154,13 +154,16 @@
  ```
  - 调用图片选择方法
  ```
-   // 选择相册，单张
-                         mPhotoSelector.getPhotoListFromSelector(1);
+   // 从本地选择图片
+   // maxCount 可选择的最大图片数量
+   // selectedPhotos  已经被选择的图片
+                       public void getPhotoListFromSelector(int maxCount, ArrayList<String> selectedPhotos);
  ```
 
  ```
   // 选择相机，拍照
-                         mPhotoSelector.getPhotoFromCamera();
+  // selectedPhotos  已经被选择的图片
+                         mPhotoSelector.getPhotoFromCamera(ArrayList<String> selectedPhotos);
  ```
 
- 2017年1月24日16:29:49
+2017年2月23日18:17:26
