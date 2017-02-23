@@ -18,14 +18,16 @@
 #### 二. 页面关系：
 ```graphLR
     A(music_album音乐专辑列表) -->B(music_album_detail歌曲列表)
-    B --> C{music_paly播放界面}
+    B --> C(music_paly播放界面)
     C -->|One| D[音乐序列界面]
     C -->|Two| E[歌曲评论界面]
     C -->|Three| F[分享界面]
 ```
 
 ####三.功能实现
-1.音乐专辑列表
+待完善。。
+
+更新时间：2017年2月23日18:43:22
 
 
 

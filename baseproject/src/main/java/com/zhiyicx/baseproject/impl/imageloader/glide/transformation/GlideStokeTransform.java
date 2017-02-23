@@ -3,6 +3,7 @@ package com.zhiyicx.baseproject.impl.imageloader.glide.transformation;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
@@ -17,11 +18,15 @@ import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
  */
 public class GlideStokeTransform extends BitmapTransformation {
 
-    private int mStokeWidth;
+    private int mStokeWidth = 3;
 
     public GlideStokeTransform(Context context, int mStokeWidth) {
         super(context);
         this.mStokeWidth = mStokeWidth;
+    }
+
+    public GlideStokeTransform(Context context) {
+        super(context);
     }
 
     @Override
@@ -38,23 +43,27 @@ public class GlideStokeTransform extends BitmapTransformation {
         if (source == null) return null;
 
         int size = Math.min(source.getWidth(), source.getHeight());
+        int x = (source.getWidth() - size) / 2;
+        int y = (source.getHeight() - size) / 2;
 
-        Bitmap result = pool.get(size + 2 * mStokeWidth, size + 2 * mStokeWidth, Bitmap.Config
-                .ARGB_8888);
+        // TODO this could be acquired from the pool too
+        Bitmap squared = Bitmap.createBitmap(source, x, y, size, size);
+
+        Bitmap result = pool.get(size, size, Bitmap.Config.ARGB_8888);
         if (result == null) {
-            result = Bitmap.createBitmap(size + 2 * mStokeWidth, size + 2 * mStokeWidth, Bitmap
-                    .Config.ARGB_8888);
+            result = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
         }
-        Rect src = new Rect(0, 0, source.getWidth(), source.getHeight());
+
         Rect dst = new Rect(0, 0, size, size);
         Canvas canvas = new Canvas(result);
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setStrokeWidth(mStokeWidth);
-        paint.setColor(0xffffff);
+        paint.setColor(Color.WHITE);
         paint.setStyle(Paint.Style.STROKE);
-        canvas.drawRect(0, 0, result.getWidth(), result.getHeight(), paint);
-        canvas.drawBitmap(source, src, dst, null);
+        canvas.drawBitmap(squared, 0, 0, null);
+        canvas.drawRect(dst, paint);
+
         return result;
     }
 }
