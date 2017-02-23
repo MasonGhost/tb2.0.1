@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.photopicker;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -42,6 +43,7 @@ import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumListFragmen
 import static me.iwf.photopicker.PhotoPicker.DEFAULT_COLUMN_NUMBER;
 import static me.iwf.photopicker.PhotoPicker.DEFAULT_MAX_COUNT;
 import static me.iwf.photopicker.PhotoPicker.EXTRA_SHOW_GIF;
+import static me.iwf.photopicker.PhotoPicker.REQUEST_CODE;
 
 /**
  * @author LiuChao
@@ -51,6 +53,7 @@ import static me.iwf.photopicker.PhotoPicker.EXTRA_SHOW_GIF;
  */
 
 public class PhotoAlbumDetailsFragment extends TSFragment {
+    public static final int TO_VIEW_REQUEST_CODE = 1000;
     public final static String EXTRA_ORIGIN = "ORIGINAL_PHOTOS";
     private final static String EXTRA_COLUMN = "column";
     public final static String EXTRA_VIEW_INDEX = "view_index";
@@ -191,16 +194,9 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 bundle.putStringArrayList(EXTRA_VIEW_ALL_PHOTOS, (ArrayList<String>) allPhotos);
                 bundle.putStringArrayList(EXTRA_VIEW_SELECTED_PHOTOS, selectedPhotos);
                 bundle.putInt(EXTRA_MAX_COUNT, maxCount);
-                /*Intent intent = new Intent(getContext(), PhotoViewActivity.class);
-                intent.putExtras(bundle);
-                startActivity(intent);*/
-
                 Intent intent = new Intent(getContext(), PhotoViewActivity.class);
-                ActivityOptionsCompat options =
-                        ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
-                                v, "trans_photo");
                 intent.putExtras(bundle);
-                ActivityCompat.startActivity(getContext(),intent, options.toBundle());
+                startActivityForResult(intent, TO_VIEW_REQUEST_CODE);
             }
         });
     }
@@ -254,12 +250,13 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 bundle.putInt(EXTRA_MAX_COUNT, maxCount);
                 Intent intent1 = new Intent(getContext(), PhotoViewActivity.class);
                 intent1.putExtras(bundle);
-                startActivity(intent1);
+                startActivityForResult(intent1, TO_VIEW_REQUEST_CODE);
                 break;
             case R.id.bt_complete:
-                ArrayList<String> selectedPhotos = photoGridAdapter.getSelectedPhotoPaths();
+                Intent it = new Intent();
+                it.putStringArrayListExtra("photos", photoGridAdapter.getSelectedPhotoPaths());
+                getActivity().setResult(Activity.RESULT_OK, it);
                 getActivity().finish();
-                EventBus.getDefault().post(selectedPhotos, EventBusTagConfig.EVENT_COMPLETE_PHOTO_SELECT);
                 break;
             default:
         }
@@ -278,26 +275,12 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         mBtComplete.setText(getString(R.string.album_selected_count, selectedCount, maxCount));
     }
 
-    private class PhotoGridLine extends RecyclerView.ItemDecoration {
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            super.getItemOffsets(outRect, view, parent, state);
-            int position = parent.getChildLayoutPosition(view);
-            // 第一列item，左边距为0
-            if (position % 4 == 0) {
-                outRect.left = 0;
-            } else {
-                // 其余的列的左边距为5dp
-                outRect.left = 50;
-            }
-
-            // 所有的item的右边距为0
-            outRect.right = 0;
-            outRect.top = 50;
-            outRect.bottom = 0;
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == TO_VIEW_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK, data);
+            getActivity().finish();
         }
     }
-
 }

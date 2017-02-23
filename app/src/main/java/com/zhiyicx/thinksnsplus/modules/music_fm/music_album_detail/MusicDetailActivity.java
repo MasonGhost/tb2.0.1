@@ -21,7 +21,7 @@ public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicD
 
     private MusicDetailFragment mMusicDetailFragment;
 
-    MediaBrowserCompat mMediaBrowserCompat;
+    private MediaBrowserCompat mMediaBrowserCompat;
 
     private MusicPlayBackFragment mPlayBackFragment;
 

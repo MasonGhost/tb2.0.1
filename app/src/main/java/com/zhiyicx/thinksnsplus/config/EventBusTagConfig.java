@@ -14,15 +14,14 @@ public class EventBusTagConfig {
     public static final String EVENT_BACKGROUND_TASK_CANT_NOT_DEAL = "event_background_task_cant_not_deal";// 后台任务处理
     public static final String EVENT_USERINFO_UPDATE = "event_userinfo_update";// 后台刷新用户信息
     public static final String EVENT_SELECTED_PHOTO_UPDATE = "event_selected_photo_update";// 刷新相册图片列表
-    public static final String EVENT_COMPLETE_PHOTO_SELECT = "event_complete_photo_select";// 完成图片选择
 
     /*******************************************
      * IM 相关
      *********************************************/
     public static final String EVENT_IM_ONMESSAGERECEIVED = "onMessageReceived";
     public static final String EVENT_IM_ONMESSAGEACKRECEIVED = "onMessageACKReceived";
-    public static final String EVENT_IM_ONCONNECTED= "onConnected";
-    public static final String EVENT_IM_ONDISCONNECT= "onDisconnect";
-    public static final String EVENT_IM_ONERROR= "onError";
-    public static final String EVENT_IM_ONMESSAGETIMEOUT= "onMessageTimeout";
+    public static final String EVENT_IM_ONCONNECTED = "onConnected";
+    public static final String EVENT_IM_ONDISCONNECT = "onDisconnect";
+    public static final String EVENT_IM_ONERROR = "onError";
+    public static final String EVENT_IM_ONMESSAGETIMEOUT = "onMessageTimeout";
 }

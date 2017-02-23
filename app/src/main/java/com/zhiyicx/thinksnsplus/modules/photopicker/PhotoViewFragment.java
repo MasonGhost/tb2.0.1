@@ -28,6 +28,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 
 import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -145,6 +146,7 @@ public class PhotoViewFragment extends TSFragment {
                 mBtComplete.setEnabled(seletedPaths.size() > 0);
                 mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(), maxCount));
                 // 通知图片列表进行刷新
+                // 在 PhotoAlbumDetailsFragment 的 refreshDataAndUI() 方法中进行订阅
                 EventBus.getDefault().post(seletedPaths, EventBusTagConfig.EVENT_SELECTED_PHOTO_UPDATE);
             }
         });
@@ -255,11 +257,11 @@ public class PhotoViewFragment extends TSFragment {
 
     @OnClick(R.id.bt_complete)
     public void onClick() {
-        Activity activity = ActivityHandler.getInstance().getActivity(PhotoAlbumDetailsActivity.class);
-        if (activity != null) {
-            activity.finish();
-        }
+        // 完成图片选择，处理图片返回结果
+        Intent it = new Intent();
+        it.putStringArrayListExtra("photos", seletedPaths);
+        getActivity().setResult(Activity.RESULT_OK, it);
         getActivity().finish();
-        EventBus.getDefault().post(seletedPaths, EventBusTagConfig.EVENT_COMPLETE_PHOTO_SELECT);
+
     }
 }

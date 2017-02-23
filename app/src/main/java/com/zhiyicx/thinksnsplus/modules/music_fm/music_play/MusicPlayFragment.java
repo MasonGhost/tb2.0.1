@@ -1,8 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_play;
 
 import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -10,8 +8,21 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.IBinder;
+import android.os.Bundle;
+import android.os.RemoteException;
+import android.os.SystemClock;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.media.MediaBrowserCompat;
+import android.support.v4.media.MediaDescriptionCompat;
+import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.MediaControllerCompat;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -29,10 +40,13 @@ import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
+import com.zhiyicx.thinksnsplus.widget.ListPopupWindow;
 import com.zhiyicx.thinksnsplus.widget.pager_recyclerview.LoopPagerRecyclerView;
 import com.zhiyicx.thinksnsplus.widget.pager_recyclerview.PagerRecyclerView;
 import com.zhiyicx.thinksnsplus.widget.pager_recyclerview.RecyclerViewUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
@@ -114,13 +128,61 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     private int mPointDuration = 500;
     private int mPointDegree = 25;
 
+    private MediaBrowserCompat mMediaBrowserCompat;
+    private PlaybackStateCompat mLastPlaybackState;
+    private ListPopupWindow mListPopupWindow;
+
+
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_music_paly;
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mMediaBrowserCompat = new MediaBrowserCompat(getActivity(), new ComponentName(getActivity(),
+                MusicPlayService.class)
+                , mConnectionCallback, null);
+        if (savedInstanceState == null) {
+            updateFromParams(getArguments());
+        }
+
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
     protected void initView(View rootView) {
+        CommonAdapter adapter = new CommonAdapter<String>(getActivity(), R.layout.item_music_list,
+                mStringList) {
+            @Override
+            protected void convert(ViewHolder holder, String s, int position) {
+
+            }
+        };
+        adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                ToastUtils.showToast("position");
+            }
+
+            @Override
+            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int
+                    position) {
+                return false;
+            }
+        });
+        mListPopupWindow = ListPopupWindow.Builder()
+                .with(getActivity())
+                .alpha(0.8f)
+                .data(mStringList)
+                .parentView(mFragmentMusicPalyTotalTime)
+                .adapter(adapter)
+                .build();
         mStringList.add("");
         mStringList.add("");
         mStringList.add("");
@@ -212,6 +274,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             case R.id.fragment_music_paly_like:
                 break;
             case R.id.fragment_music_paly_comment:
+                mListPopupWindow.showPopAsDropDown(mFragmentMusicPalyBg, 0, 0, Gravity.BOTTOM);
                 break;
             case R.id.fragment_music_paly_lyrics:
                 break;
@@ -221,14 +284,35 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 mFragmentMusicPalyRv.smoothScrollToPosition(mFragmentMusicPalyRv
                         .getActualCurrentPosition() - 1);
                 doPointAnimation(0, mPointDuration);
+                getActivity().getSupportMediaController().getTransportControls().skipToPrevious();
                 break;
             case R.id.fragment_music_paly_palyer:
-//                mMusicPlayService.playOrPause();
+                PlaybackStateCompat state = getActivity().getSupportMediaController()
+                        .getPlaybackState();
+                if (state != null) {
+                    MediaControllerCompat.TransportControls controls =
+                            getActivity().getSupportMediaController().getTransportControls();
+                    switch (state.getState()) {
+                        case PlaybackStateCompat.STATE_PLAYING: // fall through
+                        case PlaybackStateCompat.STATE_BUFFERING:
+                            controls.pause();
+//                            stopSeekbarUpdate();
+                            break;
+                        case PlaybackStateCompat.STATE_PAUSED:
+                        case PlaybackStateCompat.STATE_STOPPED:
+                            controls.play();
+//                            scheduleSeekbarUpdate();
+                            break;
+                        default:
+                            break;
+                    }
+                }
                 break;
             case R.id.fragment_music_paly_nextview:// 下一首歌
                 mFragmentMusicPalyRv.smoothScrollToPosition(mFragmentMusicPalyRv
                         .getActualCurrentPosition() + 1);
                 doPointAnimation(0, mPointDuration);
+                getActivity().getSupportMediaController().getTransportControls().skipToNext();
                 break;
             case R.id.fragment_music_paly_list:
                 break;
@@ -325,7 +409,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     }
 
-    private void initListener(){
+    private void initListener() {
         mFragmentMusicPalyPhonographPoint.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -374,5 +458,142 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
         });
     }
+
+    private void connectToSession(MediaSessionCompat.Token token) throws RemoteException {
+        MediaControllerCompat mediaController = new MediaControllerCompat(
+                getActivity(), token);
+        if (mediaController.getMetadata() == null) {
+//            finish();
+            ToastUtils.showToast("Metadata_error");
+            return;
+        }
+        getActivity().setSupportMediaController(mediaController);
+        mediaController.registerCallback(mCallback);
+        PlaybackStateCompat state = mediaController.getPlaybackState();
+
+        updatePlaybackState(state);
+
+        MediaMetadataCompat metadata = mediaController.getMetadata();
+        if (metadata != null) {
+            updateMediaDescription(metadata.getDescription());
+            updateDuration(metadata);
+        }
+        updateProgress();
+        if (state != null && (state.getState() == PlaybackStateCompat.STATE_PLAYING ||
+                state.getState() == PlaybackStateCompat.STATE_BUFFERING)) {
+
+        }
+    }
+
+    private void updateFromParams(Bundle bundle) {
+        if (bundle != null) {
+            MediaDescriptionCompat description = bundle.getParcelable(MusicDetailActivity
+                    .EXTRA_CURRENT_MEDIA_DESCRIPTION);
+            if (description != null) {
+                updateMediaDescription(description);
+            }
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (mMediaBrowserCompat != null) {
+            mMediaBrowserCompat.connect();
+        }
+    }
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mMediaBrowserCompat != null) {
+            mMediaBrowserCompat.disconnect();
+        }
+        if (getActivity().getSupportMediaController() != null) {
+            getActivity().getSupportMediaController().unregisterCallback(mCallback);
+        }
+    }
+
+    private void updateMediaDescription(MediaDescriptionCompat description) {
+        if (description == null) {
+
+            return;
+        }
+
+    }
+
+    private void updateDuration(MediaMetadataCompat metadata) {
+        if (metadata == null) {
+            return;
+        }
+        int duration = (int) metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION);
+        mFragmentMusicPalyProgress.setMax(duration);
+        mFragmentMusicPalyTotalTime.setText(DateUtils.formatElapsedTime(duration / 1000));
+    }
+
+    private void updatePlaybackState(PlaybackStateCompat state) {
+        if (state == null) {
+            return;
+        }
+        mLastPlaybackState = state;
+        switch (state.getState()) {
+            case PlaybackStateCompat.STATE_PLAYING:
+
+                break;
+            case PlaybackStateCompat.STATE_PAUSED:
+
+                break;
+            case PlaybackStateCompat.STATE_NONE:
+            case PlaybackStateCompat.STATE_STOPPED:
+
+                break;
+            case PlaybackStateCompat.STATE_BUFFERING:
+
+                break;
+            default:
+        }
+
+    }
+
+    private void updateProgress() {
+        if (mLastPlaybackState == null) {
+            return;
+        }
+        long currentPosition = mLastPlaybackState.getPosition();
+        if (mLastPlaybackState.getState() != PlaybackStateCompat.STATE_PAUSED) {
+            long timeDelta = SystemClock.elapsedRealtime() -
+                    mLastPlaybackState.getLastPositionUpdateTime();
+            currentPosition += (int) timeDelta * mLastPlaybackState.getPlaybackSpeed();
+        }
+        mFragmentMusicPalyProgress.setProgress((int) currentPosition);
+    }
+
+    private final MediaControllerCompat.Callback mCallback = new MediaControllerCompat.Callback() {
+        @Override
+        public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
+            updatePlaybackState(state);
+        }
+
+        @Override
+        public void onMetadataChanged(MediaMetadataCompat metadata) {
+            if (metadata != null) {
+                updateMediaDescription(metadata.getDescription());
+                updateDuration(metadata);
+            }
+        }
+    };
+
+    private final MediaBrowserCompat.ConnectionCallback mConnectionCallback =
+            new MediaBrowserCompat.ConnectionCallback() {
+                @Override
+                public void onConnected() {
+                    try {
+                        connectToSession(mMediaBrowserCompat.getSessionToken());
+                    } catch (RemoteException e) {
+
+                    }
+                }
+            };
 
 }

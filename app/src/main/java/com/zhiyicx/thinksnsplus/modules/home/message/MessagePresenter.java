@@ -20,6 +20,7 @@ import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.Subscriber;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -88,6 +89,9 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
      */
     @Override
     public List<MessageItemBean> requestCacheData(int maxId, boolean isLoadMore) {
+        if (mAuthRepository.getAuthBean() == null) {
+            return new ArrayList<>();
+        }
         return mChatRepository.getConversionListData(mAuthRepository.getAuthBean().getUser_id());
     }
 

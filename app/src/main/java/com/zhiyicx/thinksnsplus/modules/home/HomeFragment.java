@@ -2,23 +2,36 @@ package com.zhiyicx.thinksnsplus.modules.home;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
+import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
+import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageFragment;
 import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment;
+import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsActivity;
+
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +39,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -34,7 +48,7 @@ import butterknife.OnClick;
  * @Date 2017/1/4
  * @Contact master.jungle68@gmail.com
  */
-public class HomeFragment extends TSFragment<HomeContract.Presenter> implements HomeContract.View {
+public class HomeFragment extends TSFragment<HomeContract.Presenter> implements HomeContract.View, PhotoSelectorImpl.IPhotoBackListener {
     public static final int PAGE_NUMS = 4; // 页数
 
     public static final int PAGE_HOME = 0; // 对应在 viewpager 中的位置
@@ -65,7 +79,16 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 
     @Inject
     HomePresenter mHomePresenter;  // 仅用于构造
+    @BindView(R.id.fl_add)
+    FrameLayout mFlAdd;
+    @BindView(R.id.ll_message)
+    LinearLayout mLlMessage;
+    @BindView(R.id.ll_mine)
+    LinearLayout mLlMine;
+    @BindView(R.id.ll_bottom_container)
+    LinearLayout mLlBottomContainer;
     private TSViewPagerAdapter mHomePager;
+    private PhotoSelectorImpl mPhotoSelector;
 
     public static HomeFragment newInstance() {
         HomeFragment fragment = new HomeFragment();
@@ -89,9 +112,12 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         return R.color.white;
     }
 
+
     @Override
     protected void initView(View rootView) {
         initViewPager();
+        longClickSendTextDynamic();
+        initPhotoPicker();
     }
 
     @Override
@@ -123,10 +149,9 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
             case R.id.ll_find:
                 mVpHome.setCurrentItem(PAGE_FIND, false);
                 break;
-            // 点击增加
+            // 添加动态
             case R.id.fl_add:
-                //// TODO: 2017/1/5  添加动态
-                startActivity(new Intent(getContext(), SendDynamicActivity.class));
+                clickSendPhotoTextDynamic();
                 break;
             // 点击消息
             case R.id.ll_message:
@@ -228,5 +253,59 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
             mVMessageTip.setVisibility(View.INVISIBLE);
         }
 
+    }
+
+    /**
+     * 长按动态发送按钮，进入纯文字的动态发布
+     */
+    private void longClickSendTextDynamic() {
+        mFlAdd.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent it = new Intent(getContext(), SendDynamicActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt(SendDynamicActivity.DYNAMIC_TYPE, SendDynamicActivity.TEXT_ONLY_DYNAMIC);
+                it.putExtras(bundle);
+                startActivity(it);
+                return true;
+            }
+        });
+    }
+
+    /**
+     * 点击动态发送按钮，进入文字图片的动态发布
+     */
+    private void clickSendPhotoTextDynamic() {
+        mPhotoSelector.getPhotoListFromSelector(9, null);
+    }
+
+    private void initPhotoPicker() {
+        mPhotoSelector = DaggerPhotoSelectorImplComponent
+                .builder()
+                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
+                        .NO_CRAFT))
+                .build().photoSelectorImpl();
+    }
+    
+    @Override
+    public void getPhotoSuccess(List<ImageBean> photoList) {
+        // 跳转到发送动态页面
+        Intent it = new Intent(getContext(), SendDynamicActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(SendDynamicActivity.DYNAMIC_PHOTOS, (ArrayList<? extends Parcelable>) photoList);
+        bundle.putInt(SendDynamicActivity.DYNAMIC_TYPE, SendDynamicActivity.PHOTO_TEXT_DYNAMIC);
+        it.putExtras(bundle);
+        startActivity(it);
+    }
+
+    @Override
+    public void getPhotoFailure(String errorMsg) {
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPhotoSelector.onActivityResult(requestCode, resultCode, data);
     }
 }

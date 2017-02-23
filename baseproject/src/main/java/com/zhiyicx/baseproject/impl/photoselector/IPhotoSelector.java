@@ -23,7 +23,7 @@ public interface IPhotoSelector<T> {
     /**
      * 通过拍照的方式获取图片
      */
-    void getPhotoFromCamera();
+    void getPhotoFromCamera(ArrayList<String> selectedPhotos);
 
     /**
      * 对图片进行裁剪

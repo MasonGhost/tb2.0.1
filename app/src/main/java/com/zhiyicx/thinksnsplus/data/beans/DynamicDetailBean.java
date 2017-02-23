@@ -3,22 +3,20 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.common.utils.ConvertUtils;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import org.greenrobot.greendao.annotation.Generated;
-
-import org.greenrobot.greendao.annotation.Generated;
+import retrofit2.http.HEAD;
 
 /**
  * @author LiuChao
@@ -32,12 +30,15 @@ public class DynamicDetailBean implements Parcelable {
     private Long feed_mark;// 属于哪条动态
     @Unique
     private Long feed_id;// 服务器返回的feed_id
-    private String title;// 动态标题
-    private String content;// 动态内容
+    @SerializedName(value = "feed_title", alternate = {"title"})
+    private String feed_title;// 动态标题
+    @SerializedName(value = "feed_content", alternate = {"content"})
+    private String feed_content;// 动态内容
     private long created_at;// 创建时间
     private int feed_from;// 来自哪个平台 //[1:pc 2:h5 3:ios 4:android 5:其他]
     @Convert(converter = IntegerParamsConverter.class, columnType = String.class)
-    private List<Integer> storage;// 图片的云端存储id
+    @SerializedName(value = "storage_task_ids", alternate = {"storage"})
+    private List<Integer> storage_task_ids;// 图片的云端存储id
     @Convert(converter = StringParamsConverter.class, columnType = String.class)
     private List<String> localPhotos;// 本地图片的路径
     private int state;// 动态发送状态 0 发送失败 1 正在发送 2 发送成功
@@ -59,19 +60,19 @@ public class DynamicDetailBean implements Parcelable {
     }
 
     public String getTitle() {
-        return title==null?"":title;
+        return feed_title==null?"":feed_title;
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.feed_title = title;
     }
 
     public String getContent() {
-        return content == null ? "" : content;
+        return feed_content == null ? "" : feed_content;
     }
 
     public void setContent(String content) {
-        this.content = content;
+        this.feed_content = content;
     }
 
     public long getCreated_at() {
@@ -91,11 +92,11 @@ public class DynamicDetailBean implements Parcelable {
     }
 
     public List<Integer> getStorage() {
-        return storage;
+        return storage_task_ids;
     }
 
     public void setStorage(List<Integer> storage) {
-        this.storage = storage;
+        this.storage_task_ids = storage;
     }
 
     public List<String> getLocalPhotos() {
@@ -169,40 +170,64 @@ public class DynamicDetailBean implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(this.feed_mark);
         dest.writeValue(this.feed_id);
-        dest.writeString(this.title);
-        dest.writeString(this.content);
+        dest.writeString(this.feed_title);
+        dest.writeString(this.feed_content);
         dest.writeLong(this.created_at);
         dest.writeInt(this.feed_from);
-        dest.writeList(this.storage);
+        dest.writeList(this.storage_task_ids);
         dest.writeStringList(this.localPhotos);
         dest.writeInt(this.state);
     }
 
 
+    public List<Integer> getStorage_task_ids() {
+        return this.storage_task_ids;
+    }
+
+    public void setStorage_task_ids(List<Integer> storage_task_ids) {
+        this.storage_task_ids = storage_task_ids;
+    }
+
+    public String getFeed_title() {
+        return this.feed_title;
+    }
+
+    public void setFeed_title(String feed_title) {
+        this.feed_title = feed_title;
+    }
+
+    public String getFeed_content() {
+        return this.feed_content;
+    }
+
+    public void setFeed_content(String feed_content) {
+        this.feed_content = feed_content;
+    }
+
     protected DynamicDetailBean(Parcel in) {
         this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
         this.feed_id = (Long) in.readValue(Long.class.getClassLoader());
-        this.title = in.readString();
-        this.content = in.readString();
+        this.feed_title = in.readString();
+        this.feed_content = in.readString();
         this.created_at = in.readLong();
         this.feed_from = in.readInt();
-        this.storage = new ArrayList<Integer>();
-        in.readList(this.storage, Integer.class.getClassLoader());
+        this.storage_task_ids = new ArrayList<Integer>();
+        in.readList(this.storage_task_ids, Integer.class.getClassLoader());
         this.localPhotos = in.createStringArrayList();
         this.state = in.readInt();
     }
 
-    @Generated(hash = 183984327)
-    public DynamicDetailBean(Long feed_mark, Long feed_id, String title, String content,
-            long created_at, int feed_from, List<Integer> storage, List<String> localPhotos,
-            int state) {
+    @Generated(hash = 1634442468)
+    public DynamicDetailBean(Long feed_mark, Long feed_id, String feed_title, String feed_content,
+                             long created_at, int feed_from, List<Integer> storage_task_ids, List<String> localPhotos,
+                             int state) {
         this.feed_mark = feed_mark;
         this.feed_id = feed_id;
-        this.title = title;
-        this.content = content;
+        this.feed_title = feed_title;
+        this.feed_content = feed_content;
         this.created_at = created_at;
         this.feed_from = feed_from;
-        this.storage = storage;
+        this.storage_task_ids = storage_task_ids;
         this.localPhotos = localPhotos;
         this.state = state;
     }
@@ -222,4 +247,19 @@ public class DynamicDetailBean implements Parcelable {
             return new DynamicDetailBean[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "DynamicDetailBean{" +
+                "feed_mark=" + feed_mark +
+                ", feed_id=" + feed_id +
+                ", feed_title='" + feed_title + '\'' +
+                ", feed_content='" + feed_content + '\'' +
+                ", created_at=" + created_at +
+                ", feed_from=" + feed_from +
+                ", storage_task_ids=" + storage_task_ids +
+                ", localPhotos=" + localPhotos +
+                ", state=" + state +
+                '}';
+    }
 }

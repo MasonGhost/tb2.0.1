@@ -74,7 +74,7 @@ public class PhotoPicker {
     public void start(@NonNull Context context,
                       @NonNull android.support.v4.app.Fragment fragment) {
       if (PermissionsUtils.checkReadStoragePermission(fragment.getActivity())) {
-        fragment.startActivityForResult(getIntent(context), REQUEST_CODE);
+        fragment.startActivityForResult(getIntent(context), 1000);
       }
     }
 

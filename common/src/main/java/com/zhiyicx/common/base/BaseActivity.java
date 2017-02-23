@@ -23,7 +23,8 @@ import solid.ren.skinlibrary.base.SkinBaseActivity;
  * @Contact 335891510@qq.com
  */
 
-public abstract class BaseActivity<P extends BasePresenter> extends SkinBaseActivity implements IBaseActivity {
+public abstract class BaseActivity<P extends BasePresenter> extends SkinBaseActivity implements
+        IBaseActivity {
     protected final String TAG = this.getClass().getSimpleName();
 
     protected BaseApplication mApplication;
@@ -36,6 +37,9 @@ public abstract class BaseActivity<P extends BasePresenter> extends SkinBaseActi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            restoreData(savedInstanceState);
+        }
         mApplication = (BaseApplication) getApplication();
         ActivityHandler.getInstance().addActivity(this);
         mLayoutInflater = LayoutInflater.from(this);
@@ -92,5 +96,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends SkinBaseActi
      */
     protected abstract void initData();
 
+    protected void restoreData(Bundle savedInstanceState) {
 
+    }
 }

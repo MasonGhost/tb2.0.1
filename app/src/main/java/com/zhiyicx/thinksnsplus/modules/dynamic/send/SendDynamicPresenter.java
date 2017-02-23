@@ -4,6 +4,7 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
@@ -30,11 +31,14 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
     }
 
     @Override
-    public void sendDynamic(HashMap<String, Object> params) {
+    public void sendDynamic(DynamicBean dynamicBean) {
         // 发送动态
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.SEND_DYNAMIC);
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("params", dynamicBean);
         backgroundRequestTaskBean.setParams(params);
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+        mRootView.sendDynamicComplete();// 发送动态放到后台任务处理，关闭当前的动态发送页面
     }
 }
