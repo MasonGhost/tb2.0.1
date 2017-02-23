@@ -59,7 +59,7 @@ public class FilterImageView extends ImageView {
         }
     };
     private void changeLight() {
-        int brightness=-80;
+        int brightness=-50;
         ColorMatrix matrix = new ColorMatrix();
         matrix.set(new float[] { 1, 0, 0, 0, brightness, 0, 1, 0, 0,
                 brightness, 0, 0, 1, 0, brightness, 0, 0, 0, 1, 0 });

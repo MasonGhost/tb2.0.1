@@ -11,8 +11,9 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForFiveImage;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListRecycleItem;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForSixImage;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -27,8 +28,8 @@ import javax.inject.Inject;
  * @Date 2017/1/17
  * @Contact master.jungle68@gmail.com
  */
-public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicContract.View {
-
+public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicContract.View, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener {
+    public static final long ITEM_SPACING = 5L; // 单位dp
     @Inject
     DynamicPresenter mDynamicPresenter;  // 仅用于构造
 
@@ -52,10 +53,25 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
+    protected float getItemDecorationSpacing() {
+        return ITEM_SPACING;
+    }
+
+    @Override
     protected MultiItemTypeAdapter<DynamicBean> getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mDynamicBeens);
-        adapter.addItemViewDelegate(new DynamicListRecycleItem(getContext()));
-        adapter.addItemViewDelegate(new DynamicListItemForFiveImage(getContext()));
+//        DynamicListRecycleItem dynamicListBaseItem = new DynamicListRecycleItem(getContext());
+//        dynamicListBaseItem.setOnImageClickListener(this);
+//        dynamicListBaseItem.setOnUserInfoClickListener(this);
+//        adapter.addItemViewDelegate(dynamicListBaseItem);
+        DynamicListItemForFiveImage dynamicListItemForFiveImage = new DynamicListItemForFiveImage(getContext());
+        dynamicListItemForFiveImage.setOnImageClickListener(this);
+        dynamicListItemForFiveImage.setOnUserInfoClickListener(this);
+        adapter.addItemViewDelegate(dynamicListItemForFiveImage);
+        DynamicListItemForSixImage dynamicListItemForSixImage = new DynamicListItemForSixImage(getContext());
+        dynamicListItemForSixImage.setOnImageClickListener(this);
+        dynamicListItemForSixImage.setOnUserInfoClickListener(this);
+        adapter.addItemViewDelegate(dynamicListItemForSixImage);
         return adapter;
     }
 
@@ -109,5 +125,15 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     public void showMessage(String message) {
         ToastUtils.showToast(message);
+    }
+
+    @Override
+    public void onImageClick(DynamicBean dynamicBean, int position) {
+        showMessage(position + "");
+    }
+
+    @Override
+    public void onUserInfoClick(DynamicBean dynamicBean) {
+        showMessage(dynamicBean.getUserInfoBean().getName());
     }
 }

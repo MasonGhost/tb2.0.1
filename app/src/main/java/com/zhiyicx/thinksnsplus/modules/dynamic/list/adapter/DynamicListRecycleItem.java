@@ -6,9 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
+import com.zhiyicx.common.utils.recycleviewdecoration.DynamicGridDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -18,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @Describe  动态列表 1、2、3、4、9张图片使用的 item 适配器
+ * @Describe 动态列表 1、2、3、4、9张图片使用的 item 适配器
  * document : {@see https://github.com/zhiyicx/thinksns-plus-document/blob/master/document/TS%2B%E8%A7%86%E8%A7%89%E8%A7%84%E8%8C%83%202.0/TS%2B%E8%A7%86%E8%A7%89%E8%A7%84%E8%8C%83%202.0.pdf}
  * @Author Jungle68
  * @Date 2017/1/6
@@ -32,13 +31,12 @@ public class DynamicListRecycleItem extends DynamicListBaseItem {
     private static final int IMAGE_COUNTS_4 = 4;// 动态列表图片数量 ,四张图片
     private static final int IMAGE_COUNTS_9 = 9;// 动态列表图片数量 ,九张图片
     private static final int IMAGE_ITEM_SPACING = 5;// 图片间距，单位 dp
-    private GridDecoration mGridDecoration;
     private int mImageItemSpacing;
 
     public DynamicListRecycleItem(Context context) {
         super(context);
         mImageItemSpacing = ConvertUtils.dp2px(context, IMAGE_ITEM_SPACING);
-        mGridDecoration = new GridDecoration(mImageItemSpacing, mImageItemSpacing);
+
     }
 
     private CommonAdapter getadaper(final Context context, List<String> mImagUrls) {
@@ -47,8 +45,6 @@ public class DynamicListRecycleItem extends DynamicListBaseItem {
             protected void convert(ViewHolder holder, String String, int position) {
                 mImageLoader.loadImage(mContext, GlideImageConfig.builder()
                         .url(String)
-                        .transformation(new GlideCircleTransform(mContext))
-                        .errorPic(R.drawable.shape_default_image_circle)
                         .imagerView((ImageView) holder.getView(R.id.iv_item_image))
                         .build());
             }
@@ -67,7 +63,8 @@ public class DynamicListRecycleItem extends DynamicListBaseItem {
 //                || item.getFeed().getStorage().size() == IMAGE_COUNTS_3
 //                || item.getFeed().getStorage().size() == IMAGE_COUNTS_4
 //                || item.getFeed().getStorage().size() == IMAGE_COUNTS_9;
-       return item.getFeed().getStorage().size() != 5;
+//        return item.getFeed().getStorage().size() != 5;
+        return false;
     }
 
     @Override
@@ -95,17 +92,17 @@ public class DynamicListRecycleItem extends DynamicListBaseItem {
                 colums = 3;
                 break;
             default:
-                colums = 1;
+                colums = 3;
         }
+        System.out.println("dynamicBean.getFeed().getStorage().size() = " + dynamicBean.getFeed().getStorage().size());
         GridLayoutManager gridLayoutManager = new GridLayoutManager(holder.getConvertView().getContext(), colums);
         recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.addItemDecoration(mGridDecoration);//设置Item的间隔
+        recyclerView.addItemDecoration(new DynamicGridDecoration(mContext))
+        ;//设置Item的间隔
         List<String> testdata = new ArrayList<>();
-        testdata.add("http://wx4.sinaimg.cn/thumbnail/6c2fc79ely1fcss6ufxbaj20do0i8n4a.jpg");
-        testdata.add("http://img.blog.csdn.net/20160330224550866");
-        testdata.add("http://tva2.sinaimg.cn/crop.0.0.1002.1002.50/d710166ajw8fbw38t1do7j20ru0ru0v4.jpg");
-        testdata.add("http://tva2.sinaimg.cn/crop.0.0.1002.1002.50/d710166ajw8fbw38t1do7j20ru0ru0v4.jpg");
-        testdata.add("http://tva2.sinaimg.cn/crop.0.0.1002.1002.50/d710166ajw8fbw38t1do7j20ru0ru0v4.jpg");
+        for (int i = 0; i < dynamicBean.getFeed().getStorage().size(); i++) {
+            testdata.add("http://wx4.sinaimg.cn/thumbnail/6c2fc79ely1fcss6ufxbaj20do0i8n4a.jpg");
+        }
         recyclerView.setAdapter(getadaper(recyclerView.getContext(), testdata));
     }
 

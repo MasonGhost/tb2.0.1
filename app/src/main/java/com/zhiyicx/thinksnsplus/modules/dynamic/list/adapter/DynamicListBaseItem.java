@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
@@ -16,6 +17,11 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import java.util.concurrent.TimeUnit;
+
+import rx.functions.Action1;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean.STATUS_DIGG_FEED_CHECKED;
 
 /**
@@ -28,7 +34,6 @@ import static com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean.STATUS_DIGG_FE
  */
 
 public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
-
     protected ImageLoader mImageLoader;
     protected Context mContext;
 
@@ -36,7 +41,13 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
         mOnImageClickListener = onImageClickListener;
     }
 
-    protected OnImageClickListener mOnImageClickListener;
+    protected OnImageClickListener mOnImageClickListener; // 图片点击监听
+
+    public void setOnUserInfoClickListener(OnUserInfoClickListener onUserInfoClickListener) {
+        mOnUserInfoClickListener = onUserInfoClickListener;
+    }
+
+    protected OnUserInfoClickListener mOnUserInfoClickListener; // 用户信息点击监听
     protected DynamicListMenuView.OnItemClickListener mOnMenuClick;
 
     private int mTitleMaxShowNum;
@@ -76,29 +87,47 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
         } else {
             holder.setVisible(R.id.tv_title, View.VISIBLE);
             if (title.length() > mTitleMaxShowNum) {
-                title += "...";
+                title = title.substring(0, mTitleMaxShowNum) + "...";
             }
-            holder.setText(R.id.tv_title, dynamicBean.getFeed().getTitle());
+            holder.setText(R.id.tv_title, title);
         }
         String content = dynamicBean.getFeed().getContent();
         if (content.length() > mContentMaxShowNum) {
-            content += "...";
-            holder.setText(R.id.tv_content, content);
+            content = content.substring(0, mContentMaxShowNum) + "...";
         }
+        holder.setText(R.id.tv_content, content);
         DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
-        dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicBean.getTool().getFeed_digg_count()), dynamicBean.getTool().getIs_digg_feed()==STATUS_DIGG_FEED_CHECKED, 0);
-        dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicBean.getTool().getFeed_comment_count()),  false, 1);
-        dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicBean.getTool().getFeed_view_count()),  false, 2);
+        dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicBean.getTool().getFeed_digg_count()), dynamicBean.getTool().getIs_digg_feed() == STATUS_DIGG_FEED_CHECKED, 0);
+        dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicBean.getTool().getFeed_comment_count()), false, 1);
+        dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicBean.getTool().getFeed_view_count()), false, 2);
         if (mOnMenuClick != null) {
             dynamicListMenuView.setItemOnClick(mOnMenuClick);
         }
+        setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);
+        setUserInfoClick(holder.getView(R.id.tv_name), dynamicBean);
     }
 
+    private void setUserInfoClick(View view, final DynamicBean dynamicBean) {
+        RxView.clicks(view)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        if (mOnUserInfoClickListener != null) {
+                            mOnUserInfoClickListener.onUserInfoClick(dynamicBean);
+                        }
+                    }
+                });
+    }
 
     public interface OnImageClickListener {
 
         void onImageClick(DynamicBean dynamicBean, int position);
     }
 
+    public interface OnUserInfoClickListener {
+
+        void onUserInfoClick(DynamicBean dynamicBean);
+    }
 }
 

@@ -89,43 +89,65 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="2"
             android:orientation="horizontal">
-
-            <com.zhiyicx.common.widget.FilterImageView
-                android:id="@+id/siv_0"
-                style="@style/style_dynamic_list_image_horizen"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                />
-
-            <View
-                android:layout_width="@dimen/dynamice_spacing_small"
-                android:layout_height="match_parent"/>
-
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:orientation="horizontal"
+                >
 
                 <com.zhiyicx.baseproject.widget.SquareImageView
-                    android:id="@+id/siv_1"
-                    style="@style/style_dynamic_list_image_vertical"
+                    android:id="@+id/siv_0"
+                    style="@style/style_dynamic_list_image_horizen"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     />
 
                 <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dynamice_spacing_small"
-                    android:background="@color/white"/>
-
-                <com.zhiyicx.baseproject.widget.SquareImageView
-                    android:id="@+id/siv_2"
-                    style="@style/style_dynamic_list_image_vertical"
-                    android:layout_weight="1"
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
                     />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="4dp"
+                    android:layout_height="match_parent"
+                    />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <com.zhiyicx.baseproject.widget.SquareImageView
+                        android:id="@+id/siv_1"
+                        style="@style/style_dynamic_list_image_vertical"
+                        android:layout_weight="1"
+                        />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dynamice_spacing_small"
+                        android:background="@color/white"/>
+
+                    <com.zhiyicx.baseproject.widget.SquareImageView
+                        android:id="@+id/siv_2"
+                        style="@style/style_dynamic_list_image_vertical"
+                        android:layout_weight="1"
+                        />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 
@@ -136,8 +158,10 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:orientation="horizontal">
+
 
             <com.zhiyicx.baseproject.widget.SquareImageView
                 android:id="@+id/siv_3"
@@ -156,6 +180,16 @@
                 android:layout_weight="1"
                 />
 
+            <View
+                android:layout_width="@dimen/dynamice_spacing_small"
+                android:layout_height="match_parent"
+                />
+
+            <com.zhiyicx.baseproject.widget.SquareImageView
+                android:id="@+id/siv_5"
+                style="@style/style_dynamic_list_image_horizen"
+                android:layout_weight="1"
+                />
         </LinearLayout>
 
     </LinearLayout>
