@@ -277,8 +277,9 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         dynamicDetailBean.setTitle(mEtDynamicTitle.getInputContent());
         if (selectedPhotos != null && !selectedPhotos.isEmpty()) {
             List<String> photos = new ArrayList<>();
-            for (ImageBean imageBean : selectedPhotos) {
-                photos.add(imageBean.getImgUrl());
+            // 最后一张占位图，扔掉
+            for (int i = 0; i < selectedPhotos.size() - 1; i++) {
+                photos.add(selectedPhotos.get(i).getImgUrl());
             }
             dynamicDetailBean.setLocalPhotos(photos);
         }

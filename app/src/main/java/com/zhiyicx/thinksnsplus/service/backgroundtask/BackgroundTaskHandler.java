@@ -330,11 +330,11 @@ public class BackgroundTaskHandler {
         final DynamicDetailBean dynamicDetailBean = dynamicBean.getFeed();
         List<String> photos = dynamicDetailBean.getLocalPhotos();
         Observable<BaseJson<Object>> observable = null;
-        // 没有图片需要上传时：
-        if (photos == null || photos.isEmpty()) {
+        // 有图片需要上传时：先处理图片上传任务，成功后，获取任务id，发布动态
+        if (photos != null && !photos.isEmpty()) {
             // 先处理图片上传，图片上传成功后，在进行动态发布
             List<Observable<BaseJson<Integer>>> upLoadPics = new ArrayList<>();
-            for (int i = 0; i < photos.size() - 1; i++) {
+            for (int i = 0; i < photos.size(); i++) {
                 File file = new File(photos.get(i));
                 upLoadPics.add(mUpLoadRepository.upLoadSingleFile(FileUtils.getFileMD5ToString(file), file.getName(), file + "i", photos.get(i)));
             }
@@ -363,6 +363,7 @@ public class BackgroundTaskHandler {
                         }
                     });
         } else {
+            // 没有图片上传任务，直接发布动态
             observable = mSendDynamicPresenterRepository.sendDynamic(dynamicDetailBean);// 进行动态发布的请求
 
         }
