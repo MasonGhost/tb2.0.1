@@ -28,6 +28,7 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
 
 
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProvider;
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProviderSource;
@@ -63,7 +64,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
 
     private static final int AUDIO_NO_FOCUS_CAN_DUCK = 1;
 
-    private static final int AUDIO_FOCUSED  = 2;
+    private static final int AUDIO_FOCUSED = 2;
 
     private final Context mContext;
 
@@ -181,7 +182,8 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
             mCurrentMediaId = mediaId;
         }
 
-        if (mState == PlaybackStateCompat.STATE_PAUSED && !mediaHasChanged && mMediaPlayer != null) {
+        if (mState == PlaybackStateCompat.STATE_PAUSED && !mediaHasChanged && mMediaPlayer !=
+                null) {
             configMediaPlayerState();
         } else {
             mState = PlaybackStateCompat.STATE_STOPPED;
@@ -201,7 +203,8 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
                 mState = PlaybackStateCompat.STATE_BUFFERING;
 
                 mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                mMediaPlayer.setDataSource(source);
+                String proxyUrl = AppApplication.getProxy().getProxyUrl(source);
+                mMediaPlayer.setDataSource(proxyUrl);
 
                 mMediaPlayer.prepareAsync();
 
@@ -302,7 +305,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
             } else {
                 if (mMediaPlayer != null) {
                     mMediaPlayer.setVolume(VOLUME_NORMAL, VOLUME_NORMAL);
-                }else{
+                } else {
                     // TODO ...
                 }
             }

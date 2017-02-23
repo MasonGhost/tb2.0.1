@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBoundTransform;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideStokeTransform;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FastBlur;
@@ -130,8 +131,9 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 (), bitmap.getHeight()));
         mFragmentMusicDetailHeadInfo.setBackgroundDrawable(drawable);
 
-        mImageLoader.loadImage(getActivity(), GlideImageConfig.builder().transformation(new
-                GlideStokeTransform(getActivity(), 20)).imagerView(mFragmentMusicDetailHeadIamge)
+        mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
+                .transformation(new GlideStokeTransform(getActivity()))
+                .imagerView(mFragmentMusicDetailHeadIamge)
                 .resourceId(R.mipmap.npc).build());
 
         mFragmentMusicDetailScrollview.setOnHeadFlingListener(new NestedScrollLineayLayout
