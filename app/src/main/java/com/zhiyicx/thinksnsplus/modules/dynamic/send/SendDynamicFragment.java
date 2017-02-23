@@ -108,7 +108,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         initSendDynamicBtnState();// 设置右边发布文字监听
         setLeftTextColor();// 设置左边取消文字的颜色为主题色
         initDynamicType();
-
+        setSendDynamicState();
     }
 
     @Override
@@ -186,6 +186,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         selectedPhotos.add(camera);
         setSendDynamicState();// 每次刷新图片后都要判断发布按钮状态
         mCommonAdapter.notifyDataSetChanged();
+        setSendDynamicState();
     }
 
     @Override
@@ -323,7 +324,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     @Override
                     public void onClick(View v) {
                         if (position == selectedPhotos.size() - 1) {
-                            if (selectedPhotos.size()-1 >= MAX_PHOTOS) {
+                            if (selectedPhotos.size() - 1 >= MAX_PHOTOS) {
                                 ToastUtils.showToast(getString(R.string.choose_max_photos, MAX_PHOTOS));
                                 return;
                             }
