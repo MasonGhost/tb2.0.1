@@ -141,7 +141,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         mPhotoSelector = DaggerPhotoSelectorImplComponent
                 .builder()
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
-                        .SHAPE_RCTANGLE))
+                        .SHAPE_SQUARE))
                 .build().photoSelectorImpl();
 
         initCityPickerView();
@@ -453,7 +453,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                     @Override
                     public void onItem1Clicked() {
                         // 选择相册，单张
-                        mPhotoSelector.getPhotoListFromSelector(9, null);
+                        mPhotoSelector.getPhotoListFromSelector(1, null);
                         mPhotoPopupWindow.hide();
                     }
                 })
@@ -461,7 +461,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                     @Override
                     public void onItem2Clicked() {
                         // 选择相机，拍照
-                        mPhotoSelector.getPhotoFromCamera();
+                        mPhotoSelector.getPhotoFromCamera(null);
                         mPhotoPopupWindow.hide();
                     }
                 })

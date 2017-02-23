@@ -147,8 +147,14 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
                     public void onItem2Clicked() {
+                        ArrayList<String> photos = new ArrayList<String>();
+                        // 最后一张是占位图
+                        for (int i = 0; i < selectedPhotos.size() - 1; i++) {
+                            ImageBean imageBean = selectedPhotos.get(i);
+                            photos.add(imageBean.getImgUrl());
+                        }
                         // 选择相机，拍照
-                        mPhotoSelector.getPhotoFromCamera();
+                        mPhotoSelector.getPhotoFromCamera(photos);
                         mPhotoPopupWindow.hide();
                     }
                 })
@@ -317,7 +323,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     @Override
                     public void onClick(View v) {
                         if (position == selectedPhotos.size() - 1) {
-                            if (selectedPhotos.size() >= MAX_PHOTOS) {
+                            if (selectedPhotos.size()-1 >= MAX_PHOTOS) {
                                 ToastUtils.showToast(getString(R.string.choose_max_photos, MAX_PHOTOS));
                                 return;
                             }
