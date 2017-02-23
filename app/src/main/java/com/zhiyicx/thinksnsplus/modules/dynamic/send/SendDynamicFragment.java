@@ -342,11 +342,9 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                             bundle.putStringArrayList(PhotoAlbumDetailsFragment.EXTRA_VIEW_SELECTED_PHOTOS, photos);
                             bundle.putInt(PhotoAlbumDetailsFragment.EXTRA_MAX_COUNT, MAX_PHOTOS);
                             Intent intent = new Intent(getContext(), PhotoViewActivity.class);
-                            ActivityOptionsCompat options =
-                                    ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
-                                            v, "trans_photo");
                             intent.putExtras(bundle);
-                            ActivityCompat.startActivity(getContext(), intent, options.toBundle());
+                            startActivityForResult(intent, PhotoAlbumDetailsFragment.TO_VIEW_REQUEST_CODE);
+
                         }
                     }
                 });
@@ -367,14 +365,10 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         Bundle bundle = getArguments();
         if (bundle != null) {
             dynamicType = bundle.getInt(SendDynamicActivity.DYNAMIC_TYPE);
-            List<String> originPhotos = bundle.getStringArrayList(SendDynamicActivity.DYNAMIC_PHOTOS);
+            List<ImageBean> originPhotos = bundle.getParcelableArrayList(SendDynamicActivity.DYNAMIC_PHOTOS);
             if (originPhotos != null) {
                 selectedPhotos = new ArrayList<>(MAX_PHOTOS);
-                for (String photo : originPhotos) {
-                    ImageBean imageBean = new ImageBean();
-                    imageBean.setImgUrl(photo);
-                    selectedPhotos.add(imageBean);
-                }
+                selectedPhotos.addAll(originPhotos);
             }
         }
         switch (dynamicType) {
