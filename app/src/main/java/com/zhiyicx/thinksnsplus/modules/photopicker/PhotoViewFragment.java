@@ -1,6 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.photopicker;
 
+<<<<<<< HEAD
 import android.app.Activity;
+=======
+>>>>>>> 5eb1174523744bea0c0756f5af31310a1467fb94
 import android.content.Intent;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
@@ -145,7 +148,10 @@ public class PhotoViewFragment extends TSFragment {
                 mBtComplete.setEnabled(seletedPaths.size() > 0);
                 mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(), maxCount));
                 // 通知图片列表进行刷新
+<<<<<<< HEAD
                 // 在 PhotoAlbumDetailsFragment 的 refreshDataAndUI() 方法中进行订阅
+=======
+>>>>>>> 5eb1174523744bea0c0756f5af31310a1467fb94
                 EventBus.getDefault().post(seletedPaths, EventBusTagConfig.EVENT_SELECTED_PHOTO_UPDATE);
             }
         });
@@ -256,6 +262,7 @@ public class PhotoViewFragment extends TSFragment {
 
     @OnClick(R.id.bt_complete)
     public void onClick() {
+<<<<<<< HEAD
         Activity activity = ActivityHandler.getInstance().getActivity(PhotoAlbumDetailsActivity.class);
         if (activity != null) {
             activity.finish();
@@ -267,5 +274,10 @@ public class PhotoViewFragment extends TSFragment {
         // 完成图片选择，处理图片返回结果
         // 在 HomeFragment 中的 refreshDataAndUI() 方法进行订阅
         EventBus.getDefault().post(seletedPaths, EventBusTagConfig.EVENT_COMPLETE_DYNAMIC_PHOTO_SELECT);
+=======
+        ActivityHandler.getInstance().getActivity(PhotoAlbumDetailsActivity.class).finish();
+        getActivity().finish();
+        EventBus.getDefault().post(seletedPaths, EventBusTagConfig.EVENT_COMPLETE_PHOTO_SELECT);
+>>>>>>> 5eb1174523744bea0c0756f5af31310a1467fb94
     }
 }

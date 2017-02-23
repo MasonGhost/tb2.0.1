@@ -1,58 +1,64 @@
 package com.zhiyicx.common.base;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-
 /**
- * @Describe  Json 解析基类
+ * @Describe Json 解析基类
  * @Author Jungle68
  * @Date 2016/12/16
  * @Contact 335891510@qq.com
  */
 
-public class BaseJson<T extends Parcelable> implements Parcelable {
+public class BaseJson<T> {
+    /**
+     * {"message":"","data":{"key":"success"},"status":true,"code":0}
+     */
 
-    private int status;
-    private String msg;
+    private boolean status;
+    private String message;
+    private int code;
     private T data;
 
     public BaseJson() {
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.status);
-        dest.writeString(this.msg);
-        dest.writeString(data.getClass().getName());
-        dest.writeParcelable(this.data, flags);
+    public String toString() {
+        return "BaseJson{" +
+                "status=" + status +
+                ", message='" + message + '\'' +
+                ", code=" + code +
+                ", data=" + data +
+                '}';
     }
-
-    protected BaseJson(Parcel in) {
-        this.status = in.readInt();
-        this.msg = in.readString();
-        String dataName = in.readString();
-        try {
-            this.data = in.readParcelable(Class.forName(dataName).getClassLoader());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static final Creator<BaseJson> CREATOR = new Creator<BaseJson>() {
-        @Override
-        public BaseJson createFromParcel(Parcel source) {
-            return new BaseJson(source);
-        }
-
-        @Override
-        public BaseJson[] newArray(int size) {
-            return new BaseJson[size];
-        }
-    };
 }

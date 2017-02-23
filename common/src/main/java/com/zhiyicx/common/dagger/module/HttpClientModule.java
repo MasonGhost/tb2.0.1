@@ -4,16 +4,19 @@ import android.app.Application;
 import android.text.TextUtils;
 
 import com.tbruyelle.rxpermissions.RxPermissions;
-import com.zhiyicx.common.net.listener.RequestInterceptListener;
+import com.zhiyicx.common.R;
 import com.zhiyicx.common.net.intercept.RequestIntercept;
+import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.rxerrorhandler.RxErrorHandler;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
 
 import java.io.File;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
+import javax.net.ssl.SSLSocketFactory;
 
 import dagger.Module;
 import dagger.Provides;
@@ -26,6 +29,7 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 /**
  * @Describe
@@ -42,19 +46,21 @@ public class HttpClientModule {
 
     private HttpUrl mApiUrl;
     private RequestInterceptListener mHandler;
-    private Interceptor[] mInterceptors;
+    private Set<Interceptor> mInterceptorSet;
     private ResponseErroListener mErroListener;
+    private SSLSocketFactory mSSLSocketFactory;// 配置安全证书
 
     /**
      * 设置 baseurl
      *
      * @param buidler
      */
-    private HttpClientModule(Buidler buidler) {
+    protected HttpClientModule(Buidler buidler) {
         this.mApiUrl = buidler.apiUrl;
         this.mHandler = buidler.handler;
-        this.mInterceptors = buidler.interceptors;
+        this.mInterceptorSet = buidler.mInterceptorSet;
         this.mErroListener = buidler.responseErroListener;
+        this.mSSLSocketFactory = buidler.mSSLSocketFactory;
     }
 
     public static Buidler buidler() {
@@ -70,7 +76,7 @@ public class HttpClientModule {
      */
     @Singleton
     @Provides
-    OkHttpClient provideClient(Cache cache, Interceptor intercept) {
+    public OkHttpClient provideClient(Cache cache, Interceptor intercept) {
         final OkHttpClient.Builder okHttpClient = new OkHttpClient.Builder();
         return configureClient(okHttpClient, cache, intercept);
     }
@@ -84,7 +90,7 @@ public class HttpClientModule {
      */
     @Singleton
     @Provides
-    Retrofit provideRetrofit(OkHttpClient client, HttpUrl httpUrl) {
+    public Retrofit provideRetrofit(OkHttpClient client, HttpUrl httpUrl) {
         final Retrofit.Builder builder = new Retrofit.Builder();
         return configureRetrofit(builder, client, httpUrl);
     }
@@ -96,7 +102,7 @@ public class HttpClientModule {
      */
     @Singleton
     @Provides
-    HttpUrl provideBaseUrl() {
+    public HttpUrl provideBaseUrl() {
         return mApiUrl;
     }
 
@@ -108,7 +114,7 @@ public class HttpClientModule {
      */
     @Singleton
     @Provides
-    Cache provideCache(File cacheFile) {
+    public Cache provideCache(File cacheFile) {
         return new Cache(cacheFile, HTTP_RESPONSE_DISK_CACHE_MAX_SIZE);
     }
 
@@ -117,7 +123,7 @@ public class HttpClientModule {
      */
     @Singleton
     @Provides
-    File provideCacheFile(Application application) {
+    public File provideCacheFile(Application application) {
         return FileUtils.getCacheFile(application);
     }
 
@@ -128,7 +134,7 @@ public class HttpClientModule {
      */
     @Singleton
     @Provides
-    Interceptor provideIntercept() {
+    public Interceptor provideIntercept() {
         return new RequestIntercept(mHandler);
     }
 
@@ -140,7 +146,7 @@ public class HttpClientModule {
      */
     @Singleton
     @Provides
-    RxCache provideRxCache(File cacheDir) {
+    public RxCache provideRxCache(File cacheDir) {
         return new RxCache
                 .Builder()
                 .persistence(cacheDir, new GsonSpeaker());
@@ -154,7 +160,7 @@ public class HttpClientModule {
      */
     @Singleton
     @Provides
-    RxErrorHandler proRxErrorHandler(Application application) {
+    public RxErrorHandler proRxErrorHandler(Application application) {
         return RxErrorHandler
                 .builder()
                 .with(application)
@@ -170,7 +176,7 @@ public class HttpClientModule {
      */
     @Singleton
     @Provides
-    RxPermissions provideRxPermissions(Application application) {
+    public RxPermissions provideRxPermissions(Application application) {
         return RxPermissions.getInstance(application);
     }
 
@@ -184,10 +190,12 @@ public class HttpClientModule {
      * @return
      */
     private Retrofit configureRetrofit(Retrofit.Builder builder, OkHttpClient client, HttpUrl httpUrl) {
+
         return builder
                 .baseUrl(httpUrl)// 域名
                 .client(client)// 设置 okhttp
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())// 使用 rxjava
+                .addConverterFactory(ScalarsConverterFactory.create())// 使用Scalars
                 .addConverterFactory(GsonConverterFactory.create())// 使用 Gson
                 .build();
     }
@@ -199,13 +207,17 @@ public class HttpClientModule {
      * @return
      */
     private OkHttpClient configureClient(OkHttpClient.Builder okHttpClient, Cache cache, Interceptor intercept) {
+
         OkHttpClient.Builder builder = okHttpClient
                 .connectTimeout(TOME_OUT, TimeUnit.SECONDS)
                 .readTimeout(TOME_OUT, TimeUnit.SECONDS)
                 .cache(cache)//设置缓存
                 .addNetworkInterceptor(intercept);
-        if (mInterceptors != null && mInterceptors.length > 0) {// 如果外部提供了 interceptor 的数组则遍历添加
-            for (Interceptor interceptor : mInterceptors) {
+        if (mSSLSocketFactory != null) {
+            builder.sslSocketFactory(mSSLSocketFactory);
+        }
+        if (mInterceptorSet != null) {// 如果外部提供了 interceptor 则遍历添加
+            for (Interceptor interceptor : mInterceptorSet) {
                 builder.addInterceptor(interceptor);
             }
         }
@@ -217,8 +229,9 @@ public class HttpClientModule {
     public static final class Buidler {
         private HttpUrl apiUrl = HttpUrl.parse(DEFAULT_BASEURL);
         private RequestInterceptListener handler;
-        private Interceptor[] interceptors;
+        private Set<Interceptor> mInterceptorSet;
         private ResponseErroListener responseErroListener;
+        private SSLSocketFactory mSSLSocketFactory;
 
         private Buidler() {
         }
@@ -249,11 +262,11 @@ public class HttpClientModule {
         /**
          * 动态添加任意个 interceptor
          *
-         * @param interceptors
+         * @param interceptorSet
          * @return
          */
-        public Buidler interceptors(Interceptor[] interceptors) {
-            this.interceptors = interceptors;
+        public Buidler interceptors(Set<Interceptor> interceptorSet) {
+            this.mInterceptorSet = interceptorSet;
             return this;
         }
 
@@ -266,6 +279,17 @@ public class HttpClientModule {
         public Buidler responseErroListener(ResponseErroListener listener) {
             this.responseErroListener = listener;
             return this;
+        }
+
+        /**
+         * 获取证书id
+         *
+         * @return
+         */
+        public Buidler sslSocketFactory(SSLSocketFactory mSSLSocketFactory) {
+            this.mSSLSocketFactory = mSSLSocketFactory;
+            return this;
+
         }
 
 

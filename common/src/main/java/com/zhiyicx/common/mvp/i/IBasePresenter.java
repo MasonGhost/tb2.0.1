@@ -11,19 +11,13 @@ import rx.Subscription;
 
 public interface IBasePresenter {
     /**
-     * 关联Activity\Fragment生命周期
+     * 关联 Activity\Fragment 生命周期
      */
     void onStart();
 
     /**
-     * 关联Activity\Fragment生命周期
+     * 关联 Activity\Fragment 生命周期
      */
     void onDestroy();
 
-    /**
-     * 解绑rx注册
-     *
-     * @param subscription
-     */
-    void unSubscribe(Subscription subscription);
 }

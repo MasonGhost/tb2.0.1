@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
@@ -8,3 +9,15 @@
     <dimen name="useredit_divier_marginleft">63dp</dimen>
 
 </resources>
+=======
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <!--登录按钮margintop-->
+    <dimen name="button_login_margin_top">23dp</dimen>
+    <!--用户资料编辑分割线左边的距离-->
+    <dimen name="useredit_divier_marginleft">63dp</dimen>
+
+</resources>
+>>>>>>> 5eb1174523744bea0c0756f5af31310a1467fb94

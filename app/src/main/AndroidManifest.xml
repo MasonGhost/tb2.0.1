@@ -2,25 +2,68 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.zhiyicx.thinksnsplus">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <application
+        android:name=".base.AppApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/icon_256"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".modules.guide.TSGuideActivity">
+        android:theme="@style/TSTheme">
+        <activity
+            android:name=".modules.guide.GuideActivity"
+            android:theme="@style/BackGroundLauncherTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".modules.register.RegisterActivity">
+        </activity>
+        <activity
+            android:name=".modules.home.HomeActivity"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden">
+        </activity>
+        <activity android:name=".modules.settings.SettingsActivity">
+        </activity>
+        <activity android:name=".modules.password.changepassword.ChangePasswordActivity">
+        </activity>
+        <activity android:name=".modules.password.findpassword.FindPasswordActivity">
+        </activity>
+        <activity
+            android:name=".modules.login.LoginActivity"
+            android:launchMode="singleTask">
+        </activity>
+        <activity android:name=".modules.chat.ChatActivity">
+        </activity>
+        <activity android:name=".modules.settings.aboutus.AboutUsActivity">
+        </activity>
+        <activity android:name=".modules.edit_userinfo.UserInfoActivity">
+        </activity>
+        <activity android:name=".modules.home.message.messagecomment.MessageCommentActivity">
+        </activity>
+        <activity android:name=".modules.home.message.messagelike.MessageLikeActivity">
+        </activity>
+        <activity android:name=".modules.crop.CropActivity">
+        </activity>
 
+        <service
+            android:name=".service.backgroundtask.BackgroundTaskHandleService"
+            android:exported="false">
+        </service>
 
-        <!--glide配置-->
-        <meta-data
-            android:name="com.zhiyicx.common.utils.imageloader.core.GlideConfiguration"
-            android:value="GlideModule"/>
+        <activity android:name=".modules.photopicker.PhotoAlbumListActivity">
+        </activity>
+        <activity android:name=".modules.photopicker.PhotoAlbumDetailsActivity">
+        </activity>
+        <activity android:name=".modules.photopicker.PhotoViewActivity">
+        </activity>
+        <activity android:name=".modules.gallery.GalleryActivity"
+            android:theme="@style/FullScreenTheme">
+        </activity>
     </application>
 
 </manifest>

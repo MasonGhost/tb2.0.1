@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.neenbedankt.android-apt'
-apply plugin: 'org.greenrobot.greendao'
 android {
     def gConfig = rootProject.extensions.getByName("ext")
     compileSdkVersion gConfig.getAt("compileSdkVersion")
@@ -10,14 +9,17 @@ android {
         targetSdkVersion gConfig.getAt("targetSdkVersion")
         versionCode gConfig.getAt("versionCode")
         versionName gConfig.getAt("versionName")
+        testInstrumentationRunner gConfig.testDependencies.androidJUnitRunner
     }
     buildTypes {
         release {
+            buildConfigField "boolean", "USE_LOG", "true"
             buildConfigField "boolean", "USE_CANARY", "true"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
+            buildConfigField "boolean", "USE_LOG", "true"
             buildConfigField "boolean", "USE_CANARY", "true"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -31,58 +33,51 @@ buildscript {
     repositories {
         jcenter()
         mavenCentral()
+        maven {
+            url "https://jitpack.io"
+        }
     }
     dependencies {
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
         classpath 'org.greenrobot:greendao-gradle-plugin:3.2.1'
     }
 }
-greendao {
-    /**
-     * daoPackage 生成的DAO，DaoMaster和DaoSession的包名。默认是实体的包名。
-     * targetGenDir 生成源文件的路径。默认源文件目录是在build目录中的(build/generated/source/greendao)。
-     * generateTests 设置是否自动生成单元测试。
-     * targetGenDirTest 生成的单元测试的根目录。
-     */
-    schemaVersion 1
-    //daoPackage 'com.zhiyicx.common.greendao.gen'
-    //targetGenDir 'src/main/java'
+
+configurations.all {
+    resolutionStrategy {
+        force 'com.android.support:support-annotations:25.0.1'
+        force 'com.google.code.findbugs:jsr305:1.3.9'
+    }
 }
 dependencies {
-    def testDependences = rootProject.ext.testDependencies;
-    def dataDependences = rootProject.ext.dataDependencies;
-    def sdkSoupportDependences = rootProject.ext.sdksoupportDependencies;
+    def testDependences = rootProject.ext.testDependencies
+    def dataDependences = rootProject.ext.dataDependencies
+    def sdkSoupportDependences = rootProject.ext.sdksoupportDependencies
     def developmentDependencies = rootProject.ext.developmentDependencies
-
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     // Sdksoupport dependencies
     compile sdkSoupportDependences.appcompatV7
     compile sdkSoupportDependences.supportV4
     compile sdkSoupportDependences.design
     compile sdkSoupportDependences.recyclerview
     compile sdkSoupportDependences.rxpermissions
-
+    compile sdkSoupportDependences.annotations
     // Butterknife
     compile dataDependences.butterknife
-
     // Image
     compile dataDependences.glide
-
     // Eventbus
     compile dataDependences.androideventbus
-
     // Log
     compile dataDependences.logger
-
     // Dagger dependencies
     compile dataDependences.dagger
     provided dataDependences.javaxAnnotation
     apt dataDependences.daggerCompiler
-
     // Retrofit + rx + gson
     compile dataDependences.retrofit
     compile dataDependences.retrofitConverterGson
+    compile dataDependences.retorfitConverterScalar
     compile dataDependences.retrofitAdapterRxJava
     compile dataDependences.rxJava
     compile dataDependences.rxAndroid
@@ -93,21 +88,31 @@ dependencies {
     compile dataDependences.rxlifecycleKotlin
     compile dataDependences.rxcache
     compile dataDependences.rxcacheJolyglotGson
+    compile dataDependences.rxbinding
+    compile dataDependences.rxbindingSupportV4
+    compile dataDependences.rxbindingSupportV7
+    compile dataDependences.rxbindingDesign
+    compile dataDependences.rxbindingDesignrRcyclerviewV7
+
     compile dataDependences.gson
-
-    // database
-    compile dataDependences.greendao
-    compile dataDependences.greendaoSqlcipher
-
     // Development
-    releaseCompile developmentDependencies.leakCanaryRelease
     debugCompile developmentDependencies.leakCanaryDebug
-    
+    releaseCompile developmentDependencies.leakCanaryRelease
+    testCompile developmentDependencies.leakCanaryTest
     // Test
     testCompile testDependences.junit
-    developmentDependencies.leakCanaryRelease
-
+    androidTestCompile(testDependences.espresso) {
+        exclude module: 'support-annotations'
+    }
+    testCompile testDependences.runner
+    testCompile testDependences.robolectric
+    compile testDependencies.espressoIdling
     // Project
-    compile project(":rxerrorhandler")
-
+    compile project(':rxerrorhandler')
+    //分包
+    compile dataDependences.multidex
+    testCompile testDependencies.multidexTest
+    compile project(':skinlibrary')
+    // 指示器
+    compile dataDependences.magicIndicator
 }

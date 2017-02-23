@@ -67,6 +67,31 @@ public class FileUtils {
     }
 
     /**
+     * 使用递归删除文件夹
+     *
+     * @param dir
+     * @return
+     */
+    public static boolean deleteDir(File dir) {
+        if (dir == null) {
+            return false;
+        }
+        if (!dir.isDirectory()) {
+            return false;
+        }
+        File[] files = dir.listFiles();
+        for (File file : files) {
+            if (file.isFile()) {
+                file.delete();
+            } else if (file.isDirectory()) {
+                deleteDir(file); // 递归调用继续删除
+            }
+        }
+        return true;
+    }
+
+
+    /**
      * 根据文件路径获取文件
      *
      * @param filePath 文件路径

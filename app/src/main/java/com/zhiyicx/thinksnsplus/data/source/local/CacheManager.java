@@ -1,5 +1,8 @@
 package com.zhiyicx.thinksnsplus.data.source.local;
 
+
+import com.zhiyicx.baseproject.cache.CacheImp;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -11,20 +14,20 @@ import javax.inject.Singleton;
  */
 
 @Singleton
-public class CacheManager{
-    private CommonCache mCommonCache;
+public class CacheManager {
+    private CacheImp mCommonCache;
 
-    /**
+    /*
      * 如果需要添加 Cache 只需在构造方法中添加对应的 Cache,
      * 在提供 get 方法返回出去,只要在CacheModule提供了该 Cache Dagger2 会自行注入
      * @param commonCache
-     */
+    */
     @Inject
-    public CacheManager(CommonCache commonCache) {
+    public CacheManager(CacheImp commonCache) {
         this.mCommonCache = commonCache;
     }
 
-    public CommonCache getCommonCache() {
+    public CacheImp getCommonCache() {
         return mCommonCache;
     }
 }

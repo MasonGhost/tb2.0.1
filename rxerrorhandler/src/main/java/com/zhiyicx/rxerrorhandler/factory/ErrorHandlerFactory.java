@@ -26,6 +26,6 @@ public class ErrorHandlerFactory {
      * @param throwable
      */
     public void handleError(Throwable throwable) {
-        mResponseErroListener.handleResponseError(mContext, (Exception) throwable);
+        mResponseErroListener.handleResponseError(mContext,  throwable);
     }
 }

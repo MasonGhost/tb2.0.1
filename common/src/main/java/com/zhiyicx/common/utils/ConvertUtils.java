@@ -10,14 +10,17 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.view.View;
 
-import com.zhiyicx.common.config.ConsantConfig;
+import com.zhiyicx.common.config.ConstantConfig;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
@@ -134,25 +137,25 @@ public class ConvertUtils {
      * @param memorySize 大小
      * @param unit       单位类型
      *                   <ul>
-     *                   <li>{@link ConsantConfig.MemoryUnit#BYTE}: 字节</li>
-     *                   <li>{@link ConsantConfig.MemoryUnit#KB}  : 千字节</li>
-     *                   <li>{@link ConsantConfig.MemoryUnit#MB}  : 兆</li>
-     *                   <li>{@link ConsantConfig.MemoryUnit#GB}  : GB</li>
+     *                   <li>{@link ConstantConfig.MemoryUnit#BYTE}: 字节</li>
+     *                   <li>{@link ConstantConfig.MemoryUnit#KB}  : 千字节</li>
+     *                   <li>{@link ConstantConfig.MemoryUnit#MB}  : 兆</li>
+     *                   <li>{@link ConstantConfig.MemoryUnit#GB}  : GB</li>
      *                   </ul>
      * @return 字节数
      */
-    public static long memorySize2Byte(long memorySize, ConsantConfig.MemoryUnit unit) {
+    public static long memorySize2Byte(long memorySize, ConstantConfig.MemoryUnit unit) {
         if (memorySize < 0) return -1;
         switch (unit) {
             default:
             case BYTE:
                 return memorySize;
             case KB:
-                return memorySize * ConsantConfig.KB;
+                return memorySize * ConstantConfig.KB;
             case MB:
-                return memorySize * ConsantConfig.MB;
+                return memorySize * ConstantConfig.MB;
             case GB:
-                return memorySize * ConsantConfig.GB;
+                return memorySize * ConstantConfig.GB;
         }
     }
 
@@ -162,25 +165,25 @@ public class ConvertUtils {
      * @param byteNum 字节数
      * @param unit    单位类型
      *                <ul>
-     *                <li>{@link ConsantConfig.MemoryUnit#BYTE}: 字节</li>
-     *                <li>{@link ConsantConfig.MemoryUnit#KB}  : 千字节</li>
-     *                <li>{@link ConsantConfig.MemoryUnit#MB}  : 兆</li>
-     *                <li>{@link ConsantConfig.MemoryUnit#GB}  : GB</li>
+     *                <li>{@link ConstantConfig.MemoryUnit#BYTE}: 字节</li>
+     *                <li>{@link ConstantConfig.MemoryUnit#KB}  : 千字节</li>
+     *                <li>{@link ConstantConfig.MemoryUnit#MB}  : 兆</li>
+     *                <li>{@link ConstantConfig.MemoryUnit#GB}  : GB</li>
      *                </ul>
      * @return 以unit为单位的size
      */
-    public static double byte2MemorySize(long byteNum, ConsantConfig.MemoryUnit unit) {
+    public static double byte2MemorySize(long byteNum, ConstantConfig.MemoryUnit unit) {
         if (byteNum < 0) return -1;
         switch (unit) {
             default:
             case BYTE:
                 return (double) byteNum;
             case KB:
-                return (double) byteNum / ConsantConfig.KB;
+                return (double) byteNum / ConstantConfig.KB;
             case MB:
-                return (double) byteNum / ConsantConfig.MB;
+                return (double) byteNum / ConstantConfig.MB;
             case GB:
-                return (double) byteNum / ConsantConfig.GB;
+                return (double) byteNum / ConstantConfig.GB;
         }
     }
 
@@ -195,14 +198,14 @@ public class ConvertUtils {
     public static String byte2FitMemorySize(long byteNum) {
         if (byteNum < 0) {
             return "shouldn't be less than zero!";
-        } else if (byteNum < ConsantConfig.KB) {
-            return String.format("%.3fB", byteNum + 0.0005);
-        } else if (byteNum < ConsantConfig.MB) {
-            return String.format("%.3fKB", byteNum / ConsantConfig.KB + 0.0005);
-        } else if (byteNum < ConsantConfig.GB) {
-            return String.format("%.3fMB", byteNum / ConsantConfig.MB + 0.0005);
+        } else if (byteNum < ConstantConfig.KB) {
+            return String.format("%.1fB", byteNum + 0.05);
+        } else if (byteNum < ConstantConfig.MB) {
+            return String.format("%.1fKB", byteNum / ConstantConfig.KB + 0.05);
+        } else if (byteNum < ConstantConfig.GB) {
+            return String.format("%.1fMB", byteNum / ConstantConfig.MB + 0.05);
         } else {
-            return String.format("%.3fGB", byteNum / ConsantConfig.GB + 0.0005);
+            return String.format("%.1fGB", byteNum / ConstantConfig.GB + 0.05);
         }
     }
 
@@ -212,27 +215,27 @@ public class ConvertUtils {
      * @param timeSpan 毫秒时间戳
      * @param unit     单位类型
      *                 <ul>
-     *                 <li>{@link ConsantConfig.TimeUnit#MSEC}: 毫秒</li>
-     *                 <li>{@link ConsantConfig.TimeUnit#SEC }: 秒</li>
-     *                 <li>{@link ConsantConfig.TimeUnit#MIN }: 分</li>
-     *                 <li>{@link ConsantConfig.TimeUnit#HOUR}: 小时</li>
-     *                 <li>{@link ConsantConfig.TimeUnit#DAY }: 天</li>
+     *                 <li>{@link ConstantConfig.TimeUnit#MSEC}: 毫秒</li>
+     *                 <li>{@link ConstantConfig.TimeUnit#SEC }: 秒</li>
+     *                 <li>{@link ConstantConfig.TimeUnit#MIN }: 分</li>
+     *                 <li>{@link ConstantConfig.TimeUnit#HOUR}: 小时</li>
+     *                 <li>{@link ConstantConfig.TimeUnit#DAY }: 天</li>
      *                 </ul>
      * @return 毫秒时间戳
      */
-    public static long timeSpan2Millis(long timeSpan, ConsantConfig.TimeUnit unit) {
+    public static long timeSpan2Millis(long timeSpan, ConstantConfig.TimeUnit unit) {
         switch (unit) {
             default:
             case MSEC:
                 return timeSpan;
             case SEC:
-                return timeSpan * ConsantConfig.SEC;
+                return timeSpan * ConstantConfig.SEC;
             case MIN:
-                return timeSpan * ConsantConfig.MIN;
+                return timeSpan * ConstantConfig.MIN;
             case HOUR:
-                return timeSpan * ConsantConfig.HOUR;
+                return timeSpan * ConstantConfig.HOUR;
             case DAY:
-                return timeSpan * ConsantConfig.DAY;
+                return timeSpan * ConstantConfig.DAY;
         }
     }
 
@@ -242,27 +245,27 @@ public class ConvertUtils {
      * @param millis 毫秒时间戳
      * @param unit   单位类型
      *               <ul>
-     *               <li>{@link ConsantConfig.TimeUnit#MSEC}: 毫秒</li>
-     *               <li>{@link ConsantConfig.TimeUnit#SEC }: 秒</li>
-     *               <li>{@link ConsantConfig.TimeUnit#MIN }: 分</li>
-     *               <li>{@link ConsantConfig.TimeUnit#HOUR}: 小时</li>
-     *               <li>{@link ConsantConfig.TimeUnit#DAY }: 天</li>
+     *               <li>{@link ConstantConfig.TimeUnit#MSEC}: 毫秒</li>
+     *               <li>{@link ConstantConfig.TimeUnit#SEC }: 秒</li>
+     *               <li>{@link ConstantConfig.TimeUnit#MIN }: 分</li>
+     *               <li>{@link ConstantConfig.TimeUnit#HOUR}: 小时</li>
+     *               <li>{@link ConstantConfig.TimeUnit#DAY }: 天</li>
      *               </ul>
      * @return 以 unit 为单位的时间长度
      */
-    public static long millis2TimeSpan(long millis, ConsantConfig.TimeUnit unit) {
+    public static long millis2TimeSpan(long millis, ConstantConfig.TimeUnit unit) {
         switch (unit) {
             default:
             case MSEC:
                 return millis;
             case SEC:
-                return millis / ConsantConfig.SEC;
+                return millis / ConstantConfig.SEC;
             case MIN:
-                return millis / ConsantConfig.MIN;
+                return millis / ConstantConfig.MIN;
             case HOUR:
-                return millis / ConsantConfig.HOUR;
+                return millis / ConstantConfig.HOUR;
             case DAY:
-                return millis / ConsantConfig.DAY;
+                return millis / ConstantConfig.DAY;
         }
     }
 
@@ -349,9 +352,9 @@ public class ConvertUtils {
         if (is == null) return null;
         try {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            byte[] b = new byte[ConsantConfig.KB];
+            byte[] b = new byte[ConstantConfig.KB];
             int len;
-            while ((len = is.read(b, 0, ConsantConfig.KB)) != -1) {
+            while ((len = is.read(b, 0, ConstantConfig.KB)) != -1) {
                 os.write(b, 0, len);
             }
             return os;
@@ -600,7 +603,7 @@ public class ConvertUtils {
      * @param pxValue px值
      * @return dp值
      */
-    public static int px2dp(Context context,float pxValue) {
+    public static int px2dp(Context context, float pxValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }
@@ -611,7 +614,7 @@ public class ConvertUtils {
      * @param spValue sp值
      * @return px值
      */
-    public static int sp2px(Context context,float spValue) {
+    public static int sp2px(Context context, float spValue) {
         final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (spValue * fontScale + 0.5f);
     }
@@ -622,8 +625,46 @@ public class ConvertUtils {
      * @param pxValue px值
      * @return sp值
      */
-    public static int px2sp(Context context,float pxValue) {
-        final float fontScale =context.getResources().getDisplayMetrics().scaledDensity;
+    public static int px2sp(Context context, float pxValue) {
+        final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (pxValue / fontScale + 0.5f);
     }
+
+    public static <T> T base64Str2Object(String productBase64) {
+        T device = null;
+        if (productBase64 == null) {
+            return null;
+        }
+        // 读取字节
+        byte[] base64 = Base64.decode(productBase64.getBytes(), Base64.DEFAULT);
+
+        // 封装到字节流
+        ByteArrayInputStream bais = new ByteArrayInputStream(base64);
+        try {
+            // 再次封装
+            ObjectInputStream bis = new ObjectInputStream(bais);
+            // 读取对象
+            device = (T) bis.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return device;
+    }
+
+    public static <T> String object2Base64Str(T object) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {   //Device为自定义类
+            // 创建对象输出流，并封装字节流
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            // 将对象写入字节流
+            oos.writeObject(object);
+            // 将字节流编码成base64的字符串
+            return new String(Base64.encode(baos
+                    .toByteArray(), Base64.DEFAULT));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

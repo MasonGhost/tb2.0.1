@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
@@ -168,3 +169,175 @@
         app:showLine="false"></com.zhiyicx.baseproject.widget.button.CombinationButton>
 
 </LinearLayout>
+=======
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+    >
+    <!--头像，用户名，简介-->
+    <RelativeLayout
+        android:id="@+id/rl_userinfo_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        >
+        <!--头像-->
+        <ImageView
+            android:id="@+id/iv_head_icon"
+            android:layout_width="@dimen/headpic_for_user_center"
+            android:layout_height="@dimen/headpic_for_user_center"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="@dimen/spacing_mid"
+            android:layout_marginLeft="@dimen/spacing_mid"
+            android:layout_marginTop="@dimen/spacing_mid"
+            android:src="@mipmap/ic_launcher"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/iv_right_arrow"
+            android:layout_toRightOf="@+id/iv_head_icon"
+            android:orientation="vertical">
+            <!--用户名-->
+            <TextView
+                android:id="@+id/tv_user_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                tools:text="奔跑的蜗牛"/>
+            <!--用户签名-->
+            <TextView
+                android:id="@+id/tv_user_signature"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                tools:text="天青色等烟雨，而我在等你，炊烟袅袅升起，晕开了结局"/>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_right_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/spacing_normal"
+            android:src="@mipmap/ic_arrow_smallgrey"/>
+    </RelativeLayout>
+
+    <ImageView style="@style/style_divider_horizontal_light"/>
+    <!--粉丝，关注-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/fans_container_height"
+        android:background="@color/white"
+        android:orientation="horizontal">
+        <!--粉丝-->
+        <LinearLayout
+            android:id="@+id/ll_fans_container"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <!--粉丝数量-->
+            <TextView
+                android:id="@+id/tv_fans_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/themeColor"
+                android:textSize="@dimen/size_content_assist"
+                tools:text="23456"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="粉丝"/>
+        </LinearLayout>
+
+        <ImageView style="@style/style_divider_veitical_light"/>
+        <!--关注-->
+        <LinearLayout
+            android:id="@+id/ll_follow_container"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <!--关注数量-->
+            <TextView
+                android:id="@+id/tv_follow_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/themeColor"
+                android:textSize="@dimen/size_content_assist"
+                tools:text="12233"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="关注"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!--个人主页-->
+    <com.zhiyicx.baseproject.widget.button.CombinationButton
+        android:id="@+id/bt_personal_page"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/full_button_height"
+        android:layout_marginTop="@dimen/spacing_mid"
+        app:leftImage="@mipmap/ico_me_homepage"
+        app:leftText="@string/personal_page"
+        app:rightImage="@mipmap/ic_arrow_smallgrey"
+        ></com.zhiyicx.baseproject.widget.button.CombinationButton>
+
+    <!--排行榜-->
+    <com.zhiyicx.baseproject.widget.button.CombinationButton
+        android:id="@+id/bt_ranking"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/full_button_height"
+        app:leftImage="@mipmap/ico_me_ranklist"
+        app:leftText="@string/ranking"
+        app:rightImage="@mipmap/ic_arrow_smallgrey"></com.zhiyicx.baseproject.widget.button.CombinationButton>
+    <!--金币-->
+    <com.zhiyicx.baseproject.widget.button.CombinationButton
+        android:id="@+id/bt_gold"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/full_button_height"
+        app:leftImage="@mipmap/ico_me_goldcoin"
+        app:leftText="@string/gold"
+        app:showLine="false"
+        app:rightImage="@mipmap/ic_arrow_smallgrey"></com.zhiyicx.baseproject.widget.button.CombinationButton>
+    <!--意见反馈-->
+    <com.zhiyicx.baseproject.widget.button.CombinationButton
+        android:id="@+id/bt_suggestion"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/full_button_height"
+        android:layout_marginTop="@dimen/spacing_mid"
+        app:leftImage="@mipmap/ico_me_advance"
+        app:leftText="@string/suggetion"
+        app:rightImage="@mipmap/ic_arrow_smallgrey"></com.zhiyicx.baseproject.widget.button.CombinationButton>
+    <!--Q&A-->
+    <com.zhiyicx.baseproject.widget.button.CombinationButton
+        android:id="@+id/bt_question_answer"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/full_button_height"
+        app:leftImage="@mipmap/ico_me_question"
+        app:leftText="@string/question_answer"
+        app:rightImage="@mipmap/ic_arrow_smallgrey"></com.zhiyicx.baseproject.widget.button.CombinationButton>
+    <!--设置-->
+    <com.zhiyicx.baseproject.widget.button.CombinationButton
+        android:id="@+id/bt_setting"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/full_button_height"
+        app:leftImage="@mipmap/ico_me_setting"
+        app:leftText="@string/setting"
+        app:rightImage="@mipmap/ic_arrow_smallgrey"
+        app:showLine="false"></com.zhiyicx.baseproject.widget.button.CombinationButton>
+
+</LinearLayout>
+>>>>>>> 5eb1174523744bea0c0756f5af31310a1467fb94

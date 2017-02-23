@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
@@ -8,3 +9,15 @@
 
 
 </FrameLayout>
+=======
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@color/themeColor"
+             tools:context="com.zhiyicx.thinksnsplus.modules.guide.GuideFragment">
+
+
+
+</FrameLayout>
+>>>>>>> 5eb1174523744bea0c0756f5af31310a1467fb94

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -82,3 +83,89 @@
 
 
 </RelativeLayout>
+=======
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:paddingBottom="@dimen/spacing_normal"
+    android:paddingLeft="@dimen/spacing_small"
+    android:paddingRight="@dimen/spacing_small"
+    android:paddingTop="@dimen/spacing_normal"
+    tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
+
+    <com.zhiyicx.common.widget.FilterImageView
+        android:id="@+id/iv_headpic"
+        android:layout_width="@dimen/headpic_for_list"
+        android:layout_height="@dimen/headpic_for_list"
+        tools:src="@mipmap/ic_launcher"/>
+
+    <FrameLayout
+        android:id="@+id/fl_detial"
+        android:layout_width="@dimen/rec_image_for_list"
+        android:layout_height="@dimen/rec_image_for_list"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@color/bgColor">
+
+        <TextView
+            android:id="@+id/tv_deatil"
+            android:layout_width="match_parent"
+            android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/spacing_tiny"
+            android:textSize="@dimen/size_note_assist"
+            android:gravity="center"
+            tools:text="点点滴滴的撒范德萨范德萨范德萨多少撒 "/>
+
+        <com.zhiyicx.common.widget.FilterImageView
+            android:id="@+id/iv_detail_image"
+            android:layout_width="@dimen/rec_image_for_list"
+            android:layout_height="@dimen/rec_image_for_list"
+            android:visibility="gone"
+            tools:src="@mipmap/ic_launcher">
+        </com.zhiyicx.common.widget.FilterImageView>
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/iv_like"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/fl_detial"
+        android:src="@mipmap/msg_box_succeed"/>
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/iv_like"
+        android:layout_toRightOf="@id/iv_headpic"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:textColor="@color/important_for_content"
+        android:textSize="@dimen/size_content"
+        tools:text="张三 "/>
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_name"
+        android:layout_toLeftOf="@id/iv_like"
+        android:layout_toRightOf="@id/iv_headpic"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:paddingTop="@dimen/spacing_small"
+        android:textColor="@color/general_for_hint"
+        android:textSize="@dimen/size_content_assist"
+        tools:text="6分钟前"/>
+
+
+</RelativeLayout>
+>>>>>>> 5eb1174523744bea0c0756f5af31310a1467fb94

@@ -2,6 +2,8 @@ package com.zhiyicx.common.utils.imageloader.config;
 
 import android.widget.ImageView;
 
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
+
 
 /**
  * @Describe   图片加载的配置信息
@@ -12,6 +14,7 @@ import android.widget.ImageView;
 
 public class ImageConfig {
     protected String url;
+    protected Integer resourceId;
     protected ImageView imageView;
     protected int placeholder;
     protected int errorPic;
@@ -21,6 +24,9 @@ public class ImageConfig {
         return url;
     }
 
+    public Integer getResourceId() {
+        return resourceId;
+    }
     public ImageView getImageView() {
         return imageView;
     }
@@ -32,4 +38,5 @@ public class ImageConfig {
     public int getErrorPic() {
         return errorPic;
     }
+
 }

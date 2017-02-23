@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
        android:shape="rectangle">
@@ -18,4 +19,26 @@
         android:right="@dimen/chat_message_bubble_padding"
         android:top="@dimen/chat_message_bubble_padding"
         />
+=======
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+       android:shape="rectangle">
+
+    <!-- 纯色 -->
+    <stroke
+        android:width="@dimen/chat_message_bubble_stroke_width"
+        android:color="@color/chat_message_bubble_my_strokeColor"/>
+    <solid android:color="@color/chat_message_bubble_my_bgColor"/>
+    <corners
+        android:bottomLeftRadius="@dimen/chat_message_bubble_radus"
+        android:bottomRightRadius="@dimen/chat_message_bubble_radus"
+        android:topLeftRadius="@dimen/chat_message_bubble_radus"
+        ></corners>
+    <padding
+        android:bottom="@dimen/chat_message_bubble_paddingBottom"
+        android:left="@dimen/chat_message_bubble_padding"
+        android:right="@dimen/chat_message_bubble_padding"
+        android:top="@dimen/chat_message_bubble_padding"
+        />
+>>>>>>> 5eb1174523744bea0c0756f5af31310a1467fb94
 </shape>

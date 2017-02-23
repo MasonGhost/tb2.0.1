@@ -1,3 +1,58 @@
 <resources>
     <string name="app_name">ThinksnsPlus</string>
+    <!-- 主页  -->
+    <string name="home">首页</string>
+    <string name="find">发现</string>
+    <string name="message">消息</string>
+    <string name="mine">我</string>
+    <!-- 消息 -->
+    <string name="critical">评论的</string>
+    <string name="comment">评论</string>
+    <string name="like">赞</string>
+    <string name="liked">赞过的</string>
+    <string name="like_me">赞了我</string>
+    <string name="comment_me">评论了我</string>
+    <!--我的-->
+    <string name="personal_page">个人主页</string>
+    <string name="ranking">排行榜</string>
+    <string name="gold">金币</string>
+    <string name="suggetion">意见反馈</string>
+    <string name="question_answer">Q&amp;A</string>
+    <string name="setting">设置</string>
+
+    <!--个人资料-->
+    <string name="user_info">个人资料</string>
+    <string name="change_head_icon">更换头像</string>
+    <string name="user_name">用户</string>
+    <string name="edit_user_name">设置用户名</string>
+    <string name="sex">性别</string>
+    <string name="select_sex">选择性别</string>
+    <string name="city">城市</string>
+    <string name="select_city">选择居住地</string>
+    <string name="introduce">简介</string>
+    <string name="edit_introduce">编辑简介</string>
+
+    <!-- 设置 -->
+    <string name="vertify">认证</string>
+    <string name="change_password">修改密码</string>
+    <string name="clean_cache">清理缓存</string>
+    <string name="about_us">关于我们</string>
+    <string name="login_out">退出登录</string>
+
+    <string name="clean_success">删除成功</string>
+    <string name="clean_failure">删除失败!</string>
+    <string name="cache_zero_size">0.0B</string>
+    <string name="change">更改</string>
+
+    <!--裁剪-->
+    <string name="crop_head_icon">更换头像</string>
+    <!--相册-->
+    <string name="album_list">相册</string>
+    <string name="preview">预览</string>
+    <string name="album_selected_count">完成(%1$d/%2$d)</string>
+    <string name="album_selected">选择</string>
+    <string name="save_to_photo">保存至手机相册</string>
+
+    <!--代码中的string-->
+    <string name="token_expiers">token过期，请重新登陆</string>
 </resources>

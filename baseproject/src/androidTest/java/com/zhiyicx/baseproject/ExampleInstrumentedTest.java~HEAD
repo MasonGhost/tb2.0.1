@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus;
+package com.zhiyicx.baseproject;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.zhiyicx.thinksnsplus", appContext.getPackageName());
+        assertEquals("com.zhiyicx.baseproject.test", appContext.getPackageName());
     }
 }

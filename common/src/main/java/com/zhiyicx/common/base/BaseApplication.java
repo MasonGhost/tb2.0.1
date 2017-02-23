@@ -1,9 +1,7 @@
 package com.zhiyicx.common.base;
 
-import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
+import android.support.multidex.MultiDex;
 
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
@@ -11,13 +9,17 @@ import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.dagger.module.AppModule;
 import com.zhiyicx.common.dagger.module.HttpClientModule;
 import com.zhiyicx.common.dagger.module.ImageModule;
+import com.zhiyicx.common.dagger.module.ShareModule;
 import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
 
-import java.util.LinkedList;
+import java.util.Set;
+
+import javax.net.ssl.SSLSocketFactory;
 
 import okhttp3.Interceptor;
+import solid.ren.skinlibrary.base.SkinBaseApplication;
 
 /**
  * @Describe Applicaiton 基类
@@ -26,14 +28,12 @@ import okhttp3.Interceptor;
  * @Contact 335891510@qq.com
  */
 
-public abstract class BaseApplication extends Application {
+public abstract class BaseApplication extends SkinBaseApplication {
     protected final String TAG = this.getClass().getSimpleName();
 
     private static BaseApplication mApplication;
-    public LinkedList<Activity> mActivityList;
     private HttpClientModule mHttpClientModule;
     private AppModule mAppModule;
-    private ImageModule mImagerModule;
 
     private RefWatcher mRefWatcher;//leakCanary观察器
 
@@ -60,30 +60,38 @@ public abstract class BaseApplication extends Application {
                 .globeHttpHandler(getHttpHandler())
                 .interceptors(getInterceptors())
                 .responseErroListener(getResponseErroListener())
+                .sslSocketFactory(getSSLSocketFactory())
                 .build();
         this.mAppModule = new AppModule(this);// 提供 application
-        this.mImagerModule = new ImageModule();// 图片加载框架默认使用 glide
 
     }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 
     /**
-     * 提供基础url给retrofit
+     * 提供基础 url 给 retrofit
      *
      * @return
      */
     protected abstract String getBaseUrl();
 
+    protected abstract ImageModule getImageModule();
+
+    protected abstract ShareModule getShareModule();
 
     /**
-     * 安装leakCanary检测内存泄露
+     * 安装 leakCanary 检测内存泄露
      */
     protected void installLeakCanary() {
         this.mRefWatcher = BuildConfig.USE_CANARY ? LeakCanary.install(this) : RefWatcher.DISABLED;
     }
 
     /**
-     * 获得leakCanary观察器
+     * 获得 leakCanary 观察器
      *
      * @param context
      * @return
@@ -93,19 +101,6 @@ public abstract class BaseApplication extends Application {
         return this.mRefWatcher;
     }
 
-    /**
-     * 返回一个存储所有存在的activity的列表
-     *
-     * @return
-     */
-    public LinkedList<Activity> getActivityList() {
-        if (mActivityList == null) {
-            mActivityList = new LinkedList<>();
-        }
-        return mActivityList;
-    }
-
-
     public HttpClientModule getHttpClientModule() {
         return mHttpClientModule;
     }
@@ -114,14 +109,10 @@ public abstract class BaseApplication extends Application {
         return mAppModule;
     }
 
-    public ImageModule getImageModule() {
-        return mImagerModule;
-    }
-
 
     /**
-     * 这里可以提供一个全局处理http响应结果的处理类,
-     * 这里可以比客户端提前一步拿到服务器返回的结果,可以做一些操作,比如token超时,重新获取
+     * 这里可以提供一个全局处理 http 响应结果的处理类,
+     * 这里可以比客户端提前一步拿到服务器返回的结果,可以做一些操作,比如 token 超时,重新获取
      * 默认不实现,如果有需求可以重写此方法
      *
      * @return
@@ -131,19 +122,19 @@ public abstract class BaseApplication extends Application {
     }
 
     /**
-     * 用来提供interceptor,如果要提供额外的interceptor可以让子application实现此方法
+     * 用来提供 interceptor,如果要提供额外的 interceptor 可以让子 application 实现此方法
      *
      * @return
      */
-    protected Interceptor[] getInterceptors() {
+    protected Set<Interceptor> getInterceptors() {
         return null;
     }
 
 
     /**
      * 用来提供处理所有错误的监听
-     * 如果要使用ErrorHandleSubscriber(默认实现Subscriber的onError方法)
-     * 则让子application重写此方法
+     * 如果要使用 ErrorHandleSubscriber (默认实现 Subscriber 的 onError 方法)
+     * 则让子 application 重写此方法
      *
      * @return
      */
@@ -158,6 +149,13 @@ public abstract class BaseApplication extends Application {
     }
 
     /**
+     * 提供SSlFactory
+     */
+    protected SSLSocketFactory getSSLSocketFactory() {
+        return null;
+    }
+
+    /**
      * 返回上下文
      *
      * @return
@@ -167,12 +165,4 @@ public abstract class BaseApplication extends Application {
     }
 
 
-    /**
-     * 退出所有activity
-     */
-    public static void killAll() {
-        Intent intent = new Intent(BaseActivity.ACTION_RECEIVER_ACTIVITY);
-        intent.putExtra("type", "killAll");
-        getContext().sendBroadcast(intent);
-    }
 }

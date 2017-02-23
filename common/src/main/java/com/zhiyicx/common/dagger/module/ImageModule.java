@@ -1,7 +1,6 @@
 package com.zhiyicx.common.dagger.module;
 
 
-import com.zhiyicx.common.utils.imageloader.core.GlideImageLoaderStrategy;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.imageloader.loadstrategy.ImageLoaderStrategy;
 
@@ -18,16 +17,21 @@ import dagger.Provides;
  */
 @Module
 public class ImageModule {
+    private ImageLoaderStrategy mImageLoaderStrategy;
 
-    @Singleton
-    @Provides
-    public ImageLoaderStrategy provideImageLoaderStrategy() {
-        return new GlideImageLoaderStrategy();
+    public ImageModule(ImageLoaderStrategy imageLoaderStrategy) {
+        this.mImageLoaderStrategy = imageLoaderStrategy;
     }
 
     @Singleton
     @Provides
-    public ImageLoader provideImageLoader(ImageLoaderStrategy strategy) {
-        return new ImageLoader(strategy);
+    public ImageLoaderStrategy provideImageLoaderStrategy() {
+        return mImageLoaderStrategy;
+    }
+
+    @Singleton
+    @Provides
+    public ImageLoader provideImageLoader() {
+        return new ImageLoader(mImageLoaderStrategy);
     }
 }

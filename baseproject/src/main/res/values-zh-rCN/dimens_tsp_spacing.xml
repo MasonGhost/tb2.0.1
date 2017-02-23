@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--#########################################      tsp 间距定义       ################################-->
@@ -33,4 +34,41 @@
     资讯详情页等
     -->
     <item name="line_spacing_Multiplier_big" format="float" type="dimen">1.7</item>
+=======
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--#########################################      tsp 间距定义       ################################-->
+
+    <dimen name="spacing_huge">50dp</dimen>
+    <dimen name="spacing_big_large">30dp</dimen>
+    <dimen name="spacing_large">20dp</dimen>
+    <dimen name="spacing_mid">15dp</dimen>
+    <dimen name="spacing_normal">10dp</dimen>
+    <dimen name="spacing_small">5dp</dimen>
+    <dimen name="spacing_tiny">2dp</dimen>
+    <dimen name="spacing_line">@dimen/divider_line</dimen>
+
+    <!--#########################################      分割线       ################################-->
+
+    <dimen name="divider_line">0.5dp</dimen>
+    <dimen name="edittext_line">1.25dp</dimen>
+
+    <!--#########################################      行间距       ################################-->
+    <!--
+    一定行数的文字采用此间距，是文字内容看起来紧凑。例如：
+    动态列表的动内容;
+    个人中心和个人主页的简介；
+    聊天详情页的聊天内容；
+    输入框输入大量文字而引起换行；
+    除了a中的情况及其他特殊情况外其他时候均按1.3倍行间距处理
+    -->
+    <item name="line_spacing_Multiplier_normal" format="float" type="dimen"> 1.3</item>
+    <!--
+    有大段落的文字出现的情况，此时需要稍大的行间距，利于阅读。例如：
+    动态详情页；
+    文章详情页；
+    资讯详情页等
+    -->
+    <item name="line_spacing_Multiplier_big" format="float" type="dimen">1.7</item>
+>>>>>>> 5eb1174523744bea0c0756f5af31310a1467fb94
 </resources>

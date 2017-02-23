@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="match_parent"
              android:layout_height="match_parent">
@@ -27,3 +28,34 @@
         layout="@layout/include_empty_view"
         />
 </FrameLayout>
+=======
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
+
+    <!--<ImageView-->
+    <!--android:id="@+id/iv_tip"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:src="@mipmap/img_default_internet"/>-->
+
+    <WebView
+        android:id="@+id/wv_about_us"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </WebView>
+
+    <ProgressBar
+        android:id="@+id/pb_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pb_height"
+        android:max="@integer/progressbar_max"
+        android:progressDrawable="@drawable/pb_webview_style"/>
+
+    <include
+        layout="@layout/include_empty_view"
+        />
+</FrameLayout>
+>>>>>>> 5eb1174523744bea0c0756f5af31310a1467fb94

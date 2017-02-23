@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="utf-8"?>
 <TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -14,4 +15,22 @@
     android:paddingTop="@dimen/spacing_tiny"
     android:textColor="@color/white"
     android:textSize="@dimen/size_note_assist"
+=======
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tv_chat_time"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginTop="@dimen/spacing_mid"
+    android:background="@drawable/shape_bg_radus_deepgrey"
+    android:paddingBottom="@dimen/spacing_tiny"
+    android:paddingLeft="@dimen/spacing_normal"
+    android:paddingRight="@dimen/spacing_normal"
+    android:paddingTop="@dimen/spacing_tiny"
+    android:textColor="@color/white"
+    android:textSize="@dimen/size_note_assist"
+>>>>>>> 5eb1174523744bea0c0756f5af31310a1467fb94
     tools:text="一分钟前"/>

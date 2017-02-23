@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -36,3 +37,43 @@
         />
 </LinearLayout>
 
+=======
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:gravity="bottom"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_pop_item1"
+        style="@style/style_action_list_item"
+        tools:text="@string/choose_from_photo"
+        />
+
+    <TextView
+        android:id="@+id/tv_pop_item2"
+        style="@style/style_action_list_item"
+        android:layout_marginTop="@dimen/spacing_line"
+        tools:text="@string/choose_from_camera"
+        />
+
+    <TextView
+        android:id="@+id/tv_pop_item3"
+        style="@style/style_action_list_item"
+        android:layout_marginTop="@dimen/spacing_line"
+        tools:text="@string/choose_from_camera"
+        />
+
+    <TextView
+        android:id="@+id/tv_pop_bottom"
+        style="@style/style_action_list_item"
+        android:layout_marginTop="@dimen/spacing_normal"
+        tools:text="@string/cancel"
+        />
+</LinearLayout>
+
+>>>>>>> 5eb1174523744bea0c0756f5af31310a1467fb94

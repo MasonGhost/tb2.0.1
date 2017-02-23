@@ -1,7 +1,5 @@
 package com.zhiyicx.common.mvp.i;
 
-import android.content.Intent;
-
 /**
  * @Describe view 公用接口
  * @Author Jungle68
@@ -9,7 +7,8 @@ import android.content.Intent;
  * @Contact 335891510@qq.com
  */
 
-public interface IBaseView {
+public interface IBaseView<P>{
+    void setPresenter(P presenter);
     /**
      * 显示加载
      */
@@ -25,13 +24,4 @@ public interface IBaseView {
      */
     void showMessage(String message);
 
-    /**
-     * 跳转activity
-     */
-    void launchActivity(Intent intent);
-
-    /**
-     * 杀死自己
-     */
-    void killMyself();
 }

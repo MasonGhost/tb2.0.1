@@ -1,17 +1,15 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.1"
-
+    def gConfig = rootProject.extensions.getByName("ext")
+    compileSdkVersion gConfig.getAt("compileSdkVersion")
+    buildToolsVersion gConfig.getAt("buildToolsVersion")
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        minSdkVersion gConfig.getAt("minSdkVersion")
+        targetSdkVersion gConfig.getAt("targetSdkVersion")
+        versionCode gConfig.getAt("versionCode")
+        versionName gConfig.getAt("versionName")
+        testInstrumentationRunner gConfig.testDependencies.androidJUnitRunner
     }
     buildTypes {
         release {

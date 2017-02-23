@@ -2,21 +2,24 @@ package com.zhiyicx.thinksnsplus.base;
 
 import android.app.Application;
 
-import com.google.gson.Gson;
-import com.jess.arms.di.module.AppModule;
-import com.jess.arms.di.module.ClientModule;
-import com.jess.arms.di.module.ImageModule;
-import com.jess.arms.widget.imageloader.ImageLoader;
 import com.tbruyelle.rxpermissions.RxPermissions;
+import com.zhiyicx.common.dagger.module.AppModule;
+import com.zhiyicx.common.dagger.module.HttpClientModule;
+import com.zhiyicx.common.dagger.module.ImageModule;
+import com.zhiyicx.common.dagger.module.ShareModule;
+import com.zhiyicx.common.thridmanager.share.SharePolicy;
+import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.rxerrorhandler.RxErrorHandler;
+import com.zhiyicx.thinksnsplus.dagger.GreenDaoModule;
+import com.zhiyicx.thinksnsplus.data.source.local.CacheManager;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
+import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
 
 import javax.inject.Singleton;
 
 import dagger.Component;
-import me.jessyan.mvparms.demo.di.module.CacheModule;
-import me.jessyan.mvparms.demo.di.module.ServiceModule;
-import me.jessyan.mvparms.demo.mvp.model.api.cache.CacheManager;
-import me.jessyan.mvparms.demo.mvp.model.api.service.ServiceManager;
-import me.jessyan.rxerrorhandler.core.RxErrorHandler;
 import okhttp3.OkHttpClient;
 
 /**
@@ -27,8 +30,10 @@ import okhttp3.OkHttpClient;
  */
 
 @Singleton
-@Component(modules = {AppModule.class, ClientModule.class, ServiceModule.class, ImageModule.class, CacheModule.class})
-public interface AppComponent {
+@Component(modules = {AppModule.class, HttpClientModule.class, ServiceModule.class, CacheModule.class, ImageModule.class, ShareModule.class, GreenDaoModule.class})
+public interface AppComponent extends InjectComponent<AppApplication> {
+    void inject(BackgroundTaskHandler backgroundTaskHandler);
+
     Application Application();
 
     //服务管理器,retrofitApi
@@ -48,6 +53,9 @@ public interface AppComponent {
     //图片管理器,用于加载图片的管理类,默认使用glide,使用策略模式,可替换框架
     ImageLoader imageLoader();
 
-    //gson
-    Gson gson();
+    SharePolicy sharePolicy();
+
+    AuthRepository authRepository();
+
+    UserInfoBeanGreenDaoImpl userInfoBeanGreenDao();
 }

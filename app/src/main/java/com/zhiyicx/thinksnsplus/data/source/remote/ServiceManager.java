@@ -13,18 +13,48 @@ import javax.inject.Singleton;
 
 @Singleton
 public class ServiceManager {
-    private CommonService mCommonService;
+    private CommonClient mCommonClient;
+    private LoginClient mLoginClient;
+    private RegisterClient mRegisterClient;
+    private PasswordClient mPasswordClient;
+    private UserInfoClient mUserInfoClient;
 
     /**
      * 如果需要添加 service 只需在构造方法中添加对应的 service,在提供 get 方法返回出去,只要在 ServiceModule 提供了该 service
      * Dagger2 会自行注入
-     * @param commonService
+     *
+     * @param commonClient
      */
-    @Inject public ServiceManager(CommonService commonService){
-        this.mCommonService = commonService;
+    @Inject
+    public ServiceManager(CommonClient commonClient
+            , LoginClient loginClient
+            , RegisterClient registerClient
+            , PasswordClient passwordClient
+            , UserInfoClient userInfoClient) {
+        this.mCommonClient = commonClient;
+        this.mLoginClient = loginClient;
+        this.mRegisterClient = registerClient;
+        this.mUserInfoClient = userInfoClient;
+        this.mPasswordClient = passwordClient;
     }
 
-    public CommonService getCommonService() {
-        return mCommonService;
+    public CommonClient getCommonClient() {
+        return mCommonClient;
+    }
+
+    public LoginClient getLoginClient() {
+        return mLoginClient;
+    }
+
+    public RegisterClient getRegisterClient() {
+        return mRegisterClient;
+    }
+
+    public UserInfoClient getUserInfoClient() {
+        return mUserInfoClient;
+    }
+
+    public PasswordClient getPasswordClient() {
+        return mPasswordClient;
     }
 }

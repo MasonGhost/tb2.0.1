@@ -1,7 +1,16 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <!--登录注册编辑框左边的文字宽度-->
     <dimen name="edit_lefttext_width">60dp</dimen>
 
+=======
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--登录注册编辑框左边的文字宽度-->
+    <dimen name="edit_lefttext_width">60dp</dimen>
+
+>>>>>>> 5eb1174523744bea0c0756f5af31310a1467fb94
 </resources>

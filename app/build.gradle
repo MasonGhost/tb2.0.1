@@ -1,7 +1,12 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
-
-
+apply plugin: 'org.greenrobot.greendao'
+apply plugin: 'jacoco' //测试报告
+apply from: "$rootDir/jacocoCoverage.gradle"
+jacoco {
+    toolVersion = "0.7.8"
+    reportsDir = file("$buildDir/customJacocoReportDir")
+}
 android {
     def gConfig = rootProject.extensions.getByName("ext")
     compileSdkVersion gConfig.getAt("compileSdkVersion")
@@ -13,6 +18,12 @@ android {
         versionCode gConfig.getAt("versionCode")
         versionName gConfig.getAt("versionName")
         testInstrumentationRunner gConfig.testDependencies.androidJUnitRunner
+
+        ndk {
+            //选择要添加的对应cpu类型的.so库。
+            abiFilters 'armeabi', 'armeabi-v7a', 'armeabi-v8a', 'x86', 'x86_64', 'mips', 'mips64'
+        }
+        multiDexEnabled true
     }
     packagingOptions {
         exclude 'LICENSE.txt'
@@ -48,11 +59,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.debug
+            testCoverageEnabled true
         }
-
         release {
             minifyEnabled false
-            shrinkResources true
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.debug
         }
@@ -63,8 +74,35 @@ android {
         disable "ResourceType"
         abortOnError false
     }
-}
+    /**
+     * 保证 testDebug 执行完成后会执行 testRelease
+     * ｛@Link http://g.co/androidstudio/not-mocked｝
+     *
+     */
+    testOptions {
+        unitTests.all {
+            // All the usual Gradle options.
+            jvmArgs '-XX:MaxPermSize=256m'
+            // resolve "Method ... not mocked."
+            jacoco {
+                includeNoLocationClasses = true
+            }
+        }
+        unitTests.returnDefaultValues = true
 
+    }
+}
+greendao {
+    /**
+     * daoPackage 生成的DAO，DaoMaster和DaoSession的包名。默认是实体的包名。
+     * targetGenDir 生成源文件的路径。默认源文件目录是在build目录中的(build/generated/source/greendao)。
+     * generateTests 设置是否自动生成单元测试。
+     * targetGenDirTest 生成的单元测试的根目录。
+     */
+    schemaVersion 1
+    //daoPackage 'com.zhiyicx.common.greendao.gen'
+    //targetGenDir 'src/main/java'
+}
 buildscript {
     repositories {
         jcenter()
@@ -74,17 +112,45 @@ buildscript {
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }
-
+configurations.all {
+    resolutionStrategy {
+        force 'com.android.support:support-annotations:25.0.1'
+        force 'com.google.code.findbugs:jsr305:1.3.9'
+    }
+}
 dependencies {
     def dataDependences = rootProject.ext.dataDependencies;
+    def testDependences = rootProject.ext.testDependencies;
+
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
+    // Test
+    testCompile testDependences.junit
+    androidTestCompile(testDependences.espresso) {
+        exclude module: 'support-annotations'
+        exclude group: 'javax.inject'
+    }
+    testCompile testDependences.runner
+    testCompile testDependences.robolectric
+    testCompile testDependences.mockito
+    androidTestApt dataDependences.daggerCompiler
+    // Dagger dependencies
+    compile dataDependences.dagger
+    provided dataDependences.javaxAnnotation
+    provided dataDependences.daggerCompiler
+    apt dataDependences.daggerCompiler
     // Butterknife
     compile dataDependences.butterknife
     apt dataDependences.butterknifeApt
     // Project
-    compile project(":common")
+    compile project(":baseproject")
 
-
+    // database
+    compile dataDependences.greendao
+    compile dataDependences.greendaoSqlcipher
+    //compile dataDependences.greendaoGenerator
+    compile 'com.android.support:appcompat-v7:25.0.1'
+    compile 'com.android.support:support-v4:25.0.1'
 }
+

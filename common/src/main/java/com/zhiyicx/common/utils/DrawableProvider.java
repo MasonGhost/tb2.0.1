@@ -184,6 +184,7 @@ public class DrawableProvider {
                 case ExifInterface.ORIENTATION_ROTATE_270:
                     degree = 270;
                     break;
+                default:
             }
         } catch (IOException e) {
             e.printStackTrace();

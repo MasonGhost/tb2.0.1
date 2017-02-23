@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--#########################################      头像尺寸       ################################-->
@@ -20,4 +21,28 @@
     聊详情页头像、修改资料-更换头像
     -->
     <dimen name="headpic_for_assist">26dp</dimen>
+=======
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--#########################################      头像尺寸       ################################-->
+
+    <!--
+    用户个人主页头像
+    -->
+    <dimen name="headpic_for_user_home">70dp</dimen>
+    <!--
+    个人中心头像
+    -->
+    <dimen name="headpic_for_user_center">60dp</dimen>
+    <!--
+    动态/消息/赞过的/排行榜/粉丝/评论的 列表头像、
+    聊详情页头像、修改资料-更换头像
+    -->
+    <dimen name="headpic_for_list">38dp</dimen>
+    <!--
+    动态/消息/赞过的/排行榜/粉丝/评论的 列表头像、
+    聊详情页头像、修改资料-更换头像
+    -->
+    <dimen name="headpic_for_assist">26dp</dimen>
+>>>>>>> 5eb1174523744bea0c0756f5af31310a1467fb94
 </resources>

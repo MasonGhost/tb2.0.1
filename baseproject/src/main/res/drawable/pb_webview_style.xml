@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -23,4 +24,31 @@
         </clip>
     </item>
 
+=======
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 底色 -->
+    <item android:id="@android:id/background">
+        <shape>
+            <gradient
+                android:centerColor="@color/white"
+                android:endColor="@color/white"
+                android:startColor="@color/white"/>
+        </shape>
+    </item>
+
+    <!-- 进度色 -->
+    <item android:id="@android:id/progress">
+        <clip>
+            <shape>
+                <gradient
+                    android:centerColor="@color/bg_pb_cover"
+                    android:endColor="@color/bg_pb_cover"
+                    android:startColor="@color/bg_pb_cover"/>
+            </shape>
+        </clip>
+    </item>
+
+>>>>>>> 5eb1174523744bea0c0756f5af31310a1467fb94
 </layer-list>

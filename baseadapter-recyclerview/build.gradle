@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 apply plugin: 'com.android.library'
 
 android {
@@ -29,3 +30,36 @@ dependencies {
     compile sdkSoupportDependences.recyclerview
 
 }
+=======
+apply plugin: 'com.android.library'
+
+android {
+    def gConfig = rootProject.extensions.getByName("ext")
+    compileSdkVersion gConfig.getAt("compileSdkVersion")
+    buildToolsVersion gConfig.getAt("buildToolsVersion")
+    defaultConfig {
+        minSdkVersion gConfig.getAt("minSdkVersion")
+        targetSdkVersion gConfig.getAt("targetSdkVersion")
+        versionCode gConfig.getAt("versionCode")
+        versionName gConfig.getAt("versionName")
+        testInstrumentationRunner gConfig.testDependencies.androidJUnitRunner
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    def sdkSoupportDependences = rootProject.ext.sdksoupportDependencies;
+    def testDependences = rootProject.ext.testDependencies;
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Test
+    testCompile testDependences.junit
+    compile sdkSoupportDependences.recyclerview
+
+}
+>>>>>>> 5eb1174523744bea0c0756f5af31310a1467fb94

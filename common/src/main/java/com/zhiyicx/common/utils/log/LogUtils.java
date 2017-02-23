@@ -13,23 +13,25 @@ import com.zhiyicx.common.BuildConfig;
 
 public class LogUtils {
     private static final String APPLICATION_TAG = "LogUtils";
-    public static final int LOGGER_METHODCOUNT = 3;
+    public static final int LOGGER_METHODCOUNT = 5;
     public static final int LOGGER_METHODOFFSET = 2;
 
     public static void init() {
         Logger
                 .init(APPLICATION_TAG)           // default PRETTYLOGGER or use just init()
-                .methodCount(3)                 // default 2
+                .methodCount(LOGGER_METHODCOUNT)                 // default 2
                 .hideThreadInfo()               // default shown
-                .logLevel(BuildConfig.DEBUG?LogLevel.FULL:LogLevel.NONE)        // default LogLevel.FULL
-                .methodOffset(2);              // default 0
+                .logLevel(BuildConfig.USE_LOG?LogLevel.FULL:LogLevel.NONE)        // default LogLevel.FULL
+                .methodOffset(LOGGER_METHODOFFSET);              // default 0
         // .logAdapter(new AndroidLogAdapter()); //default AndroidLogAdapter
     }
 
     public static void d(String tag, Object object) {
         Logger.t(tag).d(object);
     }
-
+    public static void d(String tag,String message, Object... args) {
+        Logger.t(tag).d(message, args);
+    }
     public static void d(String message, Object... args) {
         Logger.d(message, args);
     }
