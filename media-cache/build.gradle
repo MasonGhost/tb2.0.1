@@ -1,0 +1,38 @@
+apply plugin: 'com.android.library'
+apply plugin: 'bintray-release'
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.novoda:bintray-release:0.3.4'
+    }
+}
+
+
+android {
+    def gConfig = rootProject.extensions.getByName("ext")
+    compileSdkVersion gConfig.getAt("compileSdkVersion")
+    buildToolsVersion gConfig.getAt("buildToolsVersion")
+    defaultConfig {
+        minSdkVersion gConfig.getAt("minSdkVersion")
+        targetSdkVersion gConfig.getAt("targetSdkVersion")
+        versionCode gConfig.getAt("versionCode")
+        versionName gConfig.getAt("versionName")
+        testInstrumentationRunner gConfig.testDependencies.androidJUnitRunner
+    }
+}
+
+dependencies {
+    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+    compile 'org.slf4j:slf4j-android:1.7.21'
+}
+
+publish {
+    userOrg = 'alexeydanilov'
+    groupId = 'com.danikula'
+    artifactId = 'videocache'
+    publishVersion = android.defaultConfig.versionName
+    description = 'Cache support for android VideoView'
+    website = 'https://github.com/danikula/AndroidVideoCache'
+}
