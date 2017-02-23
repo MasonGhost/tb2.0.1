@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.photopicker;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -42,6 +43,7 @@ import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumListFragmen
 import static me.iwf.photopicker.PhotoPicker.DEFAULT_COLUMN_NUMBER;
 import static me.iwf.photopicker.PhotoPicker.DEFAULT_MAX_COUNT;
 import static me.iwf.photopicker.PhotoPicker.EXTRA_SHOW_GIF;
+import static me.iwf.photopicker.PhotoPicker.REQUEST_CODE;
 
 /**
  * @author LiuChao
@@ -51,6 +53,7 @@ import static me.iwf.photopicker.PhotoPicker.EXTRA_SHOW_GIF;
  */
 
 public class PhotoAlbumDetailsFragment extends TSFragment {
+    public static final int TO_VIEW_REQUEST_CODE = 1000;
     public final static String EXTRA_ORIGIN = "ORIGINAL_PHOTOS";
     private final static String EXTRA_COLUMN = "column";
     public final static String EXTRA_VIEW_INDEX = "view_index";
@@ -191,16 +194,9 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 bundle.putStringArrayList(EXTRA_VIEW_ALL_PHOTOS, (ArrayList<String>) allPhotos);
                 bundle.putStringArrayList(EXTRA_VIEW_SELECTED_PHOTOS, selectedPhotos);
                 bundle.putInt(EXTRA_MAX_COUNT, maxCount);
-                /*Intent intent = new Intent(getContext(), PhotoViewActivity.class);
-                intent.putExtras(bundle);
-                startActivity(intent);*/
-
                 Intent intent = new Intent(getContext(), PhotoViewActivity.class);
-                ActivityOptionsCompat options =
-                        ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
-                                v, "trans_photo");
                 intent.putExtras(bundle);
-                ActivityCompat.startActivity(getContext(), intent, options.toBundle());
+                startActivityForResult(intent, TO_VIEW_REQUEST_CODE);
             }
         });
     }
@@ -254,16 +250,12 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 bundle.putInt(EXTRA_MAX_COUNT, maxCount);
                 Intent intent1 = new Intent(getContext(), PhotoViewActivity.class);
                 intent1.putExtras(bundle);
-                startActivity(intent1);
+                startActivityForResult(intent1, TO_VIEW_REQUEST_CODE);
                 break;
             case R.id.bt_complete:
-                ArrayList<String> selectedPhotos = photoGridAdapter.getSelectedPhotoPaths();
-                // 完成图片选择，处理图片返回结果
-                // 在 PhotoSelectorImpl 中的 getLocalSelectedPhotos() 进行订阅
-                EventBus.getDefault().post(selectedPhotos, EventBusTagConfig.EVENT_COMPLETE_PHOTO_SELECT);
-                // 完成图片选择，处理图片返回结果
-                // 在 HomeFragment 中的 refreshDataAndUI() 方法进行订阅
-                EventBus.getDefault().post(selectedPhotos, EventBusTagConfig.EVENT_COMPLETE_DYNAMIC_PHOTO_SELECT);
+                Intent it = new Intent();
+                it.putStringArrayListExtra("photos", photoGridAdapter.getSelectedPhotoPaths());
+                getActivity().setResult(Activity.RESULT_OK, it);
                 getActivity().finish();
                 break;
             default:
@@ -281,5 +273,14 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         // 设置预览按钮的状态
         mTvPreview.setEnabled(selectedCount > 0);
         mBtComplete.setText(getString(R.string.album_selected_count, selectedCount, maxCount));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == TO_VIEW_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK, data);
+            getActivity().finish();
+        }
     }
 }

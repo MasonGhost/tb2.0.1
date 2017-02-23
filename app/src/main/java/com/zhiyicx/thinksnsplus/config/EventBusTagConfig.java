@@ -14,8 +14,6 @@ public class EventBusTagConfig {
     public static final String EVENT_BACKGROUND_TASK_CANT_NOT_DEAL = "event_background_task_cant_not_deal";// 后台任务处理
     public static final String EVENT_USERINFO_UPDATE = "event_userinfo_update";// 后台刷新用户信息
     public static final String EVENT_SELECTED_PHOTO_UPDATE = "event_selected_photo_update";// 刷新相册图片列表
-    public static final String EVENT_COMPLETE_PHOTO_SELECT = "event_complete_photo_select";// 完成图片选择
-    public static final String EVENT_COMPLETE_DYNAMIC_PHOTO_SELECT = "event_complete_dynamic_photo_select";// 选择发送带图片的动态，选择图片
 
     /*******************************************
      * IM 相关

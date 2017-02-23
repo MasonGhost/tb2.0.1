@@ -65,7 +65,6 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
         this.mFragment = mFragment;
         this.mContext = mFragment.getContext();
         this.mCropShape = cropShape;
-        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -170,36 +169,31 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                     mTIPhotoBackListener.getPhotoFailure("cannot crop");
                 }
             }
-            // 裁剪图片错误
-            if (resultCode == UCrop.RESULT_ERROR) {
-                final Throwable cropError = UCrop.getError(data);
-                if (cropError != null) {
-                    ToastUtils.showToast(cropError.getMessage());
+            // 从本地相册获取图片
+            if (requestCode == 1000) {
+                ArrayList<String> photos = data.getStringArrayListExtra("photos");
+                if (isNeededCraft()) {
+                    startToCraft(photos.get(0));
                 } else {
-                    ToastUtils.showToast("Unexpected error");
+                    List<ImageBean> imageBeanList = new ArrayList<>();
+                    for (String imgUrl : photos) {
+                        ImageBean imageBean = new ImageBean();
+                        imageBean.setImgUrl(imgUrl);
+                        imageBeanList.add(imageBean);
+                    }
+                    mTIPhotoBackListener.getPhotoSuccess(imageBeanList);
                 }
-                mTIPhotoBackListener.getPhotoFailure(cropError.getMessage());
             }
         }
-    }
-
-    /**
-     * 通过eventBus获取选择的图片
-     */
-    @Subscriber(tag = "event_complete_photo_select")
-    public void getLocalSelectedPhotos(List<String> photos) {
-        // 从本地相册选择图片
-        // 是否需要剪裁，不需要就直接返回结果
-        if (isNeededCraft()) {
-            startToCraft(photos.get(0));
-        } else {
-            List<ImageBean> imageBeanList = new ArrayList<>();
-            for (String imgUrl : photos) {
-                ImageBean imageBean = new ImageBean();
-                imageBean.setImgUrl(imgUrl);
-                imageBeanList.add(imageBean);
+        // 裁剪图片错误
+        if (resultCode == UCrop.RESULT_ERROR) {
+            final Throwable cropError = UCrop.getError(data);
+            if (cropError != null) {
+                ToastUtils.showToast(cropError.getMessage());
+            } else {
+                ToastUtils.showToast("Unexpected error");
             }
-            mTIPhotoBackListener.getPhotoSuccess(imageBeanList);
+            mTIPhotoBackListener.getPhotoFailure(cropError.getMessage());
         }
     }
 
@@ -255,13 +249,6 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                 break;
             default:
         }
-    }
-
-    /**
-     * 做一些回收工作
-     */
-    public void onDestory() {
-        EventBus.getDefault().unregister(this);
     }
 
 }
