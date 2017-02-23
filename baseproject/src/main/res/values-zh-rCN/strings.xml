@@ -1,0 +1,70 @@
+<resources>
+    <!-- 异常输出内容 -->
+    <string name="err_share_no_content">分享内容不能为空</string>
+    <string name="err_net_not_work">当前网络状况不佳</string>
+    <string name="erro_argument_in_method">方法使用了不合法的参数</string>
+    <string name="data_load_error">数据加载失败</string>
+    <string name="no_data">没有任何内容</string>
+    <!-- 通用 -->
+    <string name="statistical_unit_million">万</string>
+    <string name="cancel">取消</string>
+    <string name="close">关闭</string>
+    <string name="seconds">秒后重发</string>
+    <string name="username">用户名</string>
+    <string name="password">密码</string>
+    <string name="old_password">旧密码</string>
+    <string name="new_password">新密码</string>
+    <string name="sure_new_password">确认新密码</string>
+    <string name="vertify_code">验证码</string>
+    <string name="phone_number">手机号</string>
+    <string name="send_vertify_code">获取验证码</string>
+    <string name="forget_password">忘记密码</string>
+    <string name="find_password">找回密码</string>
+    <string name="male">男</string>
+    <string name="female">女</string>
+    <string name="keep_secret">保密</string>
+    <string name="complete">完成</string>
+    <string name="send_success">发送成功</string>
+    <string name="send_failure">发送失败</string>
+    <string name="send">发送</string>
+    <string name="sure">确认</string>
+    <string name="change_head_icon">更换头像</string>
+
+    <!-- 注册 -->
+    <string name="regist">注册</string>
+    <string name="username_input_hint">输入2-8位用户名</string>
+    <string name="username_toast_hint">@string/username_input_hint</string>
+    <string name="username_toast_not_number_start_hint">用户名不能以数字开头</string>
+    <string name="username_toast_not_symbol_hint">用户名只能包含数字、字母和下划线</string>
+    <string name="immediate_regist">立即注册</string>
+    <string name="vertify_code_input_hint">输入验证码</string>
+    <string name="phone_number_input_hint">输入11位手机号</string>
+    <string name="phone_number_toast_hint">请输入正确的手机号</string>
+    <string name="password_input_hint">输入6位以上登录密码</string>
+    <string name="password_toast_hint">请输入6-16位密码</string>
+    <string name="old_password_toast_hint">请输入6-16位旧密码</string>
+    <string name="new_password_toast_hint">请输入6-16位新密码</string>
+    <string name="sure_new_password_toast_hint">请输入6-16位确认密码</string>
+    <string name="password_diffrent">新密码输入不一致</string>
+    <string name="find_password_success">找回密码成功</string>
+    <string name="change_password_success">修改密码成功</string>
+
+    <!-- 拍照相关 -->
+    <string name="choose_from_photo">从相册选取</string>
+    <string name="choose_from_camera">拍照</string>
+
+    <!--  登录  -->
+    <string name="bt_login">登录</string>
+    <string name="no_login">不登录，先随便逛逛</string>
+
+    <!-- 动态相关 -->
+    <string name="zero">0</string>
+    <string name="like">喜欢</string>
+    <string name="comment">评论</string>
+    <string name="share">分享</string>
+    <string name="more">更多</string>
+
+
+    <string name="see_origin_photo">查看原图</string>
+
+</resources>

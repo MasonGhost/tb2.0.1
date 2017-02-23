@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--主题色-->
+    <color name="themeColor">@color/important_for_theme</color>
+    <!--背景色-->
+    <color name="bgColor">@color/general_for_bg_light</color>
+    <color name="bgColor_alpha_0.5">@color/general_for_bg_light_alpha_0.5</color>
+    <!--titilebar背景色   your app's branding color (for the app bar) -->
+    <color name="colorPrimary">@color/themeColor</color>
+    <!--titlebar 文字颜色-->
+    <color name="textColorPrimary">@color/white</color>
+    <!--状态栏背景色   darker variant of colorPrimary (for status bar, contextual app bars) -->
+    <color name="colorPrimaryDark">@color/themeColor</color>
+    <!--checkbox或者dialog按钮颜色    theme UI controls like checkboxes and text fields-->
+    <color name="colorAccent">@color/themeColor</color>
+
+    <!--common-->
+    <color name="white">#ffffff</color>
+
+    <!--toolbar-->
+    <color name="toolbar_text_corlor_normal">#ffffff</color>
+
+    <!-- 聊天-->
+    <color name="chat_message_bubble_my_bgColor">#b3e1f2</color>
+    <color name="chat_message_bubble_my_strokeColor">#87c6dd</color>
+    <color name="chat_message_bubble_other_bgColor">#f7f7f7</color>
+    <color name="chat_message_bubble_other_strokeColor">#dee1e2</color>
+    <!--网页进度条-->
+    <color name="bg_pb_cover">#59b6d7</color>
+</resources>
