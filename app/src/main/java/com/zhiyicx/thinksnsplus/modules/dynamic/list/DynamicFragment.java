@@ -27,7 +27,7 @@ import javax.inject.Inject;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 
 /**
- * @Describe 消息评论
+ * @Describe 动态列表
  * @Author Jungle68
  * @Date 2017/1/17
  * @Contact master.jungle68@gmail.com
