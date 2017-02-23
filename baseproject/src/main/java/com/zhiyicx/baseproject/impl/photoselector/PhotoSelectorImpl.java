@@ -47,6 +47,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
 
     private static final int CAMERA_PHOTO_CODE = 8888;
     // 添加几种默认的裁剪框形状
+    public static final int NO_CRAFT = 0;// 不剪切
     public static final int SHAPE_SQUARE = 1;// 正方形
     public static final int SHAPE_RCTANGLE = 2;// 长方形，宽度占满
     private static final int SQUARE_LEFT_MARGIN = 36;// 裁剪框距离屏幕左边缘的距离；右边也是一样的
@@ -58,6 +59,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
     private Uri mTakePhotoUri;// 拍照后照片的uri
     private int mCropShape;
     private int maxCount;// 可选的最大图片数量
+    private boolean needCraft;// 针对单张图片进行剪切
 
     public PhotoSelectorImpl(IPhotoBackListener iPhotoBackListener, Fragment mFragment, int cropShape) {
         takePhotoFolder = new File(Environment.getExternalStorageDirectory(), "/DCIM/" + "TSPlusPhotoFolder/");
@@ -125,8 +127,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
      */
     @Override
     public boolean isNeededCraft() {
-
-        return maxCount <= 1;
+        return mCropShape != NO_CRAFT;
     }
 
     /**
