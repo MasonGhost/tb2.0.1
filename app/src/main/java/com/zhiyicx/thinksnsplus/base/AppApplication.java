@@ -6,13 +6,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
+import com.danikula.videocache.HttpProxyCacheServer;
 import com.google.gson.Gson;
 import com.zhiyicx.baseproject.base.TSApplication;
+import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.net.HttpsSSLFactroyUtils;
 import com.zhiyicx.common.net.intercept.CommonRequestIntercept;
 import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.utils.ActivityHandler;
+import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.manage.ZBIMSDK;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
@@ -23,6 +26,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -49,8 +53,8 @@ public class AppApplication extends TSApplication {
     @Inject
     AuthRepository mAuthRepository;
     private AlertDialog alertDialog; // token 过期弹框
-
     private static AuthBean mCurrentLoginAuth; //当前登录用户的信息
+    private static HttpProxyCacheServer mMediaProxyCacheServer;
 
     @Override
     public void onCreate() {
@@ -84,7 +88,8 @@ public class AppApplication extends TSApplication {
     public RequestInterceptListener getHttpHandler() {
         return new RequestInterceptListener() {
             @Override
-            public Response onHttpResponse(String httpResult, Interceptor.Chain chain, Response response) {
+            public Response onHttpResponse(String httpResult, Interceptor.Chain chain, Response
+                    response) {
                 // 这里可以先客户端一步拿到每一次http请求的结果,可以解析成json,做一些操作,如检测到token过期后
                 // token过期，调到登陆页面重新请求token,
                 LogUtils.i("baseJson-->" + httpResult);
@@ -101,19 +106,32 @@ public class AppApplication extends TSApplication {
                                 @Override
                                 public void call() {
                                     if (alertDialog == null) {
-                                        alertDialog = new AlertDialog.Builder(ActivityHandler.getInstance().currentActivity())
+                                        alertDialog = new AlertDialog.Builder(ActivityHandler
+                                                .getInstance().currentActivity())
                                                 .setTitle(R.string.token_expiers)
-                                                .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                                        // TODO: 2017/2/8  清理登录信息 token 信息
-                                                        mAuthRepository.clearAuthBean();
-                                                        BackgroundTaskManager.getInstance(getContext()).closeBackgroundTask();// 关闭后台任务
-                                                        Intent intent = new Intent(getContext(), LoginActivity.class);
-                                                        ActivityHandler.getInstance().currentActivity().startActivity(intent);
-                                                        alertDialog.dismiss();
-                                                    }
-                                                })
+                                                .setPositiveButton(R.string.sure, new
+                                                        DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(DialogInterface
+                                                                                        dialogInterface,
+                                                                                int i) {
+                                                                // TODO: 2017/2/8  清理登录信息 token 信息
+                                                                mAuthRepository.clearAuthBean();
+                                                                BackgroundTaskManager.getInstance
+                                                                        (getContext())
+                                                                        .closeBackgroundTask();//
+                                                                // 关闭后台任务
+                                                                Intent intent = new Intent
+                                                                        (getContext(),
+                                                                                LoginActivity
+                                                                                        .class);
+                                                                ActivityHandler.getInstance()
+                                                                        .currentActivity()
+                                                                        .startActivity
+                                                                                (intent);
+                                                                alertDialog.dismiss();
+                                                            }
+                                                        })
                                                 .create();
                                     }
                                     alertDialog.show();
@@ -218,6 +236,23 @@ public class AppApplication extends TSApplication {
 
     public static void setmCurrentLoginAuth(AuthBean mCurrentLoginAuth) {
         AppApplication.mCurrentLoginAuth = mCurrentLoginAuth;
+    }
+
+    public static HttpProxyCacheServer getProxy() {
+        return AppApplication.mMediaProxyCacheServer == null ? (AppApplication
+                .mMediaProxyCacheServer = newProxy()) : AppApplication.mMediaProxyCacheServer;
+    }
+
+    private static HttpProxyCacheServer newProxy() {
+        boolean b=FileUtils.createOrExistsDir(new File(FileUtils.getCacheFile(BaseApplication
+                .getContext())
+                ,"/media"));
+
+        return new HttpProxyCacheServer.Builder(BaseApplication.getContext())
+                .cacheDirectory(new File(FileUtils.getCacheFile(BaseApplication.getContext())
+                        ,"/media"))
+                .maxCacheFilesCount(100)
+                .build();
     }
 
 }
