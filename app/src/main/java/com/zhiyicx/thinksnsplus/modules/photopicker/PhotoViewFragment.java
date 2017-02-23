@@ -145,6 +145,7 @@ public class PhotoViewFragment extends TSFragment {
                 mBtComplete.setEnabled(seletedPaths.size() > 0);
                 mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(), maxCount));
                 // 通知图片列表进行刷新
+                // 在 PhotoAlbumDetailsFragment 的 refreshDataAndUI() 方法中进行订阅
                 EventBus.getDefault().post(seletedPaths, EventBusTagConfig.EVENT_SELECTED_PHOTO_UPDATE);
             }
         });
@@ -260,6 +261,11 @@ public class PhotoViewFragment extends TSFragment {
             activity.finish();
         }
         getActivity().finish();
+        // 完成图片选择，处理图片返回结果
+        // 在 PhotoSelectorImpl 中的 getLocalSelectedPhotos() 进行订阅
         EventBus.getDefault().post(seletedPaths, EventBusTagConfig.EVENT_COMPLETE_PHOTO_SELECT);
+        // 完成图片选择，处理图片返回结果
+        // 在 HomeFragment 中的 refreshDataAndUI() 方法进行订阅
+        EventBus.getDefault().post(seletedPaths, EventBusTagConfig.EVENT_COMPLETE_DYNAMIC_PHOTO_SELECT);
     }
 }

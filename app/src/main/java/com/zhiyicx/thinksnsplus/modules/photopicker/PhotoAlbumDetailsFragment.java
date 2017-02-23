@@ -200,7 +200,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                         ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
                                 v, "trans_photo");
                 intent.putExtras(bundle);
-                ActivityCompat.startActivity(getContext(),intent, options.toBundle());
+                ActivityCompat.startActivity(getContext(), intent, options.toBundle());
             }
         });
     }
@@ -258,9 +258,13 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 break;
             case R.id.bt_complete:
                 ArrayList<String> selectedPhotos = photoGridAdapter.getSelectedPhotoPaths();
-                getActivity().finish();
+                // 完成图片选择，处理图片返回结果
+                // 在 PhotoSelectorImpl 中的 getLocalSelectedPhotos() 进行订阅
                 EventBus.getDefault().post(selectedPhotos, EventBusTagConfig.EVENT_COMPLETE_PHOTO_SELECT);
+                // 完成图片选择，处理图片返回结果
+                // 在 HomeFragment 中的 refreshDataAndUI() 方法进行订阅
                 EventBus.getDefault().post(selectedPhotos, EventBusTagConfig.EVENT_COMPLETE_DYNAMIC_PHOTO_SELECT);
+                getActivity().finish();
                 break;
             default:
         }
@@ -278,27 +282,4 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         mTvPreview.setEnabled(selectedCount > 0);
         mBtComplete.setText(getString(R.string.album_selected_count, selectedCount, maxCount));
     }
-
-    private class PhotoGridLine extends RecyclerView.ItemDecoration {
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            super.getItemOffsets(outRect, view, parent, state);
-            int position = parent.getChildLayoutPosition(view);
-            // 第一列item，左边距为0
-            if (position % 4 == 0) {
-                outRect.left = 0;
-            } else {
-                // 其余的列的左边距为5dp
-                outRect.left = 50;
-            }
-
-            // 所有的item的右边距为0
-            outRect.right = 0;
-            outRect.top = 50;
-            outRect.bottom = 0;
-
-        }
-    }
-
 }
