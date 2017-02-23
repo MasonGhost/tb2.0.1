@@ -97,7 +97,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 });
         mTvTopTip = (TextView) rootView.findViewById(R.id.tv_top_tip_text);
         mEmptyView = new EmptyView(getContext());
-        mEmptyView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT));
+        mEmptyView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mEmptyView.setErrorImag(setEmptView());
         mEmptyView.setNeedTextTip(false);
         mEmptyView.setNeedClickLoadState(false);
@@ -107,6 +107,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                     @Override
                     public void call(Void aVoid) {
                         mRefreshlayout.beginRefreshing();
+                        mRefreshlayout.beginLoadingMore();
                     }
                 });
         mRefreshlayout.setDelegate(this);
@@ -121,7 +122,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mAdapter = getAdapter();
         mRvList.setAdapter(mAdapter);
         mRefreshlayout.setRefreshViewHolder(new TSPRefreshViewHolder(getActivity(), isLoadingMoreEnable()));
-        mRefreshlayout.setIsShowLoadingMoreView(getIsShowLoadingMore());
         mRefreshlayout.setPullDownRefreshEnable(getPullDownRefreshEnable());
         mEmptyWrapper = new EmptyWrapper(mAdapter);
         mEmptyWrapper.setEmptyView(mEmptyView);
@@ -337,8 +337,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void onCacheResponseSuccess(@NotNull List<T> data, boolean isLoadMore) {
+        handleRefreshState(isLoadMore);
         if (!isLoadMore && (data == null || data.size() == 0)) {// 如果没有缓存，直接拉取服务器数据
-            onBGARefreshLayoutBeginRefreshing(mRefreshlayout);
+            mRefreshlayout.beginRefreshing();
         } else {
             handleReceiveData(data, isLoadMore);
         }

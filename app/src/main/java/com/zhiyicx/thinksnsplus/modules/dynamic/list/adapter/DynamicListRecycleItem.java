@@ -58,13 +58,11 @@ public class DynamicListRecycleItem extends DynamicListBaseItem {
 
     @Override
     public boolean isForViewType(DynamicBean item, int position) {
-//        return item.getFeed().getStorage().size() == IMAGE_COUNTS_1
-//                || item.getFeed().getStorage().size() == IMAGE_COUNTS_2
-//                || item.getFeed().getStorage().size() == IMAGE_COUNTS_3
-//                || item.getFeed().getStorage().size() == IMAGE_COUNTS_4
-//                || item.getFeed().getStorage().size() == IMAGE_COUNTS_9;
-//        return item.getFeed().getStorage().size() != 5;
-        return false;
+        return item.getFeed().getStorage().size() == IMAGE_COUNTS_1
+                || item.getFeed().getStorage().size() == IMAGE_COUNTS_2
+                || item.getFeed().getStorage().size() == IMAGE_COUNTS_3
+                || item.getFeed().getStorage().size() == IMAGE_COUNTS_4
+                || item.getFeed().getStorage().size() == IMAGE_COUNTS_9;
     }
 
     @Override

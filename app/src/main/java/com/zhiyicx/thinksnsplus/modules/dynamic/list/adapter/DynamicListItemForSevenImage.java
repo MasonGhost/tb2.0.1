@@ -22,23 +22,23 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 
-public class DynamicListItemForFiveImage extends DynamicListBaseItem {
-    private static final int IMAGE_COUNTS = 5;// 动态列表图片数量
+public class DynamicListItemForSevenImage extends DynamicListBaseItem {
+    private static final int IMAGE_COUNTS = 7;// 动态列表图片数量
 
-    public DynamicListItemForFiveImage(Context context) {
+    public DynamicListItemForSevenImage(Context context) {
         super(context);
-
     }
 
     @Override
     public int getItemViewLayoutId() {
-        return R.layout.item_dynamic_list_five_image;
+        return R.layout.item_dynamic_list_seven_image;
     }
 
     @Override
     public boolean isForViewType(DynamicBean item, int position) {
         return item.getFeed().getStorage().size() == IMAGE_COUNTS;
     }
+
 
     @Override
     public void convert(ViewHolder holder, final DynamicBean dynamicBean, DynamicBean lastT, int position) {
@@ -48,6 +48,8 @@ public class DynamicListItemForFiveImage extends DynamicListBaseItem {
         initImageView((ImageView) holder.getView(R.id.siv_2), dynamicBean, 2);
         initImageView((ImageView) holder.getView(R.id.siv_3), dynamicBean, 3);
         initImageView((ImageView) holder.getView(R.id.siv_4), dynamicBean, 4);
+        initImageView((ImageView) holder.getView(R.id.siv_5), dynamicBean, 5);
+        initImageView((ImageView) holder.getView(R.id.siv_6), dynamicBean, 6);
     }
 
     /**
@@ -69,7 +71,7 @@ public class DynamicListItemForFiveImage extends DynamicListBaseItem {
                     }
                 });
         mImageLoader.loadImage(mContext, GlideImageConfig.builder()
-                .url("https://avatars0.githubusercontent.com/u/7939686?v=3&s=40") // TODO: 2017/2/22 需要添加图片前最地址dynamicBean.getFeed().getStorage().get(positon)+
+                .url("http://wx4.sinaimg.cn/thumbnail/6c2fc79ely1fcss6ufxbaj20do0i8n4a.jpg") // TODO: 2017/2/22 需要添加图片前最地址dynamicBean.getFeed().getStorage().get(positon)+
                 .imagerView(view)
                 .build());
     }

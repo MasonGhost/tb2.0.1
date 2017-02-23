@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -8,13 +7,11 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
-import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
-import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
-import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForFiveImage;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForSevenImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForSixImage;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListRecycleItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.ArrayList;
@@ -58,12 +55,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
-    protected MultiItemTypeAdapter<DynamicBean> getAdapter() {
+    protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mDynamicBeens);
-//        DynamicListRecycleItem dynamicListBaseItem = new DynamicListRecycleItem(getContext());
-//        dynamicListBaseItem.setOnImageClickListener(this);
-//        dynamicListBaseItem.setOnUserInfoClickListener(this);
-//        adapter.addItemViewDelegate(dynamicListBaseItem);
+        DynamicListRecycleItem dynamicListBaseItem = new DynamicListRecycleItem(getContext());
+        dynamicListBaseItem.setOnImageClickListener(this);
+        dynamicListBaseItem.setOnUserInfoClickListener(this);
+        adapter.addItemViewDelegate(dynamicListBaseItem);
         DynamicListItemForFiveImage dynamicListItemForFiveImage = new DynamicListItemForFiveImage(getContext());
         dynamicListItemForFiveImage.setOnImageClickListener(this);
         dynamicListItemForFiveImage.setOnUserInfoClickListener(this);
@@ -72,6 +69,10 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         dynamicListItemForSixImage.setOnImageClickListener(this);
         dynamicListItemForSixImage.setOnUserInfoClickListener(this);
         adapter.addItemViewDelegate(dynamicListItemForSixImage);
+        DynamicListItemForSevenImage dynamicListItemForSevenImage = new DynamicListItemForSevenImage(getContext());
+        dynamicListItemForSevenImage.setOnImageClickListener(this);
+        dynamicListItemForSevenImage.setOnUserInfoClickListener(this);
+        adapter.addItemViewDelegate(dynamicListItemForSevenImage);
         return adapter;
     }
 
@@ -86,27 +87,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         super.initData();
     }
 
-    /**
-     * 进入聊天页
-     *
-     * @param messageItemBean
-     */
-    private void toChat(MessageItemBean messageItemBean) {
-        Intent to = new Intent(getActivity(), ChatActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ChatFragment.BUNDLE_MESSAGEITEMBEAN, messageItemBean);
-        to.putExtras(bundle);
-        startActivity(to);
-    }
-
-    /**
-     * 前往用户个人中心
-     */
-    private void toUserCenter() {
-        Intent to = new Intent(getActivity(), UserInfoActivity.class);
-        startActivity(to);
-    }
-
     @Override
     public void setPresenter(DynamicContract.Presenter presenter) {
         mPresenter = presenter;
@@ -119,6 +99,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void hideLoading() {
+        mRefreshlayout.endRefreshing();
         mRefreshlayout.endLoadingMore();
     }
 

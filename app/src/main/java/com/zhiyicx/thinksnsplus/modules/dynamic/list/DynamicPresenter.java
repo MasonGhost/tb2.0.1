@@ -48,7 +48,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
     @Override
     public List<DynamicBean> requestCacheData(int minTime, boolean isLoadMore) {
         List<DynamicBean> datas = new ArrayList<>();
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < 9; i++) {
             DynamicBean dynamicBean = new DynamicBean();
             dynamicBean.setUser_id(3);
             dynamicBean.setUserInfoBean(AppApplication.AppComponentHolder.getAppComponent()
@@ -64,7 +64,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
             dynamicDetailBean.setTitle(i + "我知道觉得关键看感觉绝对客观艰苦的房价过快封建快攻打法就是");
             List<Integer> images = new ArrayList<>();
             for (int i1 = 0; i1 < i; i1++) {
-                images.add(i1+1);
+                images.add(i1);
             }
             dynamicDetailBean.setStorage(images);
             dynamicBean.setFeed(dynamicDetailBean);
@@ -76,7 +76,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<DynamicBean> data) {
-        return false;
+        return true;
     }
 
 }

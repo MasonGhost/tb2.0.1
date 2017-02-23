@@ -255,7 +255,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     public void hideLoading() {
         mRefreshlayout.endRefreshing();
         mHeaderAndFooterWrapper.notifyDataSetChanged();
-        System.out.println("mMessageItemBeen =--------------------- " + mMessageItemBeen.toString());
     }
 
     @Override
