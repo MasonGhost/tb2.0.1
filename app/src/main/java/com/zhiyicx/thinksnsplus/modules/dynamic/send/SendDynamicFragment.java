@@ -167,7 +167,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         mPhotoSelector = DaggerPhotoSelectorImplComponent
                 .builder()
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
-                        .SHAPE_RCTANGLE))
+                        .NO_CRAFT))
                 .build().photoSelectorImpl();
     }
 

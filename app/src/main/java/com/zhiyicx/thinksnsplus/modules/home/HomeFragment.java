@@ -283,7 +283,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         mPhotoSelector = DaggerPhotoSelectorImplComponent
                 .builder()
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
-                        .SHAPE_RCTANGLE))
+                        .NO_CRAFT))
                 .build().photoSelectorImpl();
     }
     
