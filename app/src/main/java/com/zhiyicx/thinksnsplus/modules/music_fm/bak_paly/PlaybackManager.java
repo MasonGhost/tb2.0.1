@@ -1,19 +1,3 @@
-/*
-* Copyright (C) 2014 The Android Open Source Project
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
-
 package com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly;
 
 import android.content.res.Resources;
@@ -23,8 +7,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
-import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProvider;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
 
 /**
  * @Author Jliuer
@@ -35,6 +19,13 @@ import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProvider;
 public class PlaybackManager implements Playback.Callback {
 
     private static final String CUSTOM_ACTION_THUMBS_UP = "com.zhiyicx.thinksnsplus.THUMBS_UP";
+
+    /**
+     * 播放模式
+     */
+    public static final int ORDERRANDOM = 0;
+    public static final int ORDERSINGLE = 1;
+    public static final int ORDERLOOP = 2;
 
     private MusicProvider mMusicProvider;
 
@@ -48,6 +39,8 @@ public class PlaybackManager implements Playback.Callback {
 
     private MediaSessionCallback mMediaSessionCallback;
 
+    private int orderType = ORDERLOOP;
+
     public PlaybackManager(PlaybackServiceCallback serviceCallback, Resources resources,
                            MusicProvider musicProvider, QueueManager queueManager,
                            Playback playback) {
@@ -58,14 +51,6 @@ public class PlaybackManager implements Playback.Callback {
         mMediaSessionCallback = new MediaSessionCallback();
         mPlayback = playback;
         mPlayback.setCallback(this);
-    }
-
-    public Playback getPlayback() {
-        return mPlayback;
-    }
-
-    public MediaSessionCompat.Callback getMediaSessionCallback() {
-        return mMediaSessionCallback;
     }
 
     public void handlePlayRequest() {
@@ -101,7 +86,6 @@ public class PlaybackManager implements Playback.Callback {
 
         setCustomAction(stateBuilder);
         int state = mPlayback.getState();
-
 
         if (error != null) {
             stateBuilder.setErrorMessage(error);
@@ -155,15 +139,37 @@ public class PlaybackManager implements Playback.Callback {
 
     @Override
     public void onCompletion() {
-        // The media player finished playing the current song, so we go ahead
-        // and start the next.
-        if (mQueueManager.skipQueuePosition(1)) {
-            handlePlayRequest();
-            mQueueManager.updateMetadata();
-        } else {
-            // If skipping was not possible, we stop and release the resources:
-            handleStopRequest(null);
+        switch (orderType) {
+            case ORDERRANDOM:
+                mQueueManager.setRandomQueue();
+                if (mQueueManager.skipQueuePosition(1)) {
+                    handlePlayRequest();
+                    mQueueManager.updateMetadata();
+                } else {
+                    // If skipping was not possible, we stop and release the resources:
+                    handleStopRequest(null);
+                }
+                break;
+            case ORDERSINGLE:
+                if (mQueueManager.skipQueuePosition(0)) {
+                    handlePlayRequest();
+                    mQueueManager.updateMetadata();
+                } else {
+                    // If skipping was not possible, we stop and release the resources:
+                    handleStopRequest(null);
+                }
+                break;
+            case ORDERLOOP:
+                if (mQueueManager.skipQueuePosition(1)) {
+                    handlePlayRequest();
+                    mQueueManager.updateMetadata();
+                } else {
+                    // If skipping was not possible, we stop and release the resources:
+                    handleStopRequest(null);
+                }
+                break;
         }
+
     }
 
     @Override
@@ -179,6 +185,11 @@ public class PlaybackManager implements Playback.Callback {
     @Override
     public void setCurrentMediaId(String mediaId) {
         mQueueManager.setQueueFromMusic(mediaId);
+    }
+
+    @Override
+    public void onBuffering(int percent) {
+        onBuffering(percent);
     }
 
     public void switchToPlayback(Playback playback, boolean resumePlaying) {
@@ -286,6 +297,7 @@ public class PlaybackManager implements Playback.Callback {
                 }
                 updatePlaybackState(null);
             } else {
+
             }
         }
 
@@ -303,6 +315,24 @@ public class PlaybackManager implements Playback.Callback {
         }
     }
 
+    public Playback getPlayback() {
+        return mPlayback;
+    }
+
+    public MediaSessionCompat.Callback getMediaSessionCallback() {
+        return mMediaSessionCallback;
+    }
+
+    public int getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(int orderType) {
+        if (orderType > 2 && orderType < 0) {
+            return;
+        }
+        this.orderType = orderType;
+    }
 
     public interface PlaybackServiceCallback {
         void onPlaybackStart();
@@ -312,5 +342,7 @@ public class PlaybackManager implements Playback.Callback {
         void onPlaybackStop();
 
         void onPlaybackStateUpdated(PlaybackStateCompat newState);
+
+        void onBuffering(int percent);
     }
 }
