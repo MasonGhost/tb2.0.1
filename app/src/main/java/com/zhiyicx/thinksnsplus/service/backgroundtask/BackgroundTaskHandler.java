@@ -288,11 +288,11 @@ public class BackgroundTaskHandler {
         if (backgroundRequestTaskBean.getParams() == null || backgroundRequestTaskBean.getParams().get("user_id") == null) {
             return;
         }
-        List<Integer> integers = new ArrayList<>();
+        List<Long> integers = new ArrayList<>();
         if (backgroundRequestTaskBean.getParams().get("user_id") instanceof List) {
-            integers.addAll((Collection<? extends Integer>) backgroundRequestTaskBean.getParams().get("user_id"));
+            integers.addAll((Collection<? extends Long>) backgroundRequestTaskBean.getParams().get("user_id"));
         } else {
-            integers.add((Integer) backgroundRequestTaskBean.getParams().get("user_id"));
+            integers.add((Long) backgroundRequestTaskBean.getParams().get("user_id"));
         }
 
         mUserInfoRepository.getUserInfo(integers)

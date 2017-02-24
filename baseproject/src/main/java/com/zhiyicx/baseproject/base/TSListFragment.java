@@ -38,7 +38,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 
 public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends BaseListBean> extends TSFragment<P> implements BGARefreshLayout.BGARefreshLayoutDelegate, ITSListView<T, P> {
-    public static final int DEFAULT_PAGE_MAX_ID = 0;// 默认初始化列表 id
+    public static final Long DEFAULT_PAGE_MAX_ID = 0L;// 默认初始化列表 id
+    public static final int DEFAULT_PAGE = 1;// 默认初始化列表分页，只对当 max_id 无法使用时有效，如热门动态
 
     private static final int DEFAULT_TIP_STICKY_TIME = 3000;
     private static final float DEFAULT_LIST_ITEM_SPACING = 0.5f;
@@ -59,7 +60,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     // 当前数据加载状态
     protected int mEmptyState = EmptyView.STATE_DEFAULT;
 
-    protected int mMaxId = DEFAULT_PAGE_MAX_ID; // 纪录当前列表 item id 最大值，用于分页
+    protected Long mMaxId = DEFAULT_PAGE_MAX_ID; // 纪录当前列表 item id 最大值，用于分页
+
+    protected int mPage = DEFAULT_PAGE;// 只对当 max_id 无法使用时有效，如热门动态
 
     protected boolean mIsGetNetData = false; //  是否请求了网络数据
 
@@ -291,6 +294,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mEmptyWrapper.notifyItemChanged(index);
     }
 
+    @Override
+    public int getPage() {
+        return mPage;
+    }
+
     /**
      * 刷新
      *
@@ -299,6 +307,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
         mMaxId = DEFAULT_PAGE_MAX_ID;
+        mPage = DEFAULT_PAGE;
         requestNetData(mMaxId, false);
     }
 
@@ -313,6 +322,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         if (!mIsGetNetData) { // 如果没有获取过网络数据，加载更多就是获取本地数据，如果加载了网络数据了，加载更多就是获取网络数据
             onCacheResponseSuccess(requestCacheData(mMaxId, true), true);
         } else {
+            mPage++;
             requestNetData(mMaxId, true);
         }
         return true;

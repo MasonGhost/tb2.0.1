@@ -39,6 +39,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     private String mDynamicType = ApiConfig.DYNAMIC_TYPE_NEW;
 
+
     private List<DynamicBean> mDynamicBeens = new ArrayList<>();
 
     public static DynamicFragment newInstance(String dynamicType) {

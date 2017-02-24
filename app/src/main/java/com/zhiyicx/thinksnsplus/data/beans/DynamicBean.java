@@ -259,4 +259,9 @@ public class DynamicBean extends BaseListBean {
             return new DynamicBean[size];
         }
     };
+
+    @Override
+    public Long getMaxId() {
+        return feed_id;
+    }
 }
