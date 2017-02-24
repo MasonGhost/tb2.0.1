@@ -91,12 +91,12 @@ public class PhotoAlbumListFragment extends TSFragment {
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRvPhotoAlbumList.setLayoutManager(linearLayoutManager);
         directories = new ArrayList<>();
-        listAdapter = new CommonAdapter<PhotoDirectory>(getContext(), me.iwf.photopicker.R.layout.__picker_item_directory, directories) {
+        listAdapter = new CommonAdapter<PhotoDirectory>(getContext(), R.layout.item_photo_album, directories) {
             @Override
             protected void convert(ViewHolder holder, final PhotoDirectory photoDirectory, final int position) {
-                ImageView ivCover = holder.getView(me.iwf.photopicker.R.id.iv_dir_cover);
-                TextView tvName = holder.getView(me.iwf.photopicker.R.id.tv_dir_name);
-                TextView tvCount = holder.getView(me.iwf.photopicker.R.id.tv_dir_count);
+                ImageView ivCover = holder.getView(R.id.iv_dir_cover);
+                TextView tvName = holder.getView(R.id.tv_dir_name);
+                TextView tvCount = holder.getView(R.id.tv_dir_count);
                 ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
                 imageLoader.loadImage(getContext(), GlideImageConfig.builder()
                         .url(photoDirectory.getCoverPath())

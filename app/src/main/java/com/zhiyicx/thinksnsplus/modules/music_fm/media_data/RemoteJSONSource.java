@@ -41,7 +41,7 @@ public class RemoteJSONSource implements MusicProviderSource {
 
 
     protected static final String CATALOG_URL =
-        "http://storage.googleapis.com/automotive-media/music.json";
+            "http://storage.googleapis.com/automotive-media/music.json";
 
     private static final String JSON_MUSIC = "music";
     private static final String JSON_TITLE = "title";
@@ -56,27 +56,54 @@ public class RemoteJSONSource implements MusicProviderSource {
 
     @Override
     public Iterator<MediaMetadataCompat> iterator() {
-        try {
-            int slashPos = CATALOG_URL.lastIndexOf('/');
-            String path = CATALOG_URL.substring(0, slashPos + 1);
-            JSONObject jsonObj = fetchJSONFromUrl(CATALOG_URL);
-            ArrayList<MediaMetadataCompat> tracks = new ArrayList<>();
-            if (jsonObj != null) {
-                JSONArray jsonTracks = jsonObj.getJSONArray(JSON_MUSIC);
-
-                if (jsonTracks != null) {
-                    for (int j = 0; j < jsonTracks.length(); j++) {
-                        tracks.add(buildFromJSON(jsonTracks.getJSONObject(j), path));
-                    }
-                }
-            }
-            return tracks.iterator();
-        } catch (JSONException e) {
-            throw new RuntimeException("Could not retrieve music list", e);
+        ArrayList<MediaMetadataCompat> tracks = new ArrayList<>();
+        for (int i = 0; i < 21; i++) {
+            tracks.add(buildForTest(i));
         }
+        return tracks.iterator();
+
+//        try {
+//            int slashPos = CATALOG_URL.lastIndexOf('/');
+//            String path = CATALOG_URL.substring(0, slashPos + 1);
+//            JSONObject jsonObj = fetchJSONFromUrl(CATALOG_URL);
+//
+//            if (jsonObj != null) {
+//                JSONArray jsonTracks = jsonObj.getJSONArray(JSON_MUSIC);
+//
+//                if (jsonTracks != null) {
+//                    for (int j = 0; j < jsonTracks.length(); j++) {
+//                        tracks.add(buildFromJSON(jsonTracks.getJSONObject(j), path));
+//                    }
+//                }
+//            }
+//
+//            return tracks.iterator();
+//        } catch (JSONException e) {
+//            throw new RuntimeException("Could not retrieve music list", e);
+//        }
     }
 
-    private MediaMetadataCompat buildFromJSON(JSONObject json, String basePath) throws JSONException {
+    private MediaMetadataCompat buildForTest(int i) {
+        String testSongUrl = "http://hd.xiaotimi.com/2016/myxc/ok1/GKL.mp4?#.mp3";
+        String testIcongUrl = "https://ss2.bdstatic" +
+                ".com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3498552962,2666166364&fm=21&gp=0.jpg";
+        //noinspection ResourceType
+        return new MediaMetadataCompat.Builder()
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, i + "")
+                .putString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE, testSongUrl)
+                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, testIcongUrl)
+                .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, "_tym")
+                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, 60000*4+2333)
+                .putString(MediaMetadataCompat.METADATA_KEY_GENRE, "tym_")
+                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, testIcongUrl)
+                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, "tym")
+                .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, 6000)
+                .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, 60000)
+                .build();
+    }
+
+    private MediaMetadataCompat buildFromJSON(JSONObject json, String basePath) throws
+            JSONException {
         String title = json.getString(JSON_TITLE);
         String album = json.getString(JSON_ALBUM);
         String artist = json.getString(JSON_ARTIST);

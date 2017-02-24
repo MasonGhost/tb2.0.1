@@ -72,7 +72,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
     @BindView(R.id.tv_preview)
     TextView mTvPreview;
     @BindView(R.id.bt_complete)
-    Button mBtComplete;
+    TextView mBtComplete;
     private PhotoGridAdapter photoGridAdapter;
     //所有photos的路径
     private List<PhotoDirectory> directories;

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/white"
+              android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/__picker_bg_material_item"
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing_normal"
+        >
+
+        <ImageView
+            android:id="@+id/iv_dir_cover"
+            android:layout_width="@dimen/photo_album_list_picture_height"
+            android:layout_height="@dimen/photo_album_list_picture_height"
+            android:layout_marginRight="@dimen/spacing_mid"
+            android:background="@mipmap/img_edit_album_frame"
+            android:paddingBottom="@dimen/spacing_big_line"
+            android:paddingRight="@dimen/spacing_big_line"
+            android:scaleType="centerCrop"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:id="@+id/tv_dir_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_sub_title"
+                />
+
+            <TextView
+                android:id="@+id/tv_dir_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_content_assist"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <include
+        layout="@layout/include_horizontal_divider_light"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_line"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_marginRight="@dimen/spacing_normal"></include>
+</LinearLayout>

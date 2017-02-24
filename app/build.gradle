@@ -145,6 +145,7 @@ dependencies {
     apt dataDependences.butterknifeApt
     // Project
     compile project(":baseproject")
+    compile project(":media-cache")
 
     // database
     compile dataDependences.greendao
