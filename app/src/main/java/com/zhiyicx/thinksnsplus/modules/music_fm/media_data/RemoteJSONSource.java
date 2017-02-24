@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2014 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.zhiyicx.thinksnsplus.modules.music_fm.media_data;
 
 import android.support.v4.media.MediaMetadataCompat;
@@ -57,7 +41,7 @@ public class RemoteJSONSource implements MusicProviderSource {
     @Override
     public Iterator<MediaMetadataCompat> iterator() {
         ArrayList<MediaMetadataCompat> tracks = new ArrayList<>();
-        for (int i = 0; i < 21; i++) {
+        for (int i = 0; i < 5; i++) {
             tracks.add(buildForTest(i));
         }
         return tracks.iterator();
@@ -84,16 +68,21 @@ public class RemoteJSONSource implements MusicProviderSource {
     }
 
     private MediaMetadataCompat buildForTest(int i) {
-        String testSongUrl = "http://hd.xiaotimi.com/2016/myxc/ok1/GKL.mp4?#.mp3";
+        String testSongUrl_ = "http://hd.xiaotimi.com/2016/myxc/ok1/GKL.mp4?#.mp3";
+        String testSongUrl = "http://demo.thinksns" +
+                ".com/ts4/data/upload/2017/0224/16/58aff53763a55b790541.mp3";
         String testIcongUrl = "https://ss2.bdstatic" +
                 ".com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3498552962,2666166364&fm=21&gp=0.jpg";
+        if (i % 2 == 0) {
+            testSongUrl = testSongUrl_;
+        }
         //noinspection ResourceType
         return new MediaMetadataCompat.Builder()
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, i + "")
                 .putString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE, testSongUrl)
                 .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, testIcongUrl)
                 .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, "_tym")
-                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, 60000*4+2333)
+                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, 60000 * 4 + 2333)
                 .putString(MediaMetadataCompat.METADATA_KEY_GENRE, "tym_")
                 .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, testIcongUrl)
                 .putString(MediaMetadataCompat.METADATA_KEY_TITLE, "tym")

@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class MusicListFragment extends TSListFragment<MusicContract.Presenter, MusicListBean>
         implements
-        MusicContract.View{
+        MusicContract.View {
 
     private ImageLoader mImageLoader;
 
