@@ -30,7 +30,7 @@ public class MusicListActivityTest extends AcitivityTest {
     public void init() {
         mFragment = mActivityRule.getActivity().getFragment();
     }
-
+ // 测试无法通过
     @Ignore
     public CommonAdapter getAdapter() {
         return mFragment.getAdapter();
@@ -38,6 +38,6 @@ public class MusicListActivityTest extends AcitivityTest {
 
     @Test
     public void initData() {
-//        mFragment.initData();
+//        mFragment.initData(); 测试无法通过
     }
 }
