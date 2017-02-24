@@ -255,10 +255,11 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
      * 设置动态发布按钮的点击状态
      */
     private void setSendDynamicState() {
-        // 有内容或者有图片时都可以发送
-        if (!hasContent && (selectedPhotos == null || selectedPhotos.isEmpty())) {
+        // 没有内容，并且只有占位图时不能够发送
+        if (!hasContent && (selectedPhotos == null || selectedPhotos.size()<=1)) {
             mToolbarRight.setEnabled(false);
         } else {
+            // 有内容或者有图片时都可以发送
             mToolbarRight.setEnabled(true);
         }
     }
