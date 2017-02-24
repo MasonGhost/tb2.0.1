@@ -39,7 +39,6 @@ public class DynamicDetailBean implements Parcelable {
     private List<Integer> storage_task_ids;// 图片的云端存储id
     @Convert(converter = StringParamsConverter.class, columnType = String.class)
     private List<String> localPhotos;// 本地图片的路径
-    private int state;// 动态发送状态 0 发送失败 1 正在发送 2 发送成功
 
     public Long getFeed_mark() {
         return feed_mark;
@@ -105,14 +104,6 @@ public class DynamicDetailBean implements Parcelable {
         this.localPhotos = localPhotos;
     }
 
-    public int getState() {
-        return state;
-    }
-
-    public void setState(int state) {
-        this.state = state;
-    }
-
     /**
      * list<Integer> 转 String 形式存入数据库
      */
@@ -158,26 +149,6 @@ public class DynamicDetailBean implements Parcelable {
     }
 
 
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.feed_mark);
-        dest.writeValue(this.feed_id);
-        dest.writeString(this.feed_title);
-        dest.writeString(this.feed_content);
-        dest.writeLong(this.created_at);
-        dest.writeInt(this.feed_from);
-        dest.writeList(this.storage_task_ids);
-        dest.writeStringList(this.localPhotos);
-        dest.writeInt(this.state);
-    }
-
-
     public List<Integer> getStorage_task_ids() {
         return this.storage_task_ids;
     }
@@ -202,6 +173,54 @@ public class DynamicDetailBean implements Parcelable {
         this.feed_content = feed_content;
     }
 
+    @Generated(hash = 1270021939)
+    public DynamicDetailBean(Long feed_mark, Long feed_id, String feed_title, String feed_content, long created_at,
+            int feed_from, List<Integer> storage_task_ids, List<String> localPhotos) {
+        this.feed_mark = feed_mark;
+        this.feed_id = feed_id;
+        this.feed_title = feed_title;
+        this.feed_content = feed_content;
+        this.created_at = created_at;
+        this.feed_from = feed_from;
+        this.storage_task_ids = storage_task_ids;
+        this.localPhotos = localPhotos;
+    }
+
+    @Generated(hash = 1714846364)
+    public DynamicDetailBean() {
+    }
+
+    @Override
+    public String toString() {
+        return "DynamicDetailBean{" +
+                "feed_mark=" + feed_mark +
+                ", feed_id=" + feed_id +
+                ", feed_title='" + feed_title + '\'' +
+                ", feed_content='" + feed_content + '\'' +
+                ", created_at=" + created_at +
+                ", feed_from=" + feed_from +
+                ", storage_task_ids=" + storage_task_ids +
+                ", localPhotos=" + localPhotos +
+                '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.feed_mark);
+        dest.writeValue(this.feed_id);
+        dest.writeString(this.feed_title);
+        dest.writeString(this.feed_content);
+        dest.writeLong(this.created_at);
+        dest.writeInt(this.feed_from);
+        dest.writeList(this.storage_task_ids);
+        dest.writeStringList(this.localPhotos);
+    }
+
     protected DynamicDetailBean(Parcel in) {
         this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
         this.feed_id = (Long) in.readValue(Long.class.getClassLoader());
@@ -212,26 +231,6 @@ public class DynamicDetailBean implements Parcelable {
         this.storage_task_ids = new ArrayList<Integer>();
         in.readList(this.storage_task_ids, Integer.class.getClassLoader());
         this.localPhotos = in.createStringArrayList();
-        this.state = in.readInt();
-    }
-
-    @Generated(hash = 1634442468)
-    public DynamicDetailBean(Long feed_mark, Long feed_id, String feed_title, String feed_content,
-                             long created_at, int feed_from, List<Integer> storage_task_ids, List<String> localPhotos,
-                             int state) {
-        this.feed_mark = feed_mark;
-        this.feed_id = feed_id;
-        this.feed_title = feed_title;
-        this.feed_content = feed_content;
-        this.created_at = created_at;
-        this.feed_from = feed_from;
-        this.storage_task_ids = storage_task_ids;
-        this.localPhotos = localPhotos;
-        this.state = state;
-    }
-
-    @Generated(hash = 1714846364)
-    public DynamicDetailBean() {
     }
 
     public static final Creator<DynamicDetailBean> CREATOR = new Creator<DynamicDetailBean>() {
@@ -245,19 +244,4 @@ public class DynamicDetailBean implements Parcelable {
             return new DynamicDetailBean[size];
         }
     };
-
-    @Override
-    public String toString() {
-        return "DynamicDetailBean{" +
-                "feed_mark=" + feed_mark +
-                ", feed_id=" + feed_id +
-                ", feed_title='" + feed_title + '\'' +
-                ", feed_content='" + feed_content + '\'' +
-                ", created_at=" + created_at +
-                ", feed_from=" + feed_from +
-                ", storage_task_ids=" + storage_task_ids +
-                ", localPhotos=" + localPhotos +
-                ", state=" + state +
-                '}';
-    }
 }

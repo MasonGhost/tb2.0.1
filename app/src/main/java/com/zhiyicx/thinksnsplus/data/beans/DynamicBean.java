@@ -45,6 +45,7 @@ public class DynamicBean extends BaseListBean {
 
     private Long hot_creat_time;// 标记热门，已及创建时间，用户数据库查询
     private boolean isFollowed;// 是否关注了该条动态（用户）
+    private int state;// 动态发送状态 0 发送失败 1 正在发送 2 发送成功
 
     public Long getHot_creat_time() {
         return hot_creat_time;
@@ -84,6 +85,14 @@ public class DynamicBean extends BaseListBean {
 
     public void setUser_id(long user_id) {
         this.user_id = user_id;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
     
     @Keep
@@ -190,15 +199,16 @@ public class DynamicBean extends BaseListBean {
     public DynamicBean() {
     }
 
-    @Generated(hash = 427019171)
+    @Generated(hash = 46860411)
     public DynamicBean(Long id, Long feed_id, Long feed_mark, long user_id, Long hot_creat_time,
-            boolean isFollowed) {
+            boolean isFollowed, int state) {
         this.id = id;
         this.feed_id = feed_id;
         this.feed_mark = feed_mark;
         this.user_id = user_id;
         this.hot_creat_time = hot_creat_time;
         this.isFollowed = isFollowed;
+        this.state = state;
     }
 
     /**
@@ -223,6 +233,21 @@ public class DynamicBean extends BaseListBean {
         return feed_id;
     }
 
+    public boolean getIsFollowed() {
+        return this.isFollowed;
+    }
+
+    public void setIsFollowed(boolean isFollowed) {
+        this.isFollowed = isFollowed;
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 210281324)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getDynamicBeanDao() : null;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -241,21 +266,7 @@ public class DynamicBean extends BaseListBean {
         dest.writeTypedList(this.comments);
         dest.writeValue(this.hot_creat_time);
         dest.writeByte(this.isFollowed ? (byte) 1 : (byte) 0);
-    }
-
-    public boolean getIsFollowed() {
-        return this.isFollowed;
-    }
-
-    public void setIsFollowed(boolean isFollowed) {
-        this.isFollowed = isFollowed;
-    }
-
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 210281324)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getDynamicBeanDao() : null;
+        dest.writeInt(this.state);
     }
 
     protected DynamicBean(Parcel in) {
@@ -270,6 +281,7 @@ public class DynamicBean extends BaseListBean {
         this.comments = in.createTypedArrayList(DynamicCommentBean.CREATOR);
         this.hot_creat_time = (Long) in.readValue(Long.class.getClassLoader());
         this.isFollowed = in.readByte() != 0;
+        this.state = in.readInt();
     }
 
     public static final Creator<DynamicBean> CREATOR = new Creator<DynamicBean>() {
