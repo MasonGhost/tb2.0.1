@@ -8,6 +8,8 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
+import org.greenrobot.greendao.query.QueryBuilder;
+
 import java.util.List;
 
 /**
@@ -103,5 +105,18 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
         return dynamicBeanDao.queryDeep(" where "
                 + DynamicBeanDao.TABLENAME + "." + DynamicBeanDao.Properties.Feed_id.columnName + " DESC"// feedId倒序
         );
+    }
+
+    public DynamicBean getDynamicByFeedMark(int feed_mark) {
+        DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
+        QueryBuilder<DynamicBean> queryBuilder = dynamicBeanDao.queryBuilder();
+        queryBuilder.where(DynamicBeanDao.Properties.Feed_mark.eq(feed_mark));
+        List<DynamicBean> dynamicBeanList = queryBuilder.list();
+        if (dynamicBeanList == null || dynamicBeanList.isEmpty()) {
+            return null;
+        } else {
+            return dynamicBeanList.get(0);
+        }
+
     }
 }
