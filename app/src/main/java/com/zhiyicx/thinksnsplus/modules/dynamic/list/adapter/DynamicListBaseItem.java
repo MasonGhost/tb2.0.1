@@ -74,7 +74,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
     @Override
     public void convert(ViewHolder holder, DynamicBean dynamicBean, DynamicBean lastT, final int position) {
         mImageLoader.loadImage(mContext, GlideImageConfig.builder()
-                .url(dynamicBean.getUserInfoBean().getUserIcon())
+                .url(dynamicBean.getUserInfoBean()!=null?dynamicBean.getUserInfoBean().getUserIcon():"")
                 .transformation(new GlideCircleTransform(mContext))
                 .errorPic(R.drawable.shape_default_image_circle)
                 .imagerView((ImageView) holder.getView(R.id.iv_headpic))

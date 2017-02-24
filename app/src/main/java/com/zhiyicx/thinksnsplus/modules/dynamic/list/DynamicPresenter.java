@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 
 import org.jetbrains.annotations.NotNull;
@@ -51,8 +52,14 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
         for (int i = 0; i < 9; i++) {
             DynamicBean dynamicBean = new DynamicBean();
             dynamicBean.setUser_id(3);
-            dynamicBean.setUserInfoBean(AppApplication.AppComponentHolder.getAppComponent()
-                    .userInfoBeanGreenDao().getSingleDataFromCache((long) 3));
+            UserInfoBean userInfoBean=AppApplication.AppComponentHolder.getAppComponent()
+                    .userInfoBeanGreenDao().getSingleDataFromCache((long) 3);
+            if(userInfoBean==null){
+                userInfoBean=new UserInfoBean();
+                userInfoBean.setName("我的天");
+                userInfoBean.setUserIcon("www.baiu.com");
+            }
+            dynamicBean.setUserInfoBean(userInfoBean);
             DynamicToolBean toolBean = new DynamicToolBean();
             toolBean.setFeed_comment_count(i);
             toolBean.setFeed_digg_count(2 * i);

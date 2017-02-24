@@ -54,6 +54,8 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
 
     @Override
     public void requestNetData(int maxId, boolean isLoadMore) {
+        if (AppApplication.getmCurrentLoginAuth() == null)
+            return;
         mRepository.getMessageList(AppApplication.getmCurrentLoginAuth().getUser_id())
                 .doAfterTerminate(new Action0() {
                     @Override
