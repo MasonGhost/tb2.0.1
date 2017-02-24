@@ -3,7 +3,10 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 import android.content.Context;
 
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.beans.DaoSession;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.List;
@@ -62,6 +65,13 @@ public class DynamicDetailBeanGreenDaoImpl extends CommonCacheImpl<DynamicDetail
 
     @Override
     public long insertOrReplace(DynamicDetailBean newData) {
-        return 0;
+        DynamicDetailBeanDao dynamicDetailBeanDao = getWDaoSession().getDynamicDetailBeanDao();
+        return dynamicDetailBeanDao.insertOrReplace(newData);
     }
+
+    public void insertOrReplace(List<DynamicDetailBean> newData) {
+        DynamicDetailBeanDao dynamicDetailBeanDao = getWDaoSession().getDynamicDetailBeanDao();
+        dynamicDetailBeanDao.insertOrReplaceInTx(newData);
+    }
+
 }

@@ -2,7 +2,10 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.content.Context;
 
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.List;
@@ -61,6 +64,12 @@ public class DynamicToolBeanGreenDaoImpl extends CommonCacheImpl<DynamicToolBean
 
     @Override
     public long insertOrReplace(DynamicToolBean newData) {
-        return 0;
+        DynamicToolBeanDao dynamicToolBeanDao = getWDaoSession().getDynamicToolBeanDao();
+        return dynamicToolBeanDao.insertOrReplace(newData);
+    }
+
+    public void insertOrReplace(List<DynamicToolBean> newData) {
+        DynamicToolBeanDao dynamicToolBeanDao = getWDaoSession().getDynamicToolBeanDao();
+        dynamicToolBeanDao.insertOrReplaceInTx(newData);
     }
 }

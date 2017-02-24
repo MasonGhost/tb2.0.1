@@ -4,6 +4,9 @@ import android.content.Context;
 
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.List;
@@ -62,7 +65,13 @@ public class DynamicCommentBeanGreenDaoImpl extends CommonCacheImpl<DynamicComme
 
     @Override
     public long insertOrReplace(DynamicCommentBean newData) {
-        return 0;
+        DynamicCommentBeanDao dynamicCommentBeanDao = getWDaoSession().getDynamicCommentBeanDao();
+        return dynamicCommentBeanDao.insertOrReplace(newData);
+    }
+
+    public void insertOrReplace(List<DynamicCommentBean> newData) {
+        DynamicCommentBeanDao dynamicCommentBeanDao = getWDaoSession().getDynamicCommentBeanDao();
+        dynamicCommentBeanDao.insertOrReplaceInTx(newData);
     }
 
 }

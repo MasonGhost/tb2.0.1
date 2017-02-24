@@ -3,6 +3,9 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 import android.content.Context;
 
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.List;
@@ -61,7 +64,13 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
 
     @Override
     public long insertOrReplace(DynamicBean newData) {
-        return 0;
+        DynamicBeanDao dynamicBeanDao = getWDaoSession().getDynamicBeanDao();
+        return dynamicBeanDao.insertOrReplace(newData);
+    }
+
+    public void insertOrReplace(List<DynamicBean> newData) {
+        DynamicBeanDao dynamicBeanDao = getWDaoSession().getDynamicBeanDao();
+        dynamicBeanDao.insertOrReplaceInTx(newData);
     }
 
     /**
@@ -70,14 +79,29 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
      * @return
      */
     public List<DynamicBean> getHotDynamicList() {
-        return null;
+        DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
+        return dynamicBeanDao.queryDeep(" where " + DynamicBeanDao.Properties.Hot_creat_time.columnName + " != NULL and"
+                + DynamicBeanDao.TABLENAME + "." + DynamicBeanDao.Properties.Hot_creat_time.columnName + " DESC"// 创建时间倒序
+        );
     }
 
     /**
      * 获取关注的动态列表
      */
     public List<DynamicBean> getFollowedDynamicList() {
-        return null;
+        DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
+        return dynamicBeanDao.queryDeep(" where " + DynamicBeanDao.Properties.IsFollowed.columnName + " = 1 and" // 0 false 1 true
+                + DynamicBeanDao.TABLENAME + "." + DynamicBeanDao.Properties.Feed_id.columnName + " DESC"// feedId倒序
+        );
     }
 
+    /**
+     * 获取最新的动态列表
+     */
+    public List<DynamicBean> getNewestDynamicList() {
+        DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
+        return dynamicBeanDao.queryDeep(" where "
+                + DynamicBeanDao.TABLENAME + "." + DynamicBeanDao.Properties.Feed_id.columnName + " DESC"// feedId倒序
+        );
+    }
 }
