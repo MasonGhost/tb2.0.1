@@ -292,7 +292,7 @@ public class BackgroundTaskHandler {
         if (backgroundRequestTaskBean.getParams().get("user_id") instanceof List) {
             integers.addAll((Collection<? extends Long>) backgroundRequestTaskBean.getParams().get("user_id"));
         } else {
-            integers.add((Long) backgroundRequestTaskBean.getParams().get("user_id"));
+            integers.add(Long.valueOf(backgroundRequestTaskBean.getParams().get("user_id")+""));
         }
 
         mUserInfoRepository.getUserInfo(integers)

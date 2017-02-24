@@ -3,8 +3,6 @@ package com.zhiyicx.common.dagger.module;
 import android.app.Application;
 import android.text.TextUtils;
 
-import com.tbruyelle.rxpermissions.RxPermissions;
-import com.zhiyicx.common.R;
 import com.zhiyicx.common.net.intercept.RequestIntercept;
 import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.utils.FileUtils;
@@ -167,19 +165,6 @@ public class HttpClientModule {
                 .responseErroListener(mErroListener)
                 .build();
     }
-
-    /**
-     * 提供权限管理类,用于请求权限,适配 6.0 的权限管理
-     *
-     * @param application
-     * @return
-     */
-    @Singleton
-    @Provides
-    public RxPermissions provideRxPermissions(Application application) {
-        return RxPermissions.getInstance(application);
-    }
-
 
     /**
      * 配置retrofit

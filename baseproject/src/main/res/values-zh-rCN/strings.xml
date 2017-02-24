@@ -56,6 +56,8 @@
     <!--  登录  -->
     <string name="bt_login">登录</string>
     <string name="no_login">不登录，先随便逛逛</string>
+    <string name="permisson_refused">如需使用此功能，请允许权限认证！</string>
+    <string name="permisson_refused_nerver_ask">如需使用此功能，请前往应用设置开放权限！</string>
 
     <!-- 动态相关 -->
     <string name="zero">0</string>

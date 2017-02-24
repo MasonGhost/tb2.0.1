@@ -49,9 +49,6 @@ public interface AppComponent extends InjectComponent<AppApplication> {
     //Rxjava错误处理管理类
     RxErrorHandler rxErrorHandler();
 
-    //用于请求权限,适配6.0的权限管理
-    RxPermissions rxPermissions();
-
     OkHttpClient okHttpClient();
 
     //图片管理器,用于加载图片的管理类,默认使用glide,使用策略模式,可替换框架

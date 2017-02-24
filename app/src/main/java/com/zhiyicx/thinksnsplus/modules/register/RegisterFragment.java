@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.register;
 
+import android.Manifest;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.text.Editable;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.tbruyelle.rxpermissions.Permission;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
@@ -52,6 +54,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     TextView mTvErrorTip;
     @BindView(R.id.tv_look_around)
     TextView mTvLookAround;
+
 
     private AnimationDrawable mVertifyAnimationDrawable;
     private boolean isNameEdited;
@@ -169,14 +172,21 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
         RxView.clicks(mBtRegistRegist)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.<Void>bindToLifecycle())
-                .subscribe(new Action1<Void>() {
+                .compose(mRxPermissions.ensureEach(Manifest.permission.READ_PHONE_STATE))
+                .subscribe(new Action1<Permission>() {
                     @Override
-                    public void call(Void aVoid) {
-                        mPresenter.register(mEtRegistUsername.getText().toString().trim()
-                                , mEtRegistPhone.getText().toString().trim()
-                                , mEtRegistVertifyCode.getText().toString().trim()
-                                , mEtRegistPassword.getText().toString().trim()
-                        );
+                    public void call(Permission permission) {
+                        if (permission.granted) {// 获取到了权限
+                            mPresenter.register(mEtRegistUsername.getText().toString().trim()
+                                    , mEtRegistPhone.getText().toString().trim()
+                                    , mEtRegistVertifyCode.getText().toString().trim()
+                                    , mEtRegistPassword.getText().toString().trim()
+                            );
+                        } else if (permission.shouldShowRequestPermissionRationale) {// 拒绝权限，但是可以再次请求
+                            showMessage(getString(R.string.permisson_refused));
+                        } else {//永久拒绝
+                            showMessage(getString(R.string.permisson_refused_nerver_ask));
+                        }
                     }
                 });
     }
@@ -184,6 +194,11 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     @Override
     protected void initData() {
 
+    }
+
+    @Override
+    protected boolean usePermisson() {
+        return true;
     }
 
     @Override

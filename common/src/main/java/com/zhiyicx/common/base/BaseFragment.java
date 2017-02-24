@@ -7,11 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tbruyelle.rxpermissions.RxPermissions;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 
 import org.simple.eventbus.EventBus;
-
-import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -31,6 +30,7 @@ public abstract class BaseFragment<P extends IBasePresenter> extends SkinBaseFra
     protected P mPresenter;
     private Unbinder mUnbinder;
     protected LayoutInflater mLayoutInflater;
+    protected RxPermissions mRxPermissions;
 
     @Nullable
     @Override
@@ -39,6 +39,10 @@ public abstract class BaseFragment<P extends IBasePresenter> extends SkinBaseFra
         mRootView = getContentView();
         // 绑定到 butterknife
         mUnbinder = ButterKnife.bind(this, mRootView);
+        if (usePermisson()) { //是否需要权限验证，需要防止 initview 之前，防止 rxbinding初始化空
+            mRxPermissions = new RxPermissions(getActivity());
+            mRxPermissions.setLogging(true);
+        }
         initView(mRootView);
         return mRootView;
     }
@@ -48,8 +52,20 @@ public abstract class BaseFragment<P extends IBasePresenter> extends SkinBaseFra
         super.onActivityCreated(savedInstanceState);
         mActivity = getActivity();
         if (useEventBus())// 如果要使用 eventbus 请将此方法返回 true
+        {
             EventBus.getDefault().register(this);// 注册到事件主线
+        }
+
         initData();
+    }
+
+    /**
+     * 是否需要使用权限验证
+     *
+     * @return
+     */
+    protected boolean usePermisson() {
+        return false;
     }
 
     @Override
