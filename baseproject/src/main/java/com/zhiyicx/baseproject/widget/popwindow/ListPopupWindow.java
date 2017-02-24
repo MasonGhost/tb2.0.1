@@ -1,21 +1,20 @@
-package com.zhiyicx.thinksnsplus.widget;
+package com.zhiyicx.baseproject.widget.popwindow;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
-import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.baseproject.R;
 import com.zhy.adapter.recyclerview.CommonAdapter;
-import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
-import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 
@@ -25,8 +24,7 @@ import java.util.List;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class ListPopupWindow<D> extends PopupWindow {
-    public static final float POPUPWINDOW_ALPHA = 0.8f;
+public class ListPopupWindow extends PopupWindow {
 
     private Activity mActivity;
     private View mParentView;
@@ -34,7 +32,7 @@ public class ListPopupWindow<D> extends PopupWindow {
     private boolean mIsOutsideTouch;
     private boolean mIsFocus;
     private float mAlpha;
-    private List<D> mDatas;
+    private List mDatas;
     private String mTitle;
     private String mCancle;
     private OnItemListener mItemClickListener;
@@ -42,7 +40,7 @@ public class ListPopupWindow<D> extends PopupWindow {
     private int mHeight;
     private int mItemLayout;
     private Drawable mBackgroundDrawable = new ColorDrawable(0x00000000);// 默认为透明;
-    private CommonAdapter<D> mAdapter;
+    private CommonAdapter mAdapter;
 
     private ListPopupWindow() {
 
@@ -59,19 +57,18 @@ public class ListPopupWindow<D> extends PopupWindow {
         this.mCancle = builder.mCancle;
         this.mWidth = builder.mWidth;
         this.mHeight = builder.mHeight;
-
         this.mItemLayout = builder.mItemLayout;
         this.mItemClickListener = builder.mItemClickListener;
+        this.mAdapter = builder.mAdapter;
         initView();
     }
 
     private void initView() {
         initLayout();
-        setWidth(mWidth > 0 ? mWidth : LinearLayout.LayoutParams.MATCH_PARENT);
-        setHeight(mHeight > 0 ? mHeight : LinearLayout.LayoutParams.WRAP_CONTENT);
+        setWidth(LinearLayout.LayoutParams.MATCH_PARENT);
+        setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
         setFocusable(mIsFocus);
         setOutsideTouchable(mIsOutsideTouch);
-        setBackgroundDrawable(mBackgroundDrawable);
         setAnimationStyle(R.style.style_actionPopupAnimation);
         setContentView(mContentView);
     }
@@ -81,6 +78,8 @@ public class ListPopupWindow<D> extends PopupWindow {
         RecyclerView recyclerView = (RecyclerView) mContentView.findViewById(R.id
                 .tv_pop_list_content);
         recyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
+        recyclerView.setAdapter(mAdapter);
+
         setOnDismissListener(new OnDismissListener() {
             @Override
             public void onDismiss() {
@@ -96,25 +95,20 @@ public class ListPopupWindow<D> extends PopupWindow {
         mActivity.getWindow().setAttributes(params);
     }
 
-    /**
-     * 显示popWindow :相对于控件
-     */
-    @TargetApi(19)
-    public void showPopAsDropDown(View parent, int offX, int offY, int gravity) {
+    public void show() {
         setWindowAlpha(mAlpha);
-        // 设置popwindow显示位置
-        try {
-            showAsDropDown(parent, offX, offY, gravity);
-        } catch (Throwable t) {
-            showAsDropDown(parent, offX, offY);
-        }
+        showAtLocation(mParentView == null ? mContentView : mParentView, Gravity.BOTTOM, 0, 0);
     }
 
-    public static <D> ListPopupWindow.Builder Builder() {
+    public void hide() {
+        dismiss();
+    }
+
+    public static ListPopupWindow.Builder Builder() {
         return new ListPopupWindow.Builder();
     }
 
-    public static final class Builder<D> {
+    public static final class Builder {
         private Activity mActivity;
         private View mParentView;
         private boolean mIsOutsideTouch = true;
@@ -129,7 +123,7 @@ public class ListPopupWindow<D> extends PopupWindow {
         private String mCancle;
         private OnItemListener mItemClickListener;
 
-        private <D> Builder() {
+        private Builder() {
         }
 
         public ListPopupWindow.Builder with(Activity mActivity) {
@@ -137,7 +131,7 @@ public class ListPopupWindow<D> extends PopupWindow {
             return this;
         }
 
-        public <D> ListPopupWindow.Builder adapter(CommonAdapter<D> adapter) {
+        public ListPopupWindow.Builder adapter(CommonAdapter adapter) {
             this.mAdapter = adapter;
             return this;
         }
@@ -187,14 +181,8 @@ public class ListPopupWindow<D> extends PopupWindow {
             return this;
         }
 
-        public <D> ListPopupWindow.Builder data(List<D> datas) {
+        public ListPopupWindow.Builder data(List datas) {
             this.mDatas = datas;
-            if (mAdapter != null) {
-                mAdapter.getDatas().clear();
-                mAdapter.notifyDataSetChanged();
-                mAdapter.getDatas().addAll(datas);
-                mAdapter.notifyDataSetChanged();
-            }
             return this;
         }
 
@@ -203,15 +191,13 @@ public class ListPopupWindow<D> extends PopupWindow {
             return this;
         }
 
-        public <D> ListPopupWindow build() {
-            return new ListPopupWindow<D>(this);
+        public ListPopupWindow build() {
+            return new ListPopupWindow(this);
         }
     }
 
-    public interface OnItemListener<D> {
+    public interface OnItemListener {
         void onItemClick(View view, RecyclerView.ViewHolder holder, int position);
-
-        void convertView(ViewHolder holder, D o, int position);
     }
 
 }

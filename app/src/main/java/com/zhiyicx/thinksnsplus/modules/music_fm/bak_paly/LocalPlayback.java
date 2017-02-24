@@ -1,18 +1,3 @@
-/*
- * Copyright (C) 2014 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly;
 
 import android.content.BroadcastReceiver;
@@ -49,7 +34,8 @@ import static android.support.v4.media.session.MediaSessionCompat.QueueItem;
  * @Description 音乐播放器功能实现类
  */
 public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeListener,
-        OnCompletionListener, OnErrorListener, OnPreparedListener, OnSeekCompleteListener {
+        OnCompletionListener, OnErrorListener, OnPreparedListener, OnSeekCompleteListener,
+        MediaPlayer.OnBufferingUpdateListener {
 
     /**
      * 音量控制
@@ -68,10 +54,19 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
 
     private final Context mContext;
 
+    /**
+     * wifi持有锁
+     */
     private final WifiManager.WifiLock mWifiLock;
 
+    /**
+     * 播放状态
+     */
     private int mState;
 
+    /**
+     * 重新获得焦点
+     */
     private boolean mPlayOnFocusGain;
 
     private Callback mCallback;
@@ -129,7 +124,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
             mCallback.onPlaybackStatusChanged(mState);
         }
         mCurrentPosition = getCurrentStreamPosition();
-
+        //放弃焦点 取消监听 释放资源
         giveUpAudioFocus();
         unregisterAudioNoisyReceiver();
 
@@ -171,7 +166,6 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
 
     @Override
     public void play(QueueItem item) {
-
         mPlayOnFocusGain = true;
         tryToGetAudioFocus();
         registerAudioNoisyReceiver();
@@ -183,7 +177,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
         }
 
         if (mState == PlaybackStateCompat.STATE_PAUSED && !mediaHasChanged && mMediaPlayer !=
-                null) {
+                null) { //没有切歌
             configMediaPlayerState();
         } else {
             mState = PlaybackStateCompat.STATE_STOPPED;
@@ -293,12 +287,11 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
     }
 
     private void configMediaPlayerState() {
-        if (mAudioFocus == AUDIO_NO_FOCUS_NO_DUCK) {
-
+        if (mAudioFocus == AUDIO_NO_FOCUS_NO_DUCK) { // 没有焦点并且在播放中
             if (mState == PlaybackStateCompat.STATE_PLAYING) {
                 pause();
             }
-        } else {
+        } else {// 播放器有焦点
             registerAudioNoisyReceiver();
             if (mAudioFocus == AUDIO_NO_FOCUS_CAN_DUCK) {
                 mMediaPlayer.setVolume(VOLUME_DUCK, VOLUME_DUCK);
@@ -369,8 +362,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
 
     @Override
     public void onPrepared(MediaPlayer player) {
-        // The media player is done preparing. That means we can start playing if we
-        // have audio focus.
+
         configMediaPlayerState();
     }
 
@@ -379,7 +371,12 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
         if (mCallback != null) {
             mCallback.onError("MediaPlayer error " + what + " (" + extra + ")");
         }
-        return true; // true indicates we handled the error
+        return true;
+    }
+
+    @Override
+    public void onBufferingUpdate(MediaPlayer mp, int percent) {
+        mCallback.onBuffering(percent);
     }
 
     private void createMediaPlayerIfNeeded() {

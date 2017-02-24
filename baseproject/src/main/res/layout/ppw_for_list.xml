@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="bottom"
+    android:background="#fff"
     xmlns:zhiyi="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/transparent"
     android:orientation="vertical">
 
     <LinearLayout
+
         android:layout_margin="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="20dp"
         android:orientation="horizontal">
 
         <com.zhiyicx.thinksnsplus.widget.IconTextView
-            zhiyi:srcIcon="@mipmap/music_ico_inorder"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -26,7 +26,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/tv_pop_list_cancle"
-            tools:text="@string/cancle"/>
+            />
 
     </LinearLayout>
 
