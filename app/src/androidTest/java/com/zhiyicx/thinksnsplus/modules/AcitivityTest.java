@@ -51,4 +51,16 @@ public abstract class AcitivityTest {
         return onView(withId(viewId));
     }
 
+    /**
+     * 获取一定长度的字符串
+     */
+    protected String getLengthString(int length) {
+        String a = "";
+        for (int i = 0; i < length; i++) {
+            a += "帅";
+        }
+        return a;
+
+    }
+
 }

@@ -105,16 +105,18 @@ ext {
             rxpermissions: "com.tbruyelle.rxpermissions:rxpermissions:0.7.0@aar",
     ]
     testDependencies = [
-            junit             : "junit:junit:${jUnitVersion}",
-            androidJUnitRunner: "android.support.test.runner.AndroidJUnitRunner",
-            assertj           : "org.assertj:assertj-core:${assertJVersion}",
-            mockito           : "org.mockito:mockito-core:${mockitoVersion}",
-            robolectric       : "org.robolectric:robolectric:${robolectricVersion}",
-            multidexTest      : "org.robolectric:shadows-multidex:${robolectricVersion}",
-            espresso          : "com.android.support.test.espresso:espresso-core:${espressoVersion}",
+            junit               : "junit:junit:${jUnitVersion}",
+            androidJUnitRunner  : "android.support.test.runner.AndroidJUnitRunner",
+            assertj             : "org.assertj:assertj-core:${assertJVersion}",
+            mockito             : "org.mockito:mockito-core:${mockitoVersion}",
+            robolectric         : "org.robolectric:robolectric:${robolectricVersion}",
+            multidexTest        : "org.robolectric:shadows-multidex:${robolectricVersion}",
+            espresso            : "com.android.support.test.espresso:espresso-core:${espressoVersion}",
+            // 测试recyclerView列表
+            espressoRecyclerView: "com.android.support.test.espresso:espresso-contrib:${espressoVersion}",
             // espresso异步测试依赖库，需要compile到主工程
-            espressoIdling    : "com.android.support.test.espresso:espresso-idling-resource:${espressoVersion}",
-            runner            : "com.android.support.test:runner:${runnerVersion}"
+            espressoIdling      : "com.android.support.test.espresso:espresso-idling-resource:${espressoVersion}",
+            runner              : "com.android.support.test:runner:${runnerVersion}"
     ]
 
     developmentDependencies = [
