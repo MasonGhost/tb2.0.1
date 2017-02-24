@@ -25,6 +25,10 @@ public class ApiConfig {
 
     public static final String URL_ABOUT_US = "http://blog.csdn.net/hellohhj/article/details/50467502";// 关于我们网站
 
+    // 图片地址
+
+    public static final String IMAGE_PATH = APP_DOMAIN+"api/v1/storages/{storage}/{process?=100}";// 测试服务器
+
     // 每次从服务器获取数据，一页的最大数量
     public static final int MAX_NUMBER_PER_PAGE = 3;
 
@@ -69,7 +73,10 @@ public class ApiConfig {
      * 动态相关
      */
     public static final String APP_PATH_SEND_DYNAMIC = "api/v1/feeds";// 发布动态
-
+    public static final String APP_PATH_GET_DYNAMIC_LIST = "api/v1/feeds/{type}";// 获取动态列表、｛最新：/api/v1/feeds;关注：/api/v1/feeds/follows;热门：/api/v1/feeds/hots｝
+    public static final String DYNAMIC_TYPE_NEW = ""; // 最新动态
+    public static final String DYNAMIC_TYPE_FOLLOWS = ""; // 关注动态
+    public static final String DYNAMIC_TYPE_HOTS = ""; // 热门动态
     /**
      * 通用 CommonClient
      */

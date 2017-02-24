@@ -28,7 +28,7 @@ public class MessageLikePresenter extends BasePresenter<MessageLikeContract.Repo
     }
 
     @Override
-    public void requestNetData(int maxId, boolean isLoadMore) {
+    public void requestNetData(Long maxId, boolean isLoadMore) {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -39,7 +39,7 @@ public class MessageLikePresenter extends BasePresenter<MessageLikeContract.Repo
 }
 
     @Override
-    public List<MessageItemBean> requestCacheData(int maxId, boolean isLoadMore) {
+    public List<MessageItemBean> requestCacheData(Long maxId, boolean isLoadMore) {
         return new ArrayList<>();
     }
 

@@ -13,7 +13,6 @@ import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -55,12 +54,12 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
     }
 
     @Override
-    public void requestNetData(int maxId, boolean isLoadMore) {
+    public void requestNetData(Long maxId, boolean isLoadMore) {
 
     }
 
     @Override
-    public List<FollowFansBean> requestCacheData(int maxId, boolean isLoadMore) {
+    public List<FollowFansBean> requestCacheData(Long maxId, boolean isLoadMore) {
         return null;
     }
 
@@ -71,12 +70,12 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
     }
 
     @Override
-    public void requestNetData(final int maxId, final boolean isLoadMore, final int userId, final int pageType) {
+    public void requestNetData(final Long maxId, final boolean isLoadMore, final int userId, final int pageType) {
         Observable<BaseJson<List<FollowFansBean>>> observable = null;
         if (pageType == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
-            observable = mRepository.getFollowListFromNet(userId, maxId);
+            observable = mRepository.getFollowListFromNet(userId, maxId.intValue());
         } else if (pageType == FollowFansListFragment.FANS_FRAGMENT_PAGE) {
-            observable = mRepository.getFansListFromNet(userId, maxId);
+            observable = mRepository.getFansListFromNet(userId, maxId.intValue());
         }
         Subscription subscription = observable
                 .subscribeOn(Schedulers.io())
@@ -87,9 +86,9 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
                         insertOrUpdateData(data);// 保存到数据库
                         // 多表连查，获取用户信息
                         if (pageType == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
-                            data = mFollowFansBeanGreenDao.getSomeOneFollower(userId,maxId);
+                            data = mFollowFansBeanGreenDao.getSomeOneFollower(userId,maxId.intValue());
                         } else if (pageType == FollowFansListFragment.FANS_FRAGMENT_PAGE) {
-                            data = mFollowFansBeanGreenDao.getSomeOneFans(userId,maxId);
+                            data = mFollowFansBeanGreenDao.getSomeOneFans(userId,maxId.intValue());
                         }
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                         // 处理用户信息缺失
@@ -112,12 +111,12 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
     }
 
     @Override
-    public List<FollowFansBean> requestCacheData(int maxId, boolean isLoadMore, int userId, int pageType) {
+    public List<FollowFansBean> requestCacheData(Long maxId, boolean isLoadMore, int userId, int pageType) {
         List<FollowFansBean> followFansBeanList = null;
         if (pageType == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
-            followFansBeanList = mFollowFansBeanGreenDao.getSomeOneFollower(userId,maxId);
+            followFansBeanList = mFollowFansBeanGreenDao.getSomeOneFollower(userId,maxId.intValue());
         } else if (pageType == FollowFansListFragment.FANS_FRAGMENT_PAGE) {
-            followFansBeanList = mFollowFansBeanGreenDao.getSomeOneFans(userId,maxId);
+            followFansBeanList = mFollowFansBeanGreenDao.getSomeOneFans(userId,maxId.intValue());
         }
         dealWithUserInfo(pageType, followFansBeanList);
         return followFansBeanList;

@@ -34,7 +34,6 @@ public abstract class BaseSubscribe<T> extends Subscriber<BaseJson<T>> {
 
     @Override
     public void onCompleted() {
-
     }
 
     @Override
@@ -76,19 +75,22 @@ public abstract class BaseSubscribe<T> extends Subscriber<BaseJson<T>> {
                     handleStatus(tBaseJson);
 
                 } else {
-                    onException(e);
+                    handleError(e);
                 }
             } catch (IOException e1) {
-                e1.printStackTrace();
-                onException(e);
+                onException(e1);
             } catch (JsonSyntaxException e1) {
-                e1.printStackTrace();
-                onException(e);
+                onException(e1);
             }
         } else {
-            onException(e);
+            handleError(e);
         }
 
+    }
+
+    private void handleError(Throwable e) {
+        e.printStackTrace();
+        onException(e);
     }
 
     @Override

@@ -16,8 +16,6 @@ import org.greenrobot.greendao.converter.PropertyConverter;
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.http.HEAD;
-
 /**
  * @author LiuChao
  * @describe 动态内容的实体类
@@ -37,7 +35,7 @@ public class DynamicDetailBean implements Parcelable {
     private long created_at;// 创建时间
     private int feed_from;// 来自哪个平台 //[1:pc 2:h5 3:ios 4:android 5:其他]
     @Convert(converter = IntegerParamsConverter.class, columnType = String.class)
-    @SerializedName(value = "storage_task_ids", alternate = {"storage"})
+    @SerializedName(value = "storage_task_ids", alternate = {"storages"})
     private List<Integer> storage_task_ids;// 图片的云端存储id
     @Convert(converter = StringParamsConverter.class, columnType = String.class)
     private List<String> localPhotos;// 本地图片的路径

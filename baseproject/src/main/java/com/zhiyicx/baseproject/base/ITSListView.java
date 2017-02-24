@@ -46,4 +46,10 @@ public interface ITSListView<T,P> extends IBaseView<P> {
      * 隐藏常驻信息
      */
     void hideStickyMessage();
+
+    /**
+     * 当 max_id 无法使用的时候标识分页
+     * @return
+     */
+    int getPage();
 }

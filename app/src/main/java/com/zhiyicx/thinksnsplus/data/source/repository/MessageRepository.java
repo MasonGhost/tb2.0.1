@@ -57,7 +57,7 @@ public class MessageRepository implements MessageContract.Repository {
                             final BaseJson<List<MessageItemBean>> baseJson = new BaseJson();
                             List<MessageItemBean> datas = new ArrayList<>();
                             baseJson.setData(datas);
-                            List<Integer> integers = new ArrayList<>();
+                            List<Long> integers = new ArrayList<>();
                             for (Conversation tmp : listBaseJson.getData()) {
                                 MessageItemBean messageItemBean = new MessageItemBean();
                                 Message message = MessageDao.getInstance(mContext).getLastMessageByCid(tmp.getCid());
@@ -69,7 +69,7 @@ public class MessageRepository implements MessageContract.Repository {
                                 // 存储对话信息
                                 ConversationDao.getInstance(mContext).insertOrUpdateConversation(tmp);
                                 String[] uidsTmp = tmp.getUsids().split(",");
-                                integers.add(Integer.parseInt((uidsTmp[0].equals(AppApplication.getmCurrentLoginAuth().getUser_id() + "")) ? uidsTmp[1] : uidsTmp[0]));
+                                integers.add(Long.valueOf((uidsTmp[0].equals(AppApplication.getmCurrentLoginAuth().getUser_id() + "") ? uidsTmp[1] : uidsTmp[0])));
                                 // 获取未读消息数量
                                 int unreadMessageCount = MessageDao.getInstance(mContext).getUnReadMessageCount(tmp.getCid());
                                 messageItemBean.setConversation(tmp);
