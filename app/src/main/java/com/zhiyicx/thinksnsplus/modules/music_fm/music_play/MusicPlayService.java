@@ -1,10 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_play;
 
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaRouter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,18 +15,19 @@ import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
-import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaNotificationManager;
-import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProvider;
-import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.LocalPlayback;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.QueueManager;
+import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProvider;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaNotificationManager;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper.MEDIA_ID_EMPTY_ROOT;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper
+        .MEDIA_ID_EMPTY_ROOT;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper.MEDIA_ID_ROOT;
 
 /**
@@ -89,10 +88,12 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
                 });
 
         LocalPlayback playback = new LocalPlayback(this, mMusicProvider);
+
         mPlaybackManager = new PlaybackManager(this, getResources(), mMusicProvider, queueManager,
                 playback);
 
-        mSession = new MediaSessionCompat(this, "MusicService");
+        mSession = new MediaSessionCompat(this, "MusicPlayService");
+
         setSessionToken(mSession.getSessionToken());
         mSession.setCallback(mPlaybackManager.getMediaSessionCallback());
         mSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
@@ -125,6 +126,7 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
                 if (CMD_PAUSE.equals(command)) {
                     mPlaybackManager.handlePauseRequest();
                 } else if (CMD_STOP_CASTING.equals(command)) {
+
                 }
             } else {
                 MediaButtonReceiver.handleIntent(mSession, startIntent);
@@ -148,6 +150,7 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
                                  Bundle rootHints) {
 
         return new BrowserRoot(MEDIA_ID_ROOT, null);
+
     }
 
     @Override
@@ -170,11 +173,11 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
 
     @Override
     public void onPlaybackStart() {
+
         mSession.setActive(true);
-
         mDelayedStopHandler.removeCallbacksAndMessages(null);
-
         startService(new Intent(getApplicationContext(), MusicPlayService.class));
+
     }
 
     @Override
@@ -193,6 +196,11 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
     @Override
     public void onPlaybackStateUpdated(PlaybackStateCompat newState) {
         mSession.setPlaybackState(newState);
+    }
+
+    @Override
+    public void onBuffering(int percent) {
+
     }
 
     private static class DelayedStopHandler extends Handler {
