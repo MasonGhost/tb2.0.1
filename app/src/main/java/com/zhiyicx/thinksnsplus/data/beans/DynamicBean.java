@@ -26,6 +26,11 @@ import java.util.List;
  */
 @Entity
 public class DynamicBean extends BaseListBean {
+
+    public static final int SEND_ERROR = 0;
+    public static final int SEND_ING = 1;
+    public static final int SEND_SUCCESS = 2;
+
     @Id(autoincrement = true)
     private Long id;
     @Unique
@@ -44,6 +49,8 @@ public class DynamicBean extends BaseListBean {
     private List<DynamicCommentBean> comments;
 
     private Long hot_creat_time;// 标记热门，已及创建时间，用户数据库查询
+    private boolean isFollowed;// 是否关注了该条动态（用户）
+    private int state;// 动态发送状态 0 发送失败 1 正在发送 2 发送成功
 
     public Long getHot_creat_time() {
         return hot_creat_time;
@@ -83,6 +90,14 @@ public class DynamicBean extends BaseListBean {
 
     public void setUser_id(long user_id) {
         this.user_id = user_id;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 
     @Keep
@@ -142,7 +157,9 @@ public class DynamicBean extends BaseListBean {
         this.comments = comments;
     }
 
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 249603048)
     public synchronized void resetComments() {
         comments = null;
@@ -187,19 +204,26 @@ public class DynamicBean extends BaseListBean {
     public DynamicBean() {
     }
 
-    @Generated(hash = 1596974739)
-    public DynamicBean(Long id, Long feed_id, Long feed_mark, long user_id, Long hot_creat_time) {
+    @Generated(hash = 46860411)
+    public DynamicBean(Long id, Long feed_id, Long feed_mark, long user_id, Long hot_creat_time,
+                       boolean isFollowed, int state) {
         this.id = id;
         this.feed_id = feed_id;
         this.feed_mark = feed_mark;
         this.user_id = user_id;
         this.hot_creat_time = hot_creat_time;
+        this.isFollowed = isFollowed;
+        this.state = state;
     }
 
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 476616020)
     private transient DynamicBeanDao myDao;
     @Generated(hash = 1613724019)
@@ -208,6 +232,19 @@ public class DynamicBean extends BaseListBean {
     private transient Long tool__resolvedKey;
     @Generated(hash = 1005780391)
     private transient Long userInfoBean__resolvedKey;
+
+    @Override
+    public Long getMaxId() {
+        return feed_id;
+    }
+
+    public boolean getIsFollowed() {
+        return this.isFollowed;
+    }
+
+    public void setIsFollowed(boolean isFollowed) {
+        this.isFollowed = isFollowed;
+    }
 
     @Override
     public int describeContents() {
@@ -226,6 +263,15 @@ public class DynamicBean extends BaseListBean {
         dest.writeParcelable(this.userInfoBean, flags);
         dest.writeTypedList(this.comments);
         dest.writeValue(this.hot_creat_time);
+        dest.writeByte(this.isFollowed ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.state);
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 210281324)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getDynamicBeanDao() : null;
     }
 
     protected DynamicBean(Parcel in) {
@@ -239,6 +285,8 @@ public class DynamicBean extends BaseListBean {
         this.userInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
         this.comments = in.createTypedArrayList(DynamicCommentBean.CREATOR);
         this.hot_creat_time = (Long) in.readValue(Long.class.getClassLoader());
+        this.isFollowed = in.readByte() != 0;
+        this.state = in.readInt();
     }
 
     public static final Creator<DynamicBean> CREATOR = new Creator<DynamicBean>() {
@@ -252,16 +300,4 @@ public class DynamicBean extends BaseListBean {
             return new DynamicBean[size];
         }
     };
-
-    @Override
-    public Long getMaxId() {
-        return feed_id;
-    }
-
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 210281324)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getDynamicBeanDao() : null;
-    }
 }

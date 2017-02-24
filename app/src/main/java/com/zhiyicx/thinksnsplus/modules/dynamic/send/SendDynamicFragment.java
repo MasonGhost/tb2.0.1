@@ -285,6 +285,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         dynamicDetailBean.setFeed_from(ApiConfig.ANDROID_PLATFORM);
         DynamicBean dynamicBean = new DynamicBean();
         dynamicBean.setFeed(dynamicDetailBean);
+        dynamicBean.setState(DynamicBean.SEND_ING);
         dynamicBean.setFeed_mark(feedMark);
         dynamicBean.setUser_id(userId);
         return dynamicBean;

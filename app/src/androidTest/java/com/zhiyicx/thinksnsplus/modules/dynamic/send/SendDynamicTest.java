@@ -70,11 +70,11 @@ public class SendDynamicTest extends AcitivityTest {
                 // 控件不在主UI布局上
                 .inRoot(withDecorView(not(mActivityRule.getActivity().getWindow().getDecorView())));
 
-        // 从相册选择图片
+/*        // 从相册选择图片
         localPhotoItem = onView(allOf(withId(R.id.tv_pop_item1), withParent(withId(R.id.item_container)))).inRoot(isPlatformPopup());
         ;
         // 从相机选择图片
-        cameraItem = onView(allOf(withId(R.id.tv_pop_item2), withParent(withId(R.id.item_container))));
+        cameraItem = onView(allOf(withId(R.id.tv_pop_item2), withParent(withId(R.id.item_container))));*/
 
     }
 
