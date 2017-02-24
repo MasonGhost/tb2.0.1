@@ -24,6 +24,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Describe 动态列表工具栏
+ * 相关文档{@see ThinksnsPlus/document/baseproject/DYNAMICMENU.md}
  * @Author Jungle68
  * @Date 2017/2/8
  * @Contact master.jungle68@gmail.com
@@ -53,7 +54,7 @@ public class DynamicListMenuView extends FrameLayout {
     protected TextView mTvDynamicListPageviewst;
 
     private OnItemClickListener mOnItemListener;
-
+    protected Context mContext;
 
     protected
     @DrawableRes
@@ -73,11 +74,14 @@ public class DynamicListMenuView extends FrameLayout {
     };// 图片 ids 选中状态
     protected
     @StringRes
-    int[] mTexts = new int[]{
+    int[] mTextIds = new int[]{
+            R.string.zero,
             R.string.zero,
             R.string.zero,
             R.string.zero,
     };// 文字 ids
+    private
+    String[] mText = new String[mTextIds.length];// 文字内容
 
     protected
     @ColorRes
@@ -97,6 +101,7 @@ public class DynamicListMenuView extends FrameLayout {
     }
 
     private void init(Context context, AttributeSet attrs) {
+        mContext = context;
         LayoutInflater.from(context).inflate(R.layout.view_dynamic_list_menu, this);
         mLlDynamicListLike = findViewById(R.id.ll_dynamic_list_like);
         mLlDynamicListComment = findViewById(R.id.ll_dynamic_list_comment);
@@ -162,9 +167,11 @@ public class DynamicListMenuView extends FrameLayout {
      * 设置数据
      */
     protected void setData() {
+
         int length = mImageNormalResourceIds.length;
         for (int i = 0; i < length; i++) { // 最多支持 4 个 Item 多余的数据丢弃
             if (i < ITEM_NUMS_MAX) {
+                mText[i] = mContext.getResources().getString(mTextIds[i]);
                 setItemIsChecked(false, i, true);
             } else {
                 break;
@@ -190,6 +197,20 @@ public class DynamicListMenuView extends FrameLayout {
      */
     public void setItemIsChecked(boolean isChecked, int postion) {
         setItemIsChecked(isChecked, postion, false);
+    }
+
+    /**
+     * 设置 item text 内容与状态
+     *
+     * @param string  当前内容
+     * @param postion 当前 item 的位置
+     */
+    public void setItemTextAndStatus(String string, boolean isChecked, int postion) {
+        if (postion >= ITEM_NUMS_MAX) {
+            throw new IllegalArgumentException("postion is out of index");
+        }
+        mText[postion] = string;
+        setItemIsChecked(isChecked, postion, true);
     }
 
     /**
@@ -253,8 +274,8 @@ public class DynamicListMenuView extends FrameLayout {
                 textView.setTextColor(ContextCompat.getColor(getContext(), mTextNormalColor));
             }
         }
-        if (isNeedSetText) {
-            textView.setText(getResources().getString(mTexts[position]));
+        if (textView!=null&&isNeedSetText&&mText[position]!=null) {
+            textView.setText(mText[position]);
         }
     }
 

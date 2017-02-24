@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 import android.app.Application;
 
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
+import com.zhiyicx.thinksnsplus.data.source.repository.DynamicRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -22,19 +23,14 @@ public class DynamicPresenterModule {
     }
 
     @Provides
-    DynamicContract.View provideMessageContractView() {
+    DynamicContract.View provideDynamicContractView() {
         return mView;
     }
 
 
     @Provides
     DynamicContract.Repository provideDynamicContractRepository(ServiceManager serviceManager, Application application) {
-        return new DynamicContract.Repository() {
-            @Override
-            public int hashCode() {
-                return super.hashCode();
-            }
-        };
+        return new DynamicRepository(serviceManager,application);
     }
 
 }

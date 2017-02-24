@@ -1,10 +1,15 @@
 package com.zhiyicx.thinksnsplus.modules.home.main;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.View;
 
-import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Describe 主页MainFragment
@@ -12,11 +17,7 @@ import com.zhiyicx.thinksnsplus.R;
  * @Date 2017/1/5
  * @Contact master.jungle68@gmail.com
  */
-public class MainFragment extends TSFragment {
-
-
-    public MainFragment() {
-    }
+public class MainFragment extends TSViewPagerFragment {
 
     public static MainFragment newInstance() {
         MainFragment fragment = new MainFragment();
@@ -27,9 +28,9 @@ public class MainFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
-
+        super.initView(rootView);
+        mTsvToolbar.setLeftImg(0);//不需要返回键
     }
-
 
     @Override
     protected void initData() {
@@ -37,12 +38,20 @@ public class MainFragment extends TSFragment {
     }
 
     @Override
-    protected int getBodyLayoutId() {
-        return R.layout.fragment_main;
+    protected List<String> initTitles() {
+        List<String> titles = new ArrayList<>();
+        titles.add(getString(R.string.follow));
+        titles.add(getString(R.string.hot));
+        titles.add(getString(R.string.the_last));
+        return titles;
     }
 
     @Override
-    protected boolean showToolbar() {
-        return false;
+    protected List<Fragment> initFragments() {
+        List<Fragment> fragments = new ArrayList<>();
+        fragments.add(DynamicFragment.newInstance());
+        fragments.add(DynamicFragment.newInstance());
+        fragments.add(DynamicFragment.newInstance());
+        return fragments;
     }
 }

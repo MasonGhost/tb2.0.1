@@ -1,4 +1,4 @@
-2017年2月9日 18:00:39
+2017年2月22日13:56:59
 # 动态工具栏类说明
 
 ## 1. 概述
@@ -55,6 +55,9 @@ public class MyView extends DynamicDetailMenuView {
         super(context);
     }
 }
+
+new  MyView().setItemTextAndStatus(String string, boolean isChecked, int postion)；// 设置某个 Item 具体内容
+
   ```
 
 ***注意：*** Item 数量最多只能 4 个，多余的将自动过滤掉

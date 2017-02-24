@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
 
 /**
@@ -17,7 +18,7 @@ public interface DynamicContract {
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
-    interface Repository {
+    interface Repository extends IDynamicReppsitory {
     }
 
     interface Presenter extends ITSListPresenter<DynamicBean> {

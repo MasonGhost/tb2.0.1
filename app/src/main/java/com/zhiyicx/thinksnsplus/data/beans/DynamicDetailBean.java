@@ -8,16 +8,15 @@ import com.zhiyicx.common.utils.ConvertUtils;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import org.greenrobot.greendao.annotation.Generated;
+import retrofit2.http.HEAD;
 
 /**
  * @author LiuChao
@@ -61,7 +60,7 @@ public class DynamicDetailBean implements Parcelable {
     }
 
     public String getTitle() {
-        return feed_title;
+        return feed_title==null?"":feed_title;
     }
 
     public void setTitle(String title) {
@@ -69,7 +68,7 @@ public class DynamicDetailBean implements Parcelable {
     }
 
     public String getContent() {
-        return feed_content;
+        return feed_content == null ? "" : feed_content;
     }
 
     public void setContent(String content) {
@@ -161,6 +160,7 @@ public class DynamicDetailBean implements Parcelable {
     }
 
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -178,6 +178,7 @@ public class DynamicDetailBean implements Parcelable {
         dest.writeStringList(this.localPhotos);
         dest.writeInt(this.state);
     }
+
 
     public List<Integer> getStorage_task_ids() {
         return this.storage_task_ids;
@@ -201,9 +202,6 @@ public class DynamicDetailBean implements Parcelable {
 
     public void setFeed_content(String feed_content) {
         this.feed_content = feed_content;
-    }
-
-    public DynamicDetailBean() {
     }
 
     protected DynamicDetailBean(Parcel in) {
@@ -232,6 +230,10 @@ public class DynamicDetailBean implements Parcelable {
         this.storage_task_ids = storage_task_ids;
         this.localPhotos = localPhotos;
         this.state = state;
+    }
+
+    @Generated(hash = 1714846364)
+    public DynamicDetailBean() {
     }
 
     public static final Creator<DynamicDetailBean> CREATOR = new Creator<DynamicDetailBean>() {
