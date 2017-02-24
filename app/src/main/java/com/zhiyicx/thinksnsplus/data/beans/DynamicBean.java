@@ -43,6 +43,16 @@ public class DynamicBean extends BaseListBean {
     @ToMany(joinProperties = {@JoinProperty(name = "feed_mark", referencedName = "feed_mark")})
     private List<DynamicCommentBean> comments;
 
+    private Long hot_creat_time;// 标记热门，已及创建时间，用户数据库查询
+
+    public Long getHot_creat_time() {
+        return hot_creat_time;
+    }
+
+    public void setHot_creat_time(Long hot_creat_time) {
+        this.hot_creat_time = hot_creat_time;
+    }
+
     public Long getId() {
         return id;
     }
@@ -132,24 +142,6 @@ public class DynamicBean extends BaseListBean {
         this.comments = comments;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeValue(this.id);
-        dest.writeValue(this.feed_id);
-        dest.writeValue(this.feed_mark);
-        dest.writeLong(this.user_id);
-        dest.writeParcelable(this.feed, flags);
-        dest.writeParcelable(this.tool, flags);
-        dest.writeParcelable(this.userInfoBean, flags);
-        dest.writeTypedList(this.comments);
-    }
-
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     @Generated(hash = 249603048)
     public synchronized void resetComments() {
@@ -192,47 +184,18 @@ public class DynamicBean extends BaseListBean {
         myDao.update(this);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 210281324)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getDynamicBeanDao() : null;
-    }
-
     public DynamicBean() {
     }
 
-    protected DynamicBean(Parcel in) {
-        super(in);
-        this.id = (Long) in.readValue(Long.class.getClassLoader());
-        this.feed_id = (Long) in.readValue(Long.class.getClassLoader());
-        this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
-        this.user_id = in.readLong();
-        this.feed = in.readParcelable(DynamicDetailBean.class.getClassLoader());
-        this.tool = in.readParcelable(DynamicToolBean.class.getClassLoader());
-        this.userInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
-        this.comments = in.createTypedArrayList(DynamicCommentBean.CREATOR);
-    }
-
-    @Generated(hash = 131058427)
-    public DynamicBean(Long id, Long feed_id, Long feed_mark, long user_id) {
+    @Generated(hash = 1596974739)
+    public DynamicBean(Long id, Long feed_id, Long feed_mark, long user_id, Long hot_creat_time) {
         this.id = id;
         this.feed_id = feed_id;
         this.feed_mark = feed_mark;
         this.user_id = user_id;
+        this.hot_creat_time = hot_creat_time;
     }
 
-    public static final Creator<DynamicBean> CREATOR = new Creator<DynamicBean>() {
-        @Override
-        public DynamicBean createFromParcel(Parcel source) {
-            return new DynamicBean(source);
-        }
-
-        @Override
-        public DynamicBean[] newArray(int size) {
-            return new DynamicBean[size];
-        }
-    };
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
@@ -246,4 +209,54 @@ public class DynamicBean extends BaseListBean {
     @Generated(hash = 1005780391)
     private transient Long userInfoBean__resolvedKey;
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.id);
+        dest.writeValue(this.feed_id);
+        dest.writeValue(this.feed_mark);
+        dest.writeLong(this.user_id);
+        dest.writeParcelable(this.feed, flags);
+        dest.writeParcelable(this.tool, flags);
+        dest.writeParcelable(this.userInfoBean, flags);
+        dest.writeTypedList(this.comments);
+        dest.writeValue(this.hot_creat_time);
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 210281324)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getDynamicBeanDao() : null;
+    }
+
+    protected DynamicBean(Parcel in) {
+        super(in);
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.feed_id = (Long) in.readValue(Long.class.getClassLoader());
+        this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
+        this.user_id = in.readLong();
+        this.feed = in.readParcelable(DynamicDetailBean.class.getClassLoader());
+        this.tool = in.readParcelable(DynamicToolBean.class.getClassLoader());
+        this.userInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.comments = in.createTypedArrayList(DynamicCommentBean.CREATOR);
+        this.hot_creat_time = (Long) in.readValue(Long.class.getClassLoader());
+    }
+
+    public static final Creator<DynamicBean> CREATOR = new Creator<DynamicBean>() {
+        @Override
+        public DynamicBean createFromParcel(Parcel source) {
+            return new DynamicBean(source);
+        }
+
+        @Override
+        public DynamicBean[] newArray(int size) {
+            return new DynamicBean[size];
+        }
+    };
 }

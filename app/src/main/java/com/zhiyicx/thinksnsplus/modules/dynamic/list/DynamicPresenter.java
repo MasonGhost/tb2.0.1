@@ -1,10 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
-import android.os.Handler;
-
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
@@ -17,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.functions.Action0;
 
 /**
  * @Describe
@@ -37,13 +38,29 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
 
     @Override
     public void requestNetData(int maxId, boolean isLoadMore) {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mRootView.hideLoading();
-            }
-        }, 2000);
+        mRepository.getDynamicList(mRootView.getDynamicType(), (long) maxId, null, (long) 10)
+                .doAfterTerminate(new Action0() {
+                    @Override
+                    public void call() {
+                        mRootView.hideLoading();
+                    }
+                })
+                .subscribe(new BaseSubscribe<List<DynamicBean>>() {
+                    @Override
+                    protected void onSuccess(List<DynamicBean> data) {
 
+                    }
+
+                    @Override
+                    protected void onFailure(String message) {
+
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+
+                    }
+                });
     }
 
     @Override
@@ -52,10 +69,10 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
         for (int i = 0; i < 9; i++) {
             DynamicBean dynamicBean = new DynamicBean();
             dynamicBean.setUser_id(3);
-            UserInfoBean userInfoBean=AppApplication.AppComponentHolder.getAppComponent()
+            UserInfoBean userInfoBean = AppApplication.AppComponentHolder.getAppComponent()
                     .userInfoBeanGreenDao().getSingleDataFromCache((long) 3);
-            if(userInfoBean==null){
-                userInfoBean=new UserInfoBean();
+            if (userInfoBean == null) {
+                userInfoBean = new UserInfoBean();
                 userInfoBean.setName("我的天");
                 userInfoBean.setUserIcon("www.baiu.com");
             }

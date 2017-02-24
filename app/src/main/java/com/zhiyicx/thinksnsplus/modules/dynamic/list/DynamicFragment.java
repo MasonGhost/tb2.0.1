@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -31,15 +32,19 @@ import javax.inject.Inject;
  * @Contact master.jungle68@gmail.com
  */
 public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicContract.View, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener {
+    private static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
     public static final long ITEM_SPACING = 5L; // 单位dp
     @Inject
     DynamicPresenter mDynamicPresenter;  // 仅用于构造
 
+    private String mDynamicType = ApiConfig.DYNAMIC_TYPE_NEW;
+
     private List<DynamicBean> mDynamicBeens = new ArrayList<>();
 
-    public static DynamicFragment newInstance() {
+    public static DynamicFragment newInstance(String dynamicType) {
         DynamicFragment fragment = new DynamicFragment();
         Bundle args = new Bundle();
+        args.putString(BUNDLE_DYNAMIC_TYPE, dynamicType);
         fragment.setArguments(args);
         return fragment;
     }
@@ -61,6 +66,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     protected boolean isLoadingMoreEnable() {
+        return false;
+    }
+
+    @Override
+    protected boolean getPullDownRefreshEnable() {
         return false;
     }
 
@@ -95,6 +105,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .dynamicPresenterModule(new DynamicPresenterModule(this))
                 .build().inject(this);
+        mDynamicType = getArguments().getString(BUNDLE_DYNAMIC_TYPE);
         super.initData();
     }
 
@@ -129,4 +140,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         showMessage(dynamicBean.getUserInfoBean().getName());
     }
 
+    @Override
+    public String getDynamicType() {
+        return mDynamicType;
+    }
 }

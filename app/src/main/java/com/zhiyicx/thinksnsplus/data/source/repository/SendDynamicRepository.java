@@ -20,4 +20,5 @@ public class SendDynamicRepository extends BaseDynamicRepository implements Send
     public SendDynamicRepository(ServiceManager serviceManager, Application context) {
         super(serviceManager,context);
     }
+
 }

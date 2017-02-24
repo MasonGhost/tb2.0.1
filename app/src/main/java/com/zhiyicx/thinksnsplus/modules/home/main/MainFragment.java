@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 
@@ -49,9 +50,9 @@ public class MainFragment extends TSViewPagerFragment {
     @Override
     protected List<Fragment> initFragments() {
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(DynamicFragment.newInstance());
-        fragments.add(DynamicFragment.newInstance());
-        fragments.add(DynamicFragment.newInstance());
+        fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS));
+        fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS));
+        fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW));
         return fragments;
     }
 }
