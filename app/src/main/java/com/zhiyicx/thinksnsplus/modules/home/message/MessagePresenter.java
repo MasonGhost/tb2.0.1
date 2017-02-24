@@ -53,7 +53,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     }
 
     @Override
-    public void requestNetData(int maxId, boolean isLoadMore) {
+    public void requestNetData(Long maxId, boolean isLoadMore) {
         if (AppApplication.getmCurrentLoginAuth() == null)
             return;
         mRepository.getMessageList(AppApplication.getmCurrentLoginAuth().getUser_id())
@@ -90,7 +90,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
      * @return
      */
     @Override
-    public List<MessageItemBean> requestCacheData(int maxId, boolean isLoadMore) {
+    public List<MessageItemBean> requestCacheData(Long maxId, boolean isLoadMore) {
         if (mAuthRepository.getAuthBean() == null) {
             return new ArrayList<>();
         }

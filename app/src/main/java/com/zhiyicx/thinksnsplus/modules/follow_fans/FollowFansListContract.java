@@ -3,10 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.follow_fans;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.common.mvp.i.IBasePresenter;
-import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import java.util.List;
@@ -47,9 +44,9 @@ public interface FollowFansListContract {
          * @param userId     用户id
          * @param pageType   详见FollowFansListFragment.class定义的页面类型
          */
-        void requestNetData(int maxId, boolean isLoadMore, int userId, int pageType);
+        void requestNetData(Long maxId, boolean isLoadMore, int userId, int pageType);
 
-        List<FollowFansBean> requestCacheData(int maxId, boolean isLoadMore, int userId, int pageType);
+        List<FollowFansBean> requestCacheData(Long maxId, boolean isLoadMore, int userId, int pageType);
 
         /**
          * 关注用户

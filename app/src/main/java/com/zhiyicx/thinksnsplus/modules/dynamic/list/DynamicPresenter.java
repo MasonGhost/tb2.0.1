@@ -33,13 +33,12 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
     }
 
     /**
-     *
      * @param maxId      当前获取到数据的最大 id
      * @param isLoadMore 加载状态
      */
     @Override
-    public void requestNetData(int maxId, final boolean isLoadMore) {
-        mRepository.getDynamicList(mRootView.getDynamicType(), (long) maxId,mRootView.getPage())
+    public void requestNetData(Long maxId, final boolean isLoadMore) {
+        mRepository.getDynamicList(mRootView.getDynamicType(), maxId, mRootView.getPage())
                 .doAfterTerminate(new Action0() {
                     @Override
                     public void call() {
@@ -65,7 +64,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
     }
 
     @Override
-    public List<DynamicBean> requestCacheData(int minTime, boolean isLoadMore) {
+    public List<DynamicBean> requestCacheData(Long minTime, boolean isLoadMore) {
         List<DynamicBean> datas = new ArrayList<>();
 //        for (int i = 0; i < 9; i++) {
 //            DynamicBean dynamicBean = new DynamicBean();
@@ -95,7 +94,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
 //            dynamicBean.setFeed(dynamicDetailBean);
 //            datas.add(dynamicBean);
 //        }
-        
+
 
         return datas;
     }

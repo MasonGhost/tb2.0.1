@@ -228,13 +228,6 @@ public class DynamicBean extends BaseListBean {
         dest.writeValue(this.hot_creat_time);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 210281324)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getDynamicBeanDao() : null;
-    }
-
     protected DynamicBean(Parcel in) {
         super(in);
         this.id = (Long) in.readValue(Long.class.getClassLoader());
@@ -263,5 +256,12 @@ public class DynamicBean extends BaseListBean {
     @Override
     public Long getMaxId() {
         return feed_id;
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 210281324)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getDynamicBeanDao() : null;
     }
 }

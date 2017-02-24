@@ -272,11 +272,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         }, DEFAULT_TIP_STICKY_TIME);
     }
 
-    protected void requestNetData(int maxId, boolean isLoadMore) {
+    protected void requestNetData(Long maxId, boolean isLoadMore) {
         mPresenter.requestNetData(maxId, isLoadMore);
     }
 
-    protected List<T> requestCacheData(int maxId, boolean isLoadMore) {
+    protected List<T> requestCacheData(Long maxId, boolean isLoadMore) {
         return mPresenter.requestCacheData(maxId, isLoadMore);
     }
 
@@ -336,7 +336,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     public void onNetResponseSuccess(@NotNull List<T> data, boolean isLoadMore) {
         mIsGetNetData = true;
         handleRefreshState(isLoadMore);
-        handleReceiveData(data, isLoadMore);
+        handleReceiveData(data, isLoadMore,false);
     }
 
     /**
@@ -351,7 +351,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         if (!isLoadMore && (data == null || data.size() == 0)) {// 如果没有缓存，直接拉取服务器数据
             mRefreshlayout.beginRefreshing();
         } else {
-            handleReceiveData(data, isLoadMore);
+            handleReceiveData(data, isLoadMore,true);
         }
     }
 
@@ -377,12 +377,14 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * @param data       返回的数据
      * @param isLoadMore 是否是加载更多
      */
-    private void handleReceiveData(@NotNull List<T> data, boolean isLoadMore) {
+    private void handleReceiveData(@NotNull List<T> data, boolean isLoadMore, boolean isFromCache) {
         if (!isLoadMore) { // 刷新
             mAdapter.clear();
             if (data.size() != 0) {
-                // 更新缓存
-                mPresenter.insertOrUpdateData(data);
+                if (!isFromCache) {
+                    // 更新缓存
+                    mPresenter.insertOrUpdateData(data);
+                }
                 // 内存处理数据
                 mAdapter.addAllData(data);
 //                mRefreshlayout.setIsShowLoadingMoreView(true);
@@ -393,8 +395,10 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
             refreshData();
         } else { // 加载更多
             if (data.size() != 0) {
-                // 更新缓存
-                mPresenter.insertOrUpdateData(data);
+                if (!isFromCache) {
+                    // 更新缓存
+                    mPresenter.insertOrUpdateData(data);
+                }
                 // 内存处理数据
                 mAdapter.addAllData(data);
                 refreshData();
