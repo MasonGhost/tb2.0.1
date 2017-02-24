@@ -26,6 +26,11 @@ import java.util.List;
  */
 @Entity
 public class DynamicBean extends BaseListBean {
+
+    public static final int SEND_ERROR = 0;
+    public static final int SEND_ING = 1;
+    public static final int SEND_SUCCESS = 2;
+
     @Id(autoincrement = true)
     private Long id;
     @Unique
@@ -94,7 +99,7 @@ public class DynamicBean extends BaseListBean {
     public void setState(int state) {
         this.state = state;
     }
-    
+
     @Keep
     public DynamicDetailBean getFeed() {
         return feed;
@@ -201,7 +206,7 @@ public class DynamicBean extends BaseListBean {
 
     @Generated(hash = 46860411)
     public DynamicBean(Long id, Long feed_id, Long feed_mark, long user_id, Long hot_creat_time,
-            boolean isFollowed, int state) {
+                       boolean isFollowed, int state) {
         this.id = id;
         this.feed_id = feed_id;
         this.feed_mark = feed_mark;
@@ -241,13 +246,6 @@ public class DynamicBean extends BaseListBean {
         this.isFollowed = isFollowed;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 210281324)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getDynamicBeanDao() : null;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -267,6 +265,13 @@ public class DynamicBean extends BaseListBean {
         dest.writeValue(this.hot_creat_time);
         dest.writeByte(this.isFollowed ? (byte) 1 : (byte) 0);
         dest.writeInt(this.state);
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 210281324)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getDynamicBeanDao() : null;
     }
 
     protected DynamicBean(Parcel in) {
