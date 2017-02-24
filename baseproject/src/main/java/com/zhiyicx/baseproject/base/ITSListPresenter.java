@@ -19,16 +19,16 @@ public interface ITSListPresenter<T extends BaseListBean> extends IBasePresenter
      * @param maxId      当前获取到数据的最大 id
      * @param isLoadMore 加载状态
      */
-    void requestNetData(int maxId, boolean isLoadMore);
+    void requestNetData(Long maxId, boolean isLoadMore);
 
     /**
      * 请求缓存列表数据
      *
-     * @param minTime 当前获取到数据的最小时间
+     * @param max_Id 当前获取到数据的最小时间
      * @param isLoadMore 加载状态
      * @return  返回数据按时间排序
      */
-    List<T> requestCacheData(int minTime, boolean isLoadMore);
+    List<T> requestCacheData(Long max_Id, boolean isLoadMore);
 
     /**
      * 插入或者更新缓存

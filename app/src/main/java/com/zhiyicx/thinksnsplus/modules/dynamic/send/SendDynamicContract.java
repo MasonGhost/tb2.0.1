@@ -4,9 +4,9 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
+import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
-import java.util.HashMap;
+import java.util.List;
 
 import rx.Observable;
 
@@ -24,8 +24,10 @@ public interface SendDynamicContract {
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
-    interface Repository {
-        Observable<BaseJson<Object>> sendDynamic(DynamicDetailBean dynamicDetailBean);
+    interface Repository extends IDynamicReppsitory {
+
+
+
     }
 
     interface Presenter extends IBasePresenter {

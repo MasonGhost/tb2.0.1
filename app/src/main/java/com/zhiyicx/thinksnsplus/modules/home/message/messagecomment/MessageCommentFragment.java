@@ -23,8 +23,6 @@ import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -210,7 +208,7 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
     private void toChat(MessageItemBean messageItemBean) {
         Intent to = new Intent(getActivity(), ChatActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(ChatFragment.BUNDLE_MESSAGEITEMBEAN,messageItemBean);
+        bundle.putParcelable(ChatFragment.BUNDLE_MESSAGEITEMBEAN, messageItemBean);
         to.putExtras(bundle);
         startActivity(to);
     }
@@ -235,7 +233,7 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
 
     @Override
     public void hideLoading() {
-
+        mRefreshlayout.endRefreshing();
     }
 
     @Override

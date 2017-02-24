@@ -14,6 +14,10 @@
     <!--view高度-->
     <dimen name="button_login_height">45dp</dimen>
     <dimen name="view_top_tip_height">30dp</dimen>
+    <dimen name="photo_selector_bottom_view">45dp</dimen>
+    <dimen name="photo_selector_bottom_complete_width_view">70dp</dimen>
+    <dimen name="photo_selector_bottom_complete_height_view">29dp</dimen>
+    <dimen name="photo_album_list_picture_height">60dp</dimen>
     <!--登录注册编辑框左边的文字宽度-->
     <dimen name="edit_lefttext_width">45dp</dimen>
     <dimen name="edit_lefttext_width_change_password">75dp</dimen>
@@ -51,7 +55,7 @@
     <!--#########################################      动态相关       ################################-->
 
     <dimen name="dynamic_menu_text_with">50dp</dimen>
-    <dimen name="dynamic_list_image_marginright">48dp</dimen>
+    <dimen name="dynamic_list_image_marginright">58dp</dimen>
 
 
 </resources>

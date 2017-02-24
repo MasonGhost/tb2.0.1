@@ -4,9 +4,9 @@ import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.data.beans.MusicListBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicRepository;
 
-import java.util.ArrayList;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -43,12 +43,12 @@ public class MusicPresenter extends BasePresenter<MusicContract.Repository, Musi
     }
 
     @Override
-    public void requestNetData(int maxId, boolean isLoadMore) {
+    public void requestNetData(Long maxId, boolean isLoadMore) {
 
     }
 
     @Override
-    public List requestCacheData(int maxId, boolean isLoadMore) {
+    public List requestCacheData(Long maxId, boolean isLoadMore) {
         return new ArrayList();
     }
 

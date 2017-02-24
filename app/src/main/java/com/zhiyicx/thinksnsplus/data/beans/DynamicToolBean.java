@@ -4,9 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
 
 /**
  * @author LiuChao
@@ -16,11 +15,24 @@ import org.greenrobot.greendao.annotation.Generated;
  */
 @Entity
 public class DynamicToolBean implements Parcelable {
+    public static final int STATUS_DIGG_FEED_UNCHECKED=0;
+    public static final int STATUS_DIGG_FEED_CHECKED=1;
+
     @Id
     private Long feed_mark;// 属于哪条动态
     private int feed_digg_count;// 点赞数
     private int feed_view_count;// 浏览量
     private int feed_comment_count;// 评论数
+
+    public int getIs_digg_feed() {
+        return is_digg_feed;
+    }
+
+    public void setIs_digg_feed(int is_digg_feed) {
+        this.is_digg_feed = is_digg_feed;
+    }
+
+    private int is_digg_feed;// 评论数
 
     public Long getFeed_mark() {
         return feed_mark;
@@ -54,6 +66,19 @@ public class DynamicToolBean implements Parcelable {
         this.feed_comment_count = feed_comment_count;
     }
 
+    public DynamicToolBean() {
+    }
+
+    @Generated(hash = 1207968670)
+    public DynamicToolBean(Long feed_mark, int feed_digg_count, int feed_view_count,
+            int feed_comment_count, int is_digg_feed) {
+        this.feed_mark = feed_mark;
+        this.feed_digg_count = feed_digg_count;
+        this.feed_view_count = feed_view_count;
+        this.feed_comment_count = feed_comment_count;
+        this.is_digg_feed = is_digg_feed;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -65,9 +90,7 @@ public class DynamicToolBean implements Parcelable {
         dest.writeInt(this.feed_digg_count);
         dest.writeInt(this.feed_view_count);
         dest.writeInt(this.feed_comment_count);
-    }
-
-    public DynamicToolBean() {
+        dest.writeInt(this.is_digg_feed);
     }
 
     protected DynamicToolBean(Parcel in) {
@@ -75,15 +98,7 @@ public class DynamicToolBean implements Parcelable {
         this.feed_digg_count = in.readInt();
         this.feed_view_count = in.readInt();
         this.feed_comment_count = in.readInt();
-    }
-
-    @Generated(hash = 483754181)
-    public DynamicToolBean(Long feed_mark, int feed_digg_count, int feed_view_count,
-            int feed_comment_count) {
-        this.feed_mark = feed_mark;
-        this.feed_digg_count = feed_digg_count;
-        this.feed_view_count = feed_view_count;
-        this.feed_comment_count = feed_comment_count;
+        this.is_digg_feed = in.readInt();
     }
 
     public static final Creator<DynamicToolBean> CREATOR = new Creator<DynamicToolBean>() {

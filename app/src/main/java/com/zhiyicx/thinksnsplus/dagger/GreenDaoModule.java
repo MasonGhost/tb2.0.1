@@ -2,7 +2,12 @@ package com.zhiyicx.thinksnsplus.dagger;
 
 import android.app.Application;
 
+import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.BackgroundRequestTaskBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 
@@ -35,4 +40,25 @@ public class GreenDaoModule {
     public FollowFansBeanGreenDaoImpl provideFollowFansBeanGreenDaoImpl(Application application) {
         return new FollowFansBeanGreenDaoImpl(application);
     }
+
+    @Provides
+    public DynamicBeanGreenDaoImpl provideDynamicBeanGreenDaoImpl(Application application) {
+        return new DynamicBeanGreenDaoImpl(application);
+    }
+
+    @Provides
+    public DynamicCommentBeanGreenDaoImpl provideDynamicCommentBeanGreenDaoImpl(Application application) {
+        return new DynamicCommentBeanGreenDaoImpl(application);
+    }
+
+    @Provides
+    public DynamicDetailBeanGreenDaoImpl provideDynamicDetailBeanGreenDaoImpl(Application application) {
+        return new DynamicDetailBeanGreenDaoImpl(application);
+    }
+
+    @Provides
+    public DynamicToolBeanGreenDaoImpl provideDynamicToolBeanGreenDaoImpl(Application application) {
+        return new DynamicToolBeanGreenDaoImpl(application);
+    }
+
 }

@@ -7,6 +7,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -37,7 +38,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 
 public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends BaseListBean> extends TSFragment<P> implements BGARefreshLayout.BGARefreshLayoutDelegate, ITSListView<T, P> {
-    public static final int DEFAULT_PAGE_MAX_ID = 0;// 默认初始化列表 id
+    public static final Long DEFAULT_PAGE_MAX_ID = 0L;// 默认初始化列表 id
+    public static final int DEFAULT_PAGE = 1;// 默认初始化列表分页，只对当 max_id 无法使用时有效，如热门动态
 
     private static final int DEFAULT_TIP_STICKY_TIME = 3000;
     private static final float DEFAULT_LIST_ITEM_SPACING = 0.5f;
@@ -58,7 +60,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     // 当前数据加载状态
     protected int mEmptyState = EmptyView.STATE_DEFAULT;
 
-    protected int mMaxId = DEFAULT_PAGE_MAX_ID; // 纪录当前列表 item id 最大值，用于分页
+    protected Long mMaxId = DEFAULT_PAGE_MAX_ID; // 纪录当前列表 item id 最大值，用于分页
+
+    protected int mPage = DEFAULT_PAGE;// 只对当 max_id 无法使用时有效，如热门动态
 
     protected boolean mIsGetNetData = false; //  是否请求了网络数据
 
@@ -96,6 +100,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 });
         mTvTopTip = (TextView) rootView.findViewById(R.id.tv_top_tip_text);
         mEmptyView = new EmptyView(getContext());
+        mEmptyView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        mEmptyView.setErrorImag(setEmptView());
         mEmptyView.setNeedTextTip(false);
         mEmptyView.setNeedClickLoadState(false);
         RxView.clicks(mEmptyView)
@@ -104,6 +110,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                     @Override
                     public void call(Void aVoid) {
                         mRefreshlayout.beginRefreshing();
+                        mRefreshlayout.beginLoadingMore();
                     }
                 });
         mRefreshlayout.setDelegate(this);
@@ -118,11 +125,14 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mAdapter = getAdapter();
         mRvList.setAdapter(mAdapter);
         mRefreshlayout.setRefreshViewHolder(new TSPRefreshViewHolder(getActivity(), isLoadingMoreEnable()));
-        mRefreshlayout.setIsShowLoadingMoreView(getIsShowLoadingMore());
         mRefreshlayout.setPullDownRefreshEnable(getPullDownRefreshEnable());
         mEmptyWrapper = new EmptyWrapper(mAdapter);
         mEmptyWrapper.setEmptyView(mEmptyView);
         mRvList.setAdapter(mEmptyWrapper);
+    }
+
+    private int setEmptView() {
+        return R.mipmap.img_default_nothing;
     }
 
 
@@ -173,7 +183,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     }
 
     protected boolean getIsShowLoadingMore() {
-        return true;
+        return false;
     }
 
     protected boolean getPullDownRefreshEnable() {
@@ -262,11 +272,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         }, DEFAULT_TIP_STICKY_TIME);
     }
 
-    protected void requestNetData(int maxId, boolean isLoadMore) {
+    protected void requestNetData(Long maxId, boolean isLoadMore) {
         mPresenter.requestNetData(maxId, isLoadMore);
     }
 
-    protected List<T> requestCacheData(int maxId, boolean isLoadMore) {
+    protected List<T> requestCacheData(Long maxId, boolean isLoadMore) {
         return mPresenter.requestCacheData(maxId, isLoadMore);
     }
 
@@ -284,6 +294,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mEmptyWrapper.notifyItemChanged(index);
     }
 
+    @Override
+    public int getPage() {
+        return mPage;
+    }
+
     /**
      * 刷新
      *
@@ -292,6 +307,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
         mMaxId = DEFAULT_PAGE_MAX_ID;
+        mPage = DEFAULT_PAGE;
         requestNetData(mMaxId, false);
     }
 
@@ -306,6 +322,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         if (!mIsGetNetData) { // 如果没有获取过网络数据，加载更多就是获取本地数据，如果加载了网络数据了，加载更多就是获取网络数据
             onCacheResponseSuccess(requestCacheData(mMaxId, true), true);
         } else {
+            mPage++;
             requestNetData(mMaxId, true);
         }
         return true;
@@ -319,7 +336,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     public void onNetResponseSuccess(@NotNull List<T> data, boolean isLoadMore) {
         mIsGetNetData = true;
         handleRefreshState(isLoadMore);
-        handleReceiveData(data, isLoadMore);
+        handleReceiveData(data, isLoadMore,false);
     }
 
     /**
@@ -330,10 +347,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void onCacheResponseSuccess(@NotNull List<T> data, boolean isLoadMore) {
+        handleRefreshState(isLoadMore);
         if (!isLoadMore && (data == null || data.size() == 0)) {// 如果没有缓存，直接拉取服务器数据
-            onBGARefreshLayoutBeginRefreshing(mRefreshlayout);
+            mRefreshlayout.beginRefreshing();
         } else {
-            handleReceiveData(data, isLoadMore);
+            handleReceiveData(data, isLoadMore,true);
         }
     }
 
@@ -359,30 +377,34 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * @param data       返回的数据
      * @param isLoadMore 是否是加载更多
      */
-    private void handleReceiveData(@NotNull List<T> data, boolean isLoadMore) {
+    private void handleReceiveData(@NotNull List<T> data, boolean isLoadMore, boolean isFromCache) {
         if (!isLoadMore) { // 刷新
             mAdapter.clear();
             if (data.size() != 0) {
-                // 更新缓存
-                mPresenter.insertOrUpdateData(data);
+                if (!isFromCache) {
+                    // 更新缓存
+                    mPresenter.insertOrUpdateData(data);
+                }
                 // 内存处理数据
                 mAdapter.addAllData(data);
-                mRefreshlayout.setIsShowLoadingMoreView(true);
+//                mRefreshlayout.setIsShowLoadingMoreView(true);
                 mMaxId = data.get(data.size() - 1).getMaxId();
             } else {
-                mRefreshlayout.setIsShowLoadingMoreView(false);
+//                mRefreshlayout.setIsShowLoadingMoreView(false);
             }
             refreshData();
         } else { // 加载更多
             if (data.size() != 0) {
-                // 更新缓存
-                mPresenter.insertOrUpdateData(data);
+                if (!isFromCache) {
+                    // 更新缓存
+                    mPresenter.insertOrUpdateData(data);
+                }
                 // 内存处理数据
                 mAdapter.addAllData(data);
                 refreshData();
                 mMaxId = data.get(data.size() - 1).getMaxId();
             } else {
-                mRefreshlayout.setIsShowLoadingMoreView(false);
+//                mRefreshlayout.setIsShowLoadingMoreView(false);
             }
         }
     }

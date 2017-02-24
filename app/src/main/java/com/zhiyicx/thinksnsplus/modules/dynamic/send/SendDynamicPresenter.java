@@ -2,9 +2,13 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
@@ -24,19 +28,31 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
 
     @Inject
     IUploadRepository mIUploadRepository;
+    @Inject
+    DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
+    @Inject
+    DynamicDetailBeanGreenDaoImpl mDynamicDetailBeanGreenDao;
 
     @Inject
     public SendDynamicPresenter(SendDynamicContract.Repository repository, SendDynamicContract.View rootView) {
         super(repository, rootView);
+        mDynamicBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent()
+                .dynamicBeanGreenDao();
+        mDynamicDetailBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent()
+                .dynamicDetailBeanGreenDao();
     }
 
     @Override
     public void sendDynamic(DynamicBean dynamicBean) {
+        // 将动态信息存入数据库
+        mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
+        mDynamicDetailBeanGreenDao.insertOrReplace(dynamicBean.getFeed());
         // 发送动态
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.SEND_DYNAMIC);
         HashMap<String, Object> params = new HashMap<>();
-        params.put("params", dynamicBean);
+        // feed_mark作为参数
+        params.put("params", dynamicBean.getFeed_mark());
         backgroundRequestTaskBean.setParams(params);
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
         mRootView.sendDynamicComplete();// 发送动态放到后台任务处理，关闭当前的动态发送页面

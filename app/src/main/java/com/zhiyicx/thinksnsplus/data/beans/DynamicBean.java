@@ -5,20 +5,18 @@ import android.os.Parcel;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.Keep;
-import org.greenrobot.greendao.annotation.OrderBy;
+
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.util.List;
-
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
-import org.greenrobot.greendao.annotation.NotNull;
 
 /**
  * @Describe 动态实体类：包含动态内容，工具栏参数，评论内容
@@ -28,6 +26,11 @@ import org.greenrobot.greendao.annotation.NotNull;
  */
 @Entity
 public class DynamicBean extends BaseListBean {
+
+    public static final int SEND_ERROR = 0;
+    public static final int SEND_ING = 1;
+    public static final int SEND_SUCCESS = 2;
+
     @Id(autoincrement = true)
     private Long id;
     @Unique
@@ -44,6 +47,18 @@ public class DynamicBean extends BaseListBean {
     // DynamicBean的feed_id与DynamicCommentBean的feed_id关联
     @ToMany(joinProperties = {@JoinProperty(name = "feed_mark", referencedName = "feed_mark")})
     private List<DynamicCommentBean> comments;
+
+    private Long hot_creat_time;// 标记热门，已及创建时间，用户数据库查询
+    private boolean isFollowed;// 是否关注了该条动态（用户）
+    private int state;// 动态发送状态 0 发送失败 1 正在发送 2 发送成功
+
+    public Long getHot_creat_time() {
+        return hot_creat_time;
+    }
+
+    public void setHot_creat_time(Long hot_creat_time) {
+        this.hot_creat_time = hot_creat_time;
+    }
 
     public Long getId() {
         return id;
@@ -75,6 +90,14 @@ public class DynamicBean extends BaseListBean {
 
     public void setUser_id(long user_id) {
         this.user_id = user_id;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 
     @Keep
@@ -134,25 +157,9 @@ public class DynamicBean extends BaseListBean {
         this.comments = comments;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeValue(this.id);
-        dest.writeValue(this.feed_id);
-        dest.writeValue(this.feed_mark);
-        dest.writeLong(this.user_id);
-        dest.writeParcelable(this.feed, flags);
-        dest.writeParcelable(this.tool, flags);
-        dest.writeParcelable(this.userInfoBean, flags);
-        dest.writeTypedList(this.comments);
-    }
-
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 249603048)
     public synchronized void resetComments() {
         comments = null;
@@ -194,14 +201,77 @@ public class DynamicBean extends BaseListBean {
         myDao.update(this);
     }
 
+    public DynamicBean() {
+    }
+
+    @Generated(hash = 46860411)
+    public DynamicBean(Long id, Long feed_id, Long feed_mark, long user_id, Long hot_creat_time,
+                       boolean isFollowed, int state) {
+        this.id = id;
+        this.feed_id = feed_id;
+        this.feed_mark = feed_mark;
+        this.user_id = user_id;
+        this.hot_creat_time = hot_creat_time;
+        this.isFollowed = isFollowed;
+        this.state = state;
+    }
+
+    /**
+     * Used to resolve relations
+     */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /**
+     * Used for active entity operations.
+     */
+    @Generated(hash = 476616020)
+    private transient DynamicBeanDao myDao;
+    @Generated(hash = 1613724019)
+    private transient Long feed__resolvedKey;
+    @Generated(hash = 297170499)
+    private transient Long tool__resolvedKey;
+    @Generated(hash = 1005780391)
+    private transient Long userInfoBean__resolvedKey;
+
+    @Override
+    public Long getMaxId() {
+        return feed_id;
+    }
+
+    public boolean getIsFollowed() {
+        return this.isFollowed;
+    }
+
+    public void setIsFollowed(boolean isFollowed) {
+        this.isFollowed = isFollowed;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.id);
+        dest.writeValue(this.feed_id);
+        dest.writeValue(this.feed_mark);
+        dest.writeLong(this.user_id);
+        dest.writeParcelable(this.feed, flags);
+        dest.writeParcelable(this.tool, flags);
+        dest.writeParcelable(this.userInfoBean, flags);
+        dest.writeTypedList(this.comments);
+        dest.writeValue(this.hot_creat_time);
+        dest.writeByte(this.isFollowed ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.state);
+    }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 210281324)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getDynamicBeanDao() : null;
-    }
-
-    public DynamicBean() {
     }
 
     protected DynamicBean(Parcel in) {
@@ -214,14 +284,9 @@ public class DynamicBean extends BaseListBean {
         this.tool = in.readParcelable(DynamicToolBean.class.getClassLoader());
         this.userInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
         this.comments = in.createTypedArrayList(DynamicCommentBean.CREATOR);
-    }
-
-    @Generated(hash = 131058427)
-    public DynamicBean(Long id, Long feed_id, Long feed_mark, long user_id) {
-        this.id = id;
-        this.feed_id = feed_id;
-        this.feed_mark = feed_mark;
-        this.user_id = user_id;
+        this.hot_creat_time = (Long) in.readValue(Long.class.getClassLoader());
+        this.isFollowed = in.readByte() != 0;
+        this.state = in.readInt();
     }
 
     public static final Creator<DynamicBean> CREATOR = new Creator<DynamicBean>() {
@@ -235,17 +300,4 @@ public class DynamicBean extends BaseListBean {
             return new DynamicBean[size];
         }
     };
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /** Used for active entity operations. */
-    @Generated(hash = 476616020)
-    private transient DynamicBeanDao myDao;
-    @Generated(hash = 1613724019)
-    private transient Long feed__resolvedKey;
-    @Generated(hash = 297170499)
-    private transient Long tool__resolvedKey;
-    @Generated(hash = 1005780391)
-    private transient Long userInfoBean__resolvedKey;
-
 }

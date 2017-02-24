@@ -14,6 +14,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -60,7 +61,7 @@ public class PhotoViewFragment extends TSFragment {
     @BindView(R.id.rb_select_photo)
     CheckBox mRbSelectPhoto;
     @BindView(R.id.bt_complete)
-    Button mBtComplete;
+    TextView mBtComplete;
 
     private ArrayList<String> seletedPaths;
     private ArrayList<String> allPaths;
@@ -118,7 +119,7 @@ public class PhotoViewFragment extends TSFragment {
             }
         });
         // 初始化设置当前选择的数量
-        mBtComplete.setEnabled(seletedPaths.size() > 0);
+        //mBtComplete.setEnabled(seletedPaths.size() > 0);
         mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(), maxCount));
         // 初始化选择checkbox
         mRbSelectPhoto.setChecked(seletedPaths.contains(mPagerAdapter.getPathAtPosition(currentItem)));
@@ -143,7 +144,7 @@ public class PhotoViewFragment extends TSFragment {
                 }
 
                 // 重置当前的选择数量
-                mBtComplete.setEnabled(seletedPaths.size() > 0);
+                //mBtComplete.setEnabled(seletedPaths.size() > 0);
                 mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(), maxCount));
                 // 通知图片列表进行刷新
                 // 在 PhotoAlbumDetailsFragment 的 refreshDataAndUI() 方法中进行订阅

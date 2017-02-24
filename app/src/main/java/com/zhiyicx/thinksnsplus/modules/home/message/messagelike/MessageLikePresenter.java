@@ -1,11 +1,14 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagelike;
 
+import android.os.Handler;
+
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -25,13 +28,19 @@ public class MessageLikePresenter extends BasePresenter<MessageLikeContract.Repo
     }
 
     @Override
-    public void requestNetData(int maxId, boolean isLoadMore) {
+    public void requestNetData(Long maxId, boolean isLoadMore) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mRootView.hideLoading();
+            }
+        }, 2000);
 
-    }
+}
 
     @Override
-    public List<MessageItemBean> requestCacheData(int maxId, boolean isLoadMore) {
-        return null;
+    public List<MessageItemBean> requestCacheData(Long maxId, boolean isLoadMore) {
+        return new ArrayList<>();
     }
 
     @Override

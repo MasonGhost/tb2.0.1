@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.GsonFollowFansBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.FollowFansClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListContract;
@@ -12,10 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * @author LiuChao
@@ -42,7 +38,7 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
                         List<FollowFansBean> followFansBeanList = new ArrayList<FollowFansBean>();
                         for (GsonFollowFansBean.GsonFollowsBean gsonFollowsBean : gsonFollowFansBean.getFollows()) {
                             FollowFansBean followFansBean = new FollowFansBean();
-                            followFansBean.setMaxId(gsonFollowsBean.getId());// 存入maxId
+                            followFansBean.setMaxId((long) gsonFollowsBean.getId());// 存入maxId
                             // 关注主体是当前传入的userId
                             followFansBean.setUserId(userId);
                             followFansBean.setFollowedUserId(gsonFollowsBean.getUser_id());
@@ -71,7 +67,7 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
                         List<FollowFansBean> followFansBeanList = new ArrayList<FollowFansBean>();
                         for (GsonFollowFansBean.GsonFollowsBean gsonFollowsBean : gsonFollowFansBean.getFolloweds()) {
                             FollowFansBean followFansBean = new FollowFansBean();
-                            followFansBean.setMaxId(gsonFollowsBean.getId());// 存入maxId
+                            followFansBean.setMaxId((long) gsonFollowsBean.getId());// 存入maxId
                             // 关注主体是当前从服务器获取到的user_id
                             followFansBean.setUserId(gsonFollowsBean.getUser_id());
                             followFansBean.setFollowedUserId(userId);

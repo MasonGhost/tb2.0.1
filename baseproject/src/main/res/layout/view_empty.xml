@@ -23,6 +23,7 @@
         <ProgressBar
             android:id="@+id/pb_animation_bar"
             style="@style/style_loading"
+            android:visibility="invisible"
             android:layout_centerInParent="true"
             android:layout_width="@dimen/icon_for_user_center"
             android:layout_height="@dimen/icon_for_user_center"/>

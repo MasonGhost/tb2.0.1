@@ -18,6 +18,14 @@ public class SquareImageView extends FilterImageView {
         super(context, attrs, defStyleAttr);
     }
 
+    public SquareImageView(Context context) {
+        super(context);
+    }
+
+    public SquareImageView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(getDefaultSize(0, widthMeasureSpec),

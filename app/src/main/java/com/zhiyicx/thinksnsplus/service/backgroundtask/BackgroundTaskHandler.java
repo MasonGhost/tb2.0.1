@@ -4,7 +4,6 @@ import android.app.Application;
 
 import com.google.gson.Gson;
 import com.zhiyicx.baseproject.cache.CacheBean;
-import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.NetUtils;
@@ -19,10 +18,11 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.BackgroundRequestTaskBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.SendDynamicPresenterRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.SendDynamicRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
@@ -30,7 +30,6 @@ import org.simple.eventbus.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -42,10 +41,11 @@ import javax.inject.Inject;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
+
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_DYNAMIC_TO_LIST;
 
 /**
  * @Describe 后台任务处理逻辑
@@ -69,9 +69,11 @@ public class BackgroundTaskHandler {
     @Inject
     UserInfoRepository mUserInfoRepository;
     @Inject
-    SendDynamicPresenterRepository mSendDynamicPresenterRepository;
+    SendDynamicRepository mSendDynamicRepository;
     @Inject
     UpLoadRepository mUpLoadRepository;
+    @Inject
+    DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
 
     private Queue<BackgroundRequestTaskBean> mTaskBeanConcurrentLinkedQueue = new ConcurrentLinkedQueue<>();// 线程安全的队列
 
@@ -291,11 +293,11 @@ public class BackgroundTaskHandler {
         if (backgroundRequestTaskBean.getParams() == null || backgroundRequestTaskBean.getParams().get("user_id") == null) {
             return;
         }
-        List<Integer> integers = new ArrayList<>();
+        List<Long> integers = new ArrayList<>();
         if (backgroundRequestTaskBean.getParams().get("user_id") instanceof List) {
-            integers.addAll((Collection<? extends Integer>) backgroundRequestTaskBean.getParams().get("user_id"));
+            integers.addAll((Collection<? extends Long>) backgroundRequestTaskBean.getParams().get("user_id"));
         } else {
-            integers.add((Integer) backgroundRequestTaskBean.getParams().get("user_id"));
+            integers.add(Long.valueOf(backgroundRequestTaskBean.getParams().get("user_id")+""));
         }
 
         mUserInfoRepository.getUserInfo(integers)
@@ -326,7 +328,13 @@ public class BackgroundTaskHandler {
      */
     private void sendDynamic(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
         final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
-        DynamicBean dynamicBean = (DynamicBean) params.get("params");
+        final int feedMark = (int) params.get("params");
+        final DynamicBean dynamicBean = mDynamicBeanGreenDao.getDynamicByFeedMark(feedMark);
+        // 发送动态到动态列表：状态为发送中
+        dynamicBean.setState(DynamicBean.SEND_ING);
+        EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
+        // 存入数据库
+        // ....
         final DynamicDetailBean dynamicDetailBean = dynamicBean.getFeed();
         List<String> photos = dynamicDetailBean.getLocalPhotos();
         Observable<BaseJson<Object>> observable = null;
@@ -359,12 +367,12 @@ public class BackgroundTaskHandler {
                         public Observable<BaseJson<Object>> call(List<Integer> integers) {
                             // 动态相关图片：图片任务id的数组，将它作为发布动态的参数
                             dynamicDetailBean.setStorage(integers);
-                            return mSendDynamicPresenterRepository.sendDynamic(dynamicDetailBean);// 进行动态发布的请求
+                            return mSendDynamicRepository.sendDynamic(dynamicDetailBean);// 进行动态发布的请求
                         }
                     });
         } else {
             // 没有图片上传任务，直接发布动态
-            observable = mSendDynamicPresenterRepository.sendDynamic(dynamicDetailBean);// 进行动态发布的请求
+            observable = mSendDynamicRepository.sendDynamic(dynamicDetailBean);// 进行动态发布的请求
 
         }
         observable.subscribeOn(Schedulers.io())
@@ -373,14 +381,23 @@ public class BackgroundTaskHandler {
                     @Override
                     protected void onSuccess(Object data) {
                         // 动态发送成功
-                        ToastUtils.showToast("动态发布成功");
                         mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                        // 发送动态到动态列表：状态为发送成功
+                        dynamicBean.setState(DynamicBean.SEND_SUCCESS);
+                        mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
+                        EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
+
                     }
 
                     @Override
                     protected void onFailure(String message) {
                         // 动态发送失败
                         addBackgroundRequestTask(backgroundRequestTaskBean);
+                        // 发送动态到动态列表：状态为发送失败
+                        dynamicBean.setState(DynamicBean.SEND_ERROR);
+                        mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
+                        EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
+
                     }
 
                     @Override
@@ -388,6 +405,11 @@ public class BackgroundTaskHandler {
                         // 动态发送失败
                         throwable.printStackTrace();
                         addBackgroundRequestTask(backgroundRequestTaskBean);
+                        // 发送动态到动态列表：状态为发送失败
+                        dynamicBean.setState(DynamicBean.SEND_ERROR);
+                        mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
+                        EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
+
                     }
                 });
 

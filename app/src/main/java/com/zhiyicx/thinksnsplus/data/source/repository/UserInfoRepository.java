@@ -87,7 +87,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      * @return
      */
     @Override
-    public Observable<BaseJson<List<UserInfoBean>>> getUserInfo(List<Integer> user_ids) {
+    public Observable<BaseJson<List<UserInfoBean>>> getUserInfo(List<Long> user_ids) {
         HashMap<String, Object> datas = new HashMap<>();
         datas.put("user_ids", user_ids);
         RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(datas));
