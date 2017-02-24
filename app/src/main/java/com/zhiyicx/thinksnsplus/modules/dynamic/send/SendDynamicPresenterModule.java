@@ -4,7 +4,7 @@ import android.app.Application;
 
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.SendDynamicPresenterRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.SendDynamicRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 
 import dagger.Module;
@@ -30,8 +30,8 @@ public class SendDynamicPresenterModule {
     }
 
     @Provides
-    SendDynamicContract.Repository provideSendDynamicPresenterRepository(ServiceManager serviceManager) {
-        return new SendDynamicPresenterRepository(serviceManager);
+    SendDynamicContract.Repository provideSendDynamicPresenterRepository(ServiceManager serviceManager, Application application) {
+        return new SendDynamicRepository(serviceManager,application);
     }
 
     @Provides

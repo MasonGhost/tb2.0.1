@@ -4,7 +4,6 @@ import android.app.Application;
 
 import com.google.gson.Gson;
 import com.zhiyicx.baseproject.cache.CacheBean;
-import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.NetUtils;
@@ -22,7 +21,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.BackgroundRequestTaskBeanGreen
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.SendDynamicPresenterRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.SendDynamicRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
@@ -30,7 +29,6 @@ import org.simple.eventbus.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +40,6 @@ import javax.inject.Inject;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
@@ -69,7 +66,7 @@ public class BackgroundTaskHandler {
     @Inject
     UserInfoRepository mUserInfoRepository;
     @Inject
-    SendDynamicPresenterRepository mSendDynamicPresenterRepository;
+    SendDynamicRepository mSendDynamicRepository;
     @Inject
     UpLoadRepository mUpLoadRepository;
 
@@ -359,12 +356,12 @@ public class BackgroundTaskHandler {
                         public Observable<BaseJson<Object>> call(List<Integer> integers) {
                             // 动态相关图片：图片任务id的数组，将它作为发布动态的参数
                             dynamicDetailBean.setStorage(integers);
-                            return mSendDynamicPresenterRepository.sendDynamic(dynamicDetailBean);// 进行动态发布的请求
+                            return mSendDynamicRepository.sendDynamic(dynamicDetailBean);// 进行动态发布的请求
                         }
                     });
         } else {
             // 没有图片上传任务，直接发布动态
-            observable = mSendDynamicPresenterRepository.sendDynamic(dynamicDetailBean);// 进行动态发布的请求
+            observable = mSendDynamicRepository.sendDynamic(dynamicDetailBean);// 进行动态发布的请求
 
         }
         observable.subscribeOn(Schedulers.io())

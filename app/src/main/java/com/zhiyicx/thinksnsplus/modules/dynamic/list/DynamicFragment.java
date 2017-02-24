@@ -24,8 +24,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
-
 /**
  * @Describe 动态列表
  * @Author Jungle68
@@ -59,6 +57,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected float getItemDecorationSpacing() {
         return ITEM_SPACING;
+    }
+
+    @Override
+    protected boolean isLoadingMoreEnable() {
+        return false;
     }
 
     @Override
@@ -126,8 +129,4 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         showMessage(dynamicBean.getUserInfoBean().getName());
     }
 
-    @Override
-    public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
-        return false;
-    }
 }
