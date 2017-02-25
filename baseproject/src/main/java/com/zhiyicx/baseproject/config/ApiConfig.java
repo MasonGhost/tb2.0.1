@@ -77,6 +77,7 @@ public class ApiConfig {
     public static final String DYNAMIC_TYPE_NEW = ""; // 最新动态
     public static final String DYNAMIC_TYPE_FOLLOWS = "follows"; // 关注动态
     public static final String DYNAMIC_TYPE_HOTS = "hots"; // 热门动态
+    public static final int DYNAMIC_PAGE_LIMIT = 10;// 不传 服务器默认10条
     /**
      * 通用 CommonClient
      */

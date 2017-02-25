@@ -12,5 +12,6 @@ public class ErrorCodeConfig {
     public static final int NEED_RELOGIN = 1013;//token刷新失败，需要重新登录
     public static final int OTHER_DEVICE_LOGIN = 1015;//token在其他设备登陆
     public static final int TOKEN_NOT_EXIST = 1016;//token不存在
+    public static final int USER_AUTH_FAIL = 1099;//用户认证失败
 
 }

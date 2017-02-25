@@ -5,7 +5,13 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +34,12 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
 
     @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
-
+    @Inject
+    DynamicDetailBeanGreenDaoImpl mDynamicDetailBeanGreenDao;
+    @Inject
+    DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
+    @Inject
+    DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
     @Inject
     AuthRepository mAuthRepository;
 
@@ -69,55 +80,39 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
     }
 
     @Override
-    public List<DynamicBean> requestCacheData(Long minTime, boolean isLoadMore) {
+    public List<DynamicBean> requestCacheData(Long maxId, boolean isLoadMore) {
         List<DynamicBean> datas = new ArrayList<>();
-//        for (int i = 0; i < 9; i++) {
-//            DynamicBean dynamicBean = new DynamicBean();
-//            dynamicBean.setUser_id(3);
-//            UserInfoBean userInfoBean = AppApplication.AppComponentHolder.getAppComponent()
-//                    .userInfoBeanGreenDao().getSingleDataFromCache((long) 3);
-//            if (userInfoBean == null) {
-//                userInfoBean = new UserInfoBean();
-//                userInfoBean.setName("我的天");
-//                userInfoBean.setUserIcon("www.baiu.com");
-//            }
-//            dynamicBean.setUserInfoBean(userInfoBean);
-//            DynamicToolBean toolBean = new DynamicToolBean();
-//            toolBean.setFeed_comment_count(i);
-//            toolBean.setFeed_digg_count(2 * i);
-//            toolBean.setFeed_view_count(3 * i);
-//            toolBean.setIs_digg_feed(i % 2);
-//            dynamicBean.setTool(toolBean);
-//            DynamicDetailBean dynamicDetailBean = new DynamicDetailBean();
-//            dynamicDetailBean.setContent("今天是个好日志" + i);
-//            dynamicDetailBean.setTitle(i + "我知道觉得关键看感觉绝对客观艰苦的房价过快封建快攻打法就是");
-//            List<Integer> images = new ArrayList<>();
-//            for (int i1 = 0; i1 < i; i1++) {
-//                images.add(i1);
-//            }
-//            dynamicDetailBean.setStorage(images);
-//            dynamicBean.setFeed(dynamicDetailBean);
-//            datas.add(dynamicBean);
-//        }
         switch (mRootView.getDynamicType()) {
             case ApiConfig.DYNAMIC_TYPE_FOLLOWS:
-                datas = mDynamicBeanGreenDao.getFollowedDynamicList();
+                datas = mDynamicBeanGreenDao.getFollowedDynamicList(maxId);
                 break;
             case ApiConfig.DYNAMIC_TYPE_HOTS:
-                datas = mDynamicBeanGreenDao.getHotDynamicList();
+                datas = mDynamicBeanGreenDao.getHotDynamicList(maxId);
                 break;
             case ApiConfig.DYNAMIC_TYPE_NEW:
-                datas = mDynamicBeanGreenDao.getNewestDynamicList();
+                datas = mDynamicBeanGreenDao.getNewestDynamicList(maxId);
                 break;
         }
-
-
         return datas;
     }
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<DynamicBean> data) {
+        if(data==null||data.size()==0){
+            return false;
+        }
+        List<DynamicDetailBean> dynamicDetailBeen=new ArrayList<>();
+        List<DynamicCommentBean> dynamicCommentBeen=new ArrayList<>();
+        List<DynamicToolBean> dynamicToolBeen=new ArrayList<>();
+        for (DynamicBean dynamicBean : data) {
+            dynamicDetailBeen.add(dynamicBean.getFeed());
+            dynamicCommentBeen.addAll(dynamicBean.getComments());
+            dynamicToolBeen.add(dynamicBean.getTool());
+        }
         mDynamicBeanGreenDao.insertOrReplace(data);
+        mDynamicDetailBeanGreenDao.insertOrReplace(dynamicDetailBeen);
+        mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBeen);
+        mDynamicToolBeanGreenDao.insertOrReplace(dynamicToolBeen);
         return true;
     }
 

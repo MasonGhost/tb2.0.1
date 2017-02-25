@@ -235,6 +235,9 @@ public class DynamicBean extends BaseListBean {
 
     @Override
     public Long getMaxId() {
+        if (hot_creat_time != null && hot_creat_time.intValue() != 0) { // 用于区别热门，和其他分类，查询数据库分页时使用
+            return hot_creat_time;
+        }
         return feed_id;
     }
 

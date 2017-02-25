@@ -1,15 +1,14 @@
 package com.zhiyicx.thinksnsplus.data.source.local;
 
-import android.content.Context;
+import android.app.Application;
 
-import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
-import com.zhiyicx.thinksnsplus.data.beans.DaoSession;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * @author LiuChao
@@ -19,7 +18,8 @@ import java.util.List;
  */
 
 public class DynamicDetailBeanGreenDaoImpl extends CommonCacheImpl<DynamicDetailBean> {
-    public DynamicDetailBeanGreenDaoImpl(Context context) {
+    @Inject
+    public DynamicDetailBeanGreenDaoImpl(Application context) {
         super(context);
     }
 
