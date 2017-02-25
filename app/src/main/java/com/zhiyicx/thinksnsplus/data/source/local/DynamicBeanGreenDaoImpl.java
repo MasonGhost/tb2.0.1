@@ -1,16 +1,16 @@
 package com.zhiyicx.thinksnsplus.data.source.local;
 
-import android.content.Context;
+import android.app.Application;
 
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanDao;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * @author LiuChao
@@ -20,7 +20,8 @@ import java.util.List;
  */
 
 public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
-    public DynamicBeanGreenDaoImpl(Context context) {
+    @Inject
+    public DynamicBeanGreenDaoImpl(Application context) {
         super(context);
     }
 

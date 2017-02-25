@@ -1,9 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +25,9 @@ import rx.functions.Action0;
  */
 @FragmentScoped
 public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, DynamicContract.View> implements DynamicContract.Presenter {
+
+    @Inject
+    DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
 
     @Inject
     AuthRepository mAuthRepository;
@@ -94,6 +99,17 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
 //            dynamicBean.setFeed(dynamicDetailBean);
 //            datas.add(dynamicBean);
 //        }
+        switch (mRootView.getDynamicType()) {
+            case ApiConfig.DYNAMIC_TYPE_FOLLOWS:
+                datas = mDynamicBeanGreenDao.getFollowedDynamicList();
+                break;
+            case ApiConfig.DYNAMIC_TYPE_HOTS:
+                datas = mDynamicBeanGreenDao.getHotDynamicList();
+                break;
+            case ApiConfig.DYNAMIC_TYPE_NEW:
+                datas = mDynamicBeanGreenDao.getNewestDynamicList();
+                break;
+        }
 
 
         return datas;
@@ -101,6 +117,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<DynamicBean> data) {
+        mDynamicBeanGreenDao.insertOrReplace(data);
         return true;
     }
 
