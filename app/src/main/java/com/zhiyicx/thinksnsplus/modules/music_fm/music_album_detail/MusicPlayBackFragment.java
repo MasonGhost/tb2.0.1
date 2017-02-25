@@ -48,6 +48,11 @@ public class MusicPlayBackFragment extends TSFragment {
     private String mArtUrl;
 
     @Override
+    protected boolean showToolbar() {
+        return false;
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_playback_controls;
     }

@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2014 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly;
 
 import android.content.res.Resources;
@@ -41,7 +25,9 @@ import java.util.List;
 public class QueueManager {
 
     private MusicProvider mMusicProvider;
+
     private MetadataUpdateListener mListener;
+
     private Resources mResources;
 
     private List<MediaSessionCompat.QueueItem> mPlayingQueue;
@@ -55,6 +41,7 @@ public class QueueManager {
         this.mResources = resources;
 
         mPlayingQueue = Collections.synchronizedList(new ArrayList<MediaSessionCompat.QueueItem>());
+
         mCurrentIndex = 0;
     }
 
@@ -78,7 +65,6 @@ public class QueueManager {
     }
 
     public boolean setCurrentQueueItem(long queueId) {
-
         int index = QueueHelper.getMusicIndexOnQueue(mPlayingQueue, queueId);
         setCurrentQueueIndex(index);
         return index >= 0;

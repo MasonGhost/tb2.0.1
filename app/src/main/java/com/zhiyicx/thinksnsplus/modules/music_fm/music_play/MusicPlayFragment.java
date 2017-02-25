@@ -22,7 +22,6 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -36,12 +35,12 @@ import android.widget.TextView;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.animation.ValueAnimator;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.widget.popwindow.ListPopupWindow;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
-import com.zhiyicx.thinksnsplus.widget.ListPopupWindow;
 import com.zhiyicx.thinksnsplus.widget.pager_recyclerview.LoopPagerRecyclerView;
 import com.zhiyicx.thinksnsplus.widget.pager_recyclerview.PagerRecyclerView;
 import com.zhiyicx.thinksnsplus.widget.pager_recyclerview.RecyclerViewUtils;
@@ -51,15 +50,19 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Subscription;
+import rx.functions.Action1;
 
 /**
  * @Author Jliuer
  * @Date 2017/02/14
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 音乐播放界面
  */
 public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> implements
         MusicPlayContract.View {
@@ -98,6 +101,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     private ImageLoader mImageLoader;
 
     private CommonAdapter mAdapter;
+
     private List<String> mStringList = new ArrayList<>();
 
     /**
@@ -125,18 +129,75 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
      */
     private ViewGroup mCurrentView;
 
+    /**
+     * 指针动画时长
+     */
     private int mPointDuration = 500;
+
+    /**
+     * 指针角度
+     */
     private int mPointDegree = 25;
 
+
     private MediaBrowserCompat mMediaBrowserCompat;
+
     private PlaybackStateCompat mLastPlaybackState;
+
+    /**
+     * 歌曲列表
+     */
     private ListPopupWindow mListPopupWindow;
 
+    /**
+     * 音乐进度更新间隔
+     */
+    private static final long PROGRESS_UPDATE_INTERNAL = 1000;
 
-    @Override
-    protected int getBodyLayoutId() {
-        return R.layout.fragment_music_paly;
-    }
+    /**
+     * 音乐播放进度初始延迟
+     */
+    private static final long PROGRESS_UPDATE_INITIAL_INTERVAL = 100;
+
+    /**
+     * 进度条控制
+     */
+    private Subscription mProgressSubscription;
+    private Observable<Long> mProgressObservable;
+
+    /**
+     * 音乐播放事件回调
+     */
+    private final MediaControllerCompat.Callback mCallback = new MediaControllerCompat.Callback() {
+        @Override
+        public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
+            updatePlaybackState(state);
+        }
+
+        @Override
+        public void onMetadataChanged(MediaMetadataCompat metadata) {
+            if (metadata != null) {
+                updateMediaDescription(metadata.getDescription());
+                updateDuration(metadata);
+            }
+        }
+    };
+
+    /**
+     * 音乐播放服务连接回调
+     */
+    private final MediaBrowserCompat.ConnectionCallback mConnectionCallback =
+            new MediaBrowserCompat.ConnectionCallback() {
+                @Override
+                public void onConnected() {
+                    try {
+                        connectToSession(mMediaBrowserCompat.getSessionToken());
+                    } catch (RemoteException e) {
+
+                    }
+                }
+            };
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -147,84 +208,74 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         if (savedInstanceState == null) {
             updateFromParams(getArguments());
         }
-
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onStart() {
+        super.onStart();
+        if (mMediaBrowserCompat != null) {
+            mMediaBrowserCompat.connect();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mMediaBrowserCompat != null) {
+            mMediaBrowserCompat.disconnect();
+        }
+        if (getActivity().getSupportMediaController() != null) {
+            getActivity().getSupportMediaController().unregisterCallback(mCallback);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        rxStopProgress();
+    }
+
+    @Override
+    protected int getBodyLayoutId() {
+        return R.layout.fragment_music_paly;
+    }
+
+    @Override
+    protected boolean showToolbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return false;
     }
 
     @Override
     protected void initView(View rootView) {
-        CommonAdapter adapter = new CommonAdapter<String>(getActivity(), R.layout.item_music_list,
-                mStringList) {
-            @Override
-            protected void convert(ViewHolder holder, String s, int position) {
+        initListener();
 
-            }
-        };
-        adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                ToastUtils.showToast("position");
-            }
+        mStringList.add("");
+        mStringList.add("");
+        mStringList.add("");
+        mStringList.add("");
 
-            @Override
-            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int
-                    position) {
-                return false;
-            }
-        });
         mListPopupWindow = ListPopupWindow.Builder()
                 .with(getActivity())
                 .alpha(0.8f)
                 .data(mStringList)
-                .parentView(mFragmentMusicPalyTotalTime)
-                .adapter(adapter)
+                .adapter(getPopListAdapter())
                 .build();
-        mStringList.add("");
-        mStringList.add("");
-        mStringList.add("");
-        mStringList.add("");
-        initListener();
-
-        mAdapter = new CommonAdapter<String>(getActivity(), R.layout.item_music_play, mStringList) {
-            @Override
-            protected void convert(ViewHolder holder, String o, final int position) {
-                ImageView imageView = holder.getView(R.id.fragment_music_paly_phonograph);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                });
-            }
-        };
 
         mFragmentMusicPalyRv.setLayoutManager(new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
         mFragmentMusicPalyRv.setFlingFactor(3f);
         mFragmentMusicPalyRv.setTriggerOffset(0.25f);
-        mFragmentMusicPalyRv.setAdapter(mAdapter);
+        mFragmentMusicPalyRv.setAdapter(getMediaListAdapter());
         mFragmentMusicPalyRv.setHasFixedSize(true);
 
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        Bitmap bitmap = BitmapFactory
-                .decodeResource(getResources(), R.mipmap.npc).copy(Bitmap.Config.ARGB_8888, true);
 
-        Canvas canvas = new Canvas(bitmap);
-        Paint paint = new Paint();
-        ColorMatrix cm = new ColorMatrix();
-        cm.setSaturation(0); // 设置饱和度
-        ColorMatrixColorFilter grayColorFilter = new ColorMatrixColorFilter(cm);
-        paint.setColorFilter(grayColorFilter);
-        canvas.drawBitmap(bitmap, 0, 0, paint);
-        canvas.drawARGB(200, 255, 255, 255);
-
-        BitmapDrawable drawable = new BitmapDrawable(bitmap);
-        drawable.setFilterBitmap(true);
-        mFragmentMusicPalyBg.setBackgroundDrawable(drawable);
+        dealBackgroud();
     }
 
     @Override
@@ -252,16 +303,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     }
 
-    @Override
-    protected boolean showToolbar() {
-        return true;
-    }
-
-    @Override
-    protected boolean setUseSatusbar() {
-        return false;
-    }
-
     @OnClick({R.id.fragment_music_paly_share, R.id.fragment_music_paly_like, R.id
             .fragment_music_paly_comment, R.id.fragment_music_paly_lyrics, R.id
             .fragment_music_paly_order, R.id.fragment_music_paly_preview, R.id
@@ -274,7 +315,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             case R.id.fragment_music_paly_like:
                 break;
             case R.id.fragment_music_paly_comment:
-                mListPopupWindow.showPopAsDropDown(mFragmentMusicPalyBg, 0, 0, Gravity.BOTTOM);
+                mListPopupWindow.show();
                 break;
             case R.id.fragment_music_paly_lyrics:
                 break;
@@ -296,12 +337,12 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                         case PlaybackStateCompat.STATE_PLAYING: // fall through
                         case PlaybackStateCompat.STATE_BUFFERING:
                             controls.pause();
-//                            stopSeekbarUpdate();
+                            rxStopProgress();
                             break;
                         case PlaybackStateCompat.STATE_PAUSED:
                         case PlaybackStateCompat.STATE_STOPPED:
                             controls.play();
-//                            scheduleSeekbarUpdate();
+                            rxStartProgress();
                             break;
                         default:
                             break;
@@ -409,7 +450,30 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     }
 
+    /**
+     * 各类监听器
+     */
     private void initListener() {
+        mFragmentMusicPalyProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener
+                () {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mFragmentMusicPalyCurTime.setText(DateUtils.formatElapsedTime(progress / 1000));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                rxStopProgress();
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                getActivity().getSupportMediaController().getTransportControls().seekTo(seekBar
+                        .getProgress());
+                rxStartProgress();
+            }
+        });
+
         mFragmentMusicPalyPhonographPoint.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -459,12 +523,18 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         });
     }
 
+    /**
+     * 连接上音乐播放服务
+     *
+     * @param token
+     * @throws RemoteException
+     */
     private void connectToSession(MediaSessionCompat.Token token) throws RemoteException {
         MediaControllerCompat mediaController = new MediaControllerCompat(
                 getActivity(), token);
         if (mediaController.getMetadata() == null) {
 //            finish();
-            ToastUtils.showToast("Metadata_error");
+            ToastUtils.showToast("metadata_error");
             return;
         }
         getActivity().setSupportMediaController(mediaController);
@@ -481,37 +551,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         updateProgress();
         if (state != null && (state.getState() == PlaybackStateCompat.STATE_PLAYING ||
                 state.getState() == PlaybackStateCompat.STATE_BUFFERING)) {
-
-        }
-    }
-
-    private void updateFromParams(Bundle bundle) {
-        if (bundle != null) {
-            MediaDescriptionCompat description = bundle.getParcelable(MusicDetailActivity
-                    .EXTRA_CURRENT_MEDIA_DESCRIPTION);
-            if (description != null) {
-                updateMediaDescription(description);
-            }
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (mMediaBrowserCompat != null) {
-            mMediaBrowserCompat.connect();
-        }
-    }
-
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mMediaBrowserCompat != null) {
-            mMediaBrowserCompat.disconnect();
-        }
-        if (getActivity().getSupportMediaController() != null) {
-            getActivity().getSupportMediaController().unregisterCallback(mCallback);
+            rxStartProgress();
         }
     }
 
@@ -539,21 +579,46 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         mLastPlaybackState = state;
         switch (state.getState()) {
             case PlaybackStateCompat.STATE_PLAYING:
-
+                rxStartProgress();
                 break;
             case PlaybackStateCompat.STATE_PAUSED:
-
+                rxStopProgress();
                 break;
             case PlaybackStateCompat.STATE_NONE:
             case PlaybackStateCompat.STATE_STOPPED:
-
+                rxStopProgress();
                 break;
             case PlaybackStateCompat.STATE_BUFFERING:
-
+                rxStopProgress();
                 break;
             default:
         }
 
+    }
+
+    /**
+     * 更新音乐进度
+     */
+    private void rxStartProgress() {
+        if (mProgressObservable == null) {
+            mProgressObservable = Observable.interval(PROGRESS_UPDATE_INITIAL_INTERVAL,
+                    PROGRESS_UPDATE_INTERNAL, TimeUnit
+                            .MILLISECONDS);
+        }
+        mProgressSubscription = mProgressObservable
+
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long aLong) {
+                        updateProgress();
+                    }
+                });
+    }
+
+    private void rxStopProgress() {
+        if (mProgressSubscription != null) {
+            mProgressSubscription.unsubscribe();
+        }
     }
 
     private void updateProgress() {
@@ -569,31 +634,90 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         mFragmentMusicPalyProgress.setProgress((int) currentPosition);
     }
 
-    private final MediaControllerCompat.Callback mCallback = new MediaControllerCompat.Callback() {
-        @Override
-        public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
-            updatePlaybackState(state);
-        }
 
-        @Override
-        public void onMetadataChanged(MediaMetadataCompat metadata) {
-            if (metadata != null) {
-                updateMediaDescription(metadata.getDescription());
-                updateDuration(metadata);
+    /**
+     * 初始信息
+     *
+     * @param bundle
+     */
+    private void updateFromParams(Bundle bundle) {
+        if (bundle != null) {
+            MediaDescriptionCompat description = bundle.getParcelable(MusicDetailActivity
+                    .EXTRA_CURRENT_MEDIA_DESCRIPTION);
+            if (description != null) {
+                updateMediaDescription(description);
             }
         }
-    };
+    }
 
-    private final MediaBrowserCompat.ConnectionCallback mConnectionCallback =
-            new MediaBrowserCompat.ConnectionCallback() {
-                @Override
-                public void onConnected() {
-                    try {
-                        connectToSession(mMediaBrowserCompat.getSessionToken());
-                    } catch (RemoteException e) {
+    private void dealBackgroud() {
+        Bitmap bitmap = BitmapFactory
+                .decodeResource(getResources(), R.mipmap.npc).copy(Bitmap.Config.ARGB_8888, true);
+        Canvas canvas = new Canvas(bitmap);
+        Paint paint = new Paint();
+        ColorMatrix cm = new ColorMatrix();
+        cm.setSaturation(0); // 设置饱和度
+        ColorMatrixColorFilter grayColorFilter = new ColorMatrixColorFilter(cm);
+        paint.setColorFilter(grayColorFilter);
+        canvas.drawBitmap(bitmap, 0, 0, paint);
+        canvas.drawARGB(200, 255, 255, 255);
+
+        BitmapDrawable drawable = new BitmapDrawable(bitmap);
+        drawable.setFilterBitmap(true);
+        mFragmentMusicPalyBg.setBackgroundDrawable(drawable);
+    }
+
+    @NonNull
+    private CommonAdapter getPopListAdapter() {
+        CommonAdapter adapter = new CommonAdapter<String>(getActivity(), R.layout
+                .item_music_pop_list,
+                mStringList) {
+            @Override
+            protected void convert(ViewHolder holder, String s, int position) {
+
+            }
+        };
+        adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                ToastUtils.showToast("position");
+            }
+
+            @Override
+            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int
+                    position) {
+                return false;
+            }
+        });
+        return adapter;
+    }
+
+    @NonNull
+    private CommonAdapter getMediaListAdapter() {
+        mAdapter = new CommonAdapter<String>(getActivity(), R.layout.item_music_play, mStringList) {
+            @Override
+            protected void convert(ViewHolder holder, String o, final int position) {
+                ImageView imageView = holder.getView(R.id.fragment_music_paly_phonograph);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
                     }
-                }
-            };
+                });
+            }
+        };
+        mAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                ToastUtils.showToast("position");
+            }
 
+            @Override
+            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int
+                    position) {
+                return false;
+            }
+        });
+        return mAdapter;
+    }
 }
