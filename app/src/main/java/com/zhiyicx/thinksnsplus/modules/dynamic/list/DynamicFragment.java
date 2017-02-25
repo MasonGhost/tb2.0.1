@@ -145,4 +145,20 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     public String getDynamicType() {
         return mDynamicType;
     }
+
+    @Override
+    public List<DynamicBean> getDatas() {
+        return mDynamicBeens;
+    }
+
+    @Override
+    public void setDatas(List<DynamicBean> datas) {
+        mDynamicBeens = datas;
+        refreshData();
+    }
+
+    @Override
+    public void refreshPosition(int position) {
+        refreshData(position);
+    }
 }

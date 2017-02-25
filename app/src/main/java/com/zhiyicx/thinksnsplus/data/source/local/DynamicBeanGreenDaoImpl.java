@@ -7,8 +7,6 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
-import org.greenrobot.greendao.query.QueryBuilder;
-
 import java.util.List;
 
 import javax.inject.Inject;
@@ -120,16 +118,25 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
                 , new String[]{String.valueOf(feed_id)});
     }
 
-    public DynamicBean getDynamicByFeedMark(int feed_mark) {
-        DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
-        QueryBuilder<DynamicBean> queryBuilder = dynamicBeanDao.queryBuilder();
-        queryBuilder.where(DynamicBeanDao.Properties.Feed_mark.eq(feed_mark));
-        List<DynamicBean> dynamicBeanList = queryBuilder.list();
-        if (dynamicBeanList == null || dynamicBeanList.isEmpty()) {
-            return null;
-        } else {
-            return dynamicBeanList.get(0);
-        }
+    /**
+     * 获取我正在或者发送失败的动态
+     */
+    public List<DynamicBean> getMySendingDynamic(Long userId) {
 
+        DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
+        return dynamicBeanDao.queryDeep(" where " + " T." + DynamicBeanDao.Properties.User_id.columnName + " = ? and " + " T." + DynamicBeanDao.Properties.State.columnName + " != " + DynamicBean.SEND_SUCCESS + "  ORDER BY "
+                        + " T." + DynamicBeanDao.Properties.Id.columnName + " DESC "// feedId倒序
+                , new String[]{String.valueOf(userId)});
+    }
+
+
+    public DynamicBean getDynamicByFeedMark(Long feed_mark) {
+        DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
+        List<DynamicBean> datas = dynamicBeanDao.queryDeep(" where " + " T." + DynamicBeanDao.Properties.Feed_mark.columnName + " = ? "// feedId倒序
+                , new String[]{String.valueOf(feed_mark)});
+        if (!datas.isEmpty()) {
+            return datas.get(0);
+        }
+        return null;
     }
 }

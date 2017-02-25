@@ -1,9 +1,16 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
+import android.support.annotation.NonNull;
+import android.util.SparseArray;
+
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
@@ -15,6 +22,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +30,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.functions.Action0;
+import rx.functions.Func1;
 
 /**
  * @Describe
@@ -42,10 +51,16 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
     DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
     @Inject
     AuthRepository mAuthRepository;
+    SparseArray<Long> msendingStatus = new SparseArray<>();
 
     @Inject
     public DynamicPresenter(DynamicContract.Repository repository, DynamicContract.View rootView) {
         super(repository, rootView);
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
     }
 
     /**
@@ -59,6 +74,18 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                     @Override
                     public void call() {
                         mRootView.hideLoading();
+                    }
+                })
+                .map(new Func1<BaseJson<List<DynamicBean>>, BaseJson<List<DynamicBean>>>() {
+                    @Override
+                    public BaseJson<List<DynamicBean>> call(BaseJson<List<DynamicBean>> listBaseJson) {
+                        if (!isLoadMore && listBaseJson.isStatus() && mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW)) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
+                            insertOrUpdateDynamicDB(listBaseJson.getData());
+                            List<DynamicBean> data = getDynamicBeenFromDB();
+                            data.addAll(listBaseJson.getData());
+                            listBaseJson.setData(data);
+                        }
+                        return listBaseJson;
                     }
                 })
                 .subscribe(new BaseSubscribe<List<DynamicBean>>() {
@@ -90,22 +117,39 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                 datas = mDynamicBeanGreenDao.getHotDynamicList(maxId);
                 break;
             case ApiConfig.DYNAMIC_TYPE_NEW:
-                datas = mDynamicBeanGreenDao.getNewestDynamicList(maxId);
+                if (!isLoadMore) {// 刷新
+                    datas = getDynamicBeenFromDB();
+                    datas.addAll(mDynamicBeanGreenDao.getNewestDynamicList(maxId));
+                } else {
+                    datas = mDynamicBeanGreenDao.getNewestDynamicList(maxId);
+                }
+
                 break;
             default:
         }
-        System.out.println("datas = " +mRootView.getDynamicType()+"---- maxId----->"+maxId+"------->"+ datas.toString());
         return datas;
     }
 
+    /**
+     * 此处需要先存入数据库，方便处理动态的状态，故此处不需要再次更新数据库
+     *
+     * @param data
+     * @return
+     */
     @Override
     public boolean insertOrUpdateData(@NotNull List<DynamicBean> data) {
-        if(data==null||data.size()==0){
-            return false;
-        }
-        List<DynamicDetailBean> dynamicDetailBeen=new ArrayList<>();
-        List<DynamicCommentBean> dynamicCommentBeen=new ArrayList<>();
-        List<DynamicToolBean> dynamicToolBeen=new ArrayList<>();
+        return true;
+    }
+
+    /**
+     * 动态数据库更新
+     *
+     * @param data
+     */
+    private void insertOrUpdateDynamicDB(@NotNull List<DynamicBean> data) {
+        List<DynamicDetailBean> dynamicDetailBeen = new ArrayList<>();
+        List<DynamicCommentBean> dynamicCommentBeen = new ArrayList<>();
+        List<DynamicToolBean> dynamicToolBeen = new ArrayList<>();
         for (DynamicBean dynamicBean : data) {
             dynamicBean.setFeed_id(dynamicBean.getFeed().getFeed_id());
             dynamicBean.getFeed().setFeed_mark(dynamicBean.getFeed_mark());
@@ -122,7 +166,36 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
         mDynamicDetailBeanGreenDao.insertOrReplace(dynamicDetailBeen);
         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBeen);
         mDynamicToolBeanGreenDao.insertOrReplace(dynamicToolBeen);
-        return true;
     }
 
+    /**
+     * 处理发送动态数据
+     *
+     * @param dynamicBean
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_DYNAMIC_TO_LIST)
+    public void handleSendDynamic(DynamicBean dynamicBean) {
+        LogUtils.d(TAG,"handleSendDynamic = " +dynamicBean);
+        if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW)) {
+            List<DynamicBean> datas = new ArrayList<>();
+            int position = msendingStatus.indexOfValue(dynamicBean.getFeed_mark());
+            if (position == -1) {
+                datas.add(mDynamicBeanGreenDao.getDynamicByFeedMark(dynamicBean.getFeed_mark()));
+                datas.addAll(mRootView.getDatas());
+                mRootView.setDatas(datas);
+            } else {
+                mRootView.getDatas().get(position).setState(dynamicBean.getState());
+            }
+        }
+    }
+
+    @NonNull
+    private List<DynamicBean> getDynamicBeenFromDB() {
+        List<DynamicBean> datas = mDynamicBeanGreenDao.getMySendingDynamic((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+        msendingStatus.clear();
+        for (int i = 0; i < datas.size(); i++) {
+            msendingStatus.put(i, datas.get(i).getFeed_mark());
+        }
+        return datas;
+    }
 }

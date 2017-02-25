@@ -26,6 +26,19 @@ public interface DynamicContract {
          * @return  dynamic type
          */
         String getDynamicType();
+        /**
+         * 获取列表数据
+         * @return
+         */
+        List<DynamicBean> getDatas();
+        /**
+         * 获取列表数据
+         * @return
+         */
+        void setDatas(List<DynamicBean> dynamicBeen);
+
+        void refreshPosition(int position);
+
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存

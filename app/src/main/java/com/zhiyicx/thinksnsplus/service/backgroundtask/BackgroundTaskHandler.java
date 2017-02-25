@@ -7,7 +7,6 @@ import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.NetUtils;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
@@ -328,7 +327,7 @@ public class BackgroundTaskHandler {
      */
     private void sendDynamic(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
         final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
-        final int feedMark = (int) params.get("params");
+        final Long feedMark = (Long) params.get("params");
         final DynamicBean dynamicBean = mDynamicBeanGreenDao.getDynamicByFeedMark(feedMark);
         // 发送动态到动态列表：状态为发送中
         dynamicBean.setState(DynamicBean.SEND_ING);

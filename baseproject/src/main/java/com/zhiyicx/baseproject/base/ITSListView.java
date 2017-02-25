@@ -52,4 +52,6 @@ public interface ITSListView<T,P> extends IBaseView<P> {
      * @return
      */
     int getPage();
+
+
 }
