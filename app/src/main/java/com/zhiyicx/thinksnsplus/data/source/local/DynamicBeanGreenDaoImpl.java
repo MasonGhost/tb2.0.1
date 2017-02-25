@@ -83,32 +83,41 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
      * @return
      */
     public List<DynamicBean> getHotDynamicList(Long hotCreatTime) {
+        if (hotCreatTime == 0) {
+            hotCreatTime = System.currentTimeMillis();
+        }
         DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
         return dynamicBeanDao.queryDeep(" where " + " T." + DynamicBeanDao.Properties.Hot_creat_time.columnName + " != NULL and "
-                        + " T."  + DynamicBeanDao.Properties.Hot_creat_time.columnName+" < ?  ORDER BY "
-                        +" T." + DynamicBeanDao.Properties.Hot_creat_time.columnName  + " DESC LIMIT "+ ApiConfig.DYNAMIC_PAGE_LIMIT// 创建时间倒序
-        ,new String[]{String.valueOf(hotCreatTime)});
+                        + " T." + DynamicBeanDao.Properties.Hot_creat_time.columnName + " < ?  ORDER BY "
+                        + " T." + DynamicBeanDao.Properties.Hot_creat_time.columnName + " DESC LIMIT " + ApiConfig.DYNAMIC_PAGE_LIMIT// 创建时间倒序
+                , new String[]{String.valueOf(hotCreatTime)});
     }
 
     /**
      * 获取关注的动态列表
      */
     public List<DynamicBean> getFollowedDynamicList(Long feed_id) {
+        if (feed_id == null || feed_id == 0) {
+            feed_id = System.currentTimeMillis();
+        }
         DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
-        return dynamicBeanDao.queryDeep(" where " + " T."+DynamicBeanDao.Properties.IsFollowed.columnName + " = 1 and " // 0 false 1 true
-                        + " T."  +DynamicBeanDao.Properties.Feed_id.columnName+" < ?   ORDER BY "
-                +" T."+ DynamicBeanDao.Properties.Feed_id.columnName + " DESC LIMIT "+ ApiConfig.DYNAMIC_PAGE_LIMIT// feedId倒序
-        ,new String[]{String.valueOf(feed_id)});
+        return dynamicBeanDao.queryDeep(" where " + " T." + DynamicBeanDao.Properties.IsFollowed.columnName + " = 1 and " // 0 false 1 true
+                        + " T." + DynamicBeanDao.Properties.Feed_id.columnName + " < ?   ORDER BY "
+                        + " T." + DynamicBeanDao.Properties.Feed_id.columnName + " DESC LIMIT " + ApiConfig.DYNAMIC_PAGE_LIMIT// feedId倒序
+                , new String[]{String.valueOf(feed_id)});
     }
 
     /**
      * 获取最新的动态列表
      */
     public List<DynamicBean> getNewestDynamicList(Long feed_id) {
+        if (feed_id == null || feed_id == 0) {
+            feed_id = System.currentTimeMillis();
+        }
         DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
-        return dynamicBeanDao.queryDeep(" where "   + " T."+DynamicBeanDao.Properties.Feed_id.columnName+" < ?  ORDER BY "
-                        +" T."+ DynamicBeanDao.Properties.Feed_id.columnName +" DESC LIMIT "+ ApiConfig.DYNAMIC_PAGE_LIMIT// feedId倒序
-        ,new String[]{String.valueOf(feed_id)});
+        return dynamicBeanDao.queryDeep(" where " + " T." + DynamicBeanDao.Properties.Feed_id.columnName + " < ?  ORDER BY "
+                        + " T." + DynamicBeanDao.Properties.Feed_id.columnName + " DESC LIMIT " + ApiConfig.DYNAMIC_PAGE_LIMIT// feedId倒序
+                , new String[]{String.valueOf(feed_id)});
     }
 
     public DynamicBean getDynamicByFeedMark(int feed_mark) {

@@ -119,6 +119,11 @@
 
         <!-- #########################################      后台任务相关service       ################################ -->
         <service android:name=".service.backgroundtask.BackgroundTaskHandleService"></service>
+        <!--&lt;!&ndash;glide配置&ndash;&gt;-->
+        <meta-data
+        android:name="com.zhiyicx.thinksnsplus.config.GlideConfiguration"
+        android:value="GlideModule"/>
+
     </application>
 
 </manifest>

@@ -6,6 +6,7 @@ import android.util.SparseArray;
 import com.google.gson.Gson;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -99,6 +100,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                                 for (DynamicBean dynamicBean : listBaseJson.getData()) {
                                                     dynamicBean.setUserInfoBean(userInfoBeanSparseArray.get((int) dynamicBean.getUser_id()));
                                                 }
+                                                AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao().insertOrReplace(userinfobeans.getData());
                                             } else {
                                                 listBaseJson.setStatus(userinfobeans.isStatus());
                                                 listBaseJson.setCode(userinfobeans.getCode());

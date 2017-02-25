@@ -81,7 +81,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
 
     @Override
     public List<DynamicBean> requestCacheData(Long maxId, boolean isLoadMore) {
-        List<DynamicBean> datas = new ArrayList<>();
+        List<DynamicBean> datas = null;
         switch (mRootView.getDynamicType()) {
             case ApiConfig.DYNAMIC_TYPE_FOLLOWS:
                 datas = mDynamicBeanGreenDao.getFollowedDynamicList(maxId);
@@ -92,7 +92,9 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
             case ApiConfig.DYNAMIC_TYPE_NEW:
                 datas = mDynamicBeanGreenDao.getNewestDynamicList(maxId);
                 break;
+            default:
         }
+        System.out.println("datas = " +mRootView.getDynamicType()+"---- maxId----->"+maxId+"------->"+ datas.toString());
         return datas;
     }
 
@@ -105,9 +107,16 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
         List<DynamicCommentBean> dynamicCommentBeen=new ArrayList<>();
         List<DynamicToolBean> dynamicToolBeen=new ArrayList<>();
         for (DynamicBean dynamicBean : data) {
+            dynamicBean.setFeed_id(dynamicBean.getFeed().getFeed_id());
+            dynamicBean.getFeed().setFeed_mark(dynamicBean.getFeed_mark());
+            dynamicBean.getTool().setFeed_mark(dynamicBean.getFeed_mark());
+            for (DynamicCommentBean dynamicCommentBean : dynamicBean.getComments()) {
+                dynamicCommentBean.setFeed_mark(dynamicBean.getFeed_mark());
+            }
             dynamicDetailBeen.add(dynamicBean.getFeed());
             dynamicCommentBeen.addAll(dynamicBean.getComments());
             dynamicToolBeen.add(dynamicBean.getTool());
+
         }
         mDynamicBeanGreenDao.insertOrReplace(data);
         mDynamicDetailBeanGreenDao.insertOrReplace(dynamicDetailBeen);

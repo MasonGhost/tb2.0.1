@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.tbruyelle.rxpermissions.Permission;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.thinksnsplus.R;
@@ -75,19 +74,28 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         RxView.clicks(mBtLoginLogin)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.<Void>bindToLifecycle())
-                .compose(mRxPermissions.ensureEach(Manifest.permission.READ_PHONE_STATE))
-                .subscribe(new Action1<Permission>() {
+                .compose(mRxPermissions.ensure(Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.READ_PHONE_STATE))
+                .subscribe(new Action1<Boolean>() {
                     @Override
-                    public void call(Permission permission) {
-                        if (permission.granted) {// 获取到了权限
+                    public void call(Boolean aBoolean) {
+                        if (aBoolean) {// 获取到了权限
                             mPresenter.login(mEtLoginPhone.getText().toString().trim(), mEtLoginPassword.getText().toString().trim());
-                        } else if (permission.shouldShowRequestPermissionRationale) {// 拒绝权限，但是可以再次请求
+                        } else  {// 拒绝权限，但是可以再次请求
                             showErrorTips(getString(R.string.permisson_refused));
-                        } else {//永久拒绝
-                            showErrorTips(getString(R.string.permisson_refused_nerver_ask));
-                        }
                     }
-                });
+                }});
+//                .subscribe(new Action1<Permission>() {
+//                    @Override
+//                    public void call(Permission permission) {
+//                        if (permission.granted) {// 获取到了权限
+//                            mPresenter.login(mEtLoginPhone.getText().toString().trim(), mEtLoginPassword.getText().toString().trim());
+//                        } else if (permission.shouldShowRequestPermissionRationale) {// 拒绝权限，但是可以再次请求
+//                            showErrorTips(getString(R.string.permisson_refused));
+//                        } else {//永久拒绝
+//                            showErrorTips(getString(R.string.permisson_refused_nerver_ask));
+//                        }
+//                    }
+//                });
     }
 
     @Override

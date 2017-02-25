@@ -1,4 +1,4 @@
-package com.zhiyicx.baseproject.impl.imageloader.glide;
+package com.zhiyicx.thinksnsplus.config;
 
 import android.content.Context;
 

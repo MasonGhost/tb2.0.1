@@ -13,5 +13,6 @@ public class ErrorCodeConfig {
     public static final int OTHER_DEVICE_LOGIN = 1015;//token在其他设备登陆
     public static final int TOKEN_NOT_EXIST = 1016;//token不存在
     public static final int USER_AUTH_FAIL = 1099;//用户认证失败
+    public static final int USER_NOT_FOUND = 1019;//没有相关用户
 
 }
