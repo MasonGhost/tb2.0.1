@@ -80,6 +80,9 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                 if (type.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {// 如果是热门，需要初始化时间
                                     dynamicBean.setHot_creat_time(System.currentTimeMillis());
                                 }
+                                if (type.equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) { //如果是关注，需要初始化标记
+                                    dynamicBean.setIsFollowed(true);
+                                }
                             }
                             return mUserInfoRepository.getUserInfo(user_ids)
                                     .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<DynamicBean>>>() {
