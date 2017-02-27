@@ -89,7 +89,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     private int upLoadCount = 0;// 当前文件上传的次数，>0表示已经上传成功，但是还没有提交修改用户信息
     private boolean userNameChanged, sexChanged, cityChanged, introduceChanged;
 
-    private List<String> selectedPhotos = new ArrayList<>();// 被选择的图片
+    private int upDateHeadIconStorageId = 0;// 上传成功返回的图片id
     private EditConfigBeanDaoImpl mEditConfigBeanDao;
 
     private int locationLevel = 2;
@@ -284,10 +284,11 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     }
 
     @Override
-    public void setUpLoadHeadIconState(boolean upLoadState) {
+    public void setUpLoadHeadIconState(boolean upLoadState, int taskId) {
         // 上传成功，可以进行修改
         if (upLoadState) {
             upLoadCount++;
+            upDateHeadIconStorageId = taskId;
             ToastUtils.showToast("头像上传成功");
         } else {
             ToastUtils.showToast("头像上传失败");
@@ -309,6 +310,12 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         mTvSex.setTag(R.id.view_data, mUserInfoBean.getSex());// 设置性别编号
         mTvCity.setText(mUserInfoBean.getLocation());
         mEtUserIntroduce.setText(mUserInfoBean.getIntro());
+        ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
+        imageLoader.loadImage(getContext(), GlideImageConfig.builder()
+                .url("http://192.168.2.222/api/v1/storages/" + mUserInfoBean.getUserIcon())
+                .imagerView(mIvHeadIcon)
+                .transformation(new GlideCircleTransform(getContext()))
+                .build());
 
     }
 
@@ -510,7 +517,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
             fieldMap.put("name", mEtUserName.getText().toString());
         }
         if (sexChanged) {
-            fieldMap.put("sex", (int) mTvSex.getTag(R.id.view_data) + "");
+            fieldMap.put("sex", mTvSex.getTag(R.id.view_data) + "");
         }
         if (cityChanged) {
             fieldMap.put("location", mTvCity.getText().toString());
@@ -519,7 +526,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
             fieldMap.put("intro", mEtUserIntroduce.getInputContent());
         }
         if (upLoadCount > 0) {
-
+            fieldMap.put("avatar", upDateHeadIconStorageId + "");
         }
         return fieldMap;
     }

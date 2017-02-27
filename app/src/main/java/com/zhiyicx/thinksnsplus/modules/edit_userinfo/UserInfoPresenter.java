@@ -104,20 +104,20 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                 filePathList)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe() {
+                .subscribe(new BaseSubscribe<Integer>() {
                     @Override
-                    protected void onSuccess(Object data) {
-                        mRootView.setUpLoadHeadIconState(true);
+                    protected void onSuccess(Integer data) {
+                        mRootView.setUpLoadHeadIconState(true, data);
                     }
 
                     @Override
                     protected void onFailure(String message) {
-                        mRootView.setUpLoadHeadIconState(false);
+                        mRootView.setUpLoadHeadIconState(false, 0);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        mRootView.setUpLoadHeadIconState(false);
+                        mRootView.setUpLoadHeadIconState(false, 0);
                         LogUtils.e(throwable, "result");
                     }
                 });
@@ -162,7 +162,6 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
             mUserInfoBean = new UserInfoBean();
         }
         mRootView.initUserInfo(mUserInfoBean);
-        initUserInfoGreenDao();
     }
 
     /**
@@ -186,23 +185,12 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
         if (changeUserInfo.containsKey("intro")) {
             mUserInfoBean.setIntro(changeUserInfo.get("intro"));
         }
+        if (changeUserInfo.containsKey("avatar")) {
+            mUserInfoBean.setUserIcon(changeUserInfo.get("avatar"));
+        }
+
         mUserInfoBeanGreenDao.insertOrReplace(mUserInfoBean);
     }
 
-    /**
-     * 添加用户信息的测试数据
-     */
-    public void initUserInfoGreenDao() {
-        List<UserInfoBean> datas = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            UserInfoBean userInfoBean = new UserInfoBean();
-            userInfoBean.setUser_id(10000l + i);
-            userInfoBean.setUserIcon("http://image.xinmin.cn/2017/01/11/bedca80cdaa44849a813e7820fff8a26.jpg");
-            userInfoBean.setName("魂行道" + (i + 1) + "号");
-            userInfoBean.setIntro("走在风中今天阳光突然好温柔，天的温柔地的温柔像你抱着我");
-            datas.add(userInfoBean);
-        }
-        mUserInfoBeanGreenDao.insertOrReplace(datas);
-    }
 
 }
