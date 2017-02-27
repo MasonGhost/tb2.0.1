@@ -180,7 +180,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
             List<DynamicBean> datas = new ArrayList<>();
             int position = msendingStatus.indexOfValue(dynamicBean.getFeed_mark());
             if (position == -1) {
-                datas.add(mDynamicBeanGreenDao.getDynamicByFeedMark(dynamicBean.getFeed_mark()));
+                datas.add(dynamicBean);
                 datas.addAll(mRootView.getDatas());
                 mRootView.setDatas(datas);
             } else {
