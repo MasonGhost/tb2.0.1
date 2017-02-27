@@ -115,4 +115,22 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                     }
                 });
     }
+
+    /**
+     * @param feed_id
+     * @return
+     */
+    @Override
+    public Observable<BaseJson<String>> likeDynamic(Long feed_id) {
+        return mDynamicClient.likeDynamic(feed_id);
+    }
+
+    /**
+     * @param feed_id
+     * @return
+     */
+    @Override
+    public Observable<BaseJson<String>> cancleLikeDynamic(Long feed_id) {
+        return mDynamicClient.cancleLikeDynamic(feed_id);
+    }
 }

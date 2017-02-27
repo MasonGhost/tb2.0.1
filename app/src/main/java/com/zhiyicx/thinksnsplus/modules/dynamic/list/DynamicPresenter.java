@@ -9,7 +9,9 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
@@ -19,11 +21,13 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -78,11 +82,13 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                 .map(new Func1<BaseJson<List<DynamicBean>>, BaseJson<List<DynamicBean>>>() {
                     @Override
                     public BaseJson<List<DynamicBean>> call(BaseJson<List<DynamicBean>> listBaseJson) {
-                        if (!isLoadMore && listBaseJson.isStatus() && mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW)) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
+                        if (!isLoadMore && listBaseJson.isStatus()) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
                             insertOrUpdateDynamicDB(listBaseJson.getData());
-                            List<DynamicBean> data = getDynamicBeenFromDB();
-                            data.addAll(listBaseJson.getData());
-                            listBaseJson.setData(data);
+                            if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW)) {
+                                List<DynamicBean> data = getDynamicBeenFromDB();
+                                data.addAll(listBaseJson.getData());
+                                listBaseJson.setData(data);
+                            }
                         }
                         return listBaseJson;
                     }
@@ -118,9 +124,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
             case ApiConfig.DYNAMIC_TYPE_NEW:
                 if (!isLoadMore) {// 刷新
                     datas = getDynamicBeenFromDB();
-                    System.out.println("datas   head= -----------" + datas.toString());
                     datas.addAll(mDynamicBeanGreenDao.getNewestDynamicList(maxId));
-                    System.out.println("datas   alll--------= " + datas.toString());
                 } else {
                     datas = mDynamicBeanGreenDao.getNewestDynamicList(maxId);
                 }
@@ -163,6 +167,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
             dynamicToolBeen.add(dynamicBean.getTool());
 
         }
+        System.out.println("data = " + data.toString());
         mDynamicBeanGreenDao.insertOrReplace(data);
         mDynamicDetailBeanGreenDao.insertOrReplace(dynamicDetailBeen);
         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBeen);
@@ -177,27 +182,13 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_DYNAMIC_TO_LIST)
     public void handleSendDynamic(DynamicBean dynamicBean) {
         if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW)) {
-            int position=hasContanied(dynamicBean);
-            if (position!=-1) {
+            int position = hasContanied(dynamicBean);
+            if (position != -1) {
                 mRootView.refresh(position);
             } else {
-                mRootView.getDatas().add(dynamicBean);
+                mRootView.getDatas().add(dynamicBean); // TODO: 2017/2/27 加到头部
                 mRootView.refresh();
             }
-//
-//            List<DynamicBean> datas = new ArrayList<>();
-//            int position = msendingStatus.indexOfValue(dynamicBean.getFeed_mark());
-//            if (position < 0) {
-//                SparseArray<Long> msendingStatus = new SparseArray<>();
-//                msendingStatus.put(0, dynamicBean.getFeed_mark());
-//                datas.add(dynamicBean);
-//                datas.addAll(mRootView.getDatas());
-//                mRootView.refresh(datas);
-//            } else {
-//                mRootView.getDatas().get(position).setState(dynamicBean.getState());
-//                mRootView.refresh(position);
-//                msendingStatus.remove(position);
-//            }
 
         }
     }
@@ -221,5 +212,26 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
             msendingStatus.put(i, datas.get(i).getFeed_mark());
         }
         return datas;
+    }
+
+    /**
+     * handle like or cancle like in background
+     *
+     * @param isLiked true,do like ,or  cancle like
+     * @param feed_id the dynamic id
+     */
+    @Override
+    public void handleLike(boolean isLiked, Long feed_id) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("feed_id", feed_id);
+        // 后台处理
+        if (isLiked) {
+            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST, params);
+        } else {
+            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
+        }
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_HANDLE_LIKE_FORMAT, feed_id));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
     }
 }

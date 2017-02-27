@@ -178,7 +178,6 @@ public class BackgroundTaskHandler {
                 break;
             case GET:
 
-
                 break;
             case DELETE:
                 deleteMethod(backgroundRequestTaskBean);

@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -50,11 +51,11 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
 
     protected OnUserInfoClickListener mOnUserInfoClickListener; // 用户信息点击监听
 
-    public void setOnMenuClick(DynamicListMenuView.OnItemClickListener onMenuClick) {
-        mOnMenuClick = onMenuClick;
+    public void setOnLikeClickListener(OnLikeClickListener onLikeClickListener) {
+        mOnLikeClickListener = onLikeClickListener;
     }
 
-    protected DynamicListMenuView.OnItemClickListener mOnMenuClick; // 工具栏被点击
+    protected OnLikeClickListener mOnLikeClickListener; // 工具栏被点击
 
 
     private int mTitleMaxShowNum;
@@ -107,16 +108,22 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
         dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicBean.getTool().getFeed_digg_count()), dynamicBean.getTool().getIs_digg_feed() == STATUS_DIGG_FEED_CHECKED, 0);
         dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicBean.getTool().getFeed_comment_count()), false, 1);
         dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicBean.getTool().getFeed_view_count()), false, 2);
-        if (mOnMenuClick != null) {
-            dynamicListMenuView.setItemOnClick(mOnMenuClick);
-        }
+
+        dynamicListMenuView.setItemOnClick(new DynamicListMenuView.OnItemClickListener() {
+            @Override
+            public void onItemClick(ViewGroup parent, View v, int menuPostion) {
+                if (mOnLikeClickListener != null) {
+                    mOnLikeClickListener.onLikeButtonClick(position);
+                }
+            }
+        });
         setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);
         setUserInfoClick(holder.getView(R.id.tv_name), dynamicBean);
         // 设置动态状态
-        if(dynamicBean.getState()==DynamicBean.SEND_ERROR){
-            holder.setVisible(R.id.fl_tip,View.VISIBLE);
-        }else {
-            holder.setVisible(R.id.fl_tip,View.GONE);
+        if (dynamicBean.getState() == DynamicBean.SEND_ERROR) {
+            holder.setVisible(R.id.fl_tip, View.VISIBLE);
+        } else {
+            holder.setVisible(R.id.fl_tip, View.GONE);
         }
 
     }
@@ -174,6 +181,10 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
     public interface OnUserInfoClickListener {
 
         void onUserInfoClick(DynamicBean dynamicBean);
+    }
+
+    public interface OnLikeClickListener {
+        void onLikeButtonClick(int position);
     }
 
 }

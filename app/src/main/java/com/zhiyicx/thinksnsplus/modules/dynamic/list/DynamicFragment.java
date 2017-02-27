@@ -2,15 +2,14 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForEightImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForFiveImage;
@@ -34,7 +33,7 @@ import javax.inject.Inject;
  * @Date 2017/1/17
  * @Contact master.jungle68@gmail.com
  */
-public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicContract.View, DynamicListMenuView.OnItemClickListener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener {
+public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicContract.View, DynamicListBaseItem.OnLikeClickListener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener {
     private static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
     public static final long ITEM_SPACING = 5L; // 单位dp
     @Inject
@@ -97,7 +96,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private void setAdapter(MultiItemTypeAdapter adapter, DynamicListBaseItem dynamicListBaseItem) {
         dynamicListBaseItem.setOnImageClickListener(this);
         dynamicListBaseItem.setOnUserInfoClickListener(this);
-        dynamicListBaseItem.setOnMenuClick(this);
+        dynamicListBaseItem.setOnLikeClickListener(this);
         adapter.addItemViewDelegate(dynamicListBaseItem);
     }
 
@@ -166,9 +165,13 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
-    public void onItemClick(ViewGroup parent, View v, int postion) {
-        if (postion == 0) { // 点击喜欢
-            ToastUtils.showToast("点击了喜欢");
-        }
+    public void onLikeButtonClick(int position) {
+        // 先更新界面，再后台处理
+        mDynamicBeens.get(position).getTool().setIs_digg_feed(mDynamicBeens.get(position).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ? DynamicToolBean.STATUS_DIGG_FEED_CHECKED : DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED);
+        refresh();
+        mPresenter.handleLike(mDynamicBeens.get(position).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED,
+                mDynamicBeens.get(position).getFeed_id());
+
+        System.out.println("position = " + mDynamicBeens.get(position).toString());
     }
 }

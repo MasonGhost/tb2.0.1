@@ -34,5 +34,17 @@ public interface IDynamicReppsitory {
      */
     Observable<BaseJson<List<DynamicBean>>> getDynamicList(String type, Long max_id, int page);
 
+    /**
+     * 动态点赞
+     * @param feed_id
+     * @return
+     */
+    Observable<BaseJson<String>> likeDynamic(Long feed_id);
 
+    /**
+     * 取消动态点赞
+     * @param feed_id
+     * @return
+     */
+    Observable<BaseJson<String>> cancleLikeDynamic(Long feed_id);
 }

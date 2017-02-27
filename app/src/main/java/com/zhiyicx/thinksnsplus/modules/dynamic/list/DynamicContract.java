@@ -23,16 +23,20 @@ public interface DynamicContract {
         /**
          * get dynamic type
          *
-         * @return  dynamic type
+         * @return dynamic type
          */
         String getDynamicType();
+
         /**
          * 获取列表数据
+         *
          * @return
          */
         List<DynamicBean> getDatas();
+
         /**
          * 获取列表数据
+         *
          * @return
          */
         void refresh();
@@ -47,5 +51,10 @@ public interface DynamicContract {
     }
 
     interface Presenter extends ITSListPresenter<DynamicBean> {
+        /**
+         * handle like status
+         * @param isLiked true,do like ,or  cancle like
+         */
+        void handleLike(boolean isLiked,Long feed_id);
     }
 }
