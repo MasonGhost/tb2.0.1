@@ -18,6 +18,7 @@ import java.util.List;
  * @Contact master.jungle68@gmail.com
  */
 public abstract class TSViewPagerFragment<P extends IBasePresenter> extends TSFragment<P> {
+    private static final int DEFAULT_OFFSET_PAGE = 3;
     protected TabSelectView mTsvToolbar;
     protected ViewPager mVpFragment;
 
@@ -43,6 +44,7 @@ public abstract class TSViewPagerFragment<P extends IBasePresenter> extends TSFr
     private void initViewPager(View rootView) {
         mTsvToolbar = (TabSelectView) rootView.findViewById(R.id.tsv_toolbar);
         mVpFragment = (ViewPager) rootView.findViewById(R.id.vp_fragment);
+        mVpFragment.setOffscreenPageLimit(DEFAULT_OFFSET_PAGE);
         TSViewPagerAdapter tsViewPagerAdapter = new TSViewPagerAdapter(getFragmentManager());
         tsViewPagerAdapter.bindData(initFragments());
         mVpFragment.setAdapter(tsViewPagerAdapter);

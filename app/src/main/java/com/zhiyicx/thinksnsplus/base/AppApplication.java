@@ -17,6 +17,7 @@ import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.imsdk.manage.ZBIMSDK;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
@@ -58,7 +59,7 @@ public class AppApplication extends TSApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-//        ZBIMSDK.init(getContext());
+        ZBIMSDK.init(getContext());
         initComponent();
         BackgroundTaskManager.getInstance(getContext()).startBackgroundTask();// 开启后台任务
     }

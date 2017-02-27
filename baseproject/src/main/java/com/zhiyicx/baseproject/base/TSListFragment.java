@@ -139,6 +139,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     @Override
     protected void initData() {
         onCacheResponseSuccess(requestCacheData(mMaxId, false), false); // 获取缓存数据
+//        requestNetData(mMaxId,false);
     }
 
     /**
@@ -284,6 +285,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * 刷新数据
      */
     public void refreshData() {
+        mAdapter.notifyDataSetChanged();
         mEmptyWrapper.notifyDataSetChanged();
     }
 
@@ -291,6 +293,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * 刷新单条数据
      */
     public void refreshData(int index) {
+        mAdapter.notifyDataSetChanged();
         mEmptyWrapper.notifyItemChanged(index);
     }
 

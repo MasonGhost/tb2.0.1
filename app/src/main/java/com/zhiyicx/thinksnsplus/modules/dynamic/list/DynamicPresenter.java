@@ -119,7 +119,9 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
             case ApiConfig.DYNAMIC_TYPE_NEW:
                 if (!isLoadMore) {// 刷新
                     datas = getDynamicBeenFromDB();
+                    System.out.println("datas   head= -----------" + datas.toString());
                     datas.addAll(mDynamicBeanGreenDao.getNewestDynamicList(maxId));
+                    System.out.println("datas   alll--------= " + datas.toString());
                 } else {
                     datas = mDynamicBeanGreenDao.getNewestDynamicList(maxId);
                 }
@@ -179,7 +181,8 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
         if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW)) {
             List<DynamicBean> datas = new ArrayList<>();
             int position = msendingStatus.indexOfValue(dynamicBean.getFeed_mark());
-            if (position == -1) {
+            if (position <0) {
+                msendingStatus.put(0,dynamicBean.getFeed_mark());
                 datas.add(dynamicBean);
                 datas.addAll(mRootView.getDatas());
                 mRootView.setDatas(datas);
@@ -192,6 +195,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
     @NonNull
     private List<DynamicBean> getDynamicBeenFromDB() {
         List<DynamicBean> datas = mDynamicBeanGreenDao.getMySendingDynamic((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+        System.out.println("sprasgd0-------------- = " + datas.toString());
         msendingStatus.clear();
         for (int i = 0; i < datas.size(); i++) {
             msendingStatus.put(i, datas.get(i).getFeed_mark());

@@ -87,8 +87,9 @@
         android:paddingBottom="@dimen/spacing_normal"
         android:paddingTop="@dimen/spacing_normal">
 
-        <com.zhiyicx.baseproject.widget.SquareImageView
+        <com.zhiyicx.common.widget.FilterImageView
             android:id="@+id/siv_0"
+            android:src="@drawable/shape_default_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
