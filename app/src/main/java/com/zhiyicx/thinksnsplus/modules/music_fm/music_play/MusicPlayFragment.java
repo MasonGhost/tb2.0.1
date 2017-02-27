@@ -19,9 +19,11 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -32,6 +34,7 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.animation.ValueAnimator;
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -48,6 +51,9 @@ import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import org.simple.eventbus.Subscriber;
+import org.simple.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -57,6 +63,10 @@ import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action1;
+
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_CACHE_PROGRESS;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_COMPLETE;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_START;
 
 /**
  * @Author Jliuer
@@ -98,6 +108,9 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     @BindView(R.id.fragment_music_paly_total_time)
     TextView mFragmentMusicPalyTotalTime;
 
+    private static final long PROGRESS_UPDATE_INTERNAL = 1000;
+    private static final long PROGRESS_UPDATE_INITIAL_INTERVAL = 100;
+
     private ImageLoader mImageLoader;
 
     private CommonAdapter mAdapter;
@@ -107,7 +120,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     /**
      * 指针位置flag
      */
-    private boolean isPointOutPhonograph;
+    private boolean isPointInPhonograph;
 
     /**
      * 指针动画
@@ -120,25 +133,16 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     private ObjectAnimator mPhonographAnimate;
 
     /**
-     * 两个动画的暂停位置记录
+     * 磁盘动画的暂停位置记录
      */
-    private float[] points = new float[2];
+    private float mCurrentValue;
+    private int fromDegree = 0;
+    private int targetDegree = 25;
 
     /**
      * 当前动画view
      */
     private ViewGroup mCurrentView;
-
-    /**
-     * 指针动画时长
-     */
-    private int mPointDuration = 500;
-
-    /**
-     * 指针角度
-     */
-    private int mPointDegree = 25;
-
 
     private MediaBrowserCompat mMediaBrowserCompat;
 
@@ -150,20 +154,14 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     private ListPopupWindow mListPopupWindow;
 
     /**
-     * 音乐进度更新间隔
-     */
-    private static final long PROGRESS_UPDATE_INTERNAL = 1000;
-
-    /**
-     * 音乐播放进度初始延迟
-     */
-    private static final long PROGRESS_UPDATE_INITIAL_INTERVAL = 100;
-
-    /**
      * 进度条控制
      */
     private Subscription mProgressSubscription;
     private Observable<Long> mProgressObservable;
+    private int mDefalultOrder = 0;
+    private SparseArrayCompat<String> mOrderModule = new SparseArrayCompat<>();
+
+    private Integer[] mHistory = new Integer[2];
 
     /**
      * 音乐播放事件回调
@@ -179,6 +177,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             if (metadata != null) {
                 updateMediaDescription(metadata.getDescription());
                 updateDuration(metadata);
+
             }
         }
     };
@@ -205,6 +204,9 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         mMediaBrowserCompat = new MediaBrowserCompat(getActivity(), new ComponentName(getActivity(),
                 MusicPlayService.class)
                 , mConnectionCallback, null);
+        mOrderModule.put(R.mipmap.music_ico_random, "0");
+        mOrderModule.put(R.mipmap.music_ico_single, "1");
+        mOrderModule.put(R.mipmap.music_ico_inorder, "2");
         if (savedInstanceState == null) {
             updateFromParams(getArguments());
         }
@@ -227,12 +229,13 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         if (getActivity().getSupportMediaController() != null) {
             getActivity().getSupportMediaController().unregisterCallback(mCallback);
         }
+        rxStopProgress();
     }
 
+
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        rxStopProgress();
+    protected boolean useEventBus() {
+        return true;
     }
 
     @Override
@@ -267,7 +270,12 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 .build();
 
         mFragmentMusicPalyRv.setLayoutManager(new LinearLayoutManager(getActivity(),
-                LinearLayoutManager.HORIZONTAL, false));
+                LinearLayoutManager.HORIZONTAL, false) {
+            @Override// 不要复用了
+            public void detachAndScrapAttachedViews(RecyclerView.Recycler recycler) {
+                removeAllViews();
+            }
+        });
         mFragmentMusicPalyRv.setFlingFactor(3f);
         mFragmentMusicPalyRv.setTriggerOffset(0.25f);
         mFragmentMusicPalyRv.setAdapter(getMediaListAdapter());
@@ -277,6 +285,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
         dealBackgroud();
     }
+
 
     @Override
     protected void initData() {
@@ -320,12 +329,19 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             case R.id.fragment_music_paly_lyrics:
                 break;
             case R.id.fragment_music_paly_order:
+                getActivity().getSupportMediaController().getTransportControls()
+                        .sendCustomAction(mOrderModule.valueAt(mDefalultOrder), new Bundle());
+                mDefalultOrder++;
+                if (mDefalultOrder > 2) {
+                    mDefalultOrder = 0;
+                }
+                mFragmentMusicPalyOrder.setImageResource(mOrderModule.keyAt(mDefalultOrder));
                 break;
             case R.id.fragment_music_paly_preview:// 上一首歌
                 mFragmentMusicPalyRv.smoothScrollToPosition(mFragmentMusicPalyRv
                         .getActualCurrentPosition() - 1);
-                doPointAnimation(0, mPointDuration);
                 getActivity().getSupportMediaController().getTransportControls().skipToPrevious();
+                doPointAnimation(500, 0);
                 break;
             case R.id.fragment_music_paly_palyer:
                 PlaybackStateCompat state = getActivity().getSupportMediaController()
@@ -334,14 +350,16 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                     MediaControllerCompat.TransportControls controls =
                             getActivity().getSupportMediaController().getTransportControls();
                     switch (state.getState()) {
-                        case PlaybackStateCompat.STATE_PLAYING: // fall through
+                        case PlaybackStateCompat.STATE_PLAYING:
                         case PlaybackStateCompat.STATE_BUFFERING:
                             controls.pause();
+                            doPointAnimation(500, 0);
                             rxStopProgress();
                             break;
                         case PlaybackStateCompat.STATE_PAUSED:
                         case PlaybackStateCompat.STATE_STOPPED:
                             controls.play();
+                            doPointAnimation(500, 0);
                             rxStartProgress();
                             break;
                         default:
@@ -352,102 +370,14 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             case R.id.fragment_music_paly_nextview:// 下一首歌
                 mFragmentMusicPalyRv.smoothScrollToPosition(mFragmentMusicPalyRv
                         .getActualCurrentPosition() + 1);
-                doPointAnimation(0, mPointDuration);
                 getActivity().getSupportMediaController().getTransportControls().skipToNext();
+                doPointAnimation(500, 0);
                 break;
             case R.id.fragment_music_paly_list:
                 break;
             default:
                 break;
         }
-    }
-
-    /**
-     * 指针动画
-     *
-     * @param targetDegree 目标角度
-     * @param duration     时长
-     */
-    public void doPointAnimation(int targetDegree, int duration) {
-        mPointAnimate = ObjectAnimator.ofFloat(mFragmentMusicPalyPhonographPoint, "Rotation",
-                points[0],
-                targetDegree);
-        // 设置持续时间
-        mPointAnimate.setDuration(duration);
-        mPointAnimate.setInterpolator(new AccelerateDecelerateInterpolator());
-        // 设置动画监听
-        mPointAnimate.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                // TODO Auto-generated method stub
-                // 监听动画执行的位置，以便下次开始时，从当前位置开始
-                points[0] = (float) animation.getAnimatedValue();
-            }
-        });
-
-        mPointAnimate.start();
-    }
-
-
-    /**
-     * 磁盘动画
-     *
-     * @param targetDegree 目标角度
-     * @param duration     时长
-     */
-    public void doPhonographAnimation(int targetDegree, int duration) {
-        View target;
-        if (mCurrentView == null) {
-            ViewGroup group = (ViewGroup) RecyclerViewUtils.getCenterXChild
-                    (mFragmentMusicPalyRv);
-            target = group.getChildAt(0);
-        } else {
-            target = mCurrentView.getChildAt(0);
-        }
-
-        mPhonographAnimate = ObjectAnimator.ofFloat(target, "Rotation",
-                points[1],
-                targetDegree);
-        // 设置持续时间
-        mPhonographAnimate.setDuration(duration);
-
-        mPhonographAnimate.setInterpolator(new LinearInterpolator());
-        mPhonographAnimate.setRepeatCount(ObjectAnimator.INFINITE);
-        // 设置动画监听
-        mPhonographAnimate.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                // TODO Auto-generated method stub
-                // 监听动画执行的位置，以便下次开始时，从当前位置开始
-                points[1] = (float) animation.getAnimatedValue();
-            }
-        });
-        mPhonographAnimate.start();
-    }
-
-    /**
-     * 停止转盘动画
-     */
-    public void stopAnimation(View target) {
-        if (target != null && mPhonographAnimate != null) {
-            mPhonographAnimate.setDuration(0);
-            mPhonographAnimate.reverse();
-            mPhonographAnimate.end();
-            target.clearAnimation();
-            points[1] = 0;// 重置起始位置
-        }
-    }
-
-    /**
-     * 暂停转盘动画 *
-     */
-    public void pauseAnimation(View target) {
-        if (target == null) target = RecyclerViewUtils.getCenterXChild(mFragmentMusicPalyRv);
-        if (target != null && mPhonographAnimate != null) {
-            mPhonographAnimate.cancel();
-            target.clearAnimation();// 清除此ImageView身上的动画
-        }
-
     }
 
     /**
@@ -463,14 +393,14 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                rxStopProgress();
+//                rxStopProgress();
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 getActivity().getSupportMediaController().getTransportControls().seekTo(seekBar
                         .getProgress());
-                rxStartProgress();
+//                rxStartProgress();
             }
         });
 
@@ -489,35 +419,27 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
             @Override
             public void OnPageChanged(int oldPosition, int newPosition) {
-                points[1] = 0f;
+                mCurrentValue = 0;
+                ToastUtils.showToast("OnPageChanged");
                 stopAnimation(mCurrentView);
-
             }
 
             @Override
             public void OnDragging(int downPosition) {
-                if (!isPointOutPhonograph) {
-                    isPointOutPhonograph = true;
-                    pauseAnimation(mCurrentView);
-                    doPointAnimation(0, mPointDuration);
+                if (!isPointInPhonograph) {
+                    doPointAnimation(500, 0);
+                    isPointInPhonograph = true;
                 }
-
+                pauseAnimation();
             }
 
             @Override
             public void OnIdle(int position) {
                 ToastUtils.showToast("OnIdle");
                 mCurrentView = (ViewGroup) RecyclerViewUtils.getCenterXChild(mFragmentMusicPalyRv);
-                if (mCurrentView != null) {
-                    mCurrentView.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            doPhonographAnimation(360, 10000);
-                        }
-                    }, 500);
-                }
-                doPointAnimation(mPointDegree, mPointDuration);
-                isPointOutPhonograph = false;
+                doPhonographAnimation();
+//                doPointAnimation(500, 0);
+                isPointInPhonograph = false;
             }
 
         });
@@ -580,9 +502,12 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         switch (state.getState()) {
             case PlaybackStateCompat.STATE_PLAYING:
                 rxStartProgress();
+                doPointAnimation(500, 0);
+                mFragmentMusicPalyPalyer.setImageResource(R.mipmap.music_ico_stop);
                 break;
             case PlaybackStateCompat.STATE_PAUSED:
                 rxStopProgress();
+                mFragmentMusicPalyPalyer.setImageResource(R.mipmap.music_ico_play);
                 break;
             case PlaybackStateCompat.STATE_NONE:
             case PlaybackStateCompat.STATE_STOPPED:
@@ -606,7 +531,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                             .MILLISECONDS);
         }
         mProgressSubscription = mProgressObservable
-
                 .subscribe(new Action1<Long>() {
                     @Override
                     public void call(Long aLong) {
@@ -622,7 +546,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     }
 
     private void updateProgress() {
-        if (mLastPlaybackState == null) {
+        if (mLastPlaybackState == null || mFragmentMusicPalyProgress == null) {
             return;
         }
         long currentPosition = mLastPlaybackState.getPosition();
@@ -649,6 +573,106 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             }
         }
     }
+
+    @Subscriber(tag = EVENT_SEND_MUSIC_CACHE_PROGRESS, mode = ThreadMode.MAIN)
+    public void onBufferingUpdate(int progress) {
+        mFragmentMusicPalyProgress.setSecondaryProgress(mFragmentMusicPalyProgress.getMax()
+                * progress);
+        Log.e("MUSIC_CACHE_PROGRESS", "" + progress);
+    }
+
+    @Subscriber(tag = EVENT_SEND_MUSIC_START, mode = ThreadMode.MAIN)
+    public void onMusicStart(String start) {
+        Log.e("MUSIC_START", "" + start);
+    }
+
+    @Subscriber(tag = EVENT_SEND_MUSIC_COMPLETE, mode = ThreadMode.MAIN)
+    public void onMusicEnd(String end) {
+        mFragmentMusicPalyRv.setSpeed(100);
+        mFragmentMusicPalyRv.smoothScrollToPosition(mFragmentMusicPalyRv
+                .getActualCurrentPosition() + 1);
+        mFragmentMusicPalyRv.setSpeed(250);
+        Log.e("MUSIC_END", "" + end);
+    }
+
+    /**
+     * 指针动画
+     */
+    public void doPointAnimation(int duration, long delay) {
+        mPointAnimate = ObjectAnimator.ofFloat(mFragmentMusicPalyPhonographPoint, "Rotation",
+                this.fromDegree,
+                this.targetDegree);
+        // 设置持续时间
+        mPointAnimate.setDuration(duration);
+        mPointAnimate.setStartDelay(delay);
+        mPointAnimate.setInterpolator(new AccelerateDecelerateInterpolator());
+        mPointAnimate.start();
+        int a = fromDegree;
+        this.fromDegree = this.targetDegree;
+        this.targetDegree = a;
+
+    }
+
+
+    /**
+     * 磁盘动画
+     */
+    public void doPhonographAnimation() {
+        View target;
+        if (mCurrentView == null && mFragmentMusicPalyRv != null) {
+            ViewGroup group = (ViewGroup) RecyclerViewUtils.getCenterXChild
+                    (mFragmentMusicPalyRv);
+            target = group.getChildAt(0);
+        } else {
+            target = mCurrentView.getChildAt(0);
+        }
+
+        mPhonographAnimate = ObjectAnimator.ofFloat(target, "Rotation",
+                mCurrentValue - 360,
+                mCurrentValue);
+        // 设置持续时间
+        mPhonographAnimate.setDuration(10000);
+
+        mPhonographAnimate.setInterpolator(new LinearInterpolator());
+        mPhonographAnimate.setRepeatCount(ObjectAnimator.INFINITE);
+        // 设置动画监听
+        mPhonographAnimate.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                // TODO Auto-generated method stub
+                // 监听动画执行的位置，以便下次开始时，从当前位置开始
+                mCurrentValue = (float) animation.getAnimatedValue();
+            }
+        });
+        mPhonographAnimate.start();
+    }
+
+    /**
+     * 停止转盘动画
+     */
+    public void stopAnimation(View target) {
+        if (target != null && mPhonographAnimate != null) {
+            mPhonographAnimate.setDuration(0);
+            mPhonographAnimate.reverse();
+            mPhonographAnimate.end();
+            target.clearAnimation();
+            mCurrentValue = 0;// 重置起始位置
+        }
+    }
+
+    /**
+     * 暂停转盘动画 *
+     */
+    public void pauseAnimation() {
+        if (mCurrentView == null) mCurrentView = (ViewGroup) RecyclerViewUtils.getCenterXChild
+                (mFragmentMusicPalyRv);
+        if (mCurrentView != null && mPhonographAnimate != null) {
+            mPhonographAnimate.cancel();
+            mCurrentView.getChildAt(0).clearAnimation();// 清除此ImageView身上的动画
+        }
+
+    }
+
 
     private void dealBackgroud() {
         Bitmap bitmap = BitmapFactory
@@ -680,7 +704,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                ToastUtils.showToast("position");
+                ToastUtils.showToast("position:"+position);
             }
 
             @Override
