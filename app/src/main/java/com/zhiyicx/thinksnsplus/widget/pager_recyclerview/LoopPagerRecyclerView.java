@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.widget.pager_recyclerview;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.view.View;
 
 public class LoopPagerRecyclerView extends PagerRecyclerView {
 
@@ -52,6 +53,16 @@ public class LoopPagerRecyclerView extends PagerRecyclerView {
     @Override
     public void scrollToPosition(int position) {
         super.scrollToPosition(transformInnerPositionIfNeed(position));
+    }
+
+    @Override
+    protected void removeDetachedView(View child, boolean animate) {
+        super.removeDetachedView(child, animate);
+    }
+
+    @Override
+    protected void detachAllViewsFromParent() {
+        super.detachAllViewsFromParent();
     }
 
     public int getActualCurrentPosition() {

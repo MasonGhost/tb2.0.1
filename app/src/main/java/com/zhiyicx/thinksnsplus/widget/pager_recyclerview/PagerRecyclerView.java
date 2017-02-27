@@ -82,6 +82,8 @@ public class PagerRecyclerView extends RecyclerView {
 
     private float mLastY;
 
+    private float mSpeed = 250;
+
     public PagerRecyclerView(Context context) {
         this(context, null);
     }
@@ -271,7 +273,7 @@ public class PagerRecyclerView extends RecyclerView {
 
                         @Override
                         protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
-                            return setSpeed(100f) / displayMetrics.densityDpi;
+                            return mSpeed / displayMetrics.densityDpi;
                         }
                     };
             linearSmoothScroller.setTargetPosition(position);
@@ -595,7 +597,8 @@ public class PagerRecyclerView extends RecyclerView {
      * @return
      */
     public float setSpeed(float f) {
-        return f;
+        mSpeed = f;
+        return mSpeed;
     }
 
     public void addOnPageChangedListener(OnPageChangedListener listener) {
