@@ -54,7 +54,9 @@ public interface DynamicContract {
         /**
          * handle like status
          * @param isLiked true,do like ,or  cancle like
+         * @param feed_id dynamic id
+         * @param postion current item position
          */
-        void handleLike(boolean isLiked,Long feed_id);
+        void handleLike(boolean isLiked,Long feed_id,int postion);
     }
 }

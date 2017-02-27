@@ -32,8 +32,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * @Describe
@@ -218,20 +221,35 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
      * handle like or cancle like in background
      *
      * @param isLiked true,do like ,or  cancle like
-     * @param feed_id the dynamic id
+     * @param feed_id dynamic id
+     * @param postion current item position
      */
     @Override
-    public void handleLike(boolean isLiked, Long feed_id) {
-        BackgroundRequestTaskBean backgroundRequestTaskBean;
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("feed_id", feed_id);
-        // 后台处理
-        if (isLiked) {
-            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST, params);
-        } else {
-            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
-        }
-        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_HANDLE_LIKE_FORMAT, feed_id));
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+    public void handleLike(boolean isLiked, final Long feed_id, final int postion) {
+        Observable.just(isLiked)
+                .observeOn(Schedulers.io())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getDatas().get(postion).getTool());
+                        BackgroundRequestTaskBean backgroundRequestTaskBean;
+                        HashMap<String, Object> params = new HashMap<>();
+                        params.put("feed_id", feed_id);
+                        // 后台处理
+                        if (aBoolean) {
+                            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST, params);
+                        } else {
+                            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
+                        }
+                        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_HANDLE_LIKE_FORMAT, feed_id));
+                        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
+
     }
 }

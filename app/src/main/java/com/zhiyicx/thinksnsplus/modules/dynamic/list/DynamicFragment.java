@@ -168,10 +168,10 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     public void onLikeButtonClick(int position) {
         // 先更新界面，再后台处理
         mDynamicBeens.get(position).getTool().setIs_digg_feed(mDynamicBeens.get(position).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ? DynamicToolBean.STATUS_DIGG_FEED_CHECKED : DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED);
+        mDynamicBeens.get(position).getTool().setFeed_digg_count(mDynamicBeens.get(position).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ?
+                mDynamicBeens.get(position).getTool().getFeed_digg_count() - 1 : mDynamicBeens.get(position).getTool().getFeed_digg_count() + 1);
         refresh();
         mPresenter.handleLike(mDynamicBeens.get(position).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED,
-                mDynamicBeens.get(position).getFeed_id());
-
-        System.out.println("position = " + mDynamicBeens.get(position).toString());
+                mDynamicBeens.get(position).getFeed_id(), position);
     }
 }
