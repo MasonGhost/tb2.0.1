@@ -35,8 +35,7 @@ public class GalleryFragment extends TSFragment {
     ViewPager mVpPhotos;
     @BindView(R.id.mi_indicator)
     MagicIndicator mMiIndicator;
-    @BindView(R.id.tv_origin_photo)
-    TextView mTvOriginPhoto;
+
     private GalleryPhotoAdapter mPagerAdapter;
 
     @Override
@@ -61,7 +60,7 @@ public class GalleryFragment extends TSFragment {
                 "http://pic1.5442.com/2015/0715/05/09.jpg"
         ));
         mVpPhotos.setAdapter(mPagerAdapter);
-
+        // 添加指示器
         ScaleCircleNavigator circleNavigator = new ScaleCircleNavigator(getContext());
         circleNavigator.setCircleCount(mPagerAdapter.getCount());
         circleNavigator.setMaxRadius(UIUtil.dip2px(getContext(), 2.5));
@@ -91,8 +90,4 @@ public class GalleryFragment extends TSFragment {
         return galleryFragment;
     }
 
-    @OnClick(R.id.tv_origin_photo)
-    public void onClick() {
-        //mPagerAdapter.getItem()
-    }
 }
