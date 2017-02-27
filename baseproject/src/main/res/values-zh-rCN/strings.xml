@@ -65,6 +65,7 @@
     <string name="comment">评论</string>
     <string name="share">分享</string>
     <string name="more">更多</string>
+    <string name="send_fail">发送失败</string>
 
 
     <string name="see_origin_photo">查看原图</string>

@@ -112,6 +112,13 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
         }
         setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);
         setUserInfoClick(holder.getView(R.id.tv_name), dynamicBean);
+        // 设置动态状态
+        if(dynamicBean.getState()==DynamicBean.SEND_ERROR){
+            holder.setVisible(R.id.fl_tip,View.VISIBLE);
+        }else {
+            holder.setVisible(R.id.fl_tip,View.GONE);
+        }
+
     }
 
     private void setUserInfoClick(View view, final DynamicBean dynamicBean) {
