@@ -10,6 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
+import com.aspsine.swipetoloadlayout.OnRefreshListener;
+import com.aspsine.swipetoloadlayout.SwipeRefreshHeaderLayout;
+import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.widget.EmptyView;
@@ -37,7 +41,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 
-public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends BaseListBean> extends TSFragment<P> implements BGARefreshLayout.BGARefreshLayoutDelegate, ITSListView<T, P> {
+public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends BaseListBean> extends TSFragment<P> implements OnRefreshListener, OnLoadMoreListener, ITSListView<T, P> {
     public static final Long DEFAULT_PAGE_MAX_ID = 0L;// 默认初始化列表 id
     public static final int DEFAULT_PAGE = 1;// 默认初始化列表分页，只对当 max_id 无法使用时有效，如热门动态
 
@@ -47,7 +51,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     protected MultiItemTypeAdapter<T> mAdapter;
     private EmptyWrapper mEmptyWrapper;
 
-    protected BGARefreshLayout mRefreshlayout;
+    protected SwipeToLoadLayout mRefreshlayout;
 
     protected RecyclerView mRvList;
 
@@ -68,7 +72,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     private boolean mIsTipMessageSticky;// 提示信息是否需要常驻
 
-
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_tslist;
@@ -86,9 +89,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     protected void initView(View rootView) {
-        mRefreshlayout = (BGARefreshLayout) rootView.findViewById(R.id.refreshlayout);
-        mRvList = (RecyclerView) rootView.findViewById(R.id.rv_list);
-
+        mRefreshlayout = (SwipeToLoadLayout) rootView.findViewById(R.id.refreshlayout);
+        mRvList = (RecyclerView) rootView.findViewById(R.id.swipe_target);
         mFlTopTipContainer = rootView.findViewById(R.id.fl_top_tip_container);
         RxView.clicks(mFlTopTipContainer)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
@@ -109,11 +111,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        mRefreshlayout.beginRefreshing();
-                        mRefreshlayout.beginLoadingMore();
+                        mRefreshlayout.setRefreshing(true);
                     }
                 });
-        mRefreshlayout.setDelegate(this);
+        mRefreshlayout.setOnRefreshListener(this);
+        mRefreshlayout.setOnLoadMoreListener(this);
         if (setListBackColor() != -1) {
             mRvList.setBackgroundColor(getResources().getColor(setListBackColor()));
         }
@@ -124,8 +126,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mRvList.setItemAnimator(new DefaultItemAnimator());//设置动画
         mAdapter = getAdapter();
         mRvList.setAdapter(mAdapter);
-        mRefreshlayout.setRefreshViewHolder(new TSPRefreshViewHolder(getActivity(), isLoadingMoreEnable()));
-        mRefreshlayout.setPullDownRefreshEnable(getPullDownRefreshEnable());
+        mRefreshlayout.setRefreshEnabled(getPullDownRefreshEnable());
+        mRefreshlayout.setLoadMoreEnabled(isLoadingMoreEnable());
+
         mEmptyWrapper = new EmptyWrapper(mAdapter);
         mEmptyWrapper.setEmptyView(mEmptyView);
         mRvList.setAdapter(mEmptyWrapper);
@@ -308,33 +311,21 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         return mPage;
     }
 
-    /**
-     * 刷新
-     *
-     * @param refreshLayout 刷新控件
-     */
     @Override
-    public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
+    public void onRefresh() {
         mMaxId = DEFAULT_PAGE_MAX_ID;
         mPage = DEFAULT_PAGE;
         requestNetData(mMaxId, false);
     }
 
-    /**
-     * 加载更多
-     *
-     * @param refreshLayout 刷新控件
-     * @return
-     */
     @Override
-    public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
+    public void onLoadMore() {
         if (!mIsGetNetData) { // 如果没有获取过网络数据，加载更多就是获取本地数据，如果加载了网络数据了，加载更多就是获取网络数据
             onCacheResponseSuccess(requestCacheData(mMaxId, true), true);
         } else {
             mPage++;
             requestNetData(mMaxId, true);
         }
-        return true;
     }
 
     /**
@@ -345,7 +336,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     public void onNetResponseSuccess(@NotNull List<T> data, boolean isLoadMore) {
         mIsGetNetData = true;
         handleRefreshState(isLoadMore);
-        handleReceiveData(data, isLoadMore,false);
+        handleReceiveData(data, isLoadMore, false);
     }
 
     /**
@@ -358,9 +349,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     public void onCacheResponseSuccess(@NotNull List<T> data, boolean isLoadMore) {
         handleRefreshState(isLoadMore);
         if (!isLoadMore && (data == null || data.size() == 0)) {// 如果没有缓存，直接拉取服务器数据
-            mRefreshlayout.beginRefreshing();
+            mRefreshlayout.setRefreshing(true);
         } else {
-            handleReceiveData(data, isLoadMore,true);
+            handleReceiveData(data, isLoadMore, true);
         }
     }
 
@@ -425,9 +416,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     private void handleRefreshState(boolean isLoadMore) {
         if (isLoadMore) {
-            mRefreshlayout.endLoadingMore();
+            mRefreshlayout.setLoadingMore(false);
         } else {
-            mRefreshlayout.endRefreshing();
+            mRefreshlayout.setRefreshing(false);
         }
     }
 }

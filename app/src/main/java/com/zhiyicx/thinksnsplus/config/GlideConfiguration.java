@@ -6,6 +6,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
 import com.bumptech.glide.load.engine.bitmap_recycle.LruBitmapPool;
 import com.bumptech.glide.load.engine.cache.DiskCache;
+import com.bumptech.glide.load.engine.cache.DiskLruCacheFactory;
 import com.bumptech.glide.load.engine.cache.DiskLruCacheWrapper;
 import com.bumptech.glide.load.engine.cache.LruResourceCache;
 import com.bumptech.glide.load.engine.cache.MemorySizeCalculator;
@@ -24,13 +25,14 @@ public class GlideConfiguration implements GlideModule {
 
     @Override
     public void applyOptions(final Context context, GlideBuilder builder) {
-        builder.setDiskCache(new DiskCache.Factory() {
+       /* builder.setDiskCache(new DiskCache.Factory() {
             @Override
             public DiskCache build() {
                 // Careful: the external cache directory doesn't enforce permissions
                 return DiskLruCacheWrapper.get(FileUtils.getCacheFile(context), IMAGE_DISK_CACHE_MAX_SIZE);
             }
-        });
+        });*/
+        builder.setDiskCache(new DiskLruCacheFactory(FileUtils.getCacheFile(context).getAbsolutePath(), IMAGE_DISK_CACHE_MAX_SIZE));
 
         MemorySizeCalculator calculator = new MemorySizeCalculator(context);
         int defaultMemoryCacheSize = calculator.getMemoryCacheSize();

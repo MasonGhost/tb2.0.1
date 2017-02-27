@@ -225,7 +225,7 @@ public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Pres
 
     @Override
     public void hideLoading() {
-        mRefreshlayout.endRefreshing();
+        mRefreshlayout.setRefreshing(false);
     }
 
     @Override

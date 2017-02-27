@@ -34,6 +34,7 @@ public class UserInfoBean implements Parcelable {
     @Transient
     private String sexString;// sex编号对应的具体值，不保存到数据库中
     private String name;
+    @SerializedName("avatar")
     private String userIcon;
     private String location;
     private int province;

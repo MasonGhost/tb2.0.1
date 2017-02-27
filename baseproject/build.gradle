@@ -60,6 +60,10 @@ dependencies {
     androidTestApt dataDependences.daggerCompiler
     // Dagger dependencies
     compile dataDependences.dagger
+    // 刷新:三方库compat版本过高，使用主工程的版本
+    compile(dataDependences.refresh){
+        exclude group: 'com.android.support', module:'support-compat'
+    }
     provided dataDependences.javaxAnnotation
     provided dataDependences.daggerCompiler
     apt dataDependences.daggerCompiler

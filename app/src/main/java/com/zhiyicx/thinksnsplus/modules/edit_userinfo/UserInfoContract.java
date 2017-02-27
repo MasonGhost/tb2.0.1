@@ -28,8 +28,10 @@ public interface UserInfoContract {
 
         /**
          * 设置头像上传的状态
+         *
+         * @param taskId 返回的图片任务id
          */
-        void setUpLoadHeadIconState(boolean upLoadState);
+        void setUpLoadHeadIconState(boolean upLoadState, int taskId);
 
         /**
          * 设置信息修改提交状态

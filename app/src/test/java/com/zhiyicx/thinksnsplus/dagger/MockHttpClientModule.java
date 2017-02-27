@@ -76,10 +76,6 @@ public class MockHttpClientModule extends HttpClientModule {
         return mock(RxErrorHandler.class);
     }
 
-    @Override
-    public RxPermissions provideRxPermissions(Application application) {
-        return mock(RxPermissions.class);
-    }
 }
 
 

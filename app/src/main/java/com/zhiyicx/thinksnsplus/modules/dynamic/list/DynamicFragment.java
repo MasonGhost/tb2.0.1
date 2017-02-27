@@ -125,8 +125,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void hideLoading() {
-        mRefreshlayout.endRefreshing();
-        mRefreshlayout.endLoadingMore();
+        mRefreshlayout.setRefreshing(false);
+        mRefreshlayout.setLoadingMore(false);
     }
 
     @Override

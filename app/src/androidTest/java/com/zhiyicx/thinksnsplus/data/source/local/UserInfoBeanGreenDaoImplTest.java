@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.local;
 
 
+import android.app.Application;
 import android.text.TextUtils;
 
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -23,7 +24,7 @@ public class UserInfoBeanGreenDaoImplTest {
 
     @Before
     public void setUp() {
-        mUserInfoBeanGreenDao = new UserInfoBeanGreenDaoImpl(AppApplication.getContext());
+        mUserInfoBeanGreenDao = new UserInfoBeanGreenDaoImpl((Application) AppApplication.getContext());
     }
 
     @Test

@@ -26,6 +26,7 @@ ext {
     retrofitSdkVersion = '2.1.0'
     butterKnifeVersion = '8.4.0'
     androidSupportSdkVersion = '25.0.1'
+    refreshVersion = '1.0.4'
 
     //Testing
     robolectricVersion = '3.1.4'
@@ -89,8 +90,8 @@ ext {
             //包含各种指示器
             magicIndicator               : "com.github.hackware1993:MagicIndicator:1.5.0",
             //robolectric与dagger中间接依赖的冲突，故锁定版本
-            guava                        : "com.google.guava:guava:${guavaVwesion}"
-
+            guava                        : "com.google.guava:guava:${guavaVwesion}",
+            refresh                      : "com.github.Aspsine:SwipeToLoadLayout:${refreshVersion}"
 
     ]
     sdksoupportDependencies = [

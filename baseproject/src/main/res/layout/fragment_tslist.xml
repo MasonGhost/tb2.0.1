@@ -1,25 +1,32 @@
-<cn.bingoogolapple.refreshlayout.BGARefreshLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/refreshlayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
-    <LinearLayout
+    <include
+        layout="@layout/view_top_tip"
+        />
+
+    <com.aspsine.swipetoloadlayout.SwipeToLoadLayout
+        android:id="@+id/refreshlayout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <include
-            layout="@layout/view_top_tip"
-            />
+        <com.zhiyicx.baseproject.widget.refresh.RefreshHeaderView
+            android:id="@id/swipe_refresh_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></com.zhiyicx.baseproject.widget.refresh.RefreshHeaderView>
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_list"
+            android:id="@id/swipe_target"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:overScrollMode="never">
         </android.support.v7.widget.RecyclerView>
-    </LinearLayout>
-</cn.bingoogolapple.refreshlayout.BGARefreshLayout>
 
+        <com.zhiyicx.baseproject.widget.refresh.RefreshFooterView
+            android:id="@id/swipe_load_more_footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></com.zhiyicx.baseproject.widget.refresh.RefreshFooterView>
+    </com.aspsine.swipetoloadlayout.SwipeToLoadLayout>
+</LinearLayout>

@@ -256,7 +256,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
      */
     private void setSendDynamicState() {
         // 没有内容，并且只有占位图时不能够发送
-        if (!hasContent && (selectedPhotos == null || selectedPhotos.size()<=1)) {
+        if (!hasContent && (selectedPhotos == null || selectedPhotos.size() <= 1)) {
             mToolbarRight.setEnabled(false);
         } else {
             // 有内容或者有图片时都可以发送
