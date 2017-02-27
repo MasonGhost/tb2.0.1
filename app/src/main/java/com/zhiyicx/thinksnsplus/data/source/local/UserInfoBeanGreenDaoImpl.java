@@ -1,6 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.local;
 
-import android.content.Context;
+import android.app.Application;
 
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBeanDao;
@@ -12,6 +12,8 @@ import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * @Describe 用户信息存储实现
  * @Author Jungle68
@@ -20,7 +22,8 @@ import java.util.List;
  */
 
 public class UserInfoBeanGreenDaoImpl extends CommonCacheImpl<UserInfoBean> {
-    public UserInfoBeanGreenDaoImpl(Context context) {
+    @Inject
+    public UserInfoBeanGreenDaoImpl(Application context) {
         super(context);
     }
 

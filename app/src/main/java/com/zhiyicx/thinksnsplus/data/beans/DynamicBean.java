@@ -122,7 +122,8 @@ public class DynamicBean extends BaseListBean {
 
     @Keep
     public UserInfoBean getUserInfoBean() {
-        return userInfoBean;
+
+        return userInfoBean==null?new UserInfoBean():userInfoBean;
     }
 
     @Keep
@@ -235,6 +236,9 @@ public class DynamicBean extends BaseListBean {
 
     @Override
     public Long getMaxId() {
+        if (hot_creat_time != null && hot_creat_time.intValue() != 0) { // 用于区别热门，和其他分类，查询数据库分页时使用
+            return hot_creat_time;
+        }
         return feed_id;
     }
 
@@ -267,13 +271,6 @@ public class DynamicBean extends BaseListBean {
         dest.writeInt(this.state);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 210281324)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getDynamicBeanDao() : null;
-    }
-
     protected DynamicBean(Parcel in) {
         super(in);
         this.id = (Long) in.readValue(Long.class.getClassLoader());
@@ -300,4 +297,33 @@ public class DynamicBean extends BaseListBean {
             return new DynamicBean[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "DynamicBean{" +
+                "id=" + id +
+                ", feed_id=" + feed_id +
+                ", feed_mark=" + feed_mark +
+                ", user_id=" + user_id +
+                ", feed=" + feed +
+                ", tool=" + tool +
+                ", userInfoBean=" + userInfoBean +
+                ", comments=" + comments +
+                ", hot_creat_time=" + hot_creat_time +
+                ", isFollowed=" + isFollowed +
+                ", state=" + state +
+                ", daoSession=" + daoSession +
+                ", myDao=" + myDao +
+                ", feed__resolvedKey=" + feed__resolvedKey +
+                ", tool__resolvedKey=" + tool__resolvedKey +
+                ", userInfoBean__resolvedKey=" + userInfoBean__resolvedKey +
+                '}';
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 210281324)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getDynamicBeanDao() : null;
+    }
 }

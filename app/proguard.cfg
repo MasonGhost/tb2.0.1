@@ -1,0 +1,1 @@
+-keep public class * implements com.bumptech.glide.module.GlideModule

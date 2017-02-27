@@ -75,8 +75,9 @@ public class ApiConfig {
     public static final String APP_PATH_SEND_DYNAMIC = "api/v1/feeds";// 发布动态
     public static final String APP_PATH_GET_DYNAMIC_LIST = "api/v1/feeds/{type}";// 获取动态列表、｛最新：/api/v1/feeds;关注：/api/v1/feeds/follows;热门：/api/v1/feeds/hots｝
     public static final String DYNAMIC_TYPE_NEW = ""; // 最新动态
-    public static final String DYNAMIC_TYPE_FOLLOWS = ""; // 关注动态
-    public static final String DYNAMIC_TYPE_HOTS = ""; // 热门动态
+    public static final String DYNAMIC_TYPE_FOLLOWS = "follows"; // 关注动态
+    public static final String DYNAMIC_TYPE_HOTS = "hots"; // 热门动态
+    public static final int DYNAMIC_PAGE_LIMIT = 10;// 不传 服务器默认10条
     /**
      * 通用 CommonClient
      */

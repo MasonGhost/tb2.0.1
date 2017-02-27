@@ -50,10 +50,10 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
-        <!--glide配置-->
-        <meta-data
-            android:name="com.zhiyicx.baseproject.impl.imageloader.glide.GlideConfiguration"
-            android:value="GlideModule"/>
+        <!--&lt;!&ndash;glide配置&ndash;&gt;-->
+        <!--<meta-data-->
+            <!--android:name="com.zhiyicx.thinksnsplus.config.GlideConfiguration"-->
+            <!--android:value="GlideModule"/>-->
 
         <!--图片选择器：photopicker-->
         <activity

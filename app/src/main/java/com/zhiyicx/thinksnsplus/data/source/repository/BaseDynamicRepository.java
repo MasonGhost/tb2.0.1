@@ -6,6 +6,7 @@ import android.util.SparseArray;
 import com.google.gson.Gson;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -33,7 +34,7 @@ import rx.schedulers.Schedulers;
  */
 
 public class BaseDynamicRepository implements IDynamicReppsitory {
-    private static int DYNAMIC_PAGE_LIMIT = 10;// 不传 服务器默认10条
+
     protected DynamicClient mDynamicClient;
     protected UserInfoRepository mUserInfoRepository;
     protected Context mContext;
@@ -77,10 +78,16 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                             List<Long> user_ids = new ArrayList<>();
                             for (DynamicBean dynamicBean : listBaseJson.getData()) {
                                 user_ids.add(dynamicBean.getUser_id());
-                                if (type.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {// 如果是热门，需要初始化时间
-                                    dynamicBean.setHot_creat_time(System.currentTimeMillis());
+                                if (type.equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) { //如果是关注，需要初始化标记
+                                    dynamicBean.setIsFollowed(true);
                                 }
                             }
+                            if (type.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {// 如果是热门，需要初始化时间
+                                for (int i = listBaseJson.getData().size() - 1; i >= 0; i--) {
+                                    listBaseJson.getData().get(i).setHot_creat_time(System.currentTimeMillis());
+                                }
+                            }
+
                             return mUserInfoRepository.getUserInfo(user_ids)
                                     .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<DynamicBean>>>() {
                                         @Override
@@ -93,6 +100,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                                 for (DynamicBean dynamicBean : listBaseJson.getData()) {
                                                     dynamicBean.setUserInfoBean(userInfoBeanSparseArray.get((int) dynamicBean.getUser_id()));
                                                 }
+                                                AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao().insertOrReplace(userinfobeans.getData());
                                             } else {
                                                 listBaseJson.setStatus(userinfobeans.isStatus());
                                                 listBaseJson.setCode(userinfobeans.getCode());

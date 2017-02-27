@@ -1,4 +1,4 @@
-package com.zhiyicx.baseproject.impl.imageloader.glide;
+package com.zhiyicx.thinksnsplus.config;
 
 import android.content.Context;
 
@@ -21,7 +21,7 @@ import com.zhiyicx.common.utils.FileUtils;
  */
 
 public class GlideConfiguration implements GlideModule {
-    private static final int IMAGE_DISK_CACHE_MAX_SIZE = 100 * 1024 * 1024;//图片缓存文件最大值为100Mb
+    private static final int IMAGE_DISK_CACHE_MAX_SIZE = 60 * 1024 * 1024;//图片缓存文件最大值为100Mb
 
     @Override
     public void applyOptions(final Context context, GlideBuilder builder) {
