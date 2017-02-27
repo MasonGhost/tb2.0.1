@@ -102,7 +102,7 @@ public class DynamicBean extends BaseListBean {
 
     @Keep
     public DynamicDetailBean getFeed() {
-        return feed;
+        return feed==null?new DynamicDetailBean():feed;
     }
 
     @Keep
@@ -112,7 +112,7 @@ public class DynamicBean extends BaseListBean {
 
     @Keep
     public DynamicToolBean getTool() {
-        return tool;
+        return tool==null?new DynamicToolBean():tool;
     }
 
     @Keep

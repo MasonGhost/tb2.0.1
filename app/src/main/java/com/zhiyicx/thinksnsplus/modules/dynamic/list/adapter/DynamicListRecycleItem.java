@@ -69,12 +69,12 @@ public class DynamicListRecycleItem extends DynamicListBaseItem {
 
     @Override
     public boolean isForViewType(DynamicBean item, int position) {
-        return item.getFeed().getStorage().size() == IMAGE_COUNTS_0
-                || item.getFeed().getStorage().size() == IMAGE_COUNTS_1
-                || item.getFeed().getStorage().size() == IMAGE_COUNTS_2
-                || item.getFeed().getStorage().size() == IMAGE_COUNTS_3
-                || item.getFeed().getStorage().size() == IMAGE_COUNTS_4
-                || item.getFeed().getStorage().size() == IMAGE_COUNTS_9;
+        return item.getFeed().getStorage_task_ids().size() == IMAGE_COUNTS_0
+                || item.getFeed().getStorage_task_ids().size() == IMAGE_COUNTS_1
+                || item.getFeed().getStorage_task_ids().size() == IMAGE_COUNTS_2
+                || item.getFeed().getStorage_task_ids().size() == IMAGE_COUNTS_3
+                || item.getFeed().getStorage_task_ids().size() == IMAGE_COUNTS_4
+                || item.getFeed().getStorage_task_ids().size() == IMAGE_COUNTS_9;
     }
 
     @Override
@@ -82,7 +82,7 @@ public class DynamicListRecycleItem extends DynamicListBaseItem {
         super.convert(holder, dynamicBean, lastT, position);
         RecyclerView recyclerView = holder.getView(R.id.nrv_image);
         int colums;
-        switch (dynamicBean.getFeed().getStorage().size()) { // 根据设计规范，计算出当前数量图片应该分成几列
+        switch (dynamicBean.getFeed().getStorage_task_ids().size()) { // 根据设计规范，计算出当前数量图片应该分成几列
             case IMAGE_COUNTS_1:
                 colums = 1;
                 break;
@@ -109,7 +109,7 @@ public class DynamicListRecycleItem extends DynamicListBaseItem {
         recyclerView.addItemDecoration(new GridDecoration(mContext, R.drawable.shape_recyclerview_divider_white_small))
         ;//设置Item的间隔
         List<String> testdata = new ArrayList<>();
-        for (int i = 0; i < dynamicBean.getFeed().getStorage().size(); i++) {
+        for (int i = 0; i < dynamicBean.getFeed().getStorage_task_ids().size(); i++) {
             testdata.add("http://wx4.sinaimg.cn/thumbnail/6c2fc79ely1fcss6ufxbaj20do0i8n4a.jpg");
         }
         recyclerView.setAdapter(getadaper(recyclerView.getContext(), testdata, colums));

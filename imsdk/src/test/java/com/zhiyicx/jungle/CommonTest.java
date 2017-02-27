@@ -33,16 +33,17 @@ public class CommonTest {
 
     /**
      * 测试增强 for 循环
+     *
      * @throws Exception
      */
     @Test
     public void testfor() throws Exception {
-        List<Message> data=new ArrayList<>();
+        List<Message> data = new ArrayList<>();
         data.add(new Message(1));
         data.add(new Message(2));
         data.add(new Message(3));
         for (Message message : data) {
-            if (message.getId()==2){
+            if (message.getId() == 2) {
                 message.setId(40);
                 message.setTxt("niaho");
                 data.add(message);
@@ -50,7 +51,7 @@ public class CommonTest {
             }
         }
         System.out.println("data = " + data.get(1).getTxt());
-        Assert.assertTrue(40==data.get(1).getId());
+        Assert.assertTrue(40 == data.get(1).getId());
     }
 
     /**
@@ -76,4 +77,42 @@ public class CommonTest {
         return sdf.format(date);
     }
 
+    @Test
+    public void getArraylst() {
+        ArrayList<Integer> data = new ArrayList<>();
+        data.add(1);
+        data.add(2);
+        data.add(3);
+        data.add(4);
+        ArrayList<Integer> datab = new ArrayList<>();
+        datab = data;
+        datab.add(5);
+        System.out.println("datab = " + datab);
+//        datab.addAll(data);
+//        datab.add(5);
+//        data.clear();
+//        data=datab;
+//        System.out.println("data = " + data);
+        for (Integer tmp : datab) {
+            if (tmp == 5) {
+                tmp = 6;
+            }
+        }
+        System.out.println("datab = " + datab);
+        ArrayList<Message> messages = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            messages.add(new Message(i));
+        }
+        for (Message message : messages) {
+            if (message.getId() == 5) {
+                message.setTxt("123456");
+            }
+        }
+        for (Message message : messages) {
+            if (null!=message.getTxt()) {
+                System.out.println("message = " + message.getTxt());
+            }
+        }
+
+    }
 }

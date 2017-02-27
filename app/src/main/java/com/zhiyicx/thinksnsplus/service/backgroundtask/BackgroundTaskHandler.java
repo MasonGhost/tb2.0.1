@@ -365,7 +365,7 @@ public class BackgroundTaskHandler {
                         @Override
                         public Observable<BaseJson<Object>> call(List<Integer> integers) {
                             // 动态相关图片：图片任务id的数组，将它作为发布动态的参数
-                            dynamicDetailBean.setStorage(integers);
+                            dynamicDetailBean.setStorage_task_ids(integers);
                             return mSendDynamicRepository.sendDynamic(dynamicDetailBean);// 进行动态发布的请求
                         }
                     });

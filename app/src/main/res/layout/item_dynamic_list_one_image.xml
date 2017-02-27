@@ -91,7 +91,7 @@
             android:id="@+id/siv_0"
             android:src="@drawable/shape_default_image"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="180dp"
             />
 
     </LinearLayout>

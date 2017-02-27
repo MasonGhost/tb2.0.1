@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
@@ -48,7 +49,13 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
     }
 
     protected OnUserInfoClickListener mOnUserInfoClickListener; // 用户信息点击监听
-    protected DynamicListMenuView.OnItemClickListener mOnMenuClick;
+
+    public void setOnMenuClick(DynamicListMenuView.OnItemClickListener onMenuClick) {
+        mOnMenuClick = onMenuClick;
+    }
+
+    protected DynamicListMenuView.OnItemClickListener mOnMenuClick; // 工具栏被点击
+
 
     private int mTitleMaxShowNum;
     private int mContentMaxShowNum;
@@ -68,13 +75,13 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
 
     @Override
     public boolean isForViewType(DynamicBean item, int position) {
-        return item.getFeed().getStorage().size()==0;
+        return item.getFeed().getStorage_task_ids() == null || item.getFeed().getStorage_task_ids().size() == 0;
     }
 
     @Override
     public void convert(ViewHolder holder, DynamicBean dynamicBean, DynamicBean lastT, final int position) {
         mImageLoader.loadImage(mContext, GlideImageConfig.builder()
-                .url(dynamicBean.getUserInfoBean()!=null?dynamicBean.getUserInfoBean().getUserIcon():"")
+                .url(dynamicBean.getUserInfoBean() != null ? dynamicBean.getUserInfoBean().getUserIcon() : "")
                 .transformation(new GlideCircleTransform(mContext))
                 .errorPic(R.drawable.shape_default_image_circle)
                 .imagerView((ImageView) holder.getView(R.id.iv_headpic))
@@ -120,6 +127,38 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                 });
     }
 
+
+    /**
+     * 设置 imageview 点击事件，以及显示
+     *
+     * @param view        the target
+     * @param dynamicBean item data
+     * @param positon     item position
+     */
+    protected void initImageView(ImageView view, final DynamicBean dynamicBean, final int positon) {
+        String url;
+        if (dynamicBean.getFeed().getStorage_task_ids() != null) {
+            url = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getFeed().getStorage_task_ids().get(positon), 50);
+        } else {
+            url = dynamicBean.getFeed().getLocalPhotos().get(positon);
+        }
+
+        RxView.clicks(view)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        if (mOnImageClickListener != null) {
+                            mOnImageClickListener.onImageClick(dynamicBean, positon);
+                        }
+                    }
+                });
+        mImageLoader.loadImage(mContext, GlideImageConfig.builder()
+                .url(url)
+                .imagerView(view)
+                .build());
+    }
+
     public interface OnImageClickListener {
 
         void onImageClick(DynamicBean dynamicBean, int position);
@@ -129,5 +168,6 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
 
         void onUserInfoClick(DynamicBean dynamicBean);
     }
+
 }
 

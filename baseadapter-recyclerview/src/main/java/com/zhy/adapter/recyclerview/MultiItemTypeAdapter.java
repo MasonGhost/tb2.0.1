@@ -98,6 +98,11 @@ public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
         return mDatas;
     }
 
+    public void refreshData(List<T> datas) {
+        mDatas = datas;
+        notifyDataSetChanged();
+    }
+
     /**
      * 新增清除数据
      */

@@ -35,9 +35,9 @@ public interface DynamicContract {
          * 获取列表数据
          * @return
          */
-        void setDatas(List<DynamicBean> dynamicBeen);
+        void refresh();
 
-        void refreshPosition(int position);
+        void refresh(int position);
 
     }
 

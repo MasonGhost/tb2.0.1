@@ -2,10 +2,13 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
@@ -31,7 +34,7 @@ import javax.inject.Inject;
  * @Date 2017/1/17
  * @Contact master.jungle68@gmail.com
  */
-public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicContract.View, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener {
+public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicContract.View, DynamicListMenuView.OnItemClickListener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener {
     private static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
     public static final long ITEM_SPACING = 5L; // 单位dp
     @Inject
@@ -67,12 +70,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     protected boolean isLoadingMoreEnable() {
-        return false;
+        return true;
     }
 
     @Override
     protected boolean getPullDownRefreshEnable() {
-        return false;
+        return true;
     }
 
     @Override
@@ -92,9 +95,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     private void setAdapter(MultiItemTypeAdapter adapter, DynamicListBaseItem dynamicListBaseItem) {
-
         dynamicListBaseItem.setOnImageClickListener(this);
         dynamicListBaseItem.setOnUserInfoClickListener(this);
+        dynamicListBaseItem.setOnMenuClick(this);
         adapter.addItemViewDelegate(dynamicListBaseItem);
     }
 
@@ -152,13 +155,20 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
-    public void setDatas(List<DynamicBean> datas) {
-        mDynamicBeens = datas;
+    public void refresh() {
         refreshData();
     }
 
     @Override
-    public void refreshPosition(int position) {
+    public void refresh(int position) {
+        LogUtils.d(TAG, "mDynamicBeens    position  = " + mDynamicBeens.toString());
         refreshData(position);
+    }
+
+    @Override
+    public void onItemClick(ViewGroup parent, View v, int postion) {
+        if (postion == 0) { // 点击喜欢
+            ToastUtils.showToast("点击了喜欢");
+        }
     }
 }

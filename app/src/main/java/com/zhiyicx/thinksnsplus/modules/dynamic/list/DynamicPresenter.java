@@ -7,7 +7,6 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -177,25 +176,46 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_DYNAMIC_TO_LIST)
     public void handleSendDynamic(DynamicBean dynamicBean) {
-        LogUtils.d(TAG,"handleSendDynamic = " +dynamicBean);
         if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW)) {
-            List<DynamicBean> datas = new ArrayList<>();
-            int position = msendingStatus.indexOfValue(dynamicBean.getFeed_mark());
-            if (position <0) {
-                msendingStatus.put(0,dynamicBean.getFeed_mark());
-                datas.add(dynamicBean);
-                datas.addAll(mRootView.getDatas());
-                mRootView.setDatas(datas);
+            int position=hasContanied(dynamicBean);
+            if (position!=-1) {
+                mRootView.refresh(position);
             } else {
-                mRootView.getDatas().get(position).setState(dynamicBean.getState());
+                mRootView.getDatas().add(dynamicBean);
+                mRootView.refresh();
+            }
+//
+//            List<DynamicBean> datas = new ArrayList<>();
+//            int position = msendingStatus.indexOfValue(dynamicBean.getFeed_mark());
+//            if (position < 0) {
+//                SparseArray<Long> msendingStatus = new SparseArray<>();
+//                msendingStatus.put(0, dynamicBean.getFeed_mark());
+//                datas.add(dynamicBean);
+//                datas.addAll(mRootView.getDatas());
+//                mRootView.refresh(datas);
+//            } else {
+//                mRootView.getDatas().get(position).setState(dynamicBean.getState());
+//                mRootView.refresh(position);
+//                msendingStatus.remove(position);
+//            }
+
+        }
+    }
+
+    private int hasContanied(DynamicBean dynamicBean) {
+        int size = mRootView.getDatas().size();
+        for (int i = 0; i < size; i++) {
+            if (mRootView.getDatas().get(i).getFeed_mark() == dynamicBean.getFeed_mark()) {
+                mRootView.getDatas().get(i).setState(dynamicBean.getState());
+                return i;
             }
         }
+        return -1;
     }
 
     @NonNull
     private List<DynamicBean> getDynamicBeenFromDB() {
         List<DynamicBean> datas = mDynamicBeanGreenDao.getMySendingDynamic((long) AppApplication.getmCurrentLoginAuth().getUser_id());
-        System.out.println("sprasgd0-------------- = " + datas.toString());
         msendingStatus.clear();
         for (int i = 0; i < datas.size(); i++) {
             msendingStatus.put(i, datas.get(i).getFeed_mark());
