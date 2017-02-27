@@ -233,7 +233,7 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
 
     @Override
     public void hideLoading() {
-        mRefreshlayout.endRefreshing();
+        mRefreshlayout.setRefreshing(false);
     }
 
     @Override

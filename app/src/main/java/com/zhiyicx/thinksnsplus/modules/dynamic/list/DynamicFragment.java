@@ -67,12 +67,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     protected boolean isLoadingMoreEnable() {
-        return false;
+        return true;
     }
 
     @Override
     protected boolean getPullDownRefreshEnable() {
-        return false;
+        return true;
     }
 
     @Override
@@ -122,8 +122,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void hideLoading() {
-        mRefreshlayout.endRefreshing();
-        mRefreshlayout.endLoadingMore();
+        mRefreshlayout.setRefreshing(false);
+        mRefreshlayout.setLoadingMore(false);
     }
 
     @Override
