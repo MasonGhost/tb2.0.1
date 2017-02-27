@@ -122,7 +122,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mRvList.setLayoutManager(getLayoutManager());
         mRvList.addItemDecoration(getItemDecoration());//设置Item的间隔
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
-        mRvList.setHasFixedSize(true);
+        mRvList.setHasFixedSize(false);
         mRvList.setItemAnimator(new DefaultItemAnimator());//设置动画
         mAdapter = getAdapter();
         mRvList.setAdapter(mAdapter);
@@ -142,6 +142,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     @Override
     protected void initData() {
         onCacheResponseSuccess(requestCacheData(mMaxId, false), false); // 获取缓存数据
+//        requestNetData(mMaxId,false);
     }
 
     /**
@@ -287,13 +288,21 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * 刷新数据
      */
     public void refreshData() {
+        mAdapter.notifyDataSetChanged();
         mEmptyWrapper.notifyDataSetChanged();
     }
-
+    /**
+     * 刷新数据
+     */
+    public void refreshData(List<T> datas) {
+        mAdapter.notifyDataSetChanged();
+        mEmptyWrapper.notifyDataSetChanged();
+    }
     /**
      * 刷新单条数据
      */
     public void refreshData(int index) {
+        mAdapter.notifyDataSetChanged();
         mEmptyWrapper.notifyItemChanged(index);
     }
 

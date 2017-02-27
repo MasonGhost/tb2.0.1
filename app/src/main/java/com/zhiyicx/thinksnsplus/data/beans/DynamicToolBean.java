@@ -32,7 +32,7 @@ public class DynamicToolBean implements Parcelable {
         this.is_digg_feed = is_digg_feed;
     }
 
-    private int is_digg_feed;// 评论数
+    private int is_digg_feed;// 是否喜欢了
 
     public Long getFeed_mark() {
         return feed_mark;

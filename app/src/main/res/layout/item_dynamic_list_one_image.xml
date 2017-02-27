@@ -87,10 +87,11 @@
         android:paddingBottom="@dimen/spacing_normal"
         android:paddingTop="@dimen/spacing_normal">
 
-        <com.zhiyicx.baseproject.widget.SquareImageView
+        <com.zhiyicx.common.widget.FilterImageView
             android:id="@+id/siv_0"
+            android:src="@drawable/shape_default_image"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="180dp"
             />
 
     </LinearLayout>
@@ -114,15 +115,22 @@
 
     </com.zhiyicx.baseproject.widget.DynamicListMenuView>
 
+    <include
+        android:id="@+id/fl_tip"
+        layout="@layout/view_hint_info2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/iv_headpic"
+        android:layout_below="@id/dlmv_menu"
+        />
     <FrameLayout
         android:id="@+id/fl_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/dlmv_menu"
+        android:layout_below="@+id/fl_tip"
         android:layout_marginLeft="@dimen/spacing_normal"
         android:layout_marginRight="@dimen/spacing_normal"
         android:layout_toRightOf="@+id/iv_headpic">
-
     </FrameLayout>
 
 </RelativeLayout>

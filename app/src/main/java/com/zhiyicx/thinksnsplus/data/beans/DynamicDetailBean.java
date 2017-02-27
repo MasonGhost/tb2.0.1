@@ -88,14 +88,6 @@ public class DynamicDetailBean implements Parcelable {
         this.feed_from = feed_from;
     }
 
-    public List<Integer> getStorage() {
-        return storage_task_ids;
-    }
-
-    public void setStorage(List<Integer> storage) {
-        this.storage_task_ids = storage;
-    }
-
     public List<String> getLocalPhotos() {
         return localPhotos;
     }

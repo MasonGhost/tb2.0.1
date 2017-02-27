@@ -50,7 +50,7 @@ public class DynamicBean extends BaseListBean {
 
     private Long hot_creat_time;// 标记热门，已及创建时间，用户数据库查询
     private boolean isFollowed;// 是否关注了该条动态（用户）
-    private int state;// 动态发送状态 0 发送失败 1 正在发送 2 发送成功
+    private int state = SEND_SUCCESS;// 动态发送状态 0 发送失败 1 正在发送 2 发送成功
 
     public Long getHot_creat_time() {
         return hot_creat_time;
@@ -102,6 +102,7 @@ public class DynamicBean extends BaseListBean {
 
     @Keep
     public DynamicDetailBean getFeed() {
+        feed = feed == null ? new DynamicDetailBean() : feed;
         return feed;
     }
 
@@ -112,6 +113,7 @@ public class DynamicBean extends BaseListBean {
 
     @Keep
     public DynamicToolBean getTool() {
+        tool = tool == null ? new DynamicToolBean() : tool;
         return tool;
     }
 
@@ -122,8 +124,8 @@ public class DynamicBean extends BaseListBean {
 
     @Keep
     public UserInfoBean getUserInfoBean() {
-
-        return userInfoBean==null?new UserInfoBean():userInfoBean;
+        userInfoBean = userInfoBean == null ? new UserInfoBean() : userInfoBean;
+        return userInfoBean;
     }
 
     @Keep

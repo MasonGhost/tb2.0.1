@@ -74,7 +74,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                 .flatMap(new Func1<BaseJson<List<DynamicBean>>, Observable<BaseJson<List<DynamicBean>>>>() {
                     @Override
                     public Observable<BaseJson<List<DynamicBean>>> call(final BaseJson<List<DynamicBean>> listBaseJson) {
-                        if (listBaseJson.isStatus()) {
+                        if (listBaseJson.isStatus() && listBaseJson.getData() != null && !listBaseJson.getData().isEmpty()) {
                             List<Long> user_ids = new ArrayList<>();
                             for (DynamicBean dynamicBean : listBaseJson.getData()) {
                                 user_ids.add(dynamicBean.getUser_id());
@@ -87,7 +87,6 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                     listBaseJson.getData().get(i).setHot_creat_time(System.currentTimeMillis());
                                 }
                             }
-
                             return mUserInfoRepository.getUserInfo(user_ids)
                                     .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<DynamicBean>>>() {
                                         @Override
@@ -115,5 +114,23 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
 
                     }
                 });
+    }
+
+    /**
+     * @param feed_id
+     * @return
+     */
+    @Override
+    public Observable<BaseJson<String>> likeDynamic(Long feed_id) {
+        return mDynamicClient.likeDynamic(feed_id);
+    }
+
+    /**
+     * @param feed_id
+     * @return
+     */
+    @Override
+    public Observable<BaseJson<String>> cancleLikeDynamic(Long feed_id) {
+        return mDynamicClient.cancleLikeDynamic(feed_id);
     }
 }

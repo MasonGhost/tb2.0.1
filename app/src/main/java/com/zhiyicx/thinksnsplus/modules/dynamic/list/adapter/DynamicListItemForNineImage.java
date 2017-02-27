@@ -36,7 +36,7 @@ public class DynamicListItemForNineImage extends DynamicListBaseItem {
 
     @Override
     public boolean isForViewType(DynamicBean item, int position) {
-        return item.getFeed().getStorage().size() == IMAGE_COUNTS;
+        return item.getFeed().getStorage_task_ids() != null &&item.getFeed().getStorage_task_ids().size() == IMAGE_COUNTS;
     }
 
 
@@ -52,30 +52,6 @@ public class DynamicListItemForNineImage extends DynamicListBaseItem {
         initImageView((ImageView) holder.getView(R.id.siv_6), dynamicBean, 6);
         initImageView((ImageView) holder.getView(R.id.siv_7), dynamicBean, 7);
         initImageView((ImageView) holder.getView(R.id.siv_8), dynamicBean, 8);
-    }
-
-    /**
-     * 设置 imageview 点击事件，以及显示
-     *
-     * @param view        the target
-     * @param dynamicBean item data
-     * @param positon     item position
-     */
-    private void initImageView(ImageView view, final DynamicBean dynamicBean, final int positon) {
-        RxView.clicks(view)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        if (mOnImageClickListener != null) {
-                            mOnImageClickListener.onImageClick(dynamicBean, positon);
-                        }
-                    }
-                });
-        mImageLoader.loadImage(mContext, GlideImageConfig.builder()
-                .url("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1487853874862&di=1783b319156309b01646d42f481e6239&imgtype=0&src=http%3A%2F%2Fa.hiphotos.baidu.com%2Fimage%2Fpic%2Fitem%2F6a63f6246b600c33375d7f6b1f4c510fd9f9a169.jpg") // TODO: 2017/2/22 需要添加图片前最地址dynamicBean.getFeed().getStorage().get(positon)+
-                .imagerView(view)
-                .build());
     }
 
 }

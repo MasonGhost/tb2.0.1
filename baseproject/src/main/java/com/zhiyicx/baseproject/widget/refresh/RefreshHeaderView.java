@@ -95,7 +95,6 @@ public class RefreshHeaderView extends LinearLayout implements SwipeTrigger, Swi
     public void onMove(int y, boolean isComplete, boolean automatic) {
         mPullDownView.setVisibility(VISIBLE);
         mReleaseRefreshingView.setVisibility(INVISIBLE);
-        LogUtils.i("headerMove-->" + y);
         // 移动距离小于headerView的实际高度（释放手指的盖度）
         if (y <= headerViewHeight) {
             float scale = y * 1.0f / headerViewHeight;

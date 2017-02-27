@@ -7,10 +7,11 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
@@ -20,11 +21,13 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -79,11 +82,13 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                 .map(new Func1<BaseJson<List<DynamicBean>>, BaseJson<List<DynamicBean>>>() {
                     @Override
                     public BaseJson<List<DynamicBean>> call(BaseJson<List<DynamicBean>> listBaseJson) {
-                        if (!isLoadMore && listBaseJson.isStatus() && mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW)) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
+                        if (!isLoadMore && listBaseJson.isStatus()) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
                             insertOrUpdateDynamicDB(listBaseJson.getData());
-                            List<DynamicBean> data = getDynamicBeenFromDB();
-                            data.addAll(listBaseJson.getData());
-                            listBaseJson.setData(data);
+                            if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW)) {
+                                List<DynamicBean> data = getDynamicBeenFromDB();
+                                data.addAll(listBaseJson.getData());
+                                listBaseJson.setData(data);
+                            }
                         }
                         return listBaseJson;
                     }
@@ -162,6 +167,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
             dynamicToolBeen.add(dynamicBean.getTool());
 
         }
+        System.out.println("data = " + data.toString());
         mDynamicBeanGreenDao.insertOrReplace(data);
         mDynamicDetailBeanGreenDao.insertOrReplace(dynamicDetailBeen);
         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBeen);
@@ -175,18 +181,27 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_DYNAMIC_TO_LIST)
     public void handleSendDynamic(DynamicBean dynamicBean) {
-        LogUtils.d(TAG,"handleSendDynamic = " +dynamicBean);
         if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW)) {
-            List<DynamicBean> datas = new ArrayList<>();
-            int position = msendingStatus.indexOfValue(dynamicBean.getFeed_mark());
-            if (position == -1) {
-                datas.add(dynamicBean);
-                datas.addAll(mRootView.getDatas());
-                mRootView.setDatas(datas);
+            int position = hasContanied(dynamicBean);
+            if (position != -1) {
+                mRootView.refresh(position);
             } else {
-                mRootView.getDatas().get(position).setState(dynamicBean.getState());
+                mRootView.getDatas().add(dynamicBean); // TODO: 2017/2/27 加到头部
+                mRootView.refresh();
+            }
+
+        }
+    }
+
+    private int hasContanied(DynamicBean dynamicBean) {
+        int size = mRootView.getDatas().size();
+        for (int i = 0; i < size; i++) {
+            if (mRootView.getDatas().get(i).getFeed_mark() == dynamicBean.getFeed_mark()) {
+                mRootView.getDatas().get(i).setState(dynamicBean.getState());
+                return i;
             }
         }
+        return -1;
     }
 
     @NonNull
@@ -197,5 +212,26 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
             msendingStatus.put(i, datas.get(i).getFeed_mark());
         }
         return datas;
+    }
+
+    /**
+     * handle like or cancle like in background
+     *
+     * @param isLiked true,do like ,or  cancle like
+     * @param feed_id the dynamic id
+     */
+    @Override
+    public void handleLike(boolean isLiked, Long feed_id) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("feed_id", feed_id);
+        // 后台处理
+        if (isLiked) {
+            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST, params);
+        } else {
+            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
+        }
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_HANDLE_LIKE_FORMAT, feed_id));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
     }
 }
