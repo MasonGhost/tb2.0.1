@@ -1,55 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="bottom"
-    android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/refresh_header_height">
 
-    <RelativeLayout
-        android:id="@+id/header_content"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:gravity="center">
+    <ImageView
+        android:id="@+id/iv_pull_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"/>
 
-        <TextView
-            android:id="@+id/header_hint_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginLeft="20dp"
-            android:text="下拉刷新"
-            android:textColor="@android:color/black" />
+    <ImageView
+        android:id="@+id/iv_release_refreshing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="invisible"/>
 
-        <ImageView
-            android:id="@+id/header_arrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/header_hint_text"
-            android:contentDescription="@null"
-            android:src="@mipmap/refresh_head_arrow"
-            android:visibility="visible" />
-
-        <ProgressBar
-            android:id="@+id/header_progressbar"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:indeterminate="false"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/header_hint_text"
-            android:indeterminateDrawable="@drawable/refresh_loading" />
-
-<!--        <ProgressBar
-            android:id="@+id/header_progressbar"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/header_hint_text"
-            android:indeterminateDrawable="@drawable/progress_rotate"
-            android:indeterminateOnly="true"
-            android:indeterminateDuration="1000"
-            android:visibility="visible" />-->
-
-    </RelativeLayout>
-
-</LinearLayout>
+</RelativeLayout>

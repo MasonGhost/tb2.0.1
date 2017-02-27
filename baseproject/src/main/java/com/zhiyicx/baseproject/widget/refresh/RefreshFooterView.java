@@ -1,6 +1,7 @@
 package com.zhiyicx.baseproject.widget.refresh;
 
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.animation.Animation;
@@ -15,53 +16,46 @@ import com.aspsine.swipetoloadlayout.SwipeTrigger;
 import com.zhiyicx.baseproject.R;
 
 /**
- * Created by Administrator on 2016/6/3.
+ * @author LiuChao
+ * @describe
+ * @date 2017/2/27
+ * @contact email:450127106@qq.com
  */
 public class RefreshFooterView extends LinearLayout implements SwipeTrigger, SwipeLoadMoreTrigger {
-    private TextView header_hint_text;
-    private ImageView header_arrow;
-    private ProgressBar header_progressbar;
 
-    private Animation mRotateUpAnim;
-    private Animation mRotateDownAnim;
-    private final int ROTATE_ANIM_DURATION = 180;
-    private boolean rotated = false;
-    private int mHeaderHeight;
+    private ImageView loadingMore;
+    private TextView loadingText;
+    /**
+     * 底部加载更多菊花drawable
+     */
+    protected AnimationDrawable mFooterAd;
+
     public RefreshFooterView(Context context) {
         super(context);
+        init(context);
     }
 
     public RefreshFooterView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        LayoutInflater.from(context).inflate(R.layout.vw_footer, this);
-        header_hint_text = (TextView) findViewById(R.id.header_hint_text);
-        header_arrow = (ImageView) findViewById(R.id.header_arrow);
-        header_progressbar = (ProgressBar) findViewById(R.id.header_progressbar);
-
-        mRotateUpAnim = new RotateAnimation(0.0f, -180.0f,
-                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
-                0.5f);
-        mRotateUpAnim.setDuration(ROTATE_ANIM_DURATION);
-        mRotateUpAnim.setFillAfter(true);
-        mHeaderHeight = getResources().getDimensionPixelOffset(R.dimen.button_login_height);
-
-        mRotateDownAnim = new RotateAnimation(-180.0f, 0.0f,
-                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
-                0.5f);
-        mRotateDownAnim.setDuration(ROTATE_ANIM_DURATION);
-        mRotateDownAnim.setFillAfter(true);
+        init(context);
     }
 
     public RefreshFooterView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init(context);
+    }
+
+    private void init(Context context) {
+        LayoutInflater.from(context).inflate(R.layout.vw_footer, this);
+        loadingMore = (ImageView) findViewById(R.id.iv_loading_more);
+        loadingText = (TextView) findViewById(R.id.tv_loading_text);
+        loadingMore.setImageResource(R.drawable.frame_loading_grey);
+
     }
 
     @Override
     public void onLoadMore() {
-        header_hint_text.setText("加载中...");
-        header_progressbar.setVisibility(VISIBLE);
-        header_arrow.clearAnimation();
-        header_arrow.setVisibility(GONE);
+
     }
 
     @Override
@@ -71,43 +65,32 @@ public class RefreshFooterView extends LinearLayout implements SwipeTrigger, Swi
 
     @Override
     public void onMove(int y, boolean isComplete, boolean automatic) {
-        if (!isComplete) {
-            header_arrow.setVisibility(VISIBLE);
-            header_progressbar.setVisibility(GONE);
 
-            if (y > mHeaderHeight) {
-                header_hint_text.setText("上拉加载");
-                if (!rotated) {
-                    header_arrow.clearAnimation();
-                    header_arrow.startAnimation(mRotateUpAnim);
-                    rotated = true;
-                }
-            } else if (y < mHeaderHeight) {
-                header_hint_text.setText("上拉加载");
-                //header_arrow.clearAnimation();
-                // header_arrow.startAnimation(mRotateDownAnim);
-                rotated = false;
-            }
-        }
     }
 
     @Override
     public void onRelease() {
-
+        mFooterAd = (AnimationDrawable) loadingMore.getDrawable();
+        if (mFooterAd != null) {
+            mFooterAd.start();
+        }
     }
 
     @Override
     public void onComplete() {
-        rotated = false;
-        header_hint_text.setText("加载完成");
-        header_arrow.clearAnimation();
-        header_arrow.setVisibility(GONE);
+        stopFooterAd();
     }
 
     @Override
     public void onReset() {
-        rotated = false;
-        header_arrow.clearAnimation();
-        header_arrow.setVisibility(GONE);
+        stopFooterAd();
     }
+
+    private void stopFooterAd() {
+        if (mFooterAd != null) {
+            mFooterAd.stop();
+            mFooterAd = null;
+        }
+    }
+
 }

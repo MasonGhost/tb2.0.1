@@ -1,55 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="bottom"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:orientation="horizontal">
 
-    <RelativeLayout
-        android:id="@+id/header_content"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:gravity="center">
+    <ImageView
+        android:id="@+id/iv_loading_more"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:layout_marginRight="10dip"
+        android:src="@drawable/frame_loading_grey"/>
 
-        <TextView
-            android:id="@+id/header_hint_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginLeft="20dp"
-            android:text="下拉刷新"
-            android:textColor="@android:color/black" />
-
-        <ImageView
-            android:id="@+id/header_arrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/header_hint_text"
-            android:contentDescription="@null"
-            android:src="@mipmap/refresh_head_arrow"
-            android:visibility="visible" />
-
-        <ProgressBar
-            android:id="@+id/header_progressbar"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:indeterminate="false"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/header_hint_text"
-            android:indeterminateDrawable="@drawable/refresh_loading" />
-
-<!--        <ProgressBar
-            android:id="@+id/header_progressbar"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/header_hint_text"
-            android:indeterminateDrawable="@drawable/progress_rotate"
-            android:indeterminateDuration="1000"
-            android:indeterminateOnly="true"
-            android:visibility="visible" />-->
-
-    </RelativeLayout>
-
+    <TextView
+        android:id="@+id/tv_loading_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
+        android:text="加载中..."
+        android:textColor="#777"
+        android:textSize="12sp"/>
 </LinearLayout>
