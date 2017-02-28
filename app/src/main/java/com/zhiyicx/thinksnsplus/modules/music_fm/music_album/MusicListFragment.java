@@ -112,4 +112,8 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
         return R.color.white;
     }
 
+    @Override
+    public void onRefresh() {
+        mRefreshlayout.setRefreshing(false);
+    }
 }
