@@ -28,8 +28,8 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
     }
 
     @Override
-    public boolean isForViewType(DynamicBean item, int position) {
-        return item.getFeed().getStorage_task_ids()!=null&&item.getFeed().getStorage_task_ids().size() == IMAGE_COUNTS;
+    public int getImageCounts() {
+        return IMAGE_COUNTS;
     }
 
     @Override

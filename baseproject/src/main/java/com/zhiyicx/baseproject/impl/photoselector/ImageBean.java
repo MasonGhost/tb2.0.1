@@ -3,6 +3,8 @@ package com.zhiyicx.baseproject.impl.photoselector;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * @author LiuChao
  * @describe 图片信息的实体类
@@ -10,7 +12,7 @@ import android.os.Parcelable;
  * @contact email:450127106@qq.com
  */
 
-public class ImageBean implements Parcelable {
+public class ImageBean implements Parcelable ,Serializable {
 
     /**
      * storage_id : 2
@@ -67,9 +69,11 @@ public class ImageBean implements Parcelable {
         dest.writeDouble(this.height);
     }
 
+    public ImageBean(int storage_id) {
+        this.storage_id=storage_id;
+    }
     public ImageBean() {
     }
-
     protected ImageBean(Parcel in) {
         this.imgUrl = in.readString();
         this.storage_id = in.readInt();

@@ -7,32 +7,22 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 
 import com.yalantis.ucrop.UCrop;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.ToastUtils;
-import com.zhiyicx.common.utils.UIUtils;
-
-
-import org.json.JSONArray;
-import org.simple.eventbus.EventBus;
-import org.simple.eventbus.Subscriber;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import me.iwf.photopicker.PhotoPicker;
-import me.iwf.photopicker.PhotoPreview;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -230,8 +220,8 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
         int width = UCrop.getOutputImageWidth(data);
         String imgPath = resultUri.getPath();
         ImageBean imageBean = new ImageBean();
-        imageBean.setImgHeight(height);
-        imageBean.setImgWidth(width);
+        imageBean.setHeight(height);
+        imageBean.setWidth(width);
         imageBean.setImgUrl(imgPath);
         return imageBean;
     }

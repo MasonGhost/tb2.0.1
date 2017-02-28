@@ -1,16 +1,12 @@
 package com.zhiyicx.thinksnsplus.service.backgroundtask;
 
 import android.app.Application;
-import android.graphics.BitmapFactory;
-import android.webkit.MimeTypeMap;
 
 import com.google.gson.Gson;
 import com.zhiyicx.baseproject.cache.CacheBean;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.common.utils.DrawableProvider;
-import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.NetUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
@@ -31,7 +27,6 @@ import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.simple.eventbus.EventBus;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -379,8 +374,12 @@ public class BackgroundTaskHandler {
                     }).flatMap(new Func1<List<Integer>, Observable<BaseJson<Object>>>() {
                         @Override
                         public Observable<BaseJson<Object>> call(List<Integer> integers) {
+                            List<ImageBean> imageBeens=new ArrayList<ImageBean>();
                             // 动态相关图片：图片任务id的数组，将它作为发布动态的参数
-                            dynamicDetailBean.setStorage_task_ids(integers);
+                            for (int i = 0; i < integers.size(); i++) {
+                                imageBeens.add(new ImageBean(integers.get(i)));
+                            }
+                            dynamicDetailBean.setStorage_task_ids(imageBeens);
                             return mSendDynamicRepository.sendDynamic(dynamicDetailBean);// 进行动态发布的请求
                         }
                     });

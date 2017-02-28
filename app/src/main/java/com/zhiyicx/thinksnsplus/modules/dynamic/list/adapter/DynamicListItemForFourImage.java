@@ -17,19 +17,20 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 public class DynamicListItemForFourImage extends DynamicListBaseItem {
     private static final int IMAGE_COUNTS = 4;// 动态列表图片数量
 
+
     public DynamicListItemForFourImage(Context context) {
         super(context);
 
     }
 
     @Override
-    public int getItemViewLayoutId() {
-        return R.layout.item_dynamic_list_four_image;
+    public int getImageCounts() {
+        return IMAGE_COUNTS;
     }
 
     @Override
-    public boolean isForViewType(DynamicBean item, int position) {
-        return item.getFeed().getStorage_task_ids()!=null&&item.getFeed().getStorage_task_ids().size() == IMAGE_COUNTS;
+    public int getItemViewLayoutId() {
+        return R.layout.item_dynamic_list_four_image;
     }
 
     @Override
@@ -40,7 +41,6 @@ public class DynamicListItemForFourImage extends DynamicListBaseItem {
         initImageView((ImageView) holder.getView(R.id.siv_2), dynamicBean, 2);
         initImageView((ImageView) holder.getView(R.id.siv_3), dynamicBean, 3);
     }
-
 
 
 }
