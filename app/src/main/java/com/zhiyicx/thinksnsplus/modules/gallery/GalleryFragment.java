@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.widget.indicator_expand.ScaleCircleNavigator;
 import com.zhiyicx.thinksnsplus.R;
 
@@ -52,12 +53,12 @@ public class GalleryFragment extends TSFragment {
     protected void initView(View rootView) {
 
         mPagerAdapter = new GalleryPhotoAdapter(getChildFragmentManager(), Arrays.asList(
-                "http://pic11.nipic.com/20101214/213291_155243023914_2.jpg",
-                "http://pic1.5442.com/2015/0604/07/05.jpg",
-                "http://t-1.tuzhan.com/0f50dee8f485/c-2/l/2016/02/23/18/341ec1822a524c9eb30f5b615a1f8b3a.jpg",
-                "http://pic1.5442.com/2015/0916/06/08.jpg",
-                "http://pic1.win4000.com/wallpaper/a/565bdbdac0dc4.jpg",
-                "http://pic1.5442.com/2015/0715/05/09.jpg"
+                String.format(ApiConfig.NO_PROCESS_IMAGE_PATH, 20),
+                String.format(ApiConfig.NO_PROCESS_IMAGE_PATH, 12),
+                String.format(ApiConfig.NO_PROCESS_IMAGE_PATH, 8),
+                String.format(ApiConfig.NO_PROCESS_IMAGE_PATH, 13),
+                String.format(ApiConfig.NO_PROCESS_IMAGE_PATH, 1),
+                String.format(ApiConfig.NO_PROCESS_IMAGE_PATH, 5)
         ));
         mVpPhotos.setAdapter(mPagerAdapter);
         // 添加指示器

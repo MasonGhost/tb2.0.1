@@ -98,7 +98,7 @@ public class ImageDetailFragment extends TSFragment {
         } else {
             boolean canLoadImage = AndroidLifecycleUtils.canLoadImage(context);
             if (canLoadImage) {
-
+                loadSmallImage();
             }
         }
     }
@@ -130,6 +130,7 @@ public class ImageDetailFragment extends TSFragment {
                 }
                 break;
             case R.id.tv_origin_photo:
+                loadOriginImage(mImageUrl + "/100");
                 break;
         }
     }
@@ -140,16 +141,16 @@ public class ImageDetailFragment extends TSFragment {
 
     // 加载较小的缩略图
     private void loadSmallImage() {
-        loadImage(mImageUrl + "/10");
+        loadImage(mImageUrl + "/10", true);
     }
 
     // 加载较大缩略图
     private void loadBigImage() {
-        loadImage(mImageUrl + "/50");
+        loadImage(mImageUrl + "/50", false);
     }
 
     // 加载图片不带监听
-    private void loadImage(String imageUrl) {
+    private void loadImage(String imageUrl, final boolean isCycle) {
         Glide.with(context)
                 .load(imageUrl)
                 .thumbnail(0.1f)
@@ -173,12 +174,16 @@ public class ImageDetailFragment extends TSFragment {
                         super.onResourceReady(resource, glideAnimation);
                         mIvPager.setImageDrawable(resource);
                         mPbProgress.setVisibility(View.GONE);
+                        if (isCycle) {
+                            loadBigImage();
+                        }
                     }
+
                 });
     }
 
     // 加载原图:
-    private void loadOriginImage() {
+    private void loadOriginImage(String imageUrl) {
         Glide.with(context)
                 .using(new ProgressModelLoader(new Handler() {
                     @Override
@@ -193,7 +198,7 @@ public class ImageDetailFragment extends TSFragment {
                         }
                     }
                 }))
-                .load(mImageUrl)
+                .load(imageUrl)
                 .thumbnail(0.1f)
                 .override(800, 800)
                 .placeholder(me.iwf.photopicker.R.drawable.__picker_ic_photo_black_48dp)
