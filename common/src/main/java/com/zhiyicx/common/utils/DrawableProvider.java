@@ -1,6 +1,7 @@
 package com.zhiyicx.common.utils;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
@@ -10,7 +11,7 @@ import android.widget.TextView;
 import java.io.IOException;
 
 /**
- * @Describe  Drawable 辅助工具类
+ * @Describe Drawable 辅助工具类
  * @Author Jungle68
  * @Date 2016/12/15
  * @Contact 335891510@qq.com
@@ -192,5 +193,20 @@ public class DrawableProvider {
         return degree;
     }
 
+    /**
+     * 获取文件为图片时的图片宽高
+     * options.outWidth
+     * options.outHeight
+     */
+    public static BitmapFactory.Options getPicsWHByFile(String filePath) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        /**
+         * 最关键在此，把options.inJustDecodeBounds = true;
+         * 这里再decodeFile()，返回的bitmap为空，但此时调用options.outHeight时，已经包含了图片的高了
+         */
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filePath, options); // 此时返回的bitmap为null
+        return options;
+    }
 
 }
