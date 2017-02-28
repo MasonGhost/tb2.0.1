@@ -1,12 +1,16 @@
 package com.zhiyicx.thinksnsplus.service.backgroundtask;
 
 import android.app.Application;
+import android.graphics.BitmapFactory;
+import android.webkit.MimeTypeMap;
 
 import com.google.gson.Gson;
 import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.NetUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
@@ -295,7 +299,7 @@ public class BackgroundTaskHandler {
         if (backgroundRequestTaskBean.getParams().get("user_id") instanceof List) {
             integers.addAll((Collection<? extends Long>) backgroundRequestTaskBean.getParams().get("user_id"));
         } else {
-            integers.add(Long.valueOf(backgroundRequestTaskBean.getParams().get("user_id")+""));
+            integers.add(Long.valueOf(backgroundRequestTaskBean.getParams().get("user_id") + ""));
         }
 
         mUserInfoRepository.getUserInfo(integers)
@@ -341,8 +345,8 @@ public class BackgroundTaskHandler {
             // 先处理图片上传，图片上传成功后，在进行动态发布
             List<Observable<BaseJson<Integer>>> upLoadPics = new ArrayList<>();
             for (int i = 0; i < photos.size(); i++) {
-                File file = new File(photos.get(i));
-                upLoadPics.add(mUpLoadRepository.upLoadSingleFile(FileUtils.getFileMD5ToString(file), file.getName(), file + "i", photos.get(i)));
+                String filePath = photos.get(i);
+                upLoadPics.add(mUpLoadRepository.upLoadSingleFile("file" + i, filePath,true));
             }
             observable = // 组合多个图片上传任务
                     Observable.combineLatest(upLoadPics, new FuncN<List<Integer>>() {

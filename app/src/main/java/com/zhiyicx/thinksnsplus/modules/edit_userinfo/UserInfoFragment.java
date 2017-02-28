@@ -340,9 +340,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
         String filePath = photoList.get(0).getImgUrl();
-        File file = new File(filePath);
         // 开始上传
-        mPresenter.changeUserHeadIcon(FileUtils.getFileMD5ToString(file), file.getName(), filePath);
+        mPresenter.changeUserHeadIcon(filePath);
         // 加载本地图片
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()

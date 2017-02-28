@@ -87,12 +87,18 @@ public interface CommonClient {
 
     /**
      * 储存任务创建
+     * <p>
+     * hash            待上传文件hash值，hash方式md5
+     * origin_filename 原始文件名称
+     * mime_type       文件mimeType
+     * width           图片宽度
+     * height          图片高度
      *
-     * @param hash            待上传文件hash值，hash方式md5
-     * @param origin_filename 原始文件名称
+     * @param fieldMap 参数map
      */
+    @FormUrlEncoded
     @POST(APP_PATH_CREATE_STORAGE_TASK)
-    Observable<BaseJson<StorageTaskBean>> createStorageTask(@Path("hash") String hash, @Path("origin_filename") String origin_filename, @Query("requestState") String requestState);
+    Observable<BaseJson<StorageTaskBean>> createStorageTask(@FieldMap HashMap<String, String> fieldMap, @Query("requestState") String requestState);
 
     /**
      * 通过Post方法上传文件

@@ -74,11 +74,9 @@ public interface UserInfoContract {
         /**
          * 上传用户头像
          *
-         * @param hash
-         * @param fileName
          * @param filePath
          */
-        void changeUserHeadIcon(String hash, String fileName, String filePath);
+        void changeUserHeadIcon(String filePath);
 
         void changUserInfo(HashMap<String, String> userInfos);
 
