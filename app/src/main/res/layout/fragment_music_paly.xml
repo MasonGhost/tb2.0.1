@@ -77,39 +77,39 @@
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.5">
+            android:layout_weight="0.5"
+            android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/fragment_music_paly_cur_time"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="20dp"
                 android:layout_marginStart="20dp"
                 android:gravity="center"
-                android:textColor="#fff"
-                android:textSize="16sp"
                 android:text="00:00"
-                android:id="@+id/fragment_music_paly_cur_time"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"/>
+                android:textColor="#fff"
+                android:textSize="16sp"/>
 
             <SeekBar
                 android:id="@+id/fragment_music_paly_progress"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:max="100"/>
 
             <TextView
-                android:layout_marginRight="20dp"
-                android:layout_marginEnd="20dp"
-                android:gravity="center"
-                android:textColor="#fff"
-                android:textSize="16sp"
-                android:text="03:23"
                 android:id="@+id/fragment_music_paly_total_time"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="20dp"
+                android:gravity="center"
+                android:text="03:23"
+                android:textColor="#fff"
+                android:textSize="16sp"/>
         </LinearLayout>
 
 
@@ -138,7 +138,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@mipmap/music_ico_play"/>
+                android:src="@mipmap/music_ico_stop"/>
 
             <ImageView
                 android:id="@+id/fragment_music_paly_nextview"

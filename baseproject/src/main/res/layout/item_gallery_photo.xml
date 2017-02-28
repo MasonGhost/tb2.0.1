@@ -23,14 +23,18 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"/>
 
+    <!--查看全屏-->
     <TextView
-        android:id="@+id/tv_load_progress"
-        android:layout_width="50dp"
+        android:id="@+id/tv_origin_photo"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="50dp"
-        android:textColor="@color/white"
-        android:text="0%/100%"
-        />
-
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="@dimen/spacing_big_large"
+        android:background="@drawable/shape_bg_button_see_origin_photo"
+        android:paddingBottom="@dimen/spacing_tiny"
+        android:paddingLeft="@dimen/spacing_small"
+        android:paddingRight="@dimen/spacing_small"
+        android:paddingTop="@dimen/spacing_tiny"
+        android:text="@string/see_origin_photo"
+        android:textColor="@color/white"/>
 </FrameLayout>

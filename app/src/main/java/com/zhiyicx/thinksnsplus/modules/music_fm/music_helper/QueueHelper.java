@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.music_helper;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
@@ -27,6 +28,7 @@ import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelp
  */
 public class QueueHelper {
 
+    @Nullable
     public static List<MediaSessionCompat.QueueItem> getPlayingQueue(String mediaId,
                                                                      MusicProvider musicProvider) {
         String[] hierarchy = MediaIDHelper.getHierarchy(mediaId);

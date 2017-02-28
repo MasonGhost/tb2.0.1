@@ -2,11 +2,14 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.net.UpLoadFile;
+import com.zhiyicx.common.utils.DrawableProvider;
+import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
@@ -49,8 +52,26 @@ public class UpLoadRepository implements IUploadRepository {
     }
 
     @Override
-    public Observable<BaseJson<Integer>> upLoadSingleFile(String hash, String fileName, final String params, final String filePath) {
-        return mCommonClient.createStorageTask(hash, fileName, null)
+    public Observable<BaseJson<Integer>> upLoadSingleFile(final String params, final String filePath, boolean isPic) {
+        File file = new File(filePath);
+        // 封装上传文件的参数
+        HashMap<String, String> paramMap = new HashMap<>();
+        paramMap.put("hash", FileUtils.getFileMD5ToString(file));
+        paramMap.put("origin_filename", file.getName());
+        // 如果是图片就处理图片
+        if (isPic) {
+            BitmapFactory.Options options = DrawableProvider.getPicsWHByFile(filePath);
+            paramMap.put("mime_type", options.outMimeType);
+            paramMap.put("width", options.outWidth + "");// 如果是图片就选择宽高
+            paramMap.put("height", options.outHeight + "");// 如果是图片就选择宽高
+        } else {
+            paramMap.put("mime_type", FileUtils.getMimeType(filePath));
+        }
+       /* LogUtils.i("file_options-->" + "mime_type-->" + FileUtils.getMimeType(filePath)
+                + "width-->" + options.outWidth
+                + "height-->" + options.outHeight
+                + "mime-->" + options.outMimeType);*/
+        return mCommonClient.createStorageTask(paramMap, null)
                 // 处理创建存储任务到上传文件的过程
                 .flatMap(new Func1<BaseJson<StorageTaskBean>, Observable<String[]>>() {
                     @Override
@@ -70,6 +91,7 @@ public class UpLoadRepository implements IUploadRepository {
                                 // 处理headers
                                 Object headers = storageTaskBean.getHeaders();
                                 HashMap<String, String> headerMap = parseJSONObject(headers);
+                                // 封装图片File
                                 HashMap<String, String> fileMap = new HashMap<String, String>();
                                 fileMap.put(params, filePath);
                                 if (method.equalsIgnoreCase("put")) {

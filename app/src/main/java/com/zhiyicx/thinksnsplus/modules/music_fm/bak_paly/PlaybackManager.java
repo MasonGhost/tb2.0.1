@@ -10,6 +10,11 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProvider;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
 
+import org.simple.eventbus.EventBus;
+
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_CACHE_PROGRESS;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_COMPLETE;
+
 /**
  * @Author Jliuer
  * @Date 2017/2/21/14:34
@@ -141,10 +146,11 @@ public class PlaybackManager implements Playback.Callback {
     public void onCompletion() {
         switch (orderType) {
             case ORDERRANDOM:
-                mQueueManager.setRandomQueue();
+            case ORDERLOOP:
                 if (mQueueManager.skipQueuePosition(1)) {
                     handlePlayRequest();
                     mQueueManager.updateMetadata();
+                    EventBus.getDefault().post(EVENT_SEND_MUSIC_COMPLETE, EVENT_SEND_MUSIC_COMPLETE);
                 } else {
                     // If skipping was not possible, we stop and release the resources:
                     handleStopRequest(null);
@@ -159,14 +165,7 @@ public class PlaybackManager implements Playback.Callback {
                     handleStopRequest(null);
                 }
                 break;
-            case ORDERLOOP:
-                if (mQueueManager.skipQueuePosition(1)) {
-                    handlePlayRequest();
-                    mQueueManager.updateMetadata();
-                } else {
-                    // If skipping was not possible, we stop and release the resources:
-                    handleStopRequest(null);
-                }
+            default:
                 break;
         }
 
@@ -189,7 +188,7 @@ public class PlaybackManager implements Playback.Callback {
 
     @Override
     public void onBuffering(int percent) {
-        onBuffering(percent);
+        mServiceCallback.onBufferingUpdate(percent);
     }
 
     public void switchToPlayback(Playback playback, boolean resumePlaying) {
@@ -288,17 +287,7 @@ public class PlaybackManager implements Playback.Callback {
 
         @Override
         public void onCustomAction(@NonNull String action, Bundle extras) {
-            if (CUSTOM_ACTION_THUMBS_UP.equals(action)) {
-                MediaSessionCompat.QueueItem currentMusic = mQueueManager.getCurrentMusic();
-                if (currentMusic != null) {
-                    String mediaId = currentMusic.getDescription().getMediaId();
-                    if (mediaId != null) {
-                    }
-                }
-                updatePlaybackState(null);
-            } else {
-
-            }
+            setOrderType(Integer.valueOf(action));
         }
 
         @Override
@@ -313,6 +302,8 @@ public class PlaybackManager implements Playback.Callback {
                 updatePlaybackState("Could not find music");
             }
         }
+
+
     }
 
     public Playback getPlayback() {
@@ -331,6 +322,18 @@ public class PlaybackManager implements Playback.Callback {
         if (orderType > 2 && orderType < 0) {
             return;
         }
+        switch (orderType) {
+            case ORDERLOOP:
+                mQueueManager.setNormalQueue();
+                break;
+            case ORDERRANDOM:
+                mQueueManager.setRandomQueue();
+                break;
+            case ORDERSINGLE:
+                break;
+            default:
+                break;
+        }
         this.orderType = orderType;
     }
 
@@ -343,6 +346,6 @@ public class PlaybackManager implements Playback.Callback {
 
         void onPlaybackStateUpdated(PlaybackStateCompat newState);
 
-        void onBuffering(int percent);
+        void onBufferingUpdate(int percent);
     }
 }

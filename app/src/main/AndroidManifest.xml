@@ -13,14 +13,12 @@
     <uses-permission android:name="android.permission.CALL_PHONE"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-
     <uses-permission android:name="android.permission.GET_TASKS"/>
     <uses-permission android:name="android.permission.SET_DEBUG_APP"/>
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
     <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
-
     <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
@@ -118,12 +116,14 @@
         </receiver>
 
         <!-- #########################################      后台任务相关service       ################################ -->
-        <service android:name=".service.backgroundtask.BackgroundTaskHandleService"></service>
-        <!--&lt;!&ndash;glide配置&ndash;&gt;-->
+        <service android:name=".service.backgroundtask.BackgroundTaskHandleService"/>
+        <!-- &lt;!&ndash;glide配置&ndash;&gt; -->
         <meta-data
-        android:name="com.zhiyicx.thinksnsplus.config.GlideConfiguration"
-        android:value="GlideModule"/>
+            android:name="com.zhiyicx.thinksnsplus.config.GlideConfiguration"
+            android:value="GlideModule"/>
 
+        <activity android:name=".modules.dynamic.detail.DynamicDetailActivity">
+        </activity>
     </application>
 
 </manifest>

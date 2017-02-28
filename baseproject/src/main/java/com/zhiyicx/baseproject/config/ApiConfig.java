@@ -26,7 +26,9 @@ public class ApiConfig {
     public static final String URL_ABOUT_US = "http://blog.csdn.net/hellohhj/article/details/50467502";// 关于我们网站
 
     // 图片地址
-    public static final String IMAGE_PATH = APP_DOMAIN + "api/v1/storages/%s/%d";// 测试服务器
+    public static final String IMAGE_PATH = APP_DOMAIN + "api/v1/storages/%s/%d";// 带质量压缩
+    // 图片地址
+    public static final String NO_PROCESS_IMAGE_PATH = APP_DOMAIN + "api/v1/storages/%s";// 不带质量压缩
 
     // 每次从服务器获取数据，一页的最大数量
     public static final int MAX_NUMBER_PER_PAGE = 3;
@@ -86,7 +88,7 @@ public class ApiConfig {
      */
     public static final String APP_PATH_GET_VERTIFYCODE = "api/v1/auth/phone/send-code";// 获取验证码
     public static final String APP_PATH_REFRESH_TOKEN = "api/v1/auth";// 刷新 token
-    public static final String APP_PATH_CREATE_STORAGE_TASK = "api/v1/storages/task/{hash}/{origin_filename}";// 储存任务创建
+    public static final String APP_PATH_CREATE_STORAGE_TASK = "api/v1/storages/task";// 储存任务创建
     public static final String APP_PATH_NOTIFY_STORAGE_TASK = "api/v1/storages/task/{storage_task_id}";//  储存任务通知
     public static final String APP_PATH_DELETE_STORAGE_TASK = "api/v1/storages/task/{storage_task_id}";// 通知服务器，删除当前上传文件
     public static final String APP_PATH_HANDLE_BACKGROUND_TASK = "{path}";// 处理后台任务
