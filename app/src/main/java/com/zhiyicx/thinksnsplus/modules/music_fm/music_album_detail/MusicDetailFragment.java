@@ -25,7 +25,6 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBoundTransform;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideStokeTransform;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FastBlur;
@@ -33,10 +32,9 @@ import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MusicListBean;
-import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProviderSource;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
-import com.zhiyicx.thinksnsplus.widget.IconTextView;
 import com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -64,11 +62,11 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @BindView(R.id.fragment_music_detail_dec)
     TextView mFragmentMusicDetailDec;
     @BindView(R.id.fragment_music_detail_share)
-    IconTextView mFragmentMusicDetailShare;
+    TextView mFragmentMusicDetailShare;
     @BindView(R.id.fragment_music_detail_comment)
-    IconTextView mFragmentMusicDetailComment;
+    TextView mFragmentMusicDetailComment;
     @BindView(R.id.fragment_music_detail_favorite)
-    IconTextView mFragmentMusicDetailFavorite;
+    TextView mFragmentMusicDetailFavorite;
     @BindView(R.id.fragment_music_detail_head_info)
     RelativeLayout mFragmentMusicDetailHeadInfo;
     @BindView(R.id.rv_music_detail_list)
@@ -110,6 +108,10 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
     @Override
     protected void initView(View rootView) {
+        Bitmap bitmap = BitmapFactory
+                .decodeResource(getResources(), R.mipmap.npc);
+        final Palette palette = Palette.from(bitmap).generate();
+
         ViewGroup.LayoutParams titleParam;
         int titleHeight;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -124,9 +126,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         mAdapter = getCommonAdapter();
 
-        Bitmap bitmap = BitmapFactory
-                .decodeResource(getResources(), R.mipmap.npc);
-        final Palette palette = Palette.from(bitmap).generate();
+
         BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap(bitmap, bitmap.getWidth
                 (), bitmap.getHeight()));
         mFragmentMusicDetailHeadInfo.setBackgroundDrawable(drawable);
@@ -338,7 +338,8 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                             .playFromMediaId(item.getMediaId(), null);
                 } else if (item.isBrowsable()) {
                     mCompatProvider.getMediaBrowser().unsubscribe(item.getMediaId());
-                    mCompatProvider.getMediaBrowser().subscribe(item.getMediaId(), mSubscriptionCallback);
+                    mCompatProvider.getMediaBrowser().subscribe(item.getMediaId(),
+                            mSubscriptionCallback);
                 } else {
                     startActivity(new Intent(getActivity(), MusicPlayActivity.class));
                 }
