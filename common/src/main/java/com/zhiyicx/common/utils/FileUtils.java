@@ -4,6 +4,7 @@ import android.content.Context;
 import android.media.MediaMetadataRetriever;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.webkit.MimeTypeMap;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
@@ -20,6 +21,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @Describe 文件相关工具类
@@ -664,20 +666,31 @@ public class FileUtils {
      * @return
      */
     public static String getMimeType(String filePath) {
-        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-        String mime = "text/plain";
-        if (filePath != null) {
-            try {
-                mmr.setDataSource(filePath);
-                mime = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
-            } catch (IllegalStateException e) {
-                return mime;
-            } catch (IllegalArgumentException e) {
-                return mime;
-            } catch (RuntimeException e) {
-                return mime;
-            }
+        File file = new File(filePath);
+        String suffix = getSuffix(file);
+        if (suffix == null) {
+            return "file/*";
         }
-        return mime;
+        String type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(suffix);
+        if (type != null || !type.isEmpty()) {
+            return type;
+        }
+        return "file/*";
+    }
+
+    private static String getSuffix(File file) {
+        if (file == null || !file.exists() || file.isDirectory()) {
+            return null;
+        }
+        String fileName = file.getName();
+        if (fileName.equals("") || fileName.endsWith(".")) {
+            return null;
+        }
+        int index = fileName.lastIndexOf(".");
+        if (index != -1) {
+            return fileName.substring(index + 1).toLowerCase(Locale.US);
+        } else {
+            return null;
+        }
     }
 }
