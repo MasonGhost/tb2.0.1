@@ -33,6 +33,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -75,7 +76,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
      */
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        mRepository.getDynamicList(mRootView.getDynamicType(), maxId, mRootView.getPage())
+       Subscription dynamicLisSub= mRepository.getDynamicList(mRootView.getDynamicType(), maxId, mRootView.getPage())
                 .doAfterTerminate(new Action0() {
                     @Override
                     public void call() {
@@ -112,6 +113,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                         mRootView.onResponseError(throwable, isLoadMore);
                     }
                 });
+        addSubscrebe(dynamicLisSub);
     }
 
     @Override

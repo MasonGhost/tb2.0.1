@@ -82,13 +82,13 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
         FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
         return followFansBeanDao.queryDeep(" where " + FollowFansBeanDao
                         .Properties.FollowedUserId.columnName + " = ? and "
-                        + FollowFansBeanDao.Properties.FollowState.columnName + " != ? and"
-                        + " T.\"" + FollowFansBeanDao.Properties.Id.columnName +"\""+ " <= ?"
+                        + FollowFansBeanDao.Properties.FollowState.columnName + " != ? "
+//                        + " T.\"" + FollowFansBeanDao.Properties.Id.columnName +"\""+ " <= ?"
                         + " order by " + "T.\"" + FollowFansBeanDao.Properties.Id.columnName + "\"" + " ASC"
                         + " limit ?"
                 , userId + ""
                 , FollowFansBean.UNFOLLOWED_STATE + ""
-                , maxId + ""
+//                , maxId + ""
                 , ApiConfig.MAX_NUMBER_PER_PAGE + "");
     }
 
@@ -99,13 +99,13 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
         FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
         return followFansBeanDao.queryDeep(" where " + FollowFansBeanDao
                         .Properties.UserId.columnName + " = ? and "
-                        + FollowFansBeanDao.Properties.FollowState.columnName + " != ? and"
-                        + " T.\"" + FollowFansBeanDao.Properties.Id.columnName +"\""+ " <= ?"
+                        + FollowFansBeanDao.Properties.FollowState.columnName + " != ? "
+//                        + " T.\"" + FollowFansBeanDao.Properties.Id.columnName +"\""+ " <= ?"
                         + " order by " + "T.\"" + FollowFansBeanDao.Properties.Id.columnName + "\"" + " ASC"
                         + " limit ?"
                 , userId + ""
                 , FollowFansBean.UNFOLLOWED_STATE + ""
-                , maxId + ""
+//                , maxId + ""
                 , ApiConfig.MAX_NUMBER_PER_PAGE + ""
         );
     }
@@ -117,13 +117,13 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
         FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
         return followFansBeanDao.queryDeep(" where " + FollowFansBeanDao
                         .Properties.UserId.columnName + " = ? and "
-                        + FollowFansBeanDao.Properties.FollowState.columnName + " = ? and"
-                        + " T.\"" + FollowFansBeanDao.Properties.Id.columnName +"\""+ " <= ?"
+                        + FollowFansBeanDao.Properties.FollowState.columnName + " = ? "
+//                        + " T.\"" + FollowFansBeanDao.Properties.Id.columnName +"\""+ " <= ?"
                         + " order by " + FollowFansBeanDao.Properties.Id.columnName + " ASC"
                         + " limit ?"
                 , userId + ""
                 , FollowFansBean.FOLLOWED_EACHOTHER_STATE + ""
-                , maxId + ""
+//                , maxId + ""
                 , ApiConfig.MAX_NUMBER_PER_PAGE + "");
 
     }

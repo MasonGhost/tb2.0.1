@@ -131,7 +131,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mRvList.setAdapter(mEmptyWrapper);
     }
 
-    private int setEmptView() {
+    protected int setEmptView() {
         return R.mipmap.img_default_nothing;
     }
 
@@ -387,6 +387,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 // 内存处理数据
                 mAdapter.addAllData(data);
                 mMaxId = data.get(data.size() - 1).getMaxId();
+            }else{
+                mEmptyView.setErrorImag(setEmptView());
             }
             refreshData();
         } else { // 加载更多

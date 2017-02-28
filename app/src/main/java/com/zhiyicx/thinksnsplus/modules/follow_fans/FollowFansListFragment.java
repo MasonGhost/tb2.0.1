@@ -1,46 +1,21 @@
 package com.zhiyicx.thinksnsplus.modules.follow_fans;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
-import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.common.utils.ColorPhrase;
-import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
-import com.zhy.adapter.recyclerview.base.ViewHolder;
-
-import org.jetbrains.annotations.NotNull;
-import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
-
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
-
-import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @author LiuChao
@@ -78,6 +53,7 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
         super.initView(rootView);
     }
 
+
     @Override
     protected boolean showToolbar() {
         return false;
@@ -86,6 +62,11 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
     @Override
     protected boolean showToolBarDivider() {
         return false;
+    }
+
+    @Override
+    protected int setEmptView() {
+        return R.mipmap.img_default_nobody;
     }
 
     @Override

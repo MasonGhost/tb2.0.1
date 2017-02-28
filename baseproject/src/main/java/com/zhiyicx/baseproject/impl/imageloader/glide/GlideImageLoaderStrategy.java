@@ -12,7 +12,7 @@ import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.utils.imageloader.loadstrategy.ImageLoaderStrategy;
 
 /**
- * @Describe Glide统一加载配置
+ * @Describe Glide统一加载配置,默认图片统一用灰色正方形块儿，
  * @Author Jungle68
  * @Date 2016/12/15
  * @Contact 335891510@qq.com
