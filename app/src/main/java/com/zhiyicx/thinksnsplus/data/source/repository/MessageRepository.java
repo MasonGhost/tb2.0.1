@@ -53,8 +53,8 @@ public class MessageRepository implements MessageContract.Repository {
                 .flatMap(new Func1<BaseJson<List<Conversation>>, Observable<BaseJson<List<MessageItemBean>>>>() {
                     @Override
                     public Observable<BaseJson<List<MessageItemBean>>> call(final BaseJson<List<Conversation>> listBaseJson) {
-                        if (listBaseJson.isStatus()) {
-                            final BaseJson<List<MessageItemBean>> baseJson = new BaseJson();
+                        final BaseJson<List<MessageItemBean>> baseJson = new BaseJson();
+                        if (listBaseJson.isStatus()&& !listBaseJson.getData().isEmpty()) {
                             List<MessageItemBean> datas = new ArrayList<>();
                             baseJson.setData(datas);
                             List<Long> integers = new ArrayList<>();
@@ -65,7 +65,7 @@ public class MessageRepository implements MessageContract.Repository {
                                     tmp.setLast_message_text(message.getTxt());
                                     tmp.setLast_message_time(message.getCreate_time());
                                 }
-
+                                tmp.setIm_uid(AppApplication.getmCurrentLoginAuth().getUser_id());
                                 // 存储对话信息
                                 ConversationDao.getInstance(mContext).insertOrUpdateConversation(tmp);
                                 String[] uidsTmp = tmp.getUsids().split(",");
@@ -94,7 +94,10 @@ public class MessageRepository implements MessageContract.Repository {
                                     });
 
                         } else {
-                            return Observable.empty();
+                            baseJson.setCode(listBaseJson.getCode());
+                            baseJson.setStatus(listBaseJson.isStatus());
+                            baseJson.setMessage(listBaseJson.getMessage());
+                            return Observable.just(baseJson);
                         }
                     }
                 })

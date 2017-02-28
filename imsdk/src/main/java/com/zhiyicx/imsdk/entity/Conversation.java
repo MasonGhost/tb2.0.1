@@ -26,6 +26,7 @@ public class Conversation implements Serializable {
      * `last_message_time` int(11) NOT NULL DEFAULT '0' COMMENT '最新消息时间',
      * `is_del` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否被删除 1:是 0:否',
      * `im_uid` int(11) NOT NULL COMMENT '当前登录的用户IM_uid'
+     * `user_id` int(11) NOT NULL COMMENT '对话创建用户的uid'
      * `mc` int(11) 当前群聊中的人数
      * )
      */
@@ -40,8 +41,17 @@ public class Conversation implements Serializable {
     @SerializedName("uids")
     private String usids;//聊天对方的usids
     private boolean is_del;
-    @SerializedName("user_id")
     private int im_uid;
+    private int user_id;
+
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
+    }
+
     private int mc;
 
     public int getMc() {
@@ -154,6 +164,7 @@ public class Conversation implements Serializable {
                 ", usids='" + usids + '\'' +
                 ", is_del=" + is_del +
                 ", im_uid=" + im_uid +
+                ", user_id=" + user_id +
                 ", mc=" + mc +
                 '}';
     }

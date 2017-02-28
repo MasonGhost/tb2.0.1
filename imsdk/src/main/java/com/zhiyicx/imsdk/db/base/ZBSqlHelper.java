@@ -80,6 +80,7 @@ public class ZBSqlHelper extends SQLiteOpenHelper {
                     ConversationDao.COLUMN_NAME_CONVERSATION_LAST_MESSAGE_TIME + INTEGER_TYPE + COMMA_SEP +
                     ConversationDao.COLUMN_NAME_CONVERSATION_IS_DEL + INTEGER_TYPE + COMMA_SEP +
                     ConversationDao.COLUMN_NAME_CONVERSATION_IM_UID + INTEGER_TYPE  +COMMA_SEP +
+                    ConversationDao.COLUMN_NAME_CONVERSATION_USER_ID + INTEGER_TYPE  +COMMA_SEP +
                     ConversationDao.COLUMN_NAME_CONVERSATION_MC + INTEGER_TYPE  +
                     " )";
 

@@ -37,7 +37,8 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
 
 
     public static final String COLUMN_NAME_CONVERSATION_IS_DEL = "is_del";//'是否被删除 1:是 0:否',
-    public static final String COLUMN_NAME_CONVERSATION_IM_UID = "im_uid";//'消息阅读状态 1:是 0:否',
+    public static final String COLUMN_NAME_CONVERSATION_IM_UID = "im_uid";//'当前用户的 id',
+    public static final String COLUMN_NAME_CONVERSATION_USER_ID = "user_id";//'对话创建者的 id',
     public static final String COLUMN_NAME_CONVERSATION_MC = "mc";//'当前群聊中的人数,
 
     private volatile static ConversationDao instance;
@@ -89,6 +90,7 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
             map.put(COLUMN_NAME_CONVERSATION_USIDS, conversation.getUsids());
             map.put(COLUMN_NAME_CONVERSATION_IS_DEL, isDel(conversation.is_del()));
             map.put(COLUMN_NAME_CONVERSATION_IM_UID, conversation.getIm_uid());
+            map.put(COLUMN_NAME_CONVERSATION_USER_ID, conversation.getUser_id());
             map.put(COLUMN_NAME_CONVERSATION_MC, conversation.getMc());
             resut = database.insert(
                     TABLE_NAME, null, map);
@@ -140,6 +142,8 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
                         .getColumnIndex(COLUMN_NAME_CONVERSATION_USIDS)));
                 conversation.setIm_uid(cursor.getInt(cursor
                         .getColumnIndex(COLUMN_NAME_CONVERSATION_IM_UID)));
+                conversation.setUser_id(cursor.getInt(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_USER_ID)));
                 conversation.setIs_del(isDel(cursor.getInt(cursor
                         .getColumnIndex(COLUMN_NAME_CONVERSATION_IS_DEL))));
                 conversation.setDisa(cursor.getInt(cursor
@@ -197,6 +201,8 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
 
                 conversation.setIm_uid(cursor.getInt(cursor
                         .getColumnIndex(COLUMN_NAME_CONVERSATION_IM_UID)));
+                conversation.setUser_id(cursor.getInt(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_USER_ID)));
                 conversation.setIs_del(isDel(cursor.getInt(cursor
                         .getColumnIndex(COLUMN_NAME_CONVERSATION_IS_DEL))));
                 conversation.setDisa(cursor.getInt(cursor
@@ -222,7 +228,6 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
     }
 
     /**
-     *
      * @param im_uid 聊天 id
      * @return
      */
@@ -257,6 +262,8 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
                         .getColumnIndex(COLUMN_NAME_CONVERSATION_USIDS)));
                 conversation.setIm_uid(cursor.getInt(cursor
                         .getColumnIndex(COLUMN_NAME_CONVERSATION_IM_UID)));
+                conversation.setUser_id(cursor.getInt(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_USER_ID)));
                 conversation.setIs_del(isDel(cursor.getInt(cursor
                         .getColumnIndex(COLUMN_NAME_CONVERSATION_IS_DEL))));
                 conversation.setDisa(cursor.getInt(cursor
@@ -273,7 +280,6 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
     }
 
     /**
-     *
      * @param im_uid 聊天 id
      * @return
      */
@@ -284,7 +290,7 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
         Cursor cursor = database.query(
                 TABLE_NAME,
                 null,
-                COLUMN_NAME_CONVERSATION_IM_UID + " = ? and "+COLUMN_NAME_CONVERSATION_TYPE+" != "+ ChatType.CHAT_TYPE_CHATROOM, new String[]{String.valueOf(im_uid)}, null, null,
+                COLUMN_NAME_CONVERSATION_IM_UID + " = ? and " + COLUMN_NAME_CONVERSATION_TYPE + " != " + ChatType.CHAT_TYPE_CHATROOM, new String[]{String.valueOf(im_uid)}, null, null,
                 null);
         List<Conversation> conversations = new ArrayList<>();
         if (cursor != null && cursor.moveToFirst()) {
@@ -308,6 +314,8 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
                         .getColumnIndex(COLUMN_NAME_CONVERSATION_USIDS)));
                 conversation.setIm_uid(cursor.getInt(cursor
                         .getColumnIndex(COLUMN_NAME_CONVERSATION_IM_UID)));
+                conversation.setUser_id(cursor.getInt(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_USER_ID)));
                 conversation.setIs_del(isDel(cursor.getInt(cursor
                         .getColumnIndex(COLUMN_NAME_CONVERSATION_IS_DEL))));
                 conversation.setDisa(cursor.getInt(cursor
@@ -322,6 +330,7 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
         database.endTransaction();
         return conversations;
     }
+
     /**
      * 删除对话信息
      *
@@ -402,6 +411,7 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
                 cv.put(COLUMN_NAME_CONVERSATION_USIDS, conversation.getUsids());
 
             cv.put(COLUMN_NAME_CONVERSATION_IM_UID, conversation.getIm_uid());
+            cv.put(COLUMN_NAME_CONVERSATION_USER_ID, conversation.getUser_id());
             cv.put(COLUMN_NAME_CONVERSATION_MC, conversation.getMc());
             cv.put(COLUMN_NAME_CONVERSATION_IS_DEL, isDel(conversation.is_del()));
 

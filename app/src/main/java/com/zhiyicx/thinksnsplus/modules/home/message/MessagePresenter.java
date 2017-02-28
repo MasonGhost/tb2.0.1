@@ -138,6 +138,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                 .subscribe(new BaseSubscribe<Conversation>() {
                     @Override
                     protected void onSuccess(Conversation data) {
+                        data.setIm_uid(mAuthRepository.getAuthBean().getUser_id());
                         data.setUsids(uids);
                         data.setPair(pair);
                         mChatRepository.insertOrUpdateConversation(data);
