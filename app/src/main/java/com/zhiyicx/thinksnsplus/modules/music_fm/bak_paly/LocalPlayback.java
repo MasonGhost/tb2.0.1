@@ -12,11 +12,10 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
 
-
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProvider;
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProviderSource;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayService;
 
 import java.io.IOException;
@@ -84,6 +83,8 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
     private final AudioManager mAudioManager;
 
     private MediaPlayer mMediaPlayer;
+
+    private boolean isCached;
 
     private final IntentFilter mAudioNoisyIntentFilter =
             new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
@@ -197,7 +198,17 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
                 mState = PlaybackStateCompat.STATE_BUFFERING;
 
                 mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                String proxyUrl = AppApplication.getProxy().getProxyUrl(source);
+                String proxyUrl = null;
+                try {
+                    proxyUrl = AppApplication.getProxy().getProxyUrl(source);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    proxyUrl = source;
+                }
+                isCached = AppApplication.getProxy().isCached(source);
+                if (isCached) {
+                    mCallback.onBuffering(100);
+                }
                 mMediaPlayer.setDataSource(proxyUrl);
 
                 mMediaPlayer.prepareAsync();
@@ -362,7 +373,6 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
 
     @Override
     public void onPrepared(MediaPlayer player) {
-
         configMediaPlayerState();
     }
 
@@ -376,7 +386,10 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
 
     @Override
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
-        mCallback.onBuffering(percent);
+        if (!isCached) {
+            mCallback.onBuffering(percent);
+        }
+
     }
 
     private void createMediaPlayerIfNeeded() {
@@ -385,7 +398,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
 
             mMediaPlayer.setWakeMode(mContext.getApplicationContext(),
                     PowerManager.PARTIAL_WAKE_LOCK);
-
+            mMediaPlayer.setOnBufferingUpdateListener(this);
             mMediaPlayer.setOnPreparedListener(this);
             mMediaPlayer.setOnCompletionListener(this);
             mMediaPlayer.setOnErrorListener(this);

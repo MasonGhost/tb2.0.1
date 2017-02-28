@@ -14,6 +14,7 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.LocalPlayback;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager;
@@ -22,10 +23,14 @@ import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProvider;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaNotificationManager;
 
+import org.simple.eventbus.EventBus;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_CACHE_PROGRESS;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_START;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper
         .MEDIA_ID_EMPTY_ROOT;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper.MEDIA_ID_ROOT;
@@ -173,11 +178,11 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
 
     @Override
     public void onPlaybackStart() {
-
         mSession.setActive(true);
+        EventBus.getDefault().post(EVENT_SEND_MUSIC_START,
+                EVENT_SEND_MUSIC_START);
         mDelayedStopHandler.removeCallbacksAndMessages(null);
         startService(new Intent(getApplicationContext(), MusicPlayService.class));
-
     }
 
     @Override
@@ -199,8 +204,9 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
     }
 
     @Override
-    public void onBuffering(int percent) {
-
+    public void onBufferingUpdate(int percent) {
+        EventBus.getDefault().post(percent, EVENT_SEND_MUSIC_CACHE_PROGRESS);
+        Log.e("onBufferingUpdate:", "" + percent);
     }
 
     private static class DelayedStopHandler extends Handler {

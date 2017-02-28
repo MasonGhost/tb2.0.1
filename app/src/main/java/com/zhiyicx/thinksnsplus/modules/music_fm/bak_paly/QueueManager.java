@@ -31,6 +31,7 @@ public class QueueManager {
     private Resources mResources;
 
     private List<MediaSessionCompat.QueueItem> mPlayingQueue;
+
     private int mCurrentIndex;
 
     public QueueManager(@NonNull MusicProvider musicProvider,
@@ -105,6 +106,12 @@ public class QueueManager {
         updateMetadata();
     }
 
+    public void setNormalQueue() {
+        setCurrentQueue("normal_queue_title",
+                mPlayingQueue);
+        updateMetadata();
+    }
+
     public void setQueueFromMusic(String mediaId) {
         boolean canReuseQueue = false;
         if (isSameBrowsingCategory(mediaId)) {
@@ -171,8 +178,11 @@ public class QueueManager {
 
     public interface MetadataUpdateListener {
         void onMetadataChanged(MediaMetadataCompat metadata);
+
         void onMetadataRetrieveError();
+
         void onCurrentQueueIndexUpdated(int queueIndex);
+
         void onQueueUpdated(String title, List<MediaSessionCompat.QueueItem> newQueue);
     }
 }
