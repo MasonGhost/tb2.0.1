@@ -112,7 +112,17 @@ public class BackgroundTaskHandler {
         AppApplication.AppComponentHolder.getAppComponent().inject(this);
         getCacheData();
         new Thread(handleTaskRunnable).start();
+//        EventBus.getDefault().register(this);
     }
+//
+//    /**
+//     * 网络变化监听，暂时不需要 ，配合 Evnetbus 使用
+//     */
+//    @Subscriber(tag = NetChangeReceiver.EVENT_NETWORK_CONNECTED)
+//    public void onNetConnected() {
+//
+//    }
+
 
     /**
      * 获取缓存中没有被执行的数据
@@ -143,6 +153,8 @@ public class BackgroundTaskHandler {
             if (mBackgroundRequestTaskBeanCaches.size() > 0) {
                 mBackgroundRequestTaskBeanGreenDao.saveMultiData(mBackgroundRequestTaskBeanCaches);
             }
+            // 取消 event 监听
+//            EventBus.getDefault().unregister(BackgroundTaskHandler.this);
         }
     };
 
@@ -295,7 +307,7 @@ public class BackgroundTaskHandler {
         if (backgroundRequestTaskBean.getParams().get("user_id") instanceof List) {
             integers.addAll((Collection<? extends Long>) backgroundRequestTaskBean.getParams().get("user_id"));
         } else {
-            integers.add(Long.valueOf(backgroundRequestTaskBean.getParams().get("user_id")+""));
+            integers.add(Long.valueOf(backgroundRequestTaskBean.getParams().get("user_id") + ""));
         }
 
         mUserInfoRepository.getUserInfo(integers)
@@ -329,7 +341,7 @@ public class BackgroundTaskHandler {
         final Long feedMark = (Long) params.get("params");
         final DynamicBean dynamicBean = mDynamicBeanGreenDao.getDynamicByFeedMark(feedMark);
         // 发送动态到动态列表：状态为发送中
-        dynamicBean.setState(DynamicBean.SEND_ING);
+        dynamicBean.setState(DynamicBean.SEND_SUCCESS);
         EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
         // 存入数据库
         // ....
@@ -406,8 +418,6 @@ public class BackgroundTaskHandler {
                         // 发送动态到动态列表：状态为发送失败
                         dynamicBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
-                        EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
-
                     }
                 });
 

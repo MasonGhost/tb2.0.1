@@ -58,5 +58,11 @@ public interface DynamicContract {
          * @param postion current item position
          */
         void handleLike(boolean isLiked,Long feed_id,int postion);
+
+        /**
+         * resend dynamic
+         * @param position
+         */
+        void reSendDynamic(int position);
     }
 }

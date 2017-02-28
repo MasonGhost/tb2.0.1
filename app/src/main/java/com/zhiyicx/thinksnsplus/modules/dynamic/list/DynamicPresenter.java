@@ -186,10 +186,17 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
     public void handleSendDynamic(DynamicBean dynamicBean) {
         if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW)) {
             int position = hasContanied(dynamicBean);
-            if (position != -1) {
+            System.out.println("position = " + position);
+            System.out.println("dynamicBean = " + dynamicBean.getState());
+            if (position != -1) {// 如果列表有当前数据
                 mRootView.refresh(position);
             } else {
-                mRootView.getDatas().add(dynamicBean); // TODO: 2017/2/27 加到头部
+                List<DynamicBean> temps = new ArrayList<>();
+                temps.add(dynamicBean);
+                temps.addAll(mRootView.getDatas());
+                mRootView.getDatas().clear();
+                mRootView.getDatas().addAll(temps);
+                temps.clear();
                 mRootView.refresh();
             }
 
@@ -199,7 +206,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
     private int hasContanied(DynamicBean dynamicBean) {
         int size = mRootView.getDatas().size();
         for (int i = 0; i < size; i++) {
-            if (mRootView.getDatas().get(i).getFeed_mark() == dynamicBean.getFeed_mark()) {
+            if (mRootView.getDatas().get(i).getFeed_mark().equals(dynamicBean.getFeed_mark())) {
                 mRootView.getDatas().get(i).setState(dynamicBean.getState());
                 return i;
             }
@@ -252,4 +259,21 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                 });
 
     }
+
+    @Override
+    public void reSendDynamic(int position) {
+        // 将动态信息存入数据库
+        mDynamicBeanGreenDao.insertOrReplace(mRootView.getDatas().get(position));
+        mDynamicDetailBeanGreenDao.insertOrReplace(mRootView.getDatas().get(position).getFeed());
+        // 发送动态
+        BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
+        backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.SEND_DYNAMIC);
+        HashMap<String, Object> params = new HashMap<>();
+        // feed_mark作为参数
+        params.put("params", mRootView.getDatas().get(position).getFeed_mark());
+        backgroundRequestTaskBean.setParams(params);
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+    }
+
+
 }

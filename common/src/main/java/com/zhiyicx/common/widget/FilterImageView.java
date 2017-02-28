@@ -54,7 +54,6 @@ public class FilterImageView extends ImageView {
                 default:
                     break;
             }
-            System.out.println("event = " + event.getAction());
             return false;
         }
     };

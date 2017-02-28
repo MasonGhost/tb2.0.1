@@ -112,8 +112,8 @@
             android:name="com.zhiyicx.imsdk.receiver.NetChangeReceiver"
             android:label="NetworkConnection">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
-                <action android:name="android.intent.action.USER_PRESENT"/>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/> // 网络切换
+                <action android:name="android.intent.action.USER_PRESENT"/> // 例如锁屏被唤醒
             </intent-filter>
         </receiver>
 

@@ -33,7 +33,7 @@ import javax.inject.Inject;
  * @Date 2017/1/17
  * @Contact master.jungle68@gmail.com
  */
-public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicContract.View, DynamicListBaseItem.OnLikeClickListener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener {
+public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicContract.View, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnLikeClickListener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener {
     private static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
     public static final long ITEM_SPACING = 5L; // 单位dp
     @Inject
@@ -97,6 +97,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         dynamicListBaseItem.setOnImageClickListener(this);
         dynamicListBaseItem.setOnUserInfoClickListener(this);
         dynamicListBaseItem.setOnLikeClickListener(this);
+        dynamicListBaseItem.setOnReSendClickListener(this);
         adapter.addItemViewDelegate(dynamicListBaseItem);
     }
 
@@ -173,5 +174,17 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         refresh();
         mPresenter.handleLike(mDynamicBeens.get(position).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED,
                 mDynamicBeens.get(position).getFeed_id(), position);
+    }
+
+    /**
+     * resend click
+     *
+     * @param position
+     */
+    @Override
+    public void onReSendClick(int position) {
+        mDynamicBeens.get(position).setState(DynamicBean.SEND_ING);
+        refresh();
+        mPresenter.reSendDynamic(position);
     }
 }

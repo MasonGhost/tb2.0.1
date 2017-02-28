@@ -58,6 +58,11 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
     protected OnLikeClickListener mOnLikeClickListener; // 工具栏被点击
 
 
+    public void setOnReSendClickListener(OnReSendClickListener onReSendClickListener) {
+        mOnReSendClickListener = onReSendClickListener;
+    }
+
+    protected OnReSendClickListener mOnReSendClickListener;
     private int mTitleMaxShowNum;
     private int mContentMaxShowNum;
 
@@ -125,6 +130,16 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
         } else {
             holder.setVisible(R.id.fl_tip, View.GONE);
         }
+        RxView.clicks(holder.getView(R.id.fl_tip))
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        if (mOnReSendClickListener != null) {
+                            mOnReSendClickListener.onReSendClick(position);
+                        }
+                    }
+                });
 
     }
 
@@ -173,18 +188,34 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                 .build());
     }
 
+    /**
+     * image interface
+     */
     public interface OnImageClickListener {
 
         void onImageClick(DynamicBean dynamicBean, int position);
     }
 
+    /**
+     * user info interface
+     */
     public interface OnUserInfoClickListener {
 
         void onUserInfoClick(DynamicBean dynamicBean);
     }
 
+    /**
+     * like interface
+     */
     public interface OnLikeClickListener {
         void onLikeButtonClick(int position);
+    }
+
+    /**
+     * resend interface
+     */
+    public interface OnReSendClickListener {
+        void onReSendClick(int position);
     }
 
 }
