@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.thinksnsplus.R;
 
 /**
  * @author LiuChao
@@ -15,7 +16,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 public class DynamicDetailFragment extends TSFragment<DynamicDetailContract.Presenter> implements DynamicDetailContract.View {
     @Override
     protected int getBodyLayoutId() {
-        return 0;
+        return R.layout.fragment_dynamic_detail;
     }
 
     @Override
