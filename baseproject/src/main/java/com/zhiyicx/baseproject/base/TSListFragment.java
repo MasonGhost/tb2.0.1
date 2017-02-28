@@ -401,6 +401,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 mAdapter.addAllData(data);
                 refreshData();
                 mMaxId = data.get(data.size() - 1).getMaxId();
+                System.out.println("mMaxId = " + mMaxId);
             } else {
 //                showMessage(getString(R.string.no_data)); 如需提示，打开即可
             }

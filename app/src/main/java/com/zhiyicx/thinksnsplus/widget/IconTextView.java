@@ -80,6 +80,11 @@ public class IconTextView extends TextView {
     }
 
     @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         if (mBitmap != null) {
             int width = mBitmap.getWidth();
@@ -125,6 +130,7 @@ public class IconTextView extends TextView {
                         target.top);
             }
             canvas.drawBitmap(mBitmap, src, target, getPaint());
+//            canvas.drawBitmap(mBitmap,0,0,null);
             canvas.restore();
         }
         super.onDraw(canvas);
