@@ -1,7 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+    <!--点赞头像层叠，最多五张-->
+    <RelativeLayout
+        android:id="@+id/fl_dig_head_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/iv_dig_head5"
+            android:layout_width="@dimen/headpic_for_assist"
+            android:layout_height="@dimen/headpic_for_assist"
+            android:layout_alignParentRight="true"
+            tools:src="@drawable/shape_default_image_circle"
+            />
+
+        <ImageView
+            android:id="@+id/iv_dig_head4"
+            android:layout_width="@dimen/headpic_for_assist"
+            android:layout_height="@dimen/headpic_for_assist"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            tools:src="@drawable/shape_default_image_circle"
+            />
+
+        <ImageView
+            android:id="@+id/iv_dig_head3"
+            android:layout_width="@dimen/headpic_for_assist"
+            android:layout_height="@dimen/headpic_for_assist"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="40dp"
+            tools:src="@drawable/shape_default_image_circle"
+            />
+
+        <ImageView
+            android:id="@+id/iv_dig_head2"
+            android:layout_width="@dimen/headpic_for_assist"
+            android:layout_height="@dimen/headpic_for_assist"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="60dp"
+            tools:src="@drawable/shape_default_image_circle"
+            />
+
+        <ImageView
+            android:id="@+id/iv_dig_head1"
+            android:layout_width="@dimen/headpic_for_assist"
+            android:layout_height="@dimen/headpic_for_assist"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="80dp"
+            tools:src="@drawable/shape_default_image_circle"
+            />
+    </RelativeLayout>
+</RelativeLayout>
