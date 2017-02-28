@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.utils.ConvertUtils;
 
 import org.greenrobot.greendao.annotation.Convert;
@@ -34,9 +35,9 @@ public class DynamicDetailBean implements Parcelable {
     private String feed_content;// 动态内容
     private long created_at;// 创建时间
     private int feed_from;// 来自哪个平台 //[1:pc 2:h5 3:ios 4:android 5:其他]
-    @Convert(converter = IntegerParamsConverter.class, columnType = String.class)
+    @Convert(converter = ImageParamsConverter.class, columnType = String.class)
     @SerializedName(value = "storage_task_ids", alternate = {"storages"})
-    private List<Integer> storage_task_ids;// 图片的云端存储id
+    private List<ImageBean> storage_task_ids;// 图片的云端存储id
     @Convert(converter = StringParamsConverter.class, columnType = String.class)
     private List<String> localPhotos;// 本地图片的路径
 
@@ -57,7 +58,7 @@ public class DynamicDetailBean implements Parcelable {
     }
 
     public String getTitle() {
-        return feed_title==null?"":feed_title;
+        return feed_title == null ? "" : feed_title;
     }
 
     public void setTitle(String title) {
@@ -99,10 +100,10 @@ public class DynamicDetailBean implements Parcelable {
     /**
      * list<Integer> 转 String 形式存入数据库
      */
-    public static class IntegerParamsConverter implements PropertyConverter<List<Integer>, String> {
+    public static class ImageParamsConverter implements PropertyConverter<List<ImageBean>, String> {
 
         @Override
-        public List<Integer> convertToEntityProperty(String databaseValue) {
+        public List<ImageBean> convertToEntityProperty(String databaseValue) {
             if (databaseValue == null) {
                 return null;
             }
@@ -110,7 +111,7 @@ public class DynamicDetailBean implements Parcelable {
         }
 
         @Override
-        public String convertToDatabaseValue(List<Integer> entityProperty) {
+        public String convertToDatabaseValue(List<ImageBean> entityProperty) {
             if (entityProperty == null) {
                 return null;
             }
@@ -141,11 +142,11 @@ public class DynamicDetailBean implements Parcelable {
     }
 
 
-    public List<Integer> getStorage_task_ids() {
+    public List<ImageBean> getStorage_task_ids() {
         return this.storage_task_ids;
     }
 
-    public void setStorage_task_ids(List<Integer> storage_task_ids) {
+    public void setStorage_task_ids(List<ImageBean> storage_task_ids) {
         this.storage_task_ids = storage_task_ids;
     }
 
@@ -163,23 +164,6 @@ public class DynamicDetailBean implements Parcelable {
 
     public void setFeed_content(String feed_content) {
         this.feed_content = feed_content;
-    }
-
-    @Generated(hash = 1270021939)
-    public DynamicDetailBean(Long feed_mark, Long feed_id, String feed_title, String feed_content, long created_at,
-            int feed_from, List<Integer> storage_task_ids, List<String> localPhotos) {
-        this.feed_mark = feed_mark;
-        this.feed_id = feed_id;
-        this.feed_title = feed_title;
-        this.feed_content = feed_content;
-        this.created_at = created_at;
-        this.feed_from = feed_from;
-        this.storage_task_ids = storage_task_ids;
-        this.localPhotos = localPhotos;
-    }
-
-    @Generated(hash = 1714846364)
-    public DynamicDetailBean() {
     }
 
     @Override
@@ -220,9 +204,26 @@ public class DynamicDetailBean implements Parcelable {
         this.feed_content = in.readString();
         this.created_at = in.readLong();
         this.feed_from = in.readInt();
-        this.storage_task_ids = new ArrayList<Integer>();
+        this.storage_task_ids = new ArrayList<>();
         in.readList(this.storage_task_ids, Integer.class.getClassLoader());
         this.localPhotos = in.createStringArrayList();
+    }
+
+    @Generated(hash = 2031862821)
+    public DynamicDetailBean(Long feed_mark, Long feed_id, String feed_title, String feed_content, long created_at,
+                             int feed_from, List<ImageBean> storage_task_ids, List<String> localPhotos) {
+        this.feed_mark = feed_mark;
+        this.feed_id = feed_id;
+        this.feed_title = feed_title;
+        this.feed_content = feed_content;
+        this.created_at = created_at;
+        this.feed_from = feed_from;
+        this.storage_task_ids = storage_task_ids;
+        this.localPhotos = localPhotos;
+    }
+
+    @Generated(hash = 1714846364)
+    public DynamicDetailBean() {
     }
 
     public static final Creator<DynamicDetailBean> CREATOR = new Creator<DynamicDetailBean>() {
