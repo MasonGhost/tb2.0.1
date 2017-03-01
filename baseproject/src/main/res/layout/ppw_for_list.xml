@@ -3,37 +3,35 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="bottom"
     android:background="#fff"
-    xmlns:zhiyi="http://schemas.android.com/apk/res-auto"
+    android:gravity="bottom"
     android:orientation="vertical">
 
     <LinearLayout
-
-        android:layout_margin="10dp"
         android:layout_width="match_parent"
         android:layout_height="20dp"
+        android:layout_margin="10dp"
         android:orientation="horizontal">
 
         <com.zhiyicx.thinksnsplus.widget.IconTextView
-            android:layout_weight="1"
+            android:id="@+id/tv_pop_list_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/tv_pop_list_title"/>
+            android:layout_weight="1"/>
 
         <TextView
-            android:layout_weight="1"
+            android:id="@+id/tv_pop_list_cancle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/tv_pop_list_cancle"
-            />
+            android:layout_weight="1"/>
 
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/tv_pop_list_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"/>
 
 </LinearLayout>
 

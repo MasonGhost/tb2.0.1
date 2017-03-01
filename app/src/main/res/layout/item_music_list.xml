@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="wrap_content"
-                android:background="@drawable/shape_bg_music_list_item"
-                android:layout_height="wrap_content">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_bg_music_list_item">
 
     <ImageView
         android:id="@+id/music_list_image"
@@ -11,21 +12,30 @@
         android:scaleType="centerCrop"
         android:src="@mipmap/img_default_nothing"/>
 
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/music_list_image"
-        android:layout_margin="10dp"
+        android:background="#90000000"
+        android:drawableLeft="@mipmap/music_ico_playvolume"
+        android:padding="10dp"
         android:text="2333"
         android:textColor="#000"/>
 
+    <View
+        android:layout_below="@+id/music_list_image"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_line"
+        android:background="@color/general_for_line"/>
+
     <TextView
-        android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_below="@+id/music_list_image"
         android:layout_centerHorizontal="true"
         android:layout_margin="15dp"
+        android:gravity="center"
         android:text="一壶清酒，一曲离殇"/>
 
 </RelativeLayout>

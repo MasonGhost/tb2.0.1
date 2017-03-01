@@ -3,5 +3,5 @@
     <!--查看原图的按钮背景-->
     <stroke
         android:width="@dimen/divider_line"
-        android:color="@color/chat_message_bubble_my_strokeColor"/>
+        android:color="@color/general_for_line"/>
 </shape>
