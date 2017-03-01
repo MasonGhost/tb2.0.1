@@ -6,5 +6,10 @@
     <dimen name="button_login_margin_top">23dp</dimen>
     <!--用户资料编辑分割线左边的距离-->
     <dimen name="useredit_divier_marginleft">63dp</dimen>
+    <!--动态详情页面，五张叠加的小头像距离-->
+    <dimen name="head4_right_margin">26dp</dimen>
+    <dimen name="head3_right_margin">42dp</dimen>
+    <dimen name="head2_right_margin">58dp</dimen>
+    <dimen name="head1_right_margin">74dp</dimen>
 
 </resources>

@@ -1,14 +1,19 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter;
 
 import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBoundTransform;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
+import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -51,23 +56,32 @@ public class DynamicDetailItemForContent implements ItemViewDelegate<DynamicBean
         // 设置图片
         List<ImageBean> photoList = dynamicDetailBean.getStorage_task_ids();
         if (photoList != null) {
-            for (ImageBean imageBean : photoList) {
-                showContentImage(context, imageBean.getStorage_id(), photoContainer);
+            for (int i = 0; i < photoList.size(); i++) {
+                ImageBean imageBean = photoList.get(i);
+                showContentImage(context, imageBean.getStorage_id(), i, i == photoList.size() - 1, photoContainer);
             }
         }
     }
 
-    private void showContentImage(Context context, int storage_id, LinearLayout photoContainer) {
-        FilterImageView imageView = new FilterImageView(context);
-        ViewGroup.LayoutParams layoutParams=new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-        imageView.setLayoutParams(layoutParams);
+    private void showContentImage(Context context, int storage_id, final int position, boolean lastImg, LinearLayout photoContainer) {
+        View view = LayoutInflater.from(context).inflate(R.layout.view_dynamic_detail_photos, null);
+        FilterImageView imageView = (FilterImageView) view.findViewById(R.id.dynamic_content_img);
+        // 隐藏最后一张图的下间距
+        if (lastImg) {
+            view.findViewById(R.id.img_divider).setVisibility(View.GONE);
+        }
         AppApplication.AppComponentHolder.getAppComponent().imageLoader()
                 .loadImage(context, GlideImageConfig.builder()
-                        .url(String.format(ApiConfig.IMAGE_PATH,storage_id,50))
+                        .url(String.format(ApiConfig.IMAGE_PATH, storage_id, 50))
                         .imagerView(imageView)
                         .build()
                 );
-        photoContainer.addView(imageView);
-
+        photoContainer.addView(view);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ToastUtils.showToast(position+"");
+            }
+        });
     }
 }

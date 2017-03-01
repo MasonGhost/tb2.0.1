@@ -10,7 +10,11 @@
         android:layout_height="0dp"
         android:layout_weight="1"></include>
 
+    <include layout="@layout/include_horizontal_divider_light"></include>
+
     <com.zhiyicx.baseproject.widget.DynamicDetailMenuView
+        android:id="@+id/dd_dynamic_tool"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></com.zhiyicx.baseproject.widget.DynamicDetailMenuView>
+        android:layout_height="wrap_content"
+        android:background="@color/white"></com.zhiyicx.baseproject.widget.DynamicDetailMenuView>
 </LinearLayout>
