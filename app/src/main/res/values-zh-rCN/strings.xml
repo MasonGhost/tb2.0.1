@@ -65,6 +65,10 @@
     <string name="send_dynamic">发布动态</string>
     <string name="dynamic_title_hint">有标题更吸引人</string>
     <string name="dynamic_content_hint">输入要说的话，图文结合更精彩哦</string>
+    <!--动态详情-->
+    <string name="dynamic_dig_count">%1$d人点赞</string>
+    <string name="dynamic_publish_time">发布与%1$s分钟前</string>
+    <string name="dynamic_viewer_count">%1$d人浏览</string>
     <!--代码中的string-->
     <string name="token_expiers">token过期，请重新登陆</string>
     <string name="share">分享</string>

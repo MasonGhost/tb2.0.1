@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
@@ -10,6 +12,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
+import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForEightImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForFiveImage;
@@ -20,6 +23,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForS
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForSixImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForThreeImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForTwoImage;
+import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.ArrayList;
@@ -33,7 +37,7 @@ import javax.inject.Inject;
  * @Date 2017/1/17
  * @Contact master.jungle68@gmail.com
  */
-public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicContract.View, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnLikeClickListener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener {
+public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicContract.View, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnLikeClickListener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener,MultiItemTypeAdapter.OnItemClickListener {
     private static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
     public static final long ITEM_SPACING = 5L; // 单位dp
     @Inject
@@ -90,6 +94,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         setAdapter(adapter, new DynamicListItemForSevenImage(getContext()));
         setAdapter(adapter, new DynamicListItemForEightImage(getContext()));
         setAdapter(adapter, new DynamicListItemForNineImage(getContext()));
+
+        adapter.setOnItemClickListener(this);
         return adapter;
     }
 
@@ -110,6 +116,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .dynamicPresenterModule(new DynamicPresenterModule(this))
                 .build().inject(this);
         mDynamicType = getArguments().getString(BUNDLE_DYNAMIC_TYPE);
+
         super.initData();
     }
 
@@ -186,5 +193,16 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         mDynamicBeens.get(position).setState(DynamicBean.SEND_ING);
         refresh();
         mPresenter.reSendDynamic(position);
+    }
+
+
+    @Override
+    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        startActivity(new Intent(getActivity(), DynamicDetailActivity.class));
+    }
+
+    @Override
+    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+        return false;
     }
 }

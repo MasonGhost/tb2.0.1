@@ -1,8 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
+import com.zhiyicx.baseproject.base.ITSListPresenter;
+import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicContract;
 
@@ -15,7 +18,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicContract;
 
 public interface DynamicDetailContract {
     //对于经常使用的关于UI的方法可以定义到BaseView中,如显示隐藏进度条,和显示文字消息
-    interface View extends IBaseView<DynamicDetailContract.Presenter> {
+    interface View extends ITSListView<DynamicBean, Presenter> {
 
     }
 
@@ -24,7 +27,7 @@ public interface DynamicDetailContract {
 
     }
 
-    interface Presenter extends IBasePresenter {
+    interface Presenter extends ITSListPresenter<DynamicBean> {
 
     }
 }
