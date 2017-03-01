@@ -1,6 +1,7 @@
 package com.zhiyicx.common.base;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 
@@ -72,6 +73,12 @@ public abstract class BaseActivity<P extends BasePresenter> extends SkinBaseActi
             EventBus.getDefault().unregister(this);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+
+        super.onSaveInstanceState(outState, outPersistentState);
+    }
+
     /**
      * 是否使用 eventBus,默认为使用(true)，
      *
@@ -96,7 +103,24 @@ public abstract class BaseActivity<P extends BasePresenter> extends SkinBaseActi
      */
     protected abstract void initData();
 
+    /**
+     * 读取关闭时保存的数据
+     *
+     * @param savedInstanceState
+     */
     protected void restoreData(Bundle savedInstanceState) {
 
     }
+
+    /**
+     * 关闭时保存数据
+     *
+     * @param savedInstanceState
+     * @return
+     */
+    protected Bundle saveData(Bundle savedInstanceState) {
+        return savedInstanceState;
+    }
+
+
 }
