@@ -246,7 +246,6 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
 
     @Override
     public void seekTo(int position) {
-
         if (mMediaPlayer == null) {
             mCurrentPosition = position;
         } else {
@@ -366,6 +365,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
 
     @Override
     public void onCompletion(MediaPlayer player) {
+        mCurrentPosition = 0;
         if (mCallback != null) {
             mCallback.onCompletion();
         }

@@ -23,8 +23,6 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC
  */
 public class PlaybackManager implements Playback.Callback {
 
-    private static final String CUSTOM_ACTION_THUMBS_UP = "com.zhiyicx.thinksnsplus.THUMBS_UP";
-
     /**
      * 播放模式
      */
@@ -45,6 +43,7 @@ public class PlaybackManager implements Playback.Callback {
     private MediaSessionCallback mMediaSessionCallback;
 
     private int orderType = ORDERLOOP;
+    private String currentMusicMediaId;
 
     public PlaybackManager(PlaybackServiceCallback serviceCallback, Resources resources,
                            MusicProvider musicProvider, QueueManager queueManager,
@@ -60,6 +59,7 @@ public class PlaybackManager implements Playback.Callback {
 
     public void handlePlayRequest() {
         MediaSessionCompat.QueueItem currentMusic = mQueueManager.getCurrentMusic();
+        currentMusicMediaId = currentMusic.getDescription().getMediaId();
         if (currentMusic != null) {
             mServiceCallback.onPlaybackStart();
             mPlayback.play(currentMusic);
@@ -144,26 +144,23 @@ public class PlaybackManager implements Playback.Callback {
 
     @Override
     public void onCompletion() {
+        EventBus.getDefault().post(orderType,
+                EVENT_SEND_MUSIC_COMPLETE);
         switch (orderType) {
             case ORDERRANDOM:
             case ORDERLOOP:
                 if (mQueueManager.skipQueuePosition(1)) {
                     handlePlayRequest();
                     mQueueManager.updateMetadata();
-                    EventBus.getDefault().post(EVENT_SEND_MUSIC_COMPLETE,
-                            EVENT_SEND_MUSIC_COMPLETE);
                 } else {
-                    // If skipping was not possible, we stop and release the resources:
                     handleStopRequest(null);
                 }
                 break;
             case ORDERSINGLE:
-                mQueueManager.setCurrentQueueItem(mQueueManager.getCurrentMusic().getQueueId());
-                if (true) {
+                if (mQueueManager.setCurrentQueueItem(currentMusicMediaId)) {
                     handlePlayRequest();
                     mQueueManager.updateMetadata();
                 } else {
-                    // If skipping was not possible, we stop and release the resources:
                     handleStopRequest(null);
                 }
                 break;
@@ -327,12 +324,10 @@ public class PlaybackManager implements Playback.Callback {
         ToastUtils.showToast(orderType + "");
         switch (orderType) {
             case ORDERLOOP:
-                mQueueManager.setNormalQueue();
-                break;
-            case ORDERSINGLE:
+                mQueueManager.setNormalQueue(currentMusicMediaId);
                 break;
             case ORDERRANDOM:
-                mQueueManager.setRandomQueue();
+                mQueueManager.setRandomQueue(currentMusicMediaId);
                 break;
             default:
                 break;
