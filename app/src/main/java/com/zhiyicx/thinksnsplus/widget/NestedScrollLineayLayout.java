@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.widget;
 
 import android.content.Context;
+import android.support.v4.view.NestedScrollingParent;
 import android.support.v4.view.NestedScrollingParentHelper;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
@@ -8,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.support.v4.view.NestedScrollingParent;
 import android.widget.OverScroller;
 
 import com.zhiyicx.thinksnsplus.R;
@@ -17,13 +17,15 @@ import com.zhiyicx.thinksnsplus.R;
  * @Author Jliuer
  * @Date 2017/02/14
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 嵌套滑动
  */
 public class NestedScrollLineayLayout extends LinearLayout implements NestedScrollingParent {
 
     private NestedScrollingParentHelper parentHelper;
     private LayoutInflater inflater;
     private View headerView;
+    private int mHeaderViewLayoutId;
+    private int mHeaderViewId = R.id.fragment_music_detail_head_info;
     private int mTopViewHeight;
     private int mNotConsumeHeight;
     private OverScroller mScroller;
@@ -49,10 +51,27 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
         this.setOrientation(LinearLayout.VERTICAL);
         parentHelper = new NestedScrollingParentHelper(this);
         inflater = LayoutInflater.from(context);
-        headerView = inflater.inflate(R.layout.music_headerview, null, false);
+        if (mHeaderViewLayoutId > 0) {
+            headerView = inflater.inflate(mHeaderViewLayoutId, null, false);
+            this.addView(headerView);
+        }
         setOrientation(LinearLayout.VERTICAL);
         mScroller = new OverScroller(context);
-        this.addView(headerView);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        if (mHeaderViewId > 0) {
+            try {
+                headerView = findViewById(mHeaderViewId);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (headerView == null) {
+            throw new RuntimeException("headerView can not be null");
+        }
     }
 
     @Override
@@ -151,6 +170,14 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
 
     public View getHeaderView() {
         return headerView;
+    }
+
+    public void setHeaderViewLayoutId(int headerViewLayoutId) {
+        mHeaderViewLayoutId = headerViewLayoutId;
+    }
+
+    public void setHeaderViewId(int headerViewId) {
+        mHeaderViewId = headerViewId;
     }
 
     public void setNotConsumeHeight(int notConsumeHeight) {

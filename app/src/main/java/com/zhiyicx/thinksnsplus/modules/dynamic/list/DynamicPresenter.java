@@ -33,6 +33,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -75,7 +76,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
      */
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        mRepository.getDynamicList(mRootView.getDynamicType(), maxId, mRootView.getPage())
+        Subscription dynamicLisSub = mRepository.getDynamicList(mRootView.getDynamicType(), maxId, mRootView.getPage())
                 .doAfterTerminate(new Action0() {
                     @Override
                     public void call() {
@@ -85,12 +86,14 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                 .map(new Func1<BaseJson<List<DynamicBean>>, BaseJson<List<DynamicBean>>>() {
                     @Override
                     public BaseJson<List<DynamicBean>> call(BaseJson<List<DynamicBean>> listBaseJson) {
-                        if (!isLoadMore && listBaseJson.isStatus()) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
+                        if (listBaseJson.isStatus()) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
                             insertOrUpdateDynamicDB(listBaseJson.getData());
-                            if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW)) {
-                                List<DynamicBean> data = getDynamicBeenFromDB();
-                                data.addAll(listBaseJson.getData());
-                                listBaseJson.setData(data);
+                            if (!isLoadMore) {
+                                if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW)) {
+                                    List<DynamicBean> data = getDynamicBeenFromDB();
+                                    data.addAll(listBaseJson.getData());
+                                    listBaseJson.setData(data);
+                                }
                             }
                         }
                         return listBaseJson;
@@ -112,6 +115,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                         mRootView.onResponseError(throwable, isLoadMore);
                     }
                 });
+        addSubscrebe(dynamicLisSub);
     }
 
     @Override

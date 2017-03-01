@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
-import com.aspsine.swipetoloadlayout.SwipeRefreshHeaderLayout;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.R;
@@ -27,8 +26,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
-import cn.bingoogolapple.refreshlayout.TSPRefreshViewHolder;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -134,7 +131,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mRvList.setAdapter(mEmptyWrapper);
     }
 
-    private int setEmptView() {
+    protected int setEmptView() {
         return R.mipmap.img_default_nothing;
     }
 
@@ -291,6 +288,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mAdapter.notifyDataSetChanged();
         mEmptyWrapper.notifyDataSetChanged();
     }
+
     /**
      * 刷新数据
      */
@@ -298,6 +296,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mAdapter.notifyDataSetChanged();
         mEmptyWrapper.notifyDataSetChanged();
     }
+
     /**
      * 刷新单条数据
      */
@@ -380,21 +379,20 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     private void handleReceiveData(@NotNull List<T> data, boolean isLoadMore, boolean isFromCache) {
         if (!isLoadMore) { // 刷新
             mAdapter.clear();
-            if (data.size() != 0) {
+            if (data != null && data.size() != 0) {
                 if (!isFromCache) {
                     // 更新缓存
                     mPresenter.insertOrUpdateData(data);
                 }
                 // 内存处理数据
                 mAdapter.addAllData(data);
-//                mRefreshlayout.setIsShowLoadingMoreView(true);
                 mMaxId = data.get(data.size() - 1).getMaxId();
-            } else {
-//                mRefreshlayout.setIsShowLoadingMoreView(false);
+            }else{
+                mEmptyView.setErrorImag(setEmptView());
             }
             refreshData();
         } else { // 加载更多
-            if (data.size() != 0) {
+            if (data != null && data.size() != 0) {
                 if (!isFromCache) {
                     // 更新缓存
                     mPresenter.insertOrUpdateData(data);
@@ -403,8 +401,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 mAdapter.addAllData(data);
                 refreshData();
                 mMaxId = data.get(data.size() - 1).getMaxId();
+                System.out.println("mMaxId = " + mMaxId);
             } else {
-//                mRefreshlayout.setIsShowLoadingMoreView(false);
+//                showMessage(getString(R.string.no_data)); 如需提示，打开即可
             }
         }
     }

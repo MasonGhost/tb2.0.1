@@ -3,13 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:paddingBottom="@dimen/spacing_mid"
     android:paddingTop="@dimen/spacing_mid"
     tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
 
-    <com.zhiyicx.common.widget.FilterImageView
+    <com.zhiyicx.baseproject.widget.imageview.FilterImageView
         android:id="@+id/iv_headpic"
+        app:pressShape="circle"
         android:layout_width="@dimen/headpic_for_list"
         android:layout_height="@dimen/headpic_for_list"
         android:layout_marginLeft="@dimen/spacing_normal"
@@ -93,7 +95,7 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <com.zhiyicx.baseproject.widget.SquareImageView
+            <com.zhiyicx.baseproject.widget.imageview.SquareImageView
                 android:id="@+id/siv_0"
                 style="@style/style_dynamic_list_image_vertical"
                 android:layout_weight="1"
@@ -104,7 +106,7 @@
                 android:layout_height="@dimen/dynamice_spacing_small"
                 />
 
-            <com.zhiyicx.baseproject.widget.SquareImageView
+            <com.zhiyicx.baseproject.widget.imageview.SquareImageView
                 android:id="@+id/siv_4"
                 style="@style/style_dynamic_list_image_vertical"
                 android:layout_weight="1"
@@ -129,7 +131,7 @@
                 android:orientation="horizontal"
                 >
 
-                <com.zhiyicx.baseproject.widget.SquareImageView
+                <com.zhiyicx.baseproject.widget.imageview.SquareImageView
                     android:id="@+id/siv_1"
                     style="@style/style_dynamic_list_image_horizen"
                     android:layout_weight="1"
@@ -140,7 +142,7 @@
                     android:layout_height="match_parent"
                     />
 
-                <com.zhiyicx.baseproject.widget.SquareImageView
+                <com.zhiyicx.baseproject.widget.imageview.SquareImageView
                     android:id="@+id/siv_2"
                     style="@style/style_dynamic_list_image_horizen"
                     android:layout_weight="1"
@@ -152,7 +154,7 @@
                 android:layout_height="@dimen/dynamice_spacing_small"
                 />
 
-            <com.zhiyicx.baseproject.widget.SquareImageView
+            <com.zhiyicx.baseproject.widget.imageview.SquareImageView
                 android:id="@+id/siv_3"
                 style="@style/style_dynamic_list_image_vertical"
                 android:layout_weight="2"
@@ -170,7 +172,7 @@
                 android:orientation="horizontal"
                 >
 
-                <com.zhiyicx.baseproject.widget.SquareImageView
+                <com.zhiyicx.baseproject.widget.imageview.SquareImageView
                     android:id="@+id/siv_5"
                     style="@style/style_dynamic_list_image_horizen"
                     android:layout_weight="1"
@@ -181,7 +183,7 @@
                     android:layout_height="match_parent"
                     />
 
-                <com.zhiyicx.baseproject.widget.SquareImageView
+                <com.zhiyicx.baseproject.widget.imageview.SquareImageView
                     android:id="@+id/siv_6"
                     style="@style/style_dynamic_list_image_horizen"
                     android:layout_weight="1"

@@ -19,6 +19,7 @@ public class DynamicListItemForEightImage extends DynamicListBaseItem {
 
     public DynamicListItemForEightImage(Context context) {
         super(context);
+
     }
 
     @Override
@@ -27,11 +28,9 @@ public class DynamicListItemForEightImage extends DynamicListBaseItem {
     }
 
     @Override
-    public boolean isForViewType(DynamicBean item, int position) {
-        return item.getFeed().getStorage_task_ids()!=null&&item.getFeed().getStorage_task_ids().size() == IMAGE_COUNTS;
+    public int getImageCounts() {
+        return IMAGE_COUNTS;
     }
-
-
     @Override
     public void convert(ViewHolder holder, final DynamicBean dynamicBean, DynamicBean lastT, int position) {
         super.convert(holder, dynamicBean, lastT, position);

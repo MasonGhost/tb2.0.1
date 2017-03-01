@@ -17,6 +17,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 public class DynamicListItemForFiveImage extends DynamicListBaseItem {
     private static final int IMAGE_COUNTS = 5;// 动态列表图片数量
 
+
     public DynamicListItemForFiveImage(Context context) {
         super(context);
 
@@ -28,8 +29,8 @@ public class DynamicListItemForFiveImage extends DynamicListBaseItem {
     }
 
     @Override
-    public boolean isForViewType(DynamicBean item, int position) {
-        return item.getFeed().getStorage_task_ids()!=null&&item.getFeed().getStorage_task_ids().size() == IMAGE_COUNTS;
+    public int getImageCounts() {
+        return IMAGE_COUNTS;
     }
 
     @Override

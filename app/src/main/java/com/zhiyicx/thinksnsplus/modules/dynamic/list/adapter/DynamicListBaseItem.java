@@ -36,6 +36,7 @@ import static com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean.STATUS_DIGG_FE
  */
 
 public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
+    protected int mImageCount = 0;
     protected ImageLoader mImageLoader;
     protected Context mContext;
 
@@ -81,13 +82,25 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
 
     @Override
     public boolean isForViewType(DynamicBean item, int position) {
-        return item.getFeed().getStorage_task_ids() == null || item.getFeed().getStorage_task_ids().size() == 0;
+        // 当本地和服务器都没有图片的时候，使用
+        return (item.getFeed().getStorage_task_ids() == null || item.getFeed().getStorage_task_ids().size() == getImageCounts())
+                && (item.getFeed().getLocalPhotos() == null || item.getFeed().getLocalPhotos().size() == getImageCounts());
+    }
+
+    /**
+     * 获取图片数量
+     *
+     * @return
+     */
+    protected int getImageCounts() {
+        return mImageCount;
     }
 
     @Override
     public void convert(ViewHolder holder, DynamicBean dynamicBean, DynamicBean lastT, final int position) {
         mImageLoader.loadImage(mContext, GlideImageConfig.builder()
                 .url(dynamicBean.getUserInfoBean() != null ? dynamicBean.getUserInfoBean().getUserIcon() : "")
+                .placeholder(R.drawable.shape_default_image_circle)
                 .transformation(new GlideCircleTransform(mContext))
                 .errorPic(R.drawable.shape_default_image_circle)
                 .imagerView((ImageView) holder.getView(R.id.iv_headpic))
@@ -166,12 +179,12 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
      */
     protected void initImageView(ImageView view, final DynamicBean dynamicBean, final int positon) {
         String url;
-        if (dynamicBean.getFeed().getStorage_task_ids() != null) {
-            url = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getFeed().getStorage_task_ids().get(positon), 50);
+        if (dynamicBean.getFeed().getStorage_task_ids() != null && dynamicBean.getFeed().getStorage_task_ids().size() > 0) {
+            url = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getFeed().getStorage_task_ids().get(positon).getStorage_id(), 20);
         } else {
             url = dynamicBean.getFeed().getLocalPhotos().get(positon);
         }
-
+        System.out.println("url = " + url);
         RxView.clicks(view)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(new Action1<Void>() {
