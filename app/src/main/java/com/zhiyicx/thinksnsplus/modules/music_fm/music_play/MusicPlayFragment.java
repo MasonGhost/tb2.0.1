@@ -196,6 +196,9 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         mMediaBrowserCompat = new MediaBrowserCompat(getActivity(), new ComponentName(getActivity(),
                 MusicPlayService.class)
                 , mConnectionCallback, null);
+        if (mMediaBrowserCompat.isConnected()) {
+            mMediaBrowserCompat.disconnect();
+        }
         if (savedInstanceState == null) {
             updateFromParams(getArguments());
         }
@@ -206,23 +209,25 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         super.onStart();
         if (mMediaBrowserCompat != null) {
             mDefalultOrder = 0;
-            mMediaBrowserCompat.connect();
+            if (!mMediaBrowserCompat.isConnected()) {
+                mMediaBrowserCompat.connect();
+            }
+
         }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (mMediaBrowserCompat != null) {
-            isConnected = false;
-            mMediaBrowserCompat.disconnect();
-        }
+//        if (mMediaBrowserCompat != null) {
+//            isConnected = false;
+//            mMediaBrowserCompat.disconnect();
+//        }
         if (getActivity().getSupportMediaController() != null) {
             getActivity().getSupportMediaController().unregisterCallback(mCallback);
         }
         rxStopProgress();
     }
-
 
     @Override
     protected boolean useEventBus() {
@@ -325,7 +330,9 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             case R.id.fragment_music_paly_like:
                 break;
             case R.id.fragment_music_paly_comment:
-                mListPopupWindow.show();
+                mStringList.add("");
+                mStringList.add("");
+                mListPopupWindow.dataChange(mStringList);
                 break;
             case R.id.fragment_music_paly_lyrics:
                 break;
@@ -365,12 +372,13 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                     }
                 }
                 break;
-            case R.id.fragment_music_paly_nextview:// 下一首歌
+            case R.id.fragment_music_paly_nextview:// 下一首
                 pauseAnimation();
                 mFragmentMusicPalyRv.smoothScrollToPosition(mFragmentMusicPalyRv
                         .getActualCurrentPosition() + 1);
                 break;
             case R.id.fragment_music_paly_list:
+                mListPopupWindow.show();
                 break;
             default:
                 break;
@@ -472,14 +480,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         updatePlaybackState(state);
 
         MediaMetadataCompat metadata = mediaController.getMetadata();
-//        if (mMediaMetadata == null || metadata != null) {
-//            mMediaMetadata = metadata;
-//        } else {
-//            mediaController.getTransportControls().playFromMediaId(mMediaMetadata.getString
-//                    (MediaMetadataCompat.METADATA_KEY_MEDIA_ID), null);
-//            updateMediaDescription(mMediaMetadata.getDescription());
-//            updateDuration(mMediaMetadata);
-//        }
 
         if (metadata != null) {
             updateMediaDescription(metadata.getDescription());
@@ -518,15 +518,16 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         switch (state.getState()) {
             case PlaybackStateCompat.STATE_PLAYING:
                 rxStartProgress();
-                if (!isSeekTo) {
+                if (mPhonographAnimate == null || !mPhonographAnimate.isStarted()) {
                     doPhonographAnimation();
                 }
-                isSeekTo = false;
                 mFragmentMusicPalyPalyer.setImageResource(R.mipmap.music_ico_stop);
                 break;
             case PlaybackStateCompat.STATE_PAUSED:
                 rxStopProgress();
-                pauseAnimation();
+                if (mPhonographAnimate != null && mPhonographAnimate.isStarted()) {
+                    pauseAnimation();
+                }
                 mFragmentMusicPalyPalyer.setImageResource(R.mipmap.music_ico_play);
                 break;
             case PlaybackStateCompat.STATE_NONE:
@@ -535,7 +536,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 break;
             case PlaybackStateCompat.STATE_BUFFERING:
                 rxStopProgress();
-                isSeekTo = true;
                 break;
             default:
         }
