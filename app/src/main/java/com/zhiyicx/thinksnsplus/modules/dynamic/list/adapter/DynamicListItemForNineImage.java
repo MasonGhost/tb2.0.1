@@ -16,7 +16,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 public class DynamicListItemForNineImage extends DynamicListBaseItem {
     private static final int IMAGE_COUNTS = 9;// 动态列表图片数量
-
+    private static final int CURREN_CLOUMS = 3;// 当前列数
     public DynamicListItemForNineImage(Context context) {
         super(context);
     }
@@ -32,17 +32,22 @@ public class DynamicListItemForNineImage extends DynamicListBaseItem {
     }
 
     @Override
+    public  int getCurrenCloums() {
+        return CURREN_CLOUMS;
+    }
+
+    @Override
     public void convert(ViewHolder holder, final DynamicBean dynamicBean, DynamicBean lastT, int position) {
         super.convert(holder, dynamicBean, lastT, position);
-        initImageView((ImageView) holder.getView(R.id.siv_0), dynamicBean, 0);
-        initImageView((ImageView) holder.getView(R.id.siv_1), dynamicBean, 1);
-        initImageView((ImageView) holder.getView(R.id.siv_2), dynamicBean, 2);
-        initImageView((ImageView) holder.getView(R.id.siv_3), dynamicBean, 3);
-        initImageView((ImageView) holder.getView(R.id.siv_4), dynamicBean, 4);
-        initImageView((ImageView) holder.getView(R.id.siv_5), dynamicBean, 5);
-        initImageView((ImageView) holder.getView(R.id.siv_6), dynamicBean, 6);
-        initImageView((ImageView) holder.getView(R.id.siv_7), dynamicBean, 7);
-        initImageView((ImageView) holder.getView(R.id.siv_8), dynamicBean, 8);
+        initImageView((ImageView) holder.getView(R.id.siv_0), dynamicBean, 0,1); // 数字 0 代表 image 当前的位置， 1 代表他相对与 CURREN_CLOUMS 的份数
+        initImageView((ImageView) holder.getView(R.id.siv_1), dynamicBean, 1,1);
+        initImageView((ImageView) holder.getView(R.id.siv_2), dynamicBean, 2,1);
+        initImageView((ImageView) holder.getView(R.id.siv_3), dynamicBean, 3,1);
+        initImageView((ImageView) holder.getView(R.id.siv_4), dynamicBean, 4,1);
+        initImageView((ImageView) holder.getView(R.id.siv_5), dynamicBean, 5,1);
+        initImageView((ImageView) holder.getView(R.id.siv_6), dynamicBean, 6,1);
+        initImageView((ImageView) holder.getView(R.id.siv_7), dynamicBean, 7,1);
+        initImageView((ImageView) holder.getView(R.id.siv_8), dynamicBean, 8,1);
     }
 
 }

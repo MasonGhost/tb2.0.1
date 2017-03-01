@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
@@ -38,6 +40,7 @@ import static com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean.STATUS_DIGG_FE
  */
 
 public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
+    private static final int CURREN_CLOUMS = 0;
     private final int mWidthPixels; // 屏幕宽度
     private final int mMargin; // 图片容器的边距
     protected final int mDiverwith; // 分割先的宽高
@@ -108,6 +111,12 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
         return mImageCount;
     }
 
+    /**
+     * @param holder
+     * @param dynamicBean
+     * @param lastT
+     * @param position
+     */
     @Override
     public void convert(ViewHolder holder, DynamicBean dynamicBean, DynamicBean lastT, final int position) {
         String userIconUrl = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getUserInfoBean().getUserIcon(), ImageZipConfig.IMAGE_38_ZIP);
@@ -189,11 +198,12 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
      * @param view        the target
      * @param dynamicBean item data
      * @param positon     image item position
+     * @param part        this part percent of imageContainer
      */
-    protected void initImageView(ImageView view, final DynamicBean dynamicBean, final int positon) {
+    protected void initImageView(ImageView view, final DynamicBean dynamicBean, final int positon, int part) {
         String url;
         if (dynamicBean.getFeed().getStorages() != null && dynamicBean.getFeed().getStorages().size() > 0) {
-            url = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getFeed().getStorages().get(positon).getStorage_id(), 20);
+            url = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getFeed().getStorages().get(positon).getStorage_id(), getProportion(view, dynamicBean,part));
         } else {
             url = dynamicBean.getFeed().getLocalPhotos().get(positon);
         }
@@ -213,6 +223,54 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                     }
                 });
     }
+
+
+    /**
+     * 计算压缩比例
+     *
+     * @param view
+     * @param dynamicBean
+     * @param part        比例，总大小的份数
+     * @return
+     */
+    protected int getProportion(ImageView view, DynamicBean dynamicBean, int part) {
+        /**
+         * 一张图时候，需要对宽高做限制
+         */
+        int with;
+        int height;
+        int proportion; // 压缩比例
+        int currentWith = getCurrenItemWith(part);
+        if (dynamicBean.getFeed().getStorages() == null || dynamicBean.getFeed().getStorages().size() == 0) {// 本地图片
+            BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(dynamicBean.getFeed().getLocalPhotos().get(0));
+            with = option.outWidth > currentWith ? currentWith : option.outWidth;
+        } else {
+            with = (int) dynamicBean.getFeed().getStorages().get(0).getWidth() > currentWith ? currentWith : (int) dynamicBean.getFeed().getStorages().get(0).getWidth();
+        }
+        height = with;
+        proportion = (int) ((with / dynamicBean.getFeed().getStorages().get(0).getWidth()) * 100);
+        return proportion;
+    }
+
+    /**
+     * 获取当前item 的宽
+     *
+     * @param part
+     * @return
+     */
+    protected int getCurrenItemWith(int part) {
+        try {
+            return (mImageContainerWith - (getCurrenCloums() - 1) * mDiverwith) / getCurrenCloums() * part;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    protected int getCurrenCloums() {
+        return CURREN_CLOUMS;
+    }
+
 
     /**
      * image interface
