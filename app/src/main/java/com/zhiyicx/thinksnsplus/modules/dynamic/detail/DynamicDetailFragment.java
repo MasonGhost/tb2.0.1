@@ -31,17 +31,14 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
-    protected void initView(View rootView) {
-
-    }
-
-    @Override
     protected void initData() {
 
     }
 
     @Override
     protected MultiItemTypeAdapter<DynamicBean> getAdapter() {
+        mDatas.add(new DynamicBean());
+        mDatas.add(new DynamicBean());
         MultiItemTypeAdapter<DynamicBean> adapter = new MultiItemTypeAdapter<>(getContext(), mDatas);
         adapter.addItemViewDelegate(new DynamicDetailItemForContent());
         adapter.addItemViewDelegate(new DynamicDetailItemForDig());
