@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
-import android.util.Log;
 
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProvider;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
@@ -73,7 +72,6 @@ public class QueueManager {
     }
 
     public boolean setCurrentQueueItem(String mediaId) {
-        Log.e("setCurrentQueueItem:", mediaId);
         int index = QueueHelper.getMusicIndexOnQueue(mPlayingQueue, mediaId);
         setCurrentQueueIndex(index);
         return index >= 0;
