@@ -5,6 +5,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
@@ -51,19 +52,18 @@ public class DynamicDetailItemForContent implements ItemViewDelegate<DynamicBean
         List<ImageBean> photoList = dynamicDetailBean.getStorage_task_ids();
         if (photoList != null) {
             for (ImageBean imageBean : photoList) {
-                showContentImage(context, imageBean.getImgUrl(), photoContainer);
+                showContentImage(context, imageBean.getStorage_id(), photoContainer);
             }
         }
     }
 
-    private void showContentImage(Context context, String url, LinearLayout photoContainer) {
+    private void showContentImage(Context context, int storage_id, LinearLayout photoContainer) {
         FilterImageView imageView = new FilterImageView(context);
-        ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
-        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        ViewGroup.LayoutParams layoutParams=new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        imageView.setLayoutParams(layoutParams);
         AppApplication.AppComponentHolder.getAppComponent().imageLoader()
                 .loadImage(context, GlideImageConfig.builder()
-                        .url(url)
+                        .url(String.format(ApiConfig.IMAGE_PATH,storage_id,50))
                         .imagerView(imageView)
                         .build()
                 );

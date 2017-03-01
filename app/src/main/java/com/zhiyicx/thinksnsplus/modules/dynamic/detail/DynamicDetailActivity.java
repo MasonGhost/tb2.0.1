@@ -12,7 +12,8 @@ public class DynamicDetailActivity extends TSActivity<DynamicDetailPresenter, Dy
 
     @Override
     protected DynamicDetailFragment getFragment() {
-        return DynamicDetailFragment.initFragment(null);
+        return DynamicDetailFragment.initFragment(
+                getIntent().getExtras());
     }
 
     @Override

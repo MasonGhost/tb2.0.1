@@ -180,35 +180,6 @@ public class DynamicDetailBean implements Parcelable {
                 '}';
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.feed_mark);
-        dest.writeValue(this.feed_id);
-        dest.writeString(this.feed_title);
-        dest.writeString(this.feed_content);
-        dest.writeLong(this.created_at);
-        dest.writeInt(this.feed_from);
-        dest.writeList(this.storage_task_ids);
-        dest.writeStringList(this.localPhotos);
-    }
-
-    protected DynamicDetailBean(Parcel in) {
-        this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
-        this.feed_id = (Long) in.readValue(Long.class.getClassLoader());
-        this.feed_title = in.readString();
-        this.feed_content = in.readString();
-        this.created_at = in.readLong();
-        this.feed_from = in.readInt();
-        this.storage_task_ids = new ArrayList<>();
-        in.readList(this.storage_task_ids, Integer.class.getClassLoader());
-        this.localPhotos = in.createStringArrayList();
-    }
-
     @Generated(hash = 2031862821)
     public DynamicDetailBean(Long feed_mark, Long feed_id, String feed_title, String feed_content, long created_at,
                              int feed_from, List<ImageBean> storage_task_ids, List<String> localPhotos) {
@@ -224,6 +195,34 @@ public class DynamicDetailBean implements Parcelable {
 
     @Generated(hash = 1714846364)
     public DynamicDetailBean() {
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.feed_mark);
+        dest.writeValue(this.feed_id);
+        dest.writeString(this.feed_title);
+        dest.writeString(this.feed_content);
+        dest.writeLong(this.created_at);
+        dest.writeInt(this.feed_from);
+        dest.writeTypedList(this.storage_task_ids);
+        dest.writeStringList(this.localPhotos);
+    }
+
+    protected DynamicDetailBean(Parcel in) {
+        this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
+        this.feed_id = (Long) in.readValue(Long.class.getClassLoader());
+        this.feed_title = in.readString();
+        this.feed_content = in.readString();
+        this.created_at = in.readLong();
+        this.feed_from = in.readInt();
+        this.storage_task_ids = in.createTypedArrayList(ImageBean.CREATOR);
+        this.localPhotos = in.createStringArrayList();
     }
 
     public static final Creator<DynamicDetailBean> CREATOR = new Creator<DynamicDetailBean>() {

@@ -22,7 +22,7 @@ import java.util.List;
  */
 
 public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.Presenter, DynamicBean> implements DynamicDetailContract.View {
-
+    public static final String DYNAMIC_DETAIL_DATA = "dynamic_detail_data";
     private List<DynamicBean> mDatas = new ArrayList<>();
 
     @Override
@@ -32,13 +32,23 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     protected void initData() {
-
+        // 处理上个页面传过来的动态数据
+        Bundle bundle = getArguments();
+        if (bundle != null && bundle.containsKey(DYNAMIC_DETAIL_DATA)) {
+            DynamicBean dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
+            DynamicBean dynamicContent = new DynamicBean();
+            dynamicContent.setFeed(dynamicBean.getFeed());
+            DynamicBean dynamicDig = new DynamicBean();
+            dynamicDig.setFeed(dynamicBean.getFeed());
+            dynamicDig.setTool(dynamicBean.getTool());
+            mDatas.add(dynamicContent);
+            mDatas.add(dynamicDig);
+            refreshData();
+        }
     }
 
     @Override
     protected MultiItemTypeAdapter<DynamicBean> getAdapter() {
-        mDatas.add(new DynamicBean());
-        mDatas.add(new DynamicBean());
         MultiItemTypeAdapter<DynamicBean> adapter = new MultiItemTypeAdapter<>(getContext(), mDatas);
         adapter.addItemViewDelegate(new DynamicDetailItemForContent());
         adapter.addItemViewDelegate(new DynamicDetailItemForDig());

@@ -31,13 +31,15 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
+
 /**
  * @Describe 动态列表
  * @Author Jungle68
  * @Date 2017/1/17
  * @Contact master.jungle68@gmail.com
  */
-public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicContract.View, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnLikeClickListener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener,MultiItemTypeAdapter.OnItemClickListener {
+public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicContract.View, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnLikeClickListener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener, MultiItemTypeAdapter.OnItemClickListener {
     private static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
     public static final long ITEM_SPACING = 5L; // 单位dp
     @Inject
@@ -198,7 +200,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        startActivity(new Intent(getActivity(), DynamicDetailActivity.class));
+        Intent intent = new Intent(getActivity(), DynamicDetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(DYNAMIC_DETAIL_DATA, mAdapter.getItem(position));
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override
