@@ -72,6 +72,13 @@
         <attr name="flingFactor" format="float"/>
         <attr name="singlePageFling" format="boolean"/>
     </declare-styleable>
-
+    <!--有按下效果的Imageview-->
+    <declare-styleable name="FilterImageView">
+        <attr name="pressColor" format="reference|color"/>
+        <attr name="shape">
+            <enum name="square" value="0"/>
+            <enum name="circle" value="1"/>
+        </attr>
+    </declare-styleable>
 
 </resources>

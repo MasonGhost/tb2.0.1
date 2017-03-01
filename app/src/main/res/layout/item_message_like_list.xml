@@ -10,7 +10,7 @@
     android:paddingTop="@dimen/spacing_normal"
     tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
 
-    <com.zhiyicx.common.widget.FilterImageView
+    <com.zhiyicx.baseproject.widget.imageview.FilterImageView
         android:id="@+id/iv_headpic"
         android:layout_width="@dimen/headpic_for_list"
         android:layout_height="@dimen/headpic_for_list"
@@ -34,13 +34,13 @@
             android:gravity="center"
             tools:text="点点滴滴的撒范德萨范德萨范德萨多少撒 "/>
 
-        <com.zhiyicx.common.widget.FilterImageView
+        <com.zhiyicx.baseproject.widget.imageview.FilterImageView
             android:id="@+id/iv_detail_image"
             android:layout_width="@dimen/rec_image_for_list"
             android:layout_height="@dimen/rec_image_for_list"
             android:visibility="gone"
             tools:src="@mipmap/ic_launcher">
-        </com.zhiyicx.common.widget.FilterImageView>
+        </com.zhiyicx.baseproject.widget.imageview.FilterImageView>
     </FrameLayout>
 
     <ImageView

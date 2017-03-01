@@ -1,12 +1,10 @@
-package com.zhiyicx.baseproject.widget;
+package com.zhiyicx.baseproject.widget.imageview;
 
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.zhiyicx.common.widget.FilterImageView;
-
 /**
- * @Describe
+ * @Describe  正方形的 ImageView
  * @Author Jungle68
  * @Date 2017/2/21
  * @Contact master.jungle68@gmail.com

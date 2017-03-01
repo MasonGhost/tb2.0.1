@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/spacing_mid"
     android:paddingTop="@dimen/spacing_normal">
 
-    <com.zhiyicx.common.widget.FilterImageView
+    <com.zhiyicx.baseproject.widget.imageview.FilterImageView
         android:id="@+id/iv_headpic"
         android:layout_width="@dimen/headpic_for_list"
         android:layout_height="@dimen/headpic_for_list"
