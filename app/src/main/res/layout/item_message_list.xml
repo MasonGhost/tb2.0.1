@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:paddingBottom="@dimen/spacing_normal"
     android:paddingLeft="@dimen/spacing_small"
@@ -13,6 +14,7 @@
     <com.zhiyicx.baseproject.widget.imageview.FilterImageView
         android:id="@+id/iv_headpic"
         android:layout_width="@dimen/headpic_for_list"
+        app:pressShape="circle"
         android:layout_height="@dimen/headpic_for_list"
         android:src="@mipmap/ic_launcher"/>
 

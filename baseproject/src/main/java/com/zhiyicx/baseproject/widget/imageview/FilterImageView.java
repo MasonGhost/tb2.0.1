@@ -42,7 +42,7 @@ public class FilterImageView extends ImageView {
     private void initAttrs(Context context, AttributeSet attrs) {
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.FilterImageView);
         mPressedColor = array.getInteger(R.styleable.FilterImageView_pressColor, DEFAULT_PRESSED_COLOR);
-        mShape = array.getInteger(R.styleable.FilterImageView_shape, SHAPE_SQUARE);
+        mShape = array.getInteger(R.styleable.FilterImageView_pressShape, SHAPE_SQUARE);
         array.recycle();
     }
 

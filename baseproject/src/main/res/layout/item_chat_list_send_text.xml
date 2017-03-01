@@ -3,6 +3,7 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:gravity="center_horizontal"
               android:orientation="vertical"
               android:paddingLeft="@dimen/spacing_normal"
@@ -18,6 +19,7 @@
         <com.zhiyicx.baseproject.widget.imageview.FilterImageView
             android:id="@+id/iv_chat_headpic"
             style="@style/style_chat_headpic"
+            app:pressShape="circle"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="@dimen/spacing_normal"/>
 
@@ -32,8 +34,8 @@
             android:id="@+id/rl_chat_bubble"
             style="@style/style_chat_bubble"
             android:layout_below="@id/tv_chat_name"
-            android:background="@drawable/shape_message_bubble_my"
-            android:layout_toLeftOf="@id/iv_chat_headpic">
+            android:layout_toLeftOf="@id/iv_chat_headpic"
+            android:background="@drawable/shape_message_bubble_my">
 
             <TextView
                 android:id="@+id/tv_chat_content"
