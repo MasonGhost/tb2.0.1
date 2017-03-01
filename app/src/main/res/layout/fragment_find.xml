@@ -8,6 +8,7 @@
     <TextView
         android:id="@+id/iv_bg"
         android:layout_width="match_parent"
+        android:background="@color/important_for_note"
         android:layout_height="match_parent"
         android:text="@string/find"/>
 

@@ -353,7 +353,7 @@ public class BackgroundTaskHandler {
             List<Observable<BaseJson<Integer>>> upLoadPics = new ArrayList<>();
             for (int i = 0; i < photos.size(); i++) {
                 String filePath = photos.get(i);
-                upLoadPics.add(mUpLoadRepository.upLoadSingleFile("file" + i, filePath,true));
+                upLoadPics.add(mUpLoadRepository.upLoadSingleFile("file" + i, filePath, true));
             }
             observable = // 组合多个图片上传任务
                     Observable.combineLatest(upLoadPics, new FuncN<List<Integer>>() {
@@ -374,12 +374,13 @@ public class BackgroundTaskHandler {
                     }).flatMap(new Func1<List<Integer>, Observable<BaseJson<Object>>>() {
                         @Override
                         public Observable<BaseJson<Object>> call(List<Integer> integers) {
-                            List<ImageBean> imageBeens=new ArrayList<ImageBean>();
+                            List<ImageBean> imageBeens = new ArrayList<>();
                             // 动态相关图片：图片任务id的数组，将它作为发布动态的参数
                             for (int i = 0; i < integers.size(); i++) {
                                 imageBeens.add(new ImageBean(integers.get(i)));
                             }
-                            dynamicDetailBean.setStorage_task_ids(imageBeens);
+                            dynamicDetailBean.setStorages(imageBeens);
+                            dynamicDetailBean.setStorage_task_ids(integers);
                             return mSendDynamicRepository.sendDynamic(dynamicDetailBean);// 进行动态发布的请求
                         }
                     });

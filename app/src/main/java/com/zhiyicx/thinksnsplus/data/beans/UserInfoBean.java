@@ -150,9 +150,7 @@ public class UserInfoBean implements Parcelable {
     }
 
     public String getName() {
-        if (name == null) {
-            return "";
-        }
+        name = name == null ? "" : name;
         return name;
     }
 
@@ -161,9 +159,8 @@ public class UserInfoBean implements Parcelable {
     }
 
     public String getUserIcon() {
-        if (userIcon == null) {
-            return "";
-        }
+
+        userIcon = userIcon == null ? "" : userIcon;
         return userIcon;
     }
 
@@ -172,9 +169,8 @@ public class UserInfoBean implements Parcelable {
     }
 
     public String getLocation() {
-        if (location == null) {
-            return "";
-        }
+
+        location = location == null ? "" : location;
         return location;
     }
 
