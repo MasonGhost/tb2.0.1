@@ -7,12 +7,12 @@ import android.support.annotation.NonNull;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProvider;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
 
 import org.simple.eventbus.EventBus;
 
-import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_CACHE_PROGRESS;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_COMPLETE;
 
 /**
@@ -150,14 +150,16 @@ public class PlaybackManager implements Playback.Callback {
                 if (mQueueManager.skipQueuePosition(1)) {
                     handlePlayRequest();
                     mQueueManager.updateMetadata();
-                    EventBus.getDefault().post(EVENT_SEND_MUSIC_COMPLETE, EVENT_SEND_MUSIC_COMPLETE);
+                    EventBus.getDefault().post(EVENT_SEND_MUSIC_COMPLETE,
+                            EVENT_SEND_MUSIC_COMPLETE);
                 } else {
                     // If skipping was not possible, we stop and release the resources:
                     handleStopRequest(null);
                 }
                 break;
             case ORDERSINGLE:
-                if (mQueueManager.skipQueuePosition(0)) {
+                mQueueManager.setCurrentQueueItem(mQueueManager.getCurrentMusic().getQueueId());
+                if (true) {
                     handlePlayRequest();
                     mQueueManager.updateMetadata();
                 } else {
@@ -322,14 +324,15 @@ public class PlaybackManager implements Playback.Callback {
         if (orderType > 2 && orderType < 0) {
             return;
         }
+        ToastUtils.showToast(orderType + "");
         switch (orderType) {
             case ORDERLOOP:
                 mQueueManager.setNormalQueue();
                 break;
+            case ORDERSINGLE:
+                break;
             case ORDERRANDOM:
                 mQueueManager.setRandomQueue();
-                break;
-            case ORDERSINGLE:
                 break;
             default:
                 break;

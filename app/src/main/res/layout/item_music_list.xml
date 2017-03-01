@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:scaleType="centerCrop"
-        android:src="@mipmap/img_default_nobody"/>
+        android:src="@mipmap/img_default_nothing"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -17,7 +17,7 @@
         android:layout_alignRight="@+id/music_list_image"
         android:layout_margin="10dp"
         android:text="2333"
-        android:textColor="#fff"/>
+        android:textColor="#000"/>
 
     <TextView
         android:gravity="center"
