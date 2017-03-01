@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaMetadataCompat;
@@ -88,8 +87,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
     private static final String ARG_MEDIA_ID = "media_id";
 
-    private static final String SAVED_MEDIA_ID = "com.zhiyicx.thinksnsplus.MEDIA_ID";
-
     private String mMediaId;
 
     public static final int STATE_INVALID = -1;
@@ -100,6 +97,36 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
     private MediaBrowserCompatProvider mCompatProvider;
 
+    private final MediaControllerCompat.Callback mMediaControllerCallback =
+            new MediaControllerCompat.Callback() {
+                @Override
+                public void onMetadataChanged(MediaMetadataCompat metadata) {
+                    super.onMetadataChanged(metadata);
+                    if (metadata == null) {
+                        return;
+                    }
+                }
+
+                @Override
+                public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
+                    super.onPlaybackStateChanged(state);
+                }
+            };
+
+    private final MediaBrowserCompat.SubscriptionCallback mSubscriptionCallback =
+            new MediaBrowserCompat.SubscriptionCallback() {
+                @Override
+                public void onChildrenLoaded(@NonNull String parentId,
+                                             @NonNull List<MediaBrowserCompat.MediaItem> children) {
+                    mAdapterList.addAll(children);
+                    mAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onError(@NonNull String id) {
+
+                }
+            };
 
     @Override
     protected int getBodyLayoutId() {
@@ -149,15 +176,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
             }
         });
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        String mediaId = getMediaId();
-        if (mediaId != null) {
-            outState.putString(SAVED_MEDIA_ID, mediaId);
-        }
-        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -295,18 +313,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         }
     }
 
-    protected void initializeFromParams(Bundle savedInstanceState, Intent intent) {
-        String mediaId = null;
-        if (intent.getAction() != null
-                && intent.getAction().equals(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH)) {
-
-        } else {
-            if (savedInstanceState != null) {
-                mediaId = savedInstanceState.getString(SAVED_MEDIA_ID);
-            }
-        }
-    }
-
     @NonNull
     private CommonAdapter<MusicListBean> getCommonAdapter() {
         mAdapter = new CommonAdapter<MediaBrowserCompat.MediaItem>(getActivity(), R.layout
@@ -336,6 +342,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
                     controllerCompat.getTransportControls()
                             .playFromMediaId(item.getMediaId(), null);
+                    mMediaId = item.getMediaId();
                 } else if (item.isBrowsable()) {
                     mCompatProvider.getMediaBrowser().unsubscribe(item.getMediaId());
                     mCompatProvider.getMediaBrowser().subscribe(item.getMediaId(),
@@ -379,37 +386,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
             return STATE_PAUSED;
         }
     }
-
-    private final MediaControllerCompat.Callback mMediaControllerCallback =
-            new MediaControllerCompat.Callback() {
-                @Override
-                public void onMetadataChanged(MediaMetadataCompat metadata) {
-                    super.onMetadataChanged(metadata);
-                    if (metadata == null) {
-                        return;
-                    }
-                }
-
-                @Override
-                public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
-                    super.onPlaybackStateChanged(state);
-                }
-            };
-
-    private final MediaBrowserCompat.SubscriptionCallback mSubscriptionCallback =
-            new MediaBrowserCompat.SubscriptionCallback() {
-                @Override
-                public void onChildrenLoaded(@NonNull String parentId,
-                                             @NonNull List<MediaBrowserCompat.MediaItem> children) {
-                    mAdapterList.addAll(children);
-                    mAdapter.notifyDataSetChanged();
-                }
-
-                @Override
-                public void onError(@NonNull String id) {
-
-                }
-            };
 
     public interface MediaBrowserCompatProvider {
         MediaBrowserCompat getMediaBrowser();

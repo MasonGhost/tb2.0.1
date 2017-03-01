@@ -1,19 +1,24 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail;
 
 import android.content.ComponentName;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.os.RemoteException;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayService;
 
 public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicDetailFragment>
@@ -32,6 +37,12 @@ public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicD
             "com.zhiyicx.thinksnsplus.CURRENT_MEDIA_DESCRIPTION";
 
     private static final String SAVED_MEDIA_ID = "com.zhiyicx.thinksnsplus.MEDIA_ID";
+
+    @Override
+    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
+        super.onCreate(savedInstanceState, persistentState);
+        initializeFromParams(savedInstanceState, getIntent());
+    }
 
     @Override
     protected MusicDetailFragment getFragment() {
@@ -81,6 +92,23 @@ public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicD
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        initializeFromParams(null, intent);
+        startMusicPlayActivityIfNeeded(intent);
+    }
+
+    private void startMusicPlayActivityIfNeeded(Intent intent) {
+        if (intent != null && intent.getBooleanExtra(EXTRA_START_FULLSCREEN, false)) {
+            Intent fullScreenIntent = new Intent(this, MusicPlayActivity.class)
+                    .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    .putExtra(EXTRA_CURRENT_MEDIA_DESCRIPTION,
+                            intent.getParcelableExtra(EXTRA_CURRENT_MEDIA_DESCRIPTION));
+            startActivity(fullScreenIntent);
+        }
+    }
+
+    @Override
     public MediaBrowserCompat getMediaBrowser() {
         return mMediaBrowserCompat;
     }
@@ -90,6 +118,22 @@ public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicD
             return null;
         }
         return mMusicDetailFragment.getMediaId();
+    }
+
+    protected void initializeFromParams(Bundle savedInstanceState, Intent intent) {
+        String mediaId = null;
+        if (intent.getAction() != null
+                && intent.getAction().equals(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH)) {
+
+        } else {
+            if (savedInstanceState != null) {
+                mediaId = savedInstanceState.getString(SAVED_MEDIA_ID);
+            }
+        }
+        if (!TextUtils.equals(mMusicDetailFragment.getMediaId(), mediaId)) {
+            mMusicDetailFragment.setMediaId(mediaId);
+        }
+
     }
 
     protected void showPlaybackControls() {
