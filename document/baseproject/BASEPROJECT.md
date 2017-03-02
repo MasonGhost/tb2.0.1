@@ -37,6 +37,7 @@
 ### widget目录：
     一些为TS+项目定制的常用组件
    - [TabSelectView:ToolBar中集成Indicator](TABSELECTVIEW.md)
+   - [刷新控件](REFRESH.md)
 ### 其他：
    - [app启动优化](APPLAUNCHEROPTIMIZE.md)
    - [动态工具栏](DYNAMICMENU.md)
