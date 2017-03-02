@@ -131,10 +131,10 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         mToolbarCenter.setText(setCenterTitle());
         mToolbarLeft.setVisibility(TextUtils.isEmpty(setLeftTitle()) && setLeftImg() == 0 ? View.GONE : View.VISIBLE);
         mToolbarLeft.setText(setLeftTitle());
-        mToolbarRight.setVisibility(TextUtils.isEmpty(setRightTitle()) ? View.GONE : View.VISIBLE);
+        mToolbarRight.setVisibility(TextUtils.isEmpty(setRightTitle()) && setRightImg() == 0 ? View.GONE : View.VISIBLE);
         mToolbarRight.setText(setRightTitle());
         mToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), setLeftImg()), null, null, null);
-
+        mToolbarRight.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), setRightImg()), null, null, null);
         RxView.clicks(mToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.<Void>bindToLifecycle())
@@ -184,6 +184,13 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     /**
+     * 设置右边的图片
+     */
+    protected int setRightImg() {
+        return 0;
+    }
+
+    /**
      * 设置左边的点击事件，默认为关闭activity，有必要重写该方法
      */
     protected void setLeftClick() {
@@ -223,6 +230,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     /**
      * 设置右侧文字
+     *
      * @param rightText 设置右侧文字 ，文字内容
      */
     protected void setRightText(String rightText) {
@@ -230,7 +238,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     /**
-     *  设置左侧文字内容
+     * 设置左侧文字内容
+     *
      * @param leftText 左侧文字内容
      */
     protected void setLeftText(String leftText) {
@@ -239,6 +248,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     /**
      * 设置中间文字内容
+     *
      * @param centerText 中间文字内容
      */
     protected void setCenterText(String centerText) {
