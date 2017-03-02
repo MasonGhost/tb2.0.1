@@ -10,8 +10,8 @@
 
         <ImageView
             android:id="@+id/fragment_music_paly_img"
-            android:layout_width="130dp"
-            android:layout_height="130dp"
+            android:layout_width="@dimen/music_play_head"
+            android:layout_height="@dimen/music_play_head"
             android:layout_gravity="center"
             android:scaleType="centerCrop"
             android:src="@mipmap/npc"/>
