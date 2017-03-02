@@ -101,5 +101,4 @@ public class RequestIntercept implements Interceptor {
         }
         return "null";
     }
-
 }

@@ -101,7 +101,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     @Override
     public void reSendText(ChatItemBean chatItemBean) {
         chatItemBean.getLastMessage().setCreate_time(System.currentTimeMillis());
-        ChatClient.getInstance(mContext).sendMessage( chatItemBean.getLastMessage());
+        ChatClient.getInstance(mContext).sendMessage(chatItemBean.getLastMessage());
         mRootView.reFreshMessage(chatItemBean);
     }
 
@@ -137,9 +137,6 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         if (userInfoBean == null) {
             userInfoBean = AppApplication.AppComponentHolder.getAppComponent()
                     .userInfoBeanGreenDao().getSingleDataFromCache((long) message.getUid());
-            if (userInfoBean == null) {
-                // TODO: 2017/2/21    //网络请求
-            }
             mUserInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
         }
         chatItemBean.setUserInfo(userInfoBean);

@@ -236,15 +236,21 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     public void refreshMessageUnreadNum(Message message) {
         int size = mMessageItemBeen.size();
+        boolean isHasConversion = false; // 对话是否存在
         for (int i = 0; i < size; i++) {
             if (mMessageItemBeen.get(i).getConversation().getCid() == message.getCid()) {
                 mMessageItemBeen.get(i).setUnReadMessageNums(mMessageItemBeen.get(i).getUnReadMessageNums() + 1);
                 mMessageItemBeen.get(i).getConversation().setLast_message_text(message.getTxt());
                 mMessageItemBeen.get(i).getConversation().setLast_message_time(message.getCreate_time());
                 refreshLastClicikPostion(i, mMessageItemBeen.get(i));
+                isHasConversion = true;
                 break;
             }
         }
+        if (!isHasConversion) {
+            mPresenter.requestNetData(0L, false);
+        }
+
     }
 
     @Override
