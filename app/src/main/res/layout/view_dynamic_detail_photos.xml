@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/white"
+              android:orientation="vertical">
+    <!--动态详情的图片-->
+    <com.zhiyicx.baseproject.widget.imageview.FilterImageView
+        android:id="@+id/dynamic_content_img"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_marginRight="@dimen/spacing_normal"
+        tools:src="@mipmap/ic_launcher"/>
+    <!--图片之间的分割线-->
+    <View
+        android:id="@+id/img_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_small"
+        android:background="@color/white"></View>
+</LinearLayout>

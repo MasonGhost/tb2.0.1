@@ -15,6 +15,7 @@ import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.greenrobot.greendao.annotation.Generated;
 
 /**
@@ -128,7 +129,7 @@ public class DynamicDetailBean implements Parcelable {
         }
     }
 
-   /**
+    /**
      * list<Integer> 转 String 形式存入数据库
      */
     public static class IntegerParamsConverter implements PropertyConverter<List<Integer>, String> {
@@ -211,6 +212,24 @@ public class DynamicDetailBean implements Parcelable {
                 '}';
     }
 
+    @Generated(hash = 1670959522)
+    public DynamicDetailBean(Long feed_mark, Long feed_id, String feed_title, String feed_content,
+                             long created_at, int feed_from, List<ImageBean> storages, List<Integer> storage_task_ids,
+                             List<String> localPhotos) {
+        this.feed_mark = feed_mark;
+        this.feed_id = feed_id;
+        this.feed_title = feed_title;
+        this.feed_content = feed_content;
+        this.created_at = created_at;
+        this.feed_from = feed_from;
+        this.storages = storages;
+        this.storage_task_ids = storage_task_ids;
+        this.localPhotos = localPhotos;
+    }
+
+    @Generated(hash = 1714846364)
+    public DynamicDetailBean() {
+    }
 
     @Override
     public int describeContents() {
@@ -241,25 +260,6 @@ public class DynamicDetailBean implements Parcelable {
         this.storage_task_ids = new ArrayList<Integer>();
         in.readList(this.storage_task_ids, Integer.class.getClassLoader());
         this.localPhotos = in.createStringArrayList();
-    }
-
-    @Generated(hash = 1670959522)
-    public DynamicDetailBean(Long feed_mark, Long feed_id, String feed_title, String feed_content,
-            long created_at, int feed_from, List<ImageBean> storages, List<Integer> storage_task_ids,
-            List<String> localPhotos) {
-        this.feed_mark = feed_mark;
-        this.feed_id = feed_id;
-        this.feed_title = feed_title;
-        this.feed_content = feed_content;
-        this.created_at = created_at;
-        this.feed_from = feed_from;
-        this.storages = storages;
-        this.storage_task_ids = storage_task_ids;
-        this.localPhotos = localPhotos;
-    }
-
-    @Generated(hash = 1714846364)
-    public DynamicDetailBean() {
     }
 
     public static final Creator<DynamicDetailBean> CREATOR = new Creator<DynamicDetailBean>() {

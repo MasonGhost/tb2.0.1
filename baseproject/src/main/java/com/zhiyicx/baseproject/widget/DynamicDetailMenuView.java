@@ -265,4 +265,36 @@ public class DynamicDetailMenuView extends FrameLayout {
         void onItemClick(ViewGroup parent, View v, int postion);
     }
 
+    /**
+     * 设置未选中情况下的图片
+     */
+    public void setImageNormalResourceIds(int[] normalResourceIds) {
+        this.mImageNormalResourceIds = normalResourceIds;
+        // 初始化所有的控件图片
+        mIvDynamicDetailLike.setImageResource(normalResourceIds[0]);
+        mIvDynamicDetailComment.setImageResource(normalResourceIds[1]);
+        mIvDynamicDetailShare.setImageResource(normalResourceIds[2]);
+        mIvDynamicDetailMore.setImageResource(normalResourceIds[3]);
+    }
+
+    /**
+     * 设置选中情况下的图片
+     */
+    public void setImageCheckedResourceIds(int[] checkedResourceIds) {
+        this.mImageCheckedResourceIds = checkedResourceIds;
+    }
+
+    /**
+     * 设置按钮文字内容
+     */
+    public void setButtonText(int[] texts) {
+        this.mTexts = texts;
+        // 初始化所有的控件图片
+        mTvDynamicDetailLike.setText(texts[0]);
+        mTvDynamicDetailComment.setText(texts[1]);
+        mTvDynamicDetailShare.setText(texts[2]);
+        mTvDynamicDetailMore.setText(texts[3]);
+    }
+
+
 }

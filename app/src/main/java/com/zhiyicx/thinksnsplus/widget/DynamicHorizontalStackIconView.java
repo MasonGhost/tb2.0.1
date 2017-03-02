@@ -108,7 +108,7 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
     /**
      * 设置发布时间
      */
-    public void setPublishTime(int publishTime) {
+    public void setPublishTime(long publishTime) {
         this.publishTime.setText(mContext.getString(R.string.dynamic_publish_time,
                 TimeUtils.getTimeFriendlyForDetail(publishTime)));
     }
