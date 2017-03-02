@@ -14,6 +14,7 @@ import org.greenrobot.greendao.annotation.Keep;
 
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.ToOne;
+import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.util.List;
@@ -51,6 +52,8 @@ public class DynamicBean extends BaseListBean {
     private Long hot_creat_time;// 标记热门，已及创建时间，用户数据库查询
     private boolean isFollowed;// 是否关注了该条动态（用户）
     private int state = SEND_SUCCESS;// 动态发送状态 0 发送失败 1 正在发送 2 发送成功
+    @Transient
+    private List<UserInfoBean> digUserInfoList;// 点赞用户的信息列表
 
     public Long getHot_creat_time() {
         return hot_creat_time;
@@ -98,6 +101,14 @@ public class DynamicBean extends BaseListBean {
 
     public void setState(int state) {
         this.state = state;
+    }
+
+    public List<UserInfoBean> getDigUserInfoList() {
+        return digUserInfoList;
+    }
+
+    public void setDigUserInfoList(List<UserInfoBean> digUserInfoList) {
+        this.digUserInfoList = digUserInfoList;
     }
 
     @Keep
@@ -253,54 +264,6 @@ public class DynamicBean extends BaseListBean {
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeValue(this.id);
-        dest.writeValue(this.feed_id);
-        dest.writeValue(this.feed_mark);
-        dest.writeLong(this.user_id);
-        dest.writeParcelable(this.feed, flags);
-        dest.writeParcelable(this.tool, flags);
-        dest.writeParcelable(this.userInfoBean, flags);
-        dest.writeTypedList(this.comments);
-        dest.writeValue(this.hot_creat_time);
-        dest.writeByte(this.isFollowed ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.state);
-    }
-
-    protected DynamicBean(Parcel in) {
-        super(in);
-        this.id = (Long) in.readValue(Long.class.getClassLoader());
-        this.feed_id = (Long) in.readValue(Long.class.getClassLoader());
-        this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
-        this.user_id = in.readLong();
-        this.feed = in.readParcelable(DynamicDetailBean.class.getClassLoader());
-        this.tool = in.readParcelable(DynamicToolBean.class.getClassLoader());
-        this.userInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
-        this.comments = in.createTypedArrayList(DynamicCommentBean.CREATOR);
-        this.hot_creat_time = (Long) in.readValue(Long.class.getClassLoader());
-        this.isFollowed = in.readByte() != 0;
-        this.state = in.readInt();
-    }
-
-    public static final Creator<DynamicBean> CREATOR = new Creator<DynamicBean>() {
-        @Override
-        public DynamicBean createFromParcel(Parcel source) {
-            return new DynamicBean(source);
-        }
-
-        @Override
-        public DynamicBean[] newArray(int size) {
-            return new DynamicBean[size];
-        }
-    };
-
-    @Override
     public String toString() {
         return "DynamicBean{" +
                 "id=" + id +
@@ -322,10 +285,62 @@ public class DynamicBean extends BaseListBean {
                 '}';
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 210281324)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getDynamicBeanDao() : null;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.id);
+        dest.writeValue(this.feed_id);
+        dest.writeValue(this.feed_mark);
+        dest.writeLong(this.user_id);
+        dest.writeParcelable(this.feed, flags);
+        dest.writeParcelable(this.tool, flags);
+        dest.writeParcelable(this.userInfoBean, flags);
+        dest.writeTypedList(this.comments);
+        dest.writeValue(this.hot_creat_time);
+        dest.writeByte(this.isFollowed ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.state);
+        dest.writeTypedList(this.digUserInfoList);
+    }
+
+    protected DynamicBean(Parcel in) {
+        super(in);
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.feed_id = (Long) in.readValue(Long.class.getClassLoader());
+        this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
+        this.user_id = in.readLong();
+        this.feed = in.readParcelable(DynamicDetailBean.class.getClassLoader());
+        this.tool = in.readParcelable(DynamicToolBean.class.getClassLoader());
+        this.userInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.comments = in.createTypedArrayList(DynamicCommentBean.CREATOR);
+        this.hot_creat_time = (Long) in.readValue(Long.class.getClassLoader());
+        this.isFollowed = in.readByte() != 0;
+        this.state = in.readInt();
+        this.digUserInfoList = in.createTypedArrayList(UserInfoBean.CREATOR);
+    }
+
+    public static final Creator<DynamicBean> CREATOR = new Creator<DynamicBean>() {
+        @Override
+        public DynamicBean createFromParcel(Parcel source) {
+            return new DynamicBean(source);
+        }
+
+        @Override
+        public DynamicBean[] newArray(int size) {
+            return new DynamicBean[size];
+        }
+    };
 }
