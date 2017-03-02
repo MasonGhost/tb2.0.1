@@ -56,13 +56,51 @@ public class DynamicBeanGreenDaoImplTest {
 
     }
 
+    /**
+     * 获取热门的动态列表
+     *
+     * @throws Exception
+     */
     @Test
     public void getHotDynamicList() throws Exception {
-
+        long testid = 20000000;
+        List<DynamicBean> datas = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            DynamicBean dynamicBean = new DynamicBean();
+            dynamicBean.setFeed_id(testid + i);
+            dynamicBean.setUser_id(1);
+            dynamicBean.setIsFollowed(true);
+            Thread.sleep(1);
+            dynamicBean.setHot_creat_time(System.currentTimeMillis());
+            dynamicBean.setFeed_mark(Long.valueOf(("1" + System.currentTimeMillis())));
+            datas.add(dynamicBean);
+        }
+        mDynamicBeanGreenDao.insertOrReplace(datas);
+        Thread.sleep(100);
+        Assert.assertTrue(mDynamicBeanGreenDao.getHotDynamicList(System.currentTimeMillis()).size() > 0);
+        Assert.assertTrue(mDynamicBeanGreenDao.getHotDynamicList(System.currentTimeMillis()).get(1).getHot_creat_time() > mDynamicBeanGreenDao.getHotDynamicList(System.currentTimeMillis()).get(2).getHot_creat_time());
     }
 
+    /**
+     * 获取关注列表动态
+     *
+     * @throws Exception
+     */
     @Test
     public void getFollowedDynamicList() throws Exception {
+        long testid = 20000000;
+        List<DynamicBean> datas = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            DynamicBean dynamicBean = new DynamicBean();
+            dynamicBean.setFeed_id(testid + i);
+            dynamicBean.setUser_id(1);
+            dynamicBean.setIsFollowed(true);
+            Thread.sleep(1);
+            dynamicBean.setFeed_mark(Long.valueOf(("1" + System.currentTimeMillis())));
+            datas.add(dynamicBean);
+        }
+        mDynamicBeanGreenDao.insertOrReplace(datas);
+        Assert.assertTrue(mDynamicBeanGreenDao.getFollowedDynamicList(testid + 10).get(0).getFeed_id() == 20000009);
 
     }
 
@@ -85,8 +123,7 @@ public class DynamicBeanGreenDaoImplTest {
             datas.add(dynamicBean);
         }
         mDynamicBeanGreenDao.insertOrReplace(datas);
-        Assert.assertTrue(mDynamicBeanGreenDao.getNewestDynamicList(testid+10).get(0).getFeed_id()==10000009);
-
+        Assert.assertTrue(mDynamicBeanGreenDao.getNewestDynamicList(testid + 10).get(0).getFeed_id() == 10000009);
     }
 
     /**
