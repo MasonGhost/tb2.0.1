@@ -31,8 +31,6 @@ public class DynamicFragmentTest {
 
     @Before
     public void initActivity() {
-//        RxUnitTestTools.openRxTools();
-//        mRegisterClient = AppApplication.AppComponentHolder.getAppComponent().serviceManager().getRegisterClient();
 
     }
 
@@ -59,5 +57,18 @@ public class DynamicFragmentTest {
     public void testHomeNoBack() throws Exception {
         onView(withId(R.id.mg_indicator)).check(matches(isDisplayed()));
     }
+
+    /**
+     * summary              当主页显示的时候
+     * steps                查看首页类容
+     * expected              首页分类正常显示
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testPlaceHolder() throws Exception {
+        onView(withId(R.id.mg_indicator)).check(matches(isDisplayed()));
+    }
+
 
 }

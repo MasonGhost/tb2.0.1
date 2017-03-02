@@ -230,8 +230,6 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
     public void handleSendDynamic(DynamicBean dynamicBean) {
         if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW)) {
             int position = hasContanied(dynamicBean);
-            System.out.println("position = " + position);
-            System.out.println("dynamicBean = " + dynamicBean.getState());
             if (position != -1) {// 如果列表有当前数据
                 mRootView.refresh(position);
             } else {
@@ -260,7 +258,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
 
     @NonNull
     private List<DynamicBean> getDynamicBeenFromDB() {
-        List<DynamicBean> datas = mDynamicBeanGreenDao.getMySendingDynamic((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+        List<DynamicBean> datas = mDynamicBeanGreenDao.getMySendingUnSuccessDynamic((long) AppApplication.getmCurrentLoginAuth().getUser_id());
         msendingStatus.clear();
         for (int i = 0; i < datas.size(); i++) {
             msendingStatus.put(i, datas.get(i).getFeed_mark());
