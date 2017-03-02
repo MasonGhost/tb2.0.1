@@ -36,6 +36,7 @@ public interface IDynamicReppsitory {
 
     /**
      * 动态点赞
+     *
      * @param feed_id
      * @return
      */
@@ -43,8 +44,23 @@ public interface IDynamicReppsitory {
 
     /**
      * 取消动态点赞
+     *
      * @param feed_id
      * @return
      */
     Observable<BaseJson<String>> cancleLikeDynamic(Long feed_id);
+
+    /**
+     * 动态收藏
+     *
+     * @param feed_id
+     * @return
+     */
+    Observable<BaseJson<String>> collectDynamic(Long feed_id);
+
+
+    /**
+     * 取消动态收藏
+     */
+    Observable<BaseJson<String>> cancleCollectDynamic(Long feed_id);
 }

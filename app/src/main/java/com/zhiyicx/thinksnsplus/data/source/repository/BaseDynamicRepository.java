@@ -133,4 +133,14 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     public Observable<BaseJson<String>> cancleLikeDynamic(Long feed_id) {
         return mDynamicClient.cancleLikeDynamic(feed_id);
     }
+
+    @Override
+    public Observable<BaseJson<String>> collectDynamic(Long feed_id) {
+        return null;
+    }
+
+    @Override
+    public Observable<BaseJson<String>> cancleCollectDynamic(Long feed_id) {
+        return null;
+    }
 }

@@ -33,10 +33,10 @@ public class DynamicDetailMenuView extends FrameLayout {
     public static final int DEFAULT_RESOURES_ID = -1; // 默认 id ，当子类使用默认 id 时，进行占位判断
     // item 数量
     private static final int ITEM_NUMS_MAX = 4;
-    private static final int ITEM_POSITION_0 = 0;
-    private static final int ITEM_POSITION_1 = 1;
-    private static final int ITEM_POSITION_2 = 2;
-    private static final int ITEM_POSITION_3 = 3;
+    public static final int ITEM_POSITION_0 = 0;
+    public static final int ITEM_POSITION_1 = 1;
+    public static final int ITEM_POSITION_2 = 2;
+    public static final int ITEM_POSITION_3 = 3;
 
     protected View mLlDynamicDetailLike;
     protected View mLlDynamicDetailComment;
