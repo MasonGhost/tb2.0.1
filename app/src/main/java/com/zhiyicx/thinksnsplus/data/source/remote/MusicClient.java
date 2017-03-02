@@ -1,7 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.data.beans.MusicListBean;
+import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 
 import java.util.Map;
 
@@ -26,5 +26,5 @@ public interface MusicClient {
      */
     @GET
     @PATCH("tym")
-    Observable<BaseJson<MusicListBean>> getMusicList(@QueryMap Map<String, String> maps);
+    Observable<BaseJson<MusicAlbumListBean>> getMusicList(@QueryMap Map<String, String> maps);
 }
