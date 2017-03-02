@@ -154,7 +154,6 @@ public class ChatFragmentTest {
      */
     @Test
     public void testTextInput() {
-
         onView(withId(R.id.et_content)).perform(replaceText("i am jungle"));
         onView(withId(R.id.bt_send)).check(matches(isEnabled()));
     }

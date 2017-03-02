@@ -340,8 +340,8 @@ public class BackgroundTaskHandler {
         final Long feedMark = (Long) params.get("params");
         final DynamicBean dynamicBean = mDynamicBeanGreenDao.getDynamicByFeedMark(feedMark);
         // 发送动态到动态列表：状态为发送中
-        dynamicBean.setState(DynamicBean.SEND_SUCCESS);
-        EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
+        dynamicBean.setState(DynamicBean.SEND_ING);
+
         // 存入数据库
         // ....
         final DynamicDetailBean dynamicDetailBean = dynamicBean.getFeed();
@@ -399,7 +399,6 @@ public class BackgroundTaskHandler {
                         dynamicBean.setState(DynamicBean.SEND_SUCCESS);
                         mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
                         EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
-
                     }
 
                     @Override
@@ -410,7 +409,6 @@ public class BackgroundTaskHandler {
                         dynamicBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
                         EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
-
                     }
 
                     @Override

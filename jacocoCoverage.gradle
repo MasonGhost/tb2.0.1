@@ -35,6 +35,7 @@ task jacocoAndroidTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest'
             '**/*$InjectAdapter.class',
             '**/*$ModuleAdapter.class',
             '**/*$ViewInjector*.class',
+            '**/music_fm',
             '**/*_MembersInjector.class', //Dagger2 generated code
             '*/*_MembersInjector*.*', //Dagger2 generated code
             '**/*_*Factory*.*', //Dagger2 generated code
