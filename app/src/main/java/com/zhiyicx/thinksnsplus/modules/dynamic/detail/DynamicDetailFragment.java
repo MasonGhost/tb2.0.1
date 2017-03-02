@@ -5,10 +5,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
+import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailItemForContent;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailItemForDig;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -42,11 +51,12 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        // 初始化底部工具栏数据
         mDdDynamicTool.setImageNormalResourceIds(new int[]{R.mipmap.home_ico_good_normal
                 , R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal
                 , R.mipmap.detail_ico_good_uncollect
         });
-        mDdDynamicTool.setImageCheckedResourceIds(new int[]{R.mipmap.home_ico_good_normal
+        mDdDynamicTool.setImageCheckedResourceIds(new int[]{R.mipmap.home_ico_good_high
                 , R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal
                 , R.mipmap.detail_ico_collect
         });
@@ -55,11 +65,18 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
+    protected int setRightImg() {
+        return R.mipmap.detail_ico_follow;
+    }
+
+    @Override
     protected void initData() {
         // 处理上个页面传过来的动态数据
         Bundle bundle = getArguments();
         if (bundle != null && bundle.containsKey(DYNAMIC_DETAIL_DATA)) {
             DynamicBean dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
+            setToolBarUser(dynamicBean);// 设置标题用户
+
             DynamicBean dynamicContent = new DynamicBean();
             dynamicContent.setFeed(dynamicBean.getFeed());
             DynamicBean dynamicDig = new DynamicBean();
@@ -108,6 +125,46 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         DynamicDetailFragment dynamicDetailFragment = new DynamicDetailFragment();
         dynamicDetailFragment.setArguments(bundle);
         return dynamicDetailFragment;
+    }
+
+    /**
+     * 设置toolBar上面的用户头像
+     */
+    private void setToolBarUser(DynamicBean dynamicBean) {
+        mToolbarCenter.setVisibility(View.VISIBLE);
+        UserInfoBean userInfoBean = dynamicBean.getUserInfoBean();
+        mToolbarCenter.setText(userInfoBean.getName());
+        int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
+        Glide.with(getContext())
+                .load(String.format(ApiConfig.IMAGE_PATH, 20, 10))
+                .bitmapTransform(new GlideCircleTransform(getContext()))
+                .override(headIconWidth, headIconWidth)
+                .into(new SimpleTarget<GlideDrawable>() {
+                    @Override
+                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                        resource.setBounds(0, 0, resource.getMinimumWidth(), resource.getMinimumHeight());
+                        mToolbarCenter.setCompoundDrawables(resource, null, null, null);
+                    }
+                });
+    }
+
+    /**
+     * 设置toolBar上面的关注状态
+     */
+    private void setToolBarRightFollowState(int state) {
+        mToolbarRight.setVisibility(View.VISIBLE);
+        switch (state) {
+            case FollowFansBean.UNFOLLOWED_STATE:
+                mToolbarRight.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_follow), null, null, null);
+                break;
+            case FollowFansBean.IFOLLOWED_STATE:
+                mToolbarRight.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed), null, null, null);
+                break;
+            case FollowFansBean.FOLLOWED_EACHOTHER_STATE:
+                mToolbarRight.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed_eachother), null, null, null);
+                break;
+            default:
+        }
     }
 
 }
