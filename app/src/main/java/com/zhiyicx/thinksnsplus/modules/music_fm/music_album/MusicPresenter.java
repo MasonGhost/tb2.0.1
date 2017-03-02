@@ -1,7 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_album;
 
 import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.thinksnsplus.data.beans.MusicListBean;
+import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicRepository;
 
 import org.jetbrains.annotations.NotNull;
@@ -53,7 +53,7 @@ public class MusicPresenter extends BasePresenter<MusicContract.Repository, Musi
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<MusicListBean> data) {
+    public boolean insertOrUpdateData(@NotNull List<MusicAlbumListBean> data) {
         return false;
     }
 }
