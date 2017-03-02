@@ -175,35 +175,55 @@ public class BackgroundTaskHandler {
      * @param backgroundRequestTaskBean 后台任务
      */
     private void handleTask(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
-        if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
-            EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
-            return;
-        }
-        backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
+
         switch (backgroundRequestTaskBean.getMethodType()) {
             /**
              * 通用接口处理
              */
             case POST:
                 postMethod(backgroundRequestTaskBean);
+                if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
+                    EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
+                    return;
+                }
+                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 break;
             case GET:
-
+                if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
+                    EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
+                    return;
+                }
+                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 break;
             case DELETE:
                 deleteMethod(backgroundRequestTaskBean);
+                if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
+                    EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
+                    return;
+                }
+                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 break;
             /**
              * 获取 IM 信息，必须保证 header 中已经加入了权限 token
              */
             case GET_IM_INFO:
                 getIMInfo(backgroundRequestTaskBean);
+                if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
+                    EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
+                    return;
+                }
+                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 break;
             /**
              * 获取用户信息
              */
             case GET_USER_INFO:
                 getUserInfo(backgroundRequestTaskBean);
+                if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
+                    EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
+                    return;
+                }
+                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 break;
             /**
              * 发送动态
@@ -353,7 +373,7 @@ public class BackgroundTaskHandler {
             List<Observable<BaseJson<Integer>>> upLoadPics = new ArrayList<>();
             for (int i = 0; i < photos.size(); i++) {
                 String filePath = photos.get(i);
-                upLoadPics.add(mUpLoadRepository.upLoadSingleFile("file" + i, filePath,true));
+                upLoadPics.add(mUpLoadRepository.upLoadSingleFile("file" + i, filePath, true));
             }
             observable = // 组合多个图片上传任务
                     Observable.combineLatest(upLoadPics, new FuncN<List<Integer>>() {
@@ -374,7 +394,7 @@ public class BackgroundTaskHandler {
                     }).flatMap(new Func1<List<Integer>, Observable<BaseJson<Object>>>() {
                         @Override
                         public Observable<BaseJson<Object>> call(List<Integer> integers) {
-                            List<ImageBean> imageBeens=new ArrayList<ImageBean>();
+                            List<ImageBean> imageBeens = new ArrayList<ImageBean>();
                             // 动态相关图片：图片任务id的数组，将它作为发布动态的参数
                             for (int i = 0; i < integers.size(); i++) {
                                 imageBeens.add(new ImageBean(integers.get(i)));
@@ -408,7 +428,12 @@ public class BackgroundTaskHandler {
                         // 发送动态到动态列表：状态为发送失败
                         dynamicBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
-                        EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
+                        if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
+                            EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
+                            return;
+                        }
+                        backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
+
                     }
 
                     @Override
