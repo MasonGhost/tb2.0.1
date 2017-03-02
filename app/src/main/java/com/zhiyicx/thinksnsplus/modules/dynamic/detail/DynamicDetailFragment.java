@@ -155,13 +155,13 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mToolbarRight.setVisibility(View.VISIBLE);
         switch (state) {
             case FollowFansBean.UNFOLLOWED_STATE:
-                mToolbarRight.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_follow), null, null, null);
+                mToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_follow), null);
                 break;
             case FollowFansBean.IFOLLOWED_STATE:
-                mToolbarRight.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed), null, null, null);
+                mToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed), null);
                 break;
             case FollowFansBean.FOLLOWED_EACHOTHER_STATE:
-                mToolbarRight.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed_eachother), null, null, null);
+                mToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed_eachother), null);
                 break;
             default:
         }
