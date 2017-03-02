@@ -65,8 +65,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     protected int mPage = DEFAULT_PAGE;// 只对当 max_id 无法使用时有效，如热门动态
 
-    protected boolean mIsGetNetData = false; //  是否请求了网络数据
-
     private boolean mIsTipMessageSticky;// 提示信息是否需要常驻
 
     @Override
@@ -319,12 +317,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     public void onLoadMore() {
-        if (!mIsGetNetData) { // 如果没有获取过网络数据，加载更多就是获取本地数据，如果加载了网络数据了，加载更多就是获取网络数据
-            onCacheResponseSuccess(requestCacheData(mMaxId, true), true);
-        } else {
-            mPage++;
-            requestNetData(mMaxId, true);
-        }
+        mPage++;
+        requestNetData(mMaxId, true);
     }
 
     /**
@@ -333,7 +327,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void onNetResponseSuccess(@NotNull List<T> data, boolean isLoadMore) {
-        mIsGetNetData = true;
         handleRefreshState(isLoadMore);
         handleReceiveData(data, isLoadMore, false);
     }
@@ -387,7 +380,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 // 内存处理数据
                 mAdapter.addAllData(data);
                 mMaxId = data.get(data.size() - 1).getMaxId();
-            }else{
+            } else {
                 mEmptyView.setErrorImag(setEmptView());
             }
             refreshData();
