@@ -30,8 +30,7 @@ import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.MusicListBean;
-import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProviderSource;
+import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 import com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout;
@@ -80,7 +79,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     RelativeLayout mFragmentMusicDetailTitle;
 
     private CommonAdapter mAdapter;
-    private List<MediaMetadataCompat> mMusicList = new ArrayList<>();
     private List<MediaBrowserCompat.MediaItem> mAdapterList = new ArrayList<>();
     private ImageLoader mImageLoader;
     private MediaMetadataCompat.Builder mBuilder;
@@ -140,12 +138,14 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         final Palette palette = Palette.from(bitmap).generate();
 
         ViewGroup.LayoutParams titleParam;
+
         int titleHeight;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             titleHeight = ConvertUtils.dp2px(getActivity(), 64);
         } else {
             titleHeight = ConvertUtils.dp2px(getActivity(), 44);
         }
+
         titleParam = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, titleHeight);
         mFragmentMusicDetailScrollview.setNotConsumeHeight(titleHeight);
@@ -159,7 +159,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         mFragmentMusicDetailHeadInfo.setBackgroundDrawable(drawable);
 
         mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
-                .transformation(new GlideStokeTransform(getActivity()))
+                .transformation(new GlideStokeTransform(getActivity(), 15))
                 .imagerView(mFragmentMusicDetailHeadIamge)
                 .resourceId(R.mipmap.npc).build());
 
@@ -219,30 +219,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     }
 
     @Override
-    public void setMediaList(MusicListBean musicListBeen) {
-        if (mBuilder == null)
-            mBuilder = new MediaMetadataCompat.Builder();
-        for (MusicListBean.Music music : musicListBeen.getMusic()) {
-            //noinspection ResourceType
-            MediaMetadataCompat metadataCompat = mBuilder.putString(MediaMetadataCompat
-                    .METADATA_KEY_MEDIA_ID, String.valueOf(music.getSource().hashCode()))
-                    .putString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE, music.getSource())
-                    .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, music.getAlbum())
-                    .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, music.getArtist())
-                    .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, music.getDuration())
-                    .putString(MediaMetadataCompat.METADATA_KEY_GENRE, music.getGenre())
-                    .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, music.getImage())
-                    .putString(MediaMetadataCompat.METADATA_KEY_TITLE, music.getTitle())
-                    .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, music.getTrackNumber())
-                    .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, music
-                            .getTotalTrackCount())
-                    .build();
-            mMusicList.add(metadataCompat);
-        }
-
-    }
-
-    @Override
     public void showLoading() {
 
     }
@@ -268,6 +244,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
             case R.id.fragment_music_detail_favorite:
                 break;
             case R.id.fragment_music_detail_back:
+                getActivity().finish();
                 break;
         }
     }
@@ -314,7 +291,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     }
 
     @NonNull
-    private CommonAdapter<MusicListBean> getCommonAdapter() {
+    private CommonAdapter<MusicAlbumListBean> getCommonAdapter() {
         mAdapter = new CommonAdapter<MediaBrowserCompat.MediaItem>(getActivity(), R.layout
                 .item_music_detail_list,
                 mAdapterList) {

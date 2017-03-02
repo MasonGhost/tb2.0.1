@@ -5,7 +5,7 @@ import android.support.v4.media.MediaBrowserCompat;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBaseView;
-import com.zhiyicx.thinksnsplus.data.beans.MusicListBean;
+import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 
 import java.util.Map;
 
@@ -24,11 +24,11 @@ public interface MusicContract {
         void setMediaBrowserCompat(MediaBrowserCompat mediaBrowserCompat);
     }
 
-    interface Presenter extends ITSListPresenter<MusicListBean> {
+    interface Presenter extends ITSListPresenter<MusicAlbumListBean> {
         void getMusicList();
     }
 
     interface Repository {
-        Observable<BaseJson<MusicListBean>> getMusicList(Map map);
+        Observable<BaseJson<MusicAlbumListBean>> getMusicList(Map map);
     }
 }

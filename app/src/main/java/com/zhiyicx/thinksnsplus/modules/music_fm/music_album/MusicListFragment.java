@@ -6,13 +6,15 @@ import android.support.v4.media.MediaBrowserCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
-import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
+import com.zhiyicx.common.utils.recycleviewdecoration.TGridDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.MusicListBean;
+import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -27,21 +29,25 @@ import java.util.List;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class MusicListFragment extends TSListFragment<MusicContract.Presenter, MusicListBean>
+public class MusicListFragment extends TSListFragment<MusicContract.Presenter, MusicAlbumListBean>
         implements
         MusicContract.View {
 
     private ImageLoader mImageLoader;
 
-    private List<MusicListBean> mMusicListBeen = new ArrayList<>();
+    private List<MusicAlbumListBean> mMusicListBeen = new ArrayList<>();
 
     @Override
-    protected CommonAdapter<MusicListBean> getAdapter() {
-        return new CommonAdapter<MusicListBean>(getActivity(), R.layout.item_music_list,
+    protected CommonAdapter<MusicAlbumListBean> getAdapter() {
+        return new CommonAdapter<MusicAlbumListBean>(getActivity(), R.layout.item_music_list,
                 mMusicListBeen) {
             @Override
-            protected void convert(ViewHolder holder, MusicListBean musicListBean, int position) {
-
+            protected void convert(ViewHolder holder, MusicAlbumListBean musicListBean, int position) {
+                ImageView imag = holder.getView(R.id.music_list_image);
+                mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
+                        .imagerView(imag)
+                        .resourceId(R.mipmap.img_default_nothing)
+                        .build());
             }
         };
     }
@@ -50,13 +56,13 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     protected void initData() {
         super.initData();
         mRvList.setOverScrollMode(View.OVER_SCROLL_NEVER);
-        mRvList.setPadding(20, 20, 20, 0);
-        mRvList.addItemDecoration(new GridDecoration(20, 20));
+        mRvList.setPadding(20, 20, 0, 0);
+        mRvList.addItemDecoration(new TGridDecoration(20, 20, true));
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        mMusicListBeen.add(new MusicListBean());
-        mMusicListBeen.add(new MusicListBean());
-        mMusicListBeen.add(new MusicListBean());
-        mMusicListBeen.add(new MusicListBean());
+        mMusicListBeen.add(new MusicAlbumListBean());
+        mMusicListBeen.add(new MusicAlbumListBean());
+        mMusicListBeen.add(new MusicAlbumListBean());
+        mMusicListBeen.add(new MusicAlbumListBean());
 
         mAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
