@@ -58,7 +58,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
                 .subscribe(new BaseSubscribe<List<UserInfoBean>>() {
                     @Override
                     protected void onSuccess(List<UserInfoBean> data) {
-                        
+                       mRootView.setDigHeadIcon(data);
                     }
 
                     @Override

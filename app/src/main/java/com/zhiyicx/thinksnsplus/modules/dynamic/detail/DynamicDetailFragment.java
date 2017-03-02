@@ -90,6 +90,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
             refreshData();
         }
     }
+
     //不显示分割线
     @Override
     protected float getItemDecorationSpacing() {
@@ -172,16 +173,16 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public void setLike(boolean isLike) {
-        mDdDynamicTool.setItemIsChecked(isLike,ITEM_POSITION_0);
+        mDdDynamicTool.setItemIsChecked(isLike, ITEM_POSITION_0);
     }
 
     @Override
     public void setCollect(boolean isCollect) {
-        mDdDynamicTool.setItemIsChecked(isCollect,ITEM_POSITION_3);
+        mDdDynamicTool.setItemIsChecked(isCollect, ITEM_POSITION_3);
     }
 
     @Override
-    public void setDigHeadIcon() {
+    public void setDigHeadIcon(List<UserInfoBean> userInfoBeanList) {
 
     }
 }
