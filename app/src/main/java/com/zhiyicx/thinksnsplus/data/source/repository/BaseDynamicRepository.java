@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -142,5 +143,10 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     @Override
     public Observable<BaseJson<String>> cancleCollectDynamic(Long feed_id) {
         return null;
+    }
+
+    @Override
+    public Observable<BaseJson<List<DynamicDigListBean>>> getDynamicDigList(Long feed_id, Integer max_id) {
+        return mDynamicClient.getDynamicDigList(feed_id, max_id);
     }
 }

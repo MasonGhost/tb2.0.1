@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic;
 
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 
@@ -63,4 +64,9 @@ public interface IDynamicReppsitory {
      * 取消动态收藏
      */
     Observable<BaseJson<String>> cancleCollectDynamic(Long feed_id);
+
+    /**
+     * 获取动态点赞列表
+     */
+    Observable<BaseJson<List<DynamicDigListBean>>> getDynamicDigList(Long feed_id, Integer max_id);
 }

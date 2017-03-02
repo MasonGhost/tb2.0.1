@@ -49,7 +49,8 @@ public class DynamicDetailItemForDig implements ItemViewDelegate<DynamicBean> {
         dynamicHorizontalStackIconView.setDigCount(dynamicToolBean.getFeed_digg_count());
         dynamicHorizontalStackIconView.setPublishTime(dynamicDetailBean.getCreated_at());
         dynamicHorizontalStackIconView.setViewerCount(dynamicToolBean.getFeed_view_count());
-        //dynamicHorizontalStackIconView.setDigUserHeadIcon();
+
+       // dynamicHorizontalStackIconView.setDigUserHeadIcon();
     }
 
 
