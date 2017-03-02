@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @Describe
+ * @Describe 动态数据库测试
  * @Author Jungle68
  * @Date 2017/3/2
  * @Contact master.jungle68@gmail.com
@@ -66,13 +66,32 @@ public class DynamicBeanGreenDaoImplTest {
 
     }
 
+    /**
+     * 获取最新动态
+     *
+     * @throws Exception
+     */
     @Test
     public void getNewestDynamicList() throws Exception {
+        long testid = 10000000;
+        List<DynamicBean> datas = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            DynamicBean dynamicBean = new DynamicBean();
+            dynamicBean.setFeed_id(testid + i);
+            dynamicBean.setUser_id(1);
+            dynamicBean.setState(1);
+            Thread.sleep(1);
+            dynamicBean.setFeed_mark(Long.valueOf(("1" + System.currentTimeMillis())));
+            datas.add(dynamicBean);
+        }
+        mDynamicBeanGreenDao.insertOrReplace(datas);
+        Assert.assertTrue(mDynamicBeanGreenDao.getNewestDynamicList(testid+10).get(0).getFeed_id()==10000009);
 
     }
 
     /**
      * 测试我没有发送成功的动态
+     *
      * @throws Exception
      */
     @Test
@@ -88,11 +107,12 @@ public class DynamicBeanGreenDaoImplTest {
         }
         mDynamicBeanGreenDao.insertOrReplace(datas);
         List<DynamicBean> result = mDynamicBeanGreenDao.getMySendingUnSuccessDynamic(1L);
-        Assert.assertTrue(result.size()>0);
+        Assert.assertTrue(result.size() > 0);
     }
 
     /**
-     *  通过 Feed mark 获取动态
+     * 通过 Feed mark 获取动态
+     *
      * @throws Exception
      */
     @Test
@@ -105,7 +125,7 @@ public class DynamicBeanGreenDaoImplTest {
         dynamicBean.setFeed_mark(feedmark);
         mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
         DynamicBean result = mDynamicBeanGreenDao.getDynamicByFeedMark(feedmark);
-        Assert.assertTrue(result.getUser_id()==1);
+        Assert.assertTrue(result.getUser_id() == 1);
     }
 
 }
