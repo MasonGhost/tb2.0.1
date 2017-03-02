@@ -71,14 +71,32 @@ public class DynamicBeanGreenDaoImplTest {
 
     }
 
+    /**
+     * 测试我没有发送成功的动态
+     * @throws Exception
+     */
     @Test
-    public void getMySendingDynamic() throws Exception {
-
+    public void getMySendingUnsuccessDynamic() throws Exception {
+        List<DynamicBean> datas = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            DynamicBean dynamicBean = new DynamicBean();
+            dynamicBean.setUser_id(1);
+            dynamicBean.setState(1);
+            Thread.sleep(1);
+            dynamicBean.setFeed_mark(Long.valueOf(("1" + System.currentTimeMillis())));
+            datas.add(dynamicBean);
+        }
+        mDynamicBeanGreenDao.insertOrReplace(datas);
+        List<DynamicBean> result = mDynamicBeanGreenDao.getMySendingUnSuccessDynamic(1L);
+        Assert.assertTrue(result.size()>0);
     }
 
+    /**
+     *  通过 Feed mark 获取动态
+     * @throws Exception
+     */
     @Test
     public void getDynamicByFeedMark() throws Exception {
-
         DynamicBean dynamicBean = new DynamicBean();
         dynamicBean.setUser_id(1);
         dynamicBean.setState(1);
