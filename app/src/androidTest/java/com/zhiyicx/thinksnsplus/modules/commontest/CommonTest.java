@@ -7,7 +7,6 @@ import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.modules.AcitivityTest;
 import com.zhiyicx.thinksnsplus.modules.RxUnitTestTools;
@@ -182,7 +181,7 @@ public class CommonTest extends AcitivityTest {
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        assertTrue(throwable == null);
+                        assertTrue(throwable != null);
                     }
                 });
     }
@@ -205,7 +204,7 @@ public class CommonTest extends AcitivityTest {
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        assertTrue(throwable == null);
+                        assertTrue(throwable != null);
                     }
                 });
 
