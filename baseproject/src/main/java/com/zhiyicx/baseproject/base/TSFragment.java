@@ -134,7 +134,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         mToolbarRight.setVisibility(TextUtils.isEmpty(setRightTitle()) && setRightImg() == 0 ? View.GONE : View.VISIBLE);
         mToolbarRight.setText(setRightTitle());
         mToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), setLeftImg()), null, null, null);
-        mToolbarRight.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), setRightImg()), null, null, null);
+        mToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), setRightImg()), null);
         RxView.clicks(mToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.<Void>bindToLifecycle())
