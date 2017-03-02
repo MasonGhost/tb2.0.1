@@ -13,15 +13,16 @@
             android:id="@+id/fragment_music_detail_head_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="@dimen/music_album_detail_head_paddingtop_60dp"
             android:background="@mipmap/npc"
-            android:gravity="center_vertical"
-            android:paddingTop="70dp">
+            android:gravity="center_vertical">
 
             <ImageView
                 android:id="@+id/fragment_music_detail_head_iamge"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="@dimen/music_album_detail_head"
+                android:layout_height="@dimen/music_album_detail_head"
                 android:layout_centerHorizontal="true"
+                android:contentDescription="@null"
                 android:scaleType="centerCrop"/>
 
             <TextView
@@ -30,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/fragment_music_detail_head_iamge"
                 android:layout_centerHorizontal="true"
-                android:layout_margin="15dp"
+                android:layout_marginTop="@dimen/spacing_normal"
                 android:text="Climber's High"
                 android:textColor="@color/white"/>
 
@@ -40,54 +41,62 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/fragment_music_detail_name"
                 android:layout_centerHorizontal="true"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:layout_marginTop="@dimen/spacing_mid"
                 android:text="踏风而来，随风而去"
                 android:textColor="@color/white"/>
 
             <LinearLayout
-                android:layout_margin="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_below="@+id/fragment_music_detail_dec">
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/fragment_music_detail_dec"
+                android:layout_marginBottom="@dimen/spacing_large"
+                android:layout_marginTop="@dimen/spacing_large">
 
                 <TextView
                     android:id="@+id/fragment_music_detail_playvolume"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:drawablePadding="@dimen/spacing_small_4dp"
+                    android:drawableTop="@mipmap/music_ico_playvolume"
                     android:gravity="center"
                     android:text="6567"
-                    android:textColor="@color/white"
-                    android:drawableTop="@mipmap/music_ico_playvolume"/>
+                    android:textColor="@color/white"/>
 
                 <TextView
                     android:id="@+id/fragment_music_detail_share"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:drawablePadding="@dimen/spacing_small_4dp"
+                    android:drawableTop="@mipmap/music_ico_share"
                     android:gravity="center"
                     android:text="123"
-                    android:textColor="@color/white"
-                    android:drawableTop="@mipmap/music_ico_share"/>
+                    android:textColor="@color/white"/>
 
                 <TextView
                     android:id="@+id/fragment_music_detail_comment"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:drawablePadding="@dimen/spacing_small_4dp"
+                    android:drawableTop="@mipmap/music_ico_comment"
                     android:gravity="center"
                     android:text="12"
-                    android:textColor="@color/white"
-                    android:drawableTop="@mipmap/music_ico_comment"/>
+                    android:textColor="@color/white"/>
 
                 <TextView
                     android:id="@+id/fragment_music_detail_favorite"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:drawablePadding="@dimen/spacing_small_4dp"
+                    android:drawableTop="@mipmap/music_ico_collect"
                     android:gravity="center"
                     android:text="12"
-                    android:textColor="@color/white"
-                    android:drawableTop="@mipmap/music_ico_collect"/>
+                    android:textColor="@color/white"/>
 
             </LinearLayout>
 
@@ -95,16 +104,21 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
-            android:text="歌曲列表"/>
+            android:layout_height="@dimen/music_album_detail_music_num_50dp"
+            android:layout_marginLeft="@dimen/spacing_mid"
+            android:gravity="center_vertical"
+            android:text="歌曲列表(共18首)"/>
+
+        <View
+            style="@style/style_divider_horizontal_light"
+            android:layout_below="@+id/music_list_image"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_music_detail_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_mid"
+            android:layout_marginRight="@dimen/spacing_mid"
             android:overScrollMode="never"/>
 
     </com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout>
@@ -112,8 +126,7 @@
     <RelativeLayout
         android:id="@+id/fragment_music_detail_title"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:fitsSystemWindows="true">
+        android:layout_height="@dimen/toolbar_height">
 
         <TextView
             android:id="@+id/fragment_music_detail_back"

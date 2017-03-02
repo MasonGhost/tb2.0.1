@@ -3,7 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
-import com.zhiyicx.thinksnsplus.data.beans.MusicListBean;
+import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 
 import java.util.Map;
 
@@ -17,7 +17,6 @@ import rx.Observable;
  */
 public interface MusicDetailContract {
     interface View extends IBaseView<Presenter> {
-        void setMediaList(MusicListBean mediaItemList);
     }
 
     interface Presenter extends IBasePresenter {
@@ -25,6 +24,6 @@ public interface MusicDetailContract {
     }
 
     interface Repository {
-        Observable<BaseJson<MusicListBean>> getMusicList(Map map);
+        Observable<BaseJson<MusicAlbumListBean>> getMusicList(Map map);
     }
 }

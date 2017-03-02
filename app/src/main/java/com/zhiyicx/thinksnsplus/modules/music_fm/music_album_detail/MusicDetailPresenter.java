@@ -35,6 +35,5 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
 
     @Override
     public void getMediaList() {
-        mRootView.setMediaList(null);
     }
 }

@@ -1,8 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic;
 
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import java.util.List;
 
@@ -36,6 +38,7 @@ public interface IDynamicReppsitory {
 
     /**
      * 动态点赞
+     *
      * @param feed_id
      * @return
      */
@@ -43,8 +46,28 @@ public interface IDynamicReppsitory {
 
     /**
      * 取消动态点赞
+     *
      * @param feed_id
      * @return
      */
     Observable<BaseJson<String>> cancleLikeDynamic(Long feed_id);
+
+    /**
+     * 动态收藏
+     *
+     * @param feed_id
+     * @return
+     */
+    Observable<BaseJson<String>> collectDynamic(Long feed_id);
+
+
+    /**
+     * 取消动态收藏
+     */
+    Observable<BaseJson<String>> cancleCollectDynamic(Long feed_id);
+
+    /**
+     * 获取动态点赞列表
+     */
+    Observable<BaseJson<List<UserInfoBean>>> getDynamicDigList(Long feed_id, Integer max_id);
 }

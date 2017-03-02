@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 
 import java.util.List;
@@ -62,5 +63,15 @@ public interface DynamicClient {
      */
     @DELETE(ApiConfig.APP_PATH_DYNAMIC_HANDLE_LIKE)
     Observable<BaseJson<String>> cancleLikeDynamic(@Path("feed_id") Long feed_id);
+
+    /**
+     * 获取某条动态的点赞用户列表
+     *
+     * @param feed_id 动态的唯一id
+     * @param max_id  返回的feed_digg_id 作为max_id,对象为null表示不传
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_DYNAMIC_DIG_LIST)
+    Observable<BaseJson<List<DynamicDigListBean>>> getDynamicDigList(@Path("feed_id") Long feed_id, @Query("max_id ") Integer max_id);
 
 }

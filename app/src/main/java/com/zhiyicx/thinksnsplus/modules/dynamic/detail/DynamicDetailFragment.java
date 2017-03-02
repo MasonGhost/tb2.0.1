@@ -28,6 +28,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
+import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_3;
+
 /**
  * @author LiuChao
  * @describe
@@ -88,6 +91,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         }
     }
 
+    //不显示分割线
     @Override
     protected float getItemDecorationSpacing() {
         return 0;
@@ -103,7 +107,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public void setPresenter(DynamicDetailContract.Presenter presenter) {
-
+        this.mPresenter = presenter;
     }
 
     @Override
@@ -167,4 +171,20 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         }
     }
 
+    @Override
+    public void setLike(boolean isLike) {
+        mDdDynamicTool.setItemIsChecked(isLike, ITEM_POSITION_0);
+    }
+
+    @Override
+    public void setCollect(boolean isCollect) {
+        mDdDynamicTool.setItemIsChecked(isCollect, ITEM_POSITION_3);
+    }
+
+    @Override
+    public void setDigHeadIcon(List<UserInfoBean> userInfoBeanList) {
+        DynamicBean dynamicBean = mDatas.get(1);
+        dynamicBean.setDigUserInfoList(userInfoBeanList);
+        refreshData(1);
+    }
 }

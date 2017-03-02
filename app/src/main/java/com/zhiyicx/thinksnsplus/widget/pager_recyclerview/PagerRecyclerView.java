@@ -35,6 +35,7 @@ public class PagerRecyclerView extends RecyclerView {
      * 划出多少触发下一页
      */
     private float mTriggerOffset = 0.25f;
+
     /**
      * 惯性速率
      */

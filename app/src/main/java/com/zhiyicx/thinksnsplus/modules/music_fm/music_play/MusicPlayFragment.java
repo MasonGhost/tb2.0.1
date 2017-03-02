@@ -189,7 +189,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 }
             };
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -291,7 +290,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 .resourceId(R.mipmap.npc)
                 .build());
     }
-
 
     @Override
     protected void initData() {
@@ -436,7 +434,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                                 .skipToPrevious();
                     }
                 }
-                isComplete = false;
             }
 
             @Override
@@ -449,11 +446,13 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
             @Override
             public void OnIdle(int position) {
+                ToastUtils.showToast("OnIdle");
                 mCurrentView = (ViewGroup) RecyclerViewUtils.getCenterXChild(mFragmentMusicPalyRv);
                 isDraging = false;
-                if (mCurrentValue != 0) {
+                if (mCurrentValue != 0 || isComplete) {
                     doPhonographAnimation();
                 }
+                isComplete = false;
             }
 
         });
@@ -579,7 +578,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         mFragmentMusicPalyProgress.setProgress((int) currentPosition);
     }
 
-
     /**
      * 初始信息
      *
@@ -611,6 +609,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     public void onMusicEnd(int orderType) {
         isComplete = true;
         if (orderType != ORDERSINGLE) {
+            doPointOutAnimation(500, 0);
             mFragmentMusicPalyRv.setSpeed(100);
             mFragmentMusicPalyRv.smoothScrollToPosition(mFragmentMusicPalyRv
                     .getActualCurrentPosition() + 1);
@@ -652,12 +651,10 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         doPointInAnimation(500, 0);
         View target;
         if (mCurrentView == null && mFragmentMusicPalyRv != null) {
-            ViewGroup group = (ViewGroup) RecyclerViewUtils.getCenterXChild
+            mCurrentView = (ViewGroup) RecyclerViewUtils.getCenterXChild
                     (mFragmentMusicPalyRv);
-            target = group.getChildAt(0);
-        } else {
-            target = mCurrentView.getChildAt(0);
         }
+        target = mCurrentView.getChildAt(0);
 
         mPhonographAnimate = ObjectAnimator.ofFloat(target, "Rotation",
                 mCurrentValue,

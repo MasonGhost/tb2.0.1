@@ -5,37 +5,39 @@
     android:layout_height="wrap_content"
     android:background="@drawable/shape_bg_music_list_item">
 
-    <ImageView
+    <com.zhiyicx.thinksnsplus.widget.CropSquareImageView
         android:id="@+id/music_list_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
-        android:src="@mipmap/img_default_nothing"/>
-
+        android:scaleType="centerCrop"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/music_list_image"
-        android:background="#90000000"
+        android:layout_alignParentRight="true"
+        android:background="#40000000"
         android:drawableLeft="@mipmap/music_ico_playvolume"
-        android:padding="10dp"
+        android:drawablePadding="@dimen/spacing_small_4dp"
+        android:padding="@dimen/spacing_normal"
         android:text="2333"
-        android:textColor="#000"/>
+        android:textColor="@color/white"/>
 
     <View
-        android:layout_below="@+id/music_list_image"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_line"
-        android:background="@color/general_for_line"/>
+        style="@style/style_divider_horizontal_light"
+        android:layout_below="@+id/music_list_image"/>
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="20dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/music_list_image"
         android:layout_centerHorizontal="true"
-        android:layout_margin="15dp"
-        android:gravity="center"
-        android:text="一壶清酒，一曲离殇"/>
+        android:gravity="center_vertical"
+        android:padding="@dimen/spacing_normal"
+        android:paddingBottom="@dimen/spacing_mid"
+        android:paddingLeft="@dimen/spacing_mid_small_8dp"
+        android:paddingRight="@dimen/spacing_mid_small_8dp"
+        android:paddingTop="@dimen/spacing_mid"
+        android:text="一壶清酒，一曲离殇,三生三世，十里桃花"
+        android:textColor="@color/normal_for_dynamic_list_content"/>
 
 </RelativeLayout>

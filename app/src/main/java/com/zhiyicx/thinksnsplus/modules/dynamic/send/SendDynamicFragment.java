@@ -269,7 +269,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
      */
     private DynamicBean packageDynamicData() {
         long userId = AppApplication.getmCurrentLoginAuth().getUser_id();
-        long feedMark = userId + System.currentTimeMillis();
+        String feedMarkString = userId + "" + System.currentTimeMillis();
+        long feedMark = Long.parseLong(feedMarkString);
         DynamicDetailBean dynamicDetailBean = new DynamicDetailBean();
         dynamicDetailBean.setFeed_mark(feedMark);
         dynamicDetailBean.setContent(mEtDynamicContent.getInputContent());
