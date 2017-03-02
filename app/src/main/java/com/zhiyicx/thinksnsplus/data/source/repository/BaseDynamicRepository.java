@@ -4,8 +4,10 @@ import android.content.Context;
 import android.util.SparseArray;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -15,12 +17,15 @@ import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
+import java.io.IOException;
+import java.io.InvalidObjectException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import okhttp3.RequestBody;
+import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -146,7 +151,36 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     }
 
     @Override
-    public Observable<BaseJson<List<DynamicDigListBean>>> getDynamicDigList(Long feed_id, Integer max_id) {
-        return mDynamicClient.getDynamicDigList(feed_id, max_id);
+    public Observable<BaseJson<List<UserInfoBean>>> getDynamicDigList(Long feed_id, Integer max_id) {
+        return mDynamicClient.getDynamicDigList(feed_id, max_id)
+                .flatMap(new Func1<BaseJson<List<DynamicDigListBean>>, Observable<BaseJson<List<UserInfoBean>>>>() {
+                    @Override
+                    public Observable<BaseJson<List<UserInfoBean>>> call(BaseJson<List<DynamicDigListBean>> listBaseJson) {
+                        List<Long> user_ids = null;
+                        // 获取点赞列表成功
+                        if (listBaseJson.isStatus()) {
+                            user_ids = new ArrayList<Long>();
+                            List<DynamicDigListBean> dynamicDigListBeanList = listBaseJson.getData();
+                            if (dynamicDigListBeanList != null && !dynamicDigListBeanList.isEmpty()) {
+                                for (DynamicDigListBean digListBean : dynamicDigListBeanList) {
+                                    user_ids.add(digListBean.getUser_id());
+                                }
+                                return mUserInfoRepository.getUserInfo(user_ids);
+                            } else {
+                                // 不需要获取用户信息，发送一个空的BaseJson
+                                BaseJson<List<UserInfoBean>> baseJsonUserInfoList = new BaseJson<List<UserInfoBean>>();
+                                baseJsonUserInfoList.setData(new ArrayList<UserInfoBean>());
+                                baseJsonUserInfoList.setStatus(true);
+                                baseJsonUserInfoList.setCode(0);
+                                baseJsonUserInfoList.setMessage("");
+                                return Observable.just(baseJsonUserInfoList);
+                            }
+                        } else {
+                            // 获取点赞列表失败
+                            throw new JsonParseException(AppApplication.getContext().getString(R.string.get_dynamic_dig_list_failure));
+                        }
+
+                    }
+                });
     }
 }

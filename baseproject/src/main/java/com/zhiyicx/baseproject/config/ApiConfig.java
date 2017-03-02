@@ -15,6 +15,11 @@ public class ApiConfig {
     public static final int ANDROID_PLATFORM = 4;
 
     /**
+     * 接口请求失败后，最大重复请求次数
+     */
+    public static final int DEFAULT_MAX_RETRY_COUNT = 5;
+
+    /**
      * 网络根地址  http://192.168.10.222/
      * 测试服务器：http://192.168.2.222:8080/mockjs/2/test-get-repose-head-normal?
      */

@@ -179,4 +179,9 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     public void setCollect(boolean isCollect) {
         mDdDynamicTool.setItemIsChecked(isCollect,ITEM_POSITION_3);
     }
+
+    @Override
+    public void setDigHeadIcon() {
+
+    }
 }

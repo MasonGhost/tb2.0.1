@@ -32,6 +32,11 @@ public interface DynamicDetailContract {
          * @param isCollect
          */
         void setCollect(boolean isCollect);
+
+        /**
+         * 设置点赞头像
+         */
+        void setDigHeadIcon();
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
@@ -40,6 +45,9 @@ public interface DynamicDetailContract {
     }
 
     interface Presenter extends ITSListPresenter<DynamicBean> {
-
+        /**
+         * 获取当前动态的点赞列表
+         */
+        void getDynamicDigList(Long feed_id, Integer max_id);
     }
 }
