@@ -30,6 +30,7 @@ public class QueueManager {
     private Resources mResources;
 
     private List<MediaSessionCompat.QueueItem> mPlayingQueue;
+
     private List<MediaSessionCompat.QueueItem> mCacheQueue;
 
     private int mCurrentIndex;
@@ -42,7 +43,6 @@ public class QueueManager {
         this.mResources = resources;
 
         mPlayingQueue = Collections.synchronizedList(new ArrayList<MediaSessionCompat.QueueItem>());
-        mCacheQueue = mPlayingQueue;
         mCurrentIndex = 0;
     }
 
@@ -105,9 +105,15 @@ public class QueueManager {
         updateMetadata();
     }
 
-    public void setNormalQueue() {
+    public void setRandomQueue(String mediaId) {
+        setCurrentQueue("random_queue_title",
+                QueueHelper.getPlayingQueue(mediaId, mMusicProvider), mediaId);
+        updateMetadata();
+    }
+
+    public void setNormalQueue(String mediaId) {
         setCurrentQueue("normal_queue_title",
-                mCacheQueue);
+                mCacheQueue,mediaId);
         updateMetadata();
     }
 
@@ -118,8 +124,9 @@ public class QueueManager {
         }
         if (!canReuseQueue) {
             String queueTitle = "browse_musics_by_genre_subtitle";
-            setCurrentQueue(queueTitle,
-                    QueueHelper.getPlayingQueue(mediaId, mMusicProvider), mediaId);
+            mCacheQueue = QueueHelper.getPlayingQueue(mediaId, mMusicProvider);
+            setCurrentQueue(queueTitle, QueueHelper.getPlayingQueue(mediaId, mMusicProvider),
+                    mediaId);
         }
         updateMetadata();
     }

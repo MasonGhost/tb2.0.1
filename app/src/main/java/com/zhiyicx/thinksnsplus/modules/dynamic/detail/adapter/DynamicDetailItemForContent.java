@@ -54,7 +54,7 @@ public class DynamicDetailItemForContent implements ItemViewDelegate<DynamicBean
 
         Context context = title.getContext();
         // 设置图片
-        List<ImageBean> photoList = dynamicDetailBean.getStorage_task_ids();
+        List<ImageBean> photoList = dynamicDetailBean.getStorages();
         if (photoList != null) {
             for (int i = 0; i < photoList.size(); i++) {
                 ImageBean imageBean = photoList.get(i);

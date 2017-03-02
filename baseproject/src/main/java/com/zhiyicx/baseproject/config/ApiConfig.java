@@ -26,7 +26,7 @@ public class ApiConfig {
     public static final String URL_ABOUT_US = "http://blog.csdn.net/hellohhj/article/details/50467502";// 关于我们网站
 
     // 图片地址
-    public static final String IMAGE_PATH = APP_DOMAIN + "api/v1/storages/%d/%d";// 带质量压缩
+    public static final String IMAGE_PATH = APP_DOMAIN + "api/v1/storages/%s/%d";// 带质量压缩
     // 图片地址
     public static final String NO_PROCESS_IMAGE_PATH = APP_DOMAIN + "api/v1/storages/%s";// 不带质量压缩
 

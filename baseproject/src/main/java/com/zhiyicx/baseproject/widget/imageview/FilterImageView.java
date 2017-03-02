@@ -19,7 +19,7 @@ import com.zhiyicx.baseproject.R;
 public class FilterImageView extends ImageView {
     private static final int SHAPE_SQUARE = 0;
     private static final int SHAPE_CIRLCE = 1;
-    private static int DEFAULT_PRESSED_COLOR = 0x33000000;
+    private static final int DEFAULT_PRESSED_COLOR = 0x26000000; // cover：#000000 alpha 15%
     private int mPressedColor = DEFAULT_PRESSED_COLOR;// pressed color
     private int mShape = SHAPE_SQUARE;
 

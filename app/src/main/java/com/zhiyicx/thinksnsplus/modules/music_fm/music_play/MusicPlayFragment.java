@@ -1,13 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_play;
 
 import android.content.ComponentName;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.os.SystemClock;
@@ -29,13 +22,14 @@ import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.animation.ValueAnimator;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideMusicBgTransform;
 import com.zhiyicx.baseproject.widget.popwindow.ListPopupWindow;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -65,6 +59,7 @@ import rx.functions.Action1;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_CACHE_PROGRESS;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_COMPLETE;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_START;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERSINGLE;
 
 /**
  * @Author Jliuer
@@ -158,6 +153,8 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     private Integer[] mOrderModule = new Integer[]{R.mipmap.music_ico_random, R.mipmap
             .music_ico_single, R.mipmap.music_ico_inorder};
     private boolean isConnected;
+    private boolean isComplete;
+    private boolean isSeekTo;
 
     /**
      * 音乐播放事件回调
@@ -199,6 +196,9 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         mMediaBrowserCompat = new MediaBrowserCompat(getActivity(), new ComponentName(getActivity(),
                 MusicPlayService.class)
                 , mConnectionCallback, null);
+        if (mMediaBrowserCompat.isConnected()) {
+            mMediaBrowserCompat.disconnect();
+        }
         if (savedInstanceState == null) {
             updateFromParams(getArguments());
         }
@@ -209,23 +209,25 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         super.onStart();
         if (mMediaBrowserCompat != null) {
             mDefalultOrder = 0;
-            mMediaBrowserCompat.connect();
+            if (!mMediaBrowserCompat.isConnected()) {
+                mMediaBrowserCompat.connect();
+            }
+
         }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (mMediaBrowserCompat != null) {
-            isConnected = false;
-            mMediaBrowserCompat.disconnect();
-        }
+//        if (mMediaBrowserCompat != null) {
+//            isConnected = false;
+//            mMediaBrowserCompat.disconnect();
+//        }
         if (getActivity().getSupportMediaController() != null) {
             getActivity().getSupportMediaController().unregisterCallback(mCallback);
         }
         rxStopProgress();
     }
-
 
     @Override
     protected boolean useEventBus() {
@@ -283,8 +285,11 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         mFragmentMusicPalyRv.setHasFixedSize(true);
 
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-
-        dealBackgroud();
+        mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
+                .transformation(new GlideMusicBgTransform(getActivity()))
+                .imagerView(mFragmentMusicPalyBg)
+                .resourceId(R.mipmap.npc)
+                .build());
     }
 
 
@@ -325,7 +330,9 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             case R.id.fragment_music_paly_like:
                 break;
             case R.id.fragment_music_paly_comment:
-                mListPopupWindow.show();
+                mStringList.add("");
+                mStringList.add("");
+                mListPopupWindow.dataChange(mStringList);
                 break;
             case R.id.fragment_music_paly_lyrics:
                 break;
@@ -365,12 +372,13 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                     }
                 }
                 break;
-            case R.id.fragment_music_paly_nextview:// 下一首歌
+            case R.id.fragment_music_paly_nextview:// 下一首
                 pauseAnimation();
                 mFragmentMusicPalyRv.smoothScrollToPosition(mFragmentMusicPalyRv
                         .getActualCurrentPosition() + 1);
                 break;
             case R.id.fragment_music_paly_list:
+                mListPopupWindow.show();
                 break;
             default:
                 break;
@@ -419,7 +427,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             public void OnPageChanged(int oldPosition, int newPosition) {
                 mCurrentValue = 0;
                 stopAnimation(mCurrentView);
-                if (isConnected) {
+                if (isConnected && !isComplete) {
                     if (newPosition > oldPosition) {
                         getActivity().getSupportMediaController().getTransportControls()
                                 .skipToNext();
@@ -428,7 +436,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                                 .skipToPrevious();
                     }
                 }
-
+                isComplete = false;
             }
 
             @Override
@@ -472,6 +480,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         updatePlaybackState(state);
 
         MediaMetadataCompat metadata = mediaController.getMetadata();
+
         if (metadata != null) {
             updateMediaDescription(metadata.getDescription());
             updateDuration(metadata);
@@ -509,12 +518,16 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         switch (state.getState()) {
             case PlaybackStateCompat.STATE_PLAYING:
                 rxStartProgress();
-                doPhonographAnimation();
+                if (mPhonographAnimate == null || !mPhonographAnimate.isStarted()) {
+                    doPhonographAnimation();
+                }
                 mFragmentMusicPalyPalyer.setImageResource(R.mipmap.music_ico_stop);
                 break;
             case PlaybackStateCompat.STATE_PAUSED:
                 rxStopProgress();
-                pauseAnimation();
+                if (mPhonographAnimate != null && mPhonographAnimate.isStarted()) {
+                    pauseAnimation();
+                }
                 mFragmentMusicPalyPalyer.setImageResource(R.mipmap.music_ico_play);
                 break;
             case PlaybackStateCompat.STATE_NONE:
@@ -595,12 +608,15 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     }
 
     @Subscriber(tag = EVENT_SEND_MUSIC_COMPLETE, mode = ThreadMode.MAIN)
-    public void onMusicEnd(String end) {
-        mFragmentMusicPalyRv.setSpeed(100);
-        mFragmentMusicPalyRv.smoothScrollToPosition(mFragmentMusicPalyRv
-                .getActualCurrentPosition() + 1);
-        mFragmentMusicPalyRv.setSpeed(250);
-        Log.e("MUSIC_END", "" + end);
+    public void onMusicEnd(int orderType) {
+        isComplete = true;
+        if (orderType != ORDERSINGLE) {
+            mFragmentMusicPalyRv.setSpeed(100);
+            mFragmentMusicPalyRv.smoothScrollToPosition(mFragmentMusicPalyRv
+                    .getActualCurrentPosition() + 1);
+            mFragmentMusicPalyRv.setSpeed(250);
+        }
+        Log.e("MUSIC_END", "" + orderType);
     }
 
     /**
@@ -683,28 +699,12 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         if (mCurrentView == null) {
             mCurrentView = (ViewGroup) RecyclerViewUtils.getCenterXChild
                     (mFragmentMusicPalyRv);
-        } else {
-            doPointOutAnimation(500, 100);
         }
         if (mCurrentView != null && mPhonographAnimate != null) {
             mPhonographAnimate.cancel();
             mCurrentView.getChildAt(0).clearAnimation();// 清除此ImageView身上的动画
         }
-    }
-
-
-    private void dealBackgroud() {
-        Bitmap bitmap = BitmapFactory
-                .decodeResource(getResources(), R.mipmap.npc).copy(Bitmap.Config.ARGB_8888, true);
-        Canvas canvas = new Canvas(bitmap);
-        Paint paint = new Paint();
-        ColorMatrix cm = new ColorMatrix();
-        cm.setSaturation(0); // 设置饱和度
-        ColorMatrixColorFilter grayColorFilter = new ColorMatrixColorFilter(cm);
-        paint.setColorFilter(grayColorFilter);
-        canvas.drawBitmap(bitmap, 0, 0, paint);
-        canvas.drawARGB(200, 255, 255, 255);
-        mFragmentMusicPalyBg.setImageBitmap(bitmap);
+        doPointOutAnimation(500, 100);
     }
 
     @NonNull

@@ -183,6 +183,7 @@ public class ListPopupWindow extends PopupWindow {
 
         public ListPopupWindow.Builder data(List datas) {
             this.mDatas = datas;
+
             return this;
         }
 
@@ -194,6 +195,15 @@ public class ListPopupWindow extends PopupWindow {
         public ListPopupWindow build() {
             return new ListPopupWindow(this);
         }
+    }
+
+    public void dataChange(List datas) {
+        this.mDatas = datas;
+        this.mAdapter.notifyDataSetChanged();
+    }
+
+    public void dataChangeOne(int position) {
+        this.mAdapter.notifyItemChanged(position);
     }
 
     public interface OnItemListener {

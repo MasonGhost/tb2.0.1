@@ -379,7 +379,7 @@ public class BackgroundTaskHandler {
                             for (int i = 0; i < integers.size(); i++) {
                                 imageBeens.add(new ImageBean(integers.get(i)));
                             }
-                            dynamicDetailBean.setStorage_task_ids(imageBeens);
+                            dynamicDetailBean.setStorage_task_ids(integers);
                             return mSendDynamicRepository.sendDynamic(dynamicDetailBean);// 进行动态发布的请求
                         }
                     });

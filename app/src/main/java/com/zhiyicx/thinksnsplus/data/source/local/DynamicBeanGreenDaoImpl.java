@@ -85,7 +85,7 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
             hotCreatTime = System.currentTimeMillis();
         }
         DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
-        return dynamicBeanDao.queryDeep(" where " + " T." + DynamicBeanDao.Properties.Hot_creat_time.columnName + " != NULL and "
+        return dynamicBeanDao.queryDeep(" where "
                         + " T." + DynamicBeanDao.Properties.Hot_creat_time.columnName + " < ?  ORDER BY "
                         + " T." + DynamicBeanDao.Properties.Hot_creat_time.columnName + " DESC LIMIT " + ApiConfig.DYNAMIC_PAGE_LIMIT// 创建时间倒序
                 , new String[]{String.valueOf(hotCreatTime)});

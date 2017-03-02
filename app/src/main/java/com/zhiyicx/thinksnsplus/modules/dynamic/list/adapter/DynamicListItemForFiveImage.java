@@ -16,6 +16,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 public class DynamicListItemForFiveImage extends DynamicListBaseItem {
     private static final int IMAGE_COUNTS = 5;// 动态列表图片数量
+    private static final int CURREN_CLOUMS = 3;// 当前列数
 
 
     public DynamicListItemForFiveImage(Context context) {
@@ -34,13 +35,18 @@ public class DynamicListItemForFiveImage extends DynamicListBaseItem {
     }
 
     @Override
+    public  int getCurrenCloums() {
+        return CURREN_CLOUMS;
+    }
+
+    @Override
     public void convert(ViewHolder holder, final DynamicBean dynamicBean, DynamicBean lastT, int position) {
         super.convert(holder, dynamicBean, lastT, position);
-        initImageView((ImageView) holder.getView(R.id.siv_0), dynamicBean, 0);
-        initImageView((ImageView) holder.getView(R.id.siv_1), dynamicBean, 1);
-        initImageView((ImageView) holder.getView(R.id.siv_2), dynamicBean, 2);
-        initImageView((ImageView) holder.getView(R.id.siv_3), dynamicBean, 3);
-        initImageView((ImageView) holder.getView(R.id.siv_4), dynamicBean, 4);
+        initImageView((ImageView) holder.getView(R.id.siv_0), dynamicBean, 0,2); // 数字 0 代表 image 当前的位置， 2 代表他相对与 CURREN_CLOUMS 的份数
+        initImageView((ImageView) holder.getView(R.id.siv_1), dynamicBean, 1,1);
+        initImageView((ImageView) holder.getView(R.id.siv_2), dynamicBean, 2,1);
+        initImageView((ImageView) holder.getView(R.id.siv_3), dynamicBean, 3,2);
+        initImageView((ImageView) holder.getView(R.id.siv_4), dynamicBean, 4,2);
     }
 
 

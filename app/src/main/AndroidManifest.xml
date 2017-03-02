@@ -118,9 +118,9 @@
         <!-- #########################################      后台任务相关service       ################################ -->
         <service android:name=".service.backgroundtask.BackgroundTaskHandleService"/>
         <!-- &lt;!&ndash;glide配置&ndash;&gt; -->
-        <meta-data
-            android:name="com.zhiyicx.thinksnsplus.config.GlideConfiguration"
-            android:value="GlideModule"/>
+        <!--<meta-data-->
+            <!--android:name="com.zhiyicx.thinksnsplus.config.GlideConfiguration"-->
+            <!--android:value="GlideModule"/>-->
 
         <activity android:name=".modules.dynamic.detail.DynamicDetailActivity">
         </activity>
