@@ -140,7 +140,7 @@ public class ChatFragmentTest {
      * @throws Exception
      */
     @Test
-    public void testTirmInput(){
+    public void testTirmInput() {
         onView(withId(R.id.et_content)).perform(replaceText("    "));
         onView(withId(R.id.bt_send)).check(matches(disEnabled()));
     }
@@ -153,9 +153,28 @@ public class ChatFragmentTest {
      * @throws Exception
      */
     @Test
-    public void testTextInput(){
+    public void testTextInput() {
 
         onView(withId(R.id.et_content)).perform(replaceText("i am jungle"));
         onView(withId(R.id.bt_send)).check(matches(isEnabled()));
+    }
+
+
+    /**
+     * summary                      聊天输超过255个字符是否可以成功发送
+     * steps                        1.A登录 2.进入与B聊天对话框 3.输超过255个字符点击发送
+     * expected                     超过的字符不显示
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testMaxInput() {
+        String text = "";
+        int size = mActivityRule.getActivity().getResources().getInteger(R.integer.chat_input_max_size);
+        for (int i = 0; i <size; i++) {
+            text += 0;
+        }
+        onView(withId(R.id.et_content)).perform(replaceText(text + "123"));
+        onView(withId(R.id.et_content)).check(matches(withText(text)));
     }
 }
