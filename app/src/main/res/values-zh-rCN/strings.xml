@@ -26,6 +26,14 @@
     <string name="follow">关注</string>
     <string name="fans">粉丝</string>
 
+    <!--发现-->
+    <string name="information">资讯</string>
+    <string name="chanel">频道</string>
+    <string name="active">活动</string>
+    <string name="buy_goods">购物</string>
+    <string name="find_person">找人</string>
+    <string name="near_person">附件的人</string>
+
     <!--个人资料-->
     <string name="user_info">个人资料</string>
     <string name="change_head_icon">更换头像</string>
