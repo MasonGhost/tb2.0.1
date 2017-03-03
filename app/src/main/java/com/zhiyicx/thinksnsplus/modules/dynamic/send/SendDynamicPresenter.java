@@ -7,14 +7,18 @@ import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
+
+import org.simple.eventbus.EventBus;
 
 import java.util.HashMap;
 
 import javax.inject.Inject;
+
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_DYNAMIC_TO_LIST;
 
 /**
  * @author LiuChao
@@ -32,6 +36,8 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
     @Inject
     DynamicDetailBeanGreenDaoImpl mDynamicDetailBeanGreenDao;
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
     public SendDynamicPresenter(SendDynamicContract.Repository repository, SendDynamicContract.View rootView) {
@@ -44,6 +50,8 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
 
     @Override
     public void sendDynamic(DynamicBean dynamicBean) {
+        dynamicBean.setState(DynamicBean.SEND_ING);
+        dynamicBean.setUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache(dynamicBean.getUser_id()));
         // 将动态信息存入数据库
         mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
         mDynamicDetailBeanGreenDao.insertOrReplace(dynamicBean.getFeed());
@@ -55,6 +63,8 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
         params.put("params", dynamicBean.getFeed_mark());
         backgroundRequestTaskBean.setParams(params);
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+        EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
         mRootView.sendDynamicComplete();// 发送动态放到后台任务处理，关闭当前的动态发送页面
+
     }
 }

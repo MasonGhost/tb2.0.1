@@ -245,13 +245,13 @@ public class AppApplication extends TSApplication {
     }
 
     private static HttpProxyCacheServer newProxy() {
-        boolean b=FileUtils.createOrExistsDir(new File(FileUtils.getCacheFile(BaseApplication
+        boolean b = FileUtils.createOrExistsDir(new File(FileUtils.getCacheFile(BaseApplication
                 .getContext())
-                ,"/media"));
+                , "/media"));
 
         return new HttpProxyCacheServer.Builder(BaseApplication.getContext())
                 .cacheDirectory(new File(FileUtils.getCacheFile(BaseApplication.getContext())
-                        ,"/media"))
+                        , "/media"))
                 .maxCacheFilesCount(100)
                 .build();
     }

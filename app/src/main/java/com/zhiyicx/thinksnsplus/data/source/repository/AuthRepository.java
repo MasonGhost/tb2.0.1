@@ -7,6 +7,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
@@ -110,6 +111,7 @@ public class AuthRepository implements IAuthRepository {
      */
     @Override
     public boolean clearAuthBean() {
+        MessageDao.getInstance(mContext).delDataBase();// 清空聊天信息
         return SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_AUTHBEAN)
                 && SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_IMCONFIG);
     }
