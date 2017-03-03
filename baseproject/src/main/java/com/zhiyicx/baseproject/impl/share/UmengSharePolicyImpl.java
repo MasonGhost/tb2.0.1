@@ -3,6 +3,7 @@ package com.zhiyicx.baseproject.impl.share;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 
 import com.umeng.socialize.Config;
@@ -14,10 +15,16 @@ import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.media.UMImage;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.config.UmengConfig;
+import com.zhiyicx.baseproject.widget.popwindow.RecyclerViewPopupWindow;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
+import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.base.ViewHolder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -26,7 +33,7 @@ import com.zhiyicx.common.thridmanager.share.SharePolicy;
  * @Date 2016/12/20
  * @Contact master.jungle68@gmail.com
  */
-public class UmengSharePolicyImpl implements SharePolicy {
+public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListener {
 
     /**
      * 友盟初始化
@@ -40,6 +47,7 @@ public class UmengSharePolicyImpl implements SharePolicy {
 
     private Context mContext;
     private ShareContent mShareContent;
+    private RecyclerViewPopupWindow mRecyclerViewPopupWindow;
 
     public UmengSharePolicyImpl(Context mContext) {
         this.mContext = mContext;
@@ -55,6 +63,7 @@ public class UmengSharePolicyImpl implements SharePolicy {
     private void init(Context mContext) {
 
         UMShareAPI.get(mContext);
+        initSharePopupWindow();
     }
 
     public ShareContent getShareContent() {
@@ -66,9 +75,9 @@ public class UmengSharePolicyImpl implements SharePolicy {
      *
      * @param requestCode
      * @param resultCode
-   @param data
+     * @param data
      */
-    public static void onActivityResult(int requestCode, int resultCode, Intent data,Context context) {
+    public static void onActivityResult(int requestCode, int resultCode, Intent data, Context context) {
         UMShareAPI.get(context).onActivityResult(requestCode, resultCode, data);
     }
 
@@ -137,7 +146,7 @@ public class UmengSharePolicyImpl implements SharePolicy {
     @Override
     public void showShare(Activity activity) {
 
-
+        mRecyclerViewPopupWindow.show();
     }
 
     /**
@@ -154,6 +163,7 @@ public class UmengSharePolicyImpl implements SharePolicy {
 
     /**
      * 配置分享内容
+     *
      * @param activity
      * @param l
      * @param share_media
@@ -216,6 +226,7 @@ public class UmengSharePolicyImpl implements SharePolicy {
 
     /**
      * 转换分享平台标识，方便修改三方时回调标识错误
+     *
      * @param share_media
      * @return
      */
@@ -242,5 +253,74 @@ public class UmengSharePolicyImpl implements SharePolicy {
 
         }
         return share;
+    }
+
+    @Override
+    public void onSuccess(Share share) {
+
+    }
+
+    @Override
+    public void onError(Share share, Throwable throwable) {
+
+    }
+
+    @Override
+    public void onCancel(Share share) {
+
+    }
+
+    private static class ShareBean {
+        int image;
+        String name;
+
+        public ShareBean(int image, String name) {
+            this.image = image;
+            this.name = name;
+        }
+    }
+
+    private void initSharePopupWindow() {
+        List<ShareBean> mDatas = new ArrayList<>();
+        ShareBean qq = new ShareBean(R.mipmap.detail_share_qq, mContext.getString(R.string.qq_share));
+        ShareBean qZone = new ShareBean(R.mipmap.detail_share_zone, mContext.getString(R.string.qZone_share));
+        ShareBean weChat = new ShareBean(R.mipmap.detail_share_wechat, mContext.getString(R.string.weChat_share));
+        ShareBean weCircle = new ShareBean(R.mipmap.detail_share_friends, mContext.getString(R.string.weCircle_share));
+        ShareBean weibo = new ShareBean(R.mipmap.detail_share_weibo, mContext.getString(R.string.weibo_share));
+        mDatas.add(qq);
+        mDatas.add(qZone);
+        mDatas.add(weChat);
+        mDatas.add(weCircle);
+        mDatas.add(weibo);
+
+        mRecyclerViewPopupWindow = RecyclerViewPopupWindow.Builder()
+                .isOutsideTouch(true)
+                .asHorizontal()
+                .with((Activity) mContext)
+                .adapter(new CommonAdapter<ShareBean>(mContext, R.layout.item_share_popup_window, mDatas) {
+                    @Override
+                    protected void convert(ViewHolder holder, ShareBean shareBean, int position) {
+                        switch (position) {
+                            case 0:
+                                shareQQ((Activity) mContext, UmengSharePolicyImpl.this);
+                                break;
+                            case 1:
+                                shareZone((Activity) mContext, UmengSharePolicyImpl.this);
+                                break;
+                            case 2:
+                                shareWechat((Activity) mContext, UmengSharePolicyImpl.this);
+                                break;
+                            case 3:
+                                shareMoment((Activity) mContext, UmengSharePolicyImpl.this);
+                                break;
+                            case 4:
+                                shareWeibo((Activity) mContext, UmengSharePolicyImpl.this);
+                                break;
+                            default:
+                        }
+                    }
+                })
+                .iFocus(true)
+                .build();
     }
 }
