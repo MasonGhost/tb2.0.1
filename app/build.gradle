@@ -152,7 +152,7 @@ dependencies {
     // Project
     compile project(":baseproject")
     compile project(":media-cache")
-
+    compile project(':banner')
     // database
     compile dataDependences.greendao
     compile dataDependences.guava
