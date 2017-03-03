@@ -88,7 +88,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         }
         Message message = ChatClient.getInstance(mContext).sendTextMsg(text, cid, "");// usid 暂不使用
         message.setCreate_time(System.currentTimeMillis());
-        message.setUid(AppApplication.getmCurrentLoginAuth().getUser_id());
+        message.setUid(AppApplication.getmCurrentLoginAuth()!=null?AppApplication.getmCurrentLoginAuth().getUser_id():0);
         message.setIs_read(true);
         updateMessage(message);
     }
@@ -131,7 +131,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         ChatItemBean chatItemBean = new ChatItemBean();
         chatItemBean.setLastMessage(message);
         if (message.getUid() == 0) {// 如果没有 uid, 则表明是当前用户发的消息
-            message.setUid(AppApplication.getmCurrentLoginAuth().getUser_id());
+            message.setUid(AppApplication.getmCurrentLoginAuth()!=null?AppApplication.getmCurrentLoginAuth().getUser_id():0);
         }
         UserInfoBean userInfoBean = mUserInfoBeanSparseArray.get(message.getUid());
         if (userInfoBean == null) {

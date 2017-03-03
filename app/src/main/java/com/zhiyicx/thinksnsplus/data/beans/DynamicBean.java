@@ -285,15 +285,6 @@ public class DynamicBean extends BaseListBean {
                 '}';
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
-    @Generated(hash = 210281324)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getDynamicBeanDao() : null;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -314,6 +305,13 @@ public class DynamicBean extends BaseListBean {
         dest.writeByte(this.isFollowed ? (byte) 1 : (byte) 0);
         dest.writeInt(this.state);
         dest.writeTypedList(this.digUserInfoList);
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 210281324)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getDynamicBeanDao() : null;
     }
 
     protected DynamicBean(Parcel in) {

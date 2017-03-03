@@ -171,29 +171,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                         List<DynamicToolBean> dynamicToolBeen = new ArrayList<>();
                         for (DynamicBean dynamicBeanTmp : datas) {
                             // 处理关注和热门数据
-                            DynamicBean localDynamicBean = mDynamicBeanGreenDao.getDynamicByFeedMark(dynamicBeanTmp.getFeed_mark());
-
-                            switch (mRootView.getDynamicType()) {
-                                case ApiConfig.DYNAMIC_TYPE_FOLLOWS:
-                                    if (localDynamicBean.getHot_creat_time() != null && dynamicBeanTmp.getHot_creat_time() != 0) {
-                                        dynamicBeanTmp.setHot_creat_time(localDynamicBean.getHot_creat_time());
-                                    }
-                                    break;
-
-                                case ApiConfig.DYNAMIC_TYPE_HOTS:
-                                    if (localDynamicBean.getIsFollowed()) {
-                                        dynamicBeanTmp.setIsFollowed(localDynamicBean.getIsFollowed());
-                                    }
-                                    break;
-                                case ApiConfig.DYNAMIC_TYPE_NEW:
-                                    dynamicBeanTmp.setIsFollowed(localDynamicBean.getIsFollowed());
-                                    dynamicBeanTmp.setHot_creat_time(localDynamicBean.getHot_creat_time());
-                                    break;
-
-                                default:
-
-                            }
-
+                            dealLocalTypeData(dynamicBeanTmp);
                             // 把详情的 feed_id 放到 dynamicbean 中
                             dynamicBeanTmp.setFeed_id(dynamicBeanTmp.getFeed().getFeed_id());
                             // 把 feed_mark 设置到详情中去
@@ -219,6 +197,32 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                     }
                 });
 
+    }
+
+    private void dealLocalTypeData(DynamicBean dynamicBeanTmp) {
+        DynamicBean localDynamicBean = mDynamicBeanGreenDao.getDynamicByFeedMark(dynamicBeanTmp.getFeed_mark());
+        if (localDynamicBean != null) {
+            switch (mRootView.getDynamicType()) {
+                case ApiConfig.DYNAMIC_TYPE_FOLLOWS:
+                    if (localDynamicBean.getHot_creat_time() != null && dynamicBeanTmp.getHot_creat_time() != 0) {
+                        dynamicBeanTmp.setHot_creat_time(localDynamicBean.getHot_creat_time());
+                    }
+                    break;
+
+                case ApiConfig.DYNAMIC_TYPE_HOTS:
+                    if (localDynamicBean.getIsFollowed()) {
+                        dynamicBeanTmp.setIsFollowed(localDynamicBean.getIsFollowed());
+                    }
+                    break;
+                case ApiConfig.DYNAMIC_TYPE_NEW:
+                    dynamicBeanTmp.setIsFollowed(localDynamicBean.getIsFollowed());
+                    dynamicBeanTmp.setHot_creat_time(localDynamicBean.getHot_creat_time());
+                    break;
+
+                default:
+
+            }
+        }
     }
 
     /**
@@ -275,6 +279,9 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
      */
     @Override
     public void handleLike(boolean isLiked, final Long feed_id, final int postion) {
+        if (feed_id == null || feed_id == 0) {
+            return;
+        }
         Observable.just(isLiked)
                 .observeOn(Schedulers.io())
                 .subscribe(new Action1<Boolean>() {

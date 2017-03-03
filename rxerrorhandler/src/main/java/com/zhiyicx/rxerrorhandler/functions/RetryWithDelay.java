@@ -8,7 +8,7 @@ import rx.Observable;
 import rx.functions.Func1;
 
 /**
- * @Describe
+ * @Describe 操作失败，RX 重试类封装
  * @Author Jungle68
  * @Date 2016/12/15
  * @Contact 335891510@qq.com

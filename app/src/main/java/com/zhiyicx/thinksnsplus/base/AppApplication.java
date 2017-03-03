@@ -233,7 +233,6 @@ public class AppApplication extends TSApplication {
     }
 
     public static AuthBean getmCurrentLoginAuth() {
-        mCurrentLoginAuth = mCurrentLoginAuth == null ? new AuthBean() : mCurrentLoginAuth;
         return mCurrentLoginAuth;
     }
 

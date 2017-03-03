@@ -8,6 +8,7 @@ import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.imsdk.entity.IMConfig;
+import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -53,7 +54,10 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_DYNAM
  */
 
 public class BackgroundTaskHandler {
+    private static final int RETRY_MAX_COUNT = 3; // 最大重试次
+    private static final int RETRY_INTERVAL_TIME = 2; // 循环间隔时间 单位 s
     private static final long MESSAGE_SEND_INTERVAL_FOR_CPU = 500;// 消息发送间隔时间，防止 cpu 占用过高
+
     @Inject
     Application mContext;
     @Inject
@@ -72,6 +76,8 @@ public class BackgroundTaskHandler {
     UpLoadRepository mUpLoadRepository;
     @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
+
+    private int mRetryDelaySecond;
 
     private Queue<BackgroundRequestTaskBean> mTaskBeanConcurrentLinkedQueue = new ConcurrentLinkedQueue<>();// 线程安全的队列
 
@@ -181,14 +187,15 @@ public class BackgroundTaskHandler {
              * 通用接口处理
              */
             case POST:
-                postMethod(backgroundRequestTaskBean);
                 if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
                     EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
                     return;
                 }
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
+                postMethod(backgroundRequestTaskBean);
                 break;
             case GET:
+
                 if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
                     EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
                     return;
@@ -196,34 +203,38 @@ public class BackgroundTaskHandler {
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 break;
             case DELETE:
-                deleteMethod(backgroundRequestTaskBean);
+
                 if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
                     EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
                     return;
                 }
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
+                deleteMethod(backgroundRequestTaskBean);
                 break;
             /**
              * 获取 IM 信息，必须保证 header 中已经加入了权限 token
              */
             case GET_IM_INFO:
-                getIMInfo(backgroundRequestTaskBean);
+
                 if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
                     EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
                     return;
                 }
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
+
+                getIMInfo(backgroundRequestTaskBean);
                 break;
             /**
              * 获取用户信息
              */
             case GET_USER_INFO:
-                getUserInfo(backgroundRequestTaskBean);
+
                 if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
                     EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
                     return;
                 }
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
+                getUserInfo(backgroundRequestTaskBean);
                 break;
             /**
              * 发送动态
@@ -409,6 +420,7 @@ public class BackgroundTaskHandler {
 
         }
         observable.subscribeOn(Schedulers.io())
+                .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribe<Object>() {
                     @Override
@@ -428,12 +440,7 @@ public class BackgroundTaskHandler {
                         // 发送动态到动态列表：状态为发送失败
                         dynamicBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
-                        if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
-                            EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
-                            return;
-                        }
-                        backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
-
+                        EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
                     }
 
                     @Override
@@ -444,6 +451,7 @@ public class BackgroundTaskHandler {
                         // 发送动态到动态列表：状态为发送失败
                         dynamicBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
+                        EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
                     }
                 });
 

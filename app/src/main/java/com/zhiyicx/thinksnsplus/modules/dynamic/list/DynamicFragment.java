@@ -23,7 +23,6 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForS
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForSixImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForThreeImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForTwoImage;
-import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.ArrayList;
@@ -39,7 +38,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  * @Date 2017/1/17
  * @Contact master.jungle68@gmail.com
  */
-public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicContract.View, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnLikeClickListener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener, MultiItemTypeAdapter.OnItemClickListener {
+public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicContract.View, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener, MultiItemTypeAdapter.OnItemClickListener {
     private static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
     public static final long ITEM_SPACING = 5L; // 单位dp
     @Inject
@@ -104,7 +103,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private void setAdapter(MultiItemTypeAdapter adapter, DynamicListBaseItem dynamicListBaseItem) {
         dynamicListBaseItem.setOnImageClickListener(this);
         dynamicListBaseItem.setOnUserInfoClickListener(this);
-        dynamicListBaseItem.setOnLikeClickListener(this);
+        dynamicListBaseItem.setOnMenuItemClickLisitener(this);
         dynamicListBaseItem.setOnReSendClickListener(this);
         adapter.addItemViewDelegate(dynamicListBaseItem);
     }
@@ -174,17 +173,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         refreshData(position);
     }
 
-    @Override
-    public void onLikeButtonClick(int position) {
-        // 先更新界面，再后台处理
-        mDynamicBeens.get(position).getTool().setIs_digg_feed(mDynamicBeens.get(position).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ? DynamicToolBean.STATUS_DIGG_FEED_CHECKED : DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED);
-        mDynamicBeens.get(position).getTool().setFeed_digg_count(mDynamicBeens.get(position).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ?
-                mDynamicBeens.get(position).getTool().getFeed_digg_count() - 1 : mDynamicBeens.get(position).getTool().getFeed_digg_count() + 1);
-        refresh();
-        mPresenter.handleLike(mDynamicBeens.get(position).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED,
-                mDynamicBeens.get(position).getFeed_id(), position);
-    }
-
     /**
      * resend click
      *
@@ -210,5 +198,40 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
         return false;
+    }
+
+    @Override
+    public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
+        switch (viewPosition) { // 0 1 2 3 代表 view item 位置
+            case 0: // 喜欢
+                handleLike(dataPosition);
+                break;
+
+            case 1:
+                onItemClick(null, null, dataPosition);
+                break;
+
+            case 2:
+                onItemClick(null, null, dataPosition);
+                break;
+
+            case 3: // 更多
+                showMessage("点击了跟多");
+
+                break;
+            default:
+                onItemClick(null, null, dataPosition);
+        }
+
+    }
+
+    private void handleLike(int dataPosition) {
+        // 先更新界面，再后台处理
+        mDynamicBeens.get(dataPosition).getTool().setIs_digg_feed(mDynamicBeens.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ? DynamicToolBean.STATUS_DIGG_FEED_CHECKED : DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED);
+        mDynamicBeens.get(dataPosition).getTool().setFeed_digg_count(mDynamicBeens.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ?
+                mDynamicBeens.get(dataPosition).getTool().getFeed_digg_count() - 1 : mDynamicBeens.get(dataPosition).getTool().getFeed_digg_count() + 1);
+        refresh();
+        mPresenter.handleLike(mDynamicBeens.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED,
+                mDynamicBeens.get(dataPosition).getFeed().getFeed_id(), dataPosition);
     }
 }

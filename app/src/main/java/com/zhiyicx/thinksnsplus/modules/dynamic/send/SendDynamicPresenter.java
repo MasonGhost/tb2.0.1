@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
@@ -35,6 +36,8 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
     @Inject
     DynamicDetailBeanGreenDaoImpl mDynamicDetailBeanGreenDao;
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
     public SendDynamicPresenter(SendDynamicContract.Repository repository, SendDynamicContract.View rootView) {
@@ -48,6 +51,7 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
     @Override
     public void sendDynamic(DynamicBean dynamicBean) {
         dynamicBean.setState(DynamicBean.SEND_ING);
+        dynamicBean.setUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache(dynamicBean.getUser_id()));
         // 将动态信息存入数据库
         mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
         mDynamicDetailBeanGreenDao.insertOrReplace(dynamicBean.getFeed());
