@@ -153,7 +153,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
             @Override
             public void onItemClick(ViewGroup parent, View v, int menuPostion) {
                 if (mOnMenuItemClickLisitener != null) {
-                    mOnMenuItemClickLisitener.onMenuItemClick(v,position,menuPostion);
+                    mOnMenuItemClickLisitener.onMenuItemClick(v, position, menuPostion);
                 }
             }
         });
@@ -200,10 +200,10 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
      * @param positon     image item position
      * @param part        this part percent of imageContainer
      */
-    protected void initImageView(ImageView view, final DynamicBean dynamicBean, final int positon, int part) {
+    protected void initImageView(final ViewHolder holder, ImageView view, final DynamicBean dynamicBean, final int positon, int part) {
         String url;
         if (dynamicBean.getFeed().getStorages() != null && dynamicBean.getFeed().getStorages().size() > 0) {
-            url = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getFeed().getStorages().get(positon).getStorage_id(), getProportion(view, dynamicBean,part));
+            url = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getFeed().getStorages().get(positon).getStorage_id(), getProportion(view, dynamicBean, part));
         } else {
             url = dynamicBean.getFeed().getLocalPhotos().get(positon);
         }
@@ -212,13 +212,14 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                 .url(url)
                 .imagerView(view)
                 .build());
+        dynamicBean.getFeed().getStorages().get(positon).setPart(part);
         RxView.clicks(view)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
                         if (mOnImageClickListener != null) {
-                            mOnImageClickListener.onImageClick(dynamicBean, positon);
+                            mOnImageClickListener.onImageClick(holder,dynamicBean, positon);
                         }
                     }
                 });
@@ -277,7 +278,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
      */
     public interface OnImageClickListener {
 
-        void onImageClick(DynamicBean dynamicBean, int position);
+        void onImageClick(ViewHolder holder,DynamicBean dynamicBean, int position);
     }
 
     /**

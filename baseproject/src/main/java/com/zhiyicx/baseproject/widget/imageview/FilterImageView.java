@@ -5,9 +5,9 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.R;
+import com.zhiyicx.baseproject.widget.pictureviewer.core.PhotoView;
 
 /**
  * @Describe show #mPressedColor color when pressed
@@ -16,7 +16,7 @@ import com.zhiyicx.baseproject.R;
  * @Contact master.jungle68@gmail.com
  */
 
-public class FilterImageView extends ImageView {
+public class FilterImageView extends PhotoView {
     private static final int SHAPE_SQUARE = 0;
     private static final int SHAPE_CIRLCE = 1;
     private static final int DEFAULT_PRESSED_COLOR = 0x26000000; // cover：#000000 alpha 15%
@@ -40,6 +40,7 @@ public class FilterImageView extends ImageView {
 
 
     private void initAttrs(Context context, AttributeSet attrs) {
+        enable();
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.FilterImageView);
         mPressedColor = array.getInteger(R.styleable.FilterImageView_pressColor, DEFAULT_PRESSED_COLOR);
         mShape = array.getInteger(R.styleable.FilterImageView_pressShape, SHAPE_SQUARE);

@@ -7,8 +7,14 @@ import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.widget.pictureviewer.PictureViewer;
+import com.zhiyicx.baseproject.widget.pictureviewer.core.ImageInfo;
+import com.zhiyicx.baseproject.widget.pictureviewer.core.ParcelableSparseArray;
+import com.zhiyicx.baseproject.widget.pictureviewer.core.PhotoView;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
@@ -24,6 +30,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForS
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForThreeImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForTwoImage;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
+import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +55,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
 
     private List<DynamicBean> mDynamicBeens = new ArrayList<>();
+    private PictureViewer pictureViewer;
 
     public static DynamicFragment newInstance(String dynamicType) {
         DynamicFragment fragment = new DynamicFragment();
@@ -64,6 +72,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     protected void initView(View rootView) {
+        pictureViewer = (PictureViewer) rootView.findViewById(R.id.picture_view);
         super.initView(rootView);
     }
 
@@ -142,11 +151,48 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         ToastUtils.showToast(message);
     }
 
+    /**
+     * scan imags
+     *
+     * @param dynamicBean
+     * @param position
+     */
     @Override
-    public void onImageClick(DynamicBean dynamicBean, int position) {
-        showMessage(position + "");
+    public void onImageClick(ViewHolder holder, DynamicBean dynamicBean, int position) {
+        List<ImageBean> imageBeanList = dynamicBean.getFeed().getStorages();
+        ParcelableSparseArray<ImageInfo> imageInfoParcelableSparseArray = new ParcelableSparseArray<>();
+        switch (dynamicBean.getFeed().getStorages().size()) {
+            case 9:
+                imageInfoParcelableSparseArray.put(position, ((PhotoView) holder.getView(R.id.siv_8)).getInfo());
+            case 8:
+                imageInfoParcelableSparseArray.put(position, ((PhotoView) holder.getView(R.id.siv_7)).getInfo());
+            case 7:
+                imageInfoParcelableSparseArray.put(position, ((PhotoView) holder.getView(R.id.siv_6)).getInfo());
+            case 6:
+                imageInfoParcelableSparseArray.put(position, ((PhotoView) holder.getView(R.id.siv_5)).getInfo());
+            case 5:
+                imageInfoParcelableSparseArray.put(position, ((PhotoView) holder.getView(R.id.siv_4)).getInfo());
+            case 4:
+                imageInfoParcelableSparseArray.put(position, ((PhotoView) holder.getView(R.id.siv_3)).getInfo());
+            case 3:
+                imageInfoParcelableSparseArray.put(position, ((PhotoView) holder.getView(R.id.siv_2)).getInfo());
+            case 2:
+                imageInfoParcelableSparseArray.put(position, ((PhotoView) holder.getView(R.id.siv_1)).getInfo());
+            case 1:
+                imageInfoParcelableSparseArray.put(position, ((PhotoView) holder.getView(R.id.siv_0)).getInfo());
+                break;
+            default:
+
+        }
+        pictureViewer.setData(imageBeanList, imageInfoParcelableSparseArray);
+        pictureViewer.show(position);
     }
 
+    /**
+     * scan user Info
+     *
+     * @param dynamicBean
+     */
     @Override
     public void onUserInfoClick(DynamicBean dynamicBean) {
         showMessage(dynamicBean.getUserInfoBean().getName());

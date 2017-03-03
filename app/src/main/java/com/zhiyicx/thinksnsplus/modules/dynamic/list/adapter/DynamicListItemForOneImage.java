@@ -40,7 +40,7 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
     @Override
     public void convert(ViewHolder holder, final DynamicBean dynamicBean, DynamicBean lastT, int position) {
         super.convert(holder, dynamicBean, lastT, position);
-        initImageView((ImageView) holder.getView(R.id.siv_0), dynamicBean, 0,1);
+        initImageView(holder,(ImageView) holder.getView(R.id.siv_0), dynamicBean, 0,1);
     }
 
     /**
