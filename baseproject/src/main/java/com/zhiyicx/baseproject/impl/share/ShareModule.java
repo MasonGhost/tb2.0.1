@@ -25,7 +25,6 @@ public class ShareModule {
         mActivity = activity;
     }
 
-    @Singleton
     @Provides
     public SharePolicy provideSharePolicy() {
         return new UmengSharePolicyImpl(mActivity);

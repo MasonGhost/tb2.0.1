@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
@@ -295,29 +296,37 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
 
         mRecyclerViewPopupWindow = RecyclerViewPopupWindow.Builder()
                 .isOutsideTouch(true)
-                .asHorizontal()
+                .asGrid(5)
                 .with((Activity) mContext)
                 .adapter(new CommonAdapter<ShareBean>(mContext, R.layout.item_share_popup_window, mDatas) {
                     @Override
-                    protected void convert(ViewHolder holder, ShareBean shareBean, int position) {
-                        switch (position) {
-                            case 0:
-                                shareQQ((Activity) mContext, UmengSharePolicyImpl.this);
-                                break;
-                            case 1:
-                                shareZone((Activity) mContext, UmengSharePolicyImpl.this);
-                                break;
-                            case 2:
-                                shareWechat((Activity) mContext, UmengSharePolicyImpl.this);
-                                break;
-                            case 3:
-                                shareMoment((Activity) mContext, UmengSharePolicyImpl.this);
-                                break;
-                            case 4:
-                                shareWeibo((Activity) mContext, UmengSharePolicyImpl.this);
-                                break;
-                            default:
-                        }
+                    protected void convert(ViewHolder holder, ShareBean shareBean, final int position) {
+                        holder.setImageResource(R.id.iv_share_type_image, shareBean.image);
+                        holder.setText(R.id.iv_share_type_name, shareBean.name);
+                        holder.getConvertView().setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                switch (position) {
+                                    case 0:
+                                        shareQQ((Activity) mContext, UmengSharePolicyImpl.this);
+                                        break;
+                                    case 1:
+                                        shareZone((Activity) mContext, UmengSharePolicyImpl.this);
+                                        break;
+                                    case 2:
+                                        shareWechat((Activity) mContext, UmengSharePolicyImpl.this);
+                                        break;
+                                    case 3:
+                                        shareMoment((Activity) mContext, UmengSharePolicyImpl.this);
+                                        break;
+                                    case 4:
+                                        shareWeibo((Activity) mContext, UmengSharePolicyImpl.this);
+                                        break;
+                                    default:
+                                }
+                            }
+                        });
+
                     }
                 })
                 .iFocus(true)
