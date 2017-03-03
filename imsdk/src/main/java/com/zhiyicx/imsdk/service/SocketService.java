@@ -1494,11 +1494,9 @@ public class SocketService extends BaseService implements ImService.ImListener {
                      * 获取对话信息
                      */
                     mService.sendGetConversatonInfo(eventContainer.mMessageContainer.msg.cid, "");
-                    return true;
-                } else {
-                    if (conversation.getType() != Conversation.CONVERSATION_TYPE_CHAROOM)
-                        MessageDao.getInstance(getApplicationContext()).insertOrUpdateMessage(eventContainer.mMessageContainer.msg);
                 }
+                if (eventContainer.mMessageContainer.msg.rt || (conversation != null && conversation.getType() != Conversation.CONVERSATION_TYPE_CHAROOM))
+                    MessageDao.getInstance(getApplicationContext()).insertOrUpdateMessage(eventContainer.mMessageContainer.msg);
                 return false;
             }
         }

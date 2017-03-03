@@ -1,23 +1,33 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
+import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.thridmanager.share.ShareContent;
+import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -29,6 +39,12 @@ import rx.schedulers.Schedulers;
 @FragmentScoped
 public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.Repository,
         DynamicDetailContract.View> implements DynamicDetailContract.Presenter {
+
+    @Inject
+    DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
+    @Inject
+    public SharePolicy mSharePolicy;
+
     @Inject
     public DynamicDetailPresenter(DynamicDetailContract.Repository repository, DynamicDetailContract.View rootView) {
         super(repository, rootView);
@@ -58,7 +74,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
                 .subscribe(new BaseSubscribe<List<UserInfoBean>>() {
                     @Override
                     protected void onSuccess(List<UserInfoBean> data) {
-                       mRootView.setDigHeadIcon(data);
+                        mRootView.setDigHeadIcon(data);
                     }
 
                     @Override
@@ -73,4 +89,52 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
                 });
         addSubscrebe(subscription);
     }
+
+    @Override
+    public void handleLike(boolean isLiked, final Long feed_id, final DynamicToolBean dynamicToolBean) {
+        // 更新UI
+        mRootView.setLike(isLiked);
+        // 更新数据库
+        mDynamicToolBeanGreenDao.insertOrReplace(dynamicToolBean);
+        // 通知服务器
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("feed_id", feed_id);
+        // 后台处理
+        if (isLiked) {
+            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST, params);
+        } else {
+            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
+        }
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_HANDLE_LIKE_FORMAT, feed_id));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+    }
+
+    @Override
+    public void handleCollect(boolean isCollected, Long feed_id, DynamicToolBean dynamicToolBean) {
+        // 更新UI
+        mRootView.setCollect(isCollected);
+        // 更新数据库
+        mDynamicToolBeanGreenDao.insertOrReplace(dynamicToolBean);
+        // 通知服务器
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("feed_id", feed_id);
+        // 后台处理
+        if (isCollected) {
+            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST, params);
+        } else {
+            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
+        }
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_HANDLE_COLLECT_FORMAT, feed_id));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+    }
+
+    @Override
+    public void shareDynamic() {
+        ShareContent shareContent = new ShareContent();
+        mSharePolicy.setShareContent(shareContent);
+        mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
+    }
+
 }

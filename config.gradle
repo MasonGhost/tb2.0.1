@@ -113,6 +113,7 @@ ext {
             robolectric         : "org.robolectric:robolectric:${robolectricVersion}",
             multidexTest        : "org.robolectric:shadows-multidex:${robolectricVersion}",
             espresso            : "com.android.support.test.espresso:espresso-core:${espressoVersion}",
+            espressoIntent      : "com.android.support.test.espresso:espresso-intents:${espressoVersion}",
             // 测试recyclerView列表
             espressoRecyclerView: "com.android.support.test.espresso:espresso-contrib:${espressoVersion}",
             // espresso异步测试依赖库，需要compile到主工程

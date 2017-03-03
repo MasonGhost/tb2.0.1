@@ -88,7 +88,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         }
         Message message = ChatClient.getInstance(mContext).sendTextMsg(text, cid, "");// usid 暂不使用
         message.setCreate_time(System.currentTimeMillis());
-        message.setUid(AppApplication.getmCurrentLoginAuth().getUser_id());
+        message.setUid(AppApplication.getmCurrentLoginAuth()!=null?AppApplication.getmCurrentLoginAuth().getUser_id():0);
         message.setIs_read(true);
         updateMessage(message);
     }
@@ -101,7 +101,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     @Override
     public void reSendText(ChatItemBean chatItemBean) {
         chatItemBean.getLastMessage().setCreate_time(System.currentTimeMillis());
-        ChatClient.getInstance(mContext).sendMessage( chatItemBean.getLastMessage());
+        ChatClient.getInstance(mContext).sendMessage(chatItemBean.getLastMessage());
         mRootView.reFreshMessage(chatItemBean);
     }
 
@@ -131,15 +131,12 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         ChatItemBean chatItemBean = new ChatItemBean();
         chatItemBean.setLastMessage(message);
         if (message.getUid() == 0) {// 如果没有 uid, 则表明是当前用户发的消息
-            message.setUid(AppApplication.getmCurrentLoginAuth().getUser_id());
+            message.setUid(AppApplication.getmCurrentLoginAuth()!=null?AppApplication.getmCurrentLoginAuth().getUser_id():0);
         }
         UserInfoBean userInfoBean = mUserInfoBeanSparseArray.get(message.getUid());
         if (userInfoBean == null) {
             userInfoBean = AppApplication.AppComponentHolder.getAppComponent()
                     .userInfoBeanGreenDao().getSingleDataFromCache((long) message.getUid());
-            if (userInfoBean == null) {
-                // TODO: 2017/2/21    //网络请求
-            }
             mUserInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
         }
         chatItemBean.setUserInfo(userInfoBean);

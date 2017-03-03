@@ -183,7 +183,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED)
     private void onMessageReceived(Message message) {
         mRootView.refreshMessageUnreadNum(message);
-        LogUtils.d(TAG, "------onMessageReceived------->" + message);
+
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGEACKRECEIVED)
@@ -191,7 +191,6 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         if (!(ActivityHandler.getInstance().currentActivity() instanceof HomeActivity)) {
             return;
         }
-        LogUtils.d(TAG, "-------onMessageACKReceived------------>" + message);
     }
 
 

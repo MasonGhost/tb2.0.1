@@ -1,6 +1,7 @@
 package com.zhiyicx.imsdk.db.base;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 
 /**
  * Created by jungle on 16/8/12.
@@ -22,4 +23,14 @@ public abstract class BaseDao {
     protected ZBSqlHelper mHelper;
 
     public abstract void close();
+
+    public void delDataBase() {
+        SQLiteDatabase database = mHelper.getWritableDatabase();
+        database.execSQL(ZBSqlHelper.SQL_DELETE_MESSAGE);
+        database.execSQL(ZBSqlHelper.SQL_DELETE_CONVERSATION);
+        database.execSQL(ZBSqlHelper.SQL_DELETE_MASK);
+        database.execSQL(ZBSqlHelper.SQL_CREATE_MESSAGE);
+        database.execSQL(ZBSqlHelper.SQL_CREATE_CONVERSATION);
+        database.execSQL(ZBSqlHelper.SQL_CREATE_MASK);
+    }
 }

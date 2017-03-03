@@ -131,6 +131,7 @@ dependencies {
         exclude module: 'support-annotations'
         exclude group: 'javax.inject'
     }
+    androidTestCompile testDependences.espressoIntent
     androidTestCompile(testDependences.espressoRecyclerView) {
         exclude group: 'com.android.support', module: 'appcompat-v7'
         exclude group: 'com.android.support', module: 'design'

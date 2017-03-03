@@ -171,29 +171,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                         List<DynamicToolBean> dynamicToolBeen = new ArrayList<>();
                         for (DynamicBean dynamicBeanTmp : datas) {
                             // 处理关注和热门数据
-                            DynamicBean localDynamicBean = mDynamicBeanGreenDao.getDynamicByFeedMark(dynamicBeanTmp.getFeed_mark());
-
-                            switch (mRootView.getDynamicType()) {
-                                case ApiConfig.DYNAMIC_TYPE_FOLLOWS:
-                                    if (localDynamicBean.getHot_creat_time() != null && dynamicBeanTmp.getHot_creat_time() != 0) {
-                                        dynamicBeanTmp.setHot_creat_time(localDynamicBean.getHot_creat_time());
-                                    }
-                                    break;
-
-                                case ApiConfig.DYNAMIC_TYPE_HOTS:
-                                    if (localDynamicBean.getIsFollowed()) {
-                                        dynamicBeanTmp.setIsFollowed(localDynamicBean.getIsFollowed());
-                                    }
-                                    break;
-                                case ApiConfig.DYNAMIC_TYPE_NEW:
-                                    dynamicBeanTmp.setIsFollowed(localDynamicBean.getIsFollowed());
-                                    dynamicBeanTmp.setHot_creat_time(localDynamicBean.getHot_creat_time());
-                                    break;
-
-                                default:
-
-                            }
-
+                            dealLocalTypeData(dynamicBeanTmp);
                             // 把详情的 feed_id 放到 dynamicbean 中
                             dynamicBeanTmp.setFeed_id(dynamicBeanTmp.getFeed().getFeed_id());
                             // 把 feed_mark 设置到详情中去
@@ -221,6 +199,32 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
 
     }
 
+    private void dealLocalTypeData(DynamicBean dynamicBeanTmp) {
+        DynamicBean localDynamicBean = mDynamicBeanGreenDao.getDynamicByFeedMark(dynamicBeanTmp.getFeed_mark());
+        if (localDynamicBean != null) {
+            switch (mRootView.getDynamicType()) {
+                case ApiConfig.DYNAMIC_TYPE_FOLLOWS:
+                    if (localDynamicBean.getHot_creat_time() != null && dynamicBeanTmp.getHot_creat_time() != 0) {
+                        dynamicBeanTmp.setHot_creat_time(localDynamicBean.getHot_creat_time());
+                    }
+                    break;
+
+                case ApiConfig.DYNAMIC_TYPE_HOTS:
+                    if (localDynamicBean.getIsFollowed()) {
+                        dynamicBeanTmp.setIsFollowed(localDynamicBean.getIsFollowed());
+                    }
+                    break;
+                case ApiConfig.DYNAMIC_TYPE_NEW:
+                    dynamicBeanTmp.setIsFollowed(localDynamicBean.getIsFollowed());
+                    dynamicBeanTmp.setHot_creat_time(localDynamicBean.getHot_creat_time());
+                    break;
+
+                default:
+
+            }
+        }
+    }
+
     /**
      * 处理发送动态数据
      *
@@ -230,8 +234,6 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
     public void handleSendDynamic(DynamicBean dynamicBean) {
         if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW)) {
             int position = hasContanied(dynamicBean);
-            System.out.println("position = " + position);
-            System.out.println("dynamicBean = " + dynamicBean.getState());
             if (position != -1) {// 如果列表有当前数据
                 mRootView.refresh(position);
             } else {
@@ -260,7 +262,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
 
     @NonNull
     private List<DynamicBean> getDynamicBeenFromDB() {
-        List<DynamicBean> datas = mDynamicBeanGreenDao.getMySendingDynamic((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+        List<DynamicBean> datas = mDynamicBeanGreenDao.getMySendingUnSuccessDynamic((long) AppApplication.getmCurrentLoginAuth().getUser_id());
         msendingStatus.clear();
         for (int i = 0; i < datas.size(); i++) {
             msendingStatus.put(i, datas.get(i).getFeed_mark());
@@ -277,6 +279,9 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
      */
     @Override
     public void handleLike(boolean isLiked, final Long feed_id, final int postion) {
+        if (feed_id == null || feed_id == 0) {
+            return;
+        }
         Observable.just(isLiked)
                 .observeOn(Schedulers.io())
                 .subscribe(new Action1<Boolean>() {

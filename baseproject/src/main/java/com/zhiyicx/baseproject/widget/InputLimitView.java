@@ -86,7 +86,7 @@ public class InputLimitView extends FrameLayout {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (TextUtils.isEmpty(s)) {
+                if (TextUtils.isEmpty(s.toString().trim())) {
                     mBtSend.setEnabled(false);
                 } else {
                     mBtSend.setEnabled(true);

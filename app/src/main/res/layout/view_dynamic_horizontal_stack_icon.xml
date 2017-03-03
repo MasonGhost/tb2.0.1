@@ -10,6 +10,7 @@
               android:paddingTop="@dimen/spacing_normal_large">
 
     <LinearLayout
+        android:id="@+id/ll_dig_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1">

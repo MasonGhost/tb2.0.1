@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter;
 
 import android.app.ActionBar;
 import android.content.Context;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -15,10 +16,12 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,8 +52,26 @@ public class DynamicDetailItemForDig implements ItemViewDelegate<DynamicBean> {
         dynamicHorizontalStackIconView.setDigCount(dynamicToolBean.getFeed_digg_count());
         dynamicHorizontalStackIconView.setPublishTime(dynamicDetailBean.getCreated_at());
         dynamicHorizontalStackIconView.setViewerCount(dynamicToolBean.getFeed_view_count());
+        // 设置点赞头像
+      /*  List<UserInfoBean> userInfoList = dynamicBean.getDigUserInfoList();
+        List<ImageBean> imageBeanList = null;
+        if (userInfoList != null && !imageBeanList.isEmpty()) {
+            imageBeanList = new ArrayList<>();
+            for (UserInfoBean userInfoBean : userInfoList) {
+                ImageBean imageBean = new ImageBean();
+                imageBean.setStorage_id(userInfoBean.getUserIcon());
+                imageBeanList.add(imageBean);
+            }
+        }
+        dynamicHorizontalStackIconView.setDigUserHeadIcon(imageBeanList);*/
 
-       // dynamicHorizontalStackIconView.setDigUserHeadIcon();
+        // 设置跳转到点赞列表
+        dynamicHorizontalStackIconView.setDigContainerClickListener(new DynamicHorizontalStackIconView.DigContainerClickListener() {
+            @Override
+            public void digContainerClick(View digContainer) {
+
+            }
+        });
     }
 
 

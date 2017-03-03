@@ -1,12 +1,16 @@
 package com.zhiyicx.thinksnsplus.widget;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBoundTransform;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -15,6 +19,11 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import rx.functions.Action1;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @author LiuChao
@@ -32,6 +41,10 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
     private TextView publishTime;
     // 浏览量
     private TextView viewerCount;
+    // 点赞容器
+    private LinearLayout digContainer;
+
+    private DigContainerClickListener mDigContainerClickListener;
 
     private Context mContext;
 
@@ -54,6 +67,8 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
         mContext = context;
         LayoutInflater.from(context).inflate(R.layout.view_dynamic_horizontal_stack_icon, this);
         digCount = (TextView) findViewById(R.id.tv_dig_count);
+        digContainer = (LinearLayout) findViewById(R.id.ll_dig_container);
+        setDigRxClickListener();
         // 将图片存到图片数组中,倒序存放
         mImageViews = new ImageView[5];
         mImageViews[4] = iv_dig_head1 = (ImageView) findViewById(R.id.iv_dig_head1);
@@ -121,5 +136,27 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
         for (ImageView imageView : mImageViews) {
             imageView.setVisibility(GONE);
         }
+    }
+
+    private void setDigRxClickListener() {
+        RxView.clicks(digContainer)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                //.compose(.<Void>bindToLifecycle()) 瞬时操作，不需要绑定生命周期
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        if (mDigContainerClickListener != null) {
+                            mDigContainerClickListener.digContainerClick(digContainer);
+                        }
+                    }
+                });
+    }
+
+    public void setDigContainerClickListener(DigContainerClickListener digContainerClickListener) {
+        mDigContainerClickListener = digContainerClickListener;
+    }
+
+    public interface DigContainerClickListener {
+        void digContainerClick(View digContainer);
     }
 }

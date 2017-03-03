@@ -121,7 +121,7 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
     /**
      * 获取我正在或者发送失败的动态
      */
-    public List<DynamicBean> getMySendingDynamic(Long userId) {
+    public List<DynamicBean> getMySendingUnSuccessDynamic(Long userId) {
 
         DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
         return dynamicBeanDao.queryDeep(" where " + " T." + DynamicBeanDao.Properties.User_id.columnName + " = ? and " + " T." + DynamicBeanDao.Properties.State.columnName + " != " + DynamicBean.SEND_SUCCESS + "  ORDER BY "

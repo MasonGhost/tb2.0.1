@@ -183,7 +183,6 @@ public class AppApplication extends TSApplication {
                 .appModule(getAppModule())// baseApplication 提供
                 .httpClientModule(getHttpClientModule())// baseApplication 提供
                 .imageModule(getImageModule())// // 图片加载框架
-                .shareModule(getShareModule())// 分享框架
                 .serviceModule(getServiceModule())// 需自行创建
                 .cacheModule(getCacheModule())// 需自行创建
                 .build();
@@ -246,13 +245,13 @@ public class AppApplication extends TSApplication {
     }
 
     private static HttpProxyCacheServer newProxy() {
-        boolean b=FileUtils.createOrExistsDir(new File(FileUtils.getCacheFile(BaseApplication
+        boolean b = FileUtils.createOrExistsDir(new File(FileUtils.getCacheFile(BaseApplication
                 .getContext())
-                ,"/media"));
+                , "/media"));
 
         return new HttpProxyCacheServer.Builder(BaseApplication.getContext())
                 .cacheDirectory(new File(FileUtils.getCacheFile(BaseApplication.getContext())
-                        ,"/media"))
+                        , "/media"))
                 .maxCacheFilesCount(100)
                 .build();
     }

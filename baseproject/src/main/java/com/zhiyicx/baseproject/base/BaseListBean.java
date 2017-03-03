@@ -40,15 +40,4 @@ public class BaseListBean implements Parcelable {
         this.maxId = (Long) in.readValue(Long.class.getClassLoader());
     }
 
-    public static final Creator<BaseListBean> CREATOR = new Creator<BaseListBean>() {
-        @Override
-        public BaseListBean createFromParcel(Parcel source) {
-            return new BaseListBean(source);
-        }
-
-        @Override
-        public BaseListBean[] newArray(int size) {
-            return new BaseListBean[size];
-        }
-    };
 }

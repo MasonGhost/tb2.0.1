@@ -5,6 +5,7 @@ import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
@@ -52,5 +53,27 @@ public interface DynamicDetailContract {
          * 获取当前动态的点赞列表
          */
         void getDynamicDigList(Long feed_id, Integer max_id);
+
+        /**
+         * 处理喜欢逻辑
+         *
+         * @param dynamicToolBean 更新数据库
+         */
+        void handleLike(boolean isLiked, Long feed_id, DynamicToolBean dynamicToolBean);
+
+        /**
+         * 处理收藏逻辑
+         *
+         * @param isCollected
+         * @param feed_id
+         * @param dynamicToolBean
+         */
+
+        void handleCollect(boolean isCollected, Long feed_id, DynamicToolBean dynamicToolBean);
+
+        /**
+         * 动态分享
+         */
+        void shareDynamic();
     }
 }

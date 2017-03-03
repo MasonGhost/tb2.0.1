@@ -74,4 +74,10 @@
     <!--音乐FM-->
     <string name="music_fm">音乐FM</string>
 
+    <!--分享类型-->
+    <string name="qq_share">QQ</string>
+    <string name="qZone_share">空间</string>
+    <string name="weChat_share">微信</string>
+    <string name="weCircle_share">朋友圈</string>
+    <string name="weibo_share">微博</string>
 </resources>

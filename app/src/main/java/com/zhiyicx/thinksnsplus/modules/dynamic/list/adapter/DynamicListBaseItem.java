@@ -62,11 +62,11 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
 
     protected OnUserInfoClickListener mOnUserInfoClickListener; // 用户信息点击监听
 
-    public void setOnLikeClickListener(OnLikeClickListener onLikeClickListener) {
-        mOnLikeClickListener = onLikeClickListener;
+    public void setOnMenuItemClickLisitener(OnMenuItemClickLisitener onMenuItemClickLisitener) {
+        mOnMenuItemClickLisitener = onMenuItemClickLisitener;
     }
 
-    protected OnLikeClickListener mOnLikeClickListener; // 工具栏被点击
+    protected OnMenuItemClickLisitener mOnMenuItemClickLisitener; // 工具栏被点击
 
 
     public void setOnReSendClickListener(OnReSendClickListener onReSendClickListener) {
@@ -152,8 +152,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
         dynamicListMenuView.setItemOnClick(new DynamicListMenuView.OnItemClickListener() {
             @Override
             public void onItemClick(ViewGroup parent, View v, int menuPostion) {
-                if (mOnLikeClickListener != null) {
-                    mOnLikeClickListener.onLikeButtonClick(position);
+                if (mOnMenuItemClickLisitener != null) {
+                    mOnMenuItemClickLisitener.onMenuItemClick(v,position,menuPostion);
                 }
             }
         });
@@ -291,8 +291,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
     /**
      * like interface
      */
-    public interface OnLikeClickListener {
-        void onLikeButtonClick(int position);
+    public interface OnMenuItemClickLisitener {
+        void onMenuItemClick(View view, int dataPosition, int viewPosition);
     }
 
     /**
