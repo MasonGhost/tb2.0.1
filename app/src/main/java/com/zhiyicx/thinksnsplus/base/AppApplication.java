@@ -183,7 +183,6 @@ public class AppApplication extends TSApplication {
                 .appModule(getAppModule())// baseApplication 提供
                 .httpClientModule(getHttpClientModule())// baseApplication 提供
                 .imageModule(getImageModule())// // 图片加载框架
-                .shareModule(getShareModule())// 分享框架
                 .serviceModule(getServiceModule())// 需自行创建
                 .cacheModule(getCacheModule())// 需自行创建
                 .build();

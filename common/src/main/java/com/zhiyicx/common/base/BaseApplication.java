@@ -9,7 +9,6 @@ import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.dagger.module.AppModule;
 import com.zhiyicx.common.dagger.module.HttpClientModule;
 import com.zhiyicx.common.dagger.module.ImageModule;
-import com.zhiyicx.common.dagger.module.ShareModule;
 import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
@@ -80,8 +79,6 @@ public abstract class BaseApplication extends SkinBaseApplication {
     protected abstract String getBaseUrl();
 
     protected abstract ImageModule getImageModule();
-
-    protected abstract ShareModule getShareModule();
 
     /**
      * 安装 leakCanary 检测内存泄露

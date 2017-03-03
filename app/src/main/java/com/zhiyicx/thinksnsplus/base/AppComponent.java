@@ -2,12 +2,9 @@ package com.zhiyicx.thinksnsplus.base;
 
 import android.app.Application;
 
-import com.tbruyelle.rxpermissions.RxPermissions;
 import com.zhiyicx.common.dagger.module.AppModule;
 import com.zhiyicx.common.dagger.module.HttpClientModule;
 import com.zhiyicx.common.dagger.module.ImageModule;
-import com.zhiyicx.common.dagger.module.ShareModule;
-import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.rxerrorhandler.RxErrorHandler;
 import com.zhiyicx.thinksnsplus.dagger.GreenDaoModule;
@@ -38,7 +35,7 @@ import okhttp3.OkHttpClient;
  */
 
 @Singleton
-@Component(modules = {AppModule.class, HttpClientModule.class, ServiceModule.class, CacheModule.class, ImageModule.class, ShareModule.class, GreenDaoModule.class})
+@Component(modules = {AppModule.class, HttpClientModule.class, ServiceModule.class, CacheModule.class, ImageModule.class, GreenDaoModule.class})
 public interface AppComponent extends InjectComponent<AppApplication> {
     void inject(BackgroundTaskHandler backgroundTaskHandler);
 
@@ -57,8 +54,6 @@ public interface AppComponent extends InjectComponent<AppApplication> {
 
     //图片管理器,用于加载图片的管理类,默认使用glide,使用策略模式,可替换框架
     ImageLoader imageLoader();
-
-    SharePolicy sharePolicy();
 
     AuthRepository authRepository();
 
