@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.UIUtils;
@@ -27,6 +29,8 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,7 +50,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @BindView(R.id.dd_dynamic_tool)
     DynamicDetailMenuView mDdDynamicTool;
-    private SharePolicy mSharePolicy;
     private DynamicBean mDynamicBean;// 上一个页面传进来的数据
     private List<DynamicBean> mDatas = new ArrayList<>();
 
@@ -186,6 +189,12 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         refreshData(1);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UmengSharePolicyImpl.onActivityResult(requestCode, resultCode, data, getContext());
+    }
+
     /**
      * 设置底部工具栏UI
      */
@@ -202,8 +211,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mDdDynamicTool.setButtonText(new int[]{R.string.dynamic_like, R.string.comment
                 , R.string.share, R.string.favorite});
 
-        // 初始化分享
-        mSharePolicy = AppApplication.AppComponentHolder.getAppComponent().sharePolicy();
     }
 
     /**
@@ -241,7 +248,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                         break;
                     case DynamicDetailMenuView.ITEM_POSITION_2:
                         // 分享
-                        mSharePolicy.showShare(getActivity());
+                       mPresenter.shareDynamic();
                         break;
                     case DynamicDetailMenuView.ITEM_POSITION_3:
                         // 收藏

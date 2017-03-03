@@ -1,8 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
+import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.thridmanager.share.ShareContent;
+import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
@@ -39,6 +42,8 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
 
     @Inject
     DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
+    @Inject
+    public SharePolicy mSharePolicy;
 
     @Inject
     public DynamicDetailPresenter(DynamicDetailContract.Repository repository, DynamicDetailContract.View rootView) {
@@ -103,6 +108,13 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         }
         backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_HANDLE_LIKE_FORMAT, feed_id));
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+    }
+
+    @Override
+    public void shareDynamic() {
+        ShareContent shareContent=new ShareContent();
+        mSharePolicy.setShareContent(shareContent);
+        mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
     }
 
 }

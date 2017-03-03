@@ -60,5 +60,10 @@ public interface DynamicDetailContract {
          * @param dynamicToolBean 更新数据库
          */
         void handleLike(boolean isLiked, Long feed_id, DynamicToolBean dynamicToolBean);
+
+        /**
+         * 动态分享
+         */
+        void shareDynamic();
     }
 }
