@@ -85,6 +85,7 @@
         </activity>
         <activity android:name=".modules.music_fm.music_album_detail.MusicDetailActivity"/>
         <activity android:name=".modules.music_fm.music_play.MusicPlayActivity"/>
+        <activity android:name=".modules.information.InfoActivity"/>
         <activity android:name=".modules.dynamic.send.SendDynamicActivity">
         </activity>
 
@@ -110,8 +111,10 @@
             android:name="com.zhiyicx.imsdk.receiver.NetChangeReceiver"
             android:label="NetworkConnection">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/> // 网络切换
-                <action android:name="android.intent.action.USER_PRESENT"/> // 例如锁屏被唤醒
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                // 网络切换
+                <action android:name="android.intent.action.USER_PRESENT"/>
+                // 例如锁屏被唤醒
             </intent-filter>
         </receiver>
 
@@ -119,8 +122,8 @@
         <service android:name=".service.backgroundtask.BackgroundTaskHandleService"/>
         <!-- &lt;!&ndash;glide配置&ndash;&gt; -->
         <!--<meta-data-->
-            <!--android:name="com.zhiyicx.thinksnsplus.config.GlideConfiguration"-->
-            <!--android:value="GlideModule"/>-->
+        <!--android:name="com.zhiyicx.thinksnsplus.config.GlideConfiguration"-->
+        <!--android:value="GlideModule"/>-->
 
         <activity android:name=".modules.dynamic.detail.DynamicDetailActivity">
         </activity>
