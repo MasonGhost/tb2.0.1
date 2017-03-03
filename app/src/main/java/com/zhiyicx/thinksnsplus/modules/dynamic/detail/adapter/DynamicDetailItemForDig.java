@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter;
 
 import android.app.ActionBar;
 import android.content.Context;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -63,6 +64,14 @@ public class DynamicDetailItemForDig implements ItemViewDelegate<DynamicBean> {
             }
         }
         dynamicHorizontalStackIconView.setDigUserHeadIcon(imageBeanList);*/
+
+        // 设置跳转到点赞列表
+        dynamicHorizontalStackIconView.setDigContainerClickListener(new DynamicHorizontalStackIconView.DigContainerClickListener() {
+            @Override
+            public void digContainerClick(View digContainer) {
+
+            }
+        });
     }
 
 
