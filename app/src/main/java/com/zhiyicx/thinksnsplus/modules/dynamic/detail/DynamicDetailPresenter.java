@@ -111,8 +111,28 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
     }
 
     @Override
+    public void handleCollect(boolean isCollected, Long feed_id, DynamicToolBean dynamicToolBean) {
+        // 更新UI
+        mRootView.setCollect(isCollected);
+        // 更新数据库
+        mDynamicToolBeanGreenDao.insertOrReplace(dynamicToolBean);
+        // 通知服务器
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("feed_id", feed_id);
+        // 后台处理
+        if (isCollected) {
+            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST, params);
+        } else {
+            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
+        }
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_HANDLE_COLLECT_FORMAT, feed_id));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+    }
+
+    @Override
     public void shareDynamic() {
-        ShareContent shareContent=new ShareContent();
+        ShareContent shareContent = new ShareContent();
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
     }

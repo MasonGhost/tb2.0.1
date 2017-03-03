@@ -62,6 +62,16 @@ public interface DynamicDetailContract {
         void handleLike(boolean isLiked, Long feed_id, DynamicToolBean dynamicToolBean);
 
         /**
+         * 处理收藏逻辑
+         *
+         * @param isCollected
+         * @param feed_id
+         * @param dynamicToolBean
+         */
+
+        void handleCollect(boolean isCollected, Long feed_id, DynamicToolBean dynamicToolBean);
+
+        /**
          * 动态分享
          */
         void shareDynamic();

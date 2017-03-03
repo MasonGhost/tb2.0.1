@@ -219,9 +219,9 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     private void initBottomToolData(DynamicBean dynamicBean) {
         DynamicToolBean dynamicToolBean = dynamicBean.getTool();
         // 设置是否喜欢
-        mDdDynamicTool.setItemIsChecked(dynamicToolBean.getIs_digg_feed() == 1, 0);
+        mDdDynamicTool.setItemIsChecked(dynamicToolBean.getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED, DynamicDetailMenuView.ITEM_POSITION_0);
         //设置是否收藏
-        //mDdDynamicTool.setItemIsChecked(,3);
+        mDdDynamicTool.setItemIsChecked(dynamicToolBean.getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED, DynamicDetailMenuView.ITEM_POSITION_3);
     }
 
     /**
@@ -236,11 +236,12 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                     case DynamicDetailMenuView.ITEM_POSITION_0:
                         // 喜欢
                         // 修改数据
-                        DynamicToolBean dynamicToolBean = mDynamicBean.getTool();
-                        dynamicToolBean.setIs_digg_feed(dynamicToolBean.getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ? DynamicToolBean.STATUS_DIGG_FEED_CHECKED : DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED);
+                        DynamicToolBean likeToolBean = mDynamicBean.getTool();
+                        likeToolBean.setIs_digg_feed(likeToolBean.getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED
+                                ? DynamicToolBean.STATUS_DIGG_FEED_CHECKED : DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED);
                         // 处理喜欢逻辑，包括服务器，数据库，ui
                         mPresenter.handleLike(mDynamicBean.getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED,
-                                mDynamicBean.getFeed_id(), dynamicToolBean);
+                                mDynamicBean.getFeed_id(), likeToolBean);
                         break;
                     case DynamicDetailMenuView.ITEM_POSITION_1:
                         // 评论
@@ -248,11 +249,17 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                         break;
                     case DynamicDetailMenuView.ITEM_POSITION_2:
                         // 分享
-                       mPresenter.shareDynamic();
+                        mPresenter.shareDynamic();
                         break;
                     case DynamicDetailMenuView.ITEM_POSITION_3:
                         // 收藏
-
+                        // 修改数据
+                        DynamicToolBean collectToolBean = mDynamicBean.getTool();
+                        collectToolBean.setIs_collection_feed(collectToolBean.getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_UNCHECKED
+                                ? DynamicToolBean.STATUS_COLLECT_FEED_CHECKED : DynamicToolBean.STATUS_COLLECT_FEED_UNCHECKED);
+                        // 处理喜欢逻辑，包括服务器，数据库，ui
+                        mPresenter.handleCollect(mDynamicBean.getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED,
+                                mDynamicBean.getFeed_id(), collectToolBean);
                         break;
                 }
             }
