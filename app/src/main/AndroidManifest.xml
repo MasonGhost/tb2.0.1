@@ -110,19 +110,23 @@
             android:name="com.zhiyicx.imsdk.receiver.NetChangeReceiver"
             android:label="NetworkConnection">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/> // 网络切换
-                <action android:name="android.intent.action.USER_PRESENT"/> // 例如锁屏被唤醒
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                // 网络切换
+                <action android:name="android.intent.action.USER_PRESENT"/>
+                // 例如锁屏被唤醒
             </intent-filter>
         </receiver>
 
         <!-- #########################################      后台任务相关service       ################################ -->
         <service android:name=".service.backgroundtask.BackgroundTaskHandleService"/>
         <!-- &lt;!&ndash;glide配置&ndash;&gt; -->
-        <!--<meta-data-->
-            <!--android:name="com.zhiyicx.thinksnsplus.config.GlideConfiguration"-->
-            <!--android:value="GlideModule"/>-->
+        <!-- <meta-data -->
+        <!-- android:name="com.zhiyicx.thinksnsplus.config.GlideConfiguration" -->
+        <!-- android:value="GlideModule"/> -->
 
         <activity android:name=".modules.dynamic.detail.DynamicDetailActivity">
+        </activity>
+        <activity android:name=".modules.dynamic.detail.dig_list.DigListActivity">
         </activity>
     </application>
 
