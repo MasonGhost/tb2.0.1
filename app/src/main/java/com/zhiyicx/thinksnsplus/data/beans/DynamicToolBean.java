@@ -15,8 +15,8 @@ import org.greenrobot.greendao.annotation.Id;
  */
 @Entity
 public class DynamicToolBean implements Parcelable {
-    public static final int STATUS_DIGG_FEED_UNCHECKED=0;
-    public static final int STATUS_DIGG_FEED_CHECKED=1;
+    public static final int STATUS_DIGG_FEED_UNCHECKED = 0;
+    public static final int STATUS_DIGG_FEED_CHECKED = 1;
 
     @Id
     private Long feed_mark;// 属于哪条动态
@@ -32,7 +32,7 @@ public class DynamicToolBean implements Parcelable {
         this.is_digg_feed = is_digg_feed;
     }
 
-    private int is_digg_feed;// 是否喜欢了
+    private int is_digg_feed;// 是否喜欢了 0是没有喜欢  1是喜欢
 
     public Long getFeed_mark() {
         return feed_mark;
@@ -71,7 +71,7 @@ public class DynamicToolBean implements Parcelable {
 
     @Generated(hash = 1207968670)
     public DynamicToolBean(Long feed_mark, int feed_digg_count, int feed_view_count,
-            int feed_comment_count, int is_digg_feed) {
+                           int feed_comment_count, int is_digg_feed) {
         this.feed_mark = feed_mark;
         this.feed_digg_count = feed_digg_count;
         this.feed_view_count = feed_view_count;

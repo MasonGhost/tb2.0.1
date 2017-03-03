@@ -13,9 +13,12 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
+import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailItemForContent;
@@ -43,7 +46,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @BindView(R.id.dd_dynamic_tool)
     DynamicDetailMenuView mDdDynamicTool;
-
+    private SharePolicy mSharePolicy;
+    private DynamicBean mDynamicBean;// 上一个页面传进来的数据
     private List<DynamicBean> mDatas = new ArrayList<>();
 
     @Override
@@ -54,17 +58,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        // 初始化底部工具栏数据
-        mDdDynamicTool.setImageNormalResourceIds(new int[]{R.mipmap.home_ico_good_normal
-                , R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal
-                , R.mipmap.detail_ico_good_uncollect
-        });
-        mDdDynamicTool.setImageCheckedResourceIds(new int[]{R.mipmap.home_ico_good_high
-                , R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal
-                , R.mipmap.detail_ico_collect
-        });
-        mDdDynamicTool.setButtonText(new int[]{R.string.dynamic_like, R.string.comment
-                , R.string.share, R.string.favorite});
+        initBottomToolUI();
+        initBottomToolListener();
     }
 
     @Override
@@ -78,8 +73,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         Bundle bundle = getArguments();
         if (bundle != null && bundle.containsKey(DYNAMIC_DETAIL_DATA)) {
             DynamicBean dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
+            mDynamicBean = dynamicBean;
             setToolBarUser(dynamicBean);// 设置标题用户
+            initBottomToolData(dynamicBean);// 初始化底部工具栏数据
 
+            // 设置动态详情列表数据
             DynamicBean dynamicContent = new DynamicBean();
             dynamicContent.setFeed(dynamicBean.getFeed());
             DynamicBean dynamicDig = new DynamicBean();
@@ -186,5 +184,71 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         DynamicBean dynamicBean = mDatas.get(1);
         dynamicBean.setDigUserInfoList(userInfoBeanList);
         refreshData(1);
+    }
+
+    /**
+     * 设置底部工具栏UI
+     */
+    private void initBottomToolUI() {
+        // 初始化底部工具栏数据
+        mDdDynamicTool.setImageNormalResourceIds(new int[]{R.mipmap.home_ico_good_normal
+                , R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal
+                , R.mipmap.detail_ico_good_uncollect
+        });
+        mDdDynamicTool.setImageCheckedResourceIds(new int[]{R.mipmap.home_ico_good_high
+                , R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal
+                , R.mipmap.detail_ico_collect
+        });
+        mDdDynamicTool.setButtonText(new int[]{R.string.dynamic_like, R.string.comment
+                , R.string.share, R.string.favorite});
+
+        // 初始化分享
+        mSharePolicy = AppApplication.AppComponentHolder.getAppComponent().sharePolicy();
+    }
+
+    /**
+     * 进入页面，设置底部工具栏的数据
+     */
+    private void initBottomToolData(DynamicBean dynamicBean) {
+        DynamicToolBean dynamicToolBean = dynamicBean.getTool();
+        // 设置是否喜欢
+        mDdDynamicTool.setItemIsChecked(dynamicToolBean.getIs_digg_feed() == 1, 0);
+        //设置是否收藏
+        //mDdDynamicTool.setItemIsChecked(,3);
+    }
+
+    /**
+     * 设置底部工具栏的点击事件
+     */
+    private void initBottomToolListener() {
+        mDdDynamicTool.setItemOnClick(new DynamicDetailMenuView.OnItemClickListener() {
+            @Override
+            public void onItemClick(ViewGroup parent, View v, int postion) {
+                mDdDynamicTool.getTag(R.id.view_data);
+                switch (postion) {
+                    case DynamicDetailMenuView.ITEM_POSITION_0:
+                        // 喜欢
+                        // 修改数据
+                        DynamicToolBean dynamicToolBean = mDynamicBean.getTool();
+                        dynamicToolBean.setIs_digg_feed(dynamicToolBean.getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ? DynamicToolBean.STATUS_DIGG_FEED_CHECKED : DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED);
+                        // 处理喜欢逻辑，包括服务器，数据库，ui
+                        mPresenter.handleLike(mDynamicBean.getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED,
+                                mDynamicBean.getFeed_id(), dynamicToolBean);
+                        break;
+                    case DynamicDetailMenuView.ITEM_POSITION_1:
+                        // 评论
+
+                        break;
+                    case DynamicDetailMenuView.ITEM_POSITION_2:
+                        // 分享
+                        mSharePolicy.showShare(getActivity());
+                        break;
+                    case DynamicDetailMenuView.ITEM_POSITION_3:
+                        // 收藏
+
+                        break;
+                }
+            }
+        });
     }
 }
