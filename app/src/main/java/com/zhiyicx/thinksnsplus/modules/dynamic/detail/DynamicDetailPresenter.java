@@ -144,7 +144,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
     @Override
     public void followUser(FollowFansBean followFansBean) {
         // 后台通知服务器关注
-        BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
+/*        BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST);
         backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_FOLLOW_USER);
         HashMap<String, Object> hashMap = new HashMap<>();
@@ -154,12 +154,12 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         // 本地数据库和ui进行刷新
         int followState = mFollowFansBeanGreenDao.setStateToFollowed(followFansBean);
         followFansBean.setFollowState(followState);
-        mRootView.upDateFollowFansState(followState);
+        mRootView.upDateFollowFansState(followState);*/
     }
 
     @Override
     public void cancleFollowUser(FollowFansBean followFansBean) {
-        BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
+/*        BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
         backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_CANCEL_FOLLOW_USER);
         HashMap<String, Object> hashMap = new HashMap<>();
@@ -169,7 +169,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         // 本地数据库和ui进行刷新
         int followState = mFollowFansBeanGreenDao.setStateToUnFollowed(followFansBean);
         followFansBean.setFollowState(followState);
-        mRootView.upDateFollowFansState(followState);
+        mRootView.upDateFollowFansState(followState);*/
     }
 
 }

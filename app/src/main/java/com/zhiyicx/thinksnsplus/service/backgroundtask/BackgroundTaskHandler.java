@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.net.UpLoadFile;
 import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
@@ -251,7 +252,8 @@ public class BackgroundTaskHandler {
      * 处理Post请求类型的后台任务
      */
     private void postMethod(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
-        mServiceManager.getCommonClient().handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), backgroundRequestTaskBean.getParams())
+
+        mServiceManager.getCommonClient().handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null,backgroundRequestTaskBean.getParams()))
                 .subscribe(new BaseSubscribe<CacheBean>() {
                     @Override
                     protected void onSuccess(CacheBean data) {
