@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.base.BaseListBean;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -32,85 +33,153 @@ public class FollowFansBean extends BaseListBean {
     // 当前并未找到greenDao设置联合唯一性的方案，所以使用该字段，拼接userId和followedUserId
     // ，作为唯一的标识
     @Unique
-    private String userFollowedId;
-    private long userId;// 主体用户：将要关注别人的人
-    private int followState;// 关注状态 包含关注和相互关注
-    private long followedUserId;// 被关注的用户
-    @ToOne(joinProperty = "userId")
-    private UserInfoBean user;
-    @ToOne(joinProperty = "followedUserId")
-    private UserInfoBean fllowedUser;
-    /**
-     * Used to resolve relations
-     */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /**
-     * Used for active entity operations.
-     */
-    @Generated(hash = 1176234999)
-    private transient FollowFansBeanDao myDao;
-    @Generated(hash = 251390918)
-    private transient Long user__resolvedKey;
-    @Generated(hash = 1121137644)
-    private transient Long fllowedUser__resolvedKey;
+    private String origintargetUser;// 当前用户和目标用户的userId拼接字段
+    private long originUserId;// 当前用户
+    @SerializedName("user_id")
+    private long targetUserId;// 目标用户
+    @SerializedName("my_follow_status")
+    private int origin_follow_status;// 当前用户对目标用户的关注状态
+    @SerializedName("follow_status")
+    private int target_follow_status;// 目标用户对当前用户的关注状态
+    @ToOne(joinProperty = "originUserId")
+    private UserInfoBean originUserInfo;// 当前用户信息
+    @ToOne(joinProperty = "targetUserId")
+    private UserInfoBean targetUserInfo;// 目标用户信息
 
-    @Generated(hash = 1665209293)
-    public FollowFansBean(Long id, String userFollowedId, long userId, int followState,
-                          long followedUserId) {
-        this.id = id;
-        this.userFollowedId = userFollowedId;
-        this.userId = userId;
-        this.followState = followState;
-        this.followedUserId = followedUserId;
+    public String getOrigintargetUser() {
+        return origintargetUser;
     }
 
-    @Generated(hash = 258062586)
+    public void setOrigintargetUser(String origintargetUser) {
+        this.origintargetUser = origintargetUser;
+    }
+
+    public long getOriginUserId() {
+        return originUserId;
+    }
+
+    public void setOriginUserId(long originUserId) {
+        this.originUserId = originUserId;
+    }
+
+    public long getTargetUserId() {
+        return targetUserId;
+    }
+
+    public void setTargetUserId(long targetUserId) {
+        this.targetUserId = targetUserId;
+    }
+
+    public int getOrigin_follow_status() {
+        return origin_follow_status;
+    }
+
+    public void setOrigin_follow_status(int origin_follow_status) {
+        this.origin_follow_status = origin_follow_status;
+    }
+
+    public int getTarget_follow_status() {
+        return target_follow_status;
+    }
+
+    public void setTarget_follow_status(int target_follow_status) {
+        this.target_follow_status = target_follow_status;
+    }
+    @Keep
+    public UserInfoBean getOriginUserInfo() {
+        return originUserInfo;
+    }
+    @Keep
+    public void setOriginUserInfo(UserInfoBean originUserInfo) {
+        this.originUserInfo = originUserInfo;
+    }
+    @Keep
+    public UserInfoBean getTargetUserInfo() {
+        return targetUserInfo;
+    }
+    @Keep
+    public void setTargetUserInfo(UserInfoBean targetUserInfo) {
+        this.targetUserInfo = targetUserInfo;
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.id);
+        dest.writeString(this.origintargetUser);
+        dest.writeLong(this.originUserId);
+        dest.writeLong(this.targetUserId);
+        dest.writeInt(this.origin_follow_status);
+        dest.writeInt(this.target_follow_status);
+        dest.writeParcelable(this.originUserInfo, flags);
+        dest.writeParcelable(this.targetUserInfo, flags);
+    }
+
     public FollowFansBean() {
     }
 
-    public long getUserId() {
-        return userId;
+    protected FollowFansBean(Parcel in) {
+        super(in);
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.origintargetUser = in.readString();
+        this.originUserId = in.readLong();
+        this.targetUserId = in.readLong();
+        this.origin_follow_status = in.readInt();
+        this.target_follow_status = in.readInt();
+        this.originUserInfo = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.targetUserInfo = in.readParcelable(UserInfoBean.class.getClassLoader());
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    @Generated(hash = 851025626)
+    public FollowFansBean(Long id, String origintargetUser, long originUserId,
+            long targetUserId, int origin_follow_status, int target_follow_status) {
+        this.id = id;
+        this.origintargetUser = origintargetUser;
+        this.originUserId = originUserId;
+        this.targetUserId = targetUserId;
+        this.origin_follow_status = origin_follow_status;
+        this.target_follow_status = target_follow_status;
     }
 
-    public int getFollowState() {
-        return followState;
+    public static final Creator<FollowFansBean> CREATOR = new Creator<FollowFansBean>() {
+        @Override
+        public FollowFansBean createFromParcel(Parcel source) {
+            return new FollowFansBean(source);
+        }
+
+        @Override
+        public FollowFansBean[] newArray(int size) {
+            return new FollowFansBean[size];
+        }
+    };
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 1176234999)
+    private transient FollowFansBeanDao myDao;
+    @Generated(hash = 152244013)
+    private transient Long originUserInfo__resolvedKey;
+    @Generated(hash = 437417732)
+    private transient Long targetUserInfo__resolvedKey;
+
+    @Override
+    public Long getMaxId() {
+        return id;
     }
 
-    public void setFollowState(int followState) {
-        this.followState = followState;
+    public Long getId() {
+        return this.id;
     }
 
-    public long getFollowedUserId() {
-        return followedUserId;
-    }
-
-    public void setFollowedUserId(long followedUserId) {
-        this.followedUserId = followedUserId;
-    }
-
-    @Keep
-    public UserInfoBean getUser() {
-        return user;
-    }
-
-    @Keep
-    public void setUser(UserInfoBean user) {
-        this.user = user;
-    }
-
-    @Keep
-    public UserInfoBean getFllowedUser() {
-        return fllowedUser;
-    }
-
-    @Keep
-    public void setFllowedUser(UserInfoBean fllowedUser) {
-        this.fllowedUser = fllowedUser;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     /**
@@ -149,29 +218,10 @@ public class FollowFansBean extends BaseListBean {
         myDao.update(this);
     }
 
-    // greenDao生成该方法，应该用不到
-    public String getUserFollowedId() {
-        return userId + "$" + followedUserId;
-    }
-
-    // greenDao生成该方法，防止外界修改该值，修改了获取userFollowedId的方法
-    public void setUserFollowedId(String userFollowedId) {
-        this.userFollowedId = userId + "$" + followedUserId;
-    }
-
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 29967072)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getFollowFansBeanDao() : null;
     }
-
 }
