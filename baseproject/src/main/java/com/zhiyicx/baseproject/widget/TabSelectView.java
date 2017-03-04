@@ -125,8 +125,14 @@ public class TabSelectView extends FrameLayout {
     /**
      * 一般没有，暂时不开放，等需要再写
      */
-    private void setRightImg() {
-
+    public void setRightImg(int imgRes,int backgroud) {
+        if (imgRes == 0 && TextUtils.isEmpty(tvToolbarRight.getText())) {
+            tvToolbarRight.setVisibility(INVISIBLE);
+        } else {
+            tvToolbarRight.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), imgRes), null, null, null);
+            tvToolbarRight.setVisibility(View.VISIBLE);
+            tvToolbarRight.setBackgroundResource(backgroud);
+        }
     }
 
     /**
@@ -224,5 +230,7 @@ public class TabSelectView extends FrameLayout {
     public interface TabLeftRightClickListener {
         void buttonClick();
     }
+
+
 
 }

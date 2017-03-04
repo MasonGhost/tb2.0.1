@@ -85,6 +85,7 @@
         </activity>
         <activity android:name=".modules.music_fm.music_album_detail.MusicDetailActivity"/>
         <activity android:name=".modules.music_fm.music_play.MusicPlayActivity"/>
+        <activity android:name=".modules.information.InfoActivity"/>
         <activity android:name=".modules.dynamic.send.SendDynamicActivity">
         </activity>
 
@@ -119,7 +120,6 @@
 
         <!-- #########################################      后台任务相关service       ################################ -->
         <service android:name=".service.backgroundtask.BackgroundTaskHandleService"/>
-        <!-- &lt;!&ndash;glide配置&ndash;&gt; -->
         <!-- <meta-data -->
         <!-- android:name="com.zhiyicx.thinksnsplus.config.GlideConfiguration" -->
         <!-- android:value="GlideModule"/> -->
