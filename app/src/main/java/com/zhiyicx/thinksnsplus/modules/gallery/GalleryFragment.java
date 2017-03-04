@@ -3,26 +3,18 @@ package com.zhiyicx.thinksnsplus.modules.gallery;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.indicator_expand.ScaleCircleNavigator;
 import com.zhiyicx.thinksnsplus.R;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
 import net.lucode.hackware.magicindicator.buildins.UIUtil;
-import net.lucode.hackware.magicindicator.buildins.circlenavigator.CircleNavigator;
-
-import java.util.Arrays;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * @author LiuChao
@@ -32,6 +24,9 @@ import butterknife.OnClick;
  */
 
 public class GalleryFragment extends TSFragment {
+    public static final String BUNDLE_IMAGS = "imags";
+    public static final String BUNDLE_IMAGS_POSITON= "imags_positon";
+    private static final int MAX_OFF_SIZE = 9;
     @BindView(R.id.vp_photos)
     ViewPager mVpPhotos;
     @BindView(R.id.mi_indicator)
@@ -52,15 +47,10 @@ public class GalleryFragment extends TSFragment {
     @Override
     protected void initView(View rootView) {
 
-        mPagerAdapter = new GalleryPhotoAdapter(getChildFragmentManager(), Arrays.asList(
-                String.format(ApiConfig.NO_PROCESS_IMAGE_PATH, 20),
-                String.format(ApiConfig.NO_PROCESS_IMAGE_PATH, 12),
-                String.format(ApiConfig.NO_PROCESS_IMAGE_PATH, 8),
-                String.format(ApiConfig.NO_PROCESS_IMAGE_PATH, 13),
-                String.format(ApiConfig.NO_PROCESS_IMAGE_PATH, 1),
-                String.format(ApiConfig.NO_PROCESS_IMAGE_PATH, 5)
+        mPagerAdapter = new GalleryPhotoAdapter(getChildFragmentManager(), getArguments().<ImageBean>getParcelableArrayList(BUNDLE_IMAGS
         ));
         mVpPhotos.setAdapter(mPagerAdapter);
+        mVpPhotos.setOffscreenPageLimit(MAX_OFF_SIZE);
         // 添加指示器
         ScaleCircleNavigator circleNavigator = new ScaleCircleNavigator(getContext());
         circleNavigator.setCircleCount(mPagerAdapter.getCount());
@@ -78,6 +68,7 @@ public class GalleryFragment extends TSFragment {
         });
         mMiIndicator.setNavigator(circleNavigator);
         ViewPagerHelper.bind(mMiIndicator, mVpPhotos);
+        mVpPhotos.setCurrentItem(getArguments().getInt(BUNDLE_IMAGS_POSITON));
     }
 
     @Override

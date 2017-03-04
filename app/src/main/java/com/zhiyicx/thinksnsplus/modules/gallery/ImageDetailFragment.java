@@ -2,34 +2,34 @@ package com.zhiyicx.thinksnsplus.modules.gallery;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
+import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.ImageViewTarget;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressListener;
 import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressModelLoader;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.iwf.photopicker.utils.AndroidLifecycleUtils;
-import me.iwf.photopicker.widget.TouchImageView;
 
 /**
  * @author LiuChao
@@ -40,19 +40,21 @@ import me.iwf.photopicker.widget.TouchImageView;
 
 public class ImageDetailFragment extends TSFragment {
     @BindView(R.id.iv_pager)
-    TouchImageView mIvPager;
+    ImageView mIvPager;
     @BindView(R.id.pb_progress)
     ProgressBar mPbProgress;
     @BindView(R.id.tv_origin_photo)
     TextView mTvOriginPhoto;
-    private String mImageUrl;
+    private ImageBean mImageBean;
     private ActionPopupWindow mActionPopupWindow;
     private Context context;
+    private double mScreenWith;
+    private double mScreenHeiht;
 
-    public static ImageDetailFragment newInstance(String imageUrl) {
+    public static ImageDetailFragment newInstance(ImageBean imageUrl) {
         final ImageDetailFragment f = new ImageDetailFragment();
         final Bundle args = new Bundle();
-        args.putString("url", imageUrl);
+        args.putParcelable("url", imageUrl);
         f.setArguments(args);
         return f;
     }
@@ -60,7 +62,12 @@ public class ImageDetailFragment extends TSFragment {
     @Override
     protected void initView(View rootView) {
         context = getContext();
-        mImageUrl = getArguments() != null ? getArguments().getString("url") : null;
+        mScreenWith = DeviceUtils.getScreenWidth(context);
+        mScreenHeiht = DeviceUtils.getScreenHeight(context);
+        mImageBean = getArguments() != null ? (ImageBean) getArguments().getParcelable("url") : null;
+        if (mImageBean.getImgUrl() != null) { // 本地图片不需要查看原图
+            mTvOriginPhoto.setVisibility(View.GONE);
+        }
         // 图片长按，保存
         mIvPager.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -92,13 +99,13 @@ public class ImageDetailFragment extends TSFragment {
             }
         });
         // 显示图片
-        if (TextUtils.isEmpty(mImageUrl)) {
-            mIvPager.setImageResource(R.mipmap.ic_launcher);
+        if (mImageBean == null) {
+            mIvPager.setImageResource(R.drawable.shape_default_image);
             return;
         } else {
             boolean canLoadImage = AndroidLifecycleUtils.canLoadImage(context);
             if (canLoadImage) {
-                loadSmallImage();
+                loadImage(mImageBean, true);
             }
         }
     }
@@ -130,56 +137,69 @@ public class ImageDetailFragment extends TSFragment {
                 }
                 break;
             case R.id.tv_origin_photo:
-                loadOriginImage(mImageUrl + "/100");
+                loadOriginImage(String.format(ApiConfig.IMAGE_PATH, mImageBean.getStorage_id(), 100));
                 break;
         }
     }
 
     public void saveImage() {
-        //BitmapUtils.saveBitmap(getActivity(), mImageView.getDrawingCache(), StringUtils.getImageNameByUrl(mImageUrl));
+        //BitmapUtils.saveBitmap(getActivity(), mImageView.getDrawingCache(), StringUtils.getImageNameByUrl(mImageBean));
     }
-
-    // 加载较小的缩略图
-    private void loadSmallImage() {
-        loadImage(mImageUrl + "/10", true);
-    }
-
-    // 加载较大缩略图
-    private void loadBigImage() {
-        loadImage(mImageUrl + "/50", false);
-    }
+//
+//    // 加载较小的缩略图
+//    private void loadSmallImage() {
+//        loadImage(mImageBean.getImgUrl()==null?mImageBean.getStorage_id() + "/"+mImageBean.getPart():mImageBean.getImgUrl(), true);
+//    }
+//
+//    // 加载较大缩略图
+//    private void loadBigImage() {
+//        loadImage(mImageBean + "/50", false);
+//    }
 
     // 加载图片不带监听
-    private void loadImage(String imageUrl, final boolean isCycle) {
+    private void loadImage(final ImageBean imageBean, final boolean isCycle) {
+
+        if (imageBean.getImgUrl() != null) {
+            Glide.with(context)
+                    .load(imageBean.getImgUrl())
+                    .placeholder(R.drawable.shape_default_image)
+                    .error(R.drawable.shape_default_image)
+                    .into(mIvPager);
+            mPbProgress.setVisibility(View.GONE);
+            return;
+        }
+        int with = (int) (imageBean.getWidth() > mScreenWith ? mScreenWith : FrameLayout.LayoutParams.WRAP_CONTENT);
+        int height = (int) (imageBean.getHeight() > mScreenHeiht ? mScreenHeiht : FrameLayout.LayoutParams.WRAP_CONTENT);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(with, height);
+        layoutParams.gravity = Gravity.CENTER;
+        mIvPager.setLayoutParams(layoutParams);
+
+        DrawableRequestBuilder thumbnailBuilder = Glide
+                .with(context)
+                .load(new CustomImageSizeModelImp(imageBean)
+                        .requestCustomSizeUrl());
         Glide.with(context)
-                .load(imageUrl)
-                .thumbnail(0.1f)
-                .override(800, 800)
-                .placeholder(me.iwf.photopicker.R.drawable.__picker_ic_photo_black_48dp)
-                .error(me.iwf.photopicker.R.drawable.__picker_ic_broken_image_black_48dp)
-                .into(new ImageViewTarget<GlideDrawable>(mIvPager) {
+                .using(new CustomImageModelLoader(context))
+                .load(new CustomImageSizeModelImp(imageBean))
+                .placeholder(R.drawable.shape_default_image)
+                .error(R.drawable.shape_default_image)
+                .centerCrop()
+                .listener(new RequestListener<CustomImageSizeModel, GlideDrawable>() {
                     @Override
-                    protected void setResource(GlideDrawable resource) {
-
-                    }
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
+                    public boolean onException(Exception e, CustomImageSizeModel model, Target<GlideDrawable> target, boolean isFirstResource) {
+                        // 加载本地图片
                         mPbProgress.setVisibility(View.GONE);
+                        return false;
                     }
 
                     @Override
-                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                        super.onResourceReady(resource, glideAnimation);
-                        mIvPager.setImageDrawable(resource);
+                    public boolean onResourceReady(GlideDrawable resource, CustomImageSizeModel model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
                         mPbProgress.setVisibility(View.GONE);
-                        if (isCycle) {
-                            loadBigImage();
-                        }
+                        return false;
                     }
-
-                });
+                })
+                .thumbnail(thumbnailBuilder)
+                .into(mIvPager);
     }
 
     // 加载原图:
@@ -199,10 +219,9 @@ public class ImageDetailFragment extends TSFragment {
                     }
                 }))
                 .load(imageUrl)
-                .thumbnail(0.1f)
-                .override(800, 800)
-                .placeholder(me.iwf.photopicker.R.drawable.__picker_ic_photo_black_48dp)
-                .error(me.iwf.photopicker.R.drawable.__picker_ic_broken_image_black_48dp)
+
+                .placeholder(R.drawable.shape_default_image)
+                .error(R.drawable.shape_default_image)
                 .into(mIvPager);
     }
 }

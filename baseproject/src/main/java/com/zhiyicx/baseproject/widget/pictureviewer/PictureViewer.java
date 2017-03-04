@@ -91,7 +91,8 @@ public class PictureViewer extends FrameLayout {
             public void onAnimationStart(Animation animation) {
                 mPhotoView.setVisibility(View.VISIBLE);
                 mPager.setVisibility(View.INVISIBLE);
-
+                imgs.clear();
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -123,7 +124,7 @@ public class PictureViewer extends FrameLayout {
                 PhotoView view = new PhotoView(container.getContext());
                 view.enable();
                 view.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                Glide.with(container.getContext()).load(String.format(ApiConfig.IMAGE_PATH, imgs.get(position).getStorage_id(), 20))
+                Glide.with(container.getContext()).load(imgs.get(position).getImgUrl()==null?String.format(ApiConfig.IMAGE_PATH, imgs.get(position).getStorage_id(), 20):imgs.get(position).getImgUrl())
                         .placeholder(R.drawable.shape_default_image)
                         .error(R.drawable.shape_default_image)
                         .into(view);
@@ -153,7 +154,7 @@ public class PictureViewer extends FrameLayout {
             @Override
             public void onPageSelected(int position) {
                 Glide.with(mContext)
-                        .load(String.format(ApiConfig.IMAGE_PATH, imgs.get(position).getStorage_id(), 20))
+                        .load(imgs.get(position).getImgUrl()==null?String.format(ApiConfig.IMAGE_PATH, imgs.get(position).getStorage_id(), 20):imgs.get(position).getImgUrl())
                         .placeholder(R.drawable.shape_default_image)
                         .error(R.drawable.shape_default_image)
                         .into(mPhotoView);
@@ -191,8 +192,9 @@ public class PictureViewer extends FrameLayout {
     public void show(int potison) {
         mInfo = mInfos.get(potison);
         Glide.with(mContext)
-                .load(String.format(ApiConfig.IMAGE_PATH, imgs.get(potison).getStorage_id(), 20))
+                .load(imgs.get(potison).getImgUrl()==null?String.format(ApiConfig.IMAGE_PATH, imgs.get(potison).getStorage_id(), 20):imgs.get(potison).getImgUrl())
                 .placeholder(R.drawable.shape_default_image)
+                .override(mInfo.getWith(),mInfo.getHeight())
                 .error(R.drawable.shape_default_image)
                 .into(mPhotoView);
         mPager.setCurrentItem(potison);

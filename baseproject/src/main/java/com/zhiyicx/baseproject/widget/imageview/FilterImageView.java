@@ -36,6 +36,7 @@ public class FilterImageView extends PhotoView {
 
     public FilterImageView(Context context) {
         super(context);
+        enable();
     }
 
 

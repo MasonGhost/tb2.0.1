@@ -21,7 +21,7 @@ import android.widget.Scroller;
 
 
 /**
- * @Describe  可变化的 ImageView
+ * @Describe 可变化的 ImageView
  * @Author Jungle68
  * @Date 2017/1/
  * @Contact master.jungle68@gmail.com
@@ -1233,8 +1233,10 @@ public class PhotoView extends ImageView {
         RectF widgetRect = new RectF(0, 0, imgView.getWidth(), imgView.getHeight());
         RectF baseRect = new RectF(widgetRect);
         PointF screenCenter = new PointF(widgetRect.width() / 2, widgetRect.height() / 2);
-
-        return new ImageInfo(rect, imgRect, widgetRect, baseRect, screenCenter, 1, 0, imgView.getScaleType());
+        ImageInfo imageInfo = new ImageInfo(rect, imgRect, widgetRect, baseRect, screenCenter, 1, 0, imgView.getScaleType());
+        imageInfo.setHeight(height);
+        imageInfo.setWith(width);
+        return imageInfo;
     }
 
     private static void getLocation(View target, int[] position) {

@@ -32,6 +32,24 @@ public class ImageInfo implements Parcelable{
     float mDegrees;
 
     ImageView.ScaleType mScaleType;
+    int with;
+    int height;
+
+    public int getWith() {
+        return with;
+    }
+
+    public void setWith(int with) {
+        this.with = with;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
 
     public ImageInfo(RectF rect, RectF img, RectF widget, RectF base, PointF screenCenter, float scale, float degrees, ImageView.ScaleType scaleType) {
         mRect.set(rect);
@@ -46,7 +64,7 @@ public class ImageInfo implements Parcelable{
 
     @Override
     public String toString() {
-        return "Info{" +
+        return "ImageInfo{" +
                 "mRect=" + mRect +
                 ", mImgRect=" + mImgRect +
                 ", mWidgetRect=" + mWidgetRect +
@@ -55,6 +73,8 @@ public class ImageInfo implements Parcelable{
                 ", mScale=" + mScale +
                 ", mDegrees=" + mDegrees +
                 ", mScaleType=" + mScaleType +
+                ", with=" + with +
+                ", height=" + height +
                 '}';
     }
 
@@ -73,6 +93,8 @@ public class ImageInfo implements Parcelable{
         dest.writeFloat(this.mScale);
         dest.writeFloat(this.mDegrees);
         dest.writeInt(this.mScaleType == null ? -1 : this.mScaleType.ordinal());
+        dest.writeInt(this.with);
+        dest.writeInt(this.height);
     }
 
     protected ImageInfo(Parcel in) {
@@ -85,6 +107,8 @@ public class ImageInfo implements Parcelable{
         this.mDegrees = in.readFloat();
         int tmpMScaleType = in.readInt();
         this.mScaleType = tmpMScaleType == -1 ? null : ImageView.ScaleType.values()[tmpMScaleType];
+        this.with = in.readInt();
+        this.height = in.readInt();
     }
 
     public static final Creator<ImageInfo> CREATOR = new Creator<ImageInfo>() {

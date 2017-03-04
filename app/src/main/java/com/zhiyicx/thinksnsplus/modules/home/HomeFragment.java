@@ -6,9 +6,7 @@ import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,18 +18,18 @@ import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplCompone
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
+import com.zhiyicx.baseproject.widget.pictureviewer.PictureViewer;
+import com.zhiyicx.baseproject.widget.pictureviewer.core.ImageInfo;
+import com.zhiyicx.baseproject.widget.pictureviewer.core.ParcelableSparseArray;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageFragment;
 import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment;
-import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsActivity;
-
-import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +37,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -48,7 +45,7 @@ import butterknife.OnClick;
  * @Date 2017/1/4
  * @Contact master.jungle68@gmail.com
  */
-public class HomeFragment extends TSFragment<HomeContract.Presenter> implements HomeContract.View, PhotoSelectorImpl.IPhotoBackListener {
+public class HomeFragment extends TSFragment<HomeContract.Presenter> implements HomeContract.View, PhotoSelectorImpl.IPhotoBackListener,DynamicFragment.OnImageClickListener {
     public static final int PAGE_NUMS = 4; // 页数
 
     public static final int PAGE_HOME = 0; // 对应在 viewpager 中的位置
@@ -76,6 +73,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     TextView mTvMine;
     @BindView(R.id.vp_home)
     NoPullViewPager mVpHome;
+    @BindView(R.id.picture_view)
+    PictureViewer mPictureViewer;
 
     @Inject
     HomePresenter mHomePresenter;  // 仅用于构造
@@ -89,6 +88,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     LinearLayout mLlBottomContainer;
     private TSViewPagerAdapter mHomePager;
     private PhotoSelectorImpl mPhotoSelector;
+
 
     public static HomeFragment newInstance() {
         HomeFragment fragment = new HomeFragment();
@@ -175,7 +175,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         mVpHome.setOffscreenPageLimit(PAGE_NUMS);
         mHomePager = new TSViewPagerAdapter(getActivity().getSupportFragmentManager());
         List<Fragment> mFragmentList = new ArrayList<>();
-        mFragmentList.add(MainFragment.newInstance());
+        mFragmentList.add(MainFragment.newInstance(this));
         mFragmentList.add(FindFragment.newInstance());
         mFragmentList.add(MessageFragment.newInstance());
         mFragmentList.add(MineFragment.newInstance());
@@ -307,5 +307,12 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mPhotoSelector.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onImageClick(List<ImageBean> images, ParcelableSparseArray<ImageInfo> infos ,int position) {
+        System.out.println("infos = " + infos.toString());
+        mPictureViewer.setData(images, infos);
+        mPictureViewer.show(position);
     }
 }

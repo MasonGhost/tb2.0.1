@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -29,6 +30,8 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForS
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForSixImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForThreeImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForTwoImage;
+import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
+import com.zhiyicx.thinksnsplus.modules.gallery.GalleryFragment;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -57,8 +60,15 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private List<DynamicBean> mDynamicBeens = new ArrayList<>();
     private PictureViewer pictureViewer;
 
-    public static DynamicFragment newInstance(String dynamicType) {
+    public void setOnImageClickListener(OnImageClickListener onImageClickListener) {
+        mOnImageClickListener = onImageClickListener;
+    }
+
+    OnImageClickListener mOnImageClickListener;
+
+    public static DynamicFragment newInstance(String dynamicType, OnImageClickListener l) {
         DynamicFragment fragment = new DynamicFragment();
+        fragment.setOnImageClickListener(l);
         Bundle args = new Bundle();
         args.putString(BUNDLE_DYNAMIC_TYPE, dynamicType);
         fragment.setArguments(args);
@@ -159,34 +169,49 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onImageClick(ViewHolder holder, DynamicBean dynamicBean, int position) {
-        List<ImageBean> imageBeanList = dynamicBean.getFeed().getStorages();
+        List<ImageBean> imageBeanList = new ArrayList<>();
+        if (dynamicBean.getFeed().getStorages() != null) {
+            imageBeanList = dynamicBean.getFeed().getStorages();
+        } else {
+            for (int i = 0; i < dynamicBean.getFeed().getLocalPhotos().size(); i++) {
+                ImageBean imageBean = new ImageBean();
+                imageBean.setImgUrl(dynamicBean.getFeed().getLocalPhotos().get(i));
+                imageBeanList.add(imageBean);
+            }
+        }
         ParcelableSparseArray<ImageInfo> imageInfoParcelableSparseArray = new ParcelableSparseArray<>();
-        switch (dynamicBean.getFeed().getStorages().size()) {
+        int size = dynamicBean.getFeed().getLocalPhotos() == null ? dynamicBean.getFeed().getStorages().size() : dynamicBean.getFeed().getLocalPhotos().size();
+        switch (size) {
             case 9:
-                imageInfoParcelableSparseArray.put(position, ((PhotoView) holder.getView(R.id.siv_8)).getInfo());
+                imageInfoParcelableSparseArray.put(8, PhotoView.getImageViewInfo((PhotoView) holder.getView(R.id.siv_8)));
             case 8:
-                imageInfoParcelableSparseArray.put(position, ((PhotoView) holder.getView(R.id.siv_7)).getInfo());
+                imageInfoParcelableSparseArray.put(7, PhotoView.getImageViewInfo((PhotoView) holder.getView(R.id.siv_7)));
             case 7:
-                imageInfoParcelableSparseArray.put(position, ((PhotoView) holder.getView(R.id.siv_6)).getInfo());
+                imageInfoParcelableSparseArray.put(6, PhotoView.getImageViewInfo((PhotoView) holder.getView(R.id.siv_6)));
             case 6:
-                imageInfoParcelableSparseArray.put(position, ((PhotoView) holder.getView(R.id.siv_5)).getInfo());
+                imageInfoParcelableSparseArray.put(5, PhotoView.getImageViewInfo((PhotoView) holder.getView(R.id.siv_5)));
             case 5:
-                imageInfoParcelableSparseArray.put(position, ((PhotoView) holder.getView(R.id.siv_4)).getInfo());
+                imageInfoParcelableSparseArray.put(4, PhotoView.getImageViewInfo((PhotoView) holder.getView(R.id.siv_4)));
             case 4:
-                imageInfoParcelableSparseArray.put(position, ((PhotoView) holder.getView(R.id.siv_3)).getInfo());
+                imageInfoParcelableSparseArray.put(3, PhotoView.getImageViewInfo((PhotoView) holder.getView(R.id.siv_3)));
             case 3:
-                imageInfoParcelableSparseArray.put(position, ((PhotoView) holder.getView(R.id.siv_2)).getInfo());
+                imageInfoParcelableSparseArray.put(2, PhotoView.getImageViewInfo((PhotoView) holder.getView(R.id.siv_2)));
             case 2:
-                imageInfoParcelableSparseArray.put(position, ((PhotoView) holder.getView(R.id.siv_1)).getInfo());
+                imageInfoParcelableSparseArray.put(1, PhotoView.getImageViewInfo((PhotoView) holder.getView(R.id.siv_1)));
             case 1:
-                imageInfoParcelableSparseArray.put(position, ((PhotoView) holder.getView(R.id.siv_0)).getInfo());
+                imageInfoParcelableSparseArray.put(0, PhotoView.getImageViewInfo((PhotoView) holder.getView(R.id.siv_0)));
                 break;
             default:
-
         }
-        pictureViewer.setData(imageBeanList, imageInfoParcelableSparseArray);
-        pictureViewer.show(position);
+//        mOnImageClickListener.onImageClick(imageBeanList,imageInfoParcelableSparseArray,position);
+        Intent intent = new Intent(getActivity(), GalleryActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(GalleryFragment.BUNDLE_IMAGS, (ArrayList<? extends Parcelable>) imageBeanList);
+        bundle.putInt(GalleryFragment.BUNDLE_IMAGS_POSITON,position);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
+
 
     /**
      * scan user Info
@@ -279,5 +304,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         refresh();
         mPresenter.handleLike(mDynamicBeens.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED,
                 mDynamicBeens.get(dataPosition).getFeed().getFeed_id(), dataPosition);
+    }
+
+    public interface OnImageClickListener {
+        void onImageClick(List<ImageBean> images, ParcelableSparseArray<ImageInfo> infos, int position);
     }
 }

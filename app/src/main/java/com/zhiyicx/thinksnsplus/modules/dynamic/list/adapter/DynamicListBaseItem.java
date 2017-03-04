@@ -208,18 +208,21 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
             url = dynamicBean.getFeed().getLocalPhotos().get(positon);
         }
         System.out.println("url = " + url);
+
         mImageLoader.loadImage(mContext, GlideImageConfig.builder()
                 .url(url)
                 .imagerView(view)
                 .build());
-        dynamicBean.getFeed().getStorages().get(positon).setPart(part);
+        if (dynamicBean.getFeed().getStorages() != null) {
+            dynamicBean.getFeed().getStorages().get(positon).setPart(part);
+        }
         RxView.clicks(view)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
                         if (mOnImageClickListener != null) {
-                            mOnImageClickListener.onImageClick(holder,dynamicBean, positon);
+                            mOnImageClickListener.onImageClick(holder, dynamicBean, positon);
                         }
                     }
                 });
@@ -278,7 +281,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
      */
     public interface OnImageClickListener {
 
-        void onImageClick(ViewHolder holder,DynamicBean dynamicBean, int position);
+        void onImageClick(ViewHolder holder, DynamicBean dynamicBean, int position);
     }
 
     /**
