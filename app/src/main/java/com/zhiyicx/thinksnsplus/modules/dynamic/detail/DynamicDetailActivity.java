@@ -1,14 +1,13 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.baseproject.impl.share.ShareModule;
+import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
-public class DynamicDetailActivity extends TSActivity<DynamicDetailPresenter, DynamicDetailFragment> {
+import javax.inject.Inject;
 
+public class DynamicDetailActivity extends TSActivity<DynamicDetailPresenter, DynamicDetailFragment> {
 
     @Override
     protected DynamicDetailFragment getFragment() {
@@ -20,6 +19,7 @@ public class DynamicDetailActivity extends TSActivity<DynamicDetailPresenter, Dy
     protected void componentInject() {
         DaggerDynamicDetailPresenterCompnent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .shareModule(new ShareModule(DynamicDetailActivity.this))
                 .dynamicDetailPresenterModule(new DynamicDetailPresenterModule(mContanierFragment))
                 .build().inject(this);
     }

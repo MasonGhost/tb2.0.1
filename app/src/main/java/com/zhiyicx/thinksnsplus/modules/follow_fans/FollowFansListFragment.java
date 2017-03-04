@@ -110,7 +110,7 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
         List<FollowFansBean> followFansBeanList = mAdapter.getDatas();
         FollowFansBean followFansBean = followFansBeanList.get(index);
         LogUtils.i("new_state--》" + followState);
-        followFansBean.setFollowState(followState);
+        followFansBean.setOrigin_follow_status(followState);
         refreshData(index);
     }
 

@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.GsonFollowFansBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.FollowFansClient;
@@ -35,23 +36,8 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
                     @Override
                     public BaseJson<List<FollowFansBean>> call(BaseJson<GsonFollowFansBean> gsonFollowFansBeanBaseJson) {
                         GsonFollowFansBean gsonFollowFansBean = gsonFollowFansBeanBaseJson.getData();
-                        List<FollowFansBean> followFansBeanList = new ArrayList<FollowFansBean>();
-                        for (GsonFollowFansBean.GsonFollowsBean gsonFollowsBean : gsonFollowFansBean.getFollows()) {
-                            FollowFansBean followFansBean = new FollowFansBean();
-                            followFansBean.setMaxId((long) gsonFollowsBean.getId());// 存入maxId
-                            // 关注主体是当前传入的userId
-                            followFansBean.setUserId(userId);
-                            followFansBean.setFollowedUserId(gsonFollowsBean.getUser_id());
-                            followFansBean.setFollowState(FollowFansBean.IFOLLOWED_STATE);
-                            followFansBean.setUserFollowedId(null);
-                            followFansBeanList.add(followFansBean);
-                        }
-                        BaseJson<List<FollowFansBean>> listBaseJson = new BaseJson<List<FollowFansBean>>();
-                        listBaseJson.setCode(gsonFollowFansBeanBaseJson.getCode());
-                        listBaseJson.setMessage(gsonFollowFansBeanBaseJson.getMessage());
-                        listBaseJson.setStatus(gsonFollowFansBeanBaseJson.isStatus());
-                        listBaseJson.setData(followFansBeanList);
-                        return listBaseJson;
+                        List<FollowFansBean> followFansBeanList = gsonFollowFansBean.getFollows();
+                        return packageData(followFansBeanList, userId, gsonFollowFansBeanBaseJson);
                     }
                 });
     }
@@ -64,23 +50,8 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
                     @Override
                     public BaseJson<List<FollowFansBean>> call(BaseJson<GsonFollowFansBean> gsonFollowFansBeanBaseJson) {
                         GsonFollowFansBean gsonFollowFansBean = gsonFollowFansBeanBaseJson.getData();
-                        List<FollowFansBean> followFansBeanList = new ArrayList<FollowFansBean>();
-                        for (GsonFollowFansBean.GsonFollowsBean gsonFollowsBean : gsonFollowFansBean.getFolloweds()) {
-                            FollowFansBean followFansBean = new FollowFansBean();
-                            followFansBean.setMaxId((long) gsonFollowsBean.getId());// 存入maxId
-                            // 关注主体是当前从服务器获取到的user_id
-                            followFansBean.setUserId(gsonFollowsBean.getUser_id());
-                            followFansBean.setFollowedUserId(userId);
-                            followFansBean.setFollowState(FollowFansBean.IFOLLOWED_STATE);
-                            followFansBean.setUserFollowedId(null);
-                            followFansBeanList.add(followFansBean);
-                        }
-                        BaseJson<List<FollowFansBean>> listBaseJson = new BaseJson<List<FollowFansBean>>();
-                        listBaseJson.setCode(gsonFollowFansBeanBaseJson.getCode());
-                        listBaseJson.setMessage(gsonFollowFansBeanBaseJson.getMessage());
-                        listBaseJson.setStatus(gsonFollowFansBeanBaseJson.isStatus());
-                        listBaseJson.setData(followFansBeanList);
-                        return listBaseJson;
+                        List<FollowFansBean> followFansBeanList = gsonFollowFansBean.getFolloweds();
+                        return packageData(followFansBeanList, userId, gsonFollowFansBeanBaseJson);
                     }
                 });
     }
@@ -93,5 +64,25 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
     @Override
     public Observable<BaseJson> cancleFollowUser(long userId) {
         return mFollowFansClient.cancelFollowUser(userId);
+    }
+
+    /**
+     * 重新封装服务器数据
+     */
+    private BaseJson<List<FollowFansBean>> packageData(List<FollowFansBean> followFansBeanList, long userId, BaseJson<GsonFollowFansBean> gsonFollowFansBeanBaseJson) {
+        if (followFansBeanList != null) {
+            for (FollowFansBean followFansBean : followFansBeanList) {
+                // 关注主体是当前传入的userId
+                followFansBean.setOriginUserId(userId);
+                followFansBean.setOrigintargetUser(null);
+            }
+        }
+        BaseJson<List<FollowFansBean>> listBaseJson = new BaseJson<List<FollowFansBean>>();
+        listBaseJson.setCode(gsonFollowFansBeanBaseJson.getCode());
+        listBaseJson.setMessage(gsonFollowFansBeanBaseJson.getMessage());
+        listBaseJson.setStatus(gsonFollowFansBeanBaseJson.isStatus());
+        listBaseJson.setData(followFansBeanList);
+        LogUtils.i("followFansBeanList_net-->" + followFansBeanList.size() + followFansBeanList.toString());
+        return listBaseJson;
     }
 }

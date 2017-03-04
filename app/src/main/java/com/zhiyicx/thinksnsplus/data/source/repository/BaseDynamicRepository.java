@@ -144,13 +144,13 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     }
 
     @Override
-    public Observable<BaseJson<String>> collectDynamic(Long feed_id) {
-        return null;
+    public Observable<BaseJson<Object>> collectDynamic(Long feed_id) {
+        return mDynamicClient.collectDynamic(feed_id);
     }
 
     @Override
-    public Observable<BaseJson<String>> cancleCollectDynamic(Long feed_id) {
-        return null;
+    public Observable<BaseJson<Object>> cancleCollectDynamic(Long feed_id) {
+        return mDynamicClient.cancleCollectDynamic(feed_id);
     }
 
     @Override

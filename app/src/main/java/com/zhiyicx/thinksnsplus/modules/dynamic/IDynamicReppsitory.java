@@ -58,13 +58,13 @@ public interface IDynamicReppsitory {
      * @param feed_id
      * @return
      */
-    Observable<BaseJson<String>> collectDynamic(Long feed_id);
+    Observable<BaseJson<Object>> collectDynamic(Long feed_id);
 
 
     /**
      * 取消动态收藏
      */
-    Observable<BaseJson<String>> cancleCollectDynamic(Long feed_id);
+    Observable<BaseJson<Object>> cancleCollectDynamic(Long feed_id);
 
     /**
      * 获取动态点赞列表

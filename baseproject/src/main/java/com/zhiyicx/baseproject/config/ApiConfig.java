@@ -36,7 +36,7 @@ public class ApiConfig {
     public static final String NO_PROCESS_IMAGE_PATH = APP_DOMAIN + "api/v1/storages/%s";// 不带质量压缩
 
     // 每次从服务器获取数据，一页的最大数量
-    public static final int MAX_NUMBER_PER_PAGE = 3;
+    public static final int MAX_NUMBER_PER_PAGE = 10;
 
     /*******************************************  接口 Path  *********************************************/
     /**
@@ -87,7 +87,11 @@ public class ApiConfig {
     // 点赞一条动态,取消点赞
     public static final String APP_PATH_DYNAMIC_HANDLE_LIKE = "api/v1/feeds/{feed_id}/digg";
     public static final String APP_PATH_DYNAMIC_HANDLE_LIKE_FORMAT = "api/v1/feeds/%s/digg";
+    // 获取点赞列表
     public static final String APP_PATH_DYNAMIC_DIG_LIST = "api/v1/feeds/{feed_id}/diggusers";
+    // 收藏动态，取消收藏
+    public static final String APP_PATH_HANDLE_COLLECT = "api/v1/feeds/{feed_id}/collection";
+    public static final String APP_PATH_HANDLE_COLLECT_FORMAT = "api/v1/feeds/%s/collection";
 
     /**
      * 通用 CommonClient

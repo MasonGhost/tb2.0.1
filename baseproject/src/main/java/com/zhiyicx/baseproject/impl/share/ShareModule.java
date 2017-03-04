@@ -1,5 +1,7 @@
-package com.zhiyicx.common.dagger.module;
+package com.zhiyicx.baseproject.impl.share;
 
+
+import android.app.Activity;
 
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
 
@@ -17,15 +19,14 @@ import dagger.Provides;
 
 @Module
 public class ShareModule {
-    SharePolicy mSharePolicy;
+    private Activity mActivity;
 
-    public ShareModule(SharePolicy sharePolicy) {
-        this.mSharePolicy = sharePolicy;
+    public ShareModule(Activity activity) {
+        mActivity = activity;
     }
 
-    @Singleton
     @Provides
     public SharePolicy provideSharePolicy() {
-        return mSharePolicy;
+        return new UmengSharePolicyImpl(mActivity);
     }
 }

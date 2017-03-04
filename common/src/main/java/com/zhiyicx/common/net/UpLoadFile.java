@@ -61,4 +61,35 @@ public class UpLoadFile {
         List<MultipartBody.Part> parts = builder.build().parts();
         return parts;
     }
+
+    /**
+     * 上传文件以及参数携带，构造参数
+     *
+     * @param filePathList 携带的文件
+     * @param params       携带的表单数据
+     */
+    public static List<MultipartBody.Part> upLoadFileAndParams(Map<String, String> filePathList, HashMap<String, Object> params) {
+        MultipartBody.Builder builder = new MultipartBody.Builder();
+        builder.setType(MultipartBody.FORM);//表单类型
+        if (params != null) {
+            Set<String> keys = params.keySet();
+            for (String key : keys) {
+                builder.addFormDataPart(key, params.get(key).toString());//ParamKey.TOKEN 自定义参数key常量类，即参数名
+            }
+        }
+        if (filePathList != null) {
+            Set<String> filePathKey = filePathList.keySet();
+            for (String fileParam : filePathKey) {
+                try {
+                    File file = new File(filePathList.get(fileParam));//filePath 图片地址
+                    RequestBody imageBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+                    builder.addFormDataPart(fileParam, file.getName(), imageBody);//imgfile 后台接收图片流的参数名
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        List<MultipartBody.Part> parts = builder.build().parts();
+        return parts;
+    }
 }

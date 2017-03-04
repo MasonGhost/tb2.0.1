@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import com.zhiyicx.common.dagger.module.AppModule;
 import com.zhiyicx.common.dagger.module.HttpClientModule;
 import com.zhiyicx.common.dagger.module.ImageModule;
-import com.zhiyicx.common.dagger.module.ShareModule;
+import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.CacheModule;
 import com.zhiyicx.thinksnsplus.base.ServiceModule;
@@ -47,14 +47,6 @@ public class TestApplicaiton extends AppApplication {
             return super.getImageModule();
         }
         return mImageModule;
-    }
-
-    @Override
-    public ShareModule getShareModule() {
-        if (mShareModule == null) {
-            return super.getShareModule();
-        }
-        return mShareModule;
     }
 
     @NonNull

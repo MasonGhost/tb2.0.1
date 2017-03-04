@@ -93,16 +93,18 @@ public class FollowFansListAdapter extends CommonAdapter<FollowFansBean> {
                     }
                 });
 
-        // 设置用户信息
-        UserInfoBean userInfoBean = null;
+
+        /*UserInfoBean userInfoBean = null;
         if (pageType == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
             userInfoBean = followFansItemBean.getFllowedUser();
         } else if (pageType == FollowFansListFragment.FANS_FRAGMENT_PAGE) {
             userInfoBean = followFansItemBean.getUser();
-        }
+        }*/
+        // 设置用户信息
+        UserInfoBean userInfoBean = followFansItemBean.getTargetUserInfo();
         if (userInfoBean == null) {
             // 这种情况一般不会发生，为了防止崩溃，做处理
-            return;
+            userInfoBean = new UserInfoBean();
         }
         // 设置用户名，用户简介
         holder.setText(R.id.tv_name, userInfoBean.getName());

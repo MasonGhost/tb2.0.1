@@ -223,4 +223,21 @@ public class UserInfoBean implements Parcelable {
     public void setIntro(String intro) {
         this.intro = intro;
     }
+
+    @Override
+    public String toString() {
+        return "UserInfoBean{" +
+                "user_id=" + user_id +
+                ", sex='" + sex + '\'' +
+                ", sexString='" + sexString + '\'' +
+                ", name='" + name + '\'' +
+                ", userIcon='" + userIcon + '\'' +
+                ", location='" + location + '\'' +
+                ", province=" + province +
+                ", city=" + city +
+                ", area=" + area +
+                ", education='" + education + '\'' +
+                ", intro='" + intro + '\'' +
+                '}';
+    }
 }

@@ -1,1 +1,1 @@
-include ':app', ':common', ':rxerrorhandler', ':baseproject', ':imsdk', ':baseadapter-recyclerview', ':refresh', ':ucrop', ':pickerview', ':PhotoPicker', ':skinlibrary', ':media-cache'
+include ':app', ':common', ':rxerrorhandler', ':baseproject', ':imsdk', ':baseadapter-recyclerview', ':refresh', ':ucrop', ':pickerview', ':PhotoPicker', ':skinlibrary', ':media-cache', ':banner'

@@ -10,43 +10,23 @@ import java.util.List;
  */
 
 public class GsonFollowFansBean {
-    private List<GsonFollowsBean> follows;// 关注列表
-    private List<GsonFollowsBean> followeds;// 粉丝列表
+    private List<FollowFansBean> follows;// 关注列表
+    private List<FollowFansBean> followeds;// 粉丝列表
 
-    public List<GsonFollowsBean> getFollows() {
+    public List<FollowFansBean> getFollows() {
         return follows;
     }
 
-    public void setFollows(List<GsonFollowsBean> follows) {
+    public void setFollows(List<FollowFansBean> follows) {
         this.follows = follows;
     }
 
-    public List<GsonFollowsBean> getFolloweds() {
+    public List<FollowFansBean> getFolloweds() {
         return followeds;
     }
 
-    public void setFolloweds(List<GsonFollowsBean> followeds) {
+    public void setFolloweds(List<FollowFansBean> followeds) {
         this.followeds = followeds;
     }
 
-    public class GsonFollowsBean {
-        private int id;// maxId
-        private int user_id;
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public int getUser_id() {
-            return user_id;
-        }
-
-        public void setUser_id(int user_id) {
-            this.user_id = user_id;
-        }
-    }
 }

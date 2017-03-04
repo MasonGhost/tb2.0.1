@@ -5,6 +5,7 @@ import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
@@ -40,6 +41,11 @@ public interface DynamicDetailContract {
          * 设置点赞头像
          */
         void setDigHeadIcon(List<UserInfoBean> userInfoBeanList);
+
+        /**
+         * 更新关注状态
+         */
+        void upDateFollowFansState(int followState);
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
@@ -52,5 +58,39 @@ public interface DynamicDetailContract {
          * 获取当前动态的点赞列表
          */
         void getDynamicDigList(Long feed_id, Integer max_id);
+
+        /**
+         * 处理喜欢逻辑
+         *
+         * @param dynamicToolBean 更新数据库
+         */
+        void handleLike(boolean isLiked, Long feed_id, DynamicToolBean dynamicToolBean);
+
+        /**
+         * 处理收藏逻辑
+         *
+         * @param isCollected
+         * @param feed_id
+         * @param dynamicToolBean
+         */
+
+        void handleCollect(boolean isCollected, Long feed_id, DynamicToolBean dynamicToolBean);
+
+        /**
+         * 动态分享
+         */
+        void shareDynamic();
+
+        /**
+         * 关注该用户
+         */
+        void followUser(FollowFansBean followFansBean);
+
+        /**
+         * 取消用户的关注
+         */
+        void cancleFollowUser(FollowFansBean followFansBean);
+
+
     }
 }

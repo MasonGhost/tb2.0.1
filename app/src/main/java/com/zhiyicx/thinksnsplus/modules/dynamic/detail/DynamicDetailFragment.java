@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +13,14 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
+import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailItemForContent;
@@ -24,6 +29,8 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,7 +50,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @BindView(R.id.dd_dynamic_tool)
     DynamicDetailMenuView mDdDynamicTool;
-
+    private DynamicBean mDynamicBean;// 上一个页面传进来的数据
     private List<DynamicBean> mDatas = new ArrayList<>();
 
     @Override
@@ -54,17 +61,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        // 初始化底部工具栏数据
-        mDdDynamicTool.setImageNormalResourceIds(new int[]{R.mipmap.home_ico_good_normal
-                , R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal
-                , R.mipmap.detail_ico_good_uncollect
-        });
-        mDdDynamicTool.setImageCheckedResourceIds(new int[]{R.mipmap.home_ico_good_high
-                , R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal
-                , R.mipmap.detail_ico_collect
-        });
-        mDdDynamicTool.setButtonText(new int[]{R.string.dynamic_like, R.string.comment
-                , R.string.share, R.string.favorite});
+        initBottomToolUI();
+        initBottomToolListener();
     }
 
     @Override
@@ -78,8 +76,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         Bundle bundle = getArguments();
         if (bundle != null && bundle.containsKey(DYNAMIC_DETAIL_DATA)) {
             DynamicBean dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
+            mDynamicBean = dynamicBean;
             setToolBarUser(dynamicBean);// 设置标题用户
+            initBottomToolData(dynamicBean);// 初始化底部工具栏数据
 
+            // 设置动态详情列表数据
             DynamicBean dynamicContent = new DynamicBean();
             dynamicContent.setFeed(dynamicBean.getFeed());
             DynamicBean dynamicDig = new DynamicBean();
@@ -152,6 +153,105 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 });
     }
 
+    @Override
+    public void setLike(boolean isLike) {
+        mDdDynamicTool.setItemIsChecked(isLike, ITEM_POSITION_0);
+    }
+
+    @Override
+    public void setCollect(boolean isCollect) {
+        mDdDynamicTool.setItemIsChecked(isCollect, ITEM_POSITION_3);
+    }
+
+    @Override
+    public void setDigHeadIcon(List<UserInfoBean> userInfoBeanList) {
+        DynamicBean dynamicBean = mDatas.get(1);
+        dynamicBean.setDigUserInfoList(userInfoBeanList);
+        refreshData(1);
+    }
+
+    @Override
+    public void upDateFollowFansState(int followState) {
+        setToolBarRightFollowState(followState);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UmengSharePolicyImpl.onActivityResult(requestCode, resultCode, data, getContext());
+    }
+
+    /**
+     * 设置底部工具栏UI
+     */
+    private void initBottomToolUI() {
+        // 初始化底部工具栏数据
+        mDdDynamicTool.setImageNormalResourceIds(new int[]{R.mipmap.home_ico_good_normal
+                , R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal
+                , R.mipmap.detail_ico_good_uncollect
+        });
+        mDdDynamicTool.setImageCheckedResourceIds(new int[]{R.mipmap.home_ico_good_high
+                , R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal
+                , R.mipmap.detail_ico_collect
+        });
+        mDdDynamicTool.setButtonText(new int[]{R.string.dynamic_like, R.string.comment
+                , R.string.share, R.string.favorite});
+
+    }
+
+    /**
+     * 进入页面，设置底部工具栏的数据
+     */
+    private void initBottomToolData(DynamicBean dynamicBean) {
+        DynamicToolBean dynamicToolBean = dynamicBean.getTool();
+        // 设置是否喜欢
+        mDdDynamicTool.setItemIsChecked(dynamicToolBean.getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED, DynamicDetailMenuView.ITEM_POSITION_0);
+        //设置是否收藏
+        mDdDynamicTool.setItemIsChecked(dynamicToolBean.getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED, DynamicDetailMenuView.ITEM_POSITION_3);
+    }
+
+    /**
+     * 设置底部工具栏的点击事件
+     */
+    private void initBottomToolListener() {
+        mDdDynamicTool.setItemOnClick(new DynamicDetailMenuView.OnItemClickListener() {
+            @Override
+            public void onItemClick(ViewGroup parent, View v, int postion) {
+                mDdDynamicTool.getTag(R.id.view_data);
+                switch (postion) {
+                    case DynamicDetailMenuView.ITEM_POSITION_0:
+                        // 喜欢
+                        // 修改数据
+                        DynamicToolBean likeToolBean = mDynamicBean.getTool();
+                        likeToolBean.setIs_digg_feed(likeToolBean.getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED
+                                ? DynamicToolBean.STATUS_DIGG_FEED_CHECKED : DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED);
+                        // 处理喜欢逻辑，包括服务器，数据库，ui
+                        mPresenter.handleLike(mDynamicBean.getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED,
+                                mDynamicBean.getFeed_id(), likeToolBean);
+                        break;
+                    case DynamicDetailMenuView.ITEM_POSITION_1:
+                        // 评论
+
+                        break;
+                    case DynamicDetailMenuView.ITEM_POSITION_2:
+                        // 分享
+                        mPresenter.shareDynamic();
+                        break;
+                    case DynamicDetailMenuView.ITEM_POSITION_3:
+                        // 收藏
+                        // 修改数据
+                        DynamicToolBean collectToolBean = mDynamicBean.getTool();
+                        collectToolBean.setIs_collection_feed(collectToolBean.getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_UNCHECKED
+                                ? DynamicToolBean.STATUS_COLLECT_FEED_CHECKED : DynamicToolBean.STATUS_COLLECT_FEED_UNCHECKED);
+                        // 处理喜欢逻辑，包括服务器，数据库，ui
+                        mPresenter.handleCollect(mDynamicBean.getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED,
+                                mDynamicBean.getFeed_id(), collectToolBean);
+                        break;
+                }
+            }
+        });
+    }
+
     /**
      * 设置toolBar上面的关注状态
      */
@@ -171,20 +271,4 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         }
     }
 
-    @Override
-    public void setLike(boolean isLike) {
-        mDdDynamicTool.setItemIsChecked(isLike, ITEM_POSITION_0);
-    }
-
-    @Override
-    public void setCollect(boolean isCollect) {
-        mDdDynamicTool.setItemIsChecked(isCollect, ITEM_POSITION_3);
-    }
-
-    @Override
-    public void setDigHeadIcon(List<UserInfoBean> userInfoBeanList) {
-        DynamicBean dynamicBean = mDatas.get(1);
-        dynamicBean.setDigUserInfoList(userInfoBeanList);
-        refreshData(1);
-    }
 }
