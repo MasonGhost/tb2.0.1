@@ -80,16 +80,20 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
      * @param maxId 当前页面的最小id
      */
     public List<FollowFansBean> getSomeOneFans(int userId, int maxId) {
+        // 第一次没有maxId，需要处理
+        if(maxId<=0){
+            maxId=Integer.MAX_VALUE;
+        }
         FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
         List<FollowFansBean> followFansBeanList = followFansBeanDao.queryDeep(" where " + FollowFansBeanDao
                         .Properties.OriginUserId.columnName + " = ? and "
-                        + FollowFansBeanDao.Properties.Target_follow_status.columnName + " = ? " // 目标用户对我的关注状态为关注
-//                        + " T.\"" + FollowFansBeanDao.Properties.Id.columnName +"\""+ " <= ?"
-                        + " order by " + "T.\"" + FollowFansBeanDao.Properties.Id.columnName + "\"" + " ASC"
+                        + FollowFansBeanDao.Properties.Target_follow_status.columnName + " = ? and" // 目标用户对我的关注状态为关注
+                        + " T.\"" + FollowFansBeanDao.Properties.Id.columnName + "\"" + " < ? "
+                        + " order by " + "T.\"" + FollowFansBeanDao.Properties.Id.columnName + "\"" + " DESC"
                         + " limit ?"
                 , userId + ""
                 , FollowFansBean.IFOLLOWED_STATE + ""
-//                , maxId + ""
+                , maxId + ""
                 , ApiConfig.MAX_NUMBER_PER_PAGE + "");
         LogUtils.i("fansList_db-->" + followFansBeanList.size() + followFansBeanList.toString());
         return followFansBeanList;
@@ -99,16 +103,20 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
      * 获取某个人的关注列表的用户信息
      */
     public List<FollowFansBean> getSomeOneFollower(int userId, int maxId) {
+        // 第一次没有maxId，需要处理
+        if(maxId<=0){
+            maxId=Integer.MAX_VALUE;
+        }
         FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
         List<FollowFansBean> followFansBeanList = followFansBeanDao.queryDeep(" where " + FollowFansBeanDao
                         .Properties.OriginUserId.columnName + " = ? and "
-                        + FollowFansBeanDao.Properties.Origin_follow_status.columnName + " = ? "// 我对目标用户的关注状态为关注
-//                        + " T.\"" + FollowFansBeanDao.Properties.Id.columnName +"\""+ " <= ?"
-                        + " order by " + "T.\"" + FollowFansBeanDao.Properties.Id.columnName + "\"" + " ASC"
+                        + FollowFansBeanDao.Properties.Origin_follow_status.columnName + " = ? and"// 我对目标用户的关注状态为关注
+                        + " T.\"" + FollowFansBeanDao.Properties.Id.columnName + "\"" + " < ?"
+                        + " order by " + "T.\"" + FollowFansBeanDao.Properties.Id.columnName + "\"" + " DESC"
                         + " limit ?"
                 , userId + ""
                 , FollowFansBean.IFOLLOWED_STATE + ""
-//                , maxId + ""
+                , maxId + ""
                 , ApiConfig.MAX_NUMBER_PER_PAGE + ""
         );
         LogUtils.i("followList_db-->" + followFansBeanList.size() + followFansBeanList.toString());
@@ -119,18 +127,22 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
      * 获取某个人的相互关注列表的用户信息
      */
     public List<FollowFansBean> getSomeOneFollowEachOther(int userId, int maxId) {
+        // 第一次没有maxId，需要处理
+        if(maxId<=0){
+            maxId=Integer.MAX_VALUE;
+        }
         FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
         List<FollowFansBean> followFansBeanList = followFansBeanDao.queryDeep(" where " + FollowFansBeanDao
                         .Properties.OriginUserId.columnName + " = ? and "
                         + FollowFansBeanDao.Properties.Origin_follow_status.columnName + " = ? and "
-                        + FollowFansBeanDao.Properties.Target_follow_status.columnName + " = ? "
-//                        + " T.\"" + FollowFansBeanDao.Properties.Id.columnName +"\""+ " <= ?"
-                        + " order by " + FollowFansBeanDao.Properties.Id.columnName + " ASC"
+                        + FollowFansBeanDao.Properties.Target_follow_status.columnName + " = ? and "
+                        + " T.\"" + FollowFansBeanDao.Properties.Id.columnName + "\"" + " < ?"
+                        + " order by " + FollowFansBeanDao.Properties.Id.columnName + " DESC"
                         + " limit ?"
                 , userId + ""
                 , FollowFansBean.IFOLLOWED_STATE + ""
                 , FollowFansBean.IFOLLOWED_STATE + ""
-//                , maxId + ""
+                , maxId + ""
                 , ApiConfig.MAX_NUMBER_PER_PAGE + "");
         return followFansBeanList;
 
