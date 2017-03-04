@@ -299,13 +299,6 @@ public class DynamicBean extends BaseListBean {
         dest.writeTypedList(this.digUserInfoList);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 210281324)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getDynamicBeanDao() : null;
-    }
-
     protected DynamicBean(Parcel in) {
         super(in);
         this.id = (Long) in.readValue(Long.class.getClassLoader());
@@ -333,4 +326,21 @@ public class DynamicBean extends BaseListBean {
             return new DynamicBean[size];
         }
     };
+
+    @Override
+    public Long getMaxId() {
+        return super.getMaxId();
+    }
+
+    @Override
+    public void setMaxId(Long maxId) {
+        super.setMaxId(maxId);
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 210281324)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getDynamicBeanDao() : null;
+    }
 }

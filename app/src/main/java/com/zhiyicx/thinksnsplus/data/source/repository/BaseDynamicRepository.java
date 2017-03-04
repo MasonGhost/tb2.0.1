@@ -92,7 +92,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                 if (type.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {
                                     dynamicBean.setMaxId(dynamicBean.getHot_creat_time());
                                 } else {
-                                    dynamicBean.setMaxId(dynamicBean.getFeed_id());
+                                    dynamicBean.setMaxId(dynamicBean.getFeed().getFeed_id());
                                 }
                             }
 
