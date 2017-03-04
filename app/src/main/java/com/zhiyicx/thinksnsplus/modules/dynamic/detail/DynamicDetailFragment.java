@@ -153,25 +153,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 });
     }
 
-    /**
-     * 设置toolBar上面的关注状态
-     */
-    private void setToolBarRightFollowState(int state) {
-        mToolbarRight.setVisibility(View.VISIBLE);
-        switch (state) {
-            case FollowFansBean.UNFOLLOWED_STATE:
-                mToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_follow), null);
-                break;
-            case FollowFansBean.IFOLLOWED_STATE:
-                mToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed), null);
-                break;
-            case FollowFansBean.FOLLOWED_EACHOTHER_STATE:
-                mToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed_eachother), null);
-                break;
-            default:
-        }
-    }
-
     @Override
     public void setLike(boolean isLike) {
         mDdDynamicTool.setItemIsChecked(isLike, ITEM_POSITION_0);
@@ -187,6 +168,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         DynamicBean dynamicBean = mDatas.get(1);
         dynamicBean.setDigUserInfoList(userInfoBeanList);
         refreshData(1);
+    }
+
+    @Override
+    public void upDateFollowFansState(int followState) {
+        setToolBarRightFollowState(followState);
     }
 
     @Override
@@ -265,4 +251,24 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
             }
         });
     }
+
+    /**
+     * 设置toolBar上面的关注状态
+     */
+    private void setToolBarRightFollowState(int state) {
+        mToolbarRight.setVisibility(View.VISIBLE);
+        switch (state) {
+            case FollowFansBean.UNFOLLOWED_STATE:
+                mToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_follow), null);
+                break;
+            case FollowFansBean.IFOLLOWED_STATE:
+                mToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed), null);
+                break;
+            case FollowFansBean.FOLLOWED_EACHOTHER_STATE:
+                mToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed_eachother), null);
+                break;
+            default:
+        }
+    }
+
 }

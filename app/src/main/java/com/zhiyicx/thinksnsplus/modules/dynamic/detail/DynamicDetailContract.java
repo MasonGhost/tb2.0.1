@@ -41,6 +41,11 @@ public interface DynamicDetailContract {
          * 设置点赞头像
          */
         void setDigHeadIcon(List<UserInfoBean> userInfoBeanList);
+
+        /**
+         * 更新关注状态
+         */
+        void upDateFollowFansState(int followState);
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
@@ -75,5 +80,17 @@ public interface DynamicDetailContract {
          * 动态分享
          */
         void shareDynamic();
+
+        /**
+         * 关注该用户
+         */
+        void followUser(FollowFansBean followFansBean);
+
+        /**
+         * 取消用户的关注
+         */
+        void cancleFollowUser(FollowFansBean followFansBean);
+
+
     }
 }

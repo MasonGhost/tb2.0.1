@@ -13,8 +13,10 @@ import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -42,6 +44,8 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
 
     @Inject
     DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
+    @Inject
+    FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
     @Inject
     public SharePolicy mSharePolicy;
 
@@ -135,6 +139,37 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         ShareContent shareContent = new ShareContent();
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
+    }
+
+    @Override
+    public void followUser(FollowFansBean followFansBean) {
+        // 后台通知服务器关注
+        BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
+        backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST);
+        backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_FOLLOW_USER);
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("user_id", followFansBean.getFollowedUserId() + "");
+        backgroundRequestTaskBean.setParams(hashMap);
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+        // 本地数据库和ui进行刷新
+        int followState = mFollowFansBeanGreenDao.setStateToFollowed(followFansBean);
+        followFansBean.setFollowState(followState);
+        mRootView.upDateFollowFansState(followState);
+    }
+
+    @Override
+    public void cancleFollowUser(FollowFansBean followFansBean) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
+        backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
+        backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_CANCEL_FOLLOW_USER);
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("user_id", followFansBean.getFollowedUserId() + "");
+        backgroundRequestTaskBean.setParams(hashMap);
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+        // 本地数据库和ui进行刷新
+        int followState = mFollowFansBeanGreenDao.setStateToUnFollowed(followFansBean);
+        followFansBean.setFollowState(followState);
+        mRootView.upDateFollowFansState(followState);
     }
 
 }
