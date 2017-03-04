@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 import android.content.Context;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
@@ -80,16 +81,18 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
      */
     public List<FollowFansBean> getSomeOneFans(int userId, int maxId) {
         FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
-        return followFansBeanDao.queryDeep(" where " + FollowFansBeanDao
-                        .Properties.FollowedUserId.columnName + " = ? and "
-                        + FollowFansBeanDao.Properties.FollowState.columnName + " != ? "
+        List<FollowFansBean> followFansBeanList = followFansBeanDao.queryDeep(" where " + FollowFansBeanDao
+                        .Properties.OriginUserId.columnName + " = ? and "
+                        + FollowFansBeanDao.Properties.Target_follow_status.columnName + " = ? " // 目标用户对我的关注状态为关注
 //                        + " T.\"" + FollowFansBeanDao.Properties.Id.columnName +"\""+ " <= ?"
                         + " order by " + "T.\"" + FollowFansBeanDao.Properties.Id.columnName + "\"" + " ASC"
                         + " limit ?"
                 , userId + ""
-                , FollowFansBean.UNFOLLOWED_STATE + ""
+                , FollowFansBean.IFOLLOWED_STATE + ""
 //                , maxId + ""
                 , ApiConfig.MAX_NUMBER_PER_PAGE + "");
+        LogUtils.i("fansList_db-->" + followFansBeanList.size() + followFansBeanList.toString());
+        return followFansBeanList;
     }
 
     /**
@@ -97,17 +100,19 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
      */
     public List<FollowFansBean> getSomeOneFollower(int userId, int maxId) {
         FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
-        return followFansBeanDao.queryDeep(" where " + FollowFansBeanDao
-                        .Properties.UserId.columnName + " = ? and "
-                        + FollowFansBeanDao.Properties.FollowState.columnName + " != ? "
+        List<FollowFansBean> followFansBeanList = followFansBeanDao.queryDeep(" where " + FollowFansBeanDao
+                        .Properties.OriginUserId.columnName + " = ? and "
+                        + FollowFansBeanDao.Properties.Origin_follow_status.columnName + " = ? "// 我对目标用户的关注状态为关注
 //                        + " T.\"" + FollowFansBeanDao.Properties.Id.columnName +"\""+ " <= ?"
                         + " order by " + "T.\"" + FollowFansBeanDao.Properties.Id.columnName + "\"" + " ASC"
                         + " limit ?"
                 , userId + ""
-                , FollowFansBean.UNFOLLOWED_STATE + ""
+                , FollowFansBean.IFOLLOWED_STATE + ""
 //                , maxId + ""
                 , ApiConfig.MAX_NUMBER_PER_PAGE + ""
         );
+        LogUtils.i("followList_db-->" + followFansBeanList.size() + followFansBeanList.toString());
+        return followFansBeanList;
     }
 
     /**
@@ -115,80 +120,20 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
      */
     public List<FollowFansBean> getSomeOneFollowEachOther(int userId, int maxId) {
         FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
-        return followFansBeanDao.queryDeep(" where " + FollowFansBeanDao
-                        .Properties.UserId.columnName + " = ? and "
-                        + FollowFansBeanDao.Properties.FollowState.columnName + " = ? "
+        List<FollowFansBean> followFansBeanList = followFansBeanDao.queryDeep(" where " + FollowFansBeanDao
+                        .Properties.OriginUserId.columnName + " = ? and "
+                        + FollowFansBeanDao.Properties.Origin_follow_status.columnName + " = ? and "
+                        + FollowFansBeanDao.Properties.Target_follow_status.columnName + " = ? "
 //                        + " T.\"" + FollowFansBeanDao.Properties.Id.columnName +"\""+ " <= ?"
                         + " order by " + FollowFansBeanDao.Properties.Id.columnName + " ASC"
                         + " limit ?"
                 , userId + ""
-                , FollowFansBean.FOLLOWED_EACHOTHER_STATE + ""
+                , FollowFansBean.IFOLLOWED_STATE + ""
+                , FollowFansBean.IFOLLOWED_STATE + ""
 //                , maxId + ""
                 , ApiConfig.MAX_NUMBER_PER_PAGE + "");
+        return followFansBeanList;
 
     }
 
-    /**
-     * 将某条数据设为关注状态
-     *
-     * @return 返回更新后的状态
-     */
-    public int setStateToFollowed(FollowFansBean newData) {
-        if (newData == null) {
-            return newData.getFollowState();
-        }
-        long userId = newData.getUserId();
-        long followedId = newData.getFollowedUserId();
-        FollowFansBeanDao followFansBeanDao = getWDaoSession().getFollowFansBeanDao();
-        QueryBuilder<FollowFansBean> qb = followFansBeanDao.queryBuilder();
-        // 看看数据库这个人是否关注了我
-        qb.where(FollowFansBeanDao
-                .Properties.UserFollowedId.eq(followedId + "$" + userId), FollowFansBeanDao
-                .Properties.FollowState.notEq(FollowFansBean.UNFOLLOWED_STATE));
-        if (qb.list().isEmpty()) {// 看来没有关注我
-            newData.setFollowState(FollowFansBean.IFOLLOWED_STATE);
-        } else {// 关注我了，那就互相关注吧
-            newData.setFollowState(FollowFansBean.FOLLOWED_EACHOTHER_STATE);
-            // 将另外一条数据设为互相关注
-            FollowFansBean followedPerson = new FollowFansBean();
-            followedPerson.setFollowState(FollowFansBean.FOLLOWED_EACHOTHER_STATE);
-            followedPerson.setUserId(followedId);
-            followedPerson.setFollowedUserId(userId);
-            followedPerson.setUserFollowedId(null);
-            insertOrReplace(followedPerson);
-        }
-        insertOrReplace(newData);
-        return newData.getFollowState();
-    }
-
-    /**
-     * 取消某条数据的关注状态
-     */
-    public int setStateToUnFollowed(FollowFansBean newData) {
-        if (newData == null) {
-            return newData.getFollowState();
-        }
-        long userId = newData.getUserId();
-        long followedId = newData.getFollowedUserId();
-        FollowFansBeanDao followFansBeanDao = getWDaoSession().getFollowFansBeanDao();
-        QueryBuilder<FollowFansBean> qb = followFansBeanDao.queryBuilder();
-        // 看看数据库这个人和我是否互相关注
-        qb.where(FollowFansBeanDao
-                .Properties.UserFollowedId.eq(followedId + "$" + userId), FollowFansBeanDao
-                .Properties.FollowState.notEq(FollowFansBean.FOLLOWED_EACHOTHER_STATE));
-        if (qb.list().isEmpty()) {// 看来没有互相关注
-            newData.setFollowState(FollowFansBean.UNFOLLOWED_STATE);
-        } else {// 关注我了，那就互相关注吧
-            newData.setFollowState(FollowFansBean.UNFOLLOWED_STATE);
-            // 将另外一条数据设为关注了我
-            FollowFansBean followedPerson = new FollowFansBean();
-            followedPerson.setFollowState(FollowFansBean.IFOLLOWED_STATE);
-            followedPerson.setUserId(followedId);
-            followedPerson.setFollowedUserId(userId);
-            followedPerson.setUserFollowedId(null);
-            insertOrReplace(followedPerson);
-        }
-        insertOrReplace(newData);
-        return newData.getFollowState();
-    }
 }

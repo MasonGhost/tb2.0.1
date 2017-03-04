@@ -46,12 +46,22 @@ public class FollowFansBean extends BaseListBean {
     @ToOne(joinProperty = "targetUserId")
     private UserInfoBean targetUserInfo;// 目标用户信息
 
+    // 当前用户对目标用户的关注状态
+    public int getFollowState() {
+        // 相互关注了
+        if (origin_follow_status == IFOLLOWED_STATE && target_follow_status == IFOLLOWED_STATE) {
+            return FOLLOWED_EACHOTHER_STATE;
+        }
+        // 返回当前用户对目标用户的关注状态
+        return origin_follow_status;
+    }
+
     public String getOrigintargetUser() {
         return origintargetUser;
     }
 
     public void setOrigintargetUser(String origintargetUser) {
-        this.origintargetUser = origintargetUser;
+        this.origintargetUser = originUserId + "$" + targetUserId;
     }
 
     public long getOriginUserId() {
@@ -85,18 +95,22 @@ public class FollowFansBean extends BaseListBean {
     public void setTarget_follow_status(int target_follow_status) {
         this.target_follow_status = target_follow_status;
     }
+
     @Keep
     public UserInfoBean getOriginUserInfo() {
         return originUserInfo;
     }
+
     @Keep
     public void setOriginUserInfo(UserInfoBean originUserInfo) {
         this.originUserInfo = originUserInfo;
     }
+
     @Keep
     public UserInfoBean getTargetUserInfo() {
         return targetUserInfo;
     }
+
     @Keep
     public void setTargetUserInfo(UserInfoBean targetUserInfo) {
         this.targetUserInfo = targetUserInfo;
@@ -138,7 +152,7 @@ public class FollowFansBean extends BaseListBean {
 
     @Generated(hash = 851025626)
     public FollowFansBean(Long id, String origintargetUser, long originUserId,
-            long targetUserId, int origin_follow_status, int target_follow_status) {
+                          long targetUserId, int origin_follow_status, int target_follow_status) {
         this.id = id;
         this.origintargetUser = origintargetUser;
         this.originUserId = originUserId;
@@ -158,10 +172,14 @@ public class FollowFansBean extends BaseListBean {
             return new FollowFansBean[size];
         }
     };
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 1176234999)
     private transient FollowFansBeanDao myDao;
     @Generated(hash = 152244013)
@@ -216,6 +234,21 @@ public class FollowFansBean extends BaseListBean {
             throw new DaoException("Entity is detached from DAO context");
         }
         myDao.update(this);
+    }
+
+    @Override
+    public String toString() {
+        return "FollowFansBean{" +
+                "id=" + id +
+                ", origintargetUser='" + origintargetUser + '\'' +
+                ", originUserId=" + originUserId +
+                ", targetUserId=" + targetUserId +
+                ", origin_follow_status=" + origin_follow_status +
+                ", target_follow_status=" + target_follow_status +
+                ", originUserInfo=" + originUserInfo +
+                ", targetUserInfo=" + targetUserInfo +
+                ", myDao=" + myDao +
+                '}';
     }
 
     /** called by internal mechanisms, do not call yourself. */

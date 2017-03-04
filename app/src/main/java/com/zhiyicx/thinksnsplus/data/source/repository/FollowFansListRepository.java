@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.GsonFollowFansBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.FollowFansClient;
@@ -81,6 +82,7 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
         listBaseJson.setMessage(gsonFollowFansBeanBaseJson.getMessage());
         listBaseJson.setStatus(gsonFollowFansBeanBaseJson.isStatus());
         listBaseJson.setData(followFansBeanList);
+        LogUtils.i("followFansBeanList_net-->" + followFansBeanList.size() + followFansBeanList.toString());
         return listBaseJson;
     }
 }
