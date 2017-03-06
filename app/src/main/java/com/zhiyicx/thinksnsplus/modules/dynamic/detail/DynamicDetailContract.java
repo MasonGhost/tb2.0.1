@@ -49,6 +49,11 @@ public interface DynamicDetailContract {
          * 更新关注状态
          */
         void upDateFollowFansState(int followState);
+
+        /**
+         * 设置初始关注状态
+         */
+        void initFollowState(FollowFansBean mFollowFansBean);
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
@@ -94,6 +99,11 @@ public interface DynamicDetailContract {
          * 关注或者取消关注
          */
         void handleFollowUser(FollowFansBean followFansBean);
+
+        /**
+         * 获取关注状态
+         */
+        void getUserFollowState(String user_ids);
 
     }
 }

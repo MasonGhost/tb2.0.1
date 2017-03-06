@@ -168,4 +168,28 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         mRootView.upDateFollowFansState(followFansBean.getFollowState());
     }
 
+    @Override
+    public void getUserFollowState(String user_ids) {
+        Subscription subscription = mRepository.getUserFollowState(user_ids)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribe<List<FollowFansBean>>() {
+                    @Override
+                    protected void onSuccess(List<FollowFansBean> data) {
+                        mRootView.initFollowState(data.get(0));
+                    }
+
+                    @Override
+                    protected void onFailure(String message) {
+
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+
+                    }
+                });
+        addSubscrebe(subscription);
+    }
+
 }
