@@ -65,11 +65,17 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
 
     @Override
     public long insertOrReplace(FollowFansBean newData) {
+        if (newData == null) {
+            return -1;
+        }
         FollowFansBeanDao followFansBeanDao = getWDaoSession().getFollowFansBeanDao();
         return followFansBeanDao.insertOrReplace(newData);
     }
 
     public void insertOrReplace(List<FollowFansBean> newData) {
+        if (newData == null) {
+            return;
+        }
         FollowFansBeanDao followFansBeanDao = getWDaoSession().getFollowFansBeanDao();
         followFansBeanDao.insertOrReplaceInTx(newData);
     }
@@ -81,8 +87,8 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
      */
     public List<FollowFansBean> getSomeOneFans(int userId, int maxId) {
         // 第一次没有maxId，需要处理
-        if(maxId<=0){
-            maxId=Integer.MAX_VALUE;
+        if (maxId <= 0) {
+            maxId = Integer.MAX_VALUE;
         }
         FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
         List<FollowFansBean> followFansBeanList = followFansBeanDao.queryDeep(" where " + FollowFansBeanDao
@@ -104,8 +110,8 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
      */
     public List<FollowFansBean> getSomeOneFollower(int userId, int maxId) {
         // 第一次没有maxId，需要处理
-        if(maxId<=0){
-            maxId=Integer.MAX_VALUE;
+        if (maxId <= 0) {
+            maxId = Integer.MAX_VALUE;
         }
         FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
         List<FollowFansBean> followFansBeanList = followFansBeanDao.queryDeep(" where " + FollowFansBeanDao
@@ -128,8 +134,8 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
      */
     public List<FollowFansBean> getSomeOneFollowEachOther(int userId, int maxId) {
         // 第一次没有maxId，需要处理
-        if(maxId<=0){
-            maxId=Integer.MAX_VALUE;
+        if (maxId <= 0) {
+            maxId = Integer.MAX_VALUE;
         }
         FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
         List<FollowFansBean> followFansBeanList = followFansBeanDao.queryDeep(" where " + FollowFansBeanDao

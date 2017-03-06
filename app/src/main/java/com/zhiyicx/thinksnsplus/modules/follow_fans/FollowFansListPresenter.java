@@ -50,7 +50,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
 
     @Override
     protected boolean useEventBus() {
-        return true;
+        return false;
     }
 
     @Override
@@ -84,15 +84,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
                     @Override
                     protected void onSuccess(List<FollowFansBean> data) {
                         insertOrUpdateData(data);// 保存到数据库
-                        // 多表连查，获取用户信息
-                        if (pageType == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
-                            data = mFollowFansBeanGreenDao.getSomeOneFollower(userId, maxId.intValue());
-                        } else if (pageType == FollowFansListFragment.FANS_FRAGMENT_PAGE) {
-                            data = mFollowFansBeanGreenDao.getSomeOneFans(userId, maxId.intValue());
-                        }
                         mRootView.onNetResponseSuccess(data, isLoadMore);
-                        // 处理用户信息缺失
-                        dealWithUserInfo(pageType, data);
                     }
 
                     @Override
@@ -118,7 +110,6 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
         } else if (pageType == FollowFansListFragment.FANS_FRAGMENT_PAGE) {
             followFansBeanList = mFollowFansBeanGreenDao.getSomeOneFans(userId, maxId.intValue());
         }
-        dealWithUserInfo(pageType, followFansBeanList);
         return followFansBeanList;
     }
 
@@ -155,33 +146,5 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
         // 本地数据库和ui进行刷新
         mFollowFansBeanGreenDao.insertOrReplace(followFansBean);
         mRootView.upDateFollowFansState(index, FollowFansBean.UNFOLLOWED_STATE);
-    }
-
-    /**
-     * 在后台任务获取到最新的用户信息后，更新界面的用户信息
-     */
-    @Subscriber(tag = EventBusTagConfig.EVENT_USERINFO_UPDATE)
-    public void upDateUserInfo(List<UserInfoBean> userInfoBeanList) {
-        mRootView.upDateUserInfo(userInfoBeanList);
-    }
-
-    // 当数据库获取用户信息为空时，需要尝试从网络拉去信息
-    private void dealWithUserInfo(int pageType, List<FollowFansBean> followFansBeanList) {
-        List<Integer> userIdList = new ArrayList<>();
-        // 统一处理获取用户信息,将用户关注列表中的相关用户信息全部更新
-        for (FollowFansBean followFansBean : followFansBeanList) {
-            UserInfoBean userInfoBean = followFansBean.getTargetUserInfo();
-            if (userInfoBean == null) {
-                userIdList.add((int) followFansBean.getTargetUserId());
-            }
-        }
-        if (!userIdList.isEmpty()) {
-            HashMap<String, Object> hashMap = new HashMap<>();
-            hashMap.put("user_id", userIdList);
-            BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
-            backgroundRequestTaskBean.setParams(hashMap);
-            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.GET_USER_INFO);
-            BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
-        }
     }
 }

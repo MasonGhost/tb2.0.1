@@ -1,9 +1,14 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import android.util.SparseArray;
+
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.GsonFollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.FollowFansClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListContract;
@@ -23,21 +28,23 @@ import rx.functions.Func1;
 
 public class FollowFansListRepository implements FollowFansListContract.Repository {
     private FollowFansClient mFollowFansClient;
+    protected UserInfoRepository mUserInfoRepository;
 
     public FollowFansListRepository(ServiceManager serviceManager) {
         mFollowFansClient = serviceManager.getFollowFansClient();
+        mUserInfoRepository = new UserInfoRepository(serviceManager);
     }
 
     @Override
     public Observable<BaseJson<List<FollowFansBean>>> getFollowListFromNet(final long userId, int maxId) {
         // 将网络请求获取的数据，通过map转换
         return mFollowFansClient.getUserFollowsList(userId, maxId)
-                .map(new Func1<BaseJson<GsonFollowFansBean>, BaseJson<List<FollowFansBean>>>() {
+                .flatMap(new Func1<BaseJson<GsonFollowFansBean>, Observable<BaseJson<List<FollowFansBean>>>>() {
                     @Override
-                    public BaseJson<List<FollowFansBean>> call(BaseJson<GsonFollowFansBean> gsonFollowFansBeanBaseJson) {
+                    public Observable<BaseJson<List<FollowFansBean>>> call(BaseJson<GsonFollowFansBean> gsonFollowFansBeanBaseJson) {
                         GsonFollowFansBean gsonFollowFansBean = gsonFollowFansBeanBaseJson.getData();
-                        List<FollowFansBean> followFansBeanList = gsonFollowFansBean.getFollows();
-                        return packageData(followFansBeanList, userId, gsonFollowFansBeanBaseJson);
+                        final List<FollowFansBean> followFansBeanList = gsonFollowFansBean.getFollows();
+                        return packageData(gsonFollowFansBeanBaseJson, userId, followFansBeanList);
                     }
                 });
     }
@@ -46,14 +53,15 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
     public Observable<BaseJson<List<FollowFansBean>>> getFansListFromNet(final long userId, int maxId) {
         // 将网络请求获取的数据，通过map转换
         return mFollowFansClient.getUserFansList(userId, maxId)
-                .map(new Func1<BaseJson<GsonFollowFansBean>, BaseJson<List<FollowFansBean>>>() {
+                .flatMap(new Func1<BaseJson<GsonFollowFansBean>, Observable<BaseJson<List<FollowFansBean>>>>() {
                     @Override
-                    public BaseJson<List<FollowFansBean>> call(BaseJson<GsonFollowFansBean> gsonFollowFansBeanBaseJson) {
+                    public Observable<BaseJson<List<FollowFansBean>>> call(BaseJson<GsonFollowFansBean> gsonFollowFansBeanBaseJson) {
                         GsonFollowFansBean gsonFollowFansBean = gsonFollowFansBeanBaseJson.getData();
                         List<FollowFansBean> followFansBeanList = gsonFollowFansBean.getFolloweds();
-                        return packageData(followFansBeanList, userId, gsonFollowFansBeanBaseJson);
+                        return packageData(gsonFollowFansBeanBaseJson, userId, followFansBeanList);
                     }
                 });
+
     }
 
     @Override
@@ -69,20 +77,50 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
     /**
      * 重新封装服务器数据
      */
-    private BaseJson<List<FollowFansBean>> packageData(List<FollowFansBean> followFansBeanList, long userId, BaseJson<GsonFollowFansBean> gsonFollowFansBeanBaseJson) {
-        if (followFansBeanList != null) {
+    private Observable<BaseJson<List<FollowFansBean>>> packageData(BaseJson<GsonFollowFansBean> gsonFollowFansBeanBaseJson, final long userId, final List<FollowFansBean> followFansBeanList) {
+        if (gsonFollowFansBeanBaseJson.isStatus() && followFansBeanList != null && !followFansBeanList.isEmpty()) {
+            List<Long> targetUserIds = new ArrayList<Long>();
             for (FollowFansBean followFansBean : followFansBeanList) {
-                // 关注主体是当前传入的userId
-                followFansBean.setOriginUserId(userId);
-                followFansBean.setOrigintargetUser(null);
+                targetUserIds.add(followFansBean.getTargetUserId());
             }
+            return mUserInfoRepository.getUserInfo(targetUserIds)
+                    .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<FollowFansBean>>>() {
+                        @Override
+                        public BaseJson<List<FollowFansBean>> call(BaseJson<List<UserInfoBean>> userinfobeans) {
+                            if (userinfobeans.isStatus()) {
+                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                // 获取到用户信息
+                                for (UserInfoBean userInfoBean : userinfobeans.getData()) {
+                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                }
+
+                                for (FollowFansBean followFansBean : followFansBeanList) {
+                                    // 关注主体是当前传入的userId
+                                    followFansBean.setOriginUserId(userId);
+                                    followFansBean.setOrigintargetUser(null);
+                                    // 存储用户信息到粉丝关注列表
+                                    followFansBean.setTargetUserInfo(userInfoBeanSparseArray.get((int) followFansBean.getTargetUserId()));
+                                }
+                                // 保存用户信息
+                                AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao().insertOrReplace(userinfobeans.getData());
+                            } else {
+                                // 用户信息获取失败，是否抛出错误或者异常，还是作为正常数据处理，只是界面上没有用户信息显示，这是一个问题
+
+                            }
+                            BaseJson<List<FollowFansBean>> listBaseJson = new BaseJson<List<FollowFansBean>>();
+                            listBaseJson.setCode(userinfobeans.getCode());
+                            listBaseJson.setMessage(userinfobeans.getMessage());
+                            listBaseJson.setStatus(userinfobeans.isStatus());
+                            listBaseJson.setData(followFansBeanList);
+                            return listBaseJson;
+                        }
+                    });
+        } else {
+            BaseJson<List<FollowFansBean>> listBaseJson = new BaseJson<List<FollowFansBean>>();
+            listBaseJson.setCode(gsonFollowFansBeanBaseJson.getCode());
+            listBaseJson.setMessage(gsonFollowFansBeanBaseJson.getMessage());
+            listBaseJson.setStatus(gsonFollowFansBeanBaseJson.isStatus());
+            return Observable.just(listBaseJson);
         }
-        BaseJson<List<FollowFansBean>> listBaseJson = new BaseJson<List<FollowFansBean>>();
-        listBaseJson.setCode(gsonFollowFansBeanBaseJson.getCode());
-        listBaseJson.setMessage(gsonFollowFansBeanBaseJson.getMessage());
-        listBaseJson.setStatus(gsonFollowFansBeanBaseJson.isStatus());
-        listBaseJson.setData(followFansBeanList);
-        LogUtils.i("followFansBeanList_net-->" + followFansBeanList.size() + followFansBeanList.toString());
-        return listBaseJson;
     }
 }
