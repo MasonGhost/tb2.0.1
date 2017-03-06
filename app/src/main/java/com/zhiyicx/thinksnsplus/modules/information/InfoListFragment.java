@@ -74,6 +74,11 @@ public class InfoListFragment extends TSListFragment {
     }
 
     @Override
+    protected boolean setUseSatusbar() {
+        return false;
+    }
+
+    @Override
     protected boolean showToolbar() {
         return false;
     }

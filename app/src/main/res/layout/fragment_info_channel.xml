@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:fitsSystemWindows="true"
+    android:background="@color/white"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:background="@color/general_for_bg_light"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/refresh_header_height"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_marginLeft="@dimen/info_channel_13dp"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/info_sort"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_primary_title"/>
+
+            <TextView
+                android:id="@+id/fragment_channel_editor"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_toLeftOf="@+id/fragment_channel_complete"
+                android:gravity="center"
+                android:layout_marginRight="@dimen/info_channel_13dp"
+                android:text="@string/info_editor"
+                android:textColor="@color/important_for_theme"
+                android:textSize="@dimen/size_content"/>
+
+            <TextView
+                android:layout_alignParentRight="true"
+                android:id="@+id/fragment_channel_complete"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/info_channel_13dp"
+                android:gravity="center"
+                android:text="@string/complete"
+                android:textColor="@color/important_for_theme"
+                android:textSize="@dimen/size_content"/>
+        </RelativeLayout>
+
+        <TextView
+            android:layout_marginLeft="@dimen/info_channel_13dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/spacing_big_large"
+            android:gravity="center"
+            android:text="@string/info_subscribed"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_content"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/spacing_small"
+            android:id="@+id/fragment_channel_content_subscribed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_marginLeft="@dimen/info_channel_13dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/spacing_big_large"
+            android:gravity="center"
+            android:text="@string/info_unsubscribe"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_content"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/spacing_small"
+            android:id="@+id/fragment_channel_content_unsubscribe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+</ScrollView>
