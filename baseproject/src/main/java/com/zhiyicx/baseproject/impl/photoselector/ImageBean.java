@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @contact email:450127106@qq.com
  */
 
-public class ImageBean implements Parcelable ,Serializable {
+public class ImageBean implements Parcelable, Serializable {
 
     /**
      * storage_id : 2
@@ -23,6 +23,15 @@ public class ImageBean implements Parcelable ,Serializable {
     private int storage_id;
     private double width;
     private double height;
+    private int part;// 图片压缩比例
+
+    public int getPart() {
+        return part;
+    }
+
+    public void setPart(int part) {
+        this.part = part;
+    }
 
     public String getImgUrl() {
         return imgUrl;
@@ -56,6 +65,24 @@ public class ImageBean implements Parcelable ,Serializable {
         this.height = height;
     }
 
+    public ImageBean(int storage_id) {
+        this.storage_id = storage_id;
+    }
+
+    public ImageBean() {
+    }
+
+    @Override
+    public String toString() {
+        return "ImageBean{" +
+                "imgUrl='" + imgUrl + '\'' +
+                ", storage_id=" + storage_id +
+                ", width=" + width +
+                ", height=" + height +
+                ", part=" + part +
+                '}';
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -67,18 +94,15 @@ public class ImageBean implements Parcelable ,Serializable {
         dest.writeInt(this.storage_id);
         dest.writeDouble(this.width);
         dest.writeDouble(this.height);
+        dest.writeInt(this.part);
     }
 
-    public ImageBean(int storage_id) {
-        this.storage_id=storage_id;
-    }
-    public ImageBean() {
-    }
     protected ImageBean(Parcel in) {
         this.imgUrl = in.readString();
         this.storage_id = in.readInt();
         this.width = in.readDouble();
         this.height = in.readDouble();
+        this.part = in.readInt();
     }
 
     public static final Creator<ImageBean> CREATOR = new Creator<ImageBean>() {
@@ -92,14 +116,4 @@ public class ImageBean implements Parcelable ,Serializable {
             return new ImageBean[size];
         }
     };
-
-    @Override
-    public String toString() {
-        return "ImageBean{" +
-                "imgUrl='" + imgUrl + '\'' +
-                ", storage_id=" + storage_id +
-                ", width=" + width +
-                ", height=" + height +
-                '}';
-    }
 }
