@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
+import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -12,6 +13,8 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicContract;
 
 import java.util.List;
+
+import rx.Observable;
 
 /**
  * @author LiuChao
@@ -50,7 +53,13 @@ public interface DynamicDetailContract {
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
     interface Repository extends IDynamicReppsitory {
-
+        /**
+         * 获取用户关注状态
+         *
+         * @param user_ids
+         * @return
+         */
+        Observable<BaseJson<List<FollowFansBean>>> getUserFollowState(String user_ids);
     }
 
     interface Presenter extends ITSListPresenter<DynamicBean> {
