@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.zhiyicx.baseproject.base.BaseListBean;
+
 /**
  * @author LiuChao
  * @describe 动态点赞列表
@@ -10,7 +12,7 @@ import android.os.Parcelable;
  * @contact email:450127106@qq.com
  */
 
-public class DynamicDigListBean implements Parcelable {
+public class DynamicDigListBean extends BaseListBean implements Parcelable {
     private int feed_digg_id;
     private long user_id;
 

@@ -5,10 +5,15 @@ import android.os.Bundle;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 
-public class DigListActivity extends AppCompatActivity{
+public class DigListActivity extends TSActivity<DigListPresenter, DigListFragment> {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void componentInject() {
+
+    }
+
+    @Override
+    protected DigListFragment getFragment() {
+        return DigListFragment.initFragment(getIntent().getExtras());
     }
 }

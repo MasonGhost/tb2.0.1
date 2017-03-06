@@ -78,6 +78,8 @@
     <string name="dynamic_publish_time">发布与%1$s</string>
     <string name="dynamic_viewer_count">%1$d人浏览</string>
     <string name="dynamic_like">喜欢</string>
+    <string name="dig_list">点赞榜</string>
+
     <!--代码中的string-->
     <string name="token_expiers">token过期，请重新登陆</string>
     <string name="share">分享</string>
