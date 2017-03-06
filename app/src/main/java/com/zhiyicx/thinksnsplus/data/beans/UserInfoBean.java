@@ -451,7 +451,8 @@ public class UserInfoBean implements Parcelable {
         };
     }
 
-    public static class CountsBean {
+    public static class CountsBean implements Parcelable,Serializable {
+        private static final long serialVersionUID = 536871010L;
         private int id;
         private int user_id;
         private String key;
@@ -506,6 +507,45 @@ public class UserInfoBean implements Parcelable {
         public void setUpdated_at(long updated_at) {
             this.updated_at = updated_at;
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.id);
+            dest.writeInt(this.user_id);
+            dest.writeString(this.key);
+            dest.writeString(this.value);
+            dest.writeLong(this.created_at);
+            dest.writeLong(this.updated_at);
+        }
+
+        public CountsBean() {
+        }
+
+        protected CountsBean(Parcel in) {
+            this.id = in.readInt();
+            this.user_id = in.readInt();
+            this.key = in.readString();
+            this.value = in.readString();
+            this.created_at = in.readLong();
+            this.updated_at = in.readLong();
+        }
+
+        public static final Creator<CountsBean> CREATOR = new Creator<CountsBean>() {
+            @Override
+            public CountsBean createFromParcel(Parcel source) {
+                return new CountsBean(source);
+            }
+
+            @Override
+            public CountsBean[] newArray(int size) {
+                return new CountsBean[size];
+            }
+        };
     }
 
     @Override
