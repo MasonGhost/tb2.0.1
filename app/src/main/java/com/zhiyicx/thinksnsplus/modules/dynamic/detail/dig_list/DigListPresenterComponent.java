@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;
+import com.zhiyicx.thinksnsplus.base.InjectComponent;
 
 import dagger.Component;
 
@@ -13,5 +14,5 @@ import dagger.Component;
  */
 @FragmentScoped
 @Component(modules = DigListPresenterModule.class, dependencies = AppComponent.class)
-public interface DigListPresenterComponent {
+public interface DigListPresenterComponent extends InjectComponent<DigListActivity>{
 }

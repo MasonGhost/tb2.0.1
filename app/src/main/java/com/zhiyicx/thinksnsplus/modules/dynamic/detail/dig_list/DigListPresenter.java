@@ -4,6 +4,7 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
+import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -19,6 +20,9 @@ import javax.inject.Inject;
  */
 @FragmentScoped
 public class DigListPresenter extends BasePresenter<DigListContract.Repository, DigListContract.View> implements DigListContract.Presenter {
+    @Inject
+    FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
+
     @Inject
     public DigListPresenter(DigListContract.Repository repository, DigListContract.View rootView) {
         super(repository, rootView);
