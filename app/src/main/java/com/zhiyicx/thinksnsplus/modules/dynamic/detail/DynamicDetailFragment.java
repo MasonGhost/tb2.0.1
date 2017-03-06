@@ -81,9 +81,9 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
             initBottomToolData(dynamicBean);// 初始化底部工具栏数据
 
             // 设置动态详情列表数据
-            DynamicBean dynamicContent = new DynamicBean();
+            DynamicBean dynamicContent = new DynamicBean();// 设置详情内容
             dynamicContent.setFeed(dynamicBean.getFeed());
-            DynamicBean dynamicDig = new DynamicBean();
+            DynamicBean dynamicDig = new DynamicBean();// 设置点赞
             dynamicDig.setFeed(dynamicBean.getFeed());
             dynamicDig.setTool(dynamicBean.getTool());
             mDatas.add(dynamicContent);
@@ -109,6 +109,12 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     public void setPresenter(DynamicDetailContract.Presenter presenter) {
         this.mPresenter = presenter;
+    }
+
+    @Override
+    protected void setRightClick() {
+        FollowFansBean followFansBean = null;
+        mPresenter.handleFollowUser(followFansBean);
     }
 
     @Override

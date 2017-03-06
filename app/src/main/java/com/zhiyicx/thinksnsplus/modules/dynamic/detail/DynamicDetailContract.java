@@ -82,15 +82,9 @@ public interface DynamicDetailContract {
         void shareDynamic();
 
         /**
-         * 关注该用户
+         * 关注或者取消关注
          */
-        void followUser(FollowFansBean followFansBean);
-
-        /**
-         * 取消用户的关注
-         */
-        void cancleFollowUser(FollowFansBean followFansBean);
-
+        void handleFollowUser(FollowFansBean followFansBean);
 
     }
 }
