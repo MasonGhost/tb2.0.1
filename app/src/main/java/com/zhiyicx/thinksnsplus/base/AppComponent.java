@@ -12,7 +12,6 @@ import com.zhiyicx.thinksnsplus.data.source.local.CacheManager;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.DynamicDigListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -69,8 +68,6 @@ public interface AppComponent extends InjectComponent<AppApplication> {
     DynamicDetailBeanGreenDaoImpl dynamicDetailBeanGreenDao();
 
     DynamicToolBeanGreenDaoImpl dynamicToolBeanGreenDao();
-
-    DynamicDigListBeanGreenDaoImpl dynamicDigListBeanGreenDao();
 
     UserInfoRepository userInfoRepository();
 

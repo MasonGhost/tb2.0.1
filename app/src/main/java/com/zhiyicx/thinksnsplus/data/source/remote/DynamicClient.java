@@ -72,7 +72,7 @@ public interface DynamicClient {
      * @return
      */
     @GET(ApiConfig.APP_PATH_DYNAMIC_DIG_LIST)
-    Observable<BaseJson<List<DynamicDigListBean>>> getDynamicDigList(@Path("feed_id") Long feed_id, @Query("max_id ") Integer max_id);
+    Observable<BaseJson<List<DynamicDigListBean>>> getDynamicDigList(@Path("feed_id") Long feed_id, @Query("max_id ") Long max_id);
 
     /**
      * 收藏动态

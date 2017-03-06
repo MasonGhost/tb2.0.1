@@ -186,7 +186,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
-    public void setDigHeadIcon(List<UserInfoBean> userInfoBeanList) {
+    public void setDigHeadIcon(List<FollowFansBean> userInfoBeanList) {
         DynamicBean dynamicBean = mDatas.get(DYNAMIC_ITEM_DIG);
         dynamicBean.setDigUserInfoList(userInfoBeanList);
         refreshData(DYNAMIC_ITEM_DIG);

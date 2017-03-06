@@ -43,7 +43,7 @@ public interface DynamicDetailContract {
         /**
          * 设置点赞头像
          */
-        void setDigHeadIcon(List<UserInfoBean> userInfoBeanList);
+        void setDigHeadIcon(List<FollowFansBean> userInfoBeanList);
 
         /**
          * 更新关注状态
@@ -71,7 +71,7 @@ public interface DynamicDetailContract {
         /**
          * 获取当前动态的点赞列表
          */
-        void getDynamicDigList(Long feed_id, Integer max_id);
+        void getDynamicDigList(Long feed_id, Long max_id);
 
         /**
          * 处理喜欢逻辑

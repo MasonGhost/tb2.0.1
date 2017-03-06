@@ -74,14 +74,14 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
     }
 
     @Override
-    public void getDynamicDigList(Long feed_id, Integer max_id) {
+    public void getDynamicDigList(Long feed_id, Long max_id) {
         Subscription subscription = mRepository.getDynamicDigList(feed_id, max_id)
                 .subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithDelay(ApiConfig.DEFAULT_MAX_RETRY_COUNT, 0))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<List<UserInfoBean>>() {
+                .subscribe(new BaseSubscribe<List<FollowFansBean>>() {
                     @Override
-                    protected void onSuccess(List<UserInfoBean> data) {
+                    protected void onSuccess(List<FollowFansBean> data) {
                         mRootView.setDigHeadIcon(data);
                     }
 

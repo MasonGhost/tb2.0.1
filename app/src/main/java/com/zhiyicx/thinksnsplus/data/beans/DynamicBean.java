@@ -53,7 +53,7 @@ public class DynamicBean extends BaseListBean {
     private boolean isFollowed;// 是否关注了该条动态（用户）
     private int state = SEND_SUCCESS;// 动态发送状态 0 发送失败 1 正在发送 2 发送成功
     @Transient
-    private List<UserInfoBean> digUserInfoList;// 点赞用户的信息列表
+    private List<FollowFansBean> digUserInfoList;// 点赞用户的信息列表
 
     public Long getHot_creat_time() {
         return hot_creat_time;
@@ -103,11 +103,11 @@ public class DynamicBean extends BaseListBean {
         this.state = state;
     }
 
-    public List<UserInfoBean> getDigUserInfoList() {
+    public List<FollowFansBean> getDigUserInfoList() {
         return digUserInfoList;
     }
 
-    public void setDigUserInfoList(List<UserInfoBean> digUserInfoList) {
+    public void setDigUserInfoList(List<FollowFansBean> digUserInfoList) {
         this.digUserInfoList = digUserInfoList;
     }
 
@@ -327,7 +327,7 @@ public class DynamicBean extends BaseListBean {
         this.hot_creat_time = (Long) in.readValue(Long.class.getClassLoader());
         this.isFollowed = in.readByte() != 0;
         this.state = in.readInt();
-        this.digUserInfoList = in.createTypedArrayList(UserInfoBean.CREATOR);
+        this.digUserInfoList = in.createTypedArrayList(FollowFansBean.CREATOR);
     }
 
     public static final Creator<DynamicBean> CREATOR = new Creator<DynamicBean>() {
