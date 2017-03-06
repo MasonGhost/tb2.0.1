@@ -16,3 +16,4 @@ public interface OnShareCallbackListener {
     void onCancel(Share share);
 
 }
+

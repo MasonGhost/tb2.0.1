@@ -153,3 +153,4 @@ public class ChangePasswordFragment extends TSFragment<ChangePasswordContract.Pr
         getActivity().finish();
     }
 }
+

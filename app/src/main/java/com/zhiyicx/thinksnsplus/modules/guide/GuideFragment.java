@@ -49,3 +49,4 @@ public class GuideFragment extends TSFragment<GuideContract.Presenter> implement
         getActivity().finish();
     }
 }
+

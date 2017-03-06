@@ -120,5 +120,4 @@
         <item name="android:indeterminateDuration">500</item>
         <item name="android:indeterminateOnly">true</item>
     </style>
-
 </resources>

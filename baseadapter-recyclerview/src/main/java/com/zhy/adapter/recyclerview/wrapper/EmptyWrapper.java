@@ -123,3 +123,4 @@ public class EmptyWrapper<T> extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
 }
+

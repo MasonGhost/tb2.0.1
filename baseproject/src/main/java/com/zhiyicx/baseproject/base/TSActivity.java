@@ -40,3 +40,4 @@ public abstract class TSActivity<P extends BasePresenter,F extends Fragment> ext
     protected abstract F getFragment();
 
 }
+

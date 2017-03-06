@@ -82,3 +82,4 @@ public class ChangePasswordPresenter extends BasePresenter<ChangePasswordContrac
         return false;
     }
 }
+

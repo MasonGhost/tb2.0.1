@@ -31,3 +31,4 @@ public class ChangePasswordPresenterModule {
         return new ChangePasswordRepository(serviceManager);
     }
 }
+

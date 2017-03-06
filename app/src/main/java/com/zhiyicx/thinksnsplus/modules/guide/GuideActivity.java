@@ -21,3 +21,4 @@ public class GuideActivity extends TSActivity<GuidePresenter,GuideFragment> {
                 .inject(this);
     }
 }
+

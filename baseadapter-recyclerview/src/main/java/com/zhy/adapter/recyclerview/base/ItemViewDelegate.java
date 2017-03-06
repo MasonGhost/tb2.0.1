@@ -13,3 +13,4 @@ public interface ItemViewDelegate<T> {
     void convert(ViewHolder holder, T t, T lastT, int position);
 
 }
+

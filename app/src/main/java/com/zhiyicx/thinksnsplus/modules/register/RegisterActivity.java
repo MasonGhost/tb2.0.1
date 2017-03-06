@@ -29,3 +29,4 @@ public class RegisterActivity extends TSActivity<RegisterPresenter, RegisterFrag
     }
 
 }
+

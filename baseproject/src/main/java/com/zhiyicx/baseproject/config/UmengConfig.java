@@ -19,3 +19,4 @@ public class UmengConfig {
     public static String SINA_SECRETKEY = "";
     public static String SINA_RESULT_RUL="";
 }
+

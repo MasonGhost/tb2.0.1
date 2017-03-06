@@ -6,4 +6,5 @@
     <size
         android:width="@dimen/cursor_with"
         />
+
 </shape>

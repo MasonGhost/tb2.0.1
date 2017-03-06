@@ -18,4 +18,5 @@
         android:right="@dimen/chat_message_bubble_padding"
         android:top="@dimen/chat_message_bubble_padding"
         />
+
 </shape>

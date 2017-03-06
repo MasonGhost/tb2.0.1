@@ -39,3 +39,4 @@ public class AboutUsActivity extends TSActivity<RegisterPresenter, AboutUsFragme
         return super.onKeyDown(keyCode, event);
     }
 }
+

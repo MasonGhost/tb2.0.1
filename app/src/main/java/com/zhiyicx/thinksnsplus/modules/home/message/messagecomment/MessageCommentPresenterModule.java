@@ -30,3 +30,4 @@ public class MessageCommentPresenterModule {
         return new MessageCommentRepository(serviceManager);
     }
 }
+

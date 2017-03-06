@@ -16,3 +16,4 @@ import dagger.Component;
 @Component(dependencies = AppComponent.class, modules = ChangePasswordPresenterModule.class)
 public interface ChangePasswordComponent extends InjectComponent<ChangePasswordActivity> {
 }
+

@@ -35,3 +35,4 @@ public class FindPasswordActivity extends TSActivity<FindPasswordPresenter, Find
     }
 
 }
+

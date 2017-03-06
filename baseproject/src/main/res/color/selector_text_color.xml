@@ -4,4 +4,5 @@
     <item android:color="@color/themeColor" android:state_enabled="true"></item>
     <item android:color="@color/themeColor" android:state_pressed="true"></item>
     <item android:color="@color/themeColor"/> <!-- default -->
+
 </selector>

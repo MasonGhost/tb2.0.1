@@ -53,3 +53,4 @@ public class MyView extends DynamicDetailMenuView {
         super(context);
     }
 }
+

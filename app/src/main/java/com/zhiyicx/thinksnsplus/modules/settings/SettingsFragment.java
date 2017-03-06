@@ -231,3 +231,4 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
     }
 
 }
+

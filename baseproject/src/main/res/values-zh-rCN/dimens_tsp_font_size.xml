@@ -40,4 +40,5 @@
     聊天详情页时间
     -->
     <dimen name="size_note_assist">10sp</dimen>
+
 </resources>

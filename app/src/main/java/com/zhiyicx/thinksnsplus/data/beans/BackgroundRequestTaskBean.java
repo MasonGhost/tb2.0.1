@@ -1,6 +1,4 @@
 package com.zhiyicx.thinksnsplus.data.beans;
-
-
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 
@@ -175,3 +173,4 @@ public class BackgroundRequestTaskBean {
                 '}';
     }
 }
+

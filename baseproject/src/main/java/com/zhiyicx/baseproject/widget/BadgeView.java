@@ -245,3 +245,4 @@ public class BadgeView extends TextView {
         return (int) (dip * getContext().getResources().getDisplayMetrics().density + 0.5f);
     }
 }
+

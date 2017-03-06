@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 import rx.functions.Action1;
 
 import static com.umeng.socialize.utils.DeviceConfig.context;
+import static com.zhiyicx.common.base.BaseApplication.getContext;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
