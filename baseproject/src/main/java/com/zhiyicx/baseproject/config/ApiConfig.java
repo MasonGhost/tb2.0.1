@@ -36,7 +36,7 @@ public class ApiConfig {
     public static final String NO_PROCESS_IMAGE_PATH = APP_DOMAIN + "api/v1/storages/%s";// 不带质量压缩
 
     // 每次从服务器获取数据，一页的最大数量
-    public static final int MAX_NUMBER_PER_PAGE = 3;
+    public static final int MAX_NUMBER_PER_PAGE = 10;
 
     /*******************************************  接口 Path  *********************************************/
     /**
@@ -74,6 +74,7 @@ public class ApiConfig {
     public static final String APP_PATH_FANS_LIST = "api/v1/follows/followeds/{user_id}/{max_id}";// 获取用户粉丝列表
     public static final String APP_PATH_FOLLOW_USER = "api/v1/users/follow";// 关注用户
     public static final String APP_PATH_CANCEL_FOLLOW_USER = "api/v1/users/unFollow";// 取消用户关注
+    public static final String APP_PATH_GET_USER_FOLLOW_STATE = "api/v1/users/followstatus";// 获取用户关注状态
 
     /**
      * 动态相关

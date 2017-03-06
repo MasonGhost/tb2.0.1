@@ -1,8 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.gallery;
 
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 
@@ -14,8 +15,13 @@ import com.zhiyicx.baseproject.base.TSActivity;
  */
 public class GalleryActivity extends TSActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //无title
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //全屏
+        getWindow().setFlags(WindowManager.LayoutParams. FLAG_FULLSCREEN , WindowManager.LayoutParams. FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
     }
 
@@ -26,6 +32,6 @@ public class GalleryActivity extends TSActivity {
 
     @Override
     protected Fragment getFragment() {
-        return GalleryFragment.initFragment(null);
+        return GalleryFragment.initFragment(getIntent().getExtras());
     }
 }

@@ -50,7 +50,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
 
     @Override
     protected boolean useEventBus() {
-        return true;
+        return false;
     }
 
     @Override
@@ -84,15 +84,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
                     @Override
                     protected void onSuccess(List<FollowFansBean> data) {
                         insertOrUpdateData(data);// 保存到数据库
-                        // 多表连查，获取用户信息
-                        if (pageType == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
-                            data = mFollowFansBeanGreenDao.getSomeOneFollower(userId,maxId.intValue());
-                        } else if (pageType == FollowFansListFragment.FANS_FRAGMENT_PAGE) {
-                            data = mFollowFansBeanGreenDao.getSomeOneFans(userId,maxId.intValue());
-                        }
                         mRootView.onNetResponseSuccess(data, isLoadMore);
-                        // 处理用户信息缺失
-                        dealWithUserInfo(pageType, data);
                     }
 
                     @Override
@@ -114,82 +106,45 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
     public List<FollowFansBean> requestCacheData(Long maxId, boolean isLoadMore, int userId, int pageType) {
         List<FollowFansBean> followFansBeanList = null;
         if (pageType == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
-            followFansBeanList = mFollowFansBeanGreenDao.getSomeOneFollower(userId,maxId.intValue());
+            followFansBeanList = mFollowFansBeanGreenDao.getSomeOneFollower(userId, maxId.intValue());
         } else if (pageType == FollowFansListFragment.FANS_FRAGMENT_PAGE) {
-            followFansBeanList = mFollowFansBeanGreenDao.getSomeOneFans(userId,maxId.intValue());
+            followFansBeanList = mFollowFansBeanGreenDao.getSomeOneFans(userId, maxId.intValue());
         }
-        dealWithUserInfo(pageType, followFansBeanList);
         return followFansBeanList;
     }
 
     @Override
     public void followUser(int index, FollowFansBean followFansBean) {
+        // 更新数据
+        followFansBean.setOrigin_follow_status(FollowFansBean.IFOLLOWED_STATE);
         // 后台通知服务器关注
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST);
         backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_FOLLOW_USER);
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("user_id", followFansBean.getFollowedUserId() + "");
+        hashMap.put("user_id", followFansBean.getTargetUserId() + "");
         backgroundRequestTaskBean.setParams(hashMap);
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
         // 本地数据库和ui进行刷新
-        int followState = mFollowFansBeanGreenDao.setStateToFollowed(followFansBean);
-        followFansBean.setFollowState(followState);
-        mRootView.upDateFollowFansState(index, followState);
+        mFollowFansBeanGreenDao.insertOrReplace(followFansBean);
+        mRootView.upDateFollowFansState(index, FollowFansBean.IFOLLOWED_STATE);
 
     }
 
     @Override
     public void cancleFollowUser(int index, FollowFansBean followFansBean) {
+        // 更新数据
+        followFansBean.setOrigin_follow_status(FollowFansBean.UNFOLLOWED_STATE);
+        // 通知服务器
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
         backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_CANCEL_FOLLOW_USER);
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("user_id", followFansBean.getFollowedUserId() + "");
+        hashMap.put("user_id", followFansBean.getTargetUserId() + "");
         backgroundRequestTaskBean.setParams(hashMap);
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
         // 本地数据库和ui进行刷新
-        int followState = mFollowFansBeanGreenDao.setStateToUnFollowed(followFansBean);
-        followFansBean.setFollowState(followState);
-        mRootView.upDateFollowFansState(index, followState);
-    }
-
-    /**
-     * 在后台任务获取到最新的用户信息后，更新界面的用户信息
-     */
-    @Subscriber(tag = EventBusTagConfig.EVENT_USERINFO_UPDATE)
-    public void upDateUserInfo(List<UserInfoBean> userInfoBeanList) {
-        mRootView.upDateUserInfo(userInfoBeanList);
-    }
-
-    // 当数据库获取用户信息为空时，需要尝试从网络拉去信息
-    private void dealWithUserInfo(int pageType, List<FollowFansBean> followFansBeanList) {
-        List<Integer> userIdList = new ArrayList<>();
-        // 统一处理获取用户信息
-        for (FollowFansBean followFansBean : followFansBeanList) {
-            UserInfoBean userInfoBean = null;
-            if (pageType == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
-               /* userInfoBean = followFansBean.getFllowedUser();
-                if (userInfoBean == null) {
-                    userIdList.add((int) followFansBean.getFollowedUserId());
-                }*/
-                userIdList.add((int) followFansBean.getFollowedUserId());
-            } else if (pageType == FollowFansListFragment.FANS_FRAGMENT_PAGE) {
-               /* userInfoBean = followFansBean.getUser();
-                if (userInfoBean == null) {
-                    userIdList.add((int) followFansBean.getUserId());
-                }*/
-                userIdList.add((int) followFansBean.getUserId());
-            }
-
-        }
-        if (!userIdList.isEmpty()) {
-            HashMap<String, Object> hashMap = new HashMap<>();
-            hashMap.put("user_id", userIdList);
-            BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
-            backgroundRequestTaskBean.setParams(hashMap);
-            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.GET_USER_INFO);
-            BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
-        }
+        mFollowFansBeanGreenDao.insertOrReplace(followFansBean);
+        mRootView.upDateFollowFansState(index, FollowFansBean.UNFOLLOWED_STATE);
     }
 }

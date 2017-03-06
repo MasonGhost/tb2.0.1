@@ -8,6 +8,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -94,6 +95,11 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         return mUserInfoClient.getUserInfo(body)
                 .subscribeOn(Schedulers.io()).
                         observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<BaseJson<List<FollowFansBean>>> getUserFollowState(String user_ids) {
+        return mUserInfoClient.getUserFollowState(user_ids);
     }
 
     /**

@@ -4,7 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import java.util.ArrayList;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+
 import java.util.List;
 
 /**
@@ -17,9 +18,9 @@ import java.util.List;
 public class GalleryPhotoAdapter extends FragmentStatePagerAdapter {
 
 
-    public List<String> fileList;
+    public List<ImageBean> fileList;
 
-    public GalleryPhotoAdapter(FragmentManager fm, List<String> fileList) {
+    public GalleryPhotoAdapter(FragmentManager fm, List<ImageBean> fileList) {
         super(fm);
         this.fileList = fileList;
     }
@@ -31,8 +32,8 @@ public class GalleryPhotoAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        String url = fileList.get(position);
-        ImageDetailFragment imageDetailFragment = ImageDetailFragment.newInstance(url);
+        ImageBean imageBean = fileList.get(position);
+        ImageDetailFragment imageDetailFragment = ImageDetailFragment.newInstance(imageBean);
         return imageDetailFragment;
     }
 

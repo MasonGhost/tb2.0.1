@@ -35,3 +35,4 @@ proguard/
 # OSX files
 .DS_Store
 
+freeline/

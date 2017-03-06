@@ -13,8 +13,10 @@ import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -43,6 +45,8 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
     @Inject
     DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
     @Inject
+    FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
+    @Inject
     public SharePolicy mSharePolicy;
 
     @Inject
@@ -52,11 +56,15 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-
+        // 更新点赞列表
+        // 更新评论列表
     }
 
     @Override
     public List<DynamicBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+        // 从数据库获取评论列表
+        // 从数据库获取点赞列表
+        // 从数据库获取关注状态，如果没有从服务器获取
         return null;
     }
 
@@ -66,14 +74,14 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
     }
 
     @Override
-    public void getDynamicDigList(Long feed_id, Integer max_id) {
+    public void getDynamicDigList(Long feed_id, Long max_id) {
         Subscription subscription = mRepository.getDynamicDigList(feed_id, max_id)
                 .subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithDelay(ApiConfig.DEFAULT_MAX_RETRY_COUNT, 0))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<List<UserInfoBean>>() {
+                .subscribe(new BaseSubscribe<List<FollowFansBean>>() {
                     @Override
-                    protected void onSuccess(List<UserInfoBean> data) {
+                    protected void onSuccess(List<FollowFansBean> data) {
                         mRootView.setDigHeadIcon(data);
                     }
 
@@ -135,6 +143,57 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         ShareContent shareContent = new ShareContent();
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
+    }
+
+    @Override
+    public void handleFollowUser(FollowFansBean followFansBean) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean = null;
+        if (followFansBean.getOrigin_follow_status() == FollowFansBean.UNFOLLOWED_STATE) {
+            // 当前未关注，进行关注
+            followFansBean.setOrigin_follow_status(FollowFansBean.IFOLLOWED_STATE);
+            // 进行后台任务请求
+            backgroundRequestTaskBean = new BackgroundRequestTaskBean();
+            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST);
+            backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_FOLLOW_USER);
+        } else {
+            // 已关注，取消关注
+            followFansBean.setOrigin_follow_status(FollowFansBean.UNFOLLOWED_STATE);
+            // 进行后台任务请求
+            backgroundRequestTaskBean = new BackgroundRequestTaskBean();
+            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
+            backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_CANCEL_FOLLOW_USER);
+        }
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("user_id", followFansBean.getTargetUserId() + "");
+        backgroundRequestTaskBean.setParams(hashMap);
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+        // 本地数据库和ui进行刷新
+        mFollowFansBeanGreenDao.insertOrReplace(followFansBean);
+        mRootView.upDateFollowFansState(followFansBean.getFollowState());
+    }
+
+    @Override
+    public void getUserFollowState(String user_ids) {
+        Subscription subscription = mRepository.getUserFollowState(user_ids)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribe<List<FollowFansBean>>() {
+                    @Override
+                    protected void onSuccess(List<FollowFansBean> data) {
+                        mRootView.initFollowState(data.get(0));
+                    }
+
+                    @Override
+                    protected void onFailure(String message) {
+
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+
+                    }
+                });
+        addSubscrebe(subscription);
     }
 
 }

@@ -9,26 +9,26 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
-import java.io.IOException;
-import java.io.InvalidObjectException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import okhttp3.RequestBody;
-import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 
@@ -82,17 +82,23 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                     public Observable<BaseJson<List<DynamicBean>>> call(final BaseJson<List<DynamicBean>> listBaseJson) {
                         if (listBaseJson.isStatus() && listBaseJson.getData() != null && !listBaseJson.getData().isEmpty()) {
                             List<Long> user_ids = new ArrayList<>();
-                            for (DynamicBean dynamicBean : listBaseJson.getData()) {
-                                user_ids.add(dynamicBean.getUser_id());
-                                if (type.equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) { //如果是关注，需要初始化标记
-                                    dynamicBean.setIsFollowed(true);
-                                }
-                            }
                             if (type.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {// 如果是热门，需要初始化时间
                                 for (int i = listBaseJson.getData().size() - 1; i >= 0; i--) {
                                     listBaseJson.getData().get(i).setHot_creat_time(System.currentTimeMillis());
                                 }
                             }
+                            for (DynamicBean dynamicBean : listBaseJson.getData()) {
+                                user_ids.add(dynamicBean.getUser_id());
+                                if (type.equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) { //如果是关注，需要初始化标记
+                                    dynamicBean.setIsFollowed(true);
+                                }
+                                if (type.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {
+                                    dynamicBean.setMaxId(dynamicBean.getHot_creat_time());
+                                } else {
+                                    dynamicBean.setMaxId(dynamicBean.getFeed().getFeed_id());
+                                }
+                            }
+
                             return mUserInfoRepository.getUserInfo(user_ids)
                                     .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<DynamicBean>>>() {
                                         @Override
@@ -151,35 +157,55 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     }
 
     @Override
-    public Observable<BaseJson<List<UserInfoBean>>> getDynamicDigList(Long feed_id, Integer max_id) {
+    public Observable<BaseJson<List<FollowFansBean>>> getDynamicDigList(Long feed_id, Long max_id) {
         return mDynamicClient.getDynamicDigList(feed_id, max_id)
-                .flatMap(new Func1<BaseJson<List<DynamicDigListBean>>, Observable<BaseJson<List<UserInfoBean>>>>() {
+                .flatMap(new Func1<BaseJson<List<DynamicDigListBean>>, Observable<BaseJson<List<FollowFansBean>>>>() {
                     @Override
-                    public Observable<BaseJson<List<UserInfoBean>>> call(BaseJson<List<DynamicDigListBean>> listBaseJson) {
-                        List<Long> user_ids = null;
-                        // 获取点赞列表成功
-                        if (listBaseJson.isStatus()) {
-                            user_ids = new ArrayList<Long>();
-                            List<DynamicDigListBean> dynamicDigListBeanList = listBaseJson.getData();
-                            if (dynamicDigListBeanList != null && !dynamicDigListBeanList.isEmpty()) {
-                                for (DynamicDigListBean digListBean : dynamicDigListBeanList) {
-                                    user_ids.add(digListBean.getUser_id());
+                    public Observable<BaseJson<List<FollowFansBean>>> call(BaseJson<List<DynamicDigListBean>> listBaseJson) {
+                        List<DynamicDigListBean> dynamicDigListBeanList = listBaseJson.getData();
+                        // 获取点赞的用户id列表
+                        // 服务器返回数据
+                        if (listBaseJson.isStatus() && dynamicDigListBeanList != null && !dynamicDigListBeanList.isEmpty()) {
+                            List<Long> targetUserIds = new ArrayList<Long>();
+                            String userIdString = "";
+                            for (int i = 0; i < dynamicDigListBeanList.size(); i++) {
+                                DynamicDigListBean dynamicDigListBean = dynamicDigListBeanList.get(i);
+                                targetUserIds.add(dynamicDigListBean.getUser_id());
+                                if (i == 0) {
+                                    userIdString = dynamicDigListBean.getUser_id() + "";
+                                } else {
+                                    userIdString += "," + dynamicDigListBean.getUser_id();
                                 }
-                                return mUserInfoRepository.getUserInfo(user_ids);
-                            } else {
-                                // 不需要获取用户信息，发送一个空的BaseJson
-                                BaseJson<List<UserInfoBean>> baseJsonUserInfoList = new BaseJson<List<UserInfoBean>>();
-                                baseJsonUserInfoList.setData(new ArrayList<UserInfoBean>());
-                                baseJsonUserInfoList.setStatus(true);
-                                baseJsonUserInfoList.setCode(0);
-                                baseJsonUserInfoList.setMessage("");
-                                return Observable.just(baseJsonUserInfoList);
                             }
-                        } else {
-                            // 获取点赞列表失败
-                            throw new JsonParseException(AppApplication.getContext().getString(R.string.get_dynamic_dig_list_failure));
+                            // 通过用户id列表请求用户信息和用户关注状态
+                            return Observable.combineLatest(mUserInfoRepository.getUserFollowState(userIdString),
+                                    mUserInfoRepository.getUserInfo(targetUserIds), new Func2<BaseJson<List<FollowFansBean>>
+                                            , BaseJson<List<UserInfoBean>>, BaseJson<List<FollowFansBean>>>() {
+                                        @Override
+                                        public BaseJson<List<FollowFansBean>> call(BaseJson<List<FollowFansBean>> listBaseJson
+                                                , BaseJson<List<UserInfoBean>> listBaseJson2) {
+                                            List<UserInfoBean> userInfoList = listBaseJson2.getData();
+                                            // 没有获取到用户信息，但依然显示列表信息，有这个必要吗
+                                            if (listBaseJson2.isStatus() && userInfoList != null && !userInfoList.isEmpty()) {
+                                                List<FollowFansBean> followFansBeanList = listBaseJson.getData();
+                                                if (listBaseJson.isStatus() && followFansBeanList != null && !followFansBeanList.isEmpty()) {
+                                                    // 将用户信息封装到状态列表中
+                                                    for (int i = 0; i < followFansBeanList.size(); i++) {
+                                                        FollowFansBean followFansBean = followFansBeanList.get(i);
+                                                        followFansBean.setTargetUserInfo(userInfoList.get(i));
+                                                    }
+                                                }
+                                            }
+                                            return listBaseJson;
+                                        }
+                                    });
                         }
-
+                        // 返回期待以外的数据，比如状态为false，或者数据为空，发射空数据
+                        BaseJson<List<FollowFansBean>> baseJsonUserInfoList = new BaseJson<List<FollowFansBean>>();
+                        baseJsonUserInfoList.setData(new ArrayList<FollowFansBean>());
+                        baseJsonUserInfoList.setStatus(listBaseJson.isStatus());
+                        baseJsonUserInfoList.setMessage(listBaseJson.getMessage());
+                        return Observable.just(baseJsonUserInfoList);
                     }
                 });
     }

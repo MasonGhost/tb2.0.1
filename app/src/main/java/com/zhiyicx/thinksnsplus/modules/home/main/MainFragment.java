@@ -19,9 +19,14 @@ import java.util.List;
  * @Contact master.jungle68@gmail.com
  */
 public class MainFragment extends TSViewPagerFragment {
+    public void setOnImageClickListener(DynamicFragment.OnImageClickListener onImageClickListener) {
+        mOnImageClickListener = onImageClickListener;
+    }
 
-    public static MainFragment newInstance() {
+    DynamicFragment.OnImageClickListener mOnImageClickListener;
+    public static MainFragment newInstance(DynamicFragment.OnImageClickListener l) {
         MainFragment fragment = new MainFragment();
+        fragment.setOnImageClickListener(l);
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -50,9 +55,9 @@ public class MainFragment extends TSViewPagerFragment {
     @Override
     protected List<Fragment> initFragments() {
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS));
-        fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS));
-        fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW));
+        fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS,mOnImageClickListener));
+        fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS,mOnImageClickListener));
+        fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW,mOnImageClickListener));
         return fragments;
     }
 }
