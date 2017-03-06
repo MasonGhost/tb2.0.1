@@ -47,10 +47,15 @@ import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION
 
 public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.Presenter, DynamicBean> implements DynamicDetailContract.View {
     public static final String DYNAMIC_DETAIL_DATA = "dynamic_detail_data";
+    // 动态详情列表，各个item的位置
+    private static final int DYNAMIC_ITEM_CONTENT = 0;
+    private static final int DYNAMIC_ITEM_DIG = 1;
+    //private static final int DYNAMIC_ITEM_COMMENT >1;
 
     @BindView(R.id.dd_dynamic_tool)
     DynamicDetailMenuView mDdDynamicTool;
     private DynamicBean mDynamicBean;// 上一个页面传进来的数据
+    private FollowFansBean mFollowFansBean;// 用户关注状态
     private List<DynamicBean> mDatas = new ArrayList<>();
 
     @Override
@@ -79,11 +84,10 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
             mDynamicBean = dynamicBean;
             setToolBarUser(dynamicBean);// 设置标题用户
             initBottomToolData(dynamicBean);// 初始化底部工具栏数据
-
             // 设置动态详情列表数据
-            DynamicBean dynamicContent = new DynamicBean();
+            DynamicBean dynamicContent = new DynamicBean();// 设置详情内容
             dynamicContent.setFeed(dynamicBean.getFeed());
-            DynamicBean dynamicDig = new DynamicBean();
+            DynamicBean dynamicDig = new DynamicBean();// 设置点赞
             dynamicDig.setFeed(dynamicBean.getFeed());
             dynamicDig.setTool(dynamicBean.getTool());
             mDatas.add(dynamicContent);
@@ -112,6 +116,13 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
+    protected void setRightClick() {
+        if (mFollowFansBean != null) {
+            mPresenter.handleFollowUser(mFollowFansBean);
+        }
+    }
+
+    @Override
     public void showLoading() {
 
     }
@@ -133,11 +144,12 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     /**
-     * 设置toolBar上面的用户头像
+     * 设置toolBar上面的用户头像,关注状态
      */
     private void setToolBarUser(DynamicBean dynamicBean) {
+        // 设置用户头像，名称
         mToolbarCenter.setVisibility(View.VISIBLE);
-        UserInfoBean userInfoBean = dynamicBean.getUserInfoBean();
+        UserInfoBean userInfoBean = dynamicBean.getUserInfoBean();// 动态所属用户的信息
         mToolbarCenter.setText(userInfoBean.getName());
         int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
         Glide.with(getContext())
@@ -151,6 +163,16 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                         mToolbarCenter.setCompoundDrawables(resource, null, null, null);
                     }
                 });
+        // 如果当前动态所属用户，就是当前用户，隐藏关注按钮
+        long user_id = dynamicBean.getUser_id();
+        if (user_id == AppApplication.getmCurrentLoginAuth().getUser_id()) {
+            mToolbarRight.setVisibility(View.GONE);
+        } else {
+            // 获取用户关注状态
+            mPresenter.getUserFollowState(user_id + "");
+            mToolbarRight.setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Override
@@ -164,15 +186,21 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
-    public void setDigHeadIcon(List<UserInfoBean> userInfoBeanList) {
-        DynamicBean dynamicBean = mDatas.get(1);
+    public void setDigHeadIcon(List<FollowFansBean> userInfoBeanList) {
+        DynamicBean dynamicBean = mDatas.get(DYNAMIC_ITEM_DIG);
         dynamicBean.setDigUserInfoList(userInfoBeanList);
-        refreshData(1);
+        refreshData(DYNAMIC_ITEM_DIG);
     }
 
     @Override
     public void upDateFollowFansState(int followState) {
         setToolBarRightFollowState(followState);
+    }
+
+    @Override
+    public void initFollowState(FollowFansBean mFollowFansBean) {
+        this.mFollowFansBean = mFollowFansBean;
+        setToolBarRightFollowState(mFollowFansBean.getFollowState());
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import java.util.List;
@@ -69,5 +70,5 @@ public interface IDynamicReppsitory {
     /**
      * 获取动态点赞列表
      */
-    Observable<BaseJson<List<UserInfoBean>>> getDynamicDigList(Long feed_id, Integer max_id);
+    Observable<BaseJson<List<FollowFansBean>>> getDynamicDigList(Long feed_id, Long max_id);
 }
