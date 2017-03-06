@@ -10,6 +10,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -89,10 +90,13 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                 if (type.equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) { //如果是关注，需要初始化标记
                                     dynamicBean.setIsFollowed(true);
                                 }
-                                if (type.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {
+                                if (type.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) { // 热门的 max_id 是通过 hot_creat_time 标识，最新与关注都是通过 feed_id 标识
                                     dynamicBean.setMaxId(dynamicBean.getHot_creat_time());
                                 } else {
                                     dynamicBean.setMaxId(dynamicBean.getFeed().getFeed_id());
+                                }
+                                for (DynamicCommentBean dynamicCommentBean : dynamicBean.getComments()) {
+                                    user_ids.add(dynamicCommentBean.getUser_id());
                                 }
                             }
 
@@ -107,6 +111,9 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                                 }
                                                 for (DynamicBean dynamicBean : listBaseJson.getData()) {
                                                     dynamicBean.setUserInfoBean(userInfoBeanSparseArray.get((int) dynamicBean.getUser_id()));
+                                                    for (DynamicCommentBean dynamicCommentBean : dynamicBean.getComments()) {
+                                                        dynamicCommentBean.setUserInfoBean(userInfoBeanSparseArray.get((int) dynamicCommentBean.getUser_id()));
+                                                    }
                                                 }
                                                 AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao().insertOrReplace(userinfobeans.getData());
                                             } else {

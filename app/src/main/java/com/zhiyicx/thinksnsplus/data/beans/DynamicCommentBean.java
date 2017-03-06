@@ -4,9 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.ToOne;
 
 /**
  * @author LiuChao
@@ -21,7 +21,18 @@ public class DynamicCommentBean implements Parcelable {
     private Long feed_mark;// 属于哪条动态
     private long create_at;// 评论创建的时间
     private String comment_content;// 评论内容
-    private long user_id;// 谁发的这条屁股论
+    private long user_id;// 谁发的这条评论
+    @ToOne(joinProperty = "user_id")// DynamicCommentBean 的 user_id 作为外键
+    private UserInfoBean userInfoBean;
+
+    public UserInfoBean getUserInfoBean() {
+        return userInfoBean;
+    }
+
+    public void setUserInfoBean(UserInfoBean userInfoBean) {
+        this.userInfoBean = userInfoBean;
+    }
+
     private long reply_to_user_id;// 评论要发给谁
 
     public Long getComment_id() {
@@ -73,6 +84,20 @@ public class DynamicCommentBean implements Parcelable {
     }
 
 
+    public DynamicCommentBean() {
+    }
+
+    @Generated(hash = 131676871)
+    public DynamicCommentBean(Long comment_id, Long feed_mark, long create_at, String comment_content,
+            long user_id, long reply_to_user_id) {
+        this.comment_id = comment_id;
+        this.feed_mark = feed_mark;
+        this.create_at = create_at;
+        this.comment_content = comment_content;
+        this.user_id = user_id;
+        this.reply_to_user_id = reply_to_user_id;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -85,10 +110,8 @@ public class DynamicCommentBean implements Parcelable {
         dest.writeLong(this.create_at);
         dest.writeString(this.comment_content);
         dest.writeLong(this.user_id);
+        dest.writeParcelable(this.userInfoBean, flags);
         dest.writeLong(this.reply_to_user_id);
-    }
-
-    public DynamicCommentBean() {
     }
 
     protected DynamicCommentBean(Parcel in) {
@@ -97,18 +120,8 @@ public class DynamicCommentBean implements Parcelable {
         this.create_at = in.readLong();
         this.comment_content = in.readString();
         this.user_id = in.readLong();
+        this.userInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
         this.reply_to_user_id = in.readLong();
-    }
-
-    @Generated(hash = 131676871)
-    public DynamicCommentBean(Long comment_id, Long feed_mark, long create_at, String comment_content,
-            long user_id, long reply_to_user_id) {
-        this.comment_id = comment_id;
-        this.feed_mark = feed_mark;
-        this.create_at = create_at;
-        this.comment_content = comment_content;
-        this.user_id = user_id;
-        this.reply_to_user_id = reply_to_user_id;
     }
 
     public static final Creator<DynamicCommentBean> CREATOR = new Creator<DynamicCommentBean>() {
@@ -123,4 +136,16 @@ public class DynamicCommentBean implements Parcelable {
         }
     };
 
+    @Override
+    public String toString() {
+        return "DynamicCommentBean{" +
+                "comment_id=" + comment_id +
+                ", feed_mark=" + feed_mark +
+                ", create_at=" + create_at +
+                ", comment_content='" + comment_content + '\'' +
+                ", user_id=" + user_id +
+                ", userInfoBean=" + userInfoBean +
+                ", reply_to_user_id=" + reply_to_user_id +
+                '}';
+    }
 }
