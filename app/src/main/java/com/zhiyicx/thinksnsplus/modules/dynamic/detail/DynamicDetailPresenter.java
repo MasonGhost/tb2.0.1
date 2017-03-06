@@ -56,11 +56,15 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-
+        // 更新点赞列表
+        // 更新评论列表
     }
 
     @Override
     public List<DynamicBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+        // 从数据库获取评论列表
+        // 从数据库获取点赞列表
+        // 从数据库获取关注状态，如果没有从服务器获取
         return null;
     }
 
