@@ -10,10 +10,7 @@ public class DigListActivity extends TSActivity<DigListPresenter, DigListFragmen
 
     @Override
     protected void componentInject() {
-        DaggerDigListPresenterComponent.builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .digListPresenterModule(new DigListPresenterModule((DigListContract.View) mContanierFragment))
-                .build().inject(this);
+
     }
 
     @Override

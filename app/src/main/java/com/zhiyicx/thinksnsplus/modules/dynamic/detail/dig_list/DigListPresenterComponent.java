@@ -14,5 +14,5 @@ import dagger.Component;
  */
 @FragmentScoped
 @Component(modules = DigListPresenterModule.class, dependencies = AppComponent.class)
-public interface DigListPresenterComponent extends InjectComponent<DigListActivity>{
+public interface DigListPresenterComponent extends InjectComponent<DigListFragment>{
 }

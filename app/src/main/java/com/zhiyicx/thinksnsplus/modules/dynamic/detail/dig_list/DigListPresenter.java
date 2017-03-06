@@ -77,7 +77,7 @@ public class DigListPresenter extends BasePresenter<DigListContract.Repository, 
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
         // 本地数据库和ui进行刷新
         mFollowFansBeanGreenDao.insertOrReplace(followFansBean);
-        //mRootView.upDateFollowFansState(followFansBean.getFollowState());
+        mRootView.upDataFollowState(position);
     }
 
     @Override
