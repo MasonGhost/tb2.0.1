@@ -21,14 +21,11 @@ import java.util.List;
  */
 
 public class DigListFragment extends TSListFragment<DigListContract.Presenter, FollowFansBean> implements DigListContract.View {
-
+    public static final String DIG_LIST_DATA = "dig_list_data";// 传入点赞榜的数据
     private List<FollowFansBean> mDatas = new ArrayList<>();
 
     @Override
     protected MultiItemTypeAdapter<FollowFansBean> getAdapter() {
-        mDatas.add(new FollowFansBean());
-        mDatas.add(new FollowFansBean());
-        mDatas.add(new FollowFansBean());
         return new DigListAdapter(getContext(), R.layout.item_dig_list, mDatas);
     }
 
@@ -62,10 +59,10 @@ public class DigListFragment extends TSListFragment<DigListContract.Presenter, F
 
     }
 
-    public static DigListFragment initFragment(Bundle bundle) {
-        DigListFragment digListFragment = new DigListFragment();
-        digListFragment.setArguments(bundle);
-        return digListFragment;
+
+    @Override
+    protected void requestNetData(Long maxId, boolean isLoadMore) {
+        mPresenter.requestNetData(maxId, isLoadMore,getArguments().getLong(DIG_LIST_DATA));
     }
 
     @Override
@@ -75,5 +72,11 @@ public class DigListFragment extends TSListFragment<DigListContract.Presenter, F
         LogUtils.i("new_state--》" + followState);
         followFansBean.setOrigin_follow_status(followState);
         refreshData(index);*/
+    }
+
+    public static DigListFragment initFragment(Bundle bundle) {
+        DigListFragment digListFragment = new DigListFragment();
+        digListFragment.setArguments(bundle);
+        return digListFragment;
     }
 }

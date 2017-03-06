@@ -165,9 +165,14 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                         if (listBaseJson.isStatus() && dynamicDigListBeanList != null && !dynamicDigListBeanList.isEmpty()) {
                             List<Long> targetUserIds = new ArrayList<Long>();
                             String userIdString = "";
-                            for (DynamicDigListBean dynamicDigListBean : dynamicDigListBeanList) {
+                            for (int i = 0; i < dynamicDigListBeanList.size(); i++) {
+                                DynamicDigListBean dynamicDigListBean = dynamicDigListBeanList.get(i);
                                 targetUserIds.add(dynamicDigListBean.getUser_id());
-                                userIdString += dynamicDigListBean.getUser_id();
+                                if (i == 0) {
+                                    userIdString = dynamicDigListBean.getUser_id() + "";
+                                } else {
+                                    userIdString += "," + dynamicDigListBean.getUser_id();
+                                }
                             }
                             // 通过用户id列表请求用户信息和用户关注状态
                             return Observable.combineLatest(mUserInfoRepository.getUserFollowState(userIdString),

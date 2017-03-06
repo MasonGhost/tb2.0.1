@@ -81,24 +81,24 @@ public class DigListPresenter extends BasePresenter<DigListContract.Repository, 
     }
 
     @Override
-    public void requestNetData(Long maxId, boolean isLoadMore, long feed_id) {
+    public void requestNetData(Long maxId, final boolean isLoadMore, long feed_id) {
         mRepository.getDynamicDigList(feed_id, maxId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribe<List<FollowFansBean>>() {
                     @Override
                     protected void onSuccess(List<FollowFansBean> data) {
-
+                        mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 
                     @Override
                     protected void onFailure(String message) {
-
+                        mRootView.showMessage(message);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-
+                        mRootView.onResponseError(throwable, isLoadMore);
                     }
                 });
 
