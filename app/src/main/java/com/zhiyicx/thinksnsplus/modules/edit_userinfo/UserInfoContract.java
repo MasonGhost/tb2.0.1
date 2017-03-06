@@ -4,6 +4,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import java.util.ArrayList;
@@ -65,6 +66,11 @@ public interface UserInfoContract {
          * @return
          */
         Observable<BaseJson<List<UserInfoBean>>> getUserInfo(List<Long> user_ids);
+
+        /**
+         * 获取用户关注状态
+         */
+        Observable<BaseJson<List<FollowFansBean>>> getUserFollowState(String user_ids);
 
     }
 
