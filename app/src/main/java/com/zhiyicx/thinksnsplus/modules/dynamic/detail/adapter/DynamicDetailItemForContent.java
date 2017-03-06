@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,8 +54,18 @@ public class DynamicDetailItemForContent implements ItemViewDelegate<DynamicBean
         LinearLayout photoContainer = holder.getView(R.id.ll_dynamic_photos_container);
 
         DynamicDetailBean dynamicDetailBean = dynamicBean.getFeed();
-        title.setText(dynamicDetailBean.getTitle());
-        content.setText(dynamicDetailBean.getContent());
+        String titleText = dynamicDetailBean.getTitle();
+        if (TextUtils.isEmpty(titleText)) {
+            title.setVisibility(View.GONE);
+        } else {
+            title.setText(titleText);
+        }
+        String contentText = dynamicDetailBean.getContent();
+        if (TextUtils.isEmpty(contentText)) {
+            content.setVisibility(View.GONE);
+        } else {
+            content.setText(contentText);
+        }
 
         Context context = title.getContext();
         // 设置图片
