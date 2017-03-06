@@ -199,6 +199,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public void initFollowState(FollowFansBean mFollowFansBean) {
+        this.mFollowFansBean = mFollowFansBean;
         setToolBarRightFollowState(mFollowFansBean.getFollowState());
     }
 
