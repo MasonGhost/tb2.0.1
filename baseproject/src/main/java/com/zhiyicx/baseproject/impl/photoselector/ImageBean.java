@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @contact email:450127106@qq.com
  */
 
-public class ImageBean implements Parcelable, Serializable {
+public class ImageBean implements Parcelable, Serializable {  //Serializable 用于 DynamicDetailBean中 Convert base64
 
     /**
      * storage_id : 2

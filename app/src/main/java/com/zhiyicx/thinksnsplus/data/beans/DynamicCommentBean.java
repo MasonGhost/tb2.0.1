@@ -6,7 +6,9 @@ import android.os.Parcelable;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.ToOne;
+import org.greenrobot.greendao.DaoException;
 
 /**
  * @author LiuChao
@@ -25,10 +27,12 @@ public class DynamicCommentBean implements Parcelable {
     @ToOne(joinProperty = "user_id")// DynamicCommentBean 的 user_id 作为外键
     private UserInfoBean userInfoBean;
 
+    @Keep
     public UserInfoBean getUserInfoBean() {
         return userInfoBean;
     }
 
+    @Keep
     public void setUserInfoBean(UserInfoBean userInfoBean) {
         this.userInfoBean = userInfoBean;
     }
@@ -89,7 +93,7 @@ public class DynamicCommentBean implements Parcelable {
 
     @Generated(hash = 131676871)
     public DynamicCommentBean(Long comment_id, Long feed_mark, long create_at, String comment_content,
-            long user_id, long reply_to_user_id) {
+                              long user_id, long reply_to_user_id) {
         this.comment_id = comment_id;
         this.feed_mark = feed_mark;
         this.create_at = create_at;
@@ -135,6 +139,14 @@ public class DynamicCommentBean implements Parcelable {
             return new DynamicCommentBean[size];
         }
     };
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 1852910231)
+    private transient DynamicCommentBeanDao myDao;
+    @Generated(hash = 1005780391)
+    private transient Long userInfoBean__resolvedKey;
 
     @Override
     public String toString() {
@@ -147,5 +159,48 @@ public class DynamicCommentBean implements Parcelable {
                 ", userInfoBean=" + userInfoBean +
                 ", reply_to_user_id=" + reply_to_user_id +
                 '}';
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 128553479)
+    public void delete() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.delete(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 1942392019)
+    public void refresh() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.refresh(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 713229351)
+    public void update() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.update(this);
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 938647494)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getDynamicCommentBeanDao() : null;
     }
 }

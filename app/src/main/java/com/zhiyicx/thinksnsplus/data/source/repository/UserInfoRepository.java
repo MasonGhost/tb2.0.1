@@ -14,23 +14,14 @@ import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoContract;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.inject.Inject;
 
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.Subscriber;
@@ -96,50 +87,5 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                         observeOn(AndroidSchedulers.mainThread());
     }
 
-    /**
-     * 上传文件，构造参数
-     */
-    private List<MultipartBody.Part> upLoadFile(Map<String, String> filePathList, Map<String, String> params) {
-        MultipartBody.Builder builder = new MultipartBody.Builder();
-        builder.setType(MultipartBody.FORM);//表单类型
-        if (params != null) {
-            Set<String> keys = params.keySet();
-            for (String key : keys) {
-                builder.addFormDataPart(key, params.get(key));//ParamKey.TOKEN 自定义参数key常量类，即参数名
-            }
-        }
-        if (filePathList != null) {
-            Set<String> filePathKey = filePathList.keySet();
-            for (String fileParam : filePathKey) {
-                try {
-                    File file = new File(filePathList.get(fileParam));//filePath 图片地址
-                    RequestBody imageBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-                    builder.addFormDataPart(fileParam, file.getName(), imageBody);//imgfile 后台接收图片流的参数名
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        List<MultipartBody.Part> parts = builder.build().parts();
-        return parts;
-    }
-
-    private HashMap<String, String> parseJSONObject(JSONObject jsonObject) {
-
-        if (jsonObject == null) {
-            return null;
-        }
-        HashMap<String, String> jsonMap = new HashMap<>();
-        Iterator<String> iterator = jsonObject.keys();
-        while (iterator.hasNext()) {
-            try {
-                String key = iterator.next();
-                jsonMap.put(key, jsonObject.getString(key));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return jsonMap;
-    }
 
 }
