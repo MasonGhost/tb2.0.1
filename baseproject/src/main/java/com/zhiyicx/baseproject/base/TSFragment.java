@@ -77,7 +77,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * @return 默认不可用
      */
     protected boolean setUseSatusbar() {
-        return false;
+        return mIscUseSatusbar;
     }
 
     /**

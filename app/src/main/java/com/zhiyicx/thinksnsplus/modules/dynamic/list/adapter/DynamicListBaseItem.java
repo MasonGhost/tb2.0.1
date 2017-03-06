@@ -20,6 +20,7 @@ import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.widget.comment.DynamicListComment;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -175,6 +176,11 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                         }
                     }
                 });
+        if ((dynamicBean.getFeed().getStorages() == null || dynamicBean.getFeed().getStorages().size() == getImageCounts())
+                && (dynamicBean.getFeed().getLocalPhotos() == null || dynamicBean.getFeed().getLocalPhotos().size() == getImageCounts())) {
+            DynamicListComment comment = holder.getView(R.id.fl_comment);
+            comment.setData(dynamicBean.getComments());
+        }
 
     }
 
