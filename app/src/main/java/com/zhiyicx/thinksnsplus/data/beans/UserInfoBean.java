@@ -41,7 +41,7 @@ public class UserInfoBean implements Parcelable {
     @Transient
     private String sexString;// sex编号对应的具体值，不保存到数据库中
     private String name;
-    private String userIcon;
+    private String avatar;  // 投降 id
     private String phone;
     private String email;
     private String intro;
@@ -125,15 +125,15 @@ public class UserInfoBean implements Parcelable {
         this.sex = sex;
     }
 
-    public String getUserIcon() {
-        if (userIcon == null) {
-            userIcon = getConfigProperty("avatar");
+    public String getAvatar() {
+        if (avatar == null) {
+            avatar = getConfigProperty("avatar");
         }
-        return userIcon;
+        return avatar;
     }
 
-    public void setUserIcon(String userIcon) {
-        this.userIcon = userIcon;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public String getLocation() {
@@ -559,7 +559,7 @@ public class UserInfoBean implements Parcelable {
         dest.writeString(this.sex);
         dest.writeString(this.sexString);
         dest.writeString(this.name);
-        dest.writeString(this.userIcon);
+        dest.writeString(this.avatar);
         dest.writeString(this.phone);
         dest.writeString(this.email);
         dest.writeString(this.intro);
@@ -583,7 +583,7 @@ public class UserInfoBean implements Parcelable {
         this.sex = in.readString();
         this.sexString = in.readString();
         this.name = in.readString();
-        this.userIcon = in.readString();
+        this.avatar = in.readString();
         this.phone = in.readString();
         this.email = in.readString();
         this.intro = in.readString();
@@ -601,13 +601,13 @@ public class UserInfoBean implements Parcelable {
         in.readList(this.counts, CountsBean.class.getClassLoader());
     }
 
-    @Generated(hash = 726336536)
-    public UserInfoBean(Long user_id, String sex, String name, String userIcon, String phone, String email, String intro, String location, String province,
+    @Generated(hash = 363751891)
+    public UserInfoBean(Long user_id, String sex, String name, String avatar, String phone, String email, String intro, String location, String province,
             String city, String area, String education, long created_at, long updated_at, long deleted_at, List<DatasBean> datas, List<CountsBean> counts) {
         this.user_id = user_id;
         this.sex = sex;
         this.name = name;
-        this.userIcon = userIcon;
+        this.avatar = avatar;
         this.phone = phone;
         this.email = email;
         this.intro = intro;
@@ -642,7 +642,7 @@ public class UserInfoBean implements Parcelable {
                 ", sex='" + sex + '\'' +
                 ", sexString='" + sexString + '\'' +
                 ", name='" + name + '\'' +
-                ", userIcon='" + userIcon + '\'' +
+                ", avatar='" + avatar + '\'' +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
                 ", intro='" + intro + '\'' +

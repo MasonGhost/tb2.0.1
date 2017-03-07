@@ -121,7 +121,7 @@ public class FollowFansListAdapter extends CommonAdapter<FollowFansBean> {
         ImageView headPic = holder.getView(R.id.iv_headpic);
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url(userInfoBean.getUserIcon())
+                .url(userInfoBean.getAvatar())
                 .errorPic(R.drawable.shape_default_image_circle)
                 .placeholder(R.drawable.shape_default_image_circle)
                 .transformation(new GlideCircleTransform(getContext()))

@@ -22,7 +22,6 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -34,7 +33,6 @@ import com.zhiyicx.thinksnsplus.data.beans.EditConfigBeanDaoImpl;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -312,7 +310,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         mEtUserIntroduce.setText(mUserInfoBean.getIntro());
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url("http://192.168.2.222/api/v1/storages/" + mUserInfoBean.getUserIcon())
+                .url("http://192.168.2.222/api/v1/storages/" + mUserInfoBean.getAvatar())
                 .imagerView(mIvHeadIcon)
                 .transformation(new GlideCircleTransform(getContext()))
                 .build());

@@ -2,10 +2,12 @@ package com.zhiyicx.baseproject.widget;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
 import android.view.View;
 
 import com.zhiyicx.baseproject.R;
+import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.common.widget.NoPullRecycleView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -39,7 +41,9 @@ public abstract class SimpleTextNoPullRecycleView<T> extends NoPullRecycleView i
     }
 
     private void init(@Nullable AttributeSet attrs, int defStyle) {
-
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        setLayoutManager(linearLayoutManager);
+        addItemDecoration(new LinearDecoration(0, getResources().getDimensionPixelSize(R.dimen.spacing_mid_small), 0, 0));
     }
 
     /**
@@ -68,15 +72,15 @@ public abstract class SimpleTextNoPullRecycleView<T> extends NoPullRecycleView i
     }
 
     private void initData(final List<T> data) {
+
         mAdapter = new CommonAdapter<T>(getContext(), R.layout.item_simple_text_comment, data) {
             @Override
             protected void convert(com.zhy.adapter.recyclerview.base.ViewHolder holder, T t, int position) {
-
-                holder.setText(R.id.tv_simple_text_comment, setShowText(t,position));
-
+                holder.setText(R.id.tv_simple_text_comment, setShowText(t, position));
             }
         };
         mAdapter.setOnItemClickListener(this);
+        setAdapter(mAdapter);
     }
 
     protected abstract String setShowText(T t, int position);

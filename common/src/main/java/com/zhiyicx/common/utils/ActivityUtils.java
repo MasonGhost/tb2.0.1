@@ -1,11 +1,15 @@
 package com.zhiyicx.common.utils;
 
+import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.Window;
+import android.view.WindowManager;
 
 /**
  * @Describe
@@ -28,12 +32,36 @@ public class ActivityUtils {
 
     /**
      * 模拟 home 键
+     *
      * @param context
      */
-    public static void goHome(Context context){
+    public static void goHome(Context context) {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addCategory(Intent.CATEGORY_HOME);
-        context. startActivity(intent);
+        context.startActivity(intent);
     }
+
+    /**
+     * 调整窗口的透明度
+     *
+     * @param activity
+     * @param from>=0&&from<=1.0f
+     * @param to>=0&&to<=1.0f
+     */
+    public static void dimBackground(Activity activity, final float from, final float to) {
+        final Window window = activity.getWindow();
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(from, to);
+        valueAnimator.setDuration(300);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                WindowManager.LayoutParams params = window.getAttributes();
+                params.alpha = (Float) animation.getAnimatedValue();
+                window.setAttributes(params);
+            }
+        });
+        valueAnimator.start();
+    }
+
 }

@@ -6,9 +6,11 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.R;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageLoaderStrategy;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.imsdk.entity.MessageStatus;
@@ -111,7 +113,7 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
         if (mIsShowAvatar) {
             holder.setVisible(R.id.iv_chat_headpic, View.VISIBLE);
             mImageLoader.loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
-                    .url(chatItemBean.getUserInfo().getUserIcon())
+                    .url(ImageUtils.imagePathConvert(chatItemBean.getUserInfo().getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
                     .placeholder(R.drawable.shape_default_image_circle)
                     .transformation(new GlideCircleTransform(holder.getConvertView().getContext()))
                     .errorPic(R.drawable.shape_default_image_circle)

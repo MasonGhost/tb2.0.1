@@ -9,10 +9,11 @@ import android.view.View;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
-import com.zhiyicx.baseproject.widget.pictureviewer.PictureViewer;
+import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.pictureviewer.core.ImageInfo;
 import com.zhiyicx.baseproject.widget.pictureviewer.core.ParcelableSparseArray;
 import com.zhiyicx.baseproject.widget.pictureviewer.core.PhotoView;
+import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -40,6 +41,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
+
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
 
 /**
@@ -51,14 +54,16 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
 public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicContract.View, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener, MultiItemTypeAdapter.OnItemClickListener {
     private static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
     public static final long ITEM_SPACING = 5L; // 单位dp
+
+    @BindView(R.id.ilv_comment)
+    InputLimitView mIlvComment;
+
     @Inject
     DynamicPresenter mDynamicPresenter;  // 仅用于构造
-
     private String mDynamicType = ApiConfig.DYNAMIC_TYPE_NEW;
 
 
     private List<DynamicBean> mDynamicBeens = new ArrayList<>();
-    private PictureViewer pictureViewer;
 
     public void setOnImageClickListener(OnImageClickListener onImageClickListener) {
         mOnImageClickListener = onImageClickListener;
@@ -81,8 +86,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
+    protected int getBodyLayoutId() {
+        return R.layout.fragment_dynamic_list;
+    }
+
+    @Override
     protected void initView(View rootView) {
-        pictureViewer = (PictureViewer) rootView.findViewById(R.id.picture_view);
         super.initView(rootView);
     }
 
@@ -207,7 +216,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         Intent intent = new Intent(getActivity(), GalleryActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(GalleryFragment.BUNDLE_IMAGS, (ArrayList<? extends Parcelable>) imageBeanList);
-        bundle.putInt(GalleryFragment.BUNDLE_IMAGS_POSITON,position);
+        bundle.putInt(GalleryFragment.BUNDLE_IMAGS_POSITON, position);
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -220,7 +229,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onUserInfoClick(DynamicBean dynamicBean) {
-        showMessage(dynamicBean.getUserInfoBean().getName());
+//        Intent intent = new Intent(getActivity(), GalleryActivity.class);
     }
 
     @Override
@@ -278,11 +287,13 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 handleLike(dataPosition);
                 break;
 
-            case 1:
-                onItemClick(null, null, dataPosition);
+            case 1: // 评论
+                mIlvComment.setVisibility(View.VISIBLE);
+                mIlvComment.setFocusable(true);
+                ActivityUtils.dimBackground(getActivity(), 1.0f, 0.5f);
                 break;
 
-            case 2:
+            case 2: // 浏览
                 onItemClick(null, null, dataPosition);
                 break;
 
@@ -296,6 +307,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     }
 
+    /**
+     * 喜欢
+     *
+     * @param dataPosition
+     */
     private void handleLike(int dataPosition) {
         // 先更新界面，再后台处理
         mDynamicBeens.get(dataPosition).getTool().setIs_digg_feed(mDynamicBeens.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ? DynamicToolBean.STATUS_DIGG_FEED_CHECKED : DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED);

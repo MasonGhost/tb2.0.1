@@ -120,7 +120,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
      */
     @Override
     public void convert(ViewHolder holder, DynamicBean dynamicBean, DynamicBean lastT, final int position) {
-        String userIconUrl = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getUserInfoBean().getUserIcon(), ImageZipConfig.IMAGE_38_ZIP);
+        String userIconUrl = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getUserInfoBean().getAvatar(), ImageZipConfig.IMAGE_38_ZIP);
         mImageLoader.loadImage(mContext, GlideImageConfig.builder()
                 .url(userIconUrl)
                 .placeholder(R.drawable.shape_default_image_circle)
@@ -176,12 +176,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                         }
                     }
                 });
-        if ((dynamicBean.getFeed().getStorages() == null || dynamicBean.getFeed().getStorages().size() == getImageCounts())
-                && (dynamicBean.getFeed().getLocalPhotos() == null || dynamicBean.getFeed().getLocalPhotos().size() == getImageCounts())) {
-            DynamicListComment comment = holder.getView(R.id.fl_comment);
-            comment.setData(dynamicBean.getComments());
-        }
-
+        DynamicListComment comment = holder.getView(R.id.fl_comment);
+        comment.setData(dynamicBean.getComments());
     }
 
     private void setUserInfoClick(View view, final DynamicBean dynamicBean) {
