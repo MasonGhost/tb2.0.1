@@ -64,6 +64,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         } else {
             //不顶上去
             setToolBarTextColor();
+            StatusBarUtils.statusBarLightMode(getActivity());
             StatusBarUtils.setStatusBarColor(getActivity(), setToolBarBackgroud());
             linearLayout.setFitsSystemWindows(true);
         }
@@ -213,7 +214,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             mToolbarRight.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.selector_text_color));
 
             mToolbarLeft.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
-            StatusBarUtils.statusBarLightMode(getActivity());
+
         }
     }
 
