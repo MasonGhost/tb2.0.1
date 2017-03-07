@@ -2,10 +2,18 @@ package com.zhiyicx.thinksnsplus.widget.comment;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.text.SpannableStringBuilder;
+import android.text.style.ClickableSpan;
 import android.util.AttributeSet;
+import android.view.View;
+import android.widget.Toast;
 
 import com.zhiyicx.baseproject.widget.SimpleTextNoPullRecycleView;
+import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+
+import static com.umeng.socialize.utils.DeviceConfig.context;
 
 /**
  * @Describe dynamic list comment view
@@ -29,14 +37,42 @@ public class DynamicListComment extends SimpleTextNoPullRecycleView<DynamicComme
     }
 
     @Override
-    protected String setShowText(DynamicCommentBean dynamicCommentBean, int position) {
+    protected SpannableStringBuilder setShowText(DynamicCommentBean dynamicCommentBean, int position) {
         String content = "";
-        if (dynamicCommentBean.getReplyUser().getUser_id() == dynamicCommentBean.getReply_to_user_id()) {
+        if (dynamicCommentBean.getReplyUser().getUser_id().longValue() == dynamicCommentBean.getFeed_user_id()) {
             content += "[<" + dynamicCommentBean.getCommentUser().getName() + ">]:  " + dynamicCommentBean.getComment_content();
         } else {
-            content += "[<" + dynamicCommentBean.getCommentUser().getName() + ">]:  " + dynamicCommentBean.getComment_content();
+            content += "[<" + dynamicCommentBean.getCommentUser().getName() + ">] 回复 [<" + dynamicCommentBean.getReplyUser().getName() + ">]:  " + dynamicCommentBean.getComment_content();
         }
-        return content;
+        CharSequence chars = ColorPhrase.from(content).withSeparator("<>")
+                .innerColor(ContextCompat.getColor(context, com.zhiyicx.baseproject.R.color.important_for_content))
+                .outerColor(ContextCompat.getColor(context, com.zhiyicx.baseproject.R.color.normal_for_assist_text))
+                .format();
+
+        return addClickablePart(chars.toString());
+    }
+
+    private SpannableStringBuilder addClickablePart(String str) {
+        SpannableStringBuilder ssb = new SpannableStringBuilder(str);
+
+        int idx1 = str.indexOf("[");
+        int idx2 = 0;
+        while (idx1 != -1) {
+            idx2 = str.indexOf("]", idx1) + 1;
+
+            final String clickString = str.substring(idx1, idx2);
+            ssb.setSpan(new ClickableSpan() {
+
+                @Override
+                public void onClick(View widget) {
+                    Toast.makeText(getContext(), clickString,
+                            Toast.LENGTH_SHORT).show();
+                }
+            }, idx1, idx2, 0);
+            idx1 = str.indexOf("[", idx2);
+        }
+
+        return ssb;
     }
 
 }

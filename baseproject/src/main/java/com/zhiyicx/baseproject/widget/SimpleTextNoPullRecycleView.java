@@ -3,8 +3,11 @@ package com.zhiyicx.baseproject.widget;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.SpannableStringBuilder;
+import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.TextView;
 
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
@@ -76,14 +79,15 @@ public abstract class SimpleTextNoPullRecycleView<T> extends NoPullRecycleView i
         mAdapter = new CommonAdapter<T>(getContext(), R.layout.item_simple_text_comment, data) {
             @Override
             protected void convert(com.zhy.adapter.recyclerview.base.ViewHolder holder, T t, int position) {
-                holder.setText(R.id.tv_simple_text_comment, setShowText(t, position));
+                ((TextView) holder.getView(R.id.tv_simple_text_comment)).setMovementMethod(LinkMovementMethod.getInstance());
+                ((TextView) holder.getView(R.id.tv_simple_text_comment)).setText(setShowText(t, position), TextView.BufferType.SPANNABLE);
             }
         };
         mAdapter.setOnItemClickListener(this);
         setAdapter(mAdapter);
     }
 
-    protected abstract String setShowText(T t, int position);
+    protected abstract SpannableStringBuilder setShowText(T t, int position);
 
 
     @Override
