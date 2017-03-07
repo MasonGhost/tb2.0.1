@@ -6,10 +6,11 @@
               android:background="@color/white"
               android:orientation="vertical">
     <!--个人中心页面头部-->
-
+    <!--当前FrameLayout的高度为屏幕宽度的一半加上20dp-->
     <FrameLayout
+        android:id="@+id/fl_cover_contaner"
         android:layout_width="match_parent"
-        android:layout_height="200dp">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/iv_background_cover"
