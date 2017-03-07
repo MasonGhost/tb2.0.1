@@ -18,6 +18,7 @@ import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumListActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
 
@@ -130,7 +131,8 @@ public class MineFragment extends TSFragment {
                 startActivity(itFollow);
                 break;
             case R.id.bt_personal_page:
-                SkinManager.getInstance().restoreDefaultTheme();
+                //SkinManager.getInstance().restoreDefaultTheme();
+                startActivity(new Intent(getContext(), PersonalCenterActivity.class));
                 break;
             case R.id.bt_ranking:
                 SkinManager.getInstance().loadSkin("tsplustheme.skin", new SkinLoaderListener() {

@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.modules.information;
 import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.common.utils.ActivityUtils;
+import com.zhiyicx.thinksnsplus.R;
 
 /**
  * @Author Jliuer
@@ -11,14 +13,25 @@ import com.zhiyicx.baseproject.base.TSActivity;
  * @Description 资讯
  */
 public class InfoActivity extends TSActivity {
+    InfoContainerFragment mInfoContainerFragment;
 
     @Override
     protected Fragment getFragment() {
-        return new InfoContainerFragment();
+        if (mInfoContainerFragment == null) {
+            mInfoContainerFragment = new InfoContainerFragment();
+        }
+        return mInfoContainerFragment;
     }
 
     @Override
     protected void componentInject() {
 
+    }
+
+    @Override
+    protected void initView() {
+        mContanierFragment = getFragment();
+        ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),mContanierFragment,
+                R.id.fl_fragment_container);
     }
 }

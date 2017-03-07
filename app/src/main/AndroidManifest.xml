@@ -86,6 +86,8 @@
         <activity android:name=".modules.music_fm.music_album_detail.MusicDetailActivity"/>
         <activity android:name=".modules.music_fm.music_play.MusicPlayActivity"/>
         <activity android:name=".modules.information.InfoActivity"/>
+        <activity android:name=".modules.information.ChannelActivity"/>
+        <activity android:name=".modules.information.SearchActivity"/>
         <activity android:name=".modules.dynamic.send.SendDynamicActivity">
         </activity>
 
@@ -127,6 +129,8 @@
         <activity android:name=".modules.dynamic.detail.DynamicDetailActivity">
         </activity>
         <activity android:name=".modules.dynamic.detail.dig_list.DigListActivity">
+        </activity>
+        <activity android:name=".modules.personal_center.PersonalCenterActivity">
         </activity>
     </application>
 

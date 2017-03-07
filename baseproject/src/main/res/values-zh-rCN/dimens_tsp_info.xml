@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="info_channel_30dp">30dp</dimen>
+    <dimen name="info_channel_20dp">20dp</dimen>
+    <dimen name="info_channel_13dp">13dp</dimen>
+</resources>
