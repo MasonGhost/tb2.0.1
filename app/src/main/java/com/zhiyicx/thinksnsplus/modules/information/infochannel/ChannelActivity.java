@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.information.infochannel;
 import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSActivity;
-import com.zhiyicx.thinksnsplus.modules.information.InfoChannelFragment;
 
 /**
  * @Author Jliuer
