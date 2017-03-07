@@ -9,16 +9,18 @@ import android.view.View;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
-import com.zhiyicx.baseproject.widget.pictureviewer.PictureViewer;
+import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.pictureviewer.core.ImageInfo;
 import com.zhiyicx.baseproject.widget.pictureviewer.core.ParcelableSparseArray;
 import com.zhiyicx.baseproject.widget.pictureviewer.core.PhotoView;
+import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForEightImage;
@@ -32,6 +34,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForT
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryFragment;
+import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -39,6 +42,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import butterknife.BindView;
 
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
 
@@ -48,17 +53,19 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  * @Date 2017/1/17
  * @Contact master.jungle68@gmail.com
  */
-public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicContract.View, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener, MultiItemTypeAdapter.OnItemClickListener {
+public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicContract.View, DynamicListCommentView.OnCommentClickListener, DynamicListCommentView.OnMoreCommentClickListener, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener, MultiItemTypeAdapter.OnItemClickListener {
     private static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
     public static final long ITEM_SPACING = 5L; // 单位dp
+
+    @BindView(R.id.ilv_comment)
+    InputLimitView mIlvComment;
+
     @Inject
     DynamicPresenter mDynamicPresenter;  // 仅用于构造
-
     private String mDynamicType = ApiConfig.DYNAMIC_TYPE_NEW;
 
 
     private List<DynamicBean> mDynamicBeens = new ArrayList<>();
-    private PictureViewer pictureViewer;
 
     public void setOnImageClickListener(OnImageClickListener onImageClickListener) {
         mOnImageClickListener = onImageClickListener;
@@ -81,8 +88,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
+    protected int getBodyLayoutId() {
+        return R.layout.fragment_dynamic_list;
+    }
+
+    @Override
     protected void initView(View rootView) {
-        pictureViewer = (PictureViewer) rootView.findViewById(R.id.picture_view);
         super.initView(rootView);
     }
 
@@ -124,6 +135,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         dynamicListBaseItem.setOnUserInfoClickListener(this);
         dynamicListBaseItem.setOnMenuItemClickLisitener(this);
         dynamicListBaseItem.setOnReSendClickListener(this);
+        dynamicListBaseItem.setOnMoreCommentClickListener(this);
+        dynamicListBaseItem.setOnCommentClickListener(this);
         adapter.addItemViewDelegate(dynamicListBaseItem);
     }
 
@@ -207,20 +220,21 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         Intent intent = new Intent(getActivity(), GalleryActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(GalleryFragment.BUNDLE_IMAGS, (ArrayList<? extends Parcelable>) imageBeanList);
-        bundle.putInt(GalleryFragment.BUNDLE_IMAGS_POSITON,position);
+        bundle.putInt(GalleryFragment.BUNDLE_IMAGS_POSITON, position);
         intent.putExtras(bundle);
         startActivity(intent);
     }
 
-
     /**
      * scan user Info
      *
-     * @param dynamicBean
+     * @param userInfoBean
      */
     @Override
-    public void onUserInfoClick(DynamicBean dynamicBean) {
-        showMessage(dynamicBean.getUserInfoBean().getName());
+    public void onUserInfoClick(UserInfoBean userInfoBean) {
+        System.out.println("userInfoBean = " + userInfoBean);
+        System.out.println("userInfoBean.getName() = " + userInfoBean.getName());
+        showMessage(userInfoBean.getName());
     }
 
     @Override
@@ -278,11 +292,13 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 handleLike(dataPosition);
                 break;
 
-            case 1:
-                onItemClick(null, null, dataPosition);
+            case 1: // 评论
+                mIlvComment.setVisibility(View.VISIBLE);
+                mIlvComment.setFocusable(true);
+                ActivityUtils.dimBackground(getActivity(), 1.0f, 0.5f);
                 break;
 
-            case 2:
+            case 2: // 浏览
                 onItemClick(null, null, dataPosition);
                 break;
 
@@ -296,6 +312,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     }
 
+    /**
+     * 喜欢
+     *
+     * @param dataPosition
+     */
     private void handleLike(int dataPosition) {
         // 先更新界面，再后台处理
         mDynamicBeens.get(dataPosition).getTool().setIs_digg_feed(mDynamicBeens.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ? DynamicToolBean.STATUS_DIGG_FEED_CHECKED : DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED);
@@ -305,6 +326,22 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         mPresenter.handleLike(mDynamicBeens.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED,
                 mDynamicBeens.get(dataPosition).getFeed().getFeed_id(), dataPosition);
     }
+
+    @Override
+    public void onCommentUserInfoClick(UserInfoBean userInfoBean) {
+        onUserInfoClick(userInfoBean);
+    }
+
+    @Override
+    public void onCommentContentClick(DynamicBean dynamicBean, int position) {
+        showMessage(dynamicBean.getComments().get(position).getComment_content());
+    }
+
+    @Override
+    public void onMoreCommentClick(View view, DynamicBean dynamicBean) {
+        showMessage(dynamicBean.getComments().size()+"");
+    }
+
 
     public interface OnImageClickListener {
         void onImageClick(List<ImageBean> images, ParcelableSparseArray<ImageInfo> infos, int position);

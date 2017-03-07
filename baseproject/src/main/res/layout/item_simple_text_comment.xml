@@ -4,5 +4,7 @@
     android:id="@+id/tv_simple_text_comment"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    >
-</TextView>
+    android:gravity="center_vertical"
+    android:textColor="@color/normal_for_assist_text"
+    android:textSize="@dimen/size_content_comment"
+    />

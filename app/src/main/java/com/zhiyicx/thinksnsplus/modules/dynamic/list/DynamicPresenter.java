@@ -139,6 +139,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                 break;
             default:
         }
+        System.out.println("datas = " + datas.toString());
         return datas;
     }
 
@@ -165,7 +166,6 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                 .subscribe(new Action1<List<DynamicBean>>() {
                     @Override
                     public void call(List<DynamicBean> datas) {
-
                         List<DynamicDetailBean> dynamicDetailBeen = new ArrayList<>();
                         List<DynamicCommentBean> dynamicCommentBeen = new ArrayList<>();
                         List<DynamicToolBean> dynamicToolBeen = new ArrayList<>();
@@ -179,6 +179,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                             dynamicBeanTmp.getTool().setFeed_mark(dynamicBeanTmp.getFeed_mark());
                             for (DynamicCommentBean dynamicCommentBean : dynamicBeanTmp.getComments()) {
                                 dynamicCommentBean.setFeed_mark(dynamicBeanTmp.getFeed_mark());
+                                dynamicCommentBean.setFeed_user_id(dynamicBeanTmp.getUser_id());
                             }
                             dynamicDetailBeen.add(dynamicBeanTmp.getFeed());
                             dynamicCommentBeen.addAll(dynamicBeanTmp.getComments());

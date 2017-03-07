@@ -15,7 +15,7 @@ public class ConstantConfig {
     /**
      * 抖动间隔时间，单位 s
      */
-    public static final int JITTER_SPACING_TIME = 2;
+    public static final int JITTER_SPACING_TIME = 1;
     /**
      * 手机号码长度
      */

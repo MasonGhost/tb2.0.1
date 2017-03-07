@@ -2,9 +2,13 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -15,7 +19,7 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
-import com.zhiyicx.common.thridmanager.share.SharePolicy;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -29,8 +33,6 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,9 +56,22 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @BindView(R.id.dd_dynamic_tool)
     DynamicDetailMenuView mDdDynamicTool;
+    @BindView(R.id.tv_toolbar_center)
+    TextView mTvToolbarCenter;
+    @BindView(R.id.tv_toolbar_left)
+    TextView mTvToolbarLeft;
+    @BindView(R.id.tv_toolbar_right)
+    TextView mTvToolbarRight;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
     private DynamicBean mDynamicBean;// 上一个页面传进来的数据
     private FollowFansBean mFollowFansBean;// 用户关注状态
     private List<DynamicBean> mDatas = new ArrayList<>();
+
+    @Override
+    protected boolean showToolbar() {
+        return false;
+    }
 
     @Override
     protected int getBodyLayoutId() {
@@ -68,6 +83,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         super.initView(rootView);
         initBottomToolUI();
         initBottomToolListener();
+
     }
 
     @Override
@@ -148,9 +164,9 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      */
     private void setToolBarUser(DynamicBean dynamicBean) {
         // 设置用户头像，名称
-        mToolbarCenter.setVisibility(View.VISIBLE);
+        mTvToolbarCenter.setVisibility(View.VISIBLE);
         UserInfoBean userInfoBean = dynamicBean.getUserInfoBean();// 动态所属用户的信息
-        mToolbarCenter.setText(userInfoBean.getName());
+        mTvToolbarCenter.setText(userInfoBean.getName());
         int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
         Glide.with(getContext())
                 .load(String.format(ApiConfig.IMAGE_PATH, 20, 10))
@@ -160,17 +176,17 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
                         resource.setBounds(0, 0, resource.getMinimumWidth(), resource.getMinimumHeight());
-                        mToolbarCenter.setCompoundDrawables(resource, null, null, null);
+                        mTvToolbarCenter.setCompoundDrawables(resource, null, null, null);
                     }
                 });
         // 如果当前动态所属用户，就是当前用户，隐藏关注按钮
         long user_id = dynamicBean.getUser_id();
         if (user_id == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-            mToolbarRight.setVisibility(View.GONE);
+            mTvToolbarRight.setVisibility(View.GONE);
         } else {
             // 获取用户关注状态
             mPresenter.getUserFollowState(user_id + "");
-            mToolbarRight.setVisibility(View.VISIBLE);
+            mTvToolbarRight.setVisibility(View.VISIBLE);
         }
 
     }
@@ -287,13 +303,13 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mToolbarRight.setVisibility(View.VISIBLE);
         switch (state) {
             case FollowFansBean.UNFOLLOWED_STATE:
-                mToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_follow), null);
+                mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_follow), null);
                 break;
             case FollowFansBean.IFOLLOWED_STATE:
-                mToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed), null);
+                mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed), null);
                 break;
             case FollowFansBean.FOLLOWED_EACHOTHER_STATE:
-                mToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed_eachother), null);
+                mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed_eachother), null);
                 break;
             default:
         }

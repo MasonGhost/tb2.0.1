@@ -44,7 +44,7 @@ public class DynamicDetailItemForDig implements ItemViewDelegate<DynamicBean> {
 
     @Override
     public boolean isForViewType(DynamicBean item, int position) {
-        return position == 1;
+        return true;
     }
 
     @Override
@@ -63,7 +63,7 @@ public class DynamicDetailItemForDig implements ItemViewDelegate<DynamicBean> {
             imageBeanList = new ArrayList<>();
             for (UserInfoBean userInfoBean : userInfoList) {
                 ImageBean imageBean = new ImageBean();
-                imageBean.setStorage_id(userInfoBean.getUserIcon());
+                imageBean.setStorage_id(userInfoBean.getAvatar());
                 imageBeanList.add(imageBean);
             }
         }

@@ -130,6 +130,8 @@
         </activity>
         <activity android:name=".modules.dynamic.detail.dig_list.DigListActivity">
         </activity>
+        <activity android:name=".modules.personal_center.PersonalCenterActivity">
+        </activity>
     </application>
 
 </manifest>
