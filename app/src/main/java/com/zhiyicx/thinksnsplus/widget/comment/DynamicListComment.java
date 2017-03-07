@@ -13,8 +13,6 @@ import com.zhiyicx.baseproject.widget.SimpleTextNoPullRecycleView;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 
-import static com.umeng.socialize.utils.DeviceConfig.context;
-
 /**
  * @Describe dynamic list comment view
  * @Author Jungle68
@@ -38,6 +36,7 @@ public class DynamicListComment extends SimpleTextNoPullRecycleView<DynamicComme
 
     @Override
     protected SpannableStringBuilder setShowText(DynamicCommentBean dynamicCommentBean, int position) {
+        System.out.println("dynamicCommentBean = -------------->" + dynamicCommentBean.toString());
         String content = "";
         if (dynamicCommentBean.getReplyUser().getUser_id().longValue() == dynamicCommentBean.getFeed_user_id()) {
             content += "[<" + dynamicCommentBean.getCommentUser().getName() + ">]:  " + dynamicCommentBean.getComment_content();
@@ -45,8 +44,8 @@ public class DynamicListComment extends SimpleTextNoPullRecycleView<DynamicComme
             content += "[<" + dynamicCommentBean.getCommentUser().getName() + ">] 回复 [<" + dynamicCommentBean.getReplyUser().getName() + ">]:  " + dynamicCommentBean.getComment_content();
         }
         CharSequence chars = ColorPhrase.from(content).withSeparator("<>")
-                .innerColor(ContextCompat.getColor(context, com.zhiyicx.baseproject.R.color.important_for_content))
-                .outerColor(ContextCompat.getColor(context, com.zhiyicx.baseproject.R.color.normal_for_assist_text))
+                .innerColor(ContextCompat.getColor(getContext(), com.zhiyicx.baseproject.R.color.important_for_content))
+                .outerColor(ContextCompat.getColor(getContext(), com.zhiyicx.baseproject.R.color.normal_for_assist_text))
                 .format();
 
         return addClickablePart(chars.toString());

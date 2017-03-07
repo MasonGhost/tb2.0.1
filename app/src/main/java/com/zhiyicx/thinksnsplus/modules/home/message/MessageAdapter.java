@@ -92,7 +92,7 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> {
         if(messageItemBean.getConversation().getLast_message_time()==0){
             holder.setText(R.id.tv_time,"");
         }else {
-            holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(messageItemBean.getConversation().getLast_message_time() / 1000));
+            holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(messageItemBean.getConversation().getLast_message_time())));
         }
         ((BadgeView) holder.getView(R.id.tv_tip)).setBadgeCount(messageItemBean.getUnReadMessageNums());
 

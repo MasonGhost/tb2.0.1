@@ -112,10 +112,11 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                                 }
                                                 for (DynamicBean dynamicBean : listBaseJson.getData()) {
                                                     dynamicBean.setUserInfoBean(userInfoBeanSparseArray.get((int) dynamicBean.getUser_id()));
-                                                    for (DynamicCommentBean dynamicCommentBean : dynamicBean.getComments()) {
-                                                        dynamicCommentBean.setCommentUser(userInfoBeanSparseArray.get((int) dynamicCommentBean.getUser_id()));
-                                                        dynamicCommentBean.setReplyUser(userInfoBeanSparseArray.get((int) dynamicCommentBean.getReply_to_user_id()));
+                                                    for (int i = 0; i < dynamicBean.getComments().size(); i++) {
+                                                        dynamicBean.getComments().get(i).setCommentUser(userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getUser_id()));
+                                                        dynamicBean.getComments().get(i).setReplyUser(userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getReply_to_user_id()));
                                                     }
+
                                                 }
                                                 AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao().insertOrReplace(userinfobeans.getData());
                                             } else {

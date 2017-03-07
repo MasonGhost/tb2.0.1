@@ -55,6 +55,8 @@ public class DynamicBean extends BaseListBean {
     @Transient
     private List<FollowFansBean> digUserInfoList;// 点赞用户的信息列表
 
+
+
     public Long getHot_creat_time() {
         return hot_creat_time;
     }
