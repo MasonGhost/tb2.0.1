@@ -25,31 +25,7 @@
             android:layout_height="@dimen/headpic_for_user_center"
             android:layout_gravity="center_horizontal|bottom"
             android:scaleType="centerCrop"
-            tools:src="@drawable/girl_head_xinyuanjieyi"/>
-
-        <RelativeLayout
-            android:id="@+id/rl_toolbar_container"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/toolbar_height">
-
-            <ImageView
-                android:id="@+id/iv_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:paddingLeft="@dimen/spacing_mid"
-                android:src="@mipmap/topbar_back_white"/>
-
-            <ImageView
-                android:id="@+id/iv_more"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:paddingRight="@dimen/spacing_mid"
-                android:src="@mipmap/topbar_more_white"/>
-        </RelativeLayout>
-
+            android:src="@drawable/girl_head_xinyuanjieyi"/>
 
     </FrameLayout>
 
@@ -59,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/spacing_normal"
-        tools:text="阿超的超能力"/>
+        android:text="阿超的超能力"/>
 
     <TextView
         android:id="@+id/tv_user_intro"
@@ -69,7 +45,7 @@
         android:layout_marginRight="@dimen/spacing_normal_large"
         android:layout_marginTop="@dimen/spacing_mid"
         android:gravity="center"
-        tools:text="还有机会能够感觉，爱一个人的纯粹，你是我的小蝴蝶，我是你的小阿飞"/>
+        android:text="还有机会能够感觉，爱一个人的纯粹，你是我的小蝴蝶，我是你的小阿飞"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -83,14 +59,14 @@
             android:id="@+id/tv_user_follow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="关注 26"/>
+            android:text="关注 26"/>
 
         <TextView
             android:id="@+id/tv_user_fans"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
-            tools:text="粉丝 26"/>
+            android:text="粉丝 26"/>
 
     </LinearLayout>
 </LinearLayout>

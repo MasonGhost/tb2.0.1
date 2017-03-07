@@ -525,7 +525,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
             fieldMap.put("intro", mEtUserIntroduce.getInputContent());
         }
         if (upLoadCount > 0) {
-            fieldMap.put("avatar", upDateHeadIconStorageId + "");
+            // avatar
+            fieldMap.put("storage_task_id", upDateHeadIconStorageId + "");
         }
         return fieldMap;
     }
