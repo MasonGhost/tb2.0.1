@@ -4,11 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.ToOne;
-import org.greenrobot.greendao.DaoException;
 
 /**
  * @author LiuChao
@@ -23,21 +20,21 @@ public class DynamicCommentBean implements Parcelable {
     private Long feed_mark;// 属于哪条动态
     private long create_at;// 评论创建的时间
     private String comment_content;// 评论内容
+    private long feed_user_id; // 发动态人的 id
     private long user_id;// 谁发的这条评论
     @ToOne(joinProperty = "user_id")// DynamicCommentBean 的 user_id 作为外键
-    private UserInfoBean userInfoBean;
-
-    @Keep
-    public UserInfoBean getUserInfoBean() {
-        return userInfoBean;
-    }
-
-    @Keep
-    public void setUserInfoBean(UserInfoBean userInfoBean) {
-        this.userInfoBean = userInfoBean;
-    }
-
+    private UserInfoBean commentUser;
     private long reply_to_user_id;// 评论要发给谁
+    @ToOne(joinProperty = "reply_to_user_id")// DynamicCommentBean 的 user_id 作为外键
+    private UserInfoBean replyUser;// 被评论的用户信息
+
+    public long getFeed_user_id() {
+        return feed_user_id;
+    }
+
+    public void setFeed_user_id(long feed_user_id) {
+        this.feed_user_id = feed_user_id;
+    }
 
     public Long getComment_id() {
         return comment_id;
@@ -53,6 +50,14 @@ public class DynamicCommentBean implements Parcelable {
 
     public void setFeed_mark(Long feed_mark) {
         this.feed_mark = feed_mark;
+    }
+
+    public UserInfoBean getReplyUser() {
+        return replyUser;
+    }
+
+    public void setReplyUser(UserInfoBean replyUser) {
+        this.replyUser = replyUser;
     }
 
     public long getCreate_at() {
@@ -79,6 +84,14 @@ public class DynamicCommentBean implements Parcelable {
         this.user_id = user_id;
     }
 
+    public UserInfoBean getCommentUser() {
+        return commentUser;
+    }
+
+    public void setCommentUser(UserInfoBean commentUser) {
+        this.commentUser = commentUser;
+    }
+
     public long getReply_to_user_id() {
         return reply_to_user_id;
     }
@@ -87,19 +100,22 @@ public class DynamicCommentBean implements Parcelable {
         this.reply_to_user_id = reply_to_user_id;
     }
 
-
     public DynamicCommentBean() {
     }
 
-    @Generated(hash = 131676871)
-    public DynamicCommentBean(Long comment_id, Long feed_mark, long create_at, String comment_content,
-                              long user_id, long reply_to_user_id) {
-        this.comment_id = comment_id;
-        this.feed_mark = feed_mark;
-        this.create_at = create_at;
-        this.comment_content = comment_content;
-        this.user_id = user_id;
-        this.reply_to_user_id = reply_to_user_id;
+    @Override
+    public String toString() {
+        return "DynamicCommentBean{" +
+                "comment_id=" + comment_id +
+                ", feed_mark=" + feed_mark +
+                ", create_at=" + create_at +
+                ", comment_content='" + comment_content + '\'' +
+                ", feed_user_id=" + feed_user_id +
+                ", user_id=" + user_id +
+                ", commentUser=" + commentUser +
+                ", reply_to_user_id=" + reply_to_user_id +
+                ", replyUser=" + replyUser +
+                '}';
     }
 
     @Override
@@ -113,9 +129,11 @@ public class DynamicCommentBean implements Parcelable {
         dest.writeValue(this.feed_mark);
         dest.writeLong(this.create_at);
         dest.writeString(this.comment_content);
+        dest.writeLong(this.feed_user_id);
         dest.writeLong(this.user_id);
-        dest.writeParcelable(this.userInfoBean, flags);
+        dest.writeParcelable(this.commentUser, flags);
         dest.writeLong(this.reply_to_user_id);
+        dest.writeParcelable(this.replyUser, flags);
     }
 
     protected DynamicCommentBean(Parcel in) {
@@ -123,9 +141,11 @@ public class DynamicCommentBean implements Parcelable {
         this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
         this.create_at = in.readLong();
         this.comment_content = in.readString();
+        this.feed_user_id = in.readLong();
         this.user_id = in.readLong();
-        this.userInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.commentUser = in.readParcelable(UserInfoBean.class.getClassLoader());
         this.reply_to_user_id = in.readLong();
+        this.replyUser = in.readParcelable(UserInfoBean.class.getClassLoader());
     }
 
     public static final Creator<DynamicCommentBean> CREATOR = new Creator<DynamicCommentBean>() {
@@ -139,68 +159,4 @@ public class DynamicCommentBean implements Parcelable {
             return new DynamicCommentBean[size];
         }
     };
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /** Used for active entity operations. */
-    @Generated(hash = 1852910231)
-    private transient DynamicCommentBeanDao myDao;
-    @Generated(hash = 1005780391)
-    private transient Long userInfoBean__resolvedKey;
-
-    @Override
-    public String toString() {
-        return "DynamicCommentBean{" +
-                "comment_id=" + comment_id +
-                ", feed_mark=" + feed_mark +
-                ", create_at=" + create_at +
-                ", comment_content='" + comment_content + '\'' +
-                ", user_id=" + user_id +
-                ", userInfoBean=" + userInfoBean +
-                ", reply_to_user_id=" + reply_to_user_id +
-                '}';
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 128553479)
-    public void delete() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.delete(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 1942392019)
-    public void refresh() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.refresh(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 713229351)
-    public void update() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.update(this);
-    }
-
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 938647494)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getDynamicCommentBeanDao() : null;
-    }
 }

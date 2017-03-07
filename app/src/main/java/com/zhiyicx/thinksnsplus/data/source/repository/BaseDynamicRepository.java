@@ -4,10 +4,8 @@ import android.content.Context;
 import android.util.SparseArray;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonParseException;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
@@ -20,7 +18,6 @@ import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -82,7 +79,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                     @Override
                     public Observable<BaseJson<List<DynamicBean>>> call(final BaseJson<List<DynamicBean>> listBaseJson) {
                         if (listBaseJson.isStatus() && listBaseJson.getData() != null && !listBaseJson.getData().isEmpty()) {
-                            List<Long> user_ids = new ArrayList<>();
+                            final List<Long> user_ids = new ArrayList<>();
                             if (type.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {// 如果是热门，需要初始化时间
                                 for (int i = listBaseJson.getData().size() - 1; i >= 0; i--) {
                                     listBaseJson.getData().get(i).setHot_creat_time(System.currentTimeMillis());
@@ -100,6 +97,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                 }
                                 for (DynamicCommentBean dynamicCommentBean : dynamicBean.getComments()) {
                                     user_ids.add(dynamicCommentBean.getUser_id());
+                                    user_ids.add(dynamicCommentBean.getReply_to_user_id());
                                 }
                             }
 
@@ -107,7 +105,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                     .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<DynamicBean>>>() {
                                         @Override
                                         public BaseJson<List<DynamicBean>> call(BaseJson<List<UserInfoBean>> userinfobeans) {
-                                            if (userinfobeans.isStatus()) {
+                                            if (userinfobeans.isStatus()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
                                                 SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
                                                 for (UserInfoBean userInfoBean : userinfobeans.getData()) {
                                                     userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
@@ -115,7 +113,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                                 for (DynamicBean dynamicBean : listBaseJson.getData()) {
                                                     dynamicBean.setUserInfoBean(userInfoBeanSparseArray.get((int) dynamicBean.getUser_id()));
                                                     for (DynamicCommentBean dynamicCommentBean : dynamicBean.getComments()) {
-                                                        dynamicCommentBean.setUserInfoBean(userInfoBeanSparseArray.get((int) dynamicCommentBean.getUser_id()));
+                                                        dynamicCommentBean.setCommentUser(userInfoBeanSparseArray.get((int) dynamicCommentBean.getUser_id()));
+                                                        dynamicCommentBean.setReplyUser(userInfoBeanSparseArray.get((int) dynamicCommentBean.getReply_to_user_id()));
                                                     }
                                                 }
                                                 AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao().insertOrReplace(userinfobeans.getData());

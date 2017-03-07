@@ -31,8 +31,11 @@ public class DynamicListComment extends SimpleTextNoPullRecycleView<DynamicComme
     @Override
     protected String setShowText(DynamicCommentBean dynamicCommentBean, int position) {
         String content = "";
-        content = dynamicCommentBean.getComment_content();
-        System.out.println("content = " + content);
+        if (dynamicCommentBean.getReplyUser().getUser_id() == dynamicCommentBean.getReply_to_user_id()) {
+            content += "[<" + dynamicCommentBean.getCommentUser().getName() + ">]:  " + dynamicCommentBean.getComment_content();
+        } else {
+            content += "[<" + dynamicCommentBean.getCommentUser().getName() + ">]:  " + dynamicCommentBean.getComment_content();
+        }
         return content;
     }
 

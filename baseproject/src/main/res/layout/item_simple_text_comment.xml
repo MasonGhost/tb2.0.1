@@ -7,5 +7,4 @@
     android:gravity="center_vertical"
     android:textColor="@color/normal_for_assist_text"
     android:textSize="@dimen/size_content_comment"
-    >
-</TextView>
+    />
