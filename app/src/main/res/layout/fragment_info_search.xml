@@ -11,40 +11,49 @@
         android:background="@color/white">
 
         <ImageView
-            android:id="@+id/fragment_info_search_leftimg"
+            android:id="@+id/fragment_info_search_back"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:onClick="leftClick"
-            android:paddingLeft="@dimen/spacing_normal"
-            android:src="@mipmap/topbar_back_white"
-            android:visibility="visible"/>
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:layout_marginStart="@dimen/spacing_normal"
+            android:src="@mipmap/topbar_back"/>
 
         <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
             android:id="@+id/fragment_info_search_edittext"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_toRightOf="@+id/fragment_info_search_leftimg"
+            android:layout_marginBottom="@dimen/spacing_small"
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:layout_marginRight="@dimen/spacing_normal"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:layout_toEndOf="@+id/fragment_info_search_back"
+            android:layout_toLeftOf="@+id/fragment_info_search_cancle"
+            android:layout_toRightOf="@+id/fragment_info_search_back"
+            android:layout_toStartOf="@+id/fragment_info_search_cancle"
             android:background="@drawable/info_search_bg"
-            android:drawableLeft="@mipmap/ico_search"
-            android:hint="@string/edit_user_name"
+            android:imeOptions="actionSearch"
+            android:paddingEnd="@dimen/spacing_mid"
+            android:paddingLeft="@dimen/spacing_mid"
             android:paddingRight="@dimen/spacing_mid"
-            android:textColor="@color/important_for_content"
+            android:paddingStart="@dimen/spacing_mid"
+            android:textColor="@color/important_for_theme"
             android:textColorHint="@color/normal_for_assist_text"
             android:textSize="@dimen/size_sub_title"/>
 
         <TextView
-            android:id="@+id/fragment_info_search_righttext"
+            android:id="@+id/fragment_info_search_cancle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:clickable="false"
             android:gravity="center"
+            android:paddingEnd="@dimen/spacing_normal"
             android:paddingRight="@dimen/spacing_normal"
-            android:text="搜索"
-            android:textColor="@color/normal_for_assist_text"
+            android:text="@string/info_cancle"
+            android:textColor="@color/important_for_theme"
             android:textSize="@dimen/size_sub_title"
             android:visibility="visible"/>
-
 
         <View
             style="@style/style_divider_horizontal_light"/>
