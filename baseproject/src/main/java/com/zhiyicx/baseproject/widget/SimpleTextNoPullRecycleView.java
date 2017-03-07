@@ -25,6 +25,10 @@ import java.util.List;
 
 public abstract class SimpleTextNoPullRecycleView<T> extends NoPullRecycleView implements MultiItemTypeAdapter.OnItemClickListener {
 
+    private OnIitemClickListener mOnIitemClickListener;
+
+    private OnIitemLongClickListener mOnIitemLongClickListener;
+
     private MultiItemTypeAdapter<T> mAdapter;
 
     public SimpleTextNoPullRecycleView(Context context) {
@@ -46,6 +50,14 @@ public abstract class SimpleTextNoPullRecycleView<T> extends NoPullRecycleView i
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         setLayoutManager(linearLayoutManager);
         addItemDecoration(new LinearDecoration(0, getResources().getDimensionPixelSize(R.dimen.spacing_mid_small), 0, 0));
+    }
+
+    public void setOnIitemClickListener(OnIitemClickListener onIitemClickListener) {
+        mOnIitemClickListener = onIitemClickListener;
+    }
+
+    public void setOnIitemLongClickListener(OnIitemLongClickListener onIitemLongClickListener) {
+        mOnIitemLongClickListener = onIitemLongClickListener;
     }
 
     /**
@@ -91,19 +103,25 @@ public abstract class SimpleTextNoPullRecycleView<T> extends NoPullRecycleView i
 
     @Override
     public void onItemClick(View view, ViewHolder holder, int position) {
-
+        if (mOnIitemClickListener != null) {
+            mOnIitemClickListener.onItemClick(view, position);
+        }
     }
 
     @Override
     public boolean onItemLongClick(View view, ViewHolder holder, int position) {
+        if (mOnIitemLongClickListener != null) {
+            mOnIitemLongClickListener.onItemLongClick(view, position);
+        }
+
         return false;
     }
 
     public interface OnIitemClickListener {
-        void onItemClick();
+        void onItemClick(View view, int position);
     }
 
     public interface OnIitemLongClickListener {
-        void onItemLongClick();
+        void onItemLongClick(View view, int position);
     }
 }

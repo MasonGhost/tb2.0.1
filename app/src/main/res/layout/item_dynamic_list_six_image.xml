@@ -222,15 +222,15 @@
         android:layout_toRightOf="@+id/iv_headpic"
         android:layout_below="@id/dlmv_menu"
         />
-    <com.zhiyicx.thinksnsplus.widget.comment.DynamicListComment
-        android:id="@+id/fl_comment"
+    <com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView
+        android:id="@+id/dcv_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/fl_tip"
         android:layout_marginLeft="@dimen/spacing_normal"
         android:layout_marginRight="@dimen/spacing_normal"
         android:layout_toRightOf="@+id/iv_headpic">
-    </com.zhiyicx.thinksnsplus.widget.comment.DynamicListComment>
+    </com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView>
 
 
 </RelativeLayout>

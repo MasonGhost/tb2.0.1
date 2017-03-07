@@ -20,6 +20,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForEightImage;
@@ -33,6 +34,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForT
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryFragment;
+import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -51,7 +53,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  * @Date 2017/1/17
  * @Contact master.jungle68@gmail.com
  */
-public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicContract.View, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener, MultiItemTypeAdapter.OnItemClickListener {
+public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicContract.View, DynamicListCommentView.OnCommentClickListener, DynamicListCommentView.OnMoreCommentClickListener, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener, MultiItemTypeAdapter.OnItemClickListener {
     private static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
     public static final long ITEM_SPACING = 5L; // 单位dp
 
@@ -133,6 +135,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         dynamicListBaseItem.setOnUserInfoClickListener(this);
         dynamicListBaseItem.setOnMenuItemClickLisitener(this);
         dynamicListBaseItem.setOnReSendClickListener(this);
+        dynamicListBaseItem.setOnMoreCommentClickListener(this);
+        dynamicListBaseItem.setOnCommentClickListener(this);
         adapter.addItemViewDelegate(dynamicListBaseItem);
     }
 
@@ -221,15 +225,16 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         startActivity(intent);
     }
 
-
     /**
      * scan user Info
      *
-     * @param dynamicBean
+     * @param userInfoBean
      */
     @Override
-    public void onUserInfoClick(DynamicBean dynamicBean) {
-//        Intent intent = new Intent(getActivity(), GalleryActivity.class);
+    public void onUserInfoClick(UserInfoBean userInfoBean) {
+        System.out.println("userInfoBean = " + userInfoBean);
+        System.out.println("userInfoBean.getName() = " + userInfoBean.getName());
+        showMessage(userInfoBean.getName());
     }
 
     @Override
@@ -321,6 +326,22 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         mPresenter.handleLike(mDynamicBeens.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED,
                 mDynamicBeens.get(dataPosition).getFeed().getFeed_id(), dataPosition);
     }
+
+    @Override
+    public void onCommentUserInfoClick(UserInfoBean userInfoBean) {
+        onUserInfoClick(userInfoBean);
+    }
+
+    @Override
+    public void onCommentContentClick(DynamicBean dynamicBean, int position) {
+        showMessage(dynamicBean.getComments().get(position).getComment_content());
+    }
+
+    @Override
+    public void onMoreCommentClick(View view, DynamicBean dynamicBean) {
+        showMessage(dynamicBean.getComments().size()+"");
+    }
+
 
     public interface OnImageClickListener {
         void onImageClick(List<ImageBean> images, ParcelableSparseArray<ImageInfo> infos, int position);

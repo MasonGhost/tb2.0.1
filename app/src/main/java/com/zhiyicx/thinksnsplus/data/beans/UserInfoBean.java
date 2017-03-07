@@ -106,7 +106,6 @@ public class UserInfoBean implements Parcelable {
     }
 
     public String getName() {
-
         return avoidNull(name);
     }
 
