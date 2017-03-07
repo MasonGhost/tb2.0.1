@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/white"
+              android:orientation="vertical">
+    <!--个人中心页面头部-->
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+        <ImageView
+            android:id="@+id/iv_background_cover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/spacing_large"
+            android:scaleType="centerCrop"
+            android:src="@drawable/girl_xinyuanjieyi"/>
+
+        <ImageView
+            android:id="@+id/iv_head_icon"
+            android:layout_width="@dimen/headpic_for_user_center"
+            android:layout_height="@dimen/headpic_for_user_center"
+            android:layout_gravity="center_horizontal|bottom"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/girl_head_xinyuanjieyi"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_toolbar_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_height">
+
+            <ImageView
+                android:id="@+id/iv_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:paddingLeft="@dimen/spacing_mid"
+                android:src="@mipmap/topbar_back_white"/>
+
+            <ImageView
+                android:id="@+id/iv_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:paddingRight="@dimen/spacing_mid"
+                android:src="@mipmap/topbar_more_white"/>
+        </RelativeLayout>
+
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tv_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/spacing_normal"
+        tools:text="阿超的超能力"/>
+
+    <TextView
+        android:id="@+id/tv_user_intro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_normal_large"
+        android:layout_marginRight="@dimen/spacing_normal_large"
+        android:layout_marginTop="@dimen/spacing_mid"
+        android:gravity="center"
+        tools:text="还有机会能够感觉，爱一个人的纯粹，你是我的小蝴蝶，我是你的小阿飞"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/spacing_large"
+        android:layout_marginTop="@dimen/spacing_mid"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_user_follow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="关注 26"/>
+
+        <TextView
+            android:id="@+id/tv_user_fans"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            tools:text="粉丝 26"/>
+
+    </LinearLayout>
+</LinearLayout>
