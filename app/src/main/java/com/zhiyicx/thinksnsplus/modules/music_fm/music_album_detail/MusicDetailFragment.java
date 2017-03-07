@@ -48,7 +48,7 @@ import butterknife.OnClick;
  * @Author Jliuer
  * @Date 2017/02/14
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 专辑详情
  */
 public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presenter> implements
         MusicDetailContract.View {
@@ -73,10 +73,18 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     TextView mFragmentMusicDetailBack;
     @BindView(R.id.fragment_music_detail_scrollview)
     NestedScrollLineayLayout mFragmentMusicDetailScrollview;
-    @BindView(R.id.fragment_music_detail_center)
-    TextView mFragmentMusicDetailCenter;
+
     @BindView(R.id.fragment_music_detail_title)
     RelativeLayout mFragmentMusicDetailTitle;
+    @BindView(R.id.fragment_music_detail_empty)
+    View mFragmentMusicDetailEmpty;
+    @BindView(R.id.fragment_music_detail_playvolume)
+    TextView mFragmentMusicDetailPlayvolume;
+    @BindView(R.id.fragment_music_detail_center_title)
+    TextView mFragmentMusicDetailCenterTitle;
+    @BindView(R.id.fragment_music_detail_center_sub_title)
+    TextView mFragmentMusicDetailCenterSubTitle;
+
 
     private CommonAdapter mAdapter;
     private List<MediaBrowserCompat.MediaItem> mAdapterList = new ArrayList<>();
@@ -87,7 +95,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
     private String mMediaId;
 
-    public static final int STATE_INVALID = -1;
     public static final int STATE_NONE = 0;
     public static final int STATE_PLAYABLE = 1;
     public static final int STATE_PAUSED = 2;
@@ -141,9 +148,10 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
         int titleHeight;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            titleHeight = ConvertUtils.dp2px(getActivity(), 64);
+            titleHeight = ConvertUtils.dp2px(getActivity(), 84);
         } else {
-            titleHeight = ConvertUtils.dp2px(getActivity(), 44);
+            mFragmentMusicDetailEmpty.setVisibility(View.GONE);
+            titleHeight = ConvertUtils.dp2px(getActivity(), 64);
         }
 
         titleParam = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
@@ -171,7 +179,15 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 int distance = mFragmentMusicDetailScrollview.getTopViewHeight();
                 int alpha = 255 * scrollY / distance;
                 alpha = alpha > 255 ? 255 : alpha;
-                mFragmentMusicDetailTitle.setBackgroundColor(palette.getVibrantColor(0xe3e3e3));
+                mFragmentMusicDetailTitle.setBackgroundColor(palette.getLightVibrantColor
+                        (0xdedede));
+                if ((float) alpha / 255f > 0.5) {
+                    mFragmentMusicDetailCenterTitle.setVisibility(View.VISIBLE);
+                    mFragmentMusicDetailCenterSubTitle.setVisibility(View.VISIBLE);
+                } else {
+                    mFragmentMusicDetailCenterTitle.setVisibility(View.GONE);
+                    mFragmentMusicDetailCenterSubTitle.setVisibility(View.GONE);
+                }
                 mFragmentMusicDetailTitle.getBackground().setAlpha(alpha);
 
             }
