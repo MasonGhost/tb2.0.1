@@ -1,21 +1,19 @@
-package com.zhiyicx.thinksnsplus.modules.information;
+package com.zhiyicx.thinksnsplus.modules.information.indetails;
 
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.thinksnsplus.R;
 
 /**
  * @Author Jliuer
- * @Date 2017/03/06
+ * @Date 2017/03/07
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class SearchFragment extends TSFragment {
-
+public class InfoDetailsFragment extends TSFragment {
     @Override
     protected int getBodyLayoutId() {
-        return R.layout.fragment_info_search;
+        return 0;
     }
 
     @Override
@@ -26,10 +24,5 @@ public class SearchFragment extends TSFragment {
     @Override
     protected void initData() {
 
-    }
-
-    @Override
-    protected boolean showToolbar() {
-        return false;
     }
 }

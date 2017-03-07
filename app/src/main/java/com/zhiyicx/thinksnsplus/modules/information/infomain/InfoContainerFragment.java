@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.information;
+package com.zhiyicx.thinksnsplus.modules.information.infomain;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +14,11 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.information.infochannel.ChannelActivity;
+import com.zhiyicx.thinksnsplus.modules.information.infochannel.InfoChannelFragment;
+import com.zhiyicx.thinksnsplus.modules.information.InfoListFragment;
+import com.zhiyicx.thinksnsplus.modules.information.infosearch.SearchActivity;
+import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
@@ -23,8 +28,6 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNav
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator;
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles
-        .ColorTransitionPagerTitleView;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.SimplePagerTitleView;
 
 import java.util.ArrayList;
@@ -145,7 +148,7 @@ public class InfoContainerFragment extends TSFragment {
 
     protected List<Fragment> initFragments() {
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(new InfoChannelFragment());
+        fragments.add(InfoListFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS));
         fragments.add(InfoListFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS));
         fragments.add(InfoListFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW));
         fragments.add(InfoListFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS));
@@ -172,7 +175,8 @@ public class InfoContainerFragment extends TSFragment {
 
             @Override
             public IPagerTitleView getTitleView(Context context, final int index) {
-                SimplePagerTitleView simplePagerTitleView = new ColorTransitionPagerTitleView
+
+                SimplePagerTitleView simplePagerTitleView = new ScaleTransitionPagerTitleView
                         (context);
                 simplePagerTitleView.setNormalColor(ContextCompat.getColor(context,
                         DEFAULT_TAB_UNSELECTED_TEXTCOLOR));
@@ -181,6 +185,7 @@ public class InfoContainerFragment extends TSFragment {
                 simplePagerTitleView.setText(mStringList.get(index));
                 simplePagerTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, context.getResources
                         ().getInteger(DEFAULT_TAB_TEXTSIZE));
+
                 simplePagerTitleView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -189,6 +194,7 @@ public class InfoContainerFragment extends TSFragment {
                 });
                 return simplePagerTitleView;
             }
+
 
             @Override
             public IPagerIndicator getIndicator(Context context) {
@@ -204,8 +210,7 @@ public class InfoContainerFragment extends TSFragment {
                 return linePagerIndicator;
             }
         });
-        commonNavigator.setRightPadding(getActivity().getResources().getInteger
-                (DEFAULT_TAB_MARGIN));
+
         mFragmentInfocontainerIndoctor.setNavigator(commonNavigator);
         ViewPagerHelper.bind(mFragmentInfocontainerIndoctor, mFragmentInfocontainerContent);
     }

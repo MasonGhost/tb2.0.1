@@ -1,8 +1,9 @@
-package com.zhiyicx.thinksnsplus.modules.information;
+package com.zhiyicx.thinksnsplus.modules.information.infochannel;
 
 import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.thinksnsplus.modules.information.InfoChannelFragment;
 
 /**
  * @Author Jliuer
@@ -10,10 +11,11 @@ import com.zhiyicx.baseproject.base.TSActivity;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class SearchActivity extends TSActivity {
+public class ChannelActivity extends TSActivity {
+
     @Override
     protected Fragment getFragment() {
-        return new SearchFragment();
+        return new InfoChannelFragment();
     }
 
     @Override

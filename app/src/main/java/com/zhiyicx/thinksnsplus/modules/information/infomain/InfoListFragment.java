@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.information;
+package com.zhiyicx.thinksnsplus.modules.information.infomain;
 
 import android.os.Bundle;
 
@@ -95,6 +95,6 @@ public class InfoListFragment extends TSListFragment {
 
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
-        super.requestNetData(maxId, isLoadMore);
+//        super.requestNetData(maxId, isLoadMore);
     }
 }
