@@ -139,6 +139,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                 break;
             default:
         }
+        System.out.println("datas = " + datas.toString());
         return datas;
     }
 

@@ -176,7 +176,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                         }
                     }
                 });
-        System.out.println("dynamicBean = " + dynamicBean.getComments());
+        System.out.println("dynamicCommentBean = " + dynamicBean.getComments());
         DynamicListComment comment = holder.getView(R.id.fl_comment);
         comment.setData(dynamicBean.getComments());
     }

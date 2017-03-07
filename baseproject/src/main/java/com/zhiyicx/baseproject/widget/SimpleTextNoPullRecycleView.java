@@ -3,7 +3,6 @@ package com.zhiyicx.baseproject.widget;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
-import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
@@ -87,7 +86,7 @@ public abstract class SimpleTextNoPullRecycleView<T> extends NoPullRecycleView i
         setAdapter(mAdapter);
     }
 
-    protected abstract SpannableStringBuilder setShowText(T t, int position);
+    protected abstract CharSequence setShowText(T t, int position);
 
 
     @Override
