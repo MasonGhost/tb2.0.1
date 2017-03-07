@@ -54,6 +54,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     protected View mFlTopTipContainer;
     protected TextView mTvTopTip;
+    protected RecyclerView.LayoutManager layoutManager;
 
 
     protected EmptyView mEmptyView;
@@ -114,7 +115,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         if (setListBackColor() != -1) {
             mRvList.setBackgroundColor(getResources().getColor(setListBackColor()));
         }
-        mRvList.setLayoutManager(getLayoutManager());
+        layoutManager = getLayoutManager();
+        mRvList.setLayoutManager(layoutManager);
         mRvList.addItemDecoration(getItemDecoration());//设置Item的间隔
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
         mRvList.setHasFixedSize(false);

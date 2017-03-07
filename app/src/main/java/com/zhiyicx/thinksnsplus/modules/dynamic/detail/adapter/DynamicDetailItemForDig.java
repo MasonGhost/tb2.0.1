@@ -44,7 +44,7 @@ public class DynamicDetailItemForDig implements ItemViewDelegate<DynamicBean> {
 
     @Override
     public boolean isForViewType(DynamicBean item, int position) {
-        return position == 1;
+        return true;
     }
 
     @Override

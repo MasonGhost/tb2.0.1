@@ -1,8 +1,13 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -184,7 +189,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     private void initHeaderView() {
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
         View headerView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_personal_center_header, null);
-
         initHeaderViewUI(headerView);
         mHeaderAndFooterWrapper.addHeaderView(headerView);
         mRvList.setAdapter(mHeaderAndFooterWrapper);
@@ -195,10 +199,12 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         ViewGroup.LayoutParams headerLayoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         headerView.setLayoutParams(headerLayoutParams);
         fl_cover_contaner = (FrameLayout) headerView.findViewById(R.id.fl_cover_contaner);
+        iv_background_cover = (ImageView) headerView.findViewById(R.id.iv_background_cover);
         // 高度为屏幕宽度一半加上20dp
         int height = UIUtils.getWindowWidth(getContext()) / 2 + getResources().getDimensionPixelSize(R.dimen.spacing_large);
         LinearLayout.LayoutParams containerLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
         fl_cover_contaner.setLayoutParams(containerLayoutParams);
+        initHeaderZoom();
     }
 
     private void initToolBar() {
@@ -218,4 +224,85 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 break;
         }
     }
+
+
+    /**
+     * 图片缩放的处理
+     */
+    private void initzoomimage() {
+
+        mRvList.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) fl_cover_contaner.getLayoutParams();
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_UP:
+                        mScaling = false;
+                        replyImage();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        if (!mScaling) {
+                            //当图片也就是第一个item完全可见的时候，记录触摸屏幕的位置
+                            if (((LinearLayoutManager) layoutManager).findFirstCompletelyVisibleItemPosition() == 0) {
+                                mFirstPosition = event.getY();
+                            } else {
+                                break;
+                            }
+                        }
+                        int distance = (int) ((event.getY() - mFirstPosition) * 0.6); // 滚动距离乘以一个系数
+                        if (distance < 0) {
+                            break;
+                        }
+                        // 处理放大
+                        mScaling = true;
+                        lp.width = metric.widthPixels + distance;
+                        lp.height = (metric.widthPixels + distance) * 9 / 16;
+                        fl_cover_contaner.setLayoutParams(lp);
+                        return true; // 返回true表示已经完成触摸事件，不再处理
+                }
+                return false;
+            }
+        });
+
+    }
+
+    private DisplayMetrics metric;
+    // 是否正在放大
+    private Boolean mScaling = false;
+    // 记录首次按下位置
+    private float mFirstPosition = 0;
+
+    private void replyImage() {
+        final LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) fl_cover_contaner.getLayoutParams();
+        final float w = fl_cover_contaner.getLayoutParams().width;// 图片当前宽度
+        final float h = fl_cover_contaner.getLayoutParams().height;// 图片当前高度
+        final float newW = metric.widthPixels;// 图片原宽度
+        final float newH = metric.widthPixels * 9 / 16;// 图片原高度
+
+        // 设置动画
+        ValueAnimator anim = ObjectAnimator.ofFloat(0.0F, 1.0F).setDuration(200);
+
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float cVal = (Float) animation.getAnimatedValue();
+                lp.width = (int) (w - (w - newW) * cVal);
+                lp.height = (int) (h - (h - newH) * cVal);
+                fl_cover_contaner.setLayoutParams(lp);
+            }
+        });
+        anim.start();
+
+    }
+
+    private void initHeaderZoom() {
+        metric = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metric);
+        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) fl_cover_contaner.getLayoutParams();
+        lp.width = metric.widthPixels;
+        lp.height = metric.widthPixels * 9 / 16;
+        fl_cover_contaner.setLayoutParams(lp);
+        initzoomimage();
+    }
+
 }
