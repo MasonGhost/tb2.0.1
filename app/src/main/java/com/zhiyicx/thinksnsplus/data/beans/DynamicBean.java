@@ -10,8 +10,7 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.JoinProperty;
-import org.greenrobot.greendao.annotation.Keep;
-
+import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Transient;
@@ -52,57 +51,17 @@ public class DynamicBean extends BaseListBean {
     private Long hot_creat_time;// 标记热门，已及创建时间，用户数据库查询
     private boolean isFollowed;// 是否关注了该条动态（用户）
     private int state = SEND_SUCCESS;// 动态发送状态 0 发送失败 1 正在发送 2 发送成功
-    @Transient
-    private List<FollowFansBean> digUserInfoList;// 点赞用户的信息列表
 
-
-
-    public Long getHot_creat_time() {
-        return hot_creat_time;
+    public void setComments(List<DynamicCommentBean> comments) {
+        this.comments = comments;
     }
 
-    public void setHot_creat_time(Long hot_creat_time) {
-        this.hot_creat_time = hot_creat_time;
+    public boolean isFollowed() {
+        return isFollowed;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getFeed_id() {
-        return feed_id;
-    }
-
-    public void setFeed_id(Long feed_id) {
-        this.feed_id = feed_id;
-    }
-
-    public Long getFeed_mark() {
-        return feed_mark;
-    }
-
-    public void setFeed_mark(Long feed_mark) {
-        this.feed_mark = feed_mark;
-    }
-
-    public long getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(long user_id) {
-        this.user_id = user_id;
-    }
-
-    public int getState() {
-        return state;
-    }
-
-    public void setState(int state) {
-        this.state = state;
+    public void setFollowed(boolean followed) {
+        isFollowed = followed;
     }
 
     public List<FollowFansBean> getDigUserInfoList() {
@@ -113,37 +72,265 @@ public class DynamicBean extends BaseListBean {
         this.digUserInfoList = digUserInfoList;
     }
 
-    @Keep
+    @Transient
+    private List<FollowFansBean> digUserInfoList;// 点赞用户的信息列表
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.id);
+        dest.writeValue(this.feed_id);
+        dest.writeValue(this.feed_mark);
+        dest.writeLong(this.user_id);
+        dest.writeParcelable(this.feed, flags);
+        dest.writeParcelable(this.tool, flags);
+        dest.writeParcelable(this.userInfoBean, flags);
+        dest.writeTypedList(this.comments);
+        dest.writeValue(this.hot_creat_time);
+        dest.writeByte(this.isFollowed ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.state);
+        dest.writeTypedList(this.digUserInfoList);
+    }
+
+    public DynamicBean() {
+    }
+
+    protected DynamicBean(Parcel in) {
+        super(in);
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.feed_id = (Long) in.readValue(Long.class.getClassLoader());
+        this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
+        this.user_id = in.readLong();
+        this.feed = in.readParcelable(DynamicDetailBean.class.getClassLoader());
+        this.tool = in.readParcelable(DynamicToolBean.class.getClassLoader());
+        this.userInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.comments = in.createTypedArrayList(DynamicCommentBean.CREATOR);
+        this.hot_creat_time = (Long) in.readValue(Long.class.getClassLoader());
+        this.isFollowed = in.readByte() != 0;
+        this.state = in.readInt();
+        this.digUserInfoList = in.createTypedArrayList(FollowFansBean.CREATOR);
+    }
+
+    @Generated(hash = 46860411)
+    public DynamicBean(Long id, Long feed_id, Long feed_mark, long user_id, Long hot_creat_time,
+                       boolean isFollowed, int state) {
+        this.id = id;
+        this.feed_id = feed_id;
+        this.feed_mark = feed_mark;
+        this.user_id = user_id;
+        this.hot_creat_time = hot_creat_time;
+        this.isFollowed = isFollowed;
+        this.state = state;
+    }
+
+    public static final Creator<DynamicBean> CREATOR = new Creator<DynamicBean>() {
+        @Override
+        public DynamicBean createFromParcel(Parcel source) {
+            return new DynamicBean(source);
+        }
+
+        @Override
+        public DynamicBean[] newArray(int size) {
+            return new DynamicBean[size];
+        }
+    };
+    /**
+     * Used to resolve relations
+     */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /**
+     * Used for active entity operations.
+     */
+    @Generated(hash = 476616020)
+    private transient DynamicBeanDao myDao;
+    @Generated(hash = 1613724019)
+    private transient Long feed__resolvedKey;
+    @Generated(hash = 297170499)
+    private transient Long tool__resolvedKey;
+    @Generated(hash = 1005780391)
+    private transient Long userInfoBean__resolvedKey;
+
+    @Override
+    public String toString() {
+        return "DynamicBean{" +
+                "id=" + id +
+                ", feed_id=" + feed_id +
+                ", feed_mark=" + feed_mark +
+                ", user_id=" + user_id +
+                ", feed=" + feed +
+                ", tool=" + tool +
+                ", userInfoBean=" + userInfoBean +
+                ", comments=" + comments +
+                ", hot_creat_time=" + hot_creat_time +
+                ", isFollowed=" + isFollowed +
+                ", state=" + state +
+                ", digUserInfoList=" + digUserInfoList +
+                '}';
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getFeed_id() {
+        return this.feed_id;
+    }
+
+    public void setFeed_id(Long feed_id) {
+        this.feed_id = feed_id;
+    }
+
+    public Long getFeed_mark() {
+        return this.feed_mark;
+    }
+
+    public void setFeed_mark(Long feed_mark) {
+        this.feed_mark = feed_mark;
+    }
+
+    public long getUser_id() {
+        return this.user_id;
+    }
+
+    public void setUser_id(long user_id) {
+        this.user_id = user_id;
+    }
+
+    public Long getHot_creat_time() {
+        return this.hot_creat_time;
+    }
+
+    public void setHot_creat_time(Long hot_creat_time) {
+        this.hot_creat_time = hot_creat_time;
+    }
+
+    public boolean getIsFollowed() {
+        return this.isFollowed;
+    }
+
+    public void setIsFollowed(boolean isFollowed) {
+        this.isFollowed = isFollowed;
+    }
+
+    public int getState() {
+        return this.state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+
+    /**
+     * To-one relationship, resolved on first access.
+     */
+    @Generated(hash = 649279101)
     public DynamicDetailBean getFeed() {
-        feed = feed == null ? new DynamicDetailBean() : feed;
+        Long __key = this.feed_mark;
+        if (feed__resolvedKey == null || !feed__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            DynamicDetailBeanDao targetDao = daoSession.getDynamicDetailBeanDao();
+            DynamicDetailBean feedNew = targetDao.load(__key);
+            synchronized (this) {
+                feed = feedNew;
+                feed__resolvedKey = __key;
+            }
+        }
         return feed;
     }
 
-    @Keep
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
+    @Generated(hash = 946360472)
     public void setFeed(DynamicDetailBean feed) {
-        this.feed = feed;
+        synchronized (this) {
+            this.feed = feed;
+            feed_mark = feed == null ? null : feed.getFeed_mark();
+            feed__resolvedKey = feed_mark;
+        }
     }
 
-    @Keep
+    /**
+     * To-one relationship, resolved on first access.
+     */
+    @Generated(hash = 383575241)
     public DynamicToolBean getTool() {
-        tool = tool == null ? new DynamicToolBean() : tool;
+        Long __key = this.feed_mark;
+        if (tool__resolvedKey == null || !tool__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            DynamicToolBeanDao targetDao = daoSession.getDynamicToolBeanDao();
+            DynamicToolBean toolNew = targetDao.load(__key);
+            synchronized (this) {
+                tool = toolNew;
+                tool__resolvedKey = __key;
+            }
+        }
         return tool;
     }
 
-    @Keep
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
+    @Generated(hash = 1641637808)
     public void setTool(DynamicToolBean tool) {
-        this.tool = tool;
+        synchronized (this) {
+            this.tool = tool;
+            feed_mark = tool == null ? null : tool.getFeed_mark();
+            tool__resolvedKey = feed_mark;
+        }
     }
 
-    @Keep
+    /**
+     * To-one relationship, resolved on first access.
+     */
+    @Generated(hash = 822024536)
     public UserInfoBean getUserInfoBean() {
-        userInfoBean = userInfoBean == null ? new UserInfoBean() : userInfoBean;
+        long __key = this.user_id;
+        if (userInfoBean__resolvedKey == null || !userInfoBean__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            UserInfoBeanDao targetDao = daoSession.getUserInfoBeanDao();
+            UserInfoBean userInfoBeanNew = targetDao.load(__key);
+            synchronized (this) {
+                userInfoBean = userInfoBeanNew;
+                userInfoBean__resolvedKey = __key;
+            }
+        }
         return userInfoBean;
     }
 
-    @Keep
-    public void setUserInfoBean(UserInfoBean userInfoBean) {
-        this.userInfoBean = userInfoBean;
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
+    @Generated(hash = 1574359657)
+    public void setUserInfoBean(@NotNull UserInfoBean userInfoBean) {
+        if (userInfoBean == null) {
+            throw new DaoException(
+                    "To-one property 'user_id' has not-null constraint; cannot set to-one to null");
+        }
+        synchronized (this) {
+            this.userInfoBean = userInfoBean;
+            user_id = userInfoBean.getUser_id();
+            userInfoBean__resolvedKey = user_id;
+        }
     }
 
     /**
@@ -166,11 +353,6 @@ public class DynamicBean extends BaseListBean {
             }
         }
         return comments;
-    }
-
-    @Keep
-    public void setComments(List<DynamicCommentBean> comments) {
-        this.comments = comments;
     }
 
     /**
@@ -217,132 +399,11 @@ public class DynamicBean extends BaseListBean {
         myDao.update(this);
     }
 
-    public DynamicBean() {
-    }
-
-    @Generated(hash = 46860411)
-    public DynamicBean(Long id, Long feed_id, Long feed_mark, long user_id, Long hot_creat_time,
-                       boolean isFollowed, int state) {
-        this.id = id;
-        this.feed_id = feed_id;
-        this.feed_mark = feed_mark;
-        this.user_id = user_id;
-        this.hot_creat_time = hot_creat_time;
-        this.isFollowed = isFollowed;
-        this.state = state;
-    }
-
-    /**
-     * Used to resolve relations
-     */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /**
-     * Used for active entity operations.
-     */
-    @Generated(hash = 476616020)
-    private transient DynamicBeanDao myDao;
-    @Generated(hash = 1613724019)
-    private transient Long feed__resolvedKey;
-    @Generated(hash = 297170499)
-    private transient Long tool__resolvedKey;
-    @Generated(hash = 1005780391)
-    private transient Long userInfoBean__resolvedKey;
-
-    public boolean getIsFollowed() {
-        return this.isFollowed;
-    }
-
-    public void setIsFollowed(boolean isFollowed) {
-        this.isFollowed = isFollowed;
-    }
-
-    @Override
-    public String toString() {
-        return "DynamicBean{" +
-                "id=" + id +
-                ", feed_id=" + feed_id +
-                ", feed_mark=" + feed_mark +
-                ", user_id=" + user_id +
-                ", feed=" + feed +
-                ", tool=" + tool +
-                ", userInfoBean=" + userInfoBean +
-                ", comments=" + comments +
-                ", hot_creat_time=" + hot_creat_time +
-                ", isFollowed=" + isFollowed +
-                ", state=" + state +
-                ", daoSession=" + daoSession +
-                ", myDao=" + myDao +
-                ", feed__resolvedKey=" + feed__resolvedKey +
-                ", tool__resolvedKey=" + tool__resolvedKey +
-                ", userInfoBean__resolvedKey=" + userInfoBean__resolvedKey +
-                '}';
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeValue(this.id);
-        dest.writeValue(this.feed_id);
-        dest.writeValue(this.feed_mark);
-        dest.writeLong(this.user_id);
-        dest.writeParcelable(this.feed, flags);
-        dest.writeParcelable(this.tool, flags);
-        dest.writeParcelable(this.userInfoBean, flags);
-        dest.writeTypedList(this.comments);
-        dest.writeValue(this.hot_creat_time);
-        dest.writeByte(this.isFollowed ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.state);
-        dest.writeTypedList(this.digUserInfoList);
-    }
-
-    protected DynamicBean(Parcel in) {
-        super(in);
-        this.id = (Long) in.readValue(Long.class.getClassLoader());
-        this.feed_id = (Long) in.readValue(Long.class.getClassLoader());
-        this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
-        this.user_id = in.readLong();
-        this.feed = in.readParcelable(DynamicDetailBean.class.getClassLoader());
-        this.tool = in.readParcelable(DynamicToolBean.class.getClassLoader());
-        this.userInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
-        this.comments = in.createTypedArrayList(DynamicCommentBean.CREATOR);
-        this.hot_creat_time = (Long) in.readValue(Long.class.getClassLoader());
-        this.isFollowed = in.readByte() != 0;
-        this.state = in.readInt();
-        this.digUserInfoList = in.createTypedArrayList(FollowFansBean.CREATOR);
-    }
-
-    public static final Creator<DynamicBean> CREATOR = new Creator<DynamicBean>() {
-        @Override
-        public DynamicBean createFromParcel(Parcel source) {
-            return new DynamicBean(source);
-        }
-
-        @Override
-        public DynamicBean[] newArray(int size) {
-            return new DynamicBean[size];
-        }
-    };
-
-    @Override
-    public Long getMaxId() {
-        return super.getMaxId();
-    }
-
-    @Override
-    public void setMaxId(Long maxId) {
-        super.setMaxId(maxId);
-    }
-
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 210281324)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getDynamicBeanDao() : null;
     }
+
 }

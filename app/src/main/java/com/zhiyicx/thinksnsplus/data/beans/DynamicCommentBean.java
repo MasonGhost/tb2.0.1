@@ -3,12 +3,14 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Keep;
-import org.greenrobot.greendao.annotation.ToOne;
-import org.greenrobot.greendao.annotation.Generated;
+import com.google.gson.annotations.SerializedName;
+
 import org.greenrobot.greendao.DaoException;
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.NotNull;
+import org.greenrobot.greendao.annotation.ToOne;
 
 /**
  * @author LiuChao
@@ -19,6 +21,7 @@ import org.greenrobot.greendao.DaoException;
 @Entity
 public class DynamicCommentBean implements Parcelable {
     @Id
+    @SerializedName("id")
     private Long comment_id;// 评论的id
     private Long feed_mark;// 属于哪条动态
     private String created_at;// 评论创建的时间
@@ -32,82 +35,7 @@ public class DynamicCommentBean implements Parcelable {
     private UserInfoBean replyUser;// 被评论的用户信息
 
 
-    public long getFeed_user_id() {
-        return feed_user_id;
-    }
 
-    public void setFeed_user_id(long feed_user_id) {
-        this.feed_user_id = feed_user_id;
-    }
-
-    public Long getComment_id() {
-        return comment_id;
-    }
-
-    public void setComment_id(Long comment_id) {
-        this.comment_id = comment_id;
-    }
-
-    public Long getFeed_mark() {
-        return feed_mark;
-    }
-
-    public void setFeed_mark(Long feed_mark) {
-        this.feed_mark = feed_mark;
-    }
-    @Keep
-    public UserInfoBean getReplyUser() {
-        return replyUser;
-    }
-
-    @Keep
-    public void setReplyUser(UserInfoBean replyUser) {
-        this.replyUser = replyUser;
-    }
-
-
-    public String getComment_content() {
-        return comment_content;
-    }
-
-    public void setComment_content(String comment_content) {
-        this.comment_content = comment_content;
-    }
-
-    public String getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(String created_at) {
-        this.created_at = created_at;
-    }
-
-    public long getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(long user_id) {
-        this.user_id = user_id;
-    }
-    @Keep
-    public UserInfoBean getCommentUser() {
-        return commentUser;
-    }
-    @Keep
-    public void setCommentUser(UserInfoBean commentUser) {
-        this.commentUser = commentUser;
-    }
-
-    public long getReply_to_user_id() {
-        return reply_to_user_id;
-    }
-
-    public void setReply_to_user_id(long reply_to_user_id) {
-        this.reply_to_user_id = reply_to_user_id;
-    }
-
-    public DynamicCommentBean() {
-    }
 
     @Override
     public String toString() {
@@ -123,6 +51,7 @@ public class DynamicCommentBean implements Parcelable {
                 ", replyUser=" + replyUser +
                 '}';
     }
+
 
     @Override
     public int describeContents() {
@@ -142,6 +71,147 @@ public class DynamicCommentBean implements Parcelable {
         dest.writeParcelable(this.replyUser, flags);
     }
 
+
+    public Long getComment_id() {
+        return this.comment_id;
+    }
+
+
+    public void setComment_id(Long comment_id) {
+        this.comment_id = comment_id;
+    }
+
+
+    public Long getFeed_mark() {
+        return this.feed_mark;
+    }
+
+
+    public void setFeed_mark(Long feed_mark) {
+        this.feed_mark = feed_mark;
+    }
+
+
+    public String getCreated_at() {
+        return this.created_at;
+    }
+
+
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
+    }
+
+
+    public String getComment_content() {
+        return this.comment_content;
+    }
+
+
+    public void setComment_content(String comment_content) {
+        this.comment_content = comment_content;
+    }
+
+
+    public long getFeed_user_id() {
+        return this.feed_user_id;
+    }
+
+
+    public void setFeed_user_id(long feed_user_id) {
+        this.feed_user_id = feed_user_id;
+    }
+
+
+    public long getUser_id() {
+        return this.user_id;
+    }
+
+
+    public void setUser_id(long user_id) {
+        this.user_id = user_id;
+    }
+
+
+    public long getReply_to_user_id() {
+        return this.reply_to_user_id;
+    }
+
+
+    public void setReply_to_user_id(long reply_to_user_id) {
+        this.reply_to_user_id = reply_to_user_id;
+    }
+
+
+    /** To-one relationship, resolved on first access. */
+    @Generated(hash = 397031426)
+    public UserInfoBean getCommentUser() {
+        long __key = this.user_id;
+        if (commentUser__resolvedKey == null || !commentUser__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            UserInfoBeanDao targetDao = daoSession.getUserInfoBeanDao();
+            UserInfoBean commentUserNew = targetDao.load(__key);
+            synchronized (this) {
+                commentUser = commentUserNew;
+                commentUser__resolvedKey = __key;
+            }
+        }
+        return commentUser;
+    }
+
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 1714457217)
+    public void setCommentUser(@NotNull UserInfoBean commentUser) {
+        if (commentUser == null) {
+            throw new DaoException(
+                    "To-one property 'user_id' has not-null constraint; cannot set to-one to null");
+        }
+        synchronized (this) {
+            this.commentUser = commentUser;
+            user_id = commentUser.getUser_id();
+            commentUser__resolvedKey = user_id;
+        }
+    }
+
+
+    /** To-one relationship, resolved on first access. */
+    @Generated(hash = 2112537803)
+    public UserInfoBean getReplyUser() {
+        long __key = this.reply_to_user_id;
+        if (replyUser__resolvedKey == null || !replyUser__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            UserInfoBeanDao targetDao = daoSession.getUserInfoBeanDao();
+            UserInfoBean replyUserNew = targetDao.load(__key);
+            synchronized (this) {
+                replyUser = replyUserNew;
+                replyUser__resolvedKey = __key;
+            }
+        }
+        return replyUser;
+    }
+
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 1942204408)
+    public void setReplyUser(@NotNull UserInfoBean replyUser) {
+        if (replyUser == null) {
+            throw new DaoException(
+                    "To-one property 'reply_to_user_id' has not-null constraint; cannot set to-one to null");
+        }
+        synchronized (this) {
+            this.replyUser = replyUser;
+            reply_to_user_id = replyUser.getUser_id();
+            replyUser__resolvedKey = reply_to_user_id;
+        }
+    }
+
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
      * Entity must attached to an entity context.
@@ -153,6 +223,7 @@ public class DynamicCommentBean implements Parcelable {
         }
         myDao.delete(this);
     }
+
 
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
@@ -166,6 +237,7 @@ public class DynamicCommentBean implements Parcelable {
         myDao.refresh(this);
     }
 
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
      * Entity must attached to an entity context.
@@ -178,11 +250,16 @@ public class DynamicCommentBean implements Parcelable {
         myDao.update(this);
     }
 
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 938647494)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getDynamicCommentBeanDao() : null;
+    }
+
+
+    public DynamicCommentBean() {
     }
 
     protected DynamicCommentBean(Parcel in) {
@@ -197,6 +274,7 @@ public class DynamicCommentBean implements Parcelable {
         this.replyUser = in.readParcelable(UserInfoBean.class.getClassLoader());
     }
 
+
     @Generated(hash = 1706591772)
     public DynamicCommentBean(Long comment_id, Long feed_mark, String created_at,
             String comment_content, long feed_user_id, long user_id, long reply_to_user_id) {
@@ -208,7 +286,6 @@ public class DynamicCommentBean implements Parcelable {
         this.user_id = user_id;
         this.reply_to_user_id = reply_to_user_id;
     }
-
 
     public static final Creator<DynamicCommentBean> CREATOR = new Creator<DynamicCommentBean>() {
         @Override
@@ -231,5 +308,4 @@ public class DynamicCommentBean implements Parcelable {
     private transient Long commentUser__resolvedKey;
     @Generated(hash = 1789712289)
     private transient Long replyUser__resolvedKey;
-
 }
