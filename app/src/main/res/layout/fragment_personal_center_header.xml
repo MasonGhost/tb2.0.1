@@ -39,7 +39,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/spacing_normal"
-        android:text="阿超的超能力"/>
+        android:textColor="@color/important_for_content"
+        android:textSize="@dimen/size_sub_title"
+        tools:text="阿超的超能力"/>
 
     <TextView
         android:id="@+id/tv_user_intro"
@@ -49,7 +51,9 @@
         android:layout_marginRight="@dimen/spacing_normal_large"
         android:layout_marginTop="@dimen/spacing_mid"
         android:gravity="center"
-        android:text="还有机会能够感觉，爱一个人的纯粹，你是我的小蝴蝶，我是你的小阿飞"/>
+        tools:text="还有机会能够感觉，爱一个人的纯粹，你是我的小蝴蝶，我是你的小阿飞"
+        android:textColor="@color/normal_for_assist_text"
+        android:textSize="@dimen/size_content_assist"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -63,14 +67,18 @@
             android:id="@+id/tv_user_follow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="关注 26"/>
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_content_assist"
+            tools:text="关注 26"/>
 
         <TextView
             android:id="@+id/tv_user_fans"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
-            android:text="粉丝 26"/>
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_content_assist"
+            tools:text="粉丝 26"/>
 
     </LinearLayout>
 </LinearLayout>

@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.personal_center;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -20,6 +21,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBoundTransform;
+import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.ZoomView;
@@ -255,10 +257,22 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         tv_user_name.setText(userInfoBean.getName());
         // 设置简介
         tv_user_intro.setText(userInfoBean.getIntro());
+
         // 设置关注人数
-        tv_user_follow.setText("关注 " + 100);
+        String followContent = "关注 " + "<" + 100 + ">";
+        CharSequence followString = ColorPhrase.from(followContent).withSeparator("<>")
+                .innerColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
+                .format();
+        tv_user_follow.setText(followString);
+
         // 设置粉丝人数
-        tv_user_fans.setText("粉丝 " + 204);
+        String fansContent = "粉丝 " + "<" + 204 + ">";
+        CharSequence fansString = ColorPhrase.from(fansContent).withSeparator("<>")
+                .innerColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
+                .format();
+        tv_user_fans.setText(fansString);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
