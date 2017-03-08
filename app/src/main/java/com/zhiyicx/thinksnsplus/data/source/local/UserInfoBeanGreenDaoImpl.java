@@ -2,13 +2,9 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
 
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
-
-import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.List;
 
@@ -65,6 +61,11 @@ public class UserInfoBeanGreenDaoImpl extends CommonCacheImpl<UserInfoBean> {
     public void deleteSingleCache(Long primaryKey) {
         UserInfoBeanDao userInfoBeanDao = getWDaoSession().getUserInfoBeanDao();
         userInfoBeanDao.deleteByKey(primaryKey);
+    }
+
+    @Override
+    public void deleteSingleCache(UserInfoBean dta) {
+
     }
 
     @Override

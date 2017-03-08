@@ -12,7 +12,7 @@ import dagger.Component;
  * @date 2017/3/7
  * @contact email:450127106@qq.com
  */
-/*@FragmentScoped
-@Component(modules = PersonalCenterPresenterModule.class, dependencies = AppComponent.class)*/
+@FragmentScoped
+@Component(modules = PersonalCenterPresenterModule.class, dependencies = AppComponent.class)
 public interface PersonalCenterPresenterComponent extends InjectComponent<PersonalCenterActivity> {
 }

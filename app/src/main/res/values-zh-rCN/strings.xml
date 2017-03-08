@@ -72,6 +72,8 @@
 
     <!--动态列表-->
     <string name="dynamic_list_more_comment">查看全部评论</string>
+    <string name="dynamic_list_delete_comment">删除评论</string>
+    <string name="reply">回复%s:</string>
     <!--发布动态-->
     <string name="send_dynamic">发布动态</string>
     <string name="dynamic_title_hint">有标题更吸引人</string>
@@ -82,6 +84,9 @@
     <string name="dynamic_viewer_count">%1$d人浏览</string>
     <string name="dynamic_like">喜欢</string>
     <string name="dig_list">点赞榜</string>
+
+    <!--个人中心-->
+    <string name="chat">聊天</string>
 
     <!--代码中的string-->
     <string name="token_expiers">token过期，请重新登陆</string>

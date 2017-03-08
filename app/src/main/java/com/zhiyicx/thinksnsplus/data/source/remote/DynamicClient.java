@@ -88,4 +88,5 @@ public interface DynamicClient {
      */
     @DELETE(ApiConfig.APP_PATH_HANDLE_COLLECT)
     Observable<BaseJson<Object>> cancleCollectDynamic(@Path("feed_id") Long feed_id);
+
 }

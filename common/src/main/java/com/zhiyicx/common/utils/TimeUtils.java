@@ -83,7 +83,7 @@ public class TimeUtils {
                 result = getStandardTimeWithMothAndDay(timesamp);
                 break;
         }
-        return handleDetailTime(timesamp);
+        return result;
     }
 
 
@@ -119,7 +119,6 @@ public class TimeUtils {
      * @return 友好时间字符串
      */
     public static String getTimeFriendlyForDetail(String timestr) {
-        String result = "1分钟前";
         long timesamp = string2Millis(timestr);
         return handleDetailTime(timesamp);
     }
@@ -326,7 +325,7 @@ public class TimeUtils {
     public static long string2Millis(String time, String pattern) {
         try {
             return new SimpleDateFormat(pattern, Locale.getDefault()).parse(time).getTime();
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return -1;

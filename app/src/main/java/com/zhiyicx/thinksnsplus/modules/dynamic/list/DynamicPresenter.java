@@ -7,6 +7,7 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
@@ -205,7 +206,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
         if (localDynamicBean != null) {
             switch (mRootView.getDynamicType()) {
                 case ApiConfig.DYNAMIC_TYPE_FOLLOWS:
-                    if (localDynamicBean.getHot_creat_time() != null && dynamicBeanTmp.getHot_creat_time() != 0) {
+                    if (localDynamicBean.getHot_creat_time() != null && localDynamicBean.getHot_creat_time() != 0) {
                         dynamicBeanTmp.setHot_creat_time(localDynamicBean.getHot_creat_time());
                     }
                     break;
@@ -325,5 +326,61 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
     }
 
+    @Override
+    public void deleteComment(DynamicBean dynamicBean,int dynamicPosition, long comment_id, int commentPositon) {
+        mRootView.getDatas().get(dynamicPosition).getTool().setFeed_comment_count(dynamicBean.getTool().getFeed_comment_count() - 1);
+        mRootView.getDatas().get(dynamicPosition).getComments().remove(commentPositon);
+        mRootView.refresh(dynamicPosition);
+        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getDatas().get(dynamicPosition).getTool());
+        mDynamicCommentBeanGreenDao.deleteSingleCache(dynamicBean.getComments().get(commentPositon));
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("feed_id", dynamicBean.getFeed_id());
+        params.put("comment_id", comment_id);
+        // 后台处理
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_DELETE_COMMENT, dynamicBean.getFeed_id(), comment_id));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+    }
+
+    /**
+     * send a commment
+     *
+     * @param mCurrentPostion current dynamic position
+     * @param replyToUserId   comment  to who
+     * @param commentContent  comment content
+     */
+    @Override
+    public void sendComment(int mCurrentPostion, long replyToUserId, String commentContent) {
+
+        DynamicCommentBean creatComment = new DynamicCommentBean();
+        creatComment.setComment_content(commentContent);
+        creatComment.setFeed_mark(mRootView.getDatas().get(mCurrentPostion).getFeed_mark());
+        String comment_mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis();
+        creatComment.setComment_mark(Long.parseLong(comment_mark));
+        creatComment.setReply_to_user_id(replyToUserId);
+        creatComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
+        creatComment.setCreated_at(TimeUtils.millis2String(System.currentTimeMillis()));
+        List<DynamicCommentBean> commentBeanList = new ArrayList<>();
+        commentBeanList.add(creatComment);
+        commentBeanList.addAll(mRootView.getDatas().get(mCurrentPostion).getComments());
+        mRootView.getDatas().get(mCurrentPostion).getComments().clear();
+        mRootView.getDatas().get(mCurrentPostion).getComments().addAll(commentBeanList);
+        mRootView.getDatas().get(mCurrentPostion).getTool().setFeed_comment_count(mRootView.getDatas().get(mCurrentPostion).getTool().getFeed_comment_count() + 1);
+        mRootView.refresh(mCurrentPostion);
+
+        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getDatas().get(mCurrentPostion).getTool());
+        mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
+        
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("comment_content", commentContent);
+        params.put("reply_to_user_id", replyToUserId);
+        // 后台处理
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST, params);
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_SEND_COMMENT, mRootView.getDatas().get(mCurrentPostion).getFeed_id()));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+
+    }
 
 }

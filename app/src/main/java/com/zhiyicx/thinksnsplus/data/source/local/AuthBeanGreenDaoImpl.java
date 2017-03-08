@@ -62,6 +62,11 @@ public class AuthBeanGreenDaoImpl extends CommonCacheImpl<AuthBean> {
     }
 
     @Override
+    public void deleteSingleCache(AuthBean dta) {
+
+    }
+
+    @Override
     public void updateSingleData(AuthBean newData) {
         AuthBeanDao authBeanDao = getWDaoSession().getAuthBeanDao();
         authBeanDao.update(newData);

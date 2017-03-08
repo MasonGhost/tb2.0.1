@@ -56,6 +56,11 @@ public class EditConfigBeanDaoImpl extends CommonCacheImpl<EditConfigBean> {
 
     }
 
+    @Override
+    public void deleteSingleCache(EditConfigBean dta) {
+
+    }
+
 
     @Override
     public void updateSingleData(EditConfigBean newData) {
