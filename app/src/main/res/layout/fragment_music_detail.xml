@@ -4,56 +4,6 @@
     android:background="@color/white"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/fragment_music_detail_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <View
-            android:id="@+id/fragment_music_detail_empty"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/spacing_large"/>
-
-        <TextView
-            android:id="@+id/fragment_music_detail_back"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/music_album_detail_head_height_64dp"
-            android:layout_below="@+id/fragment_music_detail_empty"
-            android:drawableLeft="@mipmap/topbar_back_white"
-            android:gravity="center_vertical"
-            android:padding="@dimen/spacing_normal"
-            android:textColor="@color/white"/>
-
-        <LinearLayout
-            android:layout_toRightOf="@+id/fragment_music_detail_back"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:layout_below="@+id/fragment_music_detail_empty"
-            android:orientation="vertical">
-
-            <TextView
-                android:visibility="gone"
-                android:id="@+id/fragment_music_detail_center_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Climber's High"
-                android:textColor="@color/white"
-                android:textSize="@dimen/size_primary_title"/>
-
-            <TextView
-                android:visibility="gone"
-                android:id="@+id/fragment_music_detail_center_sub_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="踏风而来，随风而去"
-                android:textColor="@color/white"
-                android:textSize="@dimen/size_content"/>
-
-        </LinearLayout>
-
-    </RelativeLayout>
-
     <com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout
         android:id="@+id/fragment_music_detail_scrollview"
         android:layout_width="match_parent"
@@ -192,6 +142,57 @@
             android:overScrollMode="never"/>
 
     </com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout>
+
+    <RelativeLayout
+        android:background="@android:color/transparent"
+        android:id="@+id/fragment_music_detail_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/fragment_music_detail_empty"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_large"/>
+
+        <TextView
+            android:id="@+id/fragment_music_detail_back"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/music_album_detail_head_height_64dp"
+            android:layout_below="@+id/fragment_music_detail_empty"
+            android:drawableLeft="@mipmap/topbar_back_white"
+            android:gravity="center_vertical"
+            android:padding="@dimen/spacing_normal"
+            android:textColor="@color/white"/>
+
+        <LinearLayout
+            android:layout_toRightOf="@+id/fragment_music_detail_back"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_below="@+id/fragment_music_detail_empty"
+            android:orientation="vertical">
+
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/fragment_music_detail_center_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Climber's High"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_primary_title"/>
+
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/fragment_music_detail_center_sub_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="踏风而来，随风而去"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_content"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <android.support.v7.widget.CardView
         android:id="@+id/controls_container"
