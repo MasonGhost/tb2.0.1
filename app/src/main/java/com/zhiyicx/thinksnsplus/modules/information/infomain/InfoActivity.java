@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.information.infomain;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSActivity;
@@ -34,4 +35,5 @@ public class InfoActivity extends TSActivity {
         ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),mContanierFragment,
                 R.id.fl_fragment_container);
     }
+
 }
