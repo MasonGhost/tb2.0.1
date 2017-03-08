@@ -4,13 +4,15 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:background="@color/white"
+              android:gravity="center_horizontal"
               android:orientation="vertical">
     <!--个人中心页面头部-->
     <!--当前FrameLayout的高度为屏幕宽度的一半加上20dp-->
     <FrameLayout
         android:id="@+id/fl_cover_contaner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
 
         <ImageView
             android:id="@+id/iv_background_cover"
@@ -18,6 +20,7 @@
             android:layout_height="match_parent"
             android:layout_marginBottom="@dimen/spacing_large"
             android:scaleType="centerCrop"
+            android:layout_gravity="center"
             android:src="@drawable/girl_xinyuanjieyi"/>
 
         <ImageView
