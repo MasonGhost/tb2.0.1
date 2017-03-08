@@ -1,10 +1,12 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import android.app.Application;
 import android.content.Context;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterContract;
@@ -22,13 +24,14 @@ import rx.functions.Func1;
  * @contact email:450127106@qq.com
  */
 
-public class PersonalCenterRepository implements PersonalCenterContract.Repository {
+public class PersonalCenterRepository extends BaseDynamicRepository implements PersonalCenterContract.Repository {
     private UserInfoRepository mUserInfoRepository;
     private BaseDynamicRepository mBaseDynamicRepository;
 
-    public PersonalCenterRepository(ServiceManager serviceManager, Context context) {
+    public PersonalCenterRepository(ServiceManager serviceManager, Application application) {
+        super(serviceManager, application);
         mUserInfoRepository = new UserInfoRepository(serviceManager);
-        mBaseDynamicRepository = new BaseDynamicRepository(serviceManager, context);
+        mBaseDynamicRepository = new BaseDynamicRepository(serviceManager, application);
     }
 
     @Override
@@ -60,5 +63,27 @@ public class PersonalCenterRepository implements PersonalCenterContract.Reposito
     public Observable<BaseJson<List<DynamicBean>>> getDynamicListForSomeone(Long user_id, Long max_id) {
         String type = String.format(ApiConfig.DYNAMIC_TYPE_SOMEONE, user_id);
         return mBaseDynamicRepository.getDynamicList(type, max_id, 0);
+    }
+
+    @Override
+    public Observable<BaseJson<FollowFansBean>> getUserFollowState(String user_ids) {
+        return mUserInfoRepository.getUserFollowState(user_ids)
+                .map(new Func1<BaseJson<List<FollowFansBean>>, BaseJson<FollowFansBean>>() {
+                    @Override
+                    public BaseJson<FollowFansBean> call(BaseJson<List<FollowFansBean>> listBaseJson) {
+                        BaseJson<FollowFansBean> beanBaseJson = new BaseJson<FollowFansBean>();
+                        List<FollowFansBean> followFansBeanList = listBaseJson.getData();
+                        if (listBaseJson.isStatus() && followFansBeanList != null && !followFansBeanList.isEmpty()) {
+                            // 肯定最多返回一条用户数据
+                            beanBaseJson.setData(followFansBeanList.get(0));
+                        } else {
+                            beanBaseJson.setData(null);
+                        }
+                        beanBaseJson.setStatus(listBaseJson.isStatus());
+                        beanBaseJson.setMessage(listBaseJson.getMessage());
+                        beanBaseJson.setCode(listBaseJson.getCode());
+                        return beanBaseJson;
+                    }
+                });
     }
 }

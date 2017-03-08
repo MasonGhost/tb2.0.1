@@ -1,14 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -17,20 +12,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBoundTransform;
-import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
-import com.zhiyicx.common.utils.ZoomView;
-import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailItemForDig;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForEightImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForFiveImage;
@@ -49,9 +38,14 @@ import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.functions.Action1;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @author LiuChao
@@ -70,12 +64,20 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     ImageView mIvMore;
     @BindView(R.id.rl_toolbar_container)
     RelativeLayout mRlToolbarContainer;
+    @BindView(R.id.tv_follow)
+    TextView mTvFollow;
+    @BindView(R.id.ll_follow_container)
+    LinearLayout mLlFollowContainer;
+    @BindView(R.id.ll_chat_container)
+    LinearLayout mLlChatContainer;
 
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     private PersonalCenterHeaderViewItem mPersonalCenterHeaderViewItem;
     private List<DynamicBean> mDynamicBeens = new ArrayList<>();
     // 当前需要显示的用户的id
     private long currentUserId = 5;
+    // 关注状态
+    private FollowFansBean mFollowFansBean;
 
 
     @Override
@@ -85,6 +87,20 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
         mPersonalCenterHeaderViewItem = new PersonalCenterHeaderViewItem(getActivity(), mRvList, mHeaderAndFooterWrapper);
         mPersonalCenterHeaderViewItem.initHeaderView();
+        // 添加关注点击事件
+        RxView.clicks(mTvFollow)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        // 表示第一次进入界面加载正确的关注状态，后续才能进行关注操作
+                        if (mFollowFansBean != null) {
+                            mPresenter.handleFollow(mFollowFansBean);
+                        }
+                    }
+                });
+
     }
 
 
@@ -210,6 +226,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 break;
             case R.id.iv_more:
                 break;
+
         }
     }
 
@@ -218,10 +235,39 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mPersonalCenterHeaderViewItem.initHeaderViewData(userInfoBean);
     }
 
+    @Override
+    public void setFollowState(FollowFansBean followFansBean) {
+        mFollowFansBean = followFansBean;
+        setBottomFollowState(followFansBean.getFollowState());
+    }
+
     private void initToolBar() {
         // toolBar设置状态栏高度的marginTop
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(0, DeviceUtils.getStatuBarHeight(getContext()), 0, 0);
         mRlToolbarContainer.setLayoutParams(layoutParams);
     }
+
+    /**
+     * 设置底部view的关注状态
+     */
+    private void setBottomFollowState(int state) {
+        mToolbarRight.setVisibility(View.VISIBLE);
+        switch (state) {
+            case FollowFansBean.UNFOLLOWED_STATE:
+                mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_follow), null, null, null);
+                mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
+                break;
+            case FollowFansBean.IFOLLOWED_STATE:
+                mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_followed), null, null, null);
+                mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
+                break;
+            case FollowFansBean.FOLLOWED_EACHOTHER_STATE:
+                mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_followed_eachother), null, null, null);
+                mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
+                break;
+            default:
+        }
+    }
+
 }
