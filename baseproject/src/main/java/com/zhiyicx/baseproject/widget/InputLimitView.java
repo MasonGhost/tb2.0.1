@@ -30,6 +30,11 @@ public class InputLimitView extends FrameLayout {
 
     protected TextView mTvLimitTip;
     protected Button mBtSend;
+
+    public EditText getEtContent() {
+        return mEtContent;
+    }
+
     protected EditText mEtContent;
 
     private int mLimitMaxSize;// 最大输入值
@@ -140,10 +145,22 @@ public class InputLimitView extends FrameLayout {
     }
 
     /**
+     * 设置 hint
+     * @param hintStr
+     */
+    public void setEtContentHint(String hintStr) {
+        mEtContent.setHint(hintStr);
+    }
+
+    /**
      * 清除焦点
      */
     public void clearFocus() {
         mEtContent.clearFocus();
+    }
+
+    public void getFocus(){
+        mEtContent.requestFocus();
     }
 
     /**

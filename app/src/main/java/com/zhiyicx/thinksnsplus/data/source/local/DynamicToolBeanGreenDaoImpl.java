@@ -59,6 +59,11 @@ public class DynamicToolBeanGreenDaoImpl extends CommonCacheImpl<DynamicToolBean
     }
 
     @Override
+    public void deleteSingleCache(DynamicToolBean dta) {
+
+    }
+
+    @Override
     public void updateSingleData(DynamicToolBean newData) {
 
     }

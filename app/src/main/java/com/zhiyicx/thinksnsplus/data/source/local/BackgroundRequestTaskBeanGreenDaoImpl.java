@@ -59,6 +59,11 @@ public class BackgroundRequestTaskBeanGreenDaoImpl extends CommonCacheImpl<Backg
     }
 
     @Override
+    public void deleteSingleCache(BackgroundRequestTaskBean dta) {
+
+    }
+
+    @Override
     public void updateSingleData(BackgroundRequestTaskBean newData) {
         BackgroundRequestTaskBeanDao backgroundRequestTaskBeanDao = getWDaoSession().getBackgroundRequestTaskBeanDao();
         backgroundRequestTaskBeanDao.update(newData);

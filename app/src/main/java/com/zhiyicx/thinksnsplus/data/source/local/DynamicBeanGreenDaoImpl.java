@@ -60,6 +60,11 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
     }
 
     @Override
+    public void deleteSingleCache(DynamicBean dta) {
+
+    }
+
+    @Override
     public void updateSingleData(DynamicBean newData) {
 
     }

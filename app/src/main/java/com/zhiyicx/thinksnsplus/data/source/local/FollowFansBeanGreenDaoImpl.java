@@ -8,8 +8,6 @@ import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
-import org.greenrobot.greendao.query.QueryBuilder;
-
 import java.util.List;
 
 /**
@@ -55,6 +53,11 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
 
     @Override
     public void deleteSingleCache(Long primaryKey) {
+
+    }
+
+    @Override
+    public void deleteSingleCache(FollowFansBean dta) {
 
     }
 

@@ -37,7 +37,6 @@ public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<Dynami
     public DynamicNoPullRecycleView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
-
     @Override
     protected String setShowText(DynamicCommentBean dynamicCommentBean, int position) {
         return handleName(dynamicCommentBean);
@@ -49,7 +48,7 @@ public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<Dynami
         Link commentNameLink = new Link(dynamicCommentBean.getCommentUser().getName())
                 .setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content))                  // optional, defaults to holo blue
                 .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color.general_for_hint)) // optional, defaults to holo blue
-                .setHighlightAlpha(.5f)                                     // optional, defaults to .15f
+                .setHighlightAlpha(.8f)                                     // optional, defaults to .15f
                 .setUnderlined(false)                                       // optional, defaults to true
                 .setOnLongClickListener(new Link.OnLongClickListener() {
                     @Override
