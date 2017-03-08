@@ -13,5 +13,6 @@
     <dimen name="head1_right_margin">74dp</dimen>
     <!--个人中心动态数量view高度-->
     <dimen name="personal_center_dynamic_count_view_height">37dp</dimen>
+    <dimen name="personal_center_bottom_view_height">46dp</dimen>
 
 </resources>
