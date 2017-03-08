@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.widget.SimpleTextNoPullRecycleView;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -105,6 +106,12 @@ public class DynamicListCommentView extends LinearLayout {
                 if (!mIsUserNameClick) {
                     mIsUserNameClick = true;
                 }
+            }
+        });
+        setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LogUtils.d("DynamicListCommentView is clicke");
             }
         });
     }

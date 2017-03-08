@@ -205,7 +205,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
         if (localDynamicBean != null) {
             switch (mRootView.getDynamicType()) {
                 case ApiConfig.DYNAMIC_TYPE_FOLLOWS:
-                    if (localDynamicBean.getHot_creat_time() != null && dynamicBeanTmp.getHot_creat_time() != 0) {
+                    if (localDynamicBean.getHot_creat_time() != null && localDynamicBean.getHot_creat_time() != 0) {
                         dynamicBeanTmp.setHot_creat_time(localDynamicBean.getHot_creat_time());
                     }
                     break;
@@ -323,6 +323,16 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
         params.put("params", mRootView.getDatas().get(position).getFeed_mark());
         backgroundRequestTaskBean.setParams(params);
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+    }
+
+    @Override
+    public void deleteComment(long feed_id, long comment_id) {
+        
+    }
+
+    @Override
+    public void sendComment(long feed_id, int reply_to_user_id, String comment_content) {
+
     }
 
 

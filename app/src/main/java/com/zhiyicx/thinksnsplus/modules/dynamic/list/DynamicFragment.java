@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -13,6 +14,7 @@ import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.pictureviewer.core.ImageInfo;
 import com.zhiyicx.baseproject.widget.pictureviewer.core.ParcelableSparseArray;
 import com.zhiyicx.baseproject.widget.pictureviewer.core.PhotoView;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -45,7 +47,10 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 
+import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_POSITION;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.LOOK_COMMENT_MORE;
 
 /**
  * @Describe 动态列表
@@ -66,6 +71,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
 
     private List<DynamicBean> mDynamicBeens = new ArrayList<>();
+    private ActionPopupWindow mDeletCommentPopWindow;
 
     public void setOnImageClickListener(OnImageClickListener onImageClickListener) {
         mOnImageClickListener = onImageClickListener;
@@ -272,9 +278,15 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        goDynamicDetail(position, false);
+    }
+
+    private void goDynamicDetail(int position, boolean isLookMoreComment) {
         Intent intent = new Intent(getActivity(), DynamicDetailActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(DYNAMIC_DETAIL_DATA, mAdapter.getItem(position));
+        bundle.putInt(DYNAMIC_DETAIL_DATA_POSITION, position);
+        bundle.putBoolean(LOOK_COMMENT_MORE, isLookMoreComment);
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -333,15 +345,51 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void onCommentContentClick(DynamicBean dynamicBean, int position) {
-        System.out.println("dynamicBean.getComments().get(position) = " + dynamicBean.getComments().get(position).getComment_content());
-        showMessage(dynamicBean.getComments().get(position).getComment_content());
+        if (dynamicBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
+            ActivityUtils.dimBackground(getActivity(), .5f, 1f);
+        } else {
+            mIlvComment.setVisibility(View.VISIBLE);
+            mIlvComment.setFocusable(true);
+            ActivityUtils.dimBackground(getActivity(), 1.0f, 0.5f);
+        }
+
     }
 
     @Override
     public void onMoreCommentClick(View view, DynamicBean dynamicBean) {
-        showMessage(dynamicBean.getComments().size()+"");
+        goDynamicDetail(mAdapter.getDatas().indexOf(dynamicBean), true);
     }
 
+    /**
+     * 初始化评论删除选择弹框
+     */
+    private void initLoginOutPopupWindow() {
+        if (mDeletCommentPopWindow != null) {
+            return;
+        }
+        mDeletCommentPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.dynamic_list_delete_comment))
+                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+                        mDeletCommentPopWindow.hide();
+                        mPresenter.deleteComment(123,12);
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mDeletCommentPopWindow.hide();
+                    }
+                })
+                .build();
+    }
 
     public interface OnImageClickListener {
         void onImageClick(List<ImageBean> images, ParcelableSparseArray<ImageInfo> infos, int position);

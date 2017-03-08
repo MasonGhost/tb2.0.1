@@ -72,6 +72,7 @@
 
     <!--动态列表-->
     <string name="dynamic_list_more_comment">查看全部评论</string>
+    <string name="dynamic_list_delete_comment">删除评论</string>
     <!--发布动态-->
     <string name="send_dynamic">发布动态</string>
     <string name="dynamic_title_hint">有标题更吸引人</string>
