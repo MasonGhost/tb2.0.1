@@ -20,11 +20,11 @@ public class PersonalCenterDynamicCountItem implements ItemViewDelegate<DynamicB
 
     @Override
     public boolean isForViewType(DynamicBean item, int position) {
-        return position == 0;
+        return item.getFeed() == null;
     }
 
     @Override
     public void convert(ViewHolder holder, DynamicBean dynamicBean, DynamicBean lastT, int position) {
-        
+        holder.setText(R.id.tv_dynamic_count, holder.getConvertView().getContext().getString(R.string.dynamic_count, dynamicBean.getMyDyanamicListCount()));
     }
 }

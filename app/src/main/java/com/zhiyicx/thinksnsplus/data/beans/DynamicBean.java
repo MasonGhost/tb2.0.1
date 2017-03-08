@@ -54,6 +54,8 @@ public class DynamicBean extends BaseListBean {
 
     @Transient
     private List<FollowFansBean> digUserInfoList;// 点赞用户的信息列表
+    @Transient
+    private int myDyanamicListCount;// 某个用户的动态数量
 
     public DynamicBean() {
     }
@@ -115,6 +117,14 @@ public class DynamicBean extends BaseListBean {
         this.state = state;
     }
 
+    public int getMyDyanamicListCount() {
+        return myDyanamicListCount;
+    }
+
+    public void setMyDyanamicListCount(int myDyanamicListCount) {
+        this.myDyanamicListCount = myDyanamicListCount;
+    }
+
     @Keep
     public DynamicDetailBean getFeed() {
         return feed;
@@ -144,7 +154,6 @@ public class DynamicBean extends BaseListBean {
     public void setUserInfoBean(UserInfoBean userInfoBean) {
         this.userInfoBean = userInfoBean;
     }
-
 
 
     @Keep
