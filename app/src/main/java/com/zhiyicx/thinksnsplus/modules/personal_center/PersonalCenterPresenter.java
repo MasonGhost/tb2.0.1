@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center;
 
+import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -8,6 +9,8 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -19,8 +22,13 @@ import rx.schedulers.Schedulers;
  * @date 2017/3/7
  * @contact email:450127106@qq.com
  */
-
+@FragmentScoped
 public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContract.Repository, PersonalCenterContract.View> implements PersonalCenterContract.Presenter {
+    @Inject
+    public PersonalCenterPresenter(PersonalCenterContract.Repository repository, PersonalCenterContract.View rootView) {
+        super(repository, rootView);
+    }
+
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
 
@@ -44,7 +52,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
                 .subscribe(new BaseSubscribe<UserInfoBean>() {
                     @Override
                     protected void onSuccess(UserInfoBean data) {
-
+                        mRootView.setHeaderInfo(data);
                     }
 
                     @Override

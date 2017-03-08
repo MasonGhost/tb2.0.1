@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBoundTransform;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -60,7 +61,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     private List<DynamicBean> mDynamicBeens = new ArrayList<>();
     // 当前需要显示的用户的id
-    private long currentUserId;
+    private long currentUserId = 5;
 
     /**********************************
      * headerView控件
@@ -126,19 +127,20 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     protected void initData() {
-
+        // 获取个人主页用户信息，显示在headerView中
+        mPresenter.setCurrentUserInfo(currentUserId);
     }
 
     @Override
     public void setPresenter(PersonalCenterContract.Presenter presenter) {
-
+        this.mPresenter = presenter;
     }
 
     @Override
     public void showLoading() {
 
     }
-    
+
     @Override
     public void hideLoading() {
 
@@ -216,7 +218,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mHeaderAndFooterWrapper.addHeaderView(headerView);
         mRvList.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
-        mPresenter.setCurrentUserInfo(currentUserId);
+
     }
 
     private void initHeaderViewUI(View headerView) {
@@ -236,14 +238,16 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         fl_cover_contaner.setLayoutParams(containerLayoutParams);
         // 添加头部放缩
         new ZoomView(fl_cover_contaner, getActivity(), mRvList, width, height).initZoom();
-        mHeaderAndFooterWrapper.notifyDataSetChanged();
+
     }
 
     private void initHeaderViewData(UserInfoBean userInfoBean) {
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         // 显示头像
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url(userInfoBean.getAvatar())
+                .url(String.format(ApiConfig.IMAGE_PATH, userInfoBean.getAvatar(), 50))
+                .placeholder(R.drawable.shape_default_image_circle)
+                .errorPic(R.drawable.shape_default_image_circle)
                 .imagerView(iv_head_icon)
                 .transformation(new GlideCircleBoundTransform(getContext()))
                 .build());
@@ -255,6 +259,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         tv_user_follow.setText("关注 " + 100);
         // 设置粉丝人数
         tv_user_fans.setText("粉丝 " + 204);
+        mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
     private void initToolBar() {
