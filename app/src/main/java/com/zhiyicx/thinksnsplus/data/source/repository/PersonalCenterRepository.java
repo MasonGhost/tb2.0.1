@@ -1,6 +1,10 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import android.content.Context;
+
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterContract;
@@ -20,9 +24,11 @@ import rx.functions.Func1;
 
 public class PersonalCenterRepository implements PersonalCenterContract.Repository {
     private UserInfoRepository mUserInfoRepository;
+    private BaseDynamicRepository mBaseDynamicRepository;
 
-    public PersonalCenterRepository(ServiceManager serviceManager) {
+    public PersonalCenterRepository(ServiceManager serviceManager, Context context) {
         mUserInfoRepository = new UserInfoRepository(serviceManager);
+        mBaseDynamicRepository = new BaseDynamicRepository(serviceManager, context);
     }
 
     @Override
@@ -48,5 +54,11 @@ public class PersonalCenterRepository implements PersonalCenterContract.Reposito
                         return beanBaseJson;
                     }
                 });
+    }
+
+    @Override
+    public Observable<BaseJson<List<DynamicBean>>> getDynamicListForSomeone(Long user_id, Long max_id) {
+        String type = String.format(ApiConfig.DYNAMIC_TYPE_SOMEONE, user_id);
+        return mBaseDynamicRepository.getDynamicList(type, max_id, 0);
     }
 }

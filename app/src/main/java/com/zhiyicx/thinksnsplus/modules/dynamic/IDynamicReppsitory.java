@@ -71,4 +71,5 @@ public interface IDynamicReppsitory {
      * 获取动态点赞列表
      */
     Observable<BaseJson<List<FollowFansBean>>> getDynamicDigList(Long feed_id, Long max_id);
+
 }

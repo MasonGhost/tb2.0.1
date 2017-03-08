@@ -40,6 +40,35 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
     }
 
     @Override
+    public void requestNetData(Long maxId, final boolean isLoadMore, long user_id) {
+        Subscription subscription = mRepository.getDynamicListForSomeone(user_id, maxId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribe<List<DynamicBean>>() {
+                    @Override
+                    protected void onSuccess(List<DynamicBean> data) {
+                        // 添加动态条数的数据,用来显示动态数量的item
+                        if (data != null) {
+                            int dynamicCount = data.size();
+                            DynamicBean dynamicBean = new DynamicBean();
+                        }
+                        mRootView.onNetResponseSuccess(data, isLoadMore);
+                    }
+
+                    @Override
+                    protected void onFailure(String message) {
+                        mRootView.showMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        mRootView.onResponseError(throwable, isLoadMore);
+                    }
+                });
+        addSubscrebe(subscription);
+    }
+
+    @Override
     public boolean insertOrUpdateData(@NotNull List<DynamicBean> data) {
         return false;
     }
@@ -67,4 +96,6 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
                 });
         addSubscrebe(subscription);
     }
+
+
 }

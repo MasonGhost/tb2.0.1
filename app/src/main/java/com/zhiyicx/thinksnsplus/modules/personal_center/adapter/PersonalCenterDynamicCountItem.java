@@ -25,6 +25,6 @@ public class PersonalCenterDynamicCountItem implements ItemViewDelegate<DynamicB
 
     @Override
     public void convert(ViewHolder holder, DynamicBean dynamicBean, DynamicBean lastT, int position) {
-
+        
     }
 }

@@ -44,7 +44,7 @@ public class DynamicDetailItemForDig implements ItemViewDelegate<DynamicBean> {
 
     @Override
     public boolean isForViewType(DynamicBean item, int position) {
-        return true;
+        return position == 1;
     }
 
     @Override
@@ -53,7 +53,7 @@ public class DynamicDetailItemForDig implements ItemViewDelegate<DynamicBean> {
         DynamicHorizontalStackIconView dynamicHorizontalStackIconView = holder.getView(R.id.detail_dig_view);
         final DynamicDetailBean dynamicDetailBean = dynamicBean.getFeed();
         DynamicToolBean dynamicToolBean = dynamicBean.getTool();
-        if(dynamicToolBean==null){
+        if (dynamicToolBean == null) {
             return;
         }
         dynamicHorizontalStackIconView.setDigCount(dynamicToolBean.getFeed_digg_count());

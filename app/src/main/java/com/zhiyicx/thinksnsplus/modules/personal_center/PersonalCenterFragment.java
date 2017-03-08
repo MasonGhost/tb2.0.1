@@ -32,6 +32,16 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailItemForDig;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForEightImage;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForFiveImage;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForFourImage;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForNineImage;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForOneImage;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForSevenImage;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForSixImage;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForThreeImage;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForTwoImage;
+import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicCountItem;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -77,6 +87,12 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mPersonalCenterHeaderViewItem.initHeaderView();
     }
 
+
+    @Override
+    protected void requestNetData(Long maxId, boolean isLoadMore) {
+        mPresenter.requestNetData(maxId, isLoadMore, currentUserId);
+    }
+
     @Override
     protected boolean getPullDownRefreshEnable() {
         return false;
@@ -99,15 +115,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     protected MultiItemTypeAdapter<DynamicBean> getAdapter() {
-        mDynamicBeens.add(new DynamicBean());
-        mDynamicBeens.add(new DynamicBean());
-        mDynamicBeens.add(new DynamicBean());
-        mDynamicBeens.add(new DynamicBean());
-        mDynamicBeens.add(new DynamicBean());
-
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mDynamicBeens);
-        adapter.addItemViewDelegate(new DynamicDetailItemForDig());
-      /*  setAdapter(adapter, new DynamicListBaseItem(getContext()));
+        adapter.addItemViewDelegate(new PersonalCenterDynamicCountItem());
+        setAdapter(adapter, new DynamicListBaseItem(getContext()));
         setAdapter(adapter, new DynamicListItemForOneImage(getContext()));
         setAdapter(adapter, new DynamicListItemForTwoImage(getContext()));
         setAdapter(adapter, new DynamicListItemForThreeImage(getContext()));
@@ -116,7 +126,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         setAdapter(adapter, new DynamicListItemForSixImage(getContext()));
         setAdapter(adapter, new DynamicListItemForSevenImage(getContext()));
         setAdapter(adapter, new DynamicListItemForEightImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForNineImage(getContext()));*/
+        setAdapter(adapter, new DynamicListItemForNineImage(getContext()));
         return adapter;
     }
 
@@ -124,6 +134,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     protected void initData() {
         // 获取个人主页用户信息，显示在headerView中
         mPresenter.setCurrentUserInfo(currentUserId);
+        // 获取动态列表
+        mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false, currentUserId);
     }
 
     @Override

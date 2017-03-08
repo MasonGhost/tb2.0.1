@@ -36,9 +36,23 @@ public interface PersonalCenterContract {
          * @return
          */
         Observable<BaseJson<UserInfoBean>> getCurrentUserInfo(Long userId);
+
+        /**
+         * 获取某个人的动态列表
+         */
+        Observable<BaseJson<List<DynamicBean>>> getDynamicListForSomeone(Long user_id, Long max_id);
     }
 
     interface Presenter extends ITSListPresenter<DynamicBean> {
         void setCurrentUserInfo(Long userId);
+
+        /**
+         * 获取该用户的动态列表
+         *
+         * @param maxId
+         * @param isLoadMore
+         * @param user_id
+         */
+        void requestNetData(Long maxId, boolean isLoadMore, long user_id);
     }
 }
