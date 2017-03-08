@@ -32,6 +32,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailItemForDig;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
+import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
@@ -61,27 +62,19 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     RelativeLayout mRlToolbarContainer;
 
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
+    private PersonalCenterHeaderViewItem mPersonalCenterHeaderViewItem;
     private List<DynamicBean> mDynamicBeens = new ArrayList<>();
     // 当前需要显示的用户的id
     private long currentUserId = 5;
-
-    /**********************************
-     * headerView控件
-     ********************************/
-    private FrameLayout fl_cover_contaner;// 封面图的容器
-    private ImageView iv_background_cover;// 封面
-    private ImageView iv_head_icon;// 用户头像
-    private TextView tv_user_name;// 用户名
-    private TextView tv_user_intro;// 用户简介
-    private TextView tv_user_follow;// 用户关注数量
-    private TextView tv_user_fans;// 用户粉丝数量
 
 
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         initToolBar();
-        initHeaderView();
+        mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
+        mPersonalCenterHeaderViewItem = new PersonalCenterHeaderViewItem(getActivity(), mRvList, mHeaderAndFooterWrapper);
+        mPersonalCenterHeaderViewItem.initHeaderView();
     }
 
     @Override
@@ -210,70 +203,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void setHeaderInfo(UserInfoBean userInfoBean) {
-        initHeaderViewData(userInfoBean);
-    }
-
-    private void initHeaderView() {
-        mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
-        View headerView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_personal_center_header, null);
-        initHeaderViewUI(headerView);
-        mHeaderAndFooterWrapper.addHeaderView(headerView);
-        mRvList.setAdapter(mHeaderAndFooterWrapper);
-        mHeaderAndFooterWrapper.notifyDataSetChanged();
-
-    }
-
-    private void initHeaderViewUI(View headerView) {
-        ViewGroup.LayoutParams headerLayoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        headerView.setLayoutParams(headerLayoutParams);
-        fl_cover_contaner = (FrameLayout) headerView.findViewById(R.id.fl_cover_contaner);
-        iv_background_cover = (ImageView) headerView.findViewById(R.id.iv_background_cover);
-        iv_head_icon = (ImageView) headerView.findViewById(R.id.iv_head_icon);
-        tv_user_name = (TextView) headerView.findViewById(R.id.tv_user_name);
-        tv_user_intro = (TextView) headerView.findViewById(R.id.tv_user_intro);
-        tv_user_follow = (TextView) headerView.findViewById(R.id.tv_user_follow);
-        tv_user_fans = (TextView) headerView.findViewById(R.id.tv_user_fans);
-        // 高度为屏幕宽度一半加上20dp
-        int width = UIUtils.getWindowWidth(getContext());
-        int height = UIUtils.getWindowWidth(getContext()) / 2 + getResources().getDimensionPixelSize(R.dimen.spacing_large);
-        LinearLayout.LayoutParams containerLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
-        fl_cover_contaner.setLayoutParams(containerLayoutParams);
-        // 添加头部放缩
-        new ZoomView(fl_cover_contaner, getActivity(), mRvList, width, height).initZoom();
-
-    }
-
-    private void initHeaderViewData(UserInfoBean userInfoBean) {
-        ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        // 显示头像
-        imageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url(String.format(ApiConfig.IMAGE_PATH, userInfoBean.getAvatar(), 50))
-                .placeholder(R.drawable.shape_default_image_circle)
-                .errorPic(R.drawable.shape_default_image_circle)
-                .imagerView(iv_head_icon)
-                .transformation(new GlideCircleBoundTransform(getContext()))
-                .build());
-        // 设置用户名
-        tv_user_name.setText(userInfoBean.getName());
-        // 设置简介
-        tv_user_intro.setText(userInfoBean.getIntro());
-
-        // 设置关注人数
-        String followContent = "关注 " + "<" + 100 + ">";
-        CharSequence followString = ColorPhrase.from(followContent).withSeparator("<>")
-                .innerColor(ContextCompat.getColor(getContext(), R.color.themeColor))
-                .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
-                .format();
-        tv_user_follow.setText(followString);
-
-        // 设置粉丝人数
-        String fansContent = "粉丝 " + "<" + 204 + ">";
-        CharSequence fansString = ColorPhrase.from(fansContent).withSeparator("<>")
-                .innerColor(ContextCompat.getColor(getContext(), R.color.themeColor))
-                .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
-                .format();
-        tv_user_fans.setText(fansString);
-        mHeaderAndFooterWrapper.notifyDataSetChanged();
+        mPersonalCenterHeaderViewItem.initHeaderViewData(userInfoBean);
     }
 
     private void initToolBar() {
