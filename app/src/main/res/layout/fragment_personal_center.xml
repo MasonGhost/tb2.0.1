@@ -3,39 +3,7 @@
              android:layout_height="match_parent"
     >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        android:orientation="vertical">
-
-        <include
-            layout="@layout/view_top_tip"
-            />
-
-        <com.aspsine.swipetoloadlayout.SwipeToLoadLayout
-            android:id="@+id/refreshlayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <com.zhiyicx.baseproject.widget.refresh.RefreshHeaderView
-                android:id="@id/swipe_refresh_header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"></com.zhiyicx.baseproject.widget.refresh.RefreshHeaderView>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@id/swipe_target"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:overScrollMode="never">
-            </android.support.v7.widget.RecyclerView>
-
-            <com.zhiyicx.baseproject.widget.refresh.RefreshFooterView
-                android:id="@id/swipe_load_more_footer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"></com.zhiyicx.baseproject.widget.refresh.RefreshFooterView>
-        </com.aspsine.swipetoloadlayout.SwipeToLoadLayout>
-    </LinearLayout>
+    <include layout="@layout/fragment_tslist"></include>
 
     <RelativeLayout
         android:id="@+id/rl_toolbar_container"
@@ -60,4 +28,57 @@
             android:paddingRight="@dimen/spacing_mid"
             android:src="@mipmap/topbar_more_white"/>
     </RelativeLayout>
+
+    <!--底部的关注，聊天-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/ll_follow_container"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center">
+            <!--关注-->
+            <TextView
+                android:id="@+id/tv_follow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@mipmap/ico_me_followed"
+                android:drawablePadding="@dimen/spacing_small_3dp"
+                android:text="@string/follow"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="@dimen/divider_line"
+            android:layout_height="match_parent"
+            android:background="@color/general_for_line_light">
+        </View>
+
+        <LinearLayout
+            android:id="@+id/ll_chat_container"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center">
+            <!--聊天-->
+            <TextView
+                android:id="@+id/tv_chat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@mipmap/ico_me_chat"
+                android:drawablePadding="@dimen/spacing_small_3dp"
+                android:text="@string/chat"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"/>
+        </LinearLayout>
+
+    </LinearLayout>
 </FrameLayout>
