@@ -22,6 +22,7 @@ import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailItemForDig;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -71,6 +72,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         super.initView(rootView);
         initToolBar();
         initHeaderView();
+    }
+
+    @Override
+    public void onUserInfoClick(UserInfoBean userInfoBean) {
+
     }
 
     @Override
@@ -171,10 +177,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     }
 
-    @Override
-    public void onUserInfoClick(DynamicBean dynamicBean) {
-
-    }
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {

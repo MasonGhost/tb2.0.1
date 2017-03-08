@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_CACHE_PROGRESS;
-import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_START;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_LOAD;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper
         .MEDIA_ID_EMPTY_ROOT;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper.MEDIA_ID_ROOT;
@@ -179,8 +179,6 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
     @Override
     public void onPlaybackStart() {
         mSession.setActive(true);
-        EventBus.getDefault().post(EVENT_SEND_MUSIC_START,
-                EVENT_SEND_MUSIC_START);
         mDelayedStopHandler.removeCallbacksAndMessages(null);
         startService(new Intent(getApplicationContext(), MusicPlayService.class));
     }
