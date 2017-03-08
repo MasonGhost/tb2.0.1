@@ -325,7 +325,7 @@ public class TimeUtils {
     public static long string2Millis(String time, String pattern) {
         try {
             return new SimpleDateFormat(pattern, Locale.getDefault()).parse(time).getTime();
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return -1;

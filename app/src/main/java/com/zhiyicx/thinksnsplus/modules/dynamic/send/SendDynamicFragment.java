@@ -18,6 +18,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -269,6 +270,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         long feedMark = Long.parseLong(feedMarkString);
         DynamicDetailBean dynamicDetailBean = new DynamicDetailBean();
         dynamicDetailBean.setFeed_mark(feedMark);
+        dynamicDetailBean.setCreated_at(TimeUtils.millis2String(System.currentTimeMillis()));
         dynamicDetailBean.setContent(mEtDynamicContent.getInputContent());
         dynamicDetailBean.setTitle(mEtDynamicTitle.getInputContent());
         if (selectedPhotos != null && !selectedPhotos.isEmpty()) {

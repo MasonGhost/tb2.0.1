@@ -91,12 +91,11 @@ public abstract class SimpleTextNoPullRecycleView<T> extends NoPullRecycleView i
         mAdapter = new CommonAdapter<T>(getContext(), R.layout.item_simple_text_comment, data) {
             @Override
             protected void convert(com.zhy.adapter.recyclerview.base.ViewHolder holder, T t, final int position) {
-                holder.setText(R.id.tv_simple_text_comment, setShowText(t, position));
-
-                // Add the links and make the links clickable
-                LinkBuilder.on((TextView) holder.getView(R.id.tv_simple_text_comment))
-                        .addLinks(setLiknks(t, position))
-                        .build();
+                    holder.setText(R.id.tv_simple_text_comment, setShowText(t, position));
+                    // Add the links and make the links clickable
+                    LinkBuilder.on((TextView) holder.getView(R.id.tv_simple_text_comment))
+                            .addLinks(setLiknks(t, position))
+                            .build();
             }
         };
         mAdapter.setOnItemClickListener(this);

@@ -12,8 +12,11 @@ import com.zhiyicx.baseproject.widget.SimpleTextNoPullRecycleView;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.functions.Action1;
@@ -123,7 +126,15 @@ public class DynamicListCommentView extends LinearLayout {
      */
     public void setData(DynamicBean dynamicBean) {
         mDynamicBean = dynamicBean;
-        mDynamicNoPullRecycleView.setData(dynamicBean.getComments());
+        List<DynamicCommentBean> data = new ArrayList<>();
+        if (dynamicBean.getComments().size() >= SHOW_MORE_COMMENT_SIZE_LIMIT) { //最多显示3条
+            for (int i = 0; i < SHOW_MORE_COMMENT_SIZE_LIMIT - 1; i++) {
+                data.add(dynamicBean.getComments().get(i));
+            }
+        } else {
+            data.addAll(dynamicBean.getComments());
+        }
+        mDynamicNoPullRecycleView.setData(data);
         if (dynamicBean.getTool().getFeed_comment_count() >= SHOW_MORE_COMMENT_SIZE_LIMIT) {
             mMoreComment.setVisibility(VISIBLE);
         } else {

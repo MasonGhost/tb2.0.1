@@ -58,7 +58,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  * @Date 2017/1/17
  * @Contact master.jungle68@gmail.com
  */
-public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicContract.View, DynamicListCommentView.OnCommentClickListener, DynamicListCommentView.OnMoreCommentClickListener, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener, MultiItemTypeAdapter.OnItemClickListener {
+public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements InputLimitView.OnSendClickListener, DynamicContract.View, DynamicListCommentView.OnCommentClickListener, DynamicListCommentView.OnMoreCommentClickListener, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener, MultiItemTypeAdapter.OnItemClickListener {
     private static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
     public static final long ITEM_SPACING = 5L; // 单位dp
 
@@ -72,6 +72,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     private List<DynamicBean> mDynamicBeens = new ArrayList<>();
     private ActionPopupWindow mDeletCommentPopWindow;
+    private int mCurrentPostion;// 当前评论的动态位置
+    private int mReplyToUserId;// 被评论者的 id
+
 
     public void setOnImageClickListener(OnImageClickListener onImageClickListener) {
         mOnImageClickListener = onImageClickListener;
@@ -101,6 +104,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        mIlvComment.setOnSendClickListener(this);
     }
 
     @Override
@@ -343,27 +347,38 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         onUserInfoClick(userInfoBean);
     }
 
+    /**
+     * comment has been clicked
+     *
+     * @param dynamicBean current dynamic
+     * @param position    this position of comment
+     */
     @Override
     public void onCommentContentClick(DynamicBean dynamicBean, int position) {
         if (dynamicBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-            ActivityUtils.dimBackground(getActivity(), .5f, 1f);
+            initLoginOutPopupWindow(dynamicBean, position);
+            mDeletCommentPopWindow.show();
         } else {
             mIlvComment.setVisibility(View.VISIBLE);
             mIlvComment.setFocusable(true);
-            ActivityUtils.dimBackground(getActivity(), 1.0f, 0.5f);
+            ActivityUtils.dimBackground(getActivity(), 1.0f, 0.8f);
         }
 
     }
 
     @Override
     public void onMoreCommentClick(View view, DynamicBean dynamicBean) {
+        System.out.println("mAdapter.getDatas().indexOf(dynamicBean) = " + mAdapter.getDatas().indexOf(dynamicBean));
         goDynamicDetail(mAdapter.getDatas().indexOf(dynamicBean), true);
     }
 
     /**
      * 初始化评论删除选择弹框
+     *
+     * @param dynamicBean curent dynamic
+     * @param position    current comment position
      */
-    private void initLoginOutPopupWindow() {
+    private void initLoginOutPopupWindow(final DynamicBean dynamicBean, final int position) {
         if (mDeletCommentPopWindow != null) {
             return;
         }
@@ -379,7 +394,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     @Override
                     public void onItem1Clicked() {
                         mDeletCommentPopWindow.hide();
-                        mPresenter.deleteComment(123,12);
+                        mPresenter.deleteComment(dynamicBean, dynamicBean.getComments().get(position).getComment_id(), position);
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
@@ -389,6 +404,16 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     }
                 })
                 .build();
+    }
+
+    /**
+     * comment send
+     *
+     * @param text
+     */
+    @Override
+    public void onSendClick(String text) {
+        mPresenter.sendComment(mCurrentPostion, mReplyToUserId, mIlvComment.getInputContent());
     }
 
     public interface OnImageClickListener {
