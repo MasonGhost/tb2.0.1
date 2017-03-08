@@ -86,7 +86,10 @@
         <activity android:name=".modules.music_fm.music_album_detail.MusicDetailActivity"/>
         <activity android:name=".modules.music_fm.music_play.MusicPlayActivity"/>
         <activity android:name=".modules.information.infomain.InfoActivity"/>
-        <activity android:name=".modules.information.infochannel.ChannelActivity"/>
+        <activity android:name=".modules.information.infodetails.InfoDetailsActivity"/>
+        <activity
+            android:name=".modules.information.infochannel.ChannelActivity"
+            android:theme="@style/activity_topin_bottomout"/>
         <activity android:name=".modules.information.infosearch.SearchActivity"/>
         <activity android:name=".modules.dynamic.send.SendDynamicActivity">
         </activity>

@@ -181,7 +181,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 alpha = alpha > 255 ? 255 : alpha;
                 mFragmentMusicDetailTitle.setBackgroundColor(palette.getLightVibrantColor
                         (0xdedede));
-                if ((float) alpha / 255f > 0.5) {
+                if ((float) alpha / 255f > 0.7) {
                     mFragmentMusicDetailCenterTitle.setVisibility(View.VISIBLE);
                     mFragmentMusicDetailCenterSubTitle.setVisibility(View.VISIBLE);
                 } else {
@@ -197,8 +197,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        // If used on an activity that doesn't implement MediaFragmentListener, it
-        // will throw an exception as expected:
         mCompatProvider = (MediaBrowserCompatProvider) activity;
     }
 

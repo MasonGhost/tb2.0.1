@@ -27,4 +27,6 @@
     <color name="chat_message_bubble_other_strokeColor">#dee1e2</color>
     <!--网页进度条-->
     <color name="bg_pb_cover">#59b6d7</color>
+
+    <color name="music_progress">#09b6d7</color>
 </resources>

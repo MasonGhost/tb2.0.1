@@ -12,11 +12,14 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
 
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProvider;
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProviderSource;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayService;
+
+import org.simple.eventbus.EventBus;
 
 import java.io.IOException;
 
@@ -25,6 +28,7 @@ import static android.media.MediaPlayer.OnErrorListener;
 import static android.media.MediaPlayer.OnPreparedListener;
 import static android.media.MediaPlayer.OnSeekCompleteListener;
 import static android.support.v4.media.session.MediaSessionCompat.QueueItem;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_LOAD;
 
 /**
  * @Author Jliuer
@@ -212,6 +216,8 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
                 mMediaPlayer.setDataSource(proxyUrl);
 
                 mMediaPlayer.prepareAsync();
+                EventBus.getDefault().post(true,
+                        EVENT_SEND_MUSIC_LOAD);
 
                 mWifiLock.acquire();
 
@@ -373,6 +379,8 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
 
     @Override
     public void onPrepared(MediaPlayer player) {
+        EventBus.getDefault().post(false,
+                EVENT_SEND_MUSIC_LOAD);
         configMediaPlayerState();
     }
 

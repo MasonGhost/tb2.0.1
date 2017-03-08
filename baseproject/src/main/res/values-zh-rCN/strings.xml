@@ -81,6 +81,7 @@
     <string name="info_search">搜索</string>
     <string name="info_cancle">取消</string>
     <string name="info_details">资讯详情</string>
+    <string name="info_collect">收藏</string>
 
     <!--分享类型-->
     <string name="qq_share">QQ</string>

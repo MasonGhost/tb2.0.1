@@ -113,7 +113,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
     @Override
     public boolean isForViewType(DynamicBean item, int position) {
         // 当本地和服务器都没有图片的时候，使用
-        return (item.getFeed().getStorages() == null || item.getFeed().getStorages().size() == getImageCounts())
+        return item.getFeed() != null && (item.getFeed().getStorages() == null || item.getFeed().getStorages().size() == getImageCounts())
                 && (item.getFeed().getLocalPhotos() == null || item.getFeed().getLocalPhotos().size() == getImageCounts());
     }
 

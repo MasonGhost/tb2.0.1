@@ -21,8 +21,8 @@ public class EventBusTagConfig {
     // 发送动态到动态列表
     public static final String EVENT_SEND_MUSIC_CACHE_PROGRESS =
             "event_send_music_cache_progress";// 音乐播放缓冲进度
-    public static final String EVENT_SEND_MUSIC_START =
-            "event_send_music_start";// 音乐开始播放
+    public static final String EVENT_SEND_MUSIC_LOAD =
+            "event_send_music_load";// 音乐加载
     public static final String EVENT_SEND_MUSIC_COMPLETE =
             "EVENT_SEND_MUSIC_COMPLETE";// 当前音乐播放完成
     // 发送动态到动态列表

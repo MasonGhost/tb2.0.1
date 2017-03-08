@@ -4,18 +4,21 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:background="@color/white"
+              android:gravity="center_horizontal"
               android:orientation="vertical">
     <!--个人中心页面头部-->
     <!--当前FrameLayout的高度为屏幕宽度的一半加上20dp-->
     <FrameLayout
         android:id="@+id/fl_cover_contaner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
 
         <ImageView
             android:id="@+id/iv_background_cover"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:layout_marginBottom="@dimen/spacing_large"
             android:scaleType="centerCrop"
             android:src="@drawable/girl_xinyuanjieyi"/>
@@ -26,7 +29,7 @@
             android:layout_height="@dimen/headpic_for_user_center"
             android:layout_gravity="center_horizontal|bottom"
             android:scaleType="centerCrop"
-            android:src="@drawable/girl_head_xinyuanjieyi"/>
+            android:src="@drawable/shape_default_image_circle"/>
 
     </FrameLayout>
 
@@ -36,7 +39,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/spacing_normal"
-        android:text="阿超的超能力"/>
+        android:textColor="@color/important_for_content"
+        android:textSize="@dimen/size_sub_title"
+        tools:text="阿超的超能力"/>
 
     <TextView
         android:id="@+id/tv_user_intro"
@@ -46,7 +51,9 @@
         android:layout_marginRight="@dimen/spacing_normal_large"
         android:layout_marginTop="@dimen/spacing_mid"
         android:gravity="center"
-        android:text="还有机会能够感觉，爱一个人的纯粹，你是我的小蝴蝶，我是你的小阿飞"/>
+        tools:text="还有机会能够感觉，爱一个人的纯粹，你是我的小蝴蝶，我是你的小阿飞"
+        android:textColor="@color/normal_for_assist_text"
+        android:textSize="@dimen/size_content_assist"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -60,14 +67,18 @@
             android:id="@+id/tv_user_follow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="关注 26"/>
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_content_assist"
+            tools:text="关注 26"/>
 
         <TextView
             android:id="@+id/tv_user_fans"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
-            android:text="粉丝 26"/>
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_content_assist"
+            tools:text="粉丝 26"/>
 
     </LinearLayout>
 </LinearLayout>

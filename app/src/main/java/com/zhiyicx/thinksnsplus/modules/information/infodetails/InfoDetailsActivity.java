@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.information.indetails;
+package com.zhiyicx.thinksnsplus.modules.information.infodetails;
 
 import android.support.v4.app.Fragment;
 
@@ -13,7 +13,7 @@ import com.zhiyicx.baseproject.base.TSActivity;
 public class InfoDetailsActivity extends TSActivity {
     @Override
     protected Fragment getFragment() {
-        return null;
+        return new InfoDetailsFragment();
     }
 
     @Override

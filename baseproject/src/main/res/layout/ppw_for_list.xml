@@ -13,7 +13,7 @@
         android:layout_margin="10dp"
         android:orientation="horizontal">
 
-        <com.zhiyicx.thinksnsplus.widget.IconTextView
+        <TextView
             android:id="@+id/tv_pop_list_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
