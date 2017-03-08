@@ -103,11 +103,6 @@ public class DefaultItemTouchHelpCallback extends ItemTouchHelper.Callback {
             int dragFlag = ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT | ItemTouchHelper.UP |
                     ItemTouchHelper.DOWN;
             int swipeFlag = 0;
-            if (viewHolder.getAdapterPosition() == recyclerView.getAdapter().getItemCount() - 1) {
-                dragFlag = 0;
-                swipeFlag = 0;
-            }
-
             // create make
             return makeMovementFlags(dragFlag, swipeFlag);
         } else if (layoutManager instanceof LinearLayoutManager) {// linearLayoutManager

@@ -5,9 +5,11 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.R;
-import com.zhiyicx.baseproject.widget.pictureviewer.core.PhotoView;
+
+import static java.lang.Compiler.enable;
 
 /**
  * @Describe show #mPressedColor color when pressed
@@ -16,7 +18,7 @@ import com.zhiyicx.baseproject.widget.pictureviewer.core.PhotoView;
  * @Contact master.jungle68@gmail.com
  */
 
-public class FilterImageView extends PhotoView {
+public class FilterImageView extends ImageView {
     private static final int SHAPE_SQUARE = 0;
     private static final int SHAPE_CIRLCE = 1;
     private static final int DEFAULT_PRESSED_COLOR = 0x26000000; // cover：#000000 alpha 15%

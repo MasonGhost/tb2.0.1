@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.widget;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -123,7 +122,7 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
     /**
      * 设置发布时间
      */
-    public void setPublishTime(long publishTime) {
+    public void setPublishTime(String publishTime) {
         this.publishTime.setText(mContext.getString(R.string.dynamic_publish_time,
                 TimeUtils.getTimeFriendlyForDetail(publishTime)));
     }

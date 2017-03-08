@@ -6,9 +6,11 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.R;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageLoaderStrategy;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.imsdk.entity.MessageStatus;
@@ -74,7 +76,7 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
 //        holder.getView(R.id.rl_chat_bubble).setBackgroundDrawable(mBubbleBg);
         // 显示时间的，最大间隔时间；当两条消息间隔 > MAX_SPACING_TIME 时显示时间
         if (lastChatItemBean == null || (chatItemBean.getLastMessage().getCreate_time() - lastChatItemBean.getLastMessage().getCreate_time()) >= (MAX_SPACING_TIME * ConstantConfig.MIN)) {
-            holder.setText(R.id.tv_chat_time, TimeUtils.getTimeFriendlyForDetail(chatItemBean.getLastMessage().getCreate_time() / 1000));// 测试数据，暂时使用
+            holder.setText(R.id.tv_chat_time, TimeUtils.getTimeFriendlyForChat(chatItemBean.getLastMessage().getCreate_time()));
             holder.setVisible(R.id.tv_chat_time, View.VISIBLE);
         } else {
             holder.setVisible(R.id.tv_chat_time, View.GONE);
@@ -111,7 +113,7 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
         if (mIsShowAvatar) {
             holder.setVisible(R.id.iv_chat_headpic, View.VISIBLE);
             mImageLoader.loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
-                    .url(chatItemBean.getUserInfo().getUserIcon())
+                    .url(ImageUtils.imagePathConvert(chatItemBean.getUserInfo().getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
                     .placeholder(R.drawable.shape_default_image_circle)
                     .transformation(new GlideCircleTransform(holder.getConvertView().getContext()))
                     .errorPic(R.drawable.shape_default_image_circle)

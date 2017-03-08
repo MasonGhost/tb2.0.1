@@ -78,6 +78,9 @@
     <string name="info_sort">长按可排序</string>
     <string name="info_subscribed">我的订阅</string>
     <string name="info_unsubscribe">更多订阅</string>
+    <string name="info_search">搜索</string>
+    <string name="info_cancle">取消</string>
+    <string name="info_details">资讯详情</string>
 
     <!--分享类型-->
     <string name="qq_share">QQ</string>

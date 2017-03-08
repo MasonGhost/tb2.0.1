@@ -10,7 +10,6 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.converter.PropertyConverter;
@@ -18,6 +17,7 @@ import org.greenrobot.greendao.converter.PropertyConverter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * @author LiuChao
@@ -41,7 +41,7 @@ public class UserInfoBean implements Parcelable {
     @Transient
     private String sexString;// sex编号对应的具体值，不保存到数据库中
     private String name;
-    private String userIcon;
+    private String avatar;  // 投降 id
     private String phone;
     private String email;
     private String intro;
@@ -50,9 +50,9 @@ public class UserInfoBean implements Parcelable {
     private String city;
     private String area;
     private String education;
-    private long created_at;
-    private long updated_at;
-    private long deleted_at;
+    private String created_at;
+    private String updated_at;
+    private String deleted_at;
     /**
      * id : 9
      * profile : avatar
@@ -106,7 +106,6 @@ public class UserInfoBean implements Parcelable {
     }
 
     public String getName() {
-
         return avoidNull(name);
     }
 
@@ -125,15 +124,15 @@ public class UserInfoBean implements Parcelable {
         this.sex = sex;
     }
 
-    public String getUserIcon() {
-        if (userIcon == null) {
-            userIcon = getConfigProperty("avatar");
+    public String getAvatar() {
+        if (avatar == null) {
+            avatar = getConfigProperty("avatar");
         }
-        return userIcon;
+        return avatar;
     }
 
-    public void setUserIcon(String userIcon) {
-        this.userIcon = userIcon;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public String getLocation() {
@@ -218,27 +217,27 @@ public class UserInfoBean implements Parcelable {
         this.phone = phone;
     }
 
-    public long getCreated_at() {
+    public String getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(long created_at) {
+    public void setCreated_at(String created_at) {
         this.created_at = created_at;
     }
 
-    public long getUpdated_at() {
+    public String getUpdated_at() {
         return updated_at;
     }
 
-    public void setUpdated_at(long updated_at) {
+    public void setUpdated_at(String updated_at) {
         this.updated_at = updated_at;
     }
 
-    public long getDeleted_at() {
+    public String getDeleted_at() {
         return deleted_at;
     }
 
-    public void setDeleted_at(long deleted_at) {
+    public void setDeleted_at(String deleted_at) {
         this.deleted_at = deleted_at;
     }
 
@@ -330,8 +329,8 @@ public class UserInfoBean implements Parcelable {
             private int user_id;
             private int user_profile_setting_id;
             private String user_profile_setting_data;
-            private long created_at;
-            private long updated_at;
+            private String created_at;
+            private String updated_at;
 
             public int getUser_id() {
                 return user_id;
@@ -357,21 +356,25 @@ public class UserInfoBean implements Parcelable {
                 this.user_profile_setting_data = user_profile_setting_data;
             }
 
-            public long getCreated_at() {
+            public String getCreated_at() {
                 return created_at;
             }
 
-            public void setCreated_at(long created_at) {
+            public void setCreated_at(String created_at) {
                 this.created_at = created_at;
             }
 
-            public long getUpdated_at() {
+            public String getUpdated_at() {
                 return updated_at;
             }
 
-            public void setUpdated_at(long updated_at) {
+            public void setUpdated_at(String updated_at) {
                 this.updated_at = updated_at;
             }
+
+            public PivotBean() {
+            }
+
 
             @Override
             public int describeContents() {
@@ -383,19 +386,16 @@ public class UserInfoBean implements Parcelable {
                 dest.writeInt(this.user_id);
                 dest.writeInt(this.user_profile_setting_id);
                 dest.writeString(this.user_profile_setting_data);
-                dest.writeLong(this.created_at);
-                dest.writeLong(this.updated_at);
-            }
-
-            public PivotBean() {
+                dest.writeString(this.created_at);
+                dest.writeString(this.updated_at);
             }
 
             protected PivotBean(Parcel in) {
                 this.user_id = in.readInt();
                 this.user_profile_setting_id = in.readInt();
                 this.user_profile_setting_data = in.readString();
-                this.created_at = in.readLong();
-                this.updated_at = in.readLong();
+                this.created_at = in.readString();
+                this.updated_at = in.readString();
             }
 
             public static final Creator<PivotBean> CREATOR = new Creator<PivotBean>() {
@@ -451,14 +451,14 @@ public class UserInfoBean implements Parcelable {
         };
     }
 
-    public static class CountsBean implements Parcelable,Serializable {
+    public static class CountsBean implements Parcelable, Serializable {
         private static final long serialVersionUID = 536871010L;
         private int id;
         private int user_id;
         private String key;
         private String value;
-        private long created_at;
-        private long updated_at;
+        private String created_at;
+        private String updated_at;
 
         public int getId() {
             return id;
@@ -492,21 +492,22 @@ public class UserInfoBean implements Parcelable {
             this.value = value;
         }
 
-        public long getCreated_at() {
+        public String getCreated_at() {
             return created_at;
         }
 
-        public void setCreated_at(long created_at) {
+        public void setCreated_at(String created_at) {
             this.created_at = created_at;
         }
 
-        public long getUpdated_at() {
+        public String getUpdated_at() {
             return updated_at;
         }
 
-        public void setUpdated_at(long updated_at) {
+        public void setUpdated_at(String updated_at) {
             this.updated_at = updated_at;
         }
+
 
         @Override
         public int describeContents() {
@@ -519,8 +520,8 @@ public class UserInfoBean implements Parcelable {
             dest.writeInt(this.user_id);
             dest.writeString(this.key);
             dest.writeString(this.value);
-            dest.writeLong(this.created_at);
-            dest.writeLong(this.updated_at);
+            dest.writeString(this.created_at);
+            dest.writeString(this.updated_at);
         }
 
         public CountsBean() {
@@ -531,8 +532,8 @@ public class UserInfoBean implements Parcelable {
             this.user_id = in.readInt();
             this.key = in.readString();
             this.value = in.readString();
-            this.created_at = in.readLong();
-            this.updated_at = in.readLong();
+            this.created_at = in.readString();
+            this.updated_at = in.readString();
         }
 
         public static final Creator<CountsBean> CREATOR = new Creator<CountsBean>() {
@@ -548,92 +549,6 @@ public class UserInfoBean implements Parcelable {
         };
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.user_id);
-        dest.writeString(this.sex);
-        dest.writeString(this.sexString);
-        dest.writeString(this.name);
-        dest.writeString(this.userIcon);
-        dest.writeString(this.phone);
-        dest.writeString(this.email);
-        dest.writeString(this.intro);
-        dest.writeString(this.location);
-        dest.writeString(this.province);
-        dest.writeString(this.city);
-        dest.writeString(this.area);
-        dest.writeString(this.education);
-        dest.writeLong(this.created_at);
-        dest.writeLong(this.updated_at);
-        dest.writeLong(this.deleted_at);
-        dest.writeList(this.datas);
-        dest.writeList(this.counts);
-    }
-
-    public UserInfoBean() {
-    }
-
-    protected UserInfoBean(Parcel in) {
-        this.user_id = (Long) in.readValue(Long.class.getClassLoader());
-        this.sex = in.readString();
-        this.sexString = in.readString();
-        this.name = in.readString();
-        this.userIcon = in.readString();
-        this.phone = in.readString();
-        this.email = in.readString();
-        this.intro = in.readString();
-        this.location = in.readString();
-        this.province = in.readString();
-        this.city = in.readString();
-        this.area = in.readString();
-        this.education = in.readString();
-        this.created_at = in.readLong();
-        this.updated_at = in.readLong();
-        this.deleted_at = in.readLong();
-        this.datas = new ArrayList<DatasBean>();
-        in.readList(this.datas, DatasBean.class.getClassLoader());
-        this.counts = new ArrayList<CountsBean>();
-        in.readList(this.counts, CountsBean.class.getClassLoader());
-    }
-
-    @Generated(hash = 726336536)
-    public UserInfoBean(Long user_id, String sex, String name, String userIcon, String phone, String email, String intro, String location, String province,
-            String city, String area, String education, long created_at, long updated_at, long deleted_at, List<DatasBean> datas, List<CountsBean> counts) {
-        this.user_id = user_id;
-        this.sex = sex;
-        this.name = name;
-        this.userIcon = userIcon;
-        this.phone = phone;
-        this.email = email;
-        this.intro = intro;
-        this.location = location;
-        this.province = province;
-        this.city = city;
-        this.area = area;
-        this.education = education;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.deleted_at = deleted_at;
-        this.datas = datas;
-        this.counts = counts;
-    }
-
-    public static final Creator<UserInfoBean> CREATOR = new Creator<UserInfoBean>() {
-        @Override
-        public UserInfoBean createFromParcel(Parcel source) {
-            return new UserInfoBean(source);
-        }
-
-        @Override
-        public UserInfoBean[] newArray(int size) {
-            return new UserInfoBean[size];
-        }
-    };
 
     @Override
     public String toString() {
@@ -642,7 +557,7 @@ public class UserInfoBean implements Parcelable {
                 ", sex='" + sex + '\'' +
                 ", sexString='" + sexString + '\'' +
                 ", name='" + name + '\'' +
-                ", userIcon='" + userIcon + '\'' +
+                ", avatar='" + avatar + '\'' +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
                 ", intro='" + intro + '\'' +
@@ -728,4 +643,89 @@ public class UserInfoBean implements Parcelable {
         }
         return result == null ? "" : result;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.user_id);
+        dest.writeString(this.sex);
+        dest.writeString(this.sexString);
+        dest.writeString(this.name);
+        dest.writeString(this.avatar);
+        dest.writeString(this.phone);
+        dest.writeString(this.email);
+        dest.writeString(this.intro);
+        dest.writeString(this.location);
+        dest.writeString(this.province);
+        dest.writeString(this.city);
+        dest.writeString(this.area);
+        dest.writeString(this.education);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+        dest.writeString(this.deleted_at);
+        dest.writeTypedList(this.datas);
+        dest.writeTypedList(this.counts);
+    }
+
+    public UserInfoBean() {
+    }
+
+    protected UserInfoBean(Parcel in) {
+        this.user_id = (Long) in.readValue(Long.class.getClassLoader());
+        this.sex = in.readString();
+        this.sexString = in.readString();
+        this.name = in.readString();
+        this.avatar = in.readString();
+        this.phone = in.readString();
+        this.email = in.readString();
+        this.intro = in.readString();
+        this.location = in.readString();
+        this.province = in.readString();
+        this.city = in.readString();
+        this.area = in.readString();
+        this.education = in.readString();
+        this.created_at = in.readString();
+        this.updated_at = in.readString();
+        this.deleted_at = in.readString();
+        this.datas = in.createTypedArrayList(DatasBean.CREATOR);
+        this.counts = in.createTypedArrayList(CountsBean.CREATOR);
+    }
+
+    @Generated(hash = 645073459)
+    public UserInfoBean(Long user_id, String sex, String name, String avatar, String phone, String email, String intro, String location, String province,
+            String city, String area, String education, String created_at, String updated_at, String deleted_at, List<DatasBean> datas, List<CountsBean> counts) {
+        this.user_id = user_id;
+        this.sex = sex;
+        this.name = name;
+        this.avatar = avatar;
+        this.phone = phone;
+        this.email = email;
+        this.intro = intro;
+        this.location = location;
+        this.province = province;
+        this.city = city;
+        this.area = area;
+        this.education = education;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.deleted_at = deleted_at;
+        this.datas = datas;
+        this.counts = counts;
+    }
+
+    public static final Creator<UserInfoBean> CREATOR = new Creator<UserInfoBean>() {
+        @Override
+        public UserInfoBean createFromParcel(Parcel source) {
+            return new UserInfoBean(source);
+        }
+
+        @Override
+        public UserInfoBean[] newArray(int size) {
+            return new UserInfoBean[size];
+        }
+    };
 }

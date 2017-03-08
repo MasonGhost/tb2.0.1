@@ -1,0 +1,481 @@
+{
+    "project_type": "gradle",
+    "android_gradle_plugin_version": "2.2.0",
+    "freeline_gradle_plugin_version": "0.8.6",
+    "java_home": "C:\\Program Files\\Android\\Android Studio\\jre",
+    "freeline_cache_dir": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus",
+    "auto_dependency": true,
+    "product_flavor": "",
+    "build_script": "gradlew.bat :app:assembleDebug",
+    "build_script_work_directory": "",
+    "root_dir": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus",
+    "main_project_name": "app",
+    "main_project_dir": "app",
+    "build_directory": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app\\build",
+    "build_cache_dir": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app\\build\\freeline",
+    "build_tools_version": "25.0.1",
+    "sdk_directory": "C:\\Work\\Android\\sdk",
+    "build_tools_directory": "C:\\Work\\Android\\sdk\\build-tools\\25.0.1",
+    "compile_sdk_version": "android-25",
+    "compile_sdk_directory": "C:\\Work\\Android\\sdk\\platforms\\android-25",
+    "package": "com.zhiyicx.thinksnsplus",
+    "debug_package": "com.zhiyicx.thinksnsplus",
+    "main_manifest_path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app\\src\\main\\AndroidManifest.xml",
+    "launcher": "com.zhiyicx.thinksnsplus.modules.guide.GuideActivity",
+    "apk_path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app\\build\\outputs\\apk\\app-debug.apk",
+    "extra_dep_res_paths": [
+        
+    ],
+    "exclude_dep_res_paths": [
+        
+    ],
+    "main_r_path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app\\build\\generated\\source\\r\\debug\\R.java",
+    "use_jdk8": true,
+    "ignore_resource_ids": [
+        "avd_hide_password_1",
+        "avd_hide_password_2",
+        "avd_hide_password_3",
+        "avd_show_password_1",
+        "avd_show_password_2",
+        "avd_show_password_3"
+    ],
+    "use_system_gradle": false,
+    "check_sources_md5": [
+        
+    ],
+    "main_src_directory": [
+        "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app\\src\\debug\\java",
+        "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app\\src\\main\\java"
+    ],
+    "main_res_directory": [
+        "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app\\src\\debug\\res",
+        "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app\\src\\main\\res"
+    ],
+    "main_assets_directory": [
+        "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app\\src\\debug\\assets",
+        "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app\\src\\main\\assets"
+    ],
+    "main_jni_directory": [
+        "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app\\src\\debug\\jni",
+        "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app\\src\\main\\jni"
+    ],
+    "main_jniLibs_directory": [
+        "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app\\src\\debug\\jniLibs",
+        "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app\\src\\main\\jniLibs"
+    ],
+    "project_source_sets": {
+        "app": {
+            "main_src_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app\\src\\debug\\java",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app\\src\\main\\java"
+            ],
+            "main_res_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app\\src\\debug\\res",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app\\src\\main\\res"
+            ],
+            "main_assets_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app\\src\\debug\\assets",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app\\src\\main\\assets"
+            ],
+            "main_jni_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app\\src\\debug\\jni",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app\\src\\main\\jni"
+            ],
+            "main_jniLibs_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app\\src\\debug\\jniLibs",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app\\src\\main\\jniLibs"
+            ],
+            "main_manifest_path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app\\src\\main\\AndroidManifest.xml"
+        },
+        "baseproject": {
+            "main_src_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\baseproject\\src\\release\\java",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\baseproject\\src\\main\\java"
+            ],
+            "main_res_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\baseproject\\src\\release\\res",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\baseproject\\src\\main\\res"
+            ],
+            "main_assets_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\baseproject\\src\\release\\assets",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\baseproject\\src\\main\\assets"
+            ],
+            "main_jni_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\baseproject\\src\\release\\jni",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\baseproject\\src\\main\\jni"
+            ],
+            "main_jniLibs_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\baseproject\\src\\release\\jniLibs",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\baseproject\\src\\main\\jniLibs"
+            ],
+            "main_manifest_path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\baseproject\\src\\main\\AndroidManifest.xml"
+        },
+        "media-cache": {
+            "main_src_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\media-cache\\src\\release\\java",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\media-cache\\src\\main\\java"
+            ],
+            "main_res_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\media-cache\\src\\release\\res",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\media-cache\\src\\main\\res"
+            ],
+            "main_assets_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\media-cache\\src\\release\\assets",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\media-cache\\src\\main\\assets"
+            ],
+            "main_jni_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\media-cache\\src\\release\\jni",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\media-cache\\src\\main\\jni"
+            ],
+            "main_jniLibs_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\media-cache\\src\\release\\jniLibs",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\media-cache\\src\\main\\jniLibs"
+            ],
+            "main_manifest_path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\media-cache\\src\\main\\AndroidManifest.xml"
+        },
+        "banner": {
+            "main_src_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\banner\\src\\release\\java",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\banner\\src\\main\\java"
+            ],
+            "main_res_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\banner\\src\\release\\res",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\banner\\src\\main\\res"
+            ],
+            "main_assets_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\banner\\src\\release\\assets",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\banner\\src\\main\\assets"
+            ],
+            "main_jni_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\banner\\src\\release\\jni",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\banner\\src\\main\\jni"
+            ],
+            "main_jniLibs_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\banner\\src\\release\\jniLibs",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\banner\\src\\main\\jniLibs"
+            ],
+            "main_manifest_path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\banner\\src\\main\\AndroidManifest.xml"
+        },
+        "common": {
+            "main_src_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\common\\src\\release\\java",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\common\\src\\main\\java"
+            ],
+            "main_res_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\common\\src\\release\\res",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\common\\src\\main\\res"
+            ],
+            "main_assets_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\common\\src\\release\\assets",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\common\\src\\main\\assets"
+            ],
+            "main_jni_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\common\\src\\release\\jni",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\common\\src\\main\\jni"
+            ],
+            "main_jniLibs_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\common\\src\\release\\jniLibs",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\common\\src\\main\\jniLibs"
+            ],
+            "main_manifest_path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\common\\src\\main\\AndroidManifest.xml"
+        },
+        "imsdk": {
+            "main_src_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\imsdk\\src\\release\\java",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\imsdk\\src\\main\\java"
+            ],
+            "main_res_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\imsdk\\src\\release\\res",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\imsdk\\src\\main\\res"
+            ],
+            "main_assets_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\imsdk\\src\\release\\assets",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\imsdk\\src\\main\\assets"
+            ],
+            "main_jni_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\imsdk\\src\\release\\jni",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\imsdk\\src\\main\\jni"
+            ],
+            "main_jniLibs_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\imsdk\\src\\release\\jniLibs",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\imsdk\\src\\main\\jniLibs"
+            ],
+            "main_manifest_path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\imsdk\\src\\main\\AndroidManifest.xml"
+        },
+        "refresh": {
+            "main_src_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\refresh\\src\\release\\java",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\refresh\\src\\main\\java"
+            ],
+            "main_res_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\refresh\\src\\release\\res",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\refresh\\src\\main\\res"
+            ],
+            "main_assets_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\refresh\\src\\release\\assets",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\refresh\\src\\main\\assets"
+            ],
+            "main_jni_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\refresh\\src\\release\\jni",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\refresh\\src\\main\\jni"
+            ],
+            "main_jniLibs_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\refresh\\src\\release\\jniLibs",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\refresh\\src\\main\\jniLibs"
+            ],
+            "main_manifest_path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\refresh\\src\\main\\AndroidManifest.xml"
+        },
+        "baseadapter-recyclerview": {
+            "main_src_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\baseadapter-recyclerview\\src\\release\\java",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\baseadapter-recyclerview\\src\\main\\java"
+            ],
+            "main_res_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\baseadapter-recyclerview\\src\\release\\res",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\baseadapter-recyclerview\\src\\main\\res"
+            ],
+            "main_assets_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\baseadapter-recyclerview\\src\\release\\assets",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\baseadapter-recyclerview\\src\\main\\assets"
+            ],
+            "main_jni_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\baseadapter-recyclerview\\src\\release\\jni",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\baseadapter-recyclerview\\src\\main\\jni"
+            ],
+            "main_jniLibs_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\baseadapter-recyclerview\\src\\release\\jniLibs",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\baseadapter-recyclerview\\src\\main\\jniLibs"
+            ],
+            "main_manifest_path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\baseadapter-recyclerview\\src\\main\\AndroidManifest.xml"
+        },
+        "ucrop": {
+            "main_src_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\ucrop\\src\\release\\java",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\ucrop\\src\\main\\java"
+            ],
+            "main_res_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\ucrop\\src\\release\\res",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\ucrop\\src\\main\\res"
+            ],
+            "main_assets_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\ucrop\\src\\release\\assets",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\ucrop\\src\\main\\assets"
+            ],
+            "main_jni_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\ucrop\\src\\release\\jni"
+            ],
+            "main_jniLibs_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\ucrop\\src\\release\\jniLibs",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\ucrop\\src\\main\\jniLibs"
+            ],
+            "main_manifest_path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\ucrop\\src\\main\\AndroidManifest.xml"
+        },
+        "pickerview": {
+            "main_src_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\pickerview\\src\\release\\java",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\pickerview\\src\\main\\java"
+            ],
+            "main_res_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\pickerview\\src\\release\\res",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\pickerview\\src\\main\\res"
+            ],
+            "main_assets_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\pickerview\\src\\release\\assets",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\pickerview\\src\\main\\assets"
+            ],
+            "main_jni_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\pickerview\\src\\release\\jni",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\pickerview\\src\\main\\jni"
+            ],
+            "main_jniLibs_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\pickerview\\src\\release\\jniLibs",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\pickerview\\src\\main\\jniLibs"
+            ],
+            "main_manifest_path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\pickerview\\src\\main\\AndroidManifest.xml"
+        },
+        "PhotoPicker": {
+            "main_src_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\PhotoPicker\\src\\release\\java",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\PhotoPicker\\src\\main\\java"
+            ],
+            "main_res_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\PhotoPicker\\src\\release\\res",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\PhotoPicker\\src\\main\\res"
+            ],
+            "main_assets_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\PhotoPicker\\src\\release\\assets",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\PhotoPicker\\src\\main\\assets"
+            ],
+            "main_jni_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\PhotoPicker\\src\\release\\jni",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\PhotoPicker\\src\\main\\jni"
+            ],
+            "main_jniLibs_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\PhotoPicker\\src\\release\\jniLibs",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\PhotoPicker\\src\\main\\jniLibs"
+            ],
+            "main_manifest_path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\PhotoPicker\\src\\main\\AndroidManifest.xml"
+        },
+        "rxerrorhandler": {
+            "main_src_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\rxerrorhandler\\src\\release\\java",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\rxerrorhandler\\src\\main\\java"
+            ],
+            "main_res_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\rxerrorhandler\\src\\release\\res",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\rxerrorhandler\\src\\main\\res"
+            ],
+            "main_assets_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\rxerrorhandler\\src\\release\\assets",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\rxerrorhandler\\src\\main\\assets"
+            ],
+            "main_jni_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\rxerrorhandler\\src\\release\\jni",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\rxerrorhandler\\src\\main\\jni"
+            ],
+            "main_jniLibs_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\rxerrorhandler\\src\\release\\jniLibs",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\rxerrorhandler\\src\\main\\jniLibs"
+            ],
+            "main_manifest_path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\rxerrorhandler\\src\\main\\AndroidManifest.xml"
+        },
+        "skinlibrary": {
+            "main_src_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\skinlibrary\\src\\release\\java",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\skinlibrary\\src\\main\\java"
+            ],
+            "main_res_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\skinlibrary\\src\\release\\res",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\skinlibrary\\src\\main\\res"
+            ],
+            "main_assets_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\skinlibrary\\src\\release\\assets",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\skinlibrary\\src\\main\\assets"
+            ],
+            "main_jni_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\skinlibrary\\src\\release\\jni",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\skinlibrary\\src\\main\\jni"
+            ],
+            "main_jniLibs_directory": [
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\skinlibrary\\src\\release\\jniLibs",
+                "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\skinlibrary\\src\\main\\jniLibs"
+            ],
+            "main_manifest_path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\skinlibrary\\src\\main\\AndroidManifest.xml"
+        }
+    },
+    "modules": [
+        {
+            "name": "app",
+            "path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\app"
+        },
+        {
+            "name": "baseproject",
+            "path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\baseproject"
+        },
+        {
+            "name": "media-cache",
+            "path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\media-cache"
+        },
+        {
+            "name": "banner",
+            "path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\banner"
+        },
+        {
+            "name": "common",
+            "path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\common"
+        },
+        {
+            "name": "imsdk",
+            "path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\imsdk"
+        },
+        {
+            "name": "refresh",
+            "path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\refresh"
+        },
+        {
+            "name": "baseadapter-recyclerview",
+            "path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\baseadapter-recyclerview"
+        },
+        {
+            "name": "ucrop",
+            "path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\ucrop"
+        },
+        {
+            "name": "pickerview",
+            "path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\pickerview"
+        },
+        {
+            "name": "PhotoPicker",
+            "path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\PhotoPicker"
+        },
+        {
+            "name": "rxerrorhandler",
+            "path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\rxerrorhandler"
+        },
+        {
+            "name": "skinlibrary",
+            "path": "C:\\Work\\TS-Plus-Resource\\thinksns-plus-android\\ThinksnsPlus\\skinlibrary"
+        }
+    ],
+    "module_dependencies": {
+        "app": [
+            "baseproject",
+            "media-cache",
+            "banner"
+        ],
+        "baseproject": [
+            "common",
+            "imsdk",
+            "refresh",
+            "baseadapter-recyclerview",
+            "ucrop",
+            "pickerview",
+            "PhotoPicker"
+        ],
+        "common": [
+            "rxerrorhandler",
+            "skinlibrary"
+        ],
+        "rxerrorhandler": [
+            
+        ],
+        "skinlibrary": [
+            
+        ],
+        "imsdk": [
+            
+        ],
+        "refresh": [
+            
+        ],
+        "baseadapter-recyclerview": [
+            
+        ],
+        "ucrop": [
+            
+        ],
+        "pickerview": [
+            
+        ],
+        "PhotoPicker": [
+            
+        ],
+        "media-cache": [
+            
+        ],
+        "banner": [
+            
+        ]
+    },
+    "databinding": [
+        {
+            "name": "refresh",
+            "isLibrary": true,
+            "minSdkVersion": 15,
+            "packageName": "cn.bingoogolapple.refreshlayout"
+        }
+    ],
+    "databinding_modules": [
+        "refresh"
+    ]
+}

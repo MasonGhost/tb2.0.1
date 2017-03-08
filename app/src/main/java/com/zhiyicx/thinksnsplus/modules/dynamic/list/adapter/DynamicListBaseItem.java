@@ -20,7 +20,8 @@ import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
-import com.zhiyicx.thinksnsplus.widget.comment.DynamicListComment;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -75,6 +76,19 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
     }
 
     protected OnReSendClickListener mOnReSendClickListener;
+
+    public void setOnCommentClickListener(DynamicListCommentView.OnCommentClickListener onCommentClickListener) {
+        mOnCommentClickListener = onCommentClickListener;
+    }
+
+    protected DynamicListCommentView.OnCommentClickListener mOnCommentClickListener;
+
+    protected DynamicListCommentView.OnMoreCommentClickListener mOnMoreCommentClickListener;
+
+    public void setOnMoreCommentClickListener(DynamicListCommentView.OnMoreCommentClickListener onMoreCommentClickListener) {
+        mOnMoreCommentClickListener = onMoreCommentClickListener;
+    }
+
     private int mTitleMaxShowNum;
     private int mContentMaxShowNum;
 
@@ -120,7 +134,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
      */
     @Override
     public void convert(ViewHolder holder, DynamicBean dynamicBean, DynamicBean lastT, final int position) {
-        String userIconUrl = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getUserInfoBean().getUserIcon(), ImageZipConfig.IMAGE_38_ZIP);
+        String userIconUrl = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getUserInfoBean().getAvatar(), ImageZipConfig.IMAGE_38_ZIP);
         mImageLoader.loadImage(mContext, GlideImageConfig.builder()
                 .url(userIconUrl)
                 .placeholder(R.drawable.shape_default_image_circle)
@@ -176,11 +190,11 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                         }
                     }
                 });
-        if ((dynamicBean.getFeed().getStorages() == null || dynamicBean.getFeed().getStorages().size() == getImageCounts())
-                && (dynamicBean.getFeed().getLocalPhotos() == null || dynamicBean.getFeed().getLocalPhotos().size() == getImageCounts())) {
-            DynamicListComment comment = holder.getView(R.id.fl_comment);
-            comment.setData(dynamicBean.getComments());
-        }
+        DynamicListCommentView comment = holder.getView(R.id.dcv_comment);
+        comment.setData(dynamicBean);
+        comment.setOnCommentClickListener(mOnCommentClickListener);
+        comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
+
 
     }
 
@@ -191,7 +205,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                     @Override
                     public void call(Void aVoid) {
                         if (mOnUserInfoClickListener != null) {
-                            mOnUserInfoClickListener.onUserInfoClick(dynamicBean);
+                            mOnUserInfoClickListener.onUserInfoClick(dynamicBean.getUserInfoBean());
                         }
                     }
                 });
@@ -295,7 +309,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
      */
     public interface OnUserInfoClickListener {
 
-        void onUserInfoClick(DynamicBean dynamicBean);
+        void onUserInfoClick(UserInfoBean userInfoBean);
     }
 
     /**

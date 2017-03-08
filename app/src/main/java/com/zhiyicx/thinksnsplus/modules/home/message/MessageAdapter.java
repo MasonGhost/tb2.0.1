@@ -6,8 +6,10 @@ import android.text.TextUtils;
 import android.widget.ImageView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.imsdk.core.ChatType;
@@ -54,7 +56,7 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> {
         switch (messageItemBean.getConversation().getType()) {
             case ChatType.CHAT_TYPE_PRIVATE:// 私聊
                 AppApplication.AppComponentHolder.getAppComponent().imageLoader().loadImage(mContext, GlideImageConfig.builder()
-                        .url(messageItemBean.getUserInfo().getUserIcon())
+                        .url(ImageUtils.imagePathConvert(messageItemBean.getUserInfo().getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
                         .transformation(new GlideCircleTransform(mContext))
                         .errorPic(R.drawable.shape_default_image_circle)
                         .imagerView((ImageView) holder.getView(R.id.iv_headpic))
@@ -90,7 +92,7 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> {
         if(messageItemBean.getConversation().getLast_message_time()==0){
             holder.setText(R.id.tv_time,"");
         }else {
-            holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(messageItemBean.getConversation().getLast_message_time() / 1000));
+            holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(messageItemBean.getConversation().getLast_message_time())));
         }
         ((BadgeView) holder.getView(R.id.tv_tip)).setBadgeCount(messageItemBean.getUnReadMessageNums());
 

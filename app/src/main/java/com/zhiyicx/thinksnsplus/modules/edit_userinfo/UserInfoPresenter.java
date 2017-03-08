@@ -1,11 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 
-import android.graphics.BitmapFactory;
-
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.common.utils.DrawableProvider;
-import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -17,10 +13,8 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -191,7 +185,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
             mUserInfoBean.setIntro(changeUserInfo.get("intro"));
         }
         if (changeUserInfo.containsKey("avatar")) {
-            mUserInfoBean.setUserIcon(changeUserInfo.get("avatar"));
+            mUserInfoBean.setAvatar(changeUserInfo.get("avatar"));
         }
 
         mUserInfoBeanGreenDao.insertOrReplace(mUserInfoBean);
