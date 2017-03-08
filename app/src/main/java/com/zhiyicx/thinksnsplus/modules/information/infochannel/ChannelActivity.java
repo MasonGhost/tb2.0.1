@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.information;
+package com.zhiyicx.thinksnsplus.modules.information.infochannel;
 
 import android.support.v4.app.Fragment;
 
