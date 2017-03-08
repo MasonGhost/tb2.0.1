@@ -37,6 +37,8 @@ public class DynamicListCommentView extends LinearLayout {
     private OnCommentClickListener mOnCommentClickListener;
     private DynamicBean mDynamicBean;
 
+    private boolean mIsUserNameClick = false; // 标识用户名被点击还是评论被点击了
+
     public DynamicListCommentView(Context context) {
         super(context);
         init();
@@ -74,16 +76,34 @@ public class DynamicListCommentView extends LinearLayout {
         mDynamicNoPullRecycleView.setOnUserNameClickListener(new DynamicNoPullRecycleView.OnUserNameClickListener() {
             @Override
             public void onUserNameClick(UserInfoBean userInfoBean) {
-                if (mOnCommentClickListener != null) {
-                    mOnCommentClickListener.onCommentUserInfoClick(userInfoBean);
+
+                if (!mIsUserNameClick) {
+                    if (mOnCommentClickListener != null) {
+                        mOnCommentClickListener.onCommentUserInfoClick(userInfoBean);
+                        mIsUserNameClick = true;
+                    }
                 }
             }
         });
         mDynamicNoPullRecycleView.setOnIitemClickListener(new SimpleTextNoPullRecycleView.OnIitemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                if (mOnCommentClickListener != null) {
-                    mOnCommentClickListener.onCommentContentClick(mDynamicBean, position);
+
+                if (!mIsUserNameClick) {
+                    if (mOnCommentClickListener != null) {
+                        mOnCommentClickListener.onCommentContentClick(mDynamicBean, position);
+                    }
+                } else {
+                    mIsUserNameClick = false;
+
+                }
+            }
+        });
+        mDynamicNoPullRecycleView.setOnUserNameLongClickListener(new DynamicNoPullRecycleView.OnUserNameLongClickListener() {
+            @Override
+            public void onUserNameLongClick(UserInfoBean userInfoBean) {
+                if (!mIsUserNameClick) {
+                    mIsUserNameClick = true;
                 }
             }
         });

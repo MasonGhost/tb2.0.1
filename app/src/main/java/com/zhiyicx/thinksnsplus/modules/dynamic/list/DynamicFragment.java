@@ -232,7 +232,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onUserInfoClick(UserInfoBean userInfoBean) {
-
         System.out.println("userInfoBean.getName() = " + userInfoBean.getName());
         showMessage(userInfoBean.getName());
     }
@@ -334,6 +333,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void onCommentContentClick(DynamicBean dynamicBean, int position) {
+        System.out.println("dynamicBean.getComments().get(position) = " + dynamicBean.getComments().get(position).getComment_content());
         showMessage(dynamicBean.getComments().get(position).getComment_content());
     }
 
