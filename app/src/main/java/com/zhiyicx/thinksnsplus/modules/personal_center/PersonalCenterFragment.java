@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -74,10 +76,10 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     private PersonalCenterHeaderViewItem mPersonalCenterHeaderViewItem;
     private List<DynamicBean> mDynamicBeens = new ArrayList<>();
-    // 当前需要显示的用户的id
-    private long currentUserId = 5;
     // 关注状态
     private FollowFansBean mFollowFansBean;
+    // 上一个页面传过来的用户信息
+    private UserInfoBean mUserInfoBean;
 
 
     @Override
@@ -106,7 +108,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
-        mPresenter.requestNetData(maxId, isLoadMore, currentUserId);
+        mPresenter.requestNetData(maxId, isLoadMore, mUserInfoBean.getUser_id());
     }
 
     @Override
@@ -148,10 +150,13 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     protected void initData() {
+        mUserInfoBean = getArguments().getParcelable(PERSONAL_CENTER_DATA);
         // 获取个人主页用户信息，显示在headerView中
-        mPresenter.setCurrentUserInfo(currentUserId);
+        mPresenter.setCurrentUserInfo(mUserInfoBean.getUser_id());
         // 获取动态列表
-        mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false, currentUserId);
+        mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false, mUserInfoBean.getUser_id());
+        // 获取关注状态
+        mPresenter.initFollowState(mUserInfoBean.getUser_id());
     }
 
     @Override
@@ -172,20 +177,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     public void showMessage(String message) {
 
-    }
-
-    public static PersonalCenterFragment initFragment(Bundle bundle) {
-        PersonalCenterFragment personalCenterFragment = new PersonalCenterFragment();
-        personalCenterFragment.setArguments(bundle);
-        return personalCenterFragment;
-    }
-
-    private void setAdapter(MultiItemTypeAdapter adapter, DynamicListBaseItem dynamicListBaseItem) {
-        dynamicListBaseItem.setOnImageClickListener(this);
-        dynamicListBaseItem.setOnUserInfoClickListener(this);
-        dynamicListBaseItem.setOnMenuItemClickLisitener(this);
-        dynamicListBaseItem.setOnReSendClickListener(this);
-        adapter.addItemViewDelegate(dynamicListBaseItem);
     }
 
     @Override
@@ -268,6 +259,31 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 break;
             default:
         }
+    }
+
+    public static PersonalCenterFragment initFragment(Bundle bundle) {
+        PersonalCenterFragment personalCenterFragment = new PersonalCenterFragment();
+        personalCenterFragment.setArguments(bundle);
+        return personalCenterFragment;
+    }
+
+    private void setAdapter(MultiItemTypeAdapter adapter, DynamicListBaseItem dynamicListBaseItem) {
+        dynamicListBaseItem.setOnImageClickListener(this);
+        dynamicListBaseItem.setOnUserInfoClickListener(this);
+        dynamicListBaseItem.setOnMenuItemClickLisitener(this);
+        dynamicListBaseItem.setOnReSendClickListener(this);
+        adapter.addItemViewDelegate(dynamicListBaseItem);
+    }
+
+    /**
+     * 跳转到当前的个人中心页面
+     */
+    public static void startToPersonalCenter(Context context, UserInfoBean userInfoBean) {
+        Intent intent = new Intent(context, PersonalCenterActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA, userInfoBean);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 
 }
