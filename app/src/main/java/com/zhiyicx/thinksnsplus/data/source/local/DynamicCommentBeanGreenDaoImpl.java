@@ -66,7 +66,8 @@ public class DynamicCommentBeanGreenDaoImpl extends CommonCacheImpl<DynamicComme
 
     @Override
     public void updateSingleData(DynamicCommentBean newData) {
-
+        DynamicCommentBeanDao dynamicCommentBeanDao = getWDaoSession().getDynamicCommentBeanDao();
+        dynamicCommentBeanDao.deleteByKey(newData.get_id());
     }
 
     @Override
