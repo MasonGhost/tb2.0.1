@@ -126,6 +126,8 @@ public class InfoContainerFragment extends TSFragment {
     @OnClick(R.id.fragment_infocontainer_change)
     public void onClick() {
         startActivity(new Intent(getActivity(), ChannelActivity.class));
+        getActivity().overridePendingTransition(R.anim.slide_from_top_enter, R.anim
+                .slide_from_top_quit);
     }
 
     protected List<String> initTitles() {

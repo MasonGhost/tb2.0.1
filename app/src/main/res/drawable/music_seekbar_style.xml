@@ -8,8 +8,8 @@
     <!-- 中 -->
     <item
         android:id="@android:id/progress"
-        android:drawable="@color/__picker_text_80"/>
+        android:drawable="@color/music_progress"/>
     <item
         android:id="@android:id/secondaryProgress"
-        android:drawable="@color/__picker_text_40"/>
+        android:drawable="@color/chat_message_bubble_my_bgColor"/>
 </layer-list>

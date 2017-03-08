@@ -112,6 +112,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
+    public void onUserInfoClick(UserInfoBean userInfoBean) {
+
+    }
+
+    @Override
     protected boolean getPullDownRefreshEnable() {
         return false;
     }
@@ -194,10 +199,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     }
 
-    @Override
-    public void onUserInfoClick(UserInfoBean userInfoBean) {
-
-    }
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
