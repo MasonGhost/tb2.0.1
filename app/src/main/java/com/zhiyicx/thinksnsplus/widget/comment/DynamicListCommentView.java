@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.widget.SimpleTextNoPullRecycleView;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -36,6 +37,8 @@ public class DynamicListCommentView extends LinearLayout {
     private OnMoreCommentClickListener mOnMoreCommentClickListener;
     private OnCommentClickListener mOnCommentClickListener;
     private DynamicBean mDynamicBean;
+
+    private boolean mIsUserNameClick = false; // 标识用户名被点击还是评论被点击了
 
     public DynamicListCommentView(Context context) {
         super(context);
@@ -74,17 +77,41 @@ public class DynamicListCommentView extends LinearLayout {
         mDynamicNoPullRecycleView.setOnUserNameClickListener(new DynamicNoPullRecycleView.OnUserNameClickListener() {
             @Override
             public void onUserNameClick(UserInfoBean userInfoBean) {
-                if (mOnCommentClickListener != null) {
-                    mOnCommentClickListener.onCommentUserInfoClick(userInfoBean);
+
+                if (!mIsUserNameClick) {
+                    if (mOnCommentClickListener != null) {
+                        mOnCommentClickListener.onCommentUserInfoClick(userInfoBean);
+                        mIsUserNameClick = true;
+                    }
                 }
             }
         });
         mDynamicNoPullRecycleView.setOnIitemClickListener(new SimpleTextNoPullRecycleView.OnIitemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                if (mOnCommentClickListener != null) {
-                    mOnCommentClickListener.onCommentContentClick(mDynamicBean, position);
+
+                if (!mIsUserNameClick) {
+                    if (mOnCommentClickListener != null) {
+                        mOnCommentClickListener.onCommentContentClick(mDynamicBean, position);
+                    }
+                } else {
+                    mIsUserNameClick = false;
+
                 }
+            }
+        });
+        mDynamicNoPullRecycleView.setOnUserNameLongClickListener(new DynamicNoPullRecycleView.OnUserNameLongClickListener() {
+            @Override
+            public void onUserNameLongClick(UserInfoBean userInfoBean) {
+                if (!mIsUserNameClick) {
+                    mIsUserNameClick = true;
+                }
+            }
+        });
+        setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LogUtils.d("DynamicListCommentView is clicke");
             }
         });
     }

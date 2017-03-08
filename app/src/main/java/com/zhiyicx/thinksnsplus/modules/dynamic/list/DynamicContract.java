@@ -53,16 +53,33 @@ public interface DynamicContract {
     interface Presenter extends ITSListPresenter<DynamicBean> {
         /**
          * handle like status
+         *
          * @param isLiked true,do like ,or  cancle like
          * @param feed_id dynamic id
          * @param postion current item position
          */
-        void handleLike(boolean isLiked,Long feed_id,int postion);
+        void handleLike(boolean isLiked, Long feed_id, int postion);
 
         /**
          * resend dynamic
+         *
          * @param position
          */
         void reSendDynamic(int position);
+
+        /**
+         * delete a comment
+         * @param feed_id  feed_id is that comment belong to feed
+         * @param comment_id comment's id
+         */
+        void deleteComment(long feed_id, long comment_id);
+
+        /**
+         * send a comment
+         * @param feed_id feed_id is that comment belong to feed
+         * @param reply_to_user_id comment  to who
+         * @param comment_content  comment content
+         */
+        void sendComment(long feed_id, int reply_to_user_id, String comment_content);
     }
 }
