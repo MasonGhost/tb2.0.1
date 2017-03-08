@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center;
 
+import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.PersonalCenterRepository;
 
 import dagger.Module;
@@ -25,7 +26,7 @@ public class PersonalCenterPresenterModule {
     }
 
     @Provides
-    public PersonalCenterContract.Repository providePersonalCenterContractRepository() {
-        return new PersonalCenterRepository();
+    public PersonalCenterContract.Repository providePersonalCenterContractRepository(ServiceManager serviceManager) {
+        return new PersonalCenterRepository(serviceManager);
     }
 }

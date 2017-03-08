@@ -140,8 +140,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     public void showLoading() {
 
     }
-
-
+    
     @Override
     public void hideLoading() {
 
@@ -182,7 +181,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    public void onUserInfoClick(DynamicBean dynamicBean) {
+    public void onUserInfoClick(UserInfoBean userInfoBean) {
 
     }
 
@@ -246,7 +245,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         // 显示头像
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url(userInfoBean.getUserIcon())
+                .url(userInfoBean.getAvatar())
                 .imagerView(iv_head_icon)
                 .transformation(new GlideCircleBoundTransform(getContext()))
                 .build());
