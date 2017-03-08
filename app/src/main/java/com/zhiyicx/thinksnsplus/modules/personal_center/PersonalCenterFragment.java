@@ -17,12 +17,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBoundTransform;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.ZoomView;
+import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailItemForDig;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -45,14 +50,19 @@ import butterknife.OnClick;
 
 public class PersonalCenterFragment extends TSListFragment<PersonalCenterContract.Presenter, DynamicBean> implements PersonalCenterContract.View, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener, MultiItemTypeAdapter.OnItemClickListener {
 
+    public static final String PERSONAL_CENTER_DATA = "personal_center_data";
+
     @BindView(R.id.iv_back)
     ImageView mIvBack;
     @BindView(R.id.iv_more)
     ImageView mIvMore;
     @BindView(R.id.rl_toolbar_container)
     RelativeLayout mRlToolbarContainer;
+
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     private List<DynamicBean> mDynamicBeens = new ArrayList<>();
+    // 当前需要显示的用户的id
+    private long currentUserId;
 
     /**********************************
      * headerView控件
@@ -68,7 +78,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     protected void initView(View rootView) {
-
         super.initView(rootView);
         initToolBar();
         initHeaderView();
@@ -187,36 +196,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         return false;
     }
 
-    private void initHeaderView() {
-        mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
-        View headerView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_personal_center_header, null);
-        initHeaderViewUI(headerView);
-        mHeaderAndFooterWrapper.addHeaderView(headerView);
-        mRvList.setAdapter(mHeaderAndFooterWrapper);
-        mHeaderAndFooterWrapper.notifyDataSetChanged();
-    }
-
-    private void initHeaderViewUI(View headerView) {
-        ViewGroup.LayoutParams headerLayoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        headerView.setLayoutParams(headerLayoutParams);
-        fl_cover_contaner = (FrameLayout) headerView.findViewById(R.id.fl_cover_contaner);
-        iv_background_cover = (ImageView) headerView.findViewById(R.id.iv_background_cover);
-        // 高度为屏幕宽度一半加上20dp
-        int width = UIUtils.getWindowWidth(getContext());
-        int height = UIUtils.getWindowWidth(getContext()) / 2 + getResources().getDimensionPixelSize(R.dimen.spacing_large);
-        LinearLayout.LayoutParams containerLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
-        fl_cover_contaner.setLayoutParams(containerLayoutParams);
-        // 添加头部放缩
-        new ZoomView(fl_cover_contaner, getActivity(), mRvList, width, height).initZoom();
-    }
-
-    private void initToolBar() {
-        // toolBar设置状态栏高度的marginTop
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(0, DeviceUtils.getStatuBarHeight(getContext()), 0, 0);
-        mRlToolbarContainer.setLayoutParams(layoutParams);
-    }
-
     @OnClick({R.id.iv_back, R.id.iv_more})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -228,5 +207,63 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         }
     }
 
+    @Override
+    public void setHeaderInfo(UserInfoBean userInfoBean) {
+        initHeaderViewData(userInfoBean);
+    }
 
+    private void initHeaderView() {
+        mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
+        View headerView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_personal_center_header, null);
+        initHeaderViewUI(headerView);
+        mHeaderAndFooterWrapper.addHeaderView(headerView);
+        mRvList.setAdapter(mHeaderAndFooterWrapper);
+        mHeaderAndFooterWrapper.notifyDataSetChanged();
+        mPresenter.setCurrentUserInfo(currentUserId);
+    }
+
+    private void initHeaderViewUI(View headerView) {
+        ViewGroup.LayoutParams headerLayoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        headerView.setLayoutParams(headerLayoutParams);
+        fl_cover_contaner = (FrameLayout) headerView.findViewById(R.id.fl_cover_contaner);
+        iv_background_cover = (ImageView) headerView.findViewById(R.id.iv_background_cover);
+        iv_head_icon = (ImageView) headerView.findViewById(R.id.iv_head_icon);
+        tv_user_name = (TextView) headerView.findViewById(R.id.tv_user_name);
+        tv_user_intro = (TextView) headerView.findViewById(R.id.tv_user_intro);
+        tv_user_follow = (TextView) headerView.findViewById(R.id.tv_user_follow);
+        tv_user_fans = (TextView) headerView.findViewById(R.id.tv_user_fans);
+        // 高度为屏幕宽度一半加上20dp
+        int width = UIUtils.getWindowWidth(getContext());
+        int height = UIUtils.getWindowWidth(getContext()) / 2 + getResources().getDimensionPixelSize(R.dimen.spacing_large);
+        LinearLayout.LayoutParams containerLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
+        fl_cover_contaner.setLayoutParams(containerLayoutParams);
+        // 添加头部放缩
+        new ZoomView(fl_cover_contaner, getActivity(), mRvList, width, height).initZoom();
+        mHeaderAndFooterWrapper.notifyDataSetChanged();
+    }
+
+    private void initHeaderViewData(UserInfoBean userInfoBean) {
+        ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
+        // 显示头像
+        imageLoader.loadImage(getContext(), GlideImageConfig.builder()
+                .url(userInfoBean.getUserIcon())
+                .imagerView(iv_head_icon)
+                .transformation(new GlideCircleBoundTransform(getContext()))
+                .build());
+        // 设置用户名
+        tv_user_name.setText(userInfoBean.getName());
+        // 设置简介
+        tv_user_intro.setText(userInfoBean.getIntro());
+        // 设置关注人数
+        tv_user_follow.setText("关注 " + 100);
+        // 设置粉丝人数
+        tv_user_fans.setText("粉丝 " + 204);
+    }
+
+    private void initToolBar() {
+        // toolBar设置状态栏高度的marginTop
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(0, DeviceUtils.getStatuBarHeight(getContext()), 0, 0);
+        mRlToolbarContainer.setLayoutParams(layoutParams);
+    }
 }
