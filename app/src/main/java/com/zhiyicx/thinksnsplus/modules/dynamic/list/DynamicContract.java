@@ -70,10 +70,11 @@ public interface DynamicContract {
         /**
          * delete a comment
          * @param dynamicBean   is that comment belong to feed
+         * @param dynamicPositon currren item dynamic position
          * @param comment_id comment's id
          * @param commentPosition comment curren position
          */
-        void deleteComment(DynamicBean dynamicBean, long comment_id,int commentPosition);
+        void deleteComment(DynamicBean dynamicBean, int dynamicPositon, long comment_id,int commentPosition);
 
         /**
          * send a comment
@@ -81,6 +82,6 @@ public interface DynamicContract {
          * @param replyToUserId comment  to who
          * @param commentContent  comment content
          */
-        void sendComment(int mCurrentPostion, int replyToUserId, String commentContent);
+        void sendComment(int mCurrentPostion, long replyToUserId, String commentContent);
     }
 }

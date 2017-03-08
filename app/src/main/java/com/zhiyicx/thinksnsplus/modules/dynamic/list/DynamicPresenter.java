@@ -327,8 +327,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
     }
 
     @Override
-    public void deleteComment(DynamicBean dynamicBean, long comment_id, int commentPositon) {
-        int dynamicPosition = mRootView.getDatas().indexOf(dynamicBean);
+    public void deleteComment(DynamicBean dynamicBean,int dynamicPosition, long comment_id, int commentPositon) {
         mRootView.getDatas().get(dynamicPosition).getTool().setFeed_comment_count(dynamicBean.getTool().getFeed_comment_count() - 1);
         mRootView.getDatas().get(dynamicPosition).getComments().remove(commentPositon);
         mRootView.refresh(dynamicPosition);
@@ -352,7 +351,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
      * @param commentContent  comment content
      */
     @Override
-    public void sendComment(int mCurrentPostion, int replyToUserId, String commentContent) {
+    public void sendComment(int mCurrentPostion, long replyToUserId, String commentContent) {
 
         DynamicCommentBean creatComment = new DynamicCommentBean();
         creatComment.setComment_content(commentContent);

@@ -1,11 +1,14 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -17,7 +20,9 @@ import com.zhiyicx.baseproject.widget.pictureviewer.core.PhotoView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -65,15 +70,19 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @BindView(R.id.ilv_comment)
     InputLimitView mIlvComment;
 
+    @BindView(R.id.fl_container)
+    FrameLayout mFlContainer;
+
+
     @Inject
     DynamicPresenter mDynamicPresenter;  // 仅用于构造
     private String mDynamicType = ApiConfig.DYNAMIC_TYPE_NEW;
-
+    private boolean mKeyboradIsOpen;// 软键盘是否打开
 
     private List<DynamicBean> mDynamicBeens = new ArrayList<>();
     private ActionPopupWindow mDeletCommentPopWindow;
     private int mCurrentPostion;// 当前评论的动态位置
-    private int mReplyToUserId;// 被评论者的 id
+    private long mReplyToUserId;// 被评论者的 id
 
 
     public void setOnImageClickListener(OnImageClickListener onImageClickListener) {
@@ -105,6 +114,29 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     protected void initView(View rootView) {
         super.initView(rootView);
         mIlvComment.setOnSendClickListener(this);
+        // 软键盘控制区
+        mIlvComment.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+                Rect rect = new Rect();
+                //获取root在窗体的可视区域
+                mFlContainer.getWindowVisibleDisplayFrame(rect);
+                //获取root在窗体的不可视区域高度(被其他View遮挡的区域高度)
+                int rootInvisibleHeight = mFlContainer.getRootView().getHeight() - rect.bottom;
+                int dispayHeight = UIUtils.getWindowHeight(getContext());
+                //若不可视区域高度大于1/3屏幕高度，则键盘显示
+                if (rootInvisibleHeight > (1 / 3 * dispayHeight)) {
+                    mKeyboradIsOpen = true;
+                } else {
+                    //键盘隐藏
+                    mKeyboradIsOpen = false;
+                    mIlvComment.clearFocus();// 主动失去焦点
+                }
+                mIlvComment.setSendButtonVisiable(mKeyboradIsOpen);
+            }
+        });
+
     }
 
     @Override
@@ -355,12 +387,21 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onCommentContentClick(DynamicBean dynamicBean, int position) {
+        mCurrentPostion = mAdapter.getDatas().indexOf(dynamicBean);
         if (dynamicBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-            initLoginOutPopupWindow(dynamicBean, position);
+            initLoginOutPopupWindow(dynamicBean, mCurrentPostion, position);
             mDeletCommentPopWindow.show();
         } else {
             mIlvComment.setVisibility(View.VISIBLE);
             mIlvComment.setFocusable(true);
+            if (dynamicBean.getComments().get(position).getReply_to_user_id() != dynamicBean.getUser_id()) {
+                mIlvComment.setEtContentHint(String.format(getString(R.string.reply), dynamicBean.getComments().get(position).getCommentUser().getName()));
+            } else {
+                mIlvComment.setEtContentHint("");
+            }
+            mReplyToUserId = dynamicBean.getComments().get(position).getReply_to_user_id();
+            DeviceUtils.showSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+            mIlvComment.getFocus();
             ActivityUtils.dimBackground(getActivity(), 1.0f, 0.8f);
         }
 
@@ -368,17 +409,17 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void onMoreCommentClick(View view, DynamicBean dynamicBean) {
-        System.out.println("mAdapter.getDatas().indexOf(dynamicBean) = " + mAdapter.getDatas().indexOf(dynamicBean));
         goDynamicDetail(mAdapter.getDatas().indexOf(dynamicBean), true);
     }
 
     /**
      * 初始化评论删除选择弹框
      *
-     * @param dynamicBean curent dynamic
-     * @param position    current comment position
+     * @param dynamicBean     curent dynamic
+     * @param dynamicPositon  dynamic comment position
+     * @param commentPosition current comment position
      */
-    private void initLoginOutPopupWindow(final DynamicBean dynamicBean, final int position) {
+    private void initLoginOutPopupWindow(final DynamicBean dynamicBean, final int dynamicPositon, final int commentPosition) {
         if (mDeletCommentPopWindow != null) {
             return;
         }
@@ -394,7 +435,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     @Override
                     public void onItem1Clicked() {
                         mDeletCommentPopWindow.hide();
-                        mPresenter.deleteComment(dynamicBean, dynamicBean.getComments().get(position).getComment_id(), position);
+                        mPresenter.deleteComment(dynamicBean, dynamicPositon, dynamicBean.getComments().get(commentPosition).getComment_id(), commentPosition);
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
