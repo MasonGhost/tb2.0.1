@@ -24,18 +24,18 @@ public class TimeUtilsTest {
     @Test
     public void testGetTimeFriendlyNormal() throws Exception {
         long now = System.currentTimeMillis()/1000;//转换s
-        System.out.println("分钟前 ："+TimeUtils.getTimeFriendlyNormal(now));
-        Assert.assertTrue(TimeUtils.getTimeFriendlyNormal(now).contains("分钟前"));
-        System.out.println("分钟前 ："+TimeUtils.getTimeFriendlyNormal(now-3590));
-        Assert.assertTrue(TimeUtils.getTimeFriendlyNormal(now-3590).contains("分钟前"));
-        System.out.println("小时前 ："+TimeUtils.getTimeFriendlyNormal(now-3610));
-        Assert.assertTrue(TimeUtils.getTimeFriendlyNormal(now-3610).contains("小时前"));
-        System.out.println("昨天 ："+TimeUtils.getTimeFriendlyNormal(now-(3600*23)));
-        Assert.assertTrue(TimeUtils.getTimeFriendlyNormal(now-(3600*23)).contains("昨天"));
-        System.out.println("天前 ："+TimeUtils.getTimeFriendlyNormal(now-(3600*24*6)));
-        Assert.assertTrue(TimeUtils.getTimeFriendlyNormal(now-3600*24*6).contains("天前"));
-        System.out.println("月日 ："+TimeUtils.getTimeFriendlyNormal(now-(3600*24*10)));
-        Assert.assertTrue(TimeUtils.getTimeFriendlyNormal(now-(3600*24*10)).contains("-"));
+        System.out.println("分钟前 ："+TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(now)));
+        Assert.assertTrue(TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(now)).contains("分钟前"));
+        System.out.println("分钟前 ："+TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(now-3590)));
+        Assert.assertTrue(TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(now-3590)).contains("分钟前"));
+        System.out.println("小时前 ："+TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(now-3610)));
+        Assert.assertTrue(TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(now-3610)).contains("小时前"));
+        System.out.println("昨天 ："+TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(now-(3600*23))));
+        Assert.assertTrue(TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(now-(3600*23))).contains("昨天"));
+        System.out.println("天前 ："+TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(now-(3600*24*6))));
+        Assert.assertTrue(TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(now-3600*24*6)).contains("天前"));
+        System.out.println("月日 ："+TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(now-(3600*24*10))));
+        Assert.assertTrue(TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(now-(3600*24*10))).contains("-"));
     }
 
     /**
@@ -52,18 +52,18 @@ public class TimeUtilsTest {
     @Test
     public void testGetTimeFriendlyForDetail() throws Exception {
         long now = System.currentTimeMillis()/1000;//转换s
-        System.out.println("分钟前 ："+TimeUtils.getTimeFriendlyForDetail(now));
-        Assert.assertTrue(TimeUtils.getTimeFriendlyForDetail(now).contains("分钟前"));
-        System.out.println("分钟前 ："+TimeUtils.getTimeFriendlyForDetail(now-3590));
-        Assert.assertTrue(TimeUtils.getTimeFriendlyForDetail(now-3590).contains("分钟前"));
-        System.out.println("小时前 ："+TimeUtils.getTimeFriendlyForDetail(now-3610));
-        Assert.assertTrue(TimeUtils.getTimeFriendlyForDetail(now-3610).contains("小时前"));
-        System.out.println("昨天 ："+TimeUtils.getTimeFriendlyForDetail(now-(3600*23)));
-        Assert.assertTrue(TimeUtils.getTimeFriendlyForDetail(now-(3600*23)).contains("昨天 "));
-        System.out.println("天前 ："+TimeUtils.getTimeFriendlyForDetail(now-(3600*24*6)));
-        Assert.assertTrue(TimeUtils.getTimeFriendlyForDetail(now-3600*24*6).contains("天前 "));
-        System.out.println("月日 ："+TimeUtils.getTimeFriendlyForDetail(now-(3600*24*10)));
-        Assert.assertTrue(TimeUtils.getTimeFriendlyForDetail(now-(3600*24*10)).contains(":"));
+        System.out.println("分钟前 ："+TimeUtils.getTimeFriendlyForDetail(TimeUtils.millis2String(now)));
+        Assert.assertTrue(TimeUtils.getTimeFriendlyForDetail(TimeUtils.millis2String(now)).contains("分钟前"));
+        System.out.println("分钟前 ："+TimeUtils.getTimeFriendlyForDetail(TimeUtils.millis2String(now-3590)));
+        Assert.assertTrue(TimeUtils.getTimeFriendlyForDetail(TimeUtils.millis2String(now-3590)).contains("分钟前"));
+        System.out.println("小时前 ："+TimeUtils.getTimeFriendlyForDetail(TimeUtils.millis2String(now-36100)));
+        Assert.assertTrue(TimeUtils.getTimeFriendlyForDetail(TimeUtils.millis2String(now-3610)).contains("小时前"));
+        System.out.println("昨天 ："+TimeUtils.getTimeFriendlyForDetail(TimeUtils.millis2String(now-(3600*23))));
+        Assert.assertTrue(TimeUtils.getTimeFriendlyForDetail(TimeUtils.millis2String(now-(3600*23))).contains("昨天 "));
+        System.out.println("天前 ："+TimeUtils.getTimeFriendlyForDetail(TimeUtils.millis2String(now-(3600*24*6))));
+        Assert.assertTrue(TimeUtils.getTimeFriendlyForDetail(TimeUtils.millis2String(now-3600*24*6)).contains("天前 "));
+        System.out.println("月日 ："+TimeUtils.getTimeFriendlyForDetail(TimeUtils.millis2String(now-(3600*24*10))));
+        Assert.assertTrue(TimeUtils.getTimeFriendlyForDetail(TimeUtils.millis2String(now-(3600*24*10))).contains(":"));
     }
 
     /**
@@ -77,17 +77,17 @@ public class TimeUtilsTest {
     @Test
     public void testGetTimeFriendlyForUserHome() throws Exception {
         long now = System.currentTimeMillis()/1000;//转换s
-        System.out.println("分钟前 ："+TimeUtils.getTimeFriendlyForUserHome(now));
-        Assert.assertTrue(TimeUtils.getTimeFriendlyForUserHome(now).equals("今天"));
-        System.out.println("分钟前 ："+TimeUtils.getTimeFriendlyForUserHome(now-3590));
-        Assert.assertTrue(TimeUtils.getTimeFriendlyForUserHome(now-3590).equals("今天"));
-        System.out.println("小时前 ："+TimeUtils.getTimeFriendlyForUserHome(now-3610));
-        Assert.assertTrue(TimeUtils.getTimeFriendlyForUserHome(now-3610).equals("今天"));
-        System.out.println("昨天 ："+TimeUtils.getTimeFriendlyForUserHome(now-(3600*23)));
-        Assert.assertTrue(TimeUtils.getTimeFriendlyForUserHome(now-(3600*23)).contains("昨天"));
-        System.out.println("天前 ："+TimeUtils.getTimeFriendlyForUserHome(now-(3600*24*6)));
-        Assert.assertTrue(TimeUtils.getTimeFriendlyForUserHome(now-3600*24*6).contains("-"));
-        System.out.println("月日 ："+TimeUtils.getTimeFriendlyForUserHome(now-(3600*24*10)));
-        Assert.assertTrue(TimeUtils.getTimeFriendlyForUserHome(now-(3600*24*10)).contains("-"));
+        System.out.println("分钟前 ："+TimeUtils.getTimeFriendlyForUserHome(TimeUtils.millis2String(now)));
+        Assert.assertTrue(TimeUtils.getTimeFriendlyForUserHome(TimeUtils.millis2String(now)).equals("今天"));
+        System.out.println("分钟前 ："+TimeUtils.getTimeFriendlyForUserHome(TimeUtils.millis2String(now-3590)));
+        Assert.assertTrue(TimeUtils.getTimeFriendlyForUserHome(TimeUtils.millis2String(now-3590)).equals("今天"));
+        System.out.println("小时前 ："+TimeUtils.getTimeFriendlyForUserHome(TimeUtils.millis2String(now-3610)));
+        Assert.assertTrue(TimeUtils.getTimeFriendlyForUserHome(TimeUtils.millis2String(now-3610)).equals("今天"));
+        System.out.println("昨天 ："+TimeUtils.getTimeFriendlyForUserHome(TimeUtils.millis2String(now-(3600*23))));
+        Assert.assertTrue(TimeUtils.getTimeFriendlyForUserHome(TimeUtils.millis2String(now-(3600*23))).contains("昨天"));
+        System.out.println("天前 ："+TimeUtils.getTimeFriendlyForUserHome(TimeUtils.millis2String(now-(3600*24*6))));
+        Assert.assertTrue(TimeUtils.getTimeFriendlyForUserHome(TimeUtils.millis2String(now-3600*24*6)).contains("-"));
+        System.out.println("月日 ："+TimeUtils.getTimeFriendlyForUserHome(TimeUtils.millis2String(now-(3600*24*10))));
+        Assert.assertTrue(TimeUtils.getTimeFriendlyForUserHome(TimeUtils.millis2String(now-(3600*24*10))).contains("-"));
     }
 }

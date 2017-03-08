@@ -1,18 +1,23 @@
 package com.zhiyicx.thinksnsplus.widget.comment;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.widget.SimpleTextNoPullRecycleView;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.widget.NoLineClickSpan;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Describe dynamic list comment view
@@ -42,6 +47,31 @@ public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<Dynami
         return handleName(dynamicCommentBean);
     }
 
+    @Override
+    protected List<Link> setLiknks(DynamicCommentBean dynamicCommentBean, int position) {
+        List<Link> links = new ArrayList<>();
+        Link link = new Link(dynamicCommentBean.getCommentUser().getName())
+                .setTextColor(Color.parseColor("#259B24"))                  // optional, defaults to holo blue
+                .setTextColorOfHighlightedLink(Color.parseColor("#0D3D0C")) // optional, defaults to holo blue
+                .setHighlightAlpha(.4f)                                     // optional, defaults to .15f
+                .setUnderlined(false)                                       // optional, defaults to true
+                .setOnLongClickListener(new Link.OnLongClickListener() {
+                    @Override
+                    public void onLongClick(String clickedText) {
+                        // long clicked
+                        System.out.println("clickedText  long = " + clickedText);
+                    }
+                })
+                .setOnClickListener(new Link.OnClickListener() {
+                    @Override
+                    public void onClick(String clickedText) {
+                        // single clicked
+                        System.out.println("clickedText = " + clickedText);
+                    }
+                });
+        return null;
+    }
+
     /**
      * 处理名字的颜色与点击
      *
@@ -60,6 +90,7 @@ public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<Dynami
                 .innerColor(ContextCompat.getColor(getContext(), R.color.important_for_content))
                 .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
                 .format();
+
         return chars;
     }
 

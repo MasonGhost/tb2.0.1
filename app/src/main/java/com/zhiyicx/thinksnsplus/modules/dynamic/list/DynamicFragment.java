@@ -232,7 +232,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onUserInfoClick(UserInfoBean userInfoBean) {
-        System.out.println("userInfoBean = " + userInfoBean);
+
         System.out.println("userInfoBean.getName() = " + userInfoBean.getName());
         showMessage(userInfoBean.getName());
     }

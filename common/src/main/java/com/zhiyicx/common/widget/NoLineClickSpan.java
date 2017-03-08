@@ -28,4 +28,5 @@ public class NoLineClickSpan extends ClickableSpan {
     public void onClick(View widget) {
 
     }
+
 }

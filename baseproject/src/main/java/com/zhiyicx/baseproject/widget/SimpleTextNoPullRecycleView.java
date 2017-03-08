@@ -3,11 +3,11 @@ package com.zhiyicx.baseproject.widget;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
-import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.TextView;
 
+import com.klinker.android.link_builder.Link;
+import com.klinker.android.link_builder.LinkBuilder;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.common.widget.NoPullRecycleView;
@@ -89,16 +89,28 @@ public abstract class SimpleTextNoPullRecycleView<T> extends NoPullRecycleView i
 
         mAdapter = new CommonAdapter<T>(getContext(), R.layout.item_simple_text_comment, data) {
             @Override
-            protected void convert(com.zhy.adapter.recyclerview.base.ViewHolder holder, T t, int position) {
-                ((TextView) holder.getView(R.id.tv_simple_text_comment)).setMovementMethod(LinkMovementMethod.getInstance());
-                ((TextView) holder.getView(R.id.tv_simple_text_comment)).setText(setShowText(t, position), TextView.BufferType.SPANNABLE);
+            protected void convert(com.zhy.adapter.recyclerview.base.ViewHolder holder, T t, final int position) {
+                holder.setText(R.id.tv_simple_text_comment, setShowText(t, position).toString());
+                (holder.getView(R.id.tv_simple_text_comment)).setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        System.out.println("position = " + position);
+                    }
+                });
             }
+            // Add the links and make the links clickable
+//            LinkBuilder.on(holder.getView(R.id.tv_simple_text_comment))
+//                    .addLink(setLiknks(t, position))
+//            .build();
+
         };
         mAdapter.setOnItemClickListener(this);
         setAdapter(mAdapter);
     }
 
     protected abstract CharSequence setShowText(T t, int position);
+
+    protected abstract List<Link> setLiknks(T t, int position);
 
 
     @Override

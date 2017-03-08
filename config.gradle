@@ -27,6 +27,7 @@ ext {
     butterKnifeVersion = '8.4.0'
     androidSupportSdkVersion = '25.0.1'
     refreshVersion = '1.0.4'
+    clickSpanLinkVersion = '1.5.2'
 
     //Testing
     robolectricVersion = '3.1.4'
@@ -91,7 +92,9 @@ ext {
             magicIndicator               : "com.github.hackware1993:MagicIndicator:1.5.0",
             //robolectric与dagger中间接依赖的冲突，故锁定版本
             guava                        : "com.google.guava:guava:${guavaVwesion}",
-            refresh                      : "com.github.Aspsine:SwipeToLoadLayout:${refreshVersion}"
+            refresh                      : "com.github.Aspsine:SwipeToLoadLayout:${refreshVersion}",
+            clickSpanLink                : "com.klinkerapps:link_builder:${clickSpanLinkVersion}"
+
 
     ]
     sdksoupportDependencies = [
