@@ -1,3 +1,4 @@
+2017年3月9日 17:58:25
 # 刷新控件
 
 使用第三方库[SwipeToLoadLayout](https://github.com/Aspsine/SwipeToLoadLayout)
@@ -51,4 +52,31 @@ automatic表示当前的move触发条件，是否是自动触发，否则是手�
 
 通过监听上拉或者下拉的不同状态，能够完成我们需要的刷新定制
 
-2017年3月2日11:46:36
+注意： 布局中的 id 是固定的 `android:id="@+id/refreshlayout"`、`ndroid:id="@id/swipe_refresh_header"`、`android:id="@id/swipe_target"`
+```java
+
+
+        <com.aspsine.swipetoloadlayout.SwipeToLoadLayout
+            android:id="@+id/refreshlayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.zhiyicx.baseproject.widget.refresh.RefreshHeaderView
+                android:id="@id/swipe_refresh_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></com.zhiyicx.baseproject.widget.refresh.RefreshHeaderView>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@id/swipe_target"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:overScrollMode="never">
+            </android.support.v7.widget.RecyclerView>
+
+            <com.zhiyicx.baseproject.widget.refresh.RefreshFooterView
+                android:id="@id/swipe_load_more_footer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></com.zhiyicx.baseproject.widget.refresh.RefreshFooterView>
+        </com.aspsine.swipetoloadlayout.SwipeToLoadLayout>
+
+```

@@ -109,10 +109,20 @@ public class CommonTest {
             }
         }
         for (Message message : messages) {
-            if (null!=message.getTxt()) {
+            if (null != message.getTxt()) {
                 System.out.println("message = " + message.getTxt());
             }
         }
 
+    }
+
+    @Test
+    public void getListAdd() {
+        List<Integer> data = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            data.add(i);
+        }
+        data.add(3,99);
+        System.out.println("data = " + data);
     }
 }

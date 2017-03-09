@@ -18,15 +18,17 @@
             android:layout_width="@dimen/headpic_for_user_center"
             android:layout_height="@dimen/headpic_for_user_center"
             android:layout_centerVertical="true"
-            android:layout_marginBottom="@dimen/spacing_mid"
-            android:layout_marginLeft="@dimen/spacing_mid"
+            android:layout_marginBottom="@dimen/spacing_normal_large"
+            android:layout_marginLeft="@dimen/spacing_normal"
             android:layout_marginTop="@dimen/spacing_mid"
-            android:src="@mipmap/ic_launcher"/>
+            android:src="@drawable/shape_default_image_circle"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:layout_marginRight="@dimen/spacing_normal"
+            android:layout_marginTop="@dimen/spacing_normal_large"
             android:layout_toLeftOf="@+id/iv_right_arrow"
             android:layout_toRightOf="@+id/iv_head_icon"
             android:orientation="vertical">
@@ -36,13 +38,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_sub_title"
                 tools:text="奔跑的蜗牛"/>
             <!--用户签名-->
             <TextView
                 android:id="@+id/tv_user_signature"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal"
                 android:maxLines="2"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_content_assist"
                 tools:text="天青色等烟雨，而我在等你，炊烟袅袅升起，晕开了结局"/>
         </LinearLayout>
 
@@ -52,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/spacing_normal"
+            android:layout_marginRight="@dimen/spacing_mid"
             android:src="@mipmap/ic_arrow_smallgrey"/>
     </RelativeLayout>
 
@@ -60,9 +67,11 @@
     <!--粉丝，关注-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/fans_container_height"
+        android:layout_height="wrap_content"
         android:background="@color/white"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/spacing_mid"
+        android:paddingTop="@dimen/spacing_mid">
         <!--粉丝-->
         <LinearLayout
             android:id="@+id/ll_fans_container"
@@ -83,10 +92,19 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/fans"/>
+                android:layout_marginTop="@dimen/spacing_small_4dp"
+                android:text="@string/fans"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content_assist"/>
         </LinearLayout>
 
-        <ImageView style="@style/style_divider_veitical_light"/>
+        <ImageView
+            style="@style/style_divider_veitical_light"
+            android:layout_width="@dimen/divider_line"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/spacing_small_3dp"
+            android:layout_marginTop="@dimen/spacing_small_3dp"
+            />
         <!--关注-->
         <LinearLayout
             android:id="@+id/ll_follow_container"
@@ -107,7 +125,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/follow"/>
+                android:layout_marginTop="@dimen/spacing_small_4dp"
+                android:text="@string/follow"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content_assist"/>
         </LinearLayout>
 
     </LinearLayout>
@@ -138,8 +159,8 @@
         android:layout_height="@dimen/full_button_height"
         app:leftImage="@mipmap/ico_me_goldcoin"
         app:leftText="@string/gold"
-        app:showLine="false"
-        app:rightImage="@mipmap/ic_arrow_smallgrey"></com.zhiyicx.baseproject.widget.button.CombinationButton>
+        app:rightImage="@mipmap/ic_arrow_smallgrey"
+        app:showLine="false"></com.zhiyicx.baseproject.widget.button.CombinationButton>
     <!--意见反馈-->
     <com.zhiyicx.baseproject.widget.button.CombinationButton
         android:id="@+id/bt_suggestion"

@@ -17,6 +17,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.EmptyWrapper;
@@ -401,6 +402,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 //                showMessage(getString(R.string.no_data)); 如需提示，打开即可
             }
         }
+        LogUtils.i("adatper_data-->"+mAdapter.getDatas().toString());
     }
 
     /**

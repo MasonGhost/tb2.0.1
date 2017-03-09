@@ -18,9 +18,6 @@ import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplCompone
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
-import com.zhiyicx.baseproject.widget.pictureviewer.PictureViewer;
-import com.zhiyicx.baseproject.widget.pictureviewer.core.ImageInfo;
-import com.zhiyicx.baseproject.widget.pictureviewer.core.ParcelableSparseArray;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -45,7 +42,7 @@ import butterknife.OnClick;
  * @Date 2017/1/4
  * @Contact master.jungle68@gmail.com
  */
-public class HomeFragment extends TSFragment<HomeContract.Presenter> implements HomeContract.View, PhotoSelectorImpl.IPhotoBackListener,DynamicFragment.OnImageClickListener {
+public class HomeFragment extends TSFragment<HomeContract.Presenter> implements DynamicFragment.OnCommentClickListener, HomeContract.View, PhotoSelectorImpl.IPhotoBackListener {
     public static final int PAGE_NUMS = 4; // 页数
 
     public static final int PAGE_HOME = 0; // 对应在 viewpager 中的位置
@@ -73,8 +70,6 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     TextView mTvMine;
     @BindView(R.id.vp_home)
     NoPullViewPager mVpHome;
-    @BindView(R.id.picture_view)
-    PictureViewer mPictureViewer;
 
     @Inject
     HomePresenter mHomePresenter;  // 仅用于构造
@@ -286,7 +281,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                         .NO_CRAFT))
                 .build().photoSelectorImpl();
     }
-    
+
     @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
         // 跳转到发送动态页面
@@ -310,9 +305,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     }
 
     @Override
-    public void onImageClick(List<ImageBean> images, ParcelableSparseArray<ImageInfo> infos ,int position) {
-        System.out.println("infos = " + infos.toString());
-        mPictureViewer.setData(images, infos);
-        mPictureViewer.show(position);
+    public void onButtonMenuShow(boolean isShow) {
+        System.out.println("isShow = " + isShow);
+        mLlBottomContainer.setVisibility(isShow ? View.VISIBLE : View.GONE);
     }
 }

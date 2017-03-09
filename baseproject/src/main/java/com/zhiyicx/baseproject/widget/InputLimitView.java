@@ -31,11 +31,9 @@ public class InputLimitView extends FrameLayout {
     protected TextView mTvLimitTip;
     protected Button mBtSend;
 
-    public EditText getEtContent() {
-        return mEtContent;
-    }
 
     protected EditText mEtContent;
+    protected EditText mEtEmpty;
 
     private int mLimitMaxSize;// 最大输入值
     private int mshowLimitSize;// 当输入值达到 mshowLimitSize 时，显示提示
@@ -65,6 +63,7 @@ public class InputLimitView extends FrameLayout {
         mTvLimitTip = (TextView) findViewById(R.id.tv_limit_tip);
         mBtSend = (Button) findViewById(R.id.bt_send);
         mEtContent = (EditText) findViewById(R.id.et_content);
+        mEtEmpty = (EditText) findViewById(R.id.et_empty);
         if (attrs != null) {
             TypedArray array = context.obtainStyledAttributes(attrs,
                     R.styleable.inputLimitView);
@@ -122,6 +121,10 @@ public class InputLimitView extends FrameLayout {
 
     }
 
+    public EditText getEtContent() {
+        return mEtContent;
+    }
+
     /**
      * 设置发送按钮点击监听
      *
@@ -146,6 +149,7 @@ public class InputLimitView extends FrameLayout {
 
     /**
      * 设置 hint
+     *
      * @param hintStr
      */
     public void setEtContentHint(String hintStr) {
@@ -159,7 +163,8 @@ public class InputLimitView extends FrameLayout {
         mEtContent.clearFocus();
     }
 
-    public void getFocus(){
+    public void getFocus() {
+        mEtEmpty.clearFocus();
         mEtContent.requestFocus();
     }
 

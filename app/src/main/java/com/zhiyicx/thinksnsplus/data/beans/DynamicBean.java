@@ -54,6 +54,8 @@ public class DynamicBean extends BaseListBean {
 
     @Transient
     private List<FollowFansBean> digUserInfoList;// 点赞用户的信息列表
+    @Transient
+    private int myDyanamicListCount;// 某个用户的动态数量
 
     public DynamicBean() {
     }
@@ -115,6 +117,14 @@ public class DynamicBean extends BaseListBean {
         this.state = state;
     }
 
+    public int getMyDyanamicListCount() {
+        return myDyanamicListCount;
+    }
+
+    public void setMyDyanamicListCount(int myDyanamicListCount) {
+        this.myDyanamicListCount = myDyanamicListCount;
+    }
+
     @Keep
     public DynamicDetailBean getFeed() {
         return feed;
@@ -144,7 +154,6 @@ public class DynamicBean extends BaseListBean {
     public void setUserInfoBean(UserInfoBean userInfoBean) {
         this.userInfoBean = userInfoBean;
     }
-
 
 
     @Keep
@@ -261,25 +270,8 @@ public class DynamicBean extends BaseListBean {
     }
 
 
-    /**
-     * To-many relationship, resolved on first access (and after reset).
-     * Changes to to-many relations are not persisted, make changes to the target entity.
-     */
-    @Generated(hash = 618015855)
+    @Keep
     public List<DynamicCommentBean> getComments() {
-        if (comments == null) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            DynamicCommentBeanDao targetDao = daoSession.getDynamicCommentBeanDao();
-            List<DynamicCommentBean> commentsNew = targetDao._queryDynamicBean_Comments(feed_mark);
-            synchronized (this) {
-                if (comments == null) {
-                    comments = commentsNew;
-                }
-            }
-        }
         return comments;
     }
 

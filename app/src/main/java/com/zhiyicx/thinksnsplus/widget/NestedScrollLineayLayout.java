@@ -91,18 +91,17 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
         boolean hiddenTop = dy > 0 && getScrollY() < mTopViewHeight;
         boolean showTop = dy < 0 && getScrollY() >= 0 && !ViewCompat.canScrollVertically(target,
                 -1);
-        if (hiddenTop || showTop) {
-            if (!addHeight) {//只增加一次 高度 height
-                addHeight = true;
-                ViewGroup.LayoutParams params = this.getLayoutParams();
-                params.height = mTopViewHeight + this.getHeight();
-                this.setLayoutParams(params);
-                requestLayout();
-            }
-            scrollBy(0, dy);
-            consumed[1] = dy;
+        //if (hiddenTop || showTop) {
+        if (!addHeight) {//只增加一次 高度 height
+            addHeight = true;
+            ViewGroup.LayoutParams params = this.getLayoutParams();
+            params.height = mTopViewHeight + this.getHeight();
+            this.setLayoutParams(params);
+            requestLayout();
         }
-
+        scrollBy(0, dy);
+        consumed[1] = dy;
+        // }
         if (mOnHeadFlingListener != null && getScrollY() <= mTopViewHeight) {
             mOnHeadFlingListener.onHeadFling(getScrollY());
         }

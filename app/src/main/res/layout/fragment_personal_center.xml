@@ -1,20 +1,99 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     >
 
-    <include
-        layout="@layout/fragment_tslist"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/personal_center_bottom_view_height"
-        ></include>
+        android:orientation="vertical">
+
+        <com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout
+            android:id="@+id/nest_scroll_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <include
+                layout="@layout/fragment_personal_center_header"></include>
+
+            <include
+                layout="@layout/fragment_tslist"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </include>
+        </com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout>
+
+        <!--底部的关注，聊天-->
+        <LinearLayout
+            android:id="@+id/ll_bottom_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="vertical">
+
+            <include layout="@layout/include_horizontal_divider_light"></include>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/personal_center_bottom_view_height"
+                android:background="@color/white"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/ll_follow_container"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center">
+                    <!--关注-->
+                    <TextView
+                        android:id="@+id/tv_follow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@mipmap/ico_me_follow"
+                        android:drawablePadding="@dimen/spacing_small_3dp"
+                        android:text="@string/follow"
+                        android:textColor="@color/important_for_content"
+                        android:textSize="@dimen/size_content"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="@dimen/divider_line"
+                    android:layout_height="match_parent"
+                    android:background="@color/general_for_line_light">
+                </View>
+
+                <LinearLayout
+                    android:id="@+id/ll_chat_container"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center">
+                    <!--聊天-->
+                    <TextView
+                        android:id="@+id/tv_chat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@mipmap/ico_me_chat"
+                        android:drawablePadding="@dimen/spacing_small_3dp"
+                        android:text="@string/chat"
+                        android:textColor="@color/important_for_content"
+                        android:textSize="@dimen/size_content"/>
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/rl_toolbar_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_height"
-        android:background="@android:color/transparent">
+        android:background="@color/white">
 
         <ImageView
             android:id="@+id/iv_back"
@@ -34,65 +113,4 @@
             android:src="@mipmap/topbar_more_white"/>
     </RelativeLayout>
 
-    <!--底部的关注，聊天-->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/ll_bottom_container"
-        android:layout_gravity="bottom"
-        android:orientation="vertical">
-
-        <include layout="@layout/include_horizontal_divider_light"></include>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/personal_center_bottom_view_height"
-            android:background="@color/white"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:id="@+id/ll_follow_container"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center">
-                <!--关注-->
-                <TextView
-                    android:id="@+id/tv_follow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@mipmap/ico_me_follow"
-                    android:drawablePadding="@dimen/spacing_small_3dp"
-                    android:text="@string/follow"
-                    android:textColor="@color/important_for_content"
-                    android:textSize="@dimen/size_content"/>
-            </LinearLayout>
-
-            <View
-                android:layout_width="@dimen/divider_line"
-                android:layout_height="match_parent"
-                android:background="@color/general_for_line_light">
-            </View>
-
-            <LinearLayout
-                android:id="@+id/ll_chat_container"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center">
-                <!--聊天-->
-                <TextView
-                    android:id="@+id/tv_chat"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@mipmap/ico_me_chat"
-                    android:drawablePadding="@dimen/spacing_small_3dp"
-                    android:text="@string/chat"
-                    android:textColor="@color/important_for_content"
-                    android:textSize="@dimen/size_content"/>
-            </LinearLayout>
-
-        </LinearLayout>
-    </LinearLayout>
 </FrameLayout>

@@ -15,6 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_mid"
         android:gravity="center_vertical"
+        android:layout_marginLeft="20dp"
         android:text="@string/dynamic_list_more_comment"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_content_comment"/>

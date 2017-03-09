@@ -1,14 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -17,20 +14,16 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBoundTransform;
-import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
-import com.zhiyicx.common.utils.ZoomView;
-import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailItemForDig;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForEightImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForFiveImage;
@@ -43,15 +36,21 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForT
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicCountItem;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem;
+import com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.functions.Action1;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @author LiuChao
@@ -70,12 +69,27 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     ImageView mIvMore;
     @BindView(R.id.rl_toolbar_container)
     RelativeLayout mRlToolbarContainer;
+    @BindView(R.id.tv_follow)
+    TextView mTvFollow;
+    @BindView(R.id.ll_follow_container)
+    LinearLayout mLlFollowContainer;
+    @BindView(R.id.ll_chat_container)
+    LinearLayout mLlChatContainer;
+    @BindView(R.id.ll_bottom_container)
+    LinearLayout mLlBottomContainer;
+    @BindView(R.id.nest_scroll_container)
+    NestedScrollLineayLayout mNestScrollContainer;
+    @BindView(R.id.personal_header)
+    LinearLayout mPersonalHeader;
+
 
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     private PersonalCenterHeaderViewItem mPersonalCenterHeaderViewItem;
     private List<DynamicBean> mDynamicBeens = new ArrayList<>();
-    // 当前需要显示的用户的id
-    private long currentUserId = 5;
+    // 关注状态
+    private FollowFansBean mFollowFansBean;
+    // 上一个页面传过来的用户信息
+    private UserInfoBean mUserInfoBean;
 
 
     @Override
@@ -83,14 +97,40 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         super.initView(rootView);
         initToolBar();
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
-        mPersonalCenterHeaderViewItem = new PersonalCenterHeaderViewItem(getActivity(), mRvList, mHeaderAndFooterWrapper);
+
+       // mNestScrollContainer.setHeaderViewId(R.id.personal_header);
+        mNestScrollContainer.setNotConsumeHeight(200);
+        mNestScrollContainer.setOnHeadFlingListener(new NestedScrollLineayLayout.OnHeadFlingListener() {
+            @Override
+            public void onHeadFling(int scrollY) {
+                int distance = mNestScrollContainer.getTopViewHeight();
+                int alpha = 255 * scrollY / distance;
+                alpha = alpha > 255 ? 255 : alpha;
+                mRlToolbarContainer.getBackground().setAlpha(alpha);
+            }
+        });
+        mPersonalCenterHeaderViewItem = new PersonalCenterHeaderViewItem(getActivity(), mRvList, mPersonalHeader);
         mPersonalCenterHeaderViewItem.initHeaderView();
+        // 添加关注点击事件
+        RxView.clicks(mTvFollow)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        // 表示第一次进入界面加载正确的关注状态，后续才能进行关注操作
+                        if (mFollowFansBean != null) {
+                            mPresenter.handleFollow(mFollowFansBean);
+                        }
+                    }
+                });
+
     }
 
 
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
-        mPresenter.requestNetData(maxId, isLoadMore, currentUserId);
+        mPresenter.requestNetData(maxId, isLoadMore, mUserInfoBean.getUser_id());
     }
 
     @Override
@@ -137,10 +177,15 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     protected void initData() {
+        mUserInfoBean = getArguments().getParcelable(PERSONAL_CENTER_DATA);
+        // 进入页面尝试设置头部信息
+        setHeaderInfo(mUserInfoBean);
         // 获取个人主页用户信息，显示在headerView中
-        mPresenter.setCurrentUserInfo(currentUserId);
+        mPresenter.setCurrentUserInfo(mUserInfoBean.getUser_id());
         // 获取动态列表
-        mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false, currentUserId);
+        mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false, mUserInfoBean.getUser_id());
+        // 获取关注状态
+        mPresenter.initFollowState(mUserInfoBean.getUser_id());
     }
 
     @Override
@@ -161,20 +206,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     public void showMessage(String message) {
 
-    }
-
-    public static PersonalCenterFragment initFragment(Bundle bundle) {
-        PersonalCenterFragment personalCenterFragment = new PersonalCenterFragment();
-        personalCenterFragment.setArguments(bundle);
-        return personalCenterFragment;
-    }
-
-    private void setAdapter(MultiItemTypeAdapter adapter, DynamicListBaseItem dynamicListBaseItem) {
-        dynamicListBaseItem.setOnImageClickListener(this);
-        dynamicListBaseItem.setOnUserInfoClickListener(this);
-        dynamicListBaseItem.setOnMenuItemClickLisitener(this);
-        dynamicListBaseItem.setOnReSendClickListener(this);
-        adapter.addItemViewDelegate(dynamicListBaseItem);
     }
 
     @Override
@@ -211,18 +242,93 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 break;
             case R.id.iv_more:
                 break;
+
         }
     }
 
     @Override
     public void setHeaderInfo(UserInfoBean userInfoBean) {
+        setBottomVisible(userInfoBean.getUser_id());
         mPersonalCenterHeaderViewItem.initHeaderViewData(userInfoBean);
+    }
+
+    @Override
+    public void setFollowState(FollowFansBean followFansBean) {
+        mFollowFansBean = followFansBean;
+        setBottomFollowState(followFansBean.getFollowState());
     }
 
     private void initToolBar() {
         // toolBar设置状态栏高度的marginTop
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(0, DeviceUtils.getStatuBarHeight(getContext()), 0, 0);
         mRlToolbarContainer.setLayoutParams(layoutParams);
+    }
+
+    /**
+     * 设置底部view的关注状态
+     */
+    private void setBottomFollowState(int state) {
+        switch (state) {
+            case FollowFansBean.UNFOLLOWED_STATE:
+                mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_follow), null, null, null);
+                mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
+                mTvFollow.setText(R.string.follow);
+                break;
+            case FollowFansBean.IFOLLOWED_STATE:
+                mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_followed), null, null, null);
+                mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
+                mTvFollow.setText(R.string.followed);
+                break;
+            case FollowFansBean.FOLLOWED_EACHOTHER_STATE:
+                mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_followed_eachother), null, null, null);
+                mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
+                mTvFollow.setText(R.string.followed_eachother);
+                break;
+            default:
+        }
+    }
+
+    /**
+     * 设置底部view的可见性;如果进入了当前登录用户的主页，需要隐藏底部状态栏
+     *
+     * @param currentUserID
+     */
+    private void setBottomVisible(long currentUserID) {
+        AuthBean authBean = AppApplication.getmCurrentLoginAuth();
+        mLlBottomContainer.setVisibility(authBean.getUser_id() == currentUserID ? View.GONE : View.VISIBLE);
+    }
+
+    public static PersonalCenterFragment initFragment(Bundle bundle) {
+        PersonalCenterFragment personalCenterFragment = new PersonalCenterFragment();
+        personalCenterFragment.setArguments(bundle);
+        return personalCenterFragment;
+    }
+
+    private void setAdapter(MultiItemTypeAdapter adapter, DynamicListBaseItem dynamicListBaseItem) {
+        dynamicListBaseItem.setOnImageClickListener(this);
+        dynamicListBaseItem.setOnUserInfoClickListener(this);
+        dynamicListBaseItem.setOnMenuItemClickLisitener(this);
+        dynamicListBaseItem.setOnReSendClickListener(this);
+        adapter.addItemViewDelegate(dynamicListBaseItem);
+    }
+
+    /**
+     * 跳转到当前的个人中心页面
+     */
+    public static void startToPersonalCenter(Context context, UserInfoBean userInfoBean) {
+        Intent intent = new Intent(context, PersonalCenterActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA, userInfoBean);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: inflate a fragment view
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        ButterKnife.bind(this, rootView);
+        return rootView;
     }
 }

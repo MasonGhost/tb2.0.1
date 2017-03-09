@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.beans;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -17,6 +18,7 @@ import org.greenrobot.greendao.converter.PropertyConverter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.greenrobot.greendao.annotation.Generated;
 
 /**
@@ -193,6 +195,10 @@ public class UserInfoBean implements Parcelable {
     public String getIntro() {
         if (intro == null) {
             intro = getConfigProperty("intro");
+        }
+        // 如果依然没有简介，那就返回缺省的内容
+        if (TextUtils.isEmpty(intro)) {
+            intro = AppApplication.getContext().getString(R.string.intro_default);
         }
         return intro;
     }
@@ -697,7 +703,7 @@ public class UserInfoBean implements Parcelable {
 
     @Generated(hash = 645073459)
     public UserInfoBean(Long user_id, String sex, String name, String avatar, String phone, String email, String intro, String location, String province,
-            String city, String area, String education, String created_at, String updated_at, String deleted_at, List<DatasBean> datas, List<CountsBean> counts) {
+                        String city, String area, String education, String created_at, String updated_at, String deleted_at, List<DatasBean> datas, List<CountsBean> counts) {
         this.user_id = user_id;
         this.sex = sex;
         this.name = name;
