@@ -1,18 +1,12 @@
 package com.zhiyicx.thinksnsplus.modules.information.indetails;
 
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
-import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
-import com.zhiyicx.baseproject.widget.pictureviewer.PictureViewer;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -34,8 +28,6 @@ public class InfoDetailsFragment extends TSListFragment {
     RecyclerView mSwipeTarget;
     @BindView(R.id.refreshlayout)
     SwipeToLoadLayout mRefreshlayout;
-    @BindView(R.id.picture_view)
-    PictureViewer mPictureView;
     @BindView(R.id.dd_dynamic_tool)
     DynamicDetailMenuView mDdDynamicTool;
 

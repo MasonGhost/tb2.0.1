@@ -13,7 +13,6 @@ import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.imsdk.core.ChatType;
 import com.zhiyicx.imsdk.entity.Message;
-import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
@@ -235,7 +234,6 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
      */
     @Override
     public void onItemClickListener(ChatItemBean message) {
-        DeviceUtils.hideSoftKeyboard(getContext(), mRootView);
     }
 
     /**

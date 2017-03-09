@@ -145,7 +145,12 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                 break;
             default:
         }
-        System.out.println("datas = " + datas.toString());
+        for (int i = 0; i < datas.size(); i++) {
+            if (datas.get(i).getFeed_mark() != null) {
+                datas.get(i).setComments(mDynamicCommentBeanGreenDao.getLocalComments(datas.get(i).getFeed_mark()));
+                System.out.println(" getComments--------> = " + datas.get(i).getComments());
+            }
+        }
         return datas;
     }
 
@@ -334,10 +339,10 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
     @Override
     public void deleteComment(DynamicBean dynamicBean, int dynamicPosition, long comment_id, int commentPositon) {
         mRootView.getDatas().get(dynamicPosition).getTool().setFeed_comment_count(dynamicBean.getTool().getFeed_comment_count() - 1);
-        mRootView.getDatas().get(dynamicPosition).getComments().remove(commentPositon);
-        mRootView.refresh(dynamicPosition);
         mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getDatas().get(dynamicPosition).getTool());
         mDynamicCommentBeanGreenDao.deleteSingleCache(dynamicBean.getComments().get(commentPositon));
+        mRootView.getDatas().get(dynamicPosition).getComments().remove(commentPositon);
+        mRootView.refresh(dynamicPosition);
         BackgroundRequestTaskBean backgroundRequestTaskBean;
         HashMap<String, Object> params = new HashMap<>();
         params.put("feed_id", dynamicBean.getFeed_id());
@@ -357,14 +362,12 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
      */
     @Override
     public void sendComment(int mCurrentPostion, long replyToUserId, String commentContent) {
-        System.out.println("replyToUserId = " + replyToUserId);
         DynamicCommentBean creatComment = new DynamicCommentBean();
         creatComment.setComment_content(commentContent);
         creatComment.setFeed_mark(mRootView.getDatas().get(mCurrentPostion).getFeed_mark());
         String comment_mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis();
         creatComment.setComment_mark(Long.parseLong(comment_mark));
         creatComment.setReply_to_user_id(replyToUserId);
-        System.out.println("replyToUserId data= " + mUserInfoBeanGreenDao.getSingleDataFromCache(replyToUserId));
         creatComment.setReplyUser(mUserInfoBeanGreenDao.getSingleDataFromCache(replyToUserId));
         creatComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
         creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id()));

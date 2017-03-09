@@ -11,6 +11,7 @@ import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.NotNull;
+import org.greenrobot.greendao.annotation.Unique;
 
 /**
  * @author LiuChao
@@ -22,9 +23,11 @@ import org.greenrobot.greendao.annotation.NotNull;
 public class DynamicCommentBean implements Parcelable {
     @Id(autoincrement = true)
     private Long _id;
+    @Unique
     @SerializedName("id")
     private Long comment_id;// 评论的id
     private Long feed_mark;// 属于哪条动态
+    @Unique
     private Long comment_mark;// 发评论的唯一标识
     private String created_at;// 评论创建的时间
     private String comment_content;// 评论内容
