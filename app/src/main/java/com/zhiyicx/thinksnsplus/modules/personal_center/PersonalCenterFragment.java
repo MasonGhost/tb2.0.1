@@ -36,6 +36,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForT
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicCountItem;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem;
+import com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
@@ -76,6 +77,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     LinearLayout mLlChatContainer;
     @BindView(R.id.ll_bottom_container)
     LinearLayout mLlBottomContainer;
+    @BindView(R.id.nest_scroll_container)
+    NestedScrollLineayLayout mNestScrollContainer;
+    @BindView(R.id.personal_header)
+    LinearLayout mPersonalHeader;
+
 
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     private PersonalCenterHeaderViewItem mPersonalCenterHeaderViewItem;
@@ -91,7 +97,19 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         super.initView(rootView);
         initToolBar();
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
-        mPersonalCenterHeaderViewItem = new PersonalCenterHeaderViewItem(getActivity(), mRvList, mHeaderAndFooterWrapper);
+
+       // mNestScrollContainer.setHeaderViewId(R.id.personal_header);
+        mNestScrollContainer.setNotConsumeHeight(200);
+        mNestScrollContainer.setOnHeadFlingListener(new NestedScrollLineayLayout.OnHeadFlingListener() {
+            @Override
+            public void onHeadFling(int scrollY) {
+                int distance = mNestScrollContainer.getTopViewHeight();
+                int alpha = 255 * scrollY / distance;
+                alpha = alpha > 255 ? 255 : alpha;
+                mRlToolbarContainer.getBackground().setAlpha(alpha);
+            }
+        });
+        mPersonalCenterHeaderViewItem = new PersonalCenterHeaderViewItem(getActivity(), mRvList, mPersonalHeader);
         mPersonalCenterHeaderViewItem.initHeaderView();
         // 添加关注点击事件
         RxView.clicks(mTvFollow)
@@ -242,7 +260,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     private void initToolBar() {
         // toolBar设置状态栏高度的marginTop
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(0, DeviceUtils.getStatuBarHeight(getContext()), 0, 0);
         mRlToolbarContainer.setLayoutParams(layoutParams);
     }
@@ -306,4 +324,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         context.startActivity(intent);
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: inflate a fragment view
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        ButterKnife.bind(this, rootView);
+        return rootView;
+    }
 }

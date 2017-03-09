@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.zhiyicx.common.utils.log.LogUtils;
+
 /**
  * @author LiuChao
  * @describe 可以缩放的View, 和可滑动的列表绑定，摸摸大
@@ -69,16 +71,20 @@ public class ZoomView {
                         replyImage();
                         break;
                     case MotionEvent.ACTION_MOVE:
+
+                        LogUtils.i("zoomView-->" + zoomView.getTop() + " zoomHeight" + zoomView.getHeight()
+                                + "  recyclerView-->" + mRecyclerView.getTop()
+                                + "postion 0-->" + mLinearLayoutManager.findViewByPosition(0).getTop());
                         if (!mScaling) {
                             //当图片也就是第一个item完全可见的时候，记录触摸屏幕的位置
-                            if (mLinearLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
+                            if (mLinearLayoutManager.findViewByPosition(0).getTop() >= zoomView.getTop()) {
                                 mFirstPosition = event.getY();
                             } else {
                                 break;
                             }
                         }
                         int distance = (int) ((event.getY() - mFirstPosition) * 0.6); // 滚动距离乘以一个系数
-                        if (distance < 0||distance>max_distance) {
+                        if (distance < 0 || distance > max_distance) {
                             break;
                         }
                         // 处理放大，需要注意的是，被放缩的控件一定要在父布局的水平方向居中显示，这样放大，才会往两边扩展
