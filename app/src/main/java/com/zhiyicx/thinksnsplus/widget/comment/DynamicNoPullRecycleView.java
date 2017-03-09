@@ -45,9 +45,9 @@ public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<Dynami
     @Override
     protected void convertData(com.zhy.adapter.recyclerview.base.ViewHolder holder, final DynamicCommentBean dynamicCommentBean, final int position) {
         if (dynamicCommentBean.getState() == DynamicCommentBean.SEND_ERROR) {
-            holder.setVisible(com.zhiyicx.baseproject.R.id.iv_hint_img, GONE);
-        } else {
             holder.setVisible(com.zhiyicx.baseproject.R.id.iv_hint_img, VISIBLE);
+        } else {
+            holder.setVisible(com.zhiyicx.baseproject.R.id.iv_hint_img, GONE);
         }
         holder.setText(com.zhiyicx.baseproject.R.id.tv_simple_text_comment, setShowText(dynamicCommentBean, position));
         // Add the links and make the links clickable

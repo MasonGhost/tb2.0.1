@@ -153,6 +153,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         dynamicListBaseItem.setOnReSendClickListener(this);
         dynamicListBaseItem.setOnMoreCommentClickListener(this);
         dynamicListBaseItem.setOnCommentClickListener(this);
+        dynamicListBaseItem.setOnCommentStateClickListener(this);
         adapter.addItemViewDelegate(dynamicListBaseItem);
     }
 
