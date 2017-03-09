@@ -25,6 +25,7 @@ import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumListActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
 
@@ -147,8 +148,11 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 startActivity(itFollow);
                 break;
             case R.id.bt_personal_page:
-                //SkinManager.getInstance().restoreDefaultTheme();
-                startActivity(new Intent(getContext(), PersonalCenterActivity.class));
+                Intent intent = new Intent(getContext(), PersonalCenterActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA, mUserInfoBean);
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
             case R.id.bt_ranking:
                 SkinManager.getInstance().loadSkin("tsplustheme.skin", new SkinLoaderListener() {
@@ -211,6 +215,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     public void setUserInfo(UserInfoBean userInfoBean) {
+        this.mUserInfoBean = userInfoBean;
         // 设置用户头像
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
