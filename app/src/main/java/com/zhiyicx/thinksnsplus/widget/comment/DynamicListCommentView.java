@@ -126,7 +126,6 @@ public class DynamicListCommentView extends LinearLayout {
      */
     public void setData(DynamicBean dynamicBean) {
         mDynamicBean = dynamicBean;
-        System.out.println("dynamicBean.getComments().toString() = " + dynamicBean.getComments().toString());
         List<DynamicCommentBean> data = new ArrayList<>();
         if (dynamicBean.getComments().size() >= SHOW_MORE_COMMENT_SIZE_LIMIT) { //最多显示3条
             for (int i = 0; i < SHOW_MORE_COMMENT_SIZE_LIMIT - 1; i++) {
@@ -135,7 +134,6 @@ public class DynamicListCommentView extends LinearLayout {
         } else {
             data.addAll(dynamicBean.getComments());
         }
-        System.out.println("dynamicBean.data= " + data.toString());
         mDynamicNoPullRecycleView.setData(data);
         if (dynamicBean.getTool().getFeed_comment_count() >= SHOW_MORE_COMMENT_SIZE_LIMIT) {
             mMoreComment.setVisibility(VISIBLE);
