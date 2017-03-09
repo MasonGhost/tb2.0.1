@@ -20,6 +20,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
@@ -37,6 +38,7 @@ import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
+import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -58,7 +60,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  * @Date 2017/1/17
  * @Contact master.jungle68@gmail.com
  */
-public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements InputLimitView.OnSendClickListener, DynamicContract.View, DynamicListCommentView.OnCommentClickListener, DynamicListCommentView.OnMoreCommentClickListener, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener, MultiItemTypeAdapter.OnItemClickListener {
+public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicNoPullRecycleView.OnCommentStateClickListener, InputLimitView.OnSendClickListener, DynamicContract.View, DynamicListCommentView.OnCommentClickListener, DynamicListCommentView.OnMoreCommentClickListener, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener, MultiItemTypeAdapter.OnItemClickListener {
     private static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
     public static final long ITEM_SPACING = 5L; // 单位dp
 
@@ -420,6 +422,17 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         mPresenter.sendComment(mCurrentPostion, mReplyToUserId, mIlvComment.getInputContent());
         mIlvComment.setVisibility(View.GONE);
         showBottomView(true);
+    }
+
+    /**
+     * 重发评论
+     *
+     * @param dynamicCommentBean
+     * @param position
+     */
+    @Override
+    public void onCommentStateClick(DynamicCommentBean dynamicCommentBean, int position) {
+        showMessage("点击了评论失败状态");
     }
 
     public interface OnCommentClickListener {

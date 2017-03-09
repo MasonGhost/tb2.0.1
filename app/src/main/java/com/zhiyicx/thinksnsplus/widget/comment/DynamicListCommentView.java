@@ -39,6 +39,7 @@ public class DynamicListCommentView extends LinearLayout {
 
     private OnMoreCommentClickListener mOnMoreCommentClickListener;
     private OnCommentClickListener mOnCommentClickListener;
+    private DynamicNoPullRecycleView.OnCommentStateClickListener mOnCommentStateClickListener;
     private DynamicBean mDynamicBean;
 
     private boolean mIsUserNameClick = false; // 标识用户名被点击还是评论被点击了
@@ -117,6 +118,14 @@ public class DynamicListCommentView extends LinearLayout {
                 LogUtils.d("DynamicListCommentView is clicke");
             }
         });
+        mDynamicNoPullRecycleView.setOnCommentStateClickListener(new DynamicNoPullRecycleView.OnCommentStateClickListener() {
+            @Override
+            public void onCommentStateClick(DynamicCommentBean dynamicCommentBean, int position) {
+                if(mOnCommentStateClickListener!=null){
+                    mOnCommentStateClickListener.onCommentStateClick(dynamicCommentBean,position);
+                }
+            }
+        });
     }
 
     /**
@@ -150,6 +159,9 @@ public class DynamicListCommentView extends LinearLayout {
         mOnCommentClickListener = onCommentClickListener;
     }
 
+    public void setOnCommentStateClickListener(DynamicNoPullRecycleView.OnCommentStateClickListener onCommentStateClickListener) {
+        mOnCommentStateClickListener = onCommentStateClickListener;
+    }
 
     public interface OnMoreCommentClickListener {
         void onMoreCommentClick(View view, DynamicBean dynamicBean);
