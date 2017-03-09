@@ -1,8 +1,6 @@
 package com.zhiyicx.thinksnsplus.config;
 
 
-import retrofit2.http.DELETE;
-
 /**
  * @Describe
  * @Author Jungle68
@@ -16,7 +14,8 @@ public enum BackgroundTaskRequestMethodConfig {
     GET_IM_INFO(2),
     GET_USER_INFO(3),
     DELETE(4),
-    SEND_DYNAMIC(5);
+    SEND_DYNAMIC(5),
+    SEND_COMMENT(6);
     public final int id;
 
     BackgroundTaskRequestMethodConfig(int id) {

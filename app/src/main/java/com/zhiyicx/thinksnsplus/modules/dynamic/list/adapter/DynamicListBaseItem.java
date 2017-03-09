@@ -22,6 +22,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
+import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -84,6 +85,12 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
     protected DynamicListCommentView.OnCommentClickListener mOnCommentClickListener;
 
     protected DynamicListCommentView.OnMoreCommentClickListener mOnMoreCommentClickListener;
+
+    public void setOnCommentStateClickListener(DynamicNoPullRecycleView.OnCommentStateClickListener onCommentStateClickListener) {
+        mOnCommentStateClickListener = onCommentStateClickListener;
+    }
+
+    protected DynamicNoPullRecycleView.OnCommentStateClickListener mOnCommentStateClickListener;
 
     public void setOnMoreCommentClickListener(DynamicListCommentView.OnMoreCommentClickListener onMoreCommentClickListener) {
         mOnMoreCommentClickListener = onMoreCommentClickListener;
@@ -194,7 +201,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
         comment.setData(dynamicBean);
         comment.setOnCommentClickListener(mOnCommentClickListener);
         comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
-
+        comment.setOnCommentStateClickListener(mOnCommentStateClickListener);
 
     }
 

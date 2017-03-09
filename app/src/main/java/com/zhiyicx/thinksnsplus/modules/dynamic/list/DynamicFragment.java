@@ -1,31 +1,26 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.InputLimitView;
-import com.zhiyicx.baseproject.widget.pictureviewer.core.ImageInfo;
-import com.zhiyicx.baseproject.widget.pictureviewer.core.ParcelableSparseArray;
-import com.zhiyicx.baseproject.widget.pictureviewer.core.PhotoView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ActivityUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.ToastUtils;
-import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
@@ -43,6 +38,7 @@ import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
+import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -64,7 +60,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  * @Date 2017/1/17
  * @Contact master.jungle68@gmail.com
  */
-public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements InputLimitView.OnSendClickListener, DynamicContract.View, DynamicListCommentView.OnCommentClickListener, DynamicListCommentView.OnMoreCommentClickListener, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener, MultiItemTypeAdapter.OnItemClickListener {
+public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicNoPullRecycleView.OnCommentStateClickListener, InputLimitView.OnSendClickListener, DynamicContract.View, DynamicListCommentView.OnCommentClickListener, DynamicListCommentView.OnMoreCommentClickListener, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener, MultiItemTypeAdapter.OnItemClickListener {
     private static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
     public static final long ITEM_SPACING = 5L; // 单位dp
 
@@ -78,7 +74,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Inject
     DynamicPresenter mDynamicPresenter;  // 仅用于构造
     private String mDynamicType = ApiConfig.DYNAMIC_TYPE_NEW;
-    private boolean mKeyboradIsOpen;// 软键盘是否打开
+
 
     private List<DynamicBean> mDynamicBeens = new ArrayList<>();
     private ActionPopupWindow mDeletCommentPopWindow;
@@ -86,15 +82,15 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private long mReplyToUserId;// 被评论者的 id
 
 
-    public void setOnImageClickListener(OnImageClickListener onImageClickListener) {
-        mOnImageClickListener = onImageClickListener;
+    public void setOnCommentClickListener(OnCommentClickListener onCommentClickListener) {
+        mOnCommentClickListener = onCommentClickListener;
     }
 
-    OnImageClickListener mOnImageClickListener;
+    OnCommentClickListener mOnCommentClickListener;
 
-    public static DynamicFragment newInstance(String dynamicType, OnImageClickListener l) {
+    public static DynamicFragment newInstance(String dynamicType, OnCommentClickListener l) {
         DynamicFragment fragment = new DynamicFragment();
-        fragment.setOnImageClickListener(l);
+        fragment.setOnCommentClickListener(l);
         Bundle args = new Bundle();
         args.putString(BUNDLE_DYNAMIC_TYPE, dynamicType);
         fragment.setArguments(args);
@@ -115,29 +111,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     protected void initView(View rootView) {
         super.initView(rootView);
         mIlvComment.setOnSendClickListener(this);
-        // 软键盘控制区
-        mIlvComment.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-
-                Rect rect = new Rect();
-                //获取root在窗体的可视区域
-                mFlContainer.getWindowVisibleDisplayFrame(rect);
-                //获取root在窗体的不可视区域高度(被其他View遮挡的区域高度)
-                int rootInvisibleHeight = mFlContainer.getRootView().getHeight() - rect.bottom;
-                int dispayHeight = UIUtils.getWindowHeight(getContext());
-                //若不可视区域高度大于1/3屏幕高度，则键盘显示
-                if (rootInvisibleHeight > (1 / 3 * dispayHeight)) {
-                    mKeyboradIsOpen = true;
-                } else {
-                    //键盘隐藏
-                    mKeyboradIsOpen = false;
-                    mIlvComment.clearFocus();// 主动失去焦点
-                }
-                mIlvComment.setSendButtonVisiable(mKeyboradIsOpen);
-            }
-        });
-
     }
 
     @Override
@@ -180,6 +153,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         dynamicListBaseItem.setOnReSendClickListener(this);
         dynamicListBaseItem.setOnMoreCommentClickListener(this);
         dynamicListBaseItem.setOnCommentClickListener(this);
+        dynamicListBaseItem.setOnCommentStateClickListener(this);
         adapter.addItemViewDelegate(dynamicListBaseItem);
     }
 
@@ -235,31 +209,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 imageBeanList.add(imageBean);
             }
         }
-        ParcelableSparseArray<ImageInfo> imageInfoParcelableSparseArray = new ParcelableSparseArray<>();
-        int size = dynamicBean.getFeed().getLocalPhotos() == null ? dynamicBean.getFeed().getStorages().size() : dynamicBean.getFeed().getLocalPhotos().size();
-        switch (size) {
-            case 9:
-                imageInfoParcelableSparseArray.put(8, PhotoView.getImageViewInfo((PhotoView) holder.getView(R.id.siv_8)));
-            case 8:
-                imageInfoParcelableSparseArray.put(7, PhotoView.getImageViewInfo((PhotoView) holder.getView(R.id.siv_7)));
-            case 7:
-                imageInfoParcelableSparseArray.put(6, PhotoView.getImageViewInfo((PhotoView) holder.getView(R.id.siv_6)));
-            case 6:
-                imageInfoParcelableSparseArray.put(5, PhotoView.getImageViewInfo((PhotoView) holder.getView(R.id.siv_5)));
-            case 5:
-                imageInfoParcelableSparseArray.put(4, PhotoView.getImageViewInfo((PhotoView) holder.getView(R.id.siv_4)));
-            case 4:
-                imageInfoParcelableSparseArray.put(3, PhotoView.getImageViewInfo((PhotoView) holder.getView(R.id.siv_3)));
-            case 3:
-                imageInfoParcelableSparseArray.put(2, PhotoView.getImageViewInfo((PhotoView) holder.getView(R.id.siv_2)));
-            case 2:
-                imageInfoParcelableSparseArray.put(1, PhotoView.getImageViewInfo((PhotoView) holder.getView(R.id.siv_1)));
-            case 1:
-                imageInfoParcelableSparseArray.put(0, PhotoView.getImageViewInfo((PhotoView) holder.getView(R.id.siv_0)));
-                break;
-            default:
-        }
-//        mOnImageClickListener.onImageClick(imageBeanList,imageInfoParcelableSparseArray,position);
         Intent intent = new Intent(getActivity(), GalleryActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(GalleryFragment.BUNDLE_IMAGS, (ArrayList<? extends Parcelable>) imageBeanList);
@@ -342,9 +291,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 break;
 
             case 1: // 评论
-                mIlvComment.setVisibility(View.VISIBLE);
-                mIlvComment.setFocusable(true);
-                ActivityUtils.dimBackground(getActivity(), 1.0f, 0.5f);
+                showCommentView();
+                mCurrentPostion = dataPosition;
+                mReplyToUserId = 0;// 0 代表评论动态
                 break;
 
             case 2: // 浏览
@@ -391,22 +340,28 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     public void onCommentContentClick(DynamicBean dynamicBean, int position) {
         mCurrentPostion = mAdapter.getDatas().indexOf(dynamicBean);
         if (dynamicBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
+            showBottomView(false);
             initLoginOutPopupWindow(dynamicBean, mCurrentPostion, position);
             mDeletCommentPopWindow.show();
         } else {
-            mIlvComment.setVisibility(View.VISIBLE);
-            mIlvComment.setFocusable(true);
+            showCommentView();
+            mReplyToUserId = dynamicBean.getComments().get(position).getUser_id();
             if (dynamicBean.getComments().get(position).getReply_to_user_id() != dynamicBean.getUser_id()) {
                 mIlvComment.setEtContentHint(String.format(getString(R.string.reply), dynamicBean.getComments().get(position).getCommentUser().getName()));
             } else {
                 mIlvComment.setEtContentHint("");
             }
-            mReplyToUserId = dynamicBean.getComments().get(position).getReply_to_user_id();
-            DeviceUtils.showSoftKeyboard(getActivity(), mIlvComment.getEtContent());
-            mIlvComment.getFocus();
-            ActivityUtils.dimBackground(getActivity(), 1.0f, 0.8f);
         }
 
+    }
+
+    private void showCommentView() {
+        showBottomView(false);
+        ActivityUtils.dimBackground(getActivity(), 1.0f, 0.8f);
+        mIlvComment.setVisibility(View.VISIBLE);
+        mIlvComment.getFocus();
+        mIlvComment.setSendButtonVisiable(true);
+        DeviceUtils.showSoftKeyboard(getActivity(), mIlvComment.getEtContent());
     }
 
     @Override
@@ -438,15 +393,23 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     public void onItem1Clicked() {
                         mDeletCommentPopWindow.hide();
                         mPresenter.deleteComment(dynamicBean, dynamicPositon, dynamicBean.getComments().get(commentPosition).getComment_id(), commentPosition);
+                        showBottomView(true);
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
                     public void onBottomClicked() {
                         mDeletCommentPopWindow.hide();
+                        showBottomView(true);
                     }
                 })
                 .build();
+    }
+
+    private void showBottomView(boolean isShow) {
+        if (mOnCommentClickListener != null) {
+            mOnCommentClickListener.onButtonMenuShow(isShow);
+        }
     }
 
     /**
@@ -456,10 +419,25 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onSendClick(String text) {
+        ActivityUtils.dimBackground(getActivity(), .8f, 1f);
         mPresenter.sendComment(mCurrentPostion, mReplyToUserId, mIlvComment.getInputContent());
+        mIlvComment.setVisibility(View.GONE);
+        com.zhiyicx.imsdk.utils.common.DeviceUtils.hideSoftKeyboard(getContext(),mIlvComment);
+        showBottomView(true);
     }
 
-    public interface OnImageClickListener {
-        void onImageClick(List<ImageBean> images, ParcelableSparseArray<ImageInfo> infos, int position);
+    /**
+     * 重发评论
+     *
+     * @param dynamicCommentBean
+     * @param position
+     */
+    @Override
+    public void onCommentStateClick(DynamicCommentBean dynamicCommentBean, int position) {
+        showMessage("点击了评论失败状态");
+    }
+
+    public interface OnCommentClickListener {
+        void onButtonMenuShow(boolean isShow);
     }
 }

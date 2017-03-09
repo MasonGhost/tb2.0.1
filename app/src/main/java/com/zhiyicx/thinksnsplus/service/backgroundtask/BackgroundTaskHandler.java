@@ -15,11 +15,13 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.BackgroundRequestTaskBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
@@ -45,6 +47,7 @@ import rx.functions.Func1;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_DYNAMIC_LIST;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_DYNAMIC_TO_LIST;
 
 /**
@@ -77,8 +80,8 @@ public class BackgroundTaskHandler {
     UpLoadRepository mUpLoadRepository;
     @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
-
-    private int mRetryDelaySecond;
+    @Inject
+    DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
 
     private Queue<BackgroundRequestTaskBean> mTaskBeanConcurrentLinkedQueue = new ConcurrentLinkedQueue<>();// 线程安全的队列
 
@@ -185,7 +188,7 @@ public class BackgroundTaskHandler {
 
         switch (backgroundRequestTaskBean.getMethodType()) {
             /**
-             * 通用接口处理
+             * 通用 POST 接口处理
              */
             case POST:
                 if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
@@ -195,6 +198,9 @@ public class BackgroundTaskHandler {
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 postMethod(backgroundRequestTaskBean);
                 break;
+            /**
+             * 通用 GET 接口处理
+             */
             case GET:
 
                 if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
@@ -203,6 +209,9 @@ public class BackgroundTaskHandler {
                 }
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 break;
+            /**
+             * 通用 DELETE 接口处理
+             */
             case DELETE:
 
                 if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
@@ -243,6 +252,12 @@ public class BackgroundTaskHandler {
             case SEND_DYNAMIC:
                 sendDynamic(backgroundRequestTaskBean);
                 break;
+            /**
+             * 发送动态
+             */
+            case SEND_COMMENT:
+                sendComment(backgroundRequestTaskBean);
+                break;
             default:
         }
 
@@ -253,10 +268,10 @@ public class BackgroundTaskHandler {
      */
     private void postMethod(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
 
-        mServiceManager.getCommonClient().handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null,backgroundRequestTaskBean.getParams()))
-                .subscribe(new BaseSubscribe<CacheBean>() {
+        mServiceManager.getCommonClient().handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
+                .subscribe(new BaseSubscribe<Object>() {
                     @Override
-                    protected void onSuccess(CacheBean data) {
+                    protected void onSuccess(Object data) {
                         mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
                     }
 
@@ -431,14 +446,13 @@ public class BackgroundTaskHandler {
                         mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
                         // 发送动态到动态列表：状态为发送成功
                         dynamicBean.setState(DynamicBean.SEND_SUCCESS);
+                        dynamicBean.setFeed_id(((Double)data).longValue());
                         mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
                         EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
                     }
 
                     @Override
                     protected void onFailure(String message) {
-                        // 动态发送失败
-                        addBackgroundRequestTask(backgroundRequestTaskBean);
                         // 发送动态到动态列表：状态为发送失败
                         dynamicBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
@@ -447,9 +461,7 @@ public class BackgroundTaskHandler {
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        // 动态发送失败
                         throwable.printStackTrace();
-                        addBackgroundRequestTask(backgroundRequestTaskBean);
                         // 发送动态到动态列表：状态为发送失败
                         dynamicBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
@@ -459,4 +471,42 @@ public class BackgroundTaskHandler {
 
     }
 
+    /**
+     * 处理评论发送的后台任务
+     */
+    private void sendComment(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
+
+        final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
+        final Long commentMark = (Long) params.get("comment_mark");
+        final DynamicCommentBean dynamicCommentBean = mDynamicCommentBeanGreenDao.getCommentByCommentMark(commentMark);
+        // 发送动态到动态列表：状态为发送中
+        mServiceManager.getCommonClient()
+                .handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
+                .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
+                .subscribe(new BaseSubscribe<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                        dynamicCommentBean.setComment_id(((Double)data).longValue());
+                        dynamicCommentBean.setState(DynamicBean.SEND_SUCCESS);
+                        mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
+                        EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
+                    }
+
+                    @Override
+                    protected void onFailure(String message) {
+                        dynamicCommentBean.setState(DynamicBean.SEND_ERROR);
+                        mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
+                        EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        dynamicCommentBean.setState(DynamicBean.SEND_ERROR);
+                        mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
+                        EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
+                    }
+                });
+
+    }
 }

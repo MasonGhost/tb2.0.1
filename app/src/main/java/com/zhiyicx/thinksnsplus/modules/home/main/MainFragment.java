@@ -19,12 +19,12 @@ import java.util.List;
  * @Contact master.jungle68@gmail.com
  */
 public class MainFragment extends TSViewPagerFragment {
-    public void setOnImageClickListener(DynamicFragment.OnImageClickListener onImageClickListener) {
-        mOnImageClickListener = onImageClickListener;
+    public void setOnImageClickListener(DynamicFragment.OnCommentClickListener onCommentClickListener) {
+        mOnCommentClickListener = onCommentClickListener;
     }
 
-    DynamicFragment.OnImageClickListener mOnImageClickListener;
-    public static MainFragment newInstance(DynamicFragment.OnImageClickListener l) {
+    DynamicFragment.OnCommentClickListener mOnCommentClickListener;
+    public static MainFragment newInstance(DynamicFragment.OnCommentClickListener l) {
         MainFragment fragment = new MainFragment();
         fragment.setOnImageClickListener(l);
         Bundle args = new Bundle();
@@ -55,9 +55,9 @@ public class MainFragment extends TSViewPagerFragment {
     @Override
     protected List<Fragment> initFragments() {
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS,mOnImageClickListener));
-        fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS,mOnImageClickListener));
-        fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW,mOnImageClickListener));
+        fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS,mOnCommentClickListener));
+        fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS,mOnCommentClickListener));
+        fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW,mOnCommentClickListener));
         return fragments;
     }
 }

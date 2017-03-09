@@ -270,25 +270,8 @@ public class DynamicBean extends BaseListBean {
     }
 
 
-    /**
-     * To-many relationship, resolved on first access (and after reset).
-     * Changes to to-many relations are not persisted, make changes to the target entity.
-     */
-    @Generated(hash = 618015855)
+    @Keep
     public List<DynamicCommentBean> getComments() {
-        if (comments == null) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            DynamicCommentBeanDao targetDao = daoSession.getDynamicCommentBeanDao();
-            List<DynamicCommentBean> commentsNew = targetDao._queryDynamicBean_Comments(feed_mark);
-            synchronized (this) {
-                if (comments == null) {
-                    comments = commentsNew;
-                }
-            }
-        }
         return comments;
     }
 

@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.ToOne;
+import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.NotNull;
@@ -20,11 +21,18 @@ import org.greenrobot.greendao.annotation.NotNull;
  */
 @Entity
 public class DynamicCommentBean implements Parcelable {
+    public static final int SEND_ERROR = 0;
+    public static final int SEND_ING = 1;
+    public static final int SEND_SUCCESS = 2;
+
+
     @Id(autoincrement = true)
     private Long _id;
+    @Unique
     @SerializedName("id")
     private Long comment_id;// 评论的id
     private Long feed_mark;// 属于哪条动态
+    @Unique
     private Long comment_mark;// 发评论的唯一标识
     private String created_at;// 评论创建的时间
     private String comment_content;// 评论内容
@@ -35,6 +43,8 @@ public class DynamicCommentBean implements Parcelable {
     private long reply_to_user_id;// 评论要发给谁
     @ToOne(joinProperty = "reply_to_user_id")// DynamicCommentBean 的 user_id 作为外键
     private UserInfoBean replyUser;// 被评论的用户信息
+    private int state = SEND_SUCCESS;// 动态发送状态 0 发送失败 1 正在发送 2 发送成功
+
 
     @Override
     public int describeContents() {
@@ -54,6 +64,7 @@ public class DynamicCommentBean implements Parcelable {
         dest.writeParcelable(this.commentUser, flags);
         dest.writeLong(this.reply_to_user_id);
         dest.writeParcelable(this.replyUser, flags);
+        dest.writeInt(this.state);
     }
 
     public DynamicCommentBean() {
@@ -71,12 +82,13 @@ public class DynamicCommentBean implements Parcelable {
         this.commentUser = in.readParcelable(UserInfoBean.class.getClassLoader());
         this.reply_to_user_id = in.readLong();
         this.replyUser = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.state = in.readInt();
     }
 
-    @Generated(hash = 1401842540)
+    @Generated(hash = 937363585)
     public DynamicCommentBean(Long _id, Long comment_id, Long feed_mark, Long comment_mark,
             String created_at, String comment_content, long feed_user_id, long user_id,
-            long reply_to_user_id) {
+            long reply_to_user_id, int state) {
         this._id = _id;
         this.comment_id = comment_id;
         this.feed_mark = feed_mark;
@@ -86,6 +98,7 @@ public class DynamicCommentBean implements Parcelable {
         this.feed_user_id = feed_user_id;
         this.user_id = user_id;
         this.reply_to_user_id = reply_to_user_id;
+        this.state = state;
     }
 
     public static final Creator<DynamicCommentBean> CREATOR = new Creator<DynamicCommentBean>() {
@@ -124,6 +137,7 @@ public class DynamicCommentBean implements Parcelable {
                 ", commentUser=" + commentUser +
                 ", reply_to_user_id=" + reply_to_user_id +
                 ", replyUser=" + replyUser +
+                ", state=" + state +
                 '}';
     }
 
@@ -197,6 +211,14 @@ public class DynamicCommentBean implements Parcelable {
 
     public void setReply_to_user_id(long reply_to_user_id) {
         this.reply_to_user_id = reply_to_user_id;
+    }
+
+    public int getState() {
+        return this.state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 
     /** To-one relationship, resolved on first access. */

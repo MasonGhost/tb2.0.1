@@ -5,10 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.TextView;
 
-import com.klinker.android.link_builder.Link;
-import com.klinker.android.link_builder.LinkBuilder;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.common.widget.NoPullRecycleView;
@@ -24,11 +21,11 @@ import java.util.List;
  * @Contact master.jungle68@gmail.com
  */
 
-public abstract class SimpleTextNoPullRecycleView<T> extends NoPullRecycleView implements MultiItemTypeAdapter.OnItemClickListener {
+public abstract class SimpleTextNoPullRecycleView<T> extends NoPullRecycleView {
 
-    private OnIitemClickListener mOnIitemClickListener;
+    protected OnIitemClickListener mOnIitemClickListener;
 
-    private OnIitemLongClickListener mOnIitemLongClickListener;
+    protected OnIitemLongClickListener mOnIitemLongClickListener;
 
     private MultiItemTypeAdapter<T> mAdapter;
 
@@ -91,36 +88,15 @@ public abstract class SimpleTextNoPullRecycleView<T> extends NoPullRecycleView i
         mAdapter = new CommonAdapter<T>(getContext(), R.layout.item_simple_text_comment, data) {
             @Override
             protected void convert(com.zhy.adapter.recyclerview.base.ViewHolder holder, T t, final int position) {
-                    holder.setText(R.id.tv_simple_text_comment, setShowText(t, position));
-                    // Add the links and make the links clickable
-                    LinkBuilder.on((TextView) holder.getView(R.id.tv_simple_text_comment))
-                            .addLinks(setLiknks(t, position))
-                            .build();
+              convertData(holder,t,position);
+
             }
         };
-        mAdapter.setOnItemClickListener(this);
         setAdapter(mAdapter);
     }
 
-    protected abstract String setShowText(T t, int position);
+    protected abstract void convertData(com.zhy.adapter.recyclerview.base.ViewHolder holder, T t, int position);
 
-    protected abstract List<Link> setLiknks(T t, int position);
-
-
-    @Override
-    public void onItemClick(View view, ViewHolder holder, int position) {
-        if (mOnIitemClickListener != null) {
-            mOnIitemClickListener.onItemClick(view, position);
-        }
-    }
-
-    @Override
-    public boolean onItemLongClick(View view, ViewHolder holder, int position) {
-        if (mOnIitemLongClickListener != null) {
-            mOnIitemLongClickListener.onItemLongClick(view, position);
-        }
-        return false;
-    }
 
     public interface OnIitemClickListener {
         void onItemClick(View view, int position);
