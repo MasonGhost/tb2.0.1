@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/iv_hint_img"
-        android:layout_width="@dimen/icon_for_assist_small"
-        android:layout_height="@dimen/icon_for_assist_small"
+        android:layout_width="@dimen/icon_for_assist_state_small"
+        android:layout_height="@dimen/icon_for_assist_state_small"
         android:layout_gravity="center"
         android:src="@mipmap/msg_box_remind"
         android:visibility="invisible"/>

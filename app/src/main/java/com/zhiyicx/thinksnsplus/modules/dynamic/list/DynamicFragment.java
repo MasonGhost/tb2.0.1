@@ -422,6 +422,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         ActivityUtils.dimBackground(getActivity(), .8f, 1f);
         mPresenter.sendComment(mCurrentPostion, mReplyToUserId, mIlvComment.getInputContent());
         mIlvComment.setVisibility(View.GONE);
+        com.zhiyicx.imsdk.utils.common.DeviceUtils.hideSoftKeyboard(getContext(),mIlvComment);
         showBottomView(true);
     }
 

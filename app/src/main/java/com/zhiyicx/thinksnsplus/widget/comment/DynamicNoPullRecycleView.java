@@ -147,7 +147,7 @@ public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<Dynami
      */
     private String handleName(DynamicCommentBean dynamicCommentBean) {
         String content = "";
-        if (dynamicCommentBean.getReplyUser().getUser_id() == null || dynamicCommentBean.getReplyUser().getUser_id().longValue() == 0) { // 当没有回复者时，就是回复评论
+        if (dynamicCommentBean.getReply_to_user_id() == 0) { // 当没有回复者时，就是回复评论
             content += "" + dynamicCommentBean.getCommentUser().getName() + ":  " + dynamicCommentBean.getComment_content();
         } else {
             content += "" + dynamicCommentBean.getCommentUser().getName() + " 回复 " + dynamicCommentBean.getReplyUser().getName() + ":  " + dynamicCommentBean.getComment_content();
