@@ -35,6 +35,7 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideMusicB
 import com.zhiyicx.baseproject.widget.popwindow.ListPopupWindow;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
@@ -672,10 +673,11 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     public void doPhonographAnimation() {
         doPointInAnimation(500, 0);
         View target;
-        if (mCurrentView == null && mFragmentMusicPalyRv != null) {
-            mCurrentView = (ViewGroup) RecyclerViewUtils.getCenterXChild
-                    (mFragmentMusicPalyRv);
-        }
+        mCurrentView = (ViewGroup) RecyclerViewUtils.getCenterXChild
+                (mFragmentMusicPalyRv);
+//        if (mCurrentView == null && mFragmentMusicPalyRv != null) {
+//
+//        }
         target = mCurrentView.getChildAt(0);
 
         mPhonographAnimate = ObjectAnimator.ofFloat(target, "Rotation",
@@ -782,9 +784,15 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     private void hideLrc() {
         mFragmentMusicPalyLrc.setVisibility(View.GONE);
+        mFragmentMusicPalyRv.setVisibility(View.VISIBLE);
+        mFragmentMusicPalyPhonographPoint.setVisibility(View.VISIBLE);
+        mFragmentMusicPalyRv.scrollToPosition(mFragmentMusicPalyRv.getCurrentPosition());
     }
 
     private void showLrc() {
+        pauseAnimation();
+        mFragmentMusicPalyRv.setVisibility(View.GONE);
+        mFragmentMusicPalyPhonographPoint.setVisibility(View.GONE);
         mFragmentMusicPalyLrc.setText("dfjie \n sdadw\n dsadw\n sawfsdw\n sdwdawdaw\n" +
                 "dsfese\n wwoifej\n dieieuww\n eueueu\n iwoidbw\n uwiqwh\n sadiuwu\n " +
                 "wuuroh\n" +

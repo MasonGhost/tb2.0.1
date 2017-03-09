@@ -65,7 +65,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     TextView mFragmentMusicDetailComment;
     @BindView(R.id.fragment_music_detail_favorite)
     TextView mFragmentMusicDetailFavorite;
-    @BindView(R.id.fragment_music_detail_head_info)
+    @BindView(R.id.nestedscroll_target)
     RelativeLayout mFragmentMusicDetailHeadInfo;
     @BindView(R.id.rv_music_detail_list)
     RecyclerView mRvMusicDetailList;
@@ -145,7 +145,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         final Palette palette = Palette.from(bitmap).generate();
 
         ViewGroup.LayoutParams titleParam;
-
         int titleHeight;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             titleHeight = ConvertUtils.dp2px(getActivity(), 84);

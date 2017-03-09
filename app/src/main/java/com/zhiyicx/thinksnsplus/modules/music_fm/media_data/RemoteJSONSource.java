@@ -41,7 +41,7 @@ public class RemoteJSONSource implements MusicProviderSource {
     @Override
     public Iterator<MediaMetadataCompat> iterator() {
         ArrayList<MediaMetadataCompat> tracks = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 20; i++) {
             tracks.add(buildForTest(i));
         }
         return tracks.iterator();
