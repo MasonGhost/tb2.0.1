@@ -244,19 +244,21 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      * 设置底部view的关注状态
      */
     private void setBottomFollowState(int state) {
-        mToolbarRight.setVisibility(View.VISIBLE);
         switch (state) {
             case FollowFansBean.UNFOLLOWED_STATE:
                 mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_follow), null, null, null);
                 mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
+                mTvFollow.setText(R.string.follow);
                 break;
             case FollowFansBean.IFOLLOWED_STATE:
                 mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_followed), null, null, null);
                 mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
+                mTvFollow.setText(R.string.followed);
                 break;
             case FollowFansBean.FOLLOWED_EACHOTHER_STATE:
                 mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_followed_eachother), null, null, null);
                 mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
+                mTvFollow.setText(R.string.followed_eachother);
                 break;
             default:
         }
