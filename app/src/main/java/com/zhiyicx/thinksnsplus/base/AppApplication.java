@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
+import com.antfortune.freeline.FreelineCore;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.google.gson.Gson;
 import com.zhiyicx.baseproject.base.TSApplication;
@@ -59,6 +60,7 @@ public class AppApplication extends TSApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        FreelineCore.init(this);
         ZBIMSDK.init(getContext());
         initComponent();
         BackgroundTaskManager.getInstance(getContext()).startBackgroundTask();// 开启后台任务

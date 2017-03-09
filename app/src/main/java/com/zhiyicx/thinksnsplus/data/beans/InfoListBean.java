@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
+import android.os.Parcel;
+
 import com.zhiyicx.baseproject.base.BaseListBean;
 
 import java.util.ArrayList;
@@ -21,4 +23,36 @@ public class InfoListBean extends BaseListBean {
     public void setIamges(List<String> iamges) {
         this.iamges = iamges;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeStringList(this.iamges);
+    }
+
+    public InfoListBean() {
+    }
+
+    protected InfoListBean(Parcel in) {
+        super(in);
+        this.iamges = in.createStringArrayList();
+    }
+
+    public static final Creator<InfoListBean> CREATOR = new Creator<InfoListBean>() {
+        @Override
+        public InfoListBean createFromParcel(Parcel source) {
+            return new InfoListBean(source);
+        }
+
+        @Override
+        public InfoListBean[] newArray(int size) {
+            return new InfoListBean[size];
+        }
+    };
 }
