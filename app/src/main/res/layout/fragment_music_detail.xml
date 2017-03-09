@@ -11,7 +11,7 @@
         android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@+id/fragment_music_detail_head_info"
+            android:id="@+id/nestedscroll_target"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@mipmap/npc"

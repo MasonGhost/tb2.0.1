@@ -2,8 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="90dp"
-    android:minHeight="90dp"
+    android:layout_height="@dimen/info_channel_list_height"
     android:background="@android:color/white"
     android:paddingBottom="@dimen/spacing_mid"
     android:paddingLeft="@dimen/spacing_normal"
@@ -12,31 +11,37 @@
 
     <ImageView
         android:id="@+id/item_info_imag"
-        android:layout_width="110dp"
+        android:layout_width="@dimen/info_channel_list_image_width"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
+        android:layout_marginLeft="@dimen/spacing_mid"
         android:layout_centerVertical="true"
         android:scaleType="centerCrop"
         android:src="@mipmap/npc"/>
 
-    <TextView
+    <LinearLayout
+        android:layout_toLeftOf="@+id/item_info_imag"
         android:layout_centerVertical="true"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <com.zhiyicx.thinksnsplus.widget.NoDefaultPadingTextView
+        android:layout_marginBottom="@dimen/spacing_normal"
         android:id="@+id/item_info_title"
+        android:gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/item_info_imag"
-        android:layout_toLeftOf="@id/item_info_imag"
-        android:ellipsize="end"
         android:textSize="@dimen/size_sub_title"
-        android:lines="2"
         android:text="流动性捉襟见肘，新三板如履薄冰"
         android:textColor="@color/important_for_content"/>
 
     <TextView
-        android:layout_alignBottom="@id/item_info_imag"
         android:id="@+id/item_info_timeform"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="三小时前   来自火星"/>
+
+    </LinearLayout>
 
 </RelativeLayout>
