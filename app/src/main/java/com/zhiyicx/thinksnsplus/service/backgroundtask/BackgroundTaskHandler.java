@@ -269,9 +269,9 @@ public class BackgroundTaskHandler {
     private void postMethod(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
 
         mServiceManager.getCommonClient().handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
-                .subscribe(new BaseSubscribe<CacheBean>() {
+                .subscribe(new BaseSubscribe<Object>() {
                     @Override
-                    protected void onSuccess(CacheBean data) {
+                    protected void onSuccess(Object data) {
                         mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
                     }
 
@@ -446,6 +446,7 @@ public class BackgroundTaskHandler {
                         mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
                         // 发送动态到动态列表：状态为发送成功
                         dynamicBean.setState(DynamicBean.SEND_SUCCESS);
+                        dynamicBean.setFeed_id((Long) data);
                         mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
                         EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
                     }
@@ -486,10 +487,11 @@ public class BackgroundTaskHandler {
         mServiceManager.getCommonClient()
                 .handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
-                .subscribe(new BaseSubscribe<CacheBean>() {
+                .subscribe(new BaseSubscribe<Object>() {
                     @Override
-                    protected void onSuccess(CacheBean data) {
+                    protected void onSuccess(Object data) {
                         mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                        dynamicCommentBean.setComment_id((Long) data);
                         dynamicCommentBean.setState(DynamicBean.SEND_SUCCESS);
                         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
                         EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
