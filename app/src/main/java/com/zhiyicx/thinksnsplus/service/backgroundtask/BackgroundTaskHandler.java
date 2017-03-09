@@ -446,7 +446,7 @@ public class BackgroundTaskHandler {
                         mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
                         // 发送动态到动态列表：状态为发送成功
                         dynamicBean.setState(DynamicBean.SEND_SUCCESS);
-                        dynamicBean.setFeed_id(Long.parseLong(data+""));
+                        dynamicBean.setFeed_id(((Double)data).longValue());
                         mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
                         EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
                     }
@@ -487,7 +487,7 @@ public class BackgroundTaskHandler {
                     @Override
                     protected void onSuccess(Object data) {
                         mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
-                        dynamicCommentBean.setComment_id(Long.valueOf(data+""));
+                        dynamicCommentBean.setComment_id(((Double)data).longValue());
                         dynamicCommentBean.setState(DynamicBean.SEND_SUCCESS);
                         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
                         EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
