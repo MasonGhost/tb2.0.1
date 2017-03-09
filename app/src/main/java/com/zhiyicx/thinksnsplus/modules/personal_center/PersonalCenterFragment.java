@@ -19,6 +19,8 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -34,6 +36,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForT
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicCountItem;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem;
+import com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
@@ -72,6 +75,13 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     LinearLayout mLlFollowContainer;
     @BindView(R.id.ll_chat_container)
     LinearLayout mLlChatContainer;
+    @BindView(R.id.ll_bottom_container)
+    LinearLayout mLlBottomContainer;
+    @BindView(R.id.nest_scroll_container)
+    NestedScrollLineayLayout mNestScrollContainer;
+    @BindView(R.id.personal_header)
+    LinearLayout mPersonalHeader;
+
 
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     private PersonalCenterHeaderViewItem mPersonalCenterHeaderViewItem;
@@ -87,7 +97,19 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         super.initView(rootView);
         initToolBar();
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
-        mPersonalCenterHeaderViewItem = new PersonalCenterHeaderViewItem(getActivity(), mRvList, mHeaderAndFooterWrapper);
+
+       // mNestScrollContainer.setHeaderViewId(R.id.personal_header);
+        mNestScrollContainer.setNotConsumeHeight(200);
+        mNestScrollContainer.setOnHeadFlingListener(new NestedScrollLineayLayout.OnHeadFlingListener() {
+            @Override
+            public void onHeadFling(int scrollY) {
+                int distance = mNestScrollContainer.getTopViewHeight();
+                int alpha = 255 * scrollY / distance;
+                alpha = alpha > 255 ? 255 : alpha;
+                mRlToolbarContainer.getBackground().setAlpha(alpha);
+            }
+        });
+        mPersonalCenterHeaderViewItem = new PersonalCenterHeaderViewItem(getActivity(), mRvList, mPersonalHeader);
         mPersonalCenterHeaderViewItem.initHeaderView();
         // 添加关注点击事件
         RxView.clicks(mTvFollow)
@@ -156,6 +178,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     protected void initData() {
         mUserInfoBean = getArguments().getParcelable(PERSONAL_CENTER_DATA);
+        // 进入页面尝试设置头部信息
+        setHeaderInfo(mUserInfoBean);
         // 获取个人主页用户信息，显示在headerView中
         mPresenter.setCurrentUserInfo(mUserInfoBean.getUser_id());
         // 获取动态列表
@@ -224,6 +248,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void setHeaderInfo(UserInfoBean userInfoBean) {
+        setBottomVisible(userInfoBean.getUser_id());
         mPersonalCenterHeaderViewItem.initHeaderViewData(userInfoBean);
     }
 
@@ -235,7 +260,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     private void initToolBar() {
         // toolBar设置状态栏高度的marginTop
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(0, DeviceUtils.getStatuBarHeight(getContext()), 0, 0);
         mRlToolbarContainer.setLayoutParams(layoutParams);
     }
@@ -244,22 +269,34 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      * 设置底部view的关注状态
      */
     private void setBottomFollowState(int state) {
-        mToolbarRight.setVisibility(View.VISIBLE);
         switch (state) {
             case FollowFansBean.UNFOLLOWED_STATE:
                 mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_follow), null, null, null);
                 mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
+                mTvFollow.setText(R.string.follow);
                 break;
             case FollowFansBean.IFOLLOWED_STATE:
                 mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_followed), null, null, null);
                 mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
+                mTvFollow.setText(R.string.followed);
                 break;
             case FollowFansBean.FOLLOWED_EACHOTHER_STATE:
                 mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_followed_eachother), null, null, null);
                 mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
+                mTvFollow.setText(R.string.followed_eachother);
                 break;
             default:
         }
+    }
+
+    /**
+     * 设置底部view的可见性;如果进入了当前登录用户的主页，需要隐藏底部状态栏
+     *
+     * @param currentUserID
+     */
+    private void setBottomVisible(long currentUserID) {
+        AuthBean authBean = AppApplication.getmCurrentLoginAuth();
+        mLlBottomContainer.setVisibility(authBean.getUser_id() == currentUserID ? View.GONE : View.VISIBLE);
     }
 
     public static PersonalCenterFragment initFragment(Bundle bundle) {
@@ -287,4 +324,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         context.startActivity(intent);
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: inflate a fragment view
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        ButterKnife.bind(this, rootView);
+        return rootView;
+    }
 }

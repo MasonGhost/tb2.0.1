@@ -88,6 +88,8 @@
     <!--个人中心-->
     <string name="chat">聊天</string>
     <string name="dynamic_count">%1$d个动态</string>
+    <string name="followed">已关注</string>
+    <string name="followed_eachother">互相关注</string>
     <!--代码中的string-->
     <string name="token_expiers">token过期，请重新登陆</string>
     <string name="share">分享</string>

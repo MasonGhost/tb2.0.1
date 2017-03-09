@@ -46,19 +46,19 @@ public class PersonalCenterHeaderViewItem {
     private Activity mActivity;
     private RecyclerView mRecyclerView;
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
+    private View headerView;
 
-    public PersonalCenterHeaderViewItem(Activity activity, RecyclerView recyclerView, HeaderAndFooterWrapper headerAndFooterWrapper) {
+    public PersonalCenterHeaderViewItem(Activity activity, RecyclerView recyclerView, View headerView) {
         mActivity = activity;
         mRecyclerView = recyclerView;
-        mHeaderAndFooterWrapper = headerAndFooterWrapper;
+        this.headerView = headerView;
     }
 
     public void initHeaderView() {
-        View headerView = LayoutInflater.from(mActivity).inflate(R.layout.fragment_personal_center_header, null);
         initHeaderViewUI(headerView);
-        mHeaderAndFooterWrapper.addHeaderView(headerView);
-        mRecyclerView.setAdapter(mHeaderAndFooterWrapper);
-        mHeaderAndFooterWrapper.notifyDataSetChanged();
+       // mHeaderAndFooterWrapper.addHeaderView(headerView);
+       // mRecyclerView.setAdapter(mHeaderAndFooterWrapper);
+       // mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
     public void initHeaderViewData(UserInfoBean userInfoBean) {
@@ -91,11 +91,11 @@ public class PersonalCenterHeaderViewItem {
                 .outerColor(ContextCompat.getColor(mActivity, R.color.normal_for_assist_text))
                 .format();
         tv_user_fans.setText(fansString);
-        mHeaderAndFooterWrapper.notifyDataSetChanged();
+        //mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
     private void initHeaderViewUI(View headerView) {
-        ViewGroup.LayoutParams headerLayoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams headerLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         headerView.setLayoutParams(headerLayoutParams);
         fl_cover_contaner = (FrameLayout) headerView.findViewById(R.id.fl_cover_contaner);
         iv_background_cover = (ImageView) headerView.findViewById(R.id.iv_background_cover);
@@ -110,7 +110,7 @@ public class PersonalCenterHeaderViewItem {
         LinearLayout.LayoutParams containerLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
         fl_cover_contaner.setLayoutParams(containerLayoutParams);
         // 添加头部放缩
-        new ZoomView(fl_cover_contaner, mActivity, mRecyclerView, width, height).initZoom();
+        //new ZoomView(fl_cover_contaner, mActivity, mRecyclerView, width, height).initZoom();
 
     }
 }
