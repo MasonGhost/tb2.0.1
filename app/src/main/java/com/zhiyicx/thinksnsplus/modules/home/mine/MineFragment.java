@@ -13,6 +13,8 @@ import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
@@ -21,6 +23,8 @@ import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumListActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -33,7 +37,7 @@ import solid.ren.skinlibrary.loader.SkinManager;
  * @Date 2017/1/5
  * @Contact master.jungle68@gmail.com
  */
-public class MineFragment extends TSFragment {
+public class MineFragment extends TSFragment<MineContract.Presenter> implements MineContract.View {
 
     @BindView(R.id.iv_head_icon)
     ImageView mIvHeadIcon;
@@ -63,6 +67,10 @@ public class MineFragment extends TSFragment {
     CombinationButton mBtQuestionAnswer;
     @BindView(R.id.bt_setting)
     CombinationButton mBtSetting;
+    @Inject
+    public MinePresenter mMinePresenter;
+
+    private UserInfoBean mUserInfoBean;
 
     public MineFragment() {
     }
@@ -81,7 +89,10 @@ public class MineFragment extends TSFragment {
 
     @Override
     protected void initData() {
-
+        DaggerMinePresenterComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .minePresenterModule(new MinePresenterModule(this))
+                .build().inject(this);
     }
 
     @Override
@@ -171,5 +182,25 @@ public class MineFragment extends TSFragment {
                 break;
             default:
         }
+    }
+
+    @Override
+    public void setPresenter(MineContract.Presenter presenter) {
+        mPresenter = presenter;
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
+    }
+
+    @Override
+    public void showMessage(String message) {
+
     }
 }
