@@ -19,6 +19,8 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -72,6 +74,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     LinearLayout mLlFollowContainer;
     @BindView(R.id.ll_chat_container)
     LinearLayout mLlChatContainer;
+    @BindView(R.id.ll_bottom_container)
+    LinearLayout mLlBottomContainer;
 
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     private PersonalCenterHeaderViewItem mPersonalCenterHeaderViewItem;
@@ -156,6 +160,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     protected void initData() {
         mUserInfoBean = getArguments().getParcelable(PERSONAL_CENTER_DATA);
+        // 进入页面尝试设置头部信息
+        setHeaderInfo(mUserInfoBean);
         // 获取个人主页用户信息，显示在headerView中
         mPresenter.setCurrentUserInfo(mUserInfoBean.getUser_id());
         // 获取动态列表
@@ -224,6 +230,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void setHeaderInfo(UserInfoBean userInfoBean) {
+        setBottomVisible(userInfoBean.getUser_id());
         mPersonalCenterHeaderViewItem.initHeaderViewData(userInfoBean);
     }
 
@@ -262,6 +269,16 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 break;
             default:
         }
+    }
+
+    /**
+     * 设置底部view的可见性;如果进入了当前登录用户的主页，需要隐藏底部状态栏
+     *
+     * @param currentUserID
+     */
+    private void setBottomVisible(long currentUserID) {
+        AuthBean authBean = AppApplication.getmCurrentLoginAuth();
+        mLlBottomContainer.setVisibility(authBean.getUser_id() == currentUserID ? View.GONE : View.VISIBLE);
     }
 
     public static PersonalCenterFragment initFragment(Bundle bundle) {
