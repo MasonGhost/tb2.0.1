@@ -84,6 +84,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     @Override
     protected void initView(View rootView) {
         mIlvContainer.setOnSendClickListener(this);
+        mIlvContainer.setSendButtonVisiable(true); // 保持显示
         // 软键盘控制区
         mRlContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -104,7 +105,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
                     mKeyboradIsOpen = false;
                     mIlvContainer.clearFocus();// 主动失去焦点
                 }
-                mIlvContainer.setSendButtonVisiable(mKeyboradIsOpen);
+//                mIlvContainer.setSendButtonVisiable(mKeyboradIsOpen); 不需要隐藏
             }
         });
 
