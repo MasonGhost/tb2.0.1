@@ -94,6 +94,11 @@ public class InfoChannelFragment extends TSFragment {
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+
+    @Override
     protected void setRightClick() {
         startActivity(new Intent(getActivity(), SearchActivity.class));
     }
