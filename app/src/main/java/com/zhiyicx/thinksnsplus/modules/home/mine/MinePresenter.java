@@ -7,6 +7,10 @@ import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 
+import org.simple.eventbus.Subscriber;
+
+import java.util.List;
+
 import javax.inject.Inject;
 
 /**
@@ -26,10 +30,31 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
     }
 
     @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    @Override
     public void getUserInfoFromDB() {
         // 尝试从数据库获取当前用户的信息
         AuthBean authBean = AppApplication.getmCurrentLoginAuth();
         UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache((long) authBean.getUser_id());
         mRootView.setUserInfo(userInfoBean);
+    }
+
+    /**
+     * 用户信息在后台更新后，在该处进行刷新，这儿获取的是自己的用户信息
+     */
+    @Subscriber
+    public void upDataUserInfo(List<UserInfoBean> data) {
+        AuthBean authBean = AppApplication.getmCurrentLoginAuth();
+        if (data != null) {
+            for (UserInfoBean userInfoBean : data) {
+                if (userInfoBean.getUser_id() == authBean.getUser_id()) {
+                    mRootView.setUserInfo(userInfoBean);
+                    break;
+                }
+            }
+        }
     }
 }
