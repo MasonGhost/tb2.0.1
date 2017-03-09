@@ -9,9 +9,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -93,6 +97,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .minePresenterModule(new MinePresenterModule(this))
                 .build().inject(this);
+        mPresenter.getUserInfoFromDB();
     }
 
     @Override
@@ -202,5 +207,22 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     @Override
     public void showMessage(String message) {
 
+    }
+
+    @Override
+    public void setUserInfo(UserInfoBean userInfoBean) {
+        // 设置用户头像
+        ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
+        imageLoader.loadImage(getContext(), GlideImageConfig.builder()
+                .transformation(new GlideCircleTransform(getContext()))
+                .imagerView(mIvHeadIcon)
+                .url(String.format(ApiConfig.IMAGE_PATH, userInfoBean.getAvatar(), 50))
+                .placeholder(R.drawable.shape_default_image_circle)
+                .errorPic(R.drawable.shape_default_image_circle)
+                .build());
+        // 设置用户名
+        mTvUserName.setText(userInfoBean.getName());
+        // 设置简介
+        mTvUserSignature.setText(userInfoBean.getIntro());
     }
 }
