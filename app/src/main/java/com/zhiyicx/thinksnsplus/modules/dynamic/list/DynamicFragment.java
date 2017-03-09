@@ -293,7 +293,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             case 1: // 评论
                 showCommentView();
                 mCurrentPostion = dataPosition;
-                mReplyToUserId = mAdapter.getDatas().get(dataPosition).getUser_id();
+                mReplyToUserId = 0;// 0 代表评论动态
                 break;
 
             case 2: // 浏览

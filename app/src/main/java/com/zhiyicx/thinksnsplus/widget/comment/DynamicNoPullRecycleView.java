@@ -47,7 +47,7 @@ public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<Dynami
         if (dynamicCommentBean.getState() == DynamicCommentBean.SEND_ERROR) {
             holder.setVisible(com.zhiyicx.baseproject.R.id.iv_hint_img, VISIBLE);
         } else {
-            holder.setVisible(com.zhiyicx.baseproject.R.id.iv_hint_img, GONE);
+            holder.setVisible(com.zhiyicx.baseproject.R.id.iv_hint_img, INVISIBLE);
         }
         holder.setText(com.zhiyicx.baseproject.R.id.tv_simple_text_comment, setShowText(dynamicCommentBean, position));
         // Add the links and make the links clickable
@@ -147,7 +147,7 @@ public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<Dynami
      */
     private String handleName(DynamicCommentBean dynamicCommentBean) {
         String content = "";
-        if (dynamicCommentBean.getReplyUser().getUser_id().longValue() == dynamicCommentBean.getFeed_user_id()) {
+        if (dynamicCommentBean.getReplyUser().getUser_id() == null || dynamicCommentBean.getReplyUser().getUser_id().longValue() == 0) { // 当没有回复者时，就是回复评论
             content += "" + dynamicCommentBean.getCommentUser().getName() + ":  " + dynamicCommentBean.getComment_content();
         } else {
             content += "" + dynamicCommentBean.getCommentUser().getName() + " 回复 " + dynamicCommentBean.getReplyUser().getName() + ":  " + dynamicCommentBean.getComment_content();

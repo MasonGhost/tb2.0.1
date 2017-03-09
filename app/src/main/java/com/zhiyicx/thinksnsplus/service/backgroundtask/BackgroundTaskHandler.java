@@ -446,15 +446,13 @@ public class BackgroundTaskHandler {
                         mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
                         // 发送动态到动态列表：状态为发送成功
                         dynamicBean.setState(DynamicBean.SEND_SUCCESS);
-                        dynamicBean.setFeed_id((Long) data);
+                        dynamicBean.setFeed_id(Long.parseLong(data+""));
                         mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
                         EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
                     }
 
                     @Override
                     protected void onFailure(String message) {
-                        // 动态发送失败
-                        addBackgroundRequestTask(backgroundRequestTaskBean);
                         // 发送动态到动态列表：状态为发送失败
                         dynamicBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
@@ -463,9 +461,7 @@ public class BackgroundTaskHandler {
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        // 动态发送失败
                         throwable.printStackTrace();
-                        addBackgroundRequestTask(backgroundRequestTaskBean);
                         // 发送动态到动态列表：状态为发送失败
                         dynamicBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
@@ -491,7 +487,7 @@ public class BackgroundTaskHandler {
                     @Override
                     protected void onSuccess(Object data) {
                         mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
-                        dynamicCommentBean.setComment_id((Long) data);
+                        dynamicCommentBean.setComment_id(Long.parseLong(data+""));
                         dynamicCommentBean.setState(DynamicBean.SEND_SUCCESS);
                         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
                         EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
@@ -499,7 +495,6 @@ public class BackgroundTaskHandler {
 
                     @Override
                     protected void onFailure(String message) {
-                        addBackgroundRequestTask(backgroundRequestTaskBean);
                         dynamicCommentBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
                         EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
@@ -507,7 +502,6 @@ public class BackgroundTaskHandler {
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        addBackgroundRequestTask(backgroundRequestTaskBean);
                         dynamicCommentBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
                         EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
