@@ -12,13 +12,15 @@ import com.aspsine.swipetoloadlayout.SwipeRefreshTrigger;
 import com.aspsine.swipetoloadlayout.SwipeTrigger;
 import com.zhiyicx.baseproject.R;
 
+
 /**
- * @author LiuChao
- * @describe
- * @date 2017/2/27
- * @contact email:450127106@qq.com
+ * @Describe 聊天刷新头部
+ * @Author Jungle68
+ * @Date 2017/1/
+ * @Contact master.jungle68@gmail.com
  */
-public class RefreshHeaderView extends LinearLayout implements SwipeTrigger, SwipeRefreshTrigger {
+
+public class ChatRefreshHeaderView extends LinearLayout implements SwipeTrigger, SwipeRefreshTrigger {
     private ImageView mPullDownView;
     private ImageView mReleaseRefreshingView;
 
@@ -30,29 +32,29 @@ public class RefreshHeaderView extends LinearLayout implements SwipeTrigger, Swi
 
     private int headerViewHeight;
 
-    public RefreshHeaderView(Context context) {
+    public ChatRefreshHeaderView(Context context) {
         super(context);
         init(context);
     }
 
-    public RefreshHeaderView(Context context, AttributeSet attrs) {
+    public ChatRefreshHeaderView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public RefreshHeaderView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ChatRefreshHeaderView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
 
     private void init(Context context) {
-        mRefreshingAnimResId = R.drawable.refresh_loading;
-        mChangeToReleaseRefreshAnimResId = R.drawable.refresh_loading;
+        mRefreshingAnimResId = R.drawable.frame_loading_grey;
+        mChangeToReleaseRefreshAnimResId =R.drawable.frame_loading_grey;
 
         LayoutInflater.from(context).inflate(R.layout.vw_header, this);
         mPullDownView = (ImageView) findViewById(R.id.iv_pull_down);
         mReleaseRefreshingView = (ImageView) findViewById(R.id.iv_release_refreshing);
-        mPullDownView.setImageResource(R.mipmap.refresh_icon_header_00000);
+        mPullDownView.setImageResource(R.mipmap.default_grey000);
         mReleaseRefreshingView.setImageResource(mChangeToReleaseRefreshAnimResId);
         headerViewHeight = getResources().getDimensionPixelSize(R.dimen.refresh_header_height);
     }

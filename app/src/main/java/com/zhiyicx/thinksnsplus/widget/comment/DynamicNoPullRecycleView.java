@@ -112,7 +112,8 @@ public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<Dynami
                         }
                     }
                 });
-        if (dynamicCommentBean.getReplyUser()!=null&&dynamicCommentBean.getReplyUser().getName() != null) {
+        links.add(commentNameLink);
+        if (dynamicCommentBean.getReplyUser() != null && dynamicCommentBean.getReplyUser().getName() != null) {
             Link replyNameLink = new Link(dynamicCommentBean.getReplyUser().getName())
                     .setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content))                  // optional, defaults to holo blue
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color.general_for_hint)) // optional, defaults to holo blue
@@ -138,7 +139,6 @@ public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<Dynami
             links.add(replyNameLink);
         }
 
-        links.add(commentNameLink);
 
         return links;
     }
