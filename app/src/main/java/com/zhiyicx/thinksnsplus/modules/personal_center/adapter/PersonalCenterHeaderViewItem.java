@@ -16,11 +16,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBoundTransform;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.ZoomView;
+import com.zhiyicx.common.utils.imageloader.config.ImageConfig;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -143,8 +146,8 @@ public class PersonalCenterHeaderViewItem {
                     //如果不是完全不透明状态的bug，将标题栏的颜色设置为完全不透明状态
                     setViewColorWithAlpha(userName, titleRGB, 255);
                     setViewColorWithAlpha(mToolBarContainer, statusRGB, 255);
-                    setViewColorWithAlpha(mToolBar, toolBarRGB,255);
-                    setViewColorWithAlpha(bootomDivider, toolBarDividerRGB,255);
+                    setViewColorWithAlpha(mToolBar, toolBarRGB, 255);
+                    setViewColorWithAlpha(bootomDivider, toolBarDividerRGB, 255);
 
                     PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(Color.argb(255, toolBarBlackIcon[0],
                             toolBarBlackIcon[1], toolBarBlackIcon[2]), PorterDuff.Mode.SRC_ATOP);
@@ -172,7 +175,7 @@ public class PersonalCenterHeaderViewItem {
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         // 显示头像
         imageLoader.loadImage(mActivity, GlideImageConfig.builder()
-                .url(String.format(ApiConfig.IMAGE_PATH, userInfoBean.getAvatar(), 50))
+                .url(ImageUtils.imagePathConvert(userInfoBean.getAvatar(), ImageZipConfig.IMAGE_70_ZIP))
                 .placeholder(R.drawable.shape_default_image_circle)
                 .errorPic(R.drawable.shape_default_image_circle)
                 .imagerView(iv_head_icon)
