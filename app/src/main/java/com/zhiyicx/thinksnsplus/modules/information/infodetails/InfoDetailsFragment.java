@@ -1,24 +1,24 @@
 package com.zhiyicx.thinksnsplus.modules.information.infodetails;
 
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
-import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.refresh.RefreshFooterView;
 import com.zhiyicx.baseproject.widget.refresh.RefreshHeaderView;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailItemForContent;
+import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailItemForDig;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * @Author Jliuer
@@ -41,6 +41,7 @@ public class InfoDetailsFragment extends TSListFragment {
     SwipeToLoadLayout mRefreshlayout;
     @BindView(R.id.dd_dynamic_tool)
     DynamicDetailMenuView mDdDynamicTool;
+    private List<DynamicBean> mDatas = new ArrayList<>();
 
     @Override
     protected int getBodyLayoutId() {
@@ -49,7 +50,11 @@ public class InfoDetailsFragment extends TSListFragment {
 
     @Override
     protected MultiItemTypeAdapter getAdapter() {
-        return null;
+        MultiItemTypeAdapter<DynamicBean> adapter = new MultiItemTypeAdapter<>(getContext(),
+                mDatas);
+        adapter.addItemViewDelegate(new DynamicDetailItemForContent());
+        adapter.addItemViewDelegate(new DynamicDetailItemForDig());
+        return adapter;
     }
 
     @Override
@@ -70,5 +75,19 @@ public class InfoDetailsFragment extends TSListFragment {
     @Override
     public void showMessage(String message) {
 
+    }
+
+    @Override
+    protected List requestCacheData(Long maxId, boolean isLoadMore) {
+        return new ArrayList();
+    }
+
+    @Override
+    protected void requestNetData(Long maxId, boolean isLoadMore) {
+    }
+
+    @Override
+    public void onRefresh() {
+        mRefreshlayout.setRefreshing(false);
     }
 }
