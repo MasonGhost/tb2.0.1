@@ -3,14 +3,10 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.common.mvp.i.IBasePresenter;
-import com.zhiyicx.common.mvp.i.IBaseView;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
-import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicContract;
 
 import java.util.List;
 
@@ -25,7 +21,7 @@ import rx.Observable;
 
 public interface DynamicDetailContract {
     //对于经常使用的关于UI的方法可以定义到BaseView中,如显示隐藏进度条,和显示文字消息
-    interface View extends ITSListView<DynamicBean, Presenter> {
+    interface View extends ITSListView<DynamicCommentBean, Presenter> {
         /**
          * 设置是否喜欢该动态
          *
@@ -67,7 +63,7 @@ public interface DynamicDetailContract {
         Observable<BaseJson<List<FollowFansBean>>> getUserFollowState(String user_ids);
     }
 
-    interface Presenter extends ITSListPresenter<DynamicBean> {
+    interface Presenter extends ITSListPresenter<DynamicCommentBean> {
         /**
          * 获取当前动态的点赞列表
          */

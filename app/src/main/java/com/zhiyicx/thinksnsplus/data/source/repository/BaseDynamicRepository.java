@@ -10,8 +10,8 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -115,7 +115,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                                     for (int i = 0; i < dynamicBean.getComments().size(); i++) {
                                                         dynamicBean.getComments().get(i).setCommentUser(userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getUser_id()));
                                                         if (dynamicBean.getComments().get(i).getReply_to_user_id() == 0) { // 如果 reply_user_id = 0 回复动态
-                                                            UserInfoBean userInfoBean=new UserInfoBean();
+                                                            UserInfoBean userInfoBean = new UserInfoBean();
                                                             userInfoBean.setUser_id(0L);
                                                             dynamicBean.getComments().get(i).setReplyUser(userInfoBean);
                                                         } else {
@@ -220,6 +220,56 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                         baseJsonUserInfoList.setMessage(listBaseJson.getMessage());
                         return Observable.just(baseJsonUserInfoList);
                     }
+                });
+    }
+
+    @Override
+    public Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentList(Long feed_id, Long max_id) {
+        return mDynamicClient.getDynamicCommentList(feed_id, max_id)
+                .subscribeOn(Schedulers.io())
+                .flatMap(new Func1<BaseJson<List<DynamicCommentBean>>, Observable<BaseJson<List<DynamicCommentBean>>>>() {
+                    @Override
+                    public Observable<BaseJson<List<DynamicCommentBean>>> call(final BaseJson<List<DynamicCommentBean>> listBaseJson) {
+                        if (listBaseJson.isStatus() && listBaseJson.getData() != null && !listBaseJson.getData().isEmpty()) {
+                            final List<Long> user_ids = new ArrayList<>();
+                            for (DynamicCommentBean dynamicCommentBean : listBaseJson.getData()) {
+                                user_ids.add(dynamicCommentBean.getUser_id());
+                                user_ids.add(dynamicCommentBean.getReply_to_user_id());
+                            }
+                            return mUserInfoRepository.getUserInfo(user_ids)
+                                    .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<DynamicCommentBean>>>() {
+                                        @Override
+                                        public BaseJson<List<DynamicCommentBean>> call(BaseJson<List<UserInfoBean>> userinfobeans) {
+                                            if (userinfobeans.isStatus()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                                for (UserInfoBean userInfoBean : userinfobeans.getData()) {
+                                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                                }
+                                                for (int i = 0; i < listBaseJson.getData().size(); i++) {
+                                                    listBaseJson.getData().get(i).setCommentUser(userInfoBeanSparseArray.get((int) listBaseJson.getData().get(i).getUser_id()));
+                                                    if (listBaseJson.getData().get(i).getReply_to_user_id() == 0) { // 如果 reply_user_id = 0 回复动态
+                                                        UserInfoBean userInfoBean = new UserInfoBean();
+                                                        userInfoBean.setUser_id(0L);
+                                                        listBaseJson.getData().get(i).setReplyUser(userInfoBean);
+                                                    } else {
+                                                        listBaseJson.getData().get(i).setReplyUser(userInfoBeanSparseArray.get((int) listBaseJson.getData().get(i).getReply_to_user_id()));
+                                                    }
+                                                }
+                                                AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao().insertOrReplace(userinfobeans.getData());
+                                            } else {
+                                                listBaseJson.setStatus(userinfobeans.isStatus());
+                                                listBaseJson.setCode(userinfobeans.getCode());
+                                                listBaseJson.setMessage(userinfobeans.getMessage());
+                                            }
+                                            return listBaseJson;
+                                        }
+                                    });
+                        } else {
+                            return Observable.just(listBaseJson);
+                        }
+
+                    }
+
                 });
     }
 

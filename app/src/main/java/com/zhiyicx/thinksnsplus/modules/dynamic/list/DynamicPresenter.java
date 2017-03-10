@@ -292,6 +292,9 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
 
     @NonNull
     private List<DynamicBean> getDynamicBeenFromDB() {
+        if(AppApplication.getmCurrentLoginAuth()==null){
+            return new ArrayList<DynamicBean>();
+        }
         List<DynamicBean> datas = mDynamicBeanGreenDao.getMySendingUnSuccessDynamic((long) AppApplication.getmCurrentLoginAuth().getUser_id());
         msendingStatus.clear();
         for (int i = 0; i < datas.size(); i++) {

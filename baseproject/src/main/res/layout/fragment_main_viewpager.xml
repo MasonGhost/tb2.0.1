@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.zhiyicx.baseproject.widget.TabSelectView
+        android:id="@+id/tsv_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height">
+
+    </com.zhiyicx.baseproject.widget.TabSelectView>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_fragment"
+        android:layout_below="@id/tsv_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></android.support.v4.view.ViewPager>
+
+    <View
+        android:id="@+id/v_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="@android:color/black"/>
+
+    <com.zhiyicx.baseproject.widget.InputLimitView
+        android:id="@+id/ilv_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_alignParentBottom="@bool/pickerview_customTextSize"
+        app:limitSize="@integer/chat_input_max_size"
+        app:showLimitSize="@integer/show_chat_input_size">
+
+    </com.zhiyicx.baseproject.widget.InputLimitView>
+
+</RelativeLayout>

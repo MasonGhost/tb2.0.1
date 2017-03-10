@@ -25,8 +25,8 @@ public class ApiConfig {
      */
 
 //    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 测试服务器
-    public static final String APP_DOMAIN = "http://192.168.2.222/";// 测试服务器
-//    public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
+//    public static final String APP_DOMAIN = "http://192.168.2.222/";// 测试服务器
+    public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
 
     public static final String URL_ABOUT_US = "http://blog.csdn.net/hellohhj/article/details/50467502";// 关于我们网站
 
@@ -100,6 +100,8 @@ public class ApiConfig {
     public static final String APP_PATH_DYNAMIC_SEND_COMMENT = "api/v1/feeds/%s/comment";
     // 获取点赞列表
     public static final String APP_PATH_DYNAMIC_DIG_LIST = "api/v1/feeds/{feed_id}/diggusers";
+    // 一条动态的评论列表
+    public static final String APP_PATH_DYNAMIC_COMMENT_LIST="api/v1/feeds/{feed_id}/comments";
     // 收藏动态，取消收藏
     public static final String APP_PATH_HANDLE_COLLECT = "api/v1/feeds/{feed_id}/collection";
     public static final String APP_PATH_HANDLE_COLLECT_FORMAT = "api/v1/feeds/%s/collection";

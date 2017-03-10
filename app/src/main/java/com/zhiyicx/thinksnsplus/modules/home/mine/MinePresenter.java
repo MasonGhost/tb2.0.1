@@ -38,8 +38,10 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
     public void getUserInfoFromDB() {
         // 尝试从数据库获取当前用户的信息
         AuthBean authBean = AppApplication.getmCurrentLoginAuth();
-        UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache((long) authBean.getUser_id());
-        mRootView.setUserInfo(userInfoBean);
+        if (authBean != null) {
+            UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache((long) authBean.getUser_id());
+            mRootView.setUserInfo(userInfoBean);
+        }
     }
 
     /**

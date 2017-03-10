@@ -13,8 +13,6 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.utils.ActivityUtils;
-import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -63,10 +61,6 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
 public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicNoPullRecycleView.OnCommentStateClickListener, InputLimitView.OnSendClickListener, DynamicContract.View, DynamicListCommentView.OnCommentClickListener, DynamicListCommentView.OnMoreCommentClickListener, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener, MultiItemTypeAdapter.OnItemClickListener {
     private static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
     public static final long ITEM_SPACING = 5L; // 单位dp
-
-    @BindView(R.id.ilv_comment)
-    InputLimitView mIlvComment;
-
     @BindView(R.id.fl_container)
     FrameLayout mFlContainer;
 
@@ -110,7 +104,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        mIlvComment.setOnSendClickListener(this);
+
     }
 
     @Override
@@ -340,16 +334,18 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     public void onCommentContentClick(DynamicBean dynamicBean, int position) {
         mCurrentPostion = mAdapter.getDatas().indexOf(dynamicBean);
         if (dynamicBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-            showBottomView(false);
+//            showBottomView(false);
             initLoginOutPopupWindow(dynamicBean, mCurrentPostion, position);
             mDeletCommentPopWindow.show();
         } else {
             showCommentView();
             mReplyToUserId = dynamicBean.getComments().get(position).getUser_id();
+            String contentHint = "";
             if (dynamicBean.getComments().get(position).getReply_to_user_id() != dynamicBean.getUser_id()) {
-                mIlvComment.setEtContentHint(String.format(getString(R.string.reply), dynamicBean.getComments().get(position).getCommentUser().getName()));
-            } else {
-                mIlvComment.setEtContentHint("");
+                contentHint = String.format(getString(R.string.reply), dynamicBean.getComments().get(position).getCommentUser().getName());
+            }
+            if (mOnCommentClickListener != null) {
+                mOnCommentClickListener.setCommentHint(contentHint);
             }
         }
 
@@ -357,11 +353,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     private void showCommentView() {
         showBottomView(false);
-        ActivityUtils.dimBackground(getActivity(), 1.0f, 0.8f);
-        mIlvComment.setVisibility(View.VISIBLE);
-        mIlvComment.getFocus();
-        mIlvComment.setSendButtonVisiable(true);
-        DeviceUtils.showSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+
     }
 
     @Override
@@ -418,11 +410,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      * @param text
      */
     @Override
-    public void onSendClick(String text) {
-        ActivityUtils.dimBackground(getActivity(), .8f, 1f);
-        mPresenter.sendComment(mCurrentPostion, mReplyToUserId, mIlvComment.getInputContent());
-        mIlvComment.setVisibility(View.GONE);
-        com.zhiyicx.imsdk.utils.common.DeviceUtils.hideSoftKeyboard(getContext(),mIlvComment);
+    public void onSendClick(View v, String text) {
+        mPresenter.sendComment(mCurrentPostion, mReplyToUserId, text);
+        com.zhiyicx.imsdk.utils.common.DeviceUtils.hideSoftKeyboard(getContext(), v);
         showBottomView(true);
     }
 
@@ -439,5 +429,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     public interface OnCommentClickListener {
         void onButtonMenuShow(boolean isShow);
+
+        void setCommentHint(String hintStr);
     }
 }

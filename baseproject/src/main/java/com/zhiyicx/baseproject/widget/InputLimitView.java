@@ -36,7 +36,7 @@ public class InputLimitView extends FrameLayout {
     protected EditText mEtEmpty;
 
     private int mLimitMaxSize;// 最大输入值
-    private int mshowLimitSize;// 当输入值达到 mshowLimitSize 时，显示提示
+    private int mShowLimitSize;// 当输入值达到 mShowLimitSize 时，显示提示
 
     private String mLimitTipStr = "{}/";// 添加格式符号，用户ColorPhrase
 
@@ -45,6 +45,13 @@ public class InputLimitView extends FrameLayout {
 
     public InputLimitView(Context context) {
         super(context);
+        init(context, null);
+    }
+
+    public InputLimitView(Context context, int limitMaxSize, int showLimitSize) {
+        super(context);
+        mLimitMaxSize = limitMaxSize;
+        mShowLimitSize = showLimitSize;
         init(context, null);
     }
 
@@ -68,13 +75,15 @@ public class InputLimitView extends FrameLayout {
             TypedArray array = context.obtainStyledAttributes(attrs,
                     R.styleable.inputLimitView);
             mLimitMaxSize = array.getInteger(R.styleable.inputLimitView_limitSize, context.getResources().getInteger(R.integer.comment_input_max_size));
-            mshowLimitSize = array.getInteger(R.styleable.inputLimitView_showLimitSize, context.getResources().getInteger(R.integer.show_comment_input_size));
+            mShowLimitSize = array.getInteger(R.styleable.inputLimitView_showLimitSize, context.getResources().getInteger(R.integer.show_comment_input_size));
             array.recycle();
-        } else {
-            mLimitMaxSize = context.getResources().getInteger(R.integer.comment_input_max_size);
-            mshowLimitSize = context.getResources().getInteger(R.integer.show_comment_input_size);
         }
-
+        if (mLimitMaxSize == 0) {
+            mLimitMaxSize = context.getResources().getInteger(R.integer.comment_input_max_size);
+        }
+        if (mLimitMaxSize == 0) {
+            context.getResources().getInteger(R.integer.show_comment_input_size);
+        }
         mEtContent.setFilters(new InputFilter[]{new InputFilter.LengthFilter(mLimitMaxSize)});
 
         mEtContent.addTextChangedListener(new TextWatcher() {
@@ -95,7 +104,7 @@ public class InputLimitView extends FrameLayout {
                 } else {
                     mBtSend.setEnabled(true);
                 }
-                if (s.length() >= mshowLimitSize) {
+                if (s.length() >= mShowLimitSize) {
                     mLimitTipStr = "<" + s.length() + ">" + "/" + mLimitMaxSize;
                     CharSequence chars = ColorPhrase.from(mLimitTipStr).withSeparator("<>")
                             .innerColor(ContextCompat.getColor(context, R.color.important_for_note))
@@ -113,7 +122,7 @@ public class InputLimitView extends FrameLayout {
             @Override
             public void onClick(View v) {
                 if (mOnSendClickListener != null) {
-                    mOnSendClickListener.onSendClick(getInputContent());
+                    mOnSendClickListener.onSendClick(v,getInputContent());
                     mEtContent.setText("");
                 }
             }
@@ -187,7 +196,7 @@ public class InputLimitView extends FrameLayout {
     }
 
     public interface OnSendClickListener {
-        void onSendClick(String text);
+        void onSendClick(View v,String text);
 
     }
 }

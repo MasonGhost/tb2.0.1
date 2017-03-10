@@ -1,7 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,20 +14,22 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailItemForContent;
-import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailItemForDig;
-import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
+import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailCommentAdapter;
+import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +46,7 @@ import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION
  * @contact email:450127106@qq.com
  */
 
-public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.Presenter, DynamicBean> implements DynamicDetailContract.View {
+public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.Presenter, DynamicCommentBean> implements DynamicDetailContract.View {
     public static final String DYNAMIC_DETAIL_DATA = "dynamic_detail_data";
     public static final String DYNAMIC_DETAIL_DATA_POSITION = "dynamic_detail_data_position";
     public static final String LOOK_COMMENT_MORE = "look_comment_more";
@@ -63,10 +67,21 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     Toolbar mToolbar;
     private DynamicBean mDynamicBean;// 上一个页面传进来的数据
     private FollowFansBean mFollowFansBean;// 用户关注状态
-    private List<DynamicBean> mDatas = new ArrayList<>();
+    private List<DynamicCommentBean> mDatas = new ArrayList<>();
+
+    private boolean mIsLookMore = false;
+    private int mDynamicPosition;
+
+    private DynamicDetailHeader mDynamicDetailHeader;
+    private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
 
     @Override
     protected boolean showToolbar() {
+        return false;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
         return false;
     }
 
@@ -80,7 +95,19 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         super.initView(rootView);
         initBottomToolUI();
         initBottomToolListener();
+        initHeaderView();
+        int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
+        Drawable  resource= ContextCompat.getDrawable(getContext(),R.drawable.shape_default_image_circle);
+        resource.setBounds(0, 0, headIconWidth, headIconWidth);
+        mTvToolbarCenter.setCompoundDrawables(resource, null, null, null);
+    }
 
+    private void initHeaderView() {
+        mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
+        mDynamicDetailHeader = new DynamicDetailHeader(getContext());
+        mHeaderAndFooterWrapper.addHeaderView(mDynamicDetailHeader.getDynamicDetailHeader());
+        mRvList.setAdapter(mHeaderAndFooterWrapper);
+        mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
     @Override
@@ -93,21 +120,17 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         // 处理上个页面传过来的动态数据
         Bundle bundle = getArguments();
         if (bundle != null && bundle.containsKey(DYNAMIC_DETAIL_DATA)) {
-            DynamicBean dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
-            mDynamicBean = dynamicBean;
-            setToolBarUser(dynamicBean);// 设置标题用户
-            initBottomToolData(dynamicBean);// 初始化底部工具栏数据
+            mIsLookMore = bundle.getBoolean(LOOK_COMMENT_MORE);
+            mDynamicPosition = bundle.getInt(DYNAMIC_DETAIL_DATA_POSITION);
+            mDynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
+            setToolBarUser(mDynamicBean);// 设置标题用户
+            initBottomToolData(mDynamicBean);// 初始化底部工具栏数据
             // 设置动态详情列表数据
-            DynamicBean dynamicContent = new DynamicBean();// 设置详情内容
-            dynamicContent.setFeed(dynamicBean.getFeed());
-            DynamicBean dynamicDig = new DynamicBean();// 设置点赞
-            dynamicDig.setFeed(dynamicBean.getFeed());
-            dynamicDig.setTool(dynamicBean.getTool());
-            mDatas.add(dynamicContent);
-            mDatas.add(dynamicDig);
+            mDynamicDetailHeader.updateHeaderViewData(mDynamicBean);
             refreshData();
         }
     }
+
 
     //不显示分割线
     @Override
@@ -116,10 +139,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
-    protected MultiItemTypeAdapter<DynamicBean> getAdapter() {
-        MultiItemTypeAdapter<DynamicBean> adapter = new MultiItemTypeAdapter<>(getContext(), mDatas);
-        adapter.addItemViewDelegate(new DynamicDetailItemForContent());
-        adapter.addItemViewDelegate(new DynamicDetailItemForDig());
+    protected CommonAdapter<DynamicCommentBean> getAdapter() {
+        CommonAdapter<DynamicCommentBean> adapter = new DynamicDetailCommentAdapter(getContext(), R.layout.item_dynamic_detail_comment, mDatas);
         return adapter;
     }
 
@@ -166,8 +187,10 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mTvToolbarCenter.setText(userInfoBean.getName());
         int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
         Glide.with(getContext())
-                .load(String.format(ApiConfig.IMAGE_PATH, 20, 10))
+                .load(ImageUtils.imagePathConvert(dynamicBean.getUserInfoBean().getAvatar(), ImageZipConfig.IMAGE_26_ZIP))
                 .bitmapTransform(new GlideCircleTransform(getContext()))
+                .placeholder(R.drawable.shape_default_image_circle)
+                .error(R.drawable.shape_default_image_circle)
                 .override(headIconWidth, headIconWidth)
                 .into(new SimpleTarget<GlideDrawable>() {
                     @Override
@@ -200,9 +223,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public void setDigHeadIcon(List<FollowFansBean> userInfoBeanList) {
-        DynamicBean dynamicBean = mDatas.get(DYNAMIC_ITEM_DIG);
-        dynamicBean.setDigUserInfoList(userInfoBeanList);
-        refreshData(DYNAMIC_ITEM_DIG);
+        mDynamicBean.setDigUserInfoList(userInfoBeanList);
+        mDynamicDetailHeader.updateHeaderViewData(mDynamicBean);
     }
 
     @Override

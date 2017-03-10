@@ -103,6 +103,9 @@ public class DynamicCommentBeanGreenDaoImpl extends CommonCacheImpl<DynamicComme
      * @return
      */
     public List<DynamicCommentBean> getMySendingComment(Long feedMark) {
+        if(AppApplication.getmCurrentLoginAuth()==null){
+            return new ArrayList<>();
+        }
         DynamicCommentBeanDao dynamicCommentBeanDao = getWDaoSession().getDynamicCommentBeanDao();
         return dynamicCommentBeanDao.queryBuilder()
                 .where(DynamicCommentBeanDao.Properties.User_id.eq(AppApplication.getmCurrentLoginAuth().getUser_id()), DynamicCommentBeanDao.Properties.Comment_id.isNull(), DynamicCommentBeanDao.Properties.Feed_mark.eq(feedMark))
