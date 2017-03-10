@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
+import com.zhiyicx.baseproject.base.BaseListBean;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
@@ -20,7 +21,7 @@ import org.greenrobot.greendao.annotation.NotNull;
  * @contact email:450127106@qq.com
  */
 @Entity
-public class DynamicCommentBean implements Parcelable {
+public class DynamicCommentBean extends BaseListBean implements Parcelable {
     public static final int SEND_ERROR = 0;
     public static final int SEND_ING = 1;
     public static final int SEND_SUCCESS = 2;

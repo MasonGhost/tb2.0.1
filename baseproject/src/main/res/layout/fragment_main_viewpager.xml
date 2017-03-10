@@ -30,6 +30,7 @@
         android:id="@+id/ilv_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:layout_alignParentBottom="@bool/pickerview_customTextSize"
         app:limitSize="@integer/chat_input_max_size"
         app:showLimitSize="@integer/show_chat_input_size">
