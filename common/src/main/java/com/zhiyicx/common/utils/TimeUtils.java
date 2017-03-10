@@ -137,14 +137,14 @@ public class TimeUtils {
         long timesamp = string2Millis(timestr);
         switch (getifferenceDays(timesamp)) {
             case 0:
-                result = "今天";
+                result = "今,天";
                 break;
             case 1:
-                result = "昨天";
+                result = "昨,天";
                 break;
 
             default:
-                result = getStandardTimeWithMothAndDay(timesamp);
+                result = getStandardTimeWithMothAndDayOne(timesamp);
                 break;
         }
         return result;
@@ -294,6 +294,13 @@ public class TimeUtils {
      */
     public static String getStandardTimeWithMothAndDay(long timestamp) {
         return getTime(timestamp, "MM-dd");
+    }
+
+    /**
+     * 通过时间戳获取 dd,MM月
+     */
+    public static String getStandardTimeWithMothAndDayOne(long timestamp) {
+        return getTime(timestamp, "dd,M月");
     }
 
     /**

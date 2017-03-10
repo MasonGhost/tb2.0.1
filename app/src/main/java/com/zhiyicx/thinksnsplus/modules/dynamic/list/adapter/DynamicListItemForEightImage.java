@@ -5,6 +5,7 @@ import android.widget.ImageView;
 
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListBaseItem;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 /**
@@ -14,7 +15,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
  * @Contact master.jungle68@gmail.com
  */
 
-public class DynamicListItemForEightImage extends DynamicListBaseItem {
+public class DynamicListItemForEightImage extends PersonalCenterDynamicListBaseItem {
     private static final int IMAGE_COUNTS = 8;// 动态列表图片数量
     private static final int CURREN_CLOUMS = 3;// 当前列数
 
