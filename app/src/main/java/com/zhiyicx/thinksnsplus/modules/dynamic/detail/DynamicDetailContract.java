@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
@@ -50,6 +51,11 @@ public interface DynamicDetailContract {
          * 设置初始关注状态
          */
         void initFollowState(FollowFansBean mFollowFansBean);
+
+        /**
+         * 获取当前动态数据
+         */
+        DynamicBean getCurrentDynamic();
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存

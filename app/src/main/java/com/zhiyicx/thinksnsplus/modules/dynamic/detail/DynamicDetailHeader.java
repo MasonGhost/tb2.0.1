@@ -22,10 +22,12 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListFragment;
 import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,7 +49,7 @@ public class DynamicDetailHeader {
         mDynamicDetailHeader = LayoutInflater.from(context).inflate(R.layout.view_header_dynamic_detial, null);
     }
 
-    public void updateHeaderViewData( DynamicBean dynamicBean) {
+    public void updateHeaderViewData(DynamicBean dynamicBean) {
 
         TextView title = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_title);
         TextView content = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_content);
@@ -85,17 +87,17 @@ public class DynamicDetailHeader {
         dynamicHorizontalStackIconView.setPublishTime(dynamicDetailBean.getCreated_at());
         dynamicHorizontalStackIconView.setViewerCount(dynamicToolBean.getFeed_view_count());
         // 设置点赞头像
-      /*  List<UserInfoBean> userInfoList = dynamicBean.getDigUserInfoList();
+        List<FollowFansBean> userInfoList = dynamicBean.getDigUserInfoList();
         List<ImageBean> imageBeanList = null;
-        if (userInfoList != null && !imageBeanList.isEmpty()) {
+        if (userInfoList != null && !userInfoList.isEmpty()) {
             imageBeanList = new ArrayList<>();
-            for (UserInfoBean userInfoBean : userInfoList) {
+            for (FollowFansBean followFansBean : userInfoList) {
                 ImageBean imageBean = new ImageBean();
-                imageBean.setStorage_id(userInfoBean.getAvatar());
+                imageBean.setStorage_id(TextUtils.isEmpty(followFansBean.getTargetUserInfo().getAvatar()) ? 0 : Integer.parseInt(followFansBean.getTargetUserInfo().getAvatar()));
                 imageBeanList.add(imageBean);
             }
         }
-        dynamicHorizontalStackIconView.setDigUserHeadIcon(imageBeanList);*/
+        dynamicHorizontalStackIconView.setDigUserHeadIcon(imageBeanList);
 
         // 设置跳转到点赞列表
         dynamicHorizontalStackIconView.setDigContainerClickListener(new DynamicHorizontalStackIconView.DigContainerClickListener() {

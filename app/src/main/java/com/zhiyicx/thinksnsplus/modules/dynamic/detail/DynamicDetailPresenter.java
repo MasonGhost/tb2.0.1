@@ -13,12 +13,15 @@ import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -43,6 +46,11 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
     @Inject
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
     @Inject
+    DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+
+    @Inject
     public SharePolicy mSharePolicy;
 
     @Inject
@@ -51,22 +59,67 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
     }
 
     @Override
-    public void requestNetData(Long maxId, boolean isLoadMore) {
+    public void requestNetData(Long maxId, final boolean isLoadMore) {
+        if (mRootView.getCurrentDynamic() == null) {
+            return;
+        }
         // 更新点赞列表
+        if (!isLoadMore) {
+            getDynamicDigList(mRootView.getCurrentDynamic().getFeed_id(), maxId);
+        }
         // 更新评论列表
+        mRepository.getDynamicCommentList(mRootView.getCurrentDynamic().getFeed_id(), maxId)
+                .subscribe(new BaseSubscribe<List<DynamicCommentBean>>() {
+                    @Override
+                    protected void onSuccess(List<DynamicCommentBean> data) {
+                        if (!isLoadMore) { // 刷新时，把自己还未发送成功的评论加载到前面
+                            List<DynamicCommentBean> myComments = mDynamicCommentBeanGreenDao.getMySendingComment(mRootView.getCurrentDynamic().getFeed_mark());
+                            if (!myComments.isEmpty()) {
+                                for (int i = 0; i < myComments.size(); i++) {
+                                    myComments.get(i).setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache(myComments.get(i).getUser_id()));
+                                    if (myComments.get(i).getReply_to_user_id() != 0) {
+                                        myComments.get(i).setReplyUser(mUserInfoBeanGreenDao.getSingleDataFromCache(myComments.get(i).getReply_to_user_id()));
+                                    }
+                                }
+                                myComments.addAll(data);
+                                data.clear();
+                                data.addAll(myComments);
+                            }
+                        }
+                        mRootView.onNetResponseSuccess(data, isLoadMore);
+                    }
+
+                    @Override
+                    protected void onFailure(String message) {
+                        mRootView.showMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        throwable.printStackTrace();
+                        mRootView.onResponseError(throwable, isLoadMore);
+                    }
+                });
     }
 
     @Override
     public List<DynamicCommentBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+        if (mRootView.getCurrentDynamic() == null) {
+            return new ArrayList<>();
+        }
         // 从数据库获取评论列表
         // 从数据库获取点赞列表
         // 从数据库获取关注状态，如果没有从服务器获取
-        return null;
+        return mDynamicCommentBeanGreenDao.getLocalComments(mRootView.getCurrentDynamic().getFeed_mark());
     }
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<DynamicCommentBean> data) {
-        return false;
+        if (data == null) {
+            return false;
+        }
+        mDynamicCommentBeanGreenDao.insertOrReplace(data);
+        return true;
     }
 
     @Override

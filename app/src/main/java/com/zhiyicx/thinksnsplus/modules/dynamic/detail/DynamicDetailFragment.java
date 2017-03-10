@@ -132,12 +132,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
 
-    //不显示分割线
-    @Override
-    protected float getItemDecorationSpacing() {
-        return 0;
-    }
-
     @Override
     protected CommonAdapter<DynamicCommentBean> getAdapter() {
         CommonAdapter<DynamicCommentBean> adapter = new DynamicDetailCommentAdapter(getContext(), R.layout.item_dynamic_detail_comment, mDatas);
@@ -239,6 +233,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
+    public DynamicBean getCurrentDynamic() {
+        return mDynamicBean;
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         UmengSharePolicyImpl.onActivityResult(requestCode, resultCode, data, getContext());
@@ -319,7 +318,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      * 设置toolBar上面的关注状态
      */
     private void setToolBarRightFollowState(int state) {
-        mToolbarRight.setVisibility(View.VISIBLE);
+        mTvToolbarRight.setVisibility(View.VISIBLE);
         switch (state) {
             case FollowFansBean.UNFOLLOWED_STATE:
                 mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_follow), null);

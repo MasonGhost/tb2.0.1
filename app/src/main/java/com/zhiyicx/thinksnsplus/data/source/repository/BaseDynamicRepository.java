@@ -227,6 +227,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     public Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentList(Long feed_id, Long max_id) {
         return mDynamicClient.getDynamicCommentList(feed_id, max_id)
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<BaseJson<List<DynamicCommentBean>>, Observable<BaseJson<List<DynamicCommentBean>>>>() {
                     @Override
                     public Observable<BaseJson<List<DynamicCommentBean>>> call(final BaseJson<List<DynamicCommentBean>> listBaseJson) {
