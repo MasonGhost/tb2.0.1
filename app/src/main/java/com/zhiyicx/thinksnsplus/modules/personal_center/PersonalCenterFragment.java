@@ -36,6 +36,16 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForS
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForThreeImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicCountItem;
+import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListBaseItem;
+import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForEightImage;
+import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForFiveImage;
+import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForFourImage;
+import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForNineImage;
+import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForOneImage;
+import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForSevenImage;
+import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForSixImage;
+import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForThreeImage;
+import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -145,16 +155,16 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     protected MultiItemTypeAdapter<DynamicBean> getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mDynamicBeens);
         adapter.addItemViewDelegate(new PersonalCenterDynamicCountItem());
-        setAdapter(adapter, new DynamicListBaseItem(getContext()));
-        setAdapter(adapter, new DynamicListItemForOneImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForTwoImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForThreeImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForFourImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForFiveImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForSixImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForSevenImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForEightImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForNineImage(getContext()));
+        setAdapter(adapter, new PersonalCenterDynamicListBaseItem(getContext()));
+        setAdapter(adapter, new PersonalCenterDynamicListItemForOneImage(getContext()));
+        setAdapter(adapter, new PersonalCenterDynamicListItemForTwoImage(getContext()));
+        setAdapter(adapter, new PersonalCenterDynamicListItemForThreeImage(getContext()));
+        setAdapter(adapter, new PersonalCenterDynamicListItemForFourImage(getContext()));
+        setAdapter(adapter, new PersonalCenterDynamicListItemForFiveImage(getContext()));
+        setAdapter(adapter, new PersonalCenterDynamicListItemForSixImage(getContext()));
+        setAdapter(adapter, new PersonalCenterDynamicListItemForSevenImage(getContext()));
+        setAdapter(adapter, new PersonalCenterDynamicListItemForEightImage(getContext()));
+        setAdapter(adapter, new PersonalCenterDynamicListItemForNineImage(getContext()));
         return adapter;
     }
 
