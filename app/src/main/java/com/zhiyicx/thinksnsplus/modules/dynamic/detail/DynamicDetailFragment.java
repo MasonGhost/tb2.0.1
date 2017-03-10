@@ -1,7 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,6 +81,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_dynamic_detail;
     }
@@ -89,6 +96,10 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         initBottomToolUI();
         initBottomToolListener();
         initHeaderView();
+        int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
+        Drawable  resource= ContextCompat.getDrawable(getContext(),R.drawable.shape_default_image_circle);
+        resource.setBounds(0, 0, headIconWidth, headIconWidth);
+        mTvToolbarCenter.setCompoundDrawables(resource, null, null, null);
     }
 
     private void initHeaderView() {

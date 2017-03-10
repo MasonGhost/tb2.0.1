@@ -9,9 +9,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.ToastUtils;
@@ -26,7 +27,6 @@ import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
-import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumListActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
 
 import javax.inject.Inject;
@@ -215,13 +215,16 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     public void setUserInfo(UserInfoBean userInfoBean) {
+        if (userInfoBean == null) {
+            return;
+        }
         this.mUserInfoBean = userInfoBean;
         // 设置用户头像
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
                 .transformation(new GlideCircleTransform(getContext()))
                 .imagerView(mIvHeadIcon)
-                .url(String.format(ApiConfig.IMAGE_PATH, userInfoBean.getAvatar(), 50))
+                .url(ImageUtils.imagePathConvert(mUserInfoBean.getAvatar(), ImageZipConfig.IMAGE_60_ZIP))
                 .placeholder(R.drawable.shape_default_image_circle)
                 .errorPic(R.drawable.shape_default_image_circle)
                 .build());
