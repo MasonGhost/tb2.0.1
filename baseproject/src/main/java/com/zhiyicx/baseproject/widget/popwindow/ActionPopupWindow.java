@@ -24,7 +24,7 @@ import com.zhiyicx.baseproject.R;
  */
 
 public class ActionPopupWindow extends PopupWindow {
-    public static final float POPUPWINDOW_ALPHA = 0.8f;
+    public static final float POPUPWINDOW_ALPHA = .8f;
 
     private Activity mActivity;
     private View mParentView;

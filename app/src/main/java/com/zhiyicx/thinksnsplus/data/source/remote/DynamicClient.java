@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 
@@ -88,5 +89,15 @@ public interface DynamicClient {
      */
     @DELETE(ApiConfig.APP_PATH_HANDLE_COLLECT)
     Observable<BaseJson<Object>> cancleCollectDynamic(@Path("feed_id") Long feed_id);
+
+    /**
+     * 一条动态的评论列表
+     *
+     * @param feed_id 动态的唯一id
+     * @param max_id  返回的feed_digg_id 作为max_id,对象为null表示不传
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_DYNAMIC_COMMENT_LIST)
+    Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentList(@Path("feed_id") Long feed_id, @Query("max_id ") Long max_id);
 
 }

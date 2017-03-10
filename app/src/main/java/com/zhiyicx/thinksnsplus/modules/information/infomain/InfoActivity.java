@@ -1,11 +1,13 @@
 package com.zhiyicx.thinksnsplus.modules.information.infomain;
 
-import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.thinksnsplus.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Author Jliuer
@@ -32,7 +34,7 @@ public class InfoActivity extends TSActivity {
     @Override
     protected void initView() {
         mContanierFragment = getFragment();
-        ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),mContanierFragment,
+        ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), mContanierFragment,
                 R.id.fl_fragment_container);
     }
 

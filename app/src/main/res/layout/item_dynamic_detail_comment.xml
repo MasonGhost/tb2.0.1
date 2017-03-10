@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/white"
+              android:orientation="vertical">
+    <!--动态标题-->
+    <TextView
+        android:id="@+id/tv_dynamic_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="@dimen/spacing_normal_large"
+        android:paddingTop="@dimen/spacing_normal_large"
+        android:text="一碗饭的时间"
+        android:textColor="@color/themeColor"
+        android:textSize="@dimen/size_sub_title"/>
+    <!--图片容器：最多九张-->
+    <LinearLayout
+        android:id="@+id/ll_dynamic_photos_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_large"
+        android:orientation="vertical"></LinearLayout>
+    <!--动态内容-->
+    <TextView
+        android:id="@+id/tv_dynamic_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:paddingRight="@dimen/spacing_normal"
+        android:text="北京时间3月1日，名记马克-斯坦推特爆料，刚刚与费城76人完成买断的安德鲁-博古特，正式确认将与克利夫兰骑士签约。
+
+至此，卫冕冠军就在没有付出任何代价的情况下，一下子收获了球队最薄弱位置的两大强援——首先是德隆-威廉姆斯，然后又是今天的博古特。
+
+截止日前，联盟各方豪强纷纷补强，进行军备竞赛。尤其是在东部，为了挑战骑士，猛龙用首轮签和泰伦斯-罗斯换来塞尔吉-伊巴卡，之后又再送选秀权，从太阳换来专门用来对付勒布朗-詹姆斯的PJ-塔克，进来状态火热的奇才也从篮网交易到得分好手博扬-博格达诺维奇，补强羸弱的板凳席。
+
+而骑士，则一直稳坐钓鱼台，看得球迷心焦火燎——他们没有想到的事，大卫-格里芬早就瞅准买断市场上会出现大鱼，好戏还在后头！
+
+最终，他们只用了两份价值不足150万的老将底薪合同，就搞定了一名仍然颇具实力，拥有首发实力的控球后卫，以及一位虽然健康状况欠佳，但有限时间里依然能够稳守篮下同时还能策应传球的七尺长人。
+
+如今的德隆和博古特，到底是个什么水准呢？"
+        android:textColor="@color/important_for_content"
+        android:textSize="@dimen/size_content"/>
+</LinearLayout>

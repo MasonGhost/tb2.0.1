@@ -2,17 +2,20 @@ package com.zhiyicx.thinksnsplus.modules.information.infomain;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoBannerBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoBannerItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoListItem;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
+import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +27,6 @@ import java.util.List;
  * @Description
  */
 public class InfoListFragment extends TSListFragment {
-
 
     private List<BaseListBean> mInfoList = new ArrayList<>();
 
@@ -53,25 +55,37 @@ public class InfoListFragment extends TSListFragment {
         mInfoList.add(new InfoListBean());
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getActivity(), mInfoList);
         adapter.addItemViewDelegate(new InfoBannerItem());
-        adapter.addItemViewDelegate(new InfoListItem());
+        adapter.addItemViewDelegate(new InfoListItem() {
+            @Override
+            public void convert(ViewHolder holder, BaseListBean baseListBean, BaseListBean lastT,
+                                final int position) {
+
+                final TextView title = holder.getView(R.id.item_info_title);
+
+                if (AppApplication.sOverRead.contains(position + "")) {
+                    title.setTextColor(getResources()
+                            .getColor(R.color.normal_for_assist_text));
+                }
+
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!AppApplication.sOverRead.contains(position + "")) {
+                            AppApplication.sOverRead.add(position + "");
+                        }
+                        title.setTextColor(getResources()
+                                .getColor(R.color.normal_for_assist_text));
+                        startActivity(new Intent(getActivity(), InfoDetailsActivity.class));
+                    }
+                });
+            }
+        });
         return adapter;
     }
 
     @Override
     protected void initData() {
         super.initData();
-        mAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                startActivity(new Intent(getActivity(), InfoDetailsActivity.class));
-            }
-
-            @Override
-            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int
-                    position) {
-                return false;
-            }
-        });
     }
 
     @Override

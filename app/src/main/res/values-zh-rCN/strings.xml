@@ -80,7 +80,7 @@
     <string name="dynamic_content_hint">输入要说的话，图文结合更精彩哦</string>
     <!--动态详情-->
     <string name="dynamic_dig_count">%1$d人点赞</string>
-    <string name="dynamic_publish_time">发布与%1$s</string>
+    <string name="dynamic_publish_time">发布于%1$s</string>
     <string name="dynamic_viewer_count">%1$d人浏览</string>
     <string name="dynamic_like">喜欢</string>
     <string name="dig_list">点赞榜</string>

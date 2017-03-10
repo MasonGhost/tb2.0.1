@@ -309,4 +309,9 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         System.out.println("isShow = " + isShow);
         mLlBottomContainer.setVisibility(isShow ? View.VISIBLE : View.GONE);
     }
+
+    @Override
+    public void setCommentHint(String hintStr) {
+
+    }
 }

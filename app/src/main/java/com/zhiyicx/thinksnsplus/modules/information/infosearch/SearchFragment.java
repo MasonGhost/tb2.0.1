@@ -43,7 +43,7 @@ public class SearchFragment extends TSFragment {
                 new TextView.OnEditorActionListener() {
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                         if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                            ToastUtils.showToast("IME_ACTION_SEARCH");
+
                             return true;
                         }
                         return false;

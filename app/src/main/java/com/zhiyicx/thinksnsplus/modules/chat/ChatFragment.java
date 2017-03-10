@@ -154,7 +154,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
      * @param text
      */
     @Override
-    public void onSendClick(String text) {
+    public void onSendClick(View v,String text) {
         mPresenter.sendTextMessage(text, mMessageItemBean.getConversation().getCid());
     }
 
