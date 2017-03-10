@@ -30,6 +30,7 @@
             android:id="@+id/tv_time_up"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:includeFontPadding="false"
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_dynamic_day"
             tools:text="今天"/>
@@ -40,6 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_time_up"
             android:layout_marginTop="@dimen/spacing_small"
+            android:includeFontPadding="false"
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_icon_assist"
             tools:text="今天"/>
@@ -277,7 +279,13 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/fl_tip"
         android:layout_marginLeft="@dimen/dynamic_list_comment_marginright"
-        android:layout_marginRight="@dimen/spacing_normal">
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:paddingBottom="@dimen/spacing_mid">
     </com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_small"
+        android:layout_below="@id/dcv_comment"
+        android:background="@color/bgColor"></View>
 </RelativeLayout>

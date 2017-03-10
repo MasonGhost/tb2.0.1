@@ -127,6 +127,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
+    protected float getItemDecorationSpacing() {
+        return 0;
+    }
+
+    @Override
     public void onUserInfoClick(UserInfoBean userInfoBean) {
 
     }
