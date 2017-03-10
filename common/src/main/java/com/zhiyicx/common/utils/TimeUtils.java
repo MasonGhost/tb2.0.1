@@ -4,7 +4,6 @@ import android.support.annotation.Nullable;
 
 import com.zhiyicx.common.config.ConstantConfig;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -33,7 +32,7 @@ public class TimeUtils {
     }
 
     /**
-     * 动态列表时间戳格式转换
+     * 动态列表 \评论列表 时间戳格式转换
      * 一分钟内显示一分钟
      * 一小时内显示几分钟前
      * 一天内显示几小时前
