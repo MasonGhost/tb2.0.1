@@ -9,23 +9,11 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout
-            android:id="@+id/nest_scroll_container"
+        <include
+            layout="@layout/fragment_tslist"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <include
-                layout="@layout/fragment_personal_center_header"></include>
-
-            <include
-                layout="@layout/fragment_tslist"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            </include>
-        </com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout>
-
+            android:layout_height="match_parent">
+        </include>
         <!--底部的关注，聊天-->
         <LinearLayout
             android:id="@+id/ll_bottom_container"

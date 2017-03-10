@@ -77,11 +77,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     LinearLayout mLlChatContainer;
     @BindView(R.id.ll_bottom_container)
     LinearLayout mLlBottomContainer;
-    @BindView(R.id.nest_scroll_container)
-    NestedScrollLineayLayout mNestScrollContainer;
-    @BindView(R.id.personal_header)
-    LinearLayout mPersonalHeader;
-
 
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     private PersonalCenterHeaderViewItem mPersonalCenterHeaderViewItem;
@@ -97,19 +92,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         super.initView(rootView);
         initToolBar();
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
-
-       // mNestScrollContainer.setHeaderViewId(R.id.personal_header);
-        mNestScrollContainer.setNotConsumeHeight(200);
-        mNestScrollContainer.setOnHeadFlingListener(new NestedScrollLineayLayout.OnHeadFlingListener() {
-            @Override
-            public void onHeadFling(int scrollY) {
-                int distance = mNestScrollContainer.getTopViewHeight();
-                int alpha = 255 * scrollY / distance;
-                alpha = alpha > 255 ? 255 : alpha;
-                mRlToolbarContainer.getBackground().setAlpha(alpha);
-            }
-        });
-        mPersonalCenterHeaderViewItem = new PersonalCenterHeaderViewItem(getActivity(), mRvList, mPersonalHeader);
+        mPersonalCenterHeaderViewItem = new PersonalCenterHeaderViewItem(getActivity(), mRvList, mHeaderAndFooterWrapper);
         mPersonalCenterHeaderViewItem.initHeaderView();
         // 添加关注点击事件
         RxView.clicks(mTvFollow)
