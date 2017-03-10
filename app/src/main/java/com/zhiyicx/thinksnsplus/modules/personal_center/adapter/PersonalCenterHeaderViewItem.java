@@ -2,6 +2,9 @@ package com.zhiyicx.thinksnsplus.modules.personal_center.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,6 +22,7 @@ import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.ZoomView;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -46,19 +50,122 @@ public class PersonalCenterHeaderViewItem {
     private Activity mActivity;
     private RecyclerView mRecyclerView;
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
+    private int mDistanceY;// recylerView 滑动距离的累计
+    private View mToolBarContainer;// 需要变换透明度的标题栏
+    private View mToolBar;
+    private ImageView back;
+    private ImageView more;
+    private TextView userName;
+    private View bootomDivider;// 底部的分割线
 
-    public PersonalCenterHeaderViewItem(Activity activity, RecyclerView recyclerView, HeaderAndFooterWrapper headerAndFooterWrapper) {
+    /**
+     * 标题文字的颜色:#333333
+     **/
+    private int[] titleRGB = {51, 51, 51};
+    /**
+     * 状态栏的颜色变化，也就是toolbar上半部分的底色:#f4f5f5
+     **/
+    private int[] statusRGB = {244, 245, 245};
+
+    /**
+     * toolbar的背景色：#ffffff
+     **/
+    private int[] toolBarRGB = {255, 255, 255};
+
+    /**
+     * toolbar下方的分割线颜色：#dedede
+     **/
+    private int[] toolBarDividerRGB = {222, 222, 222};
+
+    /**
+     * toolbar图标白色:滑到顶部的时候
+     **/
+    private int[] toolBarWhiteIcon = {255, 255, 255};
+    /**
+     * toolbar图标黑色：从顶部往下滑
+     **/
+    private int[] toolBarBlackIcon = {51, 51, 51};
+
+    public PersonalCenterHeaderViewItem(Activity activity, RecyclerView recyclerView, HeaderAndFooterWrapper headerAndFooterWrapper, View mToolBarContainer) {
         mActivity = activity;
         mRecyclerView = recyclerView;
         mHeaderAndFooterWrapper = headerAndFooterWrapper;
+        this.mToolBarContainer = mToolBarContainer;
+        mToolBar = mToolBarContainer.findViewById(R.id.rl_toolbar_container);
+        back = (ImageView) mToolBarContainer.findViewById(R.id.iv_back);
+        more = (ImageView) mToolBarContainer.findViewById(R.id.iv_more);
+        userName = (TextView) mToolBarContainer.findViewById(R.id.tv_user_name);
+        bootomDivider = mToolBarContainer.findViewById(R.id.v_horizontal_line);
+        // 设置初始透明度为0
+        setViewColorWithAlpha(userName, titleRGB, 0);
+        setViewColorWithAlpha(mToolBarContainer, statusRGB, 0);
+        setViewColorWithAlpha(mToolBar, toolBarRGB, 0);
+        setViewColorWithAlpha(bootomDivider, toolBarDividerRGB, 0);
+
     }
 
     public void initHeaderView() {
-        View headerView = LayoutInflater.from(mActivity).inflate(R.layout.fragment_personal_center_header, null);
+        final View headerView = LayoutInflater.from(mActivity).inflate(R.layout.fragment_personal_center_header, null);
         initHeaderViewUI(headerView);
         mHeaderAndFooterWrapper.addHeaderView(headerView);
         mRecyclerView.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
+        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                //滑动的距离
+                mDistanceY += dy;
+                int headerTop = headerView.getTop();
+                int headerViewHeight = headerView.getHeight();
+
+                //当滑动的距离 <= headerView高度的时候，改变Toolbar背景色的透明度，达到渐变的效果
+                if (mDistanceY <= headerViewHeight) {
+                    float scale = (float) mDistanceY / headerViewHeight;
+                    float alpha = scale * 255;
+                    setViewColorWithAlpha(mToolBar, toolBarRGB, (int) alpha);
+                    setViewColorWithAlpha(mToolBarContainer, statusRGB, (int) alpha);
+                    setViewColorWithAlpha(bootomDivider, toolBarDividerRGB, (int) alpha);
+                    if (alpha == 0) {
+                        // 设置ImageView的ColorFilter从而改变图标的颜色
+                        PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(Color.argb(255, toolBarWhiteIcon[0],
+                                toolBarWhiteIcon[1], toolBarWhiteIcon[2]), PorterDuff.Mode.SRC_ATOP);
+                        back.setColorFilter(colorFilter);// 纯白图标
+                        more.setColorFilter(colorFilter);// 纯白图标
+                        setViewColorWithAlpha(userName, titleRGB, 0);// 用户名不可见
+                    } else {
+                        PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(Color.argb((int) alpha, toolBarBlackIcon[0],
+                                toolBarBlackIcon[1], toolBarBlackIcon[2]), PorterDuff.Mode.SRC_ATOP);
+                        back.setColorFilter(colorFilter);
+                        more.setColorFilter(colorFilter);
+                        setViewColorWithAlpha(userName, titleRGB, (int) alpha);
+                    }
+                } else {
+                    //如果不是完全不透明状态的bug，将标题栏的颜色设置为完全不透明状态
+                    setViewColorWithAlpha(userName, titleRGB, 255);
+                    setViewColorWithAlpha(mToolBarContainer, statusRGB, 255);
+                    setViewColorWithAlpha(mToolBar, toolBarRGB,255);
+                    setViewColorWithAlpha(bootomDivider, toolBarDividerRGB,255);
+
+                    PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(Color.argb(255, toolBarBlackIcon[0],
+                            toolBarBlackIcon[1], toolBarBlackIcon[2]), PorterDuff.Mode.SRC_ATOP);
+                    back.setColorFilter(colorFilter);// 纯黑色
+                    more.setColorFilter(colorFilter);// 纯黑色
+                }
+                // 有可能到顶部了，仍然有一点白色透明背景，强制设置成完全透明
+                if (headerTop >= 0) {
+                    setViewColorWithAlpha(userName, titleRGB, 0);
+                    setViewColorWithAlpha(mToolBarContainer, statusRGB, 0);
+                    setViewColorWithAlpha(mToolBar, toolBarRGB, 0);
+                    setViewColorWithAlpha(bootomDivider, toolBarDividerRGB, 0);
+                    PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(Color.argb(255, toolBarWhiteIcon[0]
+                            , toolBarWhiteIcon[1], toolBarWhiteIcon[2]), PorterDuff.Mode.SRC_ATOP);
+                    back.setColorFilter(colorFilter);// 纯白图标
+                    more.setColorFilter(colorFilter);// 纯白图标
+
+                }
+                LogUtils.i("onScrolled--> headerViewHeight" + headerViewHeight + " mDistanceY-->" + mDistanceY);
+            }
+        });
     }
 
     public void initHeaderViewData(UserInfoBean userInfoBean) {
@@ -73,6 +180,8 @@ public class PersonalCenterHeaderViewItem {
                 .build());
         // 设置用户名
         tv_user_name.setText(userInfoBean.getName());
+        // 标题栏的用户名
+        userName.setText(userInfoBean.getName());
         // 设置简介
         tv_user_intro.setText(userInfoBean.getIntro());
 
@@ -112,5 +221,15 @@ public class PersonalCenterHeaderViewItem {
         // 添加头部放缩
         new ZoomView(fl_cover_contaner, mActivity, mRecyclerView, width, height).initZoom();
 
+    }
+
+    private void setViewColorWithAlpha(View v, int[] colorRGB, int alpha) {
+        int color = Color.argb(alpha, colorRGB[0], colorRGB[1], colorRGB[2]);
+        if (v instanceof TextView) {
+            TextView textView = (TextView) v;
+            textView.setTextColor(color);
+            return;
+        }
+        v.setBackgroundColor(color);
     }
 }

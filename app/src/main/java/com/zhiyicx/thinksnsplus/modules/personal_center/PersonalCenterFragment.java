@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.personal_center;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -36,7 +37,6 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForT
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicCountItem;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem;
-import com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
@@ -77,6 +77,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     LinearLayout mLlChatContainer;
     @BindView(R.id.ll_bottom_container)
     LinearLayout mLlBottomContainer;
+    @BindView(R.id.ll_toolbar_container_parent)
+    LinearLayout mLlToolbarContainerParent;
 
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     private PersonalCenterHeaderViewItem mPersonalCenterHeaderViewItem;
@@ -86,13 +88,12 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     // 上一个页面传过来的用户信息
     private UserInfoBean mUserInfoBean;
 
-
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         initToolBar();
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
-        mPersonalCenterHeaderViewItem = new PersonalCenterHeaderViewItem(getActivity(), mRvList, mHeaderAndFooterWrapper);
+        mPersonalCenterHeaderViewItem = new PersonalCenterHeaderViewItem(getActivity(), mRvList, mHeaderAndFooterWrapper, mLlToolbarContainerParent);
         mPersonalCenterHeaderViewItem.initHeaderView();
         // 添加关注点击事件
         RxView.clicks(mTvFollow)
@@ -107,7 +108,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                         }
                     }
                 });
-
     }
 
 
@@ -243,9 +243,10 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     private void initToolBar() {
         // toolBar设置状态栏高度的marginTop
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(0, DeviceUtils.getStatuBarHeight(getContext()), 0, 0);
-        mRlToolbarContainer.setLayoutParams(layoutParams);
+        int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext());
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
+        //layoutParams.setMargins(0, DeviceUtils.getStatuBarHeight(getContext()), 0, 0);
+        mLlToolbarContainerParent.setLayoutParams(layoutParams);
     }
 
     /**
@@ -305,13 +306,5 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         bundle.putParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA, userInfoBean);
         intent.putExtras(bundle);
         context.startActivity(intent);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate a fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        ButterKnife.bind(this, rootView);
-        return rootView;
     }
 }
