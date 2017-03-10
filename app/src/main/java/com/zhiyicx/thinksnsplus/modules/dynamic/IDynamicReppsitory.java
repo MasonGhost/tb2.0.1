@@ -1,11 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic;
 
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import java.util.List;
 
@@ -71,5 +70,14 @@ public interface IDynamicReppsitory {
      * 获取动态点赞列表
      */
     Observable<BaseJson<List<FollowFansBean>>> getDynamicDigList(Long feed_id, Long max_id);
+
+    /**
+     *  一条动态的评论列表
+     * @param feed_id dyanmic detail id
+     * @param max_id  max_id
+     * @return
+     */
+    Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentList(Long feed_id, Long max_id);
+
 
 }
