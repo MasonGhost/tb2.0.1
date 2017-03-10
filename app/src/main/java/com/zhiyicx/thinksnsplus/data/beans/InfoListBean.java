@@ -15,6 +15,7 @@ import java.util.List;
  */
 public class InfoListBean extends BaseListBean {
     private List<String> iamges = new ArrayList<>();
+    private String ids;
 
     public List<String> getIamges() {
         return iamges;
@@ -34,6 +35,7 @@ public class InfoListBean extends BaseListBean {
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeStringList(this.iamges);
+        dest.writeString(this.ids);
     }
 
     public InfoListBean() {
@@ -42,6 +44,7 @@ public class InfoListBean extends BaseListBean {
     protected InfoListBean(Parcel in) {
         super(in);
         this.iamges = in.createStringArrayList();
+        this.ids = in.readString();
     }
 
     public static final Creator<InfoListBean> CREATOR = new Creator<InfoListBean>() {
