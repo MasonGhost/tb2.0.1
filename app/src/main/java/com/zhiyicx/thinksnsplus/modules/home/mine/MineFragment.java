@@ -216,6 +216,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     @Override
     public void setUserInfo(UserInfoBean userInfoBean) {
         this.mUserInfoBean = userInfoBean;
+        if (userInfoBean == null) {
+            return;
+        }
         // 设置用户头像
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
