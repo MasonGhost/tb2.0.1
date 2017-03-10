@@ -37,7 +37,6 @@ public class InfoBannerItem implements ItemViewDelegate<BaseListBean> {
         banner.setImageLoader(new GlideImageLoader(realData.getIamges().get(position)));
         banner.setImages(realData.getIamges());
         banner.setDelayTime(5000);
-//        banner.setScrollTime(10000);
         banner.setIndicatorGravity(BannerConfig.RIGHT);
         banner.setBannerAnimation(Transformer.CubeIn);
         banner.start();
