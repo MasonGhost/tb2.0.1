@@ -87,6 +87,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
                             }
                         }
                         mRootView.onNetResponseSuccess(data, isLoadMore);
+                        System.out.println("data = " + data.toString());
                     }
 
                     @Override

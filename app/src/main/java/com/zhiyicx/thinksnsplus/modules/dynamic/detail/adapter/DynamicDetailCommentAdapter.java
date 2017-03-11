@@ -131,6 +131,8 @@ public class DynamicDetailCommentAdapter extends CommonAdapter<DynamicCommentBea
         String content = "";
         if (dynamicCommentBean.getReply_to_user_id() != 0) { // 当没有回复者时，就是回复评论
             content += " 回复 " + dynamicCommentBean.getReplyUser().getName() + " " + dynamicCommentBean.getComment_content();
+        }else{
+            content=dynamicCommentBean.getComment_content();
         }
         return content;
     }
