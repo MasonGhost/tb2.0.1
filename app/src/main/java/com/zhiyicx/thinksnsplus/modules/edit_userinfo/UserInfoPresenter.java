@@ -181,8 +181,8 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
         if (changeUserInfo.containsKey("intro")) {
             mUserInfoBean.setIntro(changeUserInfo.get("intro"));
         }
-        if (changeUserInfo.containsKey("avatar")) {
-            mUserInfoBean.setAvatar(changeUserInfo.get("avatar"));
+        if (changeUserInfo.containsKey("storage_task_id")) {
+            mUserInfoBean.setAvatar(changeUserInfo.get("storage_task_id"));
         }
         // 提示用户主页更新用户信息
         List<UserInfoBean>  userInfoBeanList=new ArrayList<>();
