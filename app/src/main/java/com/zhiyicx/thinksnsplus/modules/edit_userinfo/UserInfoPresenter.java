@@ -6,6 +6,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -13,8 +14,11 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
 
+import org.simple.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -47,17 +51,9 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                 .userInfoBeanGreenDao();
     }
 
-    /**
-     * 将Presenter从传入fragment
-     */
-    @Inject
-    void setupListeners() {
-        mRootView.setPresenter(this);
-    }
-
     @Override
-    public void onStart() {
-
+    protected boolean useEventBus() {
+        return true;
     }
 
     @Override
@@ -100,7 +96,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
     @Override
     public void changeUserHeadIcon(String filePath) {
         Subscription subscription = mIUploadRepository.upLoadSingleFile("pic",
-                filePath,true)
+                filePath, true)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribe<Integer>() {
@@ -133,6 +129,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                     protected void onSuccess(Object data) {
                         // 修改成功后，关闭页面
                         mRootView.setChangeUserInfoState();
+                        EventBus.getDefault().post(EventBusTagConfig.EVENT_USERINFO_UPDATE);
                         upDateUserInfo(userInfos);
                     }
 
@@ -166,7 +163,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
     /**
      * 更新数据库信息
      *
-     * @param changeUserInfo
+     * @param changeUserInfo 被编辑过的的用户信息
      */
     private void upDateUserInfo(HashMap<String, String> changeUserInfo) {
         AuthBean authBean = mIAuthRepository.getAuthBean();
@@ -187,7 +184,11 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
         if (changeUserInfo.containsKey("avatar")) {
             mUserInfoBean.setAvatar(changeUserInfo.get("avatar"));
         }
-
+        // 提示用户主页更新用户信息
+        List<UserInfoBean>  userInfoBeanList=new ArrayList<>();
+        userInfoBeanList.add(mUserInfoBean);
+        EventBus.getDefault().post(userInfoBeanList, EventBusTagConfig.EVENT_USERINFO_UPDATE);
+        // 修改数据库内容
         mUserInfoBeanGreenDao.insertOrReplace(mUserInfoBean);
     }
 

@@ -14,12 +14,14 @@ import android.widget.TextView;
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ToastUtils;
@@ -310,7 +312,9 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         mEtUserIntroduce.setText(mUserInfoBean.getIntro());
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url("http://192.168.2.222/api/v1/storages/" + mUserInfoBean.getAvatar())
+                .url(ImageUtils.imagePathConvert(mUserInfoBean.getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
+                .errorPic(R.drawable.shape_default_image_circle)
+                .placeholder(R.drawable.shape_default_image_circle)
                 .imagerView(mIvHeadIcon)
                 .transformation(new GlideCircleTransform(getContext()))
                 .build());
@@ -524,7 +528,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         }
         if (upLoadCount > 0) {
             // avatar
-            fieldMap.put("storage_task_id", upDateHeadIconStorageId + "");
+            fieldMap.put("avatar", upDateHeadIconStorageId + "");
         }
         return fieldMap;
     }
