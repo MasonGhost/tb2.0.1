@@ -27,8 +27,10 @@ import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -55,6 +57,7 @@ public class AppApplication extends TSApplication {
     private AlertDialog alertDialog; // token 过期弹框
     private static AuthBean mCurrentLoginAuth; //当前登录用户的信息
     private static HttpProxyCacheServer mMediaProxyCacheServer;
+    public static List<String> sOverRead = new ArrayList<>();
 
     @Override
     public void onCreate() {

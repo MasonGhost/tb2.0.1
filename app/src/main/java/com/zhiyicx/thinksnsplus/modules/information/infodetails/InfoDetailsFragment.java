@@ -58,6 +58,11 @@ public class InfoDetailsFragment extends TSListFragment {
     }
 
     @Override
+    protected String setCenterTitle() {
+        return getString(R.string.info_details);
+    }
+
+    @Override
     public void setPresenter(Object presenter) {
 
     }
@@ -89,5 +94,10 @@ public class InfoDetailsFragment extends TSListFragment {
     @Override
     public void onRefresh() {
         mRefreshlayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onLoadMore() {
+        mRefreshlayout.setLoadingMore(false);
     }
 }

@@ -21,6 +21,7 @@
         <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
             android:id="@+id/fragment_info_search_edittext"
             android:layout_width="match_parent"
+            android:singleLine="true"
             android:layout_height="match_parent"
             android:layout_marginBottom="@dimen/spacing_small"
             android:layout_marginLeft="@dimen/spacing_normal"

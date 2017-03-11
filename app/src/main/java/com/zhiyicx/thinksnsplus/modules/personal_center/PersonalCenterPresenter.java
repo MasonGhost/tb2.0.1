@@ -3,13 +3,18 @@ package com.zhiyicx.thinksnsplus.modules.personal_center;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -31,6 +36,15 @@ import rx.schedulers.Schedulers;
  */
 @FragmentScoped
 public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContract.Repository, PersonalCenterContract.View> implements PersonalCenterContract.Presenter {
+    @Inject
+    DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
+    @Inject
+    IUploadRepository mIUploadRepository;
+    @Inject
+    UserInfoRepository mUserInfoRepository;
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+
     @Inject
     public PersonalCenterPresenter(PersonalCenterContract.Repository repository, PersonalCenterContract.View rootView) {
         super(repository, rootView);
@@ -57,14 +71,6 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
                 .subscribe(new BaseSubscribe<List<DynamicBean>>() {
                     @Override
                     protected void onSuccess(List<DynamicBean> data) {
-
-                        if (data != null && !data.isEmpty()) {
-                            // 添加动态条数的数据,用来显示动态数量的item
-                            int dynamicCount = data.size();
-                            DynamicBean dynamicBean = new DynamicBean();
-                            dynamicBean.setMyDyanamicListCount(dynamicCount);
-                            data.add(0, dynamicBean);
-                        }
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 
@@ -79,6 +85,11 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
                     }
                 });
         addSubscrebe(subscription);
+    }
+
+    @Override
+    public List<DynamicBean> requestCacheData(Long max_Id, boolean isLoadMore, long user_id) {
+        return mDynamicBeanGreenDao.getMyDynamics(user_id);
     }
 
     @Override
@@ -133,8 +144,67 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
     }
 
     @Override
+    public void uploadUserCover(String filePath) {
+        Subscription subscription = mIUploadRepository.upLoadSingleFile("pic",
+                filePath, true)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribe<Integer>() {
+                    @Override
+                    protected void onSuccess(Integer data) {
+                        mRootView.setUpLoadCoverState(true, data);
+                    }
+
+                    @Override
+                    protected void onFailure(String message) {
+                        mRootView.setUpLoadCoverState(false, 0);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        mRootView.setUpLoadCoverState(false, 0);
+                        LogUtils.e(throwable, "result");
+                    }
+                });
+        addSubscrebe(subscription);
+    }
+
+    @Override
+    public void changeUserCover(final UserInfoBean userInfoBean, int storage_task_id, final String imagePath) {
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("cover", storage_task_id + "");
+        Subscription subscription = mUserInfoRepository.changeUserInfo(hashMap)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribe() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        // 修改成功后，关闭页面
+                        mRootView.setChangeUserCoverState(true);
+                        // 将本地图片路径作为storageId保存到数据库
+                        userInfoBean.setAvatar(imagePath);
+                        // 更新用户数据库
+                        mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
+                    }
+
+                    @Override
+                    protected void onFailure(String message) {
+                        // 修改失败，好尴尬
+                        mRootView.setChangeUserCoverState(false);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        mRootView.setChangeUserCoverState(false);
+                    }
+                });
+        addSubscrebe(subscription);
+    }
+
+    @Override
     public boolean insertOrUpdateData(@NotNull List<DynamicBean> data) {
-        return false;
+        mDynamicBeanGreenDao.insertOrReplace(data);
+        return true;
     }
 
     @Override

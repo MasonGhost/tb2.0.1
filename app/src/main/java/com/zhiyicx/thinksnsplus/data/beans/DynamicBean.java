@@ -297,6 +297,7 @@ public class DynamicBean extends BaseListBean {
         myDao = daoSession != null ? daoSession.getDynamicBeanDao() : null;
     }
 
+
     protected DynamicBean(Parcel in) {
         super(in);
         this.id = (Long) in.readValue(Long.class.getClassLoader());

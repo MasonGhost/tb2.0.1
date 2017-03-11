@@ -1,8 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.home.mine;
 
+import com.umeng.socialize.utils.Log;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -47,8 +50,9 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
     /**
      * 用户信息在后台更新后，在该处进行刷新，这儿获取的是自己的用户信息
      */
-    @Subscriber
+    @Subscriber(tag = EventBusTagConfig.EVENT_USERINFO_UPDATE)
     public void upDataUserInfo(List<UserInfoBean> data) {
+        com.zhiyicx.common.utils.log.LogUtils.i("upDataUserInfo-->"+data.toString());
         AuthBean authBean = AppApplication.getmCurrentLoginAuth();
         if (data != null) {
             for (UserInfoBean userInfoBean : data) {

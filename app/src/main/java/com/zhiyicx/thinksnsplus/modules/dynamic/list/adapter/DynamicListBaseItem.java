@@ -20,6 +20,7 @@ import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
@@ -167,9 +168,13 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
         }
         holder.setText(R.id.tv_content, content);
         DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
-        dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicBean.getTool().getFeed_digg_count()), dynamicBean.getTool().getIs_digg_feed() == STATUS_DIGG_FEED_CHECKED, 0);
-        dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicBean.getTool().getFeed_comment_count()), false, 1);
-        dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicBean.getTool().getFeed_view_count()), false, 2);
+        DynamicToolBean dynamicToolBean = dynamicBean.getTool();
+        if (dynamicToolBean != null) {
+            dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicToolBean.getFeed_digg_count()),dynamicToolBean.getIs_digg_feed() == STATUS_DIGG_FEED_CHECKED, 0);
+            dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicToolBean.getFeed_comment_count()), false, 1);
+            dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicToolBean.getFeed_view_count()), false, 2);
+        }
+
 
         dynamicListMenuView.setItemOnClick(new DynamicListMenuView.OnItemClickListener() {
             @Override

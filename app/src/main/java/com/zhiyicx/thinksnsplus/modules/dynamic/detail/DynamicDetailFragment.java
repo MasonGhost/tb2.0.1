@@ -129,7 +129,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         Drawable resource = ContextCompat.getDrawable(getContext(), R.drawable.shape_default_image_circle);
         resource.setBounds(0, 0, headIconWidth, headIconWidth);
         mTvToolbarCenter.setCompoundDrawables(resource, null, null, null);
-        mVShadow.setAlpha((1-POPUPWINDOW_ALPHA));
+        mVShadow.setAlpha((1 - POPUPWINDOW_ALPHA));
     }
 
     /**
@@ -396,6 +396,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mLLBottomMenuContainer.setVisibility(View.INVISIBLE);
         // 评论
         mIlvComment.setVisibility(View.VISIBLE);
+        mIlvComment.setSendButtonVisiable(true);
         mIlvComment.getFocus();
         mVShadow.setVisibility(View.VISIBLE);
         DeviceUtils.showSoftKeyboard(getActivity(), mIlvComment.getEtContent());
@@ -422,6 +423,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public void onSendClick(View v, String text) {
+        DeviceUtils.hideSoftKeyboard(getContext(), v);
         mIlvComment.setVisibility(View.GONE);
         mVShadow.setVisibility(View.GONE);
         mLLBottomMenuContainer.setVisibility(View.VISIBLE);
