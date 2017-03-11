@@ -16,6 +16,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
@@ -52,6 +53,8 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
     DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
 
     @Inject
     public SharePolicy mSharePolicy;
@@ -107,11 +110,16 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
 
     @Override
     public List<DynamicCommentBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        if (mRootView.getCurrentDynamic() == null) {
+        if (mRootView.getCurrentDynamic() == null || AppApplication.getmCurrentLoginAuth() == null) {
             return new ArrayList<>();
         }
-        // 从数据库获取点赞列表
+
+
         // 从数据库获取关注状态，如果没有从服务器获取
+        FollowFansBean followFansBean = mFollowFansBeanGreenDao.getFollowState(AppApplication.getmCurrentLoginAuth().getUser_id(), mRootView.getCurrentDynamic().getUser_id());
+        if (followFansBean != null) {
+            mRootView.upDateFollowFansState(followFansBean.getFollowState());
+        }
         // 从数据库获取评论列表
         return mDynamicCommentBeanGreenDao.getLocalComments(mRootView.getCurrentDynamic().getFeed_mark());
     }
@@ -135,6 +143,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
                     @Override
                     protected void onSuccess(List<FollowFansBean> data) {
                         mRootView.setDigHeadIcon(data);
+                        mDynamicBeanGreenDao.insertOrReplace(mRootView.getCurrentDynamic());
                     }
 
                     @Override

@@ -4,19 +4,21 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
+import com.zhiyicx.common.utils.ConvertUtils;
 
-import org.greenrobot.greendao.DaoException;
+import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.ToOne;
-import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
+import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.util.List;
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.DaoException;
 
 /**
  * @Describe 动态实体类：包含动态内容，工具栏参数，评论内容
@@ -52,10 +54,9 @@ public class DynamicBean extends BaseListBean {
     private boolean isFollowed;// 是否关注了该条动态（用户）
     private int state = SEND_SUCCESS;// 动态发送状态 0 发送失败 1 正在发送 2 发送成功
 
-    @Transient
+    @Convert(converter = DataConverter.class, columnType = String.class)
     private List<FollowFansBean> digUserInfoList;// 点赞用户的信息列表
-    @Transient
-    private int myDyanamicListCount;// 某个用户的动态数量
+
 
     public DynamicBean() {
     }
@@ -116,15 +117,6 @@ public class DynamicBean extends BaseListBean {
     public void setState(int state) {
         this.state = state;
     }
-
-    public int getMyDyanamicListCount() {
-        return myDyanamicListCount;
-    }
-
-    public void setMyDyanamicListCount(int myDyanamicListCount) {
-        this.myDyanamicListCount = myDyanamicListCount;
-    }
-
     @Keep
     public DynamicDetailBean getFeed() {
         return feed;
@@ -181,6 +173,12 @@ public class DynamicBean extends BaseListBean {
         this.digUserInfoList = digUserInfoList;
     }
 
+
+    @Keep
+    public List<DynamicCommentBean> getComments() {
+        return comments;
+    }
+
     @Override
     public String toString() {
         return "DynamicBean{" +
@@ -197,6 +195,30 @@ public class DynamicBean extends BaseListBean {
                 ", state=" + state +
                 ", digUserInfoList=" + digUserInfoList +
                 '}';
+    }
+
+
+    /**
+     * list<FollowFansBean> 转 String 形式存入数据库
+     */
+    public static class DataConverter implements PropertyConverter<List<FollowFansBean>, String> {
+
+        @Override
+        public List<FollowFansBean> convertToEntityProperty(String databaseValue) {
+            if (databaseValue == null) {
+                return null;
+            }
+            return ConvertUtils.base64Str2Object(databaseValue);
+        }
+
+        @Override
+        public String convertToDatabaseValue(List<FollowFansBean> entityProperty) {
+            if (entityProperty == null) {
+                return null;
+            }
+            return ConvertUtils.object2Base64Str(entityProperty);
+        }
+
     }
 
     @Override
@@ -222,9 +244,7 @@ public class DynamicBean extends BaseListBean {
     }
 
 
-    /**
-     * Resets a to-many relationship, making the next get call to query for a fresh result.
-     */
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     @Generated(hash = 249603048)
     public synchronized void resetComments() {
         comments = null;
@@ -270,19 +290,12 @@ public class DynamicBean extends BaseListBean {
     }
 
 
-    @Keep
-    public List<DynamicCommentBean> getComments() {
-        return comments;
-    }
-
-
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 210281324)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getDynamicBeanDao() : null;
     }
-
 
     protected DynamicBean(Parcel in) {
         super(in);
@@ -301,9 +314,9 @@ public class DynamicBean extends BaseListBean {
     }
 
 
-    @Generated(hash = 46860411)
+    @Generated(hash = 1888878893)
     public DynamicBean(Long id, Long feed_id, Long feed_mark, long user_id, Long hot_creat_time,
-                       boolean isFollowed, int state) {
+            boolean isFollowed, int state, List<FollowFansBean> digUserInfoList) {
         this.id = id;
         this.feed_id = feed_id;
         this.feed_mark = feed_mark;
@@ -311,6 +324,7 @@ public class DynamicBean extends BaseListBean {
         this.hot_creat_time = hot_creat_time;
         this.isFollowed = isFollowed;
         this.state = state;
+        this.digUserInfoList = digUserInfoList;
     }
 
     public static final Creator<DynamicBean> CREATOR = new Creator<DynamicBean>() {
@@ -324,14 +338,10 @@ public class DynamicBean extends BaseListBean {
             return new DynamicBean[size];
         }
     };
-    /**
-     * Used to resolve relations
-     */
+    /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /**
-     * Used for active entity operations.
-     */
+    /** Used for active entity operations. */
     @Generated(hash = 476616020)
     private transient DynamicBeanDao myDao;
     @Generated(hash = 1613724019)

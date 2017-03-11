@@ -74,6 +74,8 @@ public interface DynamicDetailContract {
         void refresh();
 
         void refresh(int position);
+
+
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
@@ -128,8 +130,8 @@ public interface DynamicDetailContract {
         /**
          * send a comment
          *
-         * @param replyToUserId   comment  to who
-         * @param commentContent  comment content
+         * @param replyToUserId  comment  to who
+         * @param commentContent comment content
          */
         void sendComment(long replyToUserId, String commentContent);
 
