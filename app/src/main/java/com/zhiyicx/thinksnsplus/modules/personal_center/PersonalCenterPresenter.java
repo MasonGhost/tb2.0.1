@@ -57,14 +57,6 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
                 .subscribe(new BaseSubscribe<List<DynamicBean>>() {
                     @Override
                     protected void onSuccess(List<DynamicBean> data) {
-
-                        if (data != null && !data.isEmpty()) {
-                            // 添加动态条数的数据,用来显示动态数量的item
-                            int dynamicCount = data.size();
-                            DynamicBean dynamicBean = new DynamicBean();
-                            dynamicBean.setMyDyanamicListCount(dynamicCount);
-                            data.add(0, dynamicBean);
-                        }
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 

@@ -159,7 +159,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     protected MultiItemTypeAdapter<DynamicBean> getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mDynamicBeens);
-        adapter.addItemViewDelegate(new PersonalCenterDynamicCountItem());
+        //adapter.addItemViewDelegate(new PersonalCenterDynamicCountItem());
         setAdapter(adapter, new PersonalCenterDynamicListBaseItem(getContext()));
         setAdapter(adapter, new PersonalCenterDynamicListItemForOneImage(getContext()));
         setAdapter(adapter, new PersonalCenterDynamicListItemForTwoImage(getContext()));
@@ -246,8 +246,10 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void setHeaderInfo(UserInfoBean userInfoBean) {
-        setBottomVisible(userInfoBean.getUser_id());
-        mPersonalCenterHeaderViewItem.initHeaderViewData(userInfoBean);
+        if (userInfoBean != null) {
+            setBottomVisible(userInfoBean.getUser_id());
+            mPersonalCenterHeaderViewItem.initHeaderViewData(userInfoBean);
+        }
     }
 
     @Override

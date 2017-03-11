@@ -7,6 +7,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,8 @@ public class PersonalCenterHeaderViewItem {
     private TextView tv_user_intro;// 用户简介
     private TextView tv_user_follow;// 用户关注数量
     private TextView tv_user_fans;// 用户粉丝数量
+    private LinearLayout ll_dynamic_count_container;// 动态数量的容器
+    private TextView tv_dynamic_count;// 动态数量
 
     private Activity mActivity;
     private RecyclerView mRecyclerView;
@@ -189,7 +192,7 @@ public class PersonalCenterHeaderViewItem {
         tv_user_intro.setText(userInfoBean.getIntro());
 
         // 设置关注人数
-        String followContent = "关注 " + "<" + 100 + ">";
+        String followContent = "关注 " + "<" + userInfoBean.getFollowing_count() + ">";
         CharSequence followString = ColorPhrase.from(followContent).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(mActivity, R.color.themeColor))
                 .outerColor(ContextCompat.getColor(mActivity, R.color.normal_for_assist_text))
@@ -197,12 +200,25 @@ public class PersonalCenterHeaderViewItem {
         tv_user_follow.setText(followString);
 
         // 设置粉丝人数
-        String fansContent = "粉丝 " + "<" + 204 + ">";
+        String fansContent = "粉丝 " + "<" + userInfoBean.getFollowed_count() + ">";
         CharSequence fansString = ColorPhrase.from(fansContent).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(mActivity, R.color.themeColor))
                 .outerColor(ContextCompat.getColor(mActivity, R.color.normal_for_assist_text))
                 .format();
         tv_user_fans.setText(fansString);
+
+        // 设置动态数量
+        String dynamicCountString = userInfoBean.getFeeds_count();
+        if (!TextUtils.isEmpty(dynamicCountString)) {
+            int dynamicCountInt = Integer.parseInt(dynamicCountString);
+            if (dynamicCountInt <= 0) {
+                ll_dynamic_count_container.setVisibility(View.GONE);
+            } else {
+                tv_dynamic_count.setText(mActivity.getString(R.string.dynamic_count, dynamicCountString));
+            }
+        } else {
+            ll_dynamic_count_container.setVisibility(View.GONE);
+        }
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
@@ -216,6 +232,8 @@ public class PersonalCenterHeaderViewItem {
         tv_user_intro = (TextView) headerView.findViewById(R.id.tv_user_intro);
         tv_user_follow = (TextView) headerView.findViewById(R.id.tv_user_follow);
         tv_user_fans = (TextView) headerView.findViewById(R.id.tv_user_fans);
+        ll_dynamic_count_container = (LinearLayout) headerView.findViewById(R.id.ll_dynamic_count_container);
+        tv_dynamic_count = (TextView) headerView.findViewById(R.id.tv_dynamic_count);
         // 高度为屏幕宽度一半加上20dp
         int width = UIUtils.getWindowWidth(mActivity);
         int height = UIUtils.getWindowWidth(mActivity) / 2 + mActivity.getResources().getDimensionPixelSize(R.dimen.spacing_large);
