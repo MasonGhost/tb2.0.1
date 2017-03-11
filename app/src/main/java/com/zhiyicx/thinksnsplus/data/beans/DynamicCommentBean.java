@@ -88,8 +88,8 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable {
 
     @Generated(hash = 937363585)
     public DynamicCommentBean(Long _id, Long comment_id, Long feed_mark, Long comment_mark,
-            String created_at, String comment_content, long feed_user_id, long user_id,
-            long reply_to_user_id, int state) {
+                              String created_at, String comment_content, long feed_user_id, long user_id,
+                              long reply_to_user_id, int state) {
         this._id = _id;
         this.comment_id = comment_id;
         this.feed_mark = feed_mark;
@@ -113,10 +113,14 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable {
             return new DynamicCommentBean[size];
         }
     };
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 1852910231)
     private transient DynamicCommentBeanDao myDao;
     @Generated(hash = 734177030)
@@ -222,7 +226,9 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable {
         this.state = state;
     }
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 397031426)
     public UserInfoBean getCommentUser() {
         long __key = this.user_id;
@@ -241,7 +247,9 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable {
         return commentUser;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 1714457217)
     public void setCommentUser(@NotNull UserInfoBean commentUser) {
         if (commentUser == null) {
@@ -255,7 +263,9 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable {
         }
     }
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 2112537803)
     public UserInfoBean getReplyUser() {
         long __key = this.reply_to_user_id;
@@ -274,7 +284,9 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable {
         return replyUser;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 1942204408)
     public void setReplyUser(@NotNull UserInfoBean replyUser) {
         if (replyUser == null) {
@@ -322,6 +334,15 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable {
             throw new DaoException("Entity is detached from DAO context");
         }
         myDao.update(this);
+    }
+
+    /**
+     * 评论的 max_id
+     * @return
+     */
+    @Override
+    public Long getMaxId() {
+        return comment_id;
     }
 
     /** called by internal mechanisms, do not call yourself. */

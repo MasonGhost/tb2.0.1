@@ -102,7 +102,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         initBottomToolListener();
         initHeaderView();
         int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
-        Drawable  resource= ContextCompat.getDrawable(getContext(),R.drawable.shape_default_image_circle);
+        Drawable resource = ContextCompat.getDrawable(getContext(), R.drawable.shape_default_image_circle);
         resource.setBounds(0, 0, headIconWidth, headIconWidth);
         mTvToolbarCenter.setCompoundDrawables(resource, null, null, null);
     }
@@ -133,6 +133,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
             // 设置动态详情列表数据
             mDynamicDetailHeader.updateHeaderViewData(mDynamicBean);
             refreshData();
+            mPresenter.getDynamicDigList(mDynamicBean.getFeed_id(), 0L);
+            mPresenter.requestNetData(0L, false);// 获取评论列表
         }
     }
 

@@ -73,11 +73,12 @@ public interface IDynamicReppsitory {
 
     /**
      *  一条动态的评论列表
+     * @param feed_mark dyanmic feed mark
      * @param feed_id dyanmic detail id
      * @param max_id  max_id
      * @return
      */
-    Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentList(Long feed_id, Long max_id);
+    Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentList(Long feed_mark,Long feed_id, Long max_id);
 
 
 }

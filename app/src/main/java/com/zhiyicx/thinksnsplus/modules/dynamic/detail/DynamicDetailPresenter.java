@@ -68,7 +68,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
             getDynamicDigList(mRootView.getCurrentDynamic().getFeed_id(), maxId);
         }
         // 更新评论列表
-        mRepository.getDynamicCommentList(mRootView.getCurrentDynamic().getFeed_id(), maxId)
+        mRepository.getDynamicCommentList(mRootView.getCurrentDynamic().getFeed_mark(),mRootView.getCurrentDynamic().getFeed_id(), maxId)
                 .subscribe(new BaseSubscribe<List<DynamicCommentBean>>() {
                     @Override
                     protected void onSuccess(List<DynamicCommentBean> data) {
@@ -87,7 +87,6 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
                             }
                         }
                         mRootView.onNetResponseSuccess(data, isLoadMore);
-                        System.out.println("data = " + data.toString());
                     }
 
                     @Override
@@ -108,9 +107,9 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         if (mRootView.getCurrentDynamic() == null) {
             return new ArrayList<>();
         }
-        // 从数据库获取评论列表
         // 从数据库获取点赞列表
         // 从数据库获取关注状态，如果没有从服务器获取
+        // 从数据库获取评论列表
         return mDynamicCommentBeanGreenDao.getLocalComments(mRootView.getCurrentDynamic().getFeed_mark());
     }
 
@@ -142,7 +141,6 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
 
                     @Override
                     protected void onException(Throwable throwable) {
-
                     }
                 });
         addSubscrebe(subscription);
