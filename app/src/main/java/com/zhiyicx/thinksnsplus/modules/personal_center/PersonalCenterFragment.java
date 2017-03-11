@@ -127,6 +127,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
+    protected List<DynamicBean> requestCacheData(Long maxId, boolean isLoadMore) {
+        return mPresenter.requestCacheData(maxId, isLoadMore, mUserInfoBean.getUser_id());
+    }
+
+    @Override
     protected float getItemDecorationSpacing() {
         return 0;
     }

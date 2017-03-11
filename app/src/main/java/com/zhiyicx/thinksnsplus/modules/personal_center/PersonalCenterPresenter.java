@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
@@ -31,6 +32,9 @@ import rx.schedulers.Schedulers;
  */
 @FragmentScoped
 public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContract.Repository, PersonalCenterContract.View> implements PersonalCenterContract.Presenter {
+    @Inject
+    DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
+
     @Inject
     public PersonalCenterPresenter(PersonalCenterContract.Repository repository, PersonalCenterContract.View rootView) {
         super(repository, rootView);
@@ -71,6 +75,11 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
                     }
                 });
         addSubscrebe(subscription);
+    }
+
+    @Override
+    public List<DynamicBean> requestCacheData(Long max_Id, boolean isLoadMore, long user_id) {
+        return mDynamicBeanGreenDao.getMyDynamics(user_id);
     }
 
     @Override
@@ -126,7 +135,8 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<DynamicBean> data) {
-        return false;
+        mDynamicBeanGreenDao.insertOrReplace(data);
+        return true;
     }
 
     @Override

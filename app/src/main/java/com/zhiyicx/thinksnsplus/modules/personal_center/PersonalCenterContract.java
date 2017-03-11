@@ -63,13 +63,23 @@ public interface PersonalCenterContract {
         void setCurrentUserInfo(Long userId);
 
         /**
-         * 获取该用户的动态列表
+         * 从网络获取该用户的动态列表
          *
          * @param maxId
          * @param isLoadMore
          * @param user_id
          */
         void requestNetData(Long maxId, boolean isLoadMore, long user_id);
+
+        /**
+         * 从数据库获取该用户的动态列表
+         *
+         * @param max_Id     当前获取到数据的最小时间
+         * @param isLoadMore 加载状态
+         * @param user_id
+         * @return
+         */
+        List<DynamicBean> requestCacheData(Long max_Id, boolean isLoadMore, long user_id);
 
         /**
          * 设置进入个人中心是的用户关注状态
