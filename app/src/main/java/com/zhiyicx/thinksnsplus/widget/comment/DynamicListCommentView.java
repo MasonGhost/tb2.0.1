@@ -121,8 +121,8 @@ public class DynamicListCommentView extends LinearLayout {
         mDynamicNoPullRecycleView.setOnCommentStateClickListener(new DynamicNoPullRecycleView.OnCommentStateClickListener() {
             @Override
             public void onCommentStateClick(DynamicCommentBean dynamicCommentBean, int position) {
-                if(mOnCommentStateClickListener!=null){
-                    mOnCommentStateClickListener.onCommentStateClick(dynamicCommentBean,position);
+                if (mOnCommentStateClickListener != null) {
+                    mOnCommentStateClickListener.onCommentStateClick(dynamicCommentBean, position);
                 }
             }
         });
@@ -136,15 +136,17 @@ public class DynamicListCommentView extends LinearLayout {
     public void setData(DynamicBean dynamicBean) {
         mDynamicBean = dynamicBean;
         List<DynamicCommentBean> data = new ArrayList<>();
-        if (dynamicBean.getComments().size() >= SHOW_MORE_COMMENT_SIZE_LIMIT) { //最多显示3条
-            for (int i = 0; i < SHOW_MORE_COMMENT_SIZE_LIMIT - 1; i++) {
-                data.add(dynamicBean.getComments().get(i));
+        if (dynamicBean.getComments() != null) {
+            if (dynamicBean.getComments().size() >= SHOW_MORE_COMMENT_SIZE_LIMIT) { //最多显示3条
+                for (int i = 0; i < SHOW_MORE_COMMENT_SIZE_LIMIT - 1; i++) {
+                    data.add(dynamicBean.getComments().get(i));
+                }
+            } else {
+                data.addAll(dynamicBean.getComments());
             }
-        } else {
-            data.addAll(dynamicBean.getComments());
         }
         mDynamicNoPullRecycleView.setData(data);
-        if (dynamicBean.getTool().getFeed_comment_count() >= SHOW_MORE_COMMENT_SIZE_LIMIT) {
+        if (dynamicBean.getTool() != null && dynamicBean.getTool().getFeed_comment_count() >= SHOW_MORE_COMMENT_SIZE_LIMIT) {
             mMoreComment.setVisibility(VISIBLE);
         } else {
             mMoreComment.setVisibility(GONE);
