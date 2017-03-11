@@ -191,6 +191,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
             setToolBarUser(mDynamicBean);// 设置标题用户
             initBottomToolData(mDynamicBean);// 初始化底部工具栏数据
             // 设置动态详情列表数据
+            mDynamicDetailHeader.setDynamicDetial(mDynamicBean);
             mDynamicDetailHeader.updateHeaderViewData(mDynamicBean);
             refreshData();
             mPresenter.getDynamicDigList(mDynamicBean.getFeed_id(), 0L);
@@ -397,6 +398,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mIlvComment.setVisibility(View.VISIBLE);
         mIlvComment.getFocus();
         mVShadow.setVisibility(View.VISIBLE);
+        DeviceUtils.showSoftKeyboard(getActivity(), mIlvComment.getEtContent());
     }
 
     /**
