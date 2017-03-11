@@ -20,7 +20,7 @@ import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
@@ -309,14 +309,6 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
     public interface OnImageClickListener {
 
         void onImageClick(ViewHolder holder, DynamicBean dynamicBean, int position);
-    }
-
-    /**
-     * user info interface
-     */
-    public interface OnUserInfoClickListener {
-
-        void onUserInfoClick(UserInfoBean userInfoBean);
     }
 
     /**

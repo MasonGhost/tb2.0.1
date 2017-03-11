@@ -21,6 +21,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForEightImage;
@@ -58,7 +59,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  * @Date 2017/1/17
  * @Contact master.jungle68@gmail.com
  */
-public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicNoPullRecycleView.OnCommentStateClickListener, InputLimitView.OnSendClickListener, DynamicContract.View, DynamicListCommentView.OnCommentClickListener, DynamicListCommentView.OnMoreCommentClickListener, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener, MultiItemTypeAdapter.OnItemClickListener {
+public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicNoPullRecycleView.OnCommentStateClickListener, InputLimitView.OnSendClickListener, DynamicContract.View, DynamicListCommentView.OnCommentClickListener, DynamicListCommentView.OnMoreCommentClickListener, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, OnUserInfoClickListener, MultiItemTypeAdapter.OnItemClickListener {
     private static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
     public static final long ITEM_SPACING = 5L; // 单位dp
     @BindView(R.id.fl_container)
@@ -218,8 +219,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onUserInfoClick(UserInfoBean userInfoBean) {
-        System.out.println("userInfoBean.getName() = " + userInfoBean.getName());
-        showMessage(userInfoBean.getName());
         PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
     }
 

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +14,16 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
+import com.zhiyicx.baseproject.widget.InputLimitView;
+import com.zhiyicx.baseproject.widget.InputLimitView.OnSendClickListener;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -27,17 +32,23 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailCommentAdapter;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_3;
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @author LiuChao
@@ -46,7 +57,7 @@ import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION
  * @contact email:450127106@qq.com
  */
 
-public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.Presenter, DynamicCommentBean> implements DynamicDetailContract.View {
+public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.Presenter, DynamicCommentBean> implements DynamicDetailContract.View, OnUserInfoClickListener,OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener {
     public static final String DYNAMIC_DETAIL_DATA = "dynamic_detail_data";
     public static final String DYNAMIC_DETAIL_DATA_POSITION = "dynamic_detail_data_position";
     public static final String LOOK_COMMENT_MORE = "look_comment_more";
@@ -65,6 +76,13 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     TextView mTvToolbarRight;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.v_shadow)
+    View mVShadow;
+    @BindView(R.id.ilv_comment)
+    InputLimitView mIlvComment;
+    @BindView(R.id.ll_bottom_menu_container)
+    ViewGroup mLLBottomMenuContainer;
+
     private DynamicBean mDynamicBean;// 上一个页面传进来的数据
     private FollowFansBean mFollowFansBean;// 用户关注状态
     private List<DynamicCommentBean> mDatas = new ArrayList<>();
@@ -74,6 +92,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     private DynamicDetailHeader mDynamicDetailHeader;
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
+
+    private long mReplyUserId;// 被评论者的 id ,评论动态 id = 0
 
     @Override
     protected boolean showToolbar() {
@@ -101,10 +121,51 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         initBottomToolUI();
         initBottomToolListener();
         initHeaderView();
+        initListener();
         int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
         Drawable resource = ContextCompat.getDrawable(getContext(), R.drawable.shape_default_image_circle);
         resource.setBounds(0, 0, headIconWidth, headIconWidth);
         mTvToolbarCenter.setCompoundDrawables(resource, null, null, null);
+    }
+
+    /**
+     * 初始化监听
+     */
+    private void initListener() {
+
+        RxView.clicks(mTvToolbarLeft)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        getActivity().finish();
+                    }
+                });
+        RxView.clicks(mTvToolbarRight)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        if (mFollowFansBean != null) {
+                            mPresenter.handleFollowUser(mFollowFansBean);
+                        }
+                    }
+                });
+        RxView.clicks(mVShadow)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        if (mIlvComment.getVisibility() == View.VISIBLE) {
+                            mIlvComment.setVisibility(View.GONE);
+                            mIlvComment.clearFocus();
+                            DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+                            mLLBottomMenuContainer.setVisibility(View.INVISIBLE);
+                        }
+                        mVShadow.setVisibility(View.GONE);
+                    }
+                });
+        mIlvComment.setOnSendClickListener(this);
     }
 
     private void initHeaderView() {
@@ -115,10 +176,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
-    @Override
-    protected int setRightImg() {
-        return R.mipmap.detail_ico_follow;
-    }
 
     @Override
     protected void initData() {
@@ -141,20 +198,15 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     protected CommonAdapter<DynamicCommentBean> getAdapter() {
-        CommonAdapter<DynamicCommentBean> adapter = new DynamicDetailCommentAdapter(getContext(), R.layout.item_dynamic_detail_comment, mDatas);
+        DynamicDetailCommentAdapter adapter = new DynamicDetailCommentAdapter(getContext(), R.layout.item_dynamic_detail_comment, mDatas);
+        adapter.setOnItemClickListener(this);
+        adapter.setOnUserInfoClickListener(this);
         return adapter;
     }
 
     @Override
     public void setPresenter(DynamicDetailContract.Presenter presenter) {
         this.mPresenter = presenter;
-    }
-
-    @Override
-    protected void setRightClick() {
-        if (mFollowFansBean != null) {
-            mPresenter.handleFollowUser(mFollowFansBean);
-        }
     }
 
     @Override
@@ -245,6 +297,21 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
+    public List<DynamicCommentBean> getDatas() {
+        return mDatas;
+    }
+
+    @Override
+    public void refresh() {
+        mHeaderAndFooterWrapper.notifyDataSetChanged();
+    }
+
+    @Override
+    public void refresh(int position) {
+        mHeaderAndFooterWrapper.notifyItemChanged(position);
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         UmengSharePolicyImpl.onActivityResult(requestCode, resultCode, data, getContext());
@@ -299,8 +366,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                                 mDynamicBean.getFeed_id(), likeToolBean);
                         break;
                     case DynamicDetailMenuView.ITEM_POSITION_1:
-                        // 评论
-
+                        showCommentView();
+                        mReplyUserId = 0;
                         break;
                     case DynamicDetailMenuView.ITEM_POSITION_2:
                         // 分享
@@ -319,6 +386,13 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 }
             }
         });
+    }
+
+    public void showCommentView() {
+        mLLBottomMenuContainer.setVisibility(View.INVISIBLE);
+        // 评论
+        mIlvComment.setVisibility(View.VISIBLE);
+        mIlvComment.getFocus();
     }
 
     /**
@@ -340,4 +414,27 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         }
     }
 
+    @Override
+    public void onSendClick(View v, String text) {
+        mIlvComment.setVisibility(View.GONE);
+        mVShadow.setVisibility(View.GONE);
+        mLLBottomMenuContainer.setVisibility(View.VISIBLE);
+        mPresenter.sendComment(mReplyUserId, text);
+    }
+
+    @Override
+    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        mReplyUserId = mDatas.get(position).getUser_id();
+        showCommentView();
+    }
+
+    @Override
+    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+        return false;
+    }
+
+    @Override
+    public void onUserInfoClick(UserInfoBean userInfoBean) {
+        PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
+    }
 }

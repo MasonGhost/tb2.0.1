@@ -292,7 +292,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
 
     @NonNull
     private List<DynamicBean> getDynamicBeenFromDB() {
-        if(AppApplication.getmCurrentLoginAuth()==null){
+        if (AppApplication.getmCurrentLoginAuth() == null) {
             return new ArrayList<DynamicBean>();
         }
         List<DynamicBean> datas = mDynamicBeanGreenDao.getMySendingUnSuccessDynamic((long) AppApplication.getmCurrentLoginAuth().getUser_id());
@@ -315,30 +315,8 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
         if (feed_id == null || feed_id == 0) {
             return;
         }
-        Observable.just(isLiked)
-                .observeOn(Schedulers.io())
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getDatas().get(postion).getTool());
-                        BackgroundRequestTaskBean backgroundRequestTaskBean;
-                        HashMap<String, Object> params = new HashMap<>();
-                        params.put("feed_id", feed_id);
-                        // 后台处理
-                        if (aBoolean) {
-                            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST, params);
-                        } else {
-                            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
-                        }
-                        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_HANDLE_LIKE_FORMAT, feed_id));
-                        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                });
+        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getDatas().get(postion).getTool());
+        mRepository.handleLike(isLiked, feed_id);
 
     }
 
@@ -364,14 +342,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
         mDynamicCommentBeanGreenDao.deleteSingleCache(dynamicBean.getComments().get(commentPositon));
         mRootView.getDatas().get(dynamicPosition).getComments().remove(commentPositon);
         mRootView.refresh(dynamicPosition);
-        BackgroundRequestTaskBean backgroundRequestTaskBean;
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("feed_id", dynamicBean.getFeed_id());
-        params.put("comment_id", comment_id);
-        // 后台处理
-        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
-        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_DELETE_COMMENT, dynamicBean.getFeed_id(), comment_id));
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+        mRepository.deleteComment(dynamicBean.getFeed_id(), comment_id);
     }
 
     /**
@@ -392,7 +363,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
         creatComment.setReply_to_user_id(replyToUserId);
         System.out.println("creatComment ---------------> = " + creatComment.getReply_to_user_id());
         if (replyToUserId == 0) { //当回复动态的时候
-            UserInfoBean userInfoBean=new UserInfoBean();
+            UserInfoBean userInfoBean = new UserInfoBean();
             userInfoBean.setUser_id(replyToUserId);
             creatComment.setReplyUser(userInfoBean);
         } else {
@@ -412,16 +383,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
 
         mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getDatas().get(mCurrentPostion).getTool());
         mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
-
-        BackgroundRequestTaskBean backgroundRequestTaskBean;
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("comment_content", commentContent);
-        params.put("reply_to_user_id", replyToUserId);
-        params.put("comment_mark", creatComment.getComment_mark());
-        // 后台处理
-        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.SEND_COMMENT, params);
-        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_SEND_COMMENT, mRootView.getDatas().get(mCurrentPostion).getFeed_id()));
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+        mRepository.sendComment(commentContent, mRootView.getDatas().get(mCurrentPostion).getFeed_id(),replyToUserId,creatComment.getComment_mark());
 
     }
 

@@ -42,7 +42,25 @@ public interface IDynamicReppsitory {
      * @param feed_id
      * @return
      */
-    Observable<BaseJson<String>> likeDynamic(Long feed_id);
+    void handleLike(boolean isLiked, final Long feed_id);
+
+    /**
+     * 删除评论
+     *
+     * @param feed_id
+     * @param comment_id
+     */
+    void deleteComment(final Long feed_id, Long comment_id);
+
+    /**
+     * 发送评论
+     *
+     * @param commentContent
+     * @param feed_id
+     * @param reply_to_user_id
+     * @param comment_mark
+     */
+    void sendComment(String commentContent, final Long feed_id, Long reply_to_user_id, Long comment_mark);
 
     /**
      * 取消动态点赞
@@ -72,13 +90,14 @@ public interface IDynamicReppsitory {
     Observable<BaseJson<List<FollowFansBean>>> getDynamicDigList(Long feed_id, Long max_id);
 
     /**
-     *  一条动态的评论列表
+     * 一条动态的评论列表
+     *
      * @param feed_mark dyanmic feed mark
-     * @param feed_id dyanmic detail id
-     * @param max_id  max_id
+     * @param feed_id   dyanmic detail id
+     * @param max_id    max_id
      * @return
      */
-    Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentList(Long feed_mark,Long feed_id, Long max_id);
+    Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentList(Long feed_mark, Long feed_id, Long max_id);
 
 
 }

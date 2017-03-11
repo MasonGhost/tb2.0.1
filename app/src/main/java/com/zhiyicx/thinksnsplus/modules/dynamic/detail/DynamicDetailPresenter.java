@@ -6,13 +6,16 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
@@ -68,7 +71,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
             getDynamicDigList(mRootView.getCurrentDynamic().getFeed_id(), maxId);
         }
         // 更新评论列表
-        mRepository.getDynamicCommentList(mRootView.getCurrentDynamic().getFeed_mark(),mRootView.getCurrentDynamic().getFeed_id(), maxId)
+        mRepository.getDynamicCommentList(mRootView.getCurrentDynamic().getFeed_mark(), mRootView.getCurrentDynamic().getFeed_id(), maxId)
                 .subscribe(new BaseSubscribe<List<DynamicCommentBean>>() {
                     @Override
                     protected void onSuccess(List<DynamicCommentBean> data) {
@@ -153,17 +156,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         // 更新数据库
         mDynamicToolBeanGreenDao.insertOrReplace(dynamicToolBean);
         // 通知服务器
-        BackgroundRequestTaskBean backgroundRequestTaskBean;
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("feed_id", feed_id);
-        // 后台处理
-        if (isLiked) {
-            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST, params);
-        } else {
-            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
-        }
-        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_HANDLE_LIKE_FORMAT, feed_id));
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+        mRepository.handleLike(isLiked, feed_id);
     }
 
     @Override
@@ -243,5 +236,55 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
                 });
         addSubscrebe(subscription);
     }
+
+    @Override
+    public void deleteComment(long comment_id, int commentPositon) {
+        mRootView.getCurrentDynamic().getTool().setFeed_comment_count(mRootView.getCurrentDynamic().getTool().getFeed_comment_count() - 1);
+        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getCurrentDynamic().getTool());
+        mDynamicCommentBeanGreenDao.deleteSingleCache(mRootView.getCurrentDynamic().getComments().get(commentPositon));
+        mRootView.getDatas().remove(commentPositon);
+        mRootView.refresh(commentPositon);
+        mRepository.deleteComment(mRootView.getCurrentDynamic().getFeed_id(), comment_id);
+    }
+
+    /**
+     * send a commment
+     *
+     * @param replyToUserId  comment  to who
+     * @param commentContent comment content
+     */
+    @Override
+    public void sendComment(long replyToUserId, String commentContent) {
+        // 生成一条评论
+        DynamicCommentBean creatComment = new DynamicCommentBean();
+        creatComment.setState(DynamicCommentBean.SEND_ING);
+        creatComment.setComment_content(commentContent);
+        creatComment.setFeed_mark(mRootView.getCurrentDynamic().getFeed_mark());
+        String comment_mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis();
+        creatComment.setComment_mark(Long.parseLong(comment_mark));
+        creatComment.setReply_to_user_id(replyToUserId);
+        System.out.println("creatComment ---------------> = " + creatComment.getReply_to_user_id());
+        if (replyToUserId == 0) { //当回复动态的时候
+            UserInfoBean userInfoBean = new UserInfoBean();
+            userInfoBean.setUser_id(replyToUserId);
+            creatComment.setReplyUser(userInfoBean);
+        } else {
+
+            creatComment.setReplyUser(mUserInfoBeanGreenDao.getSingleDataFromCache(replyToUserId));
+        }
+        creatComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
+        creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id()));
+        creatComment.setCreated_at(TimeUtils.millis2String(System.currentTimeMillis()));
+        mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
+        // 处理评论数
+        mRootView.getCurrentDynamic().getTool().setFeed_comment_count(mRootView.getCurrentDynamic().getTool().getFeed_comment_count() + 1);
+        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getCurrentDynamic().getTool());
+        mRootView.getDatas().add(0, creatComment);
+        mRootView.refresh();
+
+        mRepository.sendComment(commentContent, mRootView.getCurrentDynamic().getFeed_id(), replyToUserId, creatComment.getComment_mark());
+
+    }
+
 
 }

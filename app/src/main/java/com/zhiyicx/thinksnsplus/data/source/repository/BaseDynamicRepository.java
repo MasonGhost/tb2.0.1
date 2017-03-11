@@ -7,6 +7,8 @@ import com.google.gson.Gson;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
+import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
@@ -16,8 +18,10 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
+import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -25,6 +29,7 @@ import javax.inject.Inject;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
@@ -146,8 +151,56 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
      * @return
      */
     @Override
-    public Observable<BaseJson<String>> likeDynamic(Long feed_id) {
-        return mDynamicClient.likeDynamic(feed_id);
+    public void handleLike(boolean isLiked, final Long feed_id) {
+
+        Observable.just(isLiked)
+                .observeOn(Schedulers.io())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        BackgroundRequestTaskBean backgroundRequestTaskBean;
+                        HashMap<String, Object> params = new HashMap<>();
+                        params.put("feed_id", feed_id);
+                        // 后台处理
+                        if (aBoolean) {
+                            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST, params);
+                        } else {
+                            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
+                        }
+                        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_HANDLE_LIKE_FORMAT, feed_id));
+                        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
+    }
+
+    @Override
+    public void deleteComment(Long feed_id, Long comment_id) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("feed_id", feed_id);
+        params.put("comment_id", comment_id);
+        // 后台处理
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_DELETE_COMMENT,feed_id, comment_id));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+    }
+
+    @Override
+    public void sendComment(String commentContent, Long feed_id, Long reply_to_user_id, Long comment_mark) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("comment_content", commentContent);
+        params.put("reply_to_user_id", reply_to_user_id);
+        params.put("comment_mark", comment_mark);
+        // 后台处理
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.SEND_COMMENT, params);
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_SEND_COMMENT, feed_id));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
     }
 
     /**
