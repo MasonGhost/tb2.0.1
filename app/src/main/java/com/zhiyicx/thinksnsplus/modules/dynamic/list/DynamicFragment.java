@@ -341,7 +341,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             mReplyToUserId = dynamicBean.getComments().get(position).getUser_id();
             String contentHint = "";
             if (dynamicBean.getComments().get(position).getReply_to_user_id() != dynamicBean.getUser_id()) {
-                contentHint = String.format(getString(R.string.reply), dynamicBean.getComments().get(position).getCommentUser().getName());
+                contentHint = getString(R.string.reply, dynamicBean.getComments().get(position).getCommentUser().getName());
             }
             if (mOnCommentClickListener != null) {
                 mOnCommentClickListener.setCommentHint(contentHint);

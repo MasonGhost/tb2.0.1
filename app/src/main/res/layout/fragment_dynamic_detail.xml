@@ -120,6 +120,7 @@
         android:id="@+id/ilv_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
         android:layout_alignParentBottom="@bool/pickerview_customTextSize"
         android:visibility="gone"
         app:limitSize="@integer/comment_input_max_size"

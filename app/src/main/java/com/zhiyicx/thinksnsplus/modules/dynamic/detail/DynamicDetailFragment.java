@@ -23,6 +23,7 @@ import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.InputLimitView.OnSendClickListener;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -48,6 +49,7 @@ import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_3;
+import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -57,7 +59,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @contact email:450127106@qq.com
  */
 
-public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.Presenter, DynamicCommentBean> implements DynamicDetailContract.View, OnUserInfoClickListener,OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener {
+public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.Presenter, DynamicCommentBean> implements DynamicDetailContract.View, OnUserInfoClickListener, OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener {
     public static final String DYNAMIC_DETAIL_DATA = "dynamic_detail_data";
     public static final String DYNAMIC_DETAIL_DATA_POSITION = "dynamic_detail_data_position";
     public static final String LOOK_COMMENT_MORE = "look_comment_more";
@@ -94,6 +96,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
 
     private long mReplyUserId;// 被评论者的 id ,评论动态 id = 0
+    private ActionPopupWindow mDeletCommentPopWindow;
 
     @Override
     protected boolean showToolbar() {
@@ -126,6 +129,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         Drawable resource = ContextCompat.getDrawable(getContext(), R.drawable.shape_default_image_circle);
         resource.setBounds(0, 0, headIconWidth, headIconWidth);
         mTvToolbarCenter.setCompoundDrawables(resource, null, null, null);
+        mVShadow.setAlpha((1-POPUPWINDOW_ALPHA));
     }
 
     /**
@@ -156,13 +160,12 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        if (mIlvComment.getVisibility() == View.VISIBLE) {
-                            mIlvComment.setVisibility(View.GONE);
-                            mIlvComment.clearFocus();
-                            DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
-                            mLLBottomMenuContainer.setVisibility(View.INVISIBLE);
-                        }
+                        mIlvComment.setVisibility(View.GONE);
+                        mIlvComment.clearFocus();
+                        DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+                        mLLBottomMenuContainer.setVisibility(View.VISIBLE);
                         mVShadow.setVisibility(View.GONE);
+
                     }
                 });
         mIlvComment.setOnSendClickListener(this);
@@ -393,6 +396,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         // 评论
         mIlvComment.setVisibility(View.VISIBLE);
         mIlvComment.getFocus();
+        mVShadow.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -424,8 +428,20 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        mReplyUserId = mDatas.get(position).getUser_id();
-        showCommentView();
+        if (mDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
+            initLoginOutPopupWindow(mDatas.get(position).getComment_id(), position);
+            mDeletCommentPopWindow.show();
+        } else {
+            mReplyUserId = mDatas.get(position).getUser_id();
+            showCommentView();
+            String contentHint = "";
+            if (mDatas.get(position).getReply_to_user_id() != mDynamicBean.getUser_id()) {
+                contentHint = getString(R.string.reply, mDatas.get(position).getCommentUser().getName());
+            }
+            mIlvComment.setEtContentHint(contentHint);
+        }
+
+
     }
 
     @Override
@@ -436,5 +452,39 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     public void onUserInfoClick(UserInfoBean userInfoBean) {
         PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
+    }
+
+    /**
+     * 初始化评论删除选择弹框
+     *
+     * @param comment_id      dynamic comment id
+     * @param commentPosition current comment position
+     */
+    private void initLoginOutPopupWindow(final long comment_id, final int commentPosition) {
+        if (mDeletCommentPopWindow != null) {
+            return;
+        }
+        mDeletCommentPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.dynamic_list_delete_comment))
+                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+                        mDeletCommentPopWindow.hide();
+                        mPresenter.deleteComment(comment_id, commentPosition);
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mDeletCommentPopWindow.hide();
+                    }
+                })
+                .build();
     }
 }
