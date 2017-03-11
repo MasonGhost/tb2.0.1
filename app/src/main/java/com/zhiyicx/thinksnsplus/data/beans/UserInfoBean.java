@@ -55,10 +55,11 @@ public class UserInfoBean implements Parcelable {
     private String created_at;
     private String updated_at;
     private String deleted_at;
-    private String diggs_count;
-    private String following_count;
-    private String followed_count;
-    private String feeds_count;
+    private String diggs_count;// 点赞数量
+    private String following_count;// 关注数量
+    private String followed_count;// 粉丝数量
+    private String feeds_count;// 动态数量
+    private String cover;// 封面
 
     /**
      * id : 9
@@ -118,6 +119,17 @@ public class UserInfoBean implements Parcelable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCover() {
+        if (cover == null) {
+            cover = getConfigProperty("cover");
+        }
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
     }
 
     public String getDiggs_count() {
@@ -772,10 +784,10 @@ public class UserInfoBean implements Parcelable {
         this.counts = in.createTypedArrayList(CountsBean.CREATOR);
     }
 
-    @Generated(hash = 1257404706)
+    @Generated(hash = 1124713812)
     public UserInfoBean(Long user_id, String sex, String name, String avatar, String phone, String email, String intro, String location, String province, String city,
-            String area, String education, String created_at, String updated_at, String deleted_at, String diggs_count, String following_count, String followed_count,
-            String feeds_count, List<DatasBean> datas, List<CountsBean> counts) {
+                        String area, String education, String created_at, String updated_at, String deleted_at, String diggs_count, String following_count, String followed_count,
+                        String feeds_count, String cover, List<DatasBean> datas, List<CountsBean> counts) {
         this.user_id = user_id;
         this.sex = sex;
         this.name = name;
@@ -795,6 +807,7 @@ public class UserInfoBean implements Parcelable {
         this.following_count = following_count;
         this.followed_count = followed_count;
         this.feeds_count = feeds_count;
+        this.cover = cover;
         this.datas = datas;
         this.counts = counts;
     }

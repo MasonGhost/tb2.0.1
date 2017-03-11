@@ -17,7 +17,12 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
+import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -69,7 +74,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @contact email:450127106@qq.com
  */
 
-public class PersonalCenterFragment extends TSListFragment<PersonalCenterContract.Presenter, DynamicBean> implements PersonalCenterContract.View, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener, MultiItemTypeAdapter.OnItemClickListener {
+public class PersonalCenterFragment extends TSListFragment<PersonalCenterContract.Presenter, DynamicBean> implements PersonalCenterContract.View, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener, MultiItemTypeAdapter.OnItemClickListener, PhotoSelectorImpl.IPhotoBackListener {
 
     public static final String PERSONAL_CENTER_DATA = "personal_center_data";
 
@@ -97,13 +102,21 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     private FollowFansBean mFollowFansBean;
     // 上一个页面传过来的用户信息
     private UserInfoBean mUserInfoBean;
+    private PhotoSelectorImpl mPhotoSelector;
+    private String imagePath;// 上传的封面图片的本地路径
 
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        // 初始化图片选择器
+        mPhotoSelector = DaggerPhotoSelectorImplComponent
+                .builder()
+                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
+                        .SHAPE_RCTANGLE))
+                .build().photoSelectorImpl();
         initToolBar();
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
-        mPersonalCenterHeaderViewItem = new PersonalCenterHeaderViewItem(getActivity(), mRvList, mHeaderAndFooterWrapper, mLlToolbarContainerParent);
+        mPersonalCenterHeaderViewItem = new PersonalCenterHeaderViewItem(getActivity(), mPhotoSelector, mRvList, mHeaderAndFooterWrapper, mLlToolbarContainerParent);
         mPersonalCenterHeaderViewItem.initHeaderView();
         // 添加关注点击事件
         RxView.clicks(mTvFollow)
@@ -263,6 +276,45 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         setBottomFollowState(followFansBean.getFollowState());
     }
 
+    @Override
+    public void setUpLoadCoverState(boolean upLoadState, int taskId) {
+        if (upLoadState) {
+            // 封面图片上传成功
+            ToastUtils.showToast("封面上传成功");
+            // 通知服务器，更改用户信息
+            mPresenter.changeUserCover(mUserInfoBean, taskId, imagePath);
+        } else {
+            ToastUtils.showToast("封面上传失败");
+        }
+    }
+
+    @Override
+    public void setChangeUserCoverState(boolean changeSuccess) {
+        ToastUtils.showToast(changeSuccess ? "封面修改成功" : "封面修改失败");
+    }
+
+    @Override
+    public void getPhotoSuccess(List<ImageBean> photoList) {
+        // 选择图片完毕后，开始上传封面图片
+        ImageBean imageBean = photoList.get(0);
+        imagePath = imageBean.getImgUrl();
+        // 加载本地图片
+        mPresenter.uploadUserCover(imagePath);
+        // 上传本地图片
+        mPersonalCenterHeaderViewItem.upDateUserCover(imagePath);
+    }
+
+    @Override
+    public void getPhotoFailure(String errorMsg) {
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPhotoSelector.onActivityResult(requestCode, resultCode, data);
+    }
+
     private void initToolBar() {
         // toolBar设置状态栏高度的marginTop
         int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext());
@@ -329,4 +381,5 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         intent.putExtras(bundle);
         context.startActivity(intent);
     }
+
 }

@@ -20,7 +20,9 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBoundTransform;
+import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.utils.ImageUtils;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.ZoomView;
@@ -64,6 +66,10 @@ public class PersonalCenterHeaderViewItem {
     private TextView userName;
     private View bootomDivider;// 底部的分割线
 
+    private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
+    private PhotoSelectorImpl mPhotoSelector;
+    private ImageLoader mImageLoader;
+
     /**
      * 标题文字的颜色:#333333
      **/
@@ -92,11 +98,13 @@ public class PersonalCenterHeaderViewItem {
      **/
     private int[] toolBarBlackIcon = {51, 51, 51};
 
-    public PersonalCenterHeaderViewItem(Activity activity, RecyclerView recyclerView, HeaderAndFooterWrapper headerAndFooterWrapper, View mToolBarContainer) {
+    public PersonalCenterHeaderViewItem(Activity activity, PhotoSelectorImpl photoSelector, RecyclerView recyclerView, HeaderAndFooterWrapper headerAndFooterWrapper, View mToolBarContainer) {
         mActivity = activity;
+        this.mPhotoSelector = photoSelector;
         mRecyclerView = recyclerView;
         mHeaderAndFooterWrapper = headerAndFooterWrapper;
         this.mToolBarContainer = mToolBarContainer;
+        mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         mToolBar = mToolBarContainer.findViewById(R.id.rl_toolbar_container);
         back = (ImageView) mToolBarContainer.findViewById(R.id.iv_back);
         more = (ImageView) mToolBarContainer.findViewById(R.id.iv_more);
@@ -116,6 +124,7 @@ public class PersonalCenterHeaderViewItem {
         mHeaderAndFooterWrapper.addHeaderView(headerView);
         mRecyclerView.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
+        // 设置recyclerview的滑动监听，用来处理toolbar透明渐变的效果
         mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -175,9 +184,8 @@ public class PersonalCenterHeaderViewItem {
     }
 
     public void initHeaderViewData(UserInfoBean userInfoBean) {
-        ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         // 显示头像
-        imageLoader.loadImage(mActivity, GlideImageConfig.builder()
+        mImageLoader.loadImage(mActivity, GlideImageConfig.builder()
                 .url(ImageUtils.imagePathConvert(userInfoBean.getAvatar(), ImageZipConfig.IMAGE_70_ZIP))
                 .placeholder(R.drawable.shape_default_image_circle)
                 .errorPic(R.drawable.shape_default_image_circle)
@@ -219,6 +227,9 @@ public class PersonalCenterHeaderViewItem {
         } else {
             ll_dynamic_count_container.setVisibility(View.GONE);
         }
+
+        // 设置封面
+        setUserCover(userInfoBean.getCover());
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
@@ -241,6 +252,14 @@ public class PersonalCenterHeaderViewItem {
         fl_cover_contaner.setLayoutParams(containerLayoutParams);
         // 添加头部放缩
         new ZoomView(fl_cover_contaner, mActivity, mRecyclerView, width, height).initZoom();
+        // 设置封面切换
+        iv_background_cover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initPhotoPopupWindow();
+                mPhotoPopupWindow.show();
+            }
+        });
 
     }
 
@@ -253,4 +272,62 @@ public class PersonalCenterHeaderViewItem {
         }
         v.setBackgroundColor(color);
     }
+
+    /**
+     * 初始化图片选择弹框
+     */
+    private void initPhotoPopupWindow() {
+        if (mPhotoPopupWindow != null) {
+            return;
+        }
+        mPhotoPopupWindow = ActionPopupWindow.builder()
+                .item1Str(mActivity.getString(R.string.choose_from_photo))
+                .item2Str(mActivity.getString(R.string.choose_from_camera))
+                .bottomStr(mActivity.getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(0.8f)
+                .with(mActivity)
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+                        // 选择相册，单张
+                        mPhotoSelector.getPhotoListFromSelector(1, null);
+                        mPhotoPopupWindow.hide();
+                    }
+                })
+                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
+                    @Override
+                    public void onItem2Clicked() {
+                        // 选择相机，拍照
+                        mPhotoSelector.getPhotoFromCamera(null);
+                        mPhotoPopupWindow.hide();
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mPhotoPopupWindow.hide();
+                    }
+                }).build();
+    }
+
+    /**
+     * 设置用户的封面
+     */
+    private void setUserCover(String coverImage) {
+        // 设置封面
+        mImageLoader.loadImage(mActivity, GlideImageConfig.builder()
+                .placeholder(R.drawable.shape_default_image)
+                .errorPic(R.drawable.shape_default_image)
+                .url(ImageUtils.imagePathConvert(coverImage, 100))// 显示原图
+                .imagerView(iv_background_cover)
+                .build());
+    }
+
+    public void upDateUserCover(String coverImage) {
+        setUserCover(coverImage);
+        mHeaderAndFooterWrapper.notifyDataSetChanged();
+    }
+
 }

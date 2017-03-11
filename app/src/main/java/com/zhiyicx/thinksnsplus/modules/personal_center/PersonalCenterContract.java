@@ -34,6 +34,18 @@ public interface PersonalCenterContract {
          * @param followFansBean
          */
         void setFollowState(FollowFansBean followFansBean);
+
+        /**
+         * 设置封面上传的状态
+         *
+         * @param taskId 返回的图片任务id
+         */
+        void setUpLoadCoverState(boolean upLoadState, int taskId);
+
+        /**
+         * 设置通知服务器封面更新的状态
+         */
+        void setChangeUserCoverState(boolean changeSuccess);
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
@@ -90,5 +102,18 @@ public interface PersonalCenterContract {
          * 处理关注状态
          */
         void handleFollow(FollowFansBean followFansBean);
+
+        /**
+         * 上传封面图片
+         */
+        void uploadUserCover(String filePath);
+
+        /**
+         * 修改封面图片
+         *
+         * @param storage_task_id 封面上传的任务id
+         * @param imagePath       上传封面的本地路径
+         */
+        void changeUserCover(UserInfoBean userInfoBean, int storage_task_id, String imagePath);
     }
 }
