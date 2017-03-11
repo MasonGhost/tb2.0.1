@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -31,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @Describe
+ * @Describe 动态详情头部信息
  * @Author Jungle68
  * @Date 2017/3/10
  * @Contact master.jungle68@gmail.com
@@ -47,6 +48,7 @@ public class DynamicDetailHeader {
 
     public DynamicDetailHeader(Context context) {
         mDynamicDetailHeader = LayoutInflater.from(context).inflate(R.layout.view_header_dynamic_detial, null);
+        mDynamicDetailHeader.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.WRAP_CONTENT));
     }
 
     public void updateHeaderViewData(DynamicBean dynamicBean) {
@@ -110,6 +112,8 @@ public class DynamicDetailHeader {
                 mDynamicDetailHeader.getContext().startActivity(intent);
             }
         });
+
+        ((TextView)mDynamicDetailHeader.findViewById(R.id.tv_comment_count)).setText(mDynamicDetailHeader.getResources().getString(R.string.dynamic_comment_count, dynamicBean.getTool().getFeed_comment_count()));
     }
 
     private void showContentImage(Context context, ImageBean imageBean, final int position, boolean lastImg, LinearLayout photoContainer) {
