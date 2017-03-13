@@ -409,10 +409,12 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 break;
             case R.id.fragment_music_paly_bg:
             case R.id.fragment_music_paly_lyrics:
-                showLrc();
-                break;
-            case R.id.fragment_music_paly_lrc:
-                hideLrc();
+//            case R.id.fragment_music_paly_lrc:
+                if (mFragmentMusicPalyLrc.getVisibility() == View.VISIBLE) {
+                    hideLrc();
+                } else {
+                    showLrc();
+                }
                 break;
             default:
                 break;
