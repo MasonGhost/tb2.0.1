@@ -255,6 +255,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         mDynamicCommentBeanGreenDao.deleteSingleCache(mRootView.getCurrentDynamic().getComments().get(commentPositon));
         mRootView.getDatas().remove(commentPositon);
         mRootView.refresh(commentPositon);
+        mRootView.updateCommentCount();
         mRepository.deleteComment(mRootView.getCurrentDynamic().getFeed_id(), comment_id);
     }
 
@@ -294,7 +295,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         }
         mRootView.getDatas().add(0, creatComment);
         mRootView.refresh();
-
+        mRootView.updateCommentCount();
         mRepository.sendComment(commentContent, mRootView.getCurrentDynamic().getFeed_id(), replyToUserId, creatComment.getComment_mark());
 
     }

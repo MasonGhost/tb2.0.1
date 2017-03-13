@@ -315,6 +315,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
+    public void updateCommentCount() {
+        mDynamicDetailHeader.updateHeaderViewData(mDynamicBean);
+    }
+
+    @Override
     public void refresh() {
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }

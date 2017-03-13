@@ -324,7 +324,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
             mRefreshlayout.setLoadingMore(false);
             return;
         }
-
         mPage++;
         requestNetData(mMaxId, true);
     }

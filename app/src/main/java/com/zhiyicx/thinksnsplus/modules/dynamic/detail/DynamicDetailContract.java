@@ -65,7 +65,10 @@ public interface DynamicDetailContract {
          */
         List<DynamicCommentBean> getDatas();
 
-
+        /**
+         * 刷新评论数
+         */
+        void updateCommentCount();
         /**
          * 获取列表数据
          *
@@ -74,7 +77,6 @@ public interface DynamicDetailContract {
         void refresh();
 
         void refresh(int position);
-
 
     }
 

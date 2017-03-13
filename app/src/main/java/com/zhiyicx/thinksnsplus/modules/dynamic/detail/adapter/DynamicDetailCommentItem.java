@@ -63,9 +63,13 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
         holder.setText(R.id.tv_name, dynamicCommentBean.getCommentUser().getName());
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicCommentBean.getCreated_at()));
         holder.setText(R.id.tv_content, setShowText(dynamicCommentBean, position));
-        LinkBuilder.on((TextView) holder.getView(R.id.tv_content))
-                .addLinks(setLiknks(holder, dynamicCommentBean, position))
-                .build();
+        List<Link> links = setLiknks(holder, dynamicCommentBean, position);
+        if (!links.isEmpty()) {
+            LinkBuilder.on((TextView) holder.getView(R.id.tv_content))
+                    .addLinks(links)
+                    .build();
+        }
+
         AppApplication.AppComponentHolder.getAppComponent()
                 .imageLoader()
                 .loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
