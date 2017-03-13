@@ -7,6 +7,7 @@ import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 
@@ -52,7 +53,7 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_USERINFO_UPDATE)
     public void upDataUserInfo(List<UserInfoBean> data) {
-        com.zhiyicx.common.utils.log.LogUtils.i("upDataUserInfo-->"+data.toString());
+        com.zhiyicx.common.utils.log.LogUtils.i("upDataUserInfo-->" + data.toString());
         AuthBean authBean = AppApplication.getmCurrentLoginAuth();
         if (data != null) {
             for (UserInfoBean userInfoBean : data) {
@@ -62,5 +63,13 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
                 }
             }
         }
+    }
+
+    /**
+     * 其他地方进行了关注或者取消关注的操作,更新关注数量
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW)
+    public void upDataFollowCount(FollowFansBean followFansBean) {
+        mRootView.updateUserFollowCount(followFansBean.getOrigin_follow_status());
     }
 }

@@ -8,6 +8,7 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
@@ -186,7 +187,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
         params.put("comment_id", comment_id);
         // 后台处理
         backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
-        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_DELETE_COMMENT,feed_id, comment_id));
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_DELETE_COMMENT, feed_id, comment_id));
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
     }
 
@@ -228,7 +229,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                 .flatMap(new Func1<BaseJson<List<DynamicDigListBean>>, Observable<BaseJson<List<FollowFansBean>>>>() {
                     @Override
                     public Observable<BaseJson<List<FollowFansBean>>> call(BaseJson<List<DynamicDigListBean>> listBaseJson) {
-                        List<DynamicDigListBean> dynamicDigListBeanList = listBaseJson.getData();
+                        final List<DynamicDigListBean> dynamicDigListBeanList = listBaseJson.getData();
                         // 获取点赞的用户id列表
                         // 服务器返回数据
                         if (listBaseJson.isStatus() && dynamicDigListBeanList != null && !dynamicDigListBeanList.isEmpty()) {
@@ -257,7 +258,11 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                                 if (listBaseJson.isStatus() && followFansBeanList != null && !followFansBeanList.isEmpty()) {
                                                     // 将用户信息封装到状态列表中
                                                     for (int i = 0; i < followFansBeanList.size(); i++) {
+                                                        // 封装好每一个FollowFansBean对象，方便存入数据库
                                                         FollowFansBean followFansBean = followFansBeanList.get(i);
+                                                        // 设置点赞列表的maxID到FollowFansBean中,上拉加载
+                                                        followFansBean.setId(dynamicDigListBeanList.get(i).getFeed_digg_id());
+                                                        // 设置目标用户信息
                                                         followFansBean.setTargetUserInfo(userInfoList.get(i));
                                                     }
                                                 }

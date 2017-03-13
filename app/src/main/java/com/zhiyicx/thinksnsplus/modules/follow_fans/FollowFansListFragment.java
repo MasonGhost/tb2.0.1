@@ -43,6 +43,11 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
     }
 
     @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return true;
+    }
+
+    @Override
     protected void initView(View rootView) {
         DaggerFollowFansListPresenterComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
@@ -106,18 +111,23 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
     }
 
     @Override
-    public void upDateFollowFansState(int index, int followState) {
-        List<FollowFansBean> followFansBeanList = mAdapter.getDatas();
-        FollowFansBean followFansBean = followFansBeanList.get(index);
-        LogUtils.i("new_state--》" + followState);
-        followFansBean.setOrigin_follow_status(followState);
+    public void upDateFollowFansState(int index) {
         refreshData(index);
     }
 
     @Override
-    public void upDateUserInfo(List<UserInfoBean> userInfoBeanList) {
-        onCacheResponseSuccess(requestCacheData(mMaxId, false), false);
+    public void upDateFollowFansState() {
         refreshData();
+    }
+
+    @Override
+    public List<FollowFansBean> getFollowListData() {
+        return mAdapter.getDatas();
+    }
+
+    @Override
+    public int getPageType() {
+        return pageType;
     }
 
 }

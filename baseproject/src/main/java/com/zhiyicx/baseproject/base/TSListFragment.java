@@ -46,6 +46,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     private static final int DEFAULT_TIP_STICKY_TIME = 3000;
     private static final float DEFAULT_LIST_ITEM_SPACING = 0.5f;
 
+    private static final boolean DEFAULT_NEED_REFRESH = false;
+
     protected MultiItemTypeAdapter<T> mAdapter;
     private EmptyWrapper mEmptyWrapper;
 
@@ -140,7 +142,14 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     @Override
     protected void initData() {
         onCacheResponseSuccess(requestCacheData(mMaxId, false), false); // 获取缓存数据
-//        requestNetData(mMaxId,false);
+        mRefreshlayout.setRefreshing(isNeedRefreshDataWhenComeIn());// 从网络加载数据
+    }
+
+    /**
+     * 进入页面是否自动调用下拉刷新请求新数据
+     */
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return DEFAULT_NEED_REFRESH;
     }
 
     /**

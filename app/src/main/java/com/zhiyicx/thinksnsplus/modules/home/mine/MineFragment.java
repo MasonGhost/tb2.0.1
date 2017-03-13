@@ -19,6 +19,7 @@ import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
@@ -239,5 +240,21 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         mTvFansCount.setText(userInfoBean.getFollowed_count());
         // 设置关注数
         mTvFollowCount.setText(userInfoBean.getFollowing_count());
+    }
+
+    @Override
+    public void updateUserFollowCount(int stateFollow) {
+        switch (stateFollow) {
+            case FollowFansBean.IFOLLOWED_STATE:
+                // 添加一个关注
+                mUserInfoBean.setFollowing_count(Integer.parseInt(mUserInfoBean.getFollowing_count()) + 1 + "");
+                break;
+            case FollowFansBean.UNFOLLOWED_STATE:
+                // 取消一个关注
+                mUserInfoBean.setFollowing_count(Integer.parseInt(mUserInfoBean.getFollowing_count()) - 1 + "");
+                break;
+            default:
+        }
+        mTvFollowCount.setText(mUserInfoBean.getFollowing_count());
     }
 }

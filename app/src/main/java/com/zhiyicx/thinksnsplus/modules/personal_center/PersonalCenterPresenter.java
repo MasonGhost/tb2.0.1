@@ -6,6 +6,7 @@ import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
@@ -18,6 +19,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.EventBus;
 
 import java.util.HashMap;
 import java.util.List;
@@ -122,6 +124,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
         if (followFansBean.getOrigin_follow_status() == FollowFansBean.UNFOLLOWED_STATE) {
             // 当前未关注，进行关注
             followFansBean.setOrigin_follow_status(FollowFansBean.IFOLLOWED_STATE);
+            EventBus.getDefault().post(followFansBean, EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW);
             // 进行后台任务请求
             backgroundRequestTaskBean = new BackgroundRequestTaskBean();
             backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST);
@@ -129,6 +132,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
         } else {
             // 已关注，取消关注
             followFansBean.setOrigin_follow_status(FollowFansBean.UNFOLLOWED_STATE);
+            EventBus.getDefault().post(followFansBean, EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW);
             // 进行后台任务请求
             backgroundRequestTaskBean = new BackgroundRequestTaskBean();
             backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
@@ -172,7 +176,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
     @Override
     public void changeUserCover(final UserInfoBean userInfoBean, int storage_task_id, final String imagePath) {
         HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("cover", storage_task_id + "");
+        hashMap.put("cover_storage_task_id", storage_task_id + "");
         Subscription subscription = mUserInfoRepository.changeUserInfo(hashMap)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
