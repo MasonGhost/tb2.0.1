@@ -16,10 +16,12 @@ import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -50,7 +52,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
 
     @Override
     protected boolean useEventBus() {
-        return false;
+        return true;
     }
 
     @Override
@@ -117,6 +119,8 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
     public void followUser(int index, FollowFansBean followFansBean) {
         // 更新数据
         followFansBean.setOrigin_follow_status(FollowFansBean.IFOLLOWED_STATE);
+        // 粉丝列表变化,关注数量+1
+        EventBus.getDefault().post(followFansBean, EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW);
         // 后台通知服务器关注
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST);
@@ -127,7 +131,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
         // 本地数据库和ui进行刷新
         mFollowFansBeanGreenDao.insertOrReplace(followFansBean);
-        mRootView.upDateFollowFansState(index, FollowFansBean.IFOLLOWED_STATE);
+        mRootView.upDateFollowFansState(index);
 
     }
 
@@ -135,6 +139,8 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
     public void cancleFollowUser(int index, FollowFansBean followFansBean) {
         // 更新数据
         followFansBean.setOrigin_follow_status(FollowFansBean.UNFOLLOWED_STATE);
+        // 粉丝列表变化,关注数量-1
+        EventBus.getDefault().post(followFansBean, EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW);
         // 通知服务器
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
@@ -145,6 +151,31 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
         // 本地数据库和ui进行刷新
         mFollowFansBeanGreenDao.insertOrReplace(followFansBean);
-        mRootView.upDateFollowFansState(index, FollowFansBean.UNFOLLOWED_STATE);
+        mRootView.upDateFollowFansState(index);
     }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW)
+    public void upDateFollowState(FollowFansBean followFansBean) {
+        // 注意当前操作是在另一个页面订阅：如果我在粉丝页面点击关注按钮，当前订阅是在关注页面：
+        List<FollowFansBean> followFansBeanList = mRootView.getFollowListData();
+        Iterator<FollowFansBean> iterator = followFansBeanList.iterator();
+        int position = 0;
+        while (iterator.hasNext()) {
+            FollowFansBean oldFollowList = iterator.next();
+            // 如果粉丝（关注）列表中存在同样的用户，更新它
+            if (oldFollowList.getTargetUserId() == followFansBean.getTargetUserId()) {
+                // 更新内存数据
+                oldFollowList.setOrigin_follow_status(followFansBean.getOrigin_follow_status());
+                mRootView.upDateFollowFansState(position);
+                break;
+            }
+            // 遍历到最后一条数据，仍然不存在该用户，并且，当前订阅页面是关注页面，需要添加item
+            else if (position == followFansBeanList.size() - 1 && mRootView.getPageType() == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
+                followFansBeanList.add(0, followFansBean);
+                mRootView.upDateFollowFansState();
+            }
+            position++;
+        }
+    }
+
 }

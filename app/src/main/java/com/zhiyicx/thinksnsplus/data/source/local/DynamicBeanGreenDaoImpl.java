@@ -157,8 +157,8 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
         DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
         List<DynamicBean> datas = dynamicBeanDao.queryDeep(" where "
                         + " T." + DynamicBeanDao.Properties.User_id.columnName + " = ? "
-                        + " T." + DynamicBeanDao.Properties.Feed_mark.columnName + " DESC"// 按照Feedmark倒序：userId+时间戳 ：越新的动态，feedmark越大
-                , userId + "");
+                        + " ORDER BY  T." + DynamicBeanDao.Properties.Feed_mark.columnName + " DESC LIMIT " + ApiConfig.DYNAMIC_PAGE_LIMIT// 按照Feedmark倒序：userId+时间戳 ：越新的动态，feedmark越大
+                , new String[]{String.valueOf(userId)});
         return datas;
     }
 

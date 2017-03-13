@@ -23,6 +23,13 @@ public interface DigListContract {
     //对于经常使用的关于UI的方法可以定义到BaseView中,如显示隐藏进度条,和显示文字消息
     interface View extends ITSListView<FollowFansBean, DigListContract.Presenter> {
         void upDataFollowState(int position);
+
+        /**
+         * 获取传过来的动态数据，用来保存数据库
+         *
+         * @return
+         */
+        DynamicBean getDynamicBean();
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
@@ -38,6 +45,6 @@ public interface DigListContract {
 
         void requestNetData(Long maxId, boolean isLoadMore, long feed_id);
 
-        List<DynamicDigListBean> requestCacheData(Long maxId, boolean isLoadMore, long feed_id);
+        List<FollowFansBean> requestCacheData(Long maxId, boolean isLoadMore, DynamicBean dynamicBean);
     }
 }

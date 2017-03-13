@@ -29,6 +29,8 @@ public class DigListFragment extends TSListFragment<DigListContract.Presenter, F
     private List<FollowFansBean> mDatas = new ArrayList<>();
     @Inject
     public DigListPresenter mDigListPresenter;
+    // 从动态详情传递过来的动态数据，已经包括了第一页的点赞列表，所以不需要从数据库拿取
+    private DynamicBean mDynamicBean;
 
     @Override
     protected void initView(View rootView) {
@@ -40,8 +42,19 @@ public class DigListFragment extends TSListFragment<DigListContract.Presenter, F
     }
 
     @Override
+    protected void initData() {
+        mDynamicBean = getArguments().getParcelable(DIG_LIST_DATA);
+        super.initData();
+    }
+
+    @Override
     protected MultiItemTypeAdapter<FollowFansBean> getAdapter() {
         return new DigListAdapter(getContext(), R.layout.item_dig_list, mDatas, mPresenter);
+    }
+
+    @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return true;
     }
 
     @Override
@@ -70,19 +83,23 @@ public class DigListFragment extends TSListFragment<DigListContract.Presenter, F
     }
 
     @Override
-    protected void initData() {
-
+    protected void requestNetData(Long maxId, boolean isLoadMore) {
+        mPresenter.requestNetData(maxId, isLoadMore, mDynamicBean.getFeed_id());
     }
 
-
     @Override
-    protected void requestNetData(Long maxId, boolean isLoadMore) {
-        mPresenter.requestNetData(maxId, isLoadMore, getArguments().getLong(DIG_LIST_DATA));
+    protected List<FollowFansBean> requestCacheData(Long maxId, boolean isLoadMore) {
+        return mPresenter.requestCacheData(maxId, isLoadMore, mDynamicBean);
     }
 
     @Override
     public void upDataFollowState(int position) {
         refreshData(position);
+    }
+
+    @Override
+    public DynamicBean getDynamicBean() {
+        return mDynamicBean;
     }
 
     public static DigListFragment initFragment(Bundle bundle) {
