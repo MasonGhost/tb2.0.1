@@ -43,6 +43,11 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
     }
 
     @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return true;
+    }
+
+    @Override
     protected void initView(View rootView) {
         DaggerFollowFansListPresenterComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
