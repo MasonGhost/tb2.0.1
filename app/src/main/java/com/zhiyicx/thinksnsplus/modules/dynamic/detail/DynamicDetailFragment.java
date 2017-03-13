@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -125,10 +124,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         initBottomToolListener();
         initHeaderView();
         initListener();
-        int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
-        Drawable resource = ContextCompat.getDrawable(getContext(), R.drawable.shape_default_image_circle);
-        resource.setBounds(0, 0, headIconWidth, headIconWidth);
-        mTvToolbarCenter.setCompoundDrawables(resource, null, null, null);
         mVShadow.setAlpha((1 - POPUPWINDOW_ALPHA));
     }
 
@@ -248,17 +243,16 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mTvToolbarCenter.setVisibility(View.VISIBLE);
         UserInfoBean userInfoBean = dynamicBean.getUserInfoBean();// 动态所属用户的信息
         mTvToolbarCenter.setText(userInfoBean.getName());
-        int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
         Glide.with(getContext())
                 .load(ImageUtils.imagePathConvert(dynamicBean.getUserInfoBean().getAvatar(), ImageZipConfig.IMAGE_26_ZIP))
                 .bitmapTransform(new GlideCircleTransform(getContext()))
                 .placeholder(R.drawable.shape_default_image_circle)
                 .error(R.drawable.shape_default_image_circle)
-                .override(headIconWidth, headIconWidth)
                 .into(new SimpleTarget<GlideDrawable>() {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                        resource.setBounds(0, 0, resource.getMinimumWidth(), resource.getMinimumHeight());
+                        int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
+                        resource.setBounds(0, 0, headIconWidth,headIconWidth);
                         mTvToolbarCenter.setCompoundDrawables(resource, null, null, null);
                     }
                 });
