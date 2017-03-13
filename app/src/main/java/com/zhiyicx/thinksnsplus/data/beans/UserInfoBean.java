@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.converter.PropertyConverter;
@@ -18,8 +19,6 @@ import org.greenrobot.greendao.converter.PropertyConverter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * @author LiuChao
@@ -30,8 +29,8 @@ import org.greenrobot.greendao.annotation.Generated;
 
 
 @Entity
-public class UserInfoBean implements Parcelable {
-
+public class UserInfoBean implements Parcelable ,Serializable{
+    private static final long serialVersionUID = 536871019;
     // 定义四种性别状态
     public static final String MALE = "1";
     public static final String FEMALE = "2";
@@ -55,6 +54,12 @@ public class UserInfoBean implements Parcelable {
     private String created_at;
     private String updated_at;
     private String deleted_at;
+    private String diggs_count;// 点赞数量
+    private String following_count;// 关注数量
+    private String followed_count;// 粉丝数量
+    private String feeds_count;// 动态数量
+    private String cover;// 封面
+
     /**
      * id : 9
      * profile : avatar
@@ -113,6 +118,61 @@ public class UserInfoBean implements Parcelable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCover() {
+        if (cover == null) {
+            cover = getConfigProperty("cover");
+        }
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
+
+    public String getDiggs_count() {
+        if (diggs_count == null) {
+            diggs_count = getCountProperty("diggs_count");
+        }
+        return diggs_count;
+    }
+
+    public void setDiggs_count(String diggs_count) {
+        this.diggs_count = diggs_count;
+    }
+
+    public String getFollowing_count() {
+        if (following_count == null) {
+            following_count = getCountProperty("following_count");
+        }
+        return following_count;
+    }
+
+    public void setFollowing_count(String following_count) {
+        this.following_count = following_count;
+    }
+
+    public String getFollowed_count() {
+        if (followed_count == null) {
+            followed_count = getCountProperty("followed_count");
+        }
+        return followed_count;
+    }
+
+    public void setFollowed_count(String followed_count) {
+        this.followed_count = followed_count;
+    }
+
+    public String getFeeds_count() {
+        if (feeds_count == null) {
+            feeds_count = getCountProperty("feeds_count");
+        }
+        return feeds_count;
+    }
+
+    public void setFeeds_count(String feeds_count) {
+        this.feeds_count = feeds_count;
     }
 
     public String getSex() {
@@ -650,6 +710,28 @@ public class UserInfoBean implements Parcelable {
         return result == null ? "" : result;
     }
 
+    /**
+     * 获取用户相关的数量统计字段
+     *
+     * @param name
+     * @return
+     */
+    private String getCountProperty(String name) {
+        String result = null;
+        try {
+            counts = getCounts(); // avoid null
+            for (CountsBean count : counts) {
+                if (count.getKey().equals(name)) {
+                    result = count.getValue();
+                    break;
+                }
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        return result == null ? "" : result;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -701,9 +783,10 @@ public class UserInfoBean implements Parcelable {
         this.counts = in.createTypedArrayList(CountsBean.CREATOR);
     }
 
-    @Generated(hash = 645073459)
-    public UserInfoBean(Long user_id, String sex, String name, String avatar, String phone, String email, String intro, String location, String province,
-                        String city, String area, String education, String created_at, String updated_at, String deleted_at, List<DatasBean> datas, List<CountsBean> counts) {
+    @Generated(hash = 1124713812)
+    public UserInfoBean(Long user_id, String sex, String name, String avatar, String phone, String email, String intro, String location, String province, String city,
+                        String area, String education, String created_at, String updated_at, String deleted_at, String diggs_count, String following_count, String followed_count,
+                        String feeds_count, String cover, List<DatasBean> datas, List<CountsBean> counts) {
         this.user_id = user_id;
         this.sex = sex;
         this.name = name;
@@ -719,6 +802,11 @@ public class UserInfoBean implements Parcelable {
         this.created_at = created_at;
         this.updated_at = updated_at;
         this.deleted_at = deleted_at;
+        this.diggs_count = diggs_count;
+        this.following_count = following_count;
+        this.followed_count = followed_count;
+        this.feeds_count = feeds_count;
+        this.cover = cover;
         this.datas = datas;
         this.counts = counts;
     }

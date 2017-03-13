@@ -80,5 +80,10 @@
             <enum name="circle" value="1"/>
         </attr>
     </declare-styleable>
+    <!-- 可以设置 drawable 大小的 TextView-->
+    <declare-styleable name="DrawableSizeTextView">
+        <attr name="compoundDrawableWidth" format="dimension"/>
+        <attr name="compoundDrawableHeight" format="dimension"/>
+    </declare-styleable>
 
 </resources>

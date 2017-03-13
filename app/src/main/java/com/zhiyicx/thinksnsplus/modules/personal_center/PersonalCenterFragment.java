@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -16,7 +15,12 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
+import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -24,19 +28,19 @@ import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForEightImage;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForFiveImage;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForFourImage;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForNineImage;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForOneImage;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForSevenImage;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForSixImage;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForThreeImage;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForTwoImage;
-import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicCountItem;
+import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListBaseItem;
+import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForEightImage;
+import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForFiveImage;
+import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForFourImage;
+import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForNineImage;
+import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForOneImage;
+import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForSevenImage;
+import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForSixImage;
+import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForThreeImage;
+import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem;
-import com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
@@ -46,7 +50,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.functions.Action1;
 
@@ -59,7 +62,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @contact email:450127106@qq.com
  */
 
-public class PersonalCenterFragment extends TSListFragment<PersonalCenterContract.Presenter, DynamicBean> implements PersonalCenterContract.View, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, DynamicListBaseItem.OnUserInfoClickListener, MultiItemTypeAdapter.OnItemClickListener {
+public class PersonalCenterFragment extends TSListFragment<PersonalCenterContract.Presenter, DynamicBean> implements PersonalCenterContract.View, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, OnUserInfoClickListener, MultiItemTypeAdapter.OnItemClickListener, PhotoSelectorImpl.IPhotoBackListener {
 
     public static final String PERSONAL_CENTER_DATA = "personal_center_data";
 
@@ -77,11 +80,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     LinearLayout mLlChatContainer;
     @BindView(R.id.ll_bottom_container)
     LinearLayout mLlBottomContainer;
-    @BindView(R.id.nest_scroll_container)
-    NestedScrollLineayLayout mNestScrollContainer;
-    @BindView(R.id.personal_header)
-    LinearLayout mPersonalHeader;
-
+    @BindView(R.id.ll_toolbar_container_parent)
+    LinearLayout mLlToolbarContainerParent;
 
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     private PersonalCenterHeaderViewItem mPersonalCenterHeaderViewItem;
@@ -90,26 +90,21 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     private FollowFansBean mFollowFansBean;
     // 上一个页面传过来的用户信息
     private UserInfoBean mUserInfoBean;
-
+    private PhotoSelectorImpl mPhotoSelector;
+    private String imagePath;// 上传的封面图片的本地路径
 
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        // 初始化图片选择器
+        mPhotoSelector = DaggerPhotoSelectorImplComponent
+                .builder()
+                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
+                        .SHAPE_RCTANGLE))
+                .build().photoSelectorImpl();
         initToolBar();
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
-
-       // mNestScrollContainer.setHeaderViewId(R.id.personal_header);
-        mNestScrollContainer.setNotConsumeHeight(200);
-        mNestScrollContainer.setOnHeadFlingListener(new NestedScrollLineayLayout.OnHeadFlingListener() {
-            @Override
-            public void onHeadFling(int scrollY) {
-                int distance = mNestScrollContainer.getTopViewHeight();
-                int alpha = 255 * scrollY / distance;
-                alpha = alpha > 255 ? 255 : alpha;
-                mRlToolbarContainer.getBackground().setAlpha(alpha);
-            }
-        });
-        mPersonalCenterHeaderViewItem = new PersonalCenterHeaderViewItem(getActivity(), mRvList, mPersonalHeader);
+        mPersonalCenterHeaderViewItem = new PersonalCenterHeaderViewItem(getActivity(), mPhotoSelector, mRvList, mHeaderAndFooterWrapper, mLlToolbarContainerParent);
         mPersonalCenterHeaderViewItem.initHeaderView();
         // 添加关注点击事件
         RxView.clicks(mTvFollow)
@@ -124,13 +119,22 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                         }
                     }
                 });
-
     }
 
 
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
         mPresenter.requestNetData(maxId, isLoadMore, mUserInfoBean.getUser_id());
+    }
+
+    @Override
+    protected List<DynamicBean> requestCacheData(Long maxId, boolean isLoadMore) {
+        return mPresenter.requestCacheData(maxId, isLoadMore, mUserInfoBean.getUser_id());
+    }
+
+    @Override
+    protected float getItemDecorationSpacing() {
+        return 0;
     }
 
     @Override
@@ -161,17 +165,17 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     protected MultiItemTypeAdapter<DynamicBean> getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mDynamicBeens);
-        adapter.addItemViewDelegate(new PersonalCenterDynamicCountItem());
-        setAdapter(adapter, new DynamicListBaseItem(getContext()));
-        setAdapter(adapter, new DynamicListItemForOneImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForTwoImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForThreeImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForFourImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForFiveImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForSixImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForSevenImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForEightImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForNineImage(getContext()));
+        //adapter.addItemViewDelegate(new PersonalCenterDynamicCountItem());
+        setAdapter(adapter, new PersonalCenterDynamicListBaseItem(getContext()));
+        setAdapter(adapter, new PersonalCenterDynamicListItemForOneImage(getContext()));
+        setAdapter(adapter, new PersonalCenterDynamicListItemForTwoImage(getContext()));
+        setAdapter(adapter, new PersonalCenterDynamicListItemForThreeImage(getContext()));
+        setAdapter(adapter, new PersonalCenterDynamicListItemForFourImage(getContext()));
+        setAdapter(adapter, new PersonalCenterDynamicListItemForFiveImage(getContext()));
+        setAdapter(adapter, new PersonalCenterDynamicListItemForSixImage(getContext()));
+        setAdapter(adapter, new PersonalCenterDynamicListItemForSevenImage(getContext()));
+        setAdapter(adapter, new PersonalCenterDynamicListItemForEightImage(getContext()));
+        setAdapter(adapter, new PersonalCenterDynamicListItemForNineImage(getContext()));
         return adapter;
     }
 
@@ -248,8 +252,10 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void setHeaderInfo(UserInfoBean userInfoBean) {
-        setBottomVisible(userInfoBean.getUser_id());
-        mPersonalCenterHeaderViewItem.initHeaderViewData(userInfoBean);
+        if (userInfoBean != null) {
+            setBottomVisible(userInfoBean.getUser_id());
+            mPersonalCenterHeaderViewItem.initHeaderViewData(userInfoBean);
+        }
     }
 
     @Override
@@ -258,11 +264,51 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         setBottomFollowState(followFansBean.getFollowState());
     }
 
+    @Override
+    public void setUpLoadCoverState(boolean upLoadState, int taskId) {
+        if (upLoadState) {
+            // 封面图片上传成功
+            ToastUtils.showToast("封面上传成功");
+            // 通知服务器，更改用户信息
+            mPresenter.changeUserCover(mUserInfoBean, taskId, imagePath);
+        } else {
+            ToastUtils.showToast("封面上传失败");
+        }
+    }
+
+    @Override
+    public void setChangeUserCoverState(boolean changeSuccess) {
+        ToastUtils.showToast(changeSuccess ? "封面修改成功" : "封面修改失败");
+    }
+
+    @Override
+    public void getPhotoSuccess(List<ImageBean> photoList) {
+        // 选择图片完毕后，开始上传封面图片
+        ImageBean imageBean = photoList.get(0);
+        imagePath = imageBean.getImgUrl();
+        // 加载本地图片
+        mPresenter.uploadUserCover(imagePath);
+        // 上传本地图片
+        mPersonalCenterHeaderViewItem.upDateUserCover(imagePath);
+    }
+
+    @Override
+    public void getPhotoFailure(String errorMsg) {
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPhotoSelector.onActivityResult(requestCode, resultCode, data);
+    }
+
     private void initToolBar() {
         // toolBar设置状态栏高度的marginTop
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(0, DeviceUtils.getStatuBarHeight(getContext()), 0, 0);
-        mRlToolbarContainer.setLayoutParams(layoutParams);
+        int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext());
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
+        //layoutParams.setMargins(0, DeviceUtils.getStatuBarHeight(getContext()), 0, 0);
+        mLlToolbarContainerParent.setLayoutParams(layoutParams);
     }
 
     /**
@@ -324,11 +370,4 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         context.startActivity(intent);
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate a fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        ButterKnife.bind(this, rootView);
-        return rootView;
-    }
 }

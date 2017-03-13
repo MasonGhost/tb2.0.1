@@ -10,9 +10,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBoundTransform;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -93,10 +95,14 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
                     AppApplication.AppComponentHolder.getAppComponent().imageLoader()
                             .loadImage(mContext, GlideImageConfig.builder()
                                     .transformation(new GlideCircleBoundTransform(mContext))
+                                    .placeholder(R.drawable.shape_default_image_circle)
+                                    .errorPic(R.drawable.shape_default_image_circle)
                                     .imagerView(mImageViews[i])
-                                    .url(imageBean.getImgUrl())
+                                    .url(ImageUtils.imagePathConvert(imageBean.getStorage_id()+"", ImageZipConfig.IMAGE_26_ZIP))
                                     .build()
                             );
+                    mImageViews[i].setVisibility(VISIBLE);
+                    digCount.setVisibility(VISIBLE);
                 } else {// 没有显示的图片控件隐藏
                     mImageViews[i].setVisibility(GONE);
                 }

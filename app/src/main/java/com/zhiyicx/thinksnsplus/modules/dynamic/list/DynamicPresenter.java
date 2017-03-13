@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.SparseArray;
 
@@ -42,6 +43,10 @@ import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_POSITION;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_TYPE;
 
 /**
  * @Describe
@@ -272,6 +277,58 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
     }
 
     /**
+     * 处理更新动态数据
+     *
+     * @param data
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_DYNAMIC)
+    public void updateDynamic(Bundle data) {
+        Observable.just(data)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<Bundle, Integer>() {
+                    @Override
+                    public Integer call(Bundle bundle) {
+                        String type = bundle.getString(DYNAMIC_DETAIL_DATA_TYPE);
+                        int position = bundle.getInt(DYNAMIC_DETAIL_DATA_POSITION);
+                        DynamicBean dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
+                        if (mRootView.getDynamicType().equals(type)) { // 先刷新当前页面，再刷新其他页面
+                            mRootView.getDatas().set(position, dynamicBean);
+                            return position;
+                        }
+                        int size = mRootView.getDatas().size();
+                        int dynamicPosition = -1;
+                        for (int i = 0; i < size; i++) {
+                            if (mRootView.getDatas().get(i).getFeed_mark().equals(dynamicBean.getFeed_mark())) {
+                                dynamicPosition = i;
+                                break;
+                            }
+                        }
+                        if (dynamicPosition != -1) {// 如果列表有当前评论
+                            mRootView.getDatas().set(position, dynamicBean);
+                        }
+                        return dynamicPosition;
+                    }
+                })
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer integer) {
+                        if (integer != -1) {
+                            mRootView.refresh(integer);
+                        }
+
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
+
+
+    }
+
+    /**
      * 列表中是否有了
      *
      * @param dynamicBean
@@ -292,7 +349,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
 
     @NonNull
     private List<DynamicBean> getDynamicBeenFromDB() {
-        if(AppApplication.getmCurrentLoginAuth()==null){
+        if (AppApplication.getmCurrentLoginAuth() == null) {
             return new ArrayList<DynamicBean>();
         }
         List<DynamicBean> datas = mDynamicBeanGreenDao.getMySendingUnSuccessDynamic((long) AppApplication.getmCurrentLoginAuth().getUser_id());
@@ -315,30 +372,8 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
         if (feed_id == null || feed_id == 0) {
             return;
         }
-        Observable.just(isLiked)
-                .observeOn(Schedulers.io())
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getDatas().get(postion).getTool());
-                        BackgroundRequestTaskBean backgroundRequestTaskBean;
-                        HashMap<String, Object> params = new HashMap<>();
-                        params.put("feed_id", feed_id);
-                        // 后台处理
-                        if (aBoolean) {
-                            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST, params);
-                        } else {
-                            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
-                        }
-                        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_HANDLE_LIKE_FORMAT, feed_id));
-                        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                });
+        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getDatas().get(postion).getTool());
+        mRepository.handleLike(isLiked, feed_id);
 
     }
 
@@ -364,14 +399,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
         mDynamicCommentBeanGreenDao.deleteSingleCache(dynamicBean.getComments().get(commentPositon));
         mRootView.getDatas().get(dynamicPosition).getComments().remove(commentPositon);
         mRootView.refresh(dynamicPosition);
-        BackgroundRequestTaskBean backgroundRequestTaskBean;
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("feed_id", dynamicBean.getFeed_id());
-        params.put("comment_id", comment_id);
-        // 后台处理
-        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
-        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_DELETE_COMMENT, dynamicBean.getFeed_id(), comment_id));
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+        mRepository.deleteComment(dynamicBean.getFeed_id(), comment_id);
     }
 
     /**
@@ -392,7 +420,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
         creatComment.setReply_to_user_id(replyToUserId);
         System.out.println("creatComment ---------------> = " + creatComment.getReply_to_user_id());
         if (replyToUserId == 0) { //当回复动态的时候
-            UserInfoBean userInfoBean=new UserInfoBean();
+            UserInfoBean userInfoBean = new UserInfoBean();
             userInfoBean.setUser_id(replyToUserId);
             creatComment.setReplyUser(userInfoBean);
         } else {
@@ -412,16 +440,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
 
         mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getDatas().get(mCurrentPostion).getTool());
         mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
-
-        BackgroundRequestTaskBean backgroundRequestTaskBean;
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("comment_content", commentContent);
-        params.put("reply_to_user_id", replyToUserId);
-        params.put("comment_mark", creatComment.getComment_mark());
-        // 后台处理
-        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.SEND_COMMENT, params);
-        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_SEND_COMMENT, mRootView.getDatas().get(mCurrentPostion).getFeed_id()));
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+        mRepository.sendComment(commentContent, mRootView.getDatas().get(mCurrentPostion).getFeed_id(), replyToUserId, creatComment.getComment_mark());
 
     }
 
@@ -446,7 +465,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                                 break;
                             }
                         }
-                        if (dynamicPosition != -1) {// 如果列表没有当前评论
+                        if (dynamicPosition != -1) {// 如果列表有当前评论
                             int commentSize = mRootView.getDatas().get(dynamicPosition).getComments().size();
                             for (int i = 0; i < commentSize; i++) {
                                 if (mRootView.getDatas().get(dynamicPosition).getComments().get(i).getFeed_mark().equals(dynamicCommentBean.getFeed_mark())) {

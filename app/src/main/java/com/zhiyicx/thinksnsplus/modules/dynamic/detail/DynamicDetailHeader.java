@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -22,14 +23,16 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListFragment;
 import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @Describe
+ * @Describe 动态详情头部信息
  * @Author Jungle68
  * @Date 2017/3/10
  * @Contact master.jungle68@gmail.com
@@ -37,6 +40,9 @@ import java.util.List;
 
 public class DynamicDetailHeader {
 
+    private LinearLayout mPhotoContainer;
+    private TextView mContent;
+    private TextView mTitle;
     private View mDynamicDetailHeader;
 
     public View getDynamicDetailHeader() {
@@ -45,69 +51,84 @@ public class DynamicDetailHeader {
 
     public DynamicDetailHeader(Context context) {
         mDynamicDetailHeader = LayoutInflater.from(context).inflate(R.layout.view_header_dynamic_detial, null);
+        mDynamicDetailHeader.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
+        mTitle = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_title);
+        mContent = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_content);
+        mPhotoContainer = (LinearLayout) mDynamicDetailHeader.findViewById(R.id.ll_dynamic_photos_container);
     }
 
-    public void updateHeaderViewData( DynamicBean dynamicBean) {
-
-        TextView title = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_title);
-        TextView content = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_content);
-        LinearLayout photoContainer = (LinearLayout) mDynamicDetailHeader.findViewById(R.id.ll_dynamic_photos_container);
-
+    /**
+     * 设置头部动态信息
+     *
+     * @param dynamicBean
+     */
+    public void setDynamicDetial(DynamicBean dynamicBean) {
         final DynamicDetailBean dynamicDetailBean = dynamicBean.getFeed();
         String titleText = dynamicDetailBean.getTitle();
         if (TextUtils.isEmpty(titleText)) {
-            title.setVisibility(View.GONE);
+            mTitle.setVisibility(View.GONE);
         } else {
-            title.setText(titleText);
+            mTitle.setText(titleText);
         }
         String contentText = dynamicDetailBean.getContent();
         if (TextUtils.isEmpty(contentText)) {
-            content.setVisibility(View.GONE);
+            mContent.setVisibility(View.GONE);
         } else {
-            content.setText(contentText);
+            mContent.setText(contentText);
         }
 
-        final Context context = title.getContext();
+        final Context context = mTitle.getContext();
         // 设置图片
         List<ImageBean> photoList = dynamicDetailBean.getStorages();
         if (photoList != null) {
             for (int i = 0; i < photoList.size(); i++) {
                 ImageBean imageBean = photoList.get(i);
-                showContentImage(context, imageBean, i, i == photoList.size() - 1, photoContainer);
+                showContentImage(context, imageBean, i, i == photoList.size() - 1, mPhotoContainer);
             }
         }
+    }
+
+    /**
+     * 更新喜欢的人
+     *
+     * @param dynamicBean
+     */
+    public void updateHeaderViewData(final DynamicBean dynamicBean) {
+
         DynamicHorizontalStackIconView dynamicHorizontalStackIconView = (DynamicHorizontalStackIconView) mDynamicDetailHeader.findViewById(R.id.detail_dig_view);
         DynamicToolBean dynamicToolBean = dynamicBean.getTool();
         if (dynamicToolBean == null) {
             return;
         }
         dynamicHorizontalStackIconView.setDigCount(dynamicToolBean.getFeed_digg_count());
-        dynamicHorizontalStackIconView.setPublishTime(dynamicDetailBean.getCreated_at());
+        dynamicHorizontalStackIconView.setPublishTime(dynamicBean.getFeed().getCreated_at());
         dynamicHorizontalStackIconView.setViewerCount(dynamicToolBean.getFeed_view_count());
         // 设置点赞头像
-      /*  List<UserInfoBean> userInfoList = dynamicBean.getDigUserInfoList();
+        List<FollowFansBean> userInfoList = dynamicBean.getDigUserInfoList();
         List<ImageBean> imageBeanList = null;
-        if (userInfoList != null && !imageBeanList.isEmpty()) {
+        if (userInfoList != null && !userInfoList.isEmpty()) {
             imageBeanList = new ArrayList<>();
-            for (UserInfoBean userInfoBean : userInfoList) {
+            for (FollowFansBean followFansBean : userInfoList) {
                 ImageBean imageBean = new ImageBean();
-                imageBean.setStorage_id(userInfoBean.getAvatar());
+                imageBean.setStorage_id(TextUtils.isEmpty(followFansBean.getTargetUserInfo().getAvatar()) ? 0 : Integer.parseInt(followFansBean.getTargetUserInfo().getAvatar()));
                 imageBeanList.add(imageBean);
             }
         }
-        dynamicHorizontalStackIconView.setDigUserHeadIcon(imageBeanList);*/
+        dynamicHorizontalStackIconView.setDigUserHeadIcon(imageBeanList);
 
         // 设置跳转到点赞列表
         dynamicHorizontalStackIconView.setDigContainerClickListener(new DynamicHorizontalStackIconView.DigContainerClickListener() {
             @Override
             public void digContainerClick(View digContainer) {
                 Bundle bundle = new Bundle();
-                bundle.putLong(DigListFragment.DIG_LIST_DATA, dynamicDetailBean.getFeed_id());
+                bundle.putLong(DigListFragment.DIG_LIST_DATA, dynamicBean.getFeed().getFeed_id());
                 Intent intent = new Intent(mDynamicDetailHeader.getContext(), DigListActivity.class);
                 intent.putExtras(bundle);
                 mDynamicDetailHeader.getContext().startActivity(intent);
             }
         });
+
+        ((TextView) mDynamicDetailHeader.findViewById(R.id.tv_comment_count)).setText(mDynamicDetailHeader.getResources().getString(R.string.dynamic_comment_count, dynamicBean.getTool().getFeed_comment_count()));
     }
 
     private void showContentImage(Context context, ImageBean imageBean, final int position, boolean lastImg, LinearLayout photoContainer) {

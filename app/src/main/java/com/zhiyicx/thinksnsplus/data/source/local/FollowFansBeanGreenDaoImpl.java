@@ -157,4 +157,22 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
 
     }
 
+    /**
+     * 获取主体用户对 目标用户的关注状态
+     *
+     * @param origin_user_id  主体用户 id
+     * @param tartget_user_id 目标用户 id
+     * @return
+     */
+    public FollowFansBean getFollowState(long origin_user_id, long tartget_user_id) {
+        FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
+        List<FollowFansBean> result = followFansBeanDao.queryBuilder()
+                .where(FollowFansBeanDao.Properties.OriginUserId.eq(origin_user_id), FollowFansBeanDao.Properties.TargetUserId.eq(tartget_user_id))
+                .list();
+        if (!result.isEmpty()) {
+            return result.get(0);
+        }
+        return null;
+    }
+
 }

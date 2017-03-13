@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.widget.chat;
 
-import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
@@ -82,17 +81,17 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
             holder.setVisible(R.id.tv_chat_time, View.GONE);
         }
         // 消息状态
-        switch (chatItemBean.getLastMessage().getSend_status()) {
+        switch (chatItemBean.getLastMessage().getSend_status()) { //当前只需要失败状态，不需要发送状态，故去掉加载动画
             case MessageStatus.SENDING:
-                holder.setImageResource(R.id.msg_status, R.drawable.frame_loading_grey);
-                holder.setVisible(R.id.msg_status, View.VISIBLE);
-                ((AnimationDrawable) ((ImageView) holder.getView(R.id.msg_status)).getDrawable()).start();
-                break;
+//                holder.setImageResource(R.id.msg_status, R.drawable.frame_loading_grey);
+//                holder.setVisible(R.id.msg_status, View.VISIBLE);
+//                ((AnimationDrawable) ((ImageView) holder.getView(R.id.msg_status)).getDrawable()).start();
+//                break;
             case MessageStatus.SEND_SUCCESS:
-                AnimationDrawable animationD = (AnimationDrawable) ((ImageView) holder.getView(R.id.msg_status)).getDrawable();
-                if (animationD != null) {
-                    animationD.stop();
-                }
+//                AnimationDrawable animationD = (AnimationDrawable) ((ImageView) holder.getView(R.id.msg_status)).getDrawable();
+//                if (animationD != null) {
+//                    animationD.stop();
+//                }
                 holder.setVisible(R.id.msg_status, View.GONE);
                 break;
             case MessageStatus.SEND_FAIL:

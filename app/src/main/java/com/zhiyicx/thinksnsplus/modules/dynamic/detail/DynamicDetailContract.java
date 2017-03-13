@@ -1,8 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
+import android.os.Bundle;
+
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
@@ -50,6 +53,41 @@ public interface DynamicDetailContract {
          * 设置初始关注状态
          */
         void initFollowState(FollowFansBean mFollowFansBean);
+
+        /**
+         * 获取当前动态数据
+         */
+        DynamicBean getCurrentDynamic();
+
+
+        /**
+         * 获取列表数据
+         *
+         * @return
+         */
+        List<DynamicCommentBean> getDatas();
+
+        /**
+         * 获取当前动态在列表中的位置
+         *
+         * @return
+         */
+        Bundle getArgumentsBundle();
+
+        /**
+         * 刷新评论数
+         */
+        void updateCommentCount();
+
+        /**
+         * 获取列表数据
+         *
+         * @return
+         */
+        void refresh();
+
+        void refresh(int position);
+
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
@@ -101,5 +139,20 @@ public interface DynamicDetailContract {
          */
         void getUserFollowState(String user_ids);
 
+        /**
+         * send a comment
+         *
+         * @param replyToUserId  comment  to who
+         * @param commentContent comment content
+         */
+        void sendComment(long replyToUserId, String commentContent);
+
+        /**
+         * delete a comment
+         *
+         * @param comment_id      comment's id
+         * @param commentPosition comment curren position
+         */
+        void deleteComment(long comment_id, int commentPosition);
     }
 }

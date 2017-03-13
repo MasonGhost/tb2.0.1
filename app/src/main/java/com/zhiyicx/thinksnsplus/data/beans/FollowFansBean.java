@@ -1,20 +1,19 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.base.BaseListBean;
 
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.ToOne;
-import org.greenrobot.greendao.DaoException;
-import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.Unique;
+
+import java.io.Serializable;
 
 /**
  * @author LiuChao
@@ -23,7 +22,8 @@ import org.greenrobot.greendao.annotation.Unique;
  * @contact email:450127106@qq.com
  */
 @Entity
-public class FollowFansBean extends BaseListBean {
+public class FollowFansBean extends BaseListBean implements Serializable {
+    private static final long serialVersionUID = 536871009;
     public static final int UNFOLLOWED_STATE = 0;// 未关注的状态
     public static final int IFOLLOWED_STATE = 1;// 我关注了他，他没有关注我
     public static final int FOLLOWED_EACHOTHER_STATE = 2;// 互相关注的状态

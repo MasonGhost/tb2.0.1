@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--个人主页动态左侧的显示天的文字大小-->
+    <dimen name="size_dynamic_day">22dp</dimen>
     <!-- 标题栏标题；动态详情页标题 -->
     <dimen name="size_primary_title">18sp</dimen>
     <!-- 动态列表动态标题；

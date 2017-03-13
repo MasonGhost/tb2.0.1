@@ -34,6 +34,18 @@ public interface PersonalCenterContract {
          * @param followFansBean
          */
         void setFollowState(FollowFansBean followFansBean);
+
+        /**
+         * 设置封面上传的状态
+         *
+         * @param taskId 返回的图片任务id
+         */
+        void setUpLoadCoverState(boolean upLoadState, int taskId);
+
+        /**
+         * 设置通知服务器封面更新的状态
+         */
+        void setChangeUserCoverState(boolean changeSuccess);
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
@@ -63,13 +75,23 @@ public interface PersonalCenterContract {
         void setCurrentUserInfo(Long userId);
 
         /**
-         * 获取该用户的动态列表
+         * 从网络获取该用户的动态列表
          *
          * @param maxId
          * @param isLoadMore
          * @param user_id
          */
         void requestNetData(Long maxId, boolean isLoadMore, long user_id);
+
+        /**
+         * 从数据库获取该用户的动态列表
+         *
+         * @param max_Id     当前获取到数据的最小时间
+         * @param isLoadMore 加载状态
+         * @param user_id
+         * @return
+         */
+        List<DynamicBean> requestCacheData(Long max_Id, boolean isLoadMore, long user_id);
 
         /**
          * 设置进入个人中心是的用户关注状态
@@ -80,5 +102,18 @@ public interface PersonalCenterContract {
          * 处理关注状态
          */
         void handleFollow(FollowFansBean followFansBean);
+
+        /**
+         * 上传封面图片
+         */
+        void uploadUserCover(String filePath);
+
+        /**
+         * 修改封面图片
+         *
+         * @param storage_task_id 封面上传的任务id
+         * @param imagePath       上传封面的本地路径
+         */
+        void changeUserCover(UserInfoBean userInfoBean, int storage_task_id, String imagePath);
     }
 }

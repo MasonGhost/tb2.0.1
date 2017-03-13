@@ -219,6 +219,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
             return;
         }
         this.mUserInfoBean = userInfoBean;
+        if (userInfoBean == null) {
+            return;
+        }
         // 设置用户头像
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
@@ -232,5 +235,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         mTvUserName.setText(userInfoBean.getName());
         // 设置简介
         mTvUserSignature.setText(userInfoBean.getIntro());
+        // 设置粉丝数
+        mTvFansCount.setText(userInfoBean.getFollowed_count());
+        // 设置关注数
+        mTvFollowCount.setText(userInfoBean.getFollowing_count());
     }
 }

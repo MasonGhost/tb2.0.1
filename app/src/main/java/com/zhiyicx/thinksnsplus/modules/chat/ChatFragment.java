@@ -17,6 +17,7 @@ import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.widget.chat.ChatMessageList;
 
 import org.jetbrains.annotations.NotNull;
@@ -200,7 +201,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
      */
     @Override
     public void onUserInfoClick(ChatItemBean chatItemBean) {
-        showMessage(chatItemBean.getUserInfo().getName());
+        PersonalCenterFragment.startToPersonalCenter(getContext(), chatItemBean.getUserInfo());
     }
 
     /**

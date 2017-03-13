@@ -80,6 +80,7 @@
     <string name="dynamic_content_hint">输入要说的话，图文结合更精彩哦</string>
     <!--动态详情-->
     <string name="dynamic_dig_count">%1$d人点赞</string>
+    <string name="dynamic_comment_count">%1$d条评论</string>
     <string name="dynamic_publish_time">发布于%1$s</string>
     <string name="dynamic_viewer_count">%1$d人浏览</string>
     <string name="dynamic_like">喜欢</string>
@@ -87,7 +88,7 @@
 
     <!--个人中心-->
     <string name="chat">聊天</string>
-    <string name="dynamic_count">%1$d个动态</string>
+    <string name="dynamic_count">%1$s个动态</string>
     <string name="followed">已关注</string>
     <string name="followed_eachother">互相关注</string>
     <!--代码中的string-->
