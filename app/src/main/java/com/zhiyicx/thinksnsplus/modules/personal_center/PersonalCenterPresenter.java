@@ -176,7 +176,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
     @Override
     public void changeUserCover(final UserInfoBean userInfoBean, int storage_task_id, final String imagePath) {
         HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("cover", storage_task_id + "");
+        hashMap.put("cover_storage_task_id", storage_task_id + "");
         Subscription subscription = mUserInfoRepository.changeUserInfo(hashMap)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
