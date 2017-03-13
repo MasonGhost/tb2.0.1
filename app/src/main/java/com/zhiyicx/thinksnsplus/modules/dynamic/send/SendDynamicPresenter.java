@@ -14,6 +14,7 @@ import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.simple.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.inject.Inject;
@@ -50,7 +51,9 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
 
     @Override
     public void sendDynamic(DynamicBean dynamicBean) {
-        System.out.println("zise ---------------- " + dynamicBean.getFeed().getLocalPhotos().size());
+        if (dynamicBean.getFeed().getLocalPhotos() == null) { // 当没有图片的时候，给一个占位数组
+            dynamicBean.getFeed().setLocalPhotos(new ArrayList<String>());
+        }
         dynamicBean.setState(DynamicBean.SEND_ING);
         dynamicBean.setUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache(dynamicBean.getUser_id()));
         // 将动态信息存入数据库
