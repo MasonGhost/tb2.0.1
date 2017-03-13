@@ -6,8 +6,10 @@ import android.os.Parcel;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.utils.ConvertUtils;
 
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.Keep;
@@ -16,9 +18,8 @@ import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
+import java.util.ArrayList;
 import java.util.List;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
 
 /**
  * @Describe 动态实体类：包含动态内容，工具栏参数，评论内容
@@ -117,6 +118,7 @@ public class DynamicBean extends BaseListBean {
     public void setState(int state) {
         this.state = state;
     }
+
     @Keep
     public DynamicDetailBean getFeed() {
         return feed;
@@ -129,6 +131,7 @@ public class DynamicBean extends BaseListBean {
 
     @Keep
     public DynamicToolBean getTool() {
+        tool = tool == null ? new DynamicToolBean() : tool;
         return tool;
     }
 
@@ -176,6 +179,7 @@ public class DynamicBean extends BaseListBean {
 
     @Keep
     public List<DynamicCommentBean> getComments() {
+        comments = comments == null ? new ArrayList<DynamicCommentBean>() : comments;
         return comments;
     }
 
@@ -244,7 +248,9 @@ public class DynamicBean extends BaseListBean {
     }
 
 
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 249603048)
     public synchronized void resetComments() {
         comments = null;
@@ -317,7 +323,7 @@ public class DynamicBean extends BaseListBean {
 
     @Generated(hash = 1888878893)
     public DynamicBean(Long id, Long feed_id, Long feed_mark, long user_id, Long hot_creat_time,
-            boolean isFollowed, int state, List<FollowFansBean> digUserInfoList) {
+                       boolean isFollowed, int state, List<FollowFansBean> digUserInfoList) {
         this.id = id;
         this.feed_id = feed_id;
         this.feed_mark = feed_mark;
@@ -339,10 +345,14 @@ public class DynamicBean extends BaseListBean {
             return new DynamicBean[size];
         }
     };
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 476616020)
     private transient DynamicBeanDao myDao;
     @Generated(hash = 1613724019)

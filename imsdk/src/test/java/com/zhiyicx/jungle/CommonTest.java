@@ -2,7 +2,6 @@ package com.zhiyicx.jungle;
 
 import com.zhiyicx.imsdk.entity.Message;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.text.SimpleDateFormat;
@@ -33,25 +32,37 @@ public class CommonTest {
 
     /**
      * 测试增强 for 循环
+     * 增强 for 循环的缺点， 不能拿到当前的 position ； 不能增加或者删除数据（除非操作之后直接 break）
      *
      * @throws Exception
      */
     @Test
     public void testfor() throws Exception {
         List<Message> data = new ArrayList<>();
-        data.add(new Message(1));
         data.add(new Message(2));
+        data.add(new Message(1));
         data.add(new Message(3));
+//        for (Message message : data) {
+//            if (message.getId() == 2) {
+//                message.setId(40);
+//                message.setTxt("niaho");
+//                data.add(message);
+//            }
+//        }
+//        int j=1;
+//        for (int i = 0; i < data.size(); i++) {
+//            if (j++==1) {
+//                data.add(0,new Message(10));
+//
+//                System.out.println(data.size());
+//            }
+//        }
+
         for (Message message : data) {
-            if (message.getId() == 2) {
-                message.setId(40);
-                message.setTxt("niaho");
-                data.add(message);
-                break;
-            }
+            System.out.println("data = " + message.getId());
         }
-        System.out.println("data = " + data.get(1).getTxt());
-        Assert.assertTrue(40 == data.get(1).getId());
+
+//        Assert.assertTrue(40 == data.get(1).getId());
     }
 
     /**
@@ -122,7 +133,7 @@ public class CommonTest {
         for (int i = 0; i < 10; i++) {
             data.add(i);
         }
-        data.add(3,99);
+        data.add(3, 99);
         System.out.println("data = " + data);
     }
 }

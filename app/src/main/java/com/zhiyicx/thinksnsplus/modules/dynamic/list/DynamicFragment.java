@@ -263,6 +263,10 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     private void goDynamicDetail(int position, boolean isLookMoreComment) {
+        // 还未发送成功的动态列表不查看详情
+        if (mAdapter.getItem(position).getFeed_id() == null || mAdapter.getItem(position).getFeed_id() == 0) {
+            return;
+        }
         Intent intent = new Intent(getActivity(), DynamicDetailActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(DYNAMIC_DETAIL_DATA, mAdapter.getItem(position));
@@ -282,10 +286,18 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
         switch (viewPosition) { // 0 1 2 3 代表 view item 位置
             case 0: // 喜欢
+                // 还未发送成功的动态列表不查看详情
+                if (mAdapter.getItem(dataPosition).getFeed_id() == null || mAdapter.getItem(dataPosition).getFeed_id() == 0) {
+                    return;
+                }
                 handleLike(dataPosition);
                 break;
 
             case 1: // 评论
+                // 还未发送成功的动态列表不查看详情
+                if (mAdapter.getItem(dataPosition).getFeed_id() == null || mAdapter.getItem(dataPosition).getFeed_id() == 0) {
+                    return;
+                }
                 showCommentView();
                 mCurrentPostion = dataPosition;
                 mReplyToUserId = 0;// 0 代表评论动态
