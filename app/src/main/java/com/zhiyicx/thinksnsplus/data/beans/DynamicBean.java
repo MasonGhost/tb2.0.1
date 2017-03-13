@@ -179,7 +179,6 @@ public class DynamicBean extends BaseListBean {
 
     @Keep
     public List<DynamicCommentBean> getComments() {
-        comments = comments == null ? new ArrayList<DynamicCommentBean>() : comments;
         return comments;
     }
 

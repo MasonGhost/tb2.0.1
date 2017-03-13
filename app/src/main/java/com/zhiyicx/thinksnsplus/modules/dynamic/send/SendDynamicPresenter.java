@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -54,6 +55,7 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
         if (dynamicBean.getFeed().getLocalPhotos() == null) { // 当没有图片的时候，给一个占位数组
             dynamicBean.getFeed().setLocalPhotos(new ArrayList<String>());
         }
+        dynamicBean.setComments(new ArrayList<DynamicCommentBean>());
         dynamicBean.setState(DynamicBean.SEND_ING);
         dynamicBean.setUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache(dynamicBean.getUser_id()));
         // 将动态信息存入数据库
