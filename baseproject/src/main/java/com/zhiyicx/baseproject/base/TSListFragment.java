@@ -329,6 +329,10 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     public void onLoadMore() {
+        if (mMaxId == null || mMaxId == 0) {
+            mRefreshlayout.setLoadingMore(false);
+            return;
+        }
         mPage++;
         requestNetData(mMaxId, true);
     }

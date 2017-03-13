@@ -98,6 +98,6 @@ public interface DynamicClient {
      * @return
      */
     @GET(ApiConfig.APP_PATH_DYNAMIC_COMMENT_LIST)
-    Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentList(@Path("feed_id") Long feed_id, @Query("max_id ") Long max_id);
+    Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentList(@Path("feed_id") Long feed_id, @Query("max_id") Long max_id);
 
 }
