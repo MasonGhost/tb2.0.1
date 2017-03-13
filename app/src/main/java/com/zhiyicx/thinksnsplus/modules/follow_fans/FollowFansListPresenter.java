@@ -51,7 +51,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
 
     @Override
     protected boolean useEventBus() {
-        return false;
+        return true;
     }
 
     @Override
@@ -118,7 +118,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
     public void followUser(int index, FollowFansBean followFansBean) {
         // 更新数据
         followFansBean.setOrigin_follow_status(FollowFansBean.IFOLLOWED_STATE);
-        EventBus.getDefault().post(FollowFansBean.IFOLLOWED_STATE, EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW);
+        EventBus.getDefault().post(followFansBean, EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW);
         // 后台通知服务器关注
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST);
@@ -137,7 +137,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
     public void cancleFollowUser(int index, FollowFansBean followFansBean) {
         // 更新数据
         followFansBean.setOrigin_follow_status(FollowFansBean.UNFOLLOWED_STATE);
-        EventBus.getDefault().post(FollowFansBean.UNFOLLOWED_STATE, EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW);
+        EventBus.getDefault().post(followFansBean, EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW);
         // 通知服务器
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
@@ -150,4 +150,21 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
         mFollowFansBeanGreenDao.insertOrReplace(followFansBean);
         mRootView.upDateFollowFansState(index, FollowFansBean.UNFOLLOWED_STATE);
     }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW)
+    public void upDateFollowState(FollowFansBean followFansBean) {
+        List<FollowFansBean> followFansBeanList = mRootView.getFollowListData();
+        for (int i = 0; i < followFansBeanList.size(); i++) {
+            FollowFansBean oldFollowList = followFansBeanList.get(i);
+            // 如果粉丝（关注）列表中存在同样的用户，更新它
+            if (oldFollowList.getTargetUserId()==followFansBean.getTargetUserId()) {
+                // 更新内存数据
+                followFansBean.setOrigin_follow_status(followFansBean.getOrigin_follow_status());
+                // 更新列表
+                mRootView.upDateFollowFansState(i, followFansBean.getOrigin_follow_status());
+                break;
+            }
+        }
+    }
+
 }

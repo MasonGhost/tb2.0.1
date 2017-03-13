@@ -33,6 +33,11 @@ public interface FollowFansListContract {
          * @param userInfoBeanList
          */
         void upDateUserInfo(List<UserInfoBean> userInfoBeanList);
+
+        /**
+         * 获取关注列表数据
+         */
+        List<FollowFansBean> getFollowListData();
     }
 
     interface Presenter extends ITSListPresenter<FollowFansBean> {

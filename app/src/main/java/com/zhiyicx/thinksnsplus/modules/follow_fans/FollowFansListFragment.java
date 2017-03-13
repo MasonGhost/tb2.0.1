@@ -125,4 +125,9 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
         refreshData();
     }
 
+    @Override
+    public List<FollowFansBean> getFollowListData() {
+        return mAdapter.getDatas();
+    }
+
 }
