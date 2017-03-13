@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.SparseArray;
 
@@ -42,6 +43,10 @@ import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_POSITION;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_TYPE;
 
 /**
  * @Describe
@@ -272,6 +277,58 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
     }
 
     /**
+     * 处理更新动态数据
+     *
+     * @param data
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_DYNAMIC)
+    public void updateDynamic(Bundle data) {
+        Observable.just(data)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<Bundle, Integer>() {
+                    @Override
+                    public Integer call(Bundle bundle) {
+                        String type = bundle.getString(DYNAMIC_DETAIL_DATA_TYPE);
+                        int position = bundle.getInt(DYNAMIC_DETAIL_DATA_POSITION);
+                        DynamicBean dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
+                        if (mRootView.getDynamicType().equals(type)) { // 先刷新当前页面，再刷新其他页面
+                            mRootView.getDatas().set(position, dynamicBean);
+                            return position;
+                        }
+                        int size = mRootView.getDatas().size();
+                        int dynamicPosition = -1;
+                        for (int i = 0; i < size; i++) {
+                            if (mRootView.getDatas().get(i).getFeed_mark().equals(dynamicBean.getFeed_mark())) {
+                                dynamicPosition = i;
+                                break;
+                            }
+                        }
+                        if (dynamicPosition != -1) {// 如果列表有当前评论
+                            mRootView.getDatas().set(position, dynamicBean);
+                        }
+                        return dynamicPosition;
+                    }
+                })
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer integer) {
+                        if (integer != -1) {
+                            mRootView.refresh(integer);
+                        }
+
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
+
+
+    }
+
+    /**
      * 列表中是否有了
      *
      * @param dynamicBean
@@ -383,7 +440,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
 
         mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getDatas().get(mCurrentPostion).getTool());
         mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
-        mRepository.sendComment(commentContent, mRootView.getDatas().get(mCurrentPostion).getFeed_id(),replyToUserId,creatComment.getComment_mark());
+        mRepository.sendComment(commentContent, mRootView.getDatas().get(mCurrentPostion).getFeed_id(), replyToUserId, creatComment.getComment_mark());
 
     }
 
@@ -408,7 +465,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                                 break;
                             }
                         }
-                        if (dynamicPosition != -1) {// 如果列表没有当前评论
+                        if (dynamicPosition != -1) {// 如果列表有当前评论
                             int commentSize = mRootView.getDatas().get(dynamicPosition).getComments().size();
                             for (int i = 0; i < commentSize; i++) {
                                 if (mRootView.getDatas().get(dynamicPosition).getComments().get(i).getFeed_mark().equals(dynamicCommentBean.getFeed_mark())) {

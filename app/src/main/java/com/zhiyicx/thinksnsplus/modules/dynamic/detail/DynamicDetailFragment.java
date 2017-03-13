@@ -63,6 +63,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.Presenter, DynamicCommentBean> implements DynamicDetailContract.View, OnUserInfoClickListener, OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener {
     public static final String DYNAMIC_DETAIL_DATA = "dynamic_detail_data";
+    public static final String DYNAMIC_DETAIL_DATA_TYPE = "dynamic_detail_data_type";
     public static final String DYNAMIC_DETAIL_DATA_POSITION = "dynamic_detail_data_position";
     public static final String LOOK_COMMENT_MORE = "look_comment_more";
     // 动态详情列表，各个item的位置
@@ -90,10 +91,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     private DynamicBean mDynamicBean;// 上一个页面传进来的数据
     private FollowFansBean mFollowFansBean;// 用户关注状态
     private List<DynamicCommentBean> mDatas = new ArrayList<>();
-
     private boolean mIsLookMore = false;
-    private int mDynamicPosition;
-
     private DynamicDetailHeader mDynamicDetailHeader;
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
 
@@ -188,7 +186,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         Bundle bundle = getArguments();
         if (bundle != null && bundle.containsKey(DYNAMIC_DETAIL_DATA)) {
             mIsLookMore = bundle.getBoolean(LOOK_COMMENT_MORE);
-            mDynamicPosition = bundle.getInt(DYNAMIC_DETAIL_DATA_POSITION);
             mDynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
             setToolBarUser(mDynamicBean);// 设置标题用户
             initBottomToolData(mDynamicBean);// 初始化底部工具栏数据
@@ -312,6 +309,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     public List<DynamicCommentBean> getDatas() {
         return mDatas;
+    }
+
+    @Override
+    public Bundle getArgumentsBundle() {
+        return getArguments();
     }
 
     @Override

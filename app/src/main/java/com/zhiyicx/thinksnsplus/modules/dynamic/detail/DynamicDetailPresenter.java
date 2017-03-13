@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -13,6 +14,7 @@ import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
@@ -26,6 +28,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +39,10 @@ import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean.STATUS_DIGG_FEED_CHECKED;
+import static com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
 
 /**
  * @author LiuChao
@@ -60,6 +67,12 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
 
     @Inject
     public SharePolicy mSharePolicy;
+
+    public void setNeedRefresh(boolean needRefresh) {
+        mIsNeedRefresh = needRefresh;
+    }
+
+    private boolean mIsNeedRefresh = false;// 是否需要刷新动态列表中当前 item ,如果做了修改就刷新
 
     @Inject
     public DynamicDetailPresenter(DynamicDetailContract.Repository repository, DynamicDetailContract.View rootView) {
@@ -162,8 +175,11 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
 
     @Override
     public void handleLike(boolean isLiked, final Long feed_id, final DynamicToolBean dynamicToolBean) {
+        setNeedRefresh(true);
         // 更新UI
         mRootView.setLike(isLiked);
+        mRootView.getCurrentDynamic().getTool().setFeed_digg_count(isLiked ? mRootView.getCurrentDynamic().getTool().getFeed_digg_count() + 1 : mRootView.getCurrentDynamic().getTool().getFeed_digg_count() - 1);
+        mRootView.getCurrentDynamic().getTool().setIs_digg_feed(isLiked ? STATUS_DIGG_FEED_CHECKED : STATUS_DIGG_FEED_UNCHECKED);
         // 更新数据库
         mDynamicToolBeanGreenDao.insertOrReplace(dynamicToolBean);
         // 通知服务器
@@ -199,6 +215,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
 
     @Override
     public void handleFollowUser(FollowFansBean followFansBean) {
+        setNeedRefresh(true);
         BackgroundRequestTaskBean backgroundRequestTaskBean = null;
         if (followFansBean.getOrigin_follow_status() == FollowFansBean.UNFOLLOWED_STATE) {
             // 当前未关注，进行关注
@@ -250,6 +267,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
 
     @Override
     public void deleteComment(long comment_id, int commentPositon) {
+        setNeedRefresh(true);
         mRootView.getCurrentDynamic().getTool().setFeed_comment_count(mRootView.getCurrentDynamic().getTool().getFeed_comment_count() - 1);
         mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getCurrentDynamic().getTool());
         mDynamicCommentBeanGreenDao.deleteSingleCache(mRootView.getCurrentDynamic().getComments().get(commentPositon));
@@ -267,6 +285,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
      */
     @Override
     public void sendComment(long replyToUserId, String commentContent) {
+        setNeedRefresh(true);
         // 生成一条评论
         DynamicCommentBean creatComment = new DynamicCommentBean();
         creatComment.setState(DynamicCommentBean.SEND_ING);
@@ -300,5 +319,13 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
 
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mIsNeedRefresh) {
+            Bundle bundle = mRootView.getArgumentsBundle();
+            bundle.putParcelable(DYNAMIC_DETAIL_DATA, mRootView.getCurrentDynamic());
+            EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_DYNAMIC);
+        }
+    }
 }

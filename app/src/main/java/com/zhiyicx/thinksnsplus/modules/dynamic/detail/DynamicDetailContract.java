@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
+import android.os.Bundle;
+
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
@@ -66,9 +68,17 @@ public interface DynamicDetailContract {
         List<DynamicCommentBean> getDatas();
 
         /**
+         * 获取当前动态在列表中的位置
+         *
+         * @return
+         */
+        Bundle getArgumentsBundle();
+
+        /**
          * 刷新评论数
          */
         void updateCommentCount();
+
         /**
          * 获取列表数据
          *

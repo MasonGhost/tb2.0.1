@@ -23,6 +23,8 @@ public class EventBusTagConfig {
     public static final String EVENT_SELECTED_PHOTO_UPDATE = "event_selected_photo_update";
     // 发送动态到动态列表
     public static final String EVENT_SEND_DYNAMIC_TO_LIST = "event_send_dynamic_to_List";
+    //更新动态列表
+    public static final String EVENT_UPDATE_DYNAMIC = "event_update_dynamic";
     // 动态列表发送评论
     public static final String EVENT_SEND_COMMENT_TO_DYNAMIC_LIST = "event_send_dynamic_to_List";
 
