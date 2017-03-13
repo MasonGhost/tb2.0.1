@@ -72,7 +72,7 @@ public class DigListPresenter extends BasePresenter<DigListContract.Repository, 
         if (followFansBean.getOrigin_follow_status() == FollowFansBean.UNFOLLOWED_STATE) {
             // 当前未关注，进行关注
             followFansBean.setOrigin_follow_status(FollowFansBean.IFOLLOWED_STATE);
-            EventBus.getDefault().post(FollowFansBean.IFOLLOWED_STATE, EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW);
+            EventBus.getDefault().post(followFansBean, EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW);
             // 进行后台任务请求
             backgroundRequestTaskBean = new BackgroundRequestTaskBean();
             backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST);
@@ -80,7 +80,7 @@ public class DigListPresenter extends BasePresenter<DigListContract.Repository, 
         } else {
             // 已关注，取消关注
             followFansBean.setOrigin_follow_status(FollowFansBean.UNFOLLOWED_STATE);
-            EventBus.getDefault().post(FollowFansBean.UNFOLLOWED_STATE, EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW);
+            EventBus.getDefault().post(followFansBean, EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW);
             // 进行后台任务请求
             backgroundRequestTaskBean = new BackgroundRequestTaskBean();
             backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);

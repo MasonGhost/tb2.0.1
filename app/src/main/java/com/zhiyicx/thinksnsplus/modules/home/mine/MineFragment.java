@@ -253,6 +253,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 // 取消一个关注
                 mUserInfoBean.setFollowing_count(Integer.parseInt(mUserInfoBean.getFollowing_count()) - 1 + "");
                 break;
+            default:
         }
         mTvFollowCount.setText(mUserInfoBean.getFollowing_count());
     }
