@@ -121,7 +121,7 @@ public class DynamicDetailHeader {
             @Override
             public void digContainerClick(View digContainer) {
                 Bundle bundle = new Bundle();
-                bundle.putLong(DigListFragment.DIG_LIST_DATA, dynamicBean.getFeed().getFeed_id());
+                bundle.putParcelable(DigListFragment.DIG_LIST_DATA, dynamicBean);
                 Intent intent = new Intent(mDynamicDetailHeader.getContext(), DigListActivity.class);
                 intent.putExtras(bundle);
                 mDynamicDetailHeader.getContext().startActivity(intent);

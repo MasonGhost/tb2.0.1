@@ -29,8 +29,8 @@ import java.util.List;
 
 
 @Entity
-public class UserInfoBean implements Parcelable {
-
+public class UserInfoBean implements Parcelable ,Serializable{
+    private static final long serialVersionUID = 536871008;
     // 定义四种性别状态
     public static final String MALE = "1";
     public static final String FEMALE = "2";
