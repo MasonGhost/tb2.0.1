@@ -320,6 +320,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     public void onLoadMore() {
+        if (mMaxId == null || mMaxId == 0) {
+            mRefreshlayout.setLoadingMore(false);
+            return;
+        }
+
         mPage++;
         requestNetData(mMaxId, true);
     }
@@ -402,7 +407,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 //                showMessage(getString(R.string.no_data)); 如需提示，打开即可
             }
         }
-        LogUtils.i("adatper_data-->"+mAdapter.getDatas().toString());
+        LogUtils.i("adatper_data-->" + mAdapter.getDatas().toString());
     }
 
     /**

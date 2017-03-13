@@ -34,11 +34,13 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
-import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailCommentAdapter;
+import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailCommentItem;
+import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailEmptyCommentItem;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
-import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -193,18 +195,25 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
             // 设置动态详情列表数据
             mDynamicDetailHeader.setDynamicDetial(mDynamicBean);
             mDynamicDetailHeader.updateHeaderViewData(mDynamicBean);
-            refreshData();
+            onNetResponseSuccess(mDynamicBean.getComments(), false);
             mPresenter.getDynamicDigList(mDynamicBean.getFeed_id(), 0L);
             mPresenter.requestNetData(0L, false);// 获取评论列表
+            if (mIsLookMore) {
+                mRvList.scrollToPosition(1);
+            }
         }
     }
 
 
     @Override
-    protected CommonAdapter<DynamicCommentBean> getAdapter() {
-        DynamicDetailCommentAdapter adapter = new DynamicDetailCommentAdapter(getContext(), R.layout.item_dynamic_detail_comment, mDatas);
+    protected MultiItemTypeAdapter<DynamicCommentBean> getAdapter() {
+        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mDatas);
+        DynamicDetailCommentItem dynamicDetailCommentItem = new DynamicDetailCommentItem();
+        dynamicDetailCommentItem.setOnUserInfoClickListener(this);
+        adapter.addItemViewDelegate(dynamicDetailCommentItem);
+        DynamicDetailEmptyCommentItem dynamicDetailEmptyCommentItem = new DynamicDetailEmptyCommentItem();
+        adapter.addItemViewDelegate(dynamicDetailEmptyCommentItem);
         adapter.setOnItemClickListener(this);
-        adapter.setOnUserInfoClickListener(this);
         return adapter;
     }
 
@@ -490,5 +499,14 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                     }
                 })
                 .build();
+    }
+
+    @Override
+    public void onNetResponseSuccess(@NotNull List<DynamicCommentBean> data, boolean isLoadMore) {
+        if (data.isEmpty()) { // 增加空数据，用于显示占位图
+            DynamicCommentBean emptyData = new DynamicCommentBean();
+            data.add(emptyData);
+        }
+        super.onNetResponseSuccess(data, isLoadMore);
     }
 }

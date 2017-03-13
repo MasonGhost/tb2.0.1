@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
+import android.text.TextUtils;
+
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -272,7 +274,6 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         String comment_mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis();
         creatComment.setComment_mark(Long.parseLong(comment_mark));
         creatComment.setReply_to_user_id(replyToUserId);
-        System.out.println("creatComment ---------------> = " + creatComment.getReply_to_user_id());
         if (replyToUserId == 0) { //当回复动态的时候
             UserInfoBean userInfoBean = new UserInfoBean();
             userInfoBean.setUser_id(replyToUserId);
@@ -288,6 +289,9 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         // 处理评论数
         mRootView.getCurrentDynamic().getTool().setFeed_comment_count(mRootView.getCurrentDynamic().getTool().getFeed_comment_count() + 1);
         mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getCurrentDynamic().getTool());
+        if (mRootView.getDatas().size() == 1 && TextUtils.isEmpty(mRootView.getDatas().get(0).getComment_content())) {
+            mRootView.getDatas().clear();
+        }
         mRootView.getDatas().add(0, creatComment);
         mRootView.refresh();
 
