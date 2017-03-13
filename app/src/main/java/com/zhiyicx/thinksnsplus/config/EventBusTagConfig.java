@@ -33,6 +33,9 @@ public class EventBusTagConfig {
     public static final String EVENT_SEND_MUSIC_COMPLETE =
             "EVENT_SEND_MUSIC_COMPLETE";// 当前音乐播放完成
 
+    // 对欧人进行关注或者取消关注，需要改变个人主页关注数量
+    public static final String EVENT_FOLLOW_AND_CANCEL_FOLLOW = "event_follow_and_cancle_follow";
+
 
     /*******************************************
      * IM 相关

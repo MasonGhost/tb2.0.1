@@ -16,6 +16,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
@@ -117,6 +118,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
     public void followUser(int index, FollowFansBean followFansBean) {
         // 更新数据
         followFansBean.setOrigin_follow_status(FollowFansBean.IFOLLOWED_STATE);
+        EventBus.getDefault().post(FollowFansBean.IFOLLOWED_STATE, EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW);
         // 后台通知服务器关注
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST);
@@ -135,6 +137,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
     public void cancleFollowUser(int index, FollowFansBean followFansBean) {
         // 更新数据
         followFansBean.setOrigin_follow_status(FollowFansBean.UNFOLLOWED_STATE);
+        EventBus.getDefault().post(FollowFansBean.UNFOLLOWED_STATE, EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW);
         // 通知服务器
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
