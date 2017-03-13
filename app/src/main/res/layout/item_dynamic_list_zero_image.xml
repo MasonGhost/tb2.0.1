@@ -89,6 +89,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/v_line"
         android:layout_marginTop="@dimen/divider_line"
+        android:layout_marginRight="@dimen/spacing_normal"
         android:layout_toRightOf="@+id/iv_headpic"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingRight="@dimen/spacing_tiny">

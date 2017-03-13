@@ -50,6 +50,7 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
 
     @Override
     public void sendDynamic(DynamicBean dynamicBean) {
+        System.out.println("zise ---------------- " + dynamicBean.getFeed().getLocalPhotos().size());
         dynamicBean.setState(DynamicBean.SEND_ING);
         dynamicBean.setUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache(dynamicBean.getUser_id()));
         // 将动态信息存入数据库

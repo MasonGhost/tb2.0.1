@@ -50,7 +50,6 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
     protected final int mDiverwith; // 分割先的宽高
     protected final int mImageContainerWith; // 图片容器最大宽度
     protected final int mImageMaxHeight; // 单张图片最大高度
-    protected int mImageCount = 0;
     protected ImageLoader mImageLoader;
     protected Context mContext;
 
@@ -131,7 +130,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
      * @return
      */
     protected int getImageCounts() {
-        return mImageCount;
+        return CURREN_CLOUMS;
     }
 
     /**
