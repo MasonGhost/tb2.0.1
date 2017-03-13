@@ -59,7 +59,6 @@ public interface DynamicDetailContract {
          */
         DynamicBean getCurrentDynamic();
 
-
         /**
          * 获取列表数据
          *
@@ -75,9 +74,9 @@ public interface DynamicDetailContract {
         Bundle getArgumentsBundle();
 
         /**
-         * 刷新评论数
+         * 刷新评论数,喜欢
          */
-        void updateCommentCount();
+        void updateCommentCountAndDig();
 
         /**
          * 获取列表数据
