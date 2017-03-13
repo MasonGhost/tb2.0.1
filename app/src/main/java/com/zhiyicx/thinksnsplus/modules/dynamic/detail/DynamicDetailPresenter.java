@@ -324,6 +324,11 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         super.onDestroy();
         if (mIsNeedRefresh) {
             Bundle bundle = mRootView.getArgumentsBundle();
+            // 清除占位图数据
+            if (mRootView.getDatas() != null && mRootView.getDatas().size() == 1 && TextUtils.isEmpty(mRootView.getDatas().get(0).getComment_content())) {
+                mRootView.getDatas().clear();
+            }
+            mRootView.getCurrentDynamic().setComments(mRootView.getDatas());
             bundle.putParcelable(DYNAMIC_DETAIL_DATA, mRootView.getCurrentDynamic());
             EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_DYNAMIC);
         }
