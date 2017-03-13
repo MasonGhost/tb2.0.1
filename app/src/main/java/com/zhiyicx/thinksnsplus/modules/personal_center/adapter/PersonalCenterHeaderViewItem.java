@@ -28,6 +28,7 @@ import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
@@ -180,7 +181,7 @@ public class PersonalCenterHeaderViewItem {
         });
     }
 
-    public void initHeaderViewData(UserInfoBean userInfoBean) {
+    public void initHeaderViewData(final UserInfoBean userInfoBean) {
         // 显示头像
         mImageLoader.loadImage(mActivity, GlideImageConfig.builder()
                 .url(ImageUtils.imagePathConvert(userInfoBean.getAvatar(), ImageZipConfig.IMAGE_70_ZIP))
@@ -227,6 +228,18 @@ public class PersonalCenterHeaderViewItem {
 
         // 设置封面
         setUserCover(userInfoBean.getCover());
+        // 设置封面切换
+        iv_background_cover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AuthBean authBean = AppApplication.getmCurrentLoginAuth();
+                // 如果进入的是自己的个人中心，才允许修改背景封面
+                if (authBean.getUser_id() == userInfoBean.getUser_id()) {
+                    initPhotoPopupWindow();
+                    mPhotoPopupWindow.show();
+                }
+            }
+        });
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
@@ -249,14 +262,6 @@ public class PersonalCenterHeaderViewItem {
         fl_cover_contaner.setLayoutParams(containerLayoutParams);
         // 添加头部放缩
         new ZoomView(fl_cover_contaner, mActivity, mRecyclerView, width, height).initZoom();
-        // 设置封面切换
-        iv_background_cover.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                initPhotoPopupWindow();
-                mPhotoPopupWindow.show();
-            }
-        });
 
     }
 
