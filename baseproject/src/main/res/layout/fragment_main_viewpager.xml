@@ -31,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:layout_alignParentBottom="@bool/pickerview_customTextSize"
+        android:layout_alignParentBottom="true"
         app:limitSize="@integer/comment_input_max_size"
         app:showLimitSize="@integer/show_comment_input_size">
 

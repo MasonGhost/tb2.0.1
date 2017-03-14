@@ -24,7 +24,6 @@ public class DynamicDetailEmptyCommentItem implements ItemViewDelegate<DynamicCo
 
     @Override
     public boolean isForViewType(DynamicCommentBean item, int position) {
-        System.out.println("position -------------->= " + position + "--------" + item);
         return TextUtils.isEmpty(item.getComment_content());
     }
 

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.bumptech.glide.load.model.stream.BaseGlideUrlLoader;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 
 /**
@@ -26,10 +27,12 @@ public class CustomImageModelLoader extends BaseGlideUrlLoader<CustomImageSizeMo
             return model.getImageBean().getImgUrl();
         }
         double screenwith = DeviceUtils.getScreenWidth(mContext);
-        int part = (int) (model.getImageBean().getWidth() / screenwith * 100);
+        int part = (int) (screenwith / model.getImageBean().getWidth() * 100);
         if (part > 100) {
             part = 100;
         }
+
+        LogUtils.i("part = " + part);
         String url = String.format(ApiConfig.IMAGE_PATH, model.getImageBean().getStorage_id(), part);
 
         return url;

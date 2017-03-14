@@ -63,6 +63,7 @@ public class DynamicCommentBeanGreenDaoImpl extends CommonCacheImpl<DynamicComme
     @Override
     public void deleteSingleCache(DynamicCommentBean dynamicCommentBean) {
         DynamicCommentBeanDao dynamicCommentBeanDao = getWDaoSession().getDynamicCommentBeanDao();
+        dynamicCommentBeanDao.deleteByKeyInTx();
         dynamicCommentBeanDao.delete(dynamicCommentBean);
     }
 

@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.zhiyicx.common.utils.DrawableProvider;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -40,7 +41,7 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
     @Override
     public void convert(ViewHolder holder, final DynamicBean dynamicBean, DynamicBean lastT, int position) {
         super.convert(holder, dynamicBean, lastT, position);
-        initImageView(holder,(ImageView) holder.getView(R.id.siv_0), dynamicBean, 0,1);
+        initImageView(holder, (ImageView) holder.getView(R.id.siv_0), dynamicBean, 0, 1);
     }
 
     /**
@@ -48,6 +49,7 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
      *
      * @param view
      * @param dynamicBean
+     * @param part        占图片显示控件的比例等分
      * @return
      */
     @Override
@@ -72,6 +74,7 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
             view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
         }
         proportion = (int) ((with / dynamicBean.getFeed().getStorages().get(0).getWidth()) * 100);
+        LogUtils.i("proportion = " + proportion);
         return proportion;
     }
 

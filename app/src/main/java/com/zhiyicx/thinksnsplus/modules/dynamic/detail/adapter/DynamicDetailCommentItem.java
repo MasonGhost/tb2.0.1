@@ -54,7 +54,6 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
 
     @Override
     public boolean isForViewType(DynamicCommentBean item, int position) {
-        System.out.println("position -------------->= " + position + "--------" + item);
         return position == 0 || !TextUtils.isEmpty(item.getComment_content());
     }
 
