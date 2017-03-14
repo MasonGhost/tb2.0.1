@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center;
 
-import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -46,6 +45,22 @@ public interface PersonalCenterContract {
          * 设置通知服务器封面更新的状态
          */
         void setChangeUserCoverState(boolean changeSuccess);
+        /**
+         * 获取列表数据
+         *
+         * @return
+         */
+        List<DynamicBean> getDatas();
+
+        /**
+         * 获取列表数据
+         *
+         * @return
+         */
+        void refresh();
+
+        void refresh(int position);
+
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
@@ -71,7 +86,7 @@ public interface PersonalCenterContract {
         Observable<BaseJson<FollowFansBean>> getUserFollowState(String user_ids);
     }
 
-    interface Presenter extends ITSListPresenter<DynamicBean> {
+    interface Presenter extends DynamicContract.Presenter {
         void setCurrentUserInfo(Long userId);
 
         /**

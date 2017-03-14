@@ -82,6 +82,22 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     }
 
     @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+        mRefreshlayout.setRefreshing(false);
+        mRefreshlayout.setLoadingMore(false);
+    }
+
+    @Override
+    public void showMessage(String message) {
+        showMessageNotSticky(message);
+    }
+
+    @Override
     protected boolean showToolBarDivider() {
         return true;
     }

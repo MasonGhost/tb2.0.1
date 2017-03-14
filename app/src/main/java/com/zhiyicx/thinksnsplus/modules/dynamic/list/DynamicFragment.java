@@ -13,7 +13,6 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -60,7 +59,10 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  * @Date 2017/1/17
  * @Contact master.jungle68@gmail.com
  */
-public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicNoPullRecycleView.OnCommentStateClickListener, InputLimitView.OnSendClickListener, DynamicContract.View, DynamicListCommentView.OnCommentClickListener, DynamicListCommentView.OnMoreCommentClickListener, DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, OnUserInfoClickListener, MultiItemTypeAdapter.OnItemClickListener {
+public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicBean> implements DynamicNoPullRecycleView.OnCommentStateClickListener,
+        InputLimitView.OnSendClickListener, DynamicContract.View, DynamicListCommentView.OnCommentClickListener, DynamicListCommentView.OnMoreCommentClickListener,
+        DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, OnUserInfoClickListener,
+        MultiItemTypeAdapter.OnItemClickListener {
     private static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
     public static final long ITEM_SPACING = 5L; // 单位dp
     @BindView(R.id.fl_container)
@@ -171,22 +173,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         mPresenter = presenter;
     }
 
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-        mRefreshlayout.setRefreshing(false);
-        mRefreshlayout.setLoadingMore(false);
-    }
-
-    @Override
-    public void showMessage(String message) {
-        ToastUtils.showToast(message);
-    }
-
     /**
      * scan imags
      *
@@ -262,20 +248,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         goDynamicDetail(position, false);
     }
 
-    private void goDynamicDetail(int position, boolean isLookMoreComment) {
-        // 还未发送成功的动态列表不查看详情
-        if (mAdapter.getItem(position).getFeed_id() == null || mAdapter.getItem(position).getFeed_id() == 0) {
-            return;
-        }
-        Intent intent = new Intent(getActivity(), DynamicDetailActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(DYNAMIC_DETAIL_DATA, mAdapter.getItem(position));
-        bundle.putString(DYNAMIC_DETAIL_DATA_TYPE, getDynamicType());
-        bundle.putInt(DYNAMIC_DETAIL_DATA_POSITION, position);
-        bundle.putBoolean(LOOK_COMMENT_MORE, isLookMoreComment);
-        intent.putExtras(bundle);
-        startActivity(intent);
-    }
+
 
     @Override
     public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
@@ -347,7 +320,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     public void onCommentContentClick(DynamicBean dynamicBean, int position) {
         mCurrentPostion = mAdapter.getDatas().indexOf(dynamicBean);
         if (dynamicBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-//            showBottomView(false);
             initLoginOutPopupWindow(dynamicBean, mCurrentPostion, position);
             mDeletCommentPopWindow.show();
         } else {
@@ -368,7 +340,28 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         showBottomView(false);
 
     }
+    /**
+     * comment send
+     *
+     * @param text
+     */
+    @Override
+    public void onSendClick(View v, String text) {
+        mPresenter.sendComment(mCurrentPostion, mReplyToUserId, text);
+        com.zhiyicx.imsdk.utils.common.DeviceUtils.hideSoftKeyboard(getContext(), v);
+        showBottomView(true);
+    }
 
+    /**
+     * 重发评论
+     *
+     * @param dynamicCommentBean
+     * @param position
+     */
+    @Override
+    public void onCommentStateClick(DynamicCommentBean dynamicCommentBean, int position) {
+        showMessage("点击了评论失败状态");
+    }
     @Override
     public void onMoreCommentClick(View view, DynamicBean dynamicBean) {
         goDynamicDetail(mAdapter.getDatas().indexOf(dynamicBean), true);
@@ -416,29 +409,22 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             mOnCommentClickListener.onButtonMenuShow(isShow);
         }
     }
-
-    /**
-     * comment send
-     *
-     * @param text
-     */
-    @Override
-    public void onSendClick(View v, String text) {
-        mPresenter.sendComment(mCurrentPostion, mReplyToUserId, text);
-        com.zhiyicx.imsdk.utils.common.DeviceUtils.hideSoftKeyboard(getContext(), v);
-        showBottomView(true);
+    private void goDynamicDetail(int position, boolean isLookMoreComment) {
+        // 还未发送成功的动态列表不查看详情
+        if (mAdapter.getItem(position).getFeed_id() == null || mAdapter.getItem(position).getFeed_id() == 0) {
+            return;
+        }
+        Intent intent = new Intent(getActivity(), DynamicDetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(DYNAMIC_DETAIL_DATA, mAdapter.getItem(position));
+        bundle.putString(DYNAMIC_DETAIL_DATA_TYPE, getDynamicType());
+        bundle.putInt(DYNAMIC_DETAIL_DATA_POSITION, position);
+        bundle.putBoolean(LOOK_COMMENT_MORE, isLookMoreComment);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
-    /**
-     * 重发评论
-     *
-     * @param dynamicCommentBean
-     * @param position
-     */
-    @Override
-    public void onCommentStateClick(DynamicCommentBean dynamicCommentBean, int position) {
-        showMessage("点击了评论失败状态");
-    }
+
 
     public interface OnCommentClickListener {
         void onButtonMenuShow(boolean isShow);

@@ -56,6 +56,10 @@ public class MainFragment extends TSViewPagerFragment implements InputLimitView.
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        initInputView();
+    }
+
+    private void initInputView() {
         mVShadow.setAlpha((1 - POPUPWINDOW_ALPHA));
         mVShadow.setOnClickListener(new View.OnClickListener() {
             @Override

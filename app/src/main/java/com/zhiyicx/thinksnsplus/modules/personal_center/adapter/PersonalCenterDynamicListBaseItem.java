@@ -31,10 +31,10 @@ public class PersonalCenterDynamicListBaseItem extends DynamicListBaseItem {
         String createdTime = dynamicBean.getFeed().getCreated_at();
         String timeString = TimeUtils.getTimeFriendlyForUserHome(createdTime);
         if (timeString.equals("今,天") || timeString.equals("昨,天")) {
-            timeString=timeString.replace(",","\n");
+            timeString = timeString.replace(",", "\n");
             timeUp.setText(timeString);
-        }else{
-            String[] dayAndMonth=timeString.split(",");
+        } else {
+            String[] dayAndMonth = timeString.split(",");
             timeUp.setText(dayAndMonth[0]);
             timeDown.setText(dayAndMonth[1]);
         }
@@ -43,5 +43,10 @@ public class PersonalCenterDynamicListBaseItem extends DynamicListBaseItem {
     @Override
     public int getItemViewLayoutId() {
         return R.layout.item_personal_center_dynamic_list_zero_image;
+    }
+
+    @Override
+    public boolean isForViewType(DynamicBean item, int position) {
+        return position == 0 || item.getFeed() == null || super.isForViewType(item, position);
     }
 }
