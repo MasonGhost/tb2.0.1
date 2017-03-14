@@ -24,6 +24,7 @@ import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MusicWindows;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.io.File;
@@ -58,6 +59,7 @@ public class AppApplication extends TSApplication {
     private static AuthBean mCurrentLoginAuth; //当前登录用户的信息
     private static HttpProxyCacheServer mMediaProxyCacheServer;
     public static List<String> sOverRead = new ArrayList<>();
+    private static MusicWindows sMusicWindows;
 
     @Override
     public void onCreate() {
@@ -248,11 +250,12 @@ public class AppApplication extends TSApplication {
                 .mMediaProxyCacheServer = newProxy()) : AppApplication.mMediaProxyCacheServer;
     }
 
-    private static HttpProxyCacheServer newProxy() {
-        boolean b = FileUtils.createOrExistsDir(new File(FileUtils.getCacheFile(BaseApplication
-                .getContext())
-                , "/media"));
+    public static MusicWindows getMusicWindows() {
+        return sMusicWindows == null ? new MusicWindows(BaseApplication.getContext()) :
+                sMusicWindows;
+    }
 
+    private static HttpProxyCacheServer newProxy() {
         return new HttpProxyCacheServer.Builder(BaseApplication.getContext())
                 .cacheDirectory(new File(FileUtils.getCacheFile(BaseApplication.getContext())
                         , "/media"))
