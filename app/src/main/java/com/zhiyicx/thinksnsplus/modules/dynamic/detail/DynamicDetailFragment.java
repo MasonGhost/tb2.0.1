@@ -111,7 +111,10 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     protected float getItemDecorationSpacing() {
         return 0;
     }
-
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_dynamic_detail;
@@ -186,7 +189,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
             initBottomToolData(mDynamicBean);// 初始化底部工具栏数据
             // 设置动态详情列表数据
             mDynamicDetailHeader.setDynamicDetial(mDynamicBean);
-            mDynamicDetailHeader.updateHeaderViewData(mDynamicBean);
+            updateCommentCountAndDig();
             onNetResponseSuccess(mDynamicBean.getComments(), false);
             mPresenter.getDynamicDigList(mDynamicBean.getFeed_id(), 0L);
             mPresenter.requestNetData(0L, false);// 获取评论列表
@@ -252,7 +255,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
                         int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
-                        resource.setBounds(0, 0, headIconWidth,headIconWidth);
+                        resource.setBounds(0, 0, headIconWidth, headIconWidth);
                         mTvToolbarCenter.setCompoundDrawables(resource, null, null, null);
                     }
                 });
@@ -281,7 +284,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     public void setDigHeadIcon(List<FollowFansBean> userInfoBeanList) {
         mDynamicBean.setDigUserInfoList(userInfoBeanList);
-        mDynamicDetailHeader.updateHeaderViewData(mDynamicBean);
+        updateCommentCountAndDig();
     }
 
     @Override
@@ -311,7 +314,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
-    public void updateCommentCount() {
+    public void updateCommentCountAndDig() {
         mDynamicDetailHeader.updateHeaderViewData(mDynamicBean);
     }
 
@@ -370,14 +373,10 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 mDdDynamicTool.getTag(R.id.view_data);
                 switch (postion) {
                     case DynamicDetailMenuView.ITEM_POSITION_0:
-                        // 喜欢
-                        // 修改数据
-                        DynamicToolBean likeToolBean = mDynamicBean.getTool();
-                        likeToolBean.setIs_digg_feed(likeToolBean.getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED
-                                ? DynamicToolBean.STATUS_DIGG_FEED_CHECKED : DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED);
+
                         // 处理喜欢逻辑，包括服务器，数据库，ui
-                        mPresenter.handleLike(mDynamicBean.getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED,
-                                mDynamicBean.getFeed_id(), likeToolBean);
+                        mPresenter.handleLike(mDynamicBean.getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED,
+                                mDynamicBean.getFeed_id(), mDynamicBean.getTool());
                         break;
                     case DynamicDetailMenuView.ITEM_POSITION_1:
                         showCommentView();
@@ -504,7 +503,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public void onNetResponseSuccess(@NotNull List<DynamicCommentBean> data, boolean isLoadMore) {
-        if (data.isEmpty()) { // 增加空数据，用于显示占位图
+        if (!isLoadMore && data.isEmpty()) { // 增加空数据，用于显示占位图
             DynamicCommentBean emptyData = new DynamicCommentBean();
             data.add(emptyData);
         }

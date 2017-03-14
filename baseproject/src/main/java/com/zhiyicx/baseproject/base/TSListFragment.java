@@ -82,6 +82,22 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     }
 
     @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+        mRefreshlayout.setRefreshing(false);
+        mRefreshlayout.setLoadingMore(false);
+    }
+
+    @Override
+    public void showMessage(String message) {
+        showMessageNotSticky(message);
+    }
+
+    @Override
     protected boolean showToolBarDivider() {
         return true;
     }
@@ -141,8 +157,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     protected void initData() {
-        onCacheResponseSuccess(requestCacheData(mMaxId, false), false); // 获取缓存数据
         mRefreshlayout.setRefreshing(isNeedRefreshDataWhenComeIn());// 从网络加载数据
+        onCacheResponseSuccess(requestCacheData(mMaxId, false), false); // 获取缓存数据
     }
 
     /**
@@ -395,7 +411,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 }
                 // 内存处理数据
                 mAdapter.addAllData(data);
-                mMaxId = data.get(data.size() - 1).getMaxId();
+                mMaxId = getMaxId(data);
             } else {
                 mEmptyView.setErrorImag(setEmptView());
             }
@@ -409,13 +425,17 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 // 内存处理数据
                 mAdapter.addAllData(data);
                 refreshData();
-                mMaxId = data.get(data.size() - 1).getMaxId();
+                mMaxId = getMaxId(data);
                 System.out.println("mMaxId = " + mMaxId);
             } else {
 //                showMessage(getString(R.string.no_data)); 如需提示，打开即可
             }
         }
         LogUtils.i("adatper_data-->" + mAdapter.getDatas().toString());
+    }
+
+    protected Long getMaxId(@NotNull List<T> data) {
+        return data.get(data.size() - 1).getMaxId();
     }
 
     /**

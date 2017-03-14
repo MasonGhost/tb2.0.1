@@ -33,4 +33,5 @@ public class DynamicDetailRepository extends BaseDynamicRepository implements Dy
     public Observable<BaseJson<List<FollowFansBean>>> getUserFollowState(String user_ids) {
         return mUserInfoRepository.getUserFollowState(user_ids);
     }
+
 }

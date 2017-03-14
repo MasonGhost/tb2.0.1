@@ -8,11 +8,21 @@
     >
 
     <me.iwf.photopicker.widget.TouchImageView
-        android:id="@+id/iv_pager"
-        android:layout_width="wrap_content"
+        android:id="@+id/iv_orin_pager"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
+        android:visibility="invisible"
+        />
+
+    <me.iwf.photopicker.widget.TouchImageView
+        android:id="@+id/iv_pager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:scaleType="fitCenter"
         />
 
     <ProgressBar

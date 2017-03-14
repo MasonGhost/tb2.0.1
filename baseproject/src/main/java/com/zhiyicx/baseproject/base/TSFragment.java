@@ -81,6 +81,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         return mIscUseSatusbar;
     }
 
+
+
     /**
      * 是否显示toolbar,默认显示
      */

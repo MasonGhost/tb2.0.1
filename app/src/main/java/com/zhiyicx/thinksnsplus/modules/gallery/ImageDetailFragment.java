@@ -16,6 +16,8 @@ import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -38,7 +40,9 @@ import me.iwf.photopicker.utils.AndroidLifecycleUtils;
  * @contact email:450127106@qq.com
  */
 
-public class ImageDetailFragment extends TSFragment {
+public class ImageDetailFragment extends TSFragment implements View.OnLongClickListener {
+    @BindView(R.id.iv_orin_pager)
+    ImageView mIvOriginPager;
     @BindView(R.id.iv_pager)
     ImageView mIvPager;
     @BindView(R.id.pb_progress)
@@ -68,36 +72,10 @@ public class ImageDetailFragment extends TSFragment {
         if (mImageBean.getImgUrl() != null) { // 本地图片不需要查看原图
             mTvOriginPhoto.setVisibility(View.GONE);
         }
+
         // 图片长按，保存
-        mIvPager.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (mActionPopupWindow == null) {
-                    mActionPopupWindow = ActionPopupWindow.builder()
-                            .backgroundAlpha(1.0f)
-                            .bottomStr(context.getString(R.string.cancel))
-                            .item1Str(context.getString(R.string.save_to_photo))
-                            .isOutsideTouch(true)
-                            .isFocus(true)
-                            .with((Activity) context)
-                            .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                                @Override
-                                public void onItem1Clicked() {
-                                    mActionPopupWindow.hide();
-                                }
-                            })
-                            .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                                @Override
-                                public void onBottomClicked() {
-                                    mActionPopupWindow.hide();
-                                }
-                            })
-                            .build();
-                }
-                mActionPopupWindow.show();
-                return false;
-            }
-        });
+        mIvPager.setOnLongClickListener(this);
+        mIvOriginPager.setOnLongClickListener(this);
         // 显示图片
         if (mImageBean == null) {
             mIvPager.setImageResource(R.drawable.shape_default_image);
@@ -158,6 +136,7 @@ public class ImageDetailFragment extends TSFragment {
 
     // 加载图片不带监听
     private void loadImage(final ImageBean imageBean, final boolean isCycle) {
+        LogUtils.i("imageBean = " + imageBean.toString());
 
         if (imageBean.getImgUrl() != null) {
             Glide.with(context)
@@ -168,7 +147,8 @@ public class ImageDetailFragment extends TSFragment {
             mPbProgress.setVisibility(View.GONE);
             return;
         }
-        int with = (int) (imageBean.getWidth() > mScreenWith ? mScreenWith : FrameLayout.LayoutParams.WRAP_CONTENT);
+//        int with = (int) (imageBean.getWidth() > mScreenWith ? mScreenWith : FrameLayout.LayoutParams.MATCH_PARENT);
+        int with = (int) (mScreenWith);
         int height = (int) (imageBean.getHeight() > mScreenHeiht ? mScreenHeiht : FrameLayout.LayoutParams.WRAP_CONTENT);
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(with, height);
         layoutParams.gravity = Gravity.CENTER;
@@ -183,7 +163,6 @@ public class ImageDetailFragment extends TSFragment {
                 .load(new CustomImageSizeModelImp(imageBean))
                 .placeholder(R.drawable.shape_default_image)
                 .error(R.drawable.shape_default_image)
-                .centerCrop()
                 .listener(new RequestListener<CustomImageSizeModel, GlideDrawable>() {
                     @Override
                     public boolean onException(Exception e, CustomImageSizeModel model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -215,13 +194,68 @@ public class ImageDetailFragment extends TSFragment {
                             mTvOriginPhoto.setText(progressResult + "%/" + "100%");
                             LogUtils.i("progress-result:-->" + progressResult + " msg.arg1-->" + msg.arg1 + "  msg.arg2-->" +
                                     msg.arg2 + " 比例-->" + progressResult + "%/" + "100%");
+                            if (progressResult == 100) {
+                                mIvOriginPager.setVisibility(View.VISIBLE);
+                                mIvPager.setVisibility(View.GONE);
+                            }
                         }
                     }
                 }))
                 .load(imageUrl)
-
                 .placeholder(R.drawable.shape_default_image)
                 .error(R.drawable.shape_default_image)
-                .into(mIvPager);
+//                .listener(new RequestListener<String, GlideDrawable>() {
+//                    @Override
+//                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+//                        mTvOriginPhoto.setText(getString(R.string.load_error));
+////                        mIvOriginPager.setVisibility(View.VISIBLE);
+//                        return false;
+//                    }
+//
+//                    @Override
+//                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+//                        mTvOriginPhoto.setText(100 + "%/" + "100%");
+//                        mIvOriginPager.setVisibility(View.VISIBLE);
+//                        mIvPager.setVisibility(View.GONE);
+//                        return false;
+//                    }
+//                })
+                .into(new SimpleTarget<GlideDrawable>() {
+                    @Override
+                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                        mTvOriginPhoto.setText(100 + "%/" + "100%");
+                        mIvOriginPager.setImageDrawable(resource);
+                        mIvOriginPager.setVisibility(View.VISIBLE);
+                        mIvPager.setVisibility(View.GONE);
+                    }
+                });
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        if (mActionPopupWindow == null) {
+            mActionPopupWindow = ActionPopupWindow.builder()
+                    .backgroundAlpha(1.0f)
+                    .bottomStr(context.getString(R.string.cancel))
+                    .item1Str(context.getString(R.string.save_to_photo))
+                    .isOutsideTouch(true)
+                    .isFocus(true)
+                    .with((Activity) context)
+                    .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                        @Override
+                        public void onItem1Clicked() {
+                            mActionPopupWindow.hide();
+                        }
+                    })
+                    .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                        @Override
+                        public void onBottomClicked() {
+                            mActionPopupWindow.hide();
+                        }
+                    })
+                    .build();
+        }
+        mActionPopupWindow.show();
+        return false;
     }
 }

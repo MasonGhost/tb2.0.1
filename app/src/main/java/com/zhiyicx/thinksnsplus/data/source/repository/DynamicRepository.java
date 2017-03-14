@@ -32,4 +32,6 @@ public class DynamicRepository extends BaseDynamicRepository implements DynamicC
     public Observable<BaseJson<List<DynamicBean>>> getHistoryDynamicList(String type, long max_id, long limit, long page) {
         return Observable.just(new BaseJson<List<DynamicBean>>());
     }
+
+
 }

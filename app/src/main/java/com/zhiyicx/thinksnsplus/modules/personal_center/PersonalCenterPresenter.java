@@ -3,15 +3,21 @@ package com.zhiyicx.thinksnsplus.modules.personal_center;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
@@ -21,6 +27,7 @@ import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -46,6 +53,12 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
     UserInfoRepository mUserInfoRepository;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
+    @Inject
+    DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
+    @Inject
+    DynamicDetailBeanGreenDaoImpl mDynamicDetailBeanGreenDao;
 
     @Inject
     public PersonalCenterPresenter(PersonalCenterContract.Repository repository, PersonalCenterContract.View rootView) {
@@ -207,7 +220,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<DynamicBean> data) {
-        mDynamicBeanGreenDao.insertOrReplace(data);
+        mRepository.updateOrInsertDynamic(data);
         return true;
     }
 
@@ -235,5 +248,87 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
         addSubscrebe(subscription);
     }
 
+
+    /**
+     * handle like or cancle like in background
+     *
+     * @param isLiked true,do like ,or  cancle like
+     * @param feed_id dynamic id
+     * @param postion current item position
+     */
+    @Override
+    public void handleLike(boolean isLiked, final Long feed_id, final int postion) {
+        if (feed_id == null || feed_id == 0) {
+            return;
+        }
+        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getDatas().get(postion).getTool());
+        mRepository.handleLike(isLiked, feed_id);
+
+    }
+
+    @Override
+    public void reSendDynamic(int position) {
+        // 将动态信息存入数据库
+        mDynamicBeanGreenDao.insertOrReplace(mRootView.getDatas().get(position));
+        mDynamicDetailBeanGreenDao.insertOrReplace(mRootView.getDatas().get(position).getFeed());
+        // 发送动态
+        BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
+        backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.SEND_DYNAMIC);
+        HashMap<String, Object> params = new HashMap<>();
+        // feed_mark作为参数
+        params.put("params", mRootView.getDatas().get(position).getFeed_mark());
+        backgroundRequestTaskBean.setParams(params);
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+    }
+
+    @Override
+    public void deleteComment(DynamicBean dynamicBean, int dynamicPosition, long comment_id, int commentPositon) {
+        mRootView.getDatas().get(dynamicPosition).getTool().setFeed_comment_count(dynamicBean.getTool().getFeed_comment_count() - 1);
+        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getDatas().get(dynamicPosition).getTool());
+        mDynamicCommentBeanGreenDao.deleteSingleCache(dynamicBean.getComments().get(commentPositon));
+        mRootView.getDatas().get(dynamicPosition).getComments().remove(commentPositon);
+        mRootView.refresh();
+        mRepository.deleteComment(dynamicBean.getFeed_id(), comment_id);
+    }
+
+    /**
+     * send a commment
+     *
+     * @param mCurrentPostion current dynamic position
+     * @param replyToUserId   comment  to who
+     * @param commentContent  comment content
+     */
+    @Override
+    public void sendComment(int mCurrentPostion, long replyToUserId, String commentContent) {
+        DynamicCommentBean creatComment = new DynamicCommentBean();
+        creatComment.setState(DynamicCommentBean.SEND_ING);
+        creatComment.setComment_content(commentContent);
+        creatComment.setFeed_mark(mRootView.getDatas().get(mCurrentPostion).getFeed_mark());
+        String comment_mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis();
+        creatComment.setComment_mark(Long.parseLong(comment_mark));
+        creatComment.setReply_to_user_id(replyToUserId);
+        if (replyToUserId == 0) { //当回复动态的时候
+            UserInfoBean userInfoBean = new UserInfoBean();
+            userInfoBean.setUser_id(replyToUserId);
+            creatComment.setReplyUser(userInfoBean);
+        } else {
+            creatComment.setReplyUser(mUserInfoBeanGreenDao.getSingleDataFromCache(replyToUserId));
+        }
+        creatComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
+        creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id()));
+        creatComment.setCreated_at(TimeUtils.millis2String(System.currentTimeMillis()));
+        List<DynamicCommentBean> commentBeanList = new ArrayList<>();
+        commentBeanList.add(creatComment);
+        commentBeanList.addAll(mRootView.getDatas().get(mCurrentPostion).getComments());
+        mRootView.getDatas().get(mCurrentPostion).getComments().clear();
+        mRootView.getDatas().get(mCurrentPostion).getComments().addAll(commentBeanList);
+        mRootView.getDatas().get(mCurrentPostion).getTool().setFeed_comment_count(mRootView.getDatas().get(mCurrentPostion).getTool().getFeed_comment_count() + 1);
+        mRootView.refresh();
+
+        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getDatas().get(mCurrentPostion).getTool());
+        mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
+        mRepository.sendComment(commentContent, mRootView.getDatas().get(mCurrentPostion).getFeed_id(), replyToUserId, creatComment.getComment_mark());
+
+    }
 
 }
