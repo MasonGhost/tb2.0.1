@@ -15,12 +15,18 @@ import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.WindowManager;
 
+import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.LocalPlayback;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.QueueManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProvider;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MusicWindows;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaNotificationManager;
 
 import org.simple.eventbus.EventBus;
@@ -30,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_CACHE_PROGRESS;
-import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_LOAD;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper
         .MEDIA_ID_EMPTY_ROOT;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper.MEDIA_ID_ROOT;
@@ -59,9 +64,24 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
     private Bundle mSessionExtras;
     private final DelayedStopHandler mDelayedStopHandler = new DelayedStopHandler(this);
 
+
+    private WindowManager mWindowManager;
+    private WindowManager.LayoutParams mLayoutParams;
+    private LayoutInflater mLayoutInflater;
+    private View mFloatView;
+    private int mCurrentX;
+    private int mCurrentY;
+    private static int mFloatViewWidth = 50;
+    private static int mFloatViewHeight = 80;
+
+
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+        mWindowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+        mLayoutInflater = LayoutInflater.from(this);
 
         mMusicProvider = new MusicProvider();
         mMusicProvider.retrieveMediaAsync(null /* Callback */);
@@ -179,6 +199,8 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
     @Override
     public void onPlaybackStart() {
         mSession.setActive(true);
+        AppApplication.getMusicWindows().showWindows();
+        LogUtils.d("onPlaybackStart");
         mDelayedStopHandler.removeCallbacksAndMessages(null);
         startService(new Intent(getApplicationContext(), MusicPlayService.class));
     }
@@ -186,6 +208,8 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
     @Override
     public void onPlaybackStop() {
         mSession.setActive(false);
+        AppApplication.getMusicWindows().hideWindows();
+        LogUtils.d("onPlaybackStop");
         mDelayedStopHandler.removeCallbacksAndMessages(null);
         mDelayedStopHandler.sendEmptyMessageDelayed(0, STOP_DELAY);
         stopForeground(true);
@@ -225,5 +249,6 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
             }
         }
     }
+
 }
 

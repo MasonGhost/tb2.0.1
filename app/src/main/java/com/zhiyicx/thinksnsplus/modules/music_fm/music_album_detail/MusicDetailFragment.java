@@ -148,8 +148,8 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         Bitmap bitmap = BitmapFactory
                 .decodeResource(getResources(), R.mipmap.npc);
         final Palette palette = Palette.from(bitmap).generate();
-
         ViewGroup.LayoutParams titleParam;
+
         int titleHeight;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             titleHeight = ConvertUtils.dp2px(getActivity(), 84);
@@ -324,8 +324,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 if (cachedState == null || cachedState != state) {
                     holder.itemView.setTag(R.id.tag_mediaitem_state_cache, state);
                 }
-                LogUtils.d(getArgMediaId);
-                LogUtils.d(item.getMediaId());
 
                 if (getArgMediaId.equals(MediaIDHelper.extractMusicIDFromMediaID(item.getMediaId()))){
                     musicName.setTextColor(getResources().getColor(R.color.important_for_theme));
@@ -343,15 +341,10 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         mAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                ViewHolder realHolder=(ViewHolder)holder;
-
-
-
 
                 MediaBrowserCompat.MediaItem item = mAdapterList.get(position);
 
                 if (item.isPlayable()) {
-
                     MediaControllerCompat controllerCompat = getActivity()
                             .getSupportMediaController();
 
