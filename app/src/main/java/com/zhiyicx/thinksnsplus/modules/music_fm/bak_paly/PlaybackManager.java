@@ -321,7 +321,6 @@ public class PlaybackManager implements Playback.Callback {
         if (orderType > 2 && orderType < 0) {
             return;
         }
-        ToastUtils.showToast(orderType + "");
         switch (orderType) {
             case ORDERLOOP:
                 mQueueManager.setNormalQueue(currentMusicMediaId);

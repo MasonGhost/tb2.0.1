@@ -10,4 +10,5 @@ package com.zhiyicx.thinksnsplus.config;
 public class SharePreferenceTagConfig {
     public static final String SHAREPREFERENCE_TAG_AUTHBEAN = "authBean";
     public static final String SHAREPREFERENCE_TAG_IMCONFIG = "imConfig";
+    public static final String SHAREPREFERENCE_TAG_MUSIC = "music";
 }

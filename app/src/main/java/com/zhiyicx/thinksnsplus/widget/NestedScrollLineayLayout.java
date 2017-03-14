@@ -94,7 +94,7 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
             if (!addHeight) {//只增加一次 高度 height
                 addHeight = true;
                 ViewGroup.LayoutParams params = this.getLayoutParams();
-                params.height = mTopViewHeight + this.getHeight();
+                params.height = mTopViewHeight + this.getHeight()-120;
                 this.setLayoutParams(params);
                 requestLayout();
             }

@@ -17,7 +17,6 @@ import rx.Observable;
  * @Email Jliuer@aliyun.com
  * @Description 音乐FM 契约类
  */
-
 public interface MusicContract {
 
     interface View extends IBaseView<Presenter> {
