@@ -252,7 +252,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
                         int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
-                        resource.setBounds(0, 0, headIconWidth,headIconWidth);
+                        resource.setBounds(0, 0, headIconWidth, headIconWidth);
                         mTvToolbarCenter.setCompoundDrawables(resource, null, null, null);
                     }
                 });
@@ -500,7 +500,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public void onNetResponseSuccess(@NotNull List<DynamicCommentBean> data, boolean isLoadMore) {
-        if (data.isEmpty()) { // 增加空数据，用于显示占位图
+        if (!isLoadMore && data.isEmpty()) { // 增加空数据，用于显示占位图
             DynamicCommentBean emptyData = new DynamicCommentBean();
             data.add(emptyData);
         }
