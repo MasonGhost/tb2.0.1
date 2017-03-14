@@ -244,7 +244,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         super.initData();
         // 获取动态列表
         mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false, mUserInfoBean.getUser_id());
-
     }
 
     @Override
@@ -313,9 +312,18 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
+    public void refreshData() {
+        refresh();
+    }
+
+    @Override
+    public void refreshData(int index) {
+        refresh(index);
+    }
+
+    @Override
     public void refresh(int position) {
         mHeaderAndFooterWrapper.notifyItemChanged(position);
-        refreshData(position);
     }
 
     @Override

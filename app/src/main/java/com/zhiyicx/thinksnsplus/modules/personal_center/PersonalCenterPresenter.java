@@ -287,7 +287,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
         mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getDatas().get(dynamicPosition).getTool());
         mDynamicCommentBeanGreenDao.deleteSingleCache(dynamicBean.getComments().get(commentPositon));
         mRootView.getDatas().get(dynamicPosition).getComments().remove(commentPositon);
-        mRootView.refresh(dynamicPosition);
+        mRootView.refresh();
         mRepository.deleteComment(dynamicBean.getFeed_id(), comment_id);
     }
 
@@ -323,7 +323,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
         mRootView.getDatas().get(mCurrentPostion).getComments().clear();
         mRootView.getDatas().get(mCurrentPostion).getComments().addAll(commentBeanList);
         mRootView.getDatas().get(mCurrentPostion).getTool().setFeed_comment_count(mRootView.getDatas().get(mCurrentPostion).getTool().getFeed_comment_count() + 1);
-        mRootView.refresh(mCurrentPostion);
+        mRootView.refresh();
 
         mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getDatas().get(mCurrentPostion).getTool());
         mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
