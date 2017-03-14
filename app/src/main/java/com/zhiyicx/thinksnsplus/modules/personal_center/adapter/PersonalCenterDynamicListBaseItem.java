@@ -45,8 +45,4 @@ public class PersonalCenterDynamicListBaseItem extends DynamicListBaseItem {
         return R.layout.item_personal_center_dynamic_list_zero_image;
     }
 
-    @Override
-    public boolean isForViewType(DynamicBean item, int position) {
-        return position == 0 || item.getFeed() == null || super.isForViewType(item, position);
-    }
 }

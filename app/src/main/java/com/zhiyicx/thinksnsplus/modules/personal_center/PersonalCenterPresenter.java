@@ -220,7 +220,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<DynamicBean> data) {
-        mDynamicBeanGreenDao.insertOrReplace(data);
+        mRepository.updateOrInsertDynamic(data);
         return true;
     }
 
@@ -307,13 +307,11 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
         String comment_mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis();
         creatComment.setComment_mark(Long.parseLong(comment_mark));
         creatComment.setReply_to_user_id(replyToUserId);
-        System.out.println("creatComment ---------------> = " + creatComment.getReply_to_user_id());
         if (replyToUserId == 0) { //当回复动态的时候
             UserInfoBean userInfoBean = new UserInfoBean();
             userInfoBean.setUser_id(replyToUserId);
             creatComment.setReplyUser(userInfoBean);
         } else {
-
             creatComment.setReplyUser(mUserInfoBeanGreenDao.getSingleDataFromCache(replyToUserId));
         }
         creatComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());

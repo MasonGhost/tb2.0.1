@@ -40,6 +40,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListBaseItem;
+import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListForZeroImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForEightImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForFiveImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForFourImage;
@@ -79,7 +80,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
 
 public class PersonalCenterFragment extends TSListFragment<PersonalCenterContract.Presenter, DynamicBean> implements PersonalCenterContract.View, DynamicListBaseItem.OnReSendClickListener,
         DynamicNoPullRecycleView.OnCommentStateClickListener, DynamicListCommentView.OnCommentClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, OnUserInfoClickListener,
-        InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener, PhotoSelectorImpl.IPhotoBackListener {
+        DynamicListCommentView.OnMoreCommentClickListener, InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener, PhotoSelectorImpl.IPhotoBackListener {
 
     public static final String PERSONAL_CENTER_DATA = "personal_center_data";
 
@@ -216,8 +217,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     protected MultiItemTypeAdapter<DynamicBean> getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mDynamicBeens);
-        //adapter.addItemViewDelegate(new PersonalCenterDynamicCountItem());
         setAdapter(adapter, new PersonalCenterDynamicListBaseItem(getContext()));
+        setAdapter(adapter, new PersonalCenterDynamicListForZeroImage(getContext()));
         setAdapter(adapter, new PersonalCenterDynamicListItemForOneImage(getContext()));
         setAdapter(adapter, new PersonalCenterDynamicListItemForTwoImage(getContext()));
         setAdapter(adapter, new PersonalCenterDynamicListItemForThreeImage(getContext()));
@@ -227,6 +228,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         setAdapter(adapter, new PersonalCenterDynamicListItemForSevenImage(getContext()));
         setAdapter(adapter, new PersonalCenterDynamicListItemForEightImage(getContext()));
         setAdapter(adapter, new PersonalCenterDynamicListItemForNineImage(getContext()));
+        adapter.setOnItemClickListener(this);
         return adapter;
     }
 
@@ -273,6 +275,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
+        dataPosition = dataPosition - 1;// 减去 header
+        mCurrentPostion = dataPosition;
         switch (viewPosition) { // 0 1 2 3 代表 view item 位置
             case 0: // 喜欢
                 // 还未发送成功的动态列表不查看详情
@@ -288,31 +292,29 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                     return;
                 }
                 showCommentView();
-                mCurrentPostion = dataPosition;
                 mReplyToUserId = 0;// 0 代表评论动态
                 break;
 
             case 2: // 浏览
-                onItemClick(null, null, dataPosition);
+                onItemClick(null, null, (dataPosition + 1)); // 加上 header
                 break;
 
             case 3: // 更多
                 showMessage("点击了跟多");
-
                 break;
             default:
-                onItemClick(null, null, dataPosition);
+                onItemClick(null, null, (dataPosition + 1)); // 加上 header
         }
     }
 
     @Override
     public void refresh() {
-        refreshData();
+        mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
     @Override
     public void refresh(int position) {
-        LogUtils.d(TAG, "mDynamicBeens    position  = " + mDynamicBeens.toString());
+        mHeaderAndFooterWrapper.notifyItemChanged(position);
         refreshData(position);
     }
 
@@ -334,6 +336,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        position = position - 1;// 减去 header
+        mCurrentPostion=position;
         goDynamicDetail(position, false);
     }
 
@@ -503,6 +507,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         dynamicListBaseItem.setOnUserInfoClickListener(this);
         dynamicListBaseItem.setOnMenuItemClickLisitener(this);
         dynamicListBaseItem.setOnReSendClickListener(this);
+        dynamicListBaseItem.setOnMoreCommentClickListener(this);
+        dynamicListBaseItem.setOnCommentClickListener(this);
+        dynamicListBaseItem.setOnCommentStateClickListener(this);
         adapter.addItemViewDelegate(dynamicListBaseItem);
     }
 
@@ -531,7 +538,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mVShadow.setVisibility(View.VISIBLE);
         DeviceUtils.showSoftKeyboard(getActivity(), mIlvComment.getEtContent());
     }
-
 
 
     private void goDynamicDetail(int position, boolean isLookMoreComment) {
@@ -583,4 +589,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .build();
     }
 
+    @Override
+    public void onMoreCommentClick(View view, DynamicBean dynamicBean) {
+        goDynamicDetail(mAdapter.getDatas().indexOf(dynamicBean), true);
+    }
 }

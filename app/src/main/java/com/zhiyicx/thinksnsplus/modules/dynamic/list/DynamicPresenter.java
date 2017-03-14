@@ -16,8 +16,6 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
@@ -39,7 +37,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -90,12 +87,6 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
         Subscription dynamicLisSub = mRepository.getDynamicList(mRootView.getDynamicType(), maxId, mRootView.getPage())
-                .doAfterTerminate(new Action0() {
-                    @Override
-                    public void call() {
-                        mRootView.hideLoading();
-                    }
-                })
                 .map(new Func1<BaseJson<List<DynamicBean>>, BaseJson<List<DynamicBean>>>() {
                     @Override
                     public BaseJson<List<DynamicBean>> call(BaseJson<List<DynamicBean>> listBaseJson) {
@@ -166,6 +157,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                 datas.get(i).setComments(mDynamicCommentBeanGreenDao.getLocalComments(datas.get(i).getFeed_mark()));
             }
         }
+        System.out.println("datas.toString() = " + datas.toString());
         return datas;
     }
 
@@ -186,70 +178,8 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
      * @param data
      */
     private void insertOrUpdateDynamicDB(@NotNull List<DynamicBean> data) {
+        mRepository.updateOrInsertDynamic(data);
 
-        Observable.just(data)
-                .observeOn(Schedulers.io())
-                .subscribe(new Action1<List<DynamicBean>>() {
-                    @Override
-                    public void call(List<DynamicBean> datas) {
-                        List<DynamicDetailBean> dynamicDetailBeen = new ArrayList<>();
-                        List<DynamicCommentBean> dynamicCommentBeen = new ArrayList<>();
-                        List<DynamicToolBean> dynamicToolBeen = new ArrayList<>();
-                        for (DynamicBean dynamicBeanTmp : datas) {
-                            // 处理关注和热门数据
-                            dealLocalTypeData(dynamicBeanTmp);
-                            // 把详情的 feed_id 放到 dynamicbean 中
-                            dynamicBeanTmp.setFeed_id(dynamicBeanTmp.getFeed().getFeed_id());
-                            // 把 feed_mark 设置到详情中去
-                            dynamicBeanTmp.getFeed().setFeed_mark(dynamicBeanTmp.getFeed_mark());
-                            dynamicBeanTmp.getTool().setFeed_mark(dynamicBeanTmp.getFeed_mark());
-                            for (DynamicCommentBean dynamicCommentBean : dynamicBeanTmp.getComments()) {
-                                dynamicCommentBean.setFeed_mark(dynamicBeanTmp.getFeed_mark());
-                                dynamicCommentBean.setFeed_user_id(dynamicBeanTmp.getUser_id());
-                            }
-                            dynamicDetailBeen.add(dynamicBeanTmp.getFeed());
-                            dynamicCommentBeen.addAll(dynamicBeanTmp.getComments());
-                            dynamicToolBeen.add(dynamicBeanTmp.getTool());
-
-                        }
-                        mDynamicBeanGreenDao.insertOrReplace(datas);
-                        mDynamicDetailBeanGreenDao.insertOrReplace(dynamicDetailBeen);
-                        mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBeen);
-                        mDynamicToolBeanGreenDao.insertOrReplace(dynamicToolBeen);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                });
-
-    }
-
-    private void dealLocalTypeData(DynamicBean dynamicBeanTmp) {
-        DynamicBean localDynamicBean = mDynamicBeanGreenDao.getDynamicByFeedMark(dynamicBeanTmp.getFeed_mark());
-        if (localDynamicBean != null) {
-            switch (mRootView.getDynamicType()) {
-                case ApiConfig.DYNAMIC_TYPE_FOLLOWS:
-                    if (localDynamicBean.getHot_creat_time() != null && localDynamicBean.getHot_creat_time() != 0) {
-                        dynamicBeanTmp.setHot_creat_time(localDynamicBean.getHot_creat_time());
-                    }
-                    break;
-
-                case ApiConfig.DYNAMIC_TYPE_HOTS:
-                    if (localDynamicBean.getIsFollowed()) {
-                        dynamicBeanTmp.setIsFollowed(localDynamicBean.getIsFollowed());
-                    }
-                    break;
-                case ApiConfig.DYNAMIC_TYPE_NEW:
-                    dynamicBeanTmp.setIsFollowed(localDynamicBean.getIsFollowed());
-                    dynamicBeanTmp.setHot_creat_time(localDynamicBean.getHot_creat_time());
-                    break;
-
-                default:
-
-            }
-        }
     }
 
     /**

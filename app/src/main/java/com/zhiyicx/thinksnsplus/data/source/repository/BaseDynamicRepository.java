@@ -8,14 +8,18 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
-import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
@@ -49,11 +53,27 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     protected UserInfoRepository mUserInfoRepository;
     protected Context mContext;
 
+
+    @Inject
+    DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
+    @Inject
+    DynamicDetailBeanGreenDaoImpl mDynamicDetailBeanGreenDao;
+    @Inject
+    DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
+    @Inject
+    DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
+
+
     @Inject
     public BaseDynamicRepository(ServiceManager serviceManager, Context context) {
         mContext = context;
         mDynamicClient = serviceManager.getDynamicClient();
         mUserInfoRepository = new UserInfoRepository(serviceManager);
+        mDynamicBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicBeanGreenDao();
+        mDynamicDetailBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicDetailBeanGreenDao();
+        mDynamicCommentBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicCommentBeanGreenDao();
+        mDynamicToolBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicToolBeanGreenDao();
+
     }
 
     /**
@@ -93,6 +113,11 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                             }
                             for (DynamicBean dynamicBean : listBaseJson.getData()) {
                                 user_ids.add(dynamicBean.getUser_id());
+                                // 把详情中的 feed_id 设置到 dynamicBean 中
+                                dynamicBean.setFeed_id(dynamicBean.getFeed().getFeed_id());
+                                // 把 feed_mark 设置到详情中去
+                                dynamicBean.getFeed().setFeed_mark(dynamicBean.getFeed_mark());
+                                dynamicBean.getTool().setFeed_mark(dynamicBean.getFeed_mark());
                                 if (type.equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) { //如果是关注，需要初始化标记
                                     dynamicBean.setIsFollowed(true);
                                 }
@@ -104,6 +129,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                 for (DynamicCommentBean dynamicCommentBean : dynamicBean.getComments()) {
                                     user_ids.add(dynamicCommentBean.getUser_id());
                                     user_ids.add(dynamicCommentBean.getReply_to_user_id());
+                                    dynamicCommentBean.setFeed_mark(dynamicBean.getFeed_mark()); // 评论中增加 feed_mark \和用户标记
+                                    dynamicCommentBean.setFeed_user_id(dynamicBean.getUser_id());
                                 }
                             }
 
@@ -204,6 +231,49 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
     }
 
+    @Override
+    public void updateOrInsertDynamic(List<DynamicBean> dynamicBeens) {
+
+        Observable.just(dynamicBeens)
+                .observeOn(Schedulers.io())
+                .subscribe(new Action1<List<DynamicBean>>() {
+                    @Override
+                    public void call(List<DynamicBean> datas) {
+                        List<DynamicDetailBean> dynamicDetailBeen = new ArrayList<>();
+                        List<DynamicCommentBean> dynamicCommentBeen = new ArrayList<>();
+                        List<DynamicToolBean> dynamicToolBeen = new ArrayList<>();
+                        for (DynamicBean dynamicBeanTmp : datas) {
+                            // 处理关注和热门数据
+                            dealLocalTypeData(dynamicBeanTmp);
+                            dynamicDetailBeen.add(dynamicBeanTmp.getFeed());
+                            dynamicCommentBeen.addAll(dynamicBeanTmp.getComments());
+                            dynamicToolBeen.add(dynamicBeanTmp.getTool());
+                        }
+                        mDynamicBeanGreenDao.insertOrReplace(datas);
+                        mDynamicDetailBeanGreenDao.insertOrReplace(dynamicDetailBeen);
+                        mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBeen);
+                        mDynamicToolBeanGreenDao.insertOrReplace(dynamicToolBeen);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
+    }
+
+    private void dealLocalTypeData(DynamicBean dynamicBeanTmp) {
+        DynamicBean localDynamicBean = mDynamicBeanGreenDao.getDynamicByFeedMark(dynamicBeanTmp.getFeed_mark());
+        if (localDynamicBean != null) {
+            if ((dynamicBeanTmp.getHot_creat_time() == null || dynamicBeanTmp.getHot_creat_time() == 0) && localDynamicBean.getHot_creat_time() != null && localDynamicBean.getHot_creat_time() != 0) {
+                dynamicBeanTmp.setHot_creat_time(localDynamicBean.getHot_creat_time());
+            }
+            if (localDynamicBean.getIsFollowed()) {
+                dynamicBeanTmp.setIsFollowed(localDynamicBean.getIsFollowed());
+            }
+        }
+    }
+
     /**
      * @param feed_id
      * @return
@@ -224,7 +294,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     }
 
     @Override
-    public Observable<BaseJson<List<FollowFansBean>>> getDynamicDigList(Long feed_id, Long max_id) {
+    public Observable<BaseJson<List<FollowFansBean>>> getDynamicDigList(Long feed_id, Long
+            max_id) {
         return mDynamicClient.getDynamicDigList(feed_id, max_id)
                 .flatMap(new Func1<BaseJson<List<DynamicDigListBean>>, Observable<BaseJson<List<FollowFansBean>>>>() {
                     @Override
@@ -282,7 +353,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     }
 
     @Override
-    public Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentList(final Long feed_mark, Long feed_id, Long max_id) {
+    public Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentList(
+            final Long feed_mark, Long feed_id, Long max_id) {
         return mDynamicClient.getDynamicCommentList(feed_id, max_id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

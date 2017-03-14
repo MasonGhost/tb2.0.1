@@ -157,8 +157,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     protected void initData() {
-        onCacheResponseSuccess(requestCacheData(mMaxId, false), false); // 获取缓存数据
         mRefreshlayout.setRefreshing(isNeedRefreshDataWhenComeIn());// 从网络加载数据
+        onCacheResponseSuccess(requestCacheData(mMaxId, false), false); // 获取缓存数据
     }
 
     /**

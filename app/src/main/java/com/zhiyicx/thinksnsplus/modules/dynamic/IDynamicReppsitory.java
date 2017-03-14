@@ -63,6 +63,13 @@ public interface IDynamicReppsitory {
     void sendComment(String commentContent, final Long feed_id, Long reply_to_user_id, Long comment_mark);
 
     /**
+     * 插入或者更新动态列表
+     *
+     * @param datas
+     */
+    void updateOrInsertDynamic(List<DynamicBean> datas);
+
+    /**
      * 取消动态点赞
      *
      * @param feed_id
