@@ -11,5 +11,6 @@
   <color name="__picker_text_120">#787878</color>
   <color name="__picker_item_photo_border_selected">#ff99cc00</color>
   <color name="__picker_item_photo_border_n">#33ffffff</color>
+  <color name="__picker_general_for_line_light">#ededed</color>
 
 </resources>

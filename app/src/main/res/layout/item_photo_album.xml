@@ -20,8 +20,8 @@
             android:layout_height="@dimen/photo_album_list_picture_height"
             android:layout_marginRight="@dimen/spacing_mid"
             android:background="@mipmap/img_edit_album_frame"
-            android:paddingBottom="@dimen/spacing_big_line"
-            android:paddingRight="@dimen/spacing_big_line"
+            android:paddingBottom="@dimen/spacing_tiny"
+            android:paddingRight="@dimen/spacing_tiny"
             android:scaleType="centerCrop"
             />
 
