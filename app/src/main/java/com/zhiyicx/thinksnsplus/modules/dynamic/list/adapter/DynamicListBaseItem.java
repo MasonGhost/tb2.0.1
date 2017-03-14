@@ -17,6 +17,7 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -232,9 +233,11 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
      * @param part        this part percent of imageContainer
      */
     protected void initImageView(final ViewHolder holder, ImageView view, final DynamicBean dynamicBean, final int positon, int part) {
+        int propPart=100;
         String url;
         if (dynamicBean.getFeed().getStorages() != null && dynamicBean.getFeed().getStorages().size() > 0) {
-            url = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getFeed().getStorages().get(positon).getStorage_id(), getProportion(view, dynamicBean, part));
+            propPart= getProportion(view, dynamicBean, part);
+            url = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getFeed().getStorages().get(positon).getStorage_id(),propPart);
         } else {
             url = dynamicBean.getFeed().getLocalPhotos().get(positon);
         }
@@ -245,7 +248,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                 .imagerView(view)
                 .build());
         if (dynamicBean.getFeed().getStorages() != null) {
-            dynamicBean.getFeed().getStorages().get(positon).setPart(part);
+            dynamicBean.getFeed().getStorages().get(positon).setPart(propPart);
         }
         RxView.clicks(view)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
@@ -284,6 +287,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
         }
         height = with;
         proportion = (int) ((with / dynamicBean.getFeed().getStorages().get(0).getWidth()) * 100);
+        LogUtils.i("------------->"+proportion);
         return proportion;
     }
 

@@ -40,6 +40,8 @@ import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -174,6 +176,24 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     /**
+     * 由于热门和关注和最新的 max_id 不同，所以特殊处理
+     *
+     * @param data
+     * @return
+     */
+    @Override
+    protected Long getMaxId(@NotNull List<DynamicBean> data) {
+        switch (getDynamicType()) {
+            case ApiConfig.DYNAMIC_TYPE_HOTS:
+                return data.get(data.size() - 1).getHot_creat_time();
+            case ApiConfig.DYNAMIC_TYPE_FOLLOWS:
+            case ApiConfig.DYNAMIC_TYPE_NEW:
+            default:
+                return data.get(data.size() - 1).getFeed_id();
+        }
+    }
+
+    /**
      * scan imags
      *
      * @param dynamicBean
@@ -247,7 +267,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         goDynamicDetail(position, false);
     }
-
 
 
     @Override
@@ -340,6 +359,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         showBottomView(false);
 
     }
+
     /**
      * comment send
      *
@@ -362,6 +382,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     public void onCommentStateClick(DynamicCommentBean dynamicCommentBean, int position) {
         showMessage("点击了评论失败状态");
     }
+
     @Override
     public void onMoreCommentClick(View view, DynamicBean dynamicBean) {
         goDynamicDetail(mAdapter.getDatas().indexOf(dynamicBean), true);
@@ -409,6 +430,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             mOnCommentClickListener.onButtonMenuShow(isShow);
         }
     }
+
     private void goDynamicDetail(int position, boolean isLookMoreComment) {
         // 还未发送成功的动态列表不查看详情
         if (mAdapter.getItem(position).getFeed_id() == null || mAdapter.getItem(position).getFeed_id() == 0) {
@@ -423,7 +445,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         intent.putExtras(bundle);
         startActivity(intent);
     }
-
 
 
     public interface OnCommentClickListener {
