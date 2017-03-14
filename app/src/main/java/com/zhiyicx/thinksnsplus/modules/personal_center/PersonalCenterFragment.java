@@ -455,7 +455,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         // toolBar设置状态栏高度的marginTop
         int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext());
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
-        //layoutParams.setMargins(0, DeviceUtils.getStatuBarHeight(getContext()), 0, 0);
         mLlToolbarContainerParent.setLayoutParams(layoutParams);
     }
 

@@ -111,7 +111,10 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     protected float getItemDecorationSpacing() {
         return 0;
     }
-
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_dynamic_detail;
