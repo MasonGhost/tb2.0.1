@@ -1,4 +1,4 @@
-2017年3月1日 18:38:36
+2017年3月15日 16:46:54
 # 关于TSActivity和TSFragment
 
 本项目中，所有的实际功能和ui都放在TSFragment中，而TSActivity只是针对fragment进行控制，
@@ -35,7 +35,9 @@
 ## TSFragment
 
  - 提供状态栏的浸入式
- - 提供通用的TitlBar(可选择使用)
+ - 提供通用的 TitlBar (可选择使用)
+ - 新增状态栏文字颜色调整方法
+ - 新增状态栏占位 View
 
 注意; titlebar 可自定义也可直接使用，提供修改颜色、图片、文字以及响应事件等；具体请查看[TSFragment](../../baseproject/src/main/java/com/zhiyicx/baseproject/base/TSFragment.java)
 
