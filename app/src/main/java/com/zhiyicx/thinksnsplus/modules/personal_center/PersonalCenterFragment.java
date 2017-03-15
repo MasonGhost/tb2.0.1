@@ -166,6 +166,10 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mIlvComment.setOnSendClickListener(this);
     }
 
+    @Override
+    protected boolean setStatusbarGrey() {
+        return false;
+    }
 
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
@@ -345,7 +349,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         position = position - 1;// 减去 header
-        mCurrentPostion=position;
+        mCurrentPostion = position;
         goDynamicDetail(position, false);
     }
 

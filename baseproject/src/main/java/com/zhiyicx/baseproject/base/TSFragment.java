@@ -64,12 +64,24 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         } else {
             //不顶上去
             setToolBarTextColor();
-            StatusBarUtils.statusBarLightMode(getActivity());
             StatusBarUtils.setStatusBarColor(getActivity(), setToolBarBackgroud());
             linearLayout.setFitsSystemWindows(true);
         }
+        if (setStatusbarGrey()) {
+            StatusBarUtils.statusBarLightMode(getActivity());
+        }
         linearLayout.addView(bodyContainer);
         return linearLayout;
+    }
+
+    /**
+     * 状态栏默认为灰色
+     * 支持小米、魅族以及 6.0 以上机型
+     *
+     * @return
+     */
+    protected boolean setStatusbarGrey() {
+        return true;
     }
 
     /**
@@ -80,7 +92,6 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     protected boolean setUseSatusbar() {
         return mIscUseSatusbar;
     }
-
 
 
     /**
