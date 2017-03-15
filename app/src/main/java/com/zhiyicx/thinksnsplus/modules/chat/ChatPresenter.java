@@ -5,10 +5,14 @@ import android.util.SparseArray;
 
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.imsdk.core.ChatType;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
+import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.manage.ChatClient;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -88,7 +92,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         }
         Message message = ChatClient.getInstance(mContext).sendTextMsg(text, cid, "");// usid 暂不使用
         message.setCreate_time(System.currentTimeMillis());
-        message.setUid(AppApplication.getmCurrentLoginAuth()!=null?AppApplication.getmCurrentLoginAuth().getUser_id():0);
+        message.setUid(AppApplication.getmCurrentLoginAuth() != null ? AppApplication.getmCurrentLoginAuth().getUser_id() : 0);
         message.setIs_read(true);
         updateMessage(message);
     }
@@ -103,6 +107,36 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         chatItemBean.getLastMessage().setCreate_time(System.currentTimeMillis());
         ChatClient.getInstance(mContext).sendMessage(chatItemBean.getLastMessage());
         mRootView.reFreshMessage(chatItemBean);
+    }
+
+    @Override
+    public void createChat(int user_id) {
+        if (AppApplication.getmCurrentLoginAuth() == null) {
+            return;
+        }
+        final String uids = AppApplication.getmCurrentLoginAuth().getUser_id() + "," + user_id;
+        final String pair = AppApplication.getmCurrentLoginAuth().getUser_id() + "&" + user_id;// "pair":null,   // type=0时此项为两个uid：min_uid&max_uid
+        mRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "", "", String.valueOf(user_id))
+                .subscribe(new BaseSubscribe<Conversation>() {
+                    @Override
+                    protected void onSuccess(Conversation data) {
+                        data.setIm_uid(AppApplication.getmCurrentLoginAuth().getUser_id());
+                        data.setUsids(uids);
+                        data.setPair(pair);
+                        mRepository.insertOrUpdateConversation(data);
+
+                    }
+
+                    @Override
+                    protected void onFailure(String message) {
+                        mRootView.showMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
+                    }
+                });
     }
 
     /**
@@ -131,7 +165,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         ChatItemBean chatItemBean = new ChatItemBean();
         chatItemBean.setLastMessage(message);
         if (message.getUid() == 0) {// 如果没有 uid, 则表明是当前用户发的消息
-            message.setUid(AppApplication.getmCurrentLoginAuth()!=null?AppApplication.getmCurrentLoginAuth().getUser_id():0);
+            message.setUid(AppApplication.getmCurrentLoginAuth() != null ? AppApplication.getmCurrentLoginAuth().getUser_id() : 0);
         }
         UserInfoBean userInfoBean = mUserInfoBeanSparseArray.get(message.getUid());
         if (userInfoBean == null) {

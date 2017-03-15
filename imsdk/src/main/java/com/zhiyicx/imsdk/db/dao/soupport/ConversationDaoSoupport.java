@@ -29,6 +29,15 @@ public interface ConversationDaoSoupport {
     Conversation getConversationByCid(int cid);
 
     /**
+     * 通过 Uids 获取对话信息
+     *
+     * @param originUid 主体对象的 uid
+     * @param targetUid 目标对象的 uid
+     * @return
+     */
+    Conversation getPrivateChatConversationByUids(int originUid, int targetUid);
+
+    /**
      * 获取对话列表
      *
      * @param page

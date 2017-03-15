@@ -67,10 +67,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         return 0;
     }
 
-    @Override
-    protected String setRightTitle() {
-        return "创建对话";//测试使用
-    }
 
     @Override
     protected boolean setUseSatusbar() {
@@ -80,12 +76,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     protected boolean setUseStatusView() {
         return true;
-    }
-
-    @Override
-    protected void setRightClick() {
-        super.setRightClick();
-        mPresenter.createChat();
     }
 
     @Override

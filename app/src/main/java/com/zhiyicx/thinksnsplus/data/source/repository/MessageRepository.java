@@ -54,7 +54,7 @@ public class MessageRepository implements MessageContract.Repository {
                     @Override
                     public Observable<BaseJson<List<MessageItemBean>>> call(final BaseJson<List<Conversation>> listBaseJson) {
                         final BaseJson<List<MessageItemBean>> baseJson = new BaseJson();
-                        if (listBaseJson.isStatus()&& !listBaseJson.getData().isEmpty()) {
+                        if (listBaseJson.isStatus() && !listBaseJson.getData().isEmpty()) {
                             List<MessageItemBean> datas = new ArrayList<>();
                             baseJson.setData(datas);
                             List<Long> integers = new ArrayList<>();
@@ -66,10 +66,23 @@ public class MessageRepository implements MessageContract.Repository {
                                     tmp.setLast_message_time(message.getCreate_time());
                                 }
                                 tmp.setIm_uid(AppApplication.getmCurrentLoginAuth().getUser_id());
+                                try {
+                                    String[] uidsPair = tmp.getUsids().split("&");
+                                    int pair1 = Integer.parseInt(uidsPair[0]);
+                                    int pair2 = Integer.parseInt(uidsPair[1]);
+                                    tmp.setPair(pair1 > pair2 ? (pair2 + "&" + pair1) : (pair1 + "&" + pair2)); // "pair":null,   // type=0时此项为两个uid：min_uid&max_uid
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                                 // 存储对话信息
                                 ConversationDao.getInstance(mContext).insertOrUpdateConversation(tmp);
-                                String[] uidsTmp = tmp.getUsids().split(",");
-                                integers.add(Long.valueOf((uidsTmp[0].equals(AppApplication.getmCurrentLoginAuth().getUser_id() + "") ? uidsTmp[1] : uidsTmp[0])));
+                                try {
+                                    String[] uidsTmp = tmp.getUsids().split(",");
+                                    integers.add(Long.valueOf((uidsTmp[0].equals(AppApplication.getmCurrentLoginAuth().getUser_id() + "") ? uidsTmp[1] : uidsTmp[0])));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
                                 // 获取未读消息数量
                                 int unreadMessageCount = MessageDao.getInstance(mContext).getUnReadMessageCount(tmp.getCid());
                                 messageItemBean.setConversation(tmp);

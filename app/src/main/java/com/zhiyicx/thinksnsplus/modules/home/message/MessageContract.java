@@ -26,10 +26,11 @@ public interface MessageContract {
 
         void updateLikeItemData(MessageItemBean messageItemBean);
 
-        void refreshLastClicikPostion(int position,MessageItemBean messageItemBean);
+        void refreshLastClicikPostion(int position, MessageItemBean messageItemBean);
 
         /**
          * 更新未读消息数量
+         *
          * @param message 对话信息
          */
         void refreshMessageUnreadNum(Message message);
@@ -41,8 +42,9 @@ public interface MessageContract {
     interface Repository {
         /**
          * 获取对话列表信息
+         *
          * @param user_id 用户 id
-          * @return
+         * @return
          */
         Observable<BaseJson<List<MessageItemBean>>> getMessageList(int user_id);
     }
@@ -52,8 +54,6 @@ public interface MessageContract {
 
         MessageItemBean updateLikeItemData();
 
-        void createChat();
-
-        void refreshLastClicikPostion(int position,MessageItemBean messageItemBean);
+        void refreshLastClicikPostion(int position, MessageItemBean messageItemBean);
     }
 }
