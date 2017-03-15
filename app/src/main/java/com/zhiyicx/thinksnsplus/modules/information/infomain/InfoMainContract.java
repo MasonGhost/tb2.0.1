@@ -8,6 +8,8 @@ import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 
+import java.util.List;
+
 import rx.Observable;
 
 /**
@@ -34,7 +36,7 @@ public interface InfoMainContract {
      * 内层内容列表
      */
     interface InfoListView extends ITSListView<InfoListBean,InfoListPresenter> {
-        void setInfoList(InfoListBean infoList);
+        String getInfoType();
     }
 
     interface InfoListPresenter extends ITSListPresenter<InfoListBean> {
@@ -49,11 +51,10 @@ public interface InfoMainContract {
         /**
          * @param cate_id 订阅分类 -1 推荐 -2 热门 其他对应资讯分类id
          * @param max_id  用来翻页的记录id(对应数据体里的id)
-         * @param limit   每页返回数据条数 默认15条
          * @param page    翻页页码（热门和推荐列表 加载所需传入）
          * @return
          */
-        Observable<BaseJson<InfoListBean>> getInfoList(String cate_id, long max_id,
-                                                       long limit, long page);
+        Observable<BaseJson<List<InfoListBean>>> getInfoList(String cate_id, long max_id,
+                                                             long page);
     }
 }
