@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.information.infomain;
+package com.zhiyicx.thinksnsplus.modules.information.infomain.list;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,18 +7,25 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoBannerBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.InfoMainRepository;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoBannerItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoListItem;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
+import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * @Author Jliuer
@@ -26,14 +33,15 @@ import java.util.List;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class InfoListFragment extends TSListFragment {
-
+public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPresenter,
+        InfoListBean> implements InfoMainContract.InfoListView {
+    private static final String BUNDLE_INFO_TYPE = "info_type";
     private List<BaseListBean> mInfoList = new ArrayList<>();
 
     public static InfoListFragment newInstance(String params) {
         InfoListFragment fragment = new InfoListFragment();
         Bundle args = new Bundle();
-        args.putString("tym", params);
+        args.putString(BUNDLE_INFO_TYPE, params);
         fragment.setArguments(args);
         return fragment;
     }
@@ -85,12 +93,24 @@ public class InfoListFragment extends TSListFragment {
 
     @Override
     protected void initData() {
+        DaggerInfoListComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .infoListPresenterModule(new InfoListPresenterModule(this))
+                .build().inject(this);
+
+
         super.initData();
     }
 
     @Override
-    public void setPresenter(Object presenter) {
+    public void setInfoList(InfoListBean infoList) {
 
+    }
+
+    @Override
+    public void setPresenter(InfoMainContract.InfoListPresenter presenter) {
+        mPresenter = presenter;
+        mPresenter.getInfoList("1",1,15,1);
     }
 
     @Override

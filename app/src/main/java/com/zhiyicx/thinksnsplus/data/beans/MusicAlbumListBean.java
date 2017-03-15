@@ -1,10 +1,12 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
 
+import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -110,4 +112,42 @@ public class MusicAlbumListBean extends BaseListBean implements Parcelable {
             this.taste_count = taste_count;
         }
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeByte(this.status ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.code);
+        dest.writeString(this.message);
+        dest.writeList(this.data);
+    }
+
+    public MusicAlbumListBean() {
+    }
+
+    protected MusicAlbumListBean(Parcel in) {
+        super(in);
+        this.status = in.readByte() != 0;
+        this.code = in.readInt();
+        this.message = in.readString();
+        this.data = new ArrayList<DataBean>();
+        in.readList(this.data, DataBean.class.getClassLoader());
+    }
+
+    public static final Creator<MusicAlbumListBean> CREATOR = new Creator<MusicAlbumListBean>() {
+        @Override
+        public MusicAlbumListBean createFromParcel(Parcel source) {
+            return new MusicAlbumListBean(source);
+        }
+
+        @Override
+        public MusicAlbumListBean[] newArray(int size) {
+            return new MusicAlbumListBean[size];
+        }
+    };
 }

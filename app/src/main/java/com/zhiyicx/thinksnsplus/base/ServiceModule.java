@@ -5,6 +5,7 @@ import com.zhiyicx.thinksnsplus.data.source.remote.ChatInfoClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.FollowFansClient;
+import com.zhiyicx.thinksnsplus.data.source.remote.InfoMainClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.MusicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.PasswordClient;
@@ -104,6 +105,18 @@ public class ServiceModule {
     @Provides
     MusicClient provideMusicClient(Retrofit retrofit) {
         return retrofit.create(MusicClient.class);
+    }
+
+    /**
+     * 资讯-资讯分类列表
+     *
+     * @param retrofit
+     * @return
+     */
+    @Singleton
+    @Provides
+    InfoMainClient provideInfoMainClient(Retrofit retrofit) {
+        return retrofit.create(InfoMainClient.class);
     }
 
     /**
