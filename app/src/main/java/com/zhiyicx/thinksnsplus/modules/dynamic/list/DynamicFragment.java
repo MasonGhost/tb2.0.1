@@ -103,6 +103,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_dynamic_list;
     }
@@ -110,7 +115,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-
     }
 
     @Override

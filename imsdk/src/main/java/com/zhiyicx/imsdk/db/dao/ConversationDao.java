@@ -23,6 +23,22 @@ import java.util.List;
  * email:335891510@qq.com
  */
 public class ConversationDao extends BaseDao implements ConversationDaoSoupport {
+    /**
+     * CREATE TABLE `conversation` (
+     * `cid` int(11) NOT NULL COMMENT '对话ID',
+     * `type` tinyint(1) NOT NULL COMMENT '对话类型',0私聊，1群聊2聊天室
+     * `name` varchar(32) DEFAULT NULL COMMENT '对话名称',
+     * `disable` tinyint(1) NOT NULL DEFAULT '0' COMMENT '对话禁言状态',
+     * `pair` varchar(21) DEFAULT NULL COMMENT '私有对话双方uid标识',
+     * `pwd` varchar(32) DEFAULT NULL COMMENT '加入对话的秘钥',
+     * `last_message_time` int(11) NOT NULL DEFAULT '0' COMMENT '最新消息时间',
+     * `is_del` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否被删除 1:是 0:否',
+     * `im_uid` int(11) NOT NULL COMMENT '当前登录的用户IM_uid'
+     * `user_id` int(11) NOT NULL COMMENT '对话创建用户的uid'
+     * `mc` int(11) 当前群聊中的人数
+     * )
+     */
+
     private static final String TAG = "ConversationDao";
     public static final String TABLE_NAME = "conversation";
     public static final String COLUMN_NAME_CONVERSATION_CID = "cid";
@@ -120,39 +136,7 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
                 null,
                 COLUMN_NAME_CONVERSATION_CID + " = ?", new String[]{String.valueOf(cid)}, null, null,
                 null);
-        List<Conversation> conversations = new ArrayList<>();
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                Conversation conversation = new Conversation();
-                conversation.setCid(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_CID)));
-                conversation.setType(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_TYPE)));
-                conversation.setName(cursor.getString(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_NAME)));
-                conversation.setPair(cursor.getString(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_PAIR)));
-                conversation.setPwd(cursor.getString(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_PWD)));
-                conversation.setLast_message_time(cursor.getLong(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_LAST_MESSAGE_TIME)));
-                conversation.setLast_message_text(cursor.getString(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_LAST_MESSAGE_TEXT)));
-                conversation.setUsids(cursor.getString(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_USIDS)));
-                conversation.setIm_uid(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_IM_UID)));
-                conversation.setUser_id(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_USER_ID)));
-                conversation.setIs_del(isDel(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_IS_DEL))));
-                conversation.setDisa(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_DISABLE)));
-                conversation.setMc(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_MC)));
-                conversations.add(conversation);
-            } while (cursor.moveToNext());
-        }
+        List<Conversation> conversations = getConversations(cursor);
         cursor.close();
         database.setTransactionSuccessful();
         database.endTransaction();
@@ -160,6 +144,28 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
         else return null;
     }
 
+    /**
+     * 通过 uids 获取对话信息
+     *
+     * @return
+     */
+    @Override
+    public Conversation getPrivateChatConversationByUids(int originUid, int targetUid) {
+
+        SQLiteDatabase database = mHelper.getWritableDatabase();
+        database.beginTransaction();
+        Cursor cursor = database.query(
+                TABLE_NAME,
+                null,
+                COLUMN_NAME_CONVERSATION_USIDS + " = ? or "+COLUMN_NAME_CONVERSATION_USIDS+" = ? ", new String[]{originUid + "," + targetUid, targetUid + "," + originUid}, null, null,
+                null);
+        List<Conversation> conversations = getConversations(cursor);
+        cursor.close();
+        database.setTransactionSuccessful();
+        database.endTransaction();
+        if (conversations.size() > 0) return conversations.get(0);
+        else return null;
+    }
 
     /**
      * 获取对话列表
@@ -178,40 +184,7 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
                 null,
                 null, null, null, null,
                 COLUMN_NAME_CONVERSATION_LAST_MESSAGE_TIME + "  DESC", (page - 1) * DEFAULT_PAGESIZE + "," + DEFAULT_PAGESIZE);
-        List<Conversation> conversations = new ArrayList<>();
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                Conversation conversation = new Conversation();
-                conversation.setCid(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_CID)));
-                conversation.setType(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_TYPE)));
-                conversation.setName(cursor.getString(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_NAME)));
-                conversation.setPair(cursor.getString(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_PAIR)));
-                conversation.setPwd(cursor.getString(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_PWD)));
-                conversation.setLast_message_time(cursor.getLong(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_LAST_MESSAGE_TIME)));
-                conversation.setLast_message_text(cursor.getString(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_LAST_MESSAGE_TEXT)));
-                conversation.setUsids(cursor.getString(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_USIDS)));
-
-                conversation.setIm_uid(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_IM_UID)));
-                conversation.setUser_id(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_USER_ID)));
-                conversation.setIs_del(isDel(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_IS_DEL))));
-                conversation.setDisa(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_DISABLE)));
-                conversation.setMc(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_MC)));
-                conversations.add(conversation);
-            } while (cursor.moveToNext());
-        }
+        List<Conversation> conversations = getConversations(cursor);
         cursor.close();
         database.setTransactionSuccessful();
         database.endTransaction();
@@ -240,39 +213,7 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
                 null,
                 COLUMN_NAME_CONVERSATION_IM_UID + " = ?", new String[]{String.valueOf(im_uid)}, null, null,
                 null);
-        List<Conversation> conversations = new ArrayList<>();
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                Conversation conversation = new Conversation();
-                conversation.setCid(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_CID)));
-                conversation.setType(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_TYPE)));
-                conversation.setName(cursor.getString(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_NAME)));
-                conversation.setPair(cursor.getString(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_PAIR)));
-                conversation.setPwd(cursor.getString(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_PWD)));
-                conversation.setLast_message_time(cursor.getLong(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_LAST_MESSAGE_TIME)));
-                conversation.setLast_message_text(cursor.getString(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_LAST_MESSAGE_TEXT)));
-                conversation.setUsids(cursor.getString(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_USIDS)));
-                conversation.setIm_uid(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_IM_UID)));
-                conversation.setUser_id(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_USER_ID)));
-                conversation.setIs_del(isDel(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_IS_DEL))));
-                conversation.setDisa(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_DISABLE)));
-                conversation.setMc(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_MC)));
-                conversations.add(conversation);
-            } while (cursor.moveToNext());
-        }
+        List<Conversation> conversations = getConversations(cursor);
         cursor.close();
         database.setTransactionSuccessful();
         database.endTransaction();
@@ -292,39 +233,7 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
                 null,
                 COLUMN_NAME_CONVERSATION_IM_UID + " = ? and " + COLUMN_NAME_CONVERSATION_TYPE + " != " + ChatType.CHAT_TYPE_CHATROOM, new String[]{String.valueOf(im_uid)}, null, null,
                 null);
-        List<Conversation> conversations = new ArrayList<>();
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                Conversation conversation = new Conversation();
-                conversation.setCid(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_CID)));
-                conversation.setType(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_TYPE)));
-                conversation.setName(cursor.getString(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_NAME)));
-                conversation.setPair(cursor.getString(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_PAIR)));
-                conversation.setPwd(cursor.getString(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_PWD)));
-                conversation.setLast_message_time(cursor.getLong(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_LAST_MESSAGE_TIME)));
-                conversation.setLast_message_text(cursor.getString(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_LAST_MESSAGE_TEXT)));
-                conversation.setUsids(cursor.getString(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_USIDS)));
-                conversation.setIm_uid(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_IM_UID)));
-                conversation.setUser_id(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_USER_ID)));
-                conversation.setIs_del(isDel(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_IS_DEL))));
-                conversation.setDisa(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_DISABLE)));
-                conversation.setMc(cursor.getInt(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_MC)));
-                conversations.add(conversation);
-            } while (cursor.moveToNext());
-        }
+        List<Conversation> conversations = getConversations(cursor);
         cursor.close();
         database.setTransactionSuccessful();
         database.endTransaction();
@@ -478,4 +387,44 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
     public void close() {
         mHelper.close();
     }
+
+
+    public List<Conversation> getConversations(Cursor cursor) {
+        List<Conversation> conversations = new ArrayList<>();
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                Conversation conversation = new Conversation();
+                conversation.setCid(cursor.getInt(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_CID)));
+                conversation.setType(cursor.getInt(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_TYPE)));
+                conversation.setName(cursor.getString(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_NAME)));
+                conversation.setPair(cursor.getString(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_PAIR)));
+                conversation.setPwd(cursor.getString(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_PWD)));
+                conversation.setLast_message_time(cursor.getLong(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_LAST_MESSAGE_TIME)));
+                conversation.setLast_message_text(cursor.getString(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_LAST_MESSAGE_TEXT)));
+                conversation.setUsids(cursor.getString(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_USIDS)));
+                conversation.setIm_uid(cursor.getInt(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_IM_UID)));
+                conversation.setUser_id(cursor.getInt(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_USER_ID)));
+                conversation.setIs_del(isDel(cursor.getInt(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_IS_DEL))));
+                conversation.setDisa(cursor.getInt(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_DISABLE)));
+                conversation.setMc(cursor.getInt(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_MC)));
+                conversations.add(conversation);
+            } while (cursor.moveToNext());
+        }
+        return conversations;
+    }
+
+
 }

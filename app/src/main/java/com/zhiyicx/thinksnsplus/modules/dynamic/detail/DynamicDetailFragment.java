@@ -121,13 +121,17 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         initBottomToolUI();
         initBottomToolListener();
         initHeaderView();
         initListener();
-        mVShadow.setAlpha((1 - POPUPWINDOW_ALPHA));
     }
 
     /**

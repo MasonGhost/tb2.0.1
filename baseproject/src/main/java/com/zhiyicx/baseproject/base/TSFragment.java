@@ -13,6 +13,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.UIUtils;
 
@@ -37,13 +38,21 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     protected TextView mToolbarLeft;
     protected TextView mToolbarRight;
     protected TextView mToolbarCenter;
+    protected View mStatusPlaceholderView;
     private boolean mIscUseSatusbar = false;// 内容是否需要占用状态栏
+
 
     @Override
     protected View getContentView() {
         LinearLayout linearLayout = new LinearLayout(getActivity());
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        if (setUseSatusbar() && setUseStatusView()) { // 是否添加和状态栏等高的占位 View
+            mStatusPlaceholderView = new View(getContext());
+            mStatusPlaceholderView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceUtils.getStatuBarHeight(getContext())));
+            mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), setToolBarBackgroud()));
+            linearLayout.addView(mStatusPlaceholderView);
+        }
         if (showToolbar()) {// 在需要显示toolbar时，进行添加
             View toolBarContainer = mLayoutInflater.inflate(getToolBarLayoutId(), null);
             initDefaultToolBar(toolBarContainer);
@@ -55,8 +64,6 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             divider.setBackgroundColor(ContextCompat.getColor(getContext(), setToolBarDividerColor()));
             linearLayout.addView(divider);
         }
-        View bodyContainer = mLayoutInflater.inflate(getBodyLayoutId(), null);
-        bodyContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         if (setUseSatusbar()) {
             //顶上去
             StatusBarUtils.transparencyBar(getActivity());
@@ -64,12 +71,35 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         } else {
             //不顶上去
             setToolBarTextColor();
-            StatusBarUtils.statusBarLightMode(getActivity());
             StatusBarUtils.setStatusBarColor(getActivity(), setToolBarBackgroud());
             linearLayout.setFitsSystemWindows(true);
         }
+        if (setStatusbarGrey()) {
+            StatusBarUtils.statusBarLightMode(getActivity());
+        }
+        View bodyContainer = mLayoutInflater.inflate(getBodyLayoutId(), null);
+        bodyContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         linearLayout.addView(bodyContainer);
         return linearLayout;
+    }
+
+    /**
+     * 设置是否需要添加和状态栏等高的占位 view
+     *
+     * @return
+     */
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    /**
+     * 状态栏默认为灰色
+     * 支持小米、魅族以及 6.0 以上机型
+     *
+     * @return
+     */
+    protected boolean setStatusbarGrey() {
+        return true;
     }
 
     /**
@@ -80,7 +110,6 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     protected boolean setUseSatusbar() {
         return mIscUseSatusbar;
     }
-
 
 
     /**
@@ -264,6 +293,12 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         } else {
             view.setText(string);
             view.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void setStatusPlaceholderViewBackgroundColor(int resId) {
+        if(mStatusPlaceholderView!=null) {
+            mStatusPlaceholderView.setBackgroundColor(resId);
         }
     }
 }

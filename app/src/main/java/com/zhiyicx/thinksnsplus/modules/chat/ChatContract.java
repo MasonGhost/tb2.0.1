@@ -57,6 +57,12 @@ public interface ChatContract {
          */
         void updateMessageStatus(Message message);
 
+        /**
+         * 更新对话信息
+         * @param conversation
+         */
+        void updateConversation(Conversation conversation);
+
     }
 
     interface Repository {
@@ -136,5 +142,10 @@ public interface ChatContract {
          */
         void reSendText(ChatItemBean chatItemBean);
 
+        /**
+         * 创建对话
+         * @param user_id 目标对象的 user_id
+         */
+        void createChat(int user_id);
     }
 }

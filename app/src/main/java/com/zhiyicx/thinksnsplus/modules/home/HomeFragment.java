@@ -107,6 +107,10 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         return R.color.white;
     }
 
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
 
     @Override
     protected void initView(View rootView) {
@@ -114,6 +118,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         longClickSendTextDynamic();
         initPhotoPicker();
     }
+
 
     @Override
     protected void initData() {
