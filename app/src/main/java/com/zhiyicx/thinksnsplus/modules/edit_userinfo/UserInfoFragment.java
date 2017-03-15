@@ -99,6 +99,16 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         return R.layout.fragment_user_info;
     }
 
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return true;
+    }
+
     private void initConfig() {
         mEditConfigBeanDao = new EditConfigBeanDaoImpl(getContext());
         EditConfigBean editConfigBean = new EditConfigBean(1021L, "school", "学校", "TextView");
@@ -217,6 +227,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     public void showLoading() {
 
     }
+
 
     @Override
     public void hideLoading() {
