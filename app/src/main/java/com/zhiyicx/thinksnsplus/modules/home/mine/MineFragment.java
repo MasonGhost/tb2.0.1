@@ -14,7 +14,6 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
-import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
@@ -113,7 +112,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     }
 
     @Override
-    protected boolean showToolBarDivider() {
+    protected boolean setUseSatusbar() {
         return true;
     }
 
@@ -124,7 +123,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     protected int setToolBarBackgroud() {
-        StatusBarUtils.statusBarLightMode(getActivity());//当状态栏颜色为白色时使用，Activity 中最后一次调用确定状态栏背景颜色和图标颜色
         return R.color.white;
     }
 

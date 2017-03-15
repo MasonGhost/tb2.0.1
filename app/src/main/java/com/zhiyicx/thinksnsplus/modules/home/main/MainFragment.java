@@ -32,6 +32,7 @@ public class MainFragment extends TSViewPagerFragment implements InputLimitView.
     @BindView(R.id.v_shadow)
     View mVShadow;
 
+
     List<Fragment> fragments = new ArrayList<>();
 
     public void setOnImageClickListener(DynamicFragment.OnCommentClickListener onCommentClickListener) {
@@ -50,12 +51,18 @@ public class MainFragment extends TSViewPagerFragment implements InputLimitView.
 
     @Override
     protected int getBodyLayoutId() {
-        return com.zhiyicx.baseproject.R.layout.fragment_main_viewpager;
+        return R.layout.fragment_main_viewpager;
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
     }
 
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+
         initInputView();
     }
 

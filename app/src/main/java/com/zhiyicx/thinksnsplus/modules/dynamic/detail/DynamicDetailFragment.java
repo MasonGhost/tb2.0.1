@@ -123,20 +123,13 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        initToolBar();
         initBottomToolUI();
         initBottomToolListener();
         initHeaderView();
         initListener();
         mVShadow.setAlpha((1 - POPUPWINDOW_ALPHA));
     }
-    private void initToolBar() {
-//        // toolBar设置状态栏高度的marginTop
-//        int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext());
-//        AppBarLayout.LayoutParams layoutParams = new  AppBarLayout.LayoutParams( AppBarLayout.LayoutParams.MATCH_PARENT, height);
-//        mToolbar.setLayoutParams(layoutParams);
-//        layoutParams.gravity= Gravity.BOTTOM;
-    }
+
     /**
      * 初始化监听
      */

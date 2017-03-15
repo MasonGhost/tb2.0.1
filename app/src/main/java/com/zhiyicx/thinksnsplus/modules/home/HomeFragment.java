@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.home;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -18,6 +20,8 @@ import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplCompone
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
+import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -70,6 +74,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     TextView mTvMine;
     @BindView(R.id.vp_home)
     NoPullViewPager mVpHome;
+    @BindView(R.id.v_status_bar_placeholder)
+    View mStatusBarPlaceholder;
 
     @Inject
     HomePresenter mHomePresenter;  // 仅用于构造
@@ -107,12 +113,22 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         return R.color.white;
     }
 
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
 
     @Override
     protected void initView(View rootView) {
         initViewPager();
         longClickSendTextDynamic();
         initPhotoPicker();
+        initToolBar();
+    }
+    private void initToolBar() {
+        // toolBar设置状态栏高度的marginTop
+        RelativeLayout.LayoutParams layoutParams = new  RelativeLayout.LayoutParams( RelativeLayout.LayoutParams.MATCH_PARENT, DeviceUtils.getStatuBarHeight(getContext()));
+        mStatusBarPlaceholder.setLayoutParams(layoutParams);
     }
 
     @Override

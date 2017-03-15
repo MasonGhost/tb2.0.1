@@ -68,7 +68,10 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     protected String setRightTitle() {
         return "创建对话";//测试使用
     }
-
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
     @Override
     protected void setRightClick() {
         super.setRightClick();

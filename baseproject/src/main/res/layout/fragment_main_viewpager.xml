@@ -9,29 +9,31 @@
     <com.zhiyicx.baseproject.widget.TabSelectView
         android:id="@+id/tsv_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_height">
+        android:layout_height="@dimen/toolbar_height"
+        android:background="@color/white">
 
     </com.zhiyicx.baseproject.widget.TabSelectView>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/vp_fragment"
-        android:layout_below="@id/tsv_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></android.support.v4.view.ViewPager>
+        android:layout_height="match_parent"
+        android:layout_below="@id/tsv_toolbar"></android.support.v4.view.ViewPager>
 
     <View
         android:id="@+id/v_shadow"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:background="@android:color/black"/>
+        android:background="@android:color/black"
+        android:visibility="gone"/>
 
     <com.zhiyicx.baseproject.widget.InputLimitView
         android:id="@+id/ilv_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:layout_alignParentBottom="true"
+        android:fitsSystemWindows="true"
+        android:visibility="gone"
         app:limitSize="@integer/comment_input_max_size"
         app:showLimitSize="@integer/show_comment_input_size">
 

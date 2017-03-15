@@ -57,6 +57,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
         View bodyContainer = mLayoutInflater.inflate(getBodyLayoutId(), null);
         bodyContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        System.out.println("TAG = " + TAG);
         if (setUseSatusbar()) {
             //顶上去
             StatusBarUtils.transparencyBar(getActivity());
