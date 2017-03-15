@@ -1,6 +1,5 @@
 package com.zhiyicx.common.base;
 
-import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;

@@ -14,7 +14,6 @@
             android:id="@+id/nestedscroll_target"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@mipmap/npc"
             android:gravity="center_vertical"
             android:paddingTop="@dimen/music_album_detail_head_paddingtop_60dp">
 

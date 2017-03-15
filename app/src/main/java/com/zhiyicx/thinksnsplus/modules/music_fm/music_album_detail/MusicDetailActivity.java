@@ -21,6 +21,9 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayService;
 
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album.MusicListFragment
+        .BUNDLE_MUSIC_ABLUM;
+
 public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicDetailFragment>
         implements MusicDetailFragment.MediaBrowserCompatProvider {
 
@@ -49,7 +52,8 @@ public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicD
         mMediaBrowserCompat = new MediaBrowserCompat(this, new ComponentName(this,
                 MusicPlayService.class)
                 , mConnectionCallback, null);
-        mMusicDetailFragment = new MusicDetailFragment();
+        mMusicDetailFragment = MusicDetailFragment.newInstance(getIntent()
+                .getBundleExtra(BUNDLE_MUSIC_ABLUM));
         return mMusicDetailFragment;
     }
 
@@ -57,7 +61,7 @@ public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicD
     protected void componentInject() {
         DaggerMusicDetailComponent.builder().appComponent(AppApplication.AppComponentHolder
                 .getAppComponent()).musicDetailPresenterModule(new MusicDetailPresenterModule
-                (mContanierFragment))
+                (mMusicDetailFragment))
                 .build();
     }
 
