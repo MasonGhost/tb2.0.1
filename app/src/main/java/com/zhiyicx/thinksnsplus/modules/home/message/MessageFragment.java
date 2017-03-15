@@ -14,6 +14,7 @@ import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
@@ -22,6 +23,8 @@ import com.zhiyicx.thinksnsplus.modules.home.message.messagelike.MessageLikeActi
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
+
+import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,7 +129,15 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
             // 刷新当条信息内容
             mPresenter.refreshLastClicikPostion(mLastClickPostion, mMessageItemBeen.get(mLastClickPostion));
         }
-
+        // 是否显示底部红点
+        boolean isShowMessgeTip = false;
+        for (MessageItemBean messageItemBean : mMessageItemBeen) {
+            if (messageItemBean.getUnReadMessageNums() > 0) {
+                isShowMessgeTip = true;
+                break;
+            }
+        }
+        EventBus.getDefault().post(isShowMessgeTip, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED);
     }
 
     @Override

@@ -108,11 +108,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
-    protected boolean setUseStatusView() {
-        return false;
-    }
-
-    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_dynamic_list;
     }

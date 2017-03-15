@@ -113,11 +113,6 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     }
 
     @Override
-    protected boolean setUseStatusView() {
-        return false;
-    }
-
-    @Override
     protected void initView(View rootView) {
         initViewPager();
         longClickSendTextDynamic();
