@@ -1,13 +1,13 @@
 package com.zhiyicx.thinksnsplus.modules.information.infomain;
 
-import android.support.v4.app.Fragment;
-
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.thinksnsplus.R;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.modules.information.infomain.container.DaggerInfoContainerComponent;
+import com.zhiyicx.thinksnsplus.modules.information.infomain.container.InfoContainerFragment;
+import com.zhiyicx.thinksnsplus.modules.information.infomain.container.InfoContainerPresenter;
+import com.zhiyicx.thinksnsplus.modules.information.infomain.container.InfoContainerPresenterModule;
 
 /**
  * @Author Jliuer
@@ -15,11 +15,12 @@ import java.util.List;
  * @Email Jliuer@aliyun.com
  * @Description 资讯
  */
-public class InfoActivity extends TSActivity {
+public class InfoActivity extends TSActivity<InfoContainerPresenter, InfoContainerFragment> {
+
     InfoContainerFragment mInfoContainerFragment;
 
     @Override
-    protected Fragment getFragment() {
+    protected InfoContainerFragment getFragment() {
         if (mInfoContainerFragment == null) {
             mInfoContainerFragment = new InfoContainerFragment();
         }
@@ -28,7 +29,12 @@ public class InfoActivity extends TSActivity {
 
     @Override
     protected void componentInject() {
-
+        DaggerInfoContainerComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .infoContainerPresenterModule(
+                        new InfoContainerPresenterModule(mInfoContainerFragment))
+                .build()
+                .inject(this);
     }
 
     @Override

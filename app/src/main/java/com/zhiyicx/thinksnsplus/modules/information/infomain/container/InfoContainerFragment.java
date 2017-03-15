@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.information.infomain;
+package com.zhiyicx.thinksnsplus.modules.information.infomain.container;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,12 +12,14 @@ import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
-import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.information.infochannel.ChannelActivity;
-import com.zhiyicx.thinksnsplus.modules.information.infochannel.InfoChannelFragment;
-import com.zhiyicx.thinksnsplus.modules.information.infosearch.SearchActivity;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
+import com.zhiyicx.thinksnsplus.modules.information.infochannel.ChannelActivity;
+import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment;
+import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
+import com.zhiyicx.thinksnsplus.modules.information.infosearch.SearchActivity;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
@@ -41,7 +43,8 @@ import butterknife.OnClick;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class InfoContainerFragment extends TSFragment {
+public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoContainerPresenter>
+        implements  InfoMainContract.InfoContainerView {
 
     @BindView(R.id.fragment_infocontainer_indoctor)
     MagicIndicator mFragmentInfocontainerIndoctor;
@@ -76,7 +79,8 @@ public class InfoContainerFragment extends TSFragment {
     private static final int DEFAULT_TAB_LINE_HEGIHT = com.zhiyicx.baseproject.R.integer
             .no_line_height;
 
-    private InfoChannelFragment mInfoChannelFragment;
+    private List<String> mTitle;
+    private List<Fragment> mFragments;
 
     @Override
     protected int getBodyLayoutId() {
@@ -86,11 +90,13 @@ public class InfoContainerFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
+        mPresenter.getInfoType();
         mFragmentInfocontainerContent.setOffscreenPageLimit(DEFAULT_OFFSET_PAGE);
         TSViewPagerAdapter tsViewPagerAdapter = new TSViewPagerAdapter(getFragmentManager());
+        initMagicIndicator(initTitles());
         tsViewPagerAdapter.bindData(initFragments());
         mFragmentInfocontainerContent.setAdapter(tsViewPagerAdapter);
-        initMagicIndicator(initTitles());
+
     }
 
     @Override
@@ -130,38 +136,66 @@ public class InfoContainerFragment extends TSFragment {
                 .slide_from_top_quit);
     }
 
+    @Override
+    public void setInfoType(InfoTypeBean infoType) {
+//        Observable<InfoTypeBean.DataBean.MoreCatesBean> more_cates = Observable.from(infoType
+//                .getData().getMore_cates());
+//        Observable<InfoTypeBean.DataBean.MyCatesBean> my_cates = Observable.from(infoType.getData
+//                ().getMy_cates());
+//
+//        Observable.combineLatest(more_cates, my_cates, new
+//                Func2<InfoTypeBean.DataBean.MoreCatesBean,
+//                        InfoTypeBean.DataBean.MyCatesBean, String>() {
+//            @Override
+//            public String call(InfoTypeBean.DataBean.MoreCatesBean moreCatesBean, InfoTypeBean
+//                    .DataBean.MyCatesBean myCatesBean) {
+//                mTitle.add(moreCatesBean.getName());
+//                mTitle.add(myCatesBean.getName());
+//                return "";
+//            }
+//        });
+
+        LogUtils.d(infoType);
+        LogUtils.d(infoType);
+    }
+
+    @Override
+    public void setPresenter(InfoMainContract.InfoContainerPresenter infoContainerPresenter) {
+        mPresenter = infoContainerPresenter;
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
+    }
+
+    @Override
+    public void showMessage(String message) {
+
+    }
+
+
     protected List<String> initTitles() {
-        List<String> titles = new ArrayList<>();
-        titles.add(getString(R.string.follow));
-        titles.add(getString(R.string.hot));
-        titles.add(getString(R.string.the_last));
-        titles.add(getString(R.string.follow));
-        titles.add(getString(R.string.hot));
-        titles.add(getString(R.string.the_last));
-        titles.add(getString(R.string.follow));
-        titles.add(getString(R.string.hot));
-        titles.add(getString(R.string.the_last));
-        titles.add(getString(R.string.follow));
-        titles.add(getString(R.string.hot));
-        titles.add(getString(R.string.the_last));
-        return titles;
+        if (mTitle == null) {
+            mTitle = new ArrayList<>();
+            mTitle.add(getString(R.string.info_hot));
+            mTitle.add(getString(R.string.info_recommend));
+        }
+        return mTitle;
     }
 
     protected List<Fragment> initFragments() {
-        List<Fragment> fragments = new ArrayList<>();
-        fragments.add(InfoListFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS));
-        fragments.add(InfoListFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS));
-        fragments.add(InfoListFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW));
-        fragments.add(InfoListFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS));
-        fragments.add(InfoListFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS));
-        fragments.add(InfoListFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW));
-        fragments.add(InfoListFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS));
-        fragments.add(InfoListFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS));
-        fragments.add(InfoListFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW));
-        fragments.add(InfoListFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS));
-        fragments.add(InfoListFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS));
-        fragments.add(InfoListFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW));
-        return fragments;
+        if (mFragments == null) {
+            mFragments = new ArrayList<>();
+            mFragments.add(InfoListFragment.newInstance("1"));
+            mFragments.add(InfoListFragment.newInstance("2"));
+        }
+        return mFragments;
     }
 
     private void initMagicIndicator(final List<String> mStringList) {

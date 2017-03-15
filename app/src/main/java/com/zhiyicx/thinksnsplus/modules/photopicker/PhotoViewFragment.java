@@ -107,7 +107,7 @@ public class PhotoViewFragment extends TSFragment {
             @Override
             public void onPageSelected(int position) {
                 hasAnim = currentItem == position;
-                ToastUtils.showToast("页数--》position" + position + "currentItem-->" + currentItem + "---" + mViewPager.getCurrentItem());
+                // ToastUtils.showToast("页数--》position" + position + "currentItem-->" + currentItem + "---" + mViewPager.getCurrentItem());
                 // 是否包含了已经选中的图片该图片
                 mRbSelectPhoto.setChecked(seletedPaths.contains(mPagerAdapter.getPathAtPosition(position)));
 

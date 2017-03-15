@@ -15,6 +15,7 @@ import com.zhiyicx.common.utils.recycleviewdecoration.TGridDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
+import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -30,27 +31,11 @@ import java.util.List;
  * @Description
  */
 public class MusicListFragment extends TSListFragment<MusicContract.Presenter, MusicAlbumListBean>
-        implements
-        MusicContract.View {
+        implements MusicContract.View {
 
     private ImageLoader mImageLoader;
 
     private List<MusicAlbumListBean> mMusicListBeen = new ArrayList<>();
-
-    @Override
-    protected CommonAdapter<MusicAlbumListBean> getAdapter() {
-        return new CommonAdapter<MusicAlbumListBean>(getActivity(), R.layout.item_music_list,
-                mMusicListBeen) {
-            @Override
-            protected void convert(ViewHolder holder, MusicAlbumListBean musicListBean, int position) {
-                ImageView imag = holder.getView(R.id.music_list_image);
-                mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
-                        .imagerView(imag)
-                        .resourceId(R.mipmap.img_default_nothing)
-                        .build());
-            }
-        };
-    }
 
     @Override
     protected void initData() {
@@ -89,8 +74,8 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     }
 
     @Override
-    public void setMediaBrowserCompat(MediaBrowserCompat mediaBrowserCompat) {
-
+    public void setAlbumList(List<MusicAlbumListBean> albumList) {
+        mMusicListBeen = albumList;
     }
 
     @Override
@@ -121,5 +106,21 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     @Override
     public void onRefresh() {
         mRefreshlayout.setRefreshing(false);
+    }
+
+    @Override
+    protected CommonAdapter<MusicAlbumListBean> getAdapter() {
+        return new CommonAdapter<MusicAlbumListBean>(getActivity(), R.layout.item_music_list,
+                mMusicListBeen) {
+            @Override
+            protected void convert(ViewHolder holder, MusicAlbumListBean musicListBean, int
+                    position) {
+                ImageView imag = holder.getView(R.id.music_list_image);
+                mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
+                        .imagerView(imag)
+                        .resourceId(R.mipmap.img_default_nothing)
+                        .build());
+            }
+        };
     }
 }
