@@ -108,6 +108,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_dynamic_list;
     }
@@ -115,8 +120,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-//        StatusBarUtils.setStatusBarColor(getActivity(),R.color.normal_for_assist_text);
-//        StatusBarUtils.transparencyBar(getActivity());
     }
 
     @Override

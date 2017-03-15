@@ -149,7 +149,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     private void initInputView() {
-        mVShadow.setAlpha((1 - POPUPWINDOW_ALPHA));
         RxView.clicks(mVShadow)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(new Action1<Void>() {
@@ -168,6 +167,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     protected boolean setStatusbarGrey() {
+        return false;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
         return false;
     }
 

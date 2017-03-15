@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.home.main;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -31,7 +32,8 @@ public class MainFragment extends TSViewPagerFragment implements InputLimitView.
     InputLimitView mIlvComment;
     @BindView(R.id.v_shadow)
     View mVShadow;
-
+    @BindView(R.id.v_status_bar_placeholder)
+    View mStatusBarPlaceholder;
 
     List<Fragment> fragments = new ArrayList<>();
 
@@ -62,12 +64,15 @@ public class MainFragment extends TSViewPagerFragment implements InputLimitView.
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-
+        initToolBar();
         initInputView();
     }
-
+    private void initToolBar() {
+        // toolBar设置状态栏高度的marginTop
+        RelativeLayout.LayoutParams layoutParams = new  RelativeLayout.LayoutParams( RelativeLayout.LayoutParams.MATCH_PARENT, DeviceUtils.getStatuBarHeight(getContext()));
+        mStatusBarPlaceholder.setLayoutParams(layoutParams);
+    }
     private void initInputView() {
-        mVShadow.setAlpha((1 - POPUPWINDOW_ALPHA));
         mVShadow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -58,4 +58,9 @@
     <color name="general_for_bg_light">#f4f5f5</color>
     <color name="general_for_bg_light_alpha_0.5">#80f4f5f5</color>
 
+
+    <!--#########################################      特殊颜色       ################################-->
+
+    <!--20%蒙层颜色-->
+    <color name="masked_color">#33000000</color>
 </resources>

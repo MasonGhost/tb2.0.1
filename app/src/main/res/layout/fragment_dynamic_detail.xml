@@ -117,7 +117,7 @@
         android:id="@+id/v_shadow"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/black"
+        android:background="@color/masked_color"
         android:visibility="gone"/>
 
     <com.zhiyicx.baseproject.widget.InputLimitView

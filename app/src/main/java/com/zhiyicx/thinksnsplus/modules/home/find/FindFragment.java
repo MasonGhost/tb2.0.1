@@ -48,10 +48,15 @@ public class FindFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
-
     }
+
     @Override
     protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
         return true;
     }
 

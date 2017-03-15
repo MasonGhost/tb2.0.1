@@ -72,6 +72,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     CombinationButton mBtQuestionAnswer;
     @BindView(R.id.bt_setting)
     CombinationButton mBtSetting;
+
     @Inject
     public MinePresenter mMinePresenter;
 
@@ -89,8 +90,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     protected void initView(View rootView) {
-
     }
+
 
     @Override
     protected void initData() {
@@ -112,7 +113,17 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+
+    @Override
     protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
         return true;
     }
 
