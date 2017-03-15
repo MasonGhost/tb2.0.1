@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.information.infodetails;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -55,6 +56,18 @@ public class InfoDetailsFragment extends TSListFragment {
         adapter.addItemViewDelegate(new DynamicDetailItemForContent());
         adapter.addItemViewDelegate(new DynamicDetailItemForDig());
         return adapter;
+    }
+
+    @Override
+    protected void initView(View rootView) {
+        super.initView(rootView);
+        mDdDynamicTool.setButtonText(new int[]{R.string.info_collect,R.string.comment,
+                                                R.string.share,R.string.more});
+        mDdDynamicTool.setImageNormalResourceIds(new int[]{R.mipmap.detail_ico_good_uncollect,
+        R.mipmap.home_ico_comment_normal,R.mipmap.detail_ico_share_normal,R.mipmap.home_ico_more});
+
+        mDdDynamicTool.setImageCheckedResourceIds(new int[]{R.mipmap.detail_ico_collect,
+                R.mipmap.home_ico_comment_normal,R.mipmap.detail_ico_share_normal,R.mipmap.home_ico_more});
     }
 
     @Override

@@ -17,6 +17,7 @@
             android:gravity="center_vertical">
 
             <TextView
+                android:id="@+id/info_prompt"
                 android:layout_marginLeft="@dimen/info_channel_13dp"
                 android:gravity="center"
                 android:layout_width="wrap_content"
@@ -43,7 +44,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginRight="@dimen/info_channel_13dp"
                 android:gravity="center"
-                android:text="@string/complete"
+                android:text="@string/info_close"
                 android:textColor="@color/important_for_theme"
                 android:textSize="@dimen/size_content"/>
         </RelativeLayout>
