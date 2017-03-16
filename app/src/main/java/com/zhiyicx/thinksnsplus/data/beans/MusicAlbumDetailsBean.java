@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +13,8 @@ import java.util.List;
  * @Email Jliuer@aliyun.com
  * @Description 专辑详情
  */
-public class MusicAlbumDetailsBean implements Parcelable {
-
+public class MusicAlbumDetailsBean implements Serializable {
+    private static final long serialVersionUID = 1L;
     /**
      * id : 1
      * created_at : 2017-03-10 18:05:02
@@ -125,7 +126,8 @@ public class MusicAlbumDetailsBean implements Parcelable {
         this.musics = musics;
     }
 
-    public static class MusicsBean {
+    public static class MusicsBean implements Serializable{
+        private static final long serialVersionUID = 1L;
         /**
          * id : 1
          * created_at : 2017-03-10 18:05:15
@@ -192,7 +194,8 @@ public class MusicAlbumDetailsBean implements Parcelable {
             this.music_info = music_info;
         }
 
-        public static class MusicInfoBean {
+        public static class MusicInfoBean implements Serializable{
+            private static final long serialVersionUID = 1L;
             /**
              * id : 1
              * created_at : 2017-03-10 18:05:22
@@ -211,7 +214,7 @@ public class MusicAlbumDetailsBean implements Parcelable {
             private int id;
             private String created_at;
             private String updated_at;
-            private Object deleted_at;
+            private String deleted_at;
             private String title;
             private int singer;
             private int storage;
@@ -245,11 +248,11 @@ public class MusicAlbumDetailsBean implements Parcelable {
                 this.updated_at = updated_at;
             }
 
-            public Object getDeleted_at() {
+            public String getDeleted_at() {
                 return deleted_at;
             }
 
-            public void setDeleted_at(Object deleted_at) {
+            public void setDeleted_at(String deleted_at) {
                 this.deleted_at = deleted_at;
             }
 
@@ -316,54 +319,18 @@ public class MusicAlbumDetailsBean implements Parcelable {
             public void setComment_count(int comment_count) {
                 this.comment_count = comment_count;
             }
+
+
+            public MusicInfoBean() {
+            }
         }
-    }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+        public MusicsBean() {
+        }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.id);
-        dest.writeString(this.created_at);
-        dest.writeString(this.updated_at);
-        dest.writeString(this.title);
-        dest.writeInt(this.storage);
-        dest.writeInt(this.taste_count);
-        dest.writeInt(this.share_count);
-        dest.writeInt(this.comment_count);
-        dest.writeInt(this.collect_count);
-        dest.writeList(this.musics);
     }
 
     public MusicAlbumDetailsBean() {
     }
 
-    protected MusicAlbumDetailsBean(Parcel in) {
-        this.id = in.readInt();
-        this.created_at = in.readString();
-        this.updated_at = in.readString();
-        this.title = in.readString();
-        this.storage = in.readInt();
-        this.taste_count = in.readInt();
-        this.share_count = in.readInt();
-        this.comment_count = in.readInt();
-        this.collect_count = in.readInt();
-        this.musics = new ArrayList<MusicsBean>();
-        in.readList(this.musics, MusicsBean.class.getClassLoader());
-    }
-
-    public static final Creator<MusicAlbumDetailsBean> CREATOR = new Creator<MusicAlbumDetailsBean>() {
-        @Override
-        public MusicAlbumDetailsBean createFromParcel(Parcel source) {
-            return new MusicAlbumDetailsBean(source);
-        }
-
-        @Override
-        public MusicAlbumDetailsBean[] newArray(int size) {
-            return new MusicAlbumDetailsBean[size];
-        }
-    };
 }
