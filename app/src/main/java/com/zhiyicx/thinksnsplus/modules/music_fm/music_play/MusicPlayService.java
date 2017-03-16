@@ -15,18 +15,16 @@ import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.WindowManager;
 
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.LocalPlayback;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.QueueManager;
+import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicAblumInfo;
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProvider;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
-import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MusicWindows;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaNotificationManager;
 
 import org.simple.eventbus.EventBus;
@@ -61,79 +59,23 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
 
     private MediaSessionCompat mSession;
     private MediaNotificationManager mMediaNotificationManager;
-    private Bundle mSessionExtras;
     private final DelayedStopHandler mDelayedStopHandler = new DelayedStopHandler(this);
-
-
-    private WindowManager mWindowManager;
-    private WindowManager.LayoutParams mLayoutParams;
-    private LayoutInflater mLayoutInflater;
-    private View mFloatView;
-    private int mCurrentX;
-    private int mCurrentY;
-    private static int mFloatViewWidth = 50;
-    private static int mFloatViewHeight = 80;
-
-
 
     @Override
     public void onCreate() {
         super.onCreate();
-
-        mWindowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
-        mLayoutInflater = LayoutInflater.from(this);
-
-        mMusicProvider = new MusicProvider();
-        mMusicProvider.retrieveMediaAsync(null /* Callback */);
-
-        QueueManager queueManager = new QueueManager(mMusicProvider, getResources(),
-                new QueueManager.MetadataUpdateListener() {
-                    @Override
-                    public void onMetadataChanged(MediaMetadataCompat metadata) {
-                        mSession.setMetadata(metadata);
-                    }
-
-                    @Override
-                    public void onMetadataRetrieveError() {
-                        mPlaybackManager.updatePlaybackState(
-                                "error_no_metadata");
-                    }
-
-                    @Override
-                    public void onCurrentQueueIndexUpdated(int queueIndex) {
-                        mPlaybackManager.handlePlayRequest();
-                    }
-
-                    @Override
-                    public void onQueueUpdated(String title,
-                                               List<MediaSessionCompat.QueueItem> newQueue) {
-                        mSession.setQueue(newQueue);
-                        mSession.setQueueTitle(title);
-                    }
-                });
-
-        LocalPlayback playback = new LocalPlayback(this, mMusicProvider);
-
-        mPlaybackManager = new PlaybackManager(this, getResources(), mMusicProvider, queueManager,
-                playback);
-
         mSession = new MediaSessionCompat(this, "MusicPlayService");
-
         setSessionToken(mSession.getSessionToken());
-        mSession.setCallback(mPlaybackManager.getMediaSessionCallback());
         mSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
                 MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
-
         Context context = getApplicationContext();
         Intent intent = new Intent(context, MusicDetailActivity.class);
         PendingIntent pi = PendingIntent.getActivity(context, 99 /*request code*/,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mSession.setSessionActivity(pi);
-
-        mSessionExtras = new Bundle();
-        mSession.setExtras(mSessionExtras);
-
-        mPlaybackManager.updatePlaybackState(null);
+        mMusicProvider = new MusicProvider();
+        mMusicProvider.retrieveMediaAsync(null /* Callback */);
+        configMusicProvider(mMusicProvider);
 
         try {
             mMediaNotificationManager = new MediaNotificationManager(this);
@@ -173,9 +115,7 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
     @Override
     public BrowserRoot onGetRoot(@NonNull String clientPackageName, int clientUid,
                                  Bundle rootHints) {
-
         return new BrowserRoot(MEDIA_ID_ROOT, null);
-
     }
 
     @Override
@@ -199,7 +139,7 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
     @Override
     public void onPlaybackStart() {
         mSession.setActive(true);
-        AppApplication.getMusicWindows().showWindows();
+//        AppApplication.getMusicWindows().showWindows();
         LogUtils.d("onPlaybackStart");
         mDelayedStopHandler.removeCallbacksAndMessages(null);
         startService(new Intent(getApplicationContext(), MusicPlayService.class));
@@ -208,7 +148,7 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
     @Override
     public void onPlaybackStop() {
         mSession.setActive(false);
-        AppApplication.getMusicWindows().hideWindows();
+//        AppApplication.getMusicWindows().hideWindows();
         LogUtils.d("onPlaybackStop");
         mDelayedStopHandler.removeCallbacksAndMessages(null);
         mDelayedStopHandler.sendEmptyMessageDelayed(0, STOP_DELAY);
@@ -231,6 +171,17 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
         Log.e("onBufferingUpdate:", "" + percent);
     }
 
+    @Override
+    public void onCustomAction(String action, Bundle extras) {
+        MusicAlbumDetailsBean musicAblum =(MusicAlbumDetailsBean) extras.getSerializable("tym");
+        LogUtils.d(action+musicAblum);
+        MusicProvider newMusicProvider=new MusicProvider(new MusicAblumInfo(musicAblum));
+        newMusicProvider.retrieveMediaAsync(null);
+        LocalPlayback playback = new LocalPlayback(this, newMusicProvider);
+//        mPlaybackManager.switchToPlayback(playback,true);
+
+    }
+
     private static class DelayedStopHandler extends Handler {
         private final WeakReference<MusicPlayService> mWeakReference;
 
@@ -248,6 +199,40 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
                 service.stopSelf();
             }
         }
+    }
+
+    private void configMusicProvider(MusicProvider provider) {
+
+        QueueManager queueManager = new QueueManager(provider,
+                new QueueManager.MetadataUpdateListener() {
+                    @Override
+                    public void onMetadataChanged(MediaMetadataCompat metadata) {
+                        mSession.setMetadata(metadata);
+                    }
+
+                    @Override
+                    public void onMetadataRetrieveError() {
+                        mPlaybackManager.updatePlaybackState(
+                                "error_no_metadata");
+                    }
+
+                    @Override
+                    public void onCurrentQueueIndexUpdated(int queueIndex) {
+                        mPlaybackManager.handlePlayRequest();
+                    }
+
+                    @Override
+                    public void onQueueUpdated(String title,
+                                               List<MediaSessionCompat.QueueItem> newQueue) {
+                        mSession.setQueue(newQueue);
+                        mSession.setQueueTitle(title);
+                    }
+                });
+        LocalPlayback playback = new LocalPlayback(this, provider);
+        mPlaybackManager = new PlaybackManager(this, queueManager,
+                playback);
+        mPlaybackManager.updatePlaybackState(null);
+        mSession.setCallback(mPlaybackManager.getMediaSessionCallback());
     }
 
 }
