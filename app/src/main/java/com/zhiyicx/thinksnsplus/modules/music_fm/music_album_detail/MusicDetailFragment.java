@@ -23,7 +23,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -175,19 +174,19 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 .MATCH_PARENT, titleHeight);
         mFragmentMusicDetailScrollview.setNotConsumeHeight(titleHeight);
         mFragmentMusicDetailTitle.setLayoutParams(titleParam);
+        mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
     }
 
     @Override
     protected void initData() {
         mMusicAlbumListBean = getArguments().getParcelable(BUNDLE_MUSIC_ABLUM);
-        if (mAlbumDetailsBean!=null)
         dealBg();
-        mPresenter.getMusicAblum(mMusicAlbumListBean.getId()+"");
-
-        mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
+        mPresenter.getMusicAblum(1 + "");
         mAdapter = getCommonAdapter();
 
-
+        mBgBitmap = BitmapFactory
+                .decodeResource(getResources(), R.mipmap.npc);
+        mPalette = Palette.from(mBgBitmap).generate();
 
         mFragmentMusicDetailScrollview.setOnHeadFlingListener(new NestedScrollLineayLayout
                 .OnHeadFlingListener() {
@@ -246,6 +245,15 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @Override
     public void setPresenter(MusicDetailContract.Presenter presenter) {
         mPresenter = presenter;
+    }
+
+    @Override
+    public void setMusicAblum(MusicAlbumDetailsBean musicAblum) {
+        mAlbumDetailsBean=musicAblum;
+        Bundle bundle=new Bundle();
+        bundle.putSerializable("tym",musicAblum);
+        getActivity().getSupportMediaController().getTransportControls().sendCustomAction("tym",
+                bundle);
     }
 
     @Override
@@ -317,6 +325,14 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         MediaControllerCompat controller = getActivity()
                 .getSupportMediaController();
         if (controller != null) {
+            if (mAlbumDetailsBean!=null){
+                Bundle bundle=new Bundle();
+                bundle.putSerializable("tym",mAlbumDetailsBean);
+                controller.getTransportControls().sendCustomAction("tym",bundle);
+
+                mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
+                mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
+            }
             controller.registerCallback(mMediaControllerCallback);
         }
     }
@@ -422,11 +438,11 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
     private void dealBg() {
         mFragmentMusicDetailName.setText(mMusicAlbumListBean.getTitle());
-        mFragmentMusicDetailDec.setText(mMusicAlbumListBean.describeContents()+"");
-        mFragmentMusicDetailShare.setText(mMusicAlbumListBean.getShare_count()+"");
-        mFragmentMusicDetailComment.setText(mMusicAlbumListBean.getComment_count()+"");
-        mFragmentMusicDetailFavorite.setText(mMusicAlbumListBean.getCollect_count()+"");
-        mFragmentMusicDetailPlayvolume.setText(mMusicAlbumListBean.getTaste_count()+"");
+        mFragmentMusicDetailDec.setText(mMusicAlbumListBean.describeContents() + "");
+        mFragmentMusicDetailShare.setText(mMusicAlbumListBean.getShare_count() + "");
+        mFragmentMusicDetailComment.setText(mMusicAlbumListBean.getComment_count() + "");
+        mFragmentMusicDetailFavorite.setText(mMusicAlbumListBean.getCollect_count() + "");
+        mFragmentMusicDetailPlayvolume.setText(mMusicAlbumListBean.getTaste_count() + "");
 
 
         mBgBitmap = BitmapFactory
@@ -441,21 +457,23 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 .url(url)
                 .build());
 
-        Glide.with(getActivity()).load(url).asBitmap().into(new SimpleTarget<Bitmap>() {
-            @Override
-            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap>
-                    glideAnimation) {
-                mBgBitmap = resource;
-                mPalette = Palette.from(resource).generate();
-                BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap(mBgBitmap,
-                        mBgBitmap.getWidth
-                                (), mBgBitmap.getHeight()));
-                mFragmentMusicDetailHeadInfo.setBackgroundDrawable(drawable);
-            }
-        });
+        Glide.with(getActivity()).load(url).asBitmap()
+                .into(target);
     }
 
     public interface MediaBrowserCompatProvider {
         MediaBrowserCompat getMediaBrowser();
     }
+
+    private SimpleTarget target = new SimpleTarget<Bitmap>() {
+        @Override
+        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
+            mBgBitmap = bitmap;
+            mPalette = Palette.from(mBgBitmap).generate();
+            BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap(mBgBitmap,
+                    mBgBitmap.getWidth
+                            (), mBgBitmap.getHeight()));
+            mFragmentMusicDetailHeadInfo.setBackgroundDrawable(drawable);
+        }
+    };
 }

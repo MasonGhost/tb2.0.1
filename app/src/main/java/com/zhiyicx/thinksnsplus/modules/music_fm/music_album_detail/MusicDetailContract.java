@@ -20,6 +20,7 @@ import rx.Observable;
 public interface MusicDetailContract {
 
     interface View extends IBaseView<Presenter> {
+        void setMusicAblum(MusicAlbumDetailsBean musicAblum);
     }
 
     interface Presenter extends IBasePresenter {

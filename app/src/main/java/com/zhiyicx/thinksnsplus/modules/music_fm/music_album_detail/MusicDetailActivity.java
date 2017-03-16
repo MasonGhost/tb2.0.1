@@ -59,10 +59,11 @@ public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicD
 
     @Override
     protected void componentInject() {
-        DaggerMusicDetailComponent.builder().appComponent(AppApplication.AppComponentHolder
-                .getAppComponent()).musicDetailPresenterModule(new MusicDetailPresenterModule
-                (mMusicDetailFragment))
-                .build();
+        DaggerMusicDetailComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .musicDetailPresenterModule(new MusicDetailPresenterModule(mMusicDetailFragment))
+                .build()
+                .inject(this);
     }
 
     @Override
