@@ -137,7 +137,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
     /**
      * @param holder
      * @param dynamicBean
-     * @param lastT
+     * @param lastT  android:descendantFocusability
      * @param position
      */
     @Override
@@ -207,6 +207,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
         comment.setOnCommentClickListener(mOnCommentClickListener);
         comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
         comment.setOnCommentStateClickListener(mOnCommentStateClickListener);
+
 
     }
 

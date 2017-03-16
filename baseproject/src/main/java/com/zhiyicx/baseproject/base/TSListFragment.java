@@ -138,7 +138,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mRvList.setLayoutManager(layoutManager);
         mRvList.addItemDecoration(getItemDecoration());//设置Item的间隔
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
-        mRvList.setHasFixedSize(false);
+        mRvList.setHasFixedSize(sethasFixedSize());
         mRvList.setItemAnimator(new DefaultItemAnimator());//设置动画
         mAdapter = getAdapter();
         mRvList.setAdapter(mAdapter);
@@ -148,6 +148,15 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mEmptyWrapper = new EmptyWrapper(mAdapter);
         mEmptyWrapper.setEmptyView(mEmptyView);
         mRvList.setAdapter(mEmptyWrapper);
+    }
+
+    /**
+     * 如果确定每个item的内容不会改变RecyclerView的大小，设置这个选项可以提高性能
+     *
+     * @return
+     */
+    protected boolean sethasFixedSize() {
+        return false;
     }
 
     protected int setEmptView() {
