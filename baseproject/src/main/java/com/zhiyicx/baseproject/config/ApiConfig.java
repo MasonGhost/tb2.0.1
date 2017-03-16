@@ -80,7 +80,7 @@ public class ApiConfig {
     public static final String APP_PATH_FOLLOW_USER = "api/v1/users/follow";// 关注用户
     public static final String APP_PATH_CANCEL_FOLLOW_USER = "api/v1/users/unFollow";// 取消用户关注
     public static final String APP_PATH_GET_USER_FOLLOW_STATE = "api/v1/users/followstatus";//
- // 获取用户关注状态
+    // 获取用户关注状态
 
     /**
      * 动态相关
@@ -117,12 +117,23 @@ public class ApiConfig {
      */
     public static final String APP_PATH_INFO_TYPE = "api/v1/news/cates";// 资讯分类列表
     public static final String APP_PATH_INFO_LIST = "api/v1/news";// 资讯列表
+    public static final String APP_PATH_INFO_COMMENT = "api/v1/news/{news_id}/comment";// 评论资讯
+    public static final String APP_PATH_INFO_COMMENT_LIST =
+            "api/v1/news/{feed_id}/comments";// 资讯评论列表
+    public static final String APP_PATH_INFO_COLLECT = "api/v1/news/{news_id}/collection";// 收藏资讯
     public static final String APP_PATH_INFO_FOLLOW_LIST = "api/v1/news/cates/follow";// 订阅资讯频道
 
     /**
      * 音乐相关
      */
     public static final String APP_PATH_MUSIC_ABLUM_LIST = "api/v1/music/specials";// 专辑列表
+    public static final String APP_PATH_MUSIC_DETAILS = "api/v1/music/{music_id}";// 歌曲详情
+    public static final String APP_PATH_MUSIC_COMMENT = "api/v1/music/{music_id}/comment";// 评论歌曲
+    public static final String APP_PATH_MUSIC_ABLUM_COMMENT =
+            "api/v1/music/specail/{special_id}/comment";// 评论专辑
+    public static final String APP_PATH_MUSIC_ABLUM_COLLECT =
+            "api/v1/music/special/{special_id}/collection";// 收藏专辑
+    public static final String APP_PATH_MUSIC_DIGG = "api/v1/music/{music_id}/digg";// 音乐点赞
     public static final String APP_PATH_MUSIC_ABLUM_DETAILS =
             "api/v1/music/specials/{special_id}";// 专辑详情
 
