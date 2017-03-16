@@ -9,7 +9,7 @@ ext {
     //Android
     applicationId = "com.zhiyicx.thinksnsplus"
     minSdkVersion = 15
-    targetSdkVersion = 21
+    targetSdkVersion = 25
     versionCode = 3
     versionName = "0.3.0"
     compileSdkVersion = 25
