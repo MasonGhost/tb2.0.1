@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.information.infomain.list;
 
+import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
@@ -9,6 +10,7 @@ import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -47,10 +49,13 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
                 , maxId, mRootView.getPage())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<List<InfoListBean>>() {
+                .subscribe(new BaseSubscribe<InfoListBean>() {
                     @Override
-                    protected void onSuccess(List<InfoListBean> data) {
-                        mRootView.onNetResponseSuccess(data, isLoadMore);
+                    protected void onSuccess(InfoListBean data) {
+                        List<BaseListBean> list=new ArrayList<>();
+                        list.addAll(data.getRecommend());
+                        list.addAll(data.getList());
+                        mRootView.onNetResponseSuccess(list, isLoadMore);
                     }
 
                     @Override
@@ -67,12 +72,12 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
     }
 
     @Override
-    public List<InfoListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+    public List<BaseListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
         return null;
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<InfoListBean> data) {
+    public boolean insertOrUpdateData(@NotNull List<BaseListBean> data) {
         return false;
     }
 

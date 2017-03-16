@@ -39,7 +39,7 @@ import javax.inject.Inject;
  * @Description
  */
 public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPresenter,
-        InfoListBean> implements InfoMainContract.InfoListView {
+        BaseListBean> implements InfoMainContract.InfoListView {
     public static final String BUNDLE_INFO_TYPE = "info_type";
     private List<BaseListBean> mInfoList = new ArrayList<>();
     private String mInfoType = "1";
@@ -64,7 +64,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
             @Override
             public void convert(ViewHolder holder, BaseListBean baseListBean, BaseListBean lastT,
                                 final int position) {
-                InfoListBean realData = (InfoListBean) baseListBean;
+                InfoListBean.ListBean realData = (InfoListBean.ListBean) baseListBean;
                 final TextView title = holder.getView(R.id.item_info_title);
                 ImageView imageView = holder.getView(R.id.item_info_imag);
                 if (AppApplication.sOverRead.contains(position + "")) {
@@ -159,7 +159,8 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     }
 
     @Override
-    protected Long getMaxId(@NotNull List<InfoListBean> data) {
-        return (long) data.get(data.size() - 1).getId();
+    protected Long getMaxId(@NotNull List<BaseListBean> data) {
+        InfoListBean.ListBean needData=(InfoListBean.ListBean)data.get(data.size() - 1);
+        return (long) needData.getId();
     }
 }
