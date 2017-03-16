@@ -468,7 +468,11 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     private SimpleTarget target = new SimpleTarget<Bitmap>() {
         @Override
         public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
-            mBgBitmap = bitmap;
+            try {
+                mBgBitmap = bitmap;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             mPalette = Palette.from(mBgBitmap).generate();
             BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap(mBgBitmap,
                     mBgBitmap.getWidth
