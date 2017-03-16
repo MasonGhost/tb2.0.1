@@ -32,12 +32,17 @@
     输入框输入大量文字而引起换行；
     除了a中的情况及其他特殊情况外其他时候均按1.3倍行间距处理
     -->
-    <item name="line_spacing_Multiplier_normal" format="float" type="dimen"> 1.3</item>
+    <item name="line_spacing_Multiplier_normal" format="float" type="dimen">1.3</item>
     <!--
     有大段落的文字出现的情况，此时需要稍大的行间距，利于阅读。例如：
     动态详情页；
     文章详情页；
-    资讯详情页等
+    资讯详情页；音乐播放歌词内容等。
     -->
     <item name="line_spacing_Multiplier_big" format="float" type="dimen">1.7</item>
+
+    <!--
+    1.0倍行间距
+    一般用于在输入框中输入大量文字，有折行的情况。例如：发布评论时输入框中
+    输入多行文字时。-->
 </resources>
