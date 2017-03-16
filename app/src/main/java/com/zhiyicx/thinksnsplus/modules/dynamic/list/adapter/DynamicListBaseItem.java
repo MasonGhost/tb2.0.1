@@ -17,9 +17,14 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
+import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
+import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
+import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -46,7 +51,6 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
     protected final int mDiverwith; // 分割先的宽高
     protected final int mImageContainerWith; // 图片容器最大宽度
     protected final int mImageMaxHeight; // 单张图片最大高度
-    protected int mImageCount = 0;
     protected ImageLoader mImageLoader;
     protected Context mContext;
 
@@ -74,6 +78,25 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
     }
 
     protected OnReSendClickListener mOnReSendClickListener;
+
+    public void setOnCommentClickListener(DynamicListCommentView.OnCommentClickListener onCommentClickListener) {
+        mOnCommentClickListener = onCommentClickListener;
+    }
+
+    protected DynamicListCommentView.OnCommentClickListener mOnCommentClickListener;
+
+    protected DynamicListCommentView.OnMoreCommentClickListener mOnMoreCommentClickListener;
+
+    public void setOnCommentStateClickListener(DynamicNoPullRecycleView.OnCommentStateClickListener onCommentStateClickListener) {
+        mOnCommentStateClickListener = onCommentStateClickListener;
+    }
+
+    protected DynamicNoPullRecycleView.OnCommentStateClickListener mOnCommentStateClickListener;
+
+    public void setOnMoreCommentClickListener(DynamicListCommentView.OnMoreCommentClickListener onMoreCommentClickListener) {
+        mOnMoreCommentClickListener = onMoreCommentClickListener;
+    }
+
     private int mTitleMaxShowNum;
     private int mContentMaxShowNum;
 
@@ -98,7 +121,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
     @Override
     public boolean isForViewType(DynamicBean item, int position) {
         // 当本地和服务器都没有图片的时候，使用
-        return (item.getFeed().getStorages() == null || item.getFeed().getStorages().size() == getImageCounts())
+        return  (item.getFeed().getStorages() == null || item.getFeed().getStorages().size() == getImageCounts())
                 && (item.getFeed().getLocalPhotos() == null || item.getFeed().getLocalPhotos().size() == getImageCounts());
     }
 
@@ -108,18 +131,18 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
      * @return
      */
     protected int getImageCounts() {
-        return mImageCount;
+        return CURREN_CLOUMS;
     }
 
     /**
      * @param holder
      * @param dynamicBean
-     * @param lastT
+     * @param lastT  android:descendantFocusability
      * @param position
      */
     @Override
     public void convert(ViewHolder holder, DynamicBean dynamicBean, DynamicBean lastT, final int position) {
-        String userIconUrl = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getUserInfoBean().getUserIcon(), ImageZipConfig.IMAGE_38_ZIP);
+        String userIconUrl = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getUserInfoBean().getAvatar(), ImageZipConfig.IMAGE_38_ZIP);
         mImageLoader.loadImage(mContext, GlideImageConfig.builder()
                 .url(userIconUrl)
                 .placeholder(R.drawable.shape_default_image_circle)
@@ -145,9 +168,13 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
         }
         holder.setText(R.id.tv_content, content);
         DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
-        dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicBean.getTool().getFeed_digg_count()), dynamicBean.getTool().getIs_digg_feed() == STATUS_DIGG_FEED_CHECKED, 0);
-        dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicBean.getTool().getFeed_comment_count()), false, 1);
-        dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicBean.getTool().getFeed_view_count()), false, 2);
+        DynamicToolBean dynamicToolBean = dynamicBean.getTool();
+        if (dynamicToolBean != null) {
+            dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicToolBean.getFeed_digg_count()),dynamicToolBean.getIs_digg_feed() == STATUS_DIGG_FEED_CHECKED, 0);
+            dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicToolBean.getFeed_comment_count()), false, 1);
+            dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicToolBean.getFeed_view_count()), false, 2);
+        }
+
 
         dynamicListMenuView.setItemOnClick(new DynamicListMenuView.OnItemClickListener() {
             @Override
@@ -175,6 +202,12 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                         }
                     }
                 });
+        DynamicListCommentView comment = holder.getView(R.id.dcv_comment);
+        comment.setData(dynamicBean);
+        comment.setOnCommentClickListener(mOnCommentClickListener);
+        comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
+        comment.setOnCommentStateClickListener(mOnCommentStateClickListener);
+
 
     }
 
@@ -185,7 +218,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                     @Override
                     public void call(Void aVoid) {
                         if (mOnUserInfoClickListener != null) {
-                            mOnUserInfoClickListener.onUserInfoClick(dynamicBean);
+                            mOnUserInfoClickListener.onUserInfoClick(dynamicBean.getUserInfoBean());
                         }
                     }
                 });
@@ -201,9 +234,11 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
      * @param part        this part percent of imageContainer
      */
     protected void initImageView(final ViewHolder holder, ImageView view, final DynamicBean dynamicBean, final int positon, int part) {
+        int propPart=100;
         String url;
         if (dynamicBean.getFeed().getStorages() != null && dynamicBean.getFeed().getStorages().size() > 0) {
-            url = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getFeed().getStorages().get(positon).getStorage_id(), getProportion(view, dynamicBean, part));
+            propPart= getProportion(view, dynamicBean, part);
+            url = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getFeed().getStorages().get(positon).getStorage_id(),propPart);
         } else {
             url = dynamicBean.getFeed().getLocalPhotos().get(positon);
         }
@@ -214,7 +249,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                 .imagerView(view)
                 .build());
         if (dynamicBean.getFeed().getStorages() != null) {
-            dynamicBean.getFeed().getStorages().get(positon).setPart(part);
+            dynamicBean.getFeed().getStorages().get(positon).setPart(propPart);
         }
         RxView.clicks(view)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
@@ -253,6 +288,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
         }
         height = with;
         proportion = (int) ((with / dynamicBean.getFeed().getStorages().get(0).getWidth()) * 100);
+        LogUtils.i("------------->"+proportion);
         return proportion;
     }
 
@@ -282,14 +318,6 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
     public interface OnImageClickListener {
 
         void onImageClick(ViewHolder holder, DynamicBean dynamicBean, int position);
-    }
-
-    /**
-     * user info interface
-     */
-    public interface OnUserInfoClickListener {
-
-        void onUserInfoClick(DynamicBean dynamicBean);
     }
 
     /**

@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<cn.bingoogolapple.refreshlayout.BGARefreshLayout
+<com.aspsine.swipetoloadlayout.SwipeToLoadLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rl_chat_refresh_layout"
+    android:id="@+id/refreshlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_chat_list"
+    <com.zhiyicx.baseproject.widget.refresh.ChatRefreshHeaderView
+        android:id="@id/swipe_refresh_header"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:overScrollMode="never"
-        android:layout_weight="1"
-        />
-</cn.bingoogolapple.refreshlayout.BGARefreshLayout>
+        android:layout_height="wrap_content"></com.zhiyicx.baseproject.widget.refresh.ChatRefreshHeaderView>
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@id/swipe_target"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never">
+    </android.support.v7.widget.RecyclerView>
+
+</com.aspsine.swipetoloadlayout.SwipeToLoadLayout>

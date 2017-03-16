@@ -9,17 +9,27 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
-import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
-import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumListActivity;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -32,7 +42,7 @@ import solid.ren.skinlibrary.loader.SkinManager;
  * @Date 2017/1/5
  * @Contact master.jungle68@gmail.com
  */
-public class MineFragment extends TSFragment {
+public class MineFragment extends TSFragment<MineContract.Presenter> implements MineContract.View {
 
     @BindView(R.id.iv_head_icon)
     ImageView mIvHeadIcon;
@@ -63,6 +73,11 @@ public class MineFragment extends TSFragment {
     @BindView(R.id.bt_setting)
     CombinationButton mBtSetting;
 
+    @Inject
+    public MinePresenter mMinePresenter;
+
+    private UserInfoBean mUserInfoBean;
+
     public MineFragment() {
     }
 
@@ -75,12 +90,16 @@ public class MineFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
-
     }
+
 
     @Override
     protected void initData() {
-
+        DaggerMinePresenterComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .minePresenterModule(new MinePresenterModule(this))
+                .build().inject(this);
+        mPresenter.getUserInfoFromDB();
     }
 
     @Override
@@ -99,13 +118,22 @@ public class MineFragment extends TSFragment {
     }
 
     @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return true;
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_mine;
     }
 
     @Override
     protected int setToolBarBackgroud() {
-        StatusBarUtils.statusBarLightMode(getActivity());//当状态栏颜色为白色时使用，Activity 中最后一次调用确定状态栏背景颜色和图标颜色
         return R.color.white;
     }
 
@@ -130,7 +158,11 @@ public class MineFragment extends TSFragment {
                 startActivity(itFollow);
                 break;
             case R.id.bt_personal_page:
-                SkinManager.getInstance().restoreDefaultTheme();
+                Intent intent = new Intent(getContext(), PersonalCenterActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA, mUserInfoBean);
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
             case R.id.bt_ranking:
                 SkinManager.getInstance().loadSkin("tsplustheme.skin", new SkinLoaderListener() {
@@ -169,5 +201,69 @@ public class MineFragment extends TSFragment {
                 break;
             default:
         }
+    }
+
+    @Override
+    public void setPresenter(MineContract.Presenter presenter) {
+        mPresenter = presenter;
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
+    }
+
+    @Override
+    public void showMessage(String message) {
+
+    }
+
+    @Override
+    public void setUserInfo(UserInfoBean userInfoBean) {
+        if (userInfoBean == null) {
+            return;
+        }
+        this.mUserInfoBean = userInfoBean;
+        if (userInfoBean == null) {
+            return;
+        }
+        // 设置用户头像
+        ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
+        imageLoader.loadImage(getContext(), GlideImageConfig.builder()
+                .transformation(new GlideCircleTransform(getContext()))
+                .imagerView(mIvHeadIcon)
+                .url(ImageUtils.imagePathConvert(mUserInfoBean.getAvatar(), ImageZipConfig.IMAGE_60_ZIP))
+                .placeholder(R.drawable.shape_default_image_circle)
+                .errorPic(R.drawable.shape_default_image_circle)
+                .build());
+        // 设置用户名
+        mTvUserName.setText(userInfoBean.getName());
+        // 设置简介
+        mTvUserSignature.setText(userInfoBean.getIntro());
+        // 设置粉丝数
+        mTvFansCount.setText(userInfoBean.getFollowed_count());
+        // 设置关注数
+        mTvFollowCount.setText(userInfoBean.getFollowing_count());
+    }
+
+    @Override
+    public void updateUserFollowCount(int stateFollow) {
+        switch (stateFollow) {
+            case FollowFansBean.IFOLLOWED_STATE:
+                // 添加一个关注
+                mUserInfoBean.setFollowing_count(Integer.parseInt(mUserInfoBean.getFollowing_count()) + 1 + "");
+                break;
+            case FollowFansBean.UNFOLLOWED_STATE:
+                // 取消一个关注
+                mUserInfoBean.setFollowing_count(Integer.parseInt(mUserInfoBean.getFollowing_count()) - 1 + "");
+                break;
+            default:
+        }
+        mTvFollowCount.setText(mUserInfoBean.getFollowing_count());
     }
 }

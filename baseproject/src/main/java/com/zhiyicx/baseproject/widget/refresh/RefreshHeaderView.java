@@ -5,22 +5,12 @@ import android.graphics.drawable.AnimationDrawable;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.aspsine.swipetoloadlayout.SwipeRefreshTrigger;
 import com.aspsine.swipetoloadlayout.SwipeTrigger;
 import com.zhiyicx.baseproject.R;
-import com.zhiyicx.common.utils.log.LogUtils;
-
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 /**
  * @author LiuChao
@@ -56,13 +46,13 @@ public class RefreshHeaderView extends LinearLayout implements SwipeTrigger, Swi
     }
 
     private void init(Context context) {
-        mRefreshingAnimResId = cn.bingoogolapple.refreshlayout.R.drawable.refresh_loading;
-        mChangeToReleaseRefreshAnimResId = cn.bingoogolapple.refreshlayout.R.drawable.refresh_loading;
+        mRefreshingAnimResId = R.drawable.refresh_loading;
+        mChangeToReleaseRefreshAnimResId = R.drawable.refresh_loading;
 
         LayoutInflater.from(context).inflate(R.layout.vw_header, this);
         mPullDownView = (ImageView) findViewById(R.id.iv_pull_down);
         mReleaseRefreshingView = (ImageView) findViewById(R.id.iv_release_refreshing);
-        mPullDownView.setImageResource(cn.bingoogolapple.refreshlayout.R.mipmap.refresh_icon_header_00000);
+        mPullDownView.setImageResource(R.mipmap.refresh_icon_header_00000);
         mReleaseRefreshingView.setImageResource(mChangeToReleaseRefreshAnimResId);
         headerViewHeight = getResources().getDimensionPixelSize(R.dimen.refresh_header_height);
     }

@@ -42,7 +42,7 @@
         <activity
             android:name=".modules.home.HomeActivity"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustPan|stateAlwaysHidden">
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
         </activity>
         <activity android:name=".modules.settings.SettingsActivity">
         </activity>
@@ -85,7 +85,12 @@
         </activity>
         <activity android:name=".modules.music_fm.music_album_detail.MusicDetailActivity"/>
         <activity android:name=".modules.music_fm.music_play.MusicPlayActivity"/>
-        <activity android:name=".modules.information.InfoActivity"/>
+        <activity android:name=".modules.information.infomain.InfoActivity"/>
+        <activity android:name=".modules.information.infodetails.InfoDetailsActivity"/>
+        <activity
+            android:name=".modules.information.infochannel.ChannelActivity"
+            android:theme="@style/activity_topin_bottomout"/>
+        <activity android:name=".modules.information.infosearch.SearchActivity"/>
         <activity android:name=".modules.dynamic.send.SendDynamicActivity">
         </activity>
 
@@ -124,9 +129,16 @@
         <!-- android:name="com.zhiyicx.thinksnsplus.config.GlideConfiguration" -->
         <!-- android:value="GlideModule"/> -->
 
-        <activity android:name=".modules.dynamic.detail.DynamicDetailActivity">
+        <activity
+            android:name=".modules.dynamic.detail.DynamicDetailActivity"
+            android:windowSoftInputMode="adjustResize"
+            >
         </activity>
         <activity android:name=".modules.dynamic.detail.dig_list.DigListActivity">
+        </activity>
+        <activity
+            android:name=".modules.personal_center.PersonalCenterActivity"
+            android:windowSoftInputMode="adjustResize">
         </activity>
     </application>
 

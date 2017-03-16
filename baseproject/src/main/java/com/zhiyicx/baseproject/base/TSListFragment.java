@@ -17,6 +17,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.EmptyWrapper;
@@ -45,6 +46,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     private static final int DEFAULT_TIP_STICKY_TIME = 3000;
     private static final float DEFAULT_LIST_ITEM_SPACING = 0.5f;
 
+    private static final boolean DEFAULT_NEED_REFRESH = false;
+
     protected MultiItemTypeAdapter<T> mAdapter;
     private EmptyWrapper mEmptyWrapper;
 
@@ -54,6 +57,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     protected View mFlTopTipContainer;
     protected TextView mTvTopTip;
+    protected RecyclerView.LayoutManager layoutManager;
 
 
     protected EmptyView mEmptyView;
@@ -75,6 +79,22 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     @Override
     protected int setToolBarBackgroud() {
         return R.color.white;
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+        mRefreshlayout.setRefreshing(false);
+        mRefreshlayout.setLoadingMore(false);
+    }
+
+    @Override
+    public void showMessage(String message) {
+        showMessageNotSticky(message);
     }
 
     @Override
@@ -114,10 +134,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         if (setListBackColor() != -1) {
             mRvList.setBackgroundColor(getResources().getColor(setListBackColor()));
         }
-        mRvList.setLayoutManager(getLayoutManager());
+        layoutManager = getLayoutManager();
+        mRvList.setLayoutManager(layoutManager);
         mRvList.addItemDecoration(getItemDecoration());//设置Item的间隔
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
-        mRvList.setHasFixedSize(false);
+        mRvList.setHasFixedSize(sethasFixedSize());
         mRvList.setItemAnimator(new DefaultItemAnimator());//设置动画
         mAdapter = getAdapter();
         mRvList.setAdapter(mAdapter);
@@ -129,6 +150,15 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mRvList.setAdapter(mEmptyWrapper);
     }
 
+    /**
+     * 如果确定每个item的内容不会改变RecyclerView的大小，设置这个选项可以提高性能
+     *
+     * @return
+     */
+    protected boolean sethasFixedSize() {
+        return false;
+    }
+
     protected int setEmptView() {
         return R.mipmap.img_default_nothing;
     }
@@ -136,8 +166,15 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     protected void initData() {
+        mRefreshlayout.setRefreshing(isNeedRefreshDataWhenComeIn());// 从网络加载数据
         onCacheResponseSuccess(requestCacheData(mMaxId, false), false); // 获取缓存数据
-//        requestNetData(mMaxId,false);
+    }
+
+    /**
+     * 进入页面是否自动调用下拉刷新请求新数据
+     */
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return DEFAULT_NEED_REFRESH;
     }
 
     /**
@@ -317,6 +354,10 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     public void onLoadMore() {
+        if (mMaxId == null || mMaxId == 0) {
+            mRefreshlayout.setLoadingMore(false);
+            return;
+        }
         mPage++;
         requestNetData(mMaxId, true);
     }
@@ -379,7 +420,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 }
                 // 内存处理数据
                 mAdapter.addAllData(data);
-                mMaxId = data.get(data.size() - 1).getMaxId();
+                mMaxId = getMaxId(data);
             } else {
                 mEmptyView.setErrorImag(setEmptView());
             }
@@ -393,12 +434,17 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 // 内存处理数据
                 mAdapter.addAllData(data);
                 refreshData();
-                mMaxId = data.get(data.size() - 1).getMaxId();
+                mMaxId = getMaxId(data);
                 System.out.println("mMaxId = " + mMaxId);
             } else {
 //                showMessage(getString(R.string.no_data)); 如需提示，打开即可
             }
         }
+        LogUtils.i("adatper_data-->" + mAdapter.getDatas().toString());
+    }
+
+    protected Long getMaxId(@NotNull List<T> data) {
+        return data.get(data.size() - 1).getMaxId();
     }
 
     /**

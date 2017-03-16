@@ -1,6 +1,7 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     >
 
     <LinearLayout
@@ -35,10 +36,4 @@
                 android:layout_height="wrap_content"></com.zhiyicx.baseproject.widget.refresh.RefreshFooterView>
         </com.aspsine.swipetoloadlayout.SwipeToLoadLayout>
     </LinearLayout>
-    <com.zhiyicx.baseproject.widget.pictureviewer.PictureViewer
-        android:layout_width="match_parent"
-        android:id="@+id/picture_view"
-        android:layout_height="match_parent">
-
-    </com.zhiyicx.baseproject.widget.pictureviewer.PictureViewer>
 </FrameLayout>

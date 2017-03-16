@@ -29,6 +29,6 @@ public class MusicPlayRepository implements MusicPlayContract.Repository {
 
     @Override
     public Observable<BaseJson<MusicAlbumListBean>> getMusicList(Map map) {
-        return mMusicClient.getMusicList(map);
+        return null;
     }
 }

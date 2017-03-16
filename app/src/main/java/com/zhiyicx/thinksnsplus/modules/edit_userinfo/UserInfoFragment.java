@@ -14,15 +14,16 @@ import android.widget.TextView;
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -34,7 +35,6 @@ import com.zhiyicx.thinksnsplus.data.beans.EditConfigBeanDaoImpl;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -97,6 +97,16 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_user_info;
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return true;
     }
 
     private void initConfig() {
@@ -218,6 +228,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     }
 
+
     @Override
     public void hideLoading() {
 
@@ -312,7 +323,9 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         mEtUserIntroduce.setText(mUserInfoBean.getIntro());
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url("http://192.168.2.222/api/v1/storages/" + mUserInfoBean.getUserIcon())
+                .url(ImageUtils.imagePathConvert(mUserInfoBean.getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
+                .errorPic(R.drawable.shape_default_image_circle)
+                .placeholder(R.drawable.shape_default_image_circle)
                 .imagerView(mIvHeadIcon)
                 .transformation(new GlideCircleTransform(getContext()))
                 .build());
@@ -525,7 +538,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
             fieldMap.put("intro", mEtUserIntroduce.getInputContent());
         }
         if (upLoadCount > 0) {
-            fieldMap.put("avatar", upDateHeadIconStorageId + "");
+            // avatar
+            fieldMap.put("storage_task_id", upDateHeadIconStorageId + "");
         }
         return fieldMap;
     }

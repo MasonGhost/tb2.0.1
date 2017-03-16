@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge>
+    <com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/fl_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+    </com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView>
+
+    <TextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/tv_more_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_mid"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="20dp"
+        android:text="@string/dynamic_list_more_comment"
+        android:textColor="@color/important_for_content"
+        android:textSize="@dimen/size_content_comment"/>
+</merge>

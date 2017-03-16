@@ -15,7 +15,7 @@ public class ConstantConfig {
     /**
      * 抖动间隔时间，单位 s
      */
-    public static final int JITTER_SPACING_TIME = 2;
+    public static final int JITTER_SPACING_TIME = 1;
     /**
      * 手机号码长度
      */
@@ -170,5 +170,4 @@ public class ConstantConfig {
     public static final String REGEX_NEGATIVE_FLOAT = "^-[1-9]\\d*\\.\\d*|-0\\.\\d*[1-9]\\d*$";
 
     /************** If u want more please visit http://toutiao.com/i6231678548520731137/ **************/
-
 }

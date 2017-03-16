@@ -4,6 +4,7 @@
     <string name="err_net_not_work">当前网络状况不佳</string>
     <string name="erro_argument_in_method">方法使用了不合法的参数</string>
     <string name="data_load_error">数据加载失败</string>
+    <string name="load_error">加载失败</string>
     <string name="no_data">没有任何内容</string>
     <string name="no_more_data">没有更多数据了</string>
     <!-- 通用 -->
@@ -31,6 +32,7 @@
     <string name="sure">确认</string>
     <string name="change_head_icon">更换头像</string>
     <string name="publish">发布</string>
+    <string name="intro_default">这个家伙很懒，没有留下任何</string>
     <!-- 注册 -->
     <string name="regist">注册</string>
     <string name="username_input_hint">输入2-8位用户名</string>
@@ -73,6 +75,20 @@
 
     <!--音乐FM-->
     <string name="music_fm">音乐FM</string>
+    <!--资讯-->
+    <string name="info_editor">编辑</string>
+    <string name="info_sort">长按可排序</string>
+    <string name="info_delete">点击可删除</string>
+    <string name="info_subscribed">我的订阅</string>
+    <string name="info_unsubscribe">更多订阅</string>
+    <string name="info_search">搜索</string>
+    <string name="info_cancle">取消</string>
+    <string name="info_details">资讯详情</string>
+    <string name="info_collect">收藏</string>
+    <string name="info_hot">热门</string>
+    <string name="info_recommend">推荐</string>
+    <string name="info_close">收起</string>
+
 
     <!--分享类型-->
     <string name="qq_share">QQ</string>

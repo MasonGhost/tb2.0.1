@@ -4,19 +4,21 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
+import com.zhiyicx.common.utils.ConvertUtils;
 
 import org.greenrobot.greendao.DaoException;
+import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.Keep;
-
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.ToOne;
-import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
+import org.greenrobot.greendao.converter.PropertyConverter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,19 +54,17 @@ public class DynamicBean extends BaseListBean {
     private Long hot_creat_time;// 标记热门，已及创建时间，用户数据库查询
     private boolean isFollowed;// 是否关注了该条动态（用户）
     private int state = SEND_SUCCESS;// 动态发送状态 0 发送失败 1 正在发送 2 发送成功
-    @Transient
-    private List<UserInfoBean> digUserInfoList;// 点赞用户的信息列表
 
-    public Long getHot_creat_time() {
-        return hot_creat_time;
+    @Convert(converter = DataConverter.class, columnType = String.class)
+    private List<FollowFansBean> digUserInfoList;// 点赞用户的信息列表
+
+
+    public DynamicBean() {
     }
 
-    public void setHot_creat_time(Long hot_creat_time) {
-        this.hot_creat_time = hot_creat_time;
-    }
 
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Long id) {
@@ -72,7 +72,7 @@ public class DynamicBean extends BaseListBean {
     }
 
     public Long getFeed_id() {
-        return feed_id;
+        return this.feed_id;
     }
 
     public void setFeed_id(Long feed_id) {
@@ -80,7 +80,7 @@ public class DynamicBean extends BaseListBean {
     }
 
     public Long getFeed_mark() {
-        return feed_mark;
+        return this.feed_mark;
     }
 
     public void setFeed_mark(Long feed_mark) {
@@ -88,32 +88,39 @@ public class DynamicBean extends BaseListBean {
     }
 
     public long getUser_id() {
-        return user_id;
+        return this.user_id;
     }
 
     public void setUser_id(long user_id) {
         this.user_id = user_id;
     }
 
+    public Long getHot_creat_time() {
+        return this.hot_creat_time;
+    }
+
+    public void setHot_creat_time(Long hot_creat_time) {
+        this.hot_creat_time = hot_creat_time;
+    }
+
+    public boolean getIsFollowed() {
+        return this.isFollowed;
+    }
+
+    public void setIsFollowed(boolean isFollowed) {
+        this.isFollowed = isFollowed;
+    }
+
     public int getState() {
-        return state;
+        return this.state;
     }
 
     public void setState(int state) {
         this.state = state;
     }
 
-    public List<UserInfoBean> getDigUserInfoList() {
-        return digUserInfoList;
-    }
-
-    public void setDigUserInfoList(List<UserInfoBean> digUserInfoList) {
-        this.digUserInfoList = digUserInfoList;
-    }
-
     @Keep
     public DynamicDetailBean getFeed() {
-        feed = feed == null ? new DynamicDetailBean() : feed;
         return feed;
     }
 
@@ -135,7 +142,6 @@ public class DynamicBean extends BaseListBean {
 
     @Keep
     public UserInfoBean getUserInfoBean() {
-        userInfoBean = userInfoBean == null ? new UserInfoBean() : userInfoBean;
         return userInfoBean;
     }
 
@@ -144,115 +150,36 @@ public class DynamicBean extends BaseListBean {
         this.userInfoBean = userInfoBean;
     }
 
-    /**
-     * To-many relationship, resolved on first access (and after reset).
-     * Changes to to-many relations are not persisted, make changes to the target entity.
-     */
-    @Generated(hash = 618015855)
-    public List<DynamicCommentBean> getComments() {
-        if (comments == null) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            DynamicCommentBeanDao targetDao = daoSession.getDynamicCommentBeanDao();
-            List<DynamicCommentBean> commentsNew = targetDao._queryDynamicBean_Comments(feed_mark);
-            synchronized (this) {
-                if (comments == null) {
-                    comments = commentsNew;
-                }
-            }
-        }
-        return comments;
-    }
 
     @Keep
     public void setComments(List<DynamicCommentBean> comments) {
         this.comments = comments;
     }
 
-    /**
-     * Resets a to-many relationship, making the next get call to query for a fresh result.
-     */
-    @Generated(hash = 249603048)
-    public synchronized void resetComments() {
-        comments = null;
+    @Keep
+    public boolean isFollowed() {
+        return isFollowed;
     }
 
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 128553479)
-    public void delete() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.delete(this);
+    @Keep
+    public void setFollowed(boolean followed) {
+        isFollowed = followed;
     }
 
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 1942392019)
-    public void refresh() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.refresh(this);
+    @Keep
+    public List<FollowFansBean> getDigUserInfoList() {
+        return digUserInfoList;
     }
 
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 713229351)
-    public void update() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.update(this);
+    @Keep
+    public void setDigUserInfoList(List<FollowFansBean> digUserInfoList) {
+        this.digUserInfoList = digUserInfoList;
     }
 
-    public DynamicBean() {
-    }
 
-    @Generated(hash = 46860411)
-    public DynamicBean(Long id, Long feed_id, Long feed_mark, long user_id, Long hot_creat_time,
-                       boolean isFollowed, int state) {
-        this.id = id;
-        this.feed_id = feed_id;
-        this.feed_mark = feed_mark;
-        this.user_id = user_id;
-        this.hot_creat_time = hot_creat_time;
-        this.isFollowed = isFollowed;
-        this.state = state;
-    }
-
-    /**
-     * Used to resolve relations
-     */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /**
-     * Used for active entity operations.
-     */
-    @Generated(hash = 476616020)
-    private transient DynamicBeanDao myDao;
-    @Generated(hash = 1613724019)
-    private transient Long feed__resolvedKey;
-    @Generated(hash = 297170499)
-    private transient Long tool__resolvedKey;
-    @Generated(hash = 1005780391)
-    private transient Long userInfoBean__resolvedKey;
-
-    public boolean getIsFollowed() {
-        return this.isFollowed;
-    }
-
-    public void setIsFollowed(boolean isFollowed) {
-        this.isFollowed = isFollowed;
+    @Keep
+    public List<DynamicCommentBean> getComments() {
+        return comments;
     }
 
     @Override
@@ -269,12 +196,32 @@ public class DynamicBean extends BaseListBean {
                 ", hot_creat_time=" + hot_creat_time +
                 ", isFollowed=" + isFollowed +
                 ", state=" + state +
-                ", daoSession=" + daoSession +
-                ", myDao=" + myDao +
-                ", feed__resolvedKey=" + feed__resolvedKey +
-                ", tool__resolvedKey=" + tool__resolvedKey +
-                ", userInfoBean__resolvedKey=" + userInfoBean__resolvedKey +
+                ", digUserInfoList=" + digUserInfoList +
                 '}';
+    }
+
+
+    /**
+     * list<FollowFansBean> 转 String 形式存入数据库
+     */
+    public static class DataConverter implements PropertyConverter<List<FollowFansBean>, String> {
+
+        @Override
+        public List<FollowFansBean> convertToEntityProperty(String databaseValue) {
+            if (databaseValue == null) {
+                return null;
+            }
+            return ConvertUtils.base64Str2Object(databaseValue);
+        }
+
+        @Override
+        public String convertToDatabaseValue(List<FollowFansBean> entityProperty) {
+            if (entityProperty == null) {
+                return null;
+            }
+            return ConvertUtils.object2Base64Str(entityProperty);
+        }
+
     }
 
     @Override
@@ -299,6 +246,63 @@ public class DynamicBean extends BaseListBean {
         dest.writeTypedList(this.digUserInfoList);
     }
 
+
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
+    @Generated(hash = 249603048)
+    public synchronized void resetComments() {
+        comments = null;
+    }
+
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 128553479)
+    public void delete() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.delete(this);
+    }
+
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 1942392019)
+    public void refresh() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.refresh(this);
+    }
+
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 713229351)
+    public void update() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.update(this);
+    }
+
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 210281324)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getDynamicBeanDao() : null;
+    }
+
+
     protected DynamicBean(Parcel in) {
         super(in);
         this.id = (Long) in.readValue(Long.class.getClassLoader());
@@ -312,7 +316,21 @@ public class DynamicBean extends BaseListBean {
         this.hot_creat_time = (Long) in.readValue(Long.class.getClassLoader());
         this.isFollowed = in.readByte() != 0;
         this.state = in.readInt();
-        this.digUserInfoList = in.createTypedArrayList(UserInfoBean.CREATOR);
+        this.digUserInfoList = in.createTypedArrayList(FollowFansBean.CREATOR);
+    }
+
+
+    @Generated(hash = 1888878893)
+    public DynamicBean(Long id, Long feed_id, Long feed_mark, long user_id, Long hot_creat_time,
+                       boolean isFollowed, int state, List<FollowFansBean> digUserInfoList) {
+        this.id = id;
+        this.feed_id = feed_id;
+        this.feed_mark = feed_mark;
+        this.user_id = user_id;
+        this.hot_creat_time = hot_creat_time;
+        this.isFollowed = isFollowed;
+        this.state = state;
+        this.digUserInfoList = digUserInfoList;
     }
 
     public static final Creator<DynamicBean> CREATOR = new Creator<DynamicBean>() {
@@ -326,21 +344,20 @@ public class DynamicBean extends BaseListBean {
             return new DynamicBean[size];
         }
     };
-
-    @Override
-    public Long getMaxId() {
-        return super.getMaxId();
-    }
-
-    @Override
-    public void setMaxId(Long maxId) {
-        super.setMaxId(maxId);
-    }
-
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 210281324)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getDynamicBeanDao() : null;
-    }
+    /**
+     * Used to resolve relations
+     */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /**
+     * Used for active entity operations.
+     */
+    @Generated(hash = 476616020)
+    private transient DynamicBeanDao myDao;
+    @Generated(hash = 1613724019)
+    private transient Long feed__resolvedKey;
+    @Generated(hash = 297170499)
+    private transient Long tool__resolvedKey;
+    @Generated(hash = 1005780391)
+    private transient Long userInfoBean__resolvedKey;
 }

@@ -22,17 +22,21 @@ public interface FollowFansListContract {
         /**
          * 更新列表的关注状态
          *
-         * @param index       需要更新的item位置
-         * @param followState 详见FollowFansBean.class的三种状态值
+         * @param index 需要更新的item位置
          */
-        void upDateFollowFansState(int index, int followState);
+        void upDateFollowFansState(int index);
+
+        void upDateFollowFansState();
 
         /**
-         * 后台任务提示用户信息更新，刷新列表
-         *
-         * @param userInfoBeanList
+         * 获取关注列表数据
          */
-        void upDateUserInfo(List<UserInfoBean> userInfoBeanList);
+        List<FollowFansBean> getFollowListData();
+
+        /**
+         * 获取页面类型
+         */
+        int getPageType();
     }
 
     interface Presenter extends ITSListPresenter<FollowFansBean> {

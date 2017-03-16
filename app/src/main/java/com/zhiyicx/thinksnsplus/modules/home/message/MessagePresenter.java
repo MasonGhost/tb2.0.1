@@ -3,8 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.ActivityHandler;
-import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.imsdk.core.ChatType;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
@@ -37,6 +35,7 @@ import rx.functions.Action0;
 public class MessagePresenter extends BasePresenter<MessageContract.Repository, MessageContract.View> implements MessageContract.Presenter {
     @Inject
     ChatContract.Repository mChatRepository;
+
     @Inject
     AuthRepository mAuthRepository;
     private MessageItemBean mItemBeanComment;
@@ -128,35 +127,6 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
             mItemBeanLike.setUnReadMessageNums(Math.round(0));
         }
         return mItemBeanLike;
-    }
-
-    @Override
-    public void createChat() {
-        final String uids = mAuthRepository.getAuthBean().getUser_id() + ",4";
-        final String pair = mAuthRepository.getAuthBean().getUser_id() + "&4";// "pair":null,   // type=0时此项为两个uid：min_uid&max_uid
-        mChatRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "七夜和超超", "", "4")
-                .subscribe(new BaseSubscribe<Conversation>() {
-                    @Override
-                    protected void onSuccess(Conversation data) {
-                        data.setIm_uid(mAuthRepository.getAuthBean().getUser_id());
-                        data.setUsids(uids);
-                        data.setPair(pair);
-                        mChatRepository.insertOrUpdateConversation(data);
-                        mRootView.showMessage("创建对话成功");
-                    }
-
-                    @Override
-                    protected void onFailure(String message) {
-                        LogUtils.d(message);
-                        mRootView.showMessage(message);
-                    }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-                        LogUtils.e("error", throwable);
-                        mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
-                    }
-                });
     }
 
     @Override

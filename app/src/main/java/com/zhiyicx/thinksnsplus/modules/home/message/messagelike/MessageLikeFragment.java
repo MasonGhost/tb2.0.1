@@ -85,7 +85,7 @@ public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Pres
      */
     private void initCommentAndLike(List<MessageItemBean> messageItemBeen) {
         UserInfoBean testUserinfo = new UserInfoBean();
-        testUserinfo.setUserIcon("http://image.xinmin.cn/2017/01/11/bedca80cdaa44849a813e7820fff8a26.jpg");
+        testUserinfo.setAvatar("http://image.xinmin.cn/2017/01/11/bedca80cdaa44849a813e7820fff8a26.jpg");
         testUserinfo.setName("颤三");
         testUserinfo.setUser_id(123l);
         MessageItemBean commentItem = new MessageItemBean();
@@ -129,7 +129,7 @@ public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Pres
 
     private void setItemData(ViewHolder holder, final MessageItemBean messageItemBean, int position) {
         mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url(messageItemBean.getUserInfo().getUserIcon())
+                .url(messageItemBean.getUserInfo().getAvatar())
                 .transformation(new GlideCircleTransform(getContext()))
                 .imagerView((ImageView) holder.getView(R.id.iv_headpic))
                 .build());
@@ -137,7 +137,7 @@ public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Pres
             holder.setVisible(R.id.tv_deatil, View.GONE);
             holder.setVisible(R.id.iv_detail_image, View.VISIBLE);
             mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                    .url(messageItemBean.getUserInfo().getUserIcon())
+                    .url(messageItemBean.getUserInfo().getAvatar())
                     .imagerView((ImageView) holder.getView(R.id.iv_detail_image))
                     .build());
         } else {

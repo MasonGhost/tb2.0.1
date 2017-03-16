@@ -9,7 +9,10 @@ import org.simple.eventbus.EventBus;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -21,6 +24,14 @@ import rx.subscriptions.CompositeSubscription;
 
 public abstract class BasePresenter<R, V extends IBaseView> implements IBasePresenter {
     protected final String TAG = this.getClass().getSimpleName();
+    protected final Observable.Transformer mSchedulersTransformer = new Observable.Transformer() {
+        @Override
+        public Object call(Object observable) {
+            return ((Observable) observable).subscribeOn(Schedulers.io())
+                    .unsubscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread());
+        }
+    };
 
     protected CompositeSubscription mCompositeSubscription;
 

@@ -3,12 +3,15 @@ package com.zhiyicx.thinksnsplus.modules.follow_fans;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -17,6 +20,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -93,24 +97,22 @@ public class FollowFansListAdapter extends CommonAdapter<FollowFansBean> {
                     }
                 });
 
-
-        /*UserInfoBean userInfoBean = null;
-        if (pageType == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
-            userInfoBean = followFansItemBean.getFllowedUser();
-        } else if (pageType == FollowFansListFragment.FANS_FRAGMENT_PAGE) {
-            userInfoBean = followFansItemBean.getUser();
-        }*/
         // 设置用户信息
-        UserInfoBean userInfoBean = followFansItemBean.getTargetUserInfo();
+        final UserInfoBean userInfoBean = followFansItemBean.getTargetUserInfo();
         if (userInfoBean == null) {
             // 这种情况一般不会发生，为了防止崩溃，做处理
-            userInfoBean = new UserInfoBean();
+            return;
         }
         // 设置用户名，用户简介
         holder.setText(R.id.tv_name, userInfoBean.getName());
         holder.setText(R.id.tv_user_signature, userInfoBean.getIntro());
         // 修改点赞数量颜色
-        String digContent = "点赞 " + "<" + 56 + ">";
+        String digCountString = userInfoBean.getDiggs_count();
+        // 当前没有获取到点赞数量，设置为0，否则ColorPhrase会抛出异常
+        if (TextUtils.isEmpty(digCountString)) {
+            digCountString = 0 + "";
+        }
+        String digContent = "点赞 " + "<" + digCountString + ">";
         CharSequence charSequence = ColorPhrase.from(digContent).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
@@ -121,7 +123,7 @@ public class FollowFansListAdapter extends CommonAdapter<FollowFansBean> {
         ImageView headPic = holder.getView(R.id.iv_headpic);
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url(userInfoBean.getUserIcon())
+                .url(ImageUtils.imagePathConvert(userInfoBean.getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
                 .errorPic(R.drawable.shape_default_image_circle)
                 .placeholder(R.drawable.shape_default_image_circle)
                 .transformation(new GlideCircleTransform(getContext()))
@@ -135,7 +137,7 @@ public class FollowFansListAdapter extends CommonAdapter<FollowFansBean> {
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        toUserCenter();
+                        toUserCenter(getContext(), userInfoBean);
                     }
                 });
         RxView.clicks(holder.getView(R.id.iv_headpic))
@@ -143,7 +145,7 @@ public class FollowFansListAdapter extends CommonAdapter<FollowFansBean> {
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        toUserCenter();
+                        toUserCenter(getContext(), userInfoBean);
                     }
                 });
 
@@ -153,9 +155,8 @@ public class FollowFansListAdapter extends CommonAdapter<FollowFansBean> {
     /**
      * 前往用户个人中心
      */
-    private void toUserCenter() {
-        Intent to = new Intent(getContext(), UserInfoActivity.class);
-        getContext().startActivity(to);
+    private void toUserCenter(Context context, UserInfoBean userInfoBean) {
+        PersonalCenterFragment.startToPersonalCenter(context, userInfoBean);
     }
 
 }

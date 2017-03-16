@@ -1,12 +1,12 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_album;
 
-import android.support.v4.media.MediaBrowserCompat;
-
 import com.zhiyicx.baseproject.base.ITSListPresenter;
+import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 
+import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
@@ -17,18 +17,17 @@ import rx.Observable;
  * @Email Jliuer@aliyun.com
  * @Description 音乐FM 契约类
  */
-
 public interface MusicContract {
 
-    interface View extends IBaseView<Presenter> {
-        void setMediaBrowserCompat(MediaBrowserCompat mediaBrowserCompat);
+    interface View extends ITSListView<MusicAlbumListBean,Presenter> {
+
     }
 
     interface Presenter extends ITSListPresenter<MusicAlbumListBean> {
-        void getMusicList();
+
     }
 
     interface Repository {
-        Observable<BaseJson<MusicAlbumListBean>> getMusicList(Map map);
+        Observable<BaseJson<List<MusicAlbumListBean>>> getMusicAblumList(long max_id);
     }
 }

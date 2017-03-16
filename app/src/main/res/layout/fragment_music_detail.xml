@@ -1,6 +1,7 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:background="@color/white"
     android:layout_height="match_parent">
 
     <com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout
@@ -10,12 +11,11 @@
         android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@+id/fragment_music_detail_head_info"
+            android:id="@+id/nestedscroll_target"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/music_album_detail_head_paddingtop_60dp"
-            android:background="@mipmap/npc"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:paddingTop="@dimen/music_album_detail_head_paddingtop_60dp">
 
             <ImageView
                 android:id="@+id/fragment_music_detail_head_iamge"
@@ -102,18 +102,37 @@
 
         </RelativeLayout>
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/music_album_detail_music_num_50dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_mid"
             android:gravity="center_vertical"
-            android:text="歌曲列表(共18首)"/>
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/music_album_detail_music_num_50dp"
+                android:gravity="center_vertical"
+                android:textSize="@dimen/size_sub_title"
+                android:textColor="@color/important_for_content"
+                android:text="歌曲列表"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(共18首)"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_content_comment"/>
+
+        </LinearLayout>
+
+
 
         <View
             style="@style/style_divider_horizontal_light"
             android:layout_below="@+id/music_list_image"/>
 
-        <android.support.v7.widget.RecyclerView
+        <com.zhiyicx.thinksnsplus.widget.pager_recyclerview.NoFlingRecyclerView
             android:id="@+id/rv_music_detail_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -124,30 +143,53 @@
     </com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout>
 
     <RelativeLayout
+        android:background="@android:color/transparent"
         android:id="@+id/fragment_music_detail_title"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_height">
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/fragment_music_detail_empty"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_large"/>
 
         <TextView
             android:id="@+id/fragment_music_detail_back"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
+            android:layout_height="@dimen/music_album_detail_head_height_64dp"
+            android:layout_below="@+id/fragment_music_detail_empty"
             android:drawableLeft="@mipmap/topbar_back_white"
-            android:gravity="center"
-            android:paddingLeft="10dp"
-            android:textColor="#fff"
-            android:textSize="16sp"/>
+            android:gravity="center_vertical"
+            android:padding="@dimen/spacing_normal"
+            android:textColor="@color/white"/>
 
-        <TextView
-            android:id="@+id/fragment_music_detail_center"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_toRightOf="@+id/fragment_music_detail_back"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textColor="#fff"
-            android:textSize="16sp"/>
+            android:gravity="center_vertical"
+            android:layout_below="@+id/fragment_music_detail_empty"
+            android:orientation="vertical">
+
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/fragment_music_detail_center_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Climber's High"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_primary_title"/>
+
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/fragment_music_detail_center_sub_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="踏风而来，随风而去"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_content"/>
+
+        </LinearLayout>
 
     </RelativeLayout>
 

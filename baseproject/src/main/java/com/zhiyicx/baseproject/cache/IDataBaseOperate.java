@@ -44,6 +44,10 @@ public interface IDataBaseOperate<T> {
      * 根据key，删除缓存中的某条数据
      */
     void deleteSingleCache(Long primaryKey);
+    /**
+     * 根据 data，删除缓存中的某条数据
+     */
+    void deleteSingleCache(T dta);
 
     /**
      * 更新缓存中的某条数据

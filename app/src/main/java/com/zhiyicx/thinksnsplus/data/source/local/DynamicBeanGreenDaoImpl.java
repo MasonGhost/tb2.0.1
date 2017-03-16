@@ -60,6 +60,11 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
     }
 
     @Override
+    public void deleteSingleCache(DynamicBean dta) {
+
+    }
+
+    @Override
     public void updateSingleData(DynamicBean newData) {
 
     }
@@ -71,6 +76,9 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
     }
 
     public void insertOrReplace(List<DynamicBean> newData) {
+        if (newData == null) {
+            return;
+        }
         DynamicBeanDao dynamicBeanDao = getWDaoSession().getDynamicBeanDao();
         dynamicBeanDao.insertOrReplaceInTx(newData);
     }
@@ -139,4 +147,19 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
         }
         return null;
     }
+
+    /**
+     * 获取属于我的动态
+     *
+     * @return
+     */
+    public List<DynamicBean> getMyDynamics(Long userId) {
+        DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
+        List<DynamicBean> datas = dynamicBeanDao.queryDeep(" where "
+                        + " T." + DynamicBeanDao.Properties.User_id.columnName + " = ? "
+                        + " ORDER BY  T." + DynamicBeanDao.Properties.Feed_mark.columnName + " DESC LIMIT " + ApiConfig.DYNAMIC_PAGE_LIMIT// 按照Feedmark倒序：userId+时间戳 ：越新的动态，feedmark越大
+                , new String[]{String.valueOf(userId)});
+        return datas;
+    }
+
 }

@@ -93,6 +93,7 @@ dependencies {
     compile dataDependences.rxbindingSupportV7
     compile dataDependences.rxbindingDesign
     compile dataDependences.rxbindingDesignrRcyclerviewV7
+    compile dataDependences.clickSpanLink // click span
 
     compile dataDependences.gson
     // Development

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
+import com.antfortune.freeline.FreelineCore;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.google.gson.Gson;
 import com.zhiyicx.baseproject.base.TSApplication;
@@ -24,11 +25,14 @@ import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MusicWindows;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -55,10 +59,13 @@ public class AppApplication extends TSApplication {
     private AlertDialog alertDialog; // token 过期弹框
     private static AuthBean mCurrentLoginAuth; //当前登录用户的信息
     private static HttpProxyCacheServer mMediaProxyCacheServer;
+    public static List<String> sOverRead = new ArrayList<>();
+    private static MusicWindows sMusicWindows;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        FreelineCore.init(this);
         ZBIMSDK.init(getContext());
         initComponent();
         BackgroundTaskManager.getInstance(getContext()).startBackgroundTask();// 开启后台任务
@@ -244,11 +251,12 @@ public class AppApplication extends TSApplication {
                 .mMediaProxyCacheServer = newProxy()) : AppApplication.mMediaProxyCacheServer;
     }
 
-    private static HttpProxyCacheServer newProxy() {
-        boolean b = FileUtils.createOrExistsDir(new File(FileUtils.getCacheFile(BaseApplication
-                .getContext())
-                , "/media"));
+    public static MusicWindows getMusicWindows() {
+        return sMusicWindows == null ? new MusicWindows(BaseApplication.getContext()) :
+                sMusicWindows;
+    }
 
+    private static HttpProxyCacheServer newProxy() {
         return new HttpProxyCacheServer.Builder(BaseApplication.getContext())
                 .cacheDirectory(new File(FileUtils.getCacheFile(BaseApplication.getContext())
                         , "/media"))

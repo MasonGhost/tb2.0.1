@@ -12,10 +12,10 @@
         android:scaleType="centerCrop"/>
 
     <TextView
+        android:id="@+id/music_list_taste_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:background="#40000000"
         android:drawableLeft="@mipmap/music_ico_playvolume"
         android:drawablePadding="@dimen/spacing_small_4dp"
         android:padding="@dimen/spacing_normal"
@@ -27,6 +27,7 @@
         android:layout_below="@+id/music_list_image"/>
 
     <TextView
+        android:id="@+id/music_list_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/music_list_image"

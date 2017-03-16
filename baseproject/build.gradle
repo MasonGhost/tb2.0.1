@@ -70,7 +70,6 @@ dependencies {
     // Project
     compile project(':common')
     compile project(':imsdk')
-    compile project(':refresh')
     compile project(':baseadapter-recyclerview')
     compile project(':ucrop')
     compile project(':pickerview')

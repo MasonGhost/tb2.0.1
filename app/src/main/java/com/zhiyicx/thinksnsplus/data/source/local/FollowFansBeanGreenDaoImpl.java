@@ -8,8 +8,6 @@ import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
-import org.greenrobot.greendao.query.QueryBuilder;
-
 import java.util.List;
 
 /**
@@ -59,17 +57,28 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
     }
 
     @Override
+    public void deleteSingleCache(FollowFansBean dta) {
+
+    }
+
+    @Override
     public void updateSingleData(FollowFansBean newData) {
 
     }
 
     @Override
     public long insertOrReplace(FollowFansBean newData) {
+        if (newData == null) {
+            return -1;
+        }
         FollowFansBeanDao followFansBeanDao = getWDaoSession().getFollowFansBeanDao();
         return followFansBeanDao.insertOrReplace(newData);
     }
 
     public void insertOrReplace(List<FollowFansBean> newData) {
+        if (newData == null) {
+            return;
+        }
         FollowFansBeanDao followFansBeanDao = getWDaoSession().getFollowFansBeanDao();
         followFansBeanDao.insertOrReplaceInTx(newData);
     }
@@ -81,8 +90,8 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
      */
     public List<FollowFansBean> getSomeOneFans(int userId, int maxId) {
         // 第一次没有maxId，需要处理
-        if(maxId<=0){
-            maxId=Integer.MAX_VALUE;
+        if (maxId <= 0) {
+            maxId = Integer.MAX_VALUE;
         }
         FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
         List<FollowFansBean> followFansBeanList = followFansBeanDao.queryDeep(" where " + FollowFansBeanDao
@@ -104,8 +113,8 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
      */
     public List<FollowFansBean> getSomeOneFollower(int userId, int maxId) {
         // 第一次没有maxId，需要处理
-        if(maxId<=0){
-            maxId=Integer.MAX_VALUE;
+        if (maxId <= 0) {
+            maxId = Integer.MAX_VALUE;
         }
         FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
         List<FollowFansBean> followFansBeanList = followFansBeanDao.queryDeep(" where " + FollowFansBeanDao
@@ -128,8 +137,8 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
      */
     public List<FollowFansBean> getSomeOneFollowEachOther(int userId, int maxId) {
         // 第一次没有maxId，需要处理
-        if(maxId<=0){
-            maxId=Integer.MAX_VALUE;
+        if (maxId <= 0) {
+            maxId = Integer.MAX_VALUE;
         }
         FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
         List<FollowFansBean> followFansBeanList = followFansBeanDao.queryDeep(" where " + FollowFansBeanDao
@@ -146,6 +155,24 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
                 , ApiConfig.MAX_NUMBER_PER_PAGE + "");
         return followFansBeanList;
 
+    }
+
+    /**
+     * 获取主体用户对 目标用户的关注状态
+     *
+     * @param origin_user_id  主体用户 id
+     * @param tartget_user_id 目标用户 id
+     * @return
+     */
+    public FollowFansBean getFollowState(long origin_user_id, long tartget_user_id) {
+        FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
+        List<FollowFansBean> result = followFansBeanDao.queryBuilder()
+                .where(FollowFansBeanDao.Properties.OriginUserId.eq(origin_user_id), FollowFansBeanDao.Properties.TargetUserId.eq(tartget_user_id))
+                .list();
+        if (!result.isEmpty()) {
+            return result.get(0);
+        }
+        return null;
     }
 
 }

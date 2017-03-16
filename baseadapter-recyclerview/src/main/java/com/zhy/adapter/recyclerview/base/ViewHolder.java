@@ -62,6 +62,9 @@ public class ViewHolder extends RecyclerView.ViewHolder
         if (view == null)
         {
             view = mConvertView.findViewById(viewId);
+            if (view==null){
+                throw new RuntimeException("view==null?");
+            }
             mViews.put(viewId, view);
         }
         return (T) view;

@@ -35,3 +35,7 @@ proguard/
 # OSX files
 .DS_Store
 
+freeline/
+freeline_core/
+freeline_project_description.json
+*.py

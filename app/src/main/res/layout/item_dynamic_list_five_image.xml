@@ -7,6 +7,7 @@
     android:background="@color/white"
     android:paddingBottom="@dimen/spacing_mid"
     android:paddingTop="@dimen/spacing_mid"
+    android:descendantFocusability="blocksDescendants"
     tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
 
     <com.zhiyicx.baseproject.widget.imageview.FilterImageView
@@ -188,14 +189,13 @@
         android:layout_toRightOf="@+id/iv_headpic"
         android:layout_below="@id/dlmv_menu"
         />
-    <FrameLayout
-        android:id="@+id/fl_comment"
+    <com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView
+        android:id="@+id/dcv_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/fl_tip"
-        android:layout_marginLeft="@dimen/spacing_normal"
-        android:layout_marginRight="@dimen/spacing_normal"
-        android:layout_toRightOf="@+id/iv_headpic">
-    </FrameLayout>
+        android:layout_marginLeft="@dimen/dynamic_list_comment_marginright"
+        android:layout_marginRight="@dimen/spacing_normal">
+    </com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView>
 
 </RelativeLayout>

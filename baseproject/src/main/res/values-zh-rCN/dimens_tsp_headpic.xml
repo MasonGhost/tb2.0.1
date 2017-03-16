@@ -11,13 +11,14 @@
     -->
     <dimen name="headpic_for_user_center">60dp</dimen>
     <!--
-    动态/消息/赞过的/排行榜/粉丝/评论的 列表头像、
-    聊详情页头像、修改资料-更换头像
+    使用场景：动态/消息/赞过的/排行榜/粉丝/消息评论的 列
+    表头像、聊详情页头像、修改资料-更换头像
     -->
     <dimen name="headpic_for_list">38dp</dimen>
     <!--
-    动态/消息/赞过的/排行榜/粉丝/评论的 列表头像、
-    聊详情页头像、修改资料-更换头像
+   使用场景：动态详情页-顶部标题栏/最新点赞人/详情页评论
+    列表头像
+    注：最新点赞人头像描边3px #ffffff,重叠区域宽度20px
     -->
     <dimen name="headpic_for_assist">26dp</dimen>
 </resources>

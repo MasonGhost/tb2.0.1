@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/ll_dynamic_count_container"
+              android:layout_width="match_parent"
+              android:layout_height="@dimen/personal_center_dynamic_count_view_height"
+              android:background="@color/general_for_bg_light"
+              android:gravity="center_vertical"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_dynamic_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:text="200个动态"
+        android:textColor="@color/normal_for_assist_text"
+        android:textSize="@dimen/size_content_comment"/>
+
+</LinearLayout>

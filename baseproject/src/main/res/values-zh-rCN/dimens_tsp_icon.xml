@@ -13,6 +13,7 @@
     <dimen name="icon_for_assist_big">33dp</dimen>
     <dimen name="icon_for_assist_big_text_margin">12dp</dimen>
     <dimen name="icon_for_assist_small">16dp</dimen>
+    <dimen name="icon_for_assist_state_small">14dp</dimen>
 
 
     <!--#########################################      方形图片尺寸       ################################-->

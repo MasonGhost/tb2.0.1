@@ -1,17 +1,19 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
+import android.os.Bundle;
+
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
-import com.zhiyicx.common.mvp.i.IBasePresenter;
-import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
-import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicContract;
 
 import java.util.List;
+
+import rx.Observable;
 
 /**
  * @author LiuChao
@@ -22,7 +24,7 @@ import java.util.List;
 
 public interface DynamicDetailContract {
     //对于经常使用的关于UI的方法可以定义到BaseView中,如显示隐藏进度条,和显示文字消息
-    interface View extends ITSListView<DynamicBean, Presenter> {
+    interface View extends ITSListView<DynamicCommentBean, Presenter> {
         /**
          * 设置是否喜欢该动态
          *
@@ -40,24 +42,69 @@ public interface DynamicDetailContract {
         /**
          * 设置点赞头像
          */
-        void setDigHeadIcon(List<UserInfoBean> userInfoBeanList);
+        void setDigHeadIcon(List<FollowFansBean> userInfoBeanList);
 
         /**
          * 更新关注状态
          */
         void upDateFollowFansState(int followState);
+
+        /**
+         * 设置初始关注状态
+         */
+        void initFollowState(FollowFansBean mFollowFansBean);
+
+        /**
+         * 获取当前动态数据
+         */
+        DynamicBean getCurrentDynamic();
+
+        /**
+         * 获取列表数据
+         *
+         * @return
+         */
+        List<DynamicCommentBean> getDatas();
+
+        /**
+         * 获取当前动态在列表中的位置
+         *
+         * @return
+         */
+        Bundle getArgumentsBundle();
+
+        /**
+         * 刷新评论数,喜欢
+         */
+        void updateCommentCountAndDig();
+
+        /**
+         * 获取列表数据
+         *
+         * @return
+         */
+        void refresh();
+
+        void refresh(int position);
+
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
     interface Repository extends IDynamicReppsitory {
-
+        /**
+         * 获取用户关注状态
+         *
+         * @param user_ids
+         * @return
+         */
+        Observable<BaseJson<List<FollowFansBean>>> getUserFollowState(String user_ids);
     }
 
-    interface Presenter extends ITSListPresenter<DynamicBean> {
+    interface Presenter extends ITSListPresenter<DynamicCommentBean> {
         /**
          * 获取当前动态的点赞列表
          */
-        void getDynamicDigList(Long feed_id, Integer max_id);
+        void getDynamicDigList(Long feed_id, Long max_id);
 
         /**
          * 处理喜欢逻辑
@@ -82,15 +129,29 @@ public interface DynamicDetailContract {
         void shareDynamic();
 
         /**
-         * 关注该用户
+         * 关注或者取消关注
          */
-        void followUser(FollowFansBean followFansBean);
+        void handleFollowUser(FollowFansBean followFansBean);
 
         /**
-         * 取消用户的关注
+         * 获取关注状态
          */
-        void cancleFollowUser(FollowFansBean followFansBean);
+        void getUserFollowState(String user_ids);
 
+        /**
+         * send a comment
+         *
+         * @param replyToUserId  comment  to who
+         * @param commentContent comment content
+         */
+        void sendComment(long replyToUserId, String commentContent);
 
+        /**
+         * delete a comment
+         *
+         * @param comment_id      comment's id
+         * @param commentPosition comment curren position
+         */
+        void deleteComment(long comment_id, int commentPosition);
     }
 }

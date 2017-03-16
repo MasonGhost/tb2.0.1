@@ -4,9 +4,8 @@ import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
-import com.zhy.adapter.recyclerview.base.ViewHolder;
 
-public class InfoListItem implements ItemViewDelegate<BaseListBean> {
+public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
 
     @Override
     public int getItemViewLayoutId() {
@@ -18,9 +17,4 @@ public class InfoListItem implements ItemViewDelegate<BaseListBean> {
         return item instanceof InfoListBean;
     }
 
-    @Override
-    public void convert(ViewHolder holder, BaseListBean baseListBean, BaseListBean lastT, int
-            position) {
-
-    }
 }

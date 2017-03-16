@@ -14,6 +14,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 
 import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 import java.util.List;
 
@@ -44,6 +45,11 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
     }
 
     @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    @Override
     public void initIM() {
         mAuthRepository.loginIM();
         ChatClient.getInstance(mContext).setImMsgReceveListener(this);
@@ -58,9 +64,14 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
     @Override
     public void onMessageReceived(Message message) {
         if ((ActivityHandler.getInstance().currentActivity() instanceof HomeActivity)) {
-            mRootView.setMessageTipVisable(true);
+            setMessageTipVisable(true);
         }
         EventBus.getDefault().post(message, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED);
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED)
+    public void setMessageTipVisable(boolean isShow) {
+        mRootView.setMessageTipVisable(isShow);
     }
 
     @Override

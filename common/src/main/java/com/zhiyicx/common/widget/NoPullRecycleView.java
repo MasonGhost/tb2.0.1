@@ -1,6 +1,7 @@
 package com.zhiyicx.common.widget;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -23,6 +24,9 @@ public class NoPullRecycleView extends RecyclerView {
         super(context, attrs);
     }
 
+    public NoPullRecycleView(Context context, @Nullable AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+    }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent arg0) {

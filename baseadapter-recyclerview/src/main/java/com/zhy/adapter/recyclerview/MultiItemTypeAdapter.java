@@ -151,4 +151,77 @@ public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     public Context getContext() {
         return mContext;
     }
+
+    //添加单个在指定位置
+    public void addItem(T content, int position) {
+        mDatas.add(position, content);
+        notifyItemInserted(position);
+        notifyDataSetChanged();
+    }
+
+    //添加单个数据在最后
+    public void addItem(T content) {
+        mDatas.add(content);
+        notifyItemInserted(mDatas.size() - 1);
+        notifyDataSetChanged();
+    }
+
+    //移除单个
+    public void removeItem(T content) {
+        int position = mDatas.indexOf(content);
+        removeItem(position);
+    }
+
+    public void removeItem(int position) {
+        mDatas.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, mDatas.size());
+    }
+
+    //改变所有
+    public void dataChange(List<T> content) {
+        mDatas.clear();
+        notifyDataSetChanged();
+
+        if (content != null) {
+            mDatas.addAll(content);
+        }
+        notifyDataSetChanged();
+
+    }
+
+    //清除所有
+    public void dataClear() {
+        mDatas.clear();
+        notifyDataSetChanged();
+    }
+
+    //添加list
+    public void dataAdd(List<T> content) {
+        if (mDatas != null && content != null) {
+            mDatas.addAll(content);
+            notifyDataSetChanged();
+        }
+    }
+
+    //往前添加list
+    public void dataAddForward(List<T> content) {
+        if (mDatas != null && content != null) {
+            mDatas.addAll(0, content);
+            notifyDataSetChanged();
+        }
+    }
+
+    //添加不刷新
+    public void justDataAdd(List<T> content) {
+        if (mDatas != null && content != null) {
+            mDatas.addAll(content);
+        }
+    }
+
+    //改变单个
+    public void updateOne(int position, T content) {
+        mDatas.set(position, content);
+        notifyItemChanged(position);
+    }
 }

@@ -2,6 +2,8 @@
 <resources>
     <!--toolbar-->
     <dimen name="toolbar_height">44dp</dimen>
+    <dimen name="statusbar_height">26dp</dimen>
+    <dimen name="toolbar_and_statusbar_height">70dp</dimen>
     <dimen name="toolbar_padding_left">15dp</dimen>
     <dimen name="toolbar_padding_right">15dp</dimen>
     <dimen name="toolbar_left_text_size">@dimen/size_sub_title</dimen>
@@ -34,8 +36,6 @@
     <dimen name="userinfo_btn_height">60dp</dimen>
     <!--宽度为整个屏幕宽的按钮高度-->
     <dimen name="full_button_height">50dp</dimen>
-    <!--个人中心粉丝，关注高度-->
-    <dimen name="fans_container_height">60dp</dimen>
     <!--进度条高度-->
     <dimen name="pb_height">2dp</dimen>
     <!-- 光标宽度 -->
@@ -60,6 +60,7 @@
 
     <dimen name="dynamic_menu_text_with">50dp</dimen>
     <dimen name="dynamic_list_image_marginright">58dp</dimen>
+    <dimen name="dynamic_list_comment_marginright">40dp</dimen>
 
     <!--分享弹框文字和图片的间距-->
     <dimen name="share_image_text_padding">12dp</dimen>

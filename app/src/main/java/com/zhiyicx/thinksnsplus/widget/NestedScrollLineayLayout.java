@@ -5,7 +5,6 @@ import android.support.v4.view.NestedScrollingParent;
 import android.support.v4.view.NestedScrollingParentHelper;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -17,15 +16,12 @@ import com.zhiyicx.thinksnsplus.R;
  * @Author Jliuer
  * @Date 2017/02/14
  * @Email Jliuer@aliyun.com
- * @Description 嵌套滑动
+ * @Description 嵌套滑动, 约定头部 id 必须是 R.id.nestedscroll_target
  */
 public class NestedScrollLineayLayout extends LinearLayout implements NestedScrollingParent {
 
     private NestedScrollingParentHelper parentHelper;
-    private LayoutInflater inflater;
     private View headerView;
-    private int mHeaderViewLayoutId;
-    private int mHeaderViewId = R.id.fragment_music_detail_head_info;
     private int mTopViewHeight;
     private int mNotConsumeHeight;
     private OverScroller mScroller;
@@ -50,11 +46,6 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
     void init(Context context) {
         this.setOrientation(LinearLayout.VERTICAL);
         parentHelper = new NestedScrollingParentHelper(this);
-        inflater = LayoutInflater.from(context);
-        if (mHeaderViewLayoutId > 0) {
-            headerView = inflater.inflate(mHeaderViewLayoutId, null, false);
-            this.addView(headerView);
-        }
         setOrientation(LinearLayout.VERTICAL);
         mScroller = new OverScroller(context);
     }
@@ -62,12 +53,8 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        if (mHeaderViewId > 0) {
-            try {
-                headerView = findViewById(mHeaderViewId);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (headerView == null) {
+            headerView = findViewById(R.id.nestedscroll_target);
         }
         if (headerView == null) {
             throw new RuntimeException("headerView can not be null");
@@ -107,14 +94,13 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
             if (!addHeight) {//只增加一次 高度 height
                 addHeight = true;
                 ViewGroup.LayoutParams params = this.getLayoutParams();
-                params.height = mTopViewHeight + this.getHeight();
+                params.height = mTopViewHeight + this.getHeight()-120;
                 this.setLayoutParams(params);
                 requestLayout();
             }
             scrollBy(0, dy);
             consumed[1] = dy;
         }
-
         if (mOnHeadFlingListener != null && getScrollY() <= mTopViewHeight) {
             mOnHeadFlingListener.onHeadFling(getScrollY());
         }
@@ -170,14 +156,6 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
 
     public View getHeaderView() {
         return headerView;
-    }
-
-    public void setHeaderViewLayoutId(int headerViewLayoutId) {
-        mHeaderViewLayoutId = headerViewLayoutId;
-    }
-
-    public void setHeaderViewId(int headerViewId) {
-        mHeaderViewId = headerViewId;
     }
 
     public void setNotConsumeHeight(int notConsumeHeight) {

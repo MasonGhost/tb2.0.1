@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -55,9 +56,10 @@ public class PhotoPagerAdapter extends PagerAdapter {
                     .thumbnail(0.1f)
                     .dontAnimate()
                     .dontTransform()
-                    .override(800, 800)
-                    .placeholder(R.drawable.__picker_ic_photo_black_48dp)
-                    .error(R.drawable.__picker_ic_broken_image_black_48dp)
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .placeholder(R.drawable.__picker_shape_default_image)
+                    .error(R.drawable.__picker_shape_default_image)
                     .into(imageView);
         }
 

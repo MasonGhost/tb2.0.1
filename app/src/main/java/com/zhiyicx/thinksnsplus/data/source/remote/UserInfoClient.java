@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.data.source.remote;
 
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
@@ -15,6 +17,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHANGE_USER_INFO;
@@ -52,5 +55,13 @@ public interface UserInfoClient {
 
     @GET(APP_PATH_GET_IM_INFO)
     Observable<BaseJson<IMBean>> getIMInfo();
+
+    /**
+     * 获取用户关注状态
+     *
+     * @param user_ids 多个用户 id 通过“ ，”来隔开
+     */
+    @GET(ApiConfig.APP_PATH_GET_USER_FOLLOW_STATE)
+    Observable<BaseJson<List<FollowFansBean>>> getUserFollowState(@Query("user_ids") String user_ids);
 
 }
