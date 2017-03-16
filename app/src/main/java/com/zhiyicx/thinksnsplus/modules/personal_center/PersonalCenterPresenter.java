@@ -80,6 +80,9 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore, long user_id) {
+        if(AppApplication.getmCurrentLoginAuth()==null){
+            return;
+        }
         Subscription subscription = mRepository.getDynamicListForSomeone(user_id, maxId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -109,6 +112,9 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
 
     @Override
     public void initFollowState(long user_id) {
+        if(AppApplication.getmCurrentLoginAuth()==null){
+            return;
+        }
         Subscription subscription = mRepository.getUserFollowState(user_id + "")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -226,6 +232,9 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
 
     @Override
     public void setCurrentUserInfo(Long userId) {
+        if(AppApplication.getmCurrentLoginAuth()==null){
+            return;
+        }
         Subscription subscription = mRepository.getCurrentUserInfo(userId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

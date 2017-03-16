@@ -17,15 +17,17 @@ public class NoPullRecycleView extends RecyclerView {
 
     public NoPullRecycleView(Context context) {
         super(context);
+        init();
     }
-
 
     public NoPullRecycleView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     public NoPullRecycleView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        init();
     }
 
     @Override
@@ -38,4 +40,10 @@ public class NoPullRecycleView extends RecyclerView {
         return false;
     }
 
+    /**
+     * 这里设置为false,放弃自己的滑动,
+     */
+    public void init() {
+        setNestedScrollingEnabled(false);
+    }
 }

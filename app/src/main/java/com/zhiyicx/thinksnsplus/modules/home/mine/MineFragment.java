@@ -144,15 +144,19 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 startActivity(new Intent(getActivity(), UserInfoActivity.class));
                 break;
             case R.id.ll_fans_container:
+                long fansUserId = AppApplication.getmCurrentLoginAuth().getUser_id();
                 Bundle bundleFans = new Bundle();
                 bundleFans.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment.FANS_FRAGMENT_PAGE);
+                bundleFans.putLong(FollowFansListFragment.PAGE_DATA, fansUserId);
                 Intent itFans = new Intent(getActivity(), FollowFansListActivity.class);
                 itFans.putExtras(bundleFans);
                 startActivity(itFans);
                 break;
             case R.id.ll_follow_container:
+                long followUserId = AppApplication.getmCurrentLoginAuth().getUser_id();
                 Bundle bundleFollow = new Bundle();
                 bundleFollow.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment.FOLLOW_FRAGMENT_PAGE);
+                bundleFollow.putLong(FollowFansListFragment.PAGE_DATA, followUserId);
                 Intent itFollow = new Intent(getActivity(), FollowFansListActivity.class);
                 itFollow.putExtras(bundleFollow);
                 startActivity(itFollow);

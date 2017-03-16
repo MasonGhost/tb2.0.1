@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -103,6 +104,11 @@ public class FollowFansListAdapter extends CommonAdapter<FollowFansBean> {
             // 这种情况一般不会发生，为了防止崩溃，做处理
             return;
         }
+        /**
+         * 如果关注粉丝列表中出现了自己，需要隐藏关注按钮
+         */
+        holder.getView(R.id.iv_user_follow).setVisibility(
+                userInfoBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()? View.GONE:View.VISIBLE);
         // 设置用户名，用户简介
         holder.setText(R.id.tv_name, userInfoBean.getName());
         holder.setText(R.id.tv_user_signature, userInfoBean.getIntro());

@@ -138,7 +138,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mRvList.setLayoutManager(layoutManager);
         mRvList.addItemDecoration(getItemDecoration());//设置Item的间隔
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
-        mRvList.setHasFixedSize(false);
+        mRvList.setHasFixedSize(sethasFixedSize());
         mRvList.setItemAnimator(new DefaultItemAnimator());//设置动画
         mAdapter = getAdapter();
         mRvList.setAdapter(mAdapter);
@@ -150,6 +150,15 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mRvList.setAdapter(mEmptyWrapper);
     }
 
+    /**
+     * 如果确定每个item的内容不会改变RecyclerView的大小，设置这个选项可以提高性能
+     *
+     * @return
+     */
+    protected boolean sethasFixedSize() {
+        return false;
+    }
+
     protected int setEmptView() {
         return R.mipmap.img_default_nothing;
     }
@@ -157,7 +166,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     protected void initData() {
-        mRefreshlayout.setRefreshing(isNeedRefreshDataWhenComeIn());// 从网络加载数据
         onCacheResponseSuccess(requestCacheData(mMaxId, false), false); // 获取缓存数据
     }
 
@@ -375,7 +383,13 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         if (!isLoadMore && (data == null || data.size() == 0)) {// 如果没有缓存，直接拉取服务器数据
             mRefreshlayout.setRefreshing(true);
         } else {
+            // 如果数据库有数据就先显示
             handleReceiveData(data, isLoadMore, true);
+            // 如果需要刷新数据，就进行刷新，因为数据库一般都会比服务器先加载完数据，
+            // 这样就能实现，数据库先加载到界面，随后刷新服务器数据的效果
+            if (isNeedRefreshDataWhenComeIn()) {
+                mRefreshlayout.setRefreshing(true);
+            }
         }
     }
 
