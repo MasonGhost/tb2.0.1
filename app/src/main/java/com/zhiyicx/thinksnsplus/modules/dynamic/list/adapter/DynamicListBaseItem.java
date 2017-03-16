@@ -137,7 +137,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
     /**
      * @param holder
      * @param dynamicBean
-     * @param lastT
+     * @param lastT  android:descendantFocusability
      * @param position
      */
     @Override
