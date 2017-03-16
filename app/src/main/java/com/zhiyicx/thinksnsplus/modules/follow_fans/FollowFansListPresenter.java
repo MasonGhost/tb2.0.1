@@ -72,7 +72,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
     }
 
     @Override
-    public void requestNetData(final Long maxId, final boolean isLoadMore, final int userId, final int pageType) {
+    public void requestNetData(final Long maxId, final boolean isLoadMore, final long userId, final int pageType) {
         Observable<BaseJson<List<FollowFansBean>>> observable = null;
         if (pageType == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
             observable = mRepository.getFollowListFromNet(userId, maxId.intValue());
@@ -105,12 +105,12 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
     }
 
     @Override
-    public List<FollowFansBean> requestCacheData(Long maxId, boolean isLoadMore, int userId, int pageType) {
+    public List<FollowFansBean> requestCacheData(Long maxId, boolean isLoadMore, long userId, int pageType) {
         List<FollowFansBean> followFansBeanList = null;
         if (pageType == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
-            followFansBeanList = mFollowFansBeanGreenDao.getSomeOneFollower(userId, maxId.intValue());
+            followFansBeanList = mFollowFansBeanGreenDao.getSomeOneFollower((int) userId, maxId.intValue());
         } else if (pageType == FollowFansListFragment.FANS_FRAGMENT_PAGE) {
-            followFansBeanList = mFollowFansBeanGreenDao.getSomeOneFans(userId, maxId.intValue());
+            followFansBeanList = mFollowFansBeanGreenDao.getSomeOneFans((int) userId, maxId.intValue());
         }
         return followFansBeanList;
     }

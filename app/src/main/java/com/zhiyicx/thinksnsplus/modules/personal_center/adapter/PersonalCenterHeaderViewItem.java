@@ -1,9 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center.adapter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -30,6 +32,8 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
+import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 /**
@@ -234,10 +238,35 @@ public class PersonalCenterHeaderViewItem {
             public void onClick(View v) {
                 AuthBean authBean = AppApplication.getmCurrentLoginAuth();
                 // 如果进入的是自己的个人中心，才允许修改背景封面
-                if (authBean!=null&&authBean.getUser_id() == userInfoBean.getUser_id()) {
+                if (authBean != null && authBean.getUser_id() == userInfoBean.getUser_id()) {
                     initPhotoPopupWindow();
                     mPhotoPopupWindow.show();
                 }
+            }
+        });
+        // 跳转到粉丝列表
+        tv_user_fans.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundleFans = new Bundle();
+                bundleFans.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment.FANS_FRAGMENT_PAGE);
+                bundleFans.putLong(FollowFansListFragment.PAGE_DATA, userInfoBean.getUser_id());
+                Intent itFans = new Intent(mActivity, FollowFansListActivity.class);
+                itFans.putExtras(bundleFans);
+                mActivity.startActivity(itFans);
+            }
+        });
+
+        // 跳转到关注列表
+        tv_user_follow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundleFollow = new Bundle();
+                bundleFollow.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment.FOLLOW_FRAGMENT_PAGE);
+                bundleFollow.putLong(FollowFansListFragment.PAGE_DATA, userInfoBean.getUser_id());
+                Intent itFollow = new Intent(mActivity, FollowFansListActivity.class);
+                itFollow.putExtras(bundleFollow);
+                mActivity.startActivity(itFollow);
             }
         });
         mHeaderAndFooterWrapper.notifyDataSetChanged();

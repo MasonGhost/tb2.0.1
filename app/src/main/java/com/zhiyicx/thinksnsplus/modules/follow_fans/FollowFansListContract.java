@@ -48,9 +48,9 @@ public interface FollowFansListContract {
          * @param userId     用户id
          * @param pageType   详见FollowFansListFragment.class定义的页面类型
          */
-        void requestNetData(Long maxId, boolean isLoadMore, int userId, int pageType);
+        void requestNetData(Long maxId, boolean isLoadMore, long userId, int pageType);
 
-        List<FollowFansBean> requestCacheData(Long maxId, boolean isLoadMore, int userId, int pageType);
+        List<FollowFansBean> requestCacheData(Long maxId, boolean isLoadMore, long userId, int pageType);
 
         /**
          * 关注用户
