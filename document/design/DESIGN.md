@@ -1,4 +1,4 @@
-2017年1月9日 11:51:34
+2017年3月16日14:21:16
 # 视觉规范定义
 
 本应用UI设计遵照TS+ Android设计文档1.1编写.
@@ -16,7 +16,6 @@
 ## <span id = "color">1.颜色</span> 
 文件位于`project/src/main/res/values-zh-rCN/colors_tsp_style.xml`
 ```java
-
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--#########################################      重要的颜色       ################################-->
@@ -67,16 +66,21 @@
     -->
     <color name="general_for_line">#dedede</color>
     <!--
-    稍低调的分割线，广泛使用
+    稍低调的分割线，广泛使用,占位图
     页面内的浅色分割线
     -->
     <color name="general_for_line_light">#ededed</color>
     <!--
-    页面的浅灰色背景
+    页面的浅灰色背景，标签、热门城市背景色
     -->
     <color name="general_for_bg_light">#f4f5f5</color>
     <color name="general_for_bg_light_alpha_0.5">#80f4f5f5</color>
 
+
+    <!--#########################################      特殊颜色       ################################-->
+
+    <!--20%蒙层颜色-->
+    <color name="masked_color">#33000000</color>
 </resources>
 ```
 ## <span id = "font_size">2.字体大小</span>
