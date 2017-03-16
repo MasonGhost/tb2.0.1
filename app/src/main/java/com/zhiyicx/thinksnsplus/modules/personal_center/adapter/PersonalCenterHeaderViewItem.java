@@ -234,7 +234,7 @@ public class PersonalCenterHeaderViewItem {
             public void onClick(View v) {
                 AuthBean authBean = AppApplication.getmCurrentLoginAuth();
                 // 如果进入的是自己的个人中心，才允许修改背景封面
-                if (authBean.getUser_id() == userInfoBean.getUser_id()) {
+                if (authBean!=null&&authBean.getUser_id() == userInfoBean.getUser_id()) {
                     initPhotoPopupWindow();
                     mPhotoPopupWindow.show();
                 }

@@ -96,11 +96,17 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
 
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
+        if (mAuthBean == null) {
+            return ;
+        }
         mPresenter.requestNetData(maxId, isLoadMore, mAuthBean.getUser_id(), pageType);
     }
 
     @Override
     protected List<FollowFansBean> requestCacheData(Long maxId, boolean isLoadMore) {
+        if (mAuthBean == null) {
+            return null;
+        }
         return mPresenter.requestCacheData(maxId, isLoadMore, mAuthBean.getUser_id(), pageType);
     }
 
