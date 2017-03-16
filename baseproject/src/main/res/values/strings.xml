@@ -77,7 +77,7 @@
     <string name="music_fm">音乐FM</string>
     <!--资讯-->
     <string name="info_editor">编辑</string>
-    <string name="info_sort">长按可排序</string>
+    <string name="info_sort">长按可编辑</string>
     <string name="info_subscribed">我的订阅</string>
     <string name="info_unsubscribe">更多订阅</string>
     <string name="info_search">搜索</string>
