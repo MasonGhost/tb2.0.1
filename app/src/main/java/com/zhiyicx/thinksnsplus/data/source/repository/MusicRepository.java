@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.data.source.remote.MusicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album.MusicContract;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -28,7 +29,7 @@ public class MusicRepository implements MusicContract.Repository {
     }
 
     @Override
-    public Observable<BaseJson<MusicAlbumListBean>> getMusicList(Map map) {
-        return mMusicClient.getMusicList(map);
+    public Observable<BaseJson<List<MusicAlbumListBean>>> getMusicAblumList(long max_id) {
+        return mMusicClient.getMusicList(max_id,null);
     }
 }

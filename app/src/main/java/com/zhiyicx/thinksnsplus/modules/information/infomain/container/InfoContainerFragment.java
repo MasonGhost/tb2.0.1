@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.information.infomain.container;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -36,6 +37,12 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func2;
+
+import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment
+        .BUNDLE_INFO_TYPE;
 
 /**
  * @Author Jliuer
@@ -44,7 +51,7 @@ import butterknife.OnClick;
  * @Description
  */
 public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoContainerPresenter>
-        implements  InfoMainContract.InfoContainerView {
+        implements InfoMainContract.InfoContainerView {
 
     @BindView(R.id.fragment_infocontainer_indoctor)
     MagicIndicator mFragmentInfocontainerIndoctor;
@@ -81,6 +88,8 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
 
     private List<String> mTitle;
     private List<Fragment> mFragments;
+    private TSViewPagerAdapter mTSViewPagerAdapter;
+    private InfoTypeBean mInfoTypeBean;
 
     @Override
     protected int getBodyLayoutId() {
@@ -92,10 +101,10 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     protected void initView(View rootView) {
         mPresenter.getInfoType();
         mFragmentInfocontainerContent.setOffscreenPageLimit(DEFAULT_OFFSET_PAGE);
-        TSViewPagerAdapter tsViewPagerAdapter = new TSViewPagerAdapter(getFragmentManager());
+        mTSViewPagerAdapter = new TSViewPagerAdapter(getFragmentManager());
         initMagicIndicator(initTitles());
-        tsViewPagerAdapter.bindData(initFragments());
-        mFragmentInfocontainerContent.setAdapter(tsViewPagerAdapter);
+        mTSViewPagerAdapter.bindData(initFragments());
+        mFragmentInfocontainerContent.setAdapter(mTSViewPagerAdapter);
 
     }
 
@@ -131,32 +140,37 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
 
     @OnClick(R.id.fragment_infocontainer_change)
     public void onClick() {
-        startActivity(new Intent(getActivity(), ChannelActivity.class));
+        Intent intent = new Intent(getActivity(), ChannelActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(BUNDLE_INFO_TYPE, mInfoTypeBean);
+        intent.putExtra(BUNDLE_INFO_TYPE,bundle);
+        startActivity(intent);
         getActivity().overridePendingTransition(R.anim.slide_from_top_enter, R.anim
                 .slide_from_top_quit);
     }
 
     @Override
     public void setInfoType(InfoTypeBean infoType) {
-//        Observable<InfoTypeBean.DataBean.MoreCatesBean> more_cates = Observable.from(infoType
-//                .getData().getMore_cates());
-//        Observable<InfoTypeBean.DataBean.MyCatesBean> my_cates = Observable.from(infoType.getData
-//                ().getMy_cates());
-//
-//        Observable.combineLatest(more_cates, my_cates, new
-//                Func2<InfoTypeBean.DataBean.MoreCatesBean,
-//                        InfoTypeBean.DataBean.MyCatesBean, String>() {
-//            @Override
-//            public String call(InfoTypeBean.DataBean.MoreCatesBean moreCatesBean, InfoTypeBean
-//                    .DataBean.MyCatesBean myCatesBean) {
-//                mTitle.add(moreCatesBean.getName());
-//                mTitle.add(myCatesBean.getName());
-//                return "";
-//            }
-//        });
+        mInfoTypeBean = infoType;
+        Observable.from(infoType.getMy_cates()).subscribe(new Action1<InfoTypeBean.MyCatesBean>() {
+            @Override
+            public void call(InfoTypeBean.MyCatesBean myCatesBean) {
+                mTitle.add(myCatesBean.getName());
+                mFragments.add(InfoListFragment.newInstance(myCatesBean.getId() + ""));
+            }
+        });
 
-        LogUtils.d(infoType);
-        LogUtils.d(infoType);
+        Observable.from(infoType.getMore_cates()).subscribe(new Action1<InfoTypeBean
+                .MoreCatesBean>() {
+            @Override
+            public void call(InfoTypeBean.MoreCatesBean moreCatesBean) {
+                mTitle.add(moreCatesBean.getName());
+                mFragments.add(InfoListFragment.newInstance(moreCatesBean.getId() + ""));
+            }
+        });
+
+        initMagicIndicator(mTitle);
+        mTSViewPagerAdapter.bindData(mFragments);
     }
 
     @Override

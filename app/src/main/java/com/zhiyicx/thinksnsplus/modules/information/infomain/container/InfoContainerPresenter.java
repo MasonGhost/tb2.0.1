@@ -52,7 +52,6 @@ public class InfoContainerPresenter extends BasePresenter<InfoMainContract.Repps
                 .subscribe(new BaseSubscribe<InfoTypeBean>() {
                     @Override
                     protected void onSuccess(InfoTypeBean data) {
-
                         mRootView.setInfoType(data);
                     }
 

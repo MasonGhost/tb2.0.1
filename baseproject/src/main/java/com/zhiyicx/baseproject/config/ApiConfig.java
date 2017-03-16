@@ -117,6 +117,14 @@ public class ApiConfig {
      */
     public static final String APP_PATH_INFO_TYPE = "api/v1/news/cates";// 资讯分类列表
     public static final String APP_PATH_INFO_LIST = "api/v1/news";// 资讯列表
+    public static final String APP_PATH_INFO_FOLLOW_LIST = "api/v1/news/cates/follow";// 订阅资讯频道
+
+    /**
+     * 音乐相关
+     */
+    public static final String APP_PATH_MUSIC_ABLUM_LIST = "api/v1/music/specials";// 专辑列表
+    public static final String APP_PATH_MUSIC_ABLUM_DETAILS =
+            "api/v1/music/specials/{special_id}";// 专辑详情
 
 
     /**

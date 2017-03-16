@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_album;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
+import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
@@ -18,15 +19,15 @@ import rx.Observable;
  */
 public interface MusicContract {
 
-    interface View extends IBaseView<Presenter> {
-        void setAlbumList(List<MusicAlbumListBean> albumList);
+    interface View extends ITSListView<MusicAlbumListBean,Presenter> {
+
     }
 
     interface Presenter extends ITSListPresenter<MusicAlbumListBean> {
-        void getMusicList();
+
     }
 
     interface Repository {
-        Observable<BaseJson<MusicAlbumListBean>> getMusicList(Map map);
+        Observable<BaseJson<List<MusicAlbumListBean>>> getMusicAblumList(long max_id);
     }
 }

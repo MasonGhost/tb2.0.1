@@ -78,6 +78,7 @@
     <!--资讯-->
     <string name="info_editor">编辑</string>
     <string name="info_sort">长按可排序</string>
+    <string name="info_delete">点击可删除</string>
     <string name="info_subscribed">我的订阅</string>
     <string name="info_unsubscribe">更多订阅</string>
     <string name="info_search">搜索</string>
@@ -86,6 +87,8 @@
     <string name="info_collect">收藏</string>
     <string name="info_hot">热门</string>
     <string name="info_recommend">推荐</string>
+    <string name="info_close">收起</string>
+
 
     <!--分享类型-->
     <string name="qq_share">QQ</string>

@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_album;
 
+import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicRepository;
 
@@ -11,13 +13,15 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 /**
  * @Author Jliuer
  * @Date 2017/02/13
  * @Email Jliuer@aliyun.com
  * @Description
  */
-
+@FragmentScoped
 public class MusicPresenter extends BasePresenter<MusicContract.Repository, MusicContract.View>
         implements MusicContract.Presenter {
 
@@ -37,14 +41,29 @@ public class MusicPresenter extends BasePresenter<MusicContract.Repository, Musi
         mRootView.setPresenter(this);
     }
 
-    @Override
-    public void getMusicList() {
-
-    }
 
     @Override
-    public void requestNetData(Long maxId, boolean isLoadMore) {
+    public void requestNetData(Long maxId,final boolean isLoadMore) {
+        Subscription subscription =mMusicRepository.getMusicAblumList(maxId)
+                .compose(mSchedulersTransformer)
+                .subscribe(new BaseSubscribe<List<MusicAlbumListBean>>() {
+                    @Override
+                    protected void onSuccess(List<MusicAlbumListBean> data) {
+                        mRootView.onNetResponseSuccess(data, isLoadMore);
+                    }
 
+                    @Override
+                    protected void onFailure(String message) {
+
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+
+                    }
+
+
+                });
     }
 
     @Override

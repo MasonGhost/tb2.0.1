@@ -4,7 +4,6 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.InfoMainRepository;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
 
@@ -43,29 +42,15 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
     }
 
     @Override
-    public void requestNetData(Long maxId, boolean isLoadMore) {
-
-    }
-
-    @Override
-    public List<InfoListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
-    }
-
-    @Override
-    public boolean insertOrUpdateData(@NotNull List<InfoListBean> data) {
-        return false;
-    }
-
-    @Override
-    public void getInfoList(String cate_id, long max_id, long limit, long page) {
-        Subscription subscription = mInfoMainRepository.getInfoList(cate_id, max_id, limit, page)
+    public void requestNetData(Long maxId, final boolean isLoadMore) {
+        Subscription subscription = mInfoMainRepository.getInfoList(mRootView.getInfoType()
+                , maxId, mRootView.getPage())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<InfoListBean>() {
+                .subscribe(new BaseSubscribe<List<InfoListBean>>() {
                     @Override
-                    protected void onSuccess(InfoListBean data) {
-
+                    protected void onSuccess(List<InfoListBean> data) {
+                        mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 
                     @Override
@@ -79,5 +64,20 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
                     }
                 });
         addSubscrebe(subscription);
+    }
+
+    @Override
+    public List<InfoListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+        return null;
+    }
+
+    @Override
+    public boolean insertOrUpdateData(@NotNull List<InfoListBean> data) {
+        return false;
+    }
+
+    @Override
+    public void getInfoList(String cate_id, long max_id, long limit, final long page) {
+
     }
 }

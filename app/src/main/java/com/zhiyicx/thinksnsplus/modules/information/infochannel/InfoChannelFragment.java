@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.information.infochannel;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.modules.information.infosearch.SearchActivity;
 import com.zhiyicx.thinksnsplus.widget.pager_recyclerview.itemtouch.DefaultItemTouchHelpCallback;
 import com.zhiyicx.thinksnsplus.widget.pager_recyclerview.itemtouch.DefaultItemTouchHelper;
@@ -16,12 +18,14 @@ import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment
+        .BUNDLE_INFO_TYPE;
 
 /**
  * @Author Jliuer
@@ -29,7 +33,8 @@ import butterknife.OnClick;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class InfoChannelFragment extends TSFragment {
+public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Presenter>
+        implements InfoChannelConstract.View {
 
     @BindView(R.id.fragment_channel_editor)
     TextView mFragmentChannelEditor;
@@ -39,32 +44,38 @@ public class InfoChannelFragment extends TSFragment {
     RecyclerView mFragmentChannelContentSubscribed;
     @BindView(R.id.fragment_channel_content_unsubscribe)
     RecyclerView mFragmentChannelContentUnsubscribe;
+    @BindView(R.id.info_prompt)
+    TextView mInfoPrompt;
 
-    private List<String> mStringList = new ArrayList<>();
-    private List<String> mStringList1 = new ArrayList<>();
+    private List<InfoTypeBean.MyCatesBean> mMyCatesBeen;
+    private List<InfoTypeBean.MoreCatesBean> mMoreCatesBeen;
     private CommonAdapter mSubscribeAdapter;
     private CommonAdapter mUnSubscribeAdapter;
     private boolean isEditor;
+    private InfoTypeBean mInfoTypeBean;
+    private DefaultItemTouchHelper mItemTouchHelper;
+
+    public static InfoChannelFragment newInstance(Bundle params) {
+        InfoChannelFragment fragment = new InfoChannelFragment();
+        fragment.setArguments(params);
+        return fragment;
+    }
 
     private DefaultItemTouchHelpCallback.OnItemTouchCallbackListener onItemTouchCallbackListener =
             new DefaultItemTouchHelpCallback.OnItemTouchCallbackListener() {
 
                 @Override
                 public void onSwiped(int adapterPosition) {
-                    // 滑动删除的时候，从数据源移除，并刷新这个Item。
-//            if (mDatas != null) {
-//                mDatas.remove(adapterPosition);
-//                adapter.notifyItemRemoved(adapterPosition);
-//            }
+
                 }
 
                 @Override
                 public boolean onMove(int srcPosition, int targetPosition) {
-                    if (mStringList != null
-                            && targetPosition != mStringList.size() - 1
+                    if (mMyCatesBeen != null
+                            && targetPosition != mMyCatesBeen.size() - 1
                             && !isEditor) {
                         // 更换数据源中的数据Item的位置
-                        Collections.swap(mStringList, srcPosition, targetPosition);
+                        Collections.swap(mMyCatesBeen, srcPosition, targetPosition);
                         // 更新UI中的Item的位置，主要是给用户看到交互效果
                         mSubscribeAdapter.notifyItemMoved(srcPosition, targetPosition);
                         return true;
@@ -100,62 +111,78 @@ public class InfoChannelFragment extends TSFragment {
 
     @Override
     protected void setRightClick() {
-        startActivity(new Intent(getActivity(), SearchActivity.class));
+        mPresenter.doSubscribe(getFollows(mMyCatesBeen));
+//        startActivity(new Intent(getActivity(), SearchActivity.class));
     }
 
     @Override
     protected void initView(View rootView) {
-        mStringList.clear();
-        for (int i = 0; i < 7; i++) {
-            mStringList.add("");
-            mStringList1.add("");
-        }
 
         mFragmentChannelContentSubscribed.setLayoutManager(new GridLayoutManager(getActivity
                 (), 4));
         mFragmentChannelContentUnsubscribe.setLayoutManager(new GridLayoutManager(getActivity(),
                 4));
 
-        DefaultItemTouchHelper itemTouchHelper = new DefaultItemTouchHelper(
+        mItemTouchHelper = new DefaultItemTouchHelper(
                 onItemTouchCallbackListener);
-        itemTouchHelper.attachToRecyclerView(mFragmentChannelContentSubscribed);
-        itemTouchHelper.setDragEnable(true);
-        itemTouchHelper.setSwipeEnable(true);
+        mItemTouchHelper.attachToRecyclerView(mFragmentChannelContentSubscribed);
+        mItemTouchHelper.setDragEnable(true);
+        mItemTouchHelper.setSwipeEnable(true);
+    }
 
-        mSubscribeAdapter = new CommonAdapter<String>(getActivity(), R.layout
-                .item_info_channel, mStringList) {
+    @Override
+    protected void initData() {
+        mInfoTypeBean = getArguments().getParcelable(BUNDLE_INFO_TYPE);
+        mMyCatesBeen = mInfoTypeBean.getMy_cates();
+        mMoreCatesBeen = mInfoTypeBean.getMore_cates();
+
+        mSubscribeAdapter = new CommonAdapter<InfoTypeBean.MyCatesBean>(getActivity(), R.layout
+                .item_info_channel, mMyCatesBeen) {
             @Override
-            protected void convert(ViewHolder holder, String s, final int position) {
+            protected void convert(ViewHolder holder, InfoTypeBean.MyCatesBean data
+                    , final int position) {
                 ImageView delete = holder.getView(R.id.item_info_channel_deal);
                 if (isEditor) {
                     delete.setVisibility(View.VISIBLE);
                 } else {
                     delete.setVisibility(View.GONE);
                 }
-
-                delete.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mSubscribeAdapter.removeItem(position);
-                    }
-                });
+                holder.setText(R.id.item_info_channel, data.getName());
             }
         };
-        mFragmentChannelContentSubscribed.setAdapter(mSubscribeAdapter);
-
-        mUnSubscribeAdapter = new CommonAdapter<String>(getActivity(), R.layout
-                .item_info_channel, mStringList1) {
+        mSubscribeAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
-            protected void convert(ViewHolder holder, String s, int position) {
+            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                InfoTypeBean.MyCatesBean bean = mMyCatesBeen.get(position);
+                mSubscribeAdapter.removeItem(position);
+                mUnSubscribeAdapter.addItem(new InfoTypeBean.MoreCatesBean(bean.getId(),
+                        bean.getName()));
+            }
 
+            @Override
+            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int
+                    position) {
+                return false;
+            }
+        });
+
+        mFragmentChannelContentSubscribed.setAdapter(mSubscribeAdapter);
+        mUnSubscribeAdapter = new CommonAdapter<InfoTypeBean.MoreCatesBean>(getActivity(),
+                R.layout.item_info_channel, mMoreCatesBeen) {
+            @Override
+            protected void convert(ViewHolder holder, InfoTypeBean.MoreCatesBean data,
+                                   int position) {
+                holder.setText(R.id.item_info_channel, data.getName());
             }
         };
-        mFragmentChannelContentUnsubscribe.setAdapter(mUnSubscribeAdapter);
 
+        mFragmentChannelContentUnsubscribe.setAdapter(mUnSubscribeAdapter);
         mUnSubscribeAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                mSubscribeAdapter.addItem(mStringList1.get(position), 0);
+                InfoTypeBean.MoreCatesBean bean = mMoreCatesBeen.get(position);
+                mSubscribeAdapter.addItem(new InfoTypeBean.MyCatesBean(bean.getId(),
+                        bean.getName()), 0);
                 mUnSubscribeAdapter.removeItem(position);
             }
 
@@ -167,23 +194,53 @@ public class InfoChannelFragment extends TSFragment {
         });
     }
 
-    @Override
-    protected void initData() {
-
-    }
-
     @OnClick({R.id.fragment_channel_editor, R.id.fragment_channel_complete})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.fragment_channel_editor:
-                isEditor = true;
+                mItemTouchHelper.setDragEnable(isEditor);
+                if (isEditor) {
+                    mInfoPrompt.setText(R.string.info_sort);
+                    mFragmentChannelEditor.setText(getText(R.string.info_editor));
+                } else {
+                    mInfoPrompt.setText(R.string.info_delete);
+                    mFragmentChannelEditor.setText(getText(R.string.complete));
+                }
+                isEditor = !isEditor;
                 mSubscribeAdapter.notifyDataSetChanged();
                 break;
             case R.id.fragment_channel_complete:
-                isEditor = false;
-                mSubscribeAdapter.notifyDataSetChanged();
+
                 break;
         }
     }
 
+    @Override
+    public void setPresenter(InfoChannelConstract.Presenter presenter) {
+        mPresenter = presenter;
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
+    }
+
+    @Override
+    public void showMessage(String message) {
+
+    }
+
+    private String getFollows(List<InfoTypeBean.MyCatesBean> bean) {
+        StringBuilder ids=new StringBuilder();
+        for (InfoTypeBean.MyCatesBean data:bean){
+            ids.append(data.getId());
+            ids.append(",");
+        }
+        return ids.toString();
+    }
 }

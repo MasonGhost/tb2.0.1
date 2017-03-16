@@ -5,8 +5,6 @@ import android.os.Parcelable;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 
-import java.util.List;
-
 /**
  * @Author Jliuer
  * @Date 2017/03/03
@@ -15,28 +13,61 @@ import java.util.List;
  */
 public class InfoListBean extends BaseListBean {
 
-    private List<DataBean> data;
 
-    public List<DataBean> getData() {
-        return data;
+    /**
+     * id : 1
+     * title : 123123
+     * updated_at : 2017-03-13 09:59:32
+     * storage : {"id":1,"image_width":1,"image_height":1}
+     */
+
+    private int id;
+    private String title;
+    private String updated_at;
+    private StorageBean storage;
+
+    public int getId() {
+        return id;
     }
 
-    public void setData(List<DataBean> data) {
-        this.data = data;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public static class DataBean implements Parcelable{
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getUpdated_at() {
+        return updated_at;
+    }
+
+    public void setUpdated_at(String updated_at) {
+        this.updated_at = updated_at;
+    }
+
+    public StorageBean getStorage() {
+        return storage;
+    }
+
+    public void setStorage(StorageBean storage) {
+        this.storage = storage;
+    }
+
+    public static class StorageBean implements Parcelable{
         /**
          * id : 1
-         * title : 123123
-         * updated_at : 2017-03-13 09:59:32
-         * storage : 1
+         * image_width : 1
+         * image_height : 1
          */
 
         private int id;
-        private String title;
-        private String updated_at;
-        private int storage;
+        private int image_width;
+        private int image_height;
 
         public int getId() {
             return id;
@@ -46,28 +77,20 @@ public class InfoListBean extends BaseListBean {
             this.id = id;
         }
 
-        public String getTitle() {
-            return title;
+        public int getImage_width() {
+            return image_width;
         }
 
-        public void setTitle(String title) {
-            this.title = title;
+        public void setImage_width(int image_width) {
+            this.image_width = image_width;
         }
 
-        public String getUpdated_at() {
-            return updated_at;
+        public int getImage_height() {
+            return image_height;
         }
 
-        public void setUpdated_at(String updated_at) {
-            this.updated_at = updated_at;
-        }
-
-        public int getStorage() {
-            return storage;
-        }
-
-        public void setStorage(int storage) {
-            this.storage = storage;
+        public void setImage_height(int image_height) {
+            this.image_height = image_height;
         }
 
         @Override
@@ -78,30 +101,28 @@ public class InfoListBean extends BaseListBean {
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.id);
-            dest.writeString(this.title);
-            dest.writeString(this.updated_at);
-            dest.writeInt(this.storage);
+            dest.writeInt(this.image_width);
+            dest.writeInt(this.image_height);
         }
 
-        public DataBean() {
+        public StorageBean() {
         }
 
-        protected DataBean(Parcel in) {
+        protected StorageBean(Parcel in) {
             this.id = in.readInt();
-            this.title = in.readString();
-            this.updated_at = in.readString();
-            this.storage = in.readInt();
+            this.image_width = in.readInt();
+            this.image_height = in.readInt();
         }
 
-        public static final Creator<DataBean> CREATOR = new Creator<DataBean>() {
+        public static final Creator<StorageBean> CREATOR = new Creator<StorageBean>() {
             @Override
-            public DataBean createFromParcel(Parcel source) {
-                return new DataBean(source);
+            public StorageBean createFromParcel(Parcel source) {
+                return new StorageBean(source);
             }
 
             @Override
-            public DataBean[] newArray(int size) {
-                return new DataBean[size];
+            public StorageBean[] newArray(int size) {
+                return new StorageBean[size];
             }
         };
     }
@@ -114,7 +135,10 @@ public class InfoListBean extends BaseListBean {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
-        dest.writeTypedList(this.data);
+        dest.writeInt(this.id);
+        dest.writeString(this.title);
+        dest.writeString(this.updated_at);
+        dest.writeParcelable(this.storage, flags);
     }
 
     public InfoListBean() {
@@ -122,7 +146,10 @@ public class InfoListBean extends BaseListBean {
 
     protected InfoListBean(Parcel in) {
         super(in);
-        this.data = in.createTypedArrayList(DataBean.CREATOR);
+        this.id = in.readInt();
+        this.title = in.readString();
+        this.updated_at = in.readString();
+        this.storage = in.readParcelable(StorageBean.class.getClassLoader());
     }
 
     public static final Creator<InfoListBean> CREATOR = new Creator<InfoListBean>() {
