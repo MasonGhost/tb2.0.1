@@ -208,6 +208,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
         comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
         comment.setOnCommentStateClickListener(mOnCommentStateClickListener);
 
+
     }
 
     private void setUserInfoClick(View view, final DynamicBean dynamicBean) {
