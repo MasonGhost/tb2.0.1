@@ -27,6 +27,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
+import com.zhiyicx.thinksnsplus.modules.photopicker.AnimationRect;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
@@ -297,6 +298,12 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         if (selectedPhotos == null) {
             selectedPhotos = new ArrayList<>();
         }
+        final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), ITEM_COLUM);
+        mRvPhotoList.setLayoutManager(gridLayoutManager);
+        // 设置recyclerview的item之间的空白
+        int witdh = ConvertUtils.dp2px(getContext(), 5);
+        mRvPhotoList.addItemDecoration(new GridDecoration(witdh, witdh));
+
         // 占位缺省图
         ImageBean camera = new ImageBean();
         selectedPhotos.add(camera);
@@ -339,15 +346,35 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                                 ImageBean imageBean = selectedPhotos.get(i);
                                 photos.add(imageBean.getImgUrl());
                             }
-                            int[] screenLocation = new int[2];
-                            v.getLocationOnScreen(screenLocation);
                             Bundle bundle = new Bundle();
                             bundle.putInt(PhotoAlbumDetailsFragment.EXTRA_VIEW_INDEX, position);
-                            bundle.putInt(PhotoAlbumDetailsFragment.EXTRA_VIEW_WIDTH, v.getWidth());
-                            bundle.putInt(PhotoAlbumDetailsFragment.EXTRA_VIEW_HEIGHT, v.getHeight());
-                            bundle.putIntArray(PhotoAlbumDetailsFragment.EXTRA_VIEW_LOCATION, screenLocation);
                             bundle.putStringArrayList(PhotoAlbumDetailsFragment.EXTRA_VIEW_ALL_PHOTOS, photos);
                             bundle.putStringArrayList(PhotoAlbumDetailsFragment.EXTRA_VIEW_SELECTED_PHOTOS, photos);
+
+
+                            ArrayList<AnimationRect> animationRectArrayList
+                                    = new ArrayList<AnimationRect>();
+                            for (int i = 0; i < photos.size(); i++) {
+
+                                if (i < gridLayoutManager.findFirstVisibleItemPosition()) {
+                                    // 顶部，无法全部看见的图片
+                                    AnimationRect rect = new AnimationRect();
+                                    animationRectArrayList.add(rect);
+                                } else if (i > gridLayoutManager.findLastVisibleItemPosition()) {
+                                    // 底部，无法完全看见的图片
+                                    AnimationRect rect = new AnimationRect();
+                                    animationRectArrayList.add(rect);
+                                } else {
+                                    View view = gridLayoutManager
+                                            .getChildAt(i - gridLayoutManager.findFirstVisibleItemPosition());
+                                    ImageView imageView = (ImageView) view.findViewById(R.id.iv_dynamic_img);
+                                    // 可以完全看见的图片
+                                    AnimationRect rect = AnimationRect.buildFromImageView(imageView);
+                                    animationRectArrayList.add(rect);
+                                }
+                            }
+
+                            bundle.putParcelableArrayList("rect", animationRectArrayList);
                             bundle.putInt(PhotoAlbumDetailsFragment.EXTRA_MAX_COUNT, MAX_PHOTOS);
                             Intent intent = new Intent(getContext(), PhotoViewActivity.class);
                             intent.putExtras(bundle);
@@ -358,11 +385,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 });
             }
         };
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), ITEM_COLUM);
-        mRvPhotoList.setLayoutManager(gridLayoutManager);
-        // 设置recyclerview的item之间的空白
-        int witdh = ConvertUtils.dp2px(getContext(), 5);
-        mRvPhotoList.addItemDecoration(new GridDecoration(witdh, witdh));
+
         mRvPhotoList.setAdapter(mCommonAdapter);
     }
 

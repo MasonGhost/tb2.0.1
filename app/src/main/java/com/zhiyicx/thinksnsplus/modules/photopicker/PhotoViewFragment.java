@@ -20,14 +20,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+
+import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,7 +74,6 @@ public class PhotoViewFragment extends TSFragment {
 
     private ArrayList<String> seletedPaths;
     private ArrayList<String> allPaths;
-    // private PhotoPagerAdapter mPagerAdapter;
     private SectionsPagerAdapter mPagerAdapter;
 
     public final static String ARG_MAX_COUNT = "MAX_COUNT";
@@ -117,12 +121,12 @@ public class PhotoViewFragment extends TSFragment {
         //mBtComplete.setEnabled(seletedPaths.size() > 0);
         mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(), maxCount));
         // 初始化选择checkbox
-/*        mRbSelectPhoto.setChecked(seletedPaths.contains(mPagerAdapter.getPathAtPosition(currentItem)));
+        mRbSelectPhoto.setChecked(seletedPaths.contains(allPaths.get(currentItem)));
         mRbSelectPhoto.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                String path = mPagerAdapter.getPathAtPosition(mViewPager.getCurrentItem());
+                String path = allPaths.get(mViewPager.getCurrentItem());
                 // 达到最大选择数量，添加新的图片，进行提示
                 if (seletedPaths.size() >= maxCount && !seletedPaths.contains(path) && isChecked) {
                     ToastUtils.showToast(getString(R.string.choose_max_photos, maxCount));
@@ -144,7 +148,7 @@ public class PhotoViewFragment extends TSFragment {
                 // 在 PhotoAlbumDetailsFragment 的 refreshDataAndUI() 方法中进行订阅
                 EventBus.getDefault().post(seletedPaths, EventBusTagConfig.EVENT_SELECTED_PHOTO_UPDATE);
             }
-        });*/
+        });
     }
 
     @Override
@@ -181,7 +185,6 @@ public class PhotoViewFragment extends TSFragment {
             rectList = bundle.getParcelableArrayList("rect");
             maxCount = bundle.getInt(ARG_MAX_COUNT);
         }
-        // mPagerAdapter = new PhotoPagerAdapter(Glide.with(this), allPaths);
         mPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
     }
 
