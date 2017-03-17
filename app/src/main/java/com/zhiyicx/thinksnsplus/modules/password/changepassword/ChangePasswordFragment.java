@@ -85,7 +85,7 @@ public class ChangePasswordFragment extends TSFragment<ChangePasswordContract.Pr
                         setConfirmEnable();
                     }
                 });
-        // 旧密码观察
+        // 新密码观察
         RxTextView.textChanges(mEtNewPassword)
                 .compose(this.<CharSequence>bindToLifecycle())
                 .subscribe(new Action1<CharSequence>() {
@@ -95,7 +95,7 @@ public class ChangePasswordFragment extends TSFragment<ChangePasswordContract.Pr
                         setConfirmEnable();
                     }
                 });
-        // 旧密码观察
+        // 确认新密码观察
         RxTextView.textChanges(mEtSureNewPassword)
                 .compose(this.<CharSequence>bindToLifecycle())
                 .subscribe(new Action1<CharSequence>() {
