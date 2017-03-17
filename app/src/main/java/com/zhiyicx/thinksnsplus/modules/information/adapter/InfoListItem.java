@@ -14,7 +14,7 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
 
     @Override
     public boolean isForViewType(BaseListBean item, int position) {
-        return item instanceof InfoListBean;
+        return item instanceof InfoListBean.ListBean;
     }
 
 }

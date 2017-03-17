@@ -39,7 +39,8 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
 
     @Override
     public FollowFansBean getSingleDataFromCache(Long primaryKey) {
-        return null;
+        FollowFansBeanDao followFansBeanDao = getWDaoSession().getFollowFansBeanDao();
+        return followFansBeanDao.load(primaryKey);
     }
 
     @Override
@@ -53,12 +54,14 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
 
     @Override
     public void deleteSingleCache(Long primaryKey) {
-
+        FollowFansBeanDao followFansBeanDao = getWDaoSession().getFollowFansBeanDao();
+        followFansBeanDao.deleteByKey(primaryKey);
     }
 
     @Override
     public void deleteSingleCache(FollowFansBean dta) {
-
+        FollowFansBeanDao followFansBeanDao = getWDaoSession().getFollowFansBeanDao();
+        followFansBeanDao.delete(dta);
     }
 
     @Override

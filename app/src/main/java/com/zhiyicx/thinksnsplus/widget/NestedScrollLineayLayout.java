@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.OverScroller;
 
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 /**
@@ -27,6 +28,8 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
     private OverScroller mScroller;
     private boolean addHeight;
     private OnHeadFlingListener mOnHeadFlingListener;
+    private boolean hiddenTop;
+    private boolean showTop;
 
     public NestedScrollLineayLayout(Context context) {
         super(context);
@@ -87,14 +90,14 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
         //处理子view传上来的事件
         //头部高度
         mTopViewHeight = headerView.getHeight() - mNotConsumeHeight;
-        boolean hiddenTop = dy > 0 && getScrollY() < mTopViewHeight;
-        boolean showTop = dy < 0 && getScrollY() >= 0 && !ViewCompat.canScrollVertically(target,
+        hiddenTop = dy > 0 && getScrollY() < mTopViewHeight;
+        showTop = dy < 0 && getScrollY() >= 0 && !ViewCompat.canScrollVertically(target,
                 -1);
         if (hiddenTop || showTop) {
             if (!addHeight) {//只增加一次 高度 height
                 addHeight = true;
                 ViewGroup.LayoutParams params = this.getLayoutParams();
-                params.height = mTopViewHeight + this.getHeight()-120;
+                params.height = mTopViewHeight + this.getHeight() - 120;
                 this.setLayoutParams(params);
                 requestLayout();
             }
@@ -105,24 +108,33 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
             mOnHeadFlingListener.onHeadFling(getScrollY());
         }
 
+        LogUtils.d("onNestedPreScroll" + getScrollY());
+
     }
 
     @Override
     public void onNestedScroll(View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int
             dyUnconsumed) {
-//        super.onNestedScroll(target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
+        super.onNestedScroll(target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
     }
 
     @Override
     public boolean onNestedFling(View target, float velocityX, float velocityY, boolean consumed) {
-//        return super.onNestedFling(target, velocityX, velocityY, consumed);
         return false;
     }
 
     @Override
     public boolean onNestedPreFling(View target, float velocityX, float velocityY) {
-        return false;
-//        return super.onNestedPreFling(target, velocityX, velocityY);
+        if (getScrollY() >= mTopViewHeight) {
+            return false;
+        }
+        if (hiddenTop) {
+            mOnHeadFlingListener.onHeadFling(mTopViewHeight);
+        } else {
+            mOnHeadFlingListener.onHeadFling(0);
+        }
+        fling((int) velocityY);
+        return true;
     }
 
     @Override
@@ -144,6 +156,11 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
             scrollTo(0, mScroller.getCurrY());
             invalidate();
         }
+    }
+
+    public void fling(int velocityY) {
+        mScroller.fling(0, getScrollY(), 0, velocityY, 0, 0, 0, mTopViewHeight);
+        invalidate();
     }
 
     public void setOnHeadFlingListener(OnHeadFlingListener onHeadFlingListener) {

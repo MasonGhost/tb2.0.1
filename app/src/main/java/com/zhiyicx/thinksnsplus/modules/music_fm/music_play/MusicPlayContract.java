@@ -16,6 +16,7 @@ import rx.Observable;
  * @Description
  */
 public interface MusicPlayContract {
+
     interface View extends IBaseView<Presenter> {
 
     }

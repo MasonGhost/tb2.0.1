@@ -2,7 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 
 import android.support.test.rule.ActivityTestRule;
 
-import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
+import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity;
 
 import org.junit.Assert;
 import org.junit.Rule;
@@ -16,7 +16,7 @@ import org.junit.Test;
  */
 public class MessageFragmentTest {
     @Rule
-    public ActivityTestRule<HomeActivity> mActivityRule = new ActivityTestRule(HomeActivity.class);
+    public ActivityTestRule<GuideActivity> mActivityRule = new ActivityTestRule(GuideActivity.class);
 
 
     @Test

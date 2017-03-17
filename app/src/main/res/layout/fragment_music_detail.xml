@@ -126,13 +126,11 @@
 
         </LinearLayout>
 
-
-
         <View
             style="@style/style_divider_horizontal_light"
             android:layout_below="@+id/music_list_image"/>
 
-        <com.zhiyicx.thinksnsplus.widget.pager_recyclerview.NoFlingRecyclerView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_music_detail_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

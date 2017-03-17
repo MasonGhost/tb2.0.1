@@ -15,6 +15,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
 import com.zhiyicx.thinksnsplus.modules.information.infochannel.ChannelActivity;
@@ -39,6 +40,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.functions.Func2;
 
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment
@@ -59,7 +61,8 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     ImageView mFragmentInfocontainerChange;
     @BindView(R.id.fragment_infocontainer_content)
     ViewPager mFragmentInfocontainerContent;
-
+    public static final int SUBSCRIBE_CODE = 100;
+    public static final String SUBSCRIBE_EXTRA = "mycates";
     protected static final int DEFAULT_OFFSET_PAGE = 3;
     // 定义默认样式值
     private static final int DEFAULT_TAB_UNSELECTED_TEXTCOLOR = com.zhiyicx.baseproject.R.color
@@ -105,7 +108,14 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
         initMagicIndicator(initTitles());
         mTSViewPagerAdapter.bindData(initFragments());
         mFragmentInfocontainerContent.setAdapter(mTSViewPagerAdapter);
+    }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden & mPresenter != null) {
+
+        }
     }
 
     @Override
@@ -129,6 +139,29 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data != null) {
+            mTitle.clear();
+            mFragments.clear();
+            mInfoTypeBean = data.getParcelableExtra(SUBSCRIBE_EXTRA);
+
+            Observable.from(mInfoTypeBean.getMy_cates())
+                    .subscribe(new Action1<InfoTypeBean.MyCatesBean>() {
+                        @Override
+                        public void call(InfoTypeBean.MyCatesBean myCatesBean) {
+                            mTitle.add(myCatesBean.getName());
+                            mFragments.add(InfoListFragment.newInstance(myCatesBean.getId() + ""));
+                        }
+                    });
+
+            initMagicIndicator(mTitle);
+            mTSViewPagerAdapter.bindData(mFragments);
+        }
+
+    }
+
+    @Override
     protected boolean showToolbar() {
         return true;
     }
@@ -143,8 +176,8 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
         Intent intent = new Intent(getActivity(), ChannelActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_INFO_TYPE, mInfoTypeBean);
-        intent.putExtra(BUNDLE_INFO_TYPE,bundle);
-        startActivity(intent);
+        intent.putExtra(BUNDLE_INFO_TYPE, bundle);
+        startActivityForResult(intent, SUBSCRIBE_CODE);
         getActivity().overridePendingTransition(R.anim.slide_from_top_enter, R.anim
                 .slide_from_top_quit);
     }
@@ -152,24 +185,25 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     @Override
     public void setInfoType(InfoTypeBean infoType) {
         mInfoTypeBean = infoType;
-        Observable.from(infoType.getMy_cates()).subscribe(new Action1<InfoTypeBean.MyCatesBean>() {
-            @Override
-            public void call(InfoTypeBean.MyCatesBean myCatesBean) {
-                mTitle.add(myCatesBean.getName());
-                mFragments.add(InfoListFragment.newInstance(myCatesBean.getId() + ""));
-            }
-        });
-
-        Observable.from(infoType.getMore_cates()).subscribe(new Action1<InfoTypeBean
-                .MoreCatesBean>() {
-            @Override
-            public void call(InfoTypeBean.MoreCatesBean moreCatesBean) {
-                mTitle.add(moreCatesBean.getName());
-                mFragments.add(InfoListFragment.newInstance(moreCatesBean.getId() + ""));
-            }
-        });
+        mInfoTypeBean.getMy_cates().add(0, new InfoTypeBean.MyCatesBean(1,
+                getString(R.string.info_recommend)));
+        Observable.from(infoType.getMy_cates())
+                .filter(new Func1<InfoTypeBean.MyCatesBean, Boolean>() {
+                    @Override
+                    public Boolean call(InfoTypeBean.MyCatesBean myCatesBean) {
+                        return mInfoTypeBean.getMy_cates().indexOf(myCatesBean) != 0;
+                    }
+                })
+                .subscribe(new Action1<InfoTypeBean.MyCatesBean>() {
+                    @Override
+                    public void call(InfoTypeBean.MyCatesBean myCatesBean) {
+                        mTitle.add(myCatesBean.getName());
+                        mFragments.add(InfoListFragment.newInstance(myCatesBean.getId() + ""));
+                    }
+                });
 
         initMagicIndicator(mTitle);
+
         mTSViewPagerAdapter.bindData(mFragments);
     }
 
@@ -197,7 +231,6 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     protected List<String> initTitles() {
         if (mTitle == null) {
             mTitle = new ArrayList<>();
-            mTitle.add(getString(R.string.info_hot));
             mTitle.add(getString(R.string.info_recommend));
         }
         return mTitle;
@@ -207,7 +240,6 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
         if (mFragments == null) {
             mFragments = new ArrayList<>();
             mFragments.add(InfoListFragment.newInstance("1"));
-            mFragments.add(InfoListFragment.newInstance("2"));
         }
         return mFragments;
     }

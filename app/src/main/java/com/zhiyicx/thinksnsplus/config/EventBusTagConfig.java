@@ -34,6 +34,8 @@ public class EventBusTagConfig {
             "event_send_music_load";// 音乐加载
     public static final String EVENT_SEND_MUSIC_COMPLETE =
             "EVENT_SEND_MUSIC_COMPLETE";// 当前音乐播放完成
+    public static final String EVENT_SEND_MUSIC_CHANGE =
+            "EVENT_SEND_MUSIC_CHANGE";// 音乐改变
 
     // 对某人进行关注或者取消关注，需要改变个人主页关注数量
     public static final String EVENT_FOLLOW_AND_CANCEL_FOLLOW = "event_follow_and_cancle_follow";

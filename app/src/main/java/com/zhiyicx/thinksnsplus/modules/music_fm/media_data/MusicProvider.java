@@ -38,8 +38,6 @@ public class MusicProvider {
 
     private final ConcurrentMap<String, MutableMediaMetadata> mMusicListById;
 
-    private final Set<String> mFavoriteTracks;
-
     enum State {
         NON_INITIALIZED, INITIALIZING, INITIALIZED
     }
@@ -58,7 +56,6 @@ public class MusicProvider {
         mSource = source;
         mMusicListByGenre = new ConcurrentHashMap<>();
         mMusicListById = new ConcurrentHashMap<>();
-        mFavoriteTracks = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
     }
 
     public Iterable<String> getGenres() {

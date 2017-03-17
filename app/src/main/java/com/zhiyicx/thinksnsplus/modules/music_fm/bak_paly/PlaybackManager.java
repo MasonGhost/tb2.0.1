@@ -1,14 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly;
 
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
-import com.zhiyicx.common.utils.ToastUtils;
-import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProvider;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
 
 import org.simple.eventbus.EventBus;
@@ -30,11 +27,7 @@ public class PlaybackManager implements Playback.Callback {
     public static final int ORDERSINGLE = 1;
     public static final int ORDERLOOP = 2;
 
-    private MusicProvider mMusicProvider;
-
     private QueueManager mQueueManager;
-
-    private Resources mResources;
 
     private Playback mPlayback;
 
@@ -45,12 +38,9 @@ public class PlaybackManager implements Playback.Callback {
     private int orderType = ORDERLOOP;
     private String currentMusicMediaId;
 
-    public PlaybackManager(PlaybackServiceCallback serviceCallback, Resources resources,
-                           MusicProvider musicProvider, QueueManager queueManager,
-                           Playback playback) {
-        mMusicProvider = musicProvider;
+    public PlaybackManager(PlaybackServiceCallback serviceCallback,
+                           QueueManager queueManager, Playback playback) {
         mServiceCallback = serviceCallback;
-        mResources = resources;
         mQueueManager = queueManager;
         mMediaSessionCallback = new MediaSessionCallback();
         mPlayback = playback;
@@ -286,7 +276,12 @@ public class PlaybackManager implements Playback.Callback {
 
         @Override
         public void onCustomAction(@NonNull String action, Bundle extras) {
-            setOrderType(Integer.valueOf(action));
+            if (extras==null){
+                setOrderType(Integer.valueOf(action));
+            }else{
+                mServiceCallback.onCustomAction(action,extras);
+            }
+
         }
 
         @Override
@@ -344,5 +339,7 @@ public class PlaybackManager implements Playback.Callback {
         void onPlaybackStateUpdated(PlaybackStateCompat newState);
 
         void onBufferingUpdate(int percent);
+
+        void onCustomAction(String action, Bundle extras);
     }
 }

@@ -289,15 +289,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
         mFragmentMusicPalyRv.setLayoutManager(new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
-//        mFragmentMusicPalyRv.setLayoutManager(new LinearLayoutManager(getActivity(),
-//                LinearLayoutManager.HORIZONTAL, false) {
-//            @Override// 不要复用了
-//            public void detachAndScrapAttachedViews(RecyclerView.Recycler recycler) {
-//                removeAllViews();
-//            }
-//
-//
-//        });
+
         mFragmentMusicPalyRv.setFlingFactor(3f);
         mFragmentMusicPalyRv.setTriggerOffset(0.25f);
         mFragmentMusicPalyRv.setAdapter(getMediaListAdapter());
@@ -354,7 +346,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 break;
             case R.id.fragment_music_paly_order:
                 getActivity().getSupportMediaController().getTransportControls()
-                        .sendCustomAction(mDefalultOrder + "", new Bundle());
+                        .sendCustomAction(mDefalultOrder + "",null);
                 mFragmentMusicPalyOrder.setImageResource(mOrderModule[mDefalultOrder]);
                 SharePreferenceUtils.setInterger(getActivity(),
                         SharePreferenceTagConfig.SHAREPREFERENCE_TAG_MUSIC, mDefalultOrder);
@@ -511,7 +503,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             return;
         }
         mediaController.getTransportControls()
-                .sendCustomAction(mDefalultOrder + "", new Bundle());
+                .sendCustomAction(mDefalultOrder + "", null);
         getActivity().setSupportMediaController(mediaController);
         mediaController.registerCallback(mCallback);
         PlaybackStateCompat state = mediaController.getPlaybackState();

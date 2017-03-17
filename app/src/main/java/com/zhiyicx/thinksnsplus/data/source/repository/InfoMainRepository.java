@@ -34,7 +34,7 @@ public class InfoMainRepository implements InfoMainContract.Reppsitory {
     }
 
     @Override
-    public Observable<BaseJson<List<InfoListBean>>> getInfoList(String cate_id,
+    public Observable<BaseJson<InfoListBean>> getInfoList(String cate_id,
                                                                 long max_id,
                                                                 long page) {
         return mInfoMainClient.getInfoList(cate_id, max_id, null, page);
