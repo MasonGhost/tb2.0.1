@@ -40,7 +40,8 @@ public class DynamicDetailBeanGreenDaoImpl extends CommonCacheImpl<DynamicDetail
 
     @Override
     public DynamicDetailBean getSingleDataFromCache(Long primaryKey) {
-        return null;
+        DynamicDetailBeanDao dynamicDetailBeanDao = getWDaoSession().getDynamicDetailBeanDao();
+        return dynamicDetailBeanDao.load(primaryKey);
     }
 
     @Override
@@ -55,12 +56,14 @@ public class DynamicDetailBeanGreenDaoImpl extends CommonCacheImpl<DynamicDetail
 
     @Override
     public void deleteSingleCache(Long primaryKey) {
-
+        DynamicDetailBeanDao dynamicDetailBeanDao = getWDaoSession().getDynamicDetailBeanDao();
+        dynamicDetailBeanDao.deleteByKey(primaryKey);
     }
 
     @Override
     public void deleteSingleCache(DynamicDetailBean dta) {
-
+        DynamicDetailBeanDao dynamicDetailBeanDao = getWDaoSession().getDynamicDetailBeanDao();
+        dynamicDetailBeanDao.delete(dta);
     }
 
     @Override
