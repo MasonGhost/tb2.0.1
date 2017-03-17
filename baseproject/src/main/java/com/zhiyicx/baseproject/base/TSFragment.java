@@ -60,7 +60,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
         if (showToolBarDivider()) {// 在需要显示分割线时，进行添加
             View divider = new View(getContext());
-            divider.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.divider_line)));
+            divider.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) getResources().getDimensionPixelSize(R.dimen.divider_line)));
             divider.setBackgroundColor(ContextCompat.getColor(getContext(), setToolBarDividerColor()));
             linearLayout.addView(divider);
         }

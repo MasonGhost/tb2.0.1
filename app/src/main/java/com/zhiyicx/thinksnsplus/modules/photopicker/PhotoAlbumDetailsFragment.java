@@ -11,12 +11,15 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -57,12 +60,9 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
     public final static String EXTRA_ORIGIN = "ORIGINAL_PHOTOS";
     private final static String EXTRA_COLUMN = "column";
     public final static String EXTRA_VIEW_INDEX = "view_index";
-    public static final String EXTRA_VIEW_WIDTH = "view_width";
-    public static final String EXTRA_VIEW_HEIGHT = "view_height";
-    public static final String EXTRA_VIEW_LOCATION = "view_location";
+
     public static final String EXTRA_VIEW_ALL_PHOTOS = "view_photos";
     public static final String EXTRA_VIEW_SELECTED_PHOTOS = "view_selected_photos";
-    //public static final String EXTRA_OLD_SELECTED_PHOTOS = "view_selected_photos";
 
     public final static String EXTRA_MAX_COUNT = "MAX_COUNT";
     private int maxCount = DEFAULT_MAX_COUNT;
@@ -141,8 +141,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         photoGridAdapter.setShowCamera(false);
         photoGridAdapter.setPreviewEnable(true);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), column);
-        //layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
+        final GridLayoutManager layoutManager = new GridLayoutManager(getContext(), column);
         mRvAlbumDetails.setLayoutManager(layoutManager);
         mRvAlbumDetails.setItemAnimator(new DefaultItemAnimator());
         mRvAlbumDetails.setAdapter(photoGridAdapter);
@@ -167,8 +166,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 }
                 // 数量超过时，进行提示
                 if (selectedItemCount > maxCount) {
-                    Toast.makeText(getActivity(), getString(me.iwf.photopicker.R.string.__picker_over_max_count_tips, maxCount),
-                            LENGTH_LONG).show();
+                    ToastUtils.showToast(getString(R.string.choose_max_photos, maxCount));
                     return false;
                 }
                 // 设置当前选择的数量
@@ -184,16 +182,35 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 int index = showCamera ? position - 1 : position;
                 List<String> allPhotos = photoGridAdapter.getCurrentPhotoPaths();
                 ArrayList<String> selectedPhotos = photoGridAdapter.getSelectedPhotoPaths();
-                int[] screenLocation = new int[2];
-                v.getLocationOnScreen(screenLocation);
                 Bundle bundle = new Bundle();
                 bundle.putInt(EXTRA_VIEW_INDEX, index);
-                bundle.putInt(EXTRA_VIEW_WIDTH, v.getWidth());
-                bundle.putInt(EXTRA_VIEW_HEIGHT, v.getHeight());
-                bundle.putIntArray(EXTRA_VIEW_LOCATION, screenLocation);
                 bundle.putStringArrayList(EXTRA_VIEW_ALL_PHOTOS, (ArrayList<String>) allPhotos);
                 bundle.putStringArrayList(EXTRA_VIEW_SELECTED_PHOTOS, selectedPhotos);
                 bundle.putInt(EXTRA_MAX_COUNT, maxCount);
+
+                ArrayList<AnimationRect> animationRectArrayList
+                        = new ArrayList<AnimationRect>();
+                for (int i = 0; i < allPhotos.size(); i++) {
+
+                    if (i < layoutManager.findFirstVisibleItemPosition()) {
+                        // 顶部，无法全部看见的图片
+                        AnimationRect rect = new AnimationRect();
+                        animationRectArrayList.add(rect);
+                    } else if (i > layoutManager.findLastVisibleItemPosition()) {
+                        // 底部，无法完全看见的图片
+                        AnimationRect rect = new AnimationRect();
+                        animationRectArrayList.add(rect);
+                    } else {
+                        View view = layoutManager
+                                .getChildAt(i - layoutManager.findFirstVisibleItemPosition());
+                        ImageView imageView = (ImageView) view.findViewById(R.id.iv_photo);
+                        // 可以完全看见的图片
+                        AnimationRect rect = AnimationRect.buildFromImageView(imageView);
+                        animationRectArrayList.add(rect);
+                    }
+                }
+
+                bundle.putParcelableArrayList("rect", animationRectArrayList);
                 Intent intent = new Intent(getContext(), PhotoViewActivity.class);
                 intent.putExtras(bundle);
                 startActivityForResult(intent, TO_VIEW_REQUEST_CODE);
@@ -215,7 +232,6 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                             directories.clear();
                             directories.addAll(dirs);
                             photoGridAdapter.notifyDataSetChanged();
-                            //adjustHeight();
                         }
                     });
         }
@@ -242,9 +258,6 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 int[] screenLocation = new int[2];
                 Bundle bundle = new Bundle();
                 bundle.putInt(EXTRA_VIEW_INDEX, 0);
-                bundle.putInt(EXTRA_VIEW_WIDTH, 0);
-                bundle.putInt(EXTRA_VIEW_HEIGHT, 0);
-                bundle.putIntArray(EXTRA_VIEW_LOCATION, screenLocation);
                 bundle.putStringArrayList(EXTRA_VIEW_ALL_PHOTOS, allPhotos);
                 bundle.putStringArrayList(EXTRA_VIEW_SELECTED_PHOTOS, selectedPhoto);
                 bundle.putInt(EXTRA_MAX_COUNT, maxCount);
