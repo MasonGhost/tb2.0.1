@@ -215,7 +215,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void onUserInfoClick(UserInfoBean userInfoBean) {
-        if (AppApplication.getmCurrentLoginAuth() != null && userInfoBean.getUser_id() != AppApplication.getmCurrentLoginAuth().getUser_id()) {
+        if (userInfoBean.getUser_id() != mUserInfoBean.getUser_id()) {// 如果当前页面的主页已经是当前这个人了，不就用跳转了
             PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
         }
     }
@@ -526,7 +526,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      */
     private void setBottomVisible(long currentUserID) {
         AuthBean authBean = AppApplication.getmCurrentLoginAuth();
-        mLlBottomContainer.setVisibility(authBean!=null&&authBean.getUser_id() == currentUserID ? View.GONE : View.VISIBLE);
+        mLlBottomContainer.setVisibility(authBean != null && authBean.getUser_id() == currentUserID ? View.GONE : View.VISIBLE);
     }
 
     public static PersonalCenterFragment initFragment(Bundle bundle) {
