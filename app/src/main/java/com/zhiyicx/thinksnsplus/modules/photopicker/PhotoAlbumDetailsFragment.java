@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -167,8 +168,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 }
                 // 数量超过时，进行提示
                 if (selectedItemCount > maxCount) {
-                    Toast.makeText(getActivity(), getString(me.iwf.photopicker.R.string.__picker_over_max_count_tips, maxCount),
-                            LENGTH_LONG).show();
+                    ToastUtils.showToast(getString(R.string.choose_max_photos, maxCount));
                     return false;
                 }
                 // 设置当前选择的数量

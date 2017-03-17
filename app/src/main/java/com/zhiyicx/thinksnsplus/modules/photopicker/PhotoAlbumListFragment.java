@@ -27,7 +27,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import me.iwf.photopicker.adapter.PopupDirectoryListAdapter;
 import me.iwf.photopicker.entity.PhotoDirectory;
 import me.iwf.photopicker.utils.MediaStoreHelper;
 
@@ -103,7 +102,7 @@ public class PhotoAlbumListFragment extends TSFragment {
                         .imagerView(ivCover)
                         .build());
                 tvName.setText(photoDirectory.getName());
-                tvCount.setText(tvCount.getContext().getString(me.iwf.photopicker.R.string.__picker_image_count, photoDirectory.getPhotos().size()));
+                tvCount.setText(tvCount.getContext().getString(R.string.album_image_count, photoDirectory.getPhotos().size()));
                 holder.getConvertView().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -135,7 +134,6 @@ public class PhotoAlbumListFragment extends TSFragment {
                         directories.clear();
                         directories.addAll(dirs);
                         listAdapter.notifyDataSetChanged();
-                        //adjustHeight();
                     }
                 });
     }

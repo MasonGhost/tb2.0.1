@@ -38,11 +38,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import me.iwf.photopicker.adapter.PhotoPagerAdapter;
 
 import static android.app.Activity.RESULT_OK;
 import static android.widget.Toast.LENGTH_LONG;
-import static me.iwf.photopicker.PhotoPicker.KEY_SELECTED_PHOTOS;
+
 
 /**
  * @author LiuChao
@@ -130,8 +129,7 @@ public class PhotoViewFragment extends TSFragment {
                 String path = mPagerAdapter.getPathAtPosition(mViewPager.getCurrentItem());
                 // 达到最大选择数量，添加新的图片，进行提示
                 if (seletedPaths.size() >= maxCount && !seletedPaths.contains(path) && isChecked) {
-                    Toast.makeText(getActivity(), getString(me.iwf.photopicker.R.string.__picker_over_max_count_tips, maxCount),
-                            LENGTH_LONG).show();
+                    ToastUtils.showToast(getString(R.string.choose_max_photos, maxCount));
                     mRbSelectPhoto.setChecked(false);
                     return;
                 }
@@ -171,7 +169,6 @@ public class PhotoViewFragment extends TSFragment {
     public static PhotoViewFragment newInstance(List<String> selectedPaths, List<String> allPhotos, int currentItem, int maxCount) {
 
         PhotoViewFragment f = new PhotoViewFragment();
-
         Bundle args = new Bundle();
         args.putStringArrayList(ARG_SELCTED_PATH, (ArrayList<String>) selectedPaths);
         args.putStringArrayList(ARG_ALL_PATH, (ArrayList<String>) allPhotos);
@@ -179,7 +176,6 @@ public class PhotoViewFragment extends TSFragment {
         args.putBoolean(ARG_HAS_ANIM, false);
         args.putInt(ARG_MAX_COUNT, maxCount);
         f.setArguments(args);
-
         return f;
     }
 
