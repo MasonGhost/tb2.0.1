@@ -13,6 +13,7 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -126,6 +127,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     protected void initView(View rootView) {
         super.initView(rootView);
         initInputView();
+        AndroidBug5497Workaround.assistActivity(getActivity());
     }
 
     private void initInputView() {
