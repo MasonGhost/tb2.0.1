@@ -121,7 +121,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
     @Override
     public boolean isForViewType(DynamicBean item, int position) {
         // 当本地和服务器都没有图片的时候，使用
-        return  (item.getFeed().getStorages() == null || item.getFeed().getStorages().size() == getImageCounts())
+        return (item == null || item.getFeed() == null) || (item.getFeed().getStorages() == null || item.getFeed().getStorages().size() == getImageCounts())
                 && (item.getFeed().getLocalPhotos() == null || item.getFeed().getLocalPhotos().size() == getImageCounts());
     }
 
@@ -137,7 +137,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
     /**
      * @param holder
      * @param dynamicBean
-     * @param lastT  android:descendantFocusability
+     * @param lastT       android:descendantFocusability
      * @param position
      */
     @Override
@@ -170,7 +170,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
         DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
         DynamicToolBean dynamicToolBean = dynamicBean.getTool();
         if (dynamicToolBean != null) {
-            dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicToolBean.getFeed_digg_count()),dynamicToolBean.getIs_digg_feed() == STATUS_DIGG_FEED_CHECKED, 0);
+            dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicToolBean.getFeed_digg_count()), dynamicToolBean.getIs_digg_feed() == STATUS_DIGG_FEED_CHECKED, 0);
             dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicToolBean.getFeed_comment_count()), false, 1);
             dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicToolBean.getFeed_view_count()), false, 2);
         }
@@ -234,11 +234,11 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
      * @param part        this part percent of imageContainer
      */
     protected void initImageView(final ViewHolder holder, ImageView view, final DynamicBean dynamicBean, final int positon, int part) {
-        int propPart=100;
+        int propPart = 100;
         String url;
         if (dynamicBean.getFeed().getStorages() != null && dynamicBean.getFeed().getStorages().size() > 0) {
-            propPart= getProportion(view, dynamicBean, part);
-            url = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getFeed().getStorages().get(positon).getStorage_id(),propPart);
+            propPart = getProportion(view, dynamicBean, part);
+            url = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getFeed().getStorages().get(positon).getStorage_id(), propPart);
         } else {
             url = dynamicBean.getFeed().getLocalPhotos().get(positon);
         }
@@ -288,7 +288,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
         }
         height = with;
         proportion = (int) ((with / dynamicBean.getFeed().getStorages().get(0).getWidth()) * 100);
-        LogUtils.i("------------->"+proportion);
+        LogUtils.i("------------->" + proportion);
         return proportion;
     }
 
