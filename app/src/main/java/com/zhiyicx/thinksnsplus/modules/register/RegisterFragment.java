@@ -86,7 +86,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
 
     @Override
     protected String setCenterTitle() {
-        return getString(R.string.immediate_regist);
+        return getString(R.string.regist);
     }
 
     @Override
