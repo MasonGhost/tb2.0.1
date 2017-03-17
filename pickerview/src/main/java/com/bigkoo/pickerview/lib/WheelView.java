@@ -62,6 +62,7 @@ public class WheelView extends View {
 
     // 条目间距倍数
     static final float lineSpacingMultiplier = 2.0F;
+    static final float lineoffset = 4;//两根线的偏移量
     boolean isLoop;
 
     // 第一条线Y坐标值
@@ -104,7 +105,7 @@ public class WheelView extends View {
     private int drawCenterContentStart = 0;//中间选中文字开始绘制位置
     private int drawOutContentStart = 0;//非中间文字开始绘制位置
     private static final float SCALECONTENT = 0.8F;//非中间文字则用此控制高度，压扁形成3d错觉
-    private static final float CENTERCONTENTOFFSET = 6;//中间文字文字居中需要此偏移值
+    private static final float CENTERCONTENTOFFSET = 5;//中间文字文字居中需要此偏移值
 
     public WheelView(Context context) {
         this(context, null);
@@ -184,8 +185,8 @@ public class WheelView extends View {
         //控件宽度，这里支持weight
         measuredWidth = MeasureSpec.getSize(widthMeasureSpec);
         //计算两条横线和控件中间点的Y位置
-        firstLineY = (measuredHeight - itemHeight) / 2.0F;
-        secondLineY = (measuredHeight + itemHeight) / 2.0F;
+        firstLineY = (measuredHeight - itemHeight) / 2.0F - lineoffset;
+        secondLineY = (measuredHeight + itemHeight) / 2.0F - lineoffset;
         centerY = (measuredHeight + maxTextHeight) / 2.0F - CENTERCONTENTOFFSET;
         //初始化显示的item的position，根据是否loop
         if (initPosition == -1) {
