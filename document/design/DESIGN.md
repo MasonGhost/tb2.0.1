@@ -288,7 +288,7 @@
     <!--手机号长度-->
     <integer name="phone_number_length">11</integer>
     <!--密码最大长度-->
-    <integer name="password_maxlenght">16</integer>
+    <integer name="password_maxlenght">999999</integer>
     <!--密码最小长度-->
     <integer name="password_min_length">6</integer>
     <!--用户名最大长度-->
