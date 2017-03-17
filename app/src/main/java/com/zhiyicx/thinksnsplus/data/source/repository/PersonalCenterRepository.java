@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
-import android.content.Context;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
@@ -62,7 +61,7 @@ public class PersonalCenterRepository extends BaseDynamicRepository implements P
     @Override
     public Observable<BaseJson<List<DynamicBean>>> getDynamicListForSomeone(Long user_id, Long max_id) {
         String type = String.format(ApiConfig.DYNAMIC_TYPE_SOMEONE, user_id);
-        return mBaseDynamicRepository.getDynamicList(type, max_id, 0);
+        return mBaseDynamicRepository.getDynamicList(type, max_id, 0,false);
     }
 
     @Override
