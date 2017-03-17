@@ -111,10 +111,12 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     protected float getItemDecorationSpacing() {
         return 0;
     }
+
     @Override
     protected boolean setUseSatusbar() {
         return true;
     }
+
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_dynamic_detail;
@@ -265,7 +267,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 });
         // 如果当前动态所属用户，就是当前用户，隐藏关注按钮
         long user_id = dynamicBean.getUser_id();
-        if (user_id == AppApplication.getmCurrentLoginAuth().getUser_id()) {
+        if (AppApplication.getmCurrentLoginAuth() != null && user_id == AppApplication.getmCurrentLoginAuth().getUser_id()) {
             mTvToolbarRight.setVisibility(View.GONE);
         } else {
             // 获取用户关注状态
@@ -445,6 +447,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        position=position-1;// 减去 header
         if (mDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
             initLoginOutPopupWindow(mDatas.get(position).getComment_id(), position);
             mDeletCommentPopWindow.show();

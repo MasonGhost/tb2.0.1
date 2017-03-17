@@ -271,7 +271,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         long feedMark = Long.parseLong(feedMarkString);
         DynamicDetailBean dynamicDetailBean = new DynamicDetailBean();
         dynamicDetailBean.setFeed_mark(feedMark);
-        dynamicDetailBean.setCreated_at(TimeUtils.millis2String(System.currentTimeMillis()));
+        dynamicDetailBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         dynamicDetailBean.setContent(mEtDynamicContent.getInputContent());
         dynamicDetailBean.setTitle(mEtDynamicTitle.getInputContent());
         if (selectedPhotos != null && !selectedPhotos.isEmpty()) {

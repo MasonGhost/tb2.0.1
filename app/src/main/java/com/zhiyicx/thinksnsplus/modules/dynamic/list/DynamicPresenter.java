@@ -359,7 +359,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
         }
         creatComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
         creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id()));
-        creatComment.setCreated_at(TimeUtils.millis2String(System.currentTimeMillis()));
+        creatComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         List<DynamicCommentBean> commentBeanList = new ArrayList<>();
         commentBeanList.add(creatComment);
         commentBeanList.addAll(mRootView.getDatas().get(mCurrentPostion).getComments());

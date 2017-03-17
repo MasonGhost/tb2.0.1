@@ -70,10 +70,10 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             linearLayout.setFitsSystemWindows(false);
         } else {
             //不顶上去
-            setToolBarTextColor();
             StatusBarUtils.setStatusBarColor(getActivity(), setToolBarBackgroud());
             linearLayout.setFitsSystemWindows(true);
         }
+        setToolBarTextColor();
         if (setStatusbarGrey()) {
             StatusBarUtils.statusBarLightMode(getActivity());
         }

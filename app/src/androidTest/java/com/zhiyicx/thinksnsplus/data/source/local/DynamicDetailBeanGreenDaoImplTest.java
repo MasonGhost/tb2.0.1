@@ -32,7 +32,7 @@ public class DynamicDetailBeanGreenDaoImplTest {
         mDynamicDetailBean.setFeed_mark(Long.valueOf("51" + System.currentTimeMillis()));
         mDynamicDetailBean.setContent("hello jungle68");
         mDynamicDetailBean.setFeed_content("hello feed_content");
-        mDynamicDetailBean.setCreated_at(TimeUtils.millis2String(System.currentTimeMillis()));
+        mDynamicDetailBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         mDynamicDetailBean.setLocalPhotos(new ArrayList<String>());
         mDynamicDetailBean.setStorages(new ArrayList<ImageBean>());
         mDynamicDetailBean.setFeed_id(System.currentTimeMillis());

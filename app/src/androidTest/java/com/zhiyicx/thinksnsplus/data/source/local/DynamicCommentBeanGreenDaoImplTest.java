@@ -39,7 +39,7 @@ public class DynamicCommentBeanGreenDaoImplTest {
         dynamicCommentBean.setComment_mark(Long.valueOf("50" + System.currentTimeMillis()));
         dynamicCommentBean.setUser_id(6);
         dynamicCommentBean.setReply_to_user_id(10);
-        dynamicCommentBean.setCreated_at(TimeUtils.millis2String(System.currentTimeMillis()));
+        dynamicCommentBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         dynamicCommentBean.setComment_content("test comment");
         dynamicCommentBean.setComment_id(System.currentTimeMillis());
         dynamicCommentBean.setFeed_mark(feed_mark);
@@ -61,7 +61,7 @@ public class DynamicCommentBeanGreenDaoImplTest {
         dynamicCommentBean.setComment_mark(Long.valueOf("50" + System.currentTimeMillis()));
         dynamicCommentBean.setUser_id(6);
         dynamicCommentBean.setReply_to_user_id(10);
-        dynamicCommentBean.setCreated_at(TimeUtils.millis2String(System.currentTimeMillis()));
+        dynamicCommentBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         dynamicCommentBean.setComment_content("test comment");
         dynamicCommentBean.setComment_id(System.currentTimeMillis());
         dynamicCommentBean.setFeed_mark(feed_mark);
@@ -82,7 +82,7 @@ public class DynamicCommentBeanGreenDaoImplTest {
         dynamicCommentBean.setComment_mark(Long.valueOf("50" + System.currentTimeMillis()));
         dynamicCommentBean.setUser_id(6);
         dynamicCommentBean.setReply_to_user_id(10);
-        dynamicCommentBean.setCreated_at(TimeUtils.millis2String(System.currentTimeMillis()));
+        dynamicCommentBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         dynamicCommentBean.setComment_content("test comment");
         dynamicCommentBean.setComment_id(System.currentTimeMillis());
         dynamicCommentBean.setFeed_mark(feed_mark);
@@ -104,7 +104,7 @@ public class DynamicCommentBeanGreenDaoImplTest {
         dynamicCommentBean.setComment_mark(comment_mark);
         dynamicCommentBean.setUser_id(6);
         dynamicCommentBean.setReply_to_user_id(10);
-        dynamicCommentBean.setCreated_at(TimeUtils.millis2String(System.currentTimeMillis()));
+        dynamicCommentBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         dynamicCommentBean.setComment_content("test comment");
         dynamicCommentBean.setComment_id(System.currentTimeMillis());
         dynamicCommentBean.setFeed_mark(System.currentTimeMillis());

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="pickerview_timebtn_nor">#fa9600</color>
-    <color name="pickerview_timebtn_pre">#c2daf5</color>
+    <color name="pickerview_timebtn_nor">#59b6d7</color>
+    <color name="pickerview_timebtn_pre">#4ab2ce</color>
     <color name="pickerview_bg_topbar">#ffffff</color>
     <color name="pickerview_topbar_title">#000000</color>
     <color name="pickerview_wheelview_textcolor_out">#999999</color>

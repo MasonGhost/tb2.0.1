@@ -39,18 +39,18 @@
     <string name="username_toast_hint">@string/username_input_hint</string>
     <string name="username_toast_not_number_start_hint">用户名不能以数字开头</string>
     <string name="username_toast_not_symbol_hint">用户名只能包含数字、字母和下划线</string>
-    <string name="immediate_regist">立即注册</string>
+    <string name="immediate_regist">注册</string>
     <string name="vertify_code_input_hint">输入验证码</string>
     <string name="phone_number_input_hint">输入11位手机号</string>
     <string name="phone_number_toast_hint">请输入正确的手机号</string>
     <string name="password_input_hint">输入6位以上登录密码</string>
-    <string name="password_toast_hint">请输入6-16位密码</string>
-    <string name="old_password_toast_hint">请输入6-16位旧密码</string>
-    <string name="new_password_toast_hint">请输入6-16位新密码</string>
-    <string name="sure_new_password_toast_hint">请输入6-16位确认密码</string>
-    <string name="password_diffrent">新密码输入不一致</string>
+    <string name="password_toast_hint">密码长度不能低于6位</string>
+    <string name="old_password_toast_hint">输入6位以上登录密码</string>
+    <string name="new_password_toast_hint">输入6位以上登录密码</string>
+    <string name="sure_new_password_toast_hint">输入6位以上登录密码</string>
+    <string name="password_diffrent">两次密码输入不一致</string>
     <string name="find_password_success">找回密码成功</string>
-    <string name="change_password_success">修改密码成功</string>
+    <string name="change_password_success">更改成功</string>
 
     <!-- 拍照相关 -->
     <string name="choose_from_photo">从相册选取</string>

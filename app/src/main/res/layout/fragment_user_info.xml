@@ -49,7 +49,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="@dimen/headpic_for_list"
+            android:layout_width="@dimen/uerinfo_sub_title_hint_with"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_mid"
             android:layout_marginRight="@dimen/spacing_mid"
@@ -81,7 +81,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="@dimen/headpic_for_list"
+            android:layout_width="@dimen/uerinfo_sub_title_hint_with"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_mid"
             android:layout_marginRight="@dimen/spacing_mid"
@@ -119,7 +119,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="@dimen/headpic_for_list"
+            android:layout_width="@dimen/uerinfo_sub_title_hint_with"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_mid"
             android:layout_marginRight="@dimen/spacing_mid"
@@ -156,7 +156,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:layout_width="@dimen/headpic_for_list"
+            android:layout_width="@dimen/uerinfo_sub_title_hint_with"
             android:layout_height="@dimen/userinfo_btn_height"
             android:layout_marginLeft="@dimen/spacing_mid"
             android:layout_marginRight="@dimen/spacing_mid"
@@ -171,7 +171,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_mid"
             android:layout_marginRight="@dimen/spacing_mid"
-            android:layout_marginBottom="@dimen/spacing_mid"
+            android:paddingBottom="@dimen/spacing_mid"
             app:limitSize="@integer/introduce_input_max_size"
             app:showLimitSize="@integer/show_introduce_input_size"></com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView>
 

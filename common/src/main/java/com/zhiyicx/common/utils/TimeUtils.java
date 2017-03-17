@@ -4,9 +4,11 @@ import android.support.annotation.Nullable;
 
 import com.zhiyicx.common.config.ConstantConfig;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * @Describe 时间格式化工具类 ,api接口里 的时间返回 统一用时间空间字符串格式 UTC+ 0 时区 例如; 2017-03-01 01:28:33
@@ -45,7 +47,7 @@ public class TimeUtils {
      */
     public static String getTimeFriendlyNormal(String timestr) {
         String result = "1分钟前";
-        long timesamp = string2Millis(timestr);
+        long timesamp = utc2LocalLong(timestr);
         switch (getifferenceDays(timesamp)) {
             case 0:
                 result = getFriendlyTimeForBeforHour(timesamp, result);
@@ -118,7 +120,7 @@ public class TimeUtils {
      * @return 友好时间字符串
      */
     public static String getTimeFriendlyForDetail(String timestr) {
-        long timesamp = string2Millis(timestr);
+        long timesamp = string2MillisDefaultLocal(timestr);
         return handleDetailTime(timesamp);
     }
 
@@ -133,7 +135,7 @@ public class TimeUtils {
      */
     public static String getTimeFriendlyForUserHome(String timestr) {
         String result = "1分钟前";
-        long timesamp = string2Millis(timestr);
+        long timesamp = utc2LocalLong(timestr);
         switch (getifferenceDays(timesamp)) {
             case 0:
                 result = "今,天";
@@ -199,6 +201,34 @@ public class TimeUtils {
                 break;
         }
         return result;
+    }
+
+    /**
+     * 获取当前 0 时区的时间戳
+     *
+     * @return
+     */
+    public static long getCurrenZeroTime() {
+        //1、取得本地时间：
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        //2、取得时间偏移量：
+        int zoneOffset = cal.get(java.util.Calendar.ZONE_OFFSET);
+        //3、取得夏令时差：
+        int dstOffset = cal.get(java.util.Calendar.DST_OFFSET);
+        //4、从本地时间里扣除这些差量，即可以取得UTC时间：
+        cal.add(java.util.Calendar.MILLISECOND, -(zoneOffset + dstOffset));
+        //之后，您再通过调用cal.get(int x)或cal.getTimeInMillis()方法所取得的时间即是UTC标准时间。
+        return cal.getTimeInMillis();
+    }
+
+    /**
+     * 获取当前 0 时区的时间戳
+     *
+     * @return
+     */
+    public static String getCurrenZeroTimeStr() {
+
+        return millis2String(getCurrenZeroTime());
     }
 
 
@@ -316,8 +346,8 @@ public class TimeUtils {
      * @param time 时间字符串
      * @return 毫秒时间戳
      */
-    public static long string2Millis(String time) {
-        return string2Millis(time, DEFAULT_PATTERN);
+    public static long string2MillisDefaultLocal(String time) {
+        return string2MillisDefaultLocal(time, DEFAULT_PATTERN);
     }
 
     /**
@@ -328,12 +358,75 @@ public class TimeUtils {
      * @param pattern 时间格式
      * @return 毫秒时间戳
      */
-    public static long string2Millis(String time, String pattern) {
+    public static long string2MillisDefaultLocal(String time, String pattern) {
+        return string2Millis(time, pattern, Locale.getDefault());
+    }
+
+    /**
+     * 将时间字符串转为时间戳
+     * <p>time格式为pattern</p>
+     *
+     * @param time    时间字符串
+     * @param pattern 时间格式
+     * @return 毫秒时间戳
+     */
+    public static long string2Millis(String time, String pattern, Locale locale) {
+        return string2MillisDefaultLocal(time, pattern, locale);
+    }
+
+    /**
+     * 将时间字符串转为时间戳
+     * <p>time格式为pattern</p>
+     *
+     * @param time    时间字符串
+     * @param pattern 时间格式
+     * @param locale  时间域
+     * @return 毫秒时间戳
+     */
+    public static long string2MillisDefaultLocal(String time, String pattern, Locale locale) {
         try {
-            return new SimpleDateFormat(pattern, Locale.getDefault()).parse(time).getTime();
+            return new SimpleDateFormat(pattern, locale).parse(time).getTime();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return -1;
+    }
+
+    /**
+     * 将Server传送的UTC时间转换为指定时区的时间
+     */
+    public static String utc2LocalStr(String utcTime) {
+        SimpleDateFormat utcFormater = new SimpleDateFormat(DEFAULT_PATTERN);
+        utcFormater.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date gpsUTCDate = null;
+        try {
+            gpsUTCDate = utcFormater.parse(utcTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return millis2String(System.currentTimeMillis());
+        }
+        SimpleDateFormat localFormater = new SimpleDateFormat(DEFAULT_PATTERN);
+        localFormater.setTimeZone(TimeZone.getDefault());
+        String localTime = localFormater.format(gpsUTCDate.getTime());
+        return localTime;
+    }
+
+    /**
+     * 将Server传送的UTC时间转换为指定时区的时间
+     */
+    public static long utc2LocalLong(String utcTime) {
+        SimpleDateFormat utcFormater = new SimpleDateFormat(DEFAULT_PATTERN);
+        utcFormater.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date gpsUTCDate = null;
+        try {
+            gpsUTCDate = utcFormater.parse(utcTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return System.currentTimeMillis();
+        }
+        SimpleDateFormat localFormater = new SimpleDateFormat(DEFAULT_PATTERN);
+        localFormater.setTimeZone(TimeZone.getDefault());
+        String localTime = localFormater.format(gpsUTCDate.getTime());
+        return string2MillisDefaultLocal(localTime);
     }
 }
