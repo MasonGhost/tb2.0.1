@@ -328,7 +328,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         }
         creatComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
         creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id()));
-        creatComment.setCreated_at(TimeUtils.millis2String(System.currentTimeMillis()));
+        creatComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
         // 处理评论数
         mRootView.getCurrentDynamic().getTool().setFeed_comment_count(mRootView.getCurrentDynamic().getTool().getFeed_comment_count() + 1);

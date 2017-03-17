@@ -61,7 +61,7 @@ public class DynamicDetailActivityTest {
                     DynamicDetailBean dynamicDetailBean=new DynamicDetailBean();
                     dynamicDetailBean.setFeed_mark(feed_mark);
                     dynamicDetailBean.setFeed_content("hello jungle68");
-                    dynamicDetailBean.setCreated_at(TimeUtils.millis2String(System.currentTimeMillis()));
+                    dynamicDetailBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
                     dynamicDetailBean.setFeed_title("jundle68");
                     dynamicDetailBean.setStorages(new ArrayList<ImageBean>());
                     dynamicDetailBean.setStorage_task_ids(new ArrayList<Integer>());

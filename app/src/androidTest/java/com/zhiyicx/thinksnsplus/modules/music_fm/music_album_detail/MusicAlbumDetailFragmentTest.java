@@ -42,7 +42,7 @@ public class MusicAlbumDetailFragmentTest {
                     Intent result = new Intent(targetContext, MusicDetailActivity.class);
                     Bundle bundle = new Bundle();
                     MusicAlbumListBean messageItemBean = new MusicAlbumListBean();
-                    messageItemBean.setCreated_at(TimeUtils.millis2String(System.currentTimeMillis()));
+                    messageItemBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
                     messageItemBean.setCollect_count(5);
                     messageItemBean.setStorage(new MusicAlbumListBean.StorageBean());
                     messageItemBean.setTitle("test");
