@@ -13,6 +13,7 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -69,6 +70,10 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     public static final long ITEM_SPACING = 5L; // 单位dp
     @BindView(R.id.fl_container)
     FrameLayout mFlContainer;
+    @BindView(R.id.ilv_comment)
+    InputLimitView mIlvComment;
+    @BindView(R.id.v_shadow)
+    View mVShadow;
 
 
     @Inject
@@ -103,6 +108,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
     protected boolean setUseSatusbar() {
         return true;
     }
@@ -115,6 +125,31 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        initInputView();
+    }
+
+    private void initInputView() {
+        mVShadow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mIlvComment.getVisibility() == View.VISIBLE) {
+                    mIlvComment.setVisibility(View.GONE);
+                    DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+                }
+                v.setVisibility(View.GONE);
+                if (mOnCommentClickListener != null) {
+                    mOnCommentClickListener.onButtonMenuShow(true);
+                }
+            }
+        });
+
+        mIlvComment.setOnSendClickListener(this);
+    }
+
+    @Override
+    public void onCommentSend(View v, String text) {
+
+
     }
 
     @Override
@@ -352,9 +387,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             if (dynamicBean.getComments().get(position).getReply_to_user_id() != dynamicBean.getUser_id()) {
                 contentHint = getString(R.string.reply, dynamicBean.getComments().get(position).getCommentUser().getName());
             }
-            if (mOnCommentClickListener != null) {
-                mOnCommentClickListener.setCommentHint(contentHint);
-            }
+            mIlvComment.setEtContentHint(contentHint);
         }
 
     }
@@ -371,6 +404,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onSendClick(View v, String text) {
+        mIlvComment.setVisibility(View.GONE);
+        mVShadow.setVisibility(View.GONE);
         mPresenter.sendComment(mCurrentPostion, mReplyToUserId, text);
         com.zhiyicx.imsdk.utils.common.DeviceUtils.hideSoftKeyboard(getContext(), v);
         showBottomView(true);
@@ -430,6 +465,19 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     private void showBottomView(boolean isShow) {
+        if (isShow) {
+            mVShadow.setVisibility(View.GONE);
+            mIlvComment.setVisibility(View.GONE);
+            mIlvComment.clearFocus();
+            mIlvComment.setSendButtonVisiable(false);
+            DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+        } else {
+            mVShadow.setVisibility(View.VISIBLE);
+            mIlvComment.setVisibility(View.VISIBLE);
+            mIlvComment.getFocus();
+            mIlvComment.setSendButtonVisiable(true);
+            DeviceUtils.showSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+        }
         if (mOnCommentClickListener != null) {
             mOnCommentClickListener.onButtonMenuShow(isShow);
         }
@@ -453,7 +501,5 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     public interface OnCommentClickListener {
         void onButtonMenuShow(boolean isShow);
-
-        void setCommentHint(String hintStr);
     }
 }

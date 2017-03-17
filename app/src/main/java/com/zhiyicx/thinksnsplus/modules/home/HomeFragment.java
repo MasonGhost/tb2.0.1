@@ -113,6 +113,11 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
     protected void initView(View rootView) {
         initViewPager();
         longClickSendTextDynamic();
@@ -315,8 +320,4 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         mLlBottomContainer.setVisibility(isShow ? View.VISIBLE : View.GONE);
     }
 
-    @Override
-    public void setCommentHint(String hintStr) {
-
-    }
 }

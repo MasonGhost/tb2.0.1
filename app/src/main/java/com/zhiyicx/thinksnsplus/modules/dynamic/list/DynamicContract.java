@@ -43,7 +43,7 @@ public interface DynamicContract {
 
         void refresh(int position);
 
-        void onSendClick(android.view.View v, String text);
+        void onCommentSend(android.view.View v, String text);
 
     }
 
