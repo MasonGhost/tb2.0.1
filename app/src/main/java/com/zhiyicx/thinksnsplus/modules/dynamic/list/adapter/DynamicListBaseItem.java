@@ -142,73 +142,75 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
      */
     @Override
     public void convert(ViewHolder holder, DynamicBean dynamicBean, DynamicBean lastT, final int position) {
-        String userIconUrl = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getUserInfoBean().getAvatar(), ImageZipConfig.IMAGE_38_ZIP);
-        mImageLoader.loadImage(mContext, GlideImageConfig.builder()
-                .url(userIconUrl)
-                .placeholder(R.drawable.shape_default_image_circle)
-                .transformation(new GlideCircleTransform(mContext))
-                .errorPic(R.drawable.shape_default_image_circle)
-                .imagerView((ImageView) holder.getView(R.id.iv_headpic))
-                .build());
-        holder.setText(R.id.tv_name, dynamicBean.getUserInfoBean().getName());
-        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicBean.getFeed().getCreated_at()));
-        String title = dynamicBean.getFeed().getTitle();
-        if (TextUtils.isEmpty(title)) { // 超过的数据用 ... 表示
-            holder.setVisible(R.id.tv_title, View.GONE);
-        } else {
-            holder.setVisible(R.id.tv_title, View.VISIBLE);
-            if (title.length() > mTitleMaxShowNum) {
-                title = title.substring(0, mTitleMaxShowNum) + "...";
-            }
-            holder.setText(R.id.tv_title, title);
-        }
-        String content = dynamicBean.getFeed().getContent();
-        if (content.length() > mContentMaxShowNum) {
-            content = content.substring(0, mContentMaxShowNum) + "...";
-        }
-        holder.setText(R.id.tv_content, content);
-        DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
-        DynamicToolBean dynamicToolBean = dynamicBean.getTool();
-        if (dynamicToolBean != null) {
-            dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicToolBean.getFeed_digg_count()), dynamicToolBean.getIs_digg_feed() == STATUS_DIGG_FEED_CHECKED, 0);
-            dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicToolBean.getFeed_comment_count()), false, 1);
-            dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicToolBean.getFeed_view_count()), false, 2);
-        }
-
-
-        dynamicListMenuView.setItemOnClick(new DynamicListMenuView.OnItemClickListener() {
-            @Override
-            public void onItemClick(ViewGroup parent, View v, int menuPostion) {
-                if (mOnMenuItemClickLisitener != null) {
-                    mOnMenuItemClickLisitener.onMenuItemClick(v, position, menuPostion);
+        try {
+            String userIconUrl = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getUserInfoBean().getAvatar(), ImageZipConfig.IMAGE_38_ZIP);
+            mImageLoader.loadImage(mContext, GlideImageConfig.builder()
+                    .url(userIconUrl)
+                    .placeholder(R.drawable.shape_default_image_circle)
+                    .transformation(new GlideCircleTransform(mContext))
+                    .errorPic(R.drawable.shape_default_image_circle)
+                    .imagerView((ImageView) holder.getView(R.id.iv_headpic))
+                    .build());
+            holder.setText(R.id.tv_name, dynamicBean.getUserInfoBean().getName());
+            holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicBean.getFeed().getCreated_at()));
+            String title = dynamicBean.getFeed().getTitle();
+            if (TextUtils.isEmpty(title)) { // 超过的数据用 ... 表示
+                holder.setVisible(R.id.tv_title, View.GONE);
+            } else {
+                holder.setVisible(R.id.tv_title, View.VISIBLE);
+                if (title.length() > mTitleMaxShowNum) {
+                    title = title.substring(0, mTitleMaxShowNum) + "...";
                 }
+                holder.setText(R.id.tv_title, title);
             }
-        });
-        setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);
-        setUserInfoClick(holder.getView(R.id.tv_name), dynamicBean);
-        // 设置动态状态
-        if (dynamicBean.getState() == DynamicBean.SEND_ERROR) {
-            holder.setVisible(R.id.fl_tip, View.VISIBLE);
-        } else {
-            holder.setVisible(R.id.fl_tip, View.GONE);
-        }
-        RxView.clicks(holder.getView(R.id.fl_tip))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        if (mOnReSendClickListener != null) {
-                            mOnReSendClickListener.onReSendClick(position);
-                        }
+            String content = dynamicBean.getFeed().getContent();
+            if (content.length() > mContentMaxShowNum) {
+                content = content.substring(0, mContentMaxShowNum) + "...";
+            }
+            holder.setText(R.id.tv_content, content);
+            DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
+            DynamicToolBean dynamicToolBean = dynamicBean.getTool();
+            if (dynamicToolBean != null) {
+                dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicToolBean.getFeed_digg_count()), dynamicToolBean.getIs_digg_feed() == STATUS_DIGG_FEED_CHECKED, 0);
+                dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicToolBean.getFeed_comment_count()), false, 1);
+                dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicToolBean.getFeed_view_count()), false, 2);
+            }
+
+
+            dynamicListMenuView.setItemOnClick(new DynamicListMenuView.OnItemClickListener() {
+                @Override
+                public void onItemClick(ViewGroup parent, View v, int menuPostion) {
+                    if (mOnMenuItemClickLisitener != null) {
+                        mOnMenuItemClickLisitener.onMenuItemClick(v, position, menuPostion);
                     }
-                });
-        DynamicListCommentView comment = holder.getView(R.id.dcv_comment);
-        comment.setData(dynamicBean);
-        comment.setOnCommentClickListener(mOnCommentClickListener);
-        comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
-        comment.setOnCommentStateClickListener(mOnCommentStateClickListener);
-
-
+                }
+            });
+            setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);
+            setUserInfoClick(holder.getView(R.id.tv_name), dynamicBean);
+            // 设置动态状态
+            if (dynamicBean.getState() == DynamicBean.SEND_ERROR) {
+                holder.setVisible(R.id.fl_tip, View.VISIBLE);
+            } else {
+                holder.setVisible(R.id.fl_tip, View.GONE);
+            }
+            RxView.clicks(holder.getView(R.id.fl_tip))
+                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                    .subscribe(new Action1<Void>() {
+                        @Override
+                        public void call(Void aVoid) {
+                            if (mOnReSendClickListener != null) {
+                                mOnReSendClickListener.onReSendClick(position);
+                            }
+                        }
+                    });
+            DynamicListCommentView comment = holder.getView(R.id.dcv_comment);
+            comment.setData(dynamicBean);
+            comment.setOnCommentClickListener(mOnCommentClickListener);
+            comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
+            comment.setOnCommentStateClickListener(mOnCommentStateClickListener);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setUserInfoClick(View view, final DynamicBean dynamicBean) {
