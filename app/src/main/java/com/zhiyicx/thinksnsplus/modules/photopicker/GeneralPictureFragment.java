@@ -24,6 +24,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.gallery.CustomImageModelLoader;
 import com.zhiyicx.thinksnsplus.modules.gallery.CustomImageSizeModelImp;
@@ -126,19 +127,13 @@ public class GeneralPictureFragment extends Fragment {
         // 小图rect属性
         final Rect startBounds = rect.scaledBitmapRect;
         // 大图rect属性
-        final Rect finalBounds = getBitmapRectFromImageView(photoView);
+        final Rect finalBounds = DrawableProvider.getBitmapRectFromImageView(photoView);
         // 没有大图退出动画，直接关闭activity
         if (finalBounds == null || startBounds == null) {
             photoView.animate().alpha(0);
             backgroundAnimator.start();
             return;
         }
-
- /*       if (isDevicePort() != rect.isScreenPortrait) {
-            photoView.animate().alpha(0);
-            backgroundAnimator.start();
-            return;
-        }*/
 
         float startScale;
         if ((float) finalBounds.width() / finalBounds.height()
@@ -198,69 +193,6 @@ public class GeneralPictureFragment extends Fragment {
         animationSet.start();
     }
 
-    /**
-     * 获取imageview的rect属性
-     *
-     * @param imageView
-     * @return
-     */
-    public static Rect getBitmapRectFromImageView(ImageView imageView) {
-        Drawable drawable = imageView.getDrawable();
-        Bitmap bitmap = null;
-        if (drawable instanceof GlideBitmapDrawable) {
-            bitmap = ((GlideBitmapDrawable) drawable).getBitmap();
-        }
-
-        Rect rect = new Rect();
-        boolean isVisible = imageView.getGlobalVisibleRect(rect);
-        if (!isVisible) {
-            int[] location = new int[2];
-            imageView.getLocationOnScreen(location);
-
-            rect.left = location[0];
-            rect.top = location[1];
-            rect.right = rect.left + imageView.getWidth();
-            rect.bottom = rect.top + imageView.getHeight();
-        }
-
-        if (bitmap != null) {
-
-            int bitmapWidth = bitmap.getWidth();
-            int bitmapHeight = bitmap.getHeight();
-
-            int imageViewWidth = imageView.getWidth() - imageView.getPaddingLeft() - imageView
-                    .getPaddingRight();
-            int imageviewHeight = imageView.getHeight() - imageView.getPaddingTop() - imageView
-                    .getPaddingBottom();
-
-            float startScale;
-            if ((float) imageViewWidth / bitmapWidth
-                    > (float) imageviewHeight / bitmapHeight) {
-                // Extend start bounds horizontally
-                startScale = (float) imageviewHeight / bitmapHeight;
-            } else {
-                startScale = (float) imageViewWidth / bitmapWidth;
-            }
-
-            bitmapHeight = (int) (bitmapHeight * startScale);
-            bitmapWidth = (int) (bitmapWidth * startScale);
-
-            int deltaX = (imageViewWidth - bitmapWidth) / 2;
-            int deltaY = (imageviewHeight - bitmapHeight) / 2;
-
-            rect.set(rect.left + deltaX, rect.top + deltaY, rect.right - deltaX,
-                    rect.bottom - deltaY);
-
-            return rect;
-        } else {
-            return null;
-        }
-    }
-
-    public boolean isDevicePort() {
-        return getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_PORTRAIT;
-    }
 
     private void startInAnim(final AnimationRect rect) {
         final Runnable endAction = new Runnable() {
@@ -283,7 +215,7 @@ public class GeneralPictureFragment extends Fragment {
 
                         final Rect startBounds = new Rect(rect.scaledBitmapRect);
                         final Rect finalBounds =
-                                getBitmapRectFromImageView(photoView);
+                                DrawableProvider.getBitmapRectFromImageView(photoView);
 
                         if (finalBounds == null) {
                             photoView.getViewTreeObserver().removeOnPreDrawListener(this);
