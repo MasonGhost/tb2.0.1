@@ -6,6 +6,6 @@
 
     <FrameLayout android:layout_width="match_parent"
                  android:layout_height="match_parent"
-                 android:id="@+id/child"/>
+                 android:id="@+id/fl_picture_container"/>
 
 </FrameLayout>

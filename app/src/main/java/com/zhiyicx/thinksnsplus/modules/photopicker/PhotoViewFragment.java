@@ -257,8 +257,8 @@ public class PhotoViewFragment extends TSFragment {
 
 
     ////////////////////////////////缩放动画//////////////////////////////////
-    private HashMap<Integer, ContainerFragment> fragmentMap
-            = new HashMap<Integer, ContainerFragment>();
+    private HashMap<Integer, PhotoViewPictureContainerFragment> fragmentMap
+            = new HashMap<Integer, PhotoViewPictureContainerFragment>();
     private boolean alreadyAnimateIn = false;
     private ArrayList<AnimationRect> rectList;
 
@@ -276,11 +276,11 @@ public class PhotoViewFragment extends TSFragment {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            ContainerFragment fragment = fragmentMap.get(position);
+            PhotoViewPictureContainerFragment fragment = fragmentMap.get(position);
             if (fragment == null) {
 
                 boolean animateIn = (currentItem == position) && !alreadyAnimateIn;
-                fragment = ContainerFragment
+                fragment = PhotoViewPictureContainerFragment
                         .newInstance(allPaths.get(position), rectList.get(position), animateIn,
                                 currentItem == position);
                 alreadyAnimateIn = true;
@@ -300,7 +300,7 @@ public class PhotoViewFragment extends TSFragment {
         public void setPrimaryItem(ViewGroup container, int position, Object object) {
             super.setPrimaryItem(container, position, object);
             if (object instanceof Fragment) {
-                fragmentMap.put(position, (ContainerFragment) object);
+                fragmentMap.put(position, (PhotoViewPictureContainerFragment) object);
             }
         }
 
@@ -338,7 +338,7 @@ public class PhotoViewFragment extends TSFragment {
 
     public void backPress() {
         LogUtils.i("PhotoVIew_toolbar_height" + mToolbarLayout.getHeight());
-        ContainerFragment fragment = fragmentMap.get(mViewPager.getCurrentItem());
+        PhotoViewPictureContainerFragment fragment = fragmentMap.get(mViewPager.getCurrentItem());
         if (fragment != null && fragment.canAnimateCloseActivity()) {
             backgroundColor = new ColorDrawable(Color.WHITE);
             ObjectAnimator bgAnim = ObjectAnimator.ofInt(backgroundColor, "alpha", 0);

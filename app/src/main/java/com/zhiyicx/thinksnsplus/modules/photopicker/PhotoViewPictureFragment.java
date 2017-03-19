@@ -2,13 +2,9 @@ package com.zhiyicx.thinksnsplus.modules.photopicker;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,68 +12,67 @@ import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 
-import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.gallery.CustomImageModelLoader;
-import com.zhiyicx.thinksnsplus.modules.gallery.CustomImageSizeModelImp;
 
-import java.io.File;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import me.iwf.photopicker.widget.TouchImageView;
 
 /**
- * User: qii
- * Date: 14-4-30
+ * @author LiuChao
+ * @descibe  处理图片放缩动画
+ * @date  2017/3/19 0019
+ * @contact email:450127106@qq.com
  */
-public class GeneralPictureFragment extends Fragment {
+public class PhotoViewPictureFragment extends TSFragment {
 
-    private ImageView photoView;
+    @BindView(R.id.iv_animation)
+    TouchImageView ivAnimation;
+
     private boolean hasAnim = false;
 
     public static final int ANIMATION_DURATION = 300;
 
-    public static GeneralPictureFragment newInstance(String path, AnimationRect rect,
-                                                     boolean animationIn) {
-        GeneralPictureFragment fragment = new GeneralPictureFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("path", path);
-        bundle.putParcelable("rect", rect);
-        bundle.putBoolean("animationIn", animationIn);
-        fragment.setArguments(bundle);
-        return fragment;
+
+    @Override
+    protected int getBodyLayoutId() {
+        return R.layout.gallery_general_layout;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.gallery_general_layout, container, false);
+    protected void initView(View rootView) {
 
-        photoView = (ImageView) view.findViewById(R.id.animation);
 
-        if (true) {
-
-            photoView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    getActivity().onBackPressed();
-                }
-            });
-        }
-
-   /*     LongClickListener longClickListener = ((ContainerFragment) getParentFragment())
+   /*     LongClickListener longClickListener = ((PhotoViewPictureContainerFragment) getParentFragment())
                 .getLongClickListener();
-        photoView.setOnLongClickListener(longClickListener);*/
+        ivAnimation.setOnLongClickListener(longClickListener);*/
+
+    }
+
+    @Override
+    protected boolean showToolbar() {
+        return false;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
+    protected void initData() {
 
         final String path = getArguments().getString("path");
         boolean animateIn = getArguments().getBoolean("animationIn");
         final AnimationRect rect = getArguments().getParcelable("rect");
-
 
         Glide.with(getContext())
                 .load(path)
@@ -89,7 +84,7 @@ public class GeneralPictureFragment extends Fragment {
                 .into(new SimpleTarget<GlideDrawable>() {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                        photoView.setImageDrawable(resource);
+                        ivAnimation.setImageDrawable(resource);
 
                         // 获取到模糊图进行放大动画
                         if (!hasAnim) {
@@ -99,15 +94,23 @@ public class GeneralPictureFragment extends Fragment {
 
                     }
                 });
+    }
 
-
-        return view;
+    public static PhotoViewPictureFragment newInstance(String path, AnimationRect rect,
+                                                     boolean animationIn) {
+        PhotoViewPictureFragment fragment = new PhotoViewPictureFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("path", path);
+        bundle.putParcelable("rect", rect);
+        bundle.putBoolean("animationIn", animationIn);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     public void animationExit(ObjectAnimator backgroundAnimator) {
         // 图片处于放大状态，先让它复原
-       /* if (Math.abs(photoView.getScale() - 1.0f) > 0.1f) {
-            photoView.setScale(1, true);
+       /* if (Math.abs(ivAnimation.getScale() - 1.0f) > 0.1f) {
+            ivAnimation.setScale(1, true);
             return;
         }*/
 
@@ -120,17 +123,17 @@ public class GeneralPictureFragment extends Fragment {
         AnimationRect rect = getArguments().getParcelable("rect");
         // 没有大图退出动画，直接关闭activity
         if (rect == null) {
-            photoView.animate().alpha(0);
+            ivAnimation.animate().alpha(0);
             backgroundAnimator.start();
             return;
         }
         // 小图rect属性
         final Rect startBounds = rect.scaledBitmapRect;
         // 大图rect属性
-        final Rect finalBounds = DrawableProvider.getBitmapRectFromImageView(photoView);
+        final Rect finalBounds = DrawableProvider.getBitmapRectFromImageView(ivAnimation);
         // 没有大图退出动画，直接关闭activity
         if (finalBounds == null || startBounds == null) {
-            photoView.animate().alpha(0);
+            ivAnimation.animate().alpha(0);
             backgroundAnimator.start();
             return;
         }
@@ -149,11 +152,11 @@ public class GeneralPictureFragment extends Fragment {
         int deltaTop = startBounds.top - finalBounds.top;
         int deltaLeft = startBounds.left - finalBounds.left;
         // 设置XY轴心
-        photoView.setPivotY((photoView.getHeight() - finalBounds.height()) / 2);
-        photoView.setPivotX((photoView.getWidth() - finalBounds.width()) / 2);
+        ivAnimation.setPivotY((ivAnimation.getHeight() - finalBounds.height()) / 2);
+        ivAnimation.setPivotX((ivAnimation.getWidth() - finalBounds.width()) / 2);
         // 位移+缩小
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            photoView.animate().translationX(deltaLeft).translationY(deltaTop)
+            ivAnimation.animate().translationX(deltaLeft).translationY(deltaTop)
                     .scaleY(startScaleFinal)
                     .scaleX(startScaleFinal).setDuration(ANIMATION_DURATION)
                     .setInterpolator(new AccelerateDecelerateInterpolator())
@@ -161,7 +164,7 @@ public class GeneralPictureFragment extends Fragment {
                         @Override
                         public void run() {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                                photoView.animate().alpha(0.0f).setDuration(200).withEndAction(
+                                ivAnimation.animate().alpha(0.0f).setDuration(200).withEndAction(
                                         new Runnable() {
                                             @Override
                                             public void run() {
@@ -179,15 +182,15 @@ public class GeneralPictureFragment extends Fragment {
 
         animationSet.playTogether(backgroundAnimator);
 
-        animationSet.playTogether(ObjectAnimator.ofFloat(photoView,
+        animationSet.playTogether(ObjectAnimator.ofFloat(ivAnimation,
                 "clipBottom", 0,
                 AnimationRect.getClipBottom(rect, finalBounds)));
-        animationSet.playTogether(ObjectAnimator.ofFloat(photoView,
+        animationSet.playTogether(ObjectAnimator.ofFloat(ivAnimation,
                 "clipRight", 0,
                 AnimationRect.getClipRight(rect, finalBounds)));
-        animationSet.playTogether(ObjectAnimator.ofFloat(photoView,
+        animationSet.playTogether(ObjectAnimator.ofFloat(ivAnimation,
                 "clipTop", 0, AnimationRect.getClipTop(rect, finalBounds)));
-        animationSet.playTogether(ObjectAnimator.ofFloat(photoView,
+        animationSet.playTogether(ObjectAnimator.ofFloat(ivAnimation,
                 "clipLeft", 0, AnimationRect.getClipLeft(rect, finalBounds)));
 
         animationSet.start();
@@ -202,23 +205,23 @@ public class GeneralPictureFragment extends Fragment {
                 bundle.putBoolean("animationIn", false);
             }
         };
-        photoView.getViewTreeObserver()
+        ivAnimation.getViewTreeObserver()
                 .addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                     @Override
                     public boolean onPreDraw() {
 
                         if (rect == null) {
-                            photoView.getViewTreeObserver().removeOnPreDrawListener(this);
+                            ivAnimation.getViewTreeObserver().removeOnPreDrawListener(this);
                             endAction.run();
                             return true;
                         }
 
                         final Rect startBounds = new Rect(rect.scaledBitmapRect);
                         final Rect finalBounds =
-                                DrawableProvider.getBitmapRectFromImageView(photoView);
+                                DrawableProvider.getBitmapRectFromImageView(ivAnimation);
 
                         if (finalBounds == null) {
-                            photoView.getViewTreeObserver().removeOnPreDrawListener(this);
+                            ivAnimation.getViewTreeObserver().removeOnPreDrawListener(this);
                             endAction.run();
                             return true;
                         }
@@ -232,18 +235,18 @@ public class GeneralPictureFragment extends Fragment {
                         int deltaTop = startBounds.top - finalBounds.top;
                         int deltaLeft = startBounds.left - finalBounds.left;
                         // 位移+缩小
-                        photoView.setPivotY(
-                                (photoView.getHeight() - finalBounds.height()) / 2);
-                        photoView.setPivotX((photoView.getWidth() - finalBounds.width()) / 2);
+                        ivAnimation.setPivotY(
+                                (ivAnimation.getHeight() - finalBounds.height()) / 2);
+                        ivAnimation.setPivotX((ivAnimation.getWidth() - finalBounds.width()) / 2);
 
-                        photoView.setScaleX(1 / startScale);
-                        photoView.setScaleY(1 / startScale);
+                        ivAnimation.setScaleX(1 / startScale);
+                        ivAnimation.setScaleY(1 / startScale);
 
-                        photoView.setTranslationX(deltaLeft);
-                        photoView.setTranslationY(deltaTop);
+                        ivAnimation.setTranslationX(deltaLeft);
+                        ivAnimation.setTranslationY(deltaTop);
 
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            photoView.animate().translationY(0).translationX(0)
+                            ivAnimation.animate().translationY(0).translationX(0)
                                     .scaleY(1)
                                     .scaleX(1).setDuration(ANIMATION_DURATION)
                                     .setInterpolator(
@@ -256,22 +259,28 @@ public class GeneralPictureFragment extends Fragment {
                         animationSet
                                 .setInterpolator(new AccelerateDecelerateInterpolator());
 
-                        animationSet.playTogether(ObjectAnimator.ofFloat(photoView,
+                        animationSet.playTogether(ObjectAnimator.ofFloat(ivAnimation,
                                 "clipBottom",
                                 AnimationRect.getClipBottom(rect, finalBounds), 0));
-                        animationSet.playTogether(ObjectAnimator.ofFloat(photoView,
+                        animationSet.playTogether(ObjectAnimator.ofFloat(ivAnimation,
                                 "clipRight",
                                 AnimationRect.getClipRight(rect, finalBounds), 0));
-                        animationSet.playTogether(ObjectAnimator.ofFloat(photoView,
+                        animationSet.playTogether(ObjectAnimator.ofFloat(ivAnimation,
                                 "clipTop", AnimationRect.getClipTop(rect, finalBounds), 0));
-                        animationSet.playTogether(ObjectAnimator.ofFloat(photoView,
+                        animationSet.playTogether(ObjectAnimator.ofFloat(ivAnimation,
                                 "clipLeft", AnimationRect.getClipLeft(rect, finalBounds), 0));
 
                         animationSet.start();
 
-                        photoView.getViewTreeObserver().removeOnPreDrawListener(this);
+                        ivAnimation.getViewTreeObserver().removeOnPreDrawListener(this);
                         return true;
                     }
                 });
+    }
+
+
+    @OnClick(R.id.iv_animation)
+    public void onClick() {
+        getActivity().onBackPressed();
     }
 }
