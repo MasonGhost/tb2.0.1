@@ -40,7 +40,7 @@ import me.iwf.photopicker.utils.AndroidLifecycleUtils;
  * @contact email:450127106@qq.com
  */
 
-public class ImageDetailFragment extends TSFragment implements View.OnLongClickListener {
+public class GalleryPictureFragment extends TSFragment implements View.OnLongClickListener {
     @BindView(R.id.iv_orin_pager)
     ImageView mIvOriginPager;
     @BindView(R.id.iv_pager)
@@ -55,8 +55,8 @@ public class ImageDetailFragment extends TSFragment implements View.OnLongClickL
     private double mScreenWith;
     private double mScreenHeiht;
 
-    public static ImageDetailFragment newInstance(ImageBean imageUrl) {
-        final ImageDetailFragment f = new ImageDetailFragment();
+    public static GalleryPictureFragment newInstance(ImageBean imageUrl) {
+        final GalleryPictureFragment f = new GalleryPictureFragment();
         final Bundle args = new Bundle();
         args.putParcelable("url", imageUrl);
         f.setArguments(args);

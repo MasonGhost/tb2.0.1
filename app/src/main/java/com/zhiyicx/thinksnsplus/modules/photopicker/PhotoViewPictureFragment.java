@@ -5,12 +5,9 @@ import android.animation.ObjectAnimator;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -22,7 +19,6 @@ import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.thinksnsplus.R;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.iwf.photopicker.widget.TouchImageView;
 
@@ -44,7 +40,7 @@ public class PhotoViewPictureFragment extends TSFragment {
 
     @Override
     protected int getBodyLayoutId() {
-        return R.layout.gallery_general_layout;
+        return R.layout.fragment_photoview_picture;
     }
 
     @Override

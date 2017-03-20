@@ -20,7 +20,7 @@ public class PhotoViewPictureContainerFragment extends TSFragment {
 
     @Override
     protected int getBodyLayoutId() {
-        return R.layout.gallery_container_layout;
+        return R.layout.fragment_photoview_picture_container;
     }
 
     @Override
