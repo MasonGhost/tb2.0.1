@@ -21,6 +21,7 @@
     </style>
 
     <style name="GalleryTheme" parent="@style/TransParentTheme">
+        <item name="android:windowFullscreen">true</item><!---->
 
     </style>
 </resources>

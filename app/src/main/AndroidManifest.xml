@@ -76,12 +76,12 @@
         </activity>
         <activity
             android:name=".modules.photopicker.PhotoViewActivity"
-            android:theme="@style/GalleryTheme"
+            android:theme="@style/TransParentTheme"
             >
         </activity>
         <activity
             android:name=".modules.gallery.GalleryActivity"
-            android:theme="@style/FullScreenTheme">
+            android:theme="@style/GalleryTheme">
         </activity>
         <activity android:name=".modules.music_fm.music_album.MusicListActivity"/>
         <activity android:name=".modules.follow_fans.FollowFansListActivity">

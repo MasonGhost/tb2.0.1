@@ -1,12 +1,18 @@
 package com.zhiyicx.thinksnsplus.modules.gallery;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -26,8 +32,11 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressModelLoad
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.photopicker.AnimationRect;
+import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewPictureFragment;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -55,6 +64,9 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     private double mScreenWith;
     private double mScreenHeiht;
 
+    private boolean hasAnim = false;
+    public static final int ANIMATION_DURATION = 300;
+
     public static GalleryPictureFragment newInstance(ImageBean imageUrl) {
         final GalleryPictureFragment f = new GalleryPictureFragment();
         final Bundle args = new Bundle();
@@ -68,14 +80,21 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         context = getContext();
         mScreenWith = DeviceUtils.getScreenWidth(context);
         mScreenHeiht = DeviceUtils.getScreenHeight(context);
+        // 图片长按，保存
+        mIvPager.setOnLongClickListener(this);
+        mIvOriginPager.setOnLongClickListener(this);
+
+    }
+
+    @Override
+    protected void initData() {
+
+        boolean animateIn = getArguments().getBoolean("animationIn");
+        final AnimationRect rect = getArguments().getParcelable("rect");
         mImageBean = getArguments() != null ? (ImageBean) getArguments().getParcelable("url") : null;
         if (mImageBean.getImgUrl() != null) { // 本地图片不需要查看原图
             mTvOriginPhoto.setVisibility(View.GONE);
         }
-
-        // 图片长按，保存
-        mIvPager.setOnLongClickListener(this);
-        mIvOriginPager.setOnLongClickListener(this);
         // 显示图片
         if (mImageBean == null) {
             mIvPager.setImageResource(R.drawable.shape_default_image);
@@ -83,14 +102,9 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         } else {
             boolean canLoadImage = AndroidLifecycleUtils.canLoadImage(context);
             if (canLoadImage) {
-                loadImage(mImageBean, true);
+                loadImage(mImageBean, rect);
             }
         }
-    }
-
-    @Override
-    protected void initData() {
-
     }
 
     @Override
@@ -120,22 +134,51 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         }
     }
 
+    @Override
+    public boolean onLongClick(View v) {
+        if (mActionPopupWindow == null) {
+            mActionPopupWindow = ActionPopupWindow.builder()
+                    .backgroundAlpha(1.0f)
+                    .bottomStr(context.getString(R.string.cancel))
+                    .item1Str(context.getString(R.string.save_to_photo))
+                    .isOutsideTouch(true)
+                    .isFocus(true)
+                    .with((Activity) context)
+                    .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                        @Override
+                        public void onItem1Clicked() {
+                            mActionPopupWindow.hide();
+                        }
+                    })
+                    .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                        @Override
+                        public void onBottomClicked() {
+                            mActionPopupWindow.hide();
+                        }
+                    })
+                    .build();
+        }
+        mActionPopupWindow.show();
+        return false;
+    }
+
     public void saveImage() {
         //BitmapUtils.saveBitmap(getActivity(), mImageView.getDrawingCache(), StringUtils.getImageNameByUrl(mImageBean));
     }
-//
-//    // 加载较小的缩略图
-//    private void loadSmallImage() {
-//        loadImage(mImageBean.getImgUrl()==null?mImageBean.getStorage_id() + "/"+mImageBean.getPart():mImageBean.getImgUrl(), true);
-//    }
-//
-//    // 加载较大缩略图
-//    private void loadBigImage() {
-//        loadImage(mImageBean + "/50", false);
-//    }
+
+    public static GalleryPictureFragment newInstance(ImageBean imageBean, AnimationRect rect,
+                                                     boolean animationIn) {
+        GalleryPictureFragment fragment = new GalleryPictureFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("url", imageBean);
+        bundle.putParcelable("rect", rect);
+        bundle.putBoolean("animationIn", animationIn);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     // 加载图片不带监听
-    private void loadImage(final ImageBean imageBean, final boolean isCycle) {
+    private void loadImage(final ImageBean imageBean, final AnimationRect rect) {
         LogUtils.i("imageBean = " + imageBean.toString());
 
         if (imageBean.getImgUrl() != null) {
@@ -178,7 +221,19 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     }
                 })
                 .thumbnail(thumbnailBuilder)
-                .into(mIvPager);
+                .into(new SimpleTarget<GlideDrawable>() {
+                    @Override
+                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                        mIvPager.setImageDrawable(resource);
+
+                        // 获取到模糊图进行放大动画
+                        if (!hasAnim) {
+                            hasAnim = true;
+                            startInAnim(rect);
+                        }
+
+                    }
+                });
     }
 
     // 加载原图:
@@ -231,31 +286,175 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                 });
     }
 
-    @Override
-    public boolean onLongClick(View v) {
-        if (mActionPopupWindow == null) {
-            mActionPopupWindow = ActionPopupWindow.builder()
-                    .backgroundAlpha(1.0f)
-                    .bottomStr(context.getString(R.string.cancel))
-                    .item1Str(context.getString(R.string.save_to_photo))
-                    .isOutsideTouch(true)
-                    .isFocus(true)
-                    .with((Activity) context)
-                    .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                        @Override
-                        public void onItem1Clicked() {
-                            mActionPopupWindow.hide();
-                        }
-                    })
-                    .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                        @Override
-                        public void onBottomClicked() {
-                            mActionPopupWindow.hide();
-                        }
-                    })
-                    .build();
-        }
-        mActionPopupWindow.show();
-        return false;
+    public void animationExit(ObjectAnimator backgroundAnimator) {
+        // 图片处于放大状态，先让它复原
+       /* if (Math.abs(ivAnimation.getScale() - 1.0f) > 0.1f) {
+            ivAnimation.setScale(1, true);
+            return;
+        }*/
+
+        getActivity().overridePendingTransition(0, 0);
+        animateClose(backgroundAnimator);
     }
+
+    private void animateClose(ObjectAnimator backgroundAnimator) {
+
+        AnimationRect rect = getArguments().getParcelable("rect");
+        // 没有大图退出动画，直接关闭activity
+        if (rect == null) {
+            mIvPager.animate().alpha(0);
+            backgroundAnimator.start();
+            return;
+        }
+        // 小图rect属性
+        final Rect startBounds = rect.scaledBitmapRect;
+        // 大图rect属性
+        final Rect finalBounds = DrawableProvider.getBitmapRectFromImageView(mIvPager);
+        // 没有大图退出动画，直接关闭activity
+        if (finalBounds == null || startBounds == null) {
+            mIvPager.animate().alpha(0);
+            backgroundAnimator.start();
+            return;
+        }
+
+        float startScale;
+        if ((float) finalBounds.width() / finalBounds.height()
+                > (float) startBounds.width() / startBounds.height()) {
+            // 如果大图的宽度对于高度比小图的宽度对于高度更宽，以高度比来放缩，这样能够避免动画结束，小图边缘出现空白
+            startScale = (float) startBounds.height() / finalBounds.height();
+        } else {
+            startScale = (float) startBounds.width() / finalBounds.width();
+        }
+
+        final float startScaleFinal = startScale;
+
+        int deltaTop = startBounds.top - finalBounds.top;
+        int deltaLeft = startBounds.left - finalBounds.left;
+        // 设置XY轴心
+        mIvPager.setPivotY((mIvPager.getHeight() - finalBounds.height()) / 2);
+        mIvPager.setPivotX((mIvPager.getWidth() - finalBounds.width()) / 2);
+        // 位移+缩小
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            mIvPager.animate().translationX(deltaLeft).translationY(deltaTop)
+                    .scaleY(startScaleFinal)
+                    .scaleX(startScaleFinal).setDuration(ANIMATION_DURATION)
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                                mIvPager.animate().alpha(0.0f).setDuration(200).withEndAction(
+                                        new Runnable() {
+                                            @Override
+                                            public void run() {
+
+                                            }
+                                        });
+                            }
+                        }
+                    });
+        }
+
+        AnimatorSet animationSet = new AnimatorSet();
+        animationSet.setDuration(ANIMATION_DURATION);
+        animationSet.setInterpolator(new AccelerateDecelerateInterpolator());
+
+        animationSet.playTogether(backgroundAnimator);
+
+        animationSet.playTogether(ObjectAnimator.ofFloat(mIvPager,
+                "clipBottom", 0,
+                AnimationRect.getClipBottom(rect, finalBounds)));
+        animationSet.playTogether(ObjectAnimator.ofFloat(mIvPager,
+                "clipRight", 0,
+                AnimationRect.getClipRight(rect, finalBounds)));
+        animationSet.playTogether(ObjectAnimator.ofFloat(mIvPager,
+                "clipTop", 0, AnimationRect.getClipTop(rect, finalBounds)));
+        animationSet.playTogether(ObjectAnimator.ofFloat(mIvPager,
+                "clipLeft", 0, AnimationRect.getClipLeft(rect, finalBounds)));
+
+        animationSet.start();
+    }
+
+
+    private void startInAnim(final AnimationRect rect) {
+        final Runnable endAction = new Runnable() {
+            @Override
+            public void run() {
+                Bundle bundle = getArguments();
+                bundle.putBoolean("animationIn", false);
+            }
+        };
+        mIvPager.getViewTreeObserver()
+                .addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                    @Override
+                    public boolean onPreDraw() {
+
+                        if (rect == null) {
+                            mIvPager.getViewTreeObserver().removeOnPreDrawListener(this);
+                            endAction.run();
+                            return true;
+                        }
+
+                        final Rect startBounds = new Rect(rect.scaledBitmapRect);
+                        final Rect finalBounds =
+                                DrawableProvider.getBitmapRectFromImageView(mIvPager);
+
+                        if (finalBounds == null) {
+                            mIvPager.getViewTreeObserver().removeOnPreDrawListener(this);
+                            endAction.run();
+                            return true;
+                        }
+
+                        float startScale = (float) finalBounds.width() / startBounds.width();
+
+                        if (startScale * startBounds.height() > finalBounds.height()) {
+                            startScale = (float) finalBounds.height() / startBounds.height();
+                        }
+
+                        int deltaTop = startBounds.top - finalBounds.top;
+                        int deltaLeft = startBounds.left - finalBounds.left;
+                        // 位移+缩小
+                        mIvPager.setPivotY(
+                                (mIvPager.getHeight() - finalBounds.height()) / 2);
+                        mIvPager.setPivotX((mIvPager.getWidth() - finalBounds.width()) / 2);
+
+                        mIvPager.setScaleX(1 / startScale);
+                        mIvPager.setScaleY(1 / startScale);
+
+                        mIvPager.setTranslationX(deltaLeft);
+                        mIvPager.setTranslationY(deltaTop);
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            mIvPager.animate().translationY(0).translationX(0)
+                                    .scaleY(1)
+                                    .scaleX(1).setDuration(ANIMATION_DURATION)
+                                    .setInterpolator(
+                                            new AccelerateDecelerateInterpolator())
+                                    .withEndAction(endAction);
+                        }
+
+                        AnimatorSet animationSet = new AnimatorSet();
+                        animationSet.setDuration(ANIMATION_DURATION);
+                        animationSet
+                                .setInterpolator(new AccelerateDecelerateInterpolator());
+
+                        animationSet.playTogether(ObjectAnimator.ofFloat(mIvPager,
+                                "clipBottom",
+                                AnimationRect.getClipBottom(rect, finalBounds), 0));
+                        animationSet.playTogether(ObjectAnimator.ofFloat(mIvPager,
+                                "clipRight",
+                                AnimationRect.getClipRight(rect, finalBounds), 0));
+                        animationSet.playTogether(ObjectAnimator.ofFloat(mIvPager,
+                                "clipTop", AnimationRect.getClipTop(rect, finalBounds), 0));
+                        animationSet.playTogether(ObjectAnimator.ofFloat(mIvPager,
+                                "clipLeft", AnimationRect.getClipLeft(rect, finalBounds), 0));
+
+                        animationSet.start();
+
+                        mIvPager.getViewTreeObserver().removeOnPreDrawListener(this);
+                        return true;
+                    }
+                });
+    }
+
 }
