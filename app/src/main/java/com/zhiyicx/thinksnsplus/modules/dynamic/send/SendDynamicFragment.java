@@ -23,6 +23,7 @@ import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
+import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -317,7 +318,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 View convertView = holder.getConvertView();
                 convertView.getLayoutParams().width = width / ITEM_COLUM;
                 convertView.getLayoutParams().height = width / ITEM_COLUM;
-                ImageView imageView = holder.getView(R.id.iv_dynamic_img);
+                final ImageView imageView = holder.getView(R.id.iv_dynamic_img);
                 if (position == selectedPhotos.size() - 1) {
                     // 最后一项作为占位图
                     imageView.setImageResource(R.mipmap.img_edit_photo_frame);
@@ -331,6 +332,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        DeviceUtils.hideSoftKeyboard(getContext(), v);
                         if (position == selectedPhotos.size() - 1) {
                             if (selectedPhotos.size() - 1 >= MAX_PHOTOS) {
                                 ToastUtils.showToast(getString(R.string.choose_max_photos, MAX_PHOTOS));
