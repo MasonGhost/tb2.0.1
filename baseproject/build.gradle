@@ -74,8 +74,6 @@ dependencies {
     compile project(':ucrop')
     compile project(':pickerview')
     compile project(':PhotoPicker')
-    // 添加chrusbanes的photoview控件，替换现有的TouchImageView
-    compile dataDependences.photoview
     compile 'com.android.support:support-v4:25.0.1'
     testCompile 'org.mockito:mockito-core:1.9.5'
     androidTestCompile 'org.mockito:mockito-core:1.9.5'

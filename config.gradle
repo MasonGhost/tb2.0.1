@@ -28,7 +28,6 @@ ext {
     androidSupportSdkVersion = '25.0.1'
     refreshVersion = '1.0.4'
     clickSpanLinkVersion = '1.5.2'
-    photoviewVersion = 'v1.2.5'
 
     //Testing
     robolectricVersion = '3.1.4'
@@ -95,8 +94,6 @@ ext {
             guava                        : "com.google.guava:guava:${guavaVwesion}",
             refresh                      : "com.github.Aspsine:SwipeToLoadLayout:${refreshVersion}",
             clickSpanLink                : "com.klinkerapps:link_builder:${clickSpanLinkVersion}",
-            photoview                    : "com.github.chrisbanes:PhotoView:${photoviewVersion}"
-
 
     ]
     sdksoupportDependencies = [
