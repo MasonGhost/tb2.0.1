@@ -7,7 +7,6 @@
     android:background="@color/white"
     android:paddingBottom="@dimen/spacing_normal"
     android:paddingLeft="@dimen/spacing_normal"
-    android:paddingRight="@dimen/spacing_mid"
     android:paddingTop="@dimen/spacing_normal">
 
     <com.zhiyicx.baseproject.widget.imageview.FilterImageView
@@ -15,7 +14,7 @@
         app:pressShape="circle"
         android:layout_width="@dimen/headpic_for_list"
         android:layout_height="@dimen/headpic_for_list"
-        android:src="@mipmap/ic_launcher"/>
+        android:src="@drawable/shape_default_image_circle"/>
 
 
     <TextView
@@ -63,10 +62,12 @@
     <ImageView
         android:id="@+id/iv_user_follow"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/spacing_mid"
+        android:paddingLeft="@dimen/spacing_mid"
+        android:paddingRight="@dimen/spacing_mid"
         android:src="@mipmap/ico_me_follow"/>
 
 </RelativeLayout>
