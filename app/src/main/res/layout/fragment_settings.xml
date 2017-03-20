@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/full_button_height"
         app:rightImage="@mipmap/ic_arrow_smallgrey"
+        android:visibility="gone"
         app:leftText="@string/vertify"></com.zhiyicx.baseproject.widget.button.CombinationButton>
     <!--修改密码-->
     <com.zhiyicx.baseproject.widget.button.CombinationButton

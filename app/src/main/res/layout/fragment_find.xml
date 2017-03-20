@@ -33,6 +33,7 @@
             android:layout_height="@dimen/full_button_height"
             app:leftImage="@mipmap/discover_ico_activity"
             app:leftText="@string/active"
+            android:visibility="gone"
             app:rightImage="@mipmap/ic_arrow_smallgrey"
             app:showLine="false"/>
 
@@ -71,6 +72,7 @@
             android:layout_height="@dimen/full_button_height"
             app:leftImage="@mipmap/discover_ico_nearby"
             app:leftText="@string/near_person"
+            android:visibility="gone"
             app:rightImage="@mipmap/ic_arrow_smallgrey"
             app:showLine="false"/>
 

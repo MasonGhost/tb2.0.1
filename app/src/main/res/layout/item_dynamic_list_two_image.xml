@@ -1,22 +1,21 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
-    android:paddingBottom="@dimen/spacing_mid"
-    android:paddingTop="@dimen/spacing_mid"
     android:descendantFocusability="blocksDescendants"
+    android:paddingTop="@dimen/spacing_mid"
     tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
 
     <com.zhiyicx.baseproject.widget.imageview.FilterImageView
         android:id="@+id/iv_headpic"
         android:layout_width="@dimen/headpic_for_list"
-        app:pressShape="circle"
         android:layout_height="@dimen/headpic_for_list"
         android:layout_marginLeft="@dimen/spacing_normal"
-        android:src="@drawable/shape_default_image_circle"/>
+        android:src="@drawable/shape_default_image_circle"
+        app:pressShape="circle"/>
 
     <TextView
         android:id="@+id/tv_name"
@@ -96,10 +95,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             />
+
         <View
             android:layout_width="@dimen/dynamice_spacing_small"
             android:layout_height="match_parent"
             />
+
         <com.zhiyicx.baseproject.widget.imageview.SquareImageView
             android:id="@+id/siv_1"
             style="@style/style_dynamic_list_image_horizen"
@@ -127,20 +128,23 @@
         android:paddingRight="@dimen/spacing_tiny">
 
     </com.zhiyicx.baseproject.widget.DynamicListMenuView>
+
     <include
         android:id="@+id/fl_tip"
         layout="@layout/view_hint_info2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/iv_headpic"
         android:layout_below="@id/dlmv_menu"
+        android:layout_toRightOf="@+id/iv_headpic"
         />
+
     <com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView
         android:id="@+id/dcv_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/fl_tip"
         android:layout_marginLeft="@dimen/dynamic_list_comment_marginright"
-        android:layout_marginRight="@dimen/spacing_normal">
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:paddingBottom="@dimen/spacing_mid">
     </com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView>
 </RelativeLayout>

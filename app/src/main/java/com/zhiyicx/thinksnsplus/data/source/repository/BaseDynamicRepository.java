@@ -322,9 +322,14 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                         @Override
                                         public BaseJson<List<FollowFansBean>> call(BaseJson<List<FollowFansBean>> listBaseJson
                                                 , BaseJson<List<UserInfoBean>> listBaseJson2) {
+
                                             List<UserInfoBean> userInfoList = listBaseJson2.getData();
                                             // 没有获取到用户信息，但依然显示列表信息，有这个必要吗
                                             if (listBaseJson2.isStatus() && userInfoList != null && !userInfoList.isEmpty()) {
+                                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                                for (UserInfoBean userInfoBean : listBaseJson2.getData()) {
+                                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                                }
                                                 List<FollowFansBean> followFansBeanList = listBaseJson.getData();
                                                 if (listBaseJson.isStatus() && followFansBeanList != null && !followFansBeanList.isEmpty()) {
                                                     // 将用户信息封装到状态列表中
@@ -334,7 +339,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                                         // 设置点赞列表的maxID到FollowFansBean中,上拉加载
                                                         followFansBean.setId(dynamicDigListBeanList.get(i).getFeed_digg_id());
                                                         // 设置目标用户信息
-                                                        followFansBean.setTargetUserInfo(userInfoList.get(i));
+                                                        followFansBean.setTargetUserInfo(userInfoBeanSparseArray.get((int) followFansBean.getTargetUserId()));
                                                     }
                                                 }
                                             }

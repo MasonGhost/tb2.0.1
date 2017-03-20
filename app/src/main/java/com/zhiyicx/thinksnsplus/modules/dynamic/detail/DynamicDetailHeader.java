@@ -108,9 +108,9 @@ public class DynamicDetailHeader {
         List<ImageBean> imageBeanList = null;
         if (userInfoList != null && !userInfoList.isEmpty()) {
             imageBeanList = new ArrayList<>();
-            for (FollowFansBean followFansBean : userInfoList) {
+            for (int i = userInfoList.size() - 1; i >= 0; i--) {
                 ImageBean imageBean = new ImageBean();
-                imageBean.setStorage_id(TextUtils.isEmpty(followFansBean.getTargetUserInfo().getAvatar()) ? 0 : Integer.parseInt(followFansBean.getTargetUserInfo().getAvatar()));
+                imageBean.setStorage_id(TextUtils.isEmpty(userInfoList.get(i).getTargetUserInfo().getAvatar()) ? 0 : Integer.parseInt(userInfoList.get(i).getTargetUserInfo().getAvatar()));
                 imageBeanList.add(imageBean);
             }
         }

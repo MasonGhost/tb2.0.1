@@ -23,4 +23,9 @@ public class SendDynamicActivity extends TSActivity<SendDynamicPresenter, SendDy
                 .sendDynamicPresenterModule(new SendDynamicPresenterModule(mContanierFragment))
                 .build().inject(this);
     }
+
+    @Override
+    public void onBackPressed() {
+        mContanierFragment.onBackPressed();
+    }
 }

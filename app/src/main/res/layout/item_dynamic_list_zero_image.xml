@@ -5,9 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:paddingBottom="@dimen/spacing_mid"
-    android:paddingTop="@dimen/spacing_mid"
     android:descendantFocusability="blocksDescendants"
+    android:paddingTop="@dimen/spacing_mid"
     tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
 
     <com.zhiyicx.baseproject.widget.imageview.FilterImageView
@@ -80,8 +79,8 @@
         android:id="@+id/v_line"
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_line"
-        android:layout_marginTop="@dimen/spacing_normal"
         android:layout_below="@+id/tv_content"
+        android:layout_marginTop="@dimen/spacing_normal"
         android:background="@color/general_for_line_light"/>
 
     <com.zhiyicx.baseproject.widget.DynamicListMenuView
@@ -89,8 +88,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/v_line"
-        android:layout_marginTop="@dimen/divider_line"
         android:layout_marginRight="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/divider_line"
         android:layout_toRightOf="@+id/iv_headpic"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingRight="@dimen/spacing_tiny">
@@ -112,6 +111,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/fl_tip"
         android:layout_marginLeft="@dimen/dynamic_list_comment_marginright"
-        android:layout_marginRight="@dimen/spacing_normal">
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:paddingBottom="@dimen/spacing_mid">
     </com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView>
 </RelativeLayout>

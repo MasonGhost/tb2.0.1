@@ -59,6 +59,7 @@ public interface ChatContract {
 
         /**
          * 更新对话信息
+         *
          * @param conversation
          */
         void updateConversation(Conversation conversation);
@@ -144,8 +145,10 @@ public interface ChatContract {
 
         /**
          * 创建对话
+         *
          * @param user_id 目标对象的 user_id
+         * @param text  文本消息，单独创建的时候，传空
          */
-        void createChat(int user_id);
+        void createChat(int user_id,String text);
     }
 }

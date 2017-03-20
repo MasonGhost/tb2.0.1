@@ -5,9 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:paddingBottom="@dimen/spacing_mid"
-    android:paddingTop="@dimen/spacing_mid"
     android:descendantFocusability="blocksDescendants"
+    android:paddingTop="@dimen/spacing_mid"
     tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
 
     <com.zhiyicx.baseproject.widget.imageview.FilterImageView
@@ -234,7 +233,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/fl_tip"
         android:layout_marginLeft="@dimen/dynamic_list_comment_marginright"
-        android:layout_marginRight="@dimen/spacing_normal">
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:paddingBottom="@dimen/spacing_mid">
     </com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView>
 
 </RelativeLayout>

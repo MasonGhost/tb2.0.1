@@ -87,9 +87,6 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
      */
     @Override
     public void sendTextMessage(String text, int cid) {
-        if (TextUtils.isEmpty(text)) {
-            return;
-        }
         Message message = ChatClient.getInstance(mContext).sendTextMsg(text, cid, "");// usid 暂不使用
         message.setCreate_time(System.currentTimeMillis());
         message.setUid(AppApplication.getmCurrentLoginAuth() != null ? AppApplication.getmCurrentLoginAuth().getUser_id() : 0);
@@ -110,7 +107,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     }
 
     @Override
-    public void createChat(int user_id) {
+    public void createChat(int user_id, final String text) {
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
@@ -124,7 +121,10 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
                         data.setUsids(uids);
                         data.setPair(pair);
                         mRepository.insertOrUpdateConversation(data);
-
+                        mRootView.updateConversation(data);
+                        if (!TextUtils.isEmpty(text)) {
+                            sendTextMessage(text, data.getCid());
+                        }
                     }
 
                     @Override

@@ -17,7 +17,6 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -204,6 +203,11 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                         }
                     });
             DynamicListCommentView comment = holder.getView(R.id.dcv_comment);
+            if (dynamicBean.getComments() == null || dynamicBean.getComments().size() == 0) {
+                comment.setVisibility(View.GONE);
+            } else {
+                comment.setVisibility(View.VISIBLE);
+            }
             comment.setData(dynamicBean);
             comment.setOnCommentClickListener(mOnCommentClickListener);
             comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
@@ -236,16 +240,13 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
      * @param part        this part percent of imageContainer
      */
     protected void initImageView(final ViewHolder holder, ImageView view, final DynamicBean dynamicBean, final int positon, int part) {
-        int propPart = 100;
+        int propPart = getProportion(view, dynamicBean, part);
         String url;
         if (dynamicBean.getFeed().getStorages() != null && dynamicBean.getFeed().getStorages().size() > 0) {
-            propPart = getProportion(view, dynamicBean, part);
             url = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getFeed().getStorages().get(positon).getStorage_id(), propPart);
         } else {
             url = dynamicBean.getFeed().getLocalPhotos().get(positon);
         }
-        System.out.println("url = " + url);
-
         mImageLoader.loadImage(mContext, GlideImageConfig.builder()
                 .url(url)
                 .imagerView(view)
@@ -285,12 +286,12 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
         if (dynamicBean.getFeed().getStorages() == null || dynamicBean.getFeed().getStorages().size() == 0) {// 本地图片
             BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(dynamicBean.getFeed().getLocalPhotos().get(0));
             with = option.outWidth > currentWith ? currentWith : option.outWidth;
+            proportion = (int) ((with /option.outWidth) * 100);
         } else {
             with = (int) dynamicBean.getFeed().getStorages().get(0).getWidth() > currentWith ? currentWith : (int) dynamicBean.getFeed().getStorages().get(0).getWidth();
+            proportion = (int) ((with / dynamicBean.getFeed().getStorages().get(0).getWidth()) * 100);
         }
         height = with;
-        proportion = (int) ((with / dynamicBean.getFeed().getStorages().get(0).getWidth()) * 100);
-        LogUtils.i("------------->" + proportion);
         return proportion;
     }
 

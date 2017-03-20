@@ -19,10 +19,10 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
+import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -60,6 +60,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     private List<ImageBean> selectedPhotos;
     private CommonAdapter<ImageBean> mCommonAdapter;
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
+    private ActionPopupWindow mCanclePopupWindow;// 取消提示选择弹框
     private PhotoSelectorImpl mPhotoSelector;
     private boolean hasContent, hasPics;// 状态值用来判断发送状态
     private int dynamicType;// 需要发送的动态类型
@@ -93,6 +94,29 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     @Override
     protected String setRightTitle() {
         return getString(R.string.publish);
+    }
+
+    @Override
+    protected void setLeftClick() {
+        handleBack();
+    }
+
+    @Override
+    public void onBackPressed() {
+        handleBack();
+    }
+
+    /**
+     * 处理取消发布动态
+     */
+    private void handleBack() {
+        if (!TextUtils.isEmpty(mEtDynamicContent.getInputContent()) || !TextUtils.isEmpty(mEtDynamicTitle.getInputContent()) || selectedPhotos != null) {
+            DeviceUtils.hideSoftKeyboard(getContext(), mEtDynamicContent);
+            initCanclePopupWindow();
+            mCanclePopupWindow.show();
+        } else {
+            super.setLeftClick();
+        }
     }
 
     @Override
@@ -134,11 +158,13 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     public void onItem1Clicked() {
                         ArrayList<String> photos = new ArrayList<String>();
                         // 最后一张是占位图
-                        for (int i = 0; i < selectedPhotos.size() - 1; i++) {
+                        for (int i = 0; i < selectedPhotos.size(); i++) {
                             ImageBean imageBean = selectedPhotos.get(i);
-                            photos.add(imageBean.getImgUrl());
+                            if (!TextUtils.isEmpty(imageBean.getImgUrl())) {
+                                photos.add(imageBean.getImgUrl());
+                            }
                         }
-                        mPhotoSelector.getPhotoListFromSelector(9, photos);
+                        mPhotoSelector.getPhotoListFromSelector(MAX_PHOTOS, photos);
                         mPhotoPopupWindow.hide();
                     }
                 })
@@ -147,9 +173,11 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     public void onItem2Clicked() {
                         ArrayList<String> photos = new ArrayList<String>();
                         // 最后一张是占位图
-                        for (int i = 0; i < selectedPhotos.size() - 1; i++) {
+                        for (int i = 0; i < selectedPhotos.size(); i++) {
                             ImageBean imageBean = selectedPhotos.get(i);
-                            photos.add(imageBean.getImgUrl());
+                            if (!TextUtils.isEmpty(imageBean.getImgUrl())) {
+                                photos.add(imageBean.getImgUrl());
+                            }
                         }
                         // 选择相机，拍照
                         mPhotoSelector.getPhotoFromCamera(photos);
@@ -160,6 +188,36 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     @Override
                     public void onBottomClicked() {
                         mPhotoPopupWindow.hide();
+                    }
+                }).build();
+    }
+
+    /**
+     * 初始化取消选择弹框
+     */
+    private void initCanclePopupWindow() {
+        if (mCanclePopupWindow != null) {
+            return;
+        }
+        mCanclePopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.dynamic_send_cancel_hint))
+                .item2Str(getString(R.string.sure))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(0.8f)
+                .with(getActivity())
+                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
+                    @Override
+                    public void onItem2Clicked() {
+                        mCanclePopupWindow.hide();
+                        getActivity().finish();
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mCanclePopupWindow.hide();
                     }
                 }).build();
     }
@@ -179,12 +237,18 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     public void getPhotoSuccess(List<ImageBean> photoList) {
         selectedPhotos.clear();
         selectedPhotos.addAll(photoList);
-        // 占位缺省图
-        ImageBean camera = new ImageBean();
-        selectedPhotos.add(camera);
+        addPlaceHolder();
         setSendDynamicState();// 每次刷新图片后都要判断发布按钮状态
         mCommonAdapter.notifyDataSetChanged();
         setSendDynamicState();
+    }
+
+    private void addPlaceHolder() {
+        if (selectedPhotos.size() < MAX_PHOTOS) {
+            // 占位缺省图
+            ImageBean camera = new ImageBean();
+            selectedPhotos.add(camera);
+        }
     }
 
     @Override
@@ -277,8 +341,10 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         if (selectedPhotos != null && !selectedPhotos.isEmpty()) {
             List<String> photos = new ArrayList<>();
             // 最后一张占位图，扔掉
-            for (int i = 0; i < selectedPhotos.size() - 1; i++) {
-                photos.add(selectedPhotos.get(i).getImgUrl());
+            for (int i = 0; i < selectedPhotos.size(); i++) {
+                if (!TextUtils.isEmpty(selectedPhotos.get(i).getImgUrl())) {
+                    photos.add(selectedPhotos.get(i).getImgUrl());
+                }
             }
             dynamicDetailBean.setLocalPhotos(photos);
         }
@@ -303,13 +369,11 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         // 设置recyclerview的item之间的空白
         int witdh = ConvertUtils.dp2px(getContext(), 5);
         mRvPhotoList.addItemDecoration(new GridDecoration(witdh, witdh));
-
         // 占位缺省图
-        ImageBean camera = new ImageBean();
-        selectedPhotos.add(camera);
+        addPlaceHolder();
         mCommonAdapter = new CommonAdapter<ImageBean>(getContext(), R.layout.item_send_dynamic_photo_list, selectedPhotos) {
             @Override
-            protected void convert(ViewHolder holder, ImageBean imageBean, final int position) {
+            protected void convert(ViewHolder holder, final ImageBean imageBean, final int position) {
                 // 固定每个item的宽高
                 // 屏幕宽高减去左右margin以及item之间的空隙
                 int width = UIUtils.getWindowWidth(getContext()) - getResources().getDimensionPixelSize(R.dimen.spacing_large) * 2
@@ -317,8 +381,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 View convertView = holder.getConvertView();
                 convertView.getLayoutParams().width = width / ITEM_COLUM;
                 convertView.getLayoutParams().height = width / ITEM_COLUM;
-                ImageView imageView = holder.getView(R.id.iv_dynamic_img);
-                if (position == selectedPhotos.size() - 1) {
+                final ImageView imageView = holder.getView(R.id.iv_dynamic_img);
+                if (TextUtils.isEmpty(imageBean.getImgUrl())) {
                     // 最后一项作为占位图
                     imageView.setImageResource(R.mipmap.img_edit_photo_frame);
                 } else {
@@ -331,20 +395,19 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (position == selectedPhotos.size() - 1) {
-                            if (selectedPhotos.size() - 1 >= MAX_PHOTOS) {
-                                ToastUtils.showToast(getString(R.string.choose_max_photos, MAX_PHOTOS));
-                                return;
-                            }
+                        DeviceUtils.hideSoftKeyboard(getContext(), v);
+                        if (TextUtils.isEmpty(imageBean.getImgUrl())) {
                             initPhotoPopupWindow();
                             mPhotoPopupWindow.show();
                         } else {
                             // 预览图片
                             ArrayList<String> photos = new ArrayList<String>();
                             // 最后一张是占位图
-                            for (int i = 0; i < selectedPhotos.size() - 1; i++) {
+                            for (int i = 0; i < selectedPhotos.size(); i++) {
                                 ImageBean imageBean = selectedPhotos.get(i);
-                                photos.add(imageBean.getImgUrl());
+                                if (!TextUtils.isEmpty(imageBean.getImgUrl())) {
+                                    photos.add(imageBean.getImgUrl());
+                                }
                             }
                             Bundle bundle = new Bundle();
                             bundle.putInt(PhotoAlbumDetailsFragment.EXTRA_VIEW_INDEX, position);

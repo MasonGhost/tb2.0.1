@@ -8,7 +8,6 @@ import android.widget.LinearLayout;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForOneImage;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 /**
@@ -61,16 +60,19 @@ public class PersonalCenterDynamicListItemForOneImage extends PersonalCenterDyna
         if (dynamicBean.getFeed().getStorages() == null || dynamicBean.getFeed().getStorages().size() == 0) {// 本地图片
             BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(dynamicBean.getFeed().getLocalPhotos().get(0));
             with = option.outWidth > currentWith ? currentWith : option.outWidth;
-            height = option.outHeight > mImageMaxHeight ? mImageMaxHeight : option.outHeight;
+            height = with * option.outHeight / option.outWidth;
+            height = height > mImageMaxHeight ? mImageMaxHeight : height;
+            proportion = ((with / option.outWidth) * 100);
         } else {
             with = (int) dynamicBean.getFeed().getStorages().get(0).getWidth() > currentWith ? currentWith : (int) dynamicBean.getFeed().getStorages().get(0).getWidth();
-            height = (int) dynamicBean.getFeed().getStorages().get(0).getHeight() > mImageMaxHeight ? mImageMaxHeight : (int) dynamicBean.getFeed().getStorages().get(0).getHeight();
+            height = (int) (with * dynamicBean.getFeed().getStorages().get(0).getHeight() / dynamicBean.getFeed().getStorages().get(0).getWidth());
+            height = height > mImageMaxHeight ? mImageMaxHeight : height;
+            proportion = (int) ((with / dynamicBean.getFeed().getStorages().get(0).getWidth()) * 100);
         }
         if ((dynamicBean.getFeed().getStorages() == null || dynamicBean.getFeed().getStorages().size() == IMAGE_COUNTS)
                 && (dynamicBean.getFeed().getLocalPhotos() == null || dynamicBean.getFeed().getLocalPhotos().size() == IMAGE_COUNTS)) {
             view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
         }
-        proportion = (int) ((with / dynamicBean.getFeed().getStorages().get(0).getWidth()) * 100);
         return proportion;
     }
 

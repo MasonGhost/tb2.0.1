@@ -99,6 +99,11 @@ public abstract class BaseSubscribe<T> extends Subscriber<BaseJson<T>> {
         handleStatus(tBaseJson);
     }
 
+    /**
+     * 处理数据，按照 resutful api 要求，204 不反回数据
+     *
+     * @param tBaseJson
+     */
     private void handleStatus(BaseJson<T> tBaseJson) {
         if (tBaseJson != null) {
             boolean status = tBaseJson.isStatus();
@@ -128,6 +133,8 @@ public abstract class BaseSubscribe<T> extends Subscriber<BaseJson<T>> {
                 }
                 onFailure(tBaseJson.getMessage());
             }
+        } else { // 204 等没有结构体的数据
+            onSuccess(null);
         }
     }
 
