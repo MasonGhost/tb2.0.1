@@ -63,6 +63,7 @@ public class PhotoViewPictureContainerFragment extends TSFragment {
         // PhotoViewActivity activity = (PhotoViewActivity) getActivity();
         PhotoViewFragment photoViewFragment = (PhotoViewFragment) getParentFragment();
         AnimationRect rect = getArguments().getParcelable("rect");
+        // 进入图片浏览器的两张
         boolean firstOpenPage = getArguments().getBoolean("firstOpenPage");
         if (firstOpenPage) {
             if (animateIn) {
