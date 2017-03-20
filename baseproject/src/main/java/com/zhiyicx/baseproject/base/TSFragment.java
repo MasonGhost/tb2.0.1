@@ -3,7 +3,6 @@ package com.zhiyicx.baseproject.base;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -250,17 +249,6 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     /**
-     * 添加返回按键的监听方法，在它所依附的activity中调用
-     *
-     * @param keyCode
-     * @param event
-     * @return false 表示down事件未处理，会继续传递，交给up处理，知道结束或true停止
-     */
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return false;
-    }
-
-    /**
      * 设置右侧文字
      *
      * @param rightText 设置右侧文字 ，文字内容
@@ -297,7 +285,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     public void setStatusPlaceholderViewBackgroundColor(int resId) {
-        if(mStatusPlaceholderView!=null) {
+        if (mStatusPlaceholderView != null) {
             mStatusPlaceholderView.setBackgroundColor(resId);
         }
     }

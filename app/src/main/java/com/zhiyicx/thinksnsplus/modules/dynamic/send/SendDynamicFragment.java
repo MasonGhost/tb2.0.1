@@ -61,6 +61,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     private List<ImageBean> selectedPhotos;
     private CommonAdapter<ImageBean> mCommonAdapter;
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
+    private ActionPopupWindow mCanclePopupWindow;// 取消提示选择弹框
     private PhotoSelectorImpl mPhotoSelector;
     private boolean hasContent, hasPics;// 状态值用来判断发送状态
     private int dynamicType;// 需要发送的动态类型
@@ -94,6 +95,29 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     @Override
     protected String setRightTitle() {
         return getString(R.string.publish);
+    }
+
+    @Override
+    protected void setLeftClick() {
+        handleBack();
+    }
+
+    @Override
+    public void onBackPressed() {
+        handleBack();
+    }
+
+    /**
+     * 处理取消发布动态
+     */
+    private void handleBack() {
+        if (!TextUtils.isEmpty(mEtDynamicContent.getInputContent()) || !TextUtils.isEmpty(mEtDynamicTitle.getInputContent()) || selectedPhotos != null) {
+            DeviceUtils.hideSoftKeyboard(getContext(),mEtDynamicContent);
+            initCanclePopupWindow();
+            mCanclePopupWindow.show();
+        } else {
+            super.setLeftClick();
+        }
     }
 
     @Override
@@ -161,6 +185,36 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     @Override
                     public void onBottomClicked() {
                         mPhotoPopupWindow.hide();
+                    }
+                }).build();
+    }
+
+    /**
+     * 初始化取消选择弹框
+     */
+    private void initCanclePopupWindow() {
+        if (mCanclePopupWindow != null) {
+            return;
+        }
+        mCanclePopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.dynamic_send_cancel_hint))
+                .item2Str(getString(R.string.sure))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(0.8f)
+                .with(getActivity())
+                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
+                    @Override
+                    public void onItem2Clicked() {
+                        mCanclePopupWindow.hide();
+                        getActivity().finish();
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mCanclePopupWindow.hide();
                     }
                 }).build();
     }
