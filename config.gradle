@@ -28,6 +28,7 @@ ext {
     androidSupportSdkVersion = '25.0.1'
     refreshVersion = '1.0.4'
     clickSpanLinkVersion = '1.5.2'
+    photoviewVersion = 'v1.2.5'
 
     //Testing
     robolectricVersion = '3.1.4'
@@ -93,7 +94,8 @@ ext {
             //robolectric与dagger中间接依赖的冲突，故锁定版本
             guava                        : "com.google.guava:guava:${guavaVwesion}",
             refresh                      : "com.github.Aspsine:SwipeToLoadLayout:${refreshVersion}",
-            clickSpanLink                : "com.klinkerapps:link_builder:${clickSpanLinkVersion}"
+            clickSpanLink                : "com.klinkerapps:link_builder:${clickSpanLinkVersion}",
+            photoview                    : "com.github.chrisbanes:PhotoView:${photoviewVersion}"
 
 
     ]
