@@ -10,6 +10,7 @@ import com.zhiyicx.imsdk.db.dao.ConversationDao;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
+import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
@@ -25,6 +26,9 @@ import java.util.List;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository.MAX_RETRY_COUNTS;
+import static com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository.RETRY_DELAY_TIME;
 
 /**
  * @Describe
@@ -60,6 +64,7 @@ public class ChatRepository implements ChatContract.Repository {
     public Observable<BaseJson<Conversation>> createConveration(int type, String name, String pwd, String uids) {
         return mChatInfoClient.createConversaiton(type, name, pwd, uids)
                 .subscribeOn(Schedulers.io())
+                .retryWhen(new RetryWithDelay(MAX_RETRY_COUNTS, RETRY_DELAY_TIME))
                 .observeOn(AndroidSchedulers.mainThread());
     }
 

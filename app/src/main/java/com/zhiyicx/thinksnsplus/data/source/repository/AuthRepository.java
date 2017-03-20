@@ -37,7 +37,7 @@ import rx.schedulers.Schedulers;
  */
 
 public class AuthRepository implements IAuthRepository {
-    public static final int MAX_RETRY_COUNTS = 1;//重试次数
+    public static final int MAX_RETRY_COUNTS = 2;//重试次数
     public static final int RETRY_DELAY_TIME = 1;// 重试间隔时间,单位 s
     private UserInfoClient mUserInfoClient;
     private Context mContext;
