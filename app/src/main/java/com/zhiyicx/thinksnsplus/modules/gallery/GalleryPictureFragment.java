@@ -21,35 +21,39 @@ import android.widget.TextView;
 import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.Target;
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressListener;
 import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressModelLoader;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.baseproject.widget.photoview.PhotoViewAttacher;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.photopicker.AnimationRect;
-import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewPictureFragment;
+
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 import me.iwf.photopicker.utils.AndroidLifecycleUtils;
+import rx.functions.Action1;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+
 
 /**
  * @author LiuChao
  * @describe
- * @date 2017/2/8
+ * @date 2017/3/20
  * @contact email:450127106@qq.com
  */
 
-public class GalleryPictureFragment extends TSFragment implements View.OnLongClickListener {
+public class GalleryPictureFragment extends TSFragment implements View.OnLongClickListener, PhotoViewAttacher.OnPhotoTapListener {
     @BindView(R.id.iv_orin_pager)
     ImageView mIvOriginPager;
     @BindView(R.id.iv_pager)
@@ -58,6 +62,9 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     ProgressBar mPbProgress;
     @BindView(R.id.tv_origin_photo)
     TextView mTvOriginPhoto;
+
+    private PhotoViewAttacher mPhotoViewAttacherOrigin;
+    private PhotoViewAttacher mPhotoViewAttacherNormal;
     private ImageBean mImageBean;
     private ActionPopupWindow mActionPopupWindow;
     private Context context;
@@ -80,10 +87,22 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         context = getContext();
         mScreenWith = DeviceUtils.getScreenWidth(context);
         mScreenHeiht = DeviceUtils.getScreenHeight(context);
+        mPhotoViewAttacherNormal = new PhotoViewAttacher(mIvPager);
+        mPhotoViewAttacherOrigin = new PhotoViewAttacher(mIvOriginPager);
+        mPhotoViewAttacherNormal.setOnPhotoTapListener(this);
+        mPhotoViewAttacherOrigin.setOnPhotoTapListener(this);
         // 图片长按，保存
         mIvPager.setOnLongClickListener(this);
         mIvOriginPager.setOnLongClickListener(this);
-
+        RxView.clicks(mTvOriginPhoto)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        loadOriginImage(String.format(ApiConfig.IMAGE_PATH, mImageBean.getStorage_id(), 100));
+                    }
+                });
     }
 
     @Override
@@ -117,23 +136,6 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         return false;
     }
 
-
-    @OnClick({R.id.iv_pager, R.id.tv_origin_photo})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.iv_pager:
-                if (context instanceof Activity) {
-                    if (!((Activity) context).isFinishing()) {
-                        ((Activity) context).onBackPressed();
-                    }
-                }
-                break;
-            case R.id.tv_origin_photo:
-                loadOriginImage(String.format(ApiConfig.IMAGE_PATH, mImageBean.getStorage_id(), 100));
-                break;
-        }
-    }
-
     @Override
     public boolean onLongClick(View v) {
         if (mActionPopupWindow == null) {
@@ -162,6 +164,15 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         return false;
     }
 
+    @Override
+    public void onPhotoTap(View view, float x, float y) {
+        if (context instanceof Activity) {
+            if (!((Activity) context).isFinishing()) {
+                ((Activity) context).onBackPressed();
+            }
+        }
+    }
+
     public void saveImage() {
         //BitmapUtils.saveBitmap(getActivity(), mImageView.getDrawingCache(), StringUtils.getImageNameByUrl(mImageBean));
     }
@@ -188,6 +199,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     .error(R.drawable.shape_default_image)
                     .into(mIvPager);
             mPbProgress.setVisibility(View.GONE);
+            mPhotoViewAttacherNormal.update();
             return;
         }
 //        int with = (int) (imageBean.getWidth() > mScreenWith ? mScreenWith : FrameLayout.LayoutParams.MATCH_PARENT);
@@ -206,32 +218,18 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                 .load(new CustomImageSizeModelImp(imageBean))
                 .placeholder(R.drawable.shape_default_image)
                 .error(R.drawable.shape_default_image)
-                .listener(new RequestListener<CustomImageSizeModel, GlideDrawable>() {
-                    @Override
-                    public boolean onException(Exception e, CustomImageSizeModel model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        // 加载本地图片
-                        mPbProgress.setVisibility(View.GONE);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource, CustomImageSizeModel model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        mPbProgress.setVisibility(View.GONE);
-                        return false;
-                    }
-                })
                 .thumbnail(thumbnailBuilder)
                 .into(new SimpleTarget<GlideDrawable>() {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                        mPbProgress.setVisibility(View.GONE);
                         mIvPager.setImageDrawable(resource);
-
+                        mPhotoViewAttacherNormal.update();
                         // 获取到模糊图进行放大动画
                         if (!hasAnim) {
                             hasAnim = true;
                             startInAnim(rect);
                         }
-
                     }
                 });
     }
@@ -280,6 +278,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
                         mTvOriginPhoto.setText(100 + "%/" + "100%");
                         mIvOriginPager.setImageDrawable(resource);
+                        mPhotoViewAttacherOrigin.update();
                         mIvOriginPager.setVisibility(View.VISIBLE);
                         mIvPager.setVisibility(View.GONE);
                     }
@@ -456,5 +455,6 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     }
                 });
     }
+
 
 }

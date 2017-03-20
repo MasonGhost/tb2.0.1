@@ -161,7 +161,7 @@ public class GalleryFragment extends TSFragment {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void showBackgroundImmediately() {
         if (mRootView.getBackground() == null) {
-            backgroundColor = new ColorDrawable(Color.WHITE);
+            backgroundColor = new ColorDrawable(Color.BLACK);
             mVpPhotos.setBackground(backgroundColor);
             // ((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
         }
@@ -169,7 +169,7 @@ public class GalleryFragment extends TSFragment {
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public ObjectAnimator showBackgroundAnimate() {
-        backgroundColor = new ColorDrawable(Color.WHITE);
+        backgroundColor = new ColorDrawable(Color.BLACK);
         // mViewPager.setBackground(backgroundColor);
         // ((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
         ObjectAnimator bgAnim = ObjectAnimator
@@ -188,7 +188,7 @@ public class GalleryFragment extends TSFragment {
 
         GalleryPictureContainerFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
         if (fragment != null && fragment.canAnimateCloseActivity()) {
-            backgroundColor = new ColorDrawable(Color.WHITE);
+            backgroundColor = new ColorDrawable(Color.BLACK);
             ObjectAnimator bgAnim = ObjectAnimator.ofInt(backgroundColor, "alpha", 0);
             bgAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
