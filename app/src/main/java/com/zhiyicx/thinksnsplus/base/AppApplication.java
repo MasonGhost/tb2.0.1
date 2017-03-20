@@ -101,12 +101,12 @@ public class AppApplication extends TSApplication {
                 // token过期，调到登陆页面重新请求token,
                 LogUtils.i("baseJson-->" + httpResult);
                 BaseJson baseJson = new Gson().fromJson(httpResult, BaseJson.class);
-                if (baseJson.getCode() == ErrorCodeConfig.TOKEN_EXPIERD
+                if (baseJson != null && (baseJson.getCode() == ErrorCodeConfig.TOKEN_EXPIERD
                         || baseJson.getCode() == ErrorCodeConfig.NEED_RELOGIN
                         || baseJson.getCode() == ErrorCodeConfig.OTHER_DEVICE_LOGIN
                         || baseJson.getCode() == ErrorCodeConfig.USER_AUTH_FAIL
                         || baseJson.getCode() == ErrorCodeConfig.USER_NOT_FOUND
-                        || baseJson.getCode() == ErrorCodeConfig.TOKEN_NOT_EXIST) {
+                        || baseJson.getCode() == ErrorCodeConfig.TOKEN_NOT_EXIST)) {
                     // 跳到登陆页面，销毁之前的所有页面,添加弹框处理提示
                     // 通过rxjava在主线程处理弹框
                     Observable.empty()
