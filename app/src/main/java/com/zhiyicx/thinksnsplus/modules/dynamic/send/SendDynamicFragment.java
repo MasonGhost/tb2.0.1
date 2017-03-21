@@ -25,9 +25,9 @@ import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
 import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
-import com.zhiyicx.thinksnsplus.modules.photopicker.AnimationRect;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
@@ -415,29 +415,29 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                             bundle.putStringArrayList(PhotoAlbumDetailsFragment.EXTRA_VIEW_SELECTED_PHOTOS, photos);
 
 
-                            ArrayList<AnimationRect> animationRectArrayList
-                                    = new ArrayList<AnimationRect>();
+                            ArrayList<AnimationRectBean> animationRectBeanArrayList
+                                    = new ArrayList<AnimationRectBean>();
                             for (int i = 0; i < photos.size(); i++) {
 
                                 if (i < gridLayoutManager.findFirstVisibleItemPosition()) {
                                     // 顶部，无法全部看见的图片
-                                    AnimationRect rect = new AnimationRect();
-                                    animationRectArrayList.add(rect);
+                                    AnimationRectBean rect = new AnimationRectBean();
+                                    animationRectBeanArrayList.add(rect);
                                 } else if (i > gridLayoutManager.findLastVisibleItemPosition()) {
                                     // 底部，无法完全看见的图片
-                                    AnimationRect rect = new AnimationRect();
-                                    animationRectArrayList.add(rect);
+                                    AnimationRectBean rect = new AnimationRectBean();
+                                    animationRectBeanArrayList.add(rect);
                                 } else {
                                     View view = gridLayoutManager
                                             .getChildAt(i - gridLayoutManager.findFirstVisibleItemPosition());
                                     ImageView imageView = (ImageView) view.findViewById(R.id.iv_dynamic_img);
                                     // 可以完全看见的图片
-                                    AnimationRect rect = AnimationRect.buildFromImageView(imageView);
-                                    animationRectArrayList.add(rect);
+                                    AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
+                                    animationRectBeanArrayList.add(rect);
                                 }
                             }
 
-                            bundle.putParcelableArrayList("rect", animationRectArrayList);
+                            bundle.putParcelableArrayList("rect", animationRectBeanArrayList);
                             bundle.putInt(PhotoAlbumDetailsFragment.EXTRA_MAX_COUNT, MAX_PHOTOS);
                             Intent intent = new Intent(getContext(), PhotoViewActivity.class);
                             intent.putExtras(bundle);

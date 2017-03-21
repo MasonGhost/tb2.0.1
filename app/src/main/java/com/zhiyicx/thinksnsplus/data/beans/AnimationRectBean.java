@@ -1,7 +1,6 @@
-package com.zhiyicx.thinksnsplus.modules.photopicker;
+package com.zhiyicx.thinksnsplus.data.beans;
 
 
-import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
@@ -9,16 +8,15 @@ import android.os.Parcelable;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.target.SquaringDrawable;
 import com.zhiyicx.common.utils.log.LogUtils;
 
 /**
- * User: qii
- * Date: 14-4-1
+ * @author LiuChao
+ * @describe 用于图片查看时的转场缩放动画实体类，传递的是图片控件的相关属性，以及
+ * @date 2017/3/21
+ * @contact email:450127106@qq.com
  */
-public class AnimationRect implements Parcelable {
+public class AnimationRectBean implements Parcelable {
 
     @Override
     public int describeContents() {
@@ -45,10 +43,10 @@ public class AnimationRect implements Parcelable {
         dest.writeFloat(clipByParentRectRight);
     }
 
-    public static final Creator<AnimationRect> CREATOR =
-            new Creator<AnimationRect>() {
-                public AnimationRect createFromParcel(Parcel in) {
-                    AnimationRect rect = new AnimationRect();
+    public static final Creator<AnimationRectBean> CREATOR =
+            new Creator<AnimationRectBean>() {
+                public AnimationRectBean createFromParcel(Parcel in) {
+                    AnimationRectBean rect = new AnimationRectBean();
                     rect.scaledBitmapRect = in.readParcelable(Rect.class.getClassLoader());
                     rect.imageViewEntireRect = in.readParcelable(Rect.class.getClassLoader());
                     rect.imageViewVisibleRect = in.readParcelable(Rect.class.getClassLoader());
@@ -81,8 +79,8 @@ public class AnimationRect implements Parcelable {
                     return rect;
                 }
 
-                public AnimationRect[] newArray(int size) {
-                    return new AnimationRect[size];
+                public AnimationRectBean[] newArray(int size) {
+                    return new AnimationRectBean[size];
                 }
             };
 
@@ -113,9 +111,9 @@ public class AnimationRect implements Parcelable {
     public int widgetWidth;
     public int widgetHeight;
 
-    public static AnimationRect buildFromImageView(ImageView imageView) {
+    public static AnimationRectBean buildFromImageView(ImageView imageView) {
 
-        AnimationRect rect = new AnimationRect();
+        AnimationRectBean rect = new AnimationRectBean();
         if (imageView == null) {
             return null;
         }
@@ -227,8 +225,8 @@ public class AnimationRect implements Parcelable {
         return rect;
     }
 
-    public static float getClipLeft(AnimationRect animationRect, Rect finalBounds) {
-        final Rect startBounds = animationRect.scaledBitmapRect;
+    public static float getClipLeft(AnimationRectBean animationRectBean, Rect finalBounds) {
+        final Rect startBounds = animationRectBean.scaledBitmapRect;
         if (startBounds == null) {
             return 0;
         }
@@ -244,30 +242,30 @@ public class AnimationRect implements Parcelable {
 
         //sina server may cut thumbnail's right or bottom
         int thumbnailAndOriDeltaRightSize = Math
-                .abs(animationRect.scaledBitmapRect.width() - oriBitmapScaledWidth);
+                .abs(animationRectBean.scaledBitmapRect.width() - oriBitmapScaledWidth);
 
         float serverClipThumbnailRightSizePercent = (float) thumbnailAndOriDeltaRightSize
                 / (float) oriBitmapScaledWidth;
 
         float deltaH = (float) (oriBitmapScaledWidth
                 - oriBitmapScaledWidth * serverClipThumbnailRightSizePercent
-                - animationRect.widgetWidth);
+                - animationRectBean.widgetWidth);
 
         float deltaLeft = deltaH / 2;
 
-        if (!animationRect.isTotalVisible && !animationRect.isTotalInvisible) {
+        if (!animationRectBean.isTotalVisible && !animationRectBean.isTotalInvisible) {
             float deltaInvisibleLeft = Math
-                    .abs(animationRect.imageViewVisibleRect.left
-                            - animationRect.imageViewEntireRect.left);
+                    .abs(animationRectBean.imageViewVisibleRect.left
+                            - animationRectBean.imageViewEntireRect.left);
             deltaLeft += deltaInvisibleLeft;
         }
 
         return (deltaLeft) / (float) oriBitmapScaledWidth;
     }
 
-    public static float getClipTop(AnimationRect animationRect, Rect finalBounds) {
+    public static float getClipTop(AnimationRectBean animationRectBean, Rect finalBounds) {
 
-        final Rect startBounds = animationRect.scaledBitmapRect;
+        final Rect startBounds = animationRectBean.scaledBitmapRect;
         if (startBounds == null) {
             return 0;
         }
@@ -283,22 +281,22 @@ public class AnimationRect implements Parcelable {
 
         //sina server may cut thumbnail's right or bottom
         int thumbnailAndOriDeltaBottomSize = Math
-                .abs(animationRect.scaledBitmapRect.height() - oriBitmapScaledHeight);
+                .abs(animationRectBean.scaledBitmapRect.height() - oriBitmapScaledHeight);
 
         float serverClipThumbnailBottomSizePercent = (float) thumbnailAndOriDeltaBottomSize
                 / (float) oriBitmapScaledHeight;
 
         float deltaV = (float) (oriBitmapScaledHeight
                 - oriBitmapScaledHeight * serverClipThumbnailBottomSizePercent
-                - animationRect.widgetHeight);
+                - animationRectBean.widgetHeight);
 
         float deltaTop = deltaV / 2;
 
-        if (!animationRect.isTotalVisible && !animationRect.isTotalInvisible) {
+        if (!animationRectBean.isTotalVisible && !animationRectBean.isTotalInvisible) {
 
             float deltaInvisibleTop = Math
-                    .abs(animationRect.imageViewVisibleRect.top
-                            - animationRect.imageViewEntireRect.top);
+                    .abs(animationRectBean.imageViewVisibleRect.top
+                            - animationRectBean.imageViewEntireRect.top);
 
             deltaTop += deltaInvisibleTop;
         }
@@ -306,8 +304,8 @@ public class AnimationRect implements Parcelable {
         return (deltaTop) / (float) oriBitmapScaledHeight;
     }
 
-    public static float getClipRight(AnimationRect animationRect, Rect finalBounds) {
-        final Rect startBounds = animationRect.scaledBitmapRect;
+    public static float getClipRight(AnimationRectBean animationRectBean, Rect finalBounds) {
+        final Rect startBounds = animationRectBean.scaledBitmapRect;
         if (startBounds == null) {
             return 0;
         }
@@ -323,21 +321,21 @@ public class AnimationRect implements Parcelable {
 
         //sina server may cut thumbnail's right or bottom
         int thumbnailAndOriDeltaRightSize = Math
-                .abs(animationRect.scaledBitmapRect.width() - oriBitmapScaledWidth);
+                .abs(animationRectBean.scaledBitmapRect.width() - oriBitmapScaledWidth);
 
         float serverClipThumbnailRightSizePercent = (float) thumbnailAndOriDeltaRightSize
                 / (float) oriBitmapScaledWidth;
 
         float deltaH = (float) (oriBitmapScaledWidth
                 - oriBitmapScaledWidth * serverClipThumbnailRightSizePercent
-                - animationRect.widgetWidth);
+                - animationRectBean.widgetWidth);
 
         float deltaRight = deltaH / 2;
 
-        if (!animationRect.isTotalVisible && !animationRect.isTotalInvisible) {
+        if (!animationRectBean.isTotalVisible && !animationRectBean.isTotalInvisible) {
             float deltaInvisibleRight = Math
-                    .abs(animationRect.imageViewVisibleRect.right
-                            - animationRect.imageViewEntireRect.right);
+                    .abs(animationRectBean.imageViewVisibleRect.right
+                            - animationRectBean.imageViewEntireRect.right);
             deltaRight += deltaInvisibleRight;
         }
 
@@ -346,8 +344,8 @@ public class AnimationRect implements Parcelable {
         return (deltaRight) / (float) oriBitmapScaledWidth;
     }
 
-    public static float getClipBottom(AnimationRect animationRect, Rect finalBounds) {
-        final Rect startBounds = animationRect.scaledBitmapRect;
+    public static float getClipBottom(AnimationRectBean animationRectBean, Rect finalBounds) {
+        final Rect startBounds = animationRectBean.scaledBitmapRect;
         if (startBounds == null) {
             return 0;
         }
@@ -364,22 +362,22 @@ public class AnimationRect implements Parcelable {
 
         //sina server may cut thumbnail's right or bottom
         int thumbnailAndOriDeltaBottomSize = Math
-                .abs(animationRect.scaledBitmapRect.height() - oriBitmapScaledHeight);
+                .abs(animationRectBean.scaledBitmapRect.height() - oriBitmapScaledHeight);
 
         float serverClipThumbnailBottomSizePercent = (float) thumbnailAndOriDeltaBottomSize
                 / (float) oriBitmapScaledHeight;
 
         float deltaV = (float) (oriBitmapScaledHeight
                 - oriBitmapScaledHeight * serverClipThumbnailBottomSizePercent
-                - animationRect.widgetHeight);
+                - animationRectBean.widgetHeight);
 
         float deltaBottom = deltaV / 2;
 
-        if (!animationRect.isTotalVisible && !animationRect.isTotalInvisible) {
+        if (!animationRectBean.isTotalVisible && !animationRectBean.isTotalInvisible) {
 
             float deltaInvisibleBottom = Math
-                    .abs(animationRect.imageViewVisibleRect.bottom
-                            - animationRect.imageViewEntireRect.bottom);
+                    .abs(animationRectBean.imageViewVisibleRect.bottom
+                            - animationRectBean.imageViewEntireRect.bottom);
 
             deltaBottom += deltaInvisibleBottom;
         }
@@ -400,7 +398,7 @@ public class AnimationRect implements Parcelable {
     @Override
     public String toString() {
         return "\n" +
-                " AnimationRect{" +
+                " AnimationRectBean{" +
                 "\nclipByParentRectTop=" + clipByParentRectTop +
                 ",\n clipByParentRectBottom=" + clipByParentRectBottom +
                 ", \nclipByParentRectLeft=" + clipByParentRectLeft +

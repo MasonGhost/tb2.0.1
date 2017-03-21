@@ -13,17 +13,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.indicator_expand.ScaleCircleNavigator;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.photopicker.AnimationRect;
-import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
-import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewPictureContainerFragment;
+import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
@@ -105,10 +103,10 @@ public class GalleryFragment extends TSFragment {
     }
 
     ////////////////////////////////缩放动画//////////////////////////////////
-    private HashMap<Integer, GalleryPictureContainerFragment> fragmentMap
-            = new HashMap<Integer, GalleryPictureContainerFragment>();
+    private SparseArray<GalleryPictureContainerFragment> fragmentMap
+            = new SparseArray<>();
     private boolean alreadyAnimateIn = false;
-    private ArrayList<AnimationRect> rectList;
+    private ArrayList<AnimationRectBean> rectList;
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to

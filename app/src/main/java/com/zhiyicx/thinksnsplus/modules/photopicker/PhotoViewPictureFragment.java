@@ -16,14 +16,13 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.widget.photoview.PhotoView;
 import com.zhiyicx.baseproject.widget.photoview.PhotoViewAttacher;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
+import com.zhiyicx.thinksnsplus.utils.TransferImageAnimationUtil;
 
 import butterknife.BindView;
-import butterknife.OnClick;
-import me.iwf.photopicker.widget.TouchImageView;
 
 /**
  * @author LiuChao
@@ -39,7 +38,7 @@ public class PhotoViewPictureFragment extends TSFragment {
     private boolean hasAnim = false;
     private boolean animateIn = false;
 
-    public static final int ANIMATION_DURATION = 300;
+
     private PhotoViewAttacher mPhotoViewAttacher;
 
     @Override
@@ -73,7 +72,7 @@ public class PhotoViewPictureFragment extends TSFragment {
 
         final String path = getArguments().getString("path");
 
-        final AnimationRect rect = getArguments().getParcelable("rect");
+        final AnimationRectBean rect = getArguments().getParcelable("rect");
         animateIn = getArguments().getBoolean("animationIn");// 是否需要放缩动画，除了第一次进入需要，其他时候应该禁止
 
         Glide.with(getContext())
@@ -87,7 +86,7 @@ public class PhotoViewPictureFragment extends TSFragment {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
                         // 为什么会为空
-                        if(ivAnimation==null){
+                        if (ivAnimation == null) {
                             return;
                         }
                         ivAnimation.setImageDrawable(resource);
@@ -101,7 +100,7 @@ public class PhotoViewPictureFragment extends TSFragment {
                 });
     }
 
-    public static PhotoViewPictureFragment newInstance(String path, AnimationRect rect,
+    public static PhotoViewPictureFragment newInstance(String path, AnimationRectBean rect,
                                                        boolean animationIn) {
         PhotoViewPictureFragment fragment = new PhotoViewPictureFragment();
         Bundle bundle = new Bundle();
@@ -114,7 +113,6 @@ public class PhotoViewPictureFragment extends TSFragment {
 
     public void animationExit(ObjectAnimator backgroundAnimator) {
         // 图片处于放大状态，先让它复原
-
         if (Math.abs(mPhotoViewAttacher.getScale() - 1.0f) > 0.1f) {
             mPhotoViewAttacher.setScale(1, true);
             return;
@@ -124,85 +122,12 @@ public class PhotoViewPictureFragment extends TSFragment {
     }
 
     private void animateClose(ObjectAnimator backgroundAnimator) {
-
-        AnimationRect rect = getArguments().getParcelable("rect");
-        // 没有大图退出动画，直接关闭activity
-        if (rect == null) {
-            ivAnimation.animate().alpha(0);
-            backgroundAnimator.start();
-            return;
-        }
-        // 小图rect属性
-        final Rect startBounds = rect.scaledBitmapRect;
-        // 大图rect属性
-        final Rect finalBounds = DrawableProvider.getBitmapRectFromImageView(ivAnimation);
-        // 没有大图退出动画，直接关闭activity
-        if (finalBounds == null || startBounds == null) {
-            ivAnimation.animate().alpha(0);
-            backgroundAnimator.start();
-            return;
-        }
-
-        float startScale;
-        if ((float) finalBounds.width() / finalBounds.height()
-                > (float) startBounds.width() / startBounds.height()) {
-            // 如果大图的宽度对于高度比小图的宽度对于高度更宽，以高度比来放缩，这样能够避免动画结束，小图边缘出现空白
-            startScale = (float) startBounds.height() / finalBounds.height();
-        } else {
-            startScale = (float) startBounds.width() / finalBounds.width();
-        }
-
-        final float startScaleFinal = startScale;
-
-        int deltaTop = startBounds.top - finalBounds.top;
-        int deltaLeft = startBounds.left - finalBounds.left;
-        // 设置XY轴心
-        ivAnimation.setPivotY((ivAnimation.getHeight() - finalBounds.height()) / 2);
-        ivAnimation.setPivotX((ivAnimation.getWidth() - finalBounds.width()) / 2);
-        // 位移+缩小
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            ivAnimation.animate().translationX(deltaLeft).translationY(deltaTop)
-                    .scaleY(startScaleFinal)
-                    .scaleX(startScaleFinal).setDuration(ANIMATION_DURATION)
-                    .setInterpolator(new AccelerateDecelerateInterpolator())
-                    .withEndAction(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                                ivAnimation.animate().alpha(0.0f).setDuration(200).withEndAction(
-                                        new Runnable() {
-                                            @Override
-                                            public void run() {
-
-                                            }
-                                        });
-                            }
-                        }
-                    });
-        }
-
-        AnimatorSet animationSet = new AnimatorSet();
-        animationSet.setDuration(ANIMATION_DURATION);
-        animationSet.setInterpolator(new AccelerateDecelerateInterpolator());
-
-        animationSet.playTogether(backgroundAnimator);
-
-        animationSet.playTogether(ObjectAnimator.ofFloat(ivAnimation,
-                "clipBottom", 0,
-                AnimationRect.getClipBottom(rect, finalBounds)));
-        animationSet.playTogether(ObjectAnimator.ofFloat(ivAnimation,
-                "clipRight", 0,
-                AnimationRect.getClipRight(rect, finalBounds)));
-        animationSet.playTogether(ObjectAnimator.ofFloat(ivAnimation,
-                "clipTop", 0, AnimationRect.getClipTop(rect, finalBounds)));
-        animationSet.playTogether(ObjectAnimator.ofFloat(ivAnimation,
-                "clipLeft", 0, AnimationRect.getClipLeft(rect, finalBounds)));
-
-        animationSet.start();
+        AnimationRectBean rect = getArguments().getParcelable("rect");
+        TransferImageAnimationUtil.animateClose(backgroundAnimator, rect, ivAnimation);
     }
 
 
-    private void startInAnim(final AnimationRect rect) {
+    private void startInAnim(final AnimationRectBean rect) {
         final Runnable endAction = new Runnable() {
             @Override
             public void run() {
@@ -210,77 +135,7 @@ public class PhotoViewPictureFragment extends TSFragment {
                 bundle.putBoolean("animationIn", false);
             }
         };
-        ivAnimation.getViewTreeObserver()
-                .addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                    @Override
-                    public boolean onPreDraw() {
-
-                        if (rect == null) {
-                            ivAnimation.getViewTreeObserver().removeOnPreDrawListener(this);
-                            endAction.run();
-                            return true;
-                        }
-
-                        final Rect startBounds = new Rect(rect.scaledBitmapRect);
-                        final Rect finalBounds =
-                                DrawableProvider.getBitmapRectFromImageView(ivAnimation);
-
-                        if (finalBounds == null) {
-                            ivAnimation.getViewTreeObserver().removeOnPreDrawListener(this);
-                            endAction.run();
-                            return true;
-                        }
-
-                        float startScale = (float) finalBounds.width() / startBounds.width();
-
-                        if (startScale * startBounds.height() > finalBounds.height()) {
-                            startScale = (float) finalBounds.height() / startBounds.height();
-                        }
-
-                        int deltaTop = startBounds.top - finalBounds.top;
-                        int deltaLeft = startBounds.left - finalBounds.left;
-                        // 位移+缩小
-                        ivAnimation.setPivotY(
-                                (ivAnimation.getHeight() - finalBounds.height()) / 2);
-                        ivAnimation.setPivotX((ivAnimation.getWidth() - finalBounds.width()) / 2);
-
-                        ivAnimation.setScaleX(1 / startScale);
-                        ivAnimation.setScaleY(1 / startScale);
-
-                        ivAnimation.setTranslationX(deltaLeft);
-                        ivAnimation.setTranslationY(deltaTop);
-
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            ivAnimation.animate().translationY(0).translationX(0)
-                                    .scaleY(1)
-                                    .scaleX(1).setDuration(ANIMATION_DURATION)
-                                    .setInterpolator(
-                                            new AccelerateDecelerateInterpolator())
-                                    .withEndAction(endAction);
-                        }
-
-                        AnimatorSet animationSet = new AnimatorSet();
-                        animationSet.setDuration(ANIMATION_DURATION);
-                        animationSet
-                                .setInterpolator(new AccelerateDecelerateInterpolator());
-
-                        animationSet.playTogether(ObjectAnimator.ofFloat(ivAnimation,
-                                "clipBottom",
-                                AnimationRect.getClipBottom(rect, finalBounds), 0));
-                        animationSet.playTogether(ObjectAnimator.ofFloat(ivAnimation,
-                                "clipRight",
-                                AnimationRect.getClipRight(rect, finalBounds), 0));
-                        animationSet.playTogether(ObjectAnimator.ofFloat(ivAnimation,
-                                "clipTop", AnimationRect.getClipTop(rect, finalBounds), 0));
-                        animationSet.playTogether(ObjectAnimator.ofFloat(ivAnimation,
-                                "clipLeft", AnimationRect.getClipLeft(rect, finalBounds), 0));
-
-                        animationSet.start();
-
-                        ivAnimation.getViewTreeObserver().removeOnPreDrawListener(this);
-                        return true;
-                    }
-                });
+        TransferImageAnimationUtil.startInAnim(rect, ivAnimation, endAction);
     }
 
 }
