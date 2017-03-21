@@ -1,10 +1,13 @@
 package com.zhiyicx.baseproject.base;
 
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -34,10 +37,13 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     private static final int DEFAULT_TOOLBAR_BACKGROUD_COLOR = R.color.white;// 默认的toolbar背景色
     private static final int DEFAULT_DIVIDER_COLOR = R.color.general_for_line;// 默认的toolbar下方分割线颜色
     private static final int DEFAULT_TOOLBAR_LEFT_IMG = R.mipmap.topbar_back;// 默认的toolbar左边的图片，一般是返回键
+
     protected TextView mToolbarLeft;
     protected TextView mToolbarRight;
     protected TextView mToolbarCenter;
     protected View mStatusPlaceholderView;
+    private View centerLoadingView; // 加载
+
     private boolean mIscUseSatusbar = false;// 内容是否需要占用状态栏
 
 
@@ -59,27 +65,52 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
         if (showToolBarDivider()) {// 在需要显示分割线时，进行添加
             View divider = new View(getContext());
-            divider.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) getResources().getDimensionPixelSize(R.dimen.divider_line)));
+            divider.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getResources().getDimensionPixelSize(R.dimen.divider_line)));
             divider.setBackgroundColor(ContextCompat.getColor(getContext(), setToolBarDividerColor()));
             linearLayout.addView(divider);
         }
         if (setUseSatusbar()) {
-            //顶上去
+            // 状态栏顶上去
             StatusBarUtils.transparencyBar(getActivity());
             linearLayout.setFitsSystemWindows(false);
         } else {
-            //不顶上去
+            // 状态栏不顶上去
             StatusBarUtils.setStatusBarColor(getActivity(), setToolBarBackgroud());
             linearLayout.setFitsSystemWindows(true);
         }
         setToolBarTextColor();
+        // 是否设置状态栏文字图标灰色，对 小米、魅族、Android 6.0 及以上系统有效
         if (setStatusbarGrey()) {
             StatusBarUtils.statusBarLightMode(getActivity());
         }
+        FrameLayout frameLayout = new FrameLayout(getActivity());
+        frameLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        // 内容区域
         View bodyContainer = mLayoutInflater.inflate(getBodyLayoutId(), null);
         bodyContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        linearLayout.addView(bodyContainer);
+        frameLayout.addView(bodyContainer);
+        // 加载动画
+        if (setUseCenterLoading()) {
+            centerLoadingView = mLayoutInflater.inflate(R.layout.view_center_loading, null);
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            if (!showToolbar()) {
+                params.setMargins(0, DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelSize(R.dimen.toolbar_height) + getResources().getDimensionPixelSize(R.dimen.divider_line), 0, 0);
+            }
+            centerLoadingView.setLayoutParams(params);
+            ((AnimationDrawable) ((ImageView) centerLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).start();
+            frameLayout.addView(centerLoadingView);
+        }
+        linearLayout.addView(frameLayout);
         return linearLayout;
+    }
+
+    /**
+     * 是否开启中心加载布局
+     *
+     * @return
+     */
+    protected boolean setUseCenterLoading() {
+        return false;
     }
 
     /**

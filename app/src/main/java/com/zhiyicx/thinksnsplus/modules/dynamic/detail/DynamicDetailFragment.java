@@ -128,6 +128,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
+    protected boolean setUseCenterLoading() {
+        return true;
+    }
+
+    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         initBottomToolUI();
