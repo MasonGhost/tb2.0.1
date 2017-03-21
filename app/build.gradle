@@ -47,6 +47,12 @@ android {
 
     signingConfigs {
         debug {
+            storeFile file('../thinksnsplus.jks')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+        release {
             storeFile file('../debug.keystore')
             storePassword 'android'
             keyAlias 'androiddebugkey'
