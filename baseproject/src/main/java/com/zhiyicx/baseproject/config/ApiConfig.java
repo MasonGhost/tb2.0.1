@@ -28,8 +28,7 @@ public class ApiConfig {
     public static final String APP_DOMAIN = "http://192.168.2.222/";// 测试服务器
     // public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
 
-    public static final String URL_ABOUT_US = "http://blog.csdn" +
-            ".net/hellohhj/article/details/50467502";// 关于我们网站
+    public static final String URL_ABOUT_US = "http://www.thinksns.com/index.html";// 关于我们网站
 
     // 图片地址
     public static final String IMAGE_PATH = APP_DOMAIN + "api/v1/storages/%s/%d";// 带质量压缩
