@@ -1,22 +1,23 @@
 package com.zhiyicx.thinksnsplus.modules.information.infomain.list;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.youth.banner.Banner;
+import com.youth.banner.BannerConfig;
+import com.youth.banner.Transformer;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoBannerBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoBannerItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoListItem;
@@ -59,7 +60,21 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     @Override
     protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getActivity(), mInfoList);
-        adapter.addItemViewDelegate(new InfoBannerItem());
+        adapter.addItemViewDelegate(new InfoBannerItem() {
+            @Override
+            public void convert(ViewHolder holder, BaseListBean baseListBean, BaseListBean lastT,
+                                int position) {
+                InfoListBean.RecommendBean realData = (InfoListBean.RecommendBean) baseListBean;
+                String url = String.format(ApiConfig.IMAGE_PATH, realData.getCover().getId(), 50);
+                Banner banner = holder.getView(R.id.item_banner);
+                banner.setImageLoader(new GlideImageLoader());
+                banner.addImages(url);
+                banner.setDelayTime(5000);
+                banner.setIndicatorGravity(BannerConfig.RIGHT);
+                banner.setBannerAnimation(Transformer.CubeIn);
+                banner.start();
+            }
+        });
         adapter.addItemViewDelegate(new InfoListItem() {
             @Override
             public void convert(ViewHolder holder, BaseListBean baseListBean, BaseListBean lastT,
@@ -124,6 +139,12 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     }
 
     @Override
+    public void onNetResponseSuccess(@NotNull List<BaseListBean> data, boolean isLoadMore) {
+        super.onNetResponseSuccess(data, isLoadMore);
+        mInfoList = data;
+    }
+
+    @Override
     public void showLoading() {
 
     }
@@ -135,7 +156,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
 
     @Override
     public void showMessage(String message) {
-
+        showMessageNotSticky(message);
     }
 
     @Override
@@ -160,7 +181,22 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
 
     @Override
     protected Long getMaxId(@NotNull List<BaseListBean> data) {
-        InfoListBean.ListBean needData=(InfoListBean.ListBean)data.get(data.size() - 1);
+        InfoListBean.ListBean needData = (InfoListBean.ListBean) data.get(data.size() - 1);
         return (long) needData.getId();
+    }
+
+    private class GlideImageLoader extends com.youth.banner.loader.ImageLoader {
+
+        @Override
+        public void displayImage(Context context, Object path, ImageView imageView) {
+            AppApplication.AppComponentHolder.getAppComponent()
+                    .imageLoader()
+                    .loadImage(context, GlideImageConfig.builder()
+                            .imagerView(imageView)
+                            .url((String) path)
+                            .errorPic(R.mipmap.npc)
+                            .build());
+        }
+
     }
 }
