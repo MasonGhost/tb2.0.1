@@ -60,12 +60,12 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
 
                     @Override
                     protected void onFailure(String message) {
-
+                        mRootView.showMessage(message);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-
+                        mRootView.onResponseError(throwable, isLoadMore);
                     }
                 });
         addSubscrebe(subscription);
