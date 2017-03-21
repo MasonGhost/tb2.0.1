@@ -1,26 +1,26 @@
-package com.zhiyicx.thinksnsplus.modules.photopicker;
+package com.zhiyicx.thinksnsplus.modules.gallery;
 
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.photopicker.AnimationRect;
 
 /**
  * @author LiuChao
- * @descibe 图片缩放fragment的容器，另外可以处理转圈圈之类的其他操作
- * @date 2017/3/19 0019
+ * @describe
+ * @date 2017/3/20
  * @contact email:450127106@qq.com
  */
-public class PhotoViewPictureContainerFragment extends TSFragment {
 
+public class GalleryPictureContainerFragment extends TSFragment {
     @Override
     protected int getBodyLayoutId() {
-        return R.layout.fragment_photoview_picture_container;
+        return R.layout.fragment_gallary_picture_container_layout;
     }
 
     @Override
@@ -41,17 +41,17 @@ public class PhotoViewPictureContainerFragment extends TSFragment {
     @Override
     protected void initData() {
         Bundle bundle = getArguments();
-        String url = bundle.getString("url");
+        ImageBean imageBean = bundle.getParcelable("url");
         boolean animateIn = bundle.getBoolean("animationIn");
         bundle.putBoolean("animationIn", false);
-        displayPicture(url, animateIn);
+        displayPicture(imageBean, animateIn);
     }
 
-    public static PhotoViewPictureContainerFragment newInstance(String url, AnimationRect rect,
-                                                boolean animationIn, boolean firstOpenPage) {
-        PhotoViewPictureContainerFragment fragment = new PhotoViewPictureContainerFragment();
+    public static GalleryPictureContainerFragment newInstance(ImageBean imageBean, AnimationRect rect,
+                                                              boolean animationIn, boolean firstOpenPage) {
+        GalleryPictureContainerFragment fragment = new GalleryPictureContainerFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("url", url);
+        bundle.putParcelable("url", imageBean);
         bundle.putParcelable("rect", rect);
         bundle.putBoolean("animationIn", animationIn);
         bundle.putBoolean("firstOpenPage", firstOpenPage);
@@ -59,23 +59,21 @@ public class PhotoViewPictureContainerFragment extends TSFragment {
         return fragment;
     }
 
-    private void displayPicture(String path, boolean animateIn) {
-        // PhotoViewActivity activity = (PhotoViewActivity) getActivity();
-        PhotoViewFragment photoViewFragment = (PhotoViewFragment) getParentFragment();
+    private void displayPicture(ImageBean imageBean, boolean animateIn) {
+        GalleryFragment galleryFragment = (GalleryFragment) getParentFragment();
         AnimationRect rect = getArguments().getParcelable("rect");
-        // 进入图片浏览器的两张
         boolean firstOpenPage = getArguments().getBoolean("firstOpenPage");
         if (firstOpenPage) {
             if (animateIn) {
-                ObjectAnimator animator = photoViewFragment.showBackgroundAnimate();
+                ObjectAnimator animator = galleryFragment.showBackgroundAnimate();
                 animator.start();
             } else {
-                photoViewFragment.showBackgroundImmediately();
+                galleryFragment.showBackgroundImmediately();
             }
             getArguments().putBoolean("firstOpenPage", false);
         }
 
-        Fragment fragment = PhotoViewPictureFragment.newInstance(path, rect, animateIn);
+        Fragment fragment = GalleryPictureFragment.newInstance(imageBean, rect, animateIn);
         getChildFragmentManager().beginTransaction().replace(R.id.fl_picture_container, fragment)
                 .commitAllowingStateLoss();
 
@@ -83,18 +81,16 @@ public class PhotoViewPictureContainerFragment extends TSFragment {
 
     public void animationExit(ObjectAnimator backgroundAnimator) {
         Fragment fragment = getChildFragmentManager().findFragmentById(R.id.fl_picture_container);
-        PhotoViewPictureFragment child = (PhotoViewPictureFragment) fragment;
+        GalleryPictureFragment child = (GalleryPictureFragment) fragment;
         child.animationExit(backgroundAnimator);
     }
 
     public boolean canAnimateCloseActivity() {
         Fragment fragment = getChildFragmentManager().findFragmentById(R.id.fl_picture_container);
-        if (fragment instanceof PhotoViewPictureFragment) {
+        if (fragment instanceof GalleryPictureFragment) {
             return true;
         } else {
             return false;
         }
     }
-
-
 }

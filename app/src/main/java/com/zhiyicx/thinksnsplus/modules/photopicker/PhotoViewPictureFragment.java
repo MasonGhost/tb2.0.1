@@ -5,9 +5,7 @@ import android.animation.ObjectAnimator;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
@@ -18,43 +16,46 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.widget.photoview.PhotoView;
+import com.zhiyicx.baseproject.widget.photoview.PhotoViewAttacher;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.thinksnsplus.R;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.iwf.photopicker.widget.TouchImageView;
 
 /**
  * @author LiuChao
- * @descibe  处理图片放缩动画
- * @date  2017/3/19 0019
+ * @descibe 处理图片放缩动画
+ * @date 2017/3/19 0019
  * @contact email:450127106@qq.com
  */
 public class PhotoViewPictureFragment extends TSFragment {
 
     @BindView(R.id.iv_animation)
-    TouchImageView ivAnimation;
+    ImageView ivAnimation;
 
     private boolean hasAnim = false;
+    private boolean animateIn = false;
 
     public static final int ANIMATION_DURATION = 300;
-
+    private PhotoViewAttacher mPhotoViewAttacher;
 
     @Override
     protected int getBodyLayoutId() {
-        return R.layout.gallery_general_layout;
+        return R.layout.fragment_photoview_picture;
     }
 
     @Override
     protected void initView(View rootView) {
-
-
-   /*     LongClickListener longClickListener = ((PhotoViewPictureContainerFragment) getParentFragment())
-                .getLongClickListener();
-        ivAnimation.setOnLongClickListener(longClickListener);*/
-
+        mPhotoViewAttacher = new PhotoViewAttacher(ivAnimation);
+        mPhotoViewAttacher.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
+            @Override
+            public void onPhotoTap(View view, float x, float y) {
+                getActivity().onBackPressed();
+            }
+        });
     }
 
     @Override
@@ -71,8 +72,9 @@ public class PhotoViewPictureFragment extends TSFragment {
     protected void initData() {
 
         final String path = getArguments().getString("path");
-        boolean animateIn = getArguments().getBoolean("animationIn");
+
         final AnimationRect rect = getArguments().getParcelable("rect");
+        animateIn = getArguments().getBoolean("animationIn");// 是否需要放缩动画，除了第一次进入需要，其他时候应该禁止
 
         Glide.with(getContext())
                 .load(path)
@@ -84,20 +86,23 @@ public class PhotoViewPictureFragment extends TSFragment {
                 .into(new SimpleTarget<GlideDrawable>() {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                        // 为什么会为空
+                        if(ivAnimation==null){
+                            return;
+                        }
                         ivAnimation.setImageDrawable(resource);
-
+                        mPhotoViewAttacher.update();
                         // 获取到模糊图进行放大动画
-                        if (!hasAnim) {
+                        if (!hasAnim && animateIn) {
                             hasAnim = true;
                             startInAnim(rect);
                         }
-
                     }
                 });
     }
 
     public static PhotoViewPictureFragment newInstance(String path, AnimationRect rect,
-                                                     boolean animationIn) {
+                                                       boolean animationIn) {
         PhotoViewPictureFragment fragment = new PhotoViewPictureFragment();
         Bundle bundle = new Bundle();
         bundle.putString("path", path);
@@ -109,11 +114,11 @@ public class PhotoViewPictureFragment extends TSFragment {
 
     public void animationExit(ObjectAnimator backgroundAnimator) {
         // 图片处于放大状态，先让它复原
-       /* if (Math.abs(ivAnimation.getScale() - 1.0f) > 0.1f) {
-            ivAnimation.setScale(1, true);
-            return;
-        }*/
 
+        if (Math.abs(mPhotoViewAttacher.getScale() - 1.0f) > 0.1f) {
+            mPhotoViewAttacher.setScale(1, true);
+            return;
+        }
         getActivity().overridePendingTransition(0, 0);
         animateClose(backgroundAnimator);
     }
@@ -278,9 +283,4 @@ public class PhotoViewPictureFragment extends TSFragment {
                 });
     }
 
-
-    @OnClick(R.id.iv_animation)
-    public void onClick() {
-        getActivity().onBackPressed();
-    }
 }

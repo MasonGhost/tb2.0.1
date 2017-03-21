@@ -93,8 +93,7 @@ ext {
             //robolectric与dagger中间接依赖的冲突，故锁定版本
             guava                        : "com.google.guava:guava:${guavaVwesion}",
             refresh                      : "com.github.Aspsine:SwipeToLoadLayout:${refreshVersion}",
-            clickSpanLink                : "com.klinkerapps:link_builder:${clickSpanLinkVersion}"
-
+            clickSpanLink                : "com.klinkerapps:link_builder:${clickSpanLinkVersion}",
 
     ]
     sdksoupportDependencies = [

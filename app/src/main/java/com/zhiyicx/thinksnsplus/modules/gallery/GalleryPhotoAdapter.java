@@ -33,7 +33,7 @@ public class GalleryPhotoAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         ImageBean imageBean = fileList.get(position);
-        ImageDetailFragment imageDetailFragment = ImageDetailFragment.newInstance(imageBean);
+        GalleryPictureFragment imageDetailFragment = GalleryPictureFragment.newInstance(imageBean);
         return imageDetailFragment;
     }
 
