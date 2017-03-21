@@ -289,14 +289,29 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
      * @param backgroundAnimator
      */
     public void animationExit(ObjectAnimator backgroundAnimator) {
-        // 图片处于放大状态，先让它复原
-        if (Math.abs(mPhotoViewAttacherNormal.getScale() - 1.0f) > 0.1f) {
-            mPhotoViewAttacherNormal.setScale(1, true);
-            return;
+        // 高清图片可见，那就高清图片退出动画
+        if (mIvPager.getVisibility() == View.VISIBLE) {
+            // 图片处于放大状态，先让它复原
+            if (Math.abs(mPhotoViewAttacherNormal.getScale() - 1.0f) > 0.1f) {
+                mPhotoViewAttacherNormal.setScale(1, true);
+                return;
+            }
+            getActivity().overridePendingTransition(0, 0);
+            AnimationRectBean rect = getArguments().getParcelable("rect");
+            TransferImageAnimationUtil.animateClose(backgroundAnimator, rect, mIvPager);
         }
-        getActivity().overridePendingTransition(0, 0);
-        AnimationRectBean rect = getArguments().getParcelable("rect");
-        TransferImageAnimationUtil.animateClose(backgroundAnimator, rect, mIvPager);
+        // 原图可见，退出就是用原图
+        if (mIvOriginPager.getVisibility() == View.VISIBLE) {
+            // 图片处于放大状态，先让它复原
+            if (Math.abs(mPhotoViewAttacherOrigin.getScale() - 1.0f) > 0.1f) {
+                mPhotoViewAttacherOrigin.setScale(1, true);
+                return;
+            }
+            getActivity().overridePendingTransition(0, 0);
+            AnimationRectBean rect = getArguments().getParcelable("rect");
+            TransferImageAnimationUtil.animateClose(backgroundAnimator, rect, mIvOriginPager);
+        }
+
     }
 
     /**
