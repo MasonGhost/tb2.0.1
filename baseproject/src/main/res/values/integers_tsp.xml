@@ -6,11 +6,11 @@
     <!--手机号长度-->
     <integer name="phone_number_length">11</integer>
     <!--密码最大长度-->
-    <integer name="password_maxlenght">16</integer>
+    <integer name="password_maxlenght">999999</integer>
     <!--密码最小长度-->
     <integer name="password_min_length">6</integer>
     <!--用户名最大长度-->
-    <integer name="username_max_length">20</integer>
+    <integer name="username_max_length">8</integer>
     <!--用户名最小长度 ,数量代表字符-->
     <integer name="username_min_length">4</integer>
     <!--验证码长度-->
@@ -68,7 +68,5 @@
     <integer name="no_line_height">0</integer>
     <!--tab的文字大小，单位sp-->
     <integer name="tab_text_size">18</integer>
-
-    <!--#########################################      分割线       ################################-->
 
 </resources>

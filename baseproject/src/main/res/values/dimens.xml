@@ -30,6 +30,8 @@
     <dimen name="button_send_vertify_code_min_width">75dp</dimen>
     <!--可操作按钮列表高度-->
     <dimen name="action_button_list_item_height">45dp</dimen>
+    <!--修改个人资料 说明标题宽度-->
+    <dimen name="uerinfo_sub_title_hint_with">50dp</dimen>
     <!--个人资料头像按钮高度-->
     <dimen name="userinfo_head_icon_container_hegiht">80dp</dimen>
     <!--个人资料按钮高度-->
