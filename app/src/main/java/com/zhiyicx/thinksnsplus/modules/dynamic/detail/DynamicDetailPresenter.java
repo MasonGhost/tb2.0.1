@@ -29,6 +29,7 @@ import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,8 +37,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean.STATUS_DIGG_FEED_CHECKED;
@@ -72,6 +76,11 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
     @Inject
     public DynamicDetailPresenter(DynamicDetailContract.Repository repository, DynamicDetailContract.View rootView) {
         super(repository, rootView);
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
     }
 
     @Override
@@ -333,6 +342,51 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         mRepository.sendComment(commentContent, mRootView.getCurrentDynamic().getFeed_id(), replyToUserId, creatComment.getComment_mark());
 
     }
+    /**
+     * 处理发送动态数据
+     *
+     * @param dynamicCommentBean
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_DYNAMIC_LIST)
+    public void handleSendComment(DynamicCommentBean dynamicCommentBean) {
+        System.out.println("dynamicCommentBean = " + dynamicCommentBean.toString());
+        Observable.just(dynamicCommentBean)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<DynamicCommentBean, Integer>() {
+                    @Override
+                    public Integer call(DynamicCommentBean dynamicCommentBean) {
+                        int size = mRootView.getDatas().size();
+                        int dynamicPosition = -1;
+                        for (int i = 0; i < size; i++) {
+                            if (mRootView.getDatas().get(i).getFeed_mark().equals(dynamicCommentBean.getFeed_mark())) {
+                                dynamicPosition = i;
+                                mRootView.getDatas().get(i).setState(dynamicCommentBean.getState());
+                                mRootView.getDatas().get(i).setComment_id(dynamicCommentBean.getComment_id());
+                                mRootView.getDatas().get(i).setComment_mark(dynamicCommentBean.getComment_mark());
+                                break;
+                            }
+                        }
+                        return dynamicPosition;
+                    }
+                })
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer integer) {
+                        System.out.println("integer = " + integer);
+                        if (integer != -1) {
+                            mRootView.refresh(integer);
+                        }
+
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
+
+    }
 
     @Override
     public void onDestroy() {
@@ -346,4 +400,5 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         bundle.putParcelable(DYNAMIC_DETAIL_DATA, mRootView.getCurrentDynamic());
         EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_DYNAMIC);
     }
+
 }

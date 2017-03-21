@@ -261,7 +261,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             ImageView imageView = holder.getView(id);
             AnimationRect rect = AnimationRect.buildFromImageView(imageView);
             animationRectArrayList.add(rect);
-            LogUtils.i("dynamic_"+i+rect.toString());
+            LogUtils.i("dynamic_" + i + rect.toString());
 
           /*  if (i < layoutManager.findFirstVisibleItemPosition()) {
                 // 顶部，无法全部看见的图片
@@ -405,9 +405,13 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     public void onCommentContentClick(DynamicBean dynamicBean, int position) {
         mCurrentPostion = mAdapter.getDatas().indexOf(dynamicBean);
-        if (dynamicBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id() && dynamicBean.getComments().get(position).getComment_id() != null) {
-            initLoginOutPopupWindow(dynamicBean, mCurrentPostion, position);
-            mDeletCommentPopWindow.show();
+        if (dynamicBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
+            if (dynamicBean.getComments().get(position).getComment_id() != null) {
+                initLoginOutPopupWindow(dynamicBean, mCurrentPostion, position);
+                mDeletCommentPopWindow.show();
+            } else {
+                return;
+            }
         } else {
             showCommentView();
             mReplyToUserId = dynamicBean.getComments().get(position).getUser_id();
@@ -431,11 +435,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      * @param text
      */
     @Override
-    public void onSendClick(View v, String text) {
+    public void onSendClick(View v, final String text) {
+        com.zhiyicx.imsdk.utils.common.DeviceUtils.hideSoftKeyboard(getContext(), v);
         mIlvComment.setVisibility(View.GONE);
         mVShadow.setVisibility(View.GONE);
         mPresenter.sendComment(mCurrentPostion, mReplyToUserId, text);
-        com.zhiyicx.imsdk.utils.common.DeviceUtils.hideSoftKeyboard(getContext(), v);
         showBottomView(true);
     }
 

@@ -441,16 +441,20 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         DeviceUtils.hideSoftKeyboard(getContext(), v);
         mIlvComment.setVisibility(View.GONE);
         mVShadow.setVisibility(View.GONE);
-        mLLBottomMenuContainer.setVisibility(View.VISIBLE);
         mPresenter.sendComment(mReplyUserId, text);
+        mLLBottomMenuContainer.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         position = position - 1;// 减去 header
-        if (mDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id() && mDatas.get(position).getComment_id() != null) {
-            initLoginOutPopupWindow(mDatas.get(position).getComment_id(), position);
-            mDeletCommentPopWindow.show();
+        if (mDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
+            if (mDatas.get(position).getComment_id() != null) {
+                initLoginOutPopupWindow(mDatas.get(position).getComment_id(), position);
+                mDeletCommentPopWindow.show();
+            } else {
+                return;
+            }
         } else {
             mReplyUserId = mDatas.get(position).getUser_id();
             showCommentView();

@@ -381,6 +381,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_DYNAMIC_LIST)
     public void handleSendComment(DynamicCommentBean dynamicCommentBean) {
+        System.out.println("dynamicCommentBean = " + dynamicCommentBean.toString());
         Observable.just(dynamicCommentBean)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -400,6 +401,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                             for (int i = 0; i < commentSize; i++) {
                                 if (mRootView.getDatas().get(dynamicPosition).getComments().get(i).getFeed_mark().equals(dynamicCommentBean.getFeed_mark())) {
                                     mRootView.getDatas().get(dynamicPosition).getComments().get(i).setState(dynamicCommentBean.getState());
+                                    mRootView.getDatas().get(dynamicPosition).getComments().get(i).setComment_id(dynamicCommentBean.getComment_id());
                                     mRootView.getDatas().get(dynamicPosition).getComments().get(i).setComment_mark(dynamicCommentBean.getComment_mark());
                                     break;
                                 }
@@ -411,6 +413,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                 .subscribe(new Action1<Integer>() {
                     @Override
                     public void call(Integer integer) {
+                        System.out.println("integer = " + integer);
                         if (integer != -1) {
                             mRootView.refresh(integer);
                         }
