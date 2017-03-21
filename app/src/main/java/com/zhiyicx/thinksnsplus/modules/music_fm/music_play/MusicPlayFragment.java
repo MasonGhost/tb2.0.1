@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.animation.ValueAnimator;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideMusicBgTransform;
 import com.zhiyicx.baseproject.widget.popwindow.ListPopupWindow;
@@ -40,6 +41,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
 import com.zhiyicx.thinksnsplus.widget.PlayerSeekBar;
 import com.zhiyicx.thinksnsplus.widget.pager_recyclerview.LoopPagerRecyclerView;
@@ -68,6 +70,8 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_LOAD;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERLOOP;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERSINGLE;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailFragment
+        .MUSIC_INFO;
 
 /**
  * @Author Jliuer
@@ -119,7 +123,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     private CommonAdapter mAdapter;
 
-    private List<String> mStringList = new ArrayList<>();
+    private List<MusicAlbumDetailsBean.MusicsBean> mStringList = new ArrayList<>();
 
     /**
      * 指针位置flag
@@ -166,6 +170,8 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     private boolean isConnected;
     private boolean isComplete;
     private boolean isSeekTo;
+    private MediaDescriptionCompat mMediaDescriptionCompat;
+    private MusicAlbumDetailsBean mMusicAlbumDetailsBean;
 
     /**
      * 音乐播放事件回调
@@ -199,6 +205,12 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                     }
                 }
             };
+
+    public static MusicPlayFragment newInstance(Bundle args) {
+        MusicPlayFragment fragment = new MusicPlayFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -273,11 +285,11 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     @Override
     protected void initView(View rootView) {
         initListener();
+        mMusicAlbumDetailsBean = (MusicAlbumDetailsBean) getArguments().getSerializable
+                (MUSIC_INFO);
+        mStringList = mMusicAlbumDetailsBean.getMusics();
 
-        mStringList.add("");
-        mStringList.add("");
-        mStringList.add("");
-        mStringList.add("");
+        mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         mFragmentMusicPalyProgress.setIndeterminate(false);
         mFragmentMusicPalyLrc.setMovementMethod(ScrollingMovementMethod.getInstance());
         mListPopupWindow = ListPopupWindow.Builder()
@@ -295,12 +307,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         mFragmentMusicPalyRv.setAdapter(getMediaListAdapter());
         mFragmentMusicPalyRv.setHasFixedSize(true);
 
-        mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
-                .transformation(new GlideMusicBgTransform(getActivity()))
-                .imagerView(mFragmentMusicPalyBg)
-                .resourceId(R.mipmap.npc)
-                .build());
     }
 
     @Override
@@ -328,6 +334,16 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     }
 
+    @Override
+    public void digMusic(boolean b) {
+
+    }
+
+    @Override
+    public void cancleDigMusic(boolean b) {
+
+    }
+
     @OnClick({R.id.fragment_music_paly_share, R.id.fragment_music_paly_like, R.id
             .fragment_music_paly_comment, R.id.fragment_music_paly_lyrics, R.id
             .fragment_music_paly_order, R.id.fragment_music_paly_preview, R.id
@@ -338,15 +354,14 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             case R.id.fragment_music_paly_share:
                 break;
             case R.id.fragment_music_paly_like:
+                mPresenter.digMusic(mMediaDescriptionCompat.getMediaId());
                 break;
             case R.id.fragment_music_paly_comment:
-                mStringList.add("");
-                mStringList.add("");
                 mListPopupWindow.dataChange(mStringList);
                 break;
             case R.id.fragment_music_paly_order:
                 getActivity().getSupportMediaController().getTransportControls()
-                        .sendCustomAction(mDefalultOrder + "",null);
+                        .sendCustomAction(mDefalultOrder + "", null);
                 mFragmentMusicPalyOrder.setImageResource(mOrderModule[mDefalultOrder]);
                 SharePreferenceUtils.setInterger(getActivity(),
                         SharePreferenceTagConfig.SHAREPREFERENCE_TAG_MUSIC, mDefalultOrder);
@@ -463,6 +478,8 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                         getActivity().getSupportMediaController().getTransportControls()
                                 .skipToPrevious();
                     }
+                    mFragmentMusicPalyLrc.setText(mStringList.get(newPosition%mStringList.size())
+                            .getMusic_info().getLyric());
                 }
             }
 
@@ -527,6 +544,14 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         if (description == null) {
 
             return;
+        } else {
+            mMediaDescriptionCompat = description;
+
+            mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
+                    .transformation(new GlideMusicBgTransform(getActivity()))
+                    .imagerView(mFragmentMusicPalyBg)
+                    .url(description.getIconUri() + "")
+                    .build());
         }
 
     }
@@ -738,12 +763,15 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     @NonNull
     private CommonAdapter getPopListAdapter() {
-        CommonAdapter adapter = new CommonAdapter<String>(getActivity(), R.layout
-                .item_music_pop_list,
-                mStringList) {
+        CommonAdapter adapter = new CommonAdapter<MusicAlbumDetailsBean.MusicsBean>(getActivity()
+                , R.layout.item_music_detail_list,mStringList) {
             @Override
-            protected void convert(ViewHolder holder, String s, int position) {
-
+            protected void convert(ViewHolder holder, MusicAlbumDetailsBean.MusicsBean s, int
+                    position) {
+                TextView musicName = holder.getView(R.id.item_music_name);
+                TextView authorName = holder.getView(R.id.item_music_author);
+                musicName.setText(s.getMusic_info().getTitle());
+                authorName.setText("-"+s.getMusic_info().getSinger().getName());
             }
         };
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
@@ -763,16 +791,19 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     @NonNull
     private CommonAdapter getMediaListAdapter() {
-        mAdapter = new CommonAdapter<String>(getActivity(), R.layout.item_music_play, mStringList) {
+        mAdapter = new CommonAdapter<MusicAlbumDetailsBean.MusicsBean>(getActivity(),
+                R.layout.item_music_play, mStringList) {
             @Override
-            protected void convert(ViewHolder holder, String o, final int position) {
-                ImageView imageView = holder.getView(R.id.fragment_music_paly_phonograph);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                });
+            protected void convert(ViewHolder holder, MusicAlbumDetailsBean.MusicsBean o, final
+            int position) {
+                ImageView image=holder.getView(R.id.fragment_music_paly_img);
+                String imageUrl = String.format(ApiConfig.NO_PROCESS_IMAGE_PATH,
+                        o.getMusic_info().getSinger().getCover().getId(),50);
+                LogUtils.d(imageUrl);
+                mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
+                        .imagerView(image)
+                        .url(imageUrl)
+                        .build());
             }
         };
         mAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
@@ -800,21 +831,21 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     private void showLrc() {
         mFragmentMusicPalyRv.setVisibility(View.GONE);
         mFragmentMusicPalyPhonographPoint.setVisibility(View.GONE);
-        mFragmentMusicPalyLrc.setText("dfjie \n sdadw\n dsadw\n sawfsdw\n sdwdawdaw\n" +
-                "dsfese\n wwoifej\n dieieuww\n eueueu\n iwoidbw\n uwiqwh\n sadiuwu\n " +
-                "wuuroh\n" +
-                "dfioeii\n cncjdj\n kjjsdjoieo\n euiwuvc\n oirklsdh\n ueudif\n dfjie \n" +
-                " sdadw\n" +
-                " dsadw\n" +
-                " sawfsdw\n" +
-                " sdwdawdaw\n" +
-                "\" +\n" +
-                "                        \"dsfese\\n wwoifej\\n dieieuww\\n eueueu\\n " +
-                "iwoidbw\\n uwiqwh\\n sadiuwu\\n \" +\n" +
-                "                        \"wuuroh\\n\" +\n" +
-                "                        \"dfioeii\n" +
-                " cncjdj\n" +
-                " kjjsdjoieo\n");
+//        mFragmentMusicPalyLrc.setText("dfjie \n sdadw\n dsadw\n sawfsdw\n sdwdawdaw\n" +
+//                "dsfese\n wwoifej\n dieieuww\n eueueu\n iwoidbw\n uwiqwh\n sadiuwu\n " +
+//                "wuuroh\n" +
+//                "dfioeii\n cncjdj\n kjjsdjoieo\n euiwuvc\n oirklsdh\n ueudif\n dfjie \n" +
+//                " sdadw\n" +
+//                " dsadw\n" +
+//                " sawfsdw\n" +
+//                " sdwdawdaw\n" +
+//                "\" +\n" +
+//                "                        \"dsfese\\n wwoifej\\n dieieuww\\n eueueu\\n " +
+//                "iwoidbw\\n uwiqwh\\n sadiuwu\\n \" +\n" +
+//                "                        \"wuuroh\\n\" +\n" +
+//                "                        \"dfioeii\n" +
+//                " cncjdj\n" +
+//                " kjjsdjoieo\n");
         mFragmentMusicPalyLrc.setVisibility(View.VISIBLE);
     }
 

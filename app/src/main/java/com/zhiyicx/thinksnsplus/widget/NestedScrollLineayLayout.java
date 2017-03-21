@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.OverScroller;
 
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 /**
@@ -107,8 +106,6 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
         if (mOnHeadFlingListener != null && getScrollY() <= mTopViewHeight) {
             mOnHeadFlingListener.onHeadFling(getScrollY());
         }
-
-        LogUtils.d("onNestedPreScroll" + getScrollY());
 
     }
 

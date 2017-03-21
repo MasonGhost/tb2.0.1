@@ -177,6 +177,14 @@ public class QueueManager {
         }
     }
 
+    public MusicProvider getMusicProvider() {
+        return mMusicProvider;
+    }
+
+    public void setMusicProvider(MusicProvider musicProvider) {
+        mMusicProvider = musicProvider;
+    }
+
     public interface MetadataUpdateListener {
         void onMetadataChanged(MediaMetadataCompat metadata);
 

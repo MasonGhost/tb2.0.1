@@ -104,11 +104,6 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     }
 
     @Override
-    protected int setListBackColor() {
-        return R.color.white;
-    }
-
-    @Override
     protected CommonAdapter<MusicAlbumListBean> getAdapter() {
         return new CommonAdapter<MusicAlbumListBean>(getActivity(), R.layout.item_music_list,
                 mMusicListBeen) {

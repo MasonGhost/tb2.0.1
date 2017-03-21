@@ -86,6 +86,14 @@ public class ListPopupWindow extends PopupWindow {
                 setWindowAlpha(1.0f);
             }
         });
+
+        mContentView.findViewById(R.id.tv_pop_list_cancle).setOnClickListener(new View
+                .OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
     }
 
     private void setWindowAlpha(float alpha) {

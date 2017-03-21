@@ -20,6 +20,7 @@ import rx.Observable;
  */
 
 public class MusicPlayRepository implements MusicPlayContract.Repository {
+
     MusicClient mMusicClient;
 
     @Inject
@@ -28,7 +29,12 @@ public class MusicPlayRepository implements MusicPlayContract.Repository {
     }
 
     @Override
-    public Observable<BaseJson<MusicAlbumListBean>> getMusicList(Map map) {
-        return null;
+    public Observable<BaseJson<Integer>> doDigg(String music_id) {
+        return mMusicClient.doDigg(music_id);
+    }
+
+    @Override
+    public Observable<BaseJson<Integer>> cancleDigg(String music_id) {
+        return mMusicClient.cancleDigg(music_id);
     }
 }

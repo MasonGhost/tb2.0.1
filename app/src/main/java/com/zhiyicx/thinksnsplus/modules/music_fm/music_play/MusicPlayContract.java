@@ -18,14 +18,17 @@ import rx.Observable;
 public interface MusicPlayContract {
 
     interface View extends IBaseView<Presenter> {
-
+        void digMusic(boolean b);
+        void cancleDigMusic(boolean b);
     }
 
     interface Presenter extends IBasePresenter {
-
+        void digMusic(String music_id);
+        void cancleDigMusic(String music_id);
     }
 
     interface Repository {
-        Observable<BaseJson<MusicAlbumListBean>> getMusicList(Map map);
+        Observable<BaseJson<Integer>> doDigg(String music_id);
+        Observable<BaseJson<Integer>> cancleDigg(String music_id);
     }
 }
