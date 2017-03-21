@@ -22,6 +22,7 @@ import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -240,6 +241,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                 .using(new ProgressModelLoader(new Handler() {
                     @Override
                     public void handleMessage(Message msg) {
+                        // 这部分的图片，都是通过OKHttp从网络获取的，如果改图片从glide缓存中读取，不会经过这儿
                         if (msg.what == ProgressListener.SEND_LOAD_PROGRESS) {
                             int totalReadBytes = msg.arg1;
                             int lengthBytes = msg.arg2;
@@ -248,8 +250,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                             LogUtils.i("progress-result:-->" + progressResult + " msg.arg1-->" + msg.arg1 + "  msg.arg2-->" +
                                     msg.arg2 + " 比例-->" + progressResult + "%/" + "100%");
                             if (progressResult == 100) {
-                                mIvOriginPager.setVisibility(View.VISIBLE);
-                                mIvPager.setVisibility(View.GONE);
+                                mTvOriginPhoto.setText(R.string.completed);
                             }
                         }
                     }
@@ -257,32 +258,29 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                 .load(imageUrl)
                 .placeholder(R.drawable.shape_default_image)
                 .error(R.drawable.shape_default_image)
-//                .listener(new RequestListener<String, GlideDrawable>() {
-//                    @Override
-//                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-//                        mTvOriginPhoto.setText(getString(R.string.load_error));
-////                        mIvOriginPager.setVisibility(View.VISIBLE);
-//                        return false;
-//                    }
-//
-//                    @Override
-//                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-//                        mTvOriginPhoto.setText(100 + "%/" + "100%");
-//                        mIvOriginPager.setVisibility(View.VISIBLE);
-//                        mIvPager.setVisibility(View.GONE);
-//                        return false;
-//                    }
-//                })
                 .into(new SimpleTarget<GlideDrawable>() {
-                    @Override
-                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                        mTvOriginPhoto.setText(100 + "%/" + "100%");
-                        mIvOriginPager.setImageDrawable(resource);
-                        mPhotoViewAttacherOrigin.update();
-                        mIvOriginPager.setVisibility(View.VISIBLE);
-                        mIvPager.setVisibility(View.GONE);
-                    }
-                });
+                          @Override
+                          public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                              mTvOriginPhoto.setText(R.string.completed);
+                              mIvOriginPager.setImageDrawable(resource);
+                              mPhotoViewAttacherOrigin.update();
+                              mIvOriginPager.setVisibility(View.VISIBLE);
+                              // 直接隐藏掉图片会有闪烁的效果，通过判断图片渲染成功后，隐藏，平滑过渡
+                              Runnable runnable = new Runnable() {
+                                  @Override
+                                  public void run() {
+                                      while (mIvOriginPager.getDrawable() != null) {
+                                          mIvPager.setVisibility(View.GONE);
+                                          mTvOriginPhoto.setVisibility(View.GONE);
+                                          break;
+                                      }
+                                  }
+                              };
+                              runnable.run();
+
+                          }
+                      }
+                );
     }
 
     /**
