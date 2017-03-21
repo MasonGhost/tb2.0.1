@@ -1,8 +1,13 @@
 package com.zhiyicx.thinksnsplus;
 
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import org.junit.Test;
+
+import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func2;
 
 /**
  * @Describe
@@ -34,6 +39,37 @@ public class TimeTest {
     public void getCurrenZeroTime() {
         System.out.println("cal str = " + TimeUtils.getCurrenZeroTimeStr());
         System.out.println("cal  long= " + TimeUtils.getCurrenZeroTime());
+
+    }
+
+    @Test
+    public void rxMerge() {
+        UserInfoBean userInfoBean1=new UserInfoBean();
+        userInfoBean1.setUser_id(10L);
+        UserInfoBean userInfoBean2=new UserInfoBean();
+        userInfoBean2.setName("李四");
+        Observable<UserInfoBean>  userInfoBeanObservable1= Observable.just(userInfoBean1);
+        Observable<UserInfoBean>  userInfoBeanObservable2= Observable.just(userInfoBean2);
+        Observable.merge(userInfoBeanObservable1,userInfoBeanObservable2)
+                .subscribe(new Action1<UserInfoBean>() {
+                    @Override
+                    public void call(UserInfoBean userInfoBean) {
+                        System.out.println("userInfoBean = " + userInfoBean.getUser_id());
+                    }
+                });
+        Observable.zip(userInfoBeanObservable1, userInfoBeanObservable2, new Func2<UserInfoBean, UserInfoBean, UserInfoBean>() {
+            @Override
+            public UserInfoBean call(UserInfoBean userInfoBean, UserInfoBean userInfoBean2) {
+                userInfoBean.setName(userInfoBean2.getName());
+                return userInfoBean;
+            }
+        }).subscribe(new Action1<UserInfoBean>() {
+            @Override
+            public void call(UserInfoBean userInfoBean) {
+                System.out.println("userInfoBean = " + userInfoBean.getUser_id()+userInfoBean.getName());
+            }
+        });
+
 
     }
 }

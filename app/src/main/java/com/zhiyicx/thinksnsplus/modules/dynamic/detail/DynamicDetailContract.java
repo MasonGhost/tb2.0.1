@@ -87,6 +87,11 @@ public interface DynamicDetailContract {
 
         void refresh(int position);
 
+        /**
+         * 所有数据都有了，直接显示
+         */
+        void allDataReady();
+
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
@@ -101,6 +106,11 @@ public interface DynamicDetailContract {
     }
 
     interface Presenter extends ITSListPresenter<DynamicCommentBean> {
+        /**
+         * 获取当前动态的点赞列表
+         */
+        void getDetailAll(Long feed_id, Long max_id, String user_ids);
+
         /**
          * 获取当前动态的点赞列表
          */

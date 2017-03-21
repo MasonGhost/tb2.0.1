@@ -327,7 +327,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     /**
      * 关闭加载动画
      */
-    public void closeLoadin() {
+    public void closeLoading() {
         if (mCenterLoadingView != null) {
             ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).stop();
             mCenterLoadingView.setVisibility(View.GONE);

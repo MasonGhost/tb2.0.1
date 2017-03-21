@@ -132,6 +132,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         return true;
     }
 
+    /**
+     * 特别修改
+     *
+     * @return
+     */
     @Override
     protected int getstatusbarAndToolbarHeight() {
         return getResources().getDimensionPixelSize(R.dimen.toolbar_and_statusbar_height);
@@ -201,17 +206,18 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         if (bundle != null && bundle.containsKey(DYNAMIC_DETAIL_DATA)) {
             mIsLookMore = bundle.getBoolean(LOOK_COMMENT_MORE);
             mDynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
-            setToolBarUser(mDynamicBean);// 设置标题用户
-            initBottomToolData(mDynamicBean);// 初始化底部工具栏数据
-            // 设置动态详情列表数据
-            mDynamicDetailHeader.setDynamicDetial(mDynamicBean);
-            updateCommentCountAndDig();
-            onNetResponseSuccess(mDynamicBean.getComments(), false);
-            mPresenter.getDynamicDigList(mDynamicBean.getFeed_id(), 0L);
-            mPresenter.requestNetData(0L, false);// 获取评论列表
-            if (mIsLookMore) {
-                mRvList.scrollToPosition(1);
-            }
+            mPresenter.getDetailAll(mDynamicBean.getFeed_id(), 0L, mDynamicBean.getUser_id() + "");
+//            setToolBarUser(mDynamicBean);// 设置标题用户
+//            initBottomToolData(mDynamicBean);// 初始化底部工具栏数据
+//             设置动态详情列表数据
+//            mDynamicDetailHeader.setDynamicDetial(mDynamicBean);
+//            updateCommentCountAndDig();
+//            onNetResponseSuccess(mDynamicBean.getComments(), false);
+//            mPresenter.getDynamicDigList(mDynamicBean.getFeed_id(), 0L);
+//            mPresenter.requestNetData(0L, false);// 获取评论列表
+//            if (mIsLookMore) {
+//                mRvList.scrollToPosition(1);
+//            }
         }
     }
 
@@ -275,15 +281,15 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                         mTvToolbarCenter.setCompoundDrawables(resource, null, null, null);
                     }
                 });
-        // 如果当前动态所属用户，就是当前用户，隐藏关注按钮
-        long user_id = dynamicBean.getUser_id();
-        if (AppApplication.getmCurrentLoginAuth() != null && user_id == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-            mTvToolbarRight.setVisibility(View.GONE);
-        } else {
-            // 获取用户关注状态
-            mPresenter.getUserFollowState(user_id + "");
-            mTvToolbarRight.setVisibility(View.VISIBLE);
-        }
+//        // 如果当前动态所属用户，就是当前用户，隐藏关注按钮
+//        long user_id = dynamicBean.getUser_id();
+//        if (AppApplication.getmCurrentLoginAuth() != null && user_id == AppApplication.getmCurrentLoginAuth().getUser_id()) {
+//            mTvToolbarRight.setVisibility(View.GONE);
+//        } else {
+//            // 获取用户关注状态
+//            mPresenter.getUserFollowState(user_id + "");
+//            mTvToolbarRight.setVisibility(View.VISIBLE);
+//        }
 
     }
 
@@ -342,6 +348,33 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     public void refresh(int position) {
         mHeaderAndFooterWrapper.notifyItemChanged(position);
+    }
+
+    @Override
+    public void allDataReady() {
+        closeLoading();
+        setAllData();
+    }
+
+    private void setAllData() {
+        setToolBarUser(mDynamicBean);// 设置标题用户
+        initBottomToolData(mDynamicBean);// 初始化底部工具栏数据
+//        设置动态详情列表数据
+        mDynamicDetailHeader.setDynamicDetial(mDynamicBean);
+        updateCommentCountAndDig();
+        onNetResponseSuccess(mDynamicBean.getComments(), false);
+        if (mIsLookMore) {
+            mRvList.scrollToPosition(1);
+        }
+        // 如果当前动态所属用户，就是当前用户，隐藏关注按钮
+        long user_id = mDynamicBean.getUser_id();
+        if (AppApplication.getmCurrentLoginAuth() != null && user_id == AppApplication.getmCurrentLoginAuth().getUser_id()) {
+            mTvToolbarRight.setVisibility(View.GONE);
+        } else {
+            // 获取用户关注状态
+            mPresenter.getUserFollowState(user_id + "");
+            mTvToolbarRight.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
