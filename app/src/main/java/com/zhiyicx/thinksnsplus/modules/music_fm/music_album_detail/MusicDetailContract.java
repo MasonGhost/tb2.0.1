@@ -25,6 +25,7 @@ public interface MusicDetailContract {
 
     interface Presenter extends IBasePresenter {
         void getMusicAblum(String id);
+
     }
 
     interface Repository {

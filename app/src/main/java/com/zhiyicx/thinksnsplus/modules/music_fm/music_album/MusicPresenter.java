@@ -54,12 +54,12 @@ public class MusicPresenter extends BasePresenter<MusicContract.Repository, Musi
 
                     @Override
                     protected void onFailure(String message) {
-
+                        mRootView.showMessage(message);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-
+                        mRootView.onResponseError(throwable,isLoadMore);
                     }
 
 

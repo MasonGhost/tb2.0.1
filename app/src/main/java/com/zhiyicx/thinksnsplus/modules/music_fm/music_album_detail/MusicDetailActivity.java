@@ -142,11 +142,11 @@ public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicD
     }
 
     protected void showPlaybackControls() {
-        if (NetUtils.netIsConnected(this)) {
-            getSupportFragmentManager().beginTransaction()
-                    .show(mPlayBackFragment)
-                    .commit();
-        }
+//        if (NetUtils.netIsConnected(this)) {
+//            getSupportFragmentManager().beginTransaction()
+//                    .show(mPlayBackFragment)
+//                    .commit();
+//        }
     }
 
     protected void hidePlaybackControls() {
