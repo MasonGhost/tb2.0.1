@@ -8,6 +8,7 @@ import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
 
 import java.util.ArrayList;
@@ -78,6 +79,7 @@ public class MusicProvider {
     }
 
     public Iterable<MediaMetadataCompat> getMusicsByGenre(String genre) {
+        LogUtils.d(genre);
         if (mCurrentState != State.INITIALIZED || !mMusicListByGenre.containsKey(genre)) {
             return Collections.emptyList();
         }
@@ -142,7 +144,8 @@ public class MusicProvider {
             }
             return;
         }
-
+        mMusicListByGenre.clear();
+        mMusicListById.clear();
         new AsyncTask<Void, Void, State>() {
             @Override
             protected State doInBackground(Void... params) {
@@ -173,6 +176,7 @@ public class MusicProvider {
             list.add(m.metadata);
         }
         mMusicListByGenre = newMusicListByGenre;
+
     }
 
     private synchronized void retrieveMedia() {
@@ -203,7 +207,7 @@ public class MusicProvider {
         if (!MediaIDHelper.isBrowseable(mediaId)) {
             return mediaItems;
         }
-
+        LogUtils.d(mediaId);
         if (MEDIA_ID_ROOT.equals(mediaId)) {
             for (String genre : getGenres()) {
                 for (MediaMetadataCompat metadata : mMusicListByGenre.get(genre)) {

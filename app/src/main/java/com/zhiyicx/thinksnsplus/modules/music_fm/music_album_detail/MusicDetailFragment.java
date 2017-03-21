@@ -101,6 +101,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     private ImageLoader mImageLoader;
 
     private static final String ARG_MEDIA_ID = "media_id";
+    public static final String MUSIC_INFO = "music_info";
     private Bitmap mBgBitmap;
 
     private String mMediaId;
@@ -125,7 +126,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                     }
                     mAdapter.notifyDataSetChanged();
                     getArgMediaId = metadata.getDescription().getMediaId();
-                    LogUtils.d(getArgMediaId);
                 }
 
                 @Override
@@ -139,8 +139,8 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 @Override
                 public void onChildrenLoaded(@NonNull String parentId,
                                              @NonNull List<MediaBrowserCompat.MediaItem> children) {
-                    mAdapterList.addAll(children);
-                    mAdapter.notifyDataSetChanged();
+                    mAdapter.dataChange(children);
+                    LogUtils.d("onChildrenLoaded" + children.size());
                 }
 
                 @Override
@@ -249,11 +249,10 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
     @Override
     public void setMusicAblum(MusicAlbumDetailsBean musicAblum) {
-        mAlbumDetailsBean=musicAblum;
-        Bundle bundle=new Bundle();
-        bundle.putSerializable("tym",musicAblum);
-        getActivity().getSupportMediaController().getTransportControls().sendCustomAction("tym",
-                bundle);
+        mAlbumDetailsBean = musicAblum;
+        if (mCompatProvider.getMediaBrowser().isConnected()) {
+            onConnected();
+        }
     }
 
     @Override
@@ -325,16 +324,17 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         MediaControllerCompat controller = getActivity()
                 .getSupportMediaController();
         if (controller != null) {
-            if (mAlbumDetailsBean!=null){
-                Bundle bundle=new Bundle();
-                bundle.putSerializable("tym",mAlbumDetailsBean);
-                controller.getTransportControls().sendCustomAction("tym",bundle);
+            if (mAlbumDetailsBean != null) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("tym", mAlbumDetailsBean);
+                controller.getTransportControls().sendCustomAction("tym", bundle);
 
                 mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
                 mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
             }
             controller.registerCallback(mMediaControllerCallback);
         }
+
     }
 
     @NonNull
@@ -347,6 +347,9 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                     position) {
                 TextView musicName = holder.getView(R.id.item_music_name);
                 TextView authorName = holder.getView(R.id.item_music_author);
+                musicName.setText(item.getDescription().getTitle());
+                authorName.setText("-"+item.getDescription().getSubtitle());
+
                 Integer cachedState = (Integer) holder.itemView.getTag(R.id
                         .tag_mediaitem_state_cache);
                 int state = getMediaItemState(item);
@@ -363,9 +366,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                     authorName.setTextColor(getResources().getColor(R.color
                             .normal_for_assist_text));
                 }
-
-                holder.setText(R.id.item_music_name, "" + position);
-
             }
         };
 
@@ -374,6 +374,19 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
 
                 MediaBrowserCompat.MediaItem item = mAdapterList.get(position);
+
+                Intent intent = new Intent(getActivity(), MusicPlayActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putSerializable(MUSIC_INFO,mAlbumDetailsBean);
+                intent.putExtra(MUSIC_INFO,bundle);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                MediaControllerCompat controller = getActivity().getSupportMediaController();
+                MediaMetadataCompat metadata = controller.getMetadata();
+                if (metadata != null) {
+                    intent.putExtra(MusicDetailActivity.EXTRA_CURRENT_MEDIA_DESCRIPTION,
+                            metadata.getDescription());
+                }
+                startActivity(intent);
 
                 if (item.isPlayable()) {
                     MediaControllerCompat controllerCompat = getActivity()
@@ -387,16 +400,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                     mCompatProvider.getMediaBrowser().unsubscribe(item.getMediaId());
                     mCompatProvider.getMediaBrowser().subscribe(item.getMediaId(),
                             mSubscriptionCallback);
-                } else {
-                    Intent intent = new Intent(getActivity(), MusicPlayActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    MediaControllerCompat controller = getActivity().getSupportMediaController();
-                    MediaMetadataCompat metadata = controller.getMetadata();
-                    if (metadata != null) {
-                        intent.putExtra(MusicDetailActivity.EXTRA_CURRENT_MEDIA_DESCRIPTION,
-                                metadata.getDescription());
-                    }
-                    startActivity(intent);
                 }
 
             }
@@ -449,6 +452,11 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 .decodeResource(getResources(), R.mipmap.npc);
         mPalette = Palette.from(mBgBitmap).generate();
 
+        BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap(mBgBitmap,
+                mBgBitmap.getWidth
+                        (), mBgBitmap.getHeight()));
+        mFragmentMusicDetailHeadInfo.setBackgroundDrawable(drawable);
+
         String url = String.format(ApiConfig.IMAGE_PATH,
                 mMusicAlbumListBean.getStorage().getId(), 50);
         mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
@@ -468,16 +476,17 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     private SimpleTarget target = new SimpleTarget<Bitmap>() {
         @Override
         public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
-            try {
-                mBgBitmap = bitmap;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            mPalette = Palette.from(mBgBitmap).generate();
-            BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap(mBgBitmap,
-                    mBgBitmap.getWidth
-                            (), mBgBitmap.getHeight()));
-            mFragmentMusicDetailHeadInfo.setBackgroundDrawable(drawable);
+//            LogUtils.d(Thread.currentThread());
+//            try {
+//                mBgBitmap = bitmap;
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            mPalette = Palette.from(bitmap).generate();
+//            BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap(bitmap,
+//                    bitmap.getWidth
+//                            (), bitmap.getHeight()));
+//            mFragmentMusicDetailHeadInfo.setBackgroundDrawable(drawable);
         }
     };
 }

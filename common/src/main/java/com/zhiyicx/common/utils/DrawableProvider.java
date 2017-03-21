@@ -1,5 +1,6 @@
 package com.zhiyicx.common.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -7,9 +8,13 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.media.ExifInterface;
+import android.os.Environment;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -133,7 +138,6 @@ public class DrawableProvider {
         return returnBm;
     }
 
-
     /**
      * 将图片按照某个角度进行旋转
      *
@@ -161,7 +165,6 @@ public class DrawableProvider {
         }
         return returnBm;
     }
-
 
     /**
      * 读取图片的旋转的角度
@@ -264,6 +267,43 @@ public class DrawableProvider {
         } else {
             return null;
         }
+    }
+
+    /**
+     * 保存bitmap到文件
+     *
+     * @param bm
+     * @param imgPath
+     * @return 失败返回各种提示，成功返回图片路径
+     */
+    public static String saveBitmap(Bitmap bm, String imgPath) {
+        final File f = new File(Environment.getExternalStorageDirectory(), imgPath);
+        if (f == null) {
+            return "sd卡不存在，无法保存图片";
+        }
+        if (f.exists()) {
+            f.delete();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(f);
+            boolean isSuccess = bm.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+            out.close();
+            if (isSuccess) {
+                return "图片保存成功：" + f.getAbsolutePath() + "";
+            } else {
+                return "图片保存失败";
+            }
+
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+
+        }
+        return "图片保存失败";
     }
 
 }

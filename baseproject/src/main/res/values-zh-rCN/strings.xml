@@ -76,6 +76,10 @@
 
     <!--音乐FM-->
     <string name="music_fm">音乐FM</string>
+    <string name="music_order_nomal">顺序播放</string>
+    <string name="music_order_random">随机播放</string>
+    <string name="music_order_single">单曲循环</string>
+
     <!--资讯-->
     <string name="info_editor">编辑</string>
     <string name="info_sort">长按可编辑</string>

@@ -197,7 +197,7 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 InfoTypeBean.MoreCatesBean bean = mMoreCatesBeen.get(position);
                 mSubscribeAdapter.addItem(new InfoTypeBean.MyCatesBean(bean.getId(),
-                        bean.getName()), 0);
+                        bean.getName()));
                 mUnSubscribeAdapter.removeItem(position);
                 if (!isEditor) {
                     mFragmentChannelEditor.performClick();

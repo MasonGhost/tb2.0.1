@@ -74,7 +74,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
 
     private Callback mCallback;
 
-    private final MusicProvider mMusicProvider;
+    private MusicProvider mMusicProvider;
 
     private volatile boolean mAudioNoisyReceiverRegistered;
 
@@ -441,5 +441,9 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
             mContext.unregisterReceiver(mAudioNoisyReceiver);
             mAudioNoisyReceiverRegistered = false;
         }
+    }
+
+    public void setMusicProvider(MusicProvider musicProvider) {
+        mMusicProvider = musicProvider;
     }
 }

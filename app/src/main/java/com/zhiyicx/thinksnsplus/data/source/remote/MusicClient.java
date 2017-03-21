@@ -60,32 +60,26 @@ public interface MusicClient {
                                                                           music_id);
 
     // 评论专辑
-    @FormUrlEncoded
     @POST(APP_PATH_MUSIC_ABLUM_COMMENT)
     Observable<BaseJson<Integer>> commentAblum(@Path("special_id") String special_id);
 
     // 评论歌曲
-    @FormUrlEncoded
     @POST(APP_PATH_MUSIC_COMMENT)
     Observable<BaseJson<Integer>> commentMusic(@Path("music_id") String music_id);
 
     // 点赞歌曲
-    @FormUrlEncoded
     @POST(APP_PATH_MUSIC_DIGG)
     Observable<BaseJson<Integer>> doDigg(@Path("music_id") String music_id);
 
     // 歌曲取消点赞
-    @FormUrlEncoded
     @DELETE(APP_PATH_MUSIC_DIGG)
     Observable<BaseJson<Integer>> cancleDigg(@Path("music_id") String music_id);
 
     // 收藏专辑
-    @FormUrlEncoded
     @POST(APP_PATH_MUSIC_ABLUM_COLLECT)
     Observable<BaseJson<Integer>> collectAblum(@Path("special_id") String special_id);
 
     // 取消收藏专辑
-    @FormUrlEncoded
     @DELETE(APP_PATH_MUSIC_ABLUM_COLLECT)
     Observable<BaseJson<Integer>> cancelCollectAblum(@Path("special_id") String special_id);
 }

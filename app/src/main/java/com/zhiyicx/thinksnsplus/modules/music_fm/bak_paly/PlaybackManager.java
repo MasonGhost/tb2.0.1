@@ -112,9 +112,6 @@ public class PlaybackManager implements Playback.Callback {
         if (mediaId == null) {
             return;
         }
-        String musicId = MediaIDHelper.extractMusicIDFromMediaID(mediaId);
-        Bundle customActionExtras = new Bundle();
-
     }
 
     private long getAvailableActions() {
@@ -281,7 +278,6 @@ public class PlaybackManager implements Playback.Callback {
             }else{
                 mServiceCallback.onCustomAction(action,extras);
             }
-
         }
 
         @Override
