@@ -53,7 +53,7 @@
     -->
     <color name="general_for_line_light">#ededed</color>
     <!--
-    页面的浅灰色背景
+    页面的浅灰色背景，标签、热门城市背景色
     -->
     <color name="general_for_bg_light">#f4f5f5</color>
     <color name="general_for_bg_light_alpha_0.5">#80f4f5f5</color>
