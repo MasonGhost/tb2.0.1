@@ -42,7 +42,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     protected TextView mToolbarRight;
     protected TextView mToolbarCenter;
     protected View mStatusPlaceholderView;
-    private View centerLoadingView; // 加载
+    private View mCenterLoadingView; // 加载
 
     private boolean mIscUseSatusbar = false;// 内容是否需要占用状态栏
 
@@ -91,14 +91,14 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         frameLayout.addView(bodyContainer);
         // 加载动画
         if (setUseCenterLoading()) {
-            centerLoadingView = mLayoutInflater.inflate(R.layout.view_center_loading, null);
+            mCenterLoadingView = mLayoutInflater.inflate(R.layout.view_center_loading, null);
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             if (!showToolbar()) {
                 params.setMargins(0, getstatusbarAndToolbarHeight(), 0, 0);
             }
-            centerLoadingView.setLayoutParams(params);
-            ((AnimationDrawable) ((ImageView) centerLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).start();
-            frameLayout.addView(centerLoadingView);
+            mCenterLoadingView.setLayoutParams(params);
+            ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).start();
+            frameLayout.addView(mCenterLoadingView);
         }
         linearLayout.addView(frameLayout);
         return linearLayout;
@@ -321,6 +321,16 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         } else {
             view.setText(string);
             view.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * 关闭加载动画
+     */
+    public void closeLoadin() {
+        if (mCenterLoadingView != null) {
+            ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).stop();
+            mCenterLoadingView.setVisibility(View.GONE);
         }
     }
 
