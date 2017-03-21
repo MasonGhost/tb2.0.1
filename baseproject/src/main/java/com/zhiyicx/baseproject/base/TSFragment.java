@@ -94,7 +94,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             centerLoadingView = mLayoutInflater.inflate(R.layout.view_center_loading, null);
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             if (!showToolbar()) {
-                params.setMargins(0, DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelSize(R.dimen.toolbar_height) + getResources().getDimensionPixelSize(R.dimen.divider_line), 0, 0);
+                params.setMargins(0, getstatusbarAndToolbarHeight(), 0, 0);
             }
             centerLoadingView.setLayoutParams(params);
             ((AnimationDrawable) ((ImageView) centerLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).start();
@@ -102,6 +102,15 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
         linearLayout.addView(frameLayout);
         return linearLayout;
+    }
+
+    /**
+     * 获取状态栏和操作栏的高度
+     *
+     * @return
+     */
+    protected int getstatusbarAndToolbarHeight() {
+        return DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelSize(R.dimen.toolbar_height) + getResources().getDimensionPixelSize(R.dimen.divider_line);
     }
 
     /**

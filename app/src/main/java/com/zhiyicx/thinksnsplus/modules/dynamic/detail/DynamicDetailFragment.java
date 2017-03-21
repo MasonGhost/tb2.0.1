@@ -133,6 +133,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
+    protected int getstatusbarAndToolbarHeight() {
+        return getResources().getDimensionPixelSize(R.dimen.toolbar_and_statusbar_height);
+    }
+
+    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         initBottomToolUI();
