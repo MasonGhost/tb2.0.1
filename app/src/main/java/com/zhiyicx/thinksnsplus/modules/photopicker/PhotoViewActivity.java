@@ -1,25 +1,13 @@
 package com.zhiyicx.thinksnsplus.modules.photopicker;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import me.iwf.photopicker.fragment.ImagePagerFragment;
 
 import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment.EXTRA_MAX_COUNT;
 import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment.EXTRA_VIEW_ALL_PHOTOS;
@@ -50,9 +38,9 @@ public class PhotoViewActivity extends TSActivity {
         List<String> selectedPhotos = bundle.getStringArrayList(EXTRA_VIEW_SELECTED_PHOTOS);
         int index = bundle.getInt(EXTRA_VIEW_INDEX);
         int maxCount = bundle.getInt(EXTRA_MAX_COUNT);
-        ArrayList<AnimationRect> animationRects = bundle.getParcelableArrayList("rect");
+        ArrayList<AnimationRectBean> animationRectBeen = bundle.getParcelableArrayList("rect");
         PhotoViewFragment imagePagerFragment =
-                PhotoViewFragment.newInstance(selectedPhotos, allPhotos, animationRects, index, maxCount);
+                PhotoViewFragment.newInstance(selectedPhotos, allPhotos, animationRectBeen, index, maxCount);
         return imagePagerFragment;
     }
 

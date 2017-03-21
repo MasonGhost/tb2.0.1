@@ -35,7 +35,7 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.photopicker.AnimationRect;
+import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 
 import java.util.concurrent.TimeUnit;
 
@@ -109,7 +109,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     protected void initData() {
 
         boolean animateIn = getArguments().getBoolean("animationIn");
-        final AnimationRect rect = getArguments().getParcelable("rect");
+        final AnimationRectBean rect = getArguments().getParcelable("rect");
         mImageBean = getArguments() != null ? (ImageBean) getArguments().getParcelable("url") : null;
         if (mImageBean.getImgUrl() != null) { // 本地图片不需要查看原图
             mTvOriginPhoto.setVisibility(View.GONE);
@@ -177,7 +177,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         //BitmapUtils.saveBitmap(getActivity(), mImageView.getDrawingCache(), StringUtils.getImageNameByUrl(mImageBean));
     }
 
-    public static GalleryPictureFragment newInstance(ImageBean imageBean, AnimationRect rect,
+    public static GalleryPictureFragment newInstance(ImageBean imageBean, AnimationRectBean rect,
                                                      boolean animationIn) {
         GalleryPictureFragment fragment = new GalleryPictureFragment();
         Bundle bundle = new Bundle();
@@ -189,7 +189,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     }
 
     // 加载图片不带监听
-    private void loadImage(final ImageBean imageBean, final AnimationRect rect) {
+    private void loadImage(final ImageBean imageBean, final AnimationRectBean rect) {
         LogUtils.i("imageBean = " + imageBean.toString());
 
         if (imageBean.getImgUrl() != null) {
@@ -298,7 +298,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
 
     private void animateClose(ObjectAnimator backgroundAnimator) {
 
-        AnimationRect rect = getArguments().getParcelable("rect");
+        AnimationRectBean rect = getArguments().getParcelable("rect");
         // 没有大图退出动画，直接关闭activity
         if (rect == null) {
             mIvPager.animate().alpha(0);
@@ -362,20 +362,20 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
 
         animationSet.playTogether(ObjectAnimator.ofFloat(mIvPager,
                 "clipBottom", 0,
-                AnimationRect.getClipBottom(rect, finalBounds)));
+                AnimationRectBean.getClipBottom(rect, finalBounds)));
         animationSet.playTogether(ObjectAnimator.ofFloat(mIvPager,
                 "clipRight", 0,
-                AnimationRect.getClipRight(rect, finalBounds)));
+                AnimationRectBean.getClipRight(rect, finalBounds)));
         animationSet.playTogether(ObjectAnimator.ofFloat(mIvPager,
-                "clipTop", 0, AnimationRect.getClipTop(rect, finalBounds)));
+                "clipTop", 0, AnimationRectBean.getClipTop(rect, finalBounds)));
         animationSet.playTogether(ObjectAnimator.ofFloat(mIvPager,
-                "clipLeft", 0, AnimationRect.getClipLeft(rect, finalBounds)));
+                "clipLeft", 0, AnimationRectBean.getClipLeft(rect, finalBounds)));
 
         animationSet.start();
     }
 
 
-    private void startInAnim(final AnimationRect rect) {
+    private void startInAnim(final AnimationRectBean rect) {
         final Runnable endAction = new Runnable() {
             @Override
             public void run() {
@@ -439,14 +439,14 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
 
                         animationSet.playTogether(ObjectAnimator.ofFloat(mIvPager,
                                 "clipBottom",
-                                AnimationRect.getClipBottom(rect, finalBounds), 0));
+                                AnimationRectBean.getClipBottom(rect, finalBounds), 0));
                         animationSet.playTogether(ObjectAnimator.ofFloat(mIvPager,
                                 "clipRight",
-                                AnimationRect.getClipRight(rect, finalBounds), 0));
+                                AnimationRectBean.getClipRight(rect, finalBounds), 0));
                         animationSet.playTogether(ObjectAnimator.ofFloat(mIvPager,
-                                "clipTop", AnimationRect.getClipTop(rect, finalBounds), 0));
+                                "clipTop", AnimationRectBean.getClipTop(rect, finalBounds), 0));
                         animationSet.playTogether(ObjectAnimator.ofFloat(mIvPager,
-                                "clipLeft", AnimationRect.getClipLeft(rect, finalBounds), 0));
+                                "clipLeft", AnimationRectBean.getClipLeft(rect, finalBounds), 0));
 
                         animationSet.start();
 

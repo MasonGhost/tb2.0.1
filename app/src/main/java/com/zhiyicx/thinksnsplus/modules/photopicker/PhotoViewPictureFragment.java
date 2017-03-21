@@ -16,14 +16,12 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.widget.photoview.PhotoView;
 import com.zhiyicx.baseproject.widget.photoview.PhotoViewAttacher;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 
 import butterknife.BindView;
-import butterknife.OnClick;
-import me.iwf.photopicker.widget.TouchImageView;
 
 /**
  * @author LiuChao
@@ -73,7 +71,7 @@ public class PhotoViewPictureFragment extends TSFragment {
 
         final String path = getArguments().getString("path");
 
-        final AnimationRect rect = getArguments().getParcelable("rect");
+        final AnimationRectBean rect = getArguments().getParcelable("rect");
         animateIn = getArguments().getBoolean("animationIn");// 是否需要放缩动画，除了第一次进入需要，其他时候应该禁止
 
         Glide.with(getContext())
@@ -101,7 +99,7 @@ public class PhotoViewPictureFragment extends TSFragment {
                 });
     }
 
-    public static PhotoViewPictureFragment newInstance(String path, AnimationRect rect,
+    public static PhotoViewPictureFragment newInstance(String path, AnimationRectBean rect,
                                                        boolean animationIn) {
         PhotoViewPictureFragment fragment = new PhotoViewPictureFragment();
         Bundle bundle = new Bundle();
@@ -125,7 +123,7 @@ public class PhotoViewPictureFragment extends TSFragment {
 
     private void animateClose(ObjectAnimator backgroundAnimator) {
 
-        AnimationRect rect = getArguments().getParcelable("rect");
+        AnimationRectBean rect = getArguments().getParcelable("rect");
         // 没有大图退出动画，直接关闭activity
         if (rect == null) {
             ivAnimation.animate().alpha(0);
@@ -189,20 +187,20 @@ public class PhotoViewPictureFragment extends TSFragment {
 
         animationSet.playTogether(ObjectAnimator.ofFloat(ivAnimation,
                 "clipBottom", 0,
-                AnimationRect.getClipBottom(rect, finalBounds)));
+                AnimationRectBean.getClipBottom(rect, finalBounds)));
         animationSet.playTogether(ObjectAnimator.ofFloat(ivAnimation,
                 "clipRight", 0,
-                AnimationRect.getClipRight(rect, finalBounds)));
+                AnimationRectBean.getClipRight(rect, finalBounds)));
         animationSet.playTogether(ObjectAnimator.ofFloat(ivAnimation,
-                "clipTop", 0, AnimationRect.getClipTop(rect, finalBounds)));
+                "clipTop", 0, AnimationRectBean.getClipTop(rect, finalBounds)));
         animationSet.playTogether(ObjectAnimator.ofFloat(ivAnimation,
-                "clipLeft", 0, AnimationRect.getClipLeft(rect, finalBounds)));
+                "clipLeft", 0, AnimationRectBean.getClipLeft(rect, finalBounds)));
 
         animationSet.start();
     }
 
 
-    private void startInAnim(final AnimationRect rect) {
+    private void startInAnim(final AnimationRectBean rect) {
         final Runnable endAction = new Runnable() {
             @Override
             public void run() {
@@ -266,14 +264,14 @@ public class PhotoViewPictureFragment extends TSFragment {
 
                         animationSet.playTogether(ObjectAnimator.ofFloat(ivAnimation,
                                 "clipBottom",
-                                AnimationRect.getClipBottom(rect, finalBounds), 0));
+                                AnimationRectBean.getClipBottom(rect, finalBounds), 0));
                         animationSet.playTogether(ObjectAnimator.ofFloat(ivAnimation,
                                 "clipRight",
-                                AnimationRect.getClipRight(rect, finalBounds), 0));
+                                AnimationRectBean.getClipRight(rect, finalBounds), 0));
                         animationSet.playTogether(ObjectAnimator.ofFloat(ivAnimation,
-                                "clipTop", AnimationRect.getClipTop(rect, finalBounds), 0));
+                                "clipTop", AnimationRectBean.getClipTop(rect, finalBounds), 0));
                         animationSet.playTogether(ObjectAnimator.ofFloat(ivAnimation,
-                                "clipLeft", AnimationRect.getClipLeft(rect, finalBounds), 0));
+                                "clipLeft", AnimationRectBean.getClipLeft(rect, finalBounds), 0));
 
                         animationSet.start();
 

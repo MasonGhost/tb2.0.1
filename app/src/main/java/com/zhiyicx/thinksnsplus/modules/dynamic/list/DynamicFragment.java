@@ -1,9 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -21,6 +19,7 @@ import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
@@ -38,9 +37,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForS
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForThreeImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
-import com.zhiyicx.thinksnsplus.modules.gallery.GalleryFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
-import com.zhiyicx.thinksnsplus.modules.photopicker.AnimationRect;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -257,36 +254,36 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             }
         }
 
-        ArrayList<AnimationRect> animationRectArrayList
-                = new ArrayList<AnimationRect>();
+        ArrayList<AnimationRectBean> animationRectBeanArrayList
+                = new ArrayList<AnimationRectBean>();
         for (int i = 0; i < imageBeanList.size(); i++) {
             int id = UIUtils.getResourceByName("siv_" + i, "id", getContext());
             ImageView imageView = holder.getView(id);
-            AnimationRect rect = AnimationRect.buildFromImageView(imageView);
-            animationRectArrayList.add(rect);
+            AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
+            animationRectBeanArrayList.add(rect);
             LogUtils.i("dynamic_"+i+rect.toString());
 
           /*  if (i < layoutManager.findFirstVisibleItemPosition()) {
                 // 顶部，无法全部看见的图片
-                AnimationRect rect = new AnimationRect();
-                animationRectArrayList.add(rect);
+                AnimationRectBean rect = new AnimationRectBean();
+                animationRectBeanArrayList.add(rect);
             } else if (i > layoutManager.findLastVisibleItemPosition()) {
                 // 底部，无法完全看见的图片
-                AnimationRect rect = new AnimationRect();
-                animationRectArrayList.add(rect);
+                AnimationRectBean rect = new AnimationRectBean();
+                animationRectBeanArrayList.add(rect);
             } else {
                 View view = layoutManager
                         .getChildAt(i - layoutManager.findFirstVisibleItemPosition());
                 ImageView imageView = (ImageView) view.findViewById(R.id.iv_photo);
                 // 可以完全看见的图片
-                AnimationRect rect = AnimationRect.buildFromImageView(imageView);
-                animationRectArrayList.add(rect);
+                AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
+                animationRectBeanArrayList.add(rect);
             }*/
 
         }
 
 
-        GalleryActivity.startToGallery(getContext(), position, imageBeanList, animationRectArrayList);
+        GalleryActivity.startToGallery(getContext(), position, imageBeanList, animationRectBeanArrayList);
     }
 
     /**

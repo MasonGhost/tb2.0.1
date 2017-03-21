@@ -19,11 +19,8 @@ import android.view.ViewGroup;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.indicator_expand.ScaleCircleNavigator;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.photopicker.AnimationRect;
-import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
-import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewPictureContainerFragment;
+import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
@@ -108,7 +105,7 @@ public class GalleryFragment extends TSFragment {
     private HashMap<Integer, GalleryPictureContainerFragment> fragmentMap
             = new HashMap<Integer, GalleryPictureContainerFragment>();
     private boolean alreadyAnimateIn = false;
-    private ArrayList<AnimationRect> rectList;
+    private ArrayList<AnimationRectBean> rectList;
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
