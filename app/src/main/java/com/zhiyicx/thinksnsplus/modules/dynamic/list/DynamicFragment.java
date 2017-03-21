@@ -261,27 +261,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             ImageView imageView = holder.getView(id);
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
             animationRectBeanArrayList.add(rect);
-            LogUtils.i("dynamic_"+i+rect.toString());
-
-          /*  if (i < layoutManager.findFirstVisibleItemPosition()) {
-                // 顶部，无法全部看见的图片
-                AnimationRectBean rect = new AnimationRectBean();
-                animationRectBeanArrayList.add(rect);
-            } else if (i > layoutManager.findLastVisibleItemPosition()) {
-                // 底部，无法完全看见的图片
-                AnimationRectBean rect = new AnimationRectBean();
-                animationRectBeanArrayList.add(rect);
-            } else {
-                View view = layoutManager
-                        .getChildAt(i - layoutManager.findFirstVisibleItemPosition());
-                ImageView imageView = (ImageView) view.findViewById(R.id.iv_photo);
-                // 可以完全看见的图片
-                AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
-                animationRectBeanArrayList.add(rect);
-            }*/
-
+            LogUtils.i("dynamic_" + i + rect.toString());
         }
-
 
         GalleryActivity.startToGallery(getContext(), position, imageBeanList, animationRectBeanArrayList);
     }
