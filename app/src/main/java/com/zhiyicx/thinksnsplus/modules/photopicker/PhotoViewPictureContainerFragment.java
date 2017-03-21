@@ -3,12 +3,11 @@ package com.zhiyicx.thinksnsplus.modules.photopicker;
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 
 /**
  * @author LiuChao
@@ -47,7 +46,7 @@ public class PhotoViewPictureContainerFragment extends TSFragment {
         displayPicture(url, animateIn);
     }
 
-    public static PhotoViewPictureContainerFragment newInstance(String url, AnimationRect rect,
+    public static PhotoViewPictureContainerFragment newInstance(String url, AnimationRectBean rect,
                                                 boolean animationIn, boolean firstOpenPage) {
         PhotoViewPictureContainerFragment fragment = new PhotoViewPictureContainerFragment();
         Bundle bundle = new Bundle();
@@ -62,7 +61,7 @@ public class PhotoViewPictureContainerFragment extends TSFragment {
     private void displayPicture(String path, boolean animateIn) {
         // PhotoViewActivity activity = (PhotoViewActivity) getActivity();
         PhotoViewFragment photoViewFragment = (PhotoViewFragment) getParentFragment();
-        AnimationRect rect = getArguments().getParcelable("rect");
+        AnimationRectBean rect = getArguments().getParcelable("rect");
         // 进入图片浏览器的两张
         boolean firstOpenPage = getArguments().getBoolean("firstOpenPage");
         if (firstOpenPage) {

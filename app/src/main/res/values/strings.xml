@@ -37,7 +37,7 @@
     <!--个人资料-->
     <string name="user_info">个人资料</string>
     <string name="change_head_icon">更换头像</string>
-    <string name="user_name">用户</string>
+    <string name="user_name">用户名</string>
     <string name="edit_user_name">设置用户名</string>
     <string name="sex">性别</string>
     <string name="select_sex">选择性别</string>
@@ -78,6 +78,7 @@
     <string name="send_dynamic">发布动态</string>
     <string name="dynamic_title_hint">有标题更吸引人</string>
     <string name="dynamic_content_hint">输入要说的话，图文结合更精彩哦</string>
+    <string name="dynamic_send_cancel_hint">你还有没有发布的内容，是否放弃发布？</string>
     <!--动态详情-->
     <string name="dynamic_dig_count">%1$d人点赞</string>
     <string name="dynamic_comment_count">%1$d条评论</string>

@@ -16,7 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -31,6 +31,7 @@ import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 
 import org.simple.eventbus.EventBus;
 
@@ -39,7 +40,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
@@ -217,7 +217,7 @@ public class PhotoViewFragment extends TSFragment {
         }
     }
 
-    public static PhotoViewFragment newInstance(List<String> selectedPaths, List<String> allPhotos, ArrayList<AnimationRect> animationRects, int currentItem, int maxCount) {
+    public static PhotoViewFragment newInstance(List<String> selectedPaths, List<String> allPhotos, ArrayList<AnimationRectBean> animationRectBeen, int currentItem, int maxCount) {
 
         PhotoViewFragment f = new PhotoViewFragment();
         Bundle args = new Bundle();
@@ -225,7 +225,7 @@ public class PhotoViewFragment extends TSFragment {
         args.putStringArrayList(ARG_ALL_PATH, (ArrayList<String>) allPhotos);
         args.putInt(ARG_CURRENT_ITEM, currentItem);
         args.putInt(ARG_MAX_COUNT, maxCount);
-        args.putParcelableArrayList("rect", animationRects);
+        args.putParcelableArrayList("rect", animationRectBeen);
         f.setArguments(args);
         return f;
     }
@@ -257,10 +257,10 @@ public class PhotoViewFragment extends TSFragment {
 
 
     ////////////////////////////////缩放动画//////////////////////////////////
-    private HashMap<Integer, PhotoViewPictureContainerFragment> fragmentMap
-            = new HashMap<Integer, PhotoViewPictureContainerFragment>();
+    private SparseArray<PhotoViewPictureContainerFragment> fragmentMap
+            = new SparseArray<>();
     private boolean alreadyAnimateIn = false;
-    private ArrayList<AnimationRect> rectList;
+    private ArrayList<AnimationRectBean> rectList;
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to

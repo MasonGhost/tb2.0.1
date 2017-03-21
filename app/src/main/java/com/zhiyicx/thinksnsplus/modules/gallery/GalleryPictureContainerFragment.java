@@ -8,7 +8,7 @@ import android.view.View;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.photopicker.AnimationRect;
+import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 
 /**
  * @author LiuChao
@@ -47,7 +47,7 @@ public class GalleryPictureContainerFragment extends TSFragment {
         displayPicture(imageBean, animateIn);
     }
 
-    public static GalleryPictureContainerFragment newInstance(ImageBean imageBean, AnimationRect rect,
+    public static GalleryPictureContainerFragment newInstance(ImageBean imageBean, AnimationRectBean rect,
                                                               boolean animationIn, boolean firstOpenPage) {
         GalleryPictureContainerFragment fragment = new GalleryPictureContainerFragment();
         Bundle bundle = new Bundle();
@@ -61,7 +61,7 @@ public class GalleryPictureContainerFragment extends TSFragment {
 
     private void displayPicture(ImageBean imageBean, boolean animateIn) {
         GalleryFragment galleryFragment = (GalleryFragment) getParentFragment();
-        AnimationRect rect = getArguments().getParcelable("rect");
+        AnimationRectBean rect = getArguments().getParcelable("rect");
         boolean firstOpenPage = getArguments().getBoolean("firstOpenPage");
         if (firstOpenPage) {
             if (animateIn) {

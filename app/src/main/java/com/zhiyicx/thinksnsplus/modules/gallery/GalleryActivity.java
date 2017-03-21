@@ -10,9 +10,7 @@ import android.view.WindowManager;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
-import com.zhiyicx.thinksnsplus.modules.photopicker.AnimationRect;
-import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
-import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewFragment;
+import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,12 +53,12 @@ public class GalleryActivity extends TSActivity {
         GalleryActivity.super.onBackPressed();
     }
 
-    public static void startToGallery(Context context, int position, List<ImageBean> imageBeanList, List<AnimationRect> animationRectList) {
+    public static void startToGallery(Context context, int position, List<ImageBean> imageBeanList, List<AnimationRectBean> animationRectBeanList) {
         Intent intent = new Intent(context, GalleryActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(GalleryFragment.BUNDLE_IMAGS, (ArrayList<? extends Parcelable>) imageBeanList);
         bundle.putInt(GalleryFragment.BUNDLE_IMAGS_POSITON, position);
-        bundle.putParcelableArrayList("rect", (ArrayList<? extends Parcelable>) animationRectList);
+        bundle.putParcelableArrayList("rect", (ArrayList<? extends Parcelable>) animationRectBeanList);
         intent.putExtras(bundle);
         context.startActivity(intent);
     }

@@ -2,29 +2,23 @@ package com.zhiyicx.thinksnsplus.modules.photopicker;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.utils.ToastUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 
-import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
@@ -39,14 +33,12 @@ import me.iwf.photopicker.event.OnItemCheckListener;
 import me.iwf.photopicker.event.OnPhotoClickListener;
 import me.iwf.photopicker.utils.MediaStoreHelper;
 
-import static android.widget.Toast.LENGTH_LONG;
 import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumListFragment.ALL_PHOTOS;
 import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumListFragment.SELECTED_DIRECTORY_NAME;
 import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumListFragment.SELECTED_DIRECTORY_NUMBER;
 import static me.iwf.photopicker.PhotoPicker.DEFAULT_COLUMN_NUMBER;
 import static me.iwf.photopicker.PhotoPicker.DEFAULT_MAX_COUNT;
 import static me.iwf.photopicker.PhotoPicker.EXTRA_SHOW_GIF;
-import static me.iwf.photopicker.PhotoPicker.REQUEST_CODE;
 
 /**
  * @author LiuChao
@@ -188,29 +180,29 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 bundle.putStringArrayList(EXTRA_VIEW_SELECTED_PHOTOS, selectedPhotos);
                 bundle.putInt(EXTRA_MAX_COUNT, maxCount);
 
-                ArrayList<AnimationRect> animationRectArrayList
-                        = new ArrayList<AnimationRect>();
+                ArrayList<AnimationRectBean> animationRectBeanArrayList
+                        = new ArrayList<AnimationRectBean>();
                 for (int i = 0; i < allPhotos.size(); i++) {
 
                     if (i < layoutManager.findFirstVisibleItemPosition()) {
                         // 顶部，无法全部看见的图片
-                        AnimationRect rect = new AnimationRect();
-                        animationRectArrayList.add(rect);
+                       // AnimationRectBean rect = new AnimationRectBean();
+                        animationRectBeanArrayList.add(null);
                     } else if (i > layoutManager.findLastVisibleItemPosition()) {
                         // 底部，无法完全看见的图片
-                        AnimationRect rect = new AnimationRect();
-                        animationRectArrayList.add(rect);
+                      //  AnimationRectBean rect = new AnimationRectBean();
+                        animationRectBeanArrayList.add(null);
                     } else {
                         View view = layoutManager
                                 .getChildAt(i - layoutManager.findFirstVisibleItemPosition());
                         ImageView imageView = (ImageView) view.findViewById(R.id.iv_photo);
                         // 可以完全看见的图片
-                        AnimationRect rect = AnimationRect.buildFromImageView(imageView);
-                        animationRectArrayList.add(rect);
+                        AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
+                        animationRectBeanArrayList.add(rect);
                     }
                 }
 
-                bundle.putParcelableArrayList("rect", animationRectArrayList);
+                bundle.putParcelableArrayList("rect", animationRectBeanArrayList);
                 Intent intent = new Intent(getContext(), PhotoViewActivity.class);
                 intent.putExtras(bundle);
                 startActivityForResult(intent, TO_VIEW_REQUEST_CODE);

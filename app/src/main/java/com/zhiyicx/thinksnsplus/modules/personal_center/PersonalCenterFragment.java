@@ -25,8 +25,10 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
@@ -290,12 +292,17 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 imageBeanList.add(imageBean);
             }
         }
-        Intent intent = new Intent(getActivity(), GalleryActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(GalleryFragment.BUNDLE_IMAGS, (ArrayList<? extends Parcelable>) imageBeanList);
-        bundle.putInt(GalleryFragment.BUNDLE_IMAGS_POSITON, position);
-        intent.putExtras(bundle);
-        startActivity(intent);
+        ArrayList<AnimationRectBean> animationRectBeanArrayList
+                = new ArrayList<AnimationRectBean>();
+        for (int i = 0; i < imageBeanList.size(); i++) {
+            int id = UIUtils.getResourceByName("siv_" + i, "id", getContext());
+            ImageView imageView = holder.getView(id);
+            AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
+            animationRectBeanArrayList.add(rect);
+            LogUtils.i("dynamic_" + i + rect.toString());
+        }
+
+        GalleryActivity.startToGallery(getContext(), position, imageBeanList, animationRectBeanArrayList);
     }
 
     @Override
