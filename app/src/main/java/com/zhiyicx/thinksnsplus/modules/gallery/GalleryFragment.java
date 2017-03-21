@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -102,8 +103,8 @@ public class GalleryFragment extends TSFragment {
     }
 
     ////////////////////////////////缩放动画//////////////////////////////////
-    private HashMap<Integer, GalleryPictureContainerFragment> fragmentMap
-            = new HashMap<Integer, GalleryPictureContainerFragment>();
+    private SparseArray<GalleryPictureContainerFragment> fragmentMap
+            = new SparseArray<>();
     private boolean alreadyAnimateIn = false;
     private ArrayList<AnimationRectBean> rectList;
 

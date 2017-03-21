@@ -16,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -256,8 +257,8 @@ public class PhotoViewFragment extends TSFragment {
 
 
     ////////////////////////////////缩放动画//////////////////////////////////
-    private HashMap<Integer, PhotoViewPictureContainerFragment> fragmentMap
-            = new HashMap<Integer, PhotoViewPictureContainerFragment>();
+    private SparseArray<PhotoViewPictureContainerFragment> fragmentMap
+            = new SparseArray<>();
     private boolean alreadyAnimateIn = false;
     private ArrayList<AnimationRectBean> rectList;
 

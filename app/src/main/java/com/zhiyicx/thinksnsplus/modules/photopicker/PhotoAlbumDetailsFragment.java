@@ -186,12 +186,12 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
 
                     if (i < layoutManager.findFirstVisibleItemPosition()) {
                         // 顶部，无法全部看见的图片
-                        AnimationRectBean rect = new AnimationRectBean();
-                        animationRectBeanArrayList.add(rect);
+                       // AnimationRectBean rect = new AnimationRectBean();
+                        animationRectBeanArrayList.add(null);
                     } else if (i > layoutManager.findLastVisibleItemPosition()) {
                         // 底部，无法完全看见的图片
-                        AnimationRectBean rect = new AnimationRectBean();
-                        animationRectBeanArrayList.add(rect);
+                      //  AnimationRectBean rect = new AnimationRectBean();
+                        animationRectBeanArrayList.add(null);
                     } else {
                         View view = layoutManager
                                 .getChildAt(i - layoutManager.findFirstVisibleItemPosition());
