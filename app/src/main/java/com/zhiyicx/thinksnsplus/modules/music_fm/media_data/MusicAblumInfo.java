@@ -29,7 +29,6 @@ public class MusicAblumInfo implements MusicProviderSource {
     @Override
     public Iterator<MediaMetadataCompat> iterator() {
         ArrayList<MediaMetadataCompat> tracks = new ArrayList<>();
-        LogUtils.d("Iterator<MediaMetadataCompat>"+mAlbumDetailsBean.getMusics());
         for (MusicAlbumDetailsBean.MusicsBean data:mAlbumDetailsBean.getMusics()){
             tracks.add(buildMusic(data));
         }
