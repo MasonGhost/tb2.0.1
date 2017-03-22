@@ -247,6 +247,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
         } else {
             url = dynamicBean.getFeed().getLocalPhotos().get(positon);
         }
+        System.out.println("url = " + url);
         mImageLoader.loadImage(mContext, GlideImageConfig.builder()
                 .url(url)
                 .imagerView(view)
@@ -264,6 +265,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                         }
                     }
                 });
+        view.setBackgroundColor(mContext.getResources().getColor(R.color.themeColor));
     }
 
 
@@ -286,7 +288,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
         if (dynamicBean.getFeed().getStorages() == null || dynamicBean.getFeed().getStorages().size() == 0) {// 本地图片
             BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(dynamicBean.getFeed().getLocalPhotos().get(0));
             with = option.outWidth > currentWith ? currentWith : option.outWidth;
-            proportion = (int) ((with /option.outWidth) * 100);
+            proportion = (int) ((with / option.outWidth) * 100);
         } else {
             with = (int) dynamicBean.getFeed().getStorages().get(0).getWidth() > currentWith ? currentWith : (int) dynamicBean.getFeed().getStorages().get(0).getWidth();
             proportion = (int) ((with / dynamicBean.getFeed().getStorages().get(0).getWidth()) * 100);

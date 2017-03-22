@@ -45,6 +45,7 @@ import rx.schedulers.Schedulers;
  */
 @FragmentScoped
 public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContract.Repository, PersonalCenterContract.View> implements PersonalCenterContract.Presenter {
+    private static final int NEED_INTERFACE_NUM = 3;
     @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
     @Inject
@@ -59,6 +60,8 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
     DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
     @Inject
     DynamicDetailBeanGreenDaoImpl mDynamicDetailBeanGreenDao;
+
+    private int mInterfaceNum = 0;//纪录请求接口数量，用于统计接口是否全部请求完成，需要接口全部请求完成后在显示界面
 
     @Inject
     public PersonalCenterPresenter(PersonalCenterContract.Repository repository, PersonalCenterContract.View rootView) {
@@ -80,7 +83,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore, long user_id) {
-        if(AppApplication.getmCurrentLoginAuth()==null){
+        if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
         Subscription subscription = mRepository.getDynamicListForSomeone(user_id, maxId)
@@ -89,17 +92,27 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
                 .subscribe(new BaseSubscribe<List<DynamicBean>>() {
                     @Override
                     protected void onSuccess(List<DynamicBean> data) {
+                        mInterfaceNum++;
                         mRootView.onNetResponseSuccess(data, isLoadMore);
+                        allready();
                     }
 
                     @Override
                     protected void onFailure(String message) {
-                        mRootView.showMessage(message);
+                        if (mInterfaceNum >= NEED_INTERFACE_NUM) {
+                            mRootView.showMessage(message);
+                        } else {
+                            mRootView.loadAllError();
+                        }
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        mRootView.onResponseError(throwable, isLoadMore);
+                        if (mInterfaceNum >= NEED_INTERFACE_NUM) {
+                            mRootView.onResponseError(throwable, isLoadMore);
+                        } else {
+                            mRootView.loadAllError();
+                        }
                     }
                 });
         addSubscrebe(subscription);
@@ -112,7 +125,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
 
     @Override
     public void initFollowState(long user_id) {
-        if(AppApplication.getmCurrentLoginAuth()==null){
+        if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
         Subscription subscription = mRepository.getUserFollowState(user_id + "")
@@ -121,17 +134,19 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
                 .subscribe(new BaseSubscribe<FollowFansBean>() {
                     @Override
                     protected void onSuccess(FollowFansBean data) {
+                        mInterfaceNum++;
                         mRootView.setFollowState(data);
+                        allready();
                     }
 
                     @Override
                     protected void onFailure(String message) {
-
+                        mRootView.loadAllError();
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-
+                        mRootView.loadAllError();
                     }
                 });
         addSubscrebe(subscription);
@@ -232,7 +247,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
 
     @Override
     public void setCurrentUserInfo(Long userId) {
-        if(AppApplication.getmCurrentLoginAuth()==null){
+        if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
         Subscription subscription = mRepository.getCurrentUserInfo(userId)
@@ -241,20 +256,28 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
                 .subscribe(new BaseSubscribe<UserInfoBean>() {
                     @Override
                     protected void onSuccess(UserInfoBean data) {
+                        mInterfaceNum++;
                         mRootView.setHeaderInfo(data);
+                        allready();
                     }
 
                     @Override
                     protected void onFailure(String message) {
-
+                        mRootView.loadAllError();
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-
+                        mRootView.loadAllError();
                     }
                 });
         addSubscrebe(subscription);
+    }
+
+    private void allready() {
+        if (mInterfaceNum == NEED_INTERFACE_NUM) {
+            mRootView.allDataReady();
+        }
     }
 
 

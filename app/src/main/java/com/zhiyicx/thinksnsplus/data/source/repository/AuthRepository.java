@@ -18,6 +18,10 @@ import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
@@ -28,6 +32,8 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static com.umeng.socialize.utils.DeviceConfig.context;
 
 /**
  * @Describe
@@ -42,10 +48,19 @@ public class AuthRepository implements IAuthRepository {
     private UserInfoClient mUserInfoClient;
     private Context mContext;
 
+    DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
+    DynamicDetailBeanGreenDaoImpl mDynamicDetailBeanGreenDao;
+    DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
+    DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
+
     @Inject
     public AuthRepository(ServiceManager serviceManager, Application context) {
         mUserInfoClient = serviceManager.getUserInfoClient();
         mContext = context;
+        mDynamicBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicBeanGreenDao();
+        mDynamicDetailBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicDetailBeanGreenDao();
+        mDynamicToolBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicToolBeanGreenDao();
+        mDynamicCommentBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicCommentBeanGreenDao();
     }
 
 
@@ -112,6 +127,11 @@ public class AuthRepository implements IAuthRepository {
     @Override
     public boolean clearAuthBean() {
         MessageDao.getInstance(mContext).delDataBase();// 清空聊天信息
+        mDynamicBeanGreenDao.clearTable();
+        mDynamicCommentBeanGreenDao.clearTable();
+        mDynamicDetailBeanGreenDao.clearTable();
+        mDynamicToolBeanGreenDao.clearTable();
+        MessageDao.getInstance(context).delDataBase();
         return SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_AUTHBEAN)
                 && SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_IMCONFIG);
     }

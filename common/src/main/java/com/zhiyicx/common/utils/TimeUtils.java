@@ -56,28 +56,28 @@ public class TimeUtils {
                 result = "昨天";
                 break;
             case 2:
-                result = "两天前";
+                result = "2天前";
                 break;
             case 3:
-                result = "三天前";
+                result = "3天前";
                 break;
             case 4:
-                result = "四天前";
+                result = "4天前";
                 break;
             case 5:
-                result = "五天前";
+                result = "5天前";
                 break;
             case 6:
-                result = "六天前";
+                result = "6天前";
                 break;
             case 7:
-                result = "七天前";
+                result = "7天前";
                 break;
             case 8:
-                result = "八天前";
+                result = "8天前";
                 break;
             case 9:
-                result = "九天前";
+                result = "9天前";
                 break;
 
             default:
@@ -95,7 +95,7 @@ public class TimeUtils {
      * 一小时内显示几分钟前，
      * 一天内显示几小时前，
      * 1天到2天显示如（昨天 20:36），
-     * 2天到9天显示如（五天前 20：34），
+     * 2天到9天显示如（5天前 20：34），
      * 9天以上显示如（02-28 19:15）
      *
      * @param timesamp 时间戳 单位 ms
@@ -113,7 +113,7 @@ public class TimeUtils {
      * 一小时内显示几分钟前，
      * 一天内显示几小时前，
      * 1天到2天显示如（昨天 20:36），
-     * 2天到9天显示如（五天前 20：34），
+     * 2天到9天显示如（5天前 20：34），
      * 9天以上显示如（02-28 19:15）
      *
      * @param timestr 时间 例如; 2017-03-01 01:28:33
@@ -172,25 +172,25 @@ public class TimeUtils {
                 result = "昨天 " + getStandardTimeWithHour(timesamp);
                 break;
             case 2:
-                result = "两天前 " + getStandardTimeWithHour(timesamp);
+                result = "2天前 " + getStandardTimeWithHour(timesamp);
                 break;
             case 3:
-                result = "三天前 " + getStandardTimeWithHour(timesamp);
+                result = "3天前 " + getStandardTimeWithHour(timesamp);
                 break;
             case 4:
-                result = "四天前 " + getStandardTimeWithHour(timesamp);
+                result = "4天前 " + getStandardTimeWithHour(timesamp);
                 break;
             case 5:
-                result = "五天前 " + getStandardTimeWithHour(timesamp);
+                result = "5天前 " + getStandardTimeWithHour(timesamp);
                 break;
             case 6:
-                result = "六天前 " + getStandardTimeWithHour(timesamp);
+                result = "6天前 " + getStandardTimeWithHour(timesamp);
                 break;
             case 7:
-                result = "七天前 " + getStandardTimeWithHour(timesamp);
+                result = "7天前 " + getStandardTimeWithHour(timesamp);
                 break;
             case 8:
-                result = "八天前 " + getStandardTimeWithHour(timesamp);
+                result = "8天前 " + getStandardTimeWithHour(timesamp);
                 break;
             case 9:
                 result = "九天前 " + getStandardTimeWithHour(timesamp);

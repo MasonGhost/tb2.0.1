@@ -26,6 +26,7 @@
     <string name="female">女</string>
     <string name="keep_secret">保密</string>
     <string name="complete">完成</string>
+    <string name="completed">已完成</string>
     <string name="send_success">发送成功</string>
     <string name="send_failure">发送失败</string>
     <string name="send">发送</string>

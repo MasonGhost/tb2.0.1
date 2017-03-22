@@ -2,8 +2,8 @@ package com.zhiyicx.thinksnsplus.modules.personal_center;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -42,7 +42,6 @@ import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
-import com.zhiyicx.thinksnsplus.modules.gallery.GalleryFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListBaseItem;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListForZeroImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForEightImage;
@@ -74,6 +73,11 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_POSITION;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.LOOK_COMMENT_MORE;
+import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.STATUS_RGB;
+import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.TOOLBAR_BLACK_ICON;
+import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.TOOLBAR_DIVIDER_RGB;
+import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.TOOLBAR_RGB;
+import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.TOOLBAR_WHITE_ICON;
 
 /**
  * @author LiuChao
@@ -135,8 +139,13 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         initToolBar();
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
         mPersonalCenterHeaderViewItem = new PersonalCenterHeaderViewItem(getActivity(), mPhotoSelector, mRvList, mHeaderAndFooterWrapper, mLlToolbarContainerParent);
-        mPersonalCenterHeaderViewItem.initHeaderView();
-        initListener();
+        mPersonalCenterHeaderViewItem.initHeaderView(false);
+        mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent, STATUS_RGB, 255);
+        mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.rl_toolbar_container), TOOLBAR_RGB, 255);
+        mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.v_horizontal_line), TOOLBAR_DIVIDER_RGB, 255);
+        mPersonalCenterHeaderViewItem.setToolbarIconColor(Color.argb(255, TOOLBAR_BLACK_ICON[0],
+                TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
+
     }
 
     private void initListener() {
@@ -156,7 +165,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         // 添加聊天点击事件
         RxView.clicks(mLlChatContainer)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.<Void>bindToLifecycle())
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
@@ -243,6 +251,17 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
+    protected boolean setUseCenterLoading() {
+        return true;
+    }
+
+    @Override
+    protected void setLoadingHolderClick() {
+        super.setLoadingHolderClick();
+        requestData();
+    }
+
+    @Override
     protected MultiItemTypeAdapter<DynamicBean> getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mDynamicBeens);
         setAdapter(adapter, new PersonalCenterDynamicListBaseItem(getContext()));
@@ -263,13 +282,18 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     protected void initData() {
         mUserInfoBean = getArguments().getParcelable(PERSONAL_CENTER_DATA);
-        // 进入页面尝试设置头部信息
-        setHeaderInfo(mUserInfoBean);
+        requestData();
+        super.initData();
+    }
+
+    /**
+     * 获取服务器数据
+     */
+    private void requestData() {
         // 获取个人主页用户信息，显示在headerView中
         mPresenter.setCurrentUserInfo(mUserInfoBean.getUser_id());
         // 获取关注状态
         mPresenter.initFollowState(mUserInfoBean.getUser_id());
-        super.initData();
         // 获取动态列表
         mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false, mUserInfoBean.getUser_id());
     }
@@ -357,6 +381,25 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     public void refresh(int position) {
         mHeaderAndFooterWrapper.notifyItemChanged(position);
+    }
+
+    @Override
+    public void allDataReady() {
+        closeLoading();
+        mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent, STATUS_RGB, 0);
+        mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.rl_toolbar_container), TOOLBAR_RGB, 0);
+        mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.v_horizontal_line), TOOLBAR_DIVIDER_RGB, 0);
+        mPersonalCenterHeaderViewItem.setToolbarIconColor(Color.argb(255, TOOLBAR_WHITE_ICON[0]
+                , TOOLBAR_WHITE_ICON[1], TOOLBAR_WHITE_ICON[2]));
+        mPersonalCenterHeaderViewItem.setScrollListenter();
+        initListener();
+        // 进入页面尝试设置头部信息
+        setHeaderInfo(mUserInfoBean);
+    }
+
+    @Override
+    public void loadAllError() {
+        showLoadError();
     }
 
     @Override
@@ -471,7 +514,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     public void onCommentContentClick(DynamicBean dynamicBean, int position) {
         mCurrentPostion = mAdapter.getDatas().indexOf(dynamicBean);
         if (dynamicBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-            initLoginOutPopupWindow(dynamicBean, mCurrentPostion, position);
+            initDeletCommentPopWindow(dynamicBean, mCurrentPostion, position);
             mDeletCommentPopWindow.show();
         } else {
             showCommentView();
@@ -486,7 +529,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     private void initToolBar() {
         // toolBar设置状态栏高度的marginTop
-        int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext());
+        int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext())+getResources().getDimensionPixelSize(R.dimen.divider_line);
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
         mLlToolbarContainerParent.setLayoutParams(layoutParams);
     }
@@ -601,10 +644,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      * @param dynamicPositon  dynamic comment position
      * @param commentPosition current comment position
      */
-    private void initLoginOutPopupWindow(final DynamicBean dynamicBean, final int dynamicPositon, final int commentPosition) {
-        if (mDeletCommentPopWindow != null) {
-            return;
-        }
+    private void initDeletCommentPopWindow(final DynamicBean dynamicBean, final int dynamicPositon, final int commentPosition) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_comment))
                 .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))

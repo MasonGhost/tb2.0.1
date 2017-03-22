@@ -253,15 +253,14 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 imageBeanList.add(imageBean);
             }
         }
-
         ArrayList<AnimationRectBean> animationRectBeanArrayList
                 = new ArrayList<AnimationRectBean>();
         for (int i = 0; i < imageBeanList.size(); i++) {
             int id = UIUtils.getResourceByName("siv_" + i, "id", getContext());
             ImageView imageView = holder.getView(id);
+
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
             animationRectBeanArrayList.add(rect);
-            LogUtils.i("dynamic_" + i + rect.toString());
         }
 
         GalleryActivity.startToGallery(getContext(), position, imageBeanList, animationRectBeanArrayList);
@@ -294,7 +293,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void refresh(int position) {
-        LogUtils.d(TAG, "mDynamicBeens    position  = " + mDynamicBeens.toString());
         refreshData(position);
     }
 
@@ -387,8 +385,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     public void onCommentContentClick(DynamicBean dynamicBean, int position) {
         mCurrentPostion = mAdapter.getDatas().indexOf(dynamicBean);
         if (dynamicBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-            initLoginOutPopupWindow(dynamicBean, mCurrentPostion, position);
-            mDeletCommentPopWindow.show();
+            if (dynamicBean.getComments().get(position).getComment_id() != null) {
+                initLoginOutPopupWindow(dynamicBean, mCurrentPostion, position);
+                mDeletCommentPopWindow.show();
+            } else {
+                return;
+            }
         } else {
             showCommentView();
             mReplyToUserId = dynamicBean.getComments().get(position).getUser_id();
@@ -412,11 +414,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      * @param text
      */
     @Override
-    public void onSendClick(View v, String text) {
+    public void onSendClick(View v, final String text) {
+        com.zhiyicx.imsdk.utils.common.DeviceUtils.hideSoftKeyboard(getContext(), v);
         mIlvComment.setVisibility(View.GONE);
         mVShadow.setVisibility(View.GONE);
         mPresenter.sendComment(mCurrentPostion, mReplyToUserId, text);
-        com.zhiyicx.imsdk.utils.common.DeviceUtils.hideSoftKeyboard(getContext(), v);
         showBottomView(true);
     }
 
@@ -444,9 +446,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      * @param commentPosition current comment position
      */
     private void initLoginOutPopupWindow(final DynamicBean dynamicBean, final int dynamicPositon, final int commentPosition) {
-        if (mDeletCommentPopWindow != null) {
-            return;
-        }
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_comment))
                 .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))

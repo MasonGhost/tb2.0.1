@@ -149,11 +149,17 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 mTvPreview.setEnabled(selectedItemCount > 0);
                 if (maxCount <= 1) {
                     List<String> photos = photoGridAdapter.getSelectedPhotos();
-                    // 已经选择过的图片，取消选择
+                    // 当前选择的图片，没有被选择过
                     if (!photos.contains(photo.getPath())) {
+                        // 之前已经选择过该图片，就需要-1张
+                        if (!photos.isEmpty()) {
+                            selectedItemCount -= 1;
+                        }
                         photos.clear();
                         photoGridAdapter.notifyDataSetChanged();
                     }
+                    // 设置当前选择的数量
+                    mBtComplete.setText(getString(R.string.album_selected_count, selectedItemCount, maxCount));
                     return true;
                 }
                 // 数量超过时，进行提示
@@ -186,11 +192,11 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
 
                     if (i < layoutManager.findFirstVisibleItemPosition()) {
                         // 顶部，无法全部看见的图片
-                       // AnimationRectBean rect = new AnimationRectBean();
+                        // AnimationRectBean rect = new AnimationRectBean();
                         animationRectBeanArrayList.add(null);
                     } else if (i > layoutManager.findLastVisibleItemPosition()) {
                         // 底部，无法完全看见的图片
-                      //  AnimationRectBean rect = new AnimationRectBean();
+                        //  AnimationRectBean rect = new AnimationRectBean();
                         animationRectBeanArrayList.add(null);
                     } else {
                         View view = layoutManager
@@ -245,13 +251,15 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         switch (view.getId()) {
             case R.id.tv_preview:
                 //int index = showCamera ? position - 1 : position;
+                // 预览图片和选择图片是相同的
                 ArrayList<String> allPhotos = photoGridAdapter.getSelectedPhotoPaths();
                 ArrayList<String> selectedPhoto = photoGridAdapter.getSelectedPhotoPaths();
-                int[] screenLocation = new int[2];
                 Bundle bundle = new Bundle();
                 bundle.putInt(EXTRA_VIEW_INDEX, 0);
                 bundle.putStringArrayList(EXTRA_VIEW_ALL_PHOTOS, allPhotos);
                 bundle.putStringArrayList(EXTRA_VIEW_SELECTED_PHOTOS, selectedPhoto);
+                ArrayList<AnimationRectBean> animationRectBeanArrayList = new ArrayList<>();
+                bundle.putParcelableArrayList("rect", animationRectBeanArrayList);
                 bundle.putInt(EXTRA_MAX_COUNT, maxCount);
                 Intent intent1 = new Intent(getContext(), PhotoViewActivity.class);
                 intent1.putExtras(bundle);

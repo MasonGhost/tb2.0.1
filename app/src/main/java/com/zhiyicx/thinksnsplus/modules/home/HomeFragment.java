@@ -30,11 +30,15 @@ import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 
 /**
  * @Describe
@@ -316,8 +320,18 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 
     @Override
     public void onButtonMenuShow(boolean isShow) {
-        System.out.println("isShow = " + isShow);
-        mLlBottomContainer.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        if (isShow) {
+            Observable.timer(getResources().getInteger(android.R.integer.config_shortAnimTime), TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()).map(new Func1<Long, Object>() {
+                @Override
+                public Object call(Long aLong) {
+                    mLlBottomContainer.setVisibility(View.VISIBLE);
+                    return null;
+                }
+            }).subscribe();
+        } else {
+            mLlBottomContainer.setVisibility(View.GONE);
+        }
+
     }
 
 }

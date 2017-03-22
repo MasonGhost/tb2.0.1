@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 
 import com.yalantis.ucrop.UCrop;
 import com.zhiyicx.baseproject.R;
+import com.zhiyicx.baseproject.config.PathConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.ToastUtils;
@@ -53,7 +54,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
     private ArrayList<ImageBean> photosList;// 存储已选择图片
 
     public PhotoSelectorImpl(IPhotoBackListener iPhotoBackListener, Fragment mFragment, int cropShape) {
-        takePhotoFolder = new File(Environment.getExternalStorageDirectory(), "/DCIM/" + "TSPlusPhotoFolder/");
+        takePhotoFolder = new File(Environment.getExternalStorageDirectory(), PathConfig.CAMERA_PHOTO_PATH);
         mTIPhotoBackListener = iPhotoBackListener;
         this.mFragment = mFragment;
         this.mContext = mFragment.getContext();

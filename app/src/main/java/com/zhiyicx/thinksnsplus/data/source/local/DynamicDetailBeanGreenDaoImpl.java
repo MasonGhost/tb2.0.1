@@ -51,7 +51,8 @@ public class DynamicDetailBeanGreenDaoImpl extends CommonCacheImpl<DynamicDetail
 
     @Override
     public void clearTable() {
-
+        DynamicDetailBeanDao dynamicDetailBeanDao = getWDaoSession().getDynamicDetailBeanDao();
+        dynamicDetailBeanDao.deleteAll();
     }
 
     @Override
