@@ -134,6 +134,7 @@ public class ApiConfig {
     public static final String APP_PATH_MUSIC_ABLUM_COLLECT =
             "api/v1/music/special/{special_id}/collection";// 收藏专辑
     public static final String APP_PATH_MUSIC_DIGG = "api/v1/music/{music_id}/digg";// 音乐点赞
+    public static final String APP_PATH_MUSIC_DIGG_FORMAT = "api/v1/music/%s/digg";// 音乐点赞
     public static final String APP_PATH_MUSIC_ABLUM_DETAILS =
             "api/v1/music/specials/{special_id}";// 专辑详情
 
