@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -71,6 +72,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     private static final int DYNAMIC_ITEM_DIG = 1;
     //private static final int DYNAMIC_ITEM_COMMENT >1;
 
+    @BindView(R.id.behavior_demo_coordinatorLayout)
+    CoordinatorLayout mCoordinatorLayout;
     @BindView(R.id.dd_dynamic_tool)
     DynamicDetailMenuView mDdDynamicTool;
     @BindView(R.id.tv_toolbar_center)
@@ -136,7 +139,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     protected void setLoadingHolderClick() {
         super.setLoadingHolderClick();
-        mPresenter.getDetailAll(mDynamicBean.getFeed_id(), 0L, mDynamicBean.getUser_id() + "");
+        mPresenter.getDetailAll(mDynamicBean.getFeed_id(), DEFAULT_PAGE_MAX_ID, mDynamicBean.getUser_id() + "");
     }
 
     /**
@@ -162,7 +165,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      * 初始化监听
      */
     private void initListener() {
-        mRefreshlayout.setVisibility(View.INVISIBLE);
+        mCoordinatorLayout.setEnabled(false);
         RxView.clicks(mTvToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(new Action1<Void>() {
@@ -213,18 +216,12 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         if (bundle != null && bundle.containsKey(DYNAMIC_DETAIL_DATA)) {
             mIsLookMore = bundle.getBoolean(LOOK_COMMENT_MORE);
             mDynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
-            mPresenter.getDetailAll(mDynamicBean.getFeed_id(), 0L, mDynamicBean.getUser_id() + "");
-//            setToolBarUser(mDynamicBean);// 设置标题用户
-//            initBottomToolData(mDynamicBean);// 初始化底部工具栏数据
-//             设置动态详情列表数据
-//            mDynamicDetailHeader.setDynamicDetial(mDynamicBean);
-//            updateCommentCountAndDig();
-//            onNetResponseSuccess(mDynamicBean.getComments(), false);
-//            mPresenter.getDynamicDigList(mDynamicBean.getFeed_id(), 0L);
-//            mPresenter.requestNetData(0L, false);// 获取评论列表
-//            if (mIsLookMore) {
-//                mRvList.scrollToPosition(1);
-//            }
+            if (mDynamicBean.getDigUserInfoList() == null) {
+                mPresenter.getDetailAll(mDynamicBean.getFeed_id(), DEFAULT_PAGE_MAX_ID, mDynamicBean.getUser_id() + "");
+            } else {
+                allDataReady();
+            }
+
         }
     }
 
@@ -288,16 +285,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                         mTvToolbarCenter.setCompoundDrawables(resource, null, null, null);
                     }
                 });
-//        // 如果当前动态所属用户，就是当前用户，隐藏关注按钮
-//        long user_id = dynamicBean.getUser_id();
-//        if (AppApplication.getmCurrentLoginAuth() != null && user_id == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-//            mTvToolbarRight.setVisibility(View.GONE);
-//        } else {
-//            // 获取用户关注状态
-//            mPresenter.getUserFollowState(user_id + "");
-//            mTvToolbarRight.setVisibility(View.VISIBLE);
-//        }
-
     }
 
     @Override
@@ -360,7 +347,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     public void allDataReady() {
         closeLoading();
-        mRefreshlayout.setVisibility(View.VISIBLE);
+        mCoordinatorLayout.setEnabled(true);
         setAllData();
     }
 

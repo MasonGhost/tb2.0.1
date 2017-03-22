@@ -45,6 +45,7 @@ public interface PersonalCenterContract {
          * 设置通知服务器封面更新的状态
          */
         void setChangeUserCoverState(boolean changeSuccess);
+
         /**
          * 获取列表数据
          *
@@ -61,6 +62,12 @@ public interface PersonalCenterContract {
 
         void refresh(int position);
 
+        void allDataReady();
+
+        /**
+         * 加载失败
+         */
+        void loadAllError();
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
@@ -87,6 +94,7 @@ public interface PersonalCenterContract {
     }
 
     interface Presenter extends DynamicContract.Presenter {
+
         void setCurrentUserInfo(Long userId);
 
         /**

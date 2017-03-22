@@ -7,7 +7,6 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -125,7 +124,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         if (mCenterLoadingView.getVisibility() == View.VISIBLE) {
             ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).stop();
             mCenterLoadingView.setVisibility(View.GONE);
-            mCenterLoadingView.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
+//            mCenterLoadingView.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
         }
     }
 
@@ -167,7 +166,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * @return
      */
     protected int getstatusbarAndToolbarHeight() {
-        return DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelSize(R.dimen.toolbar_height) + getResources().getDimensionPixelSize(R.dimen.divider_line);
+        return DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelOffset(R.dimen.toolbar_height) + getResources().getDimensionPixelOffset(R.dimen.divider_line);
     }
 
     /**

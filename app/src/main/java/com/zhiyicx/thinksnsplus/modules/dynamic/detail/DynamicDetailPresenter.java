@@ -212,6 +212,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
                     protected void onSuccess(DynamicBean data) {
                         mRootView.getCurrentDynamic().setComments(data.getComments());
                         mRootView.getCurrentDynamic().setDigUserInfoList(data.getDigUserInfoList());
+                        mDynamicBeanGreenDao.insertOrReplace(mRootView.getCurrentDynamic());
                         mRootView.allDataReady();
                         FollowFansBean followFansBean = mFollowFansBeanGreenDao.getFollowState(AppApplication.getmCurrentLoginAuth().getUser_id(), mRootView.getCurrentDynamic().getUser_id());
                         System.out.println("followFansBean = " + followFansBean);

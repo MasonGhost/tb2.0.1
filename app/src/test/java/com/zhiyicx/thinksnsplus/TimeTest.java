@@ -44,13 +44,13 @@ public class TimeTest {
 
     @Test
     public void rxMerge() {
-        UserInfoBean userInfoBean1=new UserInfoBean();
+        UserInfoBean userInfoBean1 = new UserInfoBean();
         userInfoBean1.setUser_id(10L);
-        UserInfoBean userInfoBean2=new UserInfoBean();
+        UserInfoBean userInfoBean2 = new UserInfoBean();
         userInfoBean2.setName("李四");
-        Observable<UserInfoBean>  userInfoBeanObservable1= Observable.just(userInfoBean1);
-        Observable<UserInfoBean>  userInfoBeanObservable2= Observable.just(userInfoBean2);
-        Observable.merge(userInfoBeanObservable1,userInfoBeanObservable2)
+        Observable<UserInfoBean> userInfoBeanObservable1 = Observable.just(userInfoBean1);
+        Observable<UserInfoBean> userInfoBeanObservable2 = Observable.just(userInfoBean2);
+        Observable.merge(userInfoBeanObservable1, userInfoBeanObservable2)
                 .subscribe(new Action1<UserInfoBean>() {
                     @Override
                     public void call(UserInfoBean userInfoBean) {
@@ -66,7 +66,57 @@ public class TimeTest {
         }).subscribe(new Action1<UserInfoBean>() {
             @Override
             public void call(UserInfoBean userInfoBean) {
-                System.out.println("userInfoBean = " + userInfoBean.getUser_id()+userInfoBean.getName());
+                System.out.println("userInfoBean = " + userInfoBean.getUser_id() + userInfoBean.getName());
+            }
+        });
+
+
+    }
+
+    @Test
+    public void rxCombineLast() {
+        UserInfoBean userInfoBean1 = new UserInfoBean();
+        userInfoBean1.setName("张三");
+        UserInfoBean userInfoBean2 = new UserInfoBean();
+        userInfoBean2.setName("李四");
+        Observable<UserInfoBean> userInfoBeanObservable1 = Observable.just(userInfoBean1);
+        Observable<UserInfoBean> userInfoBeanObservable2 = Observable.just(userInfoBean2);
+
+        Observable.combineLatest(userInfoBeanObservable1, userInfoBeanObservable2, new Func2<UserInfoBean, UserInfoBean, UserInfoBean>() {
+            @Override
+            public UserInfoBean call(UserInfoBean userInfoBean, UserInfoBean userInfoBean2) {
+                System.out.println("userInfoBean = " + userInfoBean.getName());
+                System.out.println("userInfoBean2 = " + userInfoBean2.getName());
+                return userInfoBean;
+
+            }
+        }).subscribe(new Action1<UserInfoBean>() {
+            @Override
+            public void call(UserInfoBean userInfoBean) {
+                System.out.println(userInfoBean.getName());
+            }
+        });
+
+    }
+
+    @Test
+    public void rxZip() {
+        UserInfoBean userInfoBean1 = new UserInfoBean();
+        userInfoBean1.setUser_id(10L);
+        UserInfoBean userInfoBean2 = new UserInfoBean();
+        userInfoBean2.setName("李四");
+        Observable<UserInfoBean> userInfoBeanObservable1 = Observable.just(userInfoBean1);
+        Observable<UserInfoBean> userInfoBeanObservable2 = Observable.just(userInfoBean2);
+        Observable.zip(userInfoBeanObservable1, userInfoBeanObservable2, new Func2<UserInfoBean, UserInfoBean, UserInfoBean>() {
+            @Override
+            public UserInfoBean call(UserInfoBean userInfoBean, UserInfoBean userInfoBean2) {
+                userInfoBean.setName(userInfoBean2.getName());
+                return userInfoBean;
+            }
+        }).subscribe(new Action1<UserInfoBean>() {
+            @Override
+            public void call(UserInfoBean userInfoBean) {
+                System.out.println("userInfoBean = " + userInfoBean.getUser_id() + userInfoBean.getName());
             }
         });
 
