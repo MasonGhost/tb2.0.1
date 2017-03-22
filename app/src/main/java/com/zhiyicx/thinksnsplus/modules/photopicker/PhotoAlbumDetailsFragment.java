@@ -149,13 +149,17 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 mTvPreview.setEnabled(selectedItemCount > 0);
                 if (maxCount <= 1) {
                     List<String> photos = photoGridAdapter.getSelectedPhotos();
-                    // 已经选择过图片，取消之前的选择，设置最新的选择
+                    // 当前选择的图片，没有被选择过
                     if (!photos.contains(photo.getPath())) {
+                        // 之前已经选择过该图片，就需要-1张
+                        if (!photos.isEmpty()) {
+                            selectedItemCount -= 1;
+                        }
                         photos.clear();
                         photoGridAdapter.notifyDataSetChanged();
                     }
                     // 设置当前选择的数量
-                    mBtComplete.setText(getString(R.string.album_selected_count,selectedItemCount, maxCount));
+                    mBtComplete.setText(getString(R.string.album_selected_count, selectedItemCount, maxCount));
                     return true;
                 }
                 // 数量超过时，进行提示
