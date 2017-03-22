@@ -50,6 +50,7 @@ import rx.schedulers.Schedulers;
 import static com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean.STATUS_DIGG_FEED_CHECKED;
 import static com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_LIST_NEED_REFRESH;
 
 /**
  * @author LiuChao
@@ -75,6 +76,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
     @Inject
     public SharePolicy mSharePolicy;
 
+    private boolean mIsNeedDynamicListRefresh = false;
 
     @Inject
     public DynamicDetailPresenter(DynamicDetailContract.Repository repository, DynamicDetailContract.View rootView) {
@@ -257,6 +259,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
 
     @Override
     public void handleLike(boolean isLiked, final Long feed_id, final DynamicToolBean dynamicToolBean) {
+        mIsNeedDynamicListRefresh=true;
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
@@ -372,6 +375,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
 
     @Override
     public void deleteComment(long comment_id, int commentPositon) {
+        mIsNeedDynamicListRefresh = true;
         mRootView.getCurrentDynamic().getTool().setFeed_comment_count(mRootView.getCurrentDynamic().getTool().getFeed_comment_count() - 1);
         mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getCurrentDynamic().getTool());
         mDynamicCommentBeanGreenDao.deleteSingleCache(mRootView.getCurrentDynamic().getComments().get(commentPositon));
@@ -389,6 +393,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
      */
     @Override
     public void sendComment(long replyToUserId, String commentContent) {
+        mIsNeedDynamicListRefresh=true;
         // 生成一条评论
         DynamicCommentBean creatComment = new DynamicCommentBean();
         creatComment.setState(DynamicCommentBean.SEND_ING);
@@ -478,7 +483,12 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         }
         mRootView.getCurrentDynamic().setComments(mRootView.getDatas());
         bundle.putParcelable(DYNAMIC_DETAIL_DATA, mRootView.getCurrentDynamic());
+        bundle.putBoolean(DYNAMIC_LIST_NEED_REFRESH, mIsNeedDynamicListRefresh);
         EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_DYNAMIC);
+    }
+
+    public void setNeedDynamicListRefresh(boolean needDynamicListRefresh) {
+        mIsNeedDynamicListRefresh = needDynamicListRefresh;
     }
 
 }

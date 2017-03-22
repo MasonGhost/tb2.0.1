@@ -44,6 +44,7 @@ import rx.schedulers.Schedulers;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_POSITION;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_LIST_NEED_REFRESH;
 
 /**
  * @Describe
@@ -86,7 +87,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
      */
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        Subscription dynamicLisSub = mRepository.getDynamicList(mRootView.getDynamicType(), maxId, mRootView.getPage(),isLoadMore)
+        Subscription dynamicLisSub = mRepository.getDynamicList(mRootView.getDynamicType(), maxId, mRootView.getPage(), isLoadMore)
                 .map(new Func1<BaseJson<List<DynamicBean>>, BaseJson<List<DynamicBean>>>() {
                     @Override
                     public BaseJson<List<DynamicBean>> call(BaseJson<List<DynamicBean>> listBaseJson) {
@@ -207,6 +208,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
     }
 
     /**
+     * 动态详情处理了数据
      * 处理更新动态数据
      *
      * @param data
@@ -221,10 +223,11 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                     public Integer call(Bundle bundle) {
                         String type = bundle.getString(DYNAMIC_DETAIL_DATA_TYPE);
                         int position = bundle.getInt(DYNAMIC_DETAIL_DATA_POSITION);
+                        boolean isNeedRefresh = bundle.getBoolean(DYNAMIC_LIST_NEED_REFRESH);
                         DynamicBean dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
                         if (mRootView.getDynamicType().equals(type)) { // 先刷新当前页面，再刷新其他页面
                             mRootView.getDatas().set(position, dynamicBean);
-                            return position;
+                            return isNeedRefresh ? position : -1;
                         }
                         int size = mRootView.getDatas().size();
                         int dynamicPosition = -1;
@@ -237,7 +240,8 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                         if (dynamicPosition != -1) {// 如果列表有当前评论
                             mRootView.getDatas().set(position, dynamicBean);
                         }
-                        return dynamicPosition;
+
+                        return isNeedRefresh ? dynamicPosition : -1;
                     }
                 })
                 .subscribe(new Action1<Integer>() {

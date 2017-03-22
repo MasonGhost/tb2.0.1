@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -331,9 +332,14 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         if (mCenterLoadingView != null) {
             ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).stop();
             mCenterLoadingView.setVisibility(View.GONE);
+            mCenterLoadingView.startAnimation(AnimationUtils.loadAnimation(getContext(),android.R.anim.fade_out));
         }
     }
 
+    /**
+     * 设置状态栏占位图背景色
+     * @param resId
+     */
     public void setStatusPlaceholderViewBackgroundColor(int resId) {
         if (mStatusPlaceholderView != null) {
             mStatusPlaceholderView.setBackgroundColor(resId);
