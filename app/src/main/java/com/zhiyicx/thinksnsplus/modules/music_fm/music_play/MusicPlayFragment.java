@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_play;
 
 import android.content.ComponentName;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.os.SystemClock;
@@ -17,7 +18,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -33,7 +33,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideMusicBgTransform;
-import com.zhiyicx.baseproject.widget.popwindow.ListPopupWindow;
+import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -43,6 +43,8 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentActivity;
+import com.zhiyicx.thinksnsplus.widget.MusicListPopupWindow;
 import com.zhiyicx.thinksnsplus.widget.PlayerSeekBar;
 import com.zhiyicx.thinksnsplus.widget.pager_recyclerview.LoopPagerRecyclerView;
 import com.zhiyicx.thinksnsplus.widget.pager_recyclerview.PagerRecyclerView;
@@ -59,7 +61,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscription;
@@ -70,6 +71,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_LOAD;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERLOOP;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERSINGLE;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDER_ACTION;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailFragment
         .MUSIC_INFO;
 
@@ -118,12 +120,18 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     private static final long PROGRESS_UPDATE_INTERNAL = 1000;
     private static final long PROGRESS_UPDATE_INITIAL_INTERVAL = 100;
 
-
     private ImageLoader mImageLoader;
-
     private CommonAdapter mAdapter;
-
-    private List<MusicAlbumDetailsBean.MusicsBean> mStringList = new ArrayList<>();
+    private List<MusicAlbumDetailsBean.MusicsBean> mMusicList = new ArrayList<>();
+    private int mDefalultOrder;
+    private Integer[] mOrderModule = new Integer[]{R.mipmap.music_ico_random, R.mipmap
+            .music_ico_single, R.mipmap.music_ico_inorder};
+    private boolean isConnected;
+    private boolean isComplete;
+    private MediaDescriptionCompat mMediaDescriptionCompat;
+    private MusicAlbumDetailsBean mMusicAlbumDetailsBean;
+    private MusicAlbumDetailsBean.MusicsBean mCurrentMusic;
+    private String mCurrentMediaId = "-1";
 
     /**
      * 指针位置flag
@@ -157,21 +165,13 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     /**
      * 歌曲列表
      */
-    private ListPopupWindow mListPopupWindow;
+    private MusicListPopupWindow mListPopupWindow;
 
     /**
      * 进度条控制
      */
     private Subscription mProgressSubscription;
     private Observable<Long> mProgressObservable;
-    private int mDefalultOrder;
-    private Integer[] mOrderModule = new Integer[]{R.mipmap.music_ico_random, R.mipmap
-            .music_ico_single, R.mipmap.music_ico_inorder};
-    private boolean isConnected;
-    private boolean isComplete;
-    private boolean isSeekTo;
-    private MediaDescriptionCompat mMediaDescriptionCompat;
-    private MusicAlbumDetailsBean mMusicAlbumDetailsBean;
 
     /**
      * 音乐播放事件回调
@@ -185,6 +185,9 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
             if (metadata != null) {
+                mCurrentMediaId = metadata.getDescription().getMediaId();
+                mListPopupWindow.getAdapter().notifyDataSetChanged();
+                LogUtils.d("mCurrentMediaId:::" + mCurrentMediaId);
                 updateMediaDescription(metadata.getDescription());
                 updateDuration(metadata);
             }
@@ -287,15 +290,14 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         initListener();
         mMusicAlbumDetailsBean = (MusicAlbumDetailsBean) getArguments().getSerializable
                 (MUSIC_INFO);
-        mStringList = mMusicAlbumDetailsBean.getMusics();
-
+        mMusicList = mMusicAlbumDetailsBean.getMusics();
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        mFragmentMusicPalyProgress.setIndeterminate(false);
+
         mFragmentMusicPalyLrc.setMovementMethod(ScrollingMovementMethod.getInstance());
-        mListPopupWindow = ListPopupWindow.Builder()
+        mListPopupWindow = MusicListPopupWindow.Builder()
                 .with(getActivity())
                 .alpha(0.8f)
-                .data(mStringList)
+                .data(mMusicList)
                 .adapter(getPopListAdapter())
                 .build();
 
@@ -334,16 +336,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     }
 
-    @Override
-    public void digMusic(boolean b) {
-
-    }
-
-    @Override
-    public void cancleDigMusic(boolean b) {
-
-    }
-
     @OnClick({R.id.fragment_music_paly_share, R.id.fragment_music_paly_like, R.id
             .fragment_music_paly_comment, R.id.fragment_music_paly_lyrics, R.id
             .fragment_music_paly_order, R.id.fragment_music_paly_preview, R.id
@@ -351,17 +343,30 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             .fragment_music_paly_list, R.id.fragment_music_paly_bg, R.id.fragment_music_paly_lrc})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.fragment_music_paly_share:
+            case R.id.fragment_music_paly_share:// 分享
+                mPresenter.shareMusic();
                 break;
-            case R.id.fragment_music_paly_like:
-                mPresenter.digMusic(mMediaDescriptionCompat.getMediaId());
+            case R.id.fragment_music_paly_like: // 点赞
+                mPresenter.handleLike(mCurrentMusic.getMusic_info().getIsdiggmusic() == 0,
+                        mMediaDescriptionCompat.getMediaId());
+                if (mCurrentMusic.getMusic_info().getIsdiggmusic() == 1) {
+                    mCurrentMusic.getMusic_info().setIsdiggmusic(0);
+                    mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_normal);
+
+                } else {
+                    mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_high);
+                    mCurrentMusic.getMusic_info().setIsdiggmusic(1);
+                }
                 break;
-            case R.id.fragment_music_paly_comment:
-                mListPopupWindow.dataChange(mStringList);
+            case R.id.fragment_music_paly_comment: // 评论
+                startActivity(new Intent(getActivity(), MusicCommentActivity.class));
                 break;
-            case R.id.fragment_music_paly_order:
+            case R.id.fragment_music_paly_order: // 播放顺序
+                Bundle bundle = new Bundle();
+                bundle.putInt(ORDER_ACTION, mDefalultOrder);
                 getActivity().getSupportMediaController().getTransportControls()
-                        .sendCustomAction(mDefalultOrder + "", null);
+                        .sendCustomAction(ORDER_ACTION, bundle);
+
                 mFragmentMusicPalyOrder.setImageResource(mOrderModule[mDefalultOrder]);
                 SharePreferenceUtils.setInterger(getActivity(),
                         SharePreferenceTagConfig.SHAREPREFERENCE_TAG_MUSIC, mDefalultOrder);
@@ -380,7 +385,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                         .getActualCurrentPosition() - 1);
                 mFragmentMusicPalyProgress.setProgress(0);
                 break;
-            case R.id.fragment_music_paly_palyer:
+            case R.id.fragment_music_paly_palyer:// 播放暂停
                 PlaybackStateCompat state = getActivity().getSupportMediaController()
                         .getPlaybackState();
                 if (state != null) {
@@ -411,17 +416,13 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                         .getActualCurrentPosition() + 1);
                 mFragmentMusicPalyProgress.setProgress(0);
                 break;
-            case R.id.fragment_music_paly_list:
+            case R.id.fragment_music_paly_list:// 歌曲目录
                 mListPopupWindow.show();
                 break;
-            case R.id.fragment_music_paly_bg:
-            case R.id.fragment_music_paly_lyrics:
+//            case R.id.fragment_music_paly_bg:
+            case R.id.fragment_music_paly_lyrics:// 歌词显示
 //            case R.id.fragment_music_paly_lrc:
-                if (mFragmentMusicPalyLrc.getVisibility() == View.VISIBLE) {
-                    hideLrc();
-                } else {
-                    showLrc();
-                }
+                handleLrc();
                 break;
             default:
                 break;
@@ -469,7 +470,33 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             @Override
             public void OnPageChanged(int oldPosition, int newPosition) {
                 mCurrentValue = 0;
+                int realPosition = newPosition % mMusicList.size();
                 stopAnimation(mCurrentView);
+                ToastUtils.showToast("OnPageChanged:::" + newPosition);
+                mCurrentMusic = mMusicList.get(realPosition);
+
+                if (mCurrentMusic.getMusic_info().getIsdiggmusic() == 1) {
+                    mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_high);
+                } else {
+                    mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_normal);
+                }
+                if (mCurrentMusic.getMusic_info().getComment_count() > 0) {
+                    mFragmentMusicPalyComment.setImageResource(
+                            R.mipmap.music_ico_comment_incomplete);
+                    BadgeView badgeView = new BadgeView(getActivity());
+                    badgeView.setTargetView(mFragmentMusicPalyComment);
+                    badgeView.setBadgeCount(mCurrentMusic.getMusic_info().getComment_count());
+                    badgeView.setBadgeMargin(0, 14, 20, 0);
+                    badgeView.setTextColor(getResources().getColor(
+                            R.color.normal_for_dynamic_list_content));
+                    badgeView.setBackgroundColor(0x00000000);
+                } else {
+                    mFragmentMusicPalyComment.setImageResource(
+                            R.mipmap.music_ico_comment_complete);
+                }
+
+                mFragmentMusicPalyLrc.setText(mCurrentMusic.getMusic_info().getLyric());
+
                 if (isConnected && !isComplete) {
                     if (newPosition > oldPosition) {
                         getActivity().getSupportMediaController().getTransportControls()
@@ -478,8 +505,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                         getActivity().getSupportMediaController().getTransportControls()
                                 .skipToPrevious();
                     }
-                    mFragmentMusicPalyLrc.setText(mStringList.get(newPosition%mStringList.size())
-                            .getMusic_info().getLyric());
                 }
             }
 
@@ -493,7 +518,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
             @Override
             public void OnIdle(int position) {
-                ToastUtils.showToast("OnIdle");
+//                ToastUtils.showToast("OnIdle");
                 mCurrentView = (ViewGroup) RecyclerViewUtils.getCenterXChild(mFragmentMusicPalyRv);
                 isDraging = false;
                 if (mCurrentValue != 0 || isComplete) {
@@ -542,7 +567,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     private void updateMediaDescription(MediaDescriptionCompat description) {
         if (description == null) {
-
             return;
         } else {
             mMediaDescriptionCompat = description;
@@ -552,6 +576,8 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                     .imagerView(mFragmentMusicPalyBg)
                     .url(description.getIconUri() + "")
                     .build());
+
+
         }
 
     }
@@ -764,14 +790,24 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     @NonNull
     private CommonAdapter getPopListAdapter() {
         CommonAdapter adapter = new CommonAdapter<MusicAlbumDetailsBean.MusicsBean>(getActivity()
-                , R.layout.item_music_detail_list,mStringList) {
+                , R.layout.item_music_detail_list, mMusicList) {
             @Override
             protected void convert(ViewHolder holder, MusicAlbumDetailsBean.MusicsBean s, int
                     position) {
                 TextView musicName = holder.getView(R.id.item_music_name);
                 TextView authorName = holder.getView(R.id.item_music_author);
                 musicName.setText(s.getMusic_info().getTitle());
-                authorName.setText("-"+s.getMusic_info().getSinger().getName());
+                authorName.setText("-" + s.getMusic_info().getSinger().getName());
+
+                if (mCurrentMediaId.equals(s.getMusic_info().getId() + "")) {
+                    musicName.setTextColor(getResources().getColor(R.color.important_for_theme));
+                    authorName.setTextColor(getResources().getColor(R.color.important_for_theme));
+                } else {
+                    musicName.setTextColor(getResources().getColor(R.color.important_for_content));
+                    authorName.setTextColor(getResources().getColor(R.color
+                            .normal_for_assist_text));
+                }
+
             }
         };
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
@@ -792,14 +828,13 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     @NonNull
     private CommonAdapter getMediaListAdapter() {
         mAdapter = new CommonAdapter<MusicAlbumDetailsBean.MusicsBean>(getActivity(),
-                R.layout.item_music_play, mStringList) {
+                R.layout.item_music_play, mMusicList) {
             @Override
             protected void convert(ViewHolder holder, MusicAlbumDetailsBean.MusicsBean o, final
             int position) {
-                ImageView image=holder.getView(R.id.fragment_music_paly_img);
+                ImageView image = holder.getView(R.id.fragment_music_paly_img);
                 String imageUrl = String.format(ApiConfig.NO_PROCESS_IMAGE_PATH,
-                        o.getMusic_info().getSinger().getCover().getId(),50);
-                LogUtils.d(imageUrl);
+                        o.getMusic_info().getSinger().getCover().getId(), 50);
                 mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
                         .imagerView(image)
                         .url(imageUrl)
@@ -821,32 +856,15 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         return mAdapter;
     }
 
-    private void hideLrc() {
-        mFragmentMusicPalyLrc.setVisibility(View.GONE);
-        mFragmentMusicPalyRv.setVisibility(View.VISIBLE);
-        mFragmentMusicPalyPhonographPoint.setVisibility(View.VISIBLE);
-//        mFragmentMusicPalyRv.scrollToPosition(mFragmentMusicPalyRv.getCurrentPosition());
-    }
+    private void handleLrc() {
+        mFragmentMusicPalyRv.setVisibility(mFragmentMusicPalyLrc.getVisibility() == View
+                .VISIBLE ? View.VISIBLE : View.GONE);
 
-    private void showLrc() {
-        mFragmentMusicPalyRv.setVisibility(View.GONE);
-        mFragmentMusicPalyPhonographPoint.setVisibility(View.GONE);
-//        mFragmentMusicPalyLrc.setText("dfjie \n sdadw\n dsadw\n sawfsdw\n sdwdawdaw\n" +
-//                "dsfese\n wwoifej\n dieieuww\n eueueu\n iwoidbw\n uwiqwh\n sadiuwu\n " +
-//                "wuuroh\n" +
-//                "dfioeii\n cncjdj\n kjjsdjoieo\n euiwuvc\n oirklsdh\n ueudif\n dfjie \n" +
-//                " sdadw\n" +
-//                " dsadw\n" +
-//                " sawfsdw\n" +
-//                " sdwdawdaw\n" +
-//                "\" +\n" +
-//                "                        \"dsfese\\n wwoifej\\n dieieuww\\n eueueu\\n " +
-//                "iwoidbw\\n uwiqwh\\n sadiuwu\\n \" +\n" +
-//                "                        \"wuuroh\\n\" +\n" +
-//                "                        \"dfioeii\n" +
-//                " cncjdj\n" +
-//                " kjjsdjoieo\n");
-        mFragmentMusicPalyLrc.setVisibility(View.VISIBLE);
-    }
+        mFragmentMusicPalyPhonographPoint.setVisibility(mFragmentMusicPalyLrc.getVisibility() ==
+                View
+                .VISIBLE ? View.VISIBLE : View.GONE);
 
+        mFragmentMusicPalyLrc.setVisibility(mFragmentMusicPalyLrc.getVisibility() == View
+                .VISIBLE ? View.GONE : View.VISIBLE);
+    }
 }
