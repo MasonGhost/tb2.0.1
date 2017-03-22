@@ -13,8 +13,8 @@ android {
 
         // 友盟三方key配置
         manifestPlaceholders = [
-                TECENT_APPID: 100424468,
-                UMENG_APPKEY: "d1b01388780156949b02cadd",
+                TECENT_APPID: 1105978541,
+                UMENG_APPKEY: "58d0998e9f06fd05680011f6",
         ]
 
     }
