@@ -1,10 +1,24 @@
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_music_list"
+    <include
+        layout="@layout/fragment_tslist"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-</merge>
+    <com.zhiyicx.baseproject.widget.InputLimitView
+        android:id="@+id/ilv_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="@bool/pickerview_customTextSize"
+        android:layout_gravity="bottom"
+        android:fitsSystemWindows="true"
+        android:visibility="gone"
+        app:limitSize="@integer/comment_input_max_size"
+        app:showLimitSize="@integer/show_comment_input_size"/>
+
+</LinearLayout>
