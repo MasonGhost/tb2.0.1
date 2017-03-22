@@ -318,7 +318,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * 刷新数据
      */
     public void refreshData() {
-        mAdapter.notifyDataSetChanged();
         mEmptyWrapper.notifyDataSetChanged();
     }
 
@@ -326,7 +325,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * 刷新数据
      */
     public void refreshData(List<T> datas) {
-        mAdapter.notifyDataSetChanged();
         mEmptyWrapper.notifyDataSetChanged();
     }
 
@@ -334,7 +332,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * 刷新单条数据
      */
     public void refreshData(int index) {
-        mAdapter.notifyDataSetChanged();
         mEmptyWrapper.notifyItemChanged(index);
     }
 

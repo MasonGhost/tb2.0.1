@@ -5,10 +5,19 @@ import android.graphics.BitmapFactory;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.bumptech.glide.Glide;
+import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+
+import java.util.concurrent.TimeUnit;
+
+import rx.functions.Action1;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Describe 动态列表 五张图的时候的 item
@@ -44,15 +53,15 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
     }
 
     /**
-     * 计算压缩比例
+     * 设置 imageview 点击事件，以及显示
      *
-     * @param view
-     * @param dynamicBean
-     * @param part        占图片显示控件的比例等分
-     * @return
+     * @param view        the target
+     * @param dynamicBean item data
+     * @param positon     image item position
+     * @param part        this part percent of imageContainer
      */
     @Override
-    protected int getProportion(ImageView view, DynamicBean dynamicBean, int part) {
+    protected void initImageView(final ViewHolder holder, ImageView view, final DynamicBean dynamicBean, final int positon, int part) {
         /**
          * 一张图时候，需要对宽高做限制
          */
@@ -76,8 +85,32 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
                 && (dynamicBean.getFeed().getLocalPhotos() == null || dynamicBean.getFeed().getLocalPhotos().size() == DynamicListItemForOneImage.IMAGE_COUNTS)) {
             view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
         }
-        return  proportion;
+        String url;
+        if (dynamicBean.getFeed().getStorages() != null && dynamicBean.getFeed().getStorages().size() > 0) {
+            url = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getFeed().getStorages().get(positon).getStorage_id(), proportion);
+        } else {
+            url = dynamicBean.getFeed().getLocalPhotos().get(positon);
+        }
+        Glide.with(mContext)
+                .load(url)
+                .override(with, height)
+                .into(view);
+        if (dynamicBean.getFeed().getStorages() != null) {
+            dynamicBean.getFeed().getStorages().get(positon).setPart(proportion);
+        }
+        RxView.clicks(view)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        if (mOnImageClickListener != null) {
+                            mOnImageClickListener.onImageClick(holder, dynamicBean, positon);
+                        }
+                    }
+                });
+        view.setBackgroundColor(mContext.getResources().getColor(R.color.themeColor));
     }
+
 
     @Override
     protected int getCurrenCloums() {

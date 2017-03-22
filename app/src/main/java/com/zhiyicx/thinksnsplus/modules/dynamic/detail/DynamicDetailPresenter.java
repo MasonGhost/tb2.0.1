@@ -214,10 +214,6 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
                         mRootView.getCurrentDynamic().setDigUserInfoList(data.getDigUserInfoList());
                         mDynamicBeanGreenDao.insertOrReplace(mRootView.getCurrentDynamic());
                         mRootView.allDataReady();
-                        FollowFansBean followFansBean = mFollowFansBeanGreenDao.getFollowState(AppApplication.getmCurrentLoginAuth().getUser_id(), mRootView.getCurrentDynamic().getUser_id());
-                        if (followFansBean != null) {
-                            mRootView.initFollowState(followFansBean);
-                        }
                     }
 
                     @Override
@@ -352,27 +348,10 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
 
     @Override
     public void getUserFollowState(String user_ids) {
-        Subscription subscription = mRepository.getUserFollowState(user_ids)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<List<FollowFansBean>>() {
-                    @Override
-                    protected void onSuccess(List<FollowFansBean> data) {
-                        mFollowFansBeanGreenDao.insertOrReplace(data.get(0));
-                        mRootView.initFollowState(data.get(0));
-                    }
-
-                    @Override
-                    protected void onFailure(String message) {
-
-                    }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-
-                    }
-                });
-        addSubscrebe(subscription);
+        FollowFansBean followFansBean = mFollowFansBeanGreenDao.getFollowState(AppApplication.getmCurrentLoginAuth().getUser_id(), mRootView.getCurrentDynamic().getUser_id());
+        if (followFansBean != null) {
+            mRootView.initFollowState(followFansBean);
+        }
     }
 
     @Override
