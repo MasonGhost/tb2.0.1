@@ -165,7 +165,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         // 添加聊天点击事件
         RxView.clicks(mLlChatContainer)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.<Void>bindToLifecycle())
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
@@ -513,15 +512,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void onCommentContentClick(DynamicBean dynamicBean, int position) {
-
-        if(dynamicBean!=null){
-            System.out.println("dynamicBean = " + dynamicBean.toString());
-            System.out.println("positon = " +  mAdapter.getDatas().indexOf(dynamicBean));
-        }
-
         mCurrentPostion = mAdapter.getDatas().indexOf(dynamicBean);
         if (dynamicBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-            initLoginOutPopupWindow(dynamicBean, mCurrentPostion, position);
+            initDeletCommentPopWindow(dynamicBean, mCurrentPostion, position);
             mDeletCommentPopWindow.show();
         } else {
             showCommentView();
@@ -651,10 +644,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      * @param dynamicPositon  dynamic comment position
      * @param commentPosition current comment position
      */
-    private void initLoginOutPopupWindow(final DynamicBean dynamicBean, final int dynamicPositon, final int commentPosition) {
-        if (mDeletCommentPopWindow != null) {
-            return;
-        }
+    private void initDeletCommentPopWindow(final DynamicBean dynamicBean, final int dynamicPositon, final int commentPosition) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_comment))
                 .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))

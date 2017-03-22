@@ -528,9 +528,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      * @param commentPosition current comment position
      */
     private void initLoginOutPopupWindow(final long comment_id, final int commentPosition) {
-        if (mDeletCommentPopWindow != null) {
-            return;
-        }
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_comment))
                 .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
