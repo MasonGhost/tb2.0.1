@@ -3,15 +3,20 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.music_comment;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.adapter.MusicCommentItem;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.adapter.MusicEmptyCommentItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
+import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,11 +37,27 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     InputLimitView mIlvComment;
 
     private List<MusicCommentListBean> mDatas = new ArrayList<>();
+    private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
+    public static final String CURRENT_MUSIC = "current_music";
+    private MusicAlbumDetailsBean.MusicsBean mCurrentMusic;
 
     public static MusicCommentFragment newInstance(Bundle params) {
         MusicCommentFragment fragment = new MusicCommentFragment();
         fragment.setArguments(params);
         return fragment;
+    }
+
+    @Override
+    protected void initView(View rootView) {
+        super.initView(rootView);
+        mCurrentMusic = (MusicAlbumDetailsBean.MusicsBean) getArguments()
+                .getSerializable(CURRENT_MUSIC);
+        mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
+        MusicCommentHeader musicCommentHeader = new MusicCommentHeader(getActivity());
+        musicCommentHeader.setHeadInfo(mCurrentMusic);
+        mHeaderAndFooterWrapper.addHeaderView(musicCommentHeader.getMusicCommentHeader());
+        mRvList.setAdapter(mHeaderAndFooterWrapper);
+        mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
     @Override
@@ -70,7 +91,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
 
     @Override
     public void setPresenter(MusicCommentContract.Presenter presenter) {
-
+        mPresenter = presenter;
     }
 
     @Override
@@ -90,11 +111,25 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
 
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
+        mPresenter.requestNetData(mCurrentMusic.getMusic_info().getId() + "", maxId, isLoadMore);
+    }
 
+    @Override
+    protected Long getMaxId(@NotNull List<MusicCommentListBean> data) {
+        return (long) data.get(data.size() - 1).getId();
     }
 
     @Override
     protected List<MusicCommentListBean> requestCacheData(Long maxId, boolean isLoadMore) {
         return new ArrayList<>();
+    }
+
+    @Override
+    public void onNetResponseSuccess(@NotNull List<MusicCommentListBean> data, boolean isLoadMore) {
+        if (!isLoadMore && data.isEmpty()) { // 增加空数据，用于显示占位图
+            MusicCommentListBean emptyData = new MusicCommentListBean();
+            data.add(emptyData);
+        }
+        super.onNetResponseSuccess(data, isLoadMore);
     }
 }

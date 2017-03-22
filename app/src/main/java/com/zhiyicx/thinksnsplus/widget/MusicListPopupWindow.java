@@ -45,7 +45,7 @@ public class MusicListPopupWindow extends PopupWindow {
     private int mItemLayout;
     private Drawable mBackgroundDrawable = new ColorDrawable(0x00000000);// 默认为透明;
     private CommonAdapter mAdapter;
-    private TextView mTileTextView,mSizeTextView;
+    private TextView mTileTextView, mSizeTextView;
 
     private MusicListPopupWindow() {
 
@@ -91,8 +91,9 @@ public class MusicListPopupWindow extends PopupWindow {
                 setWindowAlpha(1.0f);
             }
         });
-        mTileTextView=(TextView)mContentView.findViewById(R.id.tv_pop_list_title);
-        mSizeTextView=(TextView)mContentView.findViewById(R.id.tv_pop_list_size);
+        mTileTextView = (TextView) mContentView.findViewById(R.id.tv_pop_list_title);
+        mSizeTextView = (TextView) mContentView.findViewById(R.id.tv_pop_list_size);
+        mSizeTextView.setText(String.format(" (%d)",mDatas.size()));
         mContentView.findViewById(R.id.tv_pop_list_cancle).setOnClickListener(new View
                 .OnClickListener() {
             @Override
@@ -224,19 +225,19 @@ public class MusicListPopupWindow extends PopupWindow {
         this.mAdapter.notifyItemChanged(position);
     }
 
-    public void setOrder(int order){
-        switch (order){
+    public void setOrder(int order) {
+        switch (order) {
             case ORDERRANDOM:
                 mTileTextView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap
-                        .music_ico_random,0,0,0);
+                        .music_ico_random, 0, 0, 0);
                 break;
             case ORDERSINGLE:
                 mTileTextView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap
-                        .music_ico_single_grey,0,0,0);
+                        .music_ico_single_grey, 0, 0, 0);
                 break;
             default:
                 mTileTextView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap
-                        .music_ico_inorder_grey,0,0,0);
+                        .music_ico_inorder_grey, 0, 0, 0);
                 break;
         }
     }

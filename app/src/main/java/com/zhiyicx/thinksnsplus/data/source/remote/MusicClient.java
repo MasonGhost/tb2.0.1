@@ -54,7 +54,9 @@ public interface MusicClient {
     // 获取歌曲评论列表
     @GET(APP_PATH_MUSIC_COMMENT)
     Observable<BaseJson<List<MusicCommentListBean>>> getMusicCommentList(@Path("music_id") String
-                                                                                 music_id);
+                                                                                 music_id,
+                                                                         @Query("max_id") Long max_id,
+                                                                         @Query("limit") Long limit);
 
     // 评论专辑
     @POST(APP_PATH_MUSIC_ABLUM_COMMENT)

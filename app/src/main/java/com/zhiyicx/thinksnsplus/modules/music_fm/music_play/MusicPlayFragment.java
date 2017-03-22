@@ -74,6 +74,8 @@ import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDER_ACTION;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailFragment
         .MUSIC_INFO;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment
+        .CURRENT_MUSIC;
 
 /**
  * @Author Jliuer
@@ -359,7 +361,11 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 }
                 break;
             case R.id.fragment_music_paly_comment: // 评论
-                startActivity(new Intent(getActivity(), MusicCommentActivity.class));
+                Intent intent=new Intent(getActivity(), MusicCommentActivity.class);
+                Bundle musicBundle=new Bundle();
+                musicBundle.putSerializable(CURRENT_MUSIC,mCurrentMusic);
+                intent.putExtra(CURRENT_MUSIC,musicBundle);
+                startActivity(intent);
                 break;
             case R.id.fragment_music_paly_order: // 播放顺序
                 Bundle bundle = new Bundle();

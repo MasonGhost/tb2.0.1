@@ -1,10 +1,16 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.MusicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentContract;
 
+import java.util.List;
+
 import javax.inject.Inject;
+
+import rx.Observable;
 
 /**
  * @Author Jliuer
@@ -19,5 +25,11 @@ public class MusicCommentRepositroty implements MusicCommentContract.Repository 
     @Inject
     public MusicCommentRepositroty(ServiceManager serviceManager) {
         mMusicClient = serviceManager.getMusicClient();
+    }
+
+    @Override
+    public Observable<BaseJson<List<MusicCommentListBean>>> getMusicCommentList(String music_id,
+                                                                                long max_id) {
+        return mMusicClient.getMusicCommentList(music_id,max_id,null);
     }
 }
