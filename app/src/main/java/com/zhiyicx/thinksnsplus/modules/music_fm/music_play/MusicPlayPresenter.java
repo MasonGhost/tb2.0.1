@@ -1,6 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_play;
 
+import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.thridmanager.share.ShareContent;
+import com.zhiyicx.common.thridmanager.share.SharePolicy;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicPlayRepository;
 
@@ -12,11 +17,9 @@ import javax.inject.Inject;
  * @Email Jliuer@aliyun.com
  * @Description
  */
+@FragmentScoped
 public class MusicPlayPresenter extends BasePresenter<MusicPlayContract.Repository,
         MusicPlayContract.View> implements MusicPlayContract.Presenter {
-
-    @Inject
-    MusicPlayRepository mMusicPlayRepository;
 
     @Inject
     public MusicPlayPresenter(MusicPlayContract.Repository repository, MusicPlayContract
@@ -32,46 +35,18 @@ public class MusicPlayPresenter extends BasePresenter<MusicPlayContract.Reposito
         mRootView.setPresenter(this);
     }
 
+    @Inject
+    public SharePolicy mSharePolicy;
+
     @Override
-    public void digMusic(String music_id){
-        mMusicPlayRepository.doDigg(music_id)
-                .compose(mSchedulersTransformer)
-                .subscribe(new BaseSubscribe<Integer>() {
-                    @Override
-                    protected void onSuccess(Integer data) {
-                        mRootView.digMusic(true);
-                    }
-
-                    @Override
-                    protected void onFailure(String message) {
-                        mRootView.digMusic(false);
-                    }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-                        mRootView.digMusic(false);
-                    }
-                });
+    public void shareMusic() {
+        ShareContent shareContent = new ShareContent();
+        mSharePolicy.setShareContent(shareContent);
+        mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
     }
 
     @Override
-    public void cancleDigMusic(String music_id){
-        mMusicPlayRepository.cancleDigg(music_id).compose(mSchedulersTransformer)
-                .subscribe(new BaseSubscribe<Integer>() {
-                    @Override
-                    protected void onSuccess(Integer data) {
-                        mRootView.cancleDigMusic(true);
-                    }
-
-                    @Override
-                    protected void onFailure(String message) {
-                        mRootView.cancleDigMusic(false);
-                    }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-                        mRootView.cancleDigMusic(false);
-                    }
-                });
+    public void handleLike(boolean isLiked, String music_id) {
+        mRepository.handleLike(isLiked,music_id);
     }
 }
