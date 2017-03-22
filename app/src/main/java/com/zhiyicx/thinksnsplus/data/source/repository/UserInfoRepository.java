@@ -27,6 +27,7 @@ import okhttp3.RequestBody;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -90,7 +91,19 @@ public class UserInfoRepository implements UserInfoContract.Repository {
 
     @Override
     public Observable<BaseJson<List<FollowFansBean>>> getUserFollowState(String user_ids) {
-        return mUserInfoClient.getUserFollowState(user_ids);
+        return mUserInfoClient.getUserFollowState(user_ids)
+                .map(new Func1<BaseJson<List<FollowFansBean>>, BaseJson<List<FollowFansBean>>>() {
+                    @Override
+                    public BaseJson<List<FollowFansBean>> call(BaseJson<List<FollowFansBean>> listBaseJson) {
+                        if(listBaseJson.isStatus()){
+                            for (FollowFansBean followFansBean : listBaseJson.getData()) {
+                                followFansBean.setOriginUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
+                                followFansBean.setOrigintargetUser("");
+                            }
+                        }
+                        return listBaseJson;
+                    }
+                });
     }
 
 

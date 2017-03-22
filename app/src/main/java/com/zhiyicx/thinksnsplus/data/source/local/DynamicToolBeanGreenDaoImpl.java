@@ -51,7 +51,8 @@ public class DynamicToolBeanGreenDaoImpl extends CommonCacheImpl<DynamicToolBean
 
     @Override
     public void clearTable() {
-
+        DynamicToolBeanDao dynamicToolBeanDao = getWDaoSession().getDynamicToolBeanDao();
+        dynamicToolBeanDao.deleteAll();
     }
 
     @Override

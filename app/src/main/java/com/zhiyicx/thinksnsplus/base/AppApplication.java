@@ -45,6 +45,7 @@ import okhttp3.Response;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
+import rx.functions.Action1;
 
 /**
  * @Describe
@@ -145,6 +146,12 @@ public class AppApplication extends TSApplication {
                                     }
                                     alertDialog.show();
 
+                                }
+                            })
+                            .doOnError(new Action1<Throwable>() {
+                                @Override
+                                public void call(Throwable throwable) {
+                                    throwable.printStackTrace();
                                 }
                             })
                             .subscribe();

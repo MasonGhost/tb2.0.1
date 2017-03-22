@@ -1,10 +1,14 @@
 package com.zhiyicx.baseproject.base;
 
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
+import android.support.annotation.DrawableRes;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -34,10 +38,13 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     private static final int DEFAULT_TOOLBAR_BACKGROUD_COLOR = R.color.white;// 默认的toolbar背景色
     private static final int DEFAULT_DIVIDER_COLOR = R.color.general_for_line;// 默认的toolbar下方分割线颜色
     private static final int DEFAULT_TOOLBAR_LEFT_IMG = R.mipmap.topbar_back;// 默认的toolbar左边的图片，一般是返回键
+
     protected TextView mToolbarLeft;
     protected TextView mToolbarRight;
     protected TextView mToolbarCenter;
     protected View mStatusPlaceholderView;
+    private View mCenterLoadingView; // 加载
+
     private boolean mIscUseSatusbar = false;// 内容是否需要占用状态栏
 
 
@@ -59,27 +66,116 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
         if (showToolBarDivider()) {// 在需要显示分割线时，进行添加
             View divider = new View(getContext());
-            divider.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) getResources().getDimensionPixelSize(R.dimen.divider_line)));
+            divider.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getResources().getDimensionPixelSize(R.dimen.divider_line)));
             divider.setBackgroundColor(ContextCompat.getColor(getContext(), setToolBarDividerColor()));
             linearLayout.addView(divider);
         }
         if (setUseSatusbar()) {
-            //顶上去
+            // 状态栏顶上去
             StatusBarUtils.transparencyBar(getActivity());
             linearLayout.setFitsSystemWindows(false);
         } else {
-            //不顶上去
+            // 状态栏不顶上去
             StatusBarUtils.setStatusBarColor(getActivity(), setToolBarBackgroud());
             linearLayout.setFitsSystemWindows(true);
         }
         setToolBarTextColor();
+        // 是否设置状态栏文字图标灰色，对 小米、魅族、Android 6.0 及以上系统有效
         if (setStatusbarGrey()) {
             StatusBarUtils.statusBarLightMode(getActivity());
         }
+        FrameLayout frameLayout = new FrameLayout(getActivity());
+        frameLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        // 内容区域
         View bodyContainer = mLayoutInflater.inflate(getBodyLayoutId(), null);
         bodyContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        linearLayout.addView(bodyContainer);
+        frameLayout.addView(bodyContainer);
+        // 加载动画
+        if (setUseCenterLoading()) {
+            mCenterLoadingView = mLayoutInflater.inflate(R.layout.view_center_loading, null);
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            if (!showToolbar()) {
+                params.setMargins(0, getstatusbarAndToolbarHeight(), 0, 0);
+            }
+            mCenterLoadingView.setLayoutParams(params);
+            ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).start();
+            RxView.clicks(mCenterLoadingView.findViewById(R.id.iv_center_holder))
+                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                    .compose(this.<Void>bindToLifecycle())
+                    .subscribe(new Action1<Void>() {
+                        @Override
+                        public void call(Void aVoid) {
+                            setLoadingHolderClick();
+                        }
+                    });
+
+            frameLayout.addView(mCenterLoadingView);
+        }
+        linearLayout.addView(frameLayout);
         return linearLayout;
+    }
+
+    /**
+     * 关闭加载动画
+     */
+    protected void closeLoading() {
+        if (mCenterLoadingView == null)
+            throw new NullPointerException("loadingView is null,you must use setUseCenterLoading() and return true");
+        if (mCenterLoadingView.getVisibility() == View.VISIBLE) {
+            ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).stop();
+            mCenterLoadingView.setVisibility(View.GONE);
+//            mCenterLoadingView.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
+        }
+    }
+
+    /**
+     * 加载失败，占位图点击事件
+     */
+    protected void setLoadingHolderClick() {
+        if (mCenterLoadingView == null)
+            throw new NullPointerException("loadingView is null,you must use setUseCenterLoading() and return true");
+        mCenterLoadingView.findViewById(R.id.iv_center_load).setVisibility(View.VISIBLE);
+        mCenterLoadingView.findViewById(R.id.iv_center_holder).setVisibility(View.GONE);
+        ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).start();
+    }
+
+    /**
+     * 显示加载失败
+     */
+    protected void showLoadError() {
+        if (mCenterLoadingView == null)
+            throw new NullPointerException("loadingView is null,you must use setUseCenterLoading() and return true");
+        ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).stop();
+        mCenterLoadingView.findViewById(R.id.iv_center_holder).setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * 设置加载失败占位图
+     *
+     * @param resId
+     */
+    protected void setLoadHolderIma(@DrawableRes int resId) {
+        if (mCenterLoadingView == null)
+            throw new NullPointerException("loadingView is null,you must use setUseCenterLoading() and return true");
+        ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_holder)).setImageResource(resId);
+    }
+
+    /**
+     * 获取状态栏和操作栏的高度
+     *
+     * @return
+     */
+    protected int getstatusbarAndToolbarHeight() {
+        return DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelOffset(R.dimen.toolbar_height) + getResources().getDimensionPixelOffset(R.dimen.divider_line);
+    }
+
+    /**
+     * 是否开启中心加载布局
+     *
+     * @return
+     */
+    protected boolean setUseCenterLoading() {
+        return false;
     }
 
     /**
@@ -284,6 +380,11 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
     }
 
+    /**
+     * 设置状态栏占位图背景色
+     *
+     * @param resId
+     */
     public void setStatusPlaceholderViewBackgroundColor(int resId) {
         if (mStatusPlaceholderView != null) {
             mStatusPlaceholderView.setBackgroundColor(resId);

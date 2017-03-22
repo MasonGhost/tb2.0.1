@@ -75,30 +75,32 @@ public class PersonalCenterHeaderViewItem {
     /**
      * 标题文字的颜色:#333333
      **/
-    private int[] titleRGB = {51, 51, 51};
+    public static int[] TITLE_RGB = {51, 51, 51};
     /**
      * 状态栏的颜色变化，也就是toolbar上半部分的底色:#f4f5f5
      **/
-    private int[] statusRGB = {244, 245, 245};
+    public static int[] STATUS_RGB = {244, 245, 245};
 
     /**
      * toolbar的背景色：#ffffff
      **/
-    private int[] toolBarRGB = {255, 255, 255};
+    public static int[] TOOLBAR_RGB = {255, 255, 255};
 
     /**
      * toolbar下方的分割线颜色：#dedede
      **/
-    private int[] toolBarDividerRGB = {222, 222, 222};
+    public static int[] TOOLBAR_DIVIDER_RGB = {222, 222, 222};
 
     /**
      * toolbar图标白色:滑到顶部的时候
      **/
-    private int[] toolBarWhiteIcon = {255, 255, 255};
+    public static int[] TOOLBAR_WHITE_ICON = {255, 255, 255};
     /**
      * toolbar图标黑色：从顶部往下滑
      **/
-    private int[] toolBarBlackIcon = {51, 51, 51};
+    public static int[] TOOLBAR_BLACK_ICON = {51, 51, 51};
+
+    private View headerView;
 
     public PersonalCenterHeaderViewItem(Activity activity, PhotoSelectorImpl photoSelector, RecyclerView recyclerView, HeaderAndFooterWrapper headerAndFooterWrapper, View mToolBarContainer) {
         mActivity = activity;
@@ -113,20 +115,29 @@ public class PersonalCenterHeaderViewItem {
         userName = (TextView) mToolBarContainer.findViewById(R.id.tv_user_name);
         bootomDivider = mToolBarContainer.findViewById(R.id.v_horizontal_line);
         // 设置初始透明度为0
-        setViewColorWithAlpha(userName, titleRGB, 0);
-        setViewColorWithAlpha(mToolBarContainer, statusRGB, 0);
-        setViewColorWithAlpha(mToolBar, toolBarRGB, 0);
-        setViewColorWithAlpha(bootomDivider, toolBarDividerRGB, 0);
+        setViewColorWithAlpha(userName, TITLE_RGB, 0);
+        setViewColorWithAlpha(mToolBarContainer, STATUS_RGB, 0);
+        setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, 0);
+        setViewColorWithAlpha(bootomDivider, TOOLBAR_DIVIDER_RGB, 0);
 
     }
 
-    public void initHeaderView() {
-        final View headerView = LayoutInflater.from(mActivity).inflate(R.layout.fragment_personal_center_header, null);
+    public void initHeaderView(boolean isSetScrollListener) {
+        headerView = LayoutInflater.from(mActivity).inflate(R.layout.fragment_personal_center_header, null);
         initHeaderViewUI(headerView);
         mHeaderAndFooterWrapper.addHeaderView(headerView);
         mRecyclerView.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
         // 设置recyclerview的滑动监听，用来处理toolbar透明渐变的效果
+        if (isSetScrollListener) {
+            setScrollListenter();
+        }
+    }
+
+    public void setScrollListenter() {
+        if (headerView == null) {
+            throw new NullPointerException("header view not be null");
+        }
         mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -139,50 +150,48 @@ public class PersonalCenterHeaderViewItem {
                 if (mDistanceY <= headerViewHeight) {
                     float scale = (float) mDistanceY / headerViewHeight;
                     float alpha = scale * 255;
-                    setViewColorWithAlpha(mToolBar, toolBarRGB, (int) alpha);
-                    setViewColorWithAlpha(mToolBarContainer, statusRGB, (int) alpha);
-                    setViewColorWithAlpha(bootomDivider, toolBarDividerRGB, (int) alpha);
+                    setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, (int) alpha);
+                    setViewColorWithAlpha(mToolBarContainer, STATUS_RGB, (int) alpha);
+                    setViewColorWithAlpha(bootomDivider, TOOLBAR_DIVIDER_RGB, (int) alpha);
                     if (alpha == 0) {
                         // 设置ImageView的ColorFilter从而改变图标的颜色
-                        PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(Color.argb(255, toolBarWhiteIcon[0],
-                                toolBarWhiteIcon[1], toolBarWhiteIcon[2]), PorterDuff.Mode.SRC_ATOP);
-                        back.setColorFilter(colorFilter);// 纯白图标
-                        more.setColorFilter(colorFilter);// 纯白图标
-                        setViewColorWithAlpha(userName, titleRGB, 0);// 用户名不可见
+                        setToolbarIconColor(Color.argb(255, TOOLBAR_WHITE_ICON[0],
+                                TOOLBAR_WHITE_ICON[1], TOOLBAR_WHITE_ICON[2]));
+                        setViewColorWithAlpha(userName, TITLE_RGB, 0);// 用户名不可见
                     } else {
-                        PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(Color.argb((int) alpha, toolBarBlackIcon[0],
-                                toolBarBlackIcon[1], toolBarBlackIcon[2]), PorterDuff.Mode.SRC_ATOP);
-                        back.setColorFilter(colorFilter);
-                        more.setColorFilter(colorFilter);
-                        setViewColorWithAlpha(userName, titleRGB, (int) alpha);
+                        setToolbarIconColor(Color.argb((int) alpha, TOOLBAR_BLACK_ICON[0],
+                                TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
+                        setViewColorWithAlpha(userName, TITLE_RGB, (int) alpha);
                     }
                 } else {
                     //如果不是完全不透明状态的bug，将标题栏的颜色设置为完全不透明状态
-                    setViewColorWithAlpha(userName, titleRGB, 255);
-                    setViewColorWithAlpha(mToolBarContainer, statusRGB, 255);
-                    setViewColorWithAlpha(mToolBar, toolBarRGB, 255);
-                    setViewColorWithAlpha(bootomDivider, toolBarDividerRGB, 255);
+                    setViewColorWithAlpha(userName, TITLE_RGB, 255);
+                    setViewColorWithAlpha(mToolBarContainer, STATUS_RGB, 255);
+                    setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, 255);
+                    setViewColorWithAlpha(bootomDivider, TOOLBAR_DIVIDER_RGB, 255);
 
-                    PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(Color.argb(255, toolBarBlackIcon[0],
-                            toolBarBlackIcon[1], toolBarBlackIcon[2]), PorterDuff.Mode.SRC_ATOP);
-                    back.setColorFilter(colorFilter);// 纯黑色
-                    more.setColorFilter(colorFilter);// 纯黑色
+                    setToolbarIconColor(Color.argb(255, TOOLBAR_BLACK_ICON[0],
+                            TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
                 }
                 // 有可能到顶部了，仍然有一点白色透明背景，强制设置成完全透明
                 if (headerTop >= 0) {
-                    setViewColorWithAlpha(userName, titleRGB, 0);
-                    setViewColorWithAlpha(mToolBarContainer, statusRGB, 0);
-                    setViewColorWithAlpha(mToolBar, toolBarRGB, 0);
-                    setViewColorWithAlpha(bootomDivider, toolBarDividerRGB, 0);
-                    PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(Color.argb(255, toolBarWhiteIcon[0]
-                            , toolBarWhiteIcon[1], toolBarWhiteIcon[2]), PorterDuff.Mode.SRC_ATOP);
-                    back.setColorFilter(colorFilter);// 纯白图标
-                    more.setColorFilter(colorFilter);// 纯白图标
+                    setViewColorWithAlpha(userName, TITLE_RGB, 0);
+                    setViewColorWithAlpha(mToolBarContainer, STATUS_RGB, 0);
+                    setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, 0);
+                    setViewColorWithAlpha(bootomDivider, TOOLBAR_DIVIDER_RGB, 0);
+                    setToolbarIconColor(Color.argb(255, TOOLBAR_WHITE_ICON[0]
+                            , TOOLBAR_WHITE_ICON[1], TOOLBAR_WHITE_ICON[2]));
 
                 }
                 LogUtils.i("onScrolled--> headerViewHeight" + headerViewHeight + " mDistanceY-->" + mDistanceY);
             }
         });
+    }
+
+    public void setToolbarIconColor(int argb) {
+        PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(argb, PorterDuff.Mode.SRC_ATOP);
+        back.setColorFilter(colorFilter);// 纯黑色
+        more.setColorFilter(colorFilter);// 纯黑色
     }
 
     public void initHeaderViewData(final UserInfoBean userInfoBean) {
@@ -294,7 +303,7 @@ public class PersonalCenterHeaderViewItem {
 
     }
 
-    private void setViewColorWithAlpha(View v, int[] colorRGB, int alpha) {
+    public void setViewColorWithAlpha(View v, int[] colorRGB, int alpha) {
         int color = Color.argb(alpha, colorRGB[0], colorRGB[1], colorRGB[2]);
         if (v instanceof TextView) {
             TextView textView = (TextView) v;

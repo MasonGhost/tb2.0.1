@@ -5,17 +5,20 @@ import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
@@ -29,6 +32,7 @@ import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,13 +40,18 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean.STATUS_DIGG_FEED_CHECKED;
 import static com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_LIST_NEED_REFRESH;
 
 /**
  * @author LiuChao
@@ -68,10 +77,16 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
     @Inject
     public SharePolicy mSharePolicy;
 
+    private boolean mIsNeedDynamicListRefresh = false;
 
     @Inject
     public DynamicDetailPresenter(DynamicDetailContract.Repository repository, DynamicDetailContract.View rootView) {
         super(repository, rootView);
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
     }
 
     @Override
@@ -112,7 +127,6 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        throwable.printStackTrace();
                         mRootView.onResponseError(throwable, isLoadMore);
                     }
                 });
@@ -144,6 +158,79 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
     }
 
     @Override
+    public void getDetailAll(final Long feed_id, Long max_id, final String user_ids) {
+        Subscription subscription = Observable.zip(mRepository.getDynamicDigList(feed_id, max_id)
+                , mRepository.getUserFollowState(user_ids)
+                , mRepository.getDynamicCommentList(mRootView.getCurrentDynamic().getFeed_mark(), mRootView.getCurrentDynamic().getFeed_id(), max_id)
+                , new Func3<BaseJson<List<FollowFansBean>>, BaseJson<List<FollowFansBean>>, BaseJson<List<DynamicCommentBean>>, BaseJson<DynamicBean>>() {
+                    @Override
+                    public BaseJson<DynamicBean> call(BaseJson<List<FollowFansBean>> listBaseJson, BaseJson<List<FollowFansBean>> listBaseJson2, BaseJson<List<DynamicCommentBean>> listBaseJson3) {
+                        BaseJson<DynamicBean> dynamicBean = new BaseJson<>();
+                        dynamicBean.setData(new DynamicBean());
+                        if (listBaseJson.isStatus()) {
+                            if (listBaseJson2.isStatus()) {
+                                if (listBaseJson3.isStatus()) {
+                                    dynamicBean.setStatus(listBaseJson3.isStatus());
+                                    dynamicBean.getData().setDigUserInfoList(listBaseJson.getData());
+                                    mFollowFansBeanGreenDao.insertOrReplace(listBaseJson2.getData().get(0)); // 保存关注状态
+                                    List<DynamicCommentBean> data = listBaseJson3.getData(); // 取出本地为发送成功的评论
+                                    List<DynamicCommentBean> myComments = mDynamicCommentBeanGreenDao.getMySendingComment(mRootView.getCurrentDynamic().getFeed_mark());
+                                    if (!myComments.isEmpty()) {
+                                        for (int i = 0; i < myComments.size(); i++) {
+                                            myComments.get(i).setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache(myComments.get(i).getUser_id()));
+                                            if (myComments.get(i).getReply_to_user_id() != 0) {
+                                                myComments.get(i).setReplyUser(mUserInfoBeanGreenDao.getSingleDataFromCache(myComments.get(i).getReply_to_user_id()));
+                                            }
+                                        }
+                                        myComments.addAll(data);
+                                        data.clear();
+                                        data.addAll(myComments);
+                                    }
+                                    dynamicBean.getData().setComments(data);
+                                } else {
+                                    dynamicBean.setStatus(listBaseJson3.isStatus());
+                                    dynamicBean.setMessage(listBaseJson3.getMessage());
+                                    dynamicBean.setCode(listBaseJson3.getCode());
+                                }
+                            } else {
+                                dynamicBean.setStatus(listBaseJson2.isStatus());
+                                dynamicBean.setMessage(listBaseJson2.getMessage());
+                                dynamicBean.setCode(listBaseJson2.getCode());
+                            }
+                        } else {
+                            dynamicBean.setStatus(listBaseJson.isStatus());
+                            dynamicBean.setMessage(listBaseJson.getMessage());
+                            dynamicBean.setCode(listBaseJson.getCode());
+                        }
+                        return dynamicBean;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribe<DynamicBean>() {
+                    @Override
+                    protected void onSuccess(DynamicBean data) {
+                        mRootView.getCurrentDynamic().setComments(data.getComments());
+                        mRootView.getCurrentDynamic().setDigUserInfoList(data.getDigUserInfoList());
+                        mDynamicBeanGreenDao.insertOrReplace(mRootView.getCurrentDynamic());
+                        mRootView.allDataReady();
+                    }
+
+                    @Override
+                    protected void onFailure(String message) {
+                        LogUtils.e(message);
+                        mRootView.loadAllError();
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        mRootView.loadAllError();
+                    }
+                });
+        addSubscrebe(subscription);
+    }
+
+    @Override
     public void getDynamicDigList(Long feed_id, Long max_id) {
         Subscription subscription = mRepository.getDynamicDigList(feed_id, max_id)
                 .subscribeOn(Schedulers.io())
@@ -170,6 +257,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
 
     @Override
     public void handleLike(boolean isLiked, final Long feed_id, final DynamicToolBean dynamicToolBean) {
+        mIsNeedDynamicListRefresh = true;
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
@@ -260,30 +348,15 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
 
     @Override
     public void getUserFollowState(String user_ids) {
-        Subscription subscription = mRepository.getUserFollowState(user_ids)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<List<FollowFansBean>>() {
-                    @Override
-                    protected void onSuccess(List<FollowFansBean> data) {
-                        mRootView.initFollowState(data.get(0));
-                    }
-
-                    @Override
-                    protected void onFailure(String message) {
-
-                    }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-
-                    }
-                });
-        addSubscrebe(subscription);
+        FollowFansBean followFansBean = mFollowFansBeanGreenDao.getFollowState(AppApplication.getmCurrentLoginAuth().getUser_id(), mRootView.getCurrentDynamic().getUser_id());
+        if (followFansBean != null) {
+            mRootView.initFollowState(followFansBean);
+        }
     }
 
     @Override
     public void deleteComment(long comment_id, int commentPositon) {
+        mIsNeedDynamicListRefresh = true;
         mRootView.getCurrentDynamic().getTool().setFeed_comment_count(mRootView.getCurrentDynamic().getTool().getFeed_comment_count() - 1);
         mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getCurrentDynamic().getTool());
         mDynamicCommentBeanGreenDao.deleteSingleCache(mRootView.getCurrentDynamic().getComments().get(commentPositon));
@@ -301,6 +374,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
      */
     @Override
     public void sendComment(long replyToUserId, String commentContent) {
+        mIsNeedDynamicListRefresh = true;
         // 生成一条评论
         DynamicCommentBean creatComment = new DynamicCommentBean();
         creatComment.setState(DynamicCommentBean.SEND_ING);
@@ -334,6 +408,52 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
 
     }
 
+    /**
+     * 处理发送动态数据
+     *
+     * @param dynamicCommentBean
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_DYNAMIC_LIST)
+    public void handleSendComment(DynamicCommentBean dynamicCommentBean) {
+        System.out.println("dynamicCommentBean = " + dynamicCommentBean.toString());
+        Observable.just(dynamicCommentBean)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<DynamicCommentBean, Integer>() {
+                    @Override
+                    public Integer call(DynamicCommentBean dynamicCommentBean) {
+                        int size = mRootView.getDatas().size();
+                        int dynamicPosition = -1;
+                        for (int i = 0; i < size; i++) {
+                            if (mRootView.getDatas().get(i).getFeed_mark().equals(dynamicCommentBean.getFeed_mark())) {
+                                dynamicPosition = i;
+                                mRootView.getDatas().get(i).setState(dynamicCommentBean.getState());
+                                mRootView.getDatas().get(i).setComment_id(dynamicCommentBean.getComment_id());
+                                mRootView.getDatas().get(i).setComment_mark(dynamicCommentBean.getComment_mark());
+                                break;
+                            }
+                        }
+                        return dynamicPosition;
+                    }
+                })
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer integer) {
+                        System.out.println("integer = " + integer);
+                        if (integer != -1) {
+                            mRootView.refresh(integer);
+                        }
+
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
+
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -344,6 +464,12 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         }
         mRootView.getCurrentDynamic().setComments(mRootView.getDatas());
         bundle.putParcelable(DYNAMIC_DETAIL_DATA, mRootView.getCurrentDynamic());
+        bundle.putBoolean(DYNAMIC_LIST_NEED_REFRESH, mIsNeedDynamicListRefresh);
         EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_DYNAMIC);
     }
+
+    public void setNeedDynamicListRefresh(boolean needDynamicListRefresh) {
+        mIsNeedDynamicListRefresh = needDynamicListRefresh;
+    }
+
 }
