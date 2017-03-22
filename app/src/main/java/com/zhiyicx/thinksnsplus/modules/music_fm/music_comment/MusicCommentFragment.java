@@ -2,17 +2,19 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.music_comment;
 
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.adapter.MusicCommentItem;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.adapter.MusicEmptyCommentItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -29,6 +31,8 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     @BindView(R.id.ilv_comment)
     InputLimitView mIlvComment;
 
+    private List<MusicCommentListBean> mDatas = new ArrayList<>();
+
     public static MusicCommentFragment newInstance(Bundle params) {
         MusicCommentFragment fragment = new MusicCommentFragment();
         fragment.setArguments(params);
@@ -36,8 +40,17 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     }
 
     @Override
-    protected MultiItemTypeAdapter getAdapter() {
-        return null;
+    protected MultiItemTypeAdapter<MusicCommentListBean> getAdapter() {
+        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mDatas);
+        MusicCommentItem musicCommentItem = new MusicCommentItem();
+
+        musicCommentItem.setOnUserInfoClickListener(this);
+        adapter.addItemViewDelegate(musicCommentItem);
+
+        MusicEmptyCommentItem musicEmptyCommentItem = new MusicEmptyCommentItem();
+        adapter.addItemViewDelegate(musicEmptyCommentItem);
+        adapter.setOnItemClickListener(this);
+        return adapter;
     }
 
     @Override
@@ -75,4 +88,13 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
         return false;
     }
 
+    @Override
+    protected void requestNetData(Long maxId, boolean isLoadMore) {
+
+    }
+
+    @Override
+    protected List<MusicCommentListBean> requestCacheData(Long maxId, boolean isLoadMore) {
+        return new ArrayList<>();
+    }
 }

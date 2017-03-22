@@ -14,7 +14,6 @@
         android:id="@+id/ilv_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="@bool/pickerview_customTextSize"
         android:layout_gravity="bottom"
         android:fitsSystemWindows="true"
         android:visibility="gone"

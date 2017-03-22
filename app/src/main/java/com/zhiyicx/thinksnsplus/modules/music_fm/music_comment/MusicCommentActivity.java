@@ -1,18 +1,22 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_comment;
 
-import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 
-public class MusicCommentActivity extends TSActivity {
+public class MusicCommentActivity extends TSActivity<MusicCommentPresenter,MusicCommentFragment> {
 
     @Override
-    protected Fragment getFragment() {
+    protected MusicCommentFragment getFragment() {
         return MusicCommentFragment.newInstance(null);
     }
 
     @Override
     protected void componentInject() {
-
+        DaggerMusicCommentComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .musicCommentPresenterModule(new MusicCommentPresenterModule(mContanierFragment))
+                .build()
+                .inject(this);
     }
 }

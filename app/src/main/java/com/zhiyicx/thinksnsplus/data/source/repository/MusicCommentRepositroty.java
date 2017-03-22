@@ -1,6 +1,10 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import com.zhiyicx.thinksnsplus.data.source.remote.MusicClient;
+import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentContract;
+
+import javax.inject.Inject;
 
 /**
  * @Author Jliuer
@@ -9,4 +13,11 @@ import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentContr
  * @Description
  */
 public class MusicCommentRepositroty implements MusicCommentContract.Repository {
+
+    MusicClient mMusicClient;
+
+    @Inject
+    public MusicCommentRepositroty(ServiceManager serviceManager) {
+        mMusicClient = serviceManager.getMusicClient();
+    }
 }
