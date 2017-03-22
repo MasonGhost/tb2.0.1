@@ -11,6 +11,7 @@ import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
@@ -221,12 +222,13 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
 
                     @Override
                     protected void onFailure(String message) {
-                        mRootView.showMessage(message);
+                        LogUtils.e(message);
+                        mRootView.loadAllError();
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        mRootView.onResponseError(throwable, false);
+                        mRootView.loadAllError();
                     }
                 });
         addSubscrebe(subscription);
@@ -259,7 +261,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
 
     @Override
     public void handleLike(boolean isLiked, final Long feed_id, final DynamicToolBean dynamicToolBean) {
-        mIsNeedDynamicListRefresh=true;
+        mIsNeedDynamicListRefresh = true;
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
@@ -393,7 +395,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
      */
     @Override
     public void sendComment(long replyToUserId, String commentContent) {
-        mIsNeedDynamicListRefresh=true;
+        mIsNeedDynamicListRefresh = true;
         // 生成一条评论
         DynamicCommentBean creatComment = new DynamicCommentBean();
         creatComment.setState(DynamicCommentBean.SEND_ING);

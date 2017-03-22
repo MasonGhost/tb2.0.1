@@ -2,6 +2,7 @@ package com.zhiyicx.baseproject.base;
 
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
+import android.support.annotation.DrawableRes;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
@@ -99,10 +100,65 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             }
             mCenterLoadingView.setLayoutParams(params);
             ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).start();
+            RxView.clicks(mCenterLoadingView.findViewById(R.id.iv_center_holder))
+                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                    .compose(this.<Void>bindToLifecycle())
+                    .subscribe(new Action1<Void>() {
+                        @Override
+                        public void call(Void aVoid) {
+                            setLoadingHolderClick();
+                        }
+                    });
+
             frameLayout.addView(mCenterLoadingView);
         }
         linearLayout.addView(frameLayout);
         return linearLayout;
+    }
+
+    /**
+     * 关闭加载动画
+     */
+    protected void closeLoading() {
+        if (mCenterLoadingView == null)
+            throw new NullPointerException("loadingView is null,you must use setUseCenterLoading() and return true");
+        if (mCenterLoadingView.getVisibility() == View.VISIBLE) {
+            ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).stop();
+            mCenterLoadingView.setVisibility(View.GONE);
+            mCenterLoadingView.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
+        }
+    }
+
+    /**
+     * 加载失败，占位图点击事件
+     */
+    protected void setLoadingHolderClick() {
+        if (mCenterLoadingView == null)
+            throw new NullPointerException("loadingView is null,you must use setUseCenterLoading() and return true");
+        mCenterLoadingView.findViewById(R.id.iv_center_load).setVisibility(View.VISIBLE);
+        mCenterLoadingView.findViewById(R.id.iv_center_holder).setVisibility(View.GONE);
+        ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).start();
+    }
+
+    /**
+     * 显示加载失败
+     */
+    protected void showLoadError() {
+        if (mCenterLoadingView == null)
+            throw new NullPointerException("loadingView is null,you must use setUseCenterLoading() and return true");
+        ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).stop();
+        mCenterLoadingView.findViewById(R.id.iv_center_holder).setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * 设置加载失败占位图
+     *
+     * @param resId
+     */
+    protected void setLoadHolderIma(@DrawableRes int resId) {
+        if (mCenterLoadingView == null)
+            throw new NullPointerException("loadingView is null,you must use setUseCenterLoading() and return true");
+        ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_holder)).setImageResource(resId);
     }
 
     /**
@@ -326,18 +382,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     /**
-     * 关闭加载动画
-     */
-    public void closeLoading() {
-        if (mCenterLoadingView != null) {
-            ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).stop();
-            mCenterLoadingView.setVisibility(View.GONE);
-            mCenterLoadingView.startAnimation(AnimationUtils.loadAnimation(getContext(),android.R.anim.fade_out));
-        }
-    }
-
-    /**
      * 设置状态栏占位图背景色
+     *
      * @param resId
      */
     public void setStatusPlaceholderViewBackgroundColor(int resId) {

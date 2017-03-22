@@ -261,7 +261,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
             animationRectBeanArrayList.add(rect);
-            LogUtils.i("dynamic_" + i + rect.toString());
         }
 
         GalleryActivity.startToGallery(getContext(), position, imageBeanList, animationRectBeanArrayList);
@@ -294,7 +293,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void refresh(int position) {
-        LogUtils.d(TAG, "mDynamicBeens    position  = " + mDynamicBeens.toString());
         refreshData(position);
     }
 

@@ -133,6 +133,12 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         return true;
     }
 
+    @Override
+    protected void setLoadingHolderClick() {
+        super.setLoadingHolderClick();
+        mPresenter.getDetailAll(mDynamicBean.getFeed_id(), 0L, mDynamicBean.getUser_id() + "");
+    }
+
     /**
      * 特别修改
      *
@@ -356,6 +362,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         closeLoading();
         mRefreshlayout.setVisibility(View.VISIBLE);
         setAllData();
+    }
+
+    @Override
+    public void loadAllError() {
+        showLoadError();
     }
 
     private void setAllData() {
