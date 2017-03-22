@@ -1,4 +1,4 @@
-2017年3月15日 16:46:54
+2017年3月22日 17:54:44
 # 关于TSActivity和TSFragment
 
 本项目中，所有的实际功能和ui都放在TSFragment中，而TSActivity只是针对fragment进行控制，
@@ -38,7 +38,48 @@
  - 提供通用的 TitlBar (可选择使用)
  - 新增状态栏文字颜色调整方法
  - 新增状态栏占位 View
+ - 新增加载占位图与动画
 
 注意; titlebar 可自定义也可直接使用，提供修改颜色、图片、文字以及响应事件等；具体请查看[TSFragment](../../baseproject/src/main/java/com/zhiyicx/baseproject/base/TSFragment.java)
 
 
+### 新增加载占位图与动画说明
+
+ 为了详情页面全部接口加载完成后再更新UI，故在`TSFragment`中新增加载占位图与动画，通过一下方法进行使用
+ ```java
+ /**
+  * 是否使用加载动画
+  */
+ boolean setUseCenterLoading(); // 返回 true 表示使用加载动画
+
+  /**
+   * 显示加载失败
+   */
+ protected void showLoadError()
+
+ /**
+  * 设置加载失败占位图
+  *
+  * @param resId
+  */
+ protected void setLoadHolderIma(@DrawableRes int resId)
+
+/**
+ * 加载失败，占位图点击事件
+ */
+ protected void setLoadingHolderClick()
+
+/**
+ * 关闭加载动画
+ */
+ protected void closeLoading()
+
+/**
+ * 获取状态栏和操作栏的高度
+ *
+ * @return
+ */
+ protected int getstatusbarAndToolbarHeight()
+
+ ```
+注意：`getstatusbarAndToolbarHeight` 方法默认返回的高度为  `状态栏高度 + Toolbar 高度 + 分割线高度`
