@@ -251,13 +251,15 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         switch (view.getId()) {
             case R.id.tv_preview:
                 //int index = showCamera ? position - 1 : position;
+                // 预览图片和选择图片是相同的
                 ArrayList<String> allPhotos = photoGridAdapter.getSelectedPhotoPaths();
                 ArrayList<String> selectedPhoto = photoGridAdapter.getSelectedPhotoPaths();
-                int[] screenLocation = new int[2];
                 Bundle bundle = new Bundle();
                 bundle.putInt(EXTRA_VIEW_INDEX, 0);
                 bundle.putStringArrayList(EXTRA_VIEW_ALL_PHOTOS, allPhotos);
                 bundle.putStringArrayList(EXTRA_VIEW_SELECTED_PHOTOS, selectedPhoto);
+                ArrayList<AnimationRectBean> animationRectBeanArrayList = new ArrayList<>();
+                bundle.putParcelableArrayList("rect", animationRectBeanArrayList);
                 bundle.putInt(EXTRA_MAX_COUNT, maxCount);
                 Intent intent1 = new Intent(getContext(), PhotoViewActivity.class);
                 intent1.putExtras(bundle);
