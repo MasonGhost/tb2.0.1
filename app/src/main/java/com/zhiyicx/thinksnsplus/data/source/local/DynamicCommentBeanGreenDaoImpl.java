@@ -52,7 +52,8 @@ public class DynamicCommentBeanGreenDaoImpl extends CommonCacheImpl<DynamicComme
 
     @Override
     public void clearTable() {
-
+        DynamicCommentBeanDao dynamicCommentBeanDao = getWDaoSession().getDynamicCommentBeanDao();
+        dynamicCommentBeanDao.deleteAll();
     }
 
     @Override
