@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.music_album;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.media.MediaBrowserCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -17,7 +16,6 @@ import com.zhiyicx.common.utils.recycleviewdecoration.TGridDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
-import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -25,7 +23,6 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,7 +37,6 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     private ImageLoader mImageLoader;
     public static final String BUNDLE_MUSIC_ABLUM="music_ablum";
 
-    private List<MusicAlbumListBean> mMusicListBeen = new ArrayList<>();
 
     @Override
     protected void initData() {
@@ -55,7 +51,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 Intent intent=new Intent(getActivity(), MusicDetailActivity.class);
                 Bundle bundle=new Bundle();
-                bundle.putParcelable(BUNDLE_MUSIC_ABLUM,mMusicListBeen.get(position));
+                bundle.putParcelable(BUNDLE_MUSIC_ABLUM,mListDatas.get(position));
                 intent.putExtra(BUNDLE_MUSIC_ABLUM,bundle);
                 startActivity(intent);
             }
@@ -106,7 +102,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     @Override
     protected CommonAdapter<MusicAlbumListBean> getAdapter() {
         return new CommonAdapter<MusicAlbumListBean>(getActivity(), R.layout.item_music_list,
-                mMusicListBeen) {
+                mListDatas) {
             @Override
             protected void convert(ViewHolder holder, MusicAlbumListBean musicListBean, int
                     position) {

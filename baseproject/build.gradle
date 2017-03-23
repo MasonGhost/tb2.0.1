@@ -64,6 +64,7 @@ dependencies {
     compile(dataDependences.refresh){
         exclude group: 'com.android.support', module:'support-compat'
     }
+    compile dataDependences.swipeLayout;
     provided dataDependences.javaxAnnotation
     provided dataDependences.daggerCompiler
     apt dataDependences.daggerCompiler

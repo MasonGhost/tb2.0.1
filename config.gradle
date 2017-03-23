@@ -94,6 +94,7 @@ ext {
             guava                        : "com.google.guava:guava:${guavaVwesion}",
             refresh                      : "com.github.Aspsine:SwipeToLoadLayout:${refreshVersion}",
             clickSpanLink                : "com.klinkerapps:link_builder:${clickSpanLinkVersion}",
+            swipeLayout                  : "com.daimajia.swipelayout:library:1.2.0@aar"
 
     ]
     sdksoupportDependencies = [

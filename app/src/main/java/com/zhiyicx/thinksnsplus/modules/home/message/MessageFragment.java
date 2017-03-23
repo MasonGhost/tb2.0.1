@@ -23,8 +23,6 @@ import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -47,7 +45,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     @Inject
     protected MessagePresenter mMessagePresenter;
-    private List<MessageItemBean> mMessageItemBeen = new ArrayList<>();
+
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     private int mLastClickPostion = -1;// 纪录上次聊天 item ,用于单条刷新
 
@@ -114,14 +112,14 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         super.onResume();
         if (mLastClickPostion != -1) {
             // 刷新当条信息内容
-            mPresenter.refreshLastClicikPostion(mLastClickPostion, mMessageItemBeen.get(mLastClickPostion), mMessageItemBeen);
+            mPresenter.refreshLastClicikPostion(mLastClickPostion, mListDatas.get(mLastClickPostion), mListDatas);
             mLastClickPostion = -1;
         }
     }
 
     @Override
     protected MultiItemTypeAdapter getAdapter() {
-        CommonAdapter commonAdapter = new MessageAdapter(getActivity(), R.layout.item_message_list, mMessageItemBeen);
+        CommonAdapter commonAdapter = new MessageAdapter(getActivity(), R.layout.item_message_list, mListDatas);
         commonAdapter.setOnItemClickListener(this);
         return commonAdapter;
     }
@@ -213,17 +211,17 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     @Override
     public void updateCommnetItemData(MessageItemBean messageItemBean) {
-        mMessageItemBeen.set(ITEM_TYPE_COMMNETED, messageItemBean);
+        mListDatas.set(ITEM_TYPE_COMMNETED, messageItemBean);
     }
 
     @Override
     public void updateLikeItemData(MessageItemBean messageItemBean) {
-        mMessageItemBeen.set(ITEM_TYPE_LIKED, messageItemBean);
+        mListDatas.set(ITEM_TYPE_LIKED, messageItemBean);
     }
 
     @Override
     public void refreshLastClicikPostion(int position, MessageItemBean messageItemBean) {
-        mMessageItemBeen.set(position, messageItemBean);
+        mListDatas.set(position, messageItemBean);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
@@ -234,14 +232,14 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
      */
     @Override
     public void refreshMessageUnreadNum(Message message) {
-        int size = mMessageItemBeen.size();
+        int size = mListDatas.size();
         boolean isHasConversion = false; // 对话是否存在
         for (int i = 0; i < size; i++) {
-            if (mMessageItemBeen.get(i).getConversation().getCid() == message.getCid()) {
-                mMessageItemBeen.get(i).setUnReadMessageNums(mMessageItemBeen.get(i).getUnReadMessageNums() + 1);
-                mMessageItemBeen.get(i).getConversation().setLast_message_text(message.getTxt());
-                mMessageItemBeen.get(i).getConversation().setLast_message_time(message.getCreate_time());
-                refreshLastClicikPostion(i, mMessageItemBeen.get(i));
+            if (mListDatas.get(i).getConversation().getCid() == message.getCid()) {
+                mListDatas.get(i).setUnReadMessageNums(mListDatas.get(i).getUnReadMessageNums() + 1);
+                mListDatas.get(i).getConversation().setLast_message_text(message.getTxt());
+                mListDatas.get(i).getConversation().setLast_message_time(message.getCreate_time());
+                refreshLastClicikPostion(i, mListDatas.get(i));
                 isHasConversion = true;
                 break;
             }
@@ -270,7 +268,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         position = position - 1;//  减去 heder 占用的 1 个位置
-        toChat(mMessageItemBeen.get(position), position);
+        toChat(mListDatas.get(position), position);
     }
 
     @Override

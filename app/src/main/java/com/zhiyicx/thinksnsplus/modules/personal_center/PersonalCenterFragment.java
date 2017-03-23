@@ -116,7 +116,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     private PersonalCenterHeaderViewItem mPersonalCenterHeaderViewItem;
-    private List<DynamicBean> mDynamicBeens = new ArrayList<>();
     // 关注状态
     private FollowFansBean mFollowFansBean;
     // 上一个页面传过来的用户信息
@@ -263,7 +262,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     protected MultiItemTypeAdapter<DynamicBean> getAdapter() {
-        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mDynamicBeens);
+        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mListDatas);
         setAdapter(adapter, new PersonalCenterDynamicListBaseItem(getContext()));
         setAdapter(adapter, new PersonalCenterDynamicListForZeroImage(getContext()));
         setAdapter(adapter, new PersonalCenterDynamicListItemForOneImage(getContext()));
@@ -412,7 +411,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void onReSendClick(int position) {
-        mDynamicBeens.get(position).setState(DynamicBean.SEND_ING);
+        mListDatas.get(position).setState(DynamicBean.SEND_ING);
         refresh();
         mPresenter.reSendDynamic(position);
     }
@@ -475,7 +474,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public List<DynamicBean> getDatas() {
-        return mDynamicBeens;
+        return mListDatas;
     }
 
     @Override
@@ -604,12 +603,12 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      */
     private void handleLike(int dataPosition) {
         // 先更新界面，再后台处理
-        mDynamicBeens.get(dataPosition).getTool().setIs_digg_feed(mDynamicBeens.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ? DynamicToolBean.STATUS_DIGG_FEED_CHECKED : DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED);
-        mDynamicBeens.get(dataPosition).getTool().setFeed_digg_count(mDynamicBeens.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ?
-                mDynamicBeens.get(dataPosition).getTool().getFeed_digg_count() - 1 : mDynamicBeens.get(dataPosition).getTool().getFeed_digg_count() + 1);
+        mListDatas.get(dataPosition).getTool().setIs_digg_feed(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ? DynamicToolBean.STATUS_DIGG_FEED_CHECKED : DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED);
+        mListDatas.get(dataPosition).getTool().setFeed_digg_count(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ?
+                mListDatas.get(dataPosition).getTool().getFeed_digg_count() - 1 : mListDatas.get(dataPosition).getTool().getFeed_digg_count() + 1);
         refresh();
-        mPresenter.handleLike(mDynamicBeens.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED,
-                mDynamicBeens.get(dataPosition).getFeed().getFeed_id(), dataPosition);
+        mPresenter.handleLike(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED,
+                mListDatas.get(dataPosition).getFeed().getFeed_id(), dataPosition);
     }
 
 

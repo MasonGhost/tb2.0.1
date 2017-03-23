@@ -28,7 +28,6 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -42,7 +41,6 @@ import javax.inject.Inject;
 public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPresenter,
         BaseListBean> implements InfoMainContract.InfoListView {
     public static final String BUNDLE_INFO_TYPE = "info_type";
-    private List<BaseListBean> mInfoList = new ArrayList<>();
     private String mInfoType = "1";
     private ImageLoader mImageLoader;
 
@@ -59,7 +57,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
 
     @Override
     protected MultiItemTypeAdapter getAdapter() {
-        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getActivity(), mInfoList);
+        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getActivity(), mListDatas);
         adapter.addItemViewDelegate(new InfoBannerItem() {
             @Override
             public void convert(ViewHolder holder, BaseListBean baseListBean, BaseListBean lastT,
@@ -141,7 +139,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     @Override
     public void onNetResponseSuccess(@NotNull List<BaseListBean> data, boolean isLoadMore) {
         super.onNetResponseSuccess(data, isLoadMore);
-        mInfoList = data;
+        mListDatas = data;
     }
 
     @Override

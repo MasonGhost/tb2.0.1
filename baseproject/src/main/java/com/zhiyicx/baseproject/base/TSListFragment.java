@@ -23,6 +23,7 @@ import com.zhy.adapter.recyclerview.wrapper.EmptyWrapper;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -47,7 +48,10 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     private static final boolean DEFAULT_NEED_REFRESH = false;
 
+    protected List<T> mListDatas = new ArrayList<>();
+
     protected MultiItemTypeAdapter<T> mAdapter;
+
     private EmptyWrapper mEmptyWrapper;
 
     protected SwipeToLoadLayout mRefreshlayout;
