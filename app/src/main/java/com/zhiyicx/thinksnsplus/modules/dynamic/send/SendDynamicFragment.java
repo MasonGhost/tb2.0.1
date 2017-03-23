@@ -235,12 +235,13 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
-        selectedPhotos.clear();
-        selectedPhotos.addAll(photoList);
-        addPlaceHolder();
-        setSendDynamicState();// 每次刷新图片后都要判断发布按钮状态
-        mCommonAdapter.notifyDataSetChanged();
-        setSendDynamicState();
+        if (isPhotoListChanged(selectedPhotos, photoList)) {
+            selectedPhotos.clear();
+            selectedPhotos.addAll(photoList);
+            addPlaceHolder();
+            setSendDynamicState();// 每次刷新图片后都要判断发布按钮状态
+            mCommonAdapter.notifyDataSetChanged();
+        }
     }
 
     private void addPlaceHolder() {
@@ -409,12 +410,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                                     photos.add(imageBean.getImgUrl());
                                 }
                             }
-                            Bundle bundle = new Bundle();
-                            bundle.putInt(PhotoAlbumDetailsFragment.EXTRA_VIEW_INDEX, position);
-                            bundle.putStringArrayList(PhotoAlbumDetailsFragment.EXTRA_VIEW_ALL_PHOTOS, photos);
-                            bundle.putStringArrayList(PhotoAlbumDetailsFragment.EXTRA_VIEW_SELECTED_PHOTOS, photos);
-
-
                             ArrayList<AnimationRectBean> animationRectBeanArrayList
                                     = new ArrayList<AnimationRectBean>();
                             for (int i = 0; i < photos.size(); i++) {
@@ -436,13 +431,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                                     animationRectBeanArrayList.add(rect);
                                 }
                             }
-
-                            bundle.putParcelableArrayList("rect", animationRectBeanArrayList);
-                            bundle.putInt(PhotoAlbumDetailsFragment.EXTRA_MAX_COUNT, MAX_PHOTOS);
-                            Intent intent = new Intent(getContext(), PhotoViewActivity.class);
-                            intent.putExtras(bundle);
-                            startActivityForResult(intent, PhotoAlbumDetailsFragment.COMPLETE_REQUEST_CODE);
-
+                            PhotoViewActivity.startToPhotoView(SendDynamicFragment.this, photos, photos, animationRectBeanArrayList, MAX_PHOTOS, position);
                         }
                     }
                 });
@@ -475,6 +464,41 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 mRvPhotoList.setVisibility(View.GONE);// 隐藏图片控件
                 break;
             default:
+        }
+    }
+
+    /**
+     * 图片列表返回后，判断图片列表内容以及顺序是否发生变化，如果没变，就可以不用刷新
+     */
+    private boolean isPhotoListChanged(List<ImageBean> oldList, List<ImageBean> newList) {
+        if (oldList == null || oldList.isEmpty()) {
+            return false;
+        }
+        // 取消了所有选择的图片
+        if (newList == null || newList.isEmpty()) {
+            return oldList.size() > 1;
+        } else {
+            int oldSize = 0;
+            // 最后一张是占位图
+            if (TextUtils.isEmpty(oldList.get(oldList.size()-1).getImgUrl())) {
+                oldSize = oldList.size() - 1;
+            } else {
+                oldSize = oldList.size();
+            }
+            if (oldSize != newList.size()) {
+                // 如果长度不同，那肯定改变了
+                return true;
+            } else {
+                // 继续判断内容和顺序变了没有
+                for (int i = 0; i < newList.size(); i++) {
+                    ImageBean newImageBean = newList.get(i);
+                    ImageBean oldImageBean = oldList.get(i);
+                    if (!newImageBean.getImgUrl().equals(oldImageBean.getImgUrl())) {
+                        return true;
+                    }
+                }
+                return false;
+            }
         }
     }
 }
