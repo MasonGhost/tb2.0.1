@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.content.Context;
+import android.util.SparseArray;
 
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.imsdk.db.dao.ConversationDao;
@@ -67,7 +68,7 @@ public class MessageRepository implements MessageContract.Repository {
                                 }
                                 tmp.setIm_uid(AppApplication.getmCurrentLoginAuth().getUser_id());
                                 try {
-                                    String[] uidsPair = tmp.getUsids().split("&");
+                                    String[] uidsPair = tmp.getUsids().split(",");
                                     int pair1 = Integer.parseInt(uidsPair[0]);
                                     int pair2 = Integer.parseInt(uidsPair[1]);
                                     tmp.setPair(pair1 > pair2 ? (pair2 + "&" + pair1) : (pair1 + "&" + pair2)); // "pair":null,   // type=0时此项为两个uid：min_uid&max_uid
@@ -76,13 +77,12 @@ public class MessageRepository implements MessageContract.Repository {
                                 }
                                 // 存储对话信息
                                 ConversationDao.getInstance(mContext).insertOrUpdateConversation(tmp);
-                                try {
-                                    String[] uidsTmp = tmp.getUsids().split(",");
-                                    integers.add(Long.valueOf((uidsTmp[0].equals(AppApplication.getmCurrentLoginAuth().getUser_id() + "") ? uidsTmp[1] : uidsTmp[0])));
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-
+                                String[] uidsTmp = tmp.getUsids().split(",");
+                                UserInfoBean userInfoBean = new UserInfoBean();
+                                long toChatUser_id = Long.valueOf((uidsTmp[0].equals(AppApplication.getmCurrentLoginAuth().getUser_id() + "") ? uidsTmp[1] : uidsTmp[0]));
+                                integers.add(toChatUser_id);
+                                userInfoBean.setUser_id(toChatUser_id);
+                                messageItemBean.setUserInfo(userInfoBean);
                                 // 获取未读消息数量
                                 int unreadMessageCount = MessageDao.getInstance(mContext).getUnReadMessageCount(tmp.getCid());
                                 messageItemBean.setConversation(tmp);
@@ -93,16 +93,27 @@ public class MessageRepository implements MessageContract.Repository {
                                     map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<MessageItemBean>>>() {
                                         @Override
                                         public BaseJson<List<MessageItemBean>> call(BaseJson<List<UserInfoBean>> userInfoBeanBaseJson) {
-                                            baseJson.setStatus(userInfoBeanBaseJson.isStatus());
-                                            baseJson.setCode(userInfoBeanBaseJson.getCode());
-                                            baseJson.setMessage(userInfoBeanBaseJson.getMessage());
-                                            for (int i = 0; i < userInfoBeanBaseJson.getData().size(); i++) {
-                                                baseJson.getData().get(i).setUserInfo(userInfoBeanBaseJson.getData().get(i));
-                                            }
-                                            // 存储用户信息
-                                            mUserInfoBeanGreenDao.insertOrReplace(userInfoBeanBaseJson.getData());
-                                            return baseJson;
+                                            if (userInfoBeanBaseJson.isStatus()) {
+                                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                                for (UserInfoBean userInfoBean : userInfoBeanBaseJson.getData()) {
+                                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                                }
+                                                baseJson.setStatus(userInfoBeanBaseJson.isStatus());
+                                                baseJson.setCode(userInfoBeanBaseJson.getCode());
+                                                baseJson.setMessage(userInfoBeanBaseJson.getMessage());
 
+                                                for (int i = 0; i < baseJson.getData().size(); i++) {
+                                                    baseJson.getData().get(i).setUserInfo(userInfoBeanSparseArray.get(baseJson.getData().get(i).getUserInfo().getUser_id().intValue()));
+                                                }
+                                                // 存储用户信息
+                                                mUserInfoBeanGreenDao.insertOrReplace(userInfoBeanBaseJson.getData());
+
+                                            } else {
+                                                baseJson.setCode(userInfoBeanBaseJson.getCode());
+                                                baseJson.setStatus(userInfoBeanBaseJson.isStatus());
+                                                baseJson.setMessage(userInfoBeanBaseJson.getMessage());
+                                            }
+                                            return baseJson;
                                         }
                                     });
 

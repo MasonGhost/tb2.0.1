@@ -259,8 +259,8 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                 break;
             }
         }
-        if (!isHasConversion) {
-            mPresenter.requestNetData(0L, false);
+        if (!isHasConversion) { // 不存在本地对话，直接服务器获取
+            mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
         }
 
     }
