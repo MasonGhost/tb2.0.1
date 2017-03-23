@@ -141,12 +141,10 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mRvList.setItemAnimator(new DefaultItemAnimator());//设置动画
         mAdapter = getAdapter();
         mRvList.setAdapter(mAdapter);
-        mRefreshlayout.setRefreshEnabled(getPullDownRefreshEnable());
-        mRefreshlayout.setLoadMoreEnabled(isLoadingMoreEnable());
-
         mEmptyWrapper = new EmptyWrapper(mAdapter);
         mEmptyWrapper.setEmptyView(mEmptyView);
         mRvList.setAdapter(mEmptyWrapper);
+
     }
 
     /**
@@ -165,6 +163,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     protected void initData() {
+        mRefreshlayout.setRefreshEnabled(getPullDownRefreshEnable());
+        mRefreshlayout.setLoadMoreEnabled(isLoadingMoreEnable());
         onCacheResponseSuccess(requestCacheData(mMaxId, false), false); // 获取缓存数据
     }
 
@@ -413,7 +413,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     private void handleReceiveData(@NotNull List<T> data, boolean isLoadMore, boolean isFromCache) {
         if (!isLoadMore) { // 刷新
-            mRefreshlayout.setLoadMoreEnabled(true);
+            if (isLoadingMoreEnable()) {
+                mRefreshlayout.setLoadMoreEnabled(true);
+            }
             mAdapter.clear();
             if (data != null && data.size() != 0) {
                 if (!isFromCache) {

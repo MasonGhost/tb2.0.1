@@ -16,7 +16,7 @@
         android:layout_width="@dimen/headpic_for_list"
         app:pressShape="circle"
         android:layout_height="@dimen/headpic_for_list"
-        android:src="@mipmap/ic_launcher"/>
+        android:src="@drawable/shape_default_image_circle"/>
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
@@ -42,8 +42,9 @@
     <FrameLayout
         android:id="@+id/fl_tip"
         android:layout_width="@dimen/chat_list_new_msg_tip_with"
-        android:paddingTop="@dimen/spacing_small"
+        android:layout_marginTop="@dimen/spacing_normal"
         android:layout_alignParentRight="true"
+        android:paddingRight="@dimen/spacing_mid"
         android:layout_below="@id/tv_time"
         android:layout_height="wrap_content">
 
@@ -51,12 +52,8 @@
             android:id="@+id/tv_tip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="@dimen/spacing_line"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/spacing_line"
+            android:layout_gravity="right"
             android:maxLines="1"
-            android:maxWidth="@dimen/chat_list_new_msg_tip_with"
             android:textColor="@color/white"
             android:textSize="@dimen/size_icon_assist"
             tools:text="99"/>
