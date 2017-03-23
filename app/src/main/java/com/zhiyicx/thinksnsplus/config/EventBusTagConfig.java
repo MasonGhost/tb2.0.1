@@ -19,8 +19,7 @@ public class EventBusTagConfig {
     public static final String EVENT_BACKGROUND_TASK_CANT_NOT_DEAL = "event_background_task_cant_not_deal";
     // 后台刷新用户信息
     public static final String EVENT_USERINFO_UPDATE = "event_userinfo_update";
-    // 刷新相册图片列表
-    public static final String EVENT_SELECTED_PHOTO_UPDATE = "event_selected_photo_update";
+
     // 发送动态到动态列表
     public static final String EVENT_SEND_DYNAMIC_TO_LIST = "event_send_dynamic_to_List";
     //更新动态列表

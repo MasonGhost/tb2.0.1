@@ -16,10 +16,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
-
-import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +45,8 @@ import static me.iwf.photopicker.PhotoPicker.EXTRA_SHOW_GIF;
  */
 
 public class PhotoAlbumDetailsFragment extends TSFragment {
-    public static final int TO_VIEW_REQUEST_CODE = 1000;
+    public static final int COMPLETE_REQUEST_CODE = 1000;
+    public static final String EXTRA_BACK_HERE = "back_here";// 回到当前图片列表页面，是否停留
     public final static String EXTRA_ORIGIN = "ORIGINAL_PHOTOS";
     private final static String EXTRA_COLUMN = "column";
     public final static String EXTRA_VIEW_INDEX = "view_index";
@@ -176,27 +174,18 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         photoGridAdapter.setOnPhotoClickListener(new OnPhotoClickListener() {
             @Override
             public void onClick(View v, int position, boolean showCamera) {
-                // ToastUtils.showToast("位置--》"+position);
                 int index = showCamera ? position - 1 : position;
                 List<String> allPhotos = photoGridAdapter.getCurrentPhotoPaths();
                 ArrayList<String> selectedPhotos = photoGridAdapter.getSelectedPhotoPaths();
-                Bundle bundle = new Bundle();
-                bundle.putInt(EXTRA_VIEW_INDEX, index);
-                bundle.putStringArrayList(EXTRA_VIEW_ALL_PHOTOS, (ArrayList<String>) allPhotos);
-                bundle.putStringArrayList(EXTRA_VIEW_SELECTED_PHOTOS, selectedPhotos);
-                bundle.putInt(EXTRA_MAX_COUNT, maxCount);
-
                 ArrayList<AnimationRectBean> animationRectBeanArrayList
                         = new ArrayList<AnimationRectBean>();
                 for (int i = 0; i < allPhotos.size(); i++) {
 
                     if (i < layoutManager.findFirstVisibleItemPosition()) {
-                        // 顶部，无法全部看见的图片
-                        // AnimationRectBean rect = new AnimationRectBean();
+                        // 顶部，无法看见的图片
                         animationRectBeanArrayList.add(null);
                     } else if (i > layoutManager.findLastVisibleItemPosition()) {
-                        // 底部，无法完全看见的图片
-                        //  AnimationRectBean rect = new AnimationRectBean();
+                        // 底部，无法看见的图片
                         animationRectBeanArrayList.add(null);
                     } else {
                         View view = layoutManager
@@ -207,11 +196,8 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                         animationRectBeanArrayList.add(rect);
                     }
                 }
-
-                bundle.putParcelableArrayList("rect", animationRectBeanArrayList);
-                Intent intent = new Intent(getContext(), PhotoViewActivity.class);
-                intent.putExtras(bundle);
-                startActivityForResult(intent, TO_VIEW_REQUEST_CODE);
+                PhotoViewActivity.startToPhotoView(PhotoAlbumDetailsFragment.this, (ArrayList<String>) allPhotos
+                        , selectedPhotos, animationRectBeanArrayList, maxCount, index);
             }
         });
     }
@@ -250,20 +236,14 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_preview:
-                //int index = showCamera ? position - 1 : position;
                 // 预览图片和选择图片是相同的
                 ArrayList<String> allPhotos = photoGridAdapter.getSelectedPhotoPaths();
                 ArrayList<String> selectedPhoto = photoGridAdapter.getSelectedPhotoPaths();
-                Bundle bundle = new Bundle();
-                bundle.putInt(EXTRA_VIEW_INDEX, 0);
-                bundle.putStringArrayList(EXTRA_VIEW_ALL_PHOTOS, allPhotos);
-                bundle.putStringArrayList(EXTRA_VIEW_SELECTED_PHOTOS, selectedPhoto);
                 ArrayList<AnimationRectBean> animationRectBeanArrayList = new ArrayList<>();
-                bundle.putParcelableArrayList("rect", animationRectBeanArrayList);
-                bundle.putInt(EXTRA_MAX_COUNT, maxCount);
-                Intent intent1 = new Intent(getContext(), PhotoViewActivity.class);
-                intent1.putExtras(bundle);
-                startActivityForResult(intent1, TO_VIEW_REQUEST_CODE);
+                for (String path : selectedPhoto) {
+                    animationRectBeanArrayList.add(null);
+                }
+                PhotoViewActivity.startToPhotoView(this, allPhotos, selectedPhoto, animationRectBeanArrayList, maxCount, 0);
                 break;
             case R.id.bt_complete:
                 Intent it = new Intent();
@@ -275,7 +255,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         }
     }
 
-    @Subscriber(tag = EventBusTagConfig.EVENT_SELECTED_PHOTO_UPDATE)
+    // @Subscriber(tag = EventBusTagConfig.EVENT_SELECTED_PHOTO_UPDATE)
     public void refreshDataAndUI(List<String> selectedPhoto) {
         int selectedCount = selectedPhoto.size();
         List<String> oldSelectedPhotos = photoGridAdapter.getSelectedPhotos();
@@ -291,9 +271,17 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == TO_VIEW_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            getActivity().setResult(Activity.RESULT_OK, data);
-            getActivity().finish();
+        if (requestCode == COMPLETE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            boolean stayHere = data.getBooleanExtra(EXTRA_BACK_HERE, false);
+            if (stayHere) {
+                // 如果停在该页面，刷新图片列表选择状态
+                List<String> selectedPhoto = data.getStringArrayListExtra("photos");
+                refreshDataAndUI(selectedPhoto);
+            } else {
+                // 否则，直接将结果返回到该去的地方
+                getActivity().setResult(Activity.RESULT_OK, data);
+                getActivity().finish();
+            }
         }
     }
 }

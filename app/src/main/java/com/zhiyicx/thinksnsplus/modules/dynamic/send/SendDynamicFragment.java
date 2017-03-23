@@ -441,7 +441,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                             bundle.putInt(PhotoAlbumDetailsFragment.EXTRA_MAX_COUNT, MAX_PHOTOS);
                             Intent intent = new Intent(getContext(), PhotoViewActivity.class);
                             intent.putExtras(bundle);
-                            startActivityForResult(intent, PhotoAlbumDetailsFragment.TO_VIEW_REQUEST_CODE);
+                            startActivityForResult(intent, PhotoAlbumDetailsFragment.COMPLETE_REQUEST_CODE);
 
                         }
                     }
