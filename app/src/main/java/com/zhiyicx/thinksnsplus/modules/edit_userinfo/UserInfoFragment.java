@@ -1,9 +1,15 @@
 package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 
 import android.content.Intent;
+import android.graphics.Rect;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -11,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bigkoo.pickerview.OptionsPickerView;
+import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
@@ -22,7 +29,9 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -36,6 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.functions.Action1;
 
@@ -67,8 +77,11 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     LinearLayout mLlCityContainer;
     @BindView(R.id.et_user_introduce)
     UserInfoInroduceInputView mEtUserIntroduce;
-    @BindView(R.id.view_container)
-    LinearLayout mViewContainer;
+    @BindView(R.id.tv_edit_introduce)
+    TextView mTvEditIntroduce;
+    @BindView(R.id.ll_container)
+    LinearLayout mLlContainer;
+
 
     private ArrayList<AreaBean> options1Items;
     private ArrayList<ArrayList<AreaBean>> options2Items;
@@ -106,7 +119,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     @Override
     protected void initView(View rootView) {
-
         mPhotoSelector = DaggerPhotoSelectorImplComponent
                 .builder()
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
@@ -114,6 +126,29 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .build().photoSelectorImpl();
 
         initCityPickerView();
+      /*  // 软键盘控制区
+        mLlContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+                Rect rect = new Rect();
+                //获取root在窗体的可视区域
+                mLlContainer.getWindowVisibleDisplayFrame(rect);
+                //获取root在窗体的不可视区域高度(被其他View遮挡的区域高度)
+                int rootInvisibleHeight = mLlContainer.getRootView().getHeight() - rect.bottom;
+                LogUtils.i("rootInvisibleHeight-->" + rootInvisibleHeight + "rect.bottom" + rect.bottom);
+                int dispayHeight = UIUtils.getWindowHeight(getContext());
+                //若不可视区域高度大于1/3屏幕高度，则键盘显示
+                if (rootInvisibleHeight > (1 / 3 * dispayHeight)) {
+
+                } else {
+                    //键盘隐藏
+                    mEtUserName.clearFocus();// 主动失去焦点
+                    mEtUserIntroduce.getEtContent().clearFocus();
+                }
+            }
+        });
+*/
     }
 
     @Override
@@ -164,13 +199,28 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .subscribe(new Action1<CharSequence>() {
                     @Override
                     public void call(CharSequence charSequence) {
-                        String oldIntroduce = mUserInfoBean.getIntro();
+                        String oldIntroduce = getIntro(mUserInfoBean);
                         if (TextUtils.isEmpty(oldIntroduce)) {
                             introduceChanged = !TextUtils.isEmpty(charSequence);
                         } else {
                             introduceChanged = !oldIntroduce.equals(charSequence.toString());
                         }
                         canChangerUserInfo();
+                    }
+                });
+        RxView.focusChanges(mEtUserIntroduce.getEtContent())
+                .compose(this.<Boolean>bindToLifecycle())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        // 没有焦点，并且简介为空的时候隐藏编辑框，显示编辑简介
+                        if (!aBoolean && TextUtils.isEmpty(mEtUserIntroduce.getInputContent())) {
+                            mTvEditIntroduce.setVisibility(View.VISIBLE);// 显示编辑简介
+                            mEtUserIntroduce.setVisibility(View.GONE);// 隐藏编辑框
+                        } else {
+                            mTvEditIntroduce.setVisibility(View.GONE);// 隐藏编辑简介
+                            mEtUserIntroduce.setVisibility(View.VISIBLE);// 显示编辑框
+                        }
                     }
                 });
     }
@@ -211,7 +261,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         return true;
     }
 
-    @OnClick({R.id.rl_change_head_container, R.id.ll_sex_container, R.id.ll_city_container})
+    @OnClick({R.id.rl_change_head_container, R.id.ll_sex_container, R.id.ll_city_container, R.id.tv_edit_introduce})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_change_head_container:
@@ -225,6 +275,9 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
             case R.id.ll_city_container:
                 mAreaPickerView.setSelectOptions(mCityOption1, mCityOption2, mCityOption3);
                 mAreaPickerView.show();
+                break;
+            case R.id.tv_edit_introduce:
+                mEtUserIntroduce.getEtContent().requestFocus();
                 break;
             default:
         }
@@ -273,11 +326,26 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     public void initUserInfo(UserInfoBean mUserInfoBean) {
         this.mUserInfoBean = mUserInfoBean;
         // 初始化界面数据
+        // 设置用户名
         mEtUserName.setText(mUserInfoBean.getName());
+        // 设置性别
         mTvSex.setText(mUserInfoBean.getSexString());
         mTvSex.setTag(R.id.view_data, mUserInfoBean.getSex());// 设置性别编号
+        // 设置地址
         mTvCity.setText(mUserInfoBean.getLocation());
-        mEtUserIntroduce.setText(mUserInfoBean.getIntro());
+        // 设置简介
+        String intro = getIntro(mUserInfoBean);
+        // 如果没有简介
+        if (TextUtils.isEmpty(intro)) {
+            mTvEditIntroduce.setVisibility(View.VISIBLE);// 显示编辑简介
+            mEtUserIntroduce.setVisibility(View.GONE);// 隐藏编辑框
+        } else {
+            mTvEditIntroduce.setVisibility(View.GONE);// 隐藏编辑简介
+            mEtUserIntroduce.setVisibility(View.VISIBLE);// 显示编辑框
+            mEtUserIntroduce.setText(intro);// 设置简介
+        }
+
+        // 设置头像
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
                 .url(ImageUtils.imagePathConvert(mUserInfoBean.getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
@@ -513,4 +581,24 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         }
     }
 
+    /**
+     * 处理用户简介缺省文字，如果是缺省文字，就应该默认为“”
+     */
+    private String getIntro(UserInfoBean userInfoBean) {
+        if (userInfoBean == null) {
+            return "";
+        }
+        String intro = userInfoBean.getIntro();
+        // 是缺省的内容,就设置为kong，但要注意这儿有个隐藏的bug，如果简介设置为缺省的内容，那就。。。
+        if (getString(R.string.intro_default).equals(intro)) {
+            intro = "";
+        }
+        return intro;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
 }
