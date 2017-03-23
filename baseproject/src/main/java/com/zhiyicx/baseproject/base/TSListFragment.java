@@ -18,7 +18,6 @@ import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
-import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.EmptyWrapper;
 
 import org.jetbrains.annotations.NotNull;
@@ -50,7 +49,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     protected List<T> mListDatas = new ArrayList<>();
 
-    protected MultiItemTypeAdapter<T> mAdapter;
+    protected RecyclerView.Adapter mAdapter;
 
     private EmptyWrapper mEmptyWrapper;
 
@@ -242,7 +241,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      *
      * @return
      */
-    protected abstract MultiItemTypeAdapter<T> getAdapter();
+    protected abstract RecyclerView.Adapter getAdapter();
 
     /**
      * 提示信息被点击了
@@ -400,7 +399,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     @Override
     public void onResponseError(Throwable throwable, boolean isLoadMore) {
         handleRefreshState(isLoadMore);
-        if (!isLoadMore && (mAdapter.getDatas() == null || mAdapter.getDatas().size() == 0)) { // 刷新
+        if (!isLoadMore && (mListDatas.size() == 0)) { // 刷新
             mEmptyView.setErrorType(EmptyView.STATE_NETWORK_ERROR);
             mAdapter.notifyDataSetChanged();
         } else { // 加载更多
@@ -420,14 +419,14 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
             if (isLoadingMoreEnable()) {
                 mRefreshlayout.setLoadMoreEnabled(true);
             }
-            mAdapter.clear();
+            mListDatas.clear();
             if (data != null && data.size() != 0) {
                 if (!isFromCache) {
                     // 更新缓存
                     mPresenter.insertOrUpdateData(data);
                 }
                 // 内存处理数据
-                mAdapter.addAllData(data);
+                mListDatas.addAll(data);
                 mMaxId = getMaxId(data);
             } else {
                 mEmptyView.setErrorImag(setEmptView());
@@ -440,7 +439,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                     mPresenter.insertOrUpdateData(data);
                 }
                 // 内存处理数据
-                mAdapter.addAllData(data);
+               mListDatas.addAll(data);
                 refreshData();
                 mMaxId = getMaxId(data);
             } else {

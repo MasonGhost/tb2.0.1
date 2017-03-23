@@ -35,7 +35,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
         implements MusicContract.View {
 
     private ImageLoader mImageLoader;
-    public static final String BUNDLE_MUSIC_ABLUM="music_ablum";
+    public static final String BUNDLE_MUSIC_ABLUM = "music_ablum";
 
 
     @Override
@@ -46,22 +46,6 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
         mRvList.addItemDecoration(new TGridDecoration(20, 20, true));
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
 
-        mAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                Intent intent=new Intent(getActivity(), MusicDetailActivity.class);
-                Bundle bundle=new Bundle();
-                bundle.putParcelable(BUNDLE_MUSIC_ABLUM,mListDatas.get(position));
-                intent.putExtra(BUNDLE_MUSIC_ABLUM,bundle);
-                startActivity(intent);
-            }
-
-            @Override
-            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int
-                    position) {
-                return false;
-            }
-        });
     }
 
     @Override
@@ -101,7 +85,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
 
     @Override
     protected CommonAdapter<MusicAlbumListBean> getAdapter() {
-        return new CommonAdapter<MusicAlbumListBean>(getActivity(), R.layout.item_music_list,
+        CommonAdapter<MusicAlbumListBean> comAdapter = new CommonAdapter<MusicAlbumListBean>(getActivity(), R.layout.item_music_list,
                 mListDatas) {
             @Override
             protected void convert(ViewHolder holder, MusicAlbumListBean musicListBean, int
@@ -113,14 +97,32 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
                         .imagerView(imag)
                         .url(url)
                         .build());
-                holder.setText(R.id.music_list_taste_count,""+musicListBean.getTaste_count());
-                holder.setText(R.id.music_list_title,musicListBean.getTitle());
+                holder.setText(R.id.music_list_taste_count, "" + musicListBean.getTaste_count());
+                holder.setText(R.id.music_list_title, musicListBean.getTitle());
             }
         };
+
+        comAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                Intent intent = new Intent(getActivity(), MusicDetailActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(BUNDLE_MUSIC_ABLUM, mListDatas.get(position));
+                intent.putExtra(BUNDLE_MUSIC_ABLUM, bundle);
+                startActivity(intent);
+            }
+
+            @Override
+            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int
+                    position) {
+                return false;
+            }
+        });
+        return comAdapter;
     }
 
     @Override
     protected Long getMaxId(@NotNull List<MusicAlbumListBean> data) {
-        return (long)data.get(data.size() - 1).getId();
+        return (long) data.get(data.size() - 1).getId();
     }
 }

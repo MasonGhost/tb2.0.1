@@ -120,7 +120,7 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
 
     @Override
     public List<FollowFansBean> getFollowListData() {
-        return mAdapter.getDatas();
+        return mListDatas;
     }
 
     @Override

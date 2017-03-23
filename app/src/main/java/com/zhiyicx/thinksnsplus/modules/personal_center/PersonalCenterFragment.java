@@ -335,7 +335,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         switch (viewPosition) { // 0 1 2 3 代表 view item 位置
             case 0: // 喜欢
                 // 还未发送成功的动态列表不查看详情
-                if (mAdapter.getItem(dataPosition).getFeed_id() == null || mAdapter.getItem(dataPosition).getFeed_id() == 0) {
+                if (mListDatas.get(dataPosition).getFeed_id() == null || mListDatas.get(dataPosition).getFeed_id() == 0) {
                     return;
                 }
                 handleLike(dataPosition);
@@ -343,7 +343,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
             case 1: // 评论
                 // 还未发送成功的动态列表不查看详情
-                if (mAdapter.getItem(dataPosition).getFeed_id() == null || mAdapter.getItem(dataPosition).getFeed_id() == 0) {
+                if (mListDatas.get(dataPosition).getFeed_id() == null || mListDatas.get(dataPosition).getFeed_id() == 0) {
                     return;
                 }
                 showCommentView();
@@ -511,7 +511,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void onCommentContentClick(DynamicBean dynamicBean, int position) {
-        mCurrentPostion = mAdapter.getDatas().indexOf(dynamicBean);
+        mCurrentPostion = mListDatas.indexOf(dynamicBean);
         if (dynamicBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
             initDeletCommentPopWindow(dynamicBean, mCurrentPostion, position);
             mDeletCommentPopWindow.show();
@@ -624,12 +624,12 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     private void goDynamicDetail(int position, boolean isLookMoreComment) {
         // 还未发送成功的动态列表不查看详情
-        if (mAdapter.getItem(position).getFeed_id() == null || mAdapter.getItem(position).getFeed_id() == 0) {
+        if (mListDatas.get(position).getFeed_id() == null || mListDatas.get(position).getFeed_id() == 0) {
             return;
         }
         Intent intent = new Intent(getActivity(), DynamicDetailActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(DYNAMIC_DETAIL_DATA, mAdapter.getItem(position));
+        bundle.putParcelable(DYNAMIC_DETAIL_DATA, mListDatas.get(position));
         bundle.putInt(DYNAMIC_DETAIL_DATA_POSITION, position);
         bundle.putBoolean(LOOK_COMMENT_MORE, isLookMoreComment);
         intent.putExtras(bundle);
@@ -670,6 +670,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void onMoreCommentClick(View view, DynamicBean dynamicBean) {
-        goDynamicDetail(mAdapter.getDatas().indexOf(dynamicBean), true);
+        goDynamicDetail(mListDatas.indexOf(dynamicBean), true);
     }
 }
