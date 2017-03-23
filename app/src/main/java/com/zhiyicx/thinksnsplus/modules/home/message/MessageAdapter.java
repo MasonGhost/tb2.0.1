@@ -5,6 +5,13 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.daimajia.swipe.SimpleSwipeListener;
+import com.daimajia.swipe.SwipeLayout;
+import com.daimajia.swipe.implments.SwipeItemMangerImpl;
+import com.daimajia.swipe.implments.SwipeItemRecyclerMangerImpl;
+import com.daimajia.swipe.interfaces.SwipeAdapterInterface;
+import com.daimajia.swipe.interfaces.SwipeItemMangerInterface;
+import com.daimajia.swipe.util.Attributes;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
@@ -35,10 +42,18 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 
-public class MessageAdapter extends CommonAdapter<MessageItemBean> {
+public class MessageAdapter extends CommonAdapter<MessageItemBean> implements SwipeItemMangerInterface, SwipeAdapterInterface {
+    private SwipeItemMangerImpl mItemManger;
+
+    public void setOnSwipItemClickListener(OnSwipItemClickListener onSwipItemClickListener) {
+        mOnSwipItemClickListener = onSwipItemClickListener;
+    }
+
+    private OnSwipItemClickListener mOnSwipItemClickListener;
 
     public MessageAdapter(Context context, int layoutId, List<MessageItemBean> datas) {
         super(context, layoutId, datas);
+        mItemManger = new SwipeItemRecyclerMangerImpl(this);
     }
 
     @Override
@@ -64,8 +79,8 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> {
                         .build()
                 );
                 holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getName());     // 响应事件
-                setUserInfoClick(holder.getView(R.id.tv_name),messageItemBean.getUserInfo());
-                setUserInfoClick(holder.getView(R.id.iv_headpic),messageItemBean.getUserInfo());
+                setUserInfoClick(holder.getView(R.id.tv_name), messageItemBean.getUserInfo());
+                setUserInfoClick(holder.getView(R.id.iv_headpic), messageItemBean.getUserInfo());
 
                 break;
             case ChatType.CHAT_TYPE_GROUP:// 群组
@@ -76,16 +91,48 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> {
             default:
         }
         holder.setText(R.id.tv_content, messageItemBean.getConversation().getLast_message_text());
-        if(messageItemBean.getConversation().getLast_message_time()==0){
-            holder.setText(R.id.tv_time,"");
-        }else {
+        if (messageItemBean.getConversation().getLast_message_time() == 0) {
+            holder.setText(R.id.tv_time, "");
+        } else {
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(messageItemBean.getConversation().getLast_message_time())));
         }
         ((BadgeView) holder.getView(R.id.tv_tip)).setBadgeCount(messageItemBean.getUnReadMessageNums());
+        // 右边
+        final SwipeLayout swipeLayout = holder.getView(R.id.swipe);
+        swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
+        swipeLayout.addSwipeListener(new SimpleSwipeListener() {
+            @Override
+            public void onOpen(SwipeLayout layout) {
+//                YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.trash));
+            }
+        });
+        RxView.clicks(holder.getView(R.id.tv_right))
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        if (mOnSwipItemClickListener != null) {
+                            mOnSwipItemClickListener.onRightClick(position);
+                        }
+                        mItemManger.closeAllItems();
+                    }
+                });
+        RxView.clicks(holder.getView(R.id.rl_left))
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        if (mOnSwipItemClickListener != null && !mItemManger.isOpen(position)) {
+                            mOnSwipItemClickListener.onLeftClick(position);
+                        }
+                        mItemManger.closeAllItems();
+                    }
+                });
+        mItemManger.bindView(holder.getConvertView(), position);
 
     }
 
-    private void setUserInfoClick(View v,final UserInfoBean userInfoBean) {
+    private void setUserInfoClick(View v, final UserInfoBean userInfoBean) {
         RxView.clicks(v)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(new Action1<Void>() {
@@ -103,4 +150,64 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> {
         PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
     }
 
+    @Override
+    public int getSwipeLayoutResourceId(int position) {
+        return R.id.swipe;
+    }
+
+    @Override
+    public void openItem(int position) {
+        mItemManger.openItem(position);
+    }
+
+    @Override
+    public void closeItem(int position) {
+        mItemManger.closeItem(position);
+    }
+
+    @Override
+    public void closeAllExcept(SwipeLayout layout) {
+        mItemManger.closeAllExcept(layout);
+    }
+
+    @Override
+    public void closeAllItems() {
+        mItemManger.closeAllItems();
+    }
+
+    @Override
+    public List<Integer> getOpenItems() {
+        return mItemManger.getOpenItems();
+    }
+
+    @Override
+    public List<SwipeLayout> getOpenLayouts() {
+        return mItemManger.getOpenLayouts();
+    }
+
+    @Override
+    public void removeShownLayouts(SwipeLayout layout) {
+        mItemManger.removeShownLayouts(layout);
+    }
+
+    @Override
+    public boolean isOpen(int position) {
+        return mItemManger.isOpen(position);
+    }
+
+    @Override
+    public Attributes.Mode getMode() {
+        return mItemManger.getMode();
+    }
+
+    @Override
+    public void setMode(Attributes.Mode mode) {
+        mItemManger.setMode(mode);
+    }
+
+    public interface OnSwipItemClickListener {
+        void onLeftClick(int position);
+
+        void onRightClick(int position);
+    }
 }

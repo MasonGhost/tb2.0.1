@@ -19,8 +19,6 @@ import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagelike.MessageLikeActivity;
-import com.zhy.adapter.recyclerview.CommonAdapter;
-import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import java.util.concurrent.TimeUnit;
@@ -37,7 +35,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/5
  * @Contact master.jungle68@gmail.com
  */
-public class MessageFragment extends TSListFragment<MessageContract.Presenter, MessageItemBean> implements MessageContract.View, MultiItemTypeAdapter.OnItemClickListener {
+public class MessageFragment extends TSListFragment<MessageContract.Presenter, MessageItemBean> implements MessageContract.View, MessageAdapter.OnSwipItemClickListener {
     private static final int ITEM_TYPE_COMMNETED = 0;
     private static final int ITEM_TYPE_LIKED = 1;
 
@@ -62,7 +60,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         return 0;
     }
 
-
     @Override
     protected boolean setUseSatusbar() {
         return true;
@@ -84,6 +81,10 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         initHeaderView();
     }
 
+    @Override
+    protected boolean isRefreshEnable() {
+        return false;
+    }
 
     /**
      * 是否需要上拉加载
@@ -118,9 +119,11 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     @Override
-    protected MultiItemTypeAdapter getAdapter() {
-        CommonAdapter commonAdapter = new MessageAdapter(getActivity(), R.layout.item_message_list, mListDatas);
-        commonAdapter.setOnItemClickListener(this);
+    protected RecyclerView.Adapter getAdapter() {
+
+//        MessageSwipeAdapter commonAdapter =new MessageSwipeAdapter(getContext(),mListDatas);
+        MessageAdapter commonAdapter = new MessageAdapter(getActivity(), R.layout.item_message_list, mListDatas);
+        commonAdapter.setOnSwipItemClickListener(this);
         return commonAdapter;
     }
 
@@ -265,16 +268,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         showMessageNotSticky(message);
     }
 
-    @Override
-    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        position = position - 1;//  减去 heder 占用的 1 个位置
-        toChat(mListDatas.get(position), position);
-    }
-
-    @Override
-    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
-        return false;
-    }
 
     /**
      * 进入聊天页
@@ -289,5 +282,20 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         to.putExtras(bundle);
         startActivity(to);
         mLastClickPostion = positon;//
+    }
+
+    @Override
+    public void onLeftClick(int position) {
+        position = position - 1;// 减去 header
+        toChat(mListDatas.get(position), position);
+    }
+
+    @Override
+    public void onRightClick(int position) {
+        position = position - 1;// 减去 header
+        mPresenter.deletConversation(mListDatas.get(position));
+        mListDatas.remove(position);
+        refreshData();
+
     }
 }

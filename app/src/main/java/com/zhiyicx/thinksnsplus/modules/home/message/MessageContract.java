@@ -63,5 +63,11 @@ public interface MessageContract {
          * @param data                  所有数据
          */
         void refreshLastClicikPostion(int position, MessageItemBean currentMessageItemBean, List<MessageItemBean> data);
+
+        /**
+         *  删除本地对话
+         * @param messageItemBean
+         */
+        void deletConversation(MessageItemBean messageItemBean);
     }
 }

@@ -163,7 +163,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
-    protected boolean getPullDownRefreshEnable() {
+    protected boolean isRefreshEnable() {
         return true;
     }
 

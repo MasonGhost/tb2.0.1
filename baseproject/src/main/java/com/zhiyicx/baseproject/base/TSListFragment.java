@@ -166,7 +166,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     protected void initData() {
-        mRefreshlayout.setRefreshEnabled(getPullDownRefreshEnable());
+        mRefreshlayout.setRefreshEnabled(isRefreshEnable());
         mRefreshlayout.setLoadMoreEnabled(isLoadingMoreEnable());
         onCacheResponseSuccess(requestCacheData(mMaxId, false), false); // 获取缓存数据
     }
@@ -223,7 +223,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         return false;
     }
 
-    protected boolean getPullDownRefreshEnable() {
+    protected boolean isRefreshEnable() {
         return true;
     }
 

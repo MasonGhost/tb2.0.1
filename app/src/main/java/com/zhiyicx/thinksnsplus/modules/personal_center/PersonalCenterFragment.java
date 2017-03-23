@@ -230,7 +230,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    protected boolean getPullDownRefreshEnable() {
+    protected boolean isRefreshEnable() {
         return false;
     }
 
