@@ -76,8 +76,7 @@
         </activity>
         <activity
             android:name=".modules.photopicker.PhotoViewActivity"
-            android:theme="@style/TransParentTheme"
-            >
+            android:theme="@style/TransParentTheme">
         </activity>
         <activity
             android:name=".modules.gallery.GalleryActivity"
@@ -134,14 +133,15 @@
 
         <activity
             android:name=".modules.dynamic.detail.DynamicDetailActivity"
-            android:windowSoftInputMode="adjustResize"
-            >
+            android:windowSoftInputMode="adjustResize">
         </activity>
         <activity android:name=".modules.dynamic.detail.dig_list.DigListActivity">
         </activity>
         <activity
             android:name=".modules.personal_center.PersonalCenterActivity"
             android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity android:name=".modules.music_fm.music_comment.MusicCommentActivity">
         </activity>
     </application>
 

@@ -2,14 +2,30 @@
 <layer-list
     xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- 未选中 -->
-    <item
-        android:id="@android:id/background"
-        android:drawable="@color/__picker_text_120"/>
+    <item android:id="@android:id/background">
+        <shape>
+            <corners android:radius="@dimen/spacing_small"/>
+            <solid android:color="@color/normal_for_disable_button_text"/>
+        </shape>
+    </item>
+
+    <item android:id="@android:id/secondaryProgress">
+        <clip>
+            <shape>
+                <corners android:radius="@dimen/spacing_small"/>
+                <solid android:color="@color/normal_for_assist_text"/>
+            </shape>
+        </clip>
+    </item>
+
     <!-- 中 -->
-    <item
-        android:id="@android:id/progress"
-        android:drawable="@color/music_progress"/>
-    <item
-        android:id="@android:id/secondaryProgress"
-        android:drawable="@color/chat_message_bubble_my_bgColor"/>
+    <item android:id="@android:id/progress">
+        <clip>
+            <shape>
+                <corners android:radius="@dimen/spacing_small"/>
+                <solid android:color="@color/normal_for_dynamic_list_content"/>
+            </shape>
+        </clip>
+    </item>
+
 </layer-list>

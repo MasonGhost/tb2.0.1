@@ -22,6 +22,8 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.utils.TransferImageAnimationUtil;
 
+import java.io.File;
+
 import butterknife.BindView;
 
 /**
@@ -76,12 +78,11 @@ public class PhotoViewPictureFragment extends TSFragment {
         animateIn = getArguments().getBoolean("animationIn");// 是否需要放缩动画，除了第一次进入需要，其他时候应该禁止
 
         Glide.with(getContext())
-                .load(path)
+                .load(new File(path))
                 .centerCrop()
-                .dontAnimate()
-                .thumbnail(0.5f)
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .crossFade()
+                .override(800, 800)// 这儿很重要，图片太大，会很卡，并且内存溢出
+                .thumbnail(0.1f)
                 .into(new SimpleTarget<GlideDrawable>() {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,7 +21,6 @@ import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.utils.ImageUtils;
-import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -30,8 +28,6 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
-import com.zhiyicx.thinksnsplus.data.beans.EditConfigBean;
-import com.zhiyicx.thinksnsplus.data.beans.EditConfigBeanDaoImpl;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 
@@ -90,9 +86,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     private boolean userNameChanged, sexChanged, cityChanged, introduceChanged;
 
     private int upDateHeadIconStorageId = 0;// 上传成功返回的图片id
-    private EditConfigBeanDaoImpl mEditConfigBeanDao;
 
-    private int locationLevel = 2;
+    private int locationLevel = LOCATION_2LEVEL;
 
     @Override
     protected int getBodyLayoutId() {
@@ -109,42 +104,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         return true;
     }
 
-    private void initConfig() {
-        mEditConfigBeanDao = new EditConfigBeanDaoImpl(getContext());
-        EditConfigBean editConfigBean = new EditConfigBean(1021L, "school", "学校", "TextView");
-        mEditConfigBeanDao.saveSingleData(editConfigBean);
-    }
-
-    private void initUI() {
-        List<EditConfigBean> editConfigBeanList = mEditConfigBeanDao.getMultiDataFromCache();
-        for (EditConfigBean editConfigBean : editConfigBeanList) {
-            String itemName = editConfigBean.getItemName();
-            String itemType = editConfigBean.getItemType();
-            String itemField = editConfigBean.getItemField();
-            if (itemType.equals("TextView")) {
-                CombinationButton combinationButton = new CombinationButton(getContext(), null);
-                ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup
-                        .LayoutParams.MATCH_PARENT, 100);
-                combinationButton.setLayoutParams(layoutParams);
-                combinationButton.setLeftText(itemName);
-                combinationButton.setTag(editConfigBean);
-                mViewContainer.removeAllViews();
-                mViewContainer.addView(combinationButton);
-            }
-
-        }
-    }
-
-    private HashMap<String, String> getNetParams() {
-        HashMap<String, String> hashMap = new HashMap<>();
-        for (int i = 0; i < mViewContainer.getChildCount(); i++) {
-            View view = mViewContainer.getChildAt(i);
-            EditConfigBean editConfigBean = (EditConfigBean) view.getTag();
-            hashMap.put(editConfigBean.getItemField(), "");// 通过自定义view接口获取要传递的值
-        }
-        return hashMap;
-    }
-
     @Override
     protected void initView(View rootView) {
 
@@ -155,8 +114,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .build().photoSelectorImpl();
 
         initCityPickerView();
-      /*  initConfig();
-        initUI();*/
     }
 
     @Override

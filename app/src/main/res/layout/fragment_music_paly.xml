@@ -21,13 +21,13 @@
             android:layout_weight="2">
 
             <TextView
-                android:visibility="gone"
-                android:fadingEdge="vertical"
-                android:gravity="center"
-                android:layout_centerHorizontal="true"
                 android:id="@+id/fragment_music_paly_lrc"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:fadingEdge="vertical"
+                android:gravity="center"
+                android:visibility="gone"/>
 
             <com.zhiyicx.thinksnsplus.widget.pager_recyclerview.LoopPagerRecyclerView
                 android:id="@+id/fragment_music_paly_rv"
@@ -67,29 +67,33 @@
                 <ImageView
                     android:id="@+id/fragment_music_paly_share"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:scaleType="center"
                     android:src="@mipmap/music_ico_share_black"/>
 
                 <ImageView
                     android:id="@+id/fragment_music_paly_like"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:scaleType="center"
                     android:src="@mipmap/music_ico_like_high"/>
 
                 <ImageView
                     android:id="@+id/fragment_music_paly_comment"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:scaleType="center"
                     android:src="@mipmap/music_ico_comment_complete"/>
 
                 <ImageView
                     android:id="@+id/fragment_music_paly_lyrics"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:scaleType="center"
                     android:src="@mipmap/music_ico_lyrics"/>
 
             </LinearLayout>
@@ -122,11 +126,11 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:max="100"
                     android:maxHeight="3dp"
                     android:minHeight="3dp"
                     android:progressDrawable="@drawable/music_seekbar_style"
-                    android:secondaryProgress="0"
-                    android:max="100"/>
+                    android:secondaryProgress="0"/>
 
                 <TextView
                     android:id="@+id/fragment_music_paly_total_time"

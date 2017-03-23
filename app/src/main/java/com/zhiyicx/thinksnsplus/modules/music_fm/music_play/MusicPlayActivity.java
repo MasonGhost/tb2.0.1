@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_play;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailFragment
@@ -18,6 +19,7 @@ public class MusicPlayActivity extends TSActivity<MusicPlayPresenter, MusicPlayF
         DaggerMusicPlayComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .musicPlayPresenterModule(new MusicPlayPresenterModule(mContanierFragment))
+                .shareModule(new ShareModule(this))
                 .build()
                 .inject(this);
     }

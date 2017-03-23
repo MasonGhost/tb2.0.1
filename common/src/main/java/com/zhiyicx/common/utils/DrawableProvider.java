@@ -273,20 +273,23 @@ public class DrawableProvider {
      * 保存bitmap到文件
      *
      * @param bm
-     * @param imgPath
+     * @param picName 图片名称
+     * @param imgPath 图片目录
      * @return 失败返回各种提示，成功返回图片路径
      */
-    public static String saveBitmap(Bitmap bm, String imgPath) {
-        final File f = new File(Environment.getExternalStorageDirectory(), imgPath);
-        if (f == null) {
-            return "sd卡不存在，无法保存图片";
-        }
-        if (f.exists()) {
-            f.delete();
+    public static String saveBitmap(Bitmap bm, String picName, String imgPath) {
+        // 保存在sd卡中
+        File dir = new File(Environment.getExternalStorageDirectory(), imgPath);
+        if (!dir.exists() || !dir.isDirectory()) {
+            // 如果没有这样的文件，或者有同名的文件但不是目录，就需要创建这样的目录
+            if (!dir.mkdir()) {
+                return "sd卡不存在，无法保存图片";
+            }
         }
         try {
+            File f = new File(dir, picName);
             FileOutputStream out = new FileOutputStream(f);
-            boolean isSuccess = bm.compress(Bitmap.CompressFormat.PNG, 100, out);
+            boolean isSuccess = bm.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.flush();
             out.close();
             if (isSuccess) {

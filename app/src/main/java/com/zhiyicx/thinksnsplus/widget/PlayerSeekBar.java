@@ -67,7 +67,7 @@ public class PlayerSeekBar extends SeekBar {
     }
 
     @Override
-    protected synchronized void onDraw(Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (drawLoading) {
             canvas.save();

@@ -222,6 +222,15 @@ public class MusicAlbumDetailsBean implements Serializable {
             private int taste_count;
             private int share_count;
             private int comment_count;
+            private int isdiggmusic;
+
+            public int getIsdiggmusic() {
+                return isdiggmusic;
+            }
+
+            public void setIsdiggmusic(int isdiggmusic) {
+                this.isdiggmusic = isdiggmusic;
+            }
 
             public int getId() {
                 return id;

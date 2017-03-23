@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -21,7 +22,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.ResourceDecoder;
+import com.bumptech.glide.load.ResourceEncoder;
+import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.load.resource.gifbitmap.GifBitmapWrapper;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.ImageViewTarget;
@@ -45,11 +50,20 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.utils.TransferImageAnimationUtil;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import me.iwf.photopicker.utils.AndroidLifecycleUtils;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -183,10 +197,16 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     }
 
     public void saveImage() {
+
         if (mIvOriginPager.getDrawingCache() != null) {
-            // 如果已经加载过原图，那么就从原图的ImageView中直接拿取bitmao
-            String result = DrawableProvider.saveBitmap(mIvOriginPager.getDrawingCache(), PathConfig.PHOTO_SAVA_PATH);
-            ToastUtils.showToast(result);
+            // 如果已经加载过原图，那么就从原图的ImageView中直接拿取bitmap
+            getSaveBitmapResultObservable(mIvOriginPager.getDrawingCache())
+                    .subscribe(new Action1<String>() {
+                        @Override
+                        public void call(String result) {
+                            ToastUtils.showToast(result);
+                        }
+                    });
         } else {
             // 否则通过GLide获取bitmap
             Glide.with(getActivity())
@@ -195,11 +215,15 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                            String result = DrawableProvider.saveBitmap(resource, PathConfig.PHOTO_SAVA_PATH);
-                            ToastUtils.showToast(result);
+                            getSaveBitmapResultObservable(resource)
+                                    .subscribe(new Action1<String>() {
+                                        @Override
+                                        public void call(String result) {
+                                            ToastUtils.showToast(result);
+                                        }
+                                    });
                         }
                     });
-
         }
     }
 
@@ -262,6 +286,8 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
 
     // 加载原图:
     private void loadOriginImage(String imageUrl) {
+        // 刚点击查看原图，可能会有一段时间，进行重定位请求，所以立即设置进度
+        mTvOriginPhoto.setText("0%/" + "100%");
         Glide.with(context)
                 .using(new ProgressModelLoader(new Handler() {
                     @Override
@@ -353,6 +379,23 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             }
         };
         TransferImageAnimationUtil.startInAnim(rect, mIvPager, endAction);
+    }
+
+    /**
+     * 通过Rxjava在io线程中处理保存图片的逻辑，得到返回结果，否则会阻塞ui
+     */
+    private Observable<String> getSaveBitmapResultObservable(final Bitmap bitmap) {
+        return Observable.just(1)// 不能empty否则map无法进行转换
+                .map(new Func1<Integer, String>() {
+                    @Override
+                    public String call(Integer integer) {
+                        String imgName = System.currentTimeMillis() + ".jpg";
+                        String imgPath = PathConfig.PHOTO_SAVA_PATH;
+                        return DrawableProvider.saveBitmap(bitmap, imgName, imgPath);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
 }
