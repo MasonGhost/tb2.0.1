@@ -186,7 +186,7 @@ public class TabSelectView extends FrameLayout {
     }
 
     private void initMagicIndicator() {
-        mMagicIndicator.setBackgroundColor(Color.WHITE);
+        mMagicIndicator.setBackgroundColor(Color.TRANSPARENT);
         CommonNavigator commonNavigator = new CommonNavigator(mContext);
         commonNavigator.setAdapter(new CommonNavigatorAdapter() {
 
