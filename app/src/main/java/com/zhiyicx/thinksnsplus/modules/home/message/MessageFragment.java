@@ -114,12 +114,13 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         super.onResume();
         if (mLastClickPostion != -1) {
             // 刷新当条信息内容
-            mPresenter.refreshLastClicikPostion(mLastClickPostion, mMessageItemBeen.get(mLastClickPostion),mMessageItemBeen);
+            mPresenter.refreshLastClicikPostion(mLastClickPostion, mMessageItemBeen.get(mLastClickPostion), mMessageItemBeen);
+            mLastClickPostion = -1;
         }
     }
 
     @Override
-    protected CommonAdapter getAdapter() {
+    protected MultiItemTypeAdapter getAdapter() {
         CommonAdapter commonAdapter = new MessageAdapter(getActivity(), R.layout.item_message_list, mMessageItemBeen);
         commonAdapter.setOnItemClickListener(this);
         return commonAdapter;
@@ -224,8 +225,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     public void refreshLastClicikPostion(int position, MessageItemBean messageItemBean) {
         mMessageItemBeen.set(position, messageItemBean);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
-        refreshData();
-        mLastClickPostion = -1;
     }
 
     /**
