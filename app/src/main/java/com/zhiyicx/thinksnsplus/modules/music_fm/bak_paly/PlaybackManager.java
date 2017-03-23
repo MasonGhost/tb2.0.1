@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
-import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 import org.simple.eventbus.EventBus;
 
@@ -26,6 +26,8 @@ public class PlaybackManager implements Playback.Callback {
     public static final int ORDERRANDOM = 0;
     public static final int ORDERSINGLE = 1;
     public static final int ORDERLOOP = 2;
+    public static final String ORDER_ACTION = "com.zhiyicx.action.order_action";
+    public static final String MUSIC_ACTION = "com.zhiyicx.action.music_action";
 
     private QueueManager mQueueManager;
 
@@ -273,9 +275,9 @@ public class PlaybackManager implements Playback.Callback {
 
         @Override
         public void onCustomAction(@NonNull String action, Bundle extras) {
-            if (extras==null){
-                setOrderType(Integer.valueOf(action));
-            }else{
+            if (action.equals(ORDER_ACTION)){
+                setOrderType(extras.getInt(ORDER_ACTION,ORDERLOOP));
+            }else if(action.equals(MUSIC_ACTION)){
                 mServiceCallback.onCustomAction(action,extras);
             }
         }
@@ -309,6 +311,7 @@ public class PlaybackManager implements Playback.Callback {
     }
 
     public void setOrderType(int orderType) {
+        LogUtils.d("setOrderType:::"+orderType);
         if (orderType > 2 && orderType < 0) {
             return;
         }

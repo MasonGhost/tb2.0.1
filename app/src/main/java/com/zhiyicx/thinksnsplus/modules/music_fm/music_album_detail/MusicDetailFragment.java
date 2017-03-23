@@ -32,7 +32,6 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideStokeT
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
@@ -50,6 +49,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album.MusicListFragment
         .BUNDLE_MUSIC_ABLUM;
 
@@ -93,7 +93,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     TextView mFragmentMusicDetailCenterTitle;
     @BindView(R.id.fragment_music_detail_center_sub_title)
     TextView mFragmentMusicDetailCenterSubTitle;
-    private String getArgMediaId = "-1";
+
 
 
     private CommonAdapter mAdapter;
@@ -102,6 +102,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
     private static final String ARG_MEDIA_ID = "media_id";
     public static final String MUSIC_INFO = "music_info";
+    private String mCurrentMediaId = "-1";
     private Bitmap mBgBitmap;
 
     private String mMediaId;
@@ -125,7 +126,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                         return;
                     }
                     mAdapter.notifyDataSetChanged();
-                    getArgMediaId = metadata.getDescription().getMediaId();
+                    mCurrentMediaId = metadata.getDescription().getMediaId();
                 }
 
                 @Override
@@ -140,7 +141,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 public void onChildrenLoaded(@NonNull String parentId,
                                              @NonNull List<MediaBrowserCompat.MediaItem> children) {
                     mAdapter.dataChange(children);
-                    LogUtils.d("onChildrenLoaded" + children.size());
                 }
 
                 @Override
@@ -297,18 +297,11 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     }
 
     public String getMediaId() {
-//        Bundle args = getArguments();
-//        if (args != null) {
-//            return args.getString(ARG_MEDIA_ID);
-//        }
         return mMediaId;
     }
 
     public void setMediaId(String mediaId) {
         mMediaId = mediaId;
-//        Bundle args = new Bundle(1);
-//        args.putString(ARG_MEDIA_ID, mediaId);
-//        setArguments(args);
     }
 
     public void onConnected() {
@@ -326,8 +319,8 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         if (controller != null) {
             if (mAlbumDetailsBean != null) {
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("tym", mAlbumDetailsBean);
-                controller.getTransportControls().sendCustomAction("tym", bundle);
+                bundle.putSerializable(MUSIC_ACTION, mAlbumDetailsBean);
+                controller.getTransportControls().sendCustomAction(MUSIC_ACTION, bundle);
 
                 mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
                 mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
@@ -357,7 +350,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                     holder.itemView.setTag(R.id.tag_mediaitem_state_cache, state);
                 }
 
-                if (getArgMediaId.equals(MediaIDHelper.extractMusicIDFromMediaID(item.getMediaId
+                if (mCurrentMediaId.equals(MediaIDHelper.extractMusicIDFromMediaID(item.getMediaId
                         ()))) {
                     musicName.setTextColor(getResources().getColor(R.color.important_for_theme));
                     authorName.setTextColor(getResources().getColor(R.color.important_for_theme));
@@ -387,7 +380,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                             metadata.getDescription());
                 }
                 startActivity(intent);
-
                 if (item.isPlayable()) {
                     MediaControllerCompat controllerCompat = getActivity()
                             .getSupportMediaController();

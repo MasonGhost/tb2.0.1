@@ -17,7 +17,7 @@
 
         <TextView
             android:drawablePadding="@dimen/spacing_small"
-            android:drawableLeft="@mipmap/msg_box_remind"
+            android:drawableLeft="@mipmap/music_ico_inorder_grey"
             android:id="@+id/tv_pop_list_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -27,9 +27,10 @@
             android:textSize="@dimen/size_sub_title"/>
 
         <TextView
+            android:id="@+id/tv_pop_list_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="(共18首)"
+            android:text=" (共18首)"
             android:textColor="@color/normal_for_assist_text"
             android:textSize="@dimen/size_content_comment"/>
 
@@ -41,7 +42,7 @@
             android:layout_height="match_parent"
             android:text="@string/cancel"
             android:textColor="@color/important_for_theme"
-            android:textSize="@dimen/size_content_comment"/>
+            android:textSize="@dimen/size_sub_title"/>
 
     </LinearLayout>
 

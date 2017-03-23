@@ -8,16 +8,12 @@ import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
 
 import java.util.List;
-import java.util.Map;
 
 import retrofit2.http.DELETE;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-import retrofit2.http.QueryMap;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_ABLUM_COLLECT;
@@ -41,6 +37,7 @@ public interface MusicClient {
     @GET(APP_PATH_MUSIC_ABLUM_LIST)
     Observable<BaseJson<List<MusicAlbumListBean>>> getMusicList(@Query("max_id") Long max_id,
                                                                 @Query("limit") Long limit);
+
     // 获取专辑详情
     @GET(APP_PATH_MUSIC_ABLUM_DETAILS)
     Observable<BaseJson<MusicAlbumDetailsBean>> getMusicAblum(@Path("special_id") String id);
@@ -48,7 +45,7 @@ public interface MusicClient {
     // 获取专辑评论列表
     @GET(APP_PATH_MUSIC_ABLUM_COMMENT)
     Observable<BaseJson<List<AblumCommentListBean>>> getAblumCommentList(@Path("music_id") String
-                                                                               music_id);
+                                                                                 music_id);
 
     // 获取歌曲详情
     @GET(APP_PATH_MUSIC_DETAILS)
@@ -57,7 +54,9 @@ public interface MusicClient {
     // 获取歌曲评论列表
     @GET(APP_PATH_MUSIC_COMMENT)
     Observable<BaseJson<List<MusicCommentListBean>>> getMusicCommentList(@Path("music_id") String
-                                                                          music_id);
+                                                                                 music_id,
+                                                                         @Query("max_id") Long max_id,
+                                                                         @Query("limit") Long limit);
 
     // 评论专辑
     @POST(APP_PATH_MUSIC_ABLUM_COMMENT)

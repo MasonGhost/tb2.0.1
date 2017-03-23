@@ -1,4 +1,4 @@
-package com.zhiyicx.baseproject.widget.popwindow;
+package com.zhiyicx.thinksnsplus.widget;
 
 import android.app.Activity;
 import android.graphics.drawable.ColorDrawable;
@@ -13,10 +13,14 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.zhiyicx.baseproject.R;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 
 import java.util.List;
+
+import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERLOOP;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERRANDOM;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERSINGLE;
 
 /**
  * @Author Jliuer
@@ -24,7 +28,7 @@ import java.util.List;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class ListPopupWindow extends PopupWindow {
+public class MusicListPopupWindow extends PopupWindow {
 
     private Activity mActivity;
     private View mParentView;
@@ -41,12 +45,13 @@ public class ListPopupWindow extends PopupWindow {
     private int mItemLayout;
     private Drawable mBackgroundDrawable = new ColorDrawable(0x00000000);// 默认为透明;
     private CommonAdapter mAdapter;
+    private TextView mTileTextView, mSizeTextView;
 
-    private ListPopupWindow() {
+    private MusicListPopupWindow() {
 
     }
 
-    private ListPopupWindow(Builder builder) {
+    private MusicListPopupWindow(Builder builder) {
         this.mActivity = builder.mActivity;
         this.mParentView = builder.mParentView;
         this.mIsOutsideTouch = builder.mIsOutsideTouch;
@@ -86,7 +91,9 @@ public class ListPopupWindow extends PopupWindow {
                 setWindowAlpha(1.0f);
             }
         });
-
+        mTileTextView = (TextView) mContentView.findViewById(R.id.tv_pop_list_title);
+        mSizeTextView = (TextView) mContentView.findViewById(R.id.tv_pop_list_size);
+        mSizeTextView.setText(String.format(" (%d)",mDatas.size()));
         mContentView.findViewById(R.id.tv_pop_list_cancle).setOnClickListener(new View
                 .OnClickListener() {
             @Override
@@ -112,8 +119,8 @@ public class ListPopupWindow extends PopupWindow {
         dismiss();
     }
 
-    public static ListPopupWindow.Builder Builder() {
-        return new ListPopupWindow.Builder();
+    public static MusicListPopupWindow.Builder Builder() {
+        return new MusicListPopupWindow.Builder();
     }
 
     public static final class Builder {
@@ -134,75 +141,79 @@ public class ListPopupWindow extends PopupWindow {
         private Builder() {
         }
 
-        public ListPopupWindow.Builder with(Activity mActivity) {
+        public MusicListPopupWindow.Builder with(Activity mActivity) {
             this.mActivity = mActivity;
             return this;
         }
 
-        public ListPopupWindow.Builder adapter(CommonAdapter adapter) {
+        public MusicListPopupWindow.Builder adapter(CommonAdapter adapter) {
             this.mAdapter = adapter;
             return this;
         }
 
-        public ListPopupWindow.Builder itemLayout(int itemLayout) {
+        public MusicListPopupWindow.Builder itemLayout(int itemLayout) {
             this.mItemLayout = itemLayout;
             return this;
         }
 
-        public ListPopupWindow.Builder width(int width) {
+        public MusicListPopupWindow.Builder width(int width) {
             this.mWidth = width;
             return this;
         }
 
-        public ListPopupWindow.Builder height(int height) {
+        public MusicListPopupWindow.Builder height(int height) {
             this.mHeight = height;
             return this;
         }
 
-        public ListPopupWindow.Builder parentView(View parentView) {
+        public MusicListPopupWindow.Builder parentView(View parentView) {
             this.mParentView = parentView;
             return this;
         }
 
-        public ListPopupWindow.Builder isOutsideTouch(boolean isOutsideTouch) {
+        public MusicListPopupWindow.Builder isOutsideTouch(boolean isOutsideTouch) {
             this.mIsOutsideTouch = isOutsideTouch;
             return this;
         }
 
-        public ListPopupWindow.Builder iFocus(boolean isFocus) {
+        public MusicListPopupWindow.Builder iFocus(boolean isFocus) {
             this.mIsFocus = isFocus;
             return this;
         }
 
-        public ListPopupWindow.Builder title(String title) {
+        public MusicListPopupWindow.Builder title(String title) {
             this.mTitle = title;
             return this;
         }
 
-        public ListPopupWindow.Builder cancle(String cancle) {
+        public MusicListPopupWindow.Builder cancle(String cancle) {
             this.mCancle = cancle;
             return this;
         }
 
-        public ListPopupWindow.Builder alpha(float alpha) {
+        public MusicListPopupWindow.Builder alpha(float alpha) {
             this.mAlpha = alpha;
             return this;
         }
 
-        public ListPopupWindow.Builder data(List datas) {
+        public MusicListPopupWindow.Builder data(List datas) {
             this.mDatas = datas;
 
             return this;
         }
 
-        public ListPopupWindow.Builder itemListener(OnItemListener itemClickListener) {
+        public MusicListPopupWindow.Builder itemListener(OnItemListener itemClickListener) {
             this.mItemClickListener = itemClickListener;
             return this;
         }
 
-        public ListPopupWindow build() {
-            return new ListPopupWindow(this);
+        public MusicListPopupWindow build() {
+            return new MusicListPopupWindow(this);
         }
+    }
+
+    public CommonAdapter getAdapter() {
+        return mAdapter;
     }
 
     public void dataChange(List datas) {
@@ -212,6 +223,23 @@ public class ListPopupWindow extends PopupWindow {
 
     public void dataChangeOne(int position) {
         this.mAdapter.notifyItemChanged(position);
+    }
+
+    public void setOrder(int order) {
+        switch (order) {
+            case ORDERRANDOM:
+                mTileTextView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap
+                        .music_ico_random, 0, 0, 0);
+                break;
+            case ORDERSINGLE:
+                mTileTextView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap
+                        .music_ico_single_grey, 0, 0, 0);
+                break;
+            default:
+                mTileTextView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap
+                        .music_ico_inorder_grey, 0, 0, 0);
+                break;
+        }
     }
 
     public interface OnItemListener {

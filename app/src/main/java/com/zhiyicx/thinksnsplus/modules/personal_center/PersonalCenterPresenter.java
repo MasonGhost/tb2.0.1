@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center;
 
+import android.os.Bundle;
+
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
@@ -26,6 +28,7 @@ import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,9 +36,17 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_POSITION;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_LIST_NEED_REFRESH;
 
 /**
  * @author LiuChao
@@ -60,6 +71,8 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
     DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
     @Inject
     DynamicDetailBeanGreenDaoImpl mDynamicDetailBeanGreenDao;
+    @Inject
+    FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
 
     private int mInterfaceNum = 0;//纪录请求接口数量，用于统计接口是否全部请求完成，需要接口全部请求完成后在显示界面
 
@@ -68,8 +81,10 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
         super(repository, rootView);
     }
 
-    @Inject
-    FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
@@ -360,6 +375,107 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
         mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getDatas().get(mCurrentPostion).getTool());
         mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
         mRepository.sendComment(commentContent, mRootView.getDatas().get(mCurrentPostion).getFeed_id(), replyToUserId, creatComment.getComment_mark());
+
+    }
+
+    /**
+     * 处理发送动态数据
+     *
+     * @param dynamicCommentBean
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_DYNAMIC_LIST)
+    public void handleSendComment(DynamicCommentBean dynamicCommentBean) {
+        Observable.just(dynamicCommentBean)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<DynamicCommentBean, Integer>() {
+                    @Override
+                    public Integer call(DynamicCommentBean dynamicCommentBean) {
+                        int size = mRootView.getDatas().size();
+                        int dynamicPosition = -1;
+                        for (int i = 0; i < size; i++) {
+                            if (mRootView.getDatas().get(i).getFeed_mark().equals(dynamicCommentBean.getFeed_mark())) {
+                                dynamicPosition = i;
+                                break;
+                            }
+                        }
+                        if (dynamicPosition != -1) {// 如果列表有当前评论
+                            int commentSize = mRootView.getDatas().get(dynamicPosition).getComments().size();
+                            for (int i = 0; i < commentSize; i++) {
+                                if (mRootView.getDatas().get(dynamicPosition).getComments().get(i).getFeed_mark().equals(dynamicCommentBean.getFeed_mark())) {
+                                    mRootView.getDatas().get(dynamicPosition).getComments().get(i).setState(dynamicCommentBean.getState());
+                                    mRootView.getDatas().get(dynamicPosition).getComments().get(i).setComment_id(dynamicCommentBean.getComment_id());
+                                    mRootView.getDatas().get(dynamicPosition).getComments().get(i).setComment_mark(dynamicCommentBean.getComment_mark());
+                                    break;
+                                }
+                            }
+                        }
+                        return dynamicPosition;
+                    }
+                })
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer integer) {
+                        if (integer != -1) {
+                            mRootView.refresh(integer);
+                        }
+
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
+
+    }
+    /**
+     * 动态详情处理了数据
+     * 处理更新动态数据
+     *
+     * @param data
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_DYNAMIC)
+    public void updateDynamic(Bundle data) {
+        Observable.just(data)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<Bundle, Integer>() {
+                    @Override
+                    public Integer call(Bundle bundle) {
+                        int position = bundle.getInt(DYNAMIC_DETAIL_DATA_POSITION);
+                        boolean isNeedRefresh = bundle.getBoolean(DYNAMIC_LIST_NEED_REFRESH);
+                        DynamicBean dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
+                        int size = mRootView.getDatas().size();
+                        int dynamicPosition = -1;
+                        for (int i = 0; i < size; i++) {
+                            if (mRootView.getDatas().get(i).getFeed_mark().equals(dynamicBean.getFeed_mark())) {
+                                dynamicPosition = i;
+                                break;
+                            }
+                        }
+                        if (dynamicPosition != -1) {// 如果列表有当前评论
+                            mRootView.getDatas().set(position, dynamicBean);
+                        }
+
+                        return isNeedRefresh ? dynamicPosition : -1;
+                    }
+                })
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer integer) {
+                        if (integer != -1) {
+                            mRootView.refresh(integer);
+                        }
+
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
+
 
     }
 

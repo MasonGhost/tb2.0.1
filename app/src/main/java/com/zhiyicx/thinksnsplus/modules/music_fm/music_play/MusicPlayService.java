@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_CACHE_PROGRESS;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper
         .MEDIA_ID_EMPTY_ROOT;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper.MEDIA_ID_ROOT;
@@ -74,7 +75,7 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mSession.setSessionActivity(pi);
         mMusicProvider = new MusicProvider();
-//        mMusicProvider.retrieveMediaAsync(null /* Callback */);
+        mMusicProvider.retrieveMediaAsync(null /* Callback */);
         configMusicProvider(mMusicProvider);
 
         try {
@@ -174,7 +175,7 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
 
     @Override
     public void onCustomAction(String action, Bundle extras) {
-        MusicAlbumDetailsBean musicAblum = (MusicAlbumDetailsBean) extras.getSerializable("tym");
+        MusicAlbumDetailsBean musicAblum = (MusicAlbumDetailsBean) extras.getSerializable(MUSIC_ACTION);
         LogUtils.d(action + musicAblum);
         if (musicAblum!=null){
             MusicProvider newMusicProvider = new MusicProvider(new MusicAblumInfo(musicAblum));
@@ -183,8 +184,6 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
             mQueueManager.setMusicProvider(mMusicProvider);
             mLocalPlayback.setMusicProvider(mMusicProvider);
         }
-
-//        mPlaybackManager.switchToPlayback(playback, true);
 
     }
 

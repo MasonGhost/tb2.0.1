@@ -8,7 +8,6 @@ import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
 
 import java.util.ArrayList;
@@ -16,7 +15,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -79,7 +77,6 @@ public class MusicProvider {
     }
 
     public Iterable<MediaMetadataCompat> getMusicsByGenre(String genre) {
-        LogUtils.d(genre);
         if (mCurrentState != State.INITIALIZED || !mMusicListByGenre.containsKey(genre)) {
             return Collections.emptyList();
         }
@@ -207,7 +204,6 @@ public class MusicProvider {
         if (!MediaIDHelper.isBrowseable(mediaId)) {
             return mediaItems;
         }
-        LogUtils.d(mediaId);
         if (MEDIA_ID_ROOT.equals(mediaId)) {
             for (String genre : getGenres()) {
                 for (MediaMetadataCompat metadata : mMusicListByGenre.get(genre)) {

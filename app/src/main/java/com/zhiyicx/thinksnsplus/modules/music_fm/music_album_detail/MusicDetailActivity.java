@@ -15,7 +15,6 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSActivity;
-import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
