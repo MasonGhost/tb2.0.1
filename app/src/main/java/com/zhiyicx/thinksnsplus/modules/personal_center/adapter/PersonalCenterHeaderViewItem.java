@@ -24,6 +24,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ColorPhrase;
+import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.ZoomView;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -77,9 +78,9 @@ public class PersonalCenterHeaderViewItem {
      **/
     public static int[] TITLE_RGB = {51, 51, 51};
     /**
-     * 状态栏的颜色变化，也就是toolbar上半部分的底色:#f4f5f5
+     * 状态栏的颜色变化，也就是toolbar上半部分的底色:#ffffff
      **/
-    public static int[] STATUS_RGB = {244, 245, 245};
+    public static int[] STATUS_RGB = {255, 255, 255};
 
     /**
      * toolbar的背景色：#ffffff
@@ -144,7 +145,9 @@ public class PersonalCenterHeaderViewItem {
                 //滑动的距离
                 mDistanceY += dy;
                 int headerTop = headerView.getTop();
-                int headerViewHeight = headerView.getHeight();
+                //int headerViewHeight = headerView.getHeight();
+                // 移动距离为封面图的高度，也就是屏幕宽度的一般，如果改了封面高度，记得修改这儿
+                int headerViewHeight = UIUtils.getWindowWidth(mActivity) / 2;
 
                 //当滑动的距离 <= headerView高度的时候，改变Toolbar背景色的透明度，达到渐变的效果
                 if (mDistanceY <= headerViewHeight) {
@@ -163,6 +166,8 @@ public class PersonalCenterHeaderViewItem {
                                 TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
                         setViewColorWithAlpha(userName, TITLE_RGB, (int) alpha);
                     }
+                    // 尝试设置状态栏文字成白色
+                    StatusBarUtils.statusBarDarkMode(mActivity);
                 } else {
                     //如果不是完全不透明状态的bug，将标题栏的颜色设置为完全不透明状态
                     setViewColorWithAlpha(userName, TITLE_RGB, 255);
@@ -172,6 +177,8 @@ public class PersonalCenterHeaderViewItem {
 
                     setToolbarIconColor(Color.argb(255, TOOLBAR_BLACK_ICON[0],
                             TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
+                    // 尝试设置状态栏文字成黑色
+                    StatusBarUtils.statusBarLightMode(mActivity);
                 }
                 // 有可能到顶部了，仍然有一点白色透明背景，强制设置成完全透明
                 if (headerTop >= 0) {
@@ -181,7 +188,8 @@ public class PersonalCenterHeaderViewItem {
                     setViewColorWithAlpha(bootomDivider, TOOLBAR_DIVIDER_RGB, 0);
                     setToolbarIconColor(Color.argb(255, TOOLBAR_WHITE_ICON[0]
                             , TOOLBAR_WHITE_ICON[1], TOOLBAR_WHITE_ICON[2]));
-
+                    // 尝试设置状态栏文字成白色
+                    StatusBarUtils.statusBarDarkMode(mActivity);
                 }
                 LogUtils.i("onScrolled--> headerViewHeight" + headerViewHeight + " mDistanceY-->" + mDistanceY);
             }

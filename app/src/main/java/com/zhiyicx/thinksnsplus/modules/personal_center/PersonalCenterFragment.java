@@ -23,6 +23,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -144,7 +145,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.v_horizontal_line), TOOLBAR_DIVIDER_RGB, 255);
         mPersonalCenterHeaderViewItem.setToolbarIconColor(Color.argb(255, TOOLBAR_BLACK_ICON[0],
                 TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
-
     }
 
     private void initListener() {
@@ -194,7 +194,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     protected boolean setStatusbarGrey() {
-        return false;
+        return true;
     }
 
     @Override
@@ -391,6 +391,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mPersonalCenterHeaderViewItem.setToolbarIconColor(Color.argb(255, TOOLBAR_WHITE_ICON[0]
                 , TOOLBAR_WHITE_ICON[1], TOOLBAR_WHITE_ICON[2]));
         mPersonalCenterHeaderViewItem.setScrollListenter();
+        // 状态栏文字设为白色
+        StatusBarUtils.statusBarDarkMode(mActivity);
         initListener();
         // 进入页面尝试设置头部信息
         setHeaderInfo(mUserInfoBean);
@@ -429,6 +431,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         return false;
     }
 
+    boolean isDark = false;
+
     @OnClick({R.id.iv_back, R.id.iv_more})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -436,8 +440,15 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 getActivity().finish();
                 break;
             case R.id.iv_more:
-                break;
+                if (isDark) {
+                    isDark = false;
+                    StatusBarUtils.statusBarDarkMode(getActivity());
+                } else {
+                    isDark = true;
+                    StatusBarUtils.statusBarLightMode(getActivity());
+                }
 
+                break;
         }
     }
 
@@ -528,7 +539,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     private void initToolBar() {
         // toolBar设置状态栏高度的marginTop
-        int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext())+getResources().getDimensionPixelSize(R.dimen.divider_line);
+        int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelSize(R.dimen.divider_line);
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
         mLlToolbarContainerParent.setLayoutParams(layoutParams);
     }
