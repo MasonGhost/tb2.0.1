@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 
 import java.util.List;
@@ -25,13 +24,6 @@ public interface MessageContract {
         void updateCommnetItemData(MessageItemBean messageItemBean);
 
         void updateLikeItemData(MessageItemBean messageItemBean);
-
-        /**
-         * 更新未读消息数量
-         *
-         * @param message 对话信息
-         */
-        void refreshMessageUnreadNum(Message message);
 
     }
 
@@ -65,10 +57,8 @@ public interface MessageContract {
          * 刷新当条item 的未读数
          *
          * @param position                当条数据位置
-         * @param currentMessageItemBean 当条数据
-         * @param data                  所有数据
          */
-        void refreshLastClicikPostion(int position, MessageItemBean currentMessageItemBean, List<MessageItemBean> data);
+        void refreshLastClicikPostion(int position);
 
         /**
          *  删除本地对话
