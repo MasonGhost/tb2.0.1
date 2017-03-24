@@ -247,7 +247,6 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
         } else {
             url = dynamicBean.getFeed().getLocalPhotos().get(positon);
         }
-        System.out.println("url = " + url);
         mImageLoader.loadImage(mContext, GlideImageConfig.builder()
                 .url(url)
                 .imagerView(view)

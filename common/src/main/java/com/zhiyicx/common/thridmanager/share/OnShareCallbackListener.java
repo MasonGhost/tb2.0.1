@@ -8,6 +8,7 @@ package com.zhiyicx.common.thridmanager.share;
  */
 
 public interface OnShareCallbackListener {
+    void onStart(Share share);
 
     void onSuccess(Share share);
 

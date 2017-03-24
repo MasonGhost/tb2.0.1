@@ -2,10 +2,8 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.impl.share.ShareModule;
-import com.zhiyicx.common.thridmanager.share.SharePolicy;
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-
-import javax.inject.Inject;
 
 public class DynamicDetailActivity extends TSActivity<DynamicDetailPresenter, DynamicDetailFragment> {
 
@@ -22,5 +20,11 @@ public class DynamicDetailActivity extends TSActivity<DynamicDetailPresenter, Dy
                 .shareModule(new ShareModule(DynamicDetailActivity.this))
                 .dynamicDetailPresenterModule(new DynamicDetailPresenterModule(mContanierFragment))
                 .build().inject(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        UmengSharePolicyImpl.onDestroy(this);
     }
 }

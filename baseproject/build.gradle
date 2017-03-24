@@ -47,6 +47,7 @@ buildscript {
 }
 
 dependencies {
+
     def dataDependences = rootProject.ext.dataDependencies
     def testDependences = rootProject.ext.testDependencies
     compile fileTree(include: ['*.jar'], dir: 'libs')

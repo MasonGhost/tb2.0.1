@@ -13,6 +13,7 @@ import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.media.UMImage;
+import com.umeng.socialize.media.UMWeb;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.config.UmengConfig;
 import com.zhiyicx.baseproject.widget.popwindow.RecyclerViewPopupWindow;
@@ -26,6 +27,8 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.umeng.socialize.utils.DeviceConfig.context;
 
 
 /**
@@ -42,8 +45,7 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
     static {
         PlatformConfig.setQQZone(UmengConfig.QQ_APPID, UmengConfig.QQ_SECRETKEY);
         PlatformConfig.setWeixin(UmengConfig.WEIXIN_APPID, UmengConfig.WEIXIN_SECRETKEY);
-        PlatformConfig.setSinaWeibo(UmengConfig.SINA_APPID, UmengConfig.SINA_SECRETKEY);
-        Config.REDIRECT_URL = UmengConfig.SINA_SECRETKEY;
+        PlatformConfig.setSinaWeibo(UmengConfig.SINA_APPID, UmengConfig.SINA_SECRETKEY, UmengConfig.SINA_RESULT_RUL);
     }
 
     private Context mContext;
@@ -84,6 +86,15 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
      */
     public static void onActivityResult(int requestCode, int resultCode, Intent data, Context context) {
         UMShareAPI.get(context).onActivityResult(requestCode, resultCode, data);
+    }
+
+    /**
+     * 在使用分享或者授权的Activity中，重写onDestory()方法：
+     *
+     * @param activity
+     */
+    public static void onDestroy(Activity activity) {
+        UMShareAPI.get(activity).release();
     }
 
     /**
@@ -176,9 +187,6 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
     private void shareActionConfig(Activity activity, final OnShareCallbackListener l, SHARE_MEDIA share_media) {
         ShareAction shareAction = new ShareAction(activity);
         shareAction.setPlatform(share_media);
-        if (!TextUtils.isEmpty(mShareContent.getTitle())) {
-            shareAction.withTitle(mShareContent.getTitle());
-        }
         if (!TextUtils.isEmpty(mShareContent.getContent())) {
             shareAction.withText(mShareContent.getContent());
         }
@@ -199,9 +207,21 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
             shareAction.withMedia(image);
         }
         if (!TextUtils.isEmpty(mShareContent.getUrl())) {
-            shareAction.withTargetUrl(mShareContent.getUrl());
+            UMWeb web = new UMWeb(mShareContent.getUrl());
+            if (!TextUtils.isEmpty(mShareContent.getTitle())) {
+                web.setTitle(mShareContent.getTitle());//标题
+            }
+            shareAction.withMedia(web);
         }
         shareAction.setCallback(new UMShareListener() {
+            @Override
+            public void onStart(SHARE_MEDIA share_media) {
+                if (l == null) {
+                    Share share = changeShare(share_media);
+                    l.onStart(share);
+                }
+            }
+
             @Override
             public void onResult(SHARE_MEDIA share_media) {
                 if (l == null) {
@@ -258,6 +278,11 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
 
         }
         return share;
+    }
+
+    @Override
+    public void onStart(Share share) {
+        LogUtils.i(" share start");
     }
 
     @Override
