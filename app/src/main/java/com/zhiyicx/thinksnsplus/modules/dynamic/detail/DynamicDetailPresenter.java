@@ -362,7 +362,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getCurrentDynamic().getTool());
         mDynamicCommentBeanGreenDao.deleteSingleCache(mRootView.getCurrentDynamic().getComments().get(commentPositon));
         mRootView.getListDatas().remove(commentPositon);
-        mRootView.refreshData(commentPositon);
+        mRootView.refreshData();
         mRootView.updateCommentCountAndDig();
         mRepository.deleteComment(mRootView.getCurrentDynamic().getFeed_id(), comment_id);
     }
@@ -442,7 +442,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
                     public void call(Integer integer) {
                         System.out.println("integer = " + integer);
                         if (integer != -1) {
-                            mRootView.refreshData(integer);
+                            mRootView.refreshData(); // 加上 header
                         }
 
                     }

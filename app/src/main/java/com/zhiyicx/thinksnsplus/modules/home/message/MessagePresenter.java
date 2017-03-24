@@ -135,7 +135,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
      * 刷新是否显示底部红点
      * 刷新当条item 的未读数
      *
-     * @param positon                当条数据位置
+     * @param positon 当条数据位置
      */
     @Override
     public void refreshLastClicikPostion(int positon) {
@@ -147,7 +147,8 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
             mRootView.getListDatas().get(positon).getConversation().setLast_message_text(message.getTxt());
         }
         mRootView.getListDatas().get(positon).setUnReadMessageNums(0);
-        mRootView.refreshData();
+
+        mRootView.refreshData(); // 刷新加上 header
 
         // 是否显示底部红点
         boolean isShowMessgeTip = false;
@@ -172,7 +173,11 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                 .subscribe(new BaseSubscribe<MessageItemBean>() {
                     @Override
                     protected void onSuccess(MessageItemBean data) {
-                        mRootView.getListDatas().set(0,data);// 置顶新消息
+                        if (mRootView.getListDatas().size() == 0) {
+                            mRootView.getListDatas().add(data);
+                        } else {
+                            mRootView.getListDatas().set(0, data);// 置顶新消息
+                        }
                         mRootView.refreshData();
 
                     }
@@ -207,7 +212,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                 mRootView.getListDatas().get(i).setUnReadMessageNums(mRootView.getListDatas().get(i).getUnReadMessageNums() + 1);
                 mRootView.getListDatas().get(i).getConversation().setLast_message_text(message.getTxt());
                 mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
-                mRootView.refreshData(i);
+                mRootView.refreshData(); // 加上 header 的位置
                 isHasConversion = true;
                 break;
             }

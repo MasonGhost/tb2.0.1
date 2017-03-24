@@ -416,7 +416,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
                     @Override
                     public void call(Integer integer) {
                         if (integer != -1) {
-                            mRootView.refreshData(integer);
+                            mRootView.refreshData();
                         }
 
                     }
@@ -464,7 +464,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
                     @Override
                     public void call(Integer integer) {
                         if (integer != -1) {
-                            mRootView.refreshData(integer);
+                            mRootView.refreshData();
                         }
 
                     }

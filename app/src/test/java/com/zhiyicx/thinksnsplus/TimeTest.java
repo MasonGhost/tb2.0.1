@@ -9,6 +9,8 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func2;
 
+import static com.zhiyicx.imsdk.db.base.BaseDao.TIME_DEFAULT_ADD;
+
 /**
  * @Describe
  * @Author Jungle68
@@ -120,6 +122,16 @@ public class TimeTest {
             }
         });
 
+
+    }
+
+
+    @Test
+    public void testdjgkdgj() {
+
+        long a = 325237164109463553L;
+        long b = (a >> 23) + TIME_DEFAULT_ADD;
+        System.out.println("b = " + b);
 
     }
 }
