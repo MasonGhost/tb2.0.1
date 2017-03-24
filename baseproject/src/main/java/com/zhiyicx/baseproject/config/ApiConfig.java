@@ -116,11 +116,16 @@ public class ApiConfig {
      */
     public static final String APP_PATH_INFO_TYPE = "api/v1/news/cates";// 资讯分类列表
     public static final String APP_PATH_INFO_LIST = "api/v1/news";// 资讯列表
-    public static final String APP_PATH_INFO_COMMENT = "api/v1/news/{news_id}/comment";// 评论资讯
+    public static final String APP_PATH_INFO_COMMENT_FORMAT = "api/v1/news/{news_id}/comment";// 评论资讯
+    public static final String APP_PATH_INFO_COMMENT = "api/v1/news/%s/comment";// 评论资讯
     public static final String APP_PATH_INFO_COMMENT_LIST =
             "api/v1/news/{feed_id}/comments";// 资讯评论列表
     public static final String APP_PATH_INFO_COLLECT = "api/v1/news/{news_id}/collection";// 收藏资讯
+    public static final String APP_PATH_INFO_COLLECT_FORMAT = "api/v1/news/%s/collection";// 收藏资讯
     public static final String APP_PATH_INFO_FOLLOW_LIST = "api/v1/news/cates/follow";// 订阅资讯频道
+    public static final String APP_PATH_INFO_SEARCH = "/api/v1/news/search";// 订阅资讯频道
+    public static final String APP_PATH_INFO_DETAILS = "/api/v1/news/{news_id}";// 资讯详情网页
+    public static final String APP_PATH_INFO_DETAILS_FORMAT = "/api/v1/news/%d";// 资讯详情网页
 
     /**
      * 音乐相关

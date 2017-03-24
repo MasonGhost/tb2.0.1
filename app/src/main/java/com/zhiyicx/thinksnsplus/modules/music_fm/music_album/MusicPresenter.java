@@ -43,8 +43,8 @@ public class MusicPresenter extends BasePresenter<MusicContract.Repository, Musi
 
 
     @Override
-    public void requestNetData(Long maxId,final boolean isLoadMore) {
-        Subscription subscription =mMusicRepository.getMusicAblumList(maxId)
+    public void requestNetData(Long maxId, final boolean isLoadMore) {
+        Subscription subscription = mMusicRepository.getMusicAblumList(maxId)
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribe<List<MusicAlbumListBean>>() {
                     @Override
@@ -59,11 +59,12 @@ public class MusicPresenter extends BasePresenter<MusicContract.Repository, Musi
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        mRootView.onResponseError(throwable,isLoadMore);
+                        mRootView.onResponseError(throwable, isLoadMore);
                     }
 
 
                 });
+        addSubscrebe(subscription);
     }
 
     @Override

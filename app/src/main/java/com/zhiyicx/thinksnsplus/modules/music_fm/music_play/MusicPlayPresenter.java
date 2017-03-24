@@ -5,9 +5,6 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
-import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
-import com.zhiyicx.thinksnsplus.data.source.repository.MusicPlayRepository;
 
 import javax.inject.Inject;
 
@@ -47,6 +44,6 @@ public class MusicPlayPresenter extends BasePresenter<MusicPlayContract.Reposito
 
     @Override
     public void handleLike(boolean isLiked, String music_id) {
-        mRepository.handleLike(isLiked,music_id);
+        mRepository.handleLike(isLiked, music_id);
     }
 }
