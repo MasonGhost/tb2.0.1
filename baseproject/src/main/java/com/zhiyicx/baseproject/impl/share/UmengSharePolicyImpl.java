@@ -28,8 +28,6 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.umeng.socialize.utils.DeviceConfig.context;
-
 
 /**
  * @Describe 友盟分享方针实现
@@ -357,6 +355,7 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
                                         break;
                                     default:
                                 }
+                                mRecyclerViewPopupWindow.hide();
                             }
                         });
 

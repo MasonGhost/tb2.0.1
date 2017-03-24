@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.home.main;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -9,6 +10,7 @@ import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 
 import java.util.ArrayList;
@@ -70,7 +72,24 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
 
     @Override
     protected void initData() {
+        mVpFragment.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                if (state == ViewPager.SCROLL_STATE_DRAGGING) {
+                    ((DynamicContract.View) fragments.get(mVpFragment.getCurrentItem())).closeInputView();
+                }
+            }
+        });
     }
 
     @Override
@@ -93,9 +112,9 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
 
     @Override
     public void onButtonMenuShow(boolean isShow) {
-        if(!isShow){
+        if (!isShow) {
             mVShadow.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             mVShadow.setVisibility(View.GONE);
         }
         if (mOnCommentClickListener != null) {

@@ -132,14 +132,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         mVShadow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mIlvComment.getVisibility() == View.VISIBLE) {
-                    mIlvComment.setVisibility(View.GONE);
-                    DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
-                }
-                v.setVisibility(View.GONE);
-                if (mOnCommentClickListener != null) {
-                    mOnCommentClickListener.onButtonMenuShow(true);
-                }
+                closeInputView();
             }
         });
 
@@ -270,6 +263,18 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     public String getDynamicType() {
         return mDynamicType;
+    }
+
+    @Override
+    public void closeInputView() {
+        if (mIlvComment.getVisibility() == View.VISIBLE) {
+            mIlvComment.setVisibility(View.GONE);
+            DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+        }
+        mVShadow.setVisibility(View.GONE);
+        if (mOnCommentClickListener != null) {
+            mOnCommentClickListener.onButtonMenuShow(true);
+        }
     }
 
     /**
