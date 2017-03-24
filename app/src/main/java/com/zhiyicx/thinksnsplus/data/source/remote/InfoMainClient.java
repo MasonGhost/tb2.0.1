@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 
@@ -20,6 +21,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COMMENT_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_FOLLOW_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_LIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_SEARCH;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_TYPE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_LOGIN;
 
@@ -48,18 +50,21 @@ public interface InfoMainClient {
     Observable<BaseJson<Integer>> doSubscribe(@Field("follows") String follows);
 
     // 收藏资讯
-    @FormUrlEncoded
     @POST(APP_PATH_INFO_COLLECT)
     Observable<BaseJson<Integer>> collectInfo(@Path("news_id") String news_id);
 
     // 取消收藏资讯
-    @FormUrlEncoded
     @DELETE(APP_PATH_INFO_COLLECT)
     Observable<BaseJson<Integer>> cancleCollectInfo(@Path("news_id") String news_id);
 
     // 获取一条资讯的评论列表
     @GET(APP_PATH_INFO_COMMENT_LIST)
-    Observable<BaseJson<InfoListBean>> getInfoCommentList(@Path("feed_id") String feed_id,
+    Observable<BaseJson<List<InfoCommentListBean>>> getInfoCommentList(@Path("feed_id") String feed_id,
+                                                                       @Query("max_id") Long max_id,
+                                                                       @Query("limit") Long limit);
+
+    @GET(APP_PATH_INFO_SEARCH)
+    Observable<BaseJson<List<InfoListBean.ListBean>>> searchInfoList(@Query("key") String key,
                                                    @Query("max_id") Long max_id,
                                                    @Query("limit") Long limit);
 
