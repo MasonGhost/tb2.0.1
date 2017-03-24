@@ -113,7 +113,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         }
         final String uids = AppApplication.getmCurrentLoginAuth().getUser_id() + "," + user_id;
         final String pair = AppApplication.getmCurrentLoginAuth().getUser_id() + "&" + user_id;// "pair":null,   // type=0时此项为两个uid：min_uid&max_uid
-        mRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "", "", String.valueOf(user_id))
+        mRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "", "",uids)
                 .subscribe(new BaseSubscribe<Conversation>() {
                     @Override
                     protected void onSuccess(Conversation data) {
@@ -152,7 +152,15 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         }
         updateMessage(message);
         // 把消息更新为已经读
-        MessageDao.getInstance(mContext).readMessage(message.getMid());
+        Observable.just(message)
+                .observeOn(Schedulers.io())
+                .subscribe(new Action1<Message>() {
+                    @Override
+                    public void call(Message message) {
+                        MessageDao.getInstance(mContext).readMessage(message.getMid());
+                    }
+                });
+
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGEACKRECEIVED)
