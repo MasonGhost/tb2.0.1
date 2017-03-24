@@ -102,7 +102,6 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
 
     @Override
     protected void initView(View rootView) {
-        mPresenter.getInfoType();
         mFragmentInfocontainerContent.setOffscreenPageLimit(DEFAULT_OFFSET_PAGE);
         mTSViewPagerAdapter = new TSViewPagerAdapter(getFragmentManager());
         initMagicIndicator(initTitles());
@@ -135,7 +134,7 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
 
     @Override
     protected void initData() {
-
+        mPresenter.getInfoType();
     }
 
     @Override
@@ -144,7 +143,8 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
         if (data != null) {
             mTitle.clear();
             mFragments.clear();
-            mInfoTypeBean = data.getParcelableExtra(SUBSCRIBE_EXTRA);
+
+            mInfoTypeBean = data.getBundleExtra(SUBSCRIBE_EXTRA).getParcelable(SUBSCRIBE_EXTRA);
 
             Observable.from(mInfoTypeBean.getMy_cates())
                     .subscribe(new Action1<InfoTypeBean.MyCatesBean>() {
@@ -191,7 +191,8 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
                 .filter(new Func1<InfoTypeBean.MyCatesBean, Boolean>() {
                     @Override
                     public Boolean call(InfoTypeBean.MyCatesBean myCatesBean) {
-                        return mInfoTypeBean.getMy_cates().indexOf(myCatesBean) != 0;
+                        return mInfoTypeBean.getMy_cates().indexOf(myCatesBean) != 0
+                                && !mTitle.contains(myCatesBean.getName());
                     }
                 })
                 .subscribe(new Action1<InfoTypeBean.MyCatesBean>() {

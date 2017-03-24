@@ -1,8 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.information.infodetails;
 
-import android.support.v4.app.Fragment;
-
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.baseproject.impl.share.ShareModule;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+
+import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment
+        .BUNDLE_INFO;
 
 /**
  * @Author Jliuer
@@ -10,14 +13,20 @@ import com.zhiyicx.baseproject.base.TSActivity;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class InfoDetailsActivity extends TSActivity {
+public class InfoDetailsActivity extends TSActivity<InfoDetailsPresenter, InfoDetailsFragment> {
+
     @Override
-    protected Fragment getFragment() {
-        return new InfoDetailsFragment();
+    protected InfoDetailsFragment getFragment() {
+        return InfoDetailsFragment.newInstance(getIntent().getBundleExtra(BUNDLE_INFO));
     }
 
     @Override
     protected void componentInject() {
-
+        DaggerInfoDetailsComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .infoDetailsPresenterMudule(new InfoDetailsPresenterMudule(mContanierFragment))
+                .shareModule(new ShareModule(this))
+                .build()
+                .inject(this);
     }
 }
