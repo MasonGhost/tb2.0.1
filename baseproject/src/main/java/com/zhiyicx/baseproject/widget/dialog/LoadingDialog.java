@@ -3,7 +3,6 @@ package com.zhiyicx.baseproject.widget.dialog;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
@@ -11,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,56 +24,65 @@ import com.zhiyicx.baseproject.R;
  * @contact email:450127106@qq.com
  */
 
-public class LoadingDialog{
-    private static AlertDialog sLoadingDialog;
-    private static AnimationDrawable mAnimationDrawable;
-    private static View layoutView;
-    private static final int SUCCESS_ERROR_STATE_TIME = 1000;// 成功或者失败的停留时间
-    private static final int HANDLE_DELAY = 0;
-    private static ImageView iv_hint_img;
-    private static TextView tv_hint_text;
+public class LoadingDialog {
+    private static final int SUCCESS_ERROR_STATE_TIME = 1500;// 成功或者失败的停留时间
+    private final int HANDLE_DELAY = 0;
+    private final float DEFAULT_ALPHA = 0.8f;
+    private AlertDialog sLoadingDialog;
+    private AnimationDrawable mAnimationDrawable;
+    private View layoutView;
+    private ImageView iv_hint_img;
+    private TextView tv_hint_text;
+
+    private Activity mActivity;
+
+
+    public LoadingDialog(Activity activity) {
+        this.mActivity = activity;
+    }
 
     /**
      * 显示错误的状态
      *
-     * @param context
-     * @param text    错误或失败状态的提示消息
+     * @param text 错误或失败状态的提示消息
      */
-    public static void showStateError(Context context, String text) {
-        initDialog(R.mipmap.msg_box_remind, text, context, false);
-        sendHideMessage(context);
+    public void showStateError(String text) {
+        initDialog(R.mipmap.msg_box_remind, text, false);
+        sendHideMessage();
     }
 
     /**
      * 显示成功的状态
      *
-     * @param context
-     * @param text    正确或成功状态的提示消息
+     * @param text 正确或成功状态的提示消息
      */
-    public static void showStateSuccess(Context context, String text) {
-        initDialog(R.mipmap.msg_box_succeed, text, context, false);
-        sendHideMessage(context);
+    public void showStateSuccess(String text) {
+        initDialog(R.mipmap.msg_box_succeed, text, false);
+        sendHideMessage();
     }
 
     /**
      * 显示进行中的状态
      *
-     * @param context
-     * @param text    进行中的提示消息
+     * @param text 进行中的提示消息
      */
-    public static void showStateIng(Context context, String text) {
-        initDialog(R.drawable.frame_loading_grey, text, context, false);
+    public void showStateIng(String text) {
+        initDialog(R.drawable.frame_loading_grey, text, false);
         handleAnimation(true);
     }
 
     /**
      * 进行中的状态变为结束
-     *
-     * @param context
-     */
-    public static void showStateEnd(Context context) {
+     **/
+    public void showStateEnd() {
         handleAnimation(false);
-        hideDialog(context);
+        hideDialog();
+    }
+
+    public void onDestroy() {
+        if (sLoadingDialog != null) {
+            sLoadingDialog.dismiss();
+        }
     }
 
     /**
@@ -81,7 +90,7 @@ public class LoadingDialog{
      *
      * @param status true 开启动画，false 关闭动画
      */
-    private static void handleAnimation(boolean status) {
+    private void handleAnimation(boolean status) {
         mAnimationDrawable = (AnimationDrawable) iv_hint_img.getDrawable();
         if (mAnimationDrawable == null)
             throw new IllegalArgumentException("load animation not be null");
@@ -97,53 +106,56 @@ public class LoadingDialog{
     }
 
 
-    private static void initDialog(Integer imgRsId, String hintContent, Context context, boolean outsideCancel) {
+    private void initDialog(Integer imgRsId, String hintContent, boolean outsideCancel) {
         if (sLoadingDialog == null) {
-            layoutView = LayoutInflater.from(context).inflate(com.zhiyicx.baseproject.R.layout.view_hint_info1, null);
+            layoutView = LayoutInflater.from(mActivity).inflate(com.zhiyicx.baseproject.R.layout.view_hint_info1, null);
             iv_hint_img = (ImageView) layoutView.findViewById(com.zhiyicx.baseproject.R.id.iv_hint_img);
             tv_hint_text = (TextView) layoutView.findViewById(com.zhiyicx.baseproject.R.id.tv_hint_text);
-            sLoadingDialog = new AlertDialog.Builder(context, R.style.loadingDialogStyle)
+            sLoadingDialog = new AlertDialog.Builder(mActivity, R.style.loadingDialogStyle)
                     .setCancelable(outsideCancel)
                     .create();
             sLoadingDialog.setCanceledOnTouchOutside(outsideCancel);
+            sLoadingDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    setWindowAlpha(1.0f);
+                }
+            });
         }
         tv_hint_text.setText(hintContent);
         iv_hint_img.setImageResource(imgRsId);
-        showDialog(context);
+        showDialog();
         sLoadingDialog.setContentView(layoutView);// 必须放在show方法后面
     }
 
     /**
      * 发送关闭窗口的延迟消息
-     *
-     * @param context
      */
-    private static void sendHideMessage(Context context) {
+    private void sendHideMessage() {
         Message message = Message.obtain();
         message.what = HANDLE_DELAY;
-        message.obj = context;
         mHandler.sendMessageDelayed(message, SUCCESS_ERROR_STATE_TIME);
     }
 
-    private static Handler mHandler = new Handler() {
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            if (msg.what == HANDLE_DELAY && sLoadingDialog != null && msg.obj != null) {
-                Context context = (Context) msg.obj;
-                hideDialog(context);
+            if (msg.what == HANDLE_DELAY && sLoadingDialog != null) {
+                hideDialog();
             }
         }
     };
 
     // Dialog有可能在activity销毁后，调用，这样会发生dialog找不到窗口的错误，所以需要先判断是否有activity
-    private static void showDialog(Context context) {
-        if (isValidContext((Activity) context)) {
+    private void showDialog() {
+        setWindowAlpha(DEFAULT_ALPHA);
+        if (mActivity != null && isValidActivity(mActivity)) {
             sLoadingDialog.show();
         }
     }
 
-    private static void hideDialog(Context context) {
-        if (isValidContext((Activity) context)) {
+    private void hideDialog() {
+        if (mActivity != null && isValidActivity(mActivity)) {
             sLoadingDialog.dismiss();
         }
     }
@@ -157,7 +169,7 @@ public class LoadingDialog{
      * @return
      */
     @TargetApi(17)
-    private static boolean isValidContext(Activity c) {
+    private boolean isValidActivity(Activity c) {
         if (c == null) {
             return false;
         }
@@ -167,5 +179,12 @@ public class LoadingDialog{
         } else {
             return true;
         }
+    }
+
+    private void setWindowAlpha(float alpha) {
+        WindowManager.LayoutParams params = mActivity.getWindow().getAttributes();
+        params.alpha = alpha;
+        params.verticalMargin = 100;
+        mActivity.getWindow().setAttributes(params);
     }
 }
