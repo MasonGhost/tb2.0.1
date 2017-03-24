@@ -6,7 +6,7 @@
              android:orientation="vertical">
     <!--用户信息编辑页面浅色水平分割线-->
     <include
-        layout="@layout/include_horizontal_divider"
+        layout="@layout/include_horizontal_divider_light"
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_line"
         android:layout_marginLeft="@dimen/useredit_divier_marginleft"></include>

@@ -177,6 +177,11 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
         }
         if (changeUserInfo.containsKey("location")) {
             mUserInfoBean.setLocation(changeUserInfo.get("location"));
+            mUserInfoBean.setProvince(changeUserInfo.get("province"));
+            mUserInfoBean.setCity(changeUserInfo.get("city"));
+            if (changeUserInfo.containsKey("area")) {
+                mUserInfoBean.setArea(changeUserInfo.get("area"));
+            }
         }
         if (changeUserInfo.containsKey("intro")) {
             mUserInfoBean.setIntro(changeUserInfo.get("intro"));
@@ -185,7 +190,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
             mUserInfoBean.setAvatar(changeUserInfo.get("storage_task_id"));
         }
         // 提示用户主页更新用户信息
-        List<UserInfoBean>  userInfoBeanList=new ArrayList<>();
+        List<UserInfoBean> userInfoBeanList = new ArrayList<>();
         userInfoBeanList.add(mUserInfoBean);
         EventBus.getDefault().post(userInfoBeanList, EventBusTagConfig.EVENT_USERINFO_UPDATE);
         // 修改数据库内容

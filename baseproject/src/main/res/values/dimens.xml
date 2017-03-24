@@ -15,7 +15,8 @@
 
 
     <!--#########################################  view 高度 、宽度         ################################-->
-
+    <!--带有tab选项卡的toolbar高度-->
+    <dimen name="toolbar_with_tab_height">44.5dp</dimen>
     <dimen name="button_login_height">45dp</dimen>
     <dimen name="view_top_tip_height">30dp</dimen>
     <dimen name="photo_selector_bottom_view">45dp</dimen>

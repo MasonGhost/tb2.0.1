@@ -17,6 +17,9 @@ public class AreaBean implements IPickerViewData {
     private String title;
     private ArrayList<AreaBean> child;
 
+    public AreaBean() {
+    }
+
     public AreaBean(String area_id, String title, ArrayList<AreaBean> child) {
         this.area_id = area_id;
         this.title = title;
@@ -46,5 +49,14 @@ public class AreaBean implements IPickerViewData {
     @Override
     public String getPickerViewText() {
         return title;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null && obj instanceof AreaBean) {
+            AreaBean areaBean = (AreaBean) obj;
+            return areaBean.getPickerViewText().equals(title);
+        }
+        return super.equals(obj);
     }
 }

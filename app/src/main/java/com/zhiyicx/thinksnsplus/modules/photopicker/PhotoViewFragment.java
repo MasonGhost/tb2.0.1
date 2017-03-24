@@ -42,6 +42,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment.EXTRA_BACK_HERE;
+
 
 /**
  * @author LiuChao
@@ -106,9 +108,8 @@ public class PhotoViewFragment extends TSFragment {
             @Override
             public void onPageSelected(int position) {
                 hasAnim = currentItem == position;
-                // ToastUtils.showToast("页数--》position" + position + "currentItem-->" + currentItem + "---" + mViewPager.getCurrentItem());
-                // 是否包含了已经选中的图片该图片
-                //  mRbSelectPhoto.setChecked(seletedPaths.contains(mPagerAdapter.getPathAtPosition(position)));
+                // 是否包含了已经选中的图片
+                mRbSelectPhoto.setChecked(seletedPaths.contains(allPaths.get(position)));
 
             }
 
@@ -134,19 +135,21 @@ public class PhotoViewFragment extends TSFragment {
                     return;
                 }
                 if (isChecked) {
+                    // 当前选择该图片，如果还没有添加过，就进行添加
                     if (!seletedPaths.contains(path)) {
                         seletedPaths.add(path);
                     }
                 } else {
+                    // 当前取消选择改图片，直接移除
                     seletedPaths.remove(path);
                 }
-
+                // 没有选择图片时，是否可以点击完成，应该可以点击，所以注释了下面的代码
+                // mBtComplete.setEnabled(seletedPaths.size() > 0);
                 // 重置当前的选择数量
-                //mBtComplete.setEnabled(seletedPaths.size() > 0);
                 mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(), maxCount));
                 // 通知图片列表进行刷新
                 // 在 PhotoAlbumDetailsFragment 的 refreshDataAndUI() 方法中进行订阅
-                EventBus.getDefault().post(seletedPaths, EventBusTagConfig.EVENT_SELECTED_PHOTO_UPDATE);
+                // EventBus.getDefault().post(seletedPaths, EventBusTagConfig.EVENT_SELECTED_PHOTO_UPDATE);
             }
         });
     }
@@ -208,11 +211,7 @@ public class PhotoViewFragment extends TSFragment {
                 getActivity().onBackPressed();
                 break;
             case R.id.bt_complete:
-                // 完成图片选择，处理图片返回结果
-                Intent it = new Intent();
-                it.putStringArrayListExtra("photos", seletedPaths);
-                getActivity().setResult(Activity.RESULT_OK, it);
-                getActivity().finish();
+                setResult(false);
                 break;
         }
     }
@@ -228,31 +227,6 @@ public class PhotoViewFragment extends TSFragment {
         args.putParcelableArrayList("rect", animationRectBeen);
         f.setArguments(args);
         return f;
-    }
-
-    public void setPhotos(List<String> paths, int currentItem) {
-        this.allPaths.clear();
-        this.allPaths.addAll(paths);
-        this.currentItem = currentItem;
-
-        mViewPager.setCurrentItem(currentItem);
-        mViewPager.getAdapter().notifyDataSetChanged();
-    }
-
-    public ViewPager getViewPager() {
-        return mViewPager;
-    }
-
-    public ArrayList<String> getAllPaths() {
-        return allPaths;
-    }
-
-    public ArrayList<String> getSeletedPaths() {
-        return seletedPaths;
-    }
-
-    public int getCurrentItem() {
-        return mViewPager.getCurrentItem();
     }
 
 
@@ -315,7 +289,6 @@ public class PhotoViewFragment extends TSFragment {
         if (mRootView.getBackground() == null) {
             backgroundColor = new ColorDrawable(Color.WHITE);
             mViewPager.setBackground(backgroundColor);
-            // ((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
         }
     }
 
@@ -330,7 +303,6 @@ public class PhotoViewFragment extends TSFragment {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 mViewPager.setBackground(backgroundColor);
-                //((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
             }
         });
         return bgAnim;
@@ -347,21 +319,35 @@ public class PhotoViewFragment extends TSFragment {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     mViewPager.setBackground(backgroundColor);
-                    //((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
                 }
             });
             bgAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
-                    getActivity().finish();
+                    setResult(true);
                     getActivity().overridePendingTransition(-1, -1);
                 }
             });
             fragment.animationExit(bgAnim);
         } else {
+            setResult(true);
             ((PhotoViewActivity) getActivity()).superBackpress();
         }
+    }
+
+    /**
+     * 设置退出方法
+     *
+     * @param backToPhotoAlbum 如果回到图片列表页面，是否停留
+     */
+    private void setResult(boolean backToPhotoAlbum) {
+        // 完成图片选择，处理图片返回结果
+        Intent it = new Intent();
+        it.putStringArrayListExtra("photos", seletedPaths);
+        it.putExtra(EXTRA_BACK_HERE, backToPhotoAlbum);
+        getActivity().setResult(Activity.RESULT_OK, it);
+        getActivity().finish();
     }
 
 }

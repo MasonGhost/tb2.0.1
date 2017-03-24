@@ -1,8 +1,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/ll_container"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:background="@color/bgColor"
+              android:focusable="true"
+              android:focusableInTouchMode="true"
               android:orientation="vertical">
     <!--更换头像-->
     <RelativeLayout
@@ -38,7 +42,7 @@
             android:src="@mipmap/ic_arrow_smallgrey"/>
     </RelativeLayout>
 
-    <View style="@style/style_divider_horizontal"/>
+    <View style="@style/style_divider_horizontal_light"/>
 
     <!--修改用户名-->
     <LinearLayout
@@ -155,15 +159,36 @@
         android:gravity="center_vertical"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="@dimen/uerinfo_sub_title_hint_with"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="@dimen/userinfo_btn_height"
-            android:layout_marginLeft="@dimen/spacing_mid"
-            android:layout_marginRight="@dimen/spacing_mid"
+            android:background="@color/white"
             android:gravity="center_vertical"
-            android:text="@string/introduce"
-            android:textColor="@color/normal_for_assist_text"
-            android:textSize="@dimen/size_sub_title"/>
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="@dimen/uerinfo_sub_title_hint_with"
+                android:layout_height="@dimen/userinfo_btn_height"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:gravity="center_vertical"
+                android:text="@string/introduce"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_sub_title"/>
+
+            <TextView
+                android:id="@+id/tv_edit_introduce"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/edit_introduce"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_sub_title"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
         <!--简介编辑框-->
         <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
             android:id="@+id/et_user_introduce"
@@ -172,16 +197,10 @@
             android:layout_marginLeft="@dimen/spacing_mid"
             android:layout_marginRight="@dimen/spacing_mid"
             android:paddingBottom="@dimen/spacing_mid"
+            android:visibility="gone"
             app:limitSize="@integer/introduce_input_max_size"
             app:showLimitSize="@integer/show_introduce_input_size"></com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView>
 
     </LinearLayout>
-    <!--布局容器-->
-    <LinearLayout
-        android:id="@+id/view_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
 
-    </LinearLayout>
 </LinearLayout>
