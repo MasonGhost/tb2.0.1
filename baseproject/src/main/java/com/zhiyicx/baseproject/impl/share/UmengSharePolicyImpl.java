@@ -3,7 +3,6 @@ package com.zhiyicx.baseproject.impl.share;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -21,6 +20,7 @@ import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -50,7 +50,10 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
     private ShareContent mShareContent;
     private RecyclerViewPopupWindow mRecyclerViewPopupWindow;
 
+    OnShareCallbackListener mOnShareCallbackListener;
+
     public UmengSharePolicyImpl(Context mContext) {
+        mOnShareCallbackListener = this;
         this.mContext = mContext;
         init(mContext);
     }
@@ -64,6 +67,7 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
     private void init(Context mContext) {
 
         UMShareAPI.get(mContext);
+        Config.DEBUG = true;
         initSharePopupWindow();
     }
 
@@ -258,17 +262,21 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
 
     @Override
     public void onSuccess(Share share) {
-
+        LogUtils.i(" share success");
+        mRecyclerViewPopupWindow.hide();
     }
 
     @Override
     public void onError(Share share, Throwable throwable) {
-
+        LogUtils.i(" share onError");
+        throwable.printStackTrace();
+        mRecyclerViewPopupWindow.hide();
     }
 
     @Override
     public void onCancel(Share share) {
-
+        LogUtils.i(" share cancle");
+        mRecyclerViewPopupWindow.hide();
     }
 
     private static class ShareBean {
@@ -308,19 +316,19 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
                             public void onClick(View v) {
                                 switch (position) {
                                     case 0:
-                                        shareQQ((Activity) mContext, UmengSharePolicyImpl.this);
+                                        shareQQ((Activity) mContext, mOnShareCallbackListener);
                                         break;
                                     case 1:
-                                        shareZone((Activity) mContext, UmengSharePolicyImpl.this);
+                                        shareZone((Activity) mContext, mOnShareCallbackListener);
                                         break;
                                     case 2:
-                                        shareWechat((Activity) mContext, UmengSharePolicyImpl.this);
+                                        shareWechat((Activity) mContext, mOnShareCallbackListener);
                                         break;
                                     case 3:
-                                        shareMoment((Activity) mContext, UmengSharePolicyImpl.this);
+                                        shareMoment((Activity) mContext, mOnShareCallbackListener);
                                         break;
                                     case 4:
-                                        shareWeibo((Activity) mContext, UmengSharePolicyImpl.this);
+                                        shareWeibo((Activity) mContext, mOnShareCallbackListener);
                                         break;
                                     default:
                                 }

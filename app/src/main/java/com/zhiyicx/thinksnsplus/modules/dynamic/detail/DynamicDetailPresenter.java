@@ -315,6 +315,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
     @Override
     public void shareDynamic() {
         ShareContent shareContent = new ShareContent();
+        shareContent.setUrl("http://www.thinksns.com/index.html");
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
     }
