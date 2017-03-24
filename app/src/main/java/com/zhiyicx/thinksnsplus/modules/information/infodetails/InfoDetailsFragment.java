@@ -42,7 +42,6 @@ public class InfoDetailsFragment extends TSListFragment {
     SwipeToLoadLayout mRefreshlayout;
     @BindView(R.id.dd_dynamic_tool)
     DynamicDetailMenuView mDdDynamicTool;
-    private List<DynamicBean> mDatas = new ArrayList<>();
 
     @Override
     protected int getBodyLayoutId() {
@@ -52,7 +51,7 @@ public class InfoDetailsFragment extends TSListFragment {
     @Override
     protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter<DynamicBean> adapter = new MultiItemTypeAdapter<>(getContext(),
-                mDatas);
+                mListDatas);
         adapter.addItemViewDelegate(new DynamicDetailItemForContent());
         adapter.addItemViewDelegate(new DynamicDetailItemForDig());
         return adapter;

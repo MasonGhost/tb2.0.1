@@ -54,6 +54,20 @@ public interface MessageContract {
 
         MessageItemBean updateLikeItemData();
 
-        void refreshLastClicikPostion(int position, MessageItemBean messageItemBean);
+        /**
+         * 刷新是否显示底部红点
+         * 刷新当条item 的未读数
+         *
+         * @param position                当条数据位置
+         * @param currentMessageItemBean 当条数据
+         * @param data                  所有数据
+         */
+        void refreshLastClicikPostion(int position, MessageItemBean currentMessageItemBean, List<MessageItemBean> data);
+
+        /**
+         *  删除本地对话
+         * @param messageItemBean
+         */
+        void deletConversation(MessageItemBean messageItemBean);
     }
 }

@@ -1,4 +1,4 @@
-2017年2月8日17:46:13
+2017年3月23日 16:08:44
 # # 基础列表类说明
 
   ## 1. 概述
@@ -19,3 +19,5 @@
       - 实现相应的抽象方法和接口方法；
 
   2. 示例，请参考[MessageLikeFragment](../../app/src/main/java/com/zhiyicx/thinksnsplus/modules/home/message/messagelike/MessageLikeFragment.java)
+
+  3. 移动数据源到基类中

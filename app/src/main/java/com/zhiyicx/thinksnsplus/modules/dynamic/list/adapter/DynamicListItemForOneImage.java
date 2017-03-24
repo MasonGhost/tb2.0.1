@@ -108,7 +108,6 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
                         }
                     }
                 });
-        view.setBackgroundColor(mContext.getResources().getColor(R.color.themeColor));
     }
 
 

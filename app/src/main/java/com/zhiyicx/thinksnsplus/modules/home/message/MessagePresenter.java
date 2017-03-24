@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.ActivityHandler;
+import com.zhiyicx.imsdk.db.dao.ConversationDao;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
@@ -16,6 +17,7 @@ import com.zhiyicx.thinksnsplus.modules.chat.ChatContract;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
@@ -129,16 +131,41 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         return mItemBeanLike;
     }
 
+    /**
+     * 刷新是否显示底部红点
+     * 刷新当条item 的未读数
+     *
+     * @param positon                当条数据位置
+     * @param currentMessageItemBean 当条数据
+     * @param data                   所有数据
+     */
     @Override
-    public void refreshLastClicikPostion(int positon, MessageItemBean messageItemBean) {
-        Message message = MessageDao.getInstance(mContext).getLastMessageByCid(messageItemBean.getConversation().getCid());
-        if (message == null) {
-            return;
+    public void refreshLastClicikPostion(int positon, MessageItemBean currentMessageItemBean, List<MessageItemBean> data) {
+
+        // 刷新当条item 的未读数
+        Message message = MessageDao.getInstance(mContext).getLastMessageByCid(currentMessageItemBean.getConversation().getCid());
+        if (message != null) {
+            currentMessageItemBean.getConversation().setLast_message_time(message.getCreate_time());
+            currentMessageItemBean.getConversation().setLast_message_text(message.getTxt());
         }
-        messageItemBean.getConversation().setLast_message_time(message.getCreate_time());
-        messageItemBean.getConversation().setLast_message_text(message.getTxt());
-        messageItemBean.setUnReadMessageNums(0);
-        mRootView.refreshLastClicikPostion(positon, messageItemBean);
+        currentMessageItemBean.setUnReadMessageNums(0);
+        mRootView.refreshLastClicikPostion(positon, currentMessageItemBean);
+
+        // 是否显示底部红点
+        boolean isShowMessgeTip = false;
+        for (MessageItemBean messageItemBean : data) {
+            if (messageItemBean.getUnReadMessageNums() > 0) {
+                isShowMessgeTip = true;
+                break;
+            }
+        }
+        EventBus.getDefault().post(isShowMessgeTip, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED);
+
+    }
+
+    @Override
+    public void deletConversation(MessageItemBean messageItemBean) {
+        ConversationDao.getInstance(mContext).delConversation(messageItemBean.getConversation().getCid(), messageItemBean.getConversation().getType());
     }
 
     /*******************************************
