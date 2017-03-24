@@ -97,7 +97,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     private UserInfoBean mUserInfoBean;// 用户未修改前的用户信息
     private int upLoadCount = 0;// 当前文件上传的次数，>0表示已经上传成功，但是还没有提交修改用户信息
     private boolean userNameChanged, sexChanged, cityChanged, introduceChanged;
-
+    private boolean isFirstOpenCityPicker = true;// 是否是第一次打开城市选择器：默认是第一次打开
     private int upDateHeadIconStorageId = 0;// 上传成功返回的图片id
 
     private int locationLevel = LOCATION_2LEVEL;
@@ -235,7 +235,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     }
 
-
     @Override
     public void hideLoading() {
 
@@ -273,6 +272,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 mGenderPopupWindow.show();
                 break;
             case R.id.ll_city_container:
+                initCityPickerFirstTime();
                 mAreaPickerView.setSelectOptions(mCityOption1, mCityOption2, mCityOption3);
                 mAreaPickerView.show();
                 break;
@@ -421,8 +421,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                     areaText3 = options3Items.get(options1).get(options2).get(options3)
                             .getPickerViewText();
                 }
-                areaText2 = areaText2.equals("全部") ? "" : areaText2;//如果为全部则不显示
-                areaText3 = areaText3.equals("全部") ? "" : areaText3;//如果为全部则不显示
+                areaText2 = areaText2.equals(getString(R.string.all)) ? "" : areaText2;//如果为全部则不显示
+                areaText3 = areaText3.equals(getString(R.string.all)) ? "" : areaText3;//如果为全部则不显示
                 setCity(areaText1 + areaText2 + areaText3);
                 mCityOption1 = options1;
                 mCityOption2 = options2;
@@ -558,6 +558,16 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         }
         if (cityChanged) {
             fieldMap.put("location", mTvCity.getText().toString());
+            fieldMap.put("province", options1Items.get(mCityOption1).getPickerViewText());// 省
+            String city = options2Items.get(mCityOption1).get(mCityOption2).getPickerViewText();
+            if (locationLevel == LOCATION_2LEVEL) {
+                fieldMap.put("city", city);// 市
+            } else if (locationLevel == LOCATION_3LEVEL) {
+                fieldMap.put("city", city);// 市
+                String area = options3Items.get(mCityOption1).get(mCityOption2).get(mCityOption3)
+                        .getPickerViewText();
+                fieldMap.put("area", area);// 区
+            }
         }
         if (introduceChanged) {
             fieldMap.put("intro", mEtUserIntroduce.getInputContent());
@@ -596,9 +606,51 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         return intro;
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    /**
+     * 第一次点开城市选择器，需要判断我的地址在滑轮的哪儿
+     */
+    private void initCityPickerFirstTime() {
+        if (!isFirstOpenCityPicker) {
+            return;
+        }
+        isFirstOpenCityPicker = false;
+        // 这样的情况基本不会发生
+        if (mUserInfoBean == null || options1Items == null || options1Items.isEmpty()) {
+            return;
+        }
+        // 初始化地区选择器
+        String province = mUserInfoBean.getProvince();
+        AreaBean provinceBean = new AreaBean();
+        provinceBean.setAreaName(province);
+        // 设置province初始位置
+        mCityOption1 = options1Items.indexOf(provinceBean);
+        // 如果没有找到位置，那就为0
+        mCityOption1 = mCityOption1 == -1 ? 0 : mCityOption1;
 
+        // 设置city初始位置
+        String city = mUserInfoBean.getCity();
+        if (TextUtils.isEmpty(city)) {
+            city = getString(R.string.all);
+        }
+        AreaBean cityBean = new AreaBean();
+        cityBean.setAreaName(city);
+        mCityOption2 = options2Items.get(mCityOption1).indexOf(cityBean);
+        // 如果没有找到位置，那就为0
+        mCityOption2 = mCityOption2 == -1 ? 0 : mCityOption2;
+
+        if (locationLevel == LOCATION_2LEVEL) {
+
+        } else if (locationLevel == LOCATION_3LEVEL) {
+            // 设置area初始位置
+            String area = mUserInfoBean.getArea();
+            if (TextUtils.isEmpty(area)) {
+                area = getString(R.string.all);
+            }
+            AreaBean areaBean = new AreaBean();
+            areaBean.setAreaName(area);
+            mCityOption3 = options3Items.get(mCityOption1).get(mCityOption2).indexOf(areaBean);
+            // 如果没有找到位置，那就为0
+            mCityOption3 = mCityOption3 == -1 ? 0 : mCityOption3;
+        }
     }
 }
