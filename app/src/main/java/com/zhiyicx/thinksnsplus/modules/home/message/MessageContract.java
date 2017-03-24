@@ -26,14 +26,13 @@ public interface MessageContract {
 
         void updateLikeItemData(MessageItemBean messageItemBean);
 
-        void refreshLastClicikPostion(int position, MessageItemBean messageItemBean);
-
         /**
          * 更新未读消息数量
          *
          * @param message 对话信息
          */
         void refreshMessageUnreadNum(Message message);
+
     }
 
     /**
@@ -46,7 +45,14 @@ public interface MessageContract {
          * @param user_id 用户 id
          * @return
          */
-        Observable<BaseJson<List<MessageItemBean>>> getMessageList(int user_id);
+        Observable<BaseJson<List<MessageItemBean>>> getConversationList(int user_id);
+
+        /**
+         * 通过 对话 id 获取对话信息
+         * @param cid 对话 id
+         * @return
+         */
+        Observable<BaseJson<MessageItemBean>> getSingleConversation(int cid);
     }
 
     interface Presenter extends ITSListPresenter<MessageItemBean> {
@@ -69,5 +75,12 @@ public interface MessageContract {
          * @param messageItemBean
          */
         void deletConversation(MessageItemBean messageItemBean);
+
+        /**
+         * 通过 对话 id 获取对话信息
+         * @param cid 对话 id
+         * @return
+         */
+        void getSingleConversation(int cid);
     }
 }

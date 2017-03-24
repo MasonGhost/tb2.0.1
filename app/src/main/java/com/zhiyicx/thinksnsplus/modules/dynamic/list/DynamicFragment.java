@@ -147,12 +147,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
-    public void onCommentSend(View v, String text) {
-
-
-    }
-
-    @Override
     protected float getItemDecorationSpacing() {
         return ITEM_SPACING;
     }
@@ -278,21 +272,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         return mDynamicType;
     }
 
-    @Override
-    public List<DynamicBean> getDatas() {
-        return mListDatas;
-    }
-
-    @Override
-    public void refresh() {
-        refreshData();
-    }
-
-    @Override
-    public void refresh(int position) {
-        refreshData(position);
-    }
-
     /**
      * resend click
      *
@@ -301,7 +280,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     public void onReSendClick(int position) {
         mListDatas.get(position).setState(DynamicBean.SEND_ING);
-        refresh();
+        refreshData();
         mPresenter.reSendDynamic(position);
     }
 
@@ -362,7 +341,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         mListDatas.get(dataPosition).getTool().setIs_digg_feed(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ? DynamicToolBean.STATUS_DIGG_FEED_CHECKED : DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED);
         mListDatas.get(dataPosition).getTool().setFeed_digg_count(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ?
                 mListDatas.get(dataPosition).getTool().getFeed_digg_count() - 1 : mListDatas.get(dataPosition).getTool().getFeed_digg_count() + 1);
-        refresh();
+        refreshData();
         mPresenter.handleLike(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED,
                 mListDatas.get(dataPosition).getFeed().getFeed_id(), dataPosition);
     }

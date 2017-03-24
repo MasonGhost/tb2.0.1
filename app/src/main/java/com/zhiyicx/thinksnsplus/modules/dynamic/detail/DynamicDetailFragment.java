@@ -206,7 +206,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
-
     @Override
     protected void initData() {
         // 处理上个页面传过来的动态数据
@@ -222,7 +221,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
         }
     }
-
 
     @Override
     protected MultiItemTypeAdapter<DynamicCommentBean> getAdapter() {
@@ -318,11 +316,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
-    public List<DynamicCommentBean> getDatas() {
-        return mListDatas;
-    }
-
-    @Override
     public Bundle getArgumentsBundle() {
         return getArguments();
     }
@@ -333,12 +326,12 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
-    public void refresh() {
+    public void refreshData() {
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
     @Override
-    public void refresh(int position) {
+    public void refreshData(int position) {
         mHeaderAndFooterWrapper.notifyItemChanged(position);
     }
 

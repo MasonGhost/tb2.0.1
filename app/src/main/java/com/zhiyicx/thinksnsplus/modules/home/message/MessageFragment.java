@@ -223,9 +223,13 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     @Override
-    public void refreshLastClicikPostion(int position, MessageItemBean messageItemBean) {
-        mListDatas.set(position, messageItemBean);
+    public void refreshData() {
         mHeaderAndFooterWrapper.notifyDataSetChanged();
+    }
+
+    @Override
+    public void refreshData(int index) {
+        mHeaderAndFooterWrapper.notifyItemChanged(index);
     }
 
     /**
@@ -242,7 +246,8 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                 mListDatas.get(i).setUnReadMessageNums(mListDatas.get(i).getUnReadMessageNums() + 1);
                 mListDatas.get(i).getConversation().setLast_message_text(message.getTxt());
                 mListDatas.get(i).getConversation().setLast_message_time(message.getCreate_time());
-                refreshLastClicikPostion(i, mListDatas.get(i));
+
+                refreshData(i);
                 isHasConversion = true;
                 break;
             }
