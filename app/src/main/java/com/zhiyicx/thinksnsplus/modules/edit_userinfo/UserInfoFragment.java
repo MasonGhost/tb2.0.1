@@ -28,6 +28,7 @@ import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.utils.ImageUtils;
+import com.zhiyicx.baseproject.widget.dialog.LoadingDialog;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ToastUtils;
@@ -93,12 +94,14 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     private ActionPopupWindow mGenderPopupWindow;// 性别选择弹框
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
     private PhotoSelectorImpl mPhotoSelector;
+    private LoadingDialog mLoadingDialog;// 提示弹框
 
     private UserInfoBean mUserInfoBean;// 用户未修改前的用户信息
     private int upLoadCount = 0;// 当前文件上传的次数，>0表示已经上传成功，但是还没有提交修改用户信息
     private boolean userNameChanged, sexChanged, cityChanged, introduceChanged;
     private boolean isFirstOpenCityPicker = true;// 是否是第一次打开城市选择器：默认是第一次打开
     private int upDateHeadIconStorageId = 0;// 上传成功返回的图片id
+    private String path;// 上传成功的图片本地路径
 
     private int locationLevel = LOCATION_2LEVEL;
 
@@ -124,7 +127,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
                         .SHAPE_SQUARE))
                 .build().photoSelectorImpl();
-
+        mLoadingDialog = new LoadingDialog(getActivity());
         initCityPickerView();
       /*  // 软键盘控制区
         mLlContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -310,16 +313,22 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         if (upLoadState) {
             upLoadCount++;
             upDateHeadIconStorageId = taskId;
-            ToastUtils.showToast("头像上传成功");
+            mLoadingDialog.showStateSuccess(getString(R.string.update_head_success));
         } else {
-            ToastUtils.showToast("头像上传失败");
+            mLoadingDialog.showStateError(getString(R.string.update_head_failure));
         }
         canChangerUserInfo();
     }
 
     @Override
-    public void setChangeUserInfoState() {
-        getActivity().finish();
+    public void setChangeUserInfoState(boolean success, String message) {
+        if (success) {
+            mLoadingDialog.showStateSuccess(getString(R.string.edit_userinfo_success));
+            getActivity().finish();
+        } else {
+            mLoadingDialog.showStateError(getString(R.string.edit_userinfo_failure));
+        }
+
     }
 
     @Override
@@ -377,14 +386,16 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
-        String filePath = photoList.get(0).getImgUrl();
+        path = photoList.get(0).getImgUrl();
         // 开始上传
-        mPresenter.changeUserHeadIcon(filePath);
+        mPresenter.changeUserHeadIcon(path);
         // 加载本地图片
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url(photoList.get(0).getImgUrl())
+                .url(path)
                 .imagerView(mIvHeadIcon)
+                .placeholder(R.drawable.shape_default_image_circle)
+                .errorPic(R.drawable.shape_default_image_circle)
                 .transformation(new GlideCircleTransform(getContext()))
                 .build());
     }
@@ -407,10 +418,10 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         mAreaPickerView.setOnoptionsSelectListener(new OptionsPickerView.OnOptionsSelectListener() {
             @Override
             public void onOptionsSelect(int options1, int options2, int options3) {
-                /*if (options2Items.size() <= options1 || options2Items.get(options1).size() <=
-                options2) {
+                if (options2Items.size() <= options1 || options2Items.get(options1).size() <=
+                        options2) {
                     return;//避免pickview控件的bug
-                }*/
+                }
                 String areaText1 = options1Items.get(options1).getPickerViewText();
                 String areaText2 = "", areaText3 = "";
                 if (locationLevel == LOCATION_2LEVEL) {
@@ -575,6 +586,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         if (upLoadCount > 0) {
             // avatar
             fieldMap.put("storage_task_id", upDateHeadIconStorageId + "");
+            fieldMap.put("localImgPath", path);// 本地图片的路径，因为没有返回storage_id,用来更新图片
         }
         return fieldMap;
     }
@@ -652,5 +664,11 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
             // 如果没有找到位置，那就为0
             mCityOption3 = mCityOption3 == -1 ? 0 : mCityOption3;
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        mLoadingDialog.onDestroy();
+        super.onDestroy();
     }
 }
