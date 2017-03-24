@@ -320,6 +320,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     /**
      * 刷新数据
      */
+    @Override
     public void refreshData() {
         mEmptyWrapper.notifyDataSetChanged();
     }
@@ -327,6 +328,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     /**
      * 刷新数据
      */
+    @Override
     public void refreshData(List<T> datas) {
         mEmptyWrapper.notifyDataSetChanged();
     }
@@ -334,6 +336,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     /**
      * 刷新单条数据
      */
+    @Override
     public void refreshData(int index) {
         mEmptyWrapper.notifyItemChanged(index);
     }
@@ -341,6 +344,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     @Override
     public int getPage() {
         return mPage;
+    }
+
+    @Override
+    public List<T> getListDatas() {
+        return mListDatas;
     }
 
     @Override
@@ -439,7 +447,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                     mPresenter.insertOrUpdateData(data);
                 }
                 // 内存处理数据
-               mListDatas.addAll(data);
+                mListDatas.addAll(data);
                 refreshData();
                 mMaxId = getMaxId(data);
             } else {

@@ -57,7 +57,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     public void requestNetData(Long maxId, boolean isLoadMore) {
         if (AppApplication.getmCurrentLoginAuth() == null)
             return;
-        mRepository.getMessageList(AppApplication.getmCurrentLoginAuth().getUser_id())
+        mRepository.getConversationList(AppApplication.getmCurrentLoginAuth().getUser_id())
                 .doAfterTerminate(new Action0() {
                     @Override
                     public void call() {
@@ -135,25 +135,24 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
      * 刷新是否显示底部红点
      * 刷新当条item 的未读数
      *
-     * @param positon                当条数据位置
-     * @param currentMessageItemBean 当条数据
-     * @param data                   所有数据
+     * @param positon 当条数据位置
      */
     @Override
-    public void refreshLastClicikPostion(int positon, MessageItemBean currentMessageItemBean, List<MessageItemBean> data) {
+    public void refreshLastClicikPostion(int positon) {
 
         // 刷新当条item 的未读数
-        Message message = MessageDao.getInstance(mContext).getLastMessageByCid(currentMessageItemBean.getConversation().getCid());
+        Message message = MessageDao.getInstance(mContext).getLastMessageByCid(mRootView.getListDatas().get(positon).getConversation().getCid());
         if (message != null) {
-            currentMessageItemBean.getConversation().setLast_message_time(message.getCreate_time());
-            currentMessageItemBean.getConversation().setLast_message_text(message.getTxt());
+            mRootView.getListDatas().get(positon).getConversation().setLast_message_time(message.getCreate_time());
+            mRootView.getListDatas().get(positon).getConversation().setLast_message_text(message.getTxt());
         }
-        currentMessageItemBean.setUnReadMessageNums(0);
-        mRootView.refreshLastClicikPostion(positon, currentMessageItemBean);
+        mRootView.getListDatas().get(positon).setUnReadMessageNums(0);
+
+        mRootView.refreshData(); // 刷新加上 header
 
         // 是否显示底部红点
         boolean isShowMessgeTip = false;
-        for (MessageItemBean messageItemBean : data) {
+        for (MessageItemBean messageItemBean : mRootView.getListDatas()) {
             if (messageItemBean.getUnReadMessageNums() > 0) {
                 isShowMessgeTip = true;
                 break;
@@ -168,6 +167,33 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         ConversationDao.getInstance(mContext).delConversation(messageItemBean.getConversation().getCid(), messageItemBean.getConversation().getType());
     }
 
+    @Override
+    public void getSingleConversation(int cid) {
+        mRepository.getSingleConversation(cid)
+                .subscribe(new BaseSubscribe<MessageItemBean>() {
+                    @Override
+                    protected void onSuccess(MessageItemBean data) {
+                        if (mRootView.getListDatas().size() == 0) {
+                            mRootView.getListDatas().add(data);
+                        } else {
+                            mRootView.getListDatas().set(0, data);// 置顶新消息
+                        }
+                        mRootView.refreshData();
+
+                    }
+
+                    @Override
+                    protected void onFailure(String message) {
+
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+
+                    }
+                });
+    }
+
     /*******************************************
      * IM 相关
      *********************************************/
@@ -179,8 +205,21 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED)
     private void onMessageReceived(Message message) {
-        mRootView.refreshMessageUnreadNum(message);
-
+        int size = mRootView.getListDatas().size();
+        boolean isHasConversion = false; // 对话是否存在
+        for (int i = 0; i < size; i++) {
+            if (mRootView.getListDatas().get(i).getConversation().getCid() == message.getCid()) {
+                mRootView.getListDatas().get(i).setUnReadMessageNums(mRootView.getListDatas().get(i).getUnReadMessageNums() + 1);
+                mRootView.getListDatas().get(i).getConversation().setLast_message_text(message.getTxt());
+                mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
+                mRootView.refreshData(); // 加上 header 的位置
+                isHasConversion = true;
+                break;
+            }
+        }
+        if (!isHasConversion) { // 不存在本地对话，直接服务器获取
+            getSingleConversation(message.getCid());
+        }
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGEACKRECEIVED)

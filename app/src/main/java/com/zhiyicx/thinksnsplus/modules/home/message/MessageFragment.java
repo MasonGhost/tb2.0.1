@@ -11,7 +11,6 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.TimeUtils;
-import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
@@ -113,7 +112,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         super.onResume();
         if (mLastClickPostion != -1) {
             // 刷新当条信息内容
-            mPresenter.refreshLastClicikPostion(mLastClickPostion, mListDatas.get(mLastClickPostion), mListDatas);
+            mPresenter.refreshLastClicikPostion(mLastClickPostion);
             mLastClickPostion = -1;
         }
     }
@@ -223,34 +222,14 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     @Override
-    public void refreshLastClicikPostion(int position, MessageItemBean messageItemBean) {
-        mListDatas.set(position, messageItemBean);
+    public void refreshData() {
+        super.refreshData();
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
-    /**
-     * 更新未读消息
-     *
-     * @param message 对话信息
-     */
     @Override
-    public void refreshMessageUnreadNum(Message message) {
-        int size = mListDatas.size();
-        boolean isHasConversion = false; // 对话是否存在
-        for (int i = 0; i < size; i++) {
-            if (mListDatas.get(i).getConversation().getCid() == message.getCid()) {
-                mListDatas.get(i).setUnReadMessageNums(mListDatas.get(i).getUnReadMessageNums() + 1);
-                mListDatas.get(i).getConversation().setLast_message_text(message.getTxt());
-                mListDatas.get(i).getConversation().setLast_message_time(message.getCreate_time());
-                refreshLastClicikPostion(i, mListDatas.get(i));
-                isHasConversion = true;
-                break;
-            }
-        }
-        if (!isHasConversion) { // 不存在本地对话，直接服务器获取
-            mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
-        }
-
+    public void refreshData(int index) {
+        mHeaderAndFooterWrapper.notifyItemChanged(index);
     }
 
     @Override
@@ -296,6 +275,5 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         mPresenter.deletConversation(mListDatas.get(position));
         mListDatas.remove(position);
         refreshData();
-
     }
 }

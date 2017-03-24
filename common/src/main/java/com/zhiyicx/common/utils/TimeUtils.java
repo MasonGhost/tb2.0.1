@@ -87,6 +87,60 @@ public class TimeUtils {
         return result;
     }
 
+    /**
+     * 动态列表 \评论列表 时间戳格式转换
+     * 一分钟内显示一分钟
+     * 一小时内显示几分钟前
+     * 一天内显示几小时前
+     * 1天到2天显示昨天
+     * 2天到9天显示几天前
+     * 9天以上显示月日如（05-21）
+     *
+     * @param timesamp 时间 例如; 2017-03-01 01:28:33
+     * @return 友好时间字符串
+     */
+    public static String getTimeFriendlyNormal(long timesamp) {
+        String result = "1分钟前";
+        switch (getifferenceDays(timesamp)) {
+            case 0:
+                result = getFriendlyTimeForBeforHour(timesamp, result);
+                break;
+            case 1:
+                result = "昨天";
+                break;
+            case 2:
+                result = "2天前";
+                break;
+            case 3:
+                result = "3天前";
+                break;
+            case 4:
+                result = "4天前";
+                break;
+            case 5:
+                result = "5天前";
+                break;
+            case 6:
+                result = "6天前";
+                break;
+            case 7:
+                result = "7天前";
+                break;
+            case 8:
+                result = "8天前";
+                break;
+            case 9:
+                result = "9天前";
+                break;
+
+            default:
+                result = getStandardTimeWithMothAndDay(timesamp);
+                break;
+        }
+        return result;
+    }
+
+
 
     /**
      * 聊天详情页 备注：聊天时间显示间隔6分钟

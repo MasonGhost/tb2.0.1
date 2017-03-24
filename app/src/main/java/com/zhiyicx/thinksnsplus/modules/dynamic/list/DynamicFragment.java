@@ -132,24 +132,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         mVShadow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mIlvComment.getVisibility() == View.VISIBLE) {
-                    mIlvComment.setVisibility(View.GONE);
-                    DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
-                }
-                v.setVisibility(View.GONE);
-                if (mOnCommentClickListener != null) {
-                    mOnCommentClickListener.onButtonMenuShow(true);
-                }
+                closeInputView();
             }
         });
 
         mIlvComment.setOnSendClickListener(this);
-    }
-
-    @Override
-    public void onCommentSend(View v, String text) {
-
-
     }
 
     @Override
@@ -279,18 +266,15 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
-    public List<DynamicBean> getDatas() {
-        return mListDatas;
-    }
-
-    @Override
-    public void refresh() {
-        refreshData();
-    }
-
-    @Override
-    public void refresh(int position) {
-        refreshData(position);
+    public void closeInputView() {
+        if (mIlvComment.getVisibility() == View.VISIBLE) {
+            mIlvComment.setVisibility(View.GONE);
+            DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+        }
+        mVShadow.setVisibility(View.GONE);
+        if (mOnCommentClickListener != null) {
+            mOnCommentClickListener.onButtonMenuShow(true);
+        }
     }
 
     /**
@@ -301,7 +285,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     public void onReSendClick(int position) {
         mListDatas.get(position).setState(DynamicBean.SEND_ING);
-        refresh();
+        refreshData();
         mPresenter.reSendDynamic(position);
     }
 
@@ -362,7 +346,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         mListDatas.get(dataPosition).getTool().setIs_digg_feed(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ? DynamicToolBean.STATUS_DIGG_FEED_CHECKED : DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED);
         mListDatas.get(dataPosition).getTool().setFeed_digg_count(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ?
                 mListDatas.get(dataPosition).getTool().getFeed_digg_count() - 1 : mListDatas.get(dataPosition).getTool().getFeed_digg_count() + 1);
-        refresh();
+        refreshData();
         mPresenter.handleLike(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED,
                 mListDatas.get(dataPosition).getFeed().getFeed_id(), dataPosition);
     }

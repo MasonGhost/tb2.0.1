@@ -315,6 +315,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
     @Override
     public void shareDynamic() {
         ShareContent shareContent = new ShareContent();
+        shareContent.setUrl("http://www.thinksns.com/index.html");
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
     }
@@ -360,8 +361,8 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         mRootView.getCurrentDynamic().getTool().setFeed_comment_count(mRootView.getCurrentDynamic().getTool().getFeed_comment_count() - 1);
         mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getCurrentDynamic().getTool());
         mDynamicCommentBeanGreenDao.deleteSingleCache(mRootView.getCurrentDynamic().getComments().get(commentPositon));
-        mRootView.getDatas().remove(commentPositon);
-        mRootView.refresh(commentPositon);
+        mRootView.getListDatas().remove(commentPositon);
+        mRootView.refreshData();
         mRootView.updateCommentCountAndDig();
         mRepository.deleteComment(mRootView.getCurrentDynamic().getFeed_id(), comment_id);
     }
@@ -398,11 +399,11 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         // 处理评论数
         mRootView.getCurrentDynamic().getTool().setFeed_comment_count(mRootView.getCurrentDynamic().getTool().getFeed_comment_count() + 1);
         mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getCurrentDynamic().getTool());
-        if (mRootView.getDatas().size() == 1 && TextUtils.isEmpty(mRootView.getDatas().get(0).getComment_content())) {
-            mRootView.getDatas().clear();
+        if (mRootView.getListDatas().size() == 1 && TextUtils.isEmpty(mRootView.getListDatas().get(0).getComment_content())) {
+            mRootView.getListDatas().clear();
         }
-        mRootView.getDatas().add(0, creatComment);
-        mRootView.refresh();
+        mRootView.getListDatas().add(0, creatComment);
+        mRootView.refreshData();
         mRootView.updateCommentCountAndDig();
         mRepository.sendComment(commentContent, mRootView.getCurrentDynamic().getFeed_id(), replyToUserId, creatComment.getComment_mark());
 
@@ -422,14 +423,14 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
                 .map(new Func1<DynamicCommentBean, Integer>() {
                     @Override
                     public Integer call(DynamicCommentBean dynamicCommentBean) {
-                        int size = mRootView.getDatas().size();
+                        int size = mRootView.getListDatas().size();
                         int dynamicPosition = -1;
                         for (int i = 0; i < size; i++) {
-                            if (mRootView.getDatas().get(i).getFeed_mark().equals(dynamicCommentBean.getFeed_mark())) {
+                            if (mRootView.getListDatas().get(i).getFeed_mark().equals(dynamicCommentBean.getFeed_mark())) {
                                 dynamicPosition = i;
-                                mRootView.getDatas().get(i).setState(dynamicCommentBean.getState());
-                                mRootView.getDatas().get(i).setComment_id(dynamicCommentBean.getComment_id());
-                                mRootView.getDatas().get(i).setComment_mark(dynamicCommentBean.getComment_mark());
+                                mRootView.getListDatas().get(i).setState(dynamicCommentBean.getState());
+                                mRootView.getListDatas().get(i).setComment_id(dynamicCommentBean.getComment_id());
+                                mRootView.getListDatas().get(i).setComment_mark(dynamicCommentBean.getComment_mark());
                                 break;
                             }
                         }
@@ -441,7 +442,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
                     public void call(Integer integer) {
                         System.out.println("integer = " + integer);
                         if (integer != -1) {
-                            mRootView.refresh(integer);
+                            mRootView.refreshData(); // 加上 header
                         }
 
                     }
@@ -459,10 +460,10 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         super.onDestroy();
         Bundle bundle = mRootView.getArgumentsBundle();
         // 清除占位图数据
-        if (mRootView.getDatas() != null && mRootView.getDatas().size() == 1 && TextUtils.isEmpty(mRootView.getDatas().get(0).getComment_content())) {
-            mRootView.getDatas().clear();
+        if (mRootView.getListDatas() != null && mRootView.getListDatas().size() == 1 && TextUtils.isEmpty(mRootView.getListDatas().get(0).getComment_content())) {
+            mRootView.getListDatas().clear();
         }
-        mRootView.getCurrentDynamic().setComments(mRootView.getDatas());
+        mRootView.getCurrentDynamic().setComments(mRootView.getListDatas());
         bundle.putParcelable(DYNAMIC_DETAIL_DATA, mRootView.getCurrentDynamic());
         bundle.putBoolean(DYNAMIC_LIST_NEED_REFRESH, mIsNeedDynamicListRefresh);
         EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_DYNAMIC);

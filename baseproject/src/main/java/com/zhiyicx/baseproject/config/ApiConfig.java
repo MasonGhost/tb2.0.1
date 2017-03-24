@@ -23,7 +23,7 @@ public class ApiConfig {
      * 网络根地址  http://192.168.10.222/
      * 测试服务器：http://192.168.2.222:8080/mockjs/2/test-get-repose-head-normal?
      */
-    
+
     //public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 测试服务器
     public static final String APP_DOMAIN = "http://192.168.2.222/";// 测试服务器
     // public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
@@ -64,8 +64,8 @@ public class ApiConfig {
      * 聊天相关
      */
     public static final String APP_PATH_CREATE_CONVERSAITON = "api/v1/im/conversations";// 创建对话
-    public static final String APP_PATH_GET_CONVERSAITON_LIST =
-            "api/v1/im/conversations/list/all";// 创建对话
+    public static final String APP_PATH_GET_CONVERSAITON_LIST = "api/v1/im/conversations/list/all";// 获取登陆用户的对话列表
+    public static final String APP_PATH_GET_SINGLE_CONVERSAITON = "api/v1/im/conversations/{cid}";// 获取单个对话信息
 
     /**
      * 关注粉丝 FollowFansClient

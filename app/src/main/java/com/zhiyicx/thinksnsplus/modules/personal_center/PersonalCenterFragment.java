@@ -363,22 +363,12 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    public void refresh() {
+    public void refreshData() {
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
     @Override
-    public void refreshData() {
-        refresh();
-    }
-
-    @Override
-    public void refreshData(int index) {
-        refresh(index);
-    }
-
-    @Override
-    public void refresh(int position) {
+    public void refreshData(int position) {
         mHeaderAndFooterWrapper.notifyItemChanged(position);
     }
 
@@ -414,7 +404,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     public void onReSendClick(int position) {
         mListDatas.get(position).setState(DynamicBean.SEND_ING);
-        refresh();
+        refreshData();
         mPresenter.reSendDynamic(position);
     }
 
@@ -481,11 +471,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     public void setChangeUserCoverState(boolean changeSuccess) {
         ToastUtils.showToast(changeSuccess ? "封面修改成功" : "封面修改失败");
-    }
-
-    @Override
-    public List<DynamicBean> getDatas() {
-        return mListDatas;
     }
 
     @Override
@@ -617,7 +602,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mListDatas.get(dataPosition).getTool().setIs_digg_feed(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ? DynamicToolBean.STATUS_DIGG_FEED_CHECKED : DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED);
         mListDatas.get(dataPosition).getTool().setFeed_digg_count(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ?
                 mListDatas.get(dataPosition).getTool().getFeed_digg_count() - 1 : mListDatas.get(dataPosition).getTool().getFeed_digg_count() + 1);
-        refresh();
+        refreshData();
         mPresenter.handleLike(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED,
                 mListDatas.get(dataPosition).getFeed().getFeed_id(), dataPosition);
     }

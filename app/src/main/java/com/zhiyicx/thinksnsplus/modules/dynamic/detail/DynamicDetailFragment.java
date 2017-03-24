@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
@@ -18,7 +17,6 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
@@ -206,7 +204,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
-
     @Override
     protected void initData() {
         // 处理上个页面传过来的动态数据
@@ -222,7 +219,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
         }
     }
-
 
     @Override
     protected MultiItemTypeAdapter<DynamicCommentBean> getAdapter() {
@@ -318,11 +314,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
-    public List<DynamicCommentBean> getDatas() {
-        return mListDatas;
-    }
-
-    @Override
     public Bundle getArgumentsBundle() {
         return getArguments();
     }
@@ -333,12 +324,12 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
-    public void refresh() {
+    public void refreshData() {
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
     @Override
-    public void refresh(int position) {
+    public void refreshData(int position) {
         mHeaderAndFooterWrapper.notifyItemChanged(position);
     }
 
@@ -375,11 +366,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        UmengSharePolicyImpl.onActivityResult(requestCode, resultCode, data, getContext());
-    }
 
     /**
      * 设置底部工具栏UI

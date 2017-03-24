@@ -1,7 +1,8 @@
-﻿# 分享功能
+﻿s2017年3月24日14:56:18
+# 分享功能
 
 ##  1.概述
-   主项目基于 Android U-share 6.0sdk 实现，根据扩展可替换成其他三方分享
+   主项目基于 Android U-share 6.4.2sdk 实现，根据扩展可替换成其他三方分享
    - 目的
 
    实现了分享（文字、图片、连接、文件）内容到QQ、QZone、微信、朋友圈、Sina微博
@@ -42,6 +43,12 @@ mSharePolicy.shareWechat();
 **注意：**   如果使用的是 qq 或者新浪精简版 jar，需要在您使用分享或授权的 Activity（ fragment 不行）中添加如下回调代码
 ```java
 UmengSharePolicyImpl. onActivityResult(int requestCode, int resultCode, Intent data,Context context);
+
+```
+防止内存泄漏
+
+```java
+UmengSharePolicyImpl.onDestroy(Activity activity);
 ```
 
 ## 4.逻辑描述
@@ -49,8 +56,3 @@ UmengSharePolicyImpl. onActivityResult(int requestCode, int resultCode, Intent d
 - 扩展实现：
 
 如果需要替换成其他的分享平台，比如shareSdk，需要遵循以上规范,实现SharePolicy
-
-2016年12月24日10:08:01
-
-
-

@@ -47,21 +47,8 @@ public interface PersonalCenterContract {
         void setChangeUserCoverState(boolean changeSuccess);
 
         /**
-         * 获取列表数据
-         *
-         * @return
+         * 所有接口都请求完毕后回调
          */
-        List<DynamicBean> getDatas();
-
-        /**
-         * 获取列表数据
-         *
-         * @return
-         */
-        void refresh();
-
-        void refresh(int position);
-
         void allDataReady();
 
         /**
