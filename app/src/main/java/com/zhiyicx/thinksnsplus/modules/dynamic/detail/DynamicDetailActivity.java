@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
+import android.content.Intent;
+
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
@@ -20,6 +22,11 @@ public class DynamicDetailActivity extends TSActivity<DynamicDetailPresenter, Dy
                 .shareModule(new ShareModule(DynamicDetailActivity.this))
                 .dynamicDetailPresenterModule(new DynamicDetailPresenterModule(mContanierFragment))
                 .build().inject(this);
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UmengSharePolicyImpl.onActivityResult(requestCode, resultCode, data, this);
     }
 
     @Override
