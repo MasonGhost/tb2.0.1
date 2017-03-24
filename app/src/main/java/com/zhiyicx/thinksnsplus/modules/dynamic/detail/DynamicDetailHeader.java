@@ -16,9 +16,7 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
@@ -150,10 +148,6 @@ public class DynamicDetailHeader {
         if (lastImg) {
             view.findViewById(R.id.img_divider).setVisibility(View.GONE);
         }
-
-        LogUtils.i("content_image-->" + "ImageBean--》" + imageBean.toString()
-        );
-
         AppApplication.AppComponentHolder.getAppComponent().imageLoader()
                 .loadImage(context, GlideImageConfig.builder()
                         .placeholder(R.drawable.shape_default_image)

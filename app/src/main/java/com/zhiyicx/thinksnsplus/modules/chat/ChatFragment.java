@@ -124,7 +124,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
         if (mMessageItemBean.getConversation() == null) { // 先获取本地信息，如果本地信息存在，直接使用，如果没有直接创建
             Conversation conversation = ConversationDao.getInstance(getContext()).getPrivateChatConversationByUids(AppApplication.getmCurrentLoginAuth().getUser_id(), mMessageItemBean.getUserInfo().getUser_id().intValue());
             if (conversation == null) {
-                mPresenter.createChat(mMessageItemBean.getUserInfo().getUser_id().intValue(),null);
+                mPresenter.createChat(mMessageItemBean.getUserInfo().getUser_id().intValue(), null);
             } else {
                 mMessageItemBean.setConversation(conversation);
                 initMessageList();
@@ -170,7 +170,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
         if (mMessageItemBean.getConversation() != null) {
             mPresenter.sendTextMessage(text, mMessageItemBean.getConversation().getCid());
         } else {
-            mPresenter.createChat(mMessageItemBean.getUserInfo().getUser_id().intValue(),text);
+            mPresenter.createChat(mMessageItemBean.getUserInfo().getUser_id().intValue(), text);
         }
     }
 
@@ -280,7 +280,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
         for (int i = 0; i < size; i++) {
             if (mDatas.get(i).getLastMessage().getId() == message.getId()) {
                 mDatas.get(i).setLastMessage(message);
-                mMessageList.refresh(i);
+//                mMessageList.refresh(i); 没有 UI 更新 ，所以不刷新
                 break;
             }
         }

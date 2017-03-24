@@ -36,8 +36,9 @@ public interface UserInfoContract {
 
         /**
          * 设置信息修改提交状态
+         *
          */
-        void setChangeUserInfoState();
+        void setChangeUserInfoState(boolean success,String message);
 
         /**
          * 初始化界面数据

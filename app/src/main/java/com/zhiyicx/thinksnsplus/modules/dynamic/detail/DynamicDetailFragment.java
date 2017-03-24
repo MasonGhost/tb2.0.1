@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
@@ -18,7 +17,6 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
@@ -42,7 +40,6 @@ import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -93,7 +90,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     private DynamicBean mDynamicBean;// 上一个页面传进来的数据
     private FollowFansBean mFollowFansBean;// 用户关注状态
-    private List<DynamicCommentBean> mDatas = new ArrayList<>();
     private boolean mIsLookMore = false;
     private DynamicDetailHeader mDynamicDetailHeader;
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
@@ -208,7 +204,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
-
     @Override
     protected void initData() {
         // 处理上个页面传过来的动态数据
@@ -225,10 +220,9 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         }
     }
 
-
     @Override
     protected MultiItemTypeAdapter<DynamicCommentBean> getAdapter() {
-        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mDatas);
+        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
         DynamicDetailCommentItem dynamicDetailCommentItem = new DynamicDetailCommentItem();
         dynamicDetailCommentItem.setOnUserInfoClickListener(this);
         adapter.addItemViewDelegate(dynamicDetailCommentItem);
@@ -320,11 +314,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
-    public List<DynamicCommentBean> getDatas() {
-        return mDatas;
-    }
-
-    @Override
     public Bundle getArgumentsBundle() {
         return getArguments();
     }
@@ -335,12 +324,12 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
-    public void refresh() {
+    public void refreshData() {
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
     @Override
-    public void refresh(int position) {
+    public void refreshData(int position) {
         mHeaderAndFooterWrapper.notifyItemChanged(position);
     }
 
@@ -377,11 +366,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        UmengSharePolicyImpl.onActivityResult(requestCode, resultCode, data, getContext());
-    }
 
     /**
      * 设置底部工具栏UI
@@ -491,19 +475,19 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         position = position - 1;// 减去 header
-        if (mDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-            if (mDatas.get(position).getComment_id() != null) {
-                initLoginOutPopupWindow(mDatas.get(position).getComment_id(), position);
+        if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
+            if (mListDatas.get(position).getComment_id() != null) {
+                initLoginOutPopupWindow(mListDatas.get(position).getComment_id(), position);
                 mDeletCommentPopWindow.show();
             } else {
                 return;
             }
         } else {
-            mReplyUserId = mDatas.get(position).getUser_id();
+            mReplyUserId = mListDatas.get(position).getUser_id();
             showCommentView();
             String contentHint = "";
-            if (mDatas.get(position).getReply_to_user_id() != mDynamicBean.getUser_id()) {
-                contentHint = getString(R.string.reply, mDatas.get(position).getCommentUser().getName());
+            if (mListDatas.get(position).getReply_to_user_id() != mDynamicBean.getUser_id()) {
+                contentHint = getString(R.string.reply, mListDatas.get(position).getCommentUser().getName());
             }
             mIlvComment.setEtContentHint(contentHint);
         }

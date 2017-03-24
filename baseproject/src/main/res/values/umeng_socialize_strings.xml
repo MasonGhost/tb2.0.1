@@ -22,6 +22,9 @@
     <string name="umeng_socialize_cancel_btn_str">取消</string>
     <string name="umeng_socialize_send_btn_str">发送</string>
 
+    <string name="umeng_socialize_female">女</string>
+    <string name="umeng_socialize_male">男</string>
+
     <string name="umeng_socialize_share">分享</string>
 
     <string name="umeng_socialize_mail">邮件</string>
@@ -50,4 +53,6 @@
     <string name="umeng_socialize_text_googleplus_key">GooglePlus</string>
     <string name="umeng_socialize_text_more_key">更多</string>
     <string name="umeng_socialize_text_dingding_key">钉钉</string>
+    <string name="umeng_socialize_text_vkontakte_key">VKontakte</string>
+    <string name="umeng_socialize_text_dropbox_key">DropBox</string>
 </resources>

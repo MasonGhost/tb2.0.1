@@ -85,6 +85,7 @@ public class ChatRepository implements ChatContract.Repository {
      * @param data 对话信息
      * @return
      */
+    @Override
     public boolean insertOrUpdateMessageItemBean(List<MessageItemBean> data) {
         for (MessageItemBean entity : data) {
             ConversationDao.getInstance(mContext).insertOrUpdateConversation(entity.getConversation());
@@ -140,6 +141,12 @@ public class ChatRepository implements ChatContract.Repository {
         return messageItemBeens;
     }
 
+    /**
+     * 获取聊天列表信息
+     * @param cid
+     * @param creat_time
+     * @return
+     */
     @Override
     public List<ChatItemBean> getChatListData(int cid, long creat_time) {
         List<ChatItemBean> chatItemBeen = new ArrayList<>();

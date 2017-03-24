@@ -91,10 +91,6 @@ public class DynamicDetailItemForContent implements ItemViewDelegate<DynamicBean
         if (lastImg) {
             view.findViewById(R.id.img_divider).setVisibility(View.GONE);
         }
-
-        LogUtils.i("content_image-->" + "ImageBean--》" + imageBean.toString()
-        );
-
         AppApplication.AppComponentHolder.getAppComponent().imageLoader()
                 .loadImage(context, GlideImageConfig.builder()
                         .placeholder(R.drawable.shape_default_image)

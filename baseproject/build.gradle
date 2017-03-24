@@ -29,6 +29,7 @@ android {
         }
     }
 }
+
 configurations.all {
     resolutionStrategy {
         force 'com.android.support:support-annotations:25.0.1'
@@ -47,6 +48,7 @@ buildscript {
 }
 
 dependencies {
+
     def dataDependences = rootProject.ext.dataDependencies
     def testDependences = rootProject.ext.testDependencies
     compile fileTree(include: ['*.jar'], dir: 'libs')
@@ -64,6 +66,7 @@ dependencies {
     compile(dataDependences.refresh){
         exclude group: 'com.android.support', module:'support-compat'
     }
+    compile dataDependences.swipeLayout;
     provided dataDependences.javaxAnnotation
     provided dataDependences.daggerCompiler
     apt dataDependences.daggerCompiler

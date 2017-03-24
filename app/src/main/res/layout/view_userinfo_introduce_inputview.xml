@@ -14,7 +14,6 @@
         android:background="@color/white"
         android:gravity="top|left"
         android:hint="@string/edit_introduce"
-        android:paddingBottom="@dimen/spacing_big_large"
         android:text=""
         android:textColor="@color/important_for_content"
         android:textColorHint="@color/normal_for_assist_text"

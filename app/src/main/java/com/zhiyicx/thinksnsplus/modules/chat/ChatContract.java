@@ -103,6 +103,8 @@ public interface ChatContract {
         List<MessageItemBean> getConversionListData(long userId);
 
         /**
+         * 获取聊天列表信息
+         *
          * @param cid
          * @param mid
          * @return
@@ -147,8 +149,8 @@ public interface ChatContract {
          * 创建对话
          *
          * @param user_id 目标对象的 user_id
-         * @param text  文本消息，单独创建的时候，传空
+         * @param text    文本消息，单独创建的时候，传空
          */
-        void createChat(int user_id,String text);
+        void createChat(int user_id, String text);
     }
 }

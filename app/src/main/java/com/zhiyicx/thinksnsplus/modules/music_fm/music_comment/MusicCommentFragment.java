@@ -36,7 +36,6 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     @BindView(R.id.ilv_comment)
     InputLimitView mIlvComment;
 
-    private List<MusicCommentListBean> mDatas = new ArrayList<>();
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     public static final String CURRENT_MUSIC = "current_music";
     private MusicAlbumDetailsBean.MusicsBean mCurrentMusic;
@@ -62,7 +61,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
 
     @Override
     protected MultiItemTypeAdapter<MusicCommentListBean> getAdapter() {
-        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mDatas);
+        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
         MusicCommentItem musicCommentItem = new MusicCommentItem();
 
         musicCommentItem.setOnUserInfoClickListener(this);

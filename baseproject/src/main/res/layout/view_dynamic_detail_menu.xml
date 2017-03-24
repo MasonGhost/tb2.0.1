@@ -18,8 +18,8 @@
 
         <com.zhiyicx.baseproject.widget.imageview.FilterImageView
             android:id="@+id/iv_dynamic_detail_like"
-            android:layout_width="@dimen/icon_for_home_bottom"
-            android:layout_height="@dimen/icon_for_home_bottom"
+            android:layout_width="@dimen/icon_for_assist_small"
+            android:layout_height="@dimen/icon_for_assist_small"
             android:src="@mipmap/home_ico_good_normal"
             />
 
@@ -45,8 +45,8 @@
 
         <com.zhiyicx.baseproject.widget.imageview.FilterImageView
             android:id="@+id/iv_dynamic_detail_comment"
-            android:layout_width="@dimen/icon_for_home_bottom"
-            android:layout_height="@dimen/icon_for_home_bottom"
+            android:layout_width="@dimen/icon_for_assist_small"
+            android:layout_height="@dimen/icon_for_assist_small"
             android:src="@mipmap/home_ico_comment_normal"
             />
 
@@ -71,8 +71,8 @@
 
         <com.zhiyicx.baseproject.widget.imageview.FilterImageView
             android:id="@+id/iv_dynamic_detail_share"
-            android:layout_width="@dimen/icon_for_home_bottom"
-            android:layout_height="@dimen/icon_for_home_bottom"
+            android:layout_width="@dimen/icon_for_assist_small"
+            android:layout_height="@dimen/icon_for_assist_small"
             android:src="@mipmap/detail_ico_share_normal"
             />
 
@@ -97,8 +97,8 @@
 
         <com.zhiyicx.baseproject.widget.imageview.FilterImageView
             android:id="@+id/iv_dynamic_detail_more"
-            android:layout_width="@dimen/icon_for_home_bottom"
-            android:layout_height="@dimen/icon_for_home_bottom"
+            android:layout_width="@dimen/icon_for_assist_small"
+            android:layout_height="@dimen/icon_for_assist_small"
             android:layout_gravity="center"
             android:src="@mipmap/home_ico_more"
             />

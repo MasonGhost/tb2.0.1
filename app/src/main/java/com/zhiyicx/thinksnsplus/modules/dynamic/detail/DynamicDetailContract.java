@@ -60,13 +60,6 @@ public interface DynamicDetailContract {
         DynamicBean getCurrentDynamic();
 
         /**
-         * 获取列表数据
-         *
-         * @return
-         */
-        List<DynamicCommentBean> getDatas();
-
-        /**
          * 获取当前动态在列表中的位置
          *
          * @return
@@ -77,15 +70,6 @@ public interface DynamicDetailContract {
          * 刷新评论数,喜欢
          */
         void updateCommentCountAndDig();
-
-        /**
-         * 获取列表数据
-         *
-         * @return
-         */
-        void refresh();
-
-        void refresh(int position);
 
         /**
          * 所有数据都有了，直接显示
