@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.common.utils.ColorPhrase;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 /**
@@ -103,8 +104,10 @@ public class UserInfoInroduceInputView extends FrameLayout {
                             .format();
                     mTvLimitTip.setText(chars);
                     mTvLimitTip.setVisibility(VISIBLE);
+                    mEtContent.setPadding(0, 0, 0, context.getResources().getDimensionPixelSize(R.dimen.spacing_big_large));
                 } else {
                     mTvLimitTip.setVisibility(GONE);
+                    mEtContent.setPadding(0, 0, 0, 0);
                 }
             }
         });
