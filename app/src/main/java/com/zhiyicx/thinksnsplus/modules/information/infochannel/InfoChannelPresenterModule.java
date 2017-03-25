@@ -1,12 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.information.infochannel;
 
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.InfoChannelRepository;
 
 import dagger.Module;
 import dagger.Provides;
-import rx.Observable;
 
 /**
  * @Author Jliuer

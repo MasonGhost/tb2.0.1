@@ -10,8 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
+import com.zhiyicx.thinksnsplus.data.source.local.InfoTypeBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infosearch.SearchActivity;
 import com.zhiyicx.thinksnsplus.widget.pager_recyclerview.itemtouch.DefaultItemTouchHelpCallback;
@@ -23,6 +25,8 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -152,7 +156,14 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
             protected void convert(ViewHolder holder, InfoTypeBean.MyCatesBean data
                     , final int position) {
                 ImageView delete = holder.getView(R.id.item_info_channel_deal);
-                if (isEditor) {
+                if (position == 0) {
+                    holder.getView(R.id.item_info_channel).setBackgroundResource(R.drawable
+                            .item_channel_bg_blue);
+                } else {
+                    holder.getView(R.id.item_info_channel).setBackgroundResource(R.drawable
+                            .item_channel_bg_normal);
+                }
+                if (isEditor && position != 0) {
                     delete.setVisibility(View.VISIBLE);
                 } else {
                     delete.setVisibility(View.GONE);
@@ -163,7 +174,7 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
         mSubscribeAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                if (isEditor) {
+                if (isEditor && position != 0) {
                     InfoTypeBean.MyCatesBean bean = mMyCatesBeen.get(position);
                     mSubscribeAdapter.removeItem(position);
                     mUnSubscribeAdapter.addItem(new InfoTypeBean.MoreCatesBean(bean.getId(),
@@ -229,6 +240,7 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
                 mSubscribeAdapter.notifyDataSetChanged();
                 break;
             case R.id.fragment_channel_complete:
+                InfoTypeBean infoTypeBean = new InfoTypeBean();
                 mPresenter.doSubscribe(getFollows(mMyCatesBeen));
                 backInfo();
                 break;
@@ -259,7 +271,9 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
         mInfoTypeBean.setMore_cates(mMoreCatesBeen);
         mInfoTypeBean.setMy_cates(mMyCatesBeen);
         Intent intent = new Intent(getActivity(), InfoActivity.class);
-        intent.putExtra(SUBSCRIBE_EXTRA, mInfoTypeBean);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(SUBSCRIBE_EXTRA, mInfoTypeBean);
+        intent.putExtra(SUBSCRIBE_EXTRA, bundle);
         getActivity().setResult(SUBSCRIBE_CODE, intent);
         getActivity().finish();
     }

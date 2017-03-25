@@ -5,6 +5,7 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
+import com.zhiyicx.thinksnsplus.data.source.local.InfoListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.InfoMainRepository;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
 
@@ -31,6 +32,9 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
 
     @Inject
     InfoMainRepository mInfoMainRepository;
+
+    @Inject
+    InfoListBeanGreenDaoImpl mInfoListBeanGreenDao;
 
     @Inject
     public InfoListPresenter(InfoMainContract.Reppsitory repository,

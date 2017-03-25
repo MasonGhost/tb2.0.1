@@ -128,6 +128,17 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
     }
 
+    protected void showLoading() {
+        if (mCenterLoadingView == null)
+            throw new NullPointerException("loadingView is null,you must use setUseCenterLoading() and return true");
+        if (mCenterLoadingView.getVisibility() == View.GONE) {
+            ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id
+                    .iv_center_load)).getDrawable()).start();
+            mCenterLoadingView.setVisibility(View.VISIBLE);
+//            mCenterLoadingView.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
+        }
+    }
+
     /**
      * 加载失败，占位图点击事件
      */

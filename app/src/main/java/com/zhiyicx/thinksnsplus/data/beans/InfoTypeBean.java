@@ -4,10 +4,19 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
+import com.zhiyicx.common.utils.ConvertUtils;
 
+import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Transient;
+import org.greenrobot.greendao.annotation.Unique;
+import org.greenrobot.greendao.converter.PropertyConverter;
 
+import java.io.Serializable;
 import java.util.List;
+
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * @Author Jliuer
@@ -15,9 +24,17 @@ import java.util.List;
  * @Email Jliuer@aliyun.com
  * @Description 资讯分类列表
  */
-public class InfoTypeBean extends BaseListBean{
+@Entity
+public class InfoTypeBean extends BaseListBean implements Serializable {
+    @Transient
+    private static final long serialVersionUID = 1L;
 
+    @Id
+    @Unique
+    private Long id = 1L;
+    @Convert(converter = MyCatesBeanConver.class, columnType = String.class)
     private List<MyCatesBean> my_cates;
+    @Convert(converter = MoreCatesBeanConver.class, columnType = String.class)
     private List<MoreCatesBean> more_cates;
 
     public List<MyCatesBean> getMy_cates() {
@@ -36,7 +53,9 @@ public class InfoTypeBean extends BaseListBean{
         this.more_cates = more_cates;
     }
 
-    public static class MyCatesBean implements Parcelable{
+    public static class MyCatesBean implements Parcelable, Serializable {
+        @Transient
+        private static final long serialVersionUID = 1L;
         /**
          * id : 1
          * name : 分类1
@@ -98,7 +117,9 @@ public class InfoTypeBean extends BaseListBean{
         };
     }
 
-    public static class MoreCatesBean implements Parcelable{
+    public static class MoreCatesBean implements Parcelable, Serializable {
+        @Transient
+        private static final long serialVersionUID = 1L;
         /**
          * id : 1
          * name : 分类1
@@ -172,6 +193,14 @@ public class InfoTypeBean extends BaseListBean{
         dest.writeTypedList(this.more_cates);
     }
 
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public InfoTypeBean() {
     }
 
@@ -179,6 +208,13 @@ public class InfoTypeBean extends BaseListBean{
         super(in);
         this.my_cates = in.createTypedArrayList(MyCatesBean.CREATOR);
         this.more_cates = in.createTypedArrayList(MoreCatesBean.CREATOR);
+    }
+
+    @Generated(hash = 1966470169)
+    public InfoTypeBean(Long id, List<MyCatesBean> my_cates, List<MoreCatesBean> more_cates) {
+        this.id = id;
+        this.my_cates = my_cates;
+        this.more_cates = more_cates;
     }
 
     public static final Creator<InfoTypeBean> CREATOR = new Creator<InfoTypeBean>() {
@@ -192,4 +228,41 @@ public class InfoTypeBean extends BaseListBean{
             return new InfoTypeBean[size];
         }
     };
+
+    public static class MyCatesBeanConver implements PropertyConverter<List<MyCatesBean>, String> {
+        @Override
+        public List<MyCatesBean> convertToEntityProperty(String databaseValue) {
+            if (databaseValue == null) {
+                return null;
+            }
+            return ConvertUtils.base64Str2Object(databaseValue);
+        }
+
+        @Override
+        public String convertToDatabaseValue(List<MyCatesBean> entityProperty) {
+            if (entityProperty == null) {
+                return null;
+            }
+            return ConvertUtils.object2Base64Str(entityProperty);
+        }
+    }
+
+    public static class MoreCatesBeanConver implements PropertyConverter<List<MoreCatesBean>,
+            String> {
+        @Override
+        public List<MoreCatesBean> convertToEntityProperty(String databaseValue) {
+            if (databaseValue == null) {
+                return null;
+            }
+            return ConvertUtils.base64Str2Object(databaseValue);
+        }
+
+        @Override
+        public String convertToDatabaseValue(List<MoreCatesBean> entityProperty) {
+            if (entityProperty == null) {
+                return null;
+            }
+            return ConvertUtils.object2Base64Str(entityProperty);
+        }
+    }
 }
