@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.data.source.local.db;
 import android.content.Context;
 
 import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.thinksnsplus.data.beans.AuthBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.DaoMaster;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanDao;
@@ -34,7 +33,6 @@ public class UpDBHelper extends DaoMaster.OpenHelper {
         // 每次升级，将需要更新的表进行更新，第二个参数为要升级的Dao文件.
         MigrationHelper.getInstance().migrate(db, UserInfoBeanDao.class);
         MigrationHelper.getInstance().migrate(db, DynamicBeanDao.class);
-        MigrationHelper.getInstance().migrate(db, AuthBeanDao.class);
         MigrationHelper.getInstance().migrate(db, BackgroundRequestTaskBeanDao.class);
         MigrationHelper.getInstance().migrate(db, FollowFansBeanDao.class);
     }

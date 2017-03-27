@@ -5,10 +5,6 @@ import android.os.Parcelable;
 
 import com.zhiyicx.baseproject.cache.CacheBean;
 
-import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Generated;
-
 import java.io.Serializable;
 
 /**
@@ -17,10 +13,8 @@ import java.io.Serializable;
  * @date 2017/1/3
  * @contact email:450127106@qq.com
  */
-@Entity
 public class AuthBean extends CacheBean implements Parcelable, Serializable {
     public static final long serialVersionUID = 536871008l;
-    @Id
     private Long created_at;// 用户权限token开始时间(单位秒的时间戳)
     private int expires;// 用户token的有效期(单位:秒)
     private String token;
@@ -73,6 +67,17 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
     }
 
     @Override
+    public String toString() {
+        return "AuthBean{" +
+                "created_at=" + created_at +
+                ", expires=" + expires +
+                ", token='" + token + '\'' +
+                ", refresh_token='" + refresh_token + '\'' +
+                ", user_id=" + user_id +
+                '}';
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
@@ -94,16 +99,6 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
         this.user_id = in.readInt();
     }
 
-    @Generated(hash = 1235601946)
-    public AuthBean(Long created_at, int expires, String token,
-                    String refresh_token, int user_id) {
-        this.created_at = created_at;
-        this.expires = expires;
-        this.token = token;
-        this.refresh_token = refresh_token;
-        this.user_id = user_id;
-    }
-
     public static final Creator<AuthBean> CREATOR = new Creator<AuthBean>() {
         @Override
         public AuthBean createFromParcel(Parcel source) {
@@ -115,15 +110,4 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
             return new AuthBean[size];
         }
     };
-
-    @Override
-    public String toString() {
-        return "AuthBean{" +
-                "created_at=" + created_at +
-                ", expires=" + expires +
-                ", token='" + token + '\'' +
-                ", refresh_token='" + refresh_token + '\'' +
-                ", user_id=" + user_id +
-                '}';
-    }
 }

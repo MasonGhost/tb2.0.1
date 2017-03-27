@@ -3,18 +3,14 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 import android.content.Context;
 
 import com.zhiyicx.baseproject.cache.CacheImp;
-import com.zhiyicx.baseproject.cache.NetWorkCache;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
-import com.zhiyicx.thinksnsplus.data.source.local.AuthBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.login.LoginContract;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * @author LiuChao

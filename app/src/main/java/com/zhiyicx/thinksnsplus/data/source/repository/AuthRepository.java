@@ -126,7 +126,7 @@ public class AuthRepository implements IAuthRepository {
      */
     @Override
     public boolean clearAuthBean() {
-        MessageDao.getInstance(mContext).delDataBase();// 清空聊天信息
+        MessageDao.getInstance(mContext).delDataBase();// 清空聊天信息、对话
         mDynamicBeanGreenDao.clearTable();
         mDynamicCommentBeanGreenDao.clearTable();
         mDynamicDetailBeanGreenDao.clearTable();
