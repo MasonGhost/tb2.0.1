@@ -21,7 +21,7 @@ import com.zhiyicx.common.utils.FileUtils;
  */
 
 public class GlideConfiguration implements GlideModule {
-    private static final int IMAGE_DISK_CACHE_MAX_SIZE = 200 * 1024 * 1024;//图片缓存文件最大值为100Mb
+    private static final int IMAGE_DISK_CACHE_MAX_SIZE = 200 * 1024 * 1024;//图片缓存文件最大值为200Mb
 
     @Override
     public void applyOptions(final Context context, GlideBuilder builder) {
@@ -32,7 +32,7 @@ public class GlideConfiguration implements GlideModule {
                 return DiskLruCacheWrapper.get(FileUtils.getCacheFile(context), IMAGE_DISK_CACHE_MAX_SIZE);
             }
         });*/
-        builder.setDiskCache(new DiskLruCacheFactory(FileUtils.getCacheFile(context,false).getAbsolutePath(), IMAGE_DISK_CACHE_MAX_SIZE));
+        builder.setDiskCache(new DiskLruCacheFactory(FileUtils.getCacheFile(context,false).getAbsolutePath()+"/glide_cache", IMAGE_DISK_CACHE_MAX_SIZE));
 
         MemorySizeCalculator calculator = new MemorySizeCalculator(context);
         int defaultMemoryCacheSize = calculator.getMemoryCacheSize();
