@@ -5,4 +5,5 @@
     <stroke
         android:width="@dimen/divider_line"
         android:color="@color/white"></stroke>
+    <solid android:color="@color/origin_back_color"></solid>
 </shape>

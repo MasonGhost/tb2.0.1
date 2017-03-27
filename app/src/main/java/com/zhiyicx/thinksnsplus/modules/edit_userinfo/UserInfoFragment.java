@@ -62,6 +62,20 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     private static final int LOCATION_2LEVEL = 2;// 地区选择可选的级数为2，2级联动
     private static final int LOCATION_3LEVEL = 3;// 地区选择可选的级数为3
 
+    /**
+     * 定义这些常数，用来封装被修改的用户信息
+     * 通过hashmap进行封装，而不是使用Usrinfobean，主要是以后可能配置用户信息，方便以后拓展
+     */
+    public static final String USER_NAME = "name";
+    public static final String USER_INTRO = "intro";
+    public static final String USER_SEX = "sex";
+    public static final String USER_LOCATION = "location";
+    public static final String USER_PROVINCE = "province";
+    public static final String USER_CITY = "city";
+    public static final String USER_AREA = "area";
+    public static final String USER_STORAGE_TASK_ID = "storage_task_id";
+    public static final String USER_LOCAL_IMG_PATH = "localImgPath";
+
     @BindView(R.id.iv_head_icon)
     ImageView mIvHeadIcon;
     @BindView(R.id.rl_change_head_container)
@@ -129,29 +143,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .build().photoSelectorImpl();
         mLoadingDialog = new LoadingDialog(getActivity());
         initCityPickerView();
-      /*  // 软键盘控制区
-        mLlContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-
-                Rect rect = new Rect();
-                //获取root在窗体的可视区域
-                mLlContainer.getWindowVisibleDisplayFrame(rect);
-                //获取root在窗体的不可视区域高度(被其他View遮挡的区域高度)
-                int rootInvisibleHeight = mLlContainer.getRootView().getHeight() - rect.bottom;
-                LogUtils.i("rootInvisibleHeight-->" + rootInvisibleHeight + "rect.bottom" + rect.bottom);
-                int dispayHeight = UIUtils.getWindowHeight(getContext());
-                //若不可视区域高度大于1/3屏幕高度，则键盘显示
-                if (rootInvisibleHeight > (1 / 3 * dispayHeight)) {
-
-                } else {
-                    //键盘隐藏
-                    mEtUserName.clearFocus();// 主动失去焦点
-                    mEtUserIntroduce.getEtContent().clearFocus();
-                }
-            }
-        });
-*/
     }
 
     @Override
@@ -326,7 +317,12 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
             mLoadingDialog.showStateSuccess(getString(R.string.edit_userinfo_success));
             getActivity().finish();
         } else {
-            mLoadingDialog.showStateError(getString(R.string.edit_userinfo_failure));
+            if (TextUtils.isEmpty(message)) {
+                mLoadingDialog.showStateError(getString(R.string.edit_userinfo_failure));
+            } else {
+                mLoadingDialog.showStateError(message);
+            }
+
         }
 
     }
@@ -562,31 +558,31 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         // 图片上传的任务id，姓名。。。
         // 只上传改变的信息
         if (userNameChanged) {
-            fieldMap.put("name", mEtUserName.getText().toString());
+            fieldMap.put(USER_NAME, mEtUserName.getText().toString());
         }
         if (sexChanged) {
-            fieldMap.put("sex", mTvSex.getTag(R.id.view_data) + "");
+            fieldMap.put(USER_SEX, mTvSex.getTag(R.id.view_data) + "");
         }
         if (cityChanged) {
-            fieldMap.put("location", mTvCity.getText().toString());
-            fieldMap.put("province", options1Items.get(mCityOption1).getPickerViewText());// 省
+            fieldMap.put(USER_LOCATION, mTvCity.getText().toString());
+            fieldMap.put(USER_PROVINCE, options1Items.get(mCityOption1).getPickerViewText());// 省
             String city = options2Items.get(mCityOption1).get(mCityOption2).getPickerViewText();
             if (locationLevel == LOCATION_2LEVEL) {
-                fieldMap.put("city", city);// 市
+                fieldMap.put(USER_CITY, city);// 市
             } else if (locationLevel == LOCATION_3LEVEL) {
-                fieldMap.put("city", city);// 市
+                fieldMap.put(USER_CITY, city);// 市
                 String area = options3Items.get(mCityOption1).get(mCityOption2).get(mCityOption3)
                         .getPickerViewText();
-                fieldMap.put("area", area);// 区
+                fieldMap.put(USER_AREA, area);// 区
             }
         }
         if (introduceChanged) {
-            fieldMap.put("intro", mEtUserIntroduce.getInputContent());
+            fieldMap.put(USER_INTRO, mEtUserIntroduce.getInputContent());
         }
         if (upLoadCount > 0) {
             // avatar
-            fieldMap.put("storage_task_id", upDateHeadIconStorageId + "");
-            fieldMap.put("localImgPath", path);// 本地图片的路径，因为没有返回storage_id,用来更新图片
+            fieldMap.put(USER_STORAGE_TASK_ID, upDateHeadIconStorageId + "");
+            fieldMap.put(USER_LOCAL_IMG_PATH, path);// 本地图片的路径，因为没有返回storage_id,用来更新图片
         }
         return fieldMap;
     }

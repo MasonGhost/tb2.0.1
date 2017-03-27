@@ -173,6 +173,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
         if (mCleanCacheDialogBuilder == null) {
             mCleanCacheDialogBuilder = new AlertDialog.Builder(getActivity());
         }
+<<<<<<< HEAD
         DialogUtils.getDialog(mCleanCacheDialogBuilder, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -181,6 +182,30 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
             }
         }, getString(R.string.clean_cache), getString(R.string.is_sure_clean_cache), getString(R.string.cancel), getString(R.string.sure));
         mCleanCacheDialogBuilder.create().show();
+=======
+        mCleanCachePopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.clean_cache))
+                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+                        mPresenter.cleanCache();
+                        mCleanCachePopupWindow.hide();
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mCleanCachePopupWindow.hide();
+                    }
+                })
+                .build();
+>>>>>>> 01660fedb011ba2663e19900abdaefca5e09386e
     }
 
     /**
@@ -191,6 +216,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
         if (mLoginoutDialogBuilder == null) {
             mLoginoutDialogBuilder = new AlertDialog.Builder(getActivity());
         }
+<<<<<<< HEAD
         DialogUtils.getDialog(mLoginoutDialogBuilder, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -201,6 +227,32 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
             }
         }, getString(R.string.login_out), getString(R.string.is_sure_login_out), getString(R.string.cancel), getString(R.string.sure));
         mLoginoutDialogBuilder.create().show();
+=======
+        mLoginOutPopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.login_out))
+                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+                        if (mPresenter.loginOut()) {
+                            startActivity(new Intent(getActivity(), LoginActivity.class));
+                        }
+                        mLoginOutPopupWindow.hide();
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mLoginOutPopupWindow.hide();
+                    }
+                })
+                .build();
+>>>>>>> 01660fedb011ba2663e19900abdaefca5e09386e
     }
 
 }

@@ -138,7 +138,7 @@ public class FollowFansListAdapter extends CommonAdapter<FollowFansBean> {
         );
 
         // 添加点击事件
-        RxView.clicks(holder.getView(R.id.tv_name))
+        RxView.clicks(holder.getConvertView())
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(new Action1<Void>() {
                     @Override
@@ -146,15 +146,6 @@ public class FollowFansListAdapter extends CommonAdapter<FollowFansBean> {
                         toUserCenter(getContext(), userInfoBean);
                     }
                 });
-        RxView.clicks(holder.getView(R.id.iv_headpic))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        toUserCenter(getContext(), userInfoBean);
-                    }
-                });
-
     }
 
 
