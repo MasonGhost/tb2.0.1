@@ -186,6 +186,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                     @Override
                     public void onItem1Clicked() {
                         mPresenter.cleanCache();
+                        mCleanCachePopupWindow.hide();
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
@@ -215,7 +216,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
                     public void onItem1Clicked() {
-                        if(mPresenter.loginOut()){
+                        if (mPresenter.loginOut()) {
                             startActivity(new Intent(getActivity(), LoginActivity.class));
                         }
                         mLoginOutPopupWindow.hide();

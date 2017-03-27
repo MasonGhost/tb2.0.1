@@ -58,9 +58,9 @@
             />
 
         <!--&lt;!&ndash;glide配置&ndash;&gt;-->
-        <!--<meta-data-->
-        <!--android:name="com.zhiyicx.thinksnsplus.config.GlideConfiguration"-->
-        <!--android:value="GlideModule"/>-->
+        <meta-data
+        android:name="com.zhiyicx.thinksnsplus.config.GlideConfiguration"
+        android:value="GlideModule"/>
 
         <!--图片选择器：photopicker-->
         <activity

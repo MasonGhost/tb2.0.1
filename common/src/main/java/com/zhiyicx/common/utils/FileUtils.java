@@ -1,10 +1,14 @@
 package com.zhiyicx.common.utils;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.media.MediaMetadataRetriever;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
+
+import com.bumptech.glide.Glide;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
@@ -40,10 +44,11 @@ public class FileUtils {
      * 返回缓存文件夹
      *
      * @param context
+     * @param isExternalCache 是否是sd卡缓存路径
      * @return
      */
-    public static File getCacheFile(Context context) {
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+    public static File getCacheFile(Context context, boolean isExternalCache) {
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) && isExternalCache) {
             File file = null;
             file = context.getExternalCacheDir();//获取系统管理的sd卡缓存文件
             if (file == null) {//如果获取的为空,就是用自己定义的缓存文件夹做缓存路径
@@ -54,7 +59,7 @@ public class FileUtils {
             }
             return file;
         } else {
-            return context.getCacheDir();
+            return context.getCacheDir();// 获取app缓存目录，glide就是默认缓存在这儿的
         }
     }
 
