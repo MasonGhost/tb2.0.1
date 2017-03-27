@@ -264,7 +264,6 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                         }
                     }
                 });
-        view.setBackgroundColor(mContext.getResources().getColor(R.color.themeColor));
     }
 
 

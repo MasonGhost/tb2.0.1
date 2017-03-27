@@ -1,6 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import android.content.Context;
+import android.app.Application;
 
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
@@ -22,10 +22,10 @@ import rx.Observable;
 public class DynamicDetailRepository extends BaseDynamicRepository implements DynamicDetailContract.Repository {
     private UserInfoRepository mUserInfoRepository;
     private DynamicClient mDynamicClient;
-    public DynamicDetailRepository(ServiceManager serviceManager, Context context) {
+    public DynamicDetailRepository(ServiceManager serviceManager, Application context) {
         super(serviceManager, context);
         mDynamicClient=serviceManager.getDynamicClient();
-        mUserInfoRepository = new UserInfoRepository(serviceManager);
+        mUserInfoRepository = new UserInfoRepository(serviceManager,context);
     }
 
 

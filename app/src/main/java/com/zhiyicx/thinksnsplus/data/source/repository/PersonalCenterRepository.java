@@ -29,7 +29,7 @@ public class PersonalCenterRepository extends BaseDynamicRepository implements P
 
     public PersonalCenterRepository(ServiceManager serviceManager, Application application) {
         super(serviceManager, application);
-        mUserInfoRepository = new UserInfoRepository(serviceManager);
+        mUserInfoRepository = new UserInfoRepository(serviceManager,application);
         mBaseDynamicRepository = new BaseDynamicRepository(serviceManager, application);
     }
 

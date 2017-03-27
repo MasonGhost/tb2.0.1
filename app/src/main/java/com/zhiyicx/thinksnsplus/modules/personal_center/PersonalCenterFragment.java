@@ -571,7 +571,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      */
     private void setBottomVisible(long currentUserID) {
         AuthBean authBean = AppApplication.getmCurrentLoginAuth();
-        mLlBottomContainer.setVisibility(authBean != null && authBean.getUser_id() == currentUserID ? View.GONE : View.VISIBLE);
+        mLlBottomContainer.setVisibility((authBean != null && authBean.getUser_id() == currentUserID )? View.GONE : View.VISIBLE);
     }
 
     public static PersonalCenterFragment initFragment(Bundle bundle) {

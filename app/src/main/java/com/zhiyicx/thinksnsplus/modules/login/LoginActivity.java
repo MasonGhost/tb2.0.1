@@ -1,6 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.login;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
@@ -12,6 +17,14 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
  */
 
 public class LoginActivity extends TSActivity<LoginPresenter, LoginFragment> {
+
+    @Nullable
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ActivityHandler.getInstance().removeCurrentTopActivity();// 清除 homeAcitivity 重新加载
+    }
+
     @Override
     protected LoginFragment getFragment() {
         return new LoginFragment();

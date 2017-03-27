@@ -73,6 +73,12 @@ public interface UserInfoContract {
          */
         Observable<BaseJson<List<FollowFansBean>>> getUserFollowState(String user_ids);
 
+        /**
+         * 关注操作
+         * @param followFansBean
+         */
+        void handleFollow(FollowFansBean followFansBean);
+
     }
 
     interface Presenter extends IBasePresenter {

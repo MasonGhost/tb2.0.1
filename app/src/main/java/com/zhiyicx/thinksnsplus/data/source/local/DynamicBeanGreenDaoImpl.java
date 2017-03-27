@@ -163,4 +163,21 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
         return datas;
     }
 
+    /**
+     * 更新关注状态
+     *
+     * @param userId     目标对象
+     * @param isFollowed 关注状态
+     */
+    public void updateFollowStateByUserId(long userId, boolean isFollowed) {
+        DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
+        List<DynamicBean> datas = dynamicBeanDao.queryDeep(" where "
+                        + " T." + DynamicBeanDao.Properties.User_id.columnName + " = ? "
+                , new String[]{String.valueOf(userId)});
+        for (DynamicBean data : datas) {
+            data.setFollowed(isFollowed);
+        }
+        insertOrReplace(datas);
+    }
+
 }

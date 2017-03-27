@@ -1,19 +1,31 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import android.app.Application;
+import android.content.Context;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.baseproject.cache.CacheImp;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoContract;
+import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
+
+import org.simple.eventbus.EventBus;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,11 +53,16 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     private UserInfoClient mUserInfoClient;
     private CommonClient mCommonClient;
     private CacheImp<AuthBean> cacheImp;
+    private FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
+    private DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
+    private Context mContext;
 
     @Inject
-    public UserInfoRepository(ServiceManager serviceManager) {
+    public UserInfoRepository(ServiceManager serviceManager, Application application) {
+        this.mContext = application;
         mUserInfoClient = serviceManager.getUserInfoClient();
         mCommonClient = serviceManager.getCommonClient();
+        mFollowFansBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().followFansBeanGreenDao();
     }
 
     @Override
@@ -95,7 +112,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                 .map(new Func1<BaseJson<List<FollowFansBean>>, BaseJson<List<FollowFansBean>>>() {
                     @Override
                     public BaseJson<List<FollowFansBean>> call(BaseJson<List<FollowFansBean>> listBaseJson) {
-                        if(listBaseJson.isStatus()){
+                        if (listBaseJson.isStatus()) {
                             for (FollowFansBean followFansBean : listBaseJson.getData()) {
                                 followFansBean.setOriginUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
                                 followFansBean.setOrigintargetUser("");
@@ -104,6 +121,37 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                         return listBaseJson;
                     }
                 });
+    }
+
+    @Override
+    public void handleFollow(FollowFansBean followFansBean) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean = null;
+        if (followFansBean.getOrigin_follow_status() == FollowFansBean.UNFOLLOWED_STATE) {
+            // 当前未关注，进行关注
+            followFansBean.setOrigin_follow_status(FollowFansBean.IFOLLOWED_STATE);
+            EventBus.getDefault().post(followFansBean, EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW);
+            // 进行后台任务请求
+            backgroundRequestTaskBean = new BackgroundRequestTaskBean();
+            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST);
+            backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_FOLLOW_USER);
+        } else {
+            // 已关注，取消关注
+            followFansBean.setOrigin_follow_status(FollowFansBean.UNFOLLOWED_STATE);
+            EventBus.getDefault().post(followFansBean, EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW);
+            // 进行后台任务请求
+            backgroundRequestTaskBean = new BackgroundRequestTaskBean();
+            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
+            backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_CANCEL_FOLLOW_USER);
+        }
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("user_id", followFansBean.getTargetUserId() + "");
+        backgroundRequestTaskBean.setParams(hashMap);
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+        // 本地数据库,关注状态
+        mFollowFansBeanGreenDao.insertOrReplace(followFansBean);
+        // 更新动态关注状态
+        mDynamicBeanGreenDao.updateFollowStateByUserId(followFansBean.getTargetUserId(), followFansBean.getOrigin_follow_status() != FollowFansBean.UNFOLLOWED_STATE);
+
     }
 
 
