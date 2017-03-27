@@ -63,6 +63,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         mUserInfoClient = serviceManager.getUserInfoClient();
         mCommonClient = serviceManager.getCommonClient();
         mFollowFansBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().followFansBeanGreenDao();
+        mDynamicBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicBeanGreenDao();
     }
 
     @Override
