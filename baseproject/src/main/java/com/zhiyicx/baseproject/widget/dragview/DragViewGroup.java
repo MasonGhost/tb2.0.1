@@ -112,7 +112,8 @@ public class DragViewGroup extends FrameLayout {
     }
 
     private void initViewDragHelper() {
-        mDragger = ViewDragHelper.create(this, 100.0f, new ViewDragHelper.Callback() {
+        // 第二个参数，表示滑动出发的灵敏度，值越小越难滑动，正常值1.0f
+        mDragger = ViewDragHelper.create(this, 0.1f, new ViewDragHelper.Callback() {
             @Override
             public boolean tryCaptureView(View child, int pointerId) {
                 return true;
