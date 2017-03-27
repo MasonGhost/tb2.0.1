@@ -40,12 +40,14 @@
             android:text="@string/send"
             android:textColor="@color/white"
             android:textSize="@dimen/button_text_size_small"
-            android:visibility="gone"/>
+            android:visibility="gone"
+          />
 
         <TextView
             android:id="@+id/tv_limit_tip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_normal"
             android:layout_above="@id/bt_send"
             android:layout_toRightOf="@id/et_content"
             android:gravity="center"
