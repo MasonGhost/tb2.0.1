@@ -1495,8 +1495,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                      */
                     mService.sendGetConversatonInfo(eventContainer.mMessageContainer.msg.cid, "");
                 }
-                if (eventContainer.mMessageContainer.msg.rt || (conversation != null && conversation.getType() != Conversation.CONVERSATION_TYPE_CHAROOM))
-                    MessageDao.getInstance(getApplicationContext()).insertOrUpdateMessage(eventContainer.mMessageContainer.msg);
+                MessageDao.getInstance(getApplicationContext()).insertOrUpdateMessage(eventContainer.mMessageContainer.msg);
                 return false;
             }
         }
