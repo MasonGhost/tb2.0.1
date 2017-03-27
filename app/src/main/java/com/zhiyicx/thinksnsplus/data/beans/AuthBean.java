@@ -115,4 +115,15 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
             return new AuthBean[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "AuthBean{" +
+                "created_at=" + created_at +
+                ", expires=" + expires +
+                ", token='" + token + '\'' +
+                ", refresh_token='" + refresh_token + '\'' +
+                ", user_id=" + user_id +
+                '}';
+    }
 }

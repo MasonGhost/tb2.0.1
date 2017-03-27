@@ -158,7 +158,6 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                 datas.get(i).setComments(mDynamicCommentBeanGreenDao.getLocalComments(datas.get(i).getFeed_mark()));
             }
         }
-        System.out.println("datas.toString() = " + datas.toString());
         return datas;
     }
 
@@ -273,7 +272,6 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
         String comment_mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis();
         creatComment.setComment_mark(Long.parseLong(comment_mark));
         creatComment.setReply_to_user_id(replyToUserId);
-        System.out.println("creatComment ---------------> = " + creatComment.getReply_to_user_id());
         if (replyToUserId == 0) { //当回复动态的时候
             UserInfoBean userInfoBean = new UserInfoBean();
             userInfoBean.setUser_id(replyToUserId);
