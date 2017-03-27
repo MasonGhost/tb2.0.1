@@ -87,7 +87,7 @@ public class InfoCommentListBeanDaoImpl extends CommonCacheImpl<InfoCommentListB
         return mInfoCommentListBeanDao.queryBuilder()
                 .where(InfoCommentListBeanDao.Properties.User_id.eq
                                 (AppApplication.getmCurrentLoginAuth().getUser_id()),
-                        InfoCommentListBeanDao.Properties.Id.isNull())
+                        InfoCommentListBeanDao.Properties.Id.eq(-1))
                 .orderDesc(InfoCommentListBeanDao.Properties._id)
                 .list();
 
