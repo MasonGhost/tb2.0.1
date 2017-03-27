@@ -31,7 +31,7 @@ import rx.schedulers.Schedulers;
 public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
 
     InfoMainClient mInfoMainClient;
-    private Context context;
+    private Application context;
 
     @Inject
     public InfoDetailsRepository(ServiceManager serviceManager, Application context) {
