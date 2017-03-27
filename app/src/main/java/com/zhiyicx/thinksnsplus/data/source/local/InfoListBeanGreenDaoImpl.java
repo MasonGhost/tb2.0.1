@@ -18,9 +18,12 @@ import javax.inject.Inject;
  */
 public class InfoListBeanGreenDaoImpl extends CommonCacheImpl<InfoListBean> {
 
+    private InfoListBeanDao mInfoListBeanDao;
+
     @Inject
     public InfoListBeanGreenDaoImpl(Context context) {
         super(context);
+        mInfoListBeanDao = getWDaoSession().getInfoListBeanDao();
     }
 
     @Override
@@ -40,7 +43,7 @@ public class InfoListBeanGreenDaoImpl extends CommonCacheImpl<InfoListBean> {
 
     @Override
     public InfoListBean getSingleDataFromCache(Long primaryKey) {
-        return null;
+        return mInfoListBeanDao.load(primaryKey);
     }
 
     @Override
@@ -73,7 +76,6 @@ public class InfoListBeanGreenDaoImpl extends CommonCacheImpl<InfoListBean> {
         if (newData == null) {
             return -1;
         }
-        InfoListBeanDao infoListBeanDao = getWDaoSession().getInfoListBeanDao();
-        return infoListBeanDao.insertOrReplace(newData);
+        return mInfoListBeanDao.insertOrReplace(newData);
     }
 }

@@ -16,7 +16,6 @@ import javax.inject.Inject;
  * @date 2017/2/24
  * @contact email:450127106@qq.com
  */
-
 public class DynamicDetailBeanGreenDaoImpl extends CommonCacheImpl<DynamicDetailBean> {
     @Inject
     public DynamicDetailBeanGreenDaoImpl(Application context) {
