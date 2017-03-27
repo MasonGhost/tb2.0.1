@@ -13,9 +13,8 @@ import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMyCatesBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
 import com.zhiyicx.thinksnsplus.modules.information.infochannel.ChannelActivity;
@@ -41,7 +40,6 @@ import butterknife.OnClick;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.functions.Func2;
 
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment
         .BUNDLE_INFO_TYPE;
@@ -50,7 +48,7 @@ import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoLis
  * @Author Jliuer
  * @Date 2017/03/03
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 资讯的分类
  */
 public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoContainerPresenter>
         implements InfoMainContract.InfoContainerView {
@@ -147,9 +145,9 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
             mInfoTypeBean = data.getBundleExtra(SUBSCRIBE_EXTRA).getParcelable(SUBSCRIBE_EXTRA);
 
             Observable.from(mInfoTypeBean.getMy_cates())
-                    .subscribe(new Action1<InfoTypeBean.MyCatesBean>() {
+                    .subscribe(new Action1<InfoTypeMyCatesBean>() {
                         @Override
-                        public void call(InfoTypeBean.MyCatesBean myCatesBean) {
+                        public void call(InfoTypeMyCatesBean myCatesBean) {
                             mTitle.add(myCatesBean.getName());
                             mFragments.add(InfoListFragment.newInstance(myCatesBean.getId() + ""));
                         }
@@ -185,19 +183,18 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     @Override
     public void setInfoType(InfoTypeBean infoType) {
         mInfoTypeBean = infoType;
-        mInfoTypeBean.getMy_cates().add(0, new InfoTypeBean.MyCatesBean(1,
-                getString(R.string.info_recommend)));
+        mInfoTypeBean.getMy_cates().add(0, new InfoTypeMyCatesBean(1L,getString(R.string.info_recommend)));
         Observable.from(infoType.getMy_cates())
-                .filter(new Func1<InfoTypeBean.MyCatesBean, Boolean>() {
+                .filter(new Func1<InfoTypeMyCatesBean, Boolean>() {
                     @Override
-                    public Boolean call(InfoTypeBean.MyCatesBean myCatesBean) {
+                    public Boolean call(InfoTypeMyCatesBean myCatesBean) {
                         return mInfoTypeBean.getMy_cates().indexOf(myCatesBean) != 0
                                 && !mTitle.contains(myCatesBean.getName());
                     }
                 })
-                .subscribe(new Action1<InfoTypeBean.MyCatesBean>() {
+                .subscribe(new Action1<InfoTypeMyCatesBean>() {
                     @Override
-                    public void call(InfoTypeBean.MyCatesBean myCatesBean) {
+                    public void call(InfoTypeMyCatesBean myCatesBean) {
                         mTitle.add(myCatesBean.getName());
                         mFragments.add(InfoListFragment.newInstance(myCatesBean.getId() + ""));
                     }

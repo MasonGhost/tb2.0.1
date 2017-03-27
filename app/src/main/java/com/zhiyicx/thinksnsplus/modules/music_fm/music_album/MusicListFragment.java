@@ -85,8 +85,8 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
 
     @Override
     protected CommonAdapter<MusicAlbumListBean> getAdapter() {
-        CommonAdapter<MusicAlbumListBean> comAdapter = new CommonAdapter<MusicAlbumListBean>(getActivity(), R.layout.item_music_list,
-                mListDatas) {
+        CommonAdapter<MusicAlbumListBean> comAdapter = new CommonAdapter<MusicAlbumListBean>
+                (getActivity(), R.layout.item_music_list,mListDatas) {
             @Override
             protected void convert(ViewHolder holder, MusicAlbumListBean musicListBean, int
                     position) {

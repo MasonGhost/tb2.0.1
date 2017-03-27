@@ -33,9 +33,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
         BaseListBean> implements InfoMainContract.InfoListView {
     public static final String BUNDLE_INFO_TYPE = "info_type";
     public static final String BUNDLE_INFO = "info";
-    private List<BaseListBean> mInfoList = new ArrayList<>();
     private String mInfoType = "1";
-    private ImageLoader mImageLoader;
 
     public static InfoListFragment newInstance(String params) {
         InfoListFragment fragment = new InfoListFragment();
@@ -50,7 +48,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
 
     @Override
     protected MultiItemTypeAdapter getAdapter() {
-        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getActivity(), mInfoList);
+        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getActivity(), mListDatas);
         adapter.addItemViewDelegate(new InfoBannerItem());
         adapter.addItemViewDelegate(new InfoListItem() {
             @Override
@@ -76,7 +74,8 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
         DaggerInfoListComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .infoListPresenterModule(new InfoListPresenterModule(this))
-                .build().inject(this);
+                .build()
+                .inject(this);
         mInfoType = getArguments().getString(BUNDLE_INFO_TYPE, "1");
 
         super.initData();
@@ -121,11 +120,6 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     @Override
     protected boolean showToolbar() {
         return false;
-    }
-
-    @Override
-    protected List requestCacheData(Long maxId, boolean isLoadMore) {
-        return null;
     }
 
     @Override

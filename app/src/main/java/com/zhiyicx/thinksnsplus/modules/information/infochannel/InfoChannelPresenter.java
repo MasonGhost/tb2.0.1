@@ -2,6 +2,8 @@ package com.zhiyicx.thinksnsplus.modules.information.infochannel;
 
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
+import com.zhiyicx.thinksnsplus.data.source.local.InfoTypeBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.InfoChannelRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.InfoMainRepository;
 
@@ -23,6 +25,9 @@ public class InfoChannelPresenter extends BasePresenter<InfoChannelConstract.Rep
     InfoChannelRepository mInfoChannelRepository;
 
     @Inject
+    InfoTypeBeanGreenDaoImpl mInfoTypeBeanGreenDao;
+
+    @Inject
     public InfoChannelPresenter(InfoChannelConstract.Reppsitory repository, InfoChannelConstract
             .View rootView) {
         super(repository, rootView);
@@ -31,6 +36,11 @@ public class InfoChannelPresenter extends BasePresenter<InfoChannelConstract.Rep
     @Inject
     void setupListeners() {
         mRootView.setPresenter(this);
+    }
+
+    @Override
+    public void updateLocalInfoType(InfoTypeBean infoTypeBean) {
+        mInfoTypeBeanGreenDao.updateSingleData(infoTypeBean);
     }
 
     @Override
@@ -55,4 +65,8 @@ public class InfoChannelPresenter extends BasePresenter<InfoChannelConstract.Rep
                 });
     }
 
+    @Override
+    public void handleSubscribe(String follows) {
+        mInfoChannelRepository.handleSubscribe(follows);
+    }
 }
