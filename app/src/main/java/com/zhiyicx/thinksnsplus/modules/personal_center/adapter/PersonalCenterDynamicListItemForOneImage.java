@@ -69,12 +69,14 @@ public class PersonalCenterDynamicListItemForOneImage extends PersonalCenterDyna
         int currentWith = getCurrenItemWith(part);
         if (dynamicBean.getFeed().getStorages() == null || dynamicBean.getFeed().getStorages().size() == 0) {// 本地图片
             BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(dynamicBean.getFeed().getLocalPhotos().get(0));
-            with = option.outWidth > currentWith ? currentWith : option.outWidth;
+//            with = option.outWidth > currentWith ? currentWith : option.outWidth;
+            with = currentWith;
             height = with * option.outHeight / option.outWidth;
             height = height > mImageMaxHeight ? mImageMaxHeight : height;
             proportion = ((with / option.outWidth) * 100);
         } else {
-            with = (int) dynamicBean.getFeed().getStorages().get(0).getWidth() > currentWith ? currentWith : (int) dynamicBean.getFeed().getStorages().get(0).getWidth();
+//            with = (int) dynamicBean.getFeed().getStorages().get(0).getWidth() > currentWith ? currentWith : (int) dynamicBean.getFeed().getStorages().get(0).getWidth();
+            with = currentWith;
             height = (int) (with * dynamicBean.getFeed().getStorages().get(0).getHeight() / dynamicBean.getFeed().getStorages().get(0).getWidth());
             height = height > mImageMaxHeight ? mImageMaxHeight : height;
             proportion = (int) ((with / dynamicBean.getFeed().getStorages().get(0).getWidth()) * 100);
@@ -92,6 +94,8 @@ public class PersonalCenterDynamicListItemForOneImage extends PersonalCenterDyna
         Glide.with(mContext)
                 .load(url)
                 .override(with, height)
+                .placeholder(R.drawable.shape_default_image)
+                .error(R.drawable.shape_default_image)
                 .into(view);
         if (dynamicBean.getFeed().getStorages() != null) {
             dynamicBean.getFeed().getStorages().get(positon).setPart(proportion);

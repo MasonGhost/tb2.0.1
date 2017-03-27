@@ -179,7 +179,6 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                             mRootView.getListDatas().set(0, data);// 置顶新消息
                         }
                         mRootView.refreshData();
-
                     }
 
                     @Override
