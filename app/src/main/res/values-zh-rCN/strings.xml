@@ -57,9 +57,10 @@
     <string name="vertify">认证</string>
     <string name="change_password">修改密码</string>
     <string name="clean_cache">清理缓存</string>
+    <string name="is_sure_clean_cache">确定清理缓存？</string>
     <string name="about_us">关于我们</string>
     <string name="login_out">退出登录</string>
-
+    <string name="is_sure_login_out">确定退出登录？</string>
     <string name="clean_success">删除成功</string>
     <string name="clean_failure">删除失败!</string>
     <string name="cache_zero_size">0.0B</string>
