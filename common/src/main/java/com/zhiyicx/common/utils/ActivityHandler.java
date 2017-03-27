@@ -36,7 +36,7 @@ public class ActivityHandler {
     }
 
     /**
-     * 添加Activity到堆栈
+     * 添加 Activity 到堆栈
      */
     public void addActivity(Activity activity) {
         if (activityStack == null) {
@@ -46,13 +46,19 @@ public class ActivityHandler {
     }
 
     /**
-     * 获取当前Activity（堆栈中最后一个压入的）
+     * 获取当前 Activity （堆栈中最后一个压入的）
      */
     public Activity currentActivity() {
         Activity activity = activityStack.lastElement();
         return activity;
     }
 
+    /**
+     * 通过 class 获取Activity
+     *
+     * @param cls
+     * @return
+     */
     public Activity getActivity(Class<?> cls) {
         for (Activity activity : activityStack) {
             if (activity.getClass().equals(cls)) {
@@ -81,12 +87,24 @@ public class ActivityHandler {
     }
 
     /**
-     * 结束指定类名的Activity
+     * 结束指定类名的 Activity
      */
     public void removeActivity(Class<?> cls) {
         for (Activity activity : activityStack) {
             if (activity.getClass().equals(cls)) {
                 removeActivity(activity);
+            }
+        }
+    }
+
+    /**
+     * 结束指定类名的Activity
+     */
+    public void removeCurrentTopActivity() {
+        Activity activity = activityStack.lastElement();
+        for (int i = 0; i < activityStack.size(); i++) {
+            if (null != activityStack.get(i) && activityStack.get(i) != activity) {
+                activityStack.get(i).finish();
             }
         }
     }
