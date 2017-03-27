@@ -12,6 +12,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:paddingBottom="@dimen/spacing_normal_large"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:paddingRight="@dimen/spacing_normal"
         android:paddingTop="@dimen/spacing_normal_large"
         android:textColor="@color/themeColor"
         android:textSize="@dimen/size_sub_title"

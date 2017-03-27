@@ -35,7 +35,7 @@ public class SettingsRepository implements SettingsContract.Repository {
             @Override
             public void call(Subscriber<? super String> subscriber) {
                 try {
-                    String dirSize = FileUtils.getDirSize(FileUtils.getCacheFile(context));
+                    String dirSize = FileUtils.getDirSize(FileUtils.getCacheFile(context, false));
 
                     subscriber.onNext(dirSize);//将数据传给观察者
                     subscriber.onCompleted();//通知观察者完成
@@ -53,7 +53,7 @@ public class SettingsRepository implements SettingsContract.Repository {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 try {
-                    boolean isDelete = FileUtils.deleteDir(FileUtils.getCacheFile(context));
+                    boolean isDelete = FileUtils.deleteDir(FileUtils.getCacheFile(context, false));
                     subscriber.onNext(isDelete);//将数据传给观察者
                     subscriber.onCompleted();//完成
                 } catch (Exception e) {

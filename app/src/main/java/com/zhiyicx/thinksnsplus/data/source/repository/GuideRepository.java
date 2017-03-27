@@ -33,7 +33,7 @@ public class GuideRepository implements GuideContract.Repository {
             @Override
             public void call(Subscriber<? super String> subscriber) {
                 try {
-                    String dirSize = FileUtils.getDirSize(FileUtils.getCacheFile(context));
+                    String dirSize = FileUtils.getDirSize(FileUtils.getCacheFile(context,false));
                     subscriber.onNext(dirSize);//将数据传给观察者
                     subscriber.onCompleted();//通知观察者完成
                 } catch (Exception e) {

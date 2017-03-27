@@ -10,6 +10,7 @@ import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 
@@ -90,6 +91,11 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
                 }
             }
         });
+        // 启动 app，如果本地没有数据，应跳到“热门”页面 关联 github  #113
+        if (AppApplication.AppComponentHolder.getAppComponent().dynamicBeanGreenDao().getFollowedDynamicList(System.currentTimeMillis()).size() == 0) {
+            mVpFragment.setCurrentItem(1);
+        }
+
     }
 
     @Override

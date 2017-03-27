@@ -251,12 +251,8 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             mPhotoViewAttacherNormal.update();
             return;
         }
-//        int with = (int) (imageBean.getWidth() > mScreenWith ? mScreenWith : FrameLayout.LayoutParams.MATCH_PARENT);
         int with = (int) (mScreenWith);
-        int height = (int) (imageBean.getHeight() > mScreenHeiht ? mScreenHeiht : FrameLayout.LayoutParams.WRAP_CONTENT);
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(with, height);
-        layoutParams.gravity = Gravity.CENTER;
-        mIvPager.setLayoutParams(layoutParams);
+        int height = (int) (with * imageBean.getHeight() / imageBean.getWidth());
 
         DrawableRequestBuilder thumbnailBuilder = Glide
                 .with(context)
@@ -268,6 +264,8 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                 .placeholder(R.drawable.shape_default_image)
                 .error(R.drawable.shape_default_image)
                 .thumbnail(thumbnailBuilder)
+                .centerCrop()
+                .override(with, height)
                 .into(new SimpleTarget<GlideDrawable>() {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
@@ -286,7 +284,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     // 加载原图:
     private void loadOriginImage(String imageUrl) {
         // 刚点击查看原图，可能会有一段时间，进行重定位请求，所以立即设置进度
-        mTvOriginPhoto.setText("0%/" + "100%");
+        mTvOriginPhoto.setText("0%");
         Glide.with(context)
                 .using(new ProgressModelLoader(new Handler() {
                     @Override
@@ -296,7 +294,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                             int totalReadBytes = msg.arg1;
                             int lengthBytes = msg.arg2;
                             int progressResult = (int) (((float) totalReadBytes / (float) lengthBytes) * 100);
-                            mTvOriginPhoto.setText(progressResult + "%/" + "100%");
+                            mTvOriginPhoto.setText(progressResult + "%");
                             LogUtils.i("progress-result:-->" + progressResult + " msg.arg1-->" + msg.arg1 + "  msg.arg2-->" +
                                     msg.arg2 + " 比例-->" + progressResult + "%/" + "100%");
                             if (progressResult == 100) {

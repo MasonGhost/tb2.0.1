@@ -1,26 +1,19 @@
 package com.zhiyicx.thinksnsplus.modules.follow_fans;
 
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
-import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
-import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.jetbrains.annotations.NotNull;
-import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -41,6 +34,9 @@ import rx.schedulers.Schedulers;
 public class FollowFansListPresenter extends BasePresenter<FollowFansListContract.Repository,
         FollowFansListContract.View> implements FollowFansListContract.Presenter {
     private FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
+
+    @Inject
+    UserInfoRepository mUserInfoRepository;
 
     @Inject
     public FollowFansListPresenter(FollowFansListContract.Repository repository,
@@ -117,40 +113,14 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
 
     @Override
     public void followUser(int index, FollowFansBean followFansBean) {
-        // 更新数据
-        followFansBean.setOrigin_follow_status(FollowFansBean.IFOLLOWED_STATE);
-        // 粉丝列表变化,关注数量+1
-        EventBus.getDefault().post(followFansBean, EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW);
-        // 后台通知服务器关注
-        BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
-        backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST);
-        backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_FOLLOW_USER);
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("user_id", followFansBean.getTargetUserId() + "");
-        backgroundRequestTaskBean.setParams(hashMap);
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
-        // 本地数据库和ui进行刷新
-        mFollowFansBeanGreenDao.insertOrReplace(followFansBean);
+        mUserInfoRepository.handleFollow(followFansBean);
         mRootView.upDateFollowFansState(index);
 
     }
 
     @Override
     public void cancleFollowUser(int index, FollowFansBean followFansBean) {
-        // 更新数据
-        followFansBean.setOrigin_follow_status(FollowFansBean.UNFOLLOWED_STATE);
-        // 粉丝列表变化,关注数量-1
-        EventBus.getDefault().post(followFansBean, EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW);
-        // 通知服务器
-        BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
-        backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
-        backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_CANCEL_FOLLOW_USER);
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("user_id", followFansBean.getTargetUserId() + "");
-        backgroundRequestTaskBean.setParams(hashMap);
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
-        // 本地数据库和ui进行刷新
-        mFollowFansBeanGreenDao.insertOrReplace(followFansBean);
+        mUserInfoRepository.handleFollow(followFansBean);
         mRootView.upDateFollowFansState(index);
     }
 

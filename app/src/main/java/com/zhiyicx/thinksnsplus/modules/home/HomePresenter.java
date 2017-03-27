@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.home;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.imsdk.entity.ChatRoomContainer;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
@@ -63,9 +62,7 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
 
     @Override
     public void onMessageReceived(Message message) {
-        if ((ActivityHandler.getInstance().currentActivity() instanceof HomeActivity)) {
-            setMessageTipVisable(true);
-        }
+        setMessageTipVisable(true);
         EventBus.getDefault().post(message, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED);
     }
 

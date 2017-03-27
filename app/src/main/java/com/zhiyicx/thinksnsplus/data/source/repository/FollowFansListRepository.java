@@ -1,11 +1,10 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import android.app.Application;
 import android.util.SparseArray;
 
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.GsonFollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -30,9 +29,9 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
     private FollowFansClient mFollowFansClient;
     protected UserInfoRepository mUserInfoRepository;
 
-    public FollowFansListRepository(ServiceManager serviceManager) {
+    public FollowFansListRepository(ServiceManager serviceManager, Application context) {
         mFollowFansClient = serviceManager.getFollowFansClient();
-        mUserInfoRepository = new UserInfoRepository(serviceManager);
+        mUserInfoRepository = new UserInfoRepository(serviceManager,context);
     }
 
     @Override

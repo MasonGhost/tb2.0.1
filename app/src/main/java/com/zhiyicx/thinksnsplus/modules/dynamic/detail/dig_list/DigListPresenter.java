@@ -1,25 +1,17 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list;
 
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
-import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
-import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
-import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.jetbrains.annotations.NotNull;
-import org.simple.eventbus.EventBus;
 
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -39,6 +31,8 @@ public class DigListPresenter extends BasePresenter<DigListContract.Repository, 
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
     @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
+    @Inject
+    UserInfoRepository mUserInfoRepository;
 
     @Inject
     public DigListPresenter(DigListContract.Repository repository, DigListContract.View rootView) {
@@ -68,30 +62,7 @@ public class DigListPresenter extends BasePresenter<DigListContract.Repository, 
 
     @Override
     public void handleFollowUser(int position, FollowFansBean followFansBean) {
-        BackgroundRequestTaskBean backgroundRequestTaskBean = null;
-        if (followFansBean.getOrigin_follow_status() == FollowFansBean.UNFOLLOWED_STATE) {
-            // 当前未关注，进行关注
-            followFansBean.setOrigin_follow_status(FollowFansBean.IFOLLOWED_STATE);
-            EventBus.getDefault().post(followFansBean, EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW);
-            // 进行后台任务请求
-            backgroundRequestTaskBean = new BackgroundRequestTaskBean();
-            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST);
-            backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_FOLLOW_USER);
-        } else {
-            // 已关注，取消关注
-            followFansBean.setOrigin_follow_status(FollowFansBean.UNFOLLOWED_STATE);
-            EventBus.getDefault().post(followFansBean, EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW);
-            // 进行后台任务请求
-            backgroundRequestTaskBean = new BackgroundRequestTaskBean();
-            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
-            backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_CANCEL_FOLLOW_USER);
-        }
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("user_id", followFansBean.getTargetUserId() + "");
-        backgroundRequestTaskBean.setParams(hashMap);
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
-        // 本地数据库和ui进行刷新
-        mFollowFansBeanGreenDao.insertOrReplace(followFansBean);
+        mUserInfoRepository.handleFollow(followFansBean);
         mRootView.upDataFollowState(position);
     }
 

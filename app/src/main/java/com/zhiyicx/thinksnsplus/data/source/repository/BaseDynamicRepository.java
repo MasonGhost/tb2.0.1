@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import android.app.Application;
 import android.content.Context;
 import android.util.SparseArray;
 
@@ -65,10 +66,10 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
 
 
     @Inject
-    public BaseDynamicRepository(ServiceManager serviceManager, Context context) {
+    public BaseDynamicRepository(ServiceManager serviceManager, Application context) {
         mContext = context;
         mDynamicClient = serviceManager.getDynamicClient();
-        mUserInfoRepository = new UserInfoRepository(serviceManager);
+        mUserInfoRepository = new UserInfoRepository(serviceManager,context);
         mDynamicBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicBeanGreenDao();
         mDynamicDetailBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicDetailBeanGreenDao();
         mDynamicCommentBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicCommentBeanGreenDao();

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.R;
@@ -44,6 +45,8 @@ public class CombinationButton extends FrameLayout {
         int leftTextColor = array.getColor(R.styleable.combinationBtn_leftTextColor, -1);
         int rightTextColor = array.getColor(R.styleable.combinationBtn_rightTextColor, -1);
         boolean showLine = array.getBoolean(R.styleable.combinationBtn_showLine, true);
+        int dividerLeftMargin = array.getDimensionPixelSize(R.styleable.combinationBtn_dividerLeftMargin, 0);
+        int dividerRightMargin = array.getDimensionPixelSize(R.styleable.combinationBtn_dividerRightMargin, 0);
         array.recycle();
         if (!TextUtils.isEmpty(leftText)) {
             mCombinedButtonLeftText.setText(leftText);
@@ -61,6 +64,8 @@ public class CombinationButton extends FrameLayout {
         mCombinedButtonImgRight.setImageDrawable(rightImage);
         if (showLine) {
             mVLine.setVisibility(VISIBLE);
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mVLine.getLayoutParams();
+            layoutParams.setMargins(dividerLeftMargin, 0, dividerRightMargin, 0);
         } else {
             mVLine.setVisibility(INVISIBLE);
         }

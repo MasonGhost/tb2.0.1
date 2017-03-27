@@ -1,13 +1,16 @@
 package com.zhiyicx.thinksnsplus.modules.settings;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.DialogUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
@@ -17,9 +20,9 @@ import com.zhiyicx.thinksnsplus.modules.settings.aboutus.AboutUsActivity;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import retrofit2.http.HEAD;
 import rx.functions.Action1;
 
-import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -41,8 +44,8 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
     @BindView(R.id.bt_about_us)
     CombinationButton mBtAboutUs;
 
-    private ActionPopupWindow mCleanCachePopupWindow;// 清理缓存选择弹框
-    private ActionPopupWindow mLoginOutPopupWindow;// 退出登录选择弹框
+    private AlertDialog.Builder mLoginoutDialogBuilder;// 退出登录选择弹框
+    private AlertDialog.Builder mCleanCacheDialogBuilder;// 清理缓存选择弹框
 
     public static SettingsFragment newInstance() {
         SettingsFragment fragment = new SettingsFragment();
@@ -140,7 +143,6 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                     @Override
                     public void call(Void aVoid) {
                         initCleanCachePopupWindow();
-                        mCleanCachePopupWindow.show();
                     }
                 });
         // 关于我们
@@ -161,7 +163,6 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                     @Override
                     public void call(Void aVoid) {
                         initLoginOutPopupWindow();
-                        mLoginOutPopupWindow.show();
                     }
                 });
     }
@@ -171,63 +172,38 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
      * 初始化清理缓存选择弹框
      */
     private void initCleanCachePopupWindow() {
-        if (mCleanCachePopupWindow != null) {
-            return;
+
+        if (mCleanCacheDialogBuilder == null) {
+            mCleanCacheDialogBuilder = new AlertDialog.Builder(getActivity());
         }
-        mCleanCachePopupWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.clean_cache))
-                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
-                .bottomStr(getString(R.string.cancel))
-                .isOutsideTouch(true)
-                .isFocus(true)
-                .backgroundAlpha(POPUPWINDOW_ALPHA)
-                .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItem1Clicked() {
-                        mPresenter.cleanCache();
-                    }
-                })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onBottomClicked() {
-                        mCleanCachePopupWindow.hide();
-                    }
-                })
-                .build();
+        DialogUtils.getDialog(mCleanCacheDialogBuilder, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                mPresenter.cleanCache();
+            }
+        }, getString(R.string.clean_cache), getString(R.string.is_sure_clean_cache), getString(R.string.cancel), getString(R.string.sure));
+        mCleanCacheDialogBuilder.create().show();
     }
 
     /**
      * 初始化清理缓存选择弹框
      */
     private void initLoginOutPopupWindow() {
-        if (mLoginOutPopupWindow != null) {
-            return;
+
+        if (mLoginoutDialogBuilder == null) {
+            mLoginoutDialogBuilder = new AlertDialog.Builder(getActivity());
         }
-        mLoginOutPopupWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.login_out))
-                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
-                .bottomStr(getString(R.string.cancel))
-                .isOutsideTouch(true)
-                .isFocus(true)
-                .backgroundAlpha(POPUPWINDOW_ALPHA)
-                .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItem1Clicked() {
-                        if(mPresenter.loginOut()){
-                            startActivity(new Intent(getActivity(), LoginActivity.class));
-                        }
-                        mLoginOutPopupWindow.hide();
-                    }
-                })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onBottomClicked() {
-                        mLoginOutPopupWindow.hide();
-                    }
-                })
-                .build();
+        DialogUtils.getDialog(mLoginoutDialogBuilder, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                if (mPresenter.loginOut()) {
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                }
+            }
+        }, getString(R.string.login_out), getString(R.string.is_sure_login_out), getString(R.string.cancel), getString(R.string.sure));
+        mLoginoutDialogBuilder.create().show();
     }
 
 }

@@ -250,6 +250,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
         mImageLoader.loadImage(mContext, GlideImageConfig.builder()
                 .url(url)
                 .imagerView(view)
+                .placeholder(R.drawable.shape_default_image)
+                .errorPic(R.drawable.shape_default_image)
                 .build());
         if (dynamicBean.getFeed().getStorages() != null) {
             dynamicBean.getFeed().getStorages().get(positon).setPart(propPart);
@@ -264,7 +266,6 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                         }
                     }
                 });
-        view.setBackgroundColor(mContext.getResources().getColor(R.color.themeColor));
     }
 
 

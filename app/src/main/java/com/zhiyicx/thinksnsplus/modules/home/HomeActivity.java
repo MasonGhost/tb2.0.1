@@ -22,12 +22,6 @@ public class HomeActivity extends TSActivity {
 
     @Override
     protected void componentInject() {
-//       DaggerRegisterComponent
-//               .builder()
-//               .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-//               .registerPresenterModule(new RegisterPresenterModule((RegisterContract.View) mContanierFragment))
-//               .build()
-//               .inject(this);
     }
 
     @Override
