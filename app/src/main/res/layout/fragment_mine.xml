@@ -72,7 +72,18 @@
                     android:src="@mipmap/ic_arrow_smallgrey"/>
             </RelativeLayout>
 
-            <ImageView style="@style/style_divider_horizontal_light"/>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white">
+
+                <View
+                    style="@style/style_divider_horizontal_light"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_line"
+                    android:layout_marginLeft="@dimen/spacing_normal"
+                    android:layout_marginRight="@dimen/spacing_normal"/>
+            </FrameLayout>
             <!--粉丝，关注-->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -148,6 +159,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/full_button_height"
                 android:layout_marginTop="@dimen/spacing_mid"
+                app:dividerLeftMargin="@dimen/spacing_normal"
+                app:dividerRightMargin="@dimen/spacing_normal"
                 app:leftImage="@mipmap/ico_me_homepage"
                 app:leftText="@string/personal_page"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
@@ -158,6 +171,8 @@
                 android:id="@+id/bt_ranking"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/full_button_height"
+                app:dividerLeftMargin="@dimen/spacing_normal"
+                app:dividerRightMargin="@dimen/spacing_normal"
                 app:leftImage="@mipmap/ico_me_ranklist"
                 app:leftText="@string/ranking"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"></com.zhiyicx.baseproject.widget.button.CombinationButton>
@@ -167,6 +182,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/full_button_height"
                 android:visibility="gone"
+                app:dividerLeftMargin="@dimen/spacing_normal"
+                app:dividerRightMargin="@dimen/spacing_normal"
                 app:leftImage="@mipmap/ico_me_goldcoin"
                 app:leftText="@string/gold"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
@@ -178,6 +195,8 @@
                 android:layout_height="@dimen/full_button_height"
                 android:layout_marginTop="@dimen/spacing_mid"
                 android:visibility="gone"
+                app:dividerLeftMargin="@dimen/spacing_normal"
+                app:dividerRightMargin="@dimen/spacing_normal"
                 app:leftImage="@mipmap/ico_me_advance"
                 app:leftText="@string/suggetion"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"></com.zhiyicx.baseproject.widget.button.CombinationButton>
@@ -187,6 +206,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/full_button_height"
                 android:visibility="gone"
+                app:dividerLeftMargin="@dimen/spacing_normal"
+                app:dividerRightMargin="@dimen/spacing_normal"
                 app:leftImage="@mipmap/ico_me_question"
                 app:leftText="@string/question_answer"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"></com.zhiyicx.baseproject.widget.button.CombinationButton>

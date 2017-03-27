@@ -26,6 +26,9 @@
         <attr name="rightTextColor" format="reference|color"></attr>
         <!--是否显示分割线-->
         <attr name="showLine" format="reference|boolean"></attr>
+        <!--分割线左右间距-->
+        <attr name="dividerLeftMargin" format="reference|dimension"></attr>
+        <attr name="dividerRightMargin" format="reference|dimension"></attr>
     </declare-styleable>
     <!--组合输入框和按钮文字-->
     <declare-styleable name="inputLimitView">
