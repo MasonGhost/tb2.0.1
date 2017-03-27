@@ -159,6 +159,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
             mTvErrorTip.setText("");
             mEtLoginPassword.setText("");
             mEtLoginPhone.setText("");
+            mEtLoginPhone.requestFocus();
             Intent it = new Intent();
             it.setClass(getActivity(), HomeActivity.class);
             startActivity(it);
