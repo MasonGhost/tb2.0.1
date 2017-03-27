@@ -134,4 +134,14 @@ public class TimeTest {
         System.out.println("b = " + b);
 
     }
+
+    /**
+     * summary
+     * steps
+     * expected
+     */
+    @Test
+    public void testChar() throws Exception {
+        System.out.println("testChar= " + "帅".getBytes().length);
+    }
 }

@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -121,6 +122,9 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
 
     @Override
     public void changUserInfo(final HashMap<String, String> userInfos) {
+        if (!checkChangedUserInfo(userInfos)) {
+            return;
+        }
         Subscription subscription = mRepository.changeUserInfo(userInfos)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -136,12 +140,12 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                     @Override
                     protected void onFailure(String message) {
                         // 修改失败，好尴尬
-                        mRootView.setChangeUserInfoState(false, message);
+                        mRootView.setChangeUserInfoState(false, "");
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        mRootView.setChangeUserInfoState(false, throwable.getMessage());
+                        mRootView.setChangeUserInfoState(false,"");
                     }
                 });
         addSubscrebe(subscription);
@@ -169,25 +173,25 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
         AuthBean authBean = mIAuthRepository.getAuthBean();
         UserInfoBean mUserInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache((long) authBean
                 .getUser_id());
-        if (changeUserInfo.containsKey("name")) {
-            mUserInfoBean.setName(changeUserInfo.get("name"));
+        if (changeUserInfo.containsKey(UserInfoFragment.USER_NAME)) {
+            mUserInfoBean.setName(changeUserInfo.get(UserInfoFragment.USER_NAME));
         }
-        if (changeUserInfo.containsKey("sex")) {
-            mUserInfoBean.setSex(changeUserInfo.get("sex"));
+        if (changeUserInfo.containsKey(UserInfoFragment.USER_SEX)) {
+            mUserInfoBean.setSex(changeUserInfo.get(UserInfoFragment.USER_SEX));
         }
-        if (changeUserInfo.containsKey("location")) {
-            mUserInfoBean.setLocation(changeUserInfo.get("location"));
-            mUserInfoBean.setProvince(changeUserInfo.get("province"));
-            mUserInfoBean.setCity(changeUserInfo.get("city"));
-            if (changeUserInfo.containsKey("area")) {
-                mUserInfoBean.setArea(changeUserInfo.get("area"));
+        if (changeUserInfo.containsKey(UserInfoFragment.USER_LOCATION)) {
+            mUserInfoBean.setLocation(changeUserInfo.get(UserInfoFragment.USER_LOCATION));
+            mUserInfoBean.setProvince(changeUserInfo.get(UserInfoFragment.USER_PROVINCE));
+            mUserInfoBean.setCity(changeUserInfo.get(UserInfoFragment.USER_CITY));
+            if (changeUserInfo.containsKey(UserInfoFragment.USER_AREA)) {
+                mUserInfoBean.setArea(changeUserInfo.get(UserInfoFragment.USER_AREA));
             }
         }
-        if (changeUserInfo.containsKey("intro")) {
-            mUserInfoBean.setIntro(changeUserInfo.get("intro"));
+        if (changeUserInfo.containsKey(UserInfoFragment.USER_INTRO)) {
+            mUserInfoBean.setIntro(changeUserInfo.get(UserInfoFragment.USER_INTRO));
         }
-        if (changeUserInfo.containsKey("storage_task_id")) {
-            mUserInfoBean.setAvatar(changeUserInfo.get("localImgPath"));
+        if (changeUserInfo.containsKey(UserInfoFragment.USER_STORAGE_TASK_ID)) {
+            mUserInfoBean.setAvatar(changeUserInfo.get(UserInfoFragment.USER_LOCAL_IMG_PATH));
         }
         // 提示用户主页更新用户信息
         List<UserInfoBean> userInfoBeanList = new ArrayList<>();
@@ -195,6 +199,45 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
         EventBus.getDefault().post(userInfoBeanList, EventBusTagConfig.EVENT_USERINFO_UPDATE);
         // 修改数据库内容
         mUserInfoBeanGreenDao.insertOrReplace(mUserInfoBean);
+    }
+
+    /**
+     * 修改用户信息前，校验信息
+     *
+     * @return 返回true，表示可以通知服务器
+     */
+    private boolean checkChangedUserInfo(HashMap<String, String> userInfos) {
+        if (userInfos != null) {
+            // 如果修改信息包含用户名，并且用户名无法通过检测，返回false
+            if (userInfos.containsKey(UserInfoFragment.USER_NAME)) {
+                if (!checkUsername(userInfos.get(UserInfoFragment.USER_NAME))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 检查用户名是否小于最小长度,不能以数字开头
+     *
+     * @param name
+     * @return
+     */
+    private boolean checkUsername(String name) {
+        if (!RegexUtils.isUsernameLength(name, mContext.getResources().getInteger(R.integer.username_min_length),mContext.getResources().getInteger(R.integer.username_max_length))) {
+            mRootView.setChangeUserInfoState(false, mContext.getString(R.string.username_toast_hint));
+            return false;
+        }
+        if (RegexUtils.isUsernameNoNumberStart(name)) {// 数字开头
+            mRootView.setChangeUserInfoState(false, mContext.getString(R.string.username_toast_not_number_start_hint));
+            return false;
+        }
+        if (!RegexUtils.isUsername(name)) {// 用户名只能包含数字、字母和下划线
+            mRootView.setChangeUserInfoState(false, mContext.getString(R.string.username_toast_not_symbol_hint));
+            return false;
+        }
+        return true;
     }
 
 

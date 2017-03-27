@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.zhiyicx.common.config.ConstantConfig.REGEX_DATE;
+import static com.zhiyicx.common.config.ConstantConfig.REGEX_DOUBLE_BYTE_CHAR;
 import static com.zhiyicx.common.config.ConstantConfig.REGEX_EMAIL;
 import static com.zhiyicx.common.config.ConstantConfig.REGEX_ID_CARD15;
 import static com.zhiyicx.common.config.ConstantConfig.REGEX_ID_CARD18;
@@ -134,8 +135,10 @@ public class RegexUtils {
      * @param input 待验证文本
      * @return {@code true}: 匹配<br>{@code false}: 不匹配
      */
-    public static boolean isUsernameLength(CharSequence input, int length) {
-        return input.toString().getBytes().length >= length;
+    public static boolean isUsernameLength(CharSequence input, int minLength, int maxLength) {
+        int charLength = "帅".getBytes().length;
+        int length = input.toString().getBytes().length;
+        return length >= minLength * charLength && length <= maxLength * charLength;
     }
 
     /**
