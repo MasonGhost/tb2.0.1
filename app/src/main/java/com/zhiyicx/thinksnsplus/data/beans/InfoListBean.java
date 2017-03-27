@@ -10,6 +10,7 @@ import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
+import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.io.Serializable;
@@ -29,6 +30,7 @@ public class InfoListBean extends BaseListBean implements Serializable{
     private static final long serialVersionUID = 1L;
 
     @Id
+    @Unique
     private Long id;
     @Convert(converter = InfoListConverter.class,columnType = String.class)
     private List<ListBean> list;
