@@ -32,6 +32,7 @@ public class InfoListBean extends BaseListBean implements Serializable{
     @Id
     @Unique
     private Long id;
+    private int info_type;
     @Convert(converter = InfoListConverter.class,columnType = String.class)
     private List<ListBean> list;
     @Convert(converter = InfoBannnerConverter.class,columnType = String.class)
@@ -69,6 +70,12 @@ public class InfoListBean extends BaseListBean implements Serializable{
         private String from;
         private String updated_at;
         private StorageBean storage;
+
+        @Override
+        public String toString() {
+            return ""+id+"\n"+title+"\n"+"is_collection_news:"+(is_collection_news==1)
+                    +"\n"+from+"\n"+updated_at;
+        }
 
         public int getIs_collection_news() {
             return is_collection_news;
@@ -443,6 +450,14 @@ public class InfoListBean extends BaseListBean implements Serializable{
         this.id = id;
     }
 
+    public int getInfo_type() {
+        return this.info_type;
+    }
+
+    public void setInfo_type(int info_type) {
+        this.info_type = info_type;
+    }
+
     public InfoListBean() {
     }
 
@@ -452,9 +467,10 @@ public class InfoListBean extends BaseListBean implements Serializable{
         this.recommend = in.createTypedArrayList(RecommendBean.CREATOR);
     }
 
-    @Generated(hash = 480628717)
-    public InfoListBean(Long id, List<ListBean> list, List<RecommendBean> recommend) {
+    @Generated(hash = 1580739463)
+    public InfoListBean(Long id, int info_type, List<ListBean> list, List<RecommendBean> recommend) {
         this.id = id;
+        this.info_type = info_type;
         this.list = list;
         this.recommend = recommend;
     }

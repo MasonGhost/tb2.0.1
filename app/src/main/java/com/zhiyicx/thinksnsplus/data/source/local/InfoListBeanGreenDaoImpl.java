@@ -78,4 +78,24 @@ public class InfoListBeanGreenDaoImpl extends CommonCacheImpl<InfoListBean> {
         }
         return mInfoListBeanDao.insertOrReplace(newData);
     }
+
+    public InfoListBean getInfoListByInfoType(int info_type) {
+        List<InfoListBean> infoListBeen = mInfoListBeanDao.queryBuilder()
+                .where(InfoListBeanDao.Properties.Info_type.eq(info_type))
+                .list();
+        if (infoListBeen.isEmpty()) {
+            return null;
+        }
+        return infoListBeen.get(0);
+    }
+
+    public void saveCollect(int info_type, int info_id, int is_collection_news) {
+        InfoListBean infoListBean = getInfoListByInfoType(info_type);
+        for (InfoListBean.ListBean data : infoListBean.getList()) {
+            if (data.getId() == info_id) {
+                data.setIs_collection_news(is_collection_news);
+            }
+        }
+        insertOrReplace(infoListBean);
+    }
 }

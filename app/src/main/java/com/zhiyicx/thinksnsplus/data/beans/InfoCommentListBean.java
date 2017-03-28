@@ -38,6 +38,7 @@ public class InfoCommentListBean extends BaseListBean {
     private Long _id;
     @Unique
     private int id = -1;
+    private int info_id = -1;// 自己创建的，用于记录隶属于哪一条资讯。
     private String created_at;
     private String comment_content;
     private long user_id;
@@ -49,6 +50,11 @@ public class InfoCommentListBean extends BaseListBean {
     @ToOne(joinProperty = "reply_to_user_id")
     private UserInfoBean toUserInfoBean;
     private int state = SEND_SUCCESS;
+
+    @Override
+    public String toString() {
+        return ""+id+"\n"+comment_content;
+    }
 
     public int getState() {
         return state;
@@ -194,6 +200,13 @@ public class InfoCommentListBean extends BaseListBean {
         myDao.update(this);
     }
 
+    public int getInfo_id() {
+        return this.info_id;
+    }
+
+    public void setInfo_id(int info_id) {
+        this.info_id = info_id;
+    }
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 841333318)
     public void __setDaoSession(DaoSession daoSession) {
@@ -215,11 +228,12 @@ public class InfoCommentListBean extends BaseListBean {
         this.state = in.readInt();
     }
 
-    @Generated(hash = 710570335)
-    public InfoCommentListBean(Long _id, int id, String created_at, String comment_content,
-                               long user_id, long reply_to_user_id, long comment_mark, int state) {
+    @Generated(hash = 884472755)
+    public InfoCommentListBean(Long _id, int id, int info_id, String created_at, String comment_content,
+            long user_id, long reply_to_user_id, long comment_mark, int state) {
         this._id = _id;
         this.id = id;
+        this.info_id = info_id;
         this.created_at = created_at;
         this.comment_content = comment_content;
         this.user_id = user_id;

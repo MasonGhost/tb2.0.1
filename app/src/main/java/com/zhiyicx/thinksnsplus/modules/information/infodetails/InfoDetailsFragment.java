@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.information.infodetails;
 
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -12,6 +13,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -29,8 +31,12 @@ import butterknife.BindView;
 import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
+import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO;
+import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment
+        .BUNDLE_INFO;
+import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment
+        .BUNDLE_INFO_TYPE;
 
 /**
  * @Author Jliuer
@@ -61,6 +67,8 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @BindView(R.id.ll_bottom_menu_container)
     ViewGroup mLLBottomMenuContainer;
 
+    private ActionPopupWindow mDeletCommentPopWindow;
+
     /**
      * 传入的资讯信息
      */
@@ -86,7 +94,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         super.initView(rootView);
 
         mInfoMation = (InfoListBean.ListBean) getArguments().getSerializable(BUNDLE_INFO);
-        setCollect(mInfoMation.getIs_collection_news() == 1);
 
         mTvToolbarCenter.setVisibility(View.VISIBLE);
         mTvToolbarCenter.setText(getString(R.string.info_details));
@@ -95,6 +102,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         initBottomToolStyle();
         initBottomToolListener();
         initListener();
+        setCollect(mInfoMation.getIs_collection_news() == 1);
     }
 
     @Override
@@ -150,6 +158,16 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     public Long getNewsId() {
         return (long) mInfoMation.getId();
+    }
+
+    @Override
+    public int getInfoType() {
+        return Integer.valueOf(getArguments().getString(BUNDLE_INFO_TYPE));
+    }
+
+    @Override
+    public InfoListBean.ListBean getCurrentInfo() {
+        return mInfoMation;
     }
 
     @Override
@@ -258,6 +276,34 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         DeviceUtils.showSoftKeyboard(getActivity(), mIlvComment.getEtContent());
     }
 
+    /**
+     * 初始化评论删除选择弹框
+     */
+    private void initLoginOutPopupWindow(final InfoCommentListBean data) {
+        mDeletCommentPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.dynamic_list_delete_comment))
+                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+                        mPresenter.deleteComment(data);
+                        mDeletCommentPopWindow.hide();
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mDeletCommentPopWindow.hide();
+                    }
+                })
+                .build();
+    }
+
     private class WebEvent implements InfoCommentAdapter.OnWebEventListener {
         @Override
         public void onWebImageLongClick(String mLongClickUrl) {
@@ -283,11 +329,16 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
             if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth()
                     .getUser_id()) {// 自己的评论
-
+                if (mListDatas.get(position).getId() != -1) {
+                    initLoginOutPopupWindow(mListDatas.get(position));
+                    mDeletCommentPopWindow.show();
+                } else {
+                    return;
+                }
             } else {
                 mReplyUserId = (int) mListDatas.get(position).getUser_id();
                 showCommentView();
-                String contentHint =getString(R.string.default_input_hint);
+                String contentHint = getString(R.string.default_input_hint);
                 if (mListDatas.get(position).getReply_to_user_id() != mInfoMation.getId()) {
                     contentHint = getString(R.string.reply, mListDatas.get(position).getUser_id()
                             + "");

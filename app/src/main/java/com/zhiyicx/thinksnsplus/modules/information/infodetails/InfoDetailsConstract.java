@@ -6,6 +6,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 
 import java.util.List;
 
@@ -25,6 +26,8 @@ public interface InfoDetailsConstract {
     interface View extends ITSListView<InfoCommentListBean,Presenter> {
         Long getNewsId();
         void setCollect(boolean isCollected);
+        InfoListBean.ListBean getCurrentInfo();
+        int getInfoType();
     }
 
     interface Presenter extends ITSListPresenter<InfoCommentListBean>{
@@ -34,6 +37,8 @@ public interface InfoDetailsConstract {
         void shareInfo();
 
         void handleCollect(boolean isCollected, final String news_id);
+
+        void deleteComment(InfoCommentListBean data);
     }
 
     interface Repository{
@@ -45,5 +50,7 @@ public interface InfoDetailsConstract {
 
         void sendComment(String comment_content,Long news_id,
                          int reply_to_user_id,Long comment_mark);
+
+        void deleteComment(int news_id,int comment_id);
     }
 }
