@@ -162,6 +162,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
 
     }
 
+
     @Override
     public void deletConversation(MessageItemBean messageItemBean) {
         ConversationDao.getInstance(mContext).delConversation(messageItemBean.getConversation().getCid(), messageItemBean.getConversation().getType());
@@ -245,8 +246,14 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGETIMEOUT)
-    private void onMessageTimeout(Message message) {
+    private void onMessaeTimeout(Message message) {
 
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONVERSATIONCRATED)
+    private void onConversationCreated(MessageItemBean messageItemBean) {
+        mRootView.getListDatas().add(0, messageItemBean);
+        mRootView.refreshData();
     }
 
 }
