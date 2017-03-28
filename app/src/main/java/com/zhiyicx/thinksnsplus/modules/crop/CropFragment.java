@@ -29,6 +29,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.trycatch.mysnackbar.Prompt;
+import com.trycatch.mysnackbar.TSnackbar;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropActivity;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
@@ -70,6 +72,8 @@ public class CropFragment extends TSFragment {
     @BindView(R.id.ucrop_photobox)
     FrameLayout mUcropPhotobox;
 
+    private TSnackbar mTSnackbar;
+    private ViewGroup viewGroup;
     public static final int DEFAULT_COMPRESS_QUALITY = 90;
     public static final Bitmap.CompressFormat DEFAULT_COMPRESS_FORMAT = Bitmap.CompressFormat.JPEG;
 
@@ -104,7 +108,7 @@ public class CropFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
-
+        viewGroup = (ViewGroup) getActivity().findViewById(android.R.id.content).getRootView();
     }
 
     public static CropFragment initFragment(Bundle bundle) {
@@ -305,19 +309,32 @@ public class CropFragment extends TSFragment {
     }
 
     protected void cropAndSaveImage() {
+
+        TSnackbar.make(viewGroup, R.string.crop_ing, TSnackbar.LENGTH_INDEFINITE)
+                .setPromptThemBackground(Prompt.SUCCESS)
+                .addIconProgressLoading(0, true, false)
+                .show();
         mBlockingView.setClickable(true);
         mGestureCropImageView.cropAndSaveImage(mCompressFormat, mCompressQuality, new BitmapCropCallback() {
 
             @Override
             public void onBitmapCropped(@NonNull Uri resultUri, int imageWidth, int imageHeight) {
+
+                TSnackbar.make(viewGroup, R.string.crop_success, TSnackbar.LENGTH_SHORT)
+                        .setPromptThemBackground(Prompt.SUCCESS)
+                        .show();
+
                 setResultUri(resultUri, mGestureCropImageView.getTargetAspectRatio(), imageWidth, imageHeight);
                 mActivity.finish();
             }
 
             @Override
             public void onCropFailure(@NonNull Throwable t) {
+
+                TSnackbar.make(viewGroup, R.string.crop_failure, TSnackbar.LENGTH_SHORT)
+                        .setPromptThemBackground(Prompt.ERROR)
+                        .show();
                 setResultError(t);
-                mActivity.finish();
             }
         });
     }
@@ -334,4 +351,5 @@ public class CropFragment extends TSFragment {
     protected void setResultError(Throwable throwable) {
         mActivity.setResult(UCrop.RESULT_ERROR, new Intent().putExtra(UCrop.EXTRA_ERROR, throwable));
     }
+
 }

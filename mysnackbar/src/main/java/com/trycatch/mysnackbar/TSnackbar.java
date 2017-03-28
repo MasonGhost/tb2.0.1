@@ -367,7 +367,7 @@ public final class TSnackbar {
 
     public static TSnackbar getTSnackBar(TSnackbar tSnackbar, ViewGroup viewGroup, @NonNull CharSequence text, int duration, int appearDirection) {
         if (tSnackbar == null) {
-            tSnackbar = TSnackbar.make(viewGroup, text, TSnackbar.LENGTH_LONG, appearDirection);
+            tSnackbar = TSnackbar.make(viewGroup, text, duration, appearDirection);
         } else {
             tSnackbar.setText(text);
             tSnackbar.setDuration(duration);

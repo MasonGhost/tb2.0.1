@@ -308,22 +308,22 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         // 上传成功，可以进行修改
         switch (upLoadState) {
             case -1:
-                mTSnackbar = TSnackbar.getTSnackBar(mTSnackbar, viewGroup, getString(R.string.update_head_failure), TSnackbar.LENGTH_SHORT, TSnackbar.APPEAR_FROM_TOP_TO_DOWN)
-                        .setPromptThemBackground(Prompt.ERROR);
-                mTSnackbar.show();
+                TSnackbar.make(viewGroup, R.string.update_head_failure, TSnackbar.LENGTH_SHORT)
+                        .setPromptThemBackground(Prompt.ERROR)
+                        .show();
                 break;
             case 0:
-                mTSnackbar = TSnackbar.getTSnackBar(mTSnackbar, viewGroup, getString(R.string.update_head_ing), TSnackbar.LENGTH_INDEFINITE, TSnackbar.APPEAR_FROM_TOP_TO_DOWN)
+                TSnackbar.make(viewGroup, R.string.update_head_ing, TSnackbar.LENGTH_INDEFINITE)
                         .setPromptThemBackground(Prompt.SUCCESS)
-                        .addIconProgressLoading(0, true, false);
-                mTSnackbar.show();
+                        .addIconProgressLoading(0, true, false)
+                        .show();
                 break;
             case 1:
                 upLoadCount++;
                 upDateHeadIconStorageId = taskId;
-                mTSnackbar = TSnackbar.getTSnackBar(mTSnackbar, viewGroup, getString(R.string.update_head_success), TSnackbar.LENGTH_SHORT, TSnackbar.APPEAR_FROM_TOP_TO_DOWN)
-                        .setPromptThemBackground(Prompt.SUCCESS);
-                mTSnackbar.show();
+                TSnackbar.make(viewGroup, R.string.update_head_success, TSnackbar.LENGTH_SHORT)
+                        .setPromptThemBackground(Prompt.SUCCESS)
+                        .show();
                 break;
             default:
         }
@@ -335,21 +335,21 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         switch (changeUserInfoState) {
             case -1:
                 message = TextUtils.isEmpty(message) ? getString(R.string.edit_userinfo_failure) : message;
-                mTSnackbar = TSnackbar.getTSnackBar(mTSnackbar, viewGroup, message, TSnackbar.LENGTH_SHORT, TSnackbar.APPEAR_FROM_TOP_TO_DOWN)
-                        .setPromptThemBackground(Prompt.ERROR);
-                mTSnackbar.show();
+                TSnackbar.make(viewGroup, message, TSnackbar.LENGTH_SHORT)
+                        .setPromptThemBackground(Prompt.ERROR)
+                        .show();
+
                 break;
             case 0:
-                mTSnackbar = TSnackbar.getTSnackBar(mTSnackbar, viewGroup, getString(R.string.edit_userinfo_ing), TSnackbar.LENGTH_INDEFINITE, TSnackbar.APPEAR_FROM_TOP_TO_DOWN)
+                TSnackbar.make(viewGroup, R.string.edit_userinfo_ing, TSnackbar.LENGTH_SHORT)
                         .setPromptThemBackground(Prompt.SUCCESS)
-                        .addIconProgressLoading(0, true, false);
-
-                mTSnackbar.show();
+                        .addIconProgressLoading(0, true, false)
+                        .show();
                 break;
             case 1:
-                mTSnackbar = TSnackbar.getTSnackBar(mTSnackbar, viewGroup, getString(R.string.edit_userinfo_success), TSnackbar.LENGTH_SHORT, TSnackbar.APPEAR_FROM_TOP_TO_DOWN)
-                        .setPromptThemBackground(Prompt.SUCCESS);
-                mTSnackbar.show();
+                TSnackbar.make(viewGroup, R.string.edit_userinfo_success, TSnackbar.LENGTH_SHORT)
+                        .setPromptThemBackground(Prompt.SUCCESS)
+                        .show();
                 getActivity().finish();
                 break;
             default:

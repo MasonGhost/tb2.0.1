@@ -68,6 +68,10 @@
 
     <!--裁剪-->
     <string name="crop_head_icon">更换头像</string>
+    <string name="crop_bg_cover">更换封面</string>
+    <string name="crop_ing">图片裁剪中...</string>
+    <string name="crop_success">图片裁剪成功</string>
+    <string name="crop_failure">图片裁剪失败</string>
     <!--相册-->
     <string name="album_list">相册</string>
     <string name="preview">预览</string>
