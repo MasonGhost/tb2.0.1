@@ -18,10 +18,12 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.BackgroundRequestTaskBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.InfoCommentListBeanDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
@@ -48,6 +50,7 @@ import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_DYNAMIC_LIST;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_INFO_LIST;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_DYNAMIC_TO_LIST;
 
 /**
@@ -82,6 +85,8 @@ public class BackgroundTaskHandler {
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
     @Inject
     DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
+    @Inject
+    InfoCommentListBeanDaoImpl mInfoCommentListBeanDao;
 
     private Queue<BackgroundRequestTaskBean> mTaskBeanConcurrentLinkedQueue = new ConcurrentLinkedQueue<>();// 线程安全的队列
 
@@ -257,6 +262,9 @@ public class BackgroundTaskHandler {
              */
             case SEND_COMMENT:
                 sendComment(backgroundRequestTaskBean);
+                break;
+            case SEND_INFO_COMMENT:
+                sendInfoComment(backgroundRequestTaskBean);
                 break;
             default:
         }
@@ -505,6 +513,46 @@ public class BackgroundTaskHandler {
                         dynamicCommentBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
                         EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
+                    }
+                });
+
+    }
+
+    /**
+     * 处理资讯评论发送的后台任务
+     */
+    private void sendInfoComment(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
+
+        final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
+        final Long commentMark = (Long) params.get("comment_mark");
+        final InfoCommentListBean infoCommentListBean = mInfoCommentListBeanDao.getCommentByCommentMark
+                (commentMark);
+        // 发送动态到动态列表：状态为发送中
+        mServiceManager.getCommonClient()
+                .handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
+                .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
+                .subscribe(new BaseSubscribe<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                        infoCommentListBean.setId(((Double) data).intValue());
+                        infoCommentListBean.setState(DynamicBean.SEND_SUCCESS);
+                        mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
+                        EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
+                    }
+
+                    @Override
+                    protected void onFailure(String message) {
+                        infoCommentListBean.setState(DynamicBean.SEND_ERROR);
+                        mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
+                        EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        infoCommentListBean.setState(DynamicBean.SEND_ERROR);
+                        mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
+                        EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
                     }
                 });
 
