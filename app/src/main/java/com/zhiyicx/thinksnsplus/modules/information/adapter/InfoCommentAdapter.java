@@ -320,10 +320,12 @@ public class InfoCommentAdapter extends MultiItemTypeAdapter<InfoCommentListBean
             AppApplication.AppComponentHolder.getAppComponent()
                     .imageLoader()
                     .loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
-                            .url(ImageUtils.imagePathConvert(infoCommentListBean.getFromUserInfoBean()
+                            .url(ImageUtils.imagePathConvert(infoCommentListBean
+                                    .getFromUserInfoBean()
                                     .getAvatar(), ImageZipConfig.IMAGE_26_ZIP))
                             .placeholder(R.drawable.shape_default_image_circle)
-                            .transformation(new GlideCircleTransform(holder.getConvertView().getContext()))
+                            .transformation(new GlideCircleTransform(holder.getConvertView()
+                                    .getContext()))
                             .errorPic(R.drawable.shape_default_image_circle)
                             .imagerView((ImageView) holder.getView(R.id.iv_headpic))
                             .build()
@@ -385,8 +387,8 @@ public class InfoCommentAdapter extends MultiItemTypeAdapter<InfoCommentListBean
         });
     }
 
-    protected String setShowText(InfoCommentListBean dynamicCommentBean, int position) {
-        return handleName(dynamicCommentBean);
+    protected String setShowText(InfoCommentListBean infoCommentListBean, int position) {
+        return handleName(infoCommentListBean);
     }
 
     protected List<Link> setLiknks(ViewHolder holder, final InfoCommentListBean
@@ -398,16 +400,16 @@ public class InfoCommentAdapter extends MultiItemTypeAdapter<InfoCommentListBean
     /**
      * 处理名字的颜色与点击
      *
-     * @param dynamicCommentBean
+     * @param infoCommentListBean
      * @return
      */
-    private String handleName(InfoCommentListBean dynamicCommentBean) {
+    private String handleName(InfoCommentListBean infoCommentListBean) {
         String content = "";
-        if (dynamicCommentBean.getReply_to_user_id() != 0) { // 当没有回复者时，就是回复评论
-            content += " 回复 " + dynamicCommentBean.getId() + " " + dynamicCommentBean
-                    .getComment_content();
+        if (infoCommentListBean.getReply_to_user_id() != 0) { // 当没有回复者时，就是回复评论
+            content += " 回复 " + infoCommentListBean.getToUserInfoBean().getName() + " " +
+                    infoCommentListBean.getComment_content();
         } else {                 //dynamicCommentBean.getReplyUser().getName()
-            content = dynamicCommentBean.getComment_content();
+            content = infoCommentListBean.getComment_content();
         }
         return content;
     }

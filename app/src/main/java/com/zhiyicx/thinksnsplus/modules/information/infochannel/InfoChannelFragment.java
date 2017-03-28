@@ -280,8 +280,10 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
     private String getFollows(List<InfoTypeMyCatesBean> bean) {
         StringBuilder ids = new StringBuilder();
         for (InfoTypeMyCatesBean data : bean) {
-            ids.append(data.getId());
-            ids.append(",");
+            if (data.getId()!=-1){
+                ids.append(data.getId());
+                ids.append(",");
+            }
         }
         return ids.toString();
     }
