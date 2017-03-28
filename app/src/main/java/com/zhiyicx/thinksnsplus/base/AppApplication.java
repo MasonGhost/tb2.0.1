@@ -148,6 +148,7 @@ public class AppApplication extends TSApplication {
                                                         })
                                                 .create();
                                     }
+                                    alertDialog.setCanceledOnTouchOutside(false);
                                     alertDialog.show();
 
                                 }

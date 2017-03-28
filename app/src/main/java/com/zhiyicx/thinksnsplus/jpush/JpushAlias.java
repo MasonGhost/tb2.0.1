@@ -12,7 +12,6 @@ import cn.jpush.android.api.TagAliasCallback;
 import rx.Observable;
 import rx.functions.Action1;
 
-import static com.zhiyicx.baseproject.crashhandler.CrashHandler.TAG;
 
 /**
  * @Describe
@@ -22,6 +21,7 @@ import static com.zhiyicx.baseproject.crashhandler.CrashHandler.TAG;
  */
 
 public class JpushAlias {
+    private static final String TAG = "JpushAlias";
     private static final int TIME_INTERCEPT = 60;
     private Context mContext;
     private String mAlias;

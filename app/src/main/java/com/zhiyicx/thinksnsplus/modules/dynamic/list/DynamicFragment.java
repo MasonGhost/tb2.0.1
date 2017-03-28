@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -125,7 +126,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     protected void initView(View rootView) {
         super.initView(rootView);
         initInputView();
-        AndroidBug5497Workaround.assistActivity(getActivity());
+        if ((Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT)) {
+            AndroidBug5497Workaround.assistActivity(getActivity());
+        }
     }
 
     private void initInputView() {
