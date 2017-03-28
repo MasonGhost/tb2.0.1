@@ -119,7 +119,7 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                DeviceUtils.hideSoftKeyboard(mContext,mRecyclerView);
+                DeviceUtils.hideSoftKeyboard(mContext, mRecyclerView);
             }
         });
     }
@@ -161,9 +161,9 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
      */
     public void refresh() {
         if (messageAdapter != null) {
-//            messageAdapter.notifyDataSetChanged();
             scrollToBottom();
-            messageAdapter.notifyItemInserted(messageAdapter.getItemCount());
+            messageAdapter.notifyDataSetChanged();
+//            messageAdapter.notifyItemInserted(messageAdapter.getItemCount());
 
         }
     }
