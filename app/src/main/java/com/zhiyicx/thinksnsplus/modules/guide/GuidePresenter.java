@@ -1,9 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.guide;
 
 import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
-import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 
@@ -34,7 +32,6 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
 //        mIAuthRepository.refreshToken();
             // IM login
             mRootView.startActivity(HomeActivity.class);
-            new JpushAlias(mContext, AppApplication.getmCurrentLoginAuth().getUser_id() + "");// 设置极光推送别名
         } else {
             mRootView.startActivity(LoginActivity.class);
         }

@@ -21,6 +21,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
@@ -87,6 +88,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     LinearLayout mLlBottomContainer;
     private TSViewPagerAdapter mHomePager;
     private PhotoSelectorImpl mPhotoSelector;
+    private JpushAlias mJpushAlias;
 
 
     public static HomeFragment newInstance() {
@@ -140,6 +142,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         initListener();
         changeNavigationButton(PAGE_HOME);
         mVpHome.setCurrentItem(PAGE_HOME, false);
+        mJpushAlias = new JpushAlias(getContext(), AppApplication.getmCurrentLoginAuth().getUser_id() + "");// 设置极光推送别名
+        mJpushAlias.setAlias();
     }
 
     @Override
