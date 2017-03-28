@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Keep;
@@ -32,8 +34,9 @@ public class InfoTypeMyCatesBean implements Parcelable, Serializable {
     @Id
     @Unique
     private Long id;
+    private Long info_type;
     private String name;
-    @ToOne(joinProperty = "id")
+    @ToOne(joinProperty = "info_type")
     private InfoListBean mInfoListBean;
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
@@ -79,11 +82,10 @@ public class InfoTypeMyCatesBean implements Parcelable, Serializable {
     }
 
     /** To-one relationship, resolved on first access. */
-    @Generated(hash = 1750666845)
+    @Generated(hash = 1758891489)
     public InfoListBean getMInfoListBean() {
-        Long __key = this.id;
-        if (mInfoListBean__resolvedKey == null
-                || !mInfoListBean__resolvedKey.equals(__key)) {
+        Long __key = this.info_type;
+        if (mInfoListBean__resolvedKey == null || !mInfoListBean__resolvedKey.equals(__key)) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
@@ -99,12 +101,12 @@ public class InfoTypeMyCatesBean implements Parcelable, Serializable {
     }
 
     /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1919827090)
+    @Generated(hash = 1002296003)
     public void setMInfoListBean(InfoListBean mInfoListBean) {
         synchronized (this) {
             this.mInfoListBean = mInfoListBean;
-            id = mInfoListBean == null ? null : mInfoListBean.getId();
-            mInfoListBean__resolvedKey = id;
+            info_type = mInfoListBean == null ? null : mInfoListBean.getId();
+            mInfoListBean__resolvedKey = info_type;
         }
     }
 
@@ -156,6 +158,14 @@ public class InfoTypeMyCatesBean implements Parcelable, Serializable {
         dest.writeParcelable(this.mInfoListBean, flags);
     }
 
+    public Long getInfo_type() {
+        return this.info_type;
+    }
+
+    public void setInfo_type(Long info_type) {
+        this.info_type = info_type;
+    }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1827653171)
     public void __setDaoSession(DaoSession daoSession) {
@@ -167,6 +177,13 @@ public class InfoTypeMyCatesBean implements Parcelable, Serializable {
         this.id = (Long) in.readValue(Long.class.getClassLoader());
         this.name = in.readString();
         this.mInfoListBean = in.readParcelable(InfoListBean.class.getClassLoader());
+    }
+
+    @Generated(hash = 2125491815)
+    public InfoTypeMyCatesBean(Long id, Long info_type, String name) {
+        this.id = id;
+        this.info_type = info_type;
+        this.name = name;
     }
 
     public static final Creator<InfoTypeMyCatesBean> CREATOR = new Creator<InfoTypeMyCatesBean>() {
