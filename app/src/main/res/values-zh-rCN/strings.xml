@@ -46,9 +46,9 @@
     <string name="introduce">简介</string>
     <string name="edit_introduce">编辑简介</string>
     <string name="all">全部</string>
-    <string name="edit_userinfo_success">修改成功</string>
-    <string name="edit_userinfo_failure">修改失败</string>
-    <string name="edit_userinfo_ing">修改中...</string>
+    <string name="edit_userinfo_success">信息修改成功</string>
+    <string name="edit_userinfo_failure">信息修改失败</string>
+    <string name="edit_userinfo_ing">信息修改中...</string>
     <string name="update_head_success">头像上传成功</string>
     <string name="update_head_failure">头像上传失败</string>
     <string name="update_head_ing">头像上传中...</string>
@@ -68,6 +68,10 @@
 
     <!--裁剪-->
     <string name="crop_head_icon">更换头像</string>
+    <string name="crop_bg_cover">更换封面</string>
+    <string name="crop_ing">图片裁剪中...</string>
+    <string name="crop_success">图片裁剪成功</string>
+    <string name="crop_failure">图片裁剪失败</string>
     <!--相册-->
     <string name="album_list">相册</string>
     <string name="preview">预览</string>

@@ -30,15 +30,16 @@ public interface UserInfoContract {
         /**
          * 设置头像上传的状态
          *
-         * @param taskId 返回的图片任务id
+         * @param upLoadState -1 失败 1进行中 2 成功
+         * @param taskId      返回的图片任务id
          */
-        void setUpLoadHeadIconState(boolean upLoadState, int taskId);
+        void setUpLoadHeadIconState(int upLoadState, int taskId);
 
         /**
          * 设置信息修改提交状态
-         *
+         * @param changeUserInfoState  -1 失败 1进行中 2 成功
          */
-        void setChangeUserInfoState(boolean success,String message);
+        void setChangeUserInfoState(int changeUserInfoState, String message);
 
         /**
          * 初始化界面数据
@@ -75,6 +76,7 @@ public interface UserInfoContract {
 
         /**
          * 关注操作
+         *
          * @param followFansBean
          */
         void handleFollow(FollowFansBean followFansBean);

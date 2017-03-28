@@ -96,6 +96,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
 
     @Override
     public void changeUserHeadIcon(String filePath) {
+        mRootView.setUpLoadHeadIconState(0, 0);
         Subscription subscription = mIUploadRepository.upLoadSingleFile("pic",
                 filePath, true)
                 .subscribeOn(Schedulers.io())
@@ -103,17 +104,17 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                 .subscribe(new BaseSubscribe<Integer>() {
                     @Override
                     protected void onSuccess(Integer data) {
-                        mRootView.setUpLoadHeadIconState(true, data);
+                        mRootView.setUpLoadHeadIconState(1, data);
                     }
 
                     @Override
                     protected void onFailure(String message) {
-                        mRootView.setUpLoadHeadIconState(false, 0);
+                        mRootView.setUpLoadHeadIconState(-1, 0);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        mRootView.setUpLoadHeadIconState(false, 0);
+                        mRootView.setUpLoadHeadIconState(-1, 0);
                         LogUtils.e(throwable, "result");
                     }
                 });
@@ -125,6 +126,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
         if (!checkChangedUserInfo(userInfos)) {
             return;
         }
+        mRootView.setChangeUserInfoState(0, "");
         Subscription subscription = mRepository.changeUserInfo(userInfos)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -132,7 +134,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                     @Override
                     protected void onSuccess(Object data) {
                         // 修改成功后，关闭页面
-                        mRootView.setChangeUserInfoState(true, "");
+                        mRootView.setChangeUserInfoState(1, "");
                         EventBus.getDefault().post(EventBusTagConfig.EVENT_USERINFO_UPDATE);
                         upDateUserInfo(userInfos);
                     }
@@ -140,12 +142,12 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                     @Override
                     protected void onFailure(String message) {
                         // 修改失败，好尴尬
-                        mRootView.setChangeUserInfoState(false, "");
+                        mRootView.setChangeUserInfoState(-1, "");
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        mRootView.setChangeUserInfoState(false,"");
+                        mRootView.setChangeUserInfoState(-1, "");
                     }
                 });
         addSubscrebe(subscription);
@@ -225,16 +227,16 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
      * @return
      */
     private boolean checkUsername(String name) {
-        if (!RegexUtils.isUsernameLength(name, mContext.getResources().getInteger(R.integer.username_min_length),mContext.getResources().getInteger(R.integer.username_max_length))) {
-            mRootView.setChangeUserInfoState(false, mContext.getString(R.string.username_toast_hint));
+        if (!RegexUtils.isUsernameLength(name, mContext.getResources().getInteger(R.integer.username_min_length), mContext.getResources().getInteger(R.integer.username_max_length))) {
+            mRootView.setChangeUserInfoState(-1, mContext.getString(R.string.username_toast_hint));
             return false;
         }
         if (RegexUtils.isUsernameNoNumberStart(name)) {// 数字开头
-            mRootView.setChangeUserInfoState(false, mContext.getString(R.string.username_toast_not_number_start_hint));
+            mRootView.setChangeUserInfoState(-1, mContext.getString(R.string.username_toast_not_number_start_hint));
             return false;
         }
         if (!RegexUtils.isUsername(name)) {// 用户名只能包含数字、字母和下划线
-            mRootView.setChangeUserInfoState(false, mContext.getString(R.string.username_toast_not_symbol_hint));
+            mRootView.setChangeUserInfoState(-1, mContext.getString(R.string.username_toast_not_symbol_hint));
             return false;
         }
         return true;

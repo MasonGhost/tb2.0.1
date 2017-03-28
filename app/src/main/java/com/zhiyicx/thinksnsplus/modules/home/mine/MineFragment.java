@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.home.mine;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -250,9 +251,11 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         // 设置简介
         mTvUserSignature.setText(userInfoBean.getIntro());
         // 设置粉丝数
-        mTvFansCount.setText(userInfoBean.getFollowed_count());
+        String followedCount = TextUtils.isEmpty(userInfoBean.getFollowed_count()) ? "0" : userInfoBean.getFollowed_count();
+        mTvFansCount.setText(followedCount);
         // 设置关注数
-        mTvFollowCount.setText(userInfoBean.getFollowing_count());
+        String followingCount = TextUtils.isEmpty(userInfoBean.getFollowing_count()) ? "0" : userInfoBean.getFollowing_count();
+        mTvFollowCount.setText(followingCount);
     }
 
     @Override
@@ -260,11 +263,15 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         switch (stateFollow) {
             case FollowFansBean.IFOLLOWED_STATE:
                 // 添加一个关注
-                mUserInfoBean.setFollowing_count(Integer.parseInt(mUserInfoBean.getFollowing_count()) + 1 + "");
+                int addCount = Integer.parseInt(mUserInfoBean.getFollowing_count()) + 1;
+                addCount = addCount < 0 ? 0 : addCount;
+                mUserInfoBean.setFollowing_count(addCount + "");
                 break;
             case FollowFansBean.UNFOLLOWED_STATE:
                 // 取消一个关注
-                mUserInfoBean.setFollowing_count(Integer.parseInt(mUserInfoBean.getFollowing_count()) - 1 + "");
+                int decreaseCount = Integer.parseInt(mUserInfoBean.getFollowing_count()) - 1;
+                decreaseCount = decreaseCount < 0 ? 0 : decreaseCount;
+                mUserInfoBean.setFollowing_count(decreaseCount + "");
                 break;
             default:
         }

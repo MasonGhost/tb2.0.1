@@ -45,14 +45,22 @@
     <string name="select_city">选择居住地</string>
     <string name="introduce">简介</string>
     <string name="edit_introduce">编辑简介</string>
+    <string name="all">全部</string>
+    <string name="edit_userinfo_success">信息修改成功</string>
+    <string name="edit_userinfo_failure">信息修改失败</string>
+    <string name="edit_userinfo_ing">信息修改中...</string>
+    <string name="update_head_success">头像上传成功</string>
+    <string name="update_head_failure">头像上传失败</string>
+    <string name="update_head_ing">头像上传中...</string>
 
     <!-- 设置 -->
     <string name="vertify">认证</string>
     <string name="change_password">修改密码</string>
     <string name="clean_cache">清理缓存</string>
+    <string name="is_sure_clean_cache">确定清理缓存？</string>
     <string name="about_us">关于我们</string>
     <string name="login_out">退出登录</string>
-
+    <string name="is_sure_login_out">确定退出登录？</string>
     <string name="clean_success">删除成功</string>
     <string name="clean_failure">删除失败!</string>
     <string name="cache_zero_size">0.0B</string>
