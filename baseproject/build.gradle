@@ -65,7 +65,13 @@ dependencies {
     compile(dataDependences.refresh) {
         exclude group: 'com.android.support', module: 'support-compat'
     }
-    compile dataDependences.swipeLayout
+
+    compile dataDependences.swipeLayout;
+    compile (dataDependences.recyclerviewAnimator){
+        exclude group:'com.android.support',module:'appcompat-v7'
+        exclude group:'com.android.support',module:'recyclerview-v7'
+
+    }
     provided dataDependences.javaxAnnotation
     provided dataDependences.daggerCompiler
     apt dataDependences.daggerCompiler

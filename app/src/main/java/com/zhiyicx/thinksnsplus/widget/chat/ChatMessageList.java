@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
@@ -20,10 +21,13 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
+import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.List;
+
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
 /**
  * @Describe
@@ -112,6 +116,12 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());//设置动画
         mRefreshLayout.setRefreshEnabled(true);
         mRefreshLayout.setOnRefreshListener(this);
+        setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DeviceUtils.hideSoftKeyboard(mContext, mRecyclerView);
+            }
+        });
     }
 
     /**
@@ -133,7 +143,8 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
         // TODO: 2017/1/7 添加图片、视频、音频等Delegate
         // set message adapter
         mRecyclerView.setAdapter(messageAdapter);
-        refreshSelectLast();
+        mRecyclerView.setItemAnimator(new SlideInUpAnimator());
+        mRecyclerView.getItemAnimator().setAddDuration(300);
     }
 
     /**
@@ -150,18 +161,13 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
      */
     public void refresh() {
         if (messageAdapter != null) {
+            scrollToBottom();
             messageAdapter.notifyDataSetChanged();
+//            messageAdapter.notifyItemInserted(messageAdapter.getItemCount());
+
         }
     }
 
-    /**
-     * refresh and jump to the last
-     */
-    public void refreshSelectLast() {
-//        if (messageAdapter != null) {
-//            messageAdapter.refreshSelectLast();
-//        }
-    }
 
     /**
      * refresh and jump to the position
