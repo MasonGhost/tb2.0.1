@@ -33,6 +33,7 @@ import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.dialog.LoadingDialog;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -273,6 +274,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
             case R.id.ll_city_container:
                 initCityPickerFirstTime();
                 mAreaPickerView.setSelectOptions(mCityOption1, mCityOption2, mCityOption3);
+                // 尝试隐藏键盘
+                DeviceUtils.hideSoftKeyboard(getContext(), mLlCityContainer);
                 mAreaPickerView.show();
                 break;
             case R.id.tv_edit_introduce:
