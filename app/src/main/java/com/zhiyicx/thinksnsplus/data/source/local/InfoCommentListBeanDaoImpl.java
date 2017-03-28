@@ -7,7 +7,6 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,17 +79,31 @@ public class InfoCommentListBeanDaoImpl extends CommonCacheImpl<InfoCommentListB
         return mInfoCommentListBeanDao.insertOrReplace(newData);
     }
 
-    public List<InfoCommentListBean> getMySendingComment() {
+    public List<InfoCommentListBean> getMySendingComment(Long info_id) {
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return new ArrayList<>();
         }
         return mInfoCommentListBeanDao.queryBuilder()
                 .where(InfoCommentListBeanDao.Properties.User_id.eq
                                 (AppApplication.getmCurrentLoginAuth().getUser_id()),
-                        InfoCommentListBeanDao.Properties.Id.eq(-1))
+                        InfoCommentListBeanDao.Properties.Id.eq(-1), InfoCommentListBeanDao
+                                .Properties.Info_id.eq(info_id))
                 .orderDesc(InfoCommentListBeanDao.Properties._id)
                 .list();
+    }
 
-
+    /**
+     * 通过 CommentMark 获取评论内容
+     *
+     * @return
+     */
+    public InfoCommentListBean getCommentByCommentMark(Long commentMark) {
+        List<InfoCommentListBean> result = mInfoCommentListBeanDao.queryBuilder()
+                .where(InfoCommentListBeanDao.Properties.Comment_mark.eq(commentMark))
+                .list();
+        if (!result.isEmpty()) {
+            return result.get(0);
+        }
+        return null;
     }
 }
