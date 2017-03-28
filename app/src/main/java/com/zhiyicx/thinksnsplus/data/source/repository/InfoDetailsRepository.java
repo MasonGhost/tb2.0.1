@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
-import android.content.Context;
 import android.util.SparseArray;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -11,7 +10,6 @@ import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.local.InfoCommentListBeanDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.InfoMainClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsConstract;
@@ -43,7 +41,7 @@ public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
     @Inject
     public InfoDetailsRepository(ServiceManager serviceManager, Application context) {
         mInfoMainClient = serviceManager.getInfoMainClient();
-        mUserInfoRepository = new UserInfoRepository(serviceManager);
+        mUserInfoRepository = new UserInfoRepository(serviceManager,context);
         this.context = context;
     }
 

@@ -28,6 +28,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SendDynamicRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
+import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 
 import org.simple.eventbus.EventBus;
 
@@ -365,6 +366,7 @@ public class BackgroundTaskHandler {
                         mUserInfoBeanGreenDao.insertOrReplace(data);
                         // 用户信息获取成功后就可以通知界面刷新了
                         EventBus.getDefault().post(data, EventBusTagConfig.EVENT_USERINFO_UPDATE);
+                        new JpushAlias(mContext, data.get(0).getUser_id());// 设置极光推送别名
                     }
 
                     @Override

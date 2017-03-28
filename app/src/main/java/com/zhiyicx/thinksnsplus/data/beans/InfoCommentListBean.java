@@ -194,9 +194,7 @@ public class InfoCommentListBean extends BaseListBean {
         myDao.update(this);
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 841333318)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
