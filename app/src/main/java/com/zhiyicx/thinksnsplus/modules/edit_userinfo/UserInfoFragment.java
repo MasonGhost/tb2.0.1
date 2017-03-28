@@ -19,6 +19,8 @@ import android.widget.TextView;
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.trycatch.mysnackbar.Prompt;
+import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
@@ -31,6 +33,7 @@ import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.dialog.LoadingDialog;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -109,6 +112,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
     private PhotoSelectorImpl mPhotoSelector;
     private LoadingDialog mLoadingDialog;// 提示弹框
+    private ViewGroup viewGroup;
+    private TSnackbar mTSnackbar;
 
     private UserInfoBean mUserInfoBean;// 用户未修改前的用户信息
     private int upLoadCount = 0;// 当前文件上传的次数，>0表示已经上传成功，但是还没有提交修改用户信息
@@ -141,6 +146,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
                         .SHAPE_SQUARE))
                 .build().photoSelectorImpl();
+        viewGroup = (ViewGroup) getActivity().findViewById(android.R.id.content).getRootView();
         mLoadingDialog = new LoadingDialog(getActivity());
         initCityPickerView();
     }
@@ -268,6 +274,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
             case R.id.ll_city_container:
                 initCityPickerFirstTime();
                 mAreaPickerView.setSelectOptions(mCityOption1, mCityOption2, mCityOption3);
+                // 尝试隐藏键盘
+                DeviceUtils.hideSoftKeyboard(getContext(), mLlCityContainer);
                 mAreaPickerView.show();
                 break;
             case R.id.tv_edit_introduce:
@@ -299,32 +307,56 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     }
 
     @Override
-    public void setUpLoadHeadIconState(boolean upLoadState, int taskId) {
+    public void setUpLoadHeadIconState(int upLoadState, int taskId) {
         // 上传成功，可以进行修改
-        if (upLoadState) {
-            upLoadCount++;
-            upDateHeadIconStorageId = taskId;
-            mLoadingDialog.showStateSuccess(getString(R.string.update_head_success));
-        } else {
-            mLoadingDialog.showStateError(getString(R.string.update_head_failure));
+        switch (upLoadState) {
+            case -1:
+                TSnackbar.make(viewGroup, R.string.update_head_failure, TSnackbar.LENGTH_SHORT)
+                        .setPromptThemBackground(Prompt.ERROR)
+                        .show();
+                break;
+            case 0:
+                TSnackbar.make(viewGroup, R.string.update_head_ing, TSnackbar.LENGTH_INDEFINITE)
+                        .setPromptThemBackground(Prompt.SUCCESS)
+                        .addIconProgressLoading(0, true, false)
+                        .show();
+                break;
+            case 1:
+                upLoadCount++;
+                upDateHeadIconStorageId = taskId;
+                TSnackbar.make(viewGroup, R.string.update_head_success, TSnackbar.LENGTH_SHORT)
+                        .setPromptThemBackground(Prompt.SUCCESS)
+                        .show();
+                break;
+            default:
         }
         canChangerUserInfo();
     }
 
     @Override
-    public void setChangeUserInfoState(boolean success, String message) {
-        if (success) {
-            mLoadingDialog.showStateSuccess(getString(R.string.edit_userinfo_success));
-            getActivity().finish();
-        } else {
-            if (TextUtils.isEmpty(message)) {
-                mLoadingDialog.showStateError(getString(R.string.edit_userinfo_failure));
-            } else {
-                mLoadingDialog.showStateError(message);
-            }
+    public void setChangeUserInfoState(int changeUserInfoState, String message) {
+        switch (changeUserInfoState) {
+            case -1:
+                message = TextUtils.isEmpty(message) ? getString(R.string.edit_userinfo_failure) : message;
+                TSnackbar.make(viewGroup, message, TSnackbar.LENGTH_SHORT)
+                        .setPromptThemBackground(Prompt.ERROR)
+                        .show();
 
+                break;
+            case 0:
+                TSnackbar.make(viewGroup, R.string.edit_userinfo_ing, TSnackbar.LENGTH_SHORT)
+                        .setPromptThemBackground(Prompt.SUCCESS)
+                        .addIconProgressLoading(0, true, false)
+                        .show();
+                break;
+            case 1:
+                TSnackbar.make(viewGroup, R.string.edit_userinfo_success, TSnackbar.LENGTH_SHORT)
+                        .setPromptThemBackground(Prompt.SUCCESS)
+                        .show();
+                getActivity().finish();
+                break;
+            default:
         }
-
     }
 
     @Override

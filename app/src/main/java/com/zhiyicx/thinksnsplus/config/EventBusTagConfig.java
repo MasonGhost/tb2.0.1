@@ -53,6 +53,7 @@ public class EventBusTagConfig {
     public static final String EVENT_IM_ONERROR = "onError";
     public static final String EVENT_IM_ONMESSAGETIMEOUT = "onMessageTimeout";
     public static final String EVENT_IM_SETMESSAGETIPVISABLE = "setMessageTipVisable";
+    public static final String EVENT_IM_ONCONVERSATIONCRATED = "onConversationCrated";
 
 
 }

@@ -32,10 +32,8 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
 //        mIAuthRepository.refreshToken();
             // IM login
             mRootView.startActivity(HomeActivity.class);
-
         } else {
             mRootView.startActivity(LoginActivity.class);
-
         }
     }
 

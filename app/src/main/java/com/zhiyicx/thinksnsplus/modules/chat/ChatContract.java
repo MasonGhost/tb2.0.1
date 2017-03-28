@@ -7,6 +7,7 @@ import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -148,9 +149,9 @@ public interface ChatContract {
         /**
          * 创建对话
          *
-         * @param user_id 目标对象的 user_id
+         * @param userInfoBean 目标对象的用户信息
          * @param text    文本消息，单独创建的时候，传空
          */
-        void createChat(int user_id, String text);
+        void createChat(UserInfoBean userInfoBean, String text);
     }
 }

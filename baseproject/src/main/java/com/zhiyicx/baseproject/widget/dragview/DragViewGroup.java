@@ -45,40 +45,7 @@ public class DragViewGroup extends FrameLayout {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        boolean parentDisallowIntercept = true;
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                // 纪录触摸的起始点位置
-                mDownX = ev.getX();
-                mDownY = ev.getY();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                float dX = ev.getX() - mDownX;
-                float dY = ev.getY() - mDownY;
-                mDownX = ev.getX();
-                mDownY = ev.getY();
-                // 判断手指滑动趋势，是偏向水平方向，还是垂直方向
-                LogUtils.i(TAG + "ACTION_MOVE  Math.abs(dX)-->" + Math.abs(dX) + "  Math.abs(dY)-->" + Math.abs(dY));
-                if (Math.abs(dX) > Math.abs(dY)) {
-                    // 偏向水平方向
-                } else {
-                    // 偏向垂直方向
-                    if (dY > 0) {
-                        // 向下趋势滑动
-                        parentDisallowIntercept = !mDragView.isScrollToTop();
-                        LogUtils.i(TAG + "dispatchTouchEvent 向下趋势滑动");
-                    } else {
-                        //向上趋势滑动
-                        parentDisallowIntercept = !mDragView.isScrollToBottom();
-                        LogUtils.i(TAG + "dispatchTouchEvent 向上趋势滑动");
-                    }
-                }
-                break;
-        }
-        LogUtils.i(TAG + "dispatchTouchEvent 不允许父控件接管滑动" + parentDisallowIntercept);
-        mDragger.shouldInterceptTouchEvent(ev);
-        // requestDisallowInterceptTouchEvent(parentDisallowIntercept);
-        return !parentDisallowIntercept;
+        return mDragger.shouldInterceptTouchEvent(ev);
     }
 
     @Override

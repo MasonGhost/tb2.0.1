@@ -39,6 +39,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.net.ssl.SSLSocketFactory;
 
+import cn.jpush.android.api.JPushInterface;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -70,6 +71,9 @@ public class AppApplication extends TSApplication {
         ZBIMSDK.init(getContext());
         initComponent();
         BackgroundTaskManager.getInstance(getContext()).startBackgroundTask();// 开启后台任务
+        // 极光推送
+        JPushInterface.setDebugMode(true);
+        JPushInterface.init(this);
     }
 
     /**
@@ -144,6 +148,7 @@ public class AppApplication extends TSApplication {
                                                         })
                                                 .create();
                                     }
+                                    alertDialog.setCanceledOnTouchOutside(false);
                                     alertDialog.show();
 
                                 }

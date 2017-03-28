@@ -207,7 +207,6 @@ public class InfoCommentListBean extends BaseListBean {
     public void setInfo_id(int info_id) {
         this.info_id = info_id;
     }
-
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 841333318)
     public void __setDaoSession(DaoSession daoSession) {

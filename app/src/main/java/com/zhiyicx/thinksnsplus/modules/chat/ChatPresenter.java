@@ -15,8 +15,10 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
+import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.Collections;
@@ -27,6 +29,8 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_ONCONVERSATIONCRATED;
 
 /**
  * @Describe
@@ -107,13 +111,13 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     }
 
     @Override
-    public void createChat(int user_id, final String text) {
+    public void createChat(final UserInfoBean userInfoBean, final String text) {
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
-        final String uids = AppApplication.getmCurrentLoginAuth().getUser_id() + "," + user_id;
-        final String pair = AppApplication.getmCurrentLoginAuth().getUser_id() + "&" + user_id;// "pair":null,   // type=0时此项为两个uid：min_uid&max_uid
-        mRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "", "",uids)
+        final String uids = AppApplication.getmCurrentLoginAuth().getUser_id() + "," + userInfoBean.getUser_id();
+        final String pair = AppApplication.getmCurrentLoginAuth().getUser_id() + "&" + userInfoBean.getUser_id();// "pair":null,   // type=0时此项为两个uid：min_uid&max_uid
+        mRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "", "", uids)
                 .subscribe(new BaseSubscribe<Conversation>() {
                     @Override
                     protected void onSuccess(Conversation data) {
@@ -125,6 +129,11 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
                         if (!TextUtils.isEmpty(text)) {
                             sendTextMessage(text, data.getCid());
                         }
+                        MessageItemBean messageItemBean = new MessageItemBean();
+                        messageItemBean.setConversation(data);
+                        messageItemBean.setUserInfo(userInfoBean);
+                        EventBus.getDefault().post(messageItemBean, EVENT_IM_ONCONVERSATIONCRATED);// 通知会话列表
+
                     }
 
                     @Override
@@ -183,7 +192,6 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         }
         chatItemBean.setUserInfo(userInfoBean);
         mRootView.reFreshMessage(chatItemBean);
-        mRootView.smoothScrollToBottom();
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONNECTED)

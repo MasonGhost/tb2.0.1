@@ -11,7 +11,7 @@ ext {
     minSdkVersion = 15
     targetSdkVersion = 25
     versionCode = 3
-    versionName = "0.3.0"
+    versionName = "0.4.0"
     compileSdkVersion = 25
     buildToolsVersion = "25.0.1"
 
@@ -94,8 +94,10 @@ ext {
             guava                        : "com.google.guava:guava:${guavaVwesion}",
             refresh                      : "com.github.Aspsine:SwipeToLoadLayout:${refreshVersion}",
             clickSpanLink                : "com.klinkerapps:link_builder:${clickSpanLinkVersion}",
-            swipeLayout                  : "com.daimajia.swipelayout:library:1.2.0@aar"
-
+            swipeLayout                  : "com.daimajia.swipelayout:library:1.2.0@aar",
+            recyclerviewAnimator         : 'jp.wasabeef:recyclerview-animators:2.2.6',
+            jiguangJpush                 : 'cn.jiguang.sdk:jpush:3.0.3',
+            jiguangJcore                 : 'cn.jiguang.sdk:jcore:1.1.1'
     ]
     sdksoupportDependencies = [
             appcompatV7  : "com.android.support:appcompat-v7:${androidSupportSdkVersion}",
