@@ -43,7 +43,7 @@ public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
     @Inject
     public InfoDetailsRepository(ServiceManager serviceManager, Application context) {
         mInfoMainClient = serviceManager.getInfoMainClient();
-        mUserInfoRepository = new UserInfoRepository(serviceManager);
+        mUserInfoRepository = new UserInfoRepository(serviceManager,context);
         this.context = context;
     }
 

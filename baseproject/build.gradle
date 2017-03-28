@@ -48,7 +48,6 @@ buildscript {
 }
 
 dependencies {
-
     def dataDependences = rootProject.ext.dataDependencies
     def testDependences = rootProject.ext.testDependencies
     compile fileTree(include: ['*.jar'], dir: 'libs')
@@ -63,10 +62,10 @@ dependencies {
     // Dagger dependencies
     compile dataDependences.dagger
     // 刷新:三方库compat版本过高，使用主工程的版本
-    compile(dataDependences.refresh){
-        exclude group: 'com.android.support', module:'support-compat'
+    compile(dataDependences.refresh) {
+        exclude group: 'com.android.support', module: 'support-compat'
     }
-    compile dataDependences.swipeLayout;
+    compile dataDependences.swipeLayout
     provided dataDependences.javaxAnnotation
     provided dataDependences.daggerCompiler
     apt dataDependences.daggerCompiler
@@ -82,4 +81,5 @@ dependencies {
     androidTestCompile 'org.mockito:mockito-core:1.9.5'
     androidTestCompile 'com.google.dexmaker:dexmaker:1.1'
     androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.1'
+    compile project(':mysnackbar')
 }
