@@ -56,12 +56,13 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        mRvList.setVisibility(View.GONE);
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         mFragmentInfoSearchEdittext.setOnEditorActionListener(
                 new TextView.OnEditorActionListener() {
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                         if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                            requestNetData(mMaxId,false);
+                            requestNetData(mMaxId, false);
                             return true;
                         }
                         return false;
@@ -135,6 +136,18 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
 
     @Override
     protected Long getMaxId(@NotNull List<InfoListBean.ListBean> data) {
-        return (long)data.get(data.size()-1).getId();
+        return (long) data.get(data.size() - 1).getId();
+    }
+
+    @Override
+    public void onCacheResponseSuccess(@NotNull List<InfoListBean.ListBean> data, boolean
+            isLoadMore) {
+    }
+
+    @Override
+    public void onNetResponseSuccess(@NotNull List<InfoListBean.ListBean> data, boolean
+            isLoadMore) {
+        mRvList.setVisibility(View.VISIBLE);
+        super.onNetResponseSuccess(data, isLoadMore);
     }
 }
