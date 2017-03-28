@@ -13,8 +13,6 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.ToastUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
@@ -24,7 +22,6 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -33,8 +30,7 @@ import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment
-        .BUNDLE_INFO;
+import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO;
 
 /**
  * @Author Jliuer
@@ -291,7 +287,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
             } else {
                 mReplyUserId = (int) mListDatas.get(position).getUser_id();
                 showCommentView();
-                String contentHint = "";
+                String contentHint =getString(R.string.default_input_hint);
                 if (mListDatas.get(position).getReply_to_user_id() != mInfoMation.getId()) {
                     contentHint = getString(R.string.reply, mListDatas.get(position).getUser_id()
                             + "");
