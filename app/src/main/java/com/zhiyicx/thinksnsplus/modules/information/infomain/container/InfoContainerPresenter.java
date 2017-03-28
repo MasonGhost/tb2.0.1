@@ -3,13 +3,13 @@ package com.zhiyicx.thinksnsplus.modules.information.infomain.container;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMyCatesBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoTypeBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.InfoMainRepository;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
 
-import org.jetbrains.annotations.NotNull;
-
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -63,14 +63,14 @@ public class InfoContainerPresenter extends BasePresenter<InfoMainContract.Repps
                 .filter(new Func1<InfoTypeBean, Boolean>() {
                     @Override
                     public Boolean call(InfoTypeBean infoTypeBean) {
-                        return infoTypeBean!=null;
+                        return infoTypeBean != null;
                     }
                 }).subscribe(new Action1<InfoTypeBean>() {
-                    @Override
-                    public void call(InfoTypeBean infoTypeBean) {
-                        mRootView.setInfoType(infoTypeBean);
-                    }
-                });
+            @Override
+            public void call(InfoTypeBean infoTypeBean) {
+                mRootView.setInfoType(infoTypeBean);
+            }
+        });
 
         Subscription subscription = mInfoMainRepository.getInfoType()
                 .subscribeOn(Schedulers.io())
@@ -78,7 +78,7 @@ public class InfoContainerPresenter extends BasePresenter<InfoMainContract.Repps
                 .subscribe(new BaseSubscribe<InfoTypeBean>() {
                     @Override
                     protected void onSuccess(InfoTypeBean data) {
-                        mInfoTypeBeanGreenDao.insertOrReplace(data);
+                        mInfoTypeBeanGreenDao.saveSingleData(data);
                         mRootView.setInfoType(data);
                     }
 

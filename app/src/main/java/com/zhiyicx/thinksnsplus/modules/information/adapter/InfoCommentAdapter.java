@@ -1,12 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.information.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Message;
 import android.support.annotation.RequiresApi;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -16,21 +14,26 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoLongClickListener;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.AboutUsActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -300,18 +303,32 @@ public class InfoCommentAdapter extends MultiItemTypeAdapter<InfoCommentListBean
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        InfoCommentListBean infoCommentListBean = mDatas.get(position);
         if (position == 0) {
             WebView web = holder.getView(R.id.info_detail_content);
             initWebViewData(web);
             web.loadUrl(String.format(APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT, mDatas.get
                     (position).getId()));
+            holder.setText(R.id.tv_comment_count,
+                    mContext.getResources().getString(R.string.dynamic_comment_count,
+                            mDatas.size() - 1));// 减去第一条，头部web
         } else if (TextUtils.isEmpty(mDatas.get(position).getComment_content())) {
             EmptyView emptyView = holder.getView(R.id.comment_emptyview);
             emptyView.setNeedTextTip(false);
             emptyView.setErrorType(EmptyView.STATE_NODATA_ENABLE_CLICK);
         } else {
-            InfoCommentListBean infoCommentListBean = mDatas.get(position);
-            holder.setText(R.id.tv_name, infoCommentListBean.getComment_content());
+            AppApplication.AppComponentHolder.getAppComponent()
+                    .imageLoader()
+                    .loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
+                            .url(ImageUtils.imagePathConvert(infoCommentListBean.getFromUserInfoBean()
+                                    .getAvatar(), ImageZipConfig.IMAGE_26_ZIP))
+                            .placeholder(R.drawable.shape_default_image_circle)
+                            .transformation(new GlideCircleTransform(holder.getConvertView().getContext()))
+                            .errorPic(R.drawable.shape_default_image_circle)
+                            .imagerView((ImageView) holder.getView(R.id.iv_headpic))
+                            .build()
+                    );
+            holder.setText(R.id.tv_name, infoCommentListBean.getFromUserInfoBean().getName());
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(infoCommentListBean
                     .getCreated_at()));
             holder.setText(R.id.tv_content, setShowText(infoCommentListBean, position));
@@ -320,8 +337,9 @@ public class InfoCommentAdapter extends MultiItemTypeAdapter<InfoCommentListBean
 
     private void initWebViewData(WebView mWebView) {
         WebSettings mWebSettings = mWebView.getSettings();
-        mWebSettings.setSupportZoom(true);
+        mWebSettings.setUseWideViewPort(true);
         mWebSettings.setLoadWithOverviewMode(true);
+        mWebSettings.setSupportZoom(true);
         mWebSettings.setUseWideViewPort(true);
         mWebSettings.setDefaultTextEncodingName("utf-8");
         // 支持自动加载图片

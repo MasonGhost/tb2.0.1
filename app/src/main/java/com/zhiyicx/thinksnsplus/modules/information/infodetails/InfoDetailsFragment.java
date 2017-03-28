@@ -13,6 +13,8 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
@@ -63,14 +65,12 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @BindView(R.id.ll_bottom_menu_container)
     ViewGroup mLLBottomMenuContainer;
 
-    private List<InfoCommentListBean> mDatas = new ArrayList<>();
-
     /**
      * 传入的资讯信息
      */
     private InfoListBean.ListBean mInfoMation;
 
-    private long mReplyUserId;// 被评论者的 id ,评论动态 id = 0
+    private int mReplyUserId;// 被评论者的 id ,评论动态 id = 0
 
     public static InfoDetailsFragment newInstance(Bundle params) {
         InfoDetailsFragment fragment = new InfoDetailsFragment();
@@ -80,13 +80,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     protected MultiItemTypeAdapter getAdapter() {
-        mDatas.add(new InfoCommentListBean());
-        mDatas.add(new InfoCommentListBean());
-        mDatas.add(new InfoCommentListBean());
-        mDatas.add(new InfoCommentListBean());
-        mDatas.add(new InfoCommentListBean());
-        mDatas.add(new InfoCommentListBean());
-        InfoCommentAdapter adapter = new InfoCommentAdapter(getActivity(), mDatas);
+        InfoCommentAdapter adapter = new InfoCommentAdapter(getActivity(), mListDatas);
         adapter.setOnWebEventListener(new WebEvent());
         return adapter;
     }
@@ -158,8 +152,8 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     }
 
     @Override
-    public String getFeedId() {
-        return mInfoMation.getId() + "";
+    public Long getNewsId() {
+        return (long) mInfoMation.getId();
     }
 
     @Override
@@ -186,7 +180,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         DeviceUtils.hideSoftKeyboard(getContext(), v);
         mIlvComment.setVisibility(View.GONE);
         mVShadow.setVisibility(View.GONE);
-//        mPresenter.sendComment(mReplyUserId, text);
+        mPresenter.sendComment(mReplyUserId, text);
         mLLBottomMenuContainer.setVisibility(View.VISIBLE);
     }
 
@@ -291,16 +285,16 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
         @Override
         public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-            position = position - 1;// 减去 header
-            if (mDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth()
-                    .getUser_id()) {
+            if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth()
+                    .getUser_id()) {// 自己的评论
 
             } else {
-                mReplyUserId = mDatas.get(position).getUser_id();
+                mReplyUserId = (int) mListDatas.get(position).getUser_id();
                 showCommentView();
                 String contentHint = "";
-                if (mDatas.get(position).getReply_to_user_id() != mInfoMation.getId()) {
-                    contentHint = getString(R.string.reply, mDatas.get(position).getUser_id() + "");
+                if (mListDatas.get(position).getReply_to_user_id() != mInfoMation.getId()) {
+                    contentHint = getString(R.string.reply, mListDatas.get(position).getUser_id()
+                            + "");
                 }
                 mIlvComment.setEtContentHint(contentHint);
             }

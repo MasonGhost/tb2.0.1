@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.information.infochannel;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -10,10 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMoreCatesBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMyCatesBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
-import com.zhiyicx.thinksnsplus.data.source.local.InfoTypeBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infosearch.SearchActivity;
 import com.zhiyicx.thinksnsplus.widget.pager_recyclerview.itemtouch.DefaultItemTouchHelpCallback;
@@ -22,11 +21,8 @@ import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -58,8 +54,8 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
     @BindView(R.id.info_prompt)
     TextView mInfoPrompt;
 
-    private List<InfoTypeBean.MyCatesBean> mMyCatesBeen;
-    private List<InfoTypeBean.MoreCatesBean> mMoreCatesBeen;
+    private List<InfoTypeMyCatesBean> mMyCatesBeen;
+    private List<InfoTypeMoreCatesBean> mMoreCatesBeen;
     private CommonAdapter mSubscribeAdapter;
     private CommonAdapter mUnSubscribeAdapter;
     private boolean isEditor;
@@ -150,10 +146,10 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
         mMyCatesBeen = mInfoTypeBean.getMy_cates();
         mMoreCatesBeen = mInfoTypeBean.getMore_cates();
 
-        mSubscribeAdapter = new CommonAdapter<InfoTypeBean.MyCatesBean>(getActivity(), R.layout
+        mSubscribeAdapter = new CommonAdapter<InfoTypeMyCatesBean>(getActivity(), R.layout
                 .item_info_channel, mMyCatesBeen) {
             @Override
-            protected void convert(ViewHolder holder, InfoTypeBean.MyCatesBean data
+            protected void convert(ViewHolder holder, InfoTypeMyCatesBean data
                     , final int position) {
                 ImageView delete = holder.getView(R.id.item_info_channel_deal);
                 if (position == 0) {
@@ -175,9 +171,9 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 if (isEditor && position != 0) {
-                    InfoTypeBean.MyCatesBean bean = mMyCatesBeen.get(position);
+                    InfoTypeMyCatesBean bean = mMyCatesBeen.get(position);
                     mSubscribeAdapter.removeItem(position);
-                    mUnSubscribeAdapter.addItem(new InfoTypeBean.MoreCatesBean(bean.getId(),
+                    mUnSubscribeAdapter.addItem(new InfoTypeMoreCatesBean(bean.getId(),
                             bean.getName()));
                 }
             }
@@ -193,10 +189,10 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
         });
 
         mFragmentChannelContentSubscribed.setAdapter(mSubscribeAdapter);
-        mUnSubscribeAdapter = new CommonAdapter<InfoTypeBean.MoreCatesBean>(getActivity(),
+        mUnSubscribeAdapter = new CommonAdapter<InfoTypeMoreCatesBean>(getActivity(),
                 R.layout.item_info_channel, mMoreCatesBeen) {
             @Override
-            protected void convert(ViewHolder holder, InfoTypeBean.MoreCatesBean data,
+            protected void convert(ViewHolder holder, InfoTypeMoreCatesBean data,
                                    int position) {
                 holder.setText(R.id.item_info_channel, data.getName());
             }
@@ -206,8 +202,8 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
         mUnSubscribeAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                InfoTypeBean.MoreCatesBean bean = mMoreCatesBeen.get(position);
-                mSubscribeAdapter.addItem(new InfoTypeBean.MyCatesBean(bean.getId(),
+                InfoTypeMoreCatesBean bean = mMoreCatesBeen.get(position);
+                mSubscribeAdapter.addItem(new InfoTypeMyCatesBean(bean.getId(),
                         bean.getName()));
                 mUnSubscribeAdapter.removeItem(position);
                 if (!isEditor) {
@@ -241,7 +237,10 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
                 break;
             case R.id.fragment_channel_complete:
                 InfoTypeBean infoTypeBean = new InfoTypeBean();
-                mPresenter.doSubscribe(getFollows(mMyCatesBeen));
+                infoTypeBean.setMore_cates(mMoreCatesBeen);
+                infoTypeBean.setMy_cates(mMyCatesBeen);
+                mPresenter.updateLocalInfoType(infoTypeBean);
+                mPresenter.handleSubscribe(getFollows(mMyCatesBeen));
                 backInfo();
                 break;
         }
@@ -278,9 +277,9 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
         getActivity().finish();
     }
 
-    private String getFollows(List<InfoTypeBean.MyCatesBean> bean) {
+    private String getFollows(List<InfoTypeMyCatesBean> bean) {
         StringBuilder ids = new StringBuilder();
-        for (InfoTypeBean.MyCatesBean data : bean) {
+        for (InfoTypeMyCatesBean data : bean) {
             ids.append(data.getId());
             ids.append(",");
         }

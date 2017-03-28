@@ -28,7 +28,8 @@ public class ChannelActivity extends TSActivity<InfoChannelPresenter, InfoChanne
         DaggerInfoChannelComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .infoChannelPresenterModule(new InfoChannelPresenterModule(mContanierFragment))
-                .build().inject(this);
+                .build()
+                .inject(this);
     }
 
     @Override

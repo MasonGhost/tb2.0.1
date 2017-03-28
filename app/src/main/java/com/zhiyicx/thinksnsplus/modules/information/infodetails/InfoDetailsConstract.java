@@ -23,18 +23,21 @@ import rx.Observable;
 public interface InfoDetailsConstract {
 
     interface View extends ITSListView<InfoCommentListBean,Presenter> {
-        String getFeedId();
+        Long getNewsId();
         void setCollect(boolean isCollected);
     }
 
     interface Presenter extends ITSListPresenter<InfoCommentListBean>{
+
+        void sendComment(int reply_id,String content);
+
         void shareInfo();
 
         void handleCollect(boolean isCollected, final String news_id);
     }
 
     interface Repository{
-        Observable<BaseJson<List<InfoCommentListBean>>> getInfoCommentList(String feed_id,
+        Observable<BaseJson<List<InfoCommentListBean>>> getInfoCommentList(String news_id,
                                                                            Long max_id,
                                                                            Long limit);
 

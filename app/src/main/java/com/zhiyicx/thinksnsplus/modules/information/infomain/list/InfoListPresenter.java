@@ -59,6 +59,7 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
                         List<BaseListBean> list=new ArrayList<>();
                         list.addAll(data.getRecommend());
                         list.addAll(data.getList());
+                        mInfoListBeanGreenDao.insertOrReplace(data);
                         mRootView.onNetResponseSuccess(list, isLoadMore);
                     }
 
@@ -77,6 +78,7 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
 
     @Override
     public List<BaseListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+
         return null;
     }
 

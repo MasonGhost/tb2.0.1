@@ -3,7 +3,10 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 import android.content.Context;
 
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMoreCatesBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMoreCatesBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMyCatesBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMyCatesBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.List;
@@ -17,17 +20,22 @@ import javax.inject.Inject;
  * @Description
  */
 public class InfoTypeBeanGreenDaoImpl extends CommonCacheImpl<InfoTypeBean> {
-    private InfoTypeBeanDao mInfoTypeBeanDao;
+
+    private InfoTypeMyCatesBeanDao mInfoTypeMyCatesBeanDao;
+    private InfoTypeMoreCatesBeanDao mTypeMoreCatesBeanDao;
 
     @Inject
     public InfoTypeBeanGreenDaoImpl(Context context) {
         super(context);
-        mInfoTypeBeanDao = getWDaoSession().getInfoTypeBeanDao();
+        mInfoTypeMyCatesBeanDao = getWDaoSession().getInfoTypeMyCatesBeanDao();
+        mTypeMoreCatesBeanDao = getWDaoSession().getInfoTypeMoreCatesBeanDao();
     }
 
     @Override
     public long saveSingleData(InfoTypeBean singleData) {
-        return insertOrReplace(singleData);
+        mInfoTypeMyCatesBeanDao.insertOrReplaceInTx(singleData.getMy_cates());
+        mTypeMoreCatesBeanDao.insertOrReplaceInTx(singleData.getMore_cates());
+        return 0;
     }
 
     @Override
@@ -42,7 +50,13 @@ public class InfoTypeBeanGreenDaoImpl extends CommonCacheImpl<InfoTypeBean> {
 
     @Override
     public InfoTypeBean getSingleDataFromCache(Long primaryKey) {
-        return mInfoTypeBeanDao.load(primaryKey);
+        if (getMyCatesList() == null) {
+            return null;
+        }
+        InfoTypeBean infoTypeBean = new InfoTypeBean();
+        infoTypeBean.setMy_cates(getMyCatesList());
+        infoTypeBean.setMore_cates(getMoreCatesList());
+        return infoTypeBean;
     }
 
     @Override
@@ -52,7 +66,7 @@ public class InfoTypeBeanGreenDaoImpl extends CommonCacheImpl<InfoTypeBean> {
 
     @Override
     public void clearTable() {
-        mInfoTypeBeanDao.deleteAll();
+
     }
 
     @Override
@@ -67,15 +81,22 @@ public class InfoTypeBeanGreenDaoImpl extends CommonCacheImpl<InfoTypeBean> {
 
     @Override
     public void updateSingleData(InfoTypeBean newData) {
-
+        mInfoTypeMyCatesBeanDao.insertOrReplaceInTx(newData.getMy_cates());
+        mTypeMoreCatesBeanDao.insertOrReplaceInTx(newData.getMore_cates());
     }
 
     @Override
     public long insertOrReplace(InfoTypeBean newData) {
-        if (newData == null) {
-            return -1;
-        }
-        clearTable();
-        return mInfoTypeBeanDao.insertOrReplace(newData);
+        saveSingleData(newData);
+        return 0;
     }
+
+    public List<InfoTypeMyCatesBean> getMyCatesList() {
+        return mInfoTypeMyCatesBeanDao.loadAll();
+    }
+
+    public List<InfoTypeMoreCatesBean> getMoreCatesList() {
+        return mTypeMoreCatesBeanDao.loadAll();
+    }
+
 }
