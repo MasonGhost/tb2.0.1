@@ -66,7 +66,7 @@ public class RegisterActivityTest {
      */
     @Test
     public void registerFailure() throws Exception {
-        mRegisterClient.register("failure", USER_PHONE, USER_NAME, "12344", "dsafdsa","12313")
+        mRegisterClient.register("failure", USER_PHONE, USER_NAME, "12344", "dsafdsa", "12313")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<BaseJson<AuthBean>>() {
@@ -98,7 +98,7 @@ public class RegisterActivityTest {
      */
     @Test
     public void registerSuccess() throws Exception {
-        mRegisterClient.register("success", USER_PHONE, USER_NAME, "1244", "dsafdsa","12321456")
+        mRegisterClient.register("success", USER_PHONE, USER_NAME, "1244", "dsafdsa", "12321456")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<BaseJson<AuthBean>>() {
@@ -153,7 +153,7 @@ public class RegisterActivityTest {
         onView(withId(R.id.et_regist_vertify_code)).perform(typeText("1234"));
         onView(withId(R.id.et_regist_password)).perform(typeText("fdagiasdg"));
         // 字符为空时，不能点击“注册”；
-        onView(withId(R.id.et_regist_username)).perform(typeText(""),closeSoftKeyboard());
+        onView(withId(R.id.et_regist_username)).perform(typeText(""), closeSoftKeyboard());
         onView(withId(R.id.bt_regist_regist)).perform(click()).check(matches(disEnabled()));
 
     }
@@ -175,7 +175,7 @@ public class RegisterActivityTest {
         onView(withId(R.id.et_regist_vertify_code)).perform(typeText("1234"));
         onView(withId(R.id.et_regist_password)).perform(typeText("fdagiasdg"));
         // 用户名过短，提示应为 2-8 个字符
-        onView(withId(R.id.et_regist_username)).perform(replaceText("你"),closeSoftKeyboard());
+        onView(withId(R.id.et_regist_username)).perform(replaceText("你"), closeSoftKeyboard());
         onView(withId(R.id.bt_regist_regist)).check(matches(isEnabled()));
 //                .perform(click()); 6.0 权限 6.0 权限，弹框无法自动选择故修改成 enable
 //        onView(withId(R.id.tv_error_tip)).check(matches(withText(mActivityRule.getActivity().getString(R.string.username_toast_hint))));
@@ -197,7 +197,7 @@ public class RegisterActivityTest {
         onView(withId(R.id.et_regist_username)).perform(replaceText(USER_NAME));
         onView(withId(R.id.et_regist_phone)).perform(typeText("15694005009"));
         onView(withId(R.id.et_regist_vertify_code)).perform(typeText("1234"));
-        onView(withId(R.id.et_regist_password)).perform(typeText("fdagiasdg"),closeSoftKeyboard());
+        onView(withId(R.id.et_regist_password)).perform(typeText("fdagiasdg"), closeSoftKeyboard());
         onView(withId(R.id.bt_regist_regist)).check(matches(isEnabled()));
 //                .perform(click()); 6.0 权限，弹框无法自动选择故修改成 enable
 //        onView(withId(R.id.tv_error_tip)).check(matches(isDisappear()));
@@ -218,7 +218,7 @@ public class RegisterActivityTest {
         onView(withId(R.id.et_regist_vertify_code)).perform(typeText("1234"));
         onView(withId(R.id.et_regist_password)).perform(typeText("fdagiasdg"));
         // 用户名过短，提示应为 3-8 个字符
-        onView(withId(R.id.et_regist_username)).perform(replaceText(USER_NAME),closeSoftKeyboard());
+        onView(withId(R.id.et_regist_username)).perform(replaceText(USER_NAME), closeSoftKeyboard());
         onView(withId(R.id.bt_regist_regist)).check(matches(isEnabled()));
 //        .perform(click()); 6.0 权限，弹框无法自动选择故修改成 enable
 //        onView(withId(R.id.tv_error_tip)).check(matches(isDisappear()));
@@ -241,7 +241,7 @@ public class RegisterActivityTest {
         onView(withId(R.id.et_regist_vertify_code)).perform(typeText("1234"));
         onView(withId(R.id.et_regist_password)).perform(typeText("fdagiasdg"));
         // 用户名过短，提示应为 3-8 个字符
-        onView(withId(R.id.et_regist_username)).perform(replaceText("测￥%"),closeSoftKeyboard());
+        onView(withId(R.id.et_regist_username)).perform(replaceText("测￥%"), closeSoftKeyboard());
         onView(withId(R.id.bt_regist_regist)).check(matches(isEnabled()));
 //        perform(click()); 6.0 权限，弹框无法自动选择故修改成 enable
 //        onView(withId(R.id.tv_error_tip)).check(matches(withText(mActivityRule.getActivity().getString(R.string.username_toast_not_symbol_hint))));
@@ -353,7 +353,7 @@ public class RegisterActivityTest {
         onView(withId(R.id.et_regist_phone)).perform(typeText(USER_PHONE));
         onView(withId(R.id.et_regist_vertify_code)).perform(typeText(""));
         onView(withId(R.id.et_regist_password)).perform(typeText("fdagiasdg"));
-        onView(withId(R.id.et_regist_username)).perform(replaceText(USER_NAME),closeSoftKeyboard());
+        onView(withId(R.id.et_regist_username)).perform(replaceText(USER_NAME), closeSoftKeyboard());
         onView(withId(R.id.bt_regist_regist)).check(matches(disEnabled()));
 
     }
@@ -418,7 +418,7 @@ public class RegisterActivityTest {
         onView(withId(R.id.et_regist_username)).perform(replaceText(USER_NAME));
         onView(withId(R.id.et_regist_phone)).perform(typeText(USER_PHONE));
         onView(withId(R.id.et_regist_vertify_code)).perform(typeText("2124"));
-        onView(withId(R.id.et_regist_password)).perform(typeText(""),closeSoftKeyboard());
+        onView(withId(R.id.et_regist_password)).perform(typeText(""), closeSoftKeyboard());
         onView(withId(R.id.bt_regist_regist)).check(matches(disEnabled()));
     }
 
@@ -439,7 +439,7 @@ public class RegisterActivityTest {
         onView(withId(R.id.et_regist_username)).perform(replaceText(USER_NAME));
         onView(withId(R.id.et_regist_phone)).perform(typeText(USER_PHONE));
         onView(withId(R.id.et_regist_vertify_code)).perform(typeText("2124"));
-        onView(withId(R.id.et_regist_password)).perform(replaceText("12345"),closeSoftKeyboard());
+        onView(withId(R.id.et_regist_password)).perform(replaceText("12345"), closeSoftKeyboard());
         onView(withId(R.id.bt_regist_regist)).check(matches(isEnabled()));
 //        .perform(click());
 //        onView(withId(R.id.tv_error_tip)).check(matches(withText(mActivityRule.getActivity().getString(R.string.password_toast_hint))));
@@ -462,7 +462,7 @@ public class RegisterActivityTest {
         onView(withId(R.id.et_regist_username)).perform(replaceText(USER_NAME));
         onView(withId(R.id.et_regist_phone)).perform(typeText(USER_PHONE));
         onView(withId(R.id.et_regist_vertify_code)).perform(typeText("2124"));
-        onView(withId(R.id.et_regist_password)).perform(replaceText("123456"),closeSoftKeyboard());
+        onView(withId(R.id.et_regist_password)).perform(replaceText("123456"), closeSoftKeyboard());
         onView(withId(R.id.bt_regist_regist)).check(matches(isEnabled()));
 //        onView(withId(R.id.bt_regist_regist)).perform(click()); 6.0  一下可以使用
 //        onView(withId(R.id.tv_error_tip)).check(matches(isDisappear()));
@@ -551,9 +551,9 @@ public class RegisterActivityTest {
     @Test
     public void name_english() throws Exception {
         String name = "thi";
-        assertFalse(RegexUtils.isUsernameLength(name, mActivityRule.getActivity().getResources().getInteger(R.integer.username_min_length)));
+        assertFalse(RegexUtils.isUsernameLength(name, mActivityRule.getActivity().getResources().getInteger(R.integer.username_min_length), mActivityRule.getActivity().getResources().getInteger(R.integer.username_max_length)));
         name = "thinksns";
-        assertTrue(RegexUtils.isUsernameLength(name, mActivityRule.getActivity().getResources().getInteger(R.integer.username_min_length)));
+        assertTrue(RegexUtils.isUsernameLength(name, mActivityRule.getActivity().getResources().getInteger(R.integer.username_min_length), mActivityRule.getActivity().getResources().getInteger(R.integer.username_max_length)));
     }
 
     /**
@@ -568,9 +568,9 @@ public class RegisterActivityTest {
     @Test
     public void name_chinese() throws Exception {
         String name = "嗷";
-        assertFalse(RegexUtils.isUsernameLength(name, mActivityRule.getActivity().getResources().getInteger(R.integer.username_min_length)));
+        assertFalse(RegexUtils.isUsernameLength(name, mActivityRule.getActivity().getResources().getInteger(R.integer.username_min_length), mActivityRule.getActivity().getResources().getInteger(R.integer.username_max_length)));
         name = "嗷嗷嗷";
-        assertTrue(RegexUtils.isUsernameLength(name, mActivityRule.getActivity().getResources().getInteger(R.integer.username_min_length)));
+        assertTrue(RegexUtils.isUsernameLength(name, mActivityRule.getActivity().getResources().getInteger(R.integer.username_min_length), mActivityRule.getActivity().getResources().getInteger(R.integer.username_max_length)));
     }
 
     /**
@@ -623,7 +623,7 @@ public class RegisterActivityTest {
         onView(withId(R.id.et_regist_username)).perform(replaceText(USER_NAME));
         onView(withId(R.id.et_regist_phone)).perform(typeText(USER_PHONE));
         onView(withId(R.id.et_regist_vertify_code)).perform(typeText("123"));
-        onView(withId(R.id.et_regist_password)).perform(replaceText("123456"),closeSoftKeyboard());
+        onView(withId(R.id.et_regist_password)).perform(replaceText("123456"), closeSoftKeyboard());
 //        onView(withId(R.id.bt_regist_regist)).perform(click());   因6.0权限问题隐藏，以下可用
 //        onView(withId(R.id.tv_error_tip)).check(matches(withText(mActivityRule.getActivity().getString(R.string.vertify_code_input_hint))));
 //        onView(withId(R.id.et_regist_vertify_code)).perform(replaceText("12345")).check(matches(withText("1234")));
@@ -643,7 +643,7 @@ public class RegisterActivityTest {
         onView(withId(R.id.et_regist_username)).perform(replaceText(USER_NAME));
         onView(withId(R.id.et_regist_phone)).perform(typeText(USER_PHONE));
         onView(withId(R.id.et_regist_password)).perform(replaceText("123456"));
-        onView(withId(R.id.et_regist_vertify_code)).perform(replaceText("1234"),closeSoftKeyboard());
+        onView(withId(R.id.et_regist_vertify_code)).perform(replaceText("1234"), closeSoftKeyboard());
         onView(withId(R.id.bt_regist_regist)).check(matches(isEnabled()));
 //        onView(withId(R.id.bt_regist_regist)).perform(click());
 //        onView(withId(R.id.tv_error_tip)).check(matches(isDisappear()));
@@ -663,9 +663,9 @@ public class RegisterActivityTest {
         onView(withId(R.id.et_regist_username)).perform(replaceText(USER_NAME));
         onView(withId(R.id.et_regist_phone)).perform(typeText(USER_PHONE));
         onView(withId(R.id.et_regist_vertify_code)).perform(typeText("test"));
-        onView(withId(R.id.et_regist_password)).perform(replaceText("123456"),closeSoftKeyboard());
+        onView(withId(R.id.et_regist_password)).perform(replaceText("123456"), closeSoftKeyboard());
         onView(withId(R.id.bt_regist_regist)).check(matches(disEnabled()));
-        onView(withId(R.id.et_regist_vertify_code)).perform(replaceText("1234"),closeSoftKeyboard());
+        onView(withId(R.id.et_regist_vertify_code)).perform(replaceText("1234"), closeSoftKeyboard());
         onView(withId(R.id.bt_regist_regist)).check(matches(isEnabled()));
     }
 
