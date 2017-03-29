@@ -261,6 +261,13 @@ public class PersonalCenterHeaderViewItem {
                 }
             }
         });
+        // 点击头像
+        iv_head_icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         // 跳转到粉丝列表
         tv_user_fans.setOnClickListener(new View.OnClickListener() {
             @Override

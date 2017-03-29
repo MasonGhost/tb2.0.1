@@ -7,4 +7,4 @@
 2. 测试发送消息
 ```
 2["convr.msg",{"cid":15,"type":0,"txt":"text content","ext":{"key":"value"},"rt":true}]
-```
+```s
