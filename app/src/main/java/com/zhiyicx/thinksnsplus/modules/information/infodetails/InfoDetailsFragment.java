@@ -15,6 +15,7 @@ import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
@@ -225,8 +226,10 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                         mReplyUserId = 0;
                         break;
                     case DynamicDetailMenuView.ITEM_POSITION_2:
+                        mPresenter.shareInfo();
                         break;
                     case DynamicDetailMenuView.ITEM_POSITION_3:
+                        ToastUtils.showToast("more");
                         break;
                 }
             }

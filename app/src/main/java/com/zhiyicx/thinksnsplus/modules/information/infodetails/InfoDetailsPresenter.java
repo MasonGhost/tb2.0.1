@@ -6,11 +6,9 @@ import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.TimeUtils;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoCommentListBeanDaoImpl;
@@ -18,6 +16,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.InfoListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
@@ -31,6 +30,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_INFO_LIST_COLLECT;
 import static com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean.SEND_ING;
 
 /**
@@ -125,7 +125,7 @@ public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Rep
         mRootView.getCurrentInfo().setIs_collection_news(is_collection_news);
         mInfoListBeanGreenDao.saveCollect(mRootView.getInfoType(), mRootView.getNewsId().intValue
                 (), is_collection_news);
-
+        EventBus.getDefault().post(mRootView.getCurrentInfo(), EVENT_SEND_INFO_LIST_COLLECT);
         mRepository.handleCollect(isUnCollected, news_id);
     }
 

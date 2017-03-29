@@ -9,6 +9,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoBannerItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoListItem;
@@ -17,6 +18,7 @@ import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.Subscriber;
 
 import java.util.List;
 
@@ -49,6 +51,11 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     InfoListPresenter mInfoListPresenter;
 
     @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    @Override
     protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getActivity(), mListDatas);
         adapter.addItemViewDelegate(new InfoBannerItem());
@@ -63,7 +70,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
                 Intent intent = new Intent(getActivity(), InfoDetailsActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(BUNDLE_INFO, realData);
-                bundle.putString(BUNDLE_INFO_TYPE,mInfoType);
+                bundle.putString(BUNDLE_INFO_TYPE, mInfoType);
                 LogUtils.d(realData.toString());
                 intent.putExtra(BUNDLE_INFO, bundle);
                 startActivity(intent);
@@ -131,4 +138,13 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
         return (long) needData.getId();
     }
 
+    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_INFO_LIST_COLLECT)
+    public void handleCollectInfo(InfoListBean.ListBean info) {
+        LogUtils.d("handleCollectInfo");
+        onCacheResponseSuccess(requestCacheData(mMaxId, false), false);
+    }
+
+    public void setInfoType(String infoType) {
+        mInfoType = infoType;
+    }
 }
