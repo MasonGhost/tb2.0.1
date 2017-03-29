@@ -21,7 +21,7 @@ import org.greenrobot.greendao.annotation.Generated;
  * @Author Jliuer
  * @Date 2017/03/03
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 资讯列表
  */
 @Entity
 public class InfoListBean extends BaseListBean implements Serializable{
