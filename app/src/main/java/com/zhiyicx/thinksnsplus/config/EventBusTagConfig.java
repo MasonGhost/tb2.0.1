@@ -30,6 +30,9 @@ public class EventBusTagConfig {
     // 资讯列表发送评论
     public static final String EVENT_SEND_COMMENT_TO_INFO_LIST = "event_send_info_to_List";
 
+    // 资讯收藏
+    public static final String EVENT_SEND_INFO_LIST_COLLECT = "event_send__info_list_collect";
+
     // 音乐播放缓冲进度
     public static final String EVENT_SEND_MUSIC_CACHE_PROGRESS = "event_send_music_cache_progress";
     // 音乐加载
