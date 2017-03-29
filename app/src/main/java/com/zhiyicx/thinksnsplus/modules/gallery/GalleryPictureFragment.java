@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.DrawableUtils;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.View;
@@ -34,6 +35,8 @@ import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.jakewharton.rxbinding.view.RxView;
+import com.trycatch.mysnackbar.Prompt;
+import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.PathConfig;
@@ -129,7 +132,6 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
 
     @Override
     protected void initData() {
-
         boolean animateIn = getArguments().getBoolean("animationIn");
         final AnimationRectBean rect = getArguments().getParcelable("rect");
         mImageBean = getArguments() != null ? (ImageBean) getArguments().getParcelable("url") : null;
@@ -167,7 +169,6 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             mActionPopupWindow = ActionPopupWindow.builder()
                     .backgroundAlpha(1.0f)
                     .bottomStr(context.getString(R.string.cancel))
-
                     .item1Str(context.getString(R.string.save_to_photo))
                     .isOutsideTouch(true)
                     .isFocus(true)
@@ -201,34 +202,16 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     }
 
     public void saveImage() {
-
-        if (mIvOriginPager.getDrawingCache() != null) {
-            // 如果已经加载过原图，那么就从原图的ImageView中直接拿取bitmap
-            getSaveBitmapResultObservable(mIvOriginPager.getDrawingCache())
-                    .subscribe(new Action1<String>() {
-                        @Override
-                        public void call(String result) {
-                            ToastUtils.showToast(result);
-                        }
-                    });
-        } else {
-            // 否则通过GLide获取bitmap
-            Glide.with(getActivity())
-                    .load(String.format(ApiConfig.IMAGE_PATH, mImageBean.getStorage_id(), 100))
-                    .asBitmap()
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                            getSaveBitmapResultObservable(resource)
-                                    .subscribe(new Action1<String>() {
-                                        @Override
-                                        public void call(String result) {
-                                            ToastUtils.showToast(result);
-                                        }
-                                    });
-                        }
-                    });
-        }
+        // 通过GLide获取bitmap
+        Glide.with(getActivity())
+                .load(String.format(ApiConfig.IMAGE_PATH, mImageBean.getStorage_id(), 100))
+                .asBitmap()
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(final Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        getSaveBitmapResultObservable(resource);
+                    }
+                });
     }
 
     public static GalleryPictureFragment newInstance(ImageBean imageBean, AnimationRectBean rect,
@@ -378,8 +361,8 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     /**
      * 通过Rxjava在io线程中处理保存图片的逻辑，得到返回结果，否则会阻塞ui
      */
-    private Observable<String> getSaveBitmapResultObservable(final Bitmap bitmap) {
-        return Observable.just(1)// 不能empty否则map无法进行转换
+    private void getSaveBitmapResultObservable(final Bitmap bitmap) {
+        Observable.just(1)// 不能empty否则map无法进行转换
                 .map(new Func1<Integer, String>() {
                     @Override
                     public String call(Integer integer) {
@@ -389,7 +372,27 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     }
                 })
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String result) {
+                        switch (result) {
+                            case "-1":
+                                result = getString(R.string.save_failure1);
+                                break;
+                            case "-2":
+                                result = getString(R.string.save_failure2);
+                                break;
+                            default:
+                                result = getString(R.string.save_success) + result;
+
+                        }
+                        TSnackbar.make(mSnackRootView, result, TSnackbar.LENGTH_SHORT)
+                                .setPromptThemBackground(Prompt.SUCCESS)
+                                .setMinHeight(0, getResources().getDimensionPixelSize(R.dimen.toolbar_height))
+                                .show();
+                    }
+                });
     }
 
     private class GallarySimpleTarget extends SimpleTarget<GlideDrawable> {
