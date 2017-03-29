@@ -175,6 +175,7 @@
                 app:dividerRightMargin="@dimen/spacing_normal"
                 app:leftImage="@mipmap/ico_me_ranklist"
                 app:leftText="@string/ranking"
+                app:showLine="false"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"></com.zhiyicx.baseproject.widget.button.CombinationButton>
             <!--金币-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
@@ -218,6 +219,7 @@
                 android:layout_height="@dimen/full_button_height"
                 app:leftImage="@mipmap/ico_me_setting"
                 app:leftText="@string/setting"
+                android:layout_marginTop="@dimen/spacing_mid"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
                 app:showLine="false"></com.zhiyicx.baseproject.widget.button.CombinationButton>
         </LinearLayout>
