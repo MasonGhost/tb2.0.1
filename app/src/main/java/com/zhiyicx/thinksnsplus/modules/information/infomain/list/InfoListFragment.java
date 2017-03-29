@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
@@ -18,10 +18,12 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.zhiyicx.thinksnsplus.modules.information.infomain.container
+        .InfoContainerFragment.RECOMMEND_INFO;
 
 /**
  * @Author Jliuer
@@ -33,7 +35,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
         BaseListBean> implements InfoMainContract.InfoListView {
     public static final String BUNDLE_INFO_TYPE = "info_type";
     public static final String BUNDLE_INFO = "info";
-    private String mInfoType = "1";
+    private String mInfoType = RECOMMEND_INFO;
 
     public static InfoListFragment newInstance(String params) {
         InfoListFragment fragment = new InfoListFragment();
@@ -61,6 +63,8 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
                 Intent intent = new Intent(getActivity(), InfoDetailsActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(BUNDLE_INFO, realData);
+                bundle.putString(BUNDLE_INFO_TYPE,mInfoType);
+                LogUtils.d(realData.toString());
                 intent.putExtra(BUNDLE_INFO, bundle);
                 startActivity(intent);
             }
@@ -76,8 +80,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
                 .infoListPresenterModule(new InfoListPresenterModule(this))
                 .build()
                 .inject(this);
-        mInfoType = getArguments().getString(BUNDLE_INFO_TYPE, "1");
-
+        mInfoType = getArguments().getString(BUNDLE_INFO_TYPE, RECOMMEND_INFO);
         super.initData();
     }
 

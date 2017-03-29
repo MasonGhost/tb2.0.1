@@ -185,36 +185,41 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
     private void shareActionConfig(Activity activity, final OnShareCallbackListener l, SHARE_MEDIA share_media) {
         ShareAction shareAction = new ShareAction(activity);
         shareAction.setPlatform(share_media);
+        UMImage image = null;
         if (!TextUtils.isEmpty(mShareContent.getContent())) {
             shareAction.withText(mShareContent.getContent());
         }
         if (!TextUtils.isEmpty(mShareContent.getImage())) {
-            UMImage image = new UMImage(activity, mShareContent.getImage());
-            shareAction.withMedia(image);
+            image = new UMImage(activity, mShareContent.getImage());
         }
         if (0 != mShareContent.getResImage()) {
-            UMImage image = new UMImage(activity, mShareContent.getResImage());
-            shareAction.withMedia(image);
+            image = new UMImage(activity, mShareContent.getResImage());
         }
         if (null != mShareContent.getBitmap()) {
-            UMImage image = new UMImage(activity, mShareContent.getBitmap());
-            shareAction.withMedia(image);
+            image = new UMImage(activity, mShareContent.getBitmap());
         }
         if (null != mShareContent.getFile()) {
-            UMImage image = new UMImage(activity, mShareContent.getFile());
-            shareAction.withMedia(image);
+            image = new UMImage(activity, mShareContent.getFile());
         }
         if (!TextUtils.isEmpty(mShareContent.getUrl())) {
             UMWeb web = new UMWeb(mShareContent.getUrl());
             if (!TextUtils.isEmpty(mShareContent.getTitle())) {
                 web.setTitle(mShareContent.getTitle());//标题
             }
+            if (!TextUtils.isEmpty(mShareContent.getContent())) {
+                web.setDescription(mShareContent.getContent());
+            }
+            if (image != null) {
+                web.setThumb(image);
+            }
             shareAction.withMedia(web);
+        } else {
+            shareAction.withMedia(image);
         }
         shareAction.setCallback(new UMShareListener() {
             @Override
             public void onStart(SHARE_MEDIA share_media) {
-                if (l == null) {
+                if (l != null) {
                     Share share = changeShare(share_media);
                     l.onStart(share);
                 }
@@ -222,7 +227,7 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
 
             @Override
             public void onResult(SHARE_MEDIA share_media) {
-                if (l == null) {
+                if (l != null) {
                     Share share = changeShare(share_media);
                     l.onSuccess(share);
                 }
@@ -230,7 +235,7 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
 
             @Override
             public void onError(SHARE_MEDIA share_media, Throwable throwable) {
-                if (l == null) {
+                if (l != null) {
                     Share share = changeShare(share_media);
                     l.onError(share, throwable);
                 }
@@ -238,7 +243,7 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
 
             @Override
             public void onCancel(SHARE_MEDIA share_media) {
-                if (l == null) {
+                if (l != null) {
                     Share share = changeShare(share_media);
                     l.onCancel(share);
                 }
@@ -355,7 +360,6 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
                                         break;
                                     default:
                                 }
-                                mRecyclerViewPopupWindow.hide();
                             }
                         });
 

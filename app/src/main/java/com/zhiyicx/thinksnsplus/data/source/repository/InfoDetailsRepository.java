@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
-import android.content.Context;
 import android.util.SparseArray;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -11,7 +10,6 @@ import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.local.InfoCommentListBeanDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.InfoMainClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsConstract;
@@ -43,7 +41,7 @@ public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
     @Inject
     public InfoDetailsRepository(ServiceManager serviceManager, Application context) {
         mInfoMainClient = serviceManager.getInfoMainClient();
-        mUserInfoRepository = new UserInfoRepository(serviceManager,context);
+        mUserInfoRepository = new UserInfoRepository(serviceManager, context);
         this.context = context;
     }
 
@@ -113,8 +111,8 @@ public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
     }
 
     @Override
-    public void handleCollect(boolean isCollected, final String news_id) {
-        Observable.just(isCollected)
+    public void handleCollect(boolean isUnCollected, final String news_id) {
+        Observable.just(isUnCollected)
                 .observeOn(Schedulers.io())
                 .subscribe(new Action1<Boolean>() {
                     @Override
@@ -153,9 +151,24 @@ public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
         params.put("comment_mark", comment_mark);
         // 后台处理
         backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                (BackgroundTaskRequestMethodConfig.POST, params);
+                (BackgroundTaskRequestMethodConfig.SEND_INFO_COMMENT, params);
         backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_INFO_COMMENT_FORMAT,
                 new_id));
+        BackgroundTaskManager.getInstance(context).addBackgroundRequestTask
+                (backgroundRequestTaskBean);
+    }
+
+    @Override
+    public void deleteComment(int news_id, int comment_id) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("news_id", news_id);
+        params.put("comment_id", comment_id);
+        // 后台处理
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                (BackgroundTaskRequestMethodConfig.DELETE, params);
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig
+                .APP_PATH_INFO_DELETE_COMMENT_FORMAT, news_id, comment_id));
         BackgroundTaskManager.getInstance(context).addBackgroundRequestTask
                 (backgroundRequestTaskBean);
     }

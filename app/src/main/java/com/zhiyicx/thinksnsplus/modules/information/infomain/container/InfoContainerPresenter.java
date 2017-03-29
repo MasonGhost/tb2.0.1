@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.information.infomain.container;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMyCatesBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
@@ -68,6 +69,9 @@ public class InfoContainerPresenter extends BasePresenter<InfoMainContract.Repps
                 }).subscribe(new Action1<InfoTypeBean>() {
             @Override
             public void call(InfoTypeBean infoTypeBean) {
+                for (InfoTypeMyCatesBean data:infoTypeBean.getMy_cates()){
+                    LogUtils.d("locoal:::"+data.getName());
+                }
                 mRootView.setInfoType(infoTypeBean);
             }
         });
@@ -77,9 +81,12 @@ public class InfoContainerPresenter extends BasePresenter<InfoMainContract.Repps
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribe<InfoTypeBean>() {
                     @Override
-                    protected void onSuccess(InfoTypeBean data) {
-                        mInfoTypeBeanGreenDao.saveSingleData(data);
-                        mRootView.setInfoType(data);
+                    protected void onSuccess(InfoTypeBean infoTypeBean) {
+                        mInfoTypeBeanGreenDao.updateSingleData(infoTypeBean);
+                        for (InfoTypeMyCatesBean data:infoTypeBean.getMy_cates()){
+                            LogUtils.d("remote:::"+data.getName());
+                        }
+                        mRootView.setInfoType(infoTypeBean);
                     }
 
                     @Override

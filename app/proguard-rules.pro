@@ -305,3 +305,14 @@ public static final int *;
 
     -keep class com.linkedin.** { *; }
     -keepattributes Signature
+
+
+################ 极光推送 ###############
+-dontoptimize
+-dontpreverify
+
+-dontwarn cn.jpush.**
+-keep class cn.jpush.** { *; }
+
+-dontwarn cn.jiguang.**
+-keep class cn.jiguang.** { *; }

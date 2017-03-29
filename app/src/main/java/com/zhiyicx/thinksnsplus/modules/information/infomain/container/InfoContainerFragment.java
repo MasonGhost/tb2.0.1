@@ -14,12 +14,12 @@ import android.widget.ImageView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMyCatesBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMyCatesBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
 import com.zhiyicx.thinksnsplus.modules.information.infochannel.ChannelActivity;
-import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
+import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment;
 import com.zhiyicx.thinksnsplus.modules.information.infosearch.SearchActivity;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
@@ -62,6 +62,7 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     public static final int SUBSCRIBE_CODE = 100;
     public static final String SUBSCRIBE_EXTRA = "mycates";
     protected static final int DEFAULT_OFFSET_PAGE = 3;
+    public static final String RECOMMEND_INFO = "-1";
     // 定义默认样式值
     private static final int DEFAULT_TAB_UNSELECTED_TEXTCOLOR = com.zhiyicx.baseproject.R.color
             .normal_for_assist_text;// 缺省的tab未选择文字
@@ -183,7 +184,8 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     @Override
     public void setInfoType(InfoTypeBean infoType) {
         mInfoTypeBean = infoType;
-        mInfoTypeBean.getMy_cates().add(0, new InfoTypeMyCatesBean(1L,getString(R.string.info_recommend)));
+        mInfoTypeBean.getMy_cates().add(0, new InfoTypeMyCatesBean(-1L, getString(R.string
+                .info_recommend)));
         Observable.from(infoType.getMy_cates())
                 .filter(new Func1<InfoTypeMyCatesBean, Boolean>() {
                     @Override
@@ -237,7 +239,7 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     protected List<Fragment> initFragments() {
         if (mFragments == null) {
             mFragments = new ArrayList<>();
-            mFragments.add(InfoListFragment.newInstance("1"));
+            mFragments.add(InfoListFragment.newInstance(RECOMMEND_INFO));
         }
         return mFragments;
     }

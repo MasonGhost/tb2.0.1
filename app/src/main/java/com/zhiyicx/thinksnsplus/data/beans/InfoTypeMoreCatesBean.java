@@ -11,6 +11,7 @@ import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.io.Serializable;
+
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
 
@@ -31,13 +32,19 @@ public class InfoTypeMoreCatesBean implements Parcelable, Serializable {
     @Id
     @Unique
     private Long id;
+    @Unique
+    private Long info_type;
     private String name;
-    @ToOne(joinProperty = "id")
+    @ToOne(joinProperty = "info_type")
     private InfoListBean mInfoListBean;
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 962926367)
     private transient InfoTypeMoreCatesBeanDao myDao;
     @Generated(hash = 1585318719)
@@ -78,11 +85,10 @@ public class InfoTypeMoreCatesBean implements Parcelable, Serializable {
     }
 
     /** To-one relationship, resolved on first access. */
-    @Generated(hash = 1750666845)
+    @Generated(hash = 1758891489)
     public InfoListBean getMInfoListBean() {
-        Long __key = this.id;
-        if (mInfoListBean__resolvedKey == null
-                || !mInfoListBean__resolvedKey.equals(__key)) {
+        Long __key = this.info_type;
+        if (mInfoListBean__resolvedKey == null || !mInfoListBean__resolvedKey.equals(__key)) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
@@ -98,12 +104,12 @@ public class InfoTypeMoreCatesBean implements Parcelable, Serializable {
     }
 
     /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1919827090)
+    @Generated(hash = 1002296003)
     public void setMInfoListBean(InfoListBean mInfoListBean) {
         synchronized (this) {
             this.mInfoListBean = mInfoListBean;
-            id = mInfoListBean == null ? null : mInfoListBean.getId();
-            mInfoListBean__resolvedKey = id;
+            info_type = mInfoListBean == null ? null : mInfoListBean.getId();
+            mInfoListBean__resolvedKey = info_type;
         }
     }
 
@@ -155,6 +161,14 @@ public class InfoTypeMoreCatesBean implements Parcelable, Serializable {
         dest.writeParcelable(this.mInfoListBean, flags);
     }
 
+    public Long getInfo_type() {
+        return this.info_type;
+    }
+
+    public void setInfo_type(Long info_type) {
+        this.info_type = info_type;
+    }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1943686829)
     public void __setDaoSession(DaoSession daoSession) {
@@ -168,16 +182,23 @@ public class InfoTypeMoreCatesBean implements Parcelable, Serializable {
         this.mInfoListBean = in.readParcelable(InfoListBean.class.getClassLoader());
     }
 
+    @Generated(hash = 824074184)
+    public InfoTypeMoreCatesBean(Long id, Long info_type, String name) {
+        this.id = id;
+        this.info_type = info_type;
+        this.name = name;
+    }
+
     public static final Creator<InfoTypeMoreCatesBean> CREATOR = new
             Creator<InfoTypeMoreCatesBean>() {
-        @Override
-        public InfoTypeMoreCatesBean createFromParcel(Parcel source) {
-            return new InfoTypeMoreCatesBean(source);
-        }
+                @Override
+                public InfoTypeMoreCatesBean createFromParcel(Parcel source) {
+                    return new InfoTypeMoreCatesBean(source);
+                }
 
-        @Override
-        public InfoTypeMoreCatesBean[] newArray(int size) {
-            return new InfoTypeMoreCatesBean[size];
-        }
-    };
+                @Override
+                public InfoTypeMoreCatesBean[] newArray(int size) {
+                    return new InfoTypeMoreCatesBean[size];
+                }
+            };
 }

@@ -24,25 +24,14 @@ android {
             //选择要添加的对应cpu类型的.so库。
             abiFilters 'armeabi', 'armeabi-v7a', 'armeabi-v8a', 'x86', 'x86_64', 'mips', 'mips64'
         }
-        multiDexEnabled true
-    }
-    packagingOptions {
-        exclude 'LICENSE.txt'
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/ASL2.0'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/LICENSE'
-    }
+        // 极光推送
+        manifestPlaceholders = [
+                JPUSH_PKGNAME : applicationId,
+                JPUSH_APPKEY : "85f8e1049e913108b9d9bc67", //JPush上注册的包名对应的appkey.
+                JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+        ]
 
-    lintOptions {
-        quiet true
-        abortOnError false
-        ignoreWarnings true
-        disable 'InvalidPackage'            //Some libraries have issues with this.
-        disable 'OldTargetApi'
-        //Lint gives this warning but SDK 20 would be Android L Beta.
-        disable 'IconDensities'             //For testing purpose. This is safe to remove.
-        disable 'IconMissingDensityFolder'  //For testing purpose. This is safe to remove.
+        multiDexEnabled true
     }
 
     signingConfigs {
@@ -76,11 +65,6 @@ android {
         }
     }
 
-    lintOptions {
-        disable 'InvalidPackage'
-        disable "ResourceType"
-        abortOnError false
-    }
     /**
      * 保证 testDebug 执行完成后会执行 testRelease
      * ｛@Link http://g.co/androidstudio/not-mocked｝
@@ -97,6 +81,32 @@ android {
         }
         unitTests.returnDefaultValues = true
 
+    }
+
+    lintOptions {
+        quiet true
+        abortOnError false
+        ignoreWarnings true
+        abortOnError false
+        disable "ResourceType"
+        disable 'InvalidPackage'            //Some libraries have issues with this.
+        disable 'OldTargetApi'
+        //Lint gives this warning but SDK 20 would be Android L Beta.
+        disable 'IconDensities'             //For testing purpose. This is safe to remove.
+        disable 'IconMissingDensityFolder'  //For testing purpose. This is safe to remove.
+    }
+    packagingOptions {
+        exclude 'LICENSE.txt'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+    }
+    dexOptions {
+        dexInProcess true
+        preDexLibraries true
+        javaMaxHeapSize "6g"//越大越好
+        incremental true
     }
 }
 greendao {
@@ -164,6 +174,9 @@ dependencies {
     // database
     compile dataDependences.greendao
     compile dataDependences.guava
+    // jpush
+    compile dataDependences.jiguangJpush
+    compile dataDependences.jiguangJcore
 
     compile dataDependences.greendaoSqlcipher
     //compile dataDependences.greendaoGenerator

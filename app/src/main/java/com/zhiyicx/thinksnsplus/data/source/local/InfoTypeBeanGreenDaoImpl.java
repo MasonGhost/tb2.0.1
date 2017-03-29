@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMyCatesBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMyCatesBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -66,7 +67,7 @@ public class InfoTypeBeanGreenDaoImpl extends CommonCacheImpl<InfoTypeBean> {
 
     @Override
     public void clearTable() {
-
+        mInfoTypeMyCatesBeanDao.deleteAll();
     }
 
     @Override
@@ -81,6 +82,7 @@ public class InfoTypeBeanGreenDaoImpl extends CommonCacheImpl<InfoTypeBean> {
 
     @Override
     public void updateSingleData(InfoTypeBean newData) {
+        clearTable();
         mInfoTypeMyCatesBeanDao.insertOrReplaceInTx(newData.getMy_cates());
         mTypeMoreCatesBeanDao.insertOrReplaceInTx(newData.getMore_cates());
     }
@@ -92,11 +94,15 @@ public class InfoTypeBeanGreenDaoImpl extends CommonCacheImpl<InfoTypeBean> {
     }
 
     public List<InfoTypeMyCatesBean> getMyCatesList() {
-        return mInfoTypeMyCatesBeanDao.loadAll();
+        List<InfoTypeMyCatesBean> data = mInfoTypeMyCatesBeanDao.loadAll();
+        Collections.reverse(data);
+        return data;
     }
 
     public List<InfoTypeMoreCatesBean> getMoreCatesList() {
-        return mTypeMoreCatesBeanDao.loadAll();
+        List<InfoTypeMoreCatesBean> data = mTypeMoreCatesBeanDao.loadAll();
+        Collections.reverse(data);
+        return data;
     }
 
 }

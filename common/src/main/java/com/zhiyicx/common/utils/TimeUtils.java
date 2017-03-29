@@ -174,7 +174,7 @@ public class TimeUtils {
      * @return 友好时间字符串
      */
     public static String getTimeFriendlyForDetail(String timestr) {
-        long timesamp = string2MillisDefaultLocal(timestr);
+        long timesamp = utc2LocalLong(timestr);
         return handleDetailTime(timesamp);
     }
 
