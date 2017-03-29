@@ -264,15 +264,16 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             DrawableRequestBuilder thumbnailBuilder = Glide
                     .with(context)
                     .load(new CustomImageSizeModelImp(imageBean)
-                            .requestCustomSizeUrl());
+                            .requestCustomSizeUrl())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL);
             Glide.with(context)
                     .using(new CustomImageModelLoader(context))
                     .load(new CustomImageSizeModelImp(imageBean))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.shape_default_image)
                     .error(R.drawable.shape_default_image)
                     .thumbnail(thumbnailBuilder)
                     .centerCrop()
-                    .override(with, height)
                     .into(new GallarySimpleTarget(rect));
         }
     }
