@@ -14,39 +14,38 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
 -->
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:tools="http://schemas.android.com/tools">
 
     <TextView
         android:id="@+id/snackbar_text"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|left|start"
         android:layout_weight="1"
-        android:drawablePadding="10dp"
+        android:drawableLeft="@drawable/msg_box_remind"
+        android:drawablePadding="@dimen/margin_small"
         android:ellipsize="end"
         android:gravity="center_vertical"
-        android:maxLines="@integer/design_snackbar_text_max_lines"
-        android:paddingBottom="@dimen/design_snackbar_padding_vertical"
-        android:paddingLeft="@dimen/design_snackbar_padding_horizontal"
-        android:paddingRight="@dimen/design_snackbar_padding_horizontal"
-        android:paddingTop="@dimen/design_snackbar_padding_vertical"
-        android:textAppearance="@style/TextAppearance.Design.Snackbar.Message"
-        android:textColor="@color/text_color_black"/>
+        android:maxLines="2"
+        android:paddingLeft="@dimen/margin_large"
+        android:paddingRight="@dimen/margin_large"
+        android:textColor="@color/text_color_black"
+        android:textSize="@dimen/content_size"
+        tools:text="修改中。。。"/>
 
-    <Button
+    <TextView
         android:id="@+id/snackbar_action"
-        style="?attr/borderlessButtonStyle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/toolbarHeight"
         android:layout_gravity="center_vertical|right|end"
         android:layout_marginLeft="@dimen/design_snackbar_extra_spacing_horizontal"
         android:layout_marginStart="@dimen/design_snackbar_extra_spacing_horizontal"
-        android:paddingBottom="@dimen/design_snackbar_padding_vertical"
-        android:paddingLeft="@dimen/design_snackbar_padding_horizontal"
-        android:paddingRight="@dimen/design_snackbar_padding_horizontal"
-        android:paddingTop="@dimen/design_snackbar_padding_vertical"
-        android:textAppearance="@style/TextAppearance.Design.Snackbar.Message"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/margin_large"
+        android:paddingRight="@dimen/margin_large"
         android:textColor="@color/text_color_black"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        tools:text="取消"/>
     <!--android:textColor="?attr/colorPrimaryDark"-->
 </merge>

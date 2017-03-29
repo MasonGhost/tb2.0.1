@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="toolbarHeight">44dp</dimen>
+    <dimen name="margin_large">15dp</dimen>
+    <dimen name="margin_small">5dp</dimen>
+    <dimen name="content_size">15sp</dimen>
 </resources>

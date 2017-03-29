@@ -81,6 +81,7 @@ public class PhotoViewPictureFragment extends TSFragment {
                 .load(new File(path))
                 .centerCrop()
                 .crossFade()
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .override(800, 800)// 这儿很重要，图片太大，会很卡，并且内存溢出
                 .thumbnail(0.1f)
                 .into(new SimpleTarget<GlideDrawable>() {

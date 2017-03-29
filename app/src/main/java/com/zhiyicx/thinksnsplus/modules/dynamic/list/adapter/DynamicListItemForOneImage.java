@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.utils.DrawableProvider;
@@ -97,6 +98,7 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
                 .load(url)
                 .override(with, height)
                 .placeholder(R.drawable.shape_default_image)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.drawable.shape_default_image)
                 .into(view);
         if (dynamicBean.getFeed().getStorages() != null) {

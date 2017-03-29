@@ -46,6 +46,7 @@ import static me.iwf.photopicker.PhotoPicker.EXTRA_SHOW_GIF;
 
 public class PhotoAlbumDetailsFragment extends TSFragment {
     public static final int COMPLETE_REQUEST_CODE = 1000;
+    public static final int TO_ALBUM_LIST_REQUEST_CODE = 2000;
     public static final String EXTRA_BACK_HERE = "back_here";// 回到当前图片列表页面，是否停留
     public final static String EXTRA_ORIGIN = "ORIGINAL_PHOTOS";
     private final static String EXTRA_COLUMN = "column";
@@ -106,8 +107,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         Intent intent = new Intent();
         intent.setClass(getContext(), PhotoAlbumListActivity.class);
         intent.putExtras(bundle);
-        startActivity(intent);
-        getActivity().finish();
+        startActivityForResult(intent, TO_ALBUM_LIST_REQUEST_CODE);
     }
 
     @Override
@@ -282,6 +282,21 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 getActivity().setResult(Activity.RESULT_OK, data);
                 getActivity().finish();
             }
+        }
+        // 从相册列表返回
+        if (requestCode == TO_ALBUM_LIST_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            Bundle bundle = data.getExtras();
+            // 刷新相册名称
+            mToolbarCenter.setText(bundle.getString(SELECTED_DIRECTORY_NAME));
+            // 刷新图片列表
+            selected_directory = bundle.getInt(SELECTED_DIRECTORY_NUMBER, 0);
+            List<PhotoDirectory> newDirectories = bundle.getParcelableArrayList(ALL_PHOTOS);
+            directories.clear();
+            directories.addAll(newDirectories);
+
+            //originalPhotos = bundle.getStringArrayList(EXTRA_ORIGIN);
+            photoGridAdapter.setCurrentDirectoryIndex(selected_directory);
+            photoGridAdapter.notifyDataSetChanged();
         }
     }
 }
