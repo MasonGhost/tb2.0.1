@@ -176,7 +176,7 @@ public class BackgroundTaskHandler {
                 mBackgroundRequestTaskBeanGreenDao.saveMultiData(mBackgroundRequestTaskBeanCaches);
             }
             // 取消 event 监听
-//            EventBus.getDefault().unregister(BackgroundTaskHandler.this);
+            EventBus.getDefault().unregister(BackgroundTaskHandler.this);
         }
     };
 
