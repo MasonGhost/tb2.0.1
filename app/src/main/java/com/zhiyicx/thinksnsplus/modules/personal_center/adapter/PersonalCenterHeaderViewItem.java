@@ -366,8 +366,8 @@ public class PersonalCenterHeaderViewItem {
     private void setUserCover(String coverImage) {
         // 设置封面
         mImageLoader.loadImage(mActivity, GlideImageConfig.builder()
-                .placeholder(R.drawable.shape_default_image)
-                .errorPic(R.drawable.shape_default_image)
+                .placeholder(R.mipmap.default_pic_personal)
+                .errorPic(R.mipmap.default_pic_personal)
                 .url(ImageUtils.imagePathConvert(coverImage, 100))// 显示原图
                 .imagerView(iv_background_cover)
                 .build());
