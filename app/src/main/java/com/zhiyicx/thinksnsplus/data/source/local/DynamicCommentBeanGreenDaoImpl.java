@@ -12,6 +12,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+import rx.Observer;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+
 /**
  * @author LiuChao
  * @describe
@@ -64,9 +69,40 @@ public class DynamicCommentBeanGreenDaoImpl extends CommonCacheImpl<DynamicComme
     @Override
     public void deleteSingleCache(DynamicCommentBean dynamicCommentBean) {
         DynamicCommentBeanDao dynamicCommentBeanDao = getWDaoSession().getDynamicCommentBeanDao();
-        dynamicCommentBeanDao.deleteByKeyInTx();
         dynamicCommentBeanDao.delete(dynamicCommentBean);
     }
+
+    /**
+     * 通过 feedMark 删除评论
+     *
+     * @param feedMark
+     */
+    public void deleteCacheByFeedMark(Long feedMark) {
+        Observable.from(getLocalComments(feedMark))
+                .subscribeOn(Schedulers.io())
+                .filter(new Func1<DynamicCommentBean, Boolean>() {
+                    @Override
+                    public Boolean call(DynamicCommentBean dynamicCommentBean) {
+                        return dynamicCommentBean.getComment_id() != null && dynamicCommentBean.getComment_id() != 0;
+                    }
+                }).subscribe(new Observer<DynamicCommentBean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(DynamicCommentBean dynamicCommentBean) {
+                deleteSingleCache(dynamicCommentBean);
+            }
+        });
+    }
+
 
     @Override
     public void updateSingleData(DynamicCommentBean newData) {
@@ -105,7 +141,7 @@ public class DynamicCommentBeanGreenDaoImpl extends CommonCacheImpl<DynamicComme
      * @return
      */
     public List<DynamicCommentBean> getMySendingComment(Long feedMark) {
-        if(AppApplication.getmCurrentLoginAuth()==null){
+        if (AppApplication.getmCurrentLoginAuth() == null) {
             return new ArrayList<>();
         }
         DynamicCommentBeanDao dynamicCommentBeanDao = getWDaoSession().getDynamicCommentBeanDao();

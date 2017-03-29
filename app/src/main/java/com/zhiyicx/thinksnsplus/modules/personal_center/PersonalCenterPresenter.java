@@ -289,7 +289,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
     }
 
     @Override
-    public void handleViewCount(Long feed_id,int position) {
+    public void handleViewCount(Long feed_id, int position) {
         if (feed_id == null || feed_id == 0) {
             return;
         }
@@ -362,6 +362,25 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
         mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
         mRepository.sendComment(commentContent, mRootView.getListDatas().get(mCurrentPostion).getFeed_id(), replyToUserId, creatComment.getComment_mark());
 
+    }
+
+    /**
+     * 通过 feedMark 获取当前数据的位置
+     *
+     * @param feedMark
+     * @return
+     */
+    @Override
+    public int getCurrenPosiotnInDataList(long feedMark) {
+        int position = -1;
+        int size = mRootView.getListDatas().size();
+        for (int i = 0; i < size; i++) {
+            if (feedMark == mRootView.getListDatas().get(i).getFeed_mark()) {
+                position = i;
+                break;
+            }
+        }
+        return position;
     }
 
     /**

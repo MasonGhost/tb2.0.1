@@ -368,7 +368,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onCommentContentClick(DynamicBean dynamicBean, int position) {
-        mCurrentPostion = mListDatas.indexOf(dynamicBean);
+        mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
         if (dynamicBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
             if (dynamicBean.getComments().get(position).getComment_id() != null) {
                 initLoginOutPopupWindow(dynamicBean, mCurrentPostion, position);
@@ -420,7 +420,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void onMoreCommentClick(View view, DynamicBean dynamicBean) {
-        goDynamicDetail(mListDatas.indexOf(dynamicBean), true);
+
+        int position = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
+        goDynamicDetail(position, true);
     }
 
     /**
@@ -481,7 +483,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         if (mListDatas.get(position).getFeed_id() == null || mListDatas.get(position).getFeed_id() == 0) {
             return;
         }
-        mPresenter.handleViewCount(mListDatas.get(position).getFeed_id(),position);
+        mPresenter.handleViewCount(mListDatas.get(position).getFeed_id(), position);
         Intent intent = new Intent(getActivity(), DynamicDetailActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(DYNAMIC_DETAIL_DATA, mListDatas.get(position));
@@ -491,7 +493,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         intent.putExtras(bundle);
         startActivity(intent);
     }
-
 
     public interface OnCommentClickListener {
         void onButtonMenuShow(boolean isShow);

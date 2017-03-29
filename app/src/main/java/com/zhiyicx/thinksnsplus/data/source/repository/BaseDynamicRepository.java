@@ -135,6 +135,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                     dynamicCommentBean.setFeed_mark(dynamicBean.getFeed_mark()); // 评论中增加 feed_mark \和用户标记
                                     dynamicCommentBean.setFeed_user_id(dynamicBean.getUser_id());
                                 }
+                                mDynamicCommentBeanGreenDao.deleteCacheByFeedMark(dynamicBean.getFeed_mark());// 删除本条动态的本地评论
                             }
 
                             return mUserInfoRepository.getUserInfo(user_ids)
@@ -378,6 +379,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                 user_ids.add(dynamicCommentBean.getReply_to_user_id());
                                 dynamicCommentBean.setFeed_mark(feed_mark);
                             }
+                            mDynamicCommentBeanGreenDao.deleteCacheByFeedMark(feed_mark);// 删除本条动态的本地评论
                             return mUserInfoRepository.getUserInfo(user_ids)
                                     .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<DynamicCommentBean>>>() {
                                         @Override
@@ -438,7 +440,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        LogUtils.e(throwable,"handleDynamicViewCount");
+                        LogUtils.e(throwable, "handleDynamicViewCount");
                     }
                 });
     }

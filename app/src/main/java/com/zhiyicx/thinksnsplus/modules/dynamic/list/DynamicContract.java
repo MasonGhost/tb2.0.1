@@ -82,5 +82,12 @@ public interface DynamicContract {
          * @param commentContent  comment content
          */
         void sendComment(int mCurrentPostion, long replyToUserId, String commentContent);
+
+        /**
+         * 通过 feedMark 获取当前数据的位置
+         * @param feedMark
+         * @return
+         */
+        int getCurrenPosiotnInDataList(long feedMark);
     }
 }
