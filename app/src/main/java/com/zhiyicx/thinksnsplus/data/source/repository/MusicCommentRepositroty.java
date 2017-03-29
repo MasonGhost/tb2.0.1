@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.MusicClient;
@@ -30,6 +31,6 @@ public class MusicCommentRepositroty implements MusicCommentContract.Repository 
     @Override
     public Observable<BaseJson<List<MusicCommentListBean>>> getMusicCommentList(String music_id,
                                                                                 long max_id) {
-        return mMusicClient.getMusicCommentList(music_id,max_id,null);
+        return mMusicClient.getMusicCommentList(music_id,max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE));
     }
 }

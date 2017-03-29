@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.SparseArray;
 
 import com.google.gson.Gson;
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -101,7 +102,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
      */
     @Override
     public Observable<BaseJson<List<DynamicBean>>> getDynamicList(final String type, Long max_id, int page, final boolean isLoadMore) {
-        return mDynamicClient.getDynamicList(type, max_id, null, page)
+        return mDynamicClient.getDynamicList(type, max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE), page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<BaseJson<List<DynamicBean>>, Observable<BaseJson<List<DynamicBean>>>>() {
