@@ -77,7 +77,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        initHeaderView();
     }
 
     @Override
@@ -115,7 +114,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
             mPresenter.refreshLastClicikPostion(mLastClickPostion);
             mLastClickPostion = -1;
         }
-        if(getListDatas().size()>0) {
+        if (getListDatas().size() > 0) {
             mPresenter.refreshLastClicikPostion(0);
         }
     }
@@ -129,15 +128,11 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         return commonAdapter;
     }
 
-    /**
-     * 初始化头信息（评论的、赞过的）
-     */
-    private void initHeaderView() {
-        mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
+
+    @Override
+    public View getHederView() {
         mHeaderView = LayoutInflater.from(getContext()).inflate(R.layout.view_header_message_list, null);
-        mHeaderAndFooterWrapper.addHeaderView(mHeaderView);
-        mRvList.setAdapter(mHeaderAndFooterWrapper);
-        mHeaderAndFooterWrapper.notifyDataSetChanged();
+        return mHeaderView;
     }
 
     /**

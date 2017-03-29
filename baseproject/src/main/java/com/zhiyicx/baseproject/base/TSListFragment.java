@@ -56,7 +56,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     protected RecyclerView.Adapter mAdapter;
 
     private EmptyWrapper mEmptyWrapper;
-    private HeaderAndFooterWrapper mFooterWrapper;
+    private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     private View mFooterView;
 
     protected SwipeToLoadLayout mRefreshlayout;
@@ -78,6 +78,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     protected int mPage = DEFAULT_PAGE;// 只对当 max_id 无法使用时有效，如热门动态
 
     private boolean mIsTipMessageSticky;// 提示信息是否需要常驻
+    private View mTvNoMoredataText;
 
     @Override
     protected int getBodyLayoutId() {
@@ -149,17 +150,28 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mRvList.setHasFixedSize(sethasFixedSize());
         mRvList.setItemAnimator(new DefaultItemAnimator());//设置动画
         mAdapter = getAdapter();
-        mRvList.setAdapter(mAdapter);
 
-        mFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
+        mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
         mFooterView = LayoutInflater.from(getContext()).inflate(R.layout.view_refresh_footer, null);
-        mFooterWrapper.addFootView(mFooterView);
-        mRvList.setAdapter(mFooterWrapper);
-
-        mEmptyWrapper = new EmptyWrapper(mAdapter);
+        mTvNoMoredataText = mFooterView.findViewById(R.id.tv_no_moredata_text);
+        mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        if (getHederView() != null) {
+            mHeaderAndFooterWrapper.addHeaderView(getHederView());
+        }
+        mHeaderAndFooterWrapper.addFootView(mFooterView);
+        mEmptyWrapper = new EmptyWrapper(mHeaderAndFooterWrapper);
         mEmptyWrapper.setEmptyView(mEmptyView);
         mRvList.setAdapter(mEmptyWrapper);
 
+    }
+
+    /**
+     * 列表头 view
+     *
+     * @return
+     */
+    protected View getHederView() {
+        return null;
     }
 
     /**
@@ -440,6 +452,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 mRefreshlayout.setLoadMoreEnabled(true);
             }
             mListDatas.clear();
+            mTvNoMoredataText.setVisibility(View.GONE);
             if (data != null && data.size() != 0) {
                 if (!isFromCache) {
                     // 更新缓存
@@ -451,9 +464,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
             } else {
                 mEmptyView.setErrorImag(setEmptView());
             }
+
             refreshData();
         } else { // 加载更多
             if (data != null && data.size() != 0) {
+                mTvNoMoredataText.setVisibility(View.GONE);
                 if (!isFromCache) {
                     // 更新缓存
                     mPresenter.insertOrUpdateData(data);
@@ -463,8 +478,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 refreshData();
                 mMaxId = getMaxId(data);
             } else {
-                showMessage(getString(R.string.no_more_data)); // 如需提示，打开即可
                 mRefreshlayout.setLoadMoreEnabled(false);
+                if (mListDatas.size() >= DEFAULT_PAGE_SIZE) {
+                    mTvNoMoredataText.setVisibility(View.VISIBLE);
+                    mRvList.smoothScrollToPosition(mListDatas.size() - 1);
+                }
             }
         }
     }
