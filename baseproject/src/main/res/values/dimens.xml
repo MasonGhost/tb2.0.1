@@ -43,7 +43,8 @@
     <dimen name="pb_height">2dp</dimen>
     <!-- 光标宽度 -->
     <dimen name="cursor_with">1dp</dimen>
-
+    <!-- 加载更多 -->
+    <dimen name="load_more_height">30dp</dimen>
     <!--#########################################      圆角尺寸       ################################-->
     <!--提示信息背景角度-->
     <dimen name="hintview_corner">5dp</dimen>

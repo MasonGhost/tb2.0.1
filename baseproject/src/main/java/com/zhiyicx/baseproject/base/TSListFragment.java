@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhy.adapter.recyclerview.wrapper.EmptyWrapper;
+import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -54,6 +56,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     protected RecyclerView.Adapter mAdapter;
 
     private EmptyWrapper mEmptyWrapper;
+    private HeaderAndFooterWrapper mFooterWrapper;
+    private View mFooterView;
 
     protected SwipeToLoadLayout mRefreshlayout;
 
@@ -146,6 +150,12 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mRvList.setItemAnimator(new DefaultItemAnimator());//设置动画
         mAdapter = getAdapter();
         mRvList.setAdapter(mAdapter);
+
+        mFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
+        mFooterView = LayoutInflater.from(getContext()).inflate(R.layout.view_refresh_footer, null);
+        mFooterWrapper.addFootView(mFooterView);
+        mRvList.setAdapter(mFooterWrapper);
+
         mEmptyWrapper = new EmptyWrapper(mAdapter);
         mEmptyWrapper.setEmptyView(mEmptyView);
         mRvList.setAdapter(mEmptyWrapper);
