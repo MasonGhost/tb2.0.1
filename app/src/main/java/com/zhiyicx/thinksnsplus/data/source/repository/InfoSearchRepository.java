@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.InfoMainClient;
@@ -29,6 +30,6 @@ public class InfoSearchRepository implements SearchContract.Repository {
 
     @Override
     public Observable<BaseJson<List<InfoListBean.ListBean>>> searchInfoList(String key, long max_id) {
-        return mInfoMainClient.searchInfoList(key,max_id,null);
+        return mInfoMainClient.searchInfoList(key,max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE));
     }
 }

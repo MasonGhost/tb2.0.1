@@ -193,6 +193,14 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
                     }
                 });
+        RxView.clicks(mTvToolbarCenter)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        onUserInfoClick(mDynamicBean.getUserInfoBean());
+                    }
+                });
         mIlvComment.setOnSendClickListener(this);
     }
 
@@ -485,7 +493,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         } else {
             mReplyUserId = mListDatas.get(position).getUser_id();
             showCommentView();
-            String contentHint =getString(R.string.default_input_hint);
+            String contentHint = getString(R.string.default_input_hint);
             if (mListDatas.get(position).getReply_to_user_id() != mDynamicBean.getUser_id()) {
                 contentHint = getString(R.string.reply, mListDatas.get(position).getCommentUser().getName());
             }

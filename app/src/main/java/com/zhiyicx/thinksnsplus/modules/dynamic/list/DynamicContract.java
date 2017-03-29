@@ -50,6 +50,14 @@ public interface DynamicContract {
         void handleLike(boolean isLiked, Long feed_id, int postion);
 
         /**
+         * add viewcount
+         *
+         * @param feed_id
+         * @param position
+         */
+        void handleViewCount(Long feed_id,int position);
+
+        /**
          * resend dynamic
          *
          * @param position
@@ -74,5 +82,12 @@ public interface DynamicContract {
          * @param commentContent  comment content
          */
         void sendComment(int mCurrentPostion, long replyToUserId, String commentContent);
+
+        /**
+         * 通过 feedMark 获取当前数据的位置
+         * @param feedMark
+         * @return
+         */
+        int getCurrenPosiotnInDataList(long feedMark);
     }
 }

@@ -93,11 +93,20 @@ public interface DynamicClient {
     /**
      * 一条动态的评论列表
      *
-     * @param feed_id 动态的唯一id
-     * @param max_id  返回的feed_digg_id 作为max_id,对象为null表示不传
+     * @param feed_id 动态的唯一 id
+     * @param max_id  返回的 feed_digg_id 作为max_id,对象为null表示不传
      * @return
      */
     @GET(ApiConfig.APP_PATH_DYNAMIC_COMMENT_LIST)
     Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentList(@Path("feed_id") Long feed_id, @Query("max_id") Long max_id);
+
+    /**
+     * 增加动态浏览量
+     *
+     * @param feed_id 动态的唯一 id
+     * @return
+     */
+    @POST(ApiConfig.APP_PATH_HANDLE_DYNAMIC_VIEWCOUNT)
+    Observable<BaseJson<Object>> handleDynamicViewCount(@Path("feed_id") Long feed_id);
 
 }

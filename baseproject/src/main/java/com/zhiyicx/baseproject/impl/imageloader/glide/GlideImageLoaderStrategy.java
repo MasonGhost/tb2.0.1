@@ -30,7 +30,7 @@ public class GlideImageLoaderStrategy implements ImageLoaderStrategy<GlideImageC
         boolean isFromNet = !TextUtils.isEmpty(imgUrl) && imgUrl.startsWith("http");// 是否来源于网络
         DrawableRequestBuilder requestBuilder = manager.load(TextUtils.isEmpty(imgUrl) ? config.getResourceId() : isFromNet ? imgUrl : "file://" + imgUrl)
                 .diskCacheStrategy(isFromNet ? DiskCacheStrategy.ALL : DiskCacheStrategy.NONE)
-                .skipMemoryCache(isFromNet ? false : true)
+               // .skipMemoryCache(isFromNet ? false : true) 本地图片也需要缓存到内存中
                 .crossFade()
                 .centerCrop();
         if (config.getErrorPic() != 0)// 设置错误的图片

@@ -91,6 +91,7 @@
     <FrameLayout
         android:id="@+id/fl_dynamic_list_more"
         android:layout_width="match_parent"
+        android:visibility="invisible"
         android:layout_height="wrap_content">
 
         <ImageView

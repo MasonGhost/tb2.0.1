@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 import android.app.Application;
 import android.util.SparseArray;
 
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -49,7 +50,7 @@ public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
     public Observable<BaseJson<List<InfoCommentListBean>>> getInfoCommentList(String feed_id,
                                                                               Long max_id, Long
                                                                                       limit) {
-        return mInfoMainClient.getInfoCommentList(feed_id, max_id, null)
+        return mInfoMainClient.getInfoCommentList(feed_id, max_id,  Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
                 .flatMap(new Func1<BaseJson<List<InfoCommentListBean>>,
                         Observable<BaseJson<List<InfoCommentListBean>>>>() {
 

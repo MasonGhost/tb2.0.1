@@ -24,9 +24,11 @@ public class ApiConfig {
      * 测试服务器：http://192.168.2.222:8080/mockjs/2/test-get-repose-head-normal?
      */
 
-    //public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 测试服务器
-    public static final String APP_DOMAIN = "http://192.168.2.222/";// 测试服务器
+    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
+//    public static final String APP_DOMAIN = "http://192.168.2.222/";// 测试服务器
     // public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
+//     public static final String APP_IM_DOMAIN = "ws://192.168.2.222:9900";// rap 测试服务器
+     public static final String APP_IM_DOMAIN = "ws://tsplus.zhibocloud.cn:9900";// rap 测试服务器
 
     public static final String URL_ABOUT_US = "http://www.thinksns.com/index.html";// 关于我们网站
 
@@ -110,6 +112,8 @@ public class ApiConfig {
     // 收藏动态，取消收藏
     public static final String APP_PATH_HANDLE_COLLECT = "api/v1/feeds/{feed_id}/collection";
     public static final String APP_PATH_HANDLE_COLLECT_FORMAT = "api/v1/feeds/%s/collection";
+    // 增加动态浏览量
+    public static final String APP_PATH_HANDLE_DYNAMIC_VIEWCOUNT="api/v1/feeds/{feed_id}/viewcount";
 
     /**
      * 资讯相关

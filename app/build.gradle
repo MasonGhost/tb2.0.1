@@ -33,24 +33,6 @@ android {
 
         multiDexEnabled true
     }
-    packagingOptions {
-        exclude 'LICENSE.txt'
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/ASL2.0'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/LICENSE'
-    }
-
-    lintOptions {
-        quiet true
-        abortOnError false
-        ignoreWarnings true
-        disable 'InvalidPackage'            //Some libraries have issues with this.
-        disable 'OldTargetApi'
-        //Lint gives this warning but SDK 20 would be Android L Beta.
-        disable 'IconDensities'             //For testing purpose. This is safe to remove.
-        disable 'IconMissingDensityFolder'  //For testing purpose. This is safe to remove.
-    }
 
     signingConfigs {
         release {
@@ -83,11 +65,6 @@ android {
         }
     }
 
-    lintOptions {
-        disable 'InvalidPackage'
-        disable "ResourceType"
-        abortOnError false
-    }
     /**
      * 保证 testDebug 执行完成后会执行 testRelease
      * ｛@Link http://g.co/androidstudio/not-mocked｝
@@ -104,6 +81,32 @@ android {
         }
         unitTests.returnDefaultValues = true
 
+    }
+
+    lintOptions {
+        quiet true
+        abortOnError false
+        ignoreWarnings true
+        abortOnError false
+        disable "ResourceType"
+        disable 'InvalidPackage'            //Some libraries have issues with this.
+        disable 'OldTargetApi'
+        //Lint gives this warning but SDK 20 would be Android L Beta.
+        disable 'IconDensities'             //For testing purpose. This is safe to remove.
+        disable 'IconMissingDensityFolder'  //For testing purpose. This is safe to remove.
+    }
+    packagingOptions {
+        exclude 'LICENSE.txt'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+    }
+    dexOptions {
+        dexInProcess true
+        preDexLibraries true
+        javaMaxHeapSize "6g"//越大越好
+        incremental true
     }
 }
 greendao {

@@ -5,9 +5,12 @@ import android.content.Context;
 import android.util.SparseArray;
 
 import com.google.gson.Gson;
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -69,7 +72,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     public BaseDynamicRepository(ServiceManager serviceManager, Application context) {
         mContext = context;
         mDynamicClient = serviceManager.getDynamicClient();
-        mUserInfoRepository = new UserInfoRepository(serviceManager,context);
+        mUserInfoRepository = new UserInfoRepository(serviceManager, context);
         mDynamicBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicBeanGreenDao();
         mDynamicDetailBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicDetailBeanGreenDao();
         mDynamicCommentBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicCommentBeanGreenDao();
@@ -98,8 +101,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
      * @return
      */
     @Override
-    public Observable<BaseJson<List<DynamicBean>>> getDynamicList(final String type, Long max_id, int page,final boolean isLoadMore) {
-        return mDynamicClient.getDynamicList(type, max_id, null, page)
+    public Observable<BaseJson<List<DynamicBean>>> getDynamicList(final String type, Long max_id, int page, final boolean isLoadMore) {
+        return mDynamicClient.getDynamicList(type, max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE), page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<BaseJson<List<DynamicBean>>, Observable<BaseJson<List<DynamicBean>>>>() {
@@ -107,7 +110,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                     public Observable<BaseJson<List<DynamicBean>>> call(final BaseJson<List<DynamicBean>> listBaseJson) {
                         if (listBaseJson.isStatus() && listBaseJson.getData() != null && !listBaseJson.getData().isEmpty()) {
                             final List<Long> user_ids = new ArrayList<>();
-                            if (!isLoadMore&&type.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {// 如果是热门，需要初始化时间
+                            if (!isLoadMore && type.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {// 如果是热门，需要初始化时间
                                 for (int i = listBaseJson.getData().size() - 1; i >= 0; i--) {
                                     listBaseJson.getData().get(i).setHot_creat_time(System.currentTimeMillis());
                                 }
@@ -133,6 +136,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                     dynamicCommentBean.setFeed_mark(dynamicBean.getFeed_mark()); // 评论中增加 feed_mark \和用户标记
                                     dynamicCommentBean.setFeed_user_id(dynamicBean.getUser_id());
                                 }
+                                mDynamicCommentBeanGreenDao.deleteCacheByFeedMark(dynamicBean.getFeed_mark());// 删除本条动态的本地评论
                             }
 
                             return mUserInfoRepository.getUserInfo(user_ids)
@@ -176,6 +180,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     }
 
     /**
+     * 处理喜欢操作
+     *
      * @param feed_id
      * @return
      */
@@ -374,6 +380,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                 user_ids.add(dynamicCommentBean.getReply_to_user_id());
                                 dynamicCommentBean.setFeed_mark(feed_mark);
                             }
+                            mDynamicCommentBeanGreenDao.deleteCacheByFeedMark(feed_mark);// 删除本条动态的本地评论
                             return mUserInfoRepository.getUserInfo(user_ids)
                                     .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<DynamicCommentBean>>>() {
                                         @Override
@@ -408,6 +415,34 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
 
                     }
 
+                });
+    }
+
+    /**
+     * 增加动态浏览量
+     *
+     * @param feed_id 动态的唯一 id
+     * @return
+     */
+    @Override
+    public void handleDynamicViewCount(Long feed_id) {
+        mDynamicClient.handleDynamicViewCount(feed_id)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new BaseSubscribe<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+
+                    }
+
+                    @Override
+                    protected void onFailure(String message) {
+                        LogUtils.d(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        LogUtils.e(throwable, "handleDynamicViewCount");
+                    }
                 });
     }
 

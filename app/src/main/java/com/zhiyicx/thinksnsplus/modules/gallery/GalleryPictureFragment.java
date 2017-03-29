@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.DrawableUtils;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.ResourceDecoder;
 import com.bumptech.glide.load.ResourceEncoder;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.load.resource.gifbitmap.GifBitmapWrapper;
@@ -33,6 +35,8 @@ import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.jakewharton.rxbinding.view.RxView;
+import com.trycatch.mysnackbar.Prompt;
+import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.PathConfig;
@@ -128,17 +132,19 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
 
     @Override
     protected void initData() {
-
         boolean animateIn = getArguments().getBoolean("animationIn");
         final AnimationRectBean rect = getArguments().getParcelable("rect");
         mImageBean = getArguments() != null ? (ImageBean) getArguments().getParcelable("url") : null;
-        if (mImageBean.getImgUrl() != null) { // 本地图片不需要查看原图
+        if (mImageBean.getImgUrl() != null) {
+            // 本地图片不需要查看原图
             mTvOriginPhoto.setVisibility(View.GONE);
+            // 本地图片不需要保存
+            mPhotoViewAttacherOrigin.setOnLongClickListener(null);
+            mPhotoViewAttacherNormal.setOnLongClickListener(null);
         }
         // 显示图片
         if (mImageBean == null) {
             mIvPager.setImageResource(R.drawable.shape_default_image);
-            return;
         } else {
             boolean canLoadImage = AndroidLifecycleUtils.canLoadImage(context);
             if (canLoadImage) {
@@ -196,34 +202,16 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     }
 
     public void saveImage() {
-
-        if (mIvOriginPager.getDrawingCache() != null) {
-            // 如果已经加载过原图，那么就从原图的ImageView中直接拿取bitmap
-            getSaveBitmapResultObservable(mIvOriginPager.getDrawingCache())
-                    .subscribe(new Action1<String>() {
-                        @Override
-                        public void call(String result) {
-                            ToastUtils.showToast(result);
-                        }
-                    });
-        } else {
-            // 否则通过GLide获取bitmap
-            Glide.with(getActivity())
-                    .load(String.format(ApiConfig.IMAGE_PATH, mImageBean.getStorage_id(), 100))
-                    .asBitmap()
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                            getSaveBitmapResultObservable(resource)
-                                    .subscribe(new Action1<String>() {
-                                        @Override
-                                        public void call(String result) {
-                                            ToastUtils.showToast(result);
-                                        }
-                                    });
-                        }
-                    });
-        }
+        // 通过GLide获取bitmap
+        Glide.with(getActivity())
+                .load(String.format(ApiConfig.IMAGE_PATH, mImageBean.getStorage_id(), 100))
+                .asBitmap()
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(final Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        getSaveBitmapResultObservable(resource);
+                    }
+                });
     }
 
     public static GalleryPictureFragment newInstance(ImageBean imageBean, AnimationRectBean rect,
@@ -242,43 +230,35 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         LogUtils.i("imageBean = " + imageBean.toString());
 
         if (imageBean.getImgUrl() != null) {
+            // 加载本地图片
             Glide.with(context)
                     .load(imageBean.getImgUrl())
                     .placeholder(R.drawable.shape_default_image)
                     .error(R.drawable.shape_default_image)
-                    .into(mIvPager);
-            mPbProgress.setVisibility(View.GONE);
-            mPhotoViewAttacherNormal.update();
-            return;
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .thumbnail(0.5f)
+                    .override(800, 800)
+                    .centerCrop()
+                    .into(new GallarySimpleTarget(rect));
+        } else {
+            // 加载网络图片
+            int with = (int) (mScreenWith);
+            int height = (int) (with * imageBean.getHeight() / imageBean.getWidth());
+            DrawableRequestBuilder thumbnailBuilder = Glide
+                    .with(context)
+                    .load(new CustomImageSizeModelImp(imageBean)
+                            .requestCustomSizeUrl())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL);
+            Glide.with(context)
+                    .using(new CustomImageModelLoader(context))
+                    .load(new CustomImageSizeModelImp(imageBean))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.drawable.shape_default_image)
+                    .error(R.drawable.shape_default_image)
+                    .thumbnail(thumbnailBuilder)
+                    .centerCrop()
+                    .into(new GallarySimpleTarget(rect));
         }
-        int with = (int) (mScreenWith);
-        int height = (int) (with * imageBean.getHeight() / imageBean.getWidth());
-
-        DrawableRequestBuilder thumbnailBuilder = Glide
-                .with(context)
-                .load(new CustomImageSizeModelImp(imageBean)
-                        .requestCustomSizeUrl());
-        Glide.with(context)
-                .using(new CustomImageModelLoader(context))
-                .load(new CustomImageSizeModelImp(imageBean))
-                .placeholder(R.drawable.shape_default_image)
-                .error(R.drawable.shape_default_image)
-                .thumbnail(thumbnailBuilder)
-                .centerCrop()
-                .override(with, height)
-                .into(new SimpleTarget<GlideDrawable>() {
-                    @Override
-                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                        mPbProgress.setVisibility(View.GONE);
-                        mIvPager.setImageDrawable(resource);
-                        mPhotoViewAttacherNormal.update();
-                        // 获取到模糊图进行放大动画
-                        if (!hasAnim) {
-                            hasAnim = true;
-                            startInAnim(rect);
-                        }
-                    }
-                });
     }
 
     // 加载原图:
@@ -381,8 +361,8 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     /**
      * 通过Rxjava在io线程中处理保存图片的逻辑，得到返回结果，否则会阻塞ui
      */
-    private Observable<String> getSaveBitmapResultObservable(final Bitmap bitmap) {
-        return Observable.just(1)// 不能empty否则map无法进行转换
+    private void getSaveBitmapResultObservable(final Bitmap bitmap) {
+        Observable.just(1)// 不能empty否则map无法进行转换
                 .map(new Func1<Integer, String>() {
                     @Override
                     public String call(Integer integer) {
@@ -392,7 +372,48 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     }
                 })
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String result) {
+                        switch (result) {
+                            case "-1":
+                                result = getString(R.string.save_failure1);
+                                break;
+                            case "-2":
+                                result = getString(R.string.save_failure2);
+                                break;
+                            default:
+                                result = getString(R.string.save_success) + result;
+
+                        }
+                        TSnackbar.make(mSnackRootView, result, TSnackbar.LENGTH_SHORT)
+                                .setPromptThemBackground(Prompt.SUCCESS)
+                                .setMinHeight(0, getResources().getDimensionPixelSize(R.dimen.toolbar_height))
+                                .show();
+                    }
+                });
+    }
+
+    private class GallarySimpleTarget extends SimpleTarget<GlideDrawable> {
+        private AnimationRectBean rect;
+
+        public GallarySimpleTarget(AnimationRectBean rect) {
+            super();
+            this.rect = rect;
+        }
+
+        @Override
+        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+            mPbProgress.setVisibility(View.GONE);
+            mIvPager.setImageDrawable(resource);
+            mPhotoViewAttacherNormal.update();
+            // 获取到模糊图进行放大动画
+            if (!hasAnim) {
+                hasAnim = true;
+                startInAnim(rect);
+            }
+        }
     }
 
 }

@@ -71,24 +71,11 @@ public class GalleryFragment extends TSFragment {
         mPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
         mVpPhotos.setAdapter(mPagerAdapter);
         mVpPhotos.setOffscreenPageLimit(MAX_OFF_SIZE);
-        // 添加指示器
-        ScaleCircleNavigator circleNavigator = new ScaleCircleNavigator(getContext());
-        circleNavigator.setCircleCount(mPagerAdapter.getCount());
-        circleNavigator.setMaxRadius(UIUtil.dip2px(getContext(), 2.5));
-        circleNavigator.setMinRadius(UIUtil.dip2px(getContext(), 2.4));
-        circleNavigator.setCircleSpacing(UIUtil.dip2px(getContext(), 5));
-        circleNavigator.setNormalCircleColor(Color.argb(102, 99, 99, 99));
-        circleNavigator.setSelectedCircleColor(Color.argb(255, 99, 99, 99));
-        circleNavigator.setFollowTouch(false);
-        circleNavigator.setCircleClickListener(new ScaleCircleNavigator.OnCircleClickListener() {
-            @Override
-            public void onClick(int index) {
-                mVpPhotos.setCurrentItem(index);
-            }
-        });
-        mMiIndicator.setNavigator(circleNavigator);
-        ViewPagerHelper.bind(mMiIndicator, mVpPhotos);
         mVpPhotos.setCurrentItem(currentItem);
+        // 大于一张图片才会显示小圆点，否则隐藏
+        if (allImages != null && allImages.size() > 1) {
+            addCircleNavigator();
+        }
     }
 
     @Override
@@ -210,5 +197,23 @@ public class GalleryFragment extends TSFragment {
         }
     }
 
-
+    private void addCircleNavigator() {
+        // 添加指示器
+        ScaleCircleNavigator circleNavigator = new ScaleCircleNavigator(getContext());
+        circleNavigator.setCircleCount(mPagerAdapter.getCount());
+        circleNavigator.setMaxRadius(UIUtil.dip2px(getContext(), 2.5));
+        circleNavigator.setMinRadius(UIUtil.dip2px(getContext(), 2.4));
+        circleNavigator.setCircleSpacing(UIUtil.dip2px(getContext(), 5));
+        circleNavigator.setNormalCircleColor(Color.argb(102, 99, 99, 99));
+        circleNavigator.setSelectedCircleColor(Color.argb(255, 99, 99, 99));
+        circleNavigator.setFollowTouch(false);
+        circleNavigator.setCircleClickListener(new ScaleCircleNavigator.OnCircleClickListener() {
+            @Override
+            public void onClick(int index) {
+                mVpPhotos.setCurrentItem(index);
+            }
+        });
+        mMiIndicator.setNavigator(circleNavigator);
+        ViewPagerHelper.bind(mMiIndicator, mVpPhotos);
+    }
 }

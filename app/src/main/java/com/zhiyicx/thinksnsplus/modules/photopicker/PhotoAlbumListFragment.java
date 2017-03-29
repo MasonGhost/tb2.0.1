@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.photopicker;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -110,10 +111,10 @@ public class PhotoAlbumListFragment extends TSFragment {
                         bundle.putInt(SELECTED_DIRECTORY_NUMBER, position);
                         bundle.putParcelableArrayList(ALL_PHOTOS, directories);
                         bundle.putString(SELECTED_DIRECTORY_NAME, photoDirectory.getName());
-                        bundle.putStringArrayList(EXTRA_ORIGIN,getArguments().getStringArrayList(EXTRA_ORIGIN));
+                        bundle.putStringArrayList(EXTRA_ORIGIN, getArguments().getStringArrayList(EXTRA_ORIGIN));
                         Intent intent = new Intent(getActivity(), PhotoAlbumDetailsActivity.class);
                         intent.putExtras(bundle);
-                        PhotoAlbumListFragment.this.startActivity(intent);
+                        getActivity().setResult(Activity.RESULT_OK, intent);
                         getActivity().finish();
                     }
                 });
