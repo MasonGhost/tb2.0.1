@@ -539,7 +539,7 @@ public final class TSnackbar {
      */
     @NonNull
     public TSnackbar setActionTextColor(ColorStateList colors) {
-        final Button btn = mView.getActionView();
+        final TextView btn = mView.getActionView();
         btn.setTextColor(colors);
         return this;
     }
@@ -549,7 +549,7 @@ public final class TSnackbar {
      */
     @NonNull
     public TSnackbar setActionTextSize(int size) {
-        final Button btn = mView.getActionView();
+        final TextView btn = mView.getActionView();
         btn.setTextSize(size);
         return this;
     }
@@ -570,7 +570,7 @@ public final class TSnackbar {
      */
     @NonNull
     public TSnackbar setActionTextColor(@ColorInt int color) {
-        final Button btn = mView.getActionView();
+        final TextView btn = mView.getActionView();
         btn.setTextColor(color);
         return this;
     }
@@ -952,7 +952,7 @@ public final class TSnackbar {
 
     public static class SnackbarLayout extends LinearLayout {
         private TextView mMessageView;
-        private Button mActionView;
+        private TextView mActionView;
 
         private int mMaxWidth;
         private int mMaxInlineActionWidth;
@@ -1000,21 +1000,21 @@ public final class TSnackbar {
         protected void onFinishInflate() {
             super.onFinishInflate();
             mMessageView = (TextView) findViewById(R.id.snackbar_text);
-            mActionView = (Button) findViewById(R.id.snackbar_action);
+            mActionView = (TextView) findViewById(R.id.snackbar_action);
         }
 
         TextView getMessageView() {
             return mMessageView;
         }
 
-        Button getActionView() {
+        TextView getActionView() {
             return mActionView;
         }
 
         @Override
         protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-            if (mMaxWidth > 0 && getMeasuredWidth() > mMaxWidth) {
+          /*  if (mMaxWidth > 0 && getMeasuredWidth() > mMaxWidth) {
                 widthMeasureSpec = MeasureSpec.makeMeasureSpec(mMaxWidth, MeasureSpec.EXACTLY);
                 super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             }
@@ -1038,7 +1038,7 @@ public final class TSnackbar {
             }
             if (remeasure) {
                 super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-            }
+            }*/
         }
 
         void animateChildrenIn(int delay, int duration) {
