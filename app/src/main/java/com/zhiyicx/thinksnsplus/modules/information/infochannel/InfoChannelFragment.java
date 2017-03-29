@@ -28,8 +28,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.container
-        .InfoContainerFragment.SUBSCRIBE_CODE;
-import static com.zhiyicx.thinksnsplus.modules.information.infomain.container
         .InfoContainerFragment.SUBSCRIBE_EXTRA;
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment
         .BUNDLE_INFO_TYPE;
@@ -61,6 +59,7 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
     private boolean isEditor;
     private InfoTypeBean mInfoTypeBean;
     private DefaultItemTouchHelper mItemTouchHelper;
+    public static final int RESULT_CODE = 100;
 
     public static InfoChannelFragment newInstance(Bundle params) {
         InfoChannelFragment fragment = new InfoChannelFragment();
@@ -273,14 +272,14 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
         Bundle bundle = new Bundle();
         bundle.putParcelable(SUBSCRIBE_EXTRA, mInfoTypeBean);
         intent.putExtra(SUBSCRIBE_EXTRA, bundle);
-        getActivity().setResult(SUBSCRIBE_CODE, intent);
+        getActivity().setResult(RESULT_CODE, intent);
         getActivity().finish();
     }
 
     private String getFollows(List<InfoTypeMyCatesBean> bean) {
         StringBuilder ids = new StringBuilder();
         for (InfoTypeMyCatesBean data : bean) {
-            if (data.getId()!=-1){
+            if (data.getId() != -1) {
                 ids.append(data.getId());
                 ids.append(",");
             }
