@@ -347,6 +347,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                     return;
                 }
                 showCommentView();
+                mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
+                mCurrentPostion = dataPosition;
                 mReplyToUserId = 0;// 0 代表评论动态
                 break;
 
