@@ -2,16 +2,15 @@ package com.zhiyicx.thinksnsplus.modules.settings;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.trycatch.mysnackbar.Prompt;
+import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
-import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DialogUtils;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.password.changepassword.ChangePasswordActivity;
@@ -20,7 +19,6 @@ import com.zhiyicx.thinksnsplus.modules.settings.aboutus.AboutUsActivity;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import retrofit2.http.HEAD;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -106,7 +104,9 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
 
     @Override
     public void showMessage(String message) {
-        ToastUtils.showToast(message);
+        TSnackbar.make(mSnackRootView, message, TSnackbar.LENGTH_SHORT)
+                .setPromptThemBackground(Prompt.SUCCESS)
+                .show();
     }
 
     @Override

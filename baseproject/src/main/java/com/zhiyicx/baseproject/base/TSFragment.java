@@ -46,6 +46,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     private View mCenterLoadingView; // 加载
 
     private boolean mIscUseSatusbar = false;// 内容是否需要占用状态栏
+    protected ViewGroup mSnackRootView;
 
 
     @Override
@@ -112,6 +113,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             frameLayout.addView(mCenterLoadingView);
         }
         linearLayout.addView(frameLayout);
+        mSnackRootView = (ViewGroup) getActivity().findViewById(android.R.id.content).getRootView();
         return linearLayout;
     }
 
