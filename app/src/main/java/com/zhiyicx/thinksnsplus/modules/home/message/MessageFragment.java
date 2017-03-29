@@ -18,7 +18,6 @@ import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagelike.MessageLikeActivity;
-import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import java.util.concurrent.TimeUnit;
 
@@ -43,7 +42,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Inject
     protected MessagePresenter mMessagePresenter;
 
-    private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     private int mLastClickPostion = -1;// 纪录上次聊天 item ,用于单条刷新
 
     public static MessageFragment newInstance() {
@@ -219,16 +217,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         mListDatas.set(ITEM_TYPE_LIKED, messageItemBean);
     }
 
-    @Override
-    public void refreshData() {
-        super.refreshData();
-        mHeaderAndFooterWrapper.notifyDataSetChanged();
-    }
-
-    @Override
-    public void refreshData(int index) {
-        mHeaderAndFooterWrapper.notifyItemChanged(index);
-    }
 
     @Override
     public void showLoading() {
@@ -237,7 +225,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     public void hideLoading() {
         mRefreshlayout.setRefreshing(false);
-        mHeaderAndFooterWrapper.notifyDataSetChanged();
+        refreshData();
     }
 
     @Override
