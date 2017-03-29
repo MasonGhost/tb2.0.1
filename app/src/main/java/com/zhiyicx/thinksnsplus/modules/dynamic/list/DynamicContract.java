@@ -50,6 +50,14 @@ public interface DynamicContract {
         void handleLike(boolean isLiked, Long feed_id, int postion);
 
         /**
+         * add viewcount
+         *
+         * @param feed_id
+         * @param position
+         */
+        void handleViewCount(Long feed_id,int position);
+
+        /**
          * resend dynamic
          *
          * @param position

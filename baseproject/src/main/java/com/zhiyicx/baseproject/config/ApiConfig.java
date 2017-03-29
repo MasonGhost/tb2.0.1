@@ -111,6 +111,8 @@ public class ApiConfig {
     // 收藏动态，取消收藏
     public static final String APP_PATH_HANDLE_COLLECT = "api/v1/feeds/{feed_id}/collection";
     public static final String APP_PATH_HANDLE_COLLECT_FORMAT = "api/v1/feeds/%s/collection";
+    // 增加动态浏览量
+    public static final String APP_PATH_HANDLE_DYNAMIC_VIEWCOUNT="api/v1/feeds/{feed_id}/viewcount";
 
     /**
      * 资讯相关

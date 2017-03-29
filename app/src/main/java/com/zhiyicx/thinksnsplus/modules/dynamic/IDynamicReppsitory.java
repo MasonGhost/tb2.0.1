@@ -29,13 +29,13 @@ public interface IDynamicReppsitory {
     /**
      * get dynamic list
      *
-     * @param type   "" 代表最新；follows 代表关注 ； hots 代表热门
-     * @param max_id 用来翻页的记录id(对应数据体里的feed_id ,最新和关注选填)
-     * @param page   页码 热门选填
-     * @param isLoadMore  是否是刷新
+     * @param type       "" 代表最新；follows 代表关注 ； hots 代表热门
+     * @param max_id     用来翻页的记录id(对应数据体里的feed_id ,最新和关注选填)
+     * @param page       页码 热门选填
+     * @param isLoadMore 是否是刷新
      * @return dynamic list
      */
-    Observable<BaseJson<List<DynamicBean>>> getDynamicList(String type, Long max_id, int page,boolean isLoadMore);
+    Observable<BaseJson<List<DynamicBean>>> getDynamicList(String type, Long max_id, int page, boolean isLoadMore);
 
     /**
      * 动态点赞
@@ -107,5 +107,11 @@ public interface IDynamicReppsitory {
      */
     Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentList(Long feed_mark, Long feed_id, Long max_id);
 
-
+    /**
+     * 增加动态浏览量
+     *
+     * @param feed_id 动态的唯一 id
+     * @return
+     */
+    void handleDynamicViewCount(Long feed_id);
 }

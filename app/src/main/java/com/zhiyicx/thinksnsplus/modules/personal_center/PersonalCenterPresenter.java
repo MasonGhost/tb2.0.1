@@ -289,6 +289,17 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
     }
 
     @Override
+    public void handleViewCount(Long feed_id,int position) {
+        if (feed_id == null || feed_id == 0) {
+            return;
+        }
+        mRootView.getListDatas().get(position).getTool().setFeed_view_count(mRootView.getListDatas().get(position).getTool().getFeed_view_count() + 1);
+        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(position).getTool());
+        mRepository.handleDynamicViewCount(feed_id);
+        mRootView.refreshData();
+    }
+
+    @Override
     public void reSendDynamic(int position) {
         // 将动态信息存入数据库
         mDynamicBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(position));

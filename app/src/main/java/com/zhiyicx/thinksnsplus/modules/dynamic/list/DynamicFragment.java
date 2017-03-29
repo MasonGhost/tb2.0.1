@@ -378,7 +378,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         } else {
             showCommentView();
             mReplyToUserId = dynamicBean.getComments().get(position).getUser_id();
-            String contentHint =getString(R.string.default_input_hint);
+            String contentHint = getString(R.string.default_input_hint);
             if (dynamicBean.getComments().get(position).getReply_to_user_id() != dynamicBean.getUser_id()) {
                 contentHint = getString(R.string.reply, dynamicBean.getComments().get(position).getCommentUser().getName());
             }
@@ -480,6 +480,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         if (mListDatas.get(position).getFeed_id() == null || mListDatas.get(position).getFeed_id() == 0) {
             return;
         }
+        mPresenter.handleViewCount(mListDatas.get(position).getFeed_id(),position);
         Intent intent = new Intent(getActivity(), DynamicDetailActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(DYNAMIC_DETAIL_DATA, mListDatas.get(position));
