@@ -72,8 +72,6 @@ public class CropFragment extends TSFragment {
     @BindView(R.id.ucrop_photobox)
     FrameLayout mUcropPhotobox;
 
-    private TSnackbar mTSnackbar;
-    private ViewGroup viewGroup;
     public static final int DEFAULT_COMPRESS_QUALITY = 90;
     public static final Bitmap.CompressFormat DEFAULT_COMPRESS_FORMAT = Bitmap.CompressFormat.JPEG;
 
@@ -96,6 +94,7 @@ public class CropFragment extends TSFragment {
     private GestureCropImageView mGestureCropImageView;
     private OverlayView mOverlayView;
     private View mBlockingView;
+    private TSnackbar mTSnackbar;
 
     private Bitmap.CompressFormat mCompressFormat = DEFAULT_COMPRESS_FORMAT;
     private int mCompressQuality = DEFAULT_COMPRESS_QUALITY;
@@ -108,7 +107,7 @@ public class CropFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
-        viewGroup = (ViewGroup) getActivity().findViewById(android.R.id.content).getRootView();
+
     }
 
     public static CropFragment initFragment(Bundle bundle) {
@@ -310,17 +309,17 @@ public class CropFragment extends TSFragment {
 
     protected void cropAndSaveImage() {
 
-        TSnackbar.make(viewGroup, R.string.crop_ing, TSnackbar.LENGTH_INDEFINITE)
+        mTSnackbar = TSnackbar.make(mSnackRootView, R.string.crop_ing, TSnackbar.LENGTH_INDEFINITE)
                 .setPromptThemBackground(Prompt.SUCCESS)
-                .addIconProgressLoading(0, true, false)
-                .show();
+                .addIconProgressLoading(0, true, false);
+        mTSnackbar.show();
         mBlockingView.setClickable(true);
         mGestureCropImageView.cropAndSaveImage(mCompressFormat, mCompressQuality, new BitmapCropCallback() {
 
             @Override
             public void onBitmapCropped(@NonNull Uri resultUri, int imageWidth, int imageHeight) {
 
-                TSnackbar.make(viewGroup, R.string.crop_success, TSnackbar.LENGTH_SHORT)
+                TSnackbar.getTSnackBar(mTSnackbar, mSnackRootView, getString(R.string.crop_success), TSnackbar.LENGTH_SHORT)
                         .setPromptThemBackground(Prompt.SUCCESS)
                         .show();
 
@@ -331,7 +330,7 @@ public class CropFragment extends TSFragment {
             @Override
             public void onCropFailure(@NonNull Throwable t) {
 
-                TSnackbar.make(viewGroup, R.string.crop_failure, TSnackbar.LENGTH_SHORT)
+                TSnackbar.getTSnackBar(mTSnackbar, mSnackRootView, getString(R.string.crop_failure), TSnackbar.LENGTH_SHORT)
                         .setPromptThemBackground(Prompt.ERROR)
                         .show();
                 setResultError(t);

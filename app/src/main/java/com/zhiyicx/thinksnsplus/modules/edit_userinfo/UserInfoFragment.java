@@ -91,6 +91,9 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     @BindView(R.id.ll_container)
     LinearLayout mLlContainer;
 
+    private TSnackbar mTSnackbarUserInfo;
+    private TSnackbar mTSnackbarUploadIcon;
+
 
     private ArrayList<AreaBean> options1Items;
     private ArrayList<ArrayList<AreaBean>> options2Items;
@@ -300,20 +303,22 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         // 上传成功，可以进行修改
         switch (upLoadState) {
             case -1:
-                TSnackbar.make(mSnackRootView, R.string.update_head_failure, TSnackbar.LENGTH_SHORT)
+                TSnackbar.getTSnackBar(mTSnackbarUploadIcon, mSnackRootView,
+                        getString(R.string.update_head_failure), TSnackbar.LENGTH_SHORT)
                         .setPromptThemBackground(Prompt.ERROR)
                         .show();
                 break;
             case 0:
-                TSnackbar.make(mSnackRootView, R.string.update_head_ing, TSnackbar.LENGTH_INDEFINITE)
+                mTSnackbarUploadIcon = TSnackbar.make(mSnackRootView, R.string.update_head_ing, TSnackbar.LENGTH_INDEFINITE)
                         .setPromptThemBackground(Prompt.SUCCESS)
-                        .addIconProgressLoading(0, true, false)
-                        .show();
+                        .addIconProgressLoading(0, true, false);
+                mTSnackbarUploadIcon.show();
                 break;
             case 1:
                 upLoadCount++;
                 upDateHeadIconStorageId = taskId;
-                TSnackbar.make(mSnackRootView, R.string.update_head_success, TSnackbar.LENGTH_SHORT)
+                TSnackbar.getTSnackBar(mTSnackbarUploadIcon, mSnackRootView,
+                        getString(R.string.update_head_success), TSnackbar.LENGTH_SHORT)
                         .setPromptThemBackground(Prompt.SUCCESS)
                         .show();
                 break;
@@ -327,19 +332,20 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         switch (changeUserInfoState) {
             case -1:
                 message = TextUtils.isEmpty(message) ? getString(R.string.edit_userinfo_failure) : message;
-                TSnackbar.make(mSnackRootView, message, TSnackbar.LENGTH_SHORT)
+                TSnackbar.getTSnackBar(mTSnackbarUserInfo, mSnackRootView,
+                        message, TSnackbar.LENGTH_SHORT)
                         .setPromptThemBackground(Prompt.ERROR)
                         .show();
-
                 break;
             case 0:
-                TSnackbar.make(mSnackRootView, R.string.edit_userinfo_ing, TSnackbar.LENGTH_SHORT)
+                mTSnackbarUserInfo = TSnackbar.make(mSnackRootView, R.string.edit_userinfo_ing, TSnackbar.LENGTH_INDEFINITE)
                         .setPromptThemBackground(Prompt.SUCCESS)
-                        .addIconProgressLoading(0, true, false)
-                        .show();
+                        .addIconProgressLoading(0, true, false);
+                mTSnackbarUserInfo.show();
                 break;
             case 1:
-                TSnackbar.make(mSnackRootView, R.string.edit_userinfo_success, TSnackbar.LENGTH_SHORT)
+                TSnackbar.getTSnackBar(mTSnackbarUserInfo, mSnackRootView,
+                        getString(R.string.edit_userinfo_success), TSnackbar.LENGTH_SHORT)
                         .setPromptThemBackground(Prompt.SUCCESS)
                         .show();
                 getActivity().finish();

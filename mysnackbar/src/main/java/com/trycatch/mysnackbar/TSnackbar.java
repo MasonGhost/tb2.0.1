@@ -365,9 +365,9 @@ public final class TSnackbar {
         //return (ViewGroup) view;
     }
 
-    public static TSnackbar getTSnackBar(TSnackbar tSnackbar, ViewGroup viewGroup, @NonNull CharSequence text, int duration, int appearDirection) {
+    public static TSnackbar getTSnackBar(TSnackbar tSnackbar, ViewGroup viewGroup, @NonNull CharSequence text, int duration) {
         if (tSnackbar == null) {
-            tSnackbar = TSnackbar.make(viewGroup, text, duration, appearDirection);
+            tSnackbar = TSnackbar.make(viewGroup, text, duration, APPEAR_FROM_TOP_TO_DOWN);
         } else {
             tSnackbar.setText(text);
             tSnackbar.setDuration(duration);

@@ -275,7 +275,7 @@ public class DrawableProvider {
      * @param bm
      * @param picName 图片名称
      * @param imgPath 图片目录
-     * @return 失败返回各种提示，成功返回图片路径
+     * @return 失败返回各种提示，成功返回图片路径 -2 sd卡不存在 -1 图片保存失败 其他 图片保存成功
      */
     public static String saveBitmap(Bitmap bm, String picName, String imgPath) {
         // 保存在sd卡中
@@ -283,7 +283,7 @@ public class DrawableProvider {
         if (!dir.exists() || !dir.isDirectory()) {
             // 如果没有这样的文件，或者有同名的文件但不是目录，就需要创建这样的目录
             if (!dir.mkdir()) {
-                return "sd卡不存在，无法保存图片";
+                return "-2";
             }
         }
         try {
@@ -293,9 +293,9 @@ public class DrawableProvider {
             out.flush();
             out.close();
             if (isSuccess) {
-                return "图片保存成功：" + f.getAbsolutePath() + "";
+                return f.getAbsolutePath();
             } else {
-                return "图片保存失败";
+                return "-1";
             }
 
         } catch (FileNotFoundException e) {
@@ -306,7 +306,7 @@ public class DrawableProvider {
             e.printStackTrace();
 
         }
-        return "图片保存失败";
+        return "-1";
     }
 
 }

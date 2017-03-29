@@ -7,7 +7,9 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -18,8 +20,6 @@ import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
-
-    ImageLoader mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
 
     @Override
     public int getItemViewLayoutId() {
@@ -44,9 +44,8 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
                     .getColor(R.color.normal_for_assist_text));
         }
         title.setText(realData.getTitle());
-        String url = String.format(ApiConfig.IMAGE_PATH, realData.getStorage().getId(), 50);
-        mImageLoader.loadImage(BaseApplication.getContext(), GlideImageConfig.builder()
-                .url(url)
+        AppApplication.AppComponentHolder.getAppComponent().imageLoader().loadImage(BaseApplication.getContext(), GlideImageConfig.builder()
+                .url(ImageUtils.imagePathConvert(realData.getStorage().getId()+"",ImageZipConfig.IMAGE_50_ZIP))
                 .imagerView(imageView)
                 .build());
 
