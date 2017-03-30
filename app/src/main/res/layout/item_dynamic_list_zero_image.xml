@@ -52,9 +52,10 @@
         android:layout_below="@+id/tv_name"
         android:layout_marginRight="@dimen/spacing_normal"
         android:layout_toRightOf="@+id/iv_headpic"
-        android:paddingBottom="@dimen/spacing_small"
+        android:includeFontPadding="false"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingStart="@dimen/spacing_normal"
+        android:paddingBottom="@dimen/spacing_normal"
         android:textColor="@color/themeColor"
         android:textSize="@dimen/size_sub_title"
         tools:text="了解到富士康垃圾管理的高考了了"/>
@@ -69,7 +70,7 @@
         android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
         android:maxLength="@integer/dynamic_list_content_max_show_size"
         android:paddingLeft="@dimen/spacing_normal"
-        android:paddingTop="@dimen/spacing_small"
+        android:paddingBottom="@dimen/spacing_normal"
         android:textColor="@color/normal_for_dynamic_list_content"
         android:textSize="@dimen/size_content_assist"
         tools:text="了解到富士康垃圾管理的高考了了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送"
@@ -80,7 +81,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_line"
         android:layout_below="@+id/tv_content"
-        android:layout_marginTop="@dimen/spacing_normal"
         android:background="@color/general_for_line_light"/>
 
     <com.zhiyicx.baseproject.widget.DynamicListMenuView
