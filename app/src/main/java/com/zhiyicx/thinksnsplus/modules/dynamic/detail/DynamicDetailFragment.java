@@ -36,10 +36,10 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailComm
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailEmptyCommentItem;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
+import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -92,6 +92,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     private FollowFansBean mFollowFansBean;// 用户关注状态
     private boolean mIsLookMore = false;
     private DynamicDetailHeader mDynamicDetailHeader;
+    private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
 
     private long mReplyUserId;// 被评论者的 id ,评论动态 id = 0
     private ActionPopupWindow mDeletCommentPopWindow;
@@ -152,6 +153,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         super.initView(rootView);
         initBottomToolUI();
         initBottomToolListener();
+        initHeaderView();
         initListener();
     }
 
@@ -202,12 +204,13 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mIlvComment.setOnSendClickListener(this);
     }
 
-    @Override
-    protected List<View> getHederView() {
-        List<View> headers = new ArrayList<>();
+    private void initHeaderView() {
+        mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
         mDynamicDetailHeader = new DynamicDetailHeader(getContext());
-        headers.add(mDynamicDetailHeader.getDynamicDetailHeader());
-        return headers;
+        mHeaderAndFooterWrapper.addHeaderView(mDynamicDetailHeader.getDynamicDetailHeader());
+//        mHeaderAndFooterWrapper.addFootView(getFooterView());
+        mRvList.setAdapter(mHeaderAndFooterWrapper);
+        mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
     @Override
@@ -327,6 +330,16 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     public void updateCommentCountAndDig() {
         mDynamicDetailHeader.updateHeaderViewData(mDynamicBean);
+    }
+
+    @Override
+    public void refreshData() {
+        mHeaderAndFooterWrapper.notifyDataSetChanged();
+    }
+
+    @Override
+    public void refreshData(int position) {
+        mHeaderAndFooterWrapper.notifyItemChanged(position);
     }
 
     @Override

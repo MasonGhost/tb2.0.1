@@ -138,6 +138,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .build().photoSelectorImpl();
         initToolBar();
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
+//        mHeaderAndFooterWrapper.addFootView(getFooterView());
         mPersonalCenterHeaderViewItem = new PersonalCenterHeaderViewItem(getActivity(), mPhotoSelector, mRvList, mHeaderAndFooterWrapper, mLlToolbarContainerParent);
         mPersonalCenterHeaderViewItem.initHeaderView(false);
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent, STATUS_RGB, 255);
