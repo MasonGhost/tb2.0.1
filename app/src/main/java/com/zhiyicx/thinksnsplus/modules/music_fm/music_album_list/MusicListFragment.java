@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.music_fm.music_album;
+package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list;
 
 
 import android.content.Intent;
@@ -94,6 +94,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
                 String url = String.format(ApiConfig.IMAGE_PATH,
                         musicListBean.getStorage().getId(), 50);
                 mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
+                        .placeholder(R.mipmap.img_default_nothing)
                         .imagerView(imag)
                         .url(url)
                         .build());

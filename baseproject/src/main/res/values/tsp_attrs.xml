@@ -57,19 +57,37 @@
 
     </declare-styleable>
 
+    <!--IconTextView图标文本控件-->
     <declare-styleable name="IconTextView">
-        <!--图片资源-->
-        <attr name="srcIcon" format="reference"/>
+        <!--文字大小-->
+        <attr name="itv_textSize" format="dimension|reference"/>
+        <!--文字颜色-->
+        <attr name="itv_textColor" format="color|reference"/>
+
         <!--图片与文字间隔-->
-        <attr name="space" format="dimension"/>
-        <!--方向-->
-        <attr name="direction" format="enum">
-            <enum name="left" value="1"/>
-            <enum name="right" value="2"/>
-            <enum name="top" value="3"/>
-            <enum name="bottom" value="4"/>
+        <attr name="itv_gap" format="dimension|reference"/>
+
+        <!--方向
+             TOP：上边
+             BOTTOM: 下边
+             LEFT：左边
+             RIGHT：右边
+        -->
+        <attr name="itv_direction">
+            <enum name="TOP" value="0"/>
+            <enum name="BOTTOM" value="1"/>
+            <enum name="LEFT" value="2"/>
+            <enum name="RIGHT" value="3"/>
         </attr>
 
+        <!--图片资源-->
+        <attr name="itv_icon" format="reference"/>
+        <!--显示的文本-->
+        <attr name="itv_text" format="string|reference"/>
+
+        <!--图片宽高,如果不设置宽度和高度的话，默认按照图片的宽度和高度来-->
+        <attr name="itv_iconWidth" format="dimension|reference"/>
+        <attr name="itv_iconHeight" format="dimension|reference"/>
     </declare-styleable>
 
     <declare-styleable name="PagerRecyclerView">

@@ -83,7 +83,7 @@
             android:name=".modules.gallery.GalleryActivity"
             android:theme="@style/GalleryTheme">
         </activity>
-        <activity android:name=".modules.music_fm.music_album.MusicListActivity"/>
+        <activity android:name=".modules.music_fm.music_album_list.MusicListActivity"/>
         <activity android:name=".modules.follow_fans.FollowFansListActivity">
         </activity>
         <activity android:name=".modules.music_fm.music_album_detail.MusicDetailActivity"/>

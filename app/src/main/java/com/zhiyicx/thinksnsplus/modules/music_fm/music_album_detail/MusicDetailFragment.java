@@ -13,8 +13,10 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -23,12 +25,20 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideStokeTransform;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -38,6 +48,7 @@ import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
+import com.zhiyicx.thinksnsplus.widget.IconTextView;
 import com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -47,10 +58,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
-import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album.MusicListFragment
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListFragment
         .BUNDLE_MUSIC_ABLUM;
 
 /**
@@ -68,12 +80,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     TextView mFragmentMusicDetailName;
     @BindView(R.id.fragment_music_detail_dec)
     TextView mFragmentMusicDetailDec;
-    @BindView(R.id.fragment_music_detail_share)
-    TextView mFragmentMusicDetailShare;
-    @BindView(R.id.fragment_music_detail_comment)
-    TextView mFragmentMusicDetailComment;
-    @BindView(R.id.fragment_music_detail_favorite)
-    TextView mFragmentMusicDetailFavorite;
     @BindView(R.id.nestedscroll_target)
     RelativeLayout mFragmentMusicDetailHeadInfo;
     @BindView(R.id.rv_music_detail_list)
@@ -87,14 +93,18 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     RelativeLayout mFragmentMusicDetailTitle;
     @BindView(R.id.fragment_music_detail_empty)
     View mFragmentMusicDetailEmpty;
-    @BindView(R.id.fragment_music_detail_playvolume)
-    TextView mFragmentMusicDetailPlayvolume;
     @BindView(R.id.fragment_music_detail_center_title)
     TextView mFragmentMusicDetailCenterTitle;
     @BindView(R.id.fragment_music_detail_center_sub_title)
     TextView mFragmentMusicDetailCenterSubTitle;
-
-
+    @BindView(R.id.fragment_music_detail_playvolume)
+    IconTextView mFragmentMusicDetailPlayvolume;
+    @BindView(R.id.fragment_music_detail_share)
+    IconTextView mFragmentMusicDetailShare;
+    @BindView(R.id.fragment_music_detail_comment)
+    IconTextView mFragmentMusicDetailComment;
+    @BindView(R.id.fragment_music_detail_favorite)
+    IconTextView mFragmentMusicDetailFavorite;
 
     private CommonAdapter mAdapter;
     private List<MediaBrowserCompat.MediaItem> mAdapterList = new ArrayList<>();
@@ -185,8 +195,11 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         mAdapter = getCommonAdapter();
 
         mBgBitmap = BitmapFactory
-                .decodeResource(getResources(), R.mipmap.npc);
+                .decodeResource(getResources(), R.mipmap.icon_256);
         mPalette = Palette.from(mBgBitmap).generate();
+        BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap
+                (mBgBitmap, mBgBitmap.getWidth(), mBgBitmap.getHeight()));
+        mFragmentMusicDetailHeadInfo.setBackgroundDrawable(drawable);
 
         mFragmentMusicDetailScrollview.setOnHeadFlingListener(new NestedScrollLineayLayout
                 .OnHeadFlingListener() {
@@ -196,7 +209,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 int alpha = 255 * scrollY / distance;
                 alpha = alpha > 255 ? 255 : alpha;
                 mFragmentMusicDetailTitle.setBackgroundColor(mPalette.getDarkVibrantColor
-                        (0xdedede));
+                        (0xffdedede));
                 if ((float) alpha / 255f > 0.7) {
                     mFragmentMusicDetailCenterTitle.setVisibility(View.VISIBLE);
                     mFragmentMusicDetailCenterSubTitle.setVisibility(View.VISIBLE);
@@ -270,22 +283,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
     }
 
-    @OnClick({R.id.fragment_music_detail_share, R.id.fragment_music_detail_comment, R.id
-            .fragment_music_detail_favorite, R.id.fragment_music_detail_back})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.fragment_music_detail_share:
-                break;
-            case R.id.fragment_music_detail_comment:
-                break;
-            case R.id.fragment_music_detail_favorite:
-                break;
-            case R.id.fragment_music_detail_back:
-                getActivity().finish();
-                break;
-        }
-    }
-
     @Override
     protected boolean showToolbar() {
         return false;
@@ -341,7 +338,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 TextView musicName = holder.getView(R.id.item_music_name);
                 TextView authorName = holder.getView(R.id.item_music_author);
                 musicName.setText(item.getDescription().getTitle());
-                authorName.setText("-"+item.getDescription().getSubtitle());
+                authorName.setText("-" + item.getDescription().getSubtitle());
 
                 Integer cachedState = (Integer) holder.itemView.getTag(R.id
                         .tag_mediaitem_state_cache);
@@ -369,9 +366,9 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 MediaBrowserCompat.MediaItem item = mAdapterList.get(position);
 
                 Intent intent = new Intent(getActivity(), MusicPlayActivity.class);
-                Bundle bundle=new Bundle();
-                bundle.putSerializable(MUSIC_INFO,mAlbumDetailsBean);
-                intent.putExtra(MUSIC_INFO,bundle);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(MUSIC_INFO, mAlbumDetailsBean);
+                intent.putExtra(MUSIC_INFO, bundle);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 MediaControllerCompat controller = getActivity().getSupportMediaController();
                 MediaMetadataCompat metadata = controller.getMetadata();
@@ -439,46 +436,43 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         mFragmentMusicDetailFavorite.setText(mMusicAlbumListBean.getCollect_count() + "");
         mFragmentMusicDetailPlayvolume.setText(mMusicAlbumListBean.getTaste_count() + "");
 
+        Glide.with(getContext())
+                .load(ImageUtils.imagePathConvert(mMusicAlbumListBean.getStorage().getId() + "",
+                        ImageZipConfig.IMAGE_70_ZIP))
 
-        mBgBitmap = BitmapFactory
-                .decodeResource(getResources(), R.mipmap.npc);
-        mPalette = Palette.from(mBgBitmap).generate();
+                .bitmapTransform(new GlideStokeTransform(getActivity(), 4))
+                .placeholder(R.mipmap.icon_256)
+                .error(R.mipmap.icon_256)
+                .into(new GlideDrawableImageViewTarget(mFragmentMusicDetailHeadIamge){
+                    @Override
+                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super
+                            GlideDrawable> animation) {
+//                        mBgBitmap = ((GlideBitmapDrawable)resource.getCurrent()).getBitmap();
+//                        mPalette = Palette.from(mBgBitmap).generate();
+//                        BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap
+//                                (mBgBitmap, mBgBitmap.getWidth(), mBgBitmap.getHeight()));
+//                        mFragmentMusicDetailHeadInfo.setBackgroundDrawable(drawable);
+                        super.onResourceReady(resource, animation);
+                    }
+                });
+    }
 
-        BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap(mBgBitmap,
-                mBgBitmap.getWidth
-                        (), mBgBitmap.getHeight()));
-        mFragmentMusicDetailHeadInfo.setBackgroundDrawable(drawable);
-
-        String url = String.format(ApiConfig.IMAGE_PATH,
-                mMusicAlbumListBean.getStorage().getId(), 50);
-        mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
-                .transformation(new GlideStokeTransform(getActivity(), 15))
-                .imagerView(mFragmentMusicDetailHeadIamge)
-                .url(url)
-                .build());
-
-        Glide.with(getActivity()).load(url).asBitmap()
-                .into(target);
+    @OnClick({R.id.fragment_music_detail_playvolume, R.id.fragment_music_detail_share, R.id
+            .fragment_music_detail_comment, R.id.fragment_music_detail_favorite})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.fragment_music_detail_playvolume:
+                break;
+            case R.id.fragment_music_detail_share:
+                break;
+            case R.id.fragment_music_detail_comment:
+                break;
+            case R.id.fragment_music_detail_favorite:
+                break;
+        }
     }
 
     public interface MediaBrowserCompatProvider {
         MediaBrowserCompat getMediaBrowser();
     }
-
-    private SimpleTarget target = new SimpleTarget<Bitmap>() {
-        @Override
-        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
-//            LogUtils.d(Thread.currentThread());
-//            try {
-//                mBgBitmap = bitmap;
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            mPalette = Palette.from(bitmap).generate();
-//            BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap(bitmap,
-//                    bitmap.getWidth
-//                            (), bitmap.getHeight()));
-//            mFragmentMusicDetailHeadInfo.setBackgroundDrawable(drawable);
-        }
-    };
 }

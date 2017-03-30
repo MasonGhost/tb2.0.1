@@ -20,7 +20,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayService;
 
-import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album.MusicListFragment
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListFragment
         .BUNDLE_MUSIC_ABLUM;
 
 public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicDetailFragment>

@@ -81,7 +81,7 @@ import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicComme
  * @Author Jliuer
  * @Date 2017/02/14
  * @Email Jliuer@aliyun.com
- * @Description 音乐播放界面
+ * @Description 音乐播放主要界面
  */
 public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> implements
         MusicPlayContract.View {
@@ -119,17 +119,33 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     @BindView(R.id.fragment_music_paly_lrc)
     TextView mFragmentMusicPalyLrc;
 
+
+    /**
+     * 播放进度条更新间隔
+     */
     private static final long PROGRESS_UPDATE_INTERNAL = 1000;
+    /**
+     * 播放进度条初始延迟
+     */
     private static final long PROGRESS_UPDATE_INITIAL_INTERVAL = 100;
 
     private ImageLoader mImageLoader;
     private CommonAdapter mAdapter;
     private List<MusicAlbumDetailsBean.MusicsBean> mMusicList = new ArrayList<>();
+    /**
+     * 播放模式
+     */
     private int mDefalultOrder;
+    /**
+     * 播放模式图标
+     */
     private Integer[] mOrderModule = new Integer[]{R.mipmap.music_ico_random, R.mipmap
             .music_ico_single, R.mipmap.music_ico_inorder};
+
     private boolean isConnected;
+
     private boolean isComplete;
+
     private MediaDescriptionCompat mMediaDescriptionCompat;
     private MusicAlbumDetailsBean mMusicAlbumDetailsBean;
     private MusicAlbumDetailsBean.MusicsBean mCurrentMusic;
@@ -176,7 +192,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     private Observable<Long> mProgressObservable;
 
     /**
-     * 音乐播放事件回调
+     * 音乐播放切换事件回调
      */
     private final MediaControllerCompat.Callback mCallback = new MediaControllerCompat.Callback() {
         @Override
@@ -189,7 +205,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             if (metadata != null) {
                 mCurrentMediaId = metadata.getDescription().getMediaId();
                 mListPopupWindow.getAdapter().notifyDataSetChanged();
-                LogUtils.d("mCurrentMediaId:::" + mCurrentMediaId);
                 updateMediaDescription(metadata.getDescription());
                 updateDuration(metadata);
             }
@@ -361,10 +376,10 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 }
                 break;
             case R.id.fragment_music_paly_comment: // 评论
-                Intent intent=new Intent(getActivity(), MusicCommentActivity.class);
-                Bundle musicBundle=new Bundle();
-                musicBundle.putSerializable(CURRENT_MUSIC,mCurrentMusic);
-                intent.putExtra(CURRENT_MUSIC,musicBundle);
+                Intent intent = new Intent(getActivity(), MusicCommentActivity.class);
+                Bundle musicBundle = new Bundle();
+                musicBundle.putSerializable(CURRENT_MUSIC, mCurrentMusic);
+                intent.putExtra(CURRENT_MUSIC, musicBundle);
                 startActivity(intent);
                 break;
             case R.id.fragment_music_paly_order: // 播放顺序
@@ -850,7 +865,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         mAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                ToastUtils.showToast("position");
+                ToastUtils.showToast(position + "");
             }
 
             @Override
@@ -868,7 +883,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
         mFragmentMusicPalyPhonographPoint.setVisibility(mFragmentMusicPalyLrc.getVisibility() ==
                 View
-                .VISIBLE ? View.VISIBLE : View.GONE);
+                        .VISIBLE ? View.VISIBLE : View.GONE);
 
         mFragmentMusicPalyLrc.setVisibility(mFragmentMusicPalyLrc.getVisibility() == View
                 .VISIBLE ? View.GONE : View.VISIBLE);

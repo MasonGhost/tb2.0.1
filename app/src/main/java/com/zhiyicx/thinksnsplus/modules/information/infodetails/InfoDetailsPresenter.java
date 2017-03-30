@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.information.infodetails;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
@@ -30,6 +31,8 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAILS_FORMAT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_INFO_LIST_COLLECT;
 import static com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean.SEND_ING;
 
@@ -111,6 +114,13 @@ public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Rep
     @Override
     public void shareInfo() {
         ShareContent shareContent = new ShareContent();
+        shareContent.setTitle(mRootView.getCurrentInfo().getTitle());
+        shareContent.setUrl(String.format(APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
+                mRootView.getCurrentInfo().getId()));
+        if (mRootView.getCurrentInfo().getStorage()!=null){
+            shareContent.setImage(ImageUtils.imagePathConvert(mRootView.getCurrentInfo()
+                    .getStorage().getId() + "", 100));
+        }
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
     }
