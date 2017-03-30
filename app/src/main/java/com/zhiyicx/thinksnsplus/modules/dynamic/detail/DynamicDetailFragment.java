@@ -208,6 +208,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
         mDynamicDetailHeader = new DynamicDetailHeader(getContext());
         mHeaderAndFooterWrapper.addHeaderView(mDynamicDetailHeader.getDynamicDetailHeader());
+//        mHeaderAndFooterWrapper.addFootView(getFooterView());
         mRvList.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
@@ -420,8 +421,10 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                                 mDynamicBean.getFeed_id(), mDynamicBean.getTool());
                         break;
                     case DynamicDetailMenuView.ITEM_POSITION_1:
+                        // 评论
                         showCommentView();
                         mReplyUserId = 0;
+                        mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
                         break;
                     case DynamicDetailMenuView.ITEM_POSITION_2:
                         // 分享

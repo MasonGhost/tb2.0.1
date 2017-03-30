@@ -55,8 +55,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     protected RecyclerView.Adapter mAdapter;
 
-    private EmptyWrapper mEmptyWrapper;
-    private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
+    protected EmptyWrapper mEmptyWrapper;
+    protected HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     private View mFooterView;
 
     protected SwipeToLoadLayout mRefreshlayout;
@@ -150,28 +150,24 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mRvList.setHasFixedSize(sethasFixedSize());
         mRvList.setItemAnimator(new DefaultItemAnimator());//设置动画
         mAdapter = getAdapter();
-
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
-        mFooterView = LayoutInflater.from(getContext()).inflate(R.layout.view_refresh_footer, null);
-        mTvNoMoredataText = mFooterView.findViewById(R.id.tv_no_moredata_text);
-        mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        if (getHederView() != null) {
-            mHeaderAndFooterWrapper.addHeaderView(getHederView());
-        }
-        mHeaderAndFooterWrapper.addFootView(mFooterView);
+        mHeaderAndFooterWrapper.addFootView(getFooterView());
         mEmptyWrapper = new EmptyWrapper(mHeaderAndFooterWrapper);
         mEmptyWrapper.setEmptyView(mEmptyView);
         mRvList.setAdapter(mEmptyWrapper);
-
     }
 
     /**
-     * 列表头 view
+     * 获取没有更多的脚信息
      *
      * @return
      */
-    protected View getHederView() {
-        return null;
+    protected View getFooterView() {
+        // 添加加载更多没有了的提示
+        mFooterView = LayoutInflater.from(getContext()).inflate(R.layout.view_refresh_footer, null);
+        mTvNoMoredataText = mFooterView.findViewById(R.id.tv_no_moredata_text);
+        mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        return mFooterView;
     }
 
     /**

@@ -125,5 +125,12 @@ public interface PersonalCenterContract {
          * @param imagePath       上传封面的本地路径
          */
         void changeUserCover(UserInfoBean userInfoBean, int storage_task_id, String imagePath);
+
+        /**
+         * 分享用户信息
+         *
+         * @param userInfoBean
+         */
+        void shareUserInfo(UserInfoBean userInfoBean);
     }
 }

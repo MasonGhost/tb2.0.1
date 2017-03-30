@@ -126,7 +126,7 @@ public class PersonalCenterHeaderViewItem {
     public void initHeaderView(boolean isSetScrollListener) {
         headerView = LayoutInflater.from(mActivity).inflate(R.layout.fragment_personal_center_header, null);
         initHeaderViewUI(headerView);
-        mHeaderAndFooterWrapper.addHeaderView(headerView);
+        mHeaderAndFooterWrapper .addHeaderView(headerView);
         mRecyclerView.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
         // 设置recyclerview的滑动监听，用来处理toolbar透明渐变的效果

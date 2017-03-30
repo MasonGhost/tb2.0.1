@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center;
 
+import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;
 import com.zhiyicx.thinksnsplus.base.InjectComponent;
@@ -13,6 +14,6 @@ import dagger.Component;
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-@Component(modules = PersonalCenterPresenterModule.class, dependencies = AppComponent.class)
+@Component(modules = {PersonalCenterPresenterModule.class, ShareModule.class}, dependencies = AppComponent.class)
 public interface PersonalCenterPresenterComponent extends InjectComponent<PersonalCenterActivity> {
 }
