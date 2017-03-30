@@ -2,8 +2,12 @@ package com.zhiyicx.thinksnsplus.modules.personal_center;
 
 import android.os.Bundle;
 
+import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.thridmanager.share.ShareContent;
+import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -70,6 +74,9 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
     DynamicDetailBeanGreenDaoImpl mDynamicDetailBeanGreenDao;
     @Inject
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
+
+    @Inject
+    public SharePolicy mSharePolicy;
 
     private int mInterfaceNum = 0;//纪录请求接口数量，用于统计接口是否全部请求完成，需要接口全部请求完成后在显示界面
 
@@ -227,6 +234,19 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
                     }
                 });
         addSubscrebe(subscription);
+    }
+
+    @Override
+    public void shareUserInfo(UserInfoBean userInfoBean) {
+        ShareContent shareContent = new ShareContent();
+        shareContent.setTitle(userInfoBean.getName());
+        shareContent.setContent(userInfoBean.getIntro());
+        if (userInfoBean.getAvatar() != null) {
+            shareContent.setImage(ImageUtils.imagePathConvert(userInfoBean.getAvatar(), 100));
+        }
+        shareContent.setUrl("http://www.thinksns.com/index.html");
+        mSharePolicy.setShareContent(shareContent);
+        mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
     }
 
     @Override

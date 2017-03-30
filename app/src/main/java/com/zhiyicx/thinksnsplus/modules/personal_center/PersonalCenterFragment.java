@@ -433,13 +433,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 getActivity().finish();
                 break;
             case R.id.iv_more:
-                if (isDark) {
-                    isDark = false;
-                    StatusBarUtils.statusBarDarkMode(getActivity());
-                } else {
-                    isDark = true;
-                    StatusBarUtils.statusBarLightMode(getActivity());
-                }
+            mPresenter.shareUserInfo(mUserInfoBean);
 
                 break;
         }
