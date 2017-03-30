@@ -16,7 +16,7 @@
         android:hint="@string/edit_introduce"
         android:text=""
         android:textColor="@color/important_for_content"
-        android:textColorHint="@color/normal_for_assist_text"
+        android:textColorHint="@color/general_for_hint"
         android:textSize="@dimen/size_sub_title"/>
     <!--字数提示-->
     <TextView
