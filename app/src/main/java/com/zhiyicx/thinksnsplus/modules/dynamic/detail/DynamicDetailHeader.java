@@ -45,6 +45,7 @@ public class DynamicDetailHeader {
     private TextView mContent;
     private TextView mTitle;
     private View mDynamicDetailHeader;
+    private FrameLayout fl_comment_count_container;
     private Context mContext;
     private int screenWidth;
     private int picWidth;
@@ -59,6 +60,7 @@ public class DynamicDetailHeader {
         mDynamicDetailHeader.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
         mTitle = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_title);
         mContent = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_content);
+        fl_comment_count_container = (FrameLayout) mDynamicDetailHeader.findViewById(R.id.fl_comment_count_container);
         mPhotoContainer = (LinearLayout) mDynamicDetailHeader.findViewById(R.id.ll_dynamic_photos_container);
         screenWidth = UIUtils.getWindowWidth(context);
         picWidth = UIUtils.getWindowWidth(context) - context.getResources().getDimensionPixelSize(R.dimen.spacing_normal) * 2;
@@ -134,8 +136,12 @@ public class DynamicDetailHeader {
                 mDynamicDetailHeader.getContext().startActivity(intent);
             }
         });
-
-        ((TextView) mDynamicDetailHeader.findViewById(R.id.tv_comment_count)).setText(mDynamicDetailHeader.getResources().getString(R.string.dynamic_comment_count, dynamicBean.getTool().getFeed_comment_count()));
+        if (dynamicBean.getTool().getFeed_comment_count() <= 0) {
+            fl_comment_count_container.setVisibility(View.GONE);
+        } else {
+            ((TextView) mDynamicDetailHeader.findViewById(R.id.tv_comment_count)).setText(mDynamicDetailHeader.getResources().getString(R.string.dynamic_comment_count, dynamicBean.getTool().getFeed_comment_count()));
+            fl_comment_count_container.setVisibility(View.VISIBLE);
+        }
     }
 
     private void showContentImage(Context context, List<ImageBean> photoList, final int position, boolean lastImg, LinearLayout photoContainer) {
