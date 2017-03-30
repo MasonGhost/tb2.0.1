@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -115,7 +116,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     View mVShadow;
 
 
-    private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     private PersonalCenterHeaderViewItem mPersonalCenterHeaderViewItem;
     // 关注状态
     private FollowFansBean mFollowFansBean;
@@ -137,8 +137,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                         .SHAPE_RCTANGLE))
                 .build().photoSelectorImpl();
         initToolBar();
-        mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
-//        mHeaderAndFooterWrapper.addFootView(getFooterView());
+        View mFooterView =new View(getContext());
+        mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
+        mHeaderAndFooterWrapper.addFootView(mFooterView);
         mPersonalCenterHeaderViewItem = new PersonalCenterHeaderViewItem(getActivity(), mPhotoSelector, mRvList, mHeaderAndFooterWrapper, mLlToolbarContainerParent);
         mPersonalCenterHeaderViewItem.initHeaderView(false);
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent, STATUS_RGB, 255);
