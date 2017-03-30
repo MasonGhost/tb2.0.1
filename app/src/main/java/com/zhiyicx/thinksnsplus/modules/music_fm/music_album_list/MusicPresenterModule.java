@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.music_fm.music_album;
+package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list;
 
 import android.support.v4.media.MediaBrowserCompat;
 

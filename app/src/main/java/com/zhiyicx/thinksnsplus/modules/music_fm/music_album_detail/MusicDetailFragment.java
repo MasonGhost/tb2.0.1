@@ -50,7 +50,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
-import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album.MusicListFragment
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListFragment
         .BUNDLE_MUSIC_ABLUM;
 
 /**
