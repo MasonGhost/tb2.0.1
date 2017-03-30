@@ -43,6 +43,8 @@
     <dimen name="pb_height">2dp</dimen>
     <!-- 光标宽度 -->
     <dimen name="cursor_with">1dp</dimen>
+    <!-- 补位宽度 -->
+    <dimen name="dismiss_height">-1.5dp</dimen>
     <!-- 加载更多 -->
     <dimen name="load_more_height">30dp</dimen>
     <!--#########################################      圆角尺寸       ################################-->
