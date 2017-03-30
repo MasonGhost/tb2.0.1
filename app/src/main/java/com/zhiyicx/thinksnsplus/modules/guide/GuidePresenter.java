@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.guide;
 
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
@@ -27,6 +28,10 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
     @Override
     public void onStart() {
         super.onStart();
+        // 系统扩展配置信息处理
+        mIAuthRepository.getComponentStatusFromServer();
+        mIAuthRepository.getComponentConfigFromServer(ApiConfig.APP_PATH_GET_COMPONENT_CONFIGS_IM);
+
         if (mIAuthRepository.isLogin()) {
             // TODO: 2017/2/10 刷新 Token 时间，过期前一天刷新
 //        mIAuthRepository.refreshToken();
