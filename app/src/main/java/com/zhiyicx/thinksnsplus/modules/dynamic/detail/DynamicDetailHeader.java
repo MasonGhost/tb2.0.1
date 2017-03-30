@@ -46,6 +46,8 @@ public class DynamicDetailHeader {
     private TextView mTitle;
     private View mDynamicDetailHeader;
     private Context mContext;
+    private int screenWidth;
+    private int picWidth;
 
     public View getDynamicDetailHeader() {
         return mDynamicDetailHeader;
@@ -58,6 +60,8 @@ public class DynamicDetailHeader {
         mTitle = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_title);
         mContent = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_content);
         mPhotoContainer = (LinearLayout) mDynamicDetailHeader.findViewById(R.id.ll_dynamic_photos_container);
+        screenWidth = UIUtils.getWindowWidth(context);
+        picWidth = UIUtils.getWindowWidth(context) - context.getResources().getDimensionPixelSize(R.dimen.spacing_normal) * 2;
     }
 
     /**
@@ -139,20 +143,23 @@ public class DynamicDetailHeader {
         View view = LayoutInflater.from(context).inflate(R.layout.view_dynamic_detail_photos, null);
         FilterImageView imageView = (FilterImageView) view.findViewById(R.id.dynamic_content_img);
         // 提前设置图片控件的大小，使得占位图显示
-        int width = UIUtils.getWindowWidth(context) - context.getResources().getDimensionPixelSize(R.dimen.spacing_normal) * 2;
-        int height = (int) (imageBean.getHeight() * width / imageBean.getWidth());
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, height);
+        int height = (int) (imageBean.getHeight() * picWidth / imageBean.getWidth());
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(picWidth, height);
         layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
         imageView.setLayoutParams(layoutParams);
         // 隐藏最后一张图的下间距
         if (lastImg) {
             view.findViewById(R.id.img_divider).setVisibility(View.GONE);
         }
+        int part = (int) (screenWidth / imageBean.getWidth() * 100);
+        if (part > 100) {
+            part = 100;
+        }
         AppApplication.AppComponentHolder.getAppComponent().imageLoader()
                 .loadImage(context, GlideImageConfig.builder()
                         .placeholder(R.drawable.shape_default_image)
                         .errorPic(R.drawable.shape_default_image)
-                        .url(String.format(ApiConfig.IMAGE_PATH, imageBean.getStorage_id(), 50))
+                        .url(String.format(ApiConfig.IMAGE_PATH, imageBean.getStorage_id(), part))
                         .imagerView(imageView)
                         .build()
                 );
