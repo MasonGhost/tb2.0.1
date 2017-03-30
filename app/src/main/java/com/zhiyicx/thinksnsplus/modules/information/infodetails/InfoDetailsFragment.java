@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import rx.functions.Action1;
 
+import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.DEFAULT_RESOURES_ID;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -218,12 +219,15 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         mDdDynamicTool.setButtonText(new int[]{R.string.info_collect, R.string.comment,
                 R.string.share, R.string.more});
         mDdDynamicTool.setImageNormalResourceIds(new int[]{R.mipmap.detail_ico_good_uncollect,
-                R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal, R.mipmap
-                .home_ico_more});
+                R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal,
+                //R.mipmap.home_ico_more
+                DEFAULT_RESOURES_ID });
 
         mDdDynamicTool.setImageCheckedResourceIds(new int[]{R.mipmap.detail_ico_collect,
                 R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal, R.mipmap
                 .home_ico_more});
+        mDdDynamicTool.setData();
+
     }
 
     private void initBottomToolListener() {
