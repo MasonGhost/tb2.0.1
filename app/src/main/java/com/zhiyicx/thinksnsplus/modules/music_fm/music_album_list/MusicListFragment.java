@@ -16,6 +16,7 @@ import com.zhiyicx.common.utils.recycleviewdecoration.TGridDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
+import com.zhiyicx.thinksnsplus.modules.music_fm.MusicTestActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -107,6 +108,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 Intent intent = new Intent(getActivity(), MusicDetailActivity.class);
+//                Intent intent = new Intent(getActivity(), MusicTestActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(BUNDLE_MUSIC_ABLUM, mListDatas.get(position));
                 intent.putExtra(BUNDLE_MUSIC_ABLUM, bundle);
