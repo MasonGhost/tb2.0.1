@@ -39,9 +39,6 @@ public class ApiConfig {
     // 图片地址
     public static final String NO_PROCESS_IMAGE_PATH = APP_DOMAIN + "api/v1/storages/%s";// 不带质量压缩
 
-    // 每次从服务器获取数据，一页的最大数量
-    public static final int MAX_NUMBER_PER_PAGE = 10;
-
     /*******************************************  接口 Path
      * *********************************************/
     /**
@@ -99,7 +96,6 @@ public class ApiConfig {
     public static final String DYNAMIC_TYPE_FOLLOWS = "follows"; // 关注动态
     public static final String DYNAMIC_TYPE_HOTS = "hots"; // 热门动态
     public static final String DYNAMIC_TYPE_SOMEONE = "users/%s"; // 某个人的动态列表,%s表示用户id
-    public static final int DYNAMIC_PAGE_LIMIT = 10;// 不传 服务器默认10条
     // 点赞一条动态,取消点赞
     public static final String APP_PATH_DYNAMIC_HANDLE_LIKE = "api/v1/feeds/{feed_id}/digg";
     public static final String APP_PATH_DYNAMIC_HANDLE_LIKE_FORMAT = "api/v1/feeds/%s/digg";
