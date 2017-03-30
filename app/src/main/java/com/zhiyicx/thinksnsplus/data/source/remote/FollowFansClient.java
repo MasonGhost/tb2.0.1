@@ -13,6 +13,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
 
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
@@ -33,7 +34,7 @@ public interface FollowFansClient {
      * @return
      */
     @GET(ApiConfig.APP_PATH_FANS_LIST)
-    Observable<BaseJson<GsonFollowFansBean>> getUserFansList(@Path("user_id") long user_id, @Path("max_id") long max_id);
+    Observable<BaseJson<GsonFollowFansBean>> getUserFansList(@Path("user_id") long user_id, @Path("max_id") long max_id, @Query("limit") Integer limitCount);
 
     /**
      * 获取用户关注列表
@@ -43,7 +44,7 @@ public interface FollowFansClient {
      * @return
      */
     @GET(ApiConfig.APP_PATH_FOLLOW_LIST)
-    Observable<BaseJson<GsonFollowFansBean>> getUserFollowsList(@Path("user_id") long user_id, @Path("max_id") long max_id);
+    Observable<BaseJson<GsonFollowFansBean>> getUserFollowsList(@Path("user_id") long user_id, @Path("max_id") long max_id, @Query("limit") Integer limitCount);
 
     /**
      * 关注用户操作

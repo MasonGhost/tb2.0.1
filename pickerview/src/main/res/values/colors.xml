@@ -2,11 +2,12 @@
 <resources>
     <color name="pickerview_timebtn_nor">#59b6d7</color>
     <color name="pickerview_timebtn_pre">#4ab2ce</color>
+    <color name="pickerview_timebtn_cancle">#b2b2b2</color>
     <color name="pickerview_bg_topbar">#ffffff</color>
     <color name="pickerview_topbar_title">#000000</color>
     <color name="pickerview_wheelview_textcolor_out">#999999</color>
-    <color name="pickerview_wheelview_textcolor_center">#333333</color>
-    <color name="pickerview_wheelview_textcolor_divider">#f2f2f2</color>
+    <color name="pickerview_wheelview_textcolor_center">#000000</color>
+    <color name="pickerview_wheelview_textcolor_divider">#ededed</color>
     <!--覆盖颜色-->
     <color name="bgColor_overlay">#55000000</color>
 
