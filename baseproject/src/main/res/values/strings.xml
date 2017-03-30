@@ -54,7 +54,7 @@
     <string name="change_password_success">更改成功</string>
 
     <!-- 拍照相关 -->
-    <string name="choose_from_photo">从相册选取</string>
+    <string name="choose_from_photo">从相册中选择</string>
     <string name="choose_from_camera">拍照</string>
     <string name="choose_max_photos">你最多可以选择%1$d张图片</string>
     <string name="album_image_count">%1$d张</string>
