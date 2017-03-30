@@ -163,7 +163,7 @@ public class DynamicDetailMenuView extends FrameLayout {
     /**
      * 设置数据
      */
-    protected void setData() {
+    public void setData() {
         int length = mImageNormalResourceIds.length;
         for (int i = 0; i < length; i++) { // 最多支持 4 个 Item 多余的数据丢弃
             if (i < ITEM_NUMS_MAX) {

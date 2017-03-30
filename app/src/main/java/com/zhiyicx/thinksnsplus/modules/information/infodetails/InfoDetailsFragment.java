@@ -21,6 +21,9 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoCommentAdapter;
+import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentEmptyItem;
+import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentItem;
+import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailWebItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;
@@ -31,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import rx.functions.Action1;
 
+import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.DEFAULT_RESOURES_ID;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -85,9 +89,21 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     protected MultiItemTypeAdapter getAdapter() {
-        InfoCommentAdapter adapter = new InfoCommentAdapter(getActivity(), mListDatas);
-        adapter.setOnWebEventListener(new WebEvent());
-        return adapter;
+//        InfoCommentAdapter adapter = new InfoCommentAdapter(getActivity(), mListDatas);
+//        adapter.setOnWebEventListener(new WebEvent());
+        MultiItemTypeAdapter multiItemTypeAdapter = new MultiItemTypeAdapter<>(getActivity(),
+                mListDatas);
+        multiItemTypeAdapter.addItemViewDelegate(new InfoDetailWebItem(getActivity(), new
+                ItemOnWebEventListener()) {
+            @Override
+            public int getDatasize() {
+                return mListDatas.size() - 1;
+            }
+        });
+        multiItemTypeAdapter.addItemViewDelegate(new InfoDetailCommentItem(new
+                ItemOnCommentListener()));
+        multiItemTypeAdapter.addItemViewDelegate(new InfoDetailCommentEmptyItem());
+        return multiItemTypeAdapter;
     }
 
     @Override
@@ -203,12 +219,15 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         mDdDynamicTool.setButtonText(new int[]{R.string.info_collect, R.string.comment,
                 R.string.share, R.string.more});
         mDdDynamicTool.setImageNormalResourceIds(new int[]{R.mipmap.detail_ico_good_uncollect,
-                R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal, R.mipmap
-                .home_ico_more});
+                R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal,
+                //R.mipmap.home_ico_more
+                DEFAULT_RESOURES_ID });
 
         mDdDynamicTool.setImageCheckedResourceIds(new int[]{R.mipmap.detail_ico_collect,
                 R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal, R.mipmap
                 .home_ico_more});
+        mDdDynamicTool.setData();
+
     }
 
     private void initBottomToolListener() {
@@ -328,6 +347,52 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
             showLoading();
         }
 
+        @Override
+        public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+            if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth()
+                    .getUser_id()) {// 自己的评论
+                if (mListDatas.get(position).getId() != -1) {
+                    initLoginOutPopupWindow(mListDatas.get(position));
+                    mDeletCommentPopWindow.show();
+                } else {
+                    return;
+                }
+            } else {
+                mReplyUserId = (int) mListDatas.get(position).getUser_id();
+                showCommentView();
+                String contentHint = getString(R.string.default_input_hint);
+                if (mListDatas.get(position).getReply_to_user_id() != mInfoMation.getId()) {
+                    contentHint = getString(R.string.reply, mListDatas.get(position).getUser_id()
+                            + "");
+                }
+                mIlvComment.setEtContentHint(contentHint);
+            }
+        }
+    }
+
+    class ItemOnWebEventListener implements InfoDetailWebItem.OnWebEventListener {
+        @Override
+        public void onWebImageLongClick(String mLongClickUrl) {
+
+        }
+
+        @Override
+        public void onWebImageClick(String url, List<String> mImageList) {
+
+        }
+
+        @Override
+        public void onLoadFinish() {
+            closeLoading();
+        }
+
+        @Override
+        public void onLoadStart() {
+            showLoading();
+        }
+    }
+
+    class ItemOnCommentListener implements InfoDetailCommentItem.OnCommentItemListener {
         @Override
         public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
             if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth()

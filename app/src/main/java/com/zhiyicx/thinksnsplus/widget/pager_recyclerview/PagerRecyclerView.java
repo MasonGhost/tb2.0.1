@@ -15,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 import java.lang.reflect.Field;
@@ -34,7 +35,7 @@ public class PagerRecyclerView extends RecyclerView {
     /**
      * 划出多少触发下一页
      */
-    private float mTriggerOffset = 0.25f;
+    private float mTriggerOffset = 0.2f;
 
     /**
      * 惯性速率
@@ -346,7 +347,7 @@ public class PagerRecyclerView extends RecyclerView {
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-        //记录拖动的最大/最小距离
+        // 记录拖动的最大/最小距离
         if (e.getAction() == MotionEvent.ACTION_MOVE) {
             if (mCurView != null) {
                 mMaxLeftWhenDragging = Math.max(mCurView.getLeft(), mMaxLeftWhenDragging);
@@ -405,10 +406,12 @@ public class PagerRecyclerView extends RecyclerView {
                                 mMaxLeftWhenDragging) {
                             if (!reverseLayout) targetPosition--;
                             else targetPosition++;
+                            LogUtils.d("targetPosition++");
                         } else if (spanX < mCurView.getWidth() * -mTriggerOffset && mCurView
                                 .getLeft() <= mMinLeftWhenDragging) {
                             if (!reverseLayout) targetPosition++;
                             else targetPosition--;
+                            LogUtils.d("targetPosition--");
                         }// 如果不想滚动，不改变targetPosition，没有达到临界值。
                     } else {
                         int spanY = mCurView.getTop() - mFirstTopWhenDragging;

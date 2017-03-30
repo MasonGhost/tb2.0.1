@@ -11,7 +11,7 @@ import android.support.test.rule.ActivityTestRule;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
-import com.zhiyicx.thinksnsplus.modules.music_fm.music_album.MusicListFragment;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListFragment;
 
 import org.junit.Before;
 import org.junit.Ignore;

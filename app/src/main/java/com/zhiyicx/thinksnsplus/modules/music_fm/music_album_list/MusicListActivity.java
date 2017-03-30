@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.music_fm.music_album;
+package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;

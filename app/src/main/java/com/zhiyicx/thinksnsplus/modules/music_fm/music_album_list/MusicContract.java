@@ -1,13 +1,11 @@
-package com.zhiyicx.thinksnsplus.modules.music_fm.music_album;
+package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 
 import java.util.List;
-import java.util.Map;
 
 import rx.Observable;
 

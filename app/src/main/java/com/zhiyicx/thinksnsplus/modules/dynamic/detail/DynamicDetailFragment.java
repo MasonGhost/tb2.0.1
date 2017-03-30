@@ -208,7 +208,9 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
         mDynamicDetailHeader = new DynamicDetailHeader(getContext());
         mHeaderAndFooterWrapper.addHeaderView(mDynamicDetailHeader.getDynamicDetailHeader());
-//        mHeaderAndFooterWrapper.addFootView(getFooterView());
+        View mFooterView =new View(getContext());
+        mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
+        mHeaderAndFooterWrapper.addFootView(mFooterView);
         mRvList.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }

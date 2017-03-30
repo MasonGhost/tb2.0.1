@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.OverScroller;
 
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 /**
@@ -112,7 +113,7 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
     @Override
     public void onNestedScroll(View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int
             dyUnconsumed) {
-        super.onNestedScroll(target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
+//        super.onNestedScroll(target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
     }
 
     @Override
@@ -122,15 +123,26 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
 
     @Override
     public boolean onNestedPreFling(View target, float velocityX, float velocityY) {
+
+        int scrollY = getScrollY();
+
         if (getScrollY() >= mTopViewHeight) {
             return false;
         }
+        if (!mScroller.isFinished()) {
+            mScroller.abortAnimation();
+        }
+
         if (hiddenTop) {
+            mScroller.fling(0, scrollY, (int) velocityX, (int) velocityY, 0, 0, 0,
+                    mTopViewHeight);
             mOnHeadFlingListener.onHeadFling(mTopViewHeight);
-        } else {
+        }else{
+            mScroller.fling(0, scrollY, (int) velocityX, (int) velocityY/3, 0, 0, 0,
+                    -mTopViewHeight);
             mOnHeadFlingListener.onHeadFling(0);
         }
-        fling((int) velocityY);
+        ViewCompat.postInvalidateOnAnimation(this);
         return true;
     }
 
