@@ -390,7 +390,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
         if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW)) {
             int position = hasDynamicContanied(dynamicBean);
             if (position != -1) {// 如果列表有当前数据
-                mRootView.refreshData(position);
+                mRootView.showNewDynamic(position);
             } else {
                 List<DynamicBean> temps = new ArrayList<>();
                 temps.add(dynamicBean);
@@ -398,7 +398,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                 mRootView.getListDatas().clear();
                 mRootView.getListDatas().addAll(temps);
                 temps.clear();
-                mRootView.refreshData();
+                mRootView.showNewDynamic(-1);
             }
 
         }
