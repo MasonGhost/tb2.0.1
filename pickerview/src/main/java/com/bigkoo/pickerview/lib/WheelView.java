@@ -348,10 +348,13 @@ public class WheelView extends View {
             counter++;
 
         }
-
+        /**
+         * 2017.3.30 liuchao 修改两条线的左右间距
+         */
+        float startX = context.getResources().getDimensionPixelSize(R.dimen.margin_10dp);
         //中间两条横线
-        canvas.drawLine(0.0F, firstLineY, measuredWidth, firstLineY, paintIndicator);
-        canvas.drawLine(0.0F, secondLineY, measuredWidth, secondLineY, paintIndicator);
+        canvas.drawLine(startX, firstLineY, measuredWidth - startX, firstLineY, paintIndicator);
+        canvas.drawLine(startX, secondLineY, measuredWidth - startX, secondLineY, paintIndicator);
         //单位的Label
         if (label != null) {
             int drawRightContentStart = measuredWidth - getTextWidth(paintCenterText, label);
@@ -363,7 +366,8 @@ public class WheelView extends View {
             canvas.save();
             // L(弧长)=α（弧度）* r(半径) （弧度制）
             // 求弧度--> (L * π ) / (π * r)   (弧长X派/半圆周长)
-            float itemHeight = maxTextHeight * lineSpacingMultiplier;
+            //float itemHeight = maxTextHeight * lineSpacingMultiplier;
+            float itemHeight = context.getResources().getDimensionPixelSize(R.dimen.item_hegiht);
             double radian = ((itemHeight * counter - itemHeightOffset) * Math.PI) / halfCircumference;
             // 弧度转换成角度(把半圆以Y轴为轴心向右转90度，使其处于第一象限及第四象限
             float angle = (float) (90D - (radian / Math.PI) * 180D);

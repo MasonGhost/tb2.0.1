@@ -13,7 +13,7 @@
         android:paddingLeft="@dimen/pickerview_topbar_paddingleft"
         android:paddingRight="@dimen/pickerview_topbar_paddingright"
         android:text="@string/pickerview_cancel"
-        android:textColor="@color/pickerview_wheelview_textcolor_out"
+        android:textColor="@color/pickerview_timebtn_cancle"
         android:textSize="@dimen/pickerview_topbar_btn_textsize"/>
 
     <TextView
