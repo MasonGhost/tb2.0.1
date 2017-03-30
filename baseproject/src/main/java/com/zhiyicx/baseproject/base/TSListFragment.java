@@ -481,6 +481,10 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 }
             }
         }
+        // 数据加载后，所有的数据数量小于一页，说明没有更多数据了，就不要上拉加载了
+        if (mListDatas.size() < DEFAULT_PAGE_SIZE) {
+            mRefreshlayout.setLoadMoreEnabled(false);
+        }
     }
 
     protected Long getMaxId(@NotNull List<T> data) {

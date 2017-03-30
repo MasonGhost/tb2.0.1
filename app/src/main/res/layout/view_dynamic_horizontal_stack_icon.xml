@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:text="8人点赞"
+                tools:text="8人点赞"
                 android:textColor="@color/themeColor"
                 android:textSize="@dimen/size_content_assist"/>
 
@@ -93,7 +93,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:text="发布于8分钟前"
+            android:includeFontPadding="false"
+            tools:text="发布于8分钟前"
             android:textColor="@color/normal_for_assist_text"
             android:textSize="@dimen/size_content_assist"/>
 
@@ -104,7 +105,8 @@
             android:layout_alignRight="@id/tv_dynamic_publish_time"
             android:layout_below="@id/tv_dynamic_publish_time"
             android:layout_marginTop="@dimen/spacing_small"
-            android:text="342人浏览"
+            tools:text="342人浏览"
+            android:includeFontPadding="false"
             android:textColor="@color/normal_for_assist_text"
             android:textSize="@dimen/size_content_assist"/>
     </LinearLayout>

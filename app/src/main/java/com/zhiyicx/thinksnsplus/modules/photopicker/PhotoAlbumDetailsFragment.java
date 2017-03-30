@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -91,7 +92,8 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
 
     @Override
     protected String setCenterTitle() {
-        return getArguments().getString(SELECTED_DIRECTORY_NAME);
+        String centerTitle = getArguments().getString(SELECTED_DIRECTORY_NAME);
+        return TextUtils.isEmpty(centerTitle) ? getString(R.string.all_photos) : centerTitle;
     }
 
     @Override
