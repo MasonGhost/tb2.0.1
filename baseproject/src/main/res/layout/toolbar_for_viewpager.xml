@@ -12,7 +12,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
+        <!--底部分割线，指示器覆盖在它的上面-->
         <View
             android:id="@+id/divider"
             android:layout_width="match_parent"
@@ -36,7 +36,6 @@
                 android:id="@+id/tv_toolbar_left"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_alignBaseline="@id/tv_toolbar_center"
                 android:gravity="center"
                 android:paddingLeft="@dimen/toolbar_padding_left"
                 android:paddingRight="@dimen/toolbar_padding_right"
@@ -50,9 +49,7 @@
                 android:id="@+id/tv_toolbar_right"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_alignBaseline="@id/tv_toolbar_center"
                 android:layout_alignParentRight="true"
-                android:layout_gravity="right"
                 android:gravity="center"
                 android:paddingLeft="@dimen/toolbar_padding_left"
                 android:paddingRight="@dimen/toolbar_padding_right"
