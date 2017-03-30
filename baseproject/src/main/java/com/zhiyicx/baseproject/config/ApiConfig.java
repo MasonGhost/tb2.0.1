@@ -165,6 +165,11 @@ public class ApiConfig {
             "api/v1/storages/task/{storage_task_id}";// 通知服务器，删除当前上传文件
     public static final String APP_PATH_HANDLE_BACKGROUND_TASK = "{path}";// 处理后台任务
 
+    public static final String APP_PATH_GET_COMPONENT_STATUS = "api/v1/system/component/status";// 查看扩展包安装状态
+    public static final String APP_PATH_GET_COMPONENT_CONFIGS = "api/v1/system/component/configs";// 获取扩展包配置信息
+    public static final String APP_PATH_GET_COMPONENT_CONFIGS_IM = "im";// 获取扩展包配置信息 类容
+
+
     /**
      * 仅仅测试使用
      */

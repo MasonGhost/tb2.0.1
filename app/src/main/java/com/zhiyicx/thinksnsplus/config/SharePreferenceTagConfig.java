@@ -11,4 +11,6 @@ public class SharePreferenceTagConfig {
     public static final String SHAREPREFERENCE_TAG_AUTHBEAN = "authBean";
     public static final String SHAREPREFERENCE_TAG_IMCONFIG = "imConfig";
     public static final String SHAREPREFERENCE_TAG_MUSIC = "music";
+    public static final String SHAREPREFERENCE_TAG_COMPONENT_STATUS = "component_status";
+    public static final String SHAREPREFERENCE_TAG_COMPONENT_CONFIG = "component_config";
 }
