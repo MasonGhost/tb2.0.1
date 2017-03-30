@@ -55,7 +55,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     protected RecyclerView.Adapter mAdapter;
 
-    private EmptyWrapper mEmptyWrapper;
+    protected EmptyWrapper mEmptyWrapper;
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     private View mFooterView;
 
@@ -150,27 +150,48 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mRvList.setHasFixedSize(sethasFixedSize());
         mRvList.setItemAnimator(new DefaultItemAnimator());//设置动画
         mAdapter = getAdapter();
-
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
+        if (getHederView() != null) {// 添加头信息
+            for (View view : getHederView()) {
+                mHeaderAndFooterWrapper.addHeaderView(view);
+            }
+        }
+        if (getFooterView() != null) { // 添加尾信息
+            for (View view : getFooterView()) {
+                mHeaderAndFooterWrapper.addFootView(view);
+            }
+        }
+        // 添加加载更多没有了的提示
         mFooterView = LayoutInflater.from(getContext()).inflate(R.layout.view_refresh_footer, null);
         mTvNoMoredataText = mFooterView.findViewById(R.id.tv_no_moredata_text);
         mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        if (getHederView() != null) {
-            mHeaderAndFooterWrapper.addHeaderView(getHederView());
-        }
         mHeaderAndFooterWrapper.addFootView(mFooterView);
-        mEmptyWrapper = new EmptyWrapper(mHeaderAndFooterWrapper);
-        mEmptyWrapper.setEmptyView(mEmptyView);
-        mRvList.setAdapter(mEmptyWrapper);
+
+        if (getHederView() == null && getFooterView() == null) {
+            mEmptyWrapper = new EmptyWrapper(mAdapter);
+            mEmptyWrapper.setEmptyView(mEmptyView);
+            mRvList.setAdapter(mEmptyWrapper);
+        } else {
+            mRvList.setAdapter(mHeaderAndFooterWrapper);
+        }
 
     }
 
     /**
      * 列表头 view
-     *
-     * @return
+     * <p>
+     * eturn
      */
-    protected View getHederView() {
+    protected List<View> getHederView() {
+        return null;
+    }
+
+    /**
+     * 列表尾 view
+     * <p>
+     * eturn
+     */
+    protected List<View> getFooterView() {
         return null;
     }
 
@@ -346,7 +367,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void refreshData() {
-        mEmptyWrapper.notifyDataSetChanged();
+        if (getHederView() == null && getFooterView() == null) {
+            mEmptyWrapper.notifyDataSetChanged();
+        } else {
+            mHeaderAndFooterWrapper.notifyDataSetChanged();
+        }
     }
 
     /**
@@ -354,7 +379,12 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void refreshData(List<T> datas) {
-        mEmptyWrapper.notifyDataSetChanged();
+        if (getHederView() == null && getFooterView() == null) {
+            mEmptyWrapper.notifyDataSetChanged();
+        } else {
+            mHeaderAndFooterWrapper.notifyDataSetChanged();
+        }
+
     }
 
     /**
@@ -362,7 +392,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void refreshData(int index) {
-        mEmptyWrapper.notifyItemChanged(index);
+        if (getHederView() == null && getFooterView() == null) {
+            mEmptyWrapper.notifyItemChanged(index);
+        } else {
+            mHeaderAndFooterWrapper.notifyItemChanged(index);
+        }
     }
 
     @Override

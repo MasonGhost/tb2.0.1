@@ -19,6 +19,8 @@ import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagelike.MessageLikeActivity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -128,9 +130,11 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
 
     @Override
-    public View getHederView() {
+    public List<View> getHederView() {
+        List<View> headers = new ArrayList<>();
         mHeaderView = LayoutInflater.from(getContext()).inflate(R.layout.view_header_message_list, null);
-        return mHeaderView;
+        headers.add(mHeaderView);
+        return headers;
     }
 
     /**
