@@ -114,4 +114,5 @@
     <string name="favorite">收藏</string>
     <string name="get_dynamic_dig_list_failure">获取点赞列表失败</string>
     <string name="default_input_hint">随便说说~</string>
+    <string name="default_input_chat_hint">说点什么</string>
 </resources>
