@@ -59,6 +59,8 @@ public class WheelView extends View {
     int textColorOut;
     int textColorCenter;
     int dividerColor;
+    int dividerLeftMargin;
+    int dividerRightMargin;
 
     // 条目间距倍数
     static final float lineSpacingMultiplier = 2.0F;
@@ -126,6 +128,8 @@ public class WheelView extends View {
             textColorCenter = a.getColor(R.styleable.pickerview_pickerview_textColorCenter, textColorCenter);
             dividerColor = a.getColor(R.styleable.pickerview_pickerview_dividerColor, dividerColor);
             textSize = a.getDimensionPixelOffset(R.styleable.pickerview_pickerview_textSize, textSize);
+            dividerLeftMargin = a.getDimensionPixelSize(R.styleable.pickerview_pickerview_dividerLeftMargin, 0);
+            dividerRightMargin = a.getDimensionPixelSize(R.styleable.pickerview_pickerview_dividerRightMargin, 0);
             a.recycle();// 添加回收方法
         }
         initLoopView(context);
@@ -351,10 +355,9 @@ public class WheelView extends View {
         /**
          * 2017.3.30 liuchao 修改两条线的左右间距
          */
-        float startX = context.getResources().getDimensionPixelSize(R.dimen.margin_10dp);
         //中间两条横线
-        canvas.drawLine(startX, firstLineY, measuredWidth - startX, firstLineY, paintIndicator);
-        canvas.drawLine(startX, secondLineY, measuredWidth - startX, secondLineY, paintIndicator);
+        canvas.drawLine(dividerLeftMargin, firstLineY, measuredWidth - dividerRightMargin, firstLineY, paintIndicator);
+        canvas.drawLine(dividerLeftMargin, secondLineY, measuredWidth - dividerRightMargin, secondLineY, paintIndicator);
         //单位的Label
         if (label != null) {
             int drawRightContentStart = measuredWidth - getTextWidth(paintCenterText, label);
@@ -366,8 +369,8 @@ public class WheelView extends View {
             canvas.save();
             // L(弧长)=α（弧度）* r(半径) （弧度制）
             // 求弧度--> (L * π ) / (π * r)   (弧长X派/半圆周长)
-            //float itemHeight = maxTextHeight * lineSpacingMultiplier;
-            float itemHeight = context.getResources().getDimensionPixelSize(R.dimen.item_hegiht);
+            float itemHeight = maxTextHeight * lineSpacingMultiplier;
+            //float itemHeight = context.getResources().getDimensionPixelSize(R.dimen.item_hegiht);
             double radian = ((itemHeight * counter - itemHeightOffset) * Math.PI) / halfCircumference;
             // 弧度转换成角度(把半圆以Y轴为轴心向右转90度，使其处于第一象限及第四象限
             float angle = (float) (90D - (radian / Math.PI) * 180D);
