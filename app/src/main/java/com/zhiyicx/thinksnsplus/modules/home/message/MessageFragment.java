@@ -115,7 +115,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
             mPresenter.refreshLastClicikPostion(mLastClickPostion);
             mLastClickPostion = -1;
         }
-        if(getListDatas().size()>0) {
+        if (getListDatas().size() > 0) {
             mPresenter.refreshLastClicikPostion(0);
         }
     }

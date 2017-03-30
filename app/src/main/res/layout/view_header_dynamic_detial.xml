@@ -13,6 +13,7 @@
         />
 
     <FrameLayout
+        android:id="@+id/fl_comment_count_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_small"
@@ -23,15 +24,16 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_normal"
             android:orientation="vertical">
+
             <TextView
                 android:id="@+id/tv_comment_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawablePadding="@dimen/spacing_mid"
-                android:paddingTop="@dimen/spacing_mid"
                 android:paddingBottom="@dimen/spacing_mid"
                 android:paddingLeft="@dimen/spacing_normal"
                 android:paddingRight="@dimen/spacing_normal"
+                android:paddingTop="@dimen/spacing_mid"
                 android:textColor="@color/important_for_content"
                 android:textSize="@dimen/size_content_assist"/>
 

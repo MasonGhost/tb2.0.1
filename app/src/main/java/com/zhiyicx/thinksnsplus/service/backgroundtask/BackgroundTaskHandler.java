@@ -52,7 +52,6 @@ import rx.functions.Func1;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_IM_DOMAIN;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_DYNAMIC_LIST;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_INFO_LIST;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_DYNAMIC_TO_LIST;
@@ -345,7 +344,7 @@ public class BackgroundTaskHandler {
                         IMConfig imConfig = new IMConfig();
                         imConfig.setImUid(data.getUser_id());
                         imConfig.setToken(data.getIm_password());
-                        imConfig.setWeb_socket_authority(APP_IM_DOMAIN);
+                        imConfig.setWeb_socket_authority(mAuthRepository.getComponentConfigLocal().get(0).getValue());
                         mAuthRepository.saveIMConfig(imConfig);
                         mAuthRepository.loginIM();
                     }

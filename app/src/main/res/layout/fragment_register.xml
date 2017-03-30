@@ -51,7 +51,7 @@
             android:paddingLeft="@dimen/spacing_mid"
             >
 
-            <Button
+            <TextView
                 android:id="@+id/bt_regist_send_vertify_code"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"

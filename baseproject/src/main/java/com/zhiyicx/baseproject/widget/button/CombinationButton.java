@@ -13,6 +13,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.R;
+import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.UIUtils;
 
 /**
  * @author LiuChao
@@ -47,6 +49,7 @@ public class CombinationButton extends FrameLayout {
         boolean showLine = array.getBoolean(R.styleable.combinationBtn_showLine, true);
         int dividerLeftMargin = array.getDimensionPixelSize(R.styleable.combinationBtn_dividerLeftMargin, 0);
         int dividerRightMargin = array.getDimensionPixelSize(R.styleable.combinationBtn_dividerRightMargin, 0);
+        int leftTextLeftPadding = array.getDimensionPixelOffset(R.styleable.combinationBtn_leftTextLeftPadding, ConvertUtils.dp2px(context,10));
         array.recycle();
         if (!TextUtils.isEmpty(leftText)) {
             mCombinedButtonLeftText.setText(leftText);
@@ -60,7 +63,13 @@ public class CombinationButton extends FrameLayout {
         if (!TextUtils.isEmpty(rightText)) {
             mCombinedButtonRightText.setText(rightText);
         }
-        mCombinedButtonImgLeft.setImageDrawable(leftImage);
+        mCombinedButtonLeftText.setPadding(leftTextLeftPadding, 0, 0, 0);
+        if (leftImage == null) {
+            mCombinedButtonImgLeft.setVisibility(GONE);
+        } else {
+            mCombinedButtonImgLeft.setVisibility(VISIBLE);
+            mCombinedButtonImgLeft.setImageDrawable(leftImage);
+        }
         mCombinedButtonImgRight.setImageDrawable(rightImage);
         if (showLine) {
             mVLine.setVisibility(VISIBLE);

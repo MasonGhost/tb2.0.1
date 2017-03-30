@@ -36,6 +36,7 @@
     -->
     <color name="normal_for_disable_button_text">#b2b2b2</color>
 
+
     <!--#########################################      一般的颜色       ################################-->
 
     <!--
@@ -58,7 +59,7 @@
     <color name="general_for_bg_light">#f4f5f5</color>
     <color name="general_for_bg_light_alpha_0.5">#80f4f5f5</color>
 
-
+    <color name="general_for_loading_more">#b3b3b3</color>
     <!--#########################################      特殊颜色       ################################-->
 
     <!--20%蒙层颜色-->

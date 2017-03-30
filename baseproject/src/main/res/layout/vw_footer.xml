@@ -7,18 +7,17 @@
 
     <ImageView
         android:id="@+id/iv_loading_more"
-        android:layout_width="34dp"
-        android:layout_height="34dp"
-        android:layout_marginRight="10dip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/spacing_small"
         android:src="@drawable/frame_loading_grey"/>
 
     <TextView
         android:id="@+id/tv_loading_text"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:layout_marginTop="15dp"
-        android:text="加载中..."
-        android:textColor="#777"
-        android:textSize="12sp"/>
+        android:layout_height="@dimen/load_more_height"
+        android:gravity="center_vertical"
+        android:text="@string/loading"
+        android:textColor="@color/general_for_loading_more"
+        android:textSize="@dimen/size_icon_assist"/>
 </LinearLayout>

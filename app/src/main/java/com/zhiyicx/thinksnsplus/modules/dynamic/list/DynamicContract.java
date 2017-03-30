@@ -32,6 +32,13 @@ public interface DynamicContract {
          */
         void closeInputView();
 
+        /**
+         * 展示新的动态
+         *
+         * @param position -1 表示刷新列表 >=0 表示刷新指定位置的数据
+         */
+        void showNewDynamic(int position);
+
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
@@ -55,7 +62,7 @@ public interface DynamicContract {
          * @param feed_id
          * @param position
          */
-        void handleViewCount(Long feed_id,int position);
+        void handleViewCount(Long feed_id, int position);
 
         /**
          * resend dynamic
@@ -85,6 +92,7 @@ public interface DynamicContract {
 
         /**
          * 通过 feedMark 获取当前数据的位置
+         *
          * @param feedMark
          * @return
          */

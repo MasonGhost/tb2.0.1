@@ -16,7 +16,7 @@
         android:paddingRight="@dimen/spacing_normal"
         android:paddingTop="@dimen/spacing_normal_large"
         android:textColor="@color/themeColor"
-        android:textSize="@dimen/size_sub_title"
+        android:textSize="@dimen/size_primary_title"
         tools:text="一碗饭的时间"/>
     <!--图片容器：最多九张-->
     <LinearLayout

@@ -81,6 +81,7 @@
     <string name="save_success">图片保存成功:</string>
     <string name="save_failure1">图片保存失败</string>
     <string name="save_failure2">sd卡不存在</string>
+    <string name="all_photos">所有图片</string>
 
     <!--音乐FM-->
     <string name="music_fm">音乐FM</string>

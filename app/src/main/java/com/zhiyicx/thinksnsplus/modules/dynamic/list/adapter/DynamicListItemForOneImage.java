@@ -96,6 +96,7 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
         }
         Glide.with(mContext)
                 .load(url)
+                .asBitmap()
                 .override(with, height)
                 .placeholder(R.drawable.shape_default_image)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)

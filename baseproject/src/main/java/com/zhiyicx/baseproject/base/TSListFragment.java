@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhy.adapter.recyclerview.wrapper.EmptyWrapper;
+import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -53,7 +55,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     protected RecyclerView.Adapter mAdapter;
 
-    private EmptyWrapper mEmptyWrapper;
+    protected EmptyWrapper mEmptyWrapper;
+    protected HeaderAndFooterWrapper mHeaderAndFooterWrapper;
+    private View mFooterView;
 
     protected SwipeToLoadLayout mRefreshlayout;
 
@@ -74,6 +78,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     protected int mPage = DEFAULT_PAGE;// 只对当 max_id 无法使用时有效，如热门动态
 
     private boolean mIsTipMessageSticky;// 提示信息是否需要常驻
+    private View mTvNoMoredataText;
 
     @Override
     protected int getBodyLayoutId() {
@@ -145,11 +150,24 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mRvList.setHasFixedSize(sethasFixedSize());
         mRvList.setItemAnimator(new DefaultItemAnimator());//设置动画
         mAdapter = getAdapter();
-        mRvList.setAdapter(mAdapter);
-        mEmptyWrapper = new EmptyWrapper(mAdapter);
+        mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
+        mHeaderAndFooterWrapper.addFootView(getFooterView());
+        mEmptyWrapper = new EmptyWrapper(mHeaderAndFooterWrapper);
         mEmptyWrapper.setEmptyView(mEmptyView);
         mRvList.setAdapter(mEmptyWrapper);
+    }
 
+    /**
+     * 获取没有更多的脚信息
+     *
+     * @return
+     */
+    protected View getFooterView() {
+        // 添加加载更多没有了的提示
+        mFooterView = LayoutInflater.from(getContext()).inflate(R.layout.view_refresh_footer, null);
+        mTvNoMoredataText = mFooterView.findViewById(R.id.tv_no_moredata_text);
+        mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        return mFooterView;
     }
 
     /**
@@ -430,6 +448,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 mRefreshlayout.setLoadMoreEnabled(true);
             }
             mListDatas.clear();
+            mTvNoMoredataText.setVisibility(View.GONE);
             if (data != null && data.size() != 0) {
                 if (!isFromCache) {
                     // 更新缓存
@@ -441,9 +460,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
             } else {
                 mEmptyView.setErrorImag(setEmptView());
             }
+
             refreshData();
         } else { // 加载更多
             if (data != null && data.size() != 0) {
+                mTvNoMoredataText.setVisibility(View.GONE);
                 if (!isFromCache) {
                     // 更新缓存
                     mPresenter.insertOrUpdateData(data);
@@ -453,9 +474,16 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 refreshData();
                 mMaxId = getMaxId(data);
             } else {
-                showMessage(getString(R.string.no_more_data)); // 如需提示，打开即可
                 mRefreshlayout.setLoadMoreEnabled(false);
+                if (mListDatas.size() >= DEFAULT_PAGE_SIZE) {
+                    mTvNoMoredataText.setVisibility(View.VISIBLE);
+                    mRvList.smoothScrollToPosition(mListDatas.size() - 1);
+                }
             }
+        }
+        // 数据加载后，所有的数据数量小于一页，说明没有更多数据了，就不要上拉加载了
+        if (mListDatas.size() < DEFAULT_PAGE_SIZE) {
+            mRefreshlayout.setLoadMoreEnabled(false);
         }
     }
 

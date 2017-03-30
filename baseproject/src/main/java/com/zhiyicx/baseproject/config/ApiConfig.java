@@ -25,10 +25,12 @@ public class ApiConfig {
      */
 
 //    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
+
     public static final String APP_DOMAIN = "http://192.168.2.222/";// 测试服务器
     // public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
-//     public static final String APP_IM_DOMAIN = "ws://192.168.2.222:9900";// rap 测试服务器
-     public static final String APP_IM_DOMAIN = "ws://tsplus.zhibocloud.cn:9900";// rap 测试服务器
+    public static final String APP_IM_DOMAIN = "ws://192.168.2.222:9900";// im 测试服务器
+    // public static final String APP_IM_DOMAIN = "ws://tsplus.zhibocloud.cn:9900";// im 正式服务器
+
 
     public static final String URL_ABOUT_US = "http://www.thinksns.com/index.html";// 关于我们网站
 
@@ -36,9 +38,6 @@ public class ApiConfig {
     public static final String IMAGE_PATH = APP_DOMAIN + "api/v1/storages/%s/%d";// 带质量压缩
     // 图片地址
     public static final String NO_PROCESS_IMAGE_PATH = APP_DOMAIN + "api/v1/storages/%s";// 不带质量压缩
-
-    // 每次从服务器获取数据，一页的最大数量
-    public static final int MAX_NUMBER_PER_PAGE = 10;
 
     /*******************************************  接口 Path
      * *********************************************/
@@ -97,7 +96,6 @@ public class ApiConfig {
     public static final String DYNAMIC_TYPE_FOLLOWS = "follows"; // 关注动态
     public static final String DYNAMIC_TYPE_HOTS = "hots"; // 热门动态
     public static final String DYNAMIC_TYPE_SOMEONE = "users/%s"; // 某个人的动态列表,%s表示用户id
-    public static final int DYNAMIC_PAGE_LIMIT = 10;// 不传 服务器默认10条
     // 点赞一条动态,取消点赞
     public static final String APP_PATH_DYNAMIC_HANDLE_LIKE = "api/v1/feeds/{feed_id}/digg";
     public static final String APP_PATH_DYNAMIC_HANDLE_LIKE_FORMAT = "api/v1/feeds/%s/digg";
@@ -113,7 +111,7 @@ public class ApiConfig {
     public static final String APP_PATH_HANDLE_COLLECT = "api/v1/feeds/{feed_id}/collection";
     public static final String APP_PATH_HANDLE_COLLECT_FORMAT = "api/v1/feeds/%s/collection";
     // 增加动态浏览量
-    public static final String APP_PATH_HANDLE_DYNAMIC_VIEWCOUNT="api/v1/feeds/{feed_id}/viewcount";
+    public static final String APP_PATH_HANDLE_DYNAMIC_VIEWCOUNT = "api/v1/feeds/{feed_id}/viewcount";
 
     /**
      * 资讯相关
@@ -162,6 +160,11 @@ public class ApiConfig {
     public static final String APP_PATH_DELETE_STORAGE_TASK =
             "api/v1/storages/task/{storage_task_id}";// 通知服务器，删除当前上传文件
     public static final String APP_PATH_HANDLE_BACKGROUND_TASK = "{path}";// 处理后台任务
+
+    public static final String APP_PATH_GET_COMPONENT_STATUS = "api/v1/system/component/status";// 查看扩展包安装状态
+    public static final String APP_PATH_GET_COMPONENT_CONFIGS = "api/v1/system/component/configs";// 获取扩展包配置信息
+    public static final String APP_PATH_GET_COMPONENT_CONFIGS_IM = "im";// 获取扩展包配置信息 类容
+
 
     /**
      * 仅仅测试使用

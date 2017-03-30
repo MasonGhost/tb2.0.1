@@ -29,6 +29,8 @@
         <!--分割线左右间距-->
         <attr name="dividerLeftMargin" format="reference|dimension"></attr>
         <attr name="dividerRightMargin" format="reference|dimension"></attr>
+        <!--左边文字左边的间距-->
+        <attr name="leftTextLeftPadding" format="reference|dimension"></attr>
     </declare-styleable>
     <!--组合输入框和按钮文字-->
     <declare-styleable name="inputLimitView">

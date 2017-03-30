@@ -3,12 +3,14 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -37,6 +39,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForS
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForThreeImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
+import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
@@ -277,6 +280,23 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         mVShadow.setVisibility(View.GONE);
         if (mOnCommentClickListener != null) {
             mOnCommentClickListener.onButtonMenuShow(true);
+        }
+    }
+
+    @Override
+    public void showNewDynamic(int position) {
+        if (position == -1) {
+            // 添加一条新动态
+            refreshData();
+            // 回到顶部
+            mRvList.smoothScrollToPosition(0);
+            Fragment parentFragment = getParentFragment();
+            if(parentFragment!=null&&parentFragment instanceof MainFragment){
+                MainFragment mainFragment= (MainFragment) parentFragment;
+                mainFragment.setPagerSelection(MainFragment.PAGER_NEWEST_DYNAMIC_LIST_POSITION);
+            }
+        } else {
+            refreshData(position);
         }
     }
 

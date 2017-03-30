@@ -45,7 +45,10 @@ public class DynamicDetailHeader {
     private TextView mContent;
     private TextView mTitle;
     private View mDynamicDetailHeader;
+    private FrameLayout fl_comment_count_container;
     private Context mContext;
+    private int screenWidth;
+    private int picWidth;
 
     public View getDynamicDetailHeader() {
         return mDynamicDetailHeader;
@@ -57,7 +60,10 @@ public class DynamicDetailHeader {
         mDynamicDetailHeader.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
         mTitle = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_title);
         mContent = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_content);
+        fl_comment_count_container = (FrameLayout) mDynamicDetailHeader.findViewById(R.id.fl_comment_count_container);
         mPhotoContainer = (LinearLayout) mDynamicDetailHeader.findViewById(R.id.ll_dynamic_photos_container);
+        screenWidth = UIUtils.getWindowWidth(context);
+        picWidth = UIUtils.getWindowWidth(context) - context.getResources().getDimensionPixelSize(R.dimen.spacing_normal) * 2;
     }
 
     /**
@@ -130,8 +136,12 @@ public class DynamicDetailHeader {
                 mDynamicDetailHeader.getContext().startActivity(intent);
             }
         });
-
-        ((TextView) mDynamicDetailHeader.findViewById(R.id.tv_comment_count)).setText(mDynamicDetailHeader.getResources().getString(R.string.dynamic_comment_count, dynamicBean.getTool().getFeed_comment_count()));
+        if (dynamicBean.getTool().getFeed_comment_count() <= 0) {
+            fl_comment_count_container.setVisibility(View.GONE);
+        } else {
+            ((TextView) mDynamicDetailHeader.findViewById(R.id.tv_comment_count)).setText(mDynamicDetailHeader.getResources().getString(R.string.dynamic_comment_count, dynamicBean.getTool().getFeed_comment_count()));
+            fl_comment_count_container.setVisibility(View.VISIBLE);
+        }
     }
 
     private void showContentImage(Context context, List<ImageBean> photoList, final int position, boolean lastImg, LinearLayout photoContainer) {
@@ -139,20 +149,23 @@ public class DynamicDetailHeader {
         View view = LayoutInflater.from(context).inflate(R.layout.view_dynamic_detail_photos, null);
         FilterImageView imageView = (FilterImageView) view.findViewById(R.id.dynamic_content_img);
         // 提前设置图片控件的大小，使得占位图显示
-        int width = UIUtils.getWindowWidth(context) - context.getResources().getDimensionPixelSize(R.dimen.spacing_normal) * 2;
-        int height = (int) (imageBean.getHeight() * width / imageBean.getWidth());
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, height);
+        int height = (int) (imageBean.getHeight() * picWidth / imageBean.getWidth());
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(picWidth, height);
         layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
         imageView.setLayoutParams(layoutParams);
         // 隐藏最后一张图的下间距
         if (lastImg) {
             view.findViewById(R.id.img_divider).setVisibility(View.GONE);
         }
+        int part = (int) (screenWidth / imageBean.getWidth() * 100);
+        if (part > 100) {
+            part = 100;
+        }
         AppApplication.AppComponentHolder.getAppComponent().imageLoader()
                 .loadImage(context, GlideImageConfig.builder()
                         .placeholder(R.drawable.shape_default_image)
                         .errorPic(R.drawable.shape_default_image)
-                        .url(String.format(ApiConfig.IMAGE_PATH, imageBean.getStorage_id(), 50))
+                        .url(String.format(ApiConfig.IMAGE_PATH, imageBean.getStorage_id(), part))
                         .imagerView(imageView)
                         .build()
                 );
