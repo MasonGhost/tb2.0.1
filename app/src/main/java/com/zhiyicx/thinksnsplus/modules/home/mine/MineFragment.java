@@ -170,7 +170,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 startActivity(intent);
                 break;
             case R.id.bt_ranking:
-                SkinManager.getInstance().loadSkin("tsplustheme.skin", new SkinLoaderListener() {
+                // 加载主题库方法，用于测试主题切换
+               /* SkinManager.getInstance().loadSkin("tsplustheme.skin", new SkinLoaderListener() {
                     @Override
                     public void onStart() {
 
@@ -190,7 +191,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                     public void onProgress(int progress) {
 
                     }
-                });
+                });*/
                 break;
             case R.id.bt_gold:
                 startActivity(new Intent(getActivity(), GalleryActivity.class));
