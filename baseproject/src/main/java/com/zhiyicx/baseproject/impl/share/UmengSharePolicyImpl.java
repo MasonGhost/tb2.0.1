@@ -36,6 +36,7 @@ import java.util.List;
  * @Contact master.jungle68@gmail.com
  */
 public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListener {
+    private static final int SHARE_COLUMS = 5;// item 列数
 
     /**
      * 友盟初始化
@@ -332,7 +333,8 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
 
         mRecyclerViewPopupWindow = RecyclerViewPopupWindow.Builder()
                 .isOutsideTouch(true)
-                .asGrid(5)
+                .asGrid(SHARE_COLUMS)// 列数
+                .itemSpacing(mContext.getResources().getDimensionPixelSize(R.dimen.spacing_mid)) // 间距
                 .with((Activity) mContext)
                 .adapter(new CommonAdapter<ShareBean>(mContext, R.layout.item_share_popup_window, mDatas) {
                     @Override

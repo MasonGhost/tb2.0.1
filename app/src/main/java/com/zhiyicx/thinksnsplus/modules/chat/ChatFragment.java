@@ -116,6 +116,8 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
             }
         });
 
+        mIlvContainer.setEtContentHint(getString(R.string.default_input_chat_hint));
+
     }
 
     @Override

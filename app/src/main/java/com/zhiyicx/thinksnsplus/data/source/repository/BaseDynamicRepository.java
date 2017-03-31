@@ -303,7 +303,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     @Override
     public Observable<BaseJson<List<FollowFansBean>>> getDynamicDigList(Long feed_id, Long
             max_id) {
-        return mDynamicClient.getDynamicDigList(feed_id, max_id)
+        return mDynamicClient.getDynamicDigList(feed_id, max_id,TSListFragment.DEFAULT_PAGE_SIZE)
                 .flatMap(new Func1<BaseJson<List<DynamicDigListBean>>, Observable<BaseJson<List<FollowFansBean>>>>() {
                     @Override
                     public Observable<BaseJson<List<FollowFansBean>>> call(BaseJson<List<DynamicDigListBean>> listBaseJson) {

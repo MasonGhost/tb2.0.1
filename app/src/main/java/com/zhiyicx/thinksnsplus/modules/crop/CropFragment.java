@@ -58,6 +58,7 @@ import butterknife.ButterKnife;
 import static android.app.Activity.RESULT_OK;
 import static com.yalantis.ucrop.UCrop.EXSTRA_IMAGESOURCE_PADDING;
 import static com.yalantis.ucrop.UCrop.EXSTRA_OVERLAY_PADDING;
+import static com.yalantis.ucrop.UCrop.Options.EXTRA_UCROP_TITLE_TEXT_TOOLBAR;
 
 /**
  * @author LiuChao
@@ -127,7 +128,7 @@ public class CropFragment extends TSFragment {
 
     @Override
     protected String setCenterTitle() {
-        return getString(R.string.crop_head_icon);
+        return getArguments().getString(EXTRA_UCROP_TITLE_TEXT_TOOLBAR);
     }
 
     @Override

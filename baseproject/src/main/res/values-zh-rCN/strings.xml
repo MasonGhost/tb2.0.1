@@ -1,11 +1,11 @@
 <resources>
     <!-- 异常输出内容 -->
     <string name="err_share_no_content">分享内容不能为空</string>
-    <string name="err_net_not_work">当前网络状况不佳</string>
+    <string name="err_net_not_work">网络请求失败，请重新加载</string>
     <string name="erro_argument_in_method">方法使用了不合法的参数</string>
     <string name="data_load_error">数据加载失败</string>
     <string name="load_error">加载失败</string>
-    <string name="loading">加载中...</string>
+    <string name="loading">加载更多</string>
     <string name="no_data">没有任何内容</string>
     <string name="no_more_data">没有更多数据了</string>
     <!-- 通用 -->
@@ -28,11 +28,14 @@
     <string name="female">女</string>
     <string name="keep_secret">保密</string>
     <string name="complete">完成</string>
+    <string name="completed">已完成</string>
     <string name="send_success">发送成功</string>
     <string name="send_failure">发送失败</string>
     <string name="send">发送</string>
     <string name="sure">确认</string>
     <string name="change_head_icon">更换头像</string>
+    <string name="change_bg_cover">更换封面</string>
+    <string name="crop_photo">裁剪图片</string>
     <string name="publish">发布</string>
     <string name="intro_default">这个家伙很懒，没有留下任何</string>
     <!-- 注册 -->
@@ -55,7 +58,7 @@
     <string name="change_password_success">更改成功</string>
 
     <!-- 拍照相关 -->
-    <string name="choose_from_photo">从相册选取</string>
+    <string name="choose_from_photo">从相册中选择</string>
     <string name="choose_from_camera">拍照</string>
     <string name="choose_max_photos">你最多可以选择%1$d张图片</string>
     <string name="album_image_count">%1$d张</string>
