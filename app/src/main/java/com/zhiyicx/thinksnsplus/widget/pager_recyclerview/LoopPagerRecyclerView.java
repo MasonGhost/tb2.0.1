@@ -82,7 +82,7 @@ public class LoopPagerRecyclerView extends PagerRecyclerView {
     }
 
     private int transformInnerPositionIfNeed(int position) {
-
+        LogUtils.d("transformInnerPositionIfNeed:::"+position);
         final int actualItemCount = getActualItemCountFromAdapter();//正确的item个数
 
         final int actualCurrentPosition = getCurrentPosition() % actualItemCount;//正确的当前位置
@@ -100,7 +100,6 @@ public class LoopPagerRecyclerView extends PagerRecyclerView {
         int bakPosition2 = normalPosition - actualItemCount;//往后 退回一次循环
 
         int bakPosition3 = normalPosition + actualItemCount;//往前 前进一次循环
-
 
         // 取得最靠近当前位置的 正序位。
         if (Math.abs(bakPosition1 - currentPosition) > Math.abs(bakPosition2 - currentPosition)) {
