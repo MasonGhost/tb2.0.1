@@ -402,8 +402,10 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 if (mPhonographAnimate != null && mPhonographAnimate.isStarted()) {
                     pauseAnimation();
                 }
+                
                 mFragmentMusicPalyRv.smoothScrollToPosition(mFragmentMusicPalyRv
                         .getActualCurrentPosition() - 1);
+
                 mFragmentMusicPalyProgress.setProgress(0);
                 break;
             case R.id.fragment_music_paly_palyer:// 播放暂停

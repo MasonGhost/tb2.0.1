@@ -36,7 +36,6 @@ public class PlayerSeekBar extends SeekBar {
 
     public PlayerSeekBar(Context context, AttributeSet attrs) {
         super(context, attrs);
-        matrix.setScale(0.3f, 0.3f, loading.getWidth() / 2, loading.getHeight() / 2);
         setThumb(getContext().getResources().getDrawable(R.mipmap.music_pic_progressbar_circle));
     }
 
@@ -69,12 +68,14 @@ public class PlayerSeekBar extends SeekBar {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected synchronized void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (drawLoading) {
             canvas.save();
             degree = ((int) (degree + 3.0F));
             degree %= 360;
+            matrix.reset();
+            matrix.setScale(0.3f, 0.3f, loading.getWidth() / 2, loading.getHeight() / 2);
             matrix.postRotate(degree, loading.getWidth() / 2, loading.getHeight() / 2);
             canvas.translate(getPaddingLeft() + getThumb().getBounds().left + getThumb().getBounds
                             ().width() / 2 - loading.getWidth() / 2 - getThumbOffset(),
