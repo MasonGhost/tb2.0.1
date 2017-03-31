@@ -1,7 +1,6 @@
 package com.zhiyicx.baseproject.widget.popwindow;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.GridLayoutManager;
@@ -15,9 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 import com.zhiyicx.baseproject.R;
+import com.zhiyicx.common.utils.recycleviewdecoration.ShareDecoration;
 import com.zhy.adapter.recyclerview.CommonAdapter;
-
-import java.util.List;
 
 /**
  * @author LiuChao
@@ -41,6 +39,7 @@ public class RecyclerViewPopupWindow extends PopupWindow {
     private float mAlpha = 0.8f;
     private int mOritation = VERTICAL;
     private int mSpanCount;
+    private int mItemSpacing;
     private Drawable mBackgroundDrawable = new ColorDrawable(0x00000000);// 默认为透明;
     private CommonAdapter mAdapter;
 
@@ -57,6 +56,7 @@ public class RecyclerViewPopupWindow extends PopupWindow {
         this.mAdapter = builder.mAdapter;
         this.mOritation = builder.mOritation;
         this.mSpanCount = builder.mSpanCount;
+        this.mItemSpacing = builder.mItemSpacing;
         initView();
     }
 
@@ -89,6 +89,7 @@ public class RecyclerViewPopupWindow extends PopupWindow {
                 break;
             case GRID:
                 GridLayoutManager gridLayoutManager = new GridLayoutManager(mActivity, mSpanCount);
+                recyclerView.addItemDecoration(new ShareDecoration(mItemSpacing));
                 recyclerView.setLayoutManager(gridLayoutManager);
                 break;
         }
@@ -131,6 +132,7 @@ public class RecyclerViewPopupWindow extends PopupWindow {
         private CommonAdapter mAdapter;
         private int mOritation = VERTICAL;
         private int mSpanCount;
+        private int mItemSpacing;
 
         private Builder() {
         }
@@ -180,6 +182,12 @@ public class RecyclerViewPopupWindow extends PopupWindow {
             this.mSpanCount = spanCount;
             return this;
         }
+
+        public RecyclerViewPopupWindow.Builder itemSpacing(int mItemSpacing) {
+            this.mItemSpacing = mItemSpacing;
+            return this;
+        }
+
 
         public RecyclerViewPopupWindow build() {
             return new RecyclerViewPopupWindow(this);
