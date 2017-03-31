@@ -105,7 +105,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     private ActionPopupWindow mGenderPopupWindow;// 性别选择弹框
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
     private PhotoSelectorImpl mPhotoSelector;
-    private LoadingDialog mLoadingDialog;// 提示弹框
 
     private UserInfoBean mUserInfoBean;// 用户未修改前的用户信息
     private int upLoadCount = 0;// 当前文件上传的次数，>0表示已经上传成功，但是还没有提交修改用户信息
@@ -139,7 +138,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                         .SHAPE_SQUARE))
                 .build().photoSelectorImpl();
 
-        mLoadingDialog = new LoadingDialog(getActivity());
         initCityPickerView();
     }
 
@@ -689,9 +687,4 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         }
     }
 
-    @Override
-    public void onDestroy() {
-        mLoadingDialog.onDestroy();
-        super.onDestroy();
-    }
 }
