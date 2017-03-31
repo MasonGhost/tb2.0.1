@@ -14,19 +14,15 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.WindowManager;
 
 import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.LocalPlayback;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.QueueManager;
+import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicAblumInfo;
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProvider;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
-import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MusicWindows;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaNotificationManager;
 
 import org.simple.eventbus.EventBus;
@@ -36,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_CACHE_PROGRESS;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper
         .MEDIA_ID_EMPTY_ROOT;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper.MEDIA_ID_ROOT;
@@ -61,79 +58,25 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
 
     private MediaSessionCompat mSession;
     private MediaNotificationManager mMediaNotificationManager;
-    private Bundle mSessionExtras;
     private final DelayedStopHandler mDelayedStopHandler = new DelayedStopHandler(this);
-
-
-    private WindowManager mWindowManager;
-    private WindowManager.LayoutParams mLayoutParams;
-    private LayoutInflater mLayoutInflater;
-    private View mFloatView;
-    private int mCurrentX;
-    private int mCurrentY;
-    private static int mFloatViewWidth = 50;
-    private static int mFloatViewHeight = 80;
-
-
+    private QueueManager mQueueManager;
+    private LocalPlayback mLocalPlayback;
 
     @Override
     public void onCreate() {
         super.onCreate();
-
-        mWindowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
-        mLayoutInflater = LayoutInflater.from(this);
-
-        mMusicProvider = new MusicProvider();
-        mMusicProvider.retrieveMediaAsync(null /* Callback */);
-
-        QueueManager queueManager = new QueueManager(mMusicProvider, getResources(),
-                new QueueManager.MetadataUpdateListener() {
-                    @Override
-                    public void onMetadataChanged(MediaMetadataCompat metadata) {
-                        mSession.setMetadata(metadata);
-                    }
-
-                    @Override
-                    public void onMetadataRetrieveError() {
-                        mPlaybackManager.updatePlaybackState(
-                                "error_no_metadata");
-                    }
-
-                    @Override
-                    public void onCurrentQueueIndexUpdated(int queueIndex) {
-                        mPlaybackManager.handlePlayRequest();
-                    }
-
-                    @Override
-                    public void onQueueUpdated(String title,
-                                               List<MediaSessionCompat.QueueItem> newQueue) {
-                        mSession.setQueue(newQueue);
-                        mSession.setQueueTitle(title);
-                    }
-                });
-
-        LocalPlayback playback = new LocalPlayback(this, mMusicProvider);
-
-        mPlaybackManager = new PlaybackManager(this, getResources(), mMusicProvider, queueManager,
-                playback);
-
         mSession = new MediaSessionCompat(this, "MusicPlayService");
-
         setSessionToken(mSession.getSessionToken());
-        mSession.setCallback(mPlaybackManager.getMediaSessionCallback());
         mSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
                 MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
-
         Context context = getApplicationContext();
         Intent intent = new Intent(context, MusicDetailActivity.class);
         PendingIntent pi = PendingIntent.getActivity(context, 99 /*request code*/,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mSession.setSessionActivity(pi);
-
-        mSessionExtras = new Bundle();
-        mSession.setExtras(mSessionExtras);
-
-        mPlaybackManager.updatePlaybackState(null);
+        mMusicProvider = new MusicProvider();
+        mMusicProvider.retrieveMediaAsync(null /* Callback */);
+        configMusicProvider(mMusicProvider);
 
         try {
             mMediaNotificationManager = new MediaNotificationManager(this);
@@ -173,9 +116,7 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
     @Override
     public BrowserRoot onGetRoot(@NonNull String clientPackageName, int clientUid,
                                  Bundle rootHints) {
-
         return new BrowserRoot(MEDIA_ID_ROOT, null);
-
     }
 
     @Override
@@ -184,13 +125,17 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
         if (MEDIA_ID_EMPTY_ROOT.equals(parentMediaId)) {
             result.sendResult(new ArrayList<MediaBrowserCompat.MediaItem>());
         } else if (mMusicProvider.isInitialized()) {
-            result.sendResult(mMusicProvider.getChildren(parentMediaId, getResources()));
+            List<MediaBrowserCompat.MediaItem> data;
+            data = mMusicProvider.getChildren(parentMediaId, getResources());
+            result.sendResult(data);
         } else {
             result.detach();
             mMusicProvider.retrieveMediaAsync(new MusicProvider.Callback() {
                 @Override
                 public void onMusicCatalogReady(boolean success) {
-                    result.sendResult(mMusicProvider.getChildren(parentMediaId, getResources()));
+                    List<MediaBrowserCompat.MediaItem> data;
+                    data = mMusicProvider.getChildren(parentMediaId, getResources());
+                    result.sendResult(data);
                 }
             });
         }
@@ -199,8 +144,7 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
     @Override
     public void onPlaybackStart() {
         mSession.setActive(true);
-        AppApplication.getMusicWindows().showWindows();
-        LogUtils.d("onPlaybackStart");
+//        AppApplication.getMusicWindows().showWindows();
         mDelayedStopHandler.removeCallbacksAndMessages(null);
         startService(new Intent(getApplicationContext(), MusicPlayService.class));
     }
@@ -208,8 +152,7 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
     @Override
     public void onPlaybackStop() {
         mSession.setActive(false);
-        AppApplication.getMusicWindows().hideWindows();
-        LogUtils.d("onPlaybackStop");
+//        AppApplication.getMusicWindows().hideWindows();
         mDelayedStopHandler.removeCallbacksAndMessages(null);
         mDelayedStopHandler.sendEmptyMessageDelayed(0, STOP_DELAY);
         stopForeground(true);
@@ -228,7 +171,20 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
     @Override
     public void onBufferingUpdate(int percent) {
         EventBus.getDefault().post(percent, EVENT_SEND_MUSIC_CACHE_PROGRESS);
-        Log.e("onBufferingUpdate:", "" + percent);
+    }
+
+    @Override
+    public void onCustomAction(String action, Bundle extras) {
+        MusicAlbumDetailsBean musicAblum = (MusicAlbumDetailsBean) extras.getSerializable(MUSIC_ACTION);
+        LogUtils.d(action + musicAblum);
+        if (musicAblum!=null){
+            MusicProvider newMusicProvider = new MusicProvider(new MusicAblumInfo(musicAblum));
+            newMusicProvider.retrieveMediaAsync(null);// 很重要
+            mMusicProvider = newMusicProvider;
+            mQueueManager.setMusicProvider(mMusicProvider);
+            mLocalPlayback.setMusicProvider(mMusicProvider);
+        }
+
     }
 
     private static class DelayedStopHandler extends Handler {
@@ -248,6 +204,40 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
                 service.stopSelf();
             }
         }
+    }
+
+    private void configMusicProvider(MusicProvider provider) {
+
+        mQueueManager = new QueueManager(provider,
+                new QueueManager.MetadataUpdateListener() {
+                    @Override
+                    public void onMetadataChanged(MediaMetadataCompat metadata) {
+                        mSession.setMetadata(metadata);
+                    }
+
+                    @Override
+                    public void onMetadataRetrieveError() {
+                        mPlaybackManager.updatePlaybackState(
+                                "error_no_metadata");
+                    }
+
+                    @Override
+                    public void onCurrentQueueIndexUpdated(int queueIndex) {
+                        mPlaybackManager.handlePlayRequest();
+                    }
+
+                    @Override
+                    public void onQueueUpdated(String title,
+                                               List<MediaSessionCompat.QueueItem> newQueue) {
+                        mSession.setQueue(newQueue);
+                        mSession.setQueueTitle(title);
+                    }
+                });
+        mLocalPlayback = new LocalPlayback(this, provider);
+        mPlaybackManager = new PlaybackManager(this, mQueueManager,
+                mLocalPlayback);
+        mPlaybackManager.updatePlaybackState(null);
+        mSession.setCallback(mPlaybackManager.getMediaSessionCallback());
     }
 
 }

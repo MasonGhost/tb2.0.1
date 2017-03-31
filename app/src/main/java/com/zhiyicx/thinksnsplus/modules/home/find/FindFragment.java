@@ -8,7 +8,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
-import com.zhiyicx.thinksnsplus.modules.music_fm.music_album.MusicListActivity;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
 
 import butterknife.BindView;
 import butterknife.OnClick;

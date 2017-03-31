@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-
     android:paddingLeft="@dimen/spacing_normal"
     android:paddingRight="@dimen/spacing_normal"
     android:paddingTop="@dimen/spacing_mid"
@@ -27,6 +26,8 @@
         android:layout_toRightOf="@id/iv_headpic"
         android:maxLength="@integer/username_max_length"
         android:maxLines="1"
+        android:paddingBottom="@dimen/spacing_mid"
+        android:includeFontPadding="false"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_icon_assist"
         tools:text="张三"/>
@@ -45,13 +46,13 @@
 
     <TextView
         android:id="@+id/tv_content"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_time"
+        android:includeFontPadding="false"
+        android:layout_below="@+id/tv_name"
         android:layout_toLeftOf="@+id/fl_tip"
         android:layout_toRightOf="@+id/iv_headpic"
         android:paddingBottom="@dimen/spacing_mid"
-        android:paddingTop="@dimen/spacing_mid"
         android:textColor="@color/normal_for_assist_text"
         android:textSize="@dimen/size_content_comment"
         tools:text="我送第几个 "/>

@@ -48,7 +48,7 @@ public class TabSelectView extends FrameLayout {
     private static final int DEFAULT_TAB_UNSELECTED_TEXTCOLOR = R.color.normal_for_assist_text;// 缺省的tab未选择文字
     private static final int DEFAULT_TAB_SELECTED_TEXTCOLOR = R.color.important_for_content;// 缺省的tab被选择文字
     private static final int DEFAULT_TAB_TEXTSIZE = R.integer.tab_text_size;// 缺省的tab文字大小
-    private static final int DEFAULT_TAB_MARGIN = R.integer.tab_margin;// 缺省的tab之间的空白间距
+    private static final int DEFAULT_TAB_MARGIN = R.integer.tab_margin;// 缺省的tab左右padding
     private static final int DEFAULT_TAB_PADDING = R.integer.tab_padding;// 缺省的tab的线和文字的边缘距离
     private static final int DEFAULT_TAB_LINE_COLOR = R.color.themeColor;// 缺省的tab的线的颜色
     private static final int DEFAULT_TAB_LINE_HEGIHT = R.integer.line_height;// 缺省的tab的线的高度
@@ -125,7 +125,7 @@ public class TabSelectView extends FrameLayout {
     /**
      * 一般没有，暂时不开放，等需要再写
      */
-    public void setRightImg(int imgRes,int backgroud) {
+    public void setRightImg(int imgRes, int backgroud) {
         if (imgRes == 0 && TextUtils.isEmpty(tvToolbarRight.getText())) {
             tvToolbarRight.setVisibility(INVISIBLE);
         } else {
@@ -186,7 +186,7 @@ public class TabSelectView extends FrameLayout {
     }
 
     private void initMagicIndicator() {
-        mMagicIndicator.setBackgroundColor(Color.WHITE);
+        mMagicIndicator.setBackgroundColor(Color.TRANSPARENT);
         CommonNavigator commonNavigator = new CommonNavigator(mContext);
         commonNavigator.setAdapter(new CommonNavigatorAdapter() {
 
@@ -199,6 +199,8 @@ public class TabSelectView extends FrameLayout {
             public IPagerTitleView getTitleView(Context context, final int index) {
                 SimplePagerTitleView simplePagerTitleView = new ColorTransitionPagerTitleView(context);
                 simplePagerTitleView.setNormalColor(ContextCompat.getColor(context, DEFAULT_TAB_UNSELECTED_TEXTCOLOR));
+                int leftRightPadding = UIUtil.dip2px(context, mContext.getResources().getInteger(DEFAULT_TAB_MARGIN));
+                simplePagerTitleView.setPadding(leftRightPadding, 0, leftRightPadding, 0);
                 simplePagerTitleView.setSelectedColor(ContextCompat.getColor(context, DEFAULT_TAB_SELECTED_TEXTCOLOR));
                 simplePagerTitleView.setText(mStringList.get(index));
                 simplePagerTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, context.getResources().getInteger(DEFAULT_TAB_TEXTSIZE));
@@ -214,15 +216,14 @@ public class TabSelectView extends FrameLayout {
             @Override
             public IPagerIndicator getIndicator(Context context) {
                 LinePagerIndicator linePagerIndicator = new LinePagerIndicator(context);
-                //linePagerIndicator.setMode(LinePagerIndicator.MODE_WRAP_CONTENT);// 适应文字长度
-                linePagerIndicator.setMode(LinePagerIndicator.MODE_MATCH_EDGE);// 占满
-                linePagerIndicator.setXOffset(UIUtil.dip2px(context, context.getResources().getInteger(DEFAULT_TAB_PADDING)));// 每个item边缘到指示器的边缘距离
+                linePagerIndicator.setMode(LinePagerIndicator.MODE_WRAP_CONTENT);// 适应文字长度
+                //linePagerIndicator.setMode(LinePagerIndicator.MODE_MATCH_EDGE);// 占满
+                linePagerIndicator.setXOffset(-UIUtil.dip2px(context, context.getResources().getInteger(DEFAULT_TAB_PADDING)));// 每个item边缘到指示器的边缘距离
                 linePagerIndicator.setLineHeight(UIUtil.dip2px(context, context.getResources().getInteger(DEFAULT_TAB_LINE_HEGIHT)));
                 linePagerIndicator.setColors(ContextCompat.getColor(context, DEFAULT_TAB_LINE_COLOR));
                 return linePagerIndicator;
             }
         });
-        commonNavigator.setRightPadding(mContext.getResources().getInteger(DEFAULT_TAB_MARGIN));
         mMagicIndicator.setNavigator(commonNavigator);
         ViewPagerHelper.bind(mMagicIndicator, mViewPager);
     }
@@ -230,7 +231,6 @@ public class TabSelectView extends FrameLayout {
     public interface TabLeftRightClickListener {
         void buttonClick();
     }
-
 
 
 }

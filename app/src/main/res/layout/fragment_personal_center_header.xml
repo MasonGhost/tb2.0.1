@@ -22,7 +22,7 @@
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/spacing_large"
             android:scaleType="centerCrop"
-            android:src="@drawable/girl_xinyuanjieyi"/>
+            android:src="@mipmap/default_pic_personal"/>
 
         <ImageView
             android:id="@+id/iv_head_icon"

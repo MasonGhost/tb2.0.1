@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.home.mine;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -144,15 +145,19 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 startActivity(new Intent(getActivity(), UserInfoActivity.class));
                 break;
             case R.id.ll_fans_container:
+                long fansUserId = AppApplication.getmCurrentLoginAuth().getUser_id();
                 Bundle bundleFans = new Bundle();
                 bundleFans.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment.FANS_FRAGMENT_PAGE);
+                bundleFans.putLong(FollowFansListFragment.PAGE_DATA, fansUserId);
                 Intent itFans = new Intent(getActivity(), FollowFansListActivity.class);
                 itFans.putExtras(bundleFans);
                 startActivity(itFans);
                 break;
             case R.id.ll_follow_container:
+                long followUserId = AppApplication.getmCurrentLoginAuth().getUser_id();
                 Bundle bundleFollow = new Bundle();
                 bundleFollow.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment.FOLLOW_FRAGMENT_PAGE);
+                bundleFollow.putLong(FollowFansListFragment.PAGE_DATA, followUserId);
                 Intent itFollow = new Intent(getActivity(), FollowFansListActivity.class);
                 itFollow.putExtras(bundleFollow);
                 startActivity(itFollow);
@@ -165,7 +170,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 startActivity(intent);
                 break;
             case R.id.bt_ranking:
-                SkinManager.getInstance().loadSkin("tsplustheme.skin", new SkinLoaderListener() {
+                // 加载主题库方法，用于测试主题切换
+               /* SkinManager.getInstance().loadSkin("tsplustheme.skin", new SkinLoaderListener() {
                     @Override
                     public void onStart() {
 
@@ -185,7 +191,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                     public void onProgress(int progress) {
 
                     }
-                });
+                });*/
                 break;
             case R.id.bt_gold:
                 startActivity(new Intent(getActivity(), GalleryActivity.class));
@@ -246,9 +252,11 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         // 设置简介
         mTvUserSignature.setText(userInfoBean.getIntro());
         // 设置粉丝数
-        mTvFansCount.setText(userInfoBean.getFollowed_count());
+        String followedCount = TextUtils.isEmpty(userInfoBean.getFollowed_count()) ? "0" : userInfoBean.getFollowed_count();
+        mTvFansCount.setText(followedCount);
         // 设置关注数
-        mTvFollowCount.setText(userInfoBean.getFollowing_count());
+        String followingCount = TextUtils.isEmpty(userInfoBean.getFollowing_count()) ? "0" : userInfoBean.getFollowing_count();
+        mTvFollowCount.setText(followingCount);
     }
 
     @Override
@@ -256,11 +264,15 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         switch (stateFollow) {
             case FollowFansBean.IFOLLOWED_STATE:
                 // 添加一个关注
-                mUserInfoBean.setFollowing_count(Integer.parseInt(mUserInfoBean.getFollowing_count()) + 1 + "");
+                int addCount = Integer.parseInt(mUserInfoBean.getFollowing_count()) + 1;
+                addCount = addCount < 0 ? 0 : addCount;
+                mUserInfoBean.setFollowing_count(addCount + "");
                 break;
             case FollowFansBean.UNFOLLOWED_STATE:
                 // 取消一个关注
-                mUserInfoBean.setFollowing_count(Integer.parseInt(mUserInfoBean.getFollowing_count()) - 1 + "");
+                int decreaseCount = Integer.parseInt(mUserInfoBean.getFollowing_count()) - 1;
+                decreaseCount = decreaseCount < 0 ? 0 : decreaseCount;
+                mUserInfoBean.setFollowing_count(decreaseCount + "");
                 break;
             default:
         }

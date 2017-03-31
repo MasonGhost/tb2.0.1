@@ -1,13 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_play;
 
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
-import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
-
-import java.util.Map;
-
-import rx.Observable;
 
 /**
  * @Author Jliuer
@@ -16,15 +10,17 @@ import rx.Observable;
  * @Description
  */
 public interface MusicPlayContract {
-    interface View extends IBaseView<Presenter> {
 
+    interface View extends IBaseView<Presenter> {
     }
 
     interface Presenter extends IBasePresenter {
+        void shareMusic();
 
+        void handleLike(boolean isLiked, final String music_id);
     }
 
     interface Repository {
-        Observable<BaseJson<MusicAlbumListBean>> getMusicList(Map map);
+        void handleLike(boolean isLiked, String music_id);
     }
 }

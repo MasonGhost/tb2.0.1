@@ -1,7 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_play;
 
+import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.thinksnsplus.data.source.repository.MusicDetailRepository;
+import com.zhiyicx.common.thridmanager.share.ShareContent;
+import com.zhiyicx.common.thridmanager.share.SharePolicy;
 
 import javax.inject.Inject;
 
@@ -11,11 +14,9 @@ import javax.inject.Inject;
  * @Email Jliuer@aliyun.com
  * @Description
  */
+@FragmentScoped
 public class MusicPlayPresenter extends BasePresenter<MusicPlayContract.Repository,
         MusicPlayContract.View> implements MusicPlayContract.Presenter {
-
-    @Inject
-    MusicDetailRepository mMusicDetailRepository;
 
     @Inject
     public MusicPlayPresenter(MusicPlayContract.Repository repository, MusicPlayContract
@@ -29,5 +30,20 @@ public class MusicPlayPresenter extends BasePresenter<MusicPlayContract.Reposito
     @Inject
     void setupListeners() {
         mRootView.setPresenter(this);
+    }
+
+    @Inject
+    public SharePolicy mSharePolicy;
+
+    @Override
+    public void shareMusic() {
+        ShareContent shareContent = new ShareContent();
+        mSharePolicy.setShareContent(shareContent);
+        mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
+    }
+
+    @Override
+    public void handleLike(boolean isLiked, String music_id) {
+        mRepository.handleLike(isLiked, music_id);
     }
 }

@@ -36,10 +36,10 @@ public class ChangePasswordPresenter extends BasePresenter<ChangePasswordContrac
         if (checkPasswordLength(oldPassword, mContext.getString(R.string.old_password_toast_hint))) {
             return;
         }
-        if (checkPasswordLength(oldPassword, mContext.getString(R.string.new_password_toast_hint))) {
+        if (checkPasswordLength(newPassword, mContext.getString(R.string.new_password_toast_hint))) {
             return;
         }
-        if (checkPasswordLength(oldPassword, mContext.getString(R.string.sure_new_password_toast_hint))) {
+        if (checkPasswordLength(sureNessword, mContext.getString(R.string.sure_new_password_toast_hint))) {
             return;
         }
         if (!newPassword.equals(sureNessword)) {
@@ -82,4 +82,3 @@ public class ChangePasswordPresenter extends BasePresenter<ChangePasswordContrac
         return false;
     }
 }
-

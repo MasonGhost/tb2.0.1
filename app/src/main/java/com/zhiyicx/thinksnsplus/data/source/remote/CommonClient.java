@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.beans.ComponentConfigBean;
+import com.zhiyicx.thinksnsplus.data.beans.ComponentStatusBean;
 import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 
 import java.util.HashMap;
@@ -15,6 +17,7 @@ import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.HTTP;
 import retrofit2.http.HeaderMap;
 import retrofit2.http.Headers;
@@ -30,6 +33,8 @@ import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CREATE_STORAGE_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DELETE_STORAGE_TASK;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_COMPONENT_CONFIGS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_COMPONENT_STATUS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_VERTIFYCODE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_HANDLE_BACKGROUND_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_NOTIFY_STORAGE_TASK;
@@ -55,6 +60,10 @@ public interface CommonClient {
     public static final String VERTIFY_CODE_TYPE_LOGIN = "login";
     public static final String VERTIFY_CODE_TYPE_CHANGE = "change";
 
+
+
+
+
     /**
      * 获取验证码
      *
@@ -78,6 +87,11 @@ public interface CommonClient {
     @PATCH(APP_PATH_REFRESH_TOKEN)
     Observable<BaseJson<AuthBean>> refreshToken(@Query("refresh_token") String refrshToken, @Query("device_code") String deviceCode);
 
+    @GET(APP_PATH_GET_COMPONENT_STATUS)
+    Observable<BaseJson<ComponentStatusBean>> getComponentStatus();
+
+    @GET(APP_PATH_GET_COMPONENT_CONFIGS)
+    Observable<BaseJson<List<ComponentConfigBean>>> getComponentConfigs(@Query("component") String component);
 
     ///////////////////////////////////////文件上传////////////////////////////////////////////////////
 

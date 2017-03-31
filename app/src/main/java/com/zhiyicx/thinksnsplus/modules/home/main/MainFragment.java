@@ -2,14 +2,15 @@ package com.zhiyicx.thinksnsplus.modules.home.main;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 
@@ -18,23 +19,19 @@ import java.util.List;
 
 import butterknife.BindView;
 
-import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
-
 /**
  * @Describe 主页MainFragment
  * @Author Jungle68
  * @Date 2017/1/5
  * @Contact master.jungle68@gmail.com
  */
-public class MainFragment extends TSViewPagerFragment implements InputLimitView.OnSendClickListener, DynamicFragment.OnCommentClickListener {
-
-    @BindView(R.id.ilv_comment)
-    InputLimitView mIlvComment;
-    @BindView(R.id.v_shadow)
-    View mVShadow;
+public class MainFragment extends TSViewPagerFragment implements DynamicFragment.OnCommentClickListener {
+    // 最新动态列表位置，如果更新了，记得修改这儿
+    public static final int PAGER_NEWEST_DYNAMIC_LIST_POSITION = 2;
     @BindView(R.id.v_status_bar_placeholder)
     View mStatusBarPlaceholder;
-
+    @BindView(R.id.v_shadow)
+    View mVShadow;
     List<Fragment> fragments = new ArrayList<>();
 
     public void setOnImageClickListener(DynamicFragment.OnCommentClickListener onCommentClickListener) {
@@ -65,33 +62,40 @@ public class MainFragment extends TSViewPagerFragment implements InputLimitView.
     protected void initView(View rootView) {
         super.initView(rootView);
         initToolBar();
-        initInputView();
+
     }
+
     private void initToolBar() {
         // toolBar设置状态栏高度的marginTop
-        RelativeLayout.LayoutParams layoutParams = new  RelativeLayout.LayoutParams( RelativeLayout.LayoutParams.MATCH_PARENT, DeviceUtils.getStatuBarHeight(getContext()));
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, DeviceUtils.getStatuBarHeight(getContext()));
         mStatusBarPlaceholder.setLayoutParams(layoutParams);
-    }
-    private void initInputView() {
-        mVShadow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mIlvComment.getVisibility() == View.VISIBLE) {
-                    mIlvComment.setVisibility(View.GONE);
-                    DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
-                }
-                v.setVisibility(View.GONE);
-                if (mOnCommentClickListener != null) {
-                    mOnCommentClickListener.onButtonMenuShow(true);
-                }
-            }
-        });
         mTsvToolbar.setLeftImg(0);//不需要返回键
-        mIlvComment.setOnSendClickListener(this);
     }
 
     @Override
     protected void initData() {
+        mVpFragment.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                if (state == ViewPager.SCROLL_STATE_DRAGGING) {
+                    ((DynamicContract.View) fragments.get(mVpFragment.getCurrentItem())).closeInputView();
+                }
+            }
+        });
+        // 启动 app，如果本地没有数据，应跳到“热门”页面 关联 github  #113
+        if (AppApplication.AppComponentHolder.getAppComponent().dynamicBeanGreenDao().getFollowedDynamicList(System.currentTimeMillis()).size() == 0) {
+            mVpFragment.setCurrentItem(1);
+        }
 
     }
 
@@ -106,43 +110,30 @@ public class MainFragment extends TSViewPagerFragment implements InputLimitView.
 
     @Override
     protected List<Fragment> initFragments() {
-
         fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS, this));
         fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
         fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this));
         return fragments;
     }
 
-    @Override
-    public void onSendClick(View v, String text) {
-        mIlvComment.setVisibility(View.GONE);
-        mVShadow.setVisibility(View.GONE);
-        ((DynamicContract.View) fragments.get(mVpFragment.getCurrentItem())).onSendClick(v, text);
-    }
 
     @Override
     public void onButtonMenuShow(boolean isShow) {
+        if (!isShow) {
+            mVShadow.setVisibility(View.VISIBLE);
+        } else {
+            mVShadow.setVisibility(View.GONE);
+        }
         if (mOnCommentClickListener != null) {
             mOnCommentClickListener.onButtonMenuShow(isShow);
         }
-        if (isShow) {
-            mVShadow.setVisibility(View.GONE);
-            mIlvComment.setVisibility(View.GONE);
-            mIlvComment.clearFocus();
-            mIlvComment.setSendButtonVisiable(false);
-            DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
-        } else {
-            mVShadow.setVisibility(View.VISIBLE);
-            mIlvComment.setVisibility(View.VISIBLE);
-            mIlvComment.getFocus();
-            mIlvComment.setSendButtonVisiable(true);
-            DeviceUtils.showSoftKeyboard(getActivity(), mIlvComment.getEtContent());
-        }
-
     }
 
-    @Override
-    public void setCommentHint(String hintStr) {
-        mIlvComment.setEtContentHint(hintStr);
+    /**
+     * viewpager页面切换公开方法
+     */
+    public void setPagerSelection(int position) {
+        mVpFragment.setCurrentItem(position,true);
     }
+
 }

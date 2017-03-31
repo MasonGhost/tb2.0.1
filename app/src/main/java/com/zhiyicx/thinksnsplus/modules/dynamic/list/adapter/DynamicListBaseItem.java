@@ -13,11 +13,11 @@ import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -121,7 +121,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
     @Override
     public boolean isForViewType(DynamicBean item, int position) {
         // 当本地和服务器都没有图片的时候，使用
-        return  (item.getFeed().getStorages() == null || item.getFeed().getStorages().size() == getImageCounts())
+        return (item == null || item.getFeed() == null) || (item.getFeed().getStorages() == null || item.getFeed().getStorages().size() == getImageCounts())
                 && (item.getFeed().getLocalPhotos() == null || item.getFeed().getLocalPhotos().size() == getImageCounts());
     }
 
@@ -137,78 +137,85 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
     /**
      * @param holder
      * @param dynamicBean
-     * @param lastT  android:descendantFocusability
+     * @param lastT       android:descendantFocusability
      * @param position
      */
     @Override
     public void convert(ViewHolder holder, DynamicBean dynamicBean, DynamicBean lastT, final int position) {
-        String userIconUrl = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getUserInfoBean().getAvatar(), ImageZipConfig.IMAGE_38_ZIP);
-        mImageLoader.loadImage(mContext, GlideImageConfig.builder()
-                .url(userIconUrl)
-                .placeholder(R.drawable.shape_default_image_circle)
-                .transformation(new GlideCircleTransform(mContext))
-                .errorPic(R.drawable.shape_default_image_circle)
-                .imagerView((ImageView) holder.getView(R.id.iv_headpic))
-                .build());
-        holder.setText(R.id.tv_name, dynamicBean.getUserInfoBean().getName());
-        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicBean.getFeed().getCreated_at()));
-        String title = dynamicBean.getFeed().getTitle();
-        if (TextUtils.isEmpty(title)) { // 超过的数据用 ... 表示
-            holder.setVisible(R.id.tv_title, View.GONE);
-        } else {
-            holder.setVisible(R.id.tv_title, View.VISIBLE);
-            if (title.length() > mTitleMaxShowNum) {
-                title = title.substring(0, mTitleMaxShowNum) + "...";
-            }
-            holder.setText(R.id.tv_title, title);
-        }
-        String content = dynamicBean.getFeed().getContent();
-        if (content.length() > mContentMaxShowNum) {
-            content = content.substring(0, mContentMaxShowNum) + "...";
-        }
-        holder.setText(R.id.tv_content, content);
-        DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
-        DynamicToolBean dynamicToolBean = dynamicBean.getTool();
-        if (dynamicToolBean != null) {
-            dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicToolBean.getFeed_digg_count()),dynamicToolBean.getIs_digg_feed() == STATUS_DIGG_FEED_CHECKED, 0);
-            dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicToolBean.getFeed_comment_count()), false, 1);
-            dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicToolBean.getFeed_view_count()), false, 2);
-        }
-
-
-        dynamicListMenuView.setItemOnClick(new DynamicListMenuView.OnItemClickListener() {
-            @Override
-            public void onItemClick(ViewGroup parent, View v, int menuPostion) {
-                if (mOnMenuItemClickLisitener != null) {
-                    mOnMenuItemClickLisitener.onMenuItemClick(v, position, menuPostion);
+        try {
+            String userIconUrl = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getUserInfoBean().getAvatar(), ImageZipConfig.IMAGE_38_ZIP);
+            mImageLoader.loadImage(mContext, GlideImageConfig.builder()
+                    .url(userIconUrl)
+                    .placeholder(R.drawable.shape_default_image_circle)
+                    .transformation(new GlideCircleTransform(mContext))
+                    .errorPic(R.drawable.shape_default_image_circle)
+                    .imagerView((ImageView) holder.getView(R.id.iv_headpic))
+                    .build());
+            holder.setText(R.id.tv_name, dynamicBean.getUserInfoBean().getName());
+            holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicBean.getFeed().getCreated_at()));
+            String title = dynamicBean.getFeed().getTitle();
+            if (TextUtils.isEmpty(title)) { // 超过的数据用 ... 表示
+                holder.setVisible(R.id.tv_title, View.GONE);
+            } else {
+                holder.setVisible(R.id.tv_title, View.VISIBLE);
+                if (title.length() > mTitleMaxShowNum) {
+                    title = title.substring(0, mTitleMaxShowNum) + "...";
                 }
+                holder.setText(R.id.tv_title, title);
             }
-        });
-        setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);
-        setUserInfoClick(holder.getView(R.id.tv_name), dynamicBean);
-        // 设置动态状态
-        if (dynamicBean.getState() == DynamicBean.SEND_ERROR) {
-            holder.setVisible(R.id.fl_tip, View.VISIBLE);
-        } else {
-            holder.setVisible(R.id.fl_tip, View.GONE);
-        }
-        RxView.clicks(holder.getView(R.id.fl_tip))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        if (mOnReSendClickListener != null) {
-                            mOnReSendClickListener.onReSendClick(position);
-                        }
+            String content = dynamicBean.getFeed().getContent();
+            if (content.length() > mContentMaxShowNum) {
+                content = content.substring(0, mContentMaxShowNum) + "...";
+            }
+            holder.setText(R.id.tv_content, content);
+            DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
+            DynamicToolBean dynamicToolBean = dynamicBean.getTool();
+            if (dynamicToolBean != null) {
+                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicToolBean.getFeed_digg_count()), dynamicToolBean.getIs_digg_feed() == STATUS_DIGG_FEED_CHECKED, 0);
+                dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicToolBean.getFeed_comment_count()), false, 1);
+                dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicToolBean.getFeed_view_count()), false, 2);
+            }
+
+
+            dynamicListMenuView.setItemOnClick(new DynamicListMenuView.OnItemClickListener() {
+                @Override
+                public void onItemClick(ViewGroup parent, View v, int menuPostion) {
+                    if (mOnMenuItemClickLisitener != null) {
+                        mOnMenuItemClickLisitener.onMenuItemClick(v, position, menuPostion);
                     }
-                });
-        DynamicListCommentView comment = holder.getView(R.id.dcv_comment);
-        comment.setData(dynamicBean);
-        comment.setOnCommentClickListener(mOnCommentClickListener);
-        comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
-        comment.setOnCommentStateClickListener(mOnCommentStateClickListener);
-
-
+                }
+            });
+            setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);
+            setUserInfoClick(holder.getView(R.id.tv_name), dynamicBean);
+            // 设置动态状态
+            if (dynamicBean.getState() == DynamicBean.SEND_ERROR) {
+                holder.setVisible(R.id.fl_tip, View.VISIBLE);
+            } else {
+                holder.setVisible(R.id.fl_tip, View.GONE);
+            }
+            RxView.clicks(holder.getView(R.id.fl_tip))
+                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                    .subscribe(new Action1<Void>() {
+                        @Override
+                        public void call(Void aVoid) {
+                            if (mOnReSendClickListener != null) {
+                                mOnReSendClickListener.onReSendClick(position);
+                            }
+                        }
+                    });
+            DynamicListCommentView comment = holder.getView(R.id.dcv_comment);
+            if (dynamicBean.getComments() == null || dynamicBean.getComments().size() == 0) {
+                comment.setVisibility(View.GONE);
+            } else {
+                comment.setVisibility(View.VISIBLE);
+            }
+            comment.setData(dynamicBean);
+            comment.setOnCommentClickListener(mOnCommentClickListener);
+            comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
+            comment.setOnCommentStateClickListener(mOnCommentStateClickListener);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setUserInfoClick(View view, final DynamicBean dynamicBean) {
@@ -234,19 +241,18 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
      * @param part        this part percent of imageContainer
      */
     protected void initImageView(final ViewHolder holder, ImageView view, final DynamicBean dynamicBean, final int positon, int part) {
-        int propPart=100;
+        int propPart = getProportion(view, dynamicBean, part);
         String url;
         if (dynamicBean.getFeed().getStorages() != null && dynamicBean.getFeed().getStorages().size() > 0) {
-            propPart= getProportion(view, dynamicBean, part);
-            url = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getFeed().getStorages().get(positon).getStorage_id(),propPart);
+            url = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getFeed().getStorages().get(positon).getStorage_id(), propPart);
         } else {
             url = dynamicBean.getFeed().getLocalPhotos().get(positon);
         }
-        System.out.println("url = " + url);
-
         mImageLoader.loadImage(mContext, GlideImageConfig.builder()
                 .url(url)
                 .imagerView(view)
+                .placeholder(R.drawable.shape_default_image)
+                .errorPic(R.drawable.shape_default_image)
                 .build());
         if (dynamicBean.getFeed().getStorages() != null) {
             dynamicBean.getFeed().getStorages().get(positon).setPart(propPart);
@@ -261,6 +267,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                         }
                     }
                 });
+
     }
 
 
@@ -283,12 +290,12 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
         if (dynamicBean.getFeed().getStorages() == null || dynamicBean.getFeed().getStorages().size() == 0) {// 本地图片
             BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(dynamicBean.getFeed().getLocalPhotos().get(0));
             with = option.outWidth > currentWith ? currentWith : option.outWidth;
+            proportion = (int) ((with / option.outWidth) * 100);
         } else {
             with = (int) dynamicBean.getFeed().getStorages().get(0).getWidth() > currentWith ? currentWith : (int) dynamicBean.getFeed().getStorages().get(0).getWidth();
+            proportion = (int) ((with / dynamicBean.getFeed().getStorages().get(0).getWidth()) * 100);
         }
         height = with;
-        proportion = (int) ((with / dynamicBean.getFeed().getStorages().get(0).getWidth()) * 100);
-        LogUtils.i("------------->"+proportion);
         return proportion;
     }
 

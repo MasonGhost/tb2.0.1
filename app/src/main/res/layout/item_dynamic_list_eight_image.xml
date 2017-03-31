@@ -5,9 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:paddingBottom="@dimen/spacing_mid"
-    android:paddingTop="@dimen/spacing_mid"
     android:descendantFocusability="blocksDescendants"
+    android:paddingTop="@dimen/spacing_mid"
     tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
 
     <com.zhiyicx.baseproject.widget.imageview.FilterImageView
@@ -23,13 +22,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_mid"
-
         android:layout_toRightOf="@id/iv_headpic"
         android:maxLength="@integer/username_max_length"
         android:maxLines="1"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingStart="@dimen/spacing_normal"
-        android:paddingTop="@dimen/dynamice_spacing_small"
+        android:paddingTop="@dimen/spacing_small"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_content_comment"
         tools:text="张三"/>
@@ -54,9 +52,10 @@
         android:layout_below="@+id/tv_name"
         android:layout_marginRight="@dimen/spacing_normal"
         android:layout_toRightOf="@+id/iv_headpic"
-        android:paddingBottom="@dimen/dynamice_spacing_small"
+        android:includeFontPadding="false"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingStart="@dimen/spacing_normal"
+        android:paddingBottom="@dimen/spacing_normal"
         android:textColor="@color/themeColor"
         android:textSize="@dimen/size_sub_title"
         tools:text="了解到富士康垃圾管理的高考了了"/>
@@ -71,8 +70,8 @@
         android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
         android:maxLength="@integer/dynamic_list_content_max_show_size"
         android:paddingLeft="@dimen/spacing_normal"
-        android:paddingTop="@dimen/dynamice_spacing_small"
-        android:textColor="@color/normal_for_assist_text"
+        android:paddingBottom="@dimen/spacing_normal"
+        android:textColor="@color/normal_for_dynamic_list_content"
         android:textSize="@dimen/size_content_assist"
         tools:text="了解到富士康垃圾管理的高考了了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送"
         />
@@ -87,13 +86,11 @@
         android:layout_toRightOf="@+id/iv_headpic"
         android:background="@color/white"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/spacing_normal"
-        android:paddingTop="@dimen/spacing_normal">
+        android:paddingBottom="@dimen/spacing_normal">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
 
@@ -133,8 +130,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
 
@@ -164,8 +160,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
 
@@ -234,7 +229,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/fl_tip"
         android:layout_marginLeft="@dimen/dynamic_list_comment_marginright"
-        android:layout_marginRight="@dimen/spacing_normal">
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:paddingBottom="@dimen/spacing_mid">
     </com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView>
 
 </RelativeLayout>

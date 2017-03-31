@@ -60,13 +60,6 @@ public interface DynamicDetailContract {
         DynamicBean getCurrentDynamic();
 
         /**
-         * 获取列表数据
-         *
-         * @return
-         */
-        List<DynamicCommentBean> getDatas();
-
-        /**
          * 获取当前动态在列表中的位置
          *
          * @return
@@ -79,13 +72,14 @@ public interface DynamicDetailContract {
         void updateCommentCountAndDig();
 
         /**
-         * 获取列表数据
-         *
-         * @return
+         * 所有数据都有了，直接显示
          */
-        void refresh();
+        void allDataReady();
 
-        void refresh(int position);
+        /**
+         * 加载失败
+         */
+        void loadAllError();
 
     }
 
@@ -101,6 +95,11 @@ public interface DynamicDetailContract {
     }
 
     interface Presenter extends ITSListPresenter<DynamicCommentBean> {
+        /**
+         * 获取当前动态的点赞列表
+         */
+        void getDetailAll(Long feed_id, Long max_id, String user_ids);
+
         /**
          * 获取当前动态的点赞列表
          */

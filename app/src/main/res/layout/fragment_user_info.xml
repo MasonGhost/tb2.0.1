@@ -1,8 +1,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/ll_container"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:background="@color/bgColor"
+              android:focusable="true"
+              android:focusableInTouchMode="true"
               android:orientation="vertical">
     <!--更换头像-->
     <RelativeLayout
@@ -11,20 +15,26 @@
         android:layout_height="@dimen/userinfo_head_icon_container_hegiht"
         android:background="@color/white">
 
-        <ImageView
-            android:id="@+id/iv_head_icon"
-            android:layout_width="@dimen/headpic_for_list"
-            android:layout_height="@dimen/headpic_for_list"
-            android:layout_centerVertical="true"
+        <LinearLayout
+            android:id="@+id/ll_head_icon_container"
+            android:layout_width="@dimen/uerinfo_sub_title_hint_with"
             android:layout_marginLeft="@dimen/spacing_mid"
             android:layout_marginRight="@dimen/spacing_mid"
-            android:src="@drawable/shape_default_image_circle"/>
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/iv_head_icon"
+                android:layout_width="@dimen/headpic_for_list"
+                android:layout_height="@dimen/headpic_for_list"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/shape_default_image_circle"/>
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/iv_head_icon"
+            android:layout_toRightOf="@id/ll_head_icon_container"
             android:text="@string/change_head_icon"
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_sub_title"/>
@@ -38,7 +48,7 @@
             android:src="@mipmap/ic_arrow_smallgrey"/>
     </RelativeLayout>
 
-    <View style="@style/style_divider_horizontal"/>
+    <View style="@style/style_divider_horizontal_light"/>
 
     <!--修改用户名-->
     <LinearLayout
@@ -49,7 +59,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="@dimen/headpic_for_list"
+            android:layout_width="@dimen/uerinfo_sub_title_hint_with"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_mid"
             android:layout_marginRight="@dimen/spacing_mid"
@@ -61,11 +71,12 @@
             android:id="@+id/et_user_name"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            style="@style/style_edit_cursor"
             android:background="@color/white"
             android:hint="@string/edit_user_name"
             android:paddingRight="@dimen/spacing_mid"
             android:textColor="@color/important_for_content"
-            android:textColorHint="@color/normal_for_assist_text"
+            android:textColorHint="@color/general_for_hint"
             android:textSize="@dimen/size_sub_title"/>
     </LinearLayout>
 
@@ -81,7 +92,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="@dimen/headpic_for_list"
+            android:layout_width="@dimen/uerinfo_sub_title_hint_with"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_mid"
             android:layout_marginRight="@dimen/spacing_mid"
@@ -97,7 +108,7 @@
             android:hint="@string/select_sex"
             android:text=""
             android:textColor="@color/important_for_content"
-            android:textColorHint="@color/normal_for_assist_text"
+            android:textColorHint="@color/general_for_hint"
             android:textSize="@dimen/size_sub_title"/>
 
         <ImageView
@@ -119,7 +130,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="@dimen/headpic_for_list"
+            android:layout_width="@dimen/uerinfo_sub_title_hint_with"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_mid"
             android:layout_marginRight="@dimen/spacing_mid"
@@ -135,7 +146,7 @@
             android:hint="@string/select_city"
             android:text=""
             android:textColor="@color/important_for_content"
-            android:textColorHint="@color/normal_for_assist_text"
+            android:textColorHint="@color/general_for_hint"
             android:textSize="@dimen/size_sub_title"/>
 
         <ImageView
@@ -155,33 +166,49 @@
         android:gravity="center_vertical"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="@dimen/headpic_for_list"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="@dimen/userinfo_btn_height"
-            android:layout_marginLeft="@dimen/spacing_mid"
-            android:layout_marginRight="@dimen/spacing_mid"
+            android:background="@color/white"
             android:gravity="center_vertical"
-            android:text="@string/introduce"
-            android:textColor="@color/normal_for_assist_text"
-            android:textSize="@dimen/size_sub_title"/>
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="@dimen/uerinfo_sub_title_hint_with"
+                android:layout_height="@dimen/userinfo_btn_height"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:gravity="center_vertical"
+                android:text="@string/introduce"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_sub_title"/>
+
+            <TextView
+                android:id="@+id/tv_edit_introduce"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/edit_introduce"
+                android:textColor="@color/general_for_hint"
+                android:textSize="@dimen/size_sub_title"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
         <!--简介编辑框-->
         <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
             android:id="@+id/et_user_introduce"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_mid"
+            style="@style/style_edit_cursor"
             android:layout_marginRight="@dimen/spacing_mid"
-            android:layout_marginBottom="@dimen/spacing_mid"
+            android:paddingBottom="@dimen/spacing_mid"
+            android:visibility="gone"
             app:limitSize="@integer/introduce_input_max_size"
             app:showLimitSize="@integer/show_introduce_input_size"></com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView>
 
     </LinearLayout>
-    <!--布局容器-->
-    <LinearLayout
-        android:id="@+id/view_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
 
-    </LinearLayout>
 </LinearLayout>

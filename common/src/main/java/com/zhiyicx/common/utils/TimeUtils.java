@@ -4,9 +4,11 @@ import android.support.annotation.Nullable;
 
 import com.zhiyicx.common.config.ConstantConfig;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * @Describe 时间格式化工具类 ,api接口里 的时间返回 统一用时间空间字符串格式 UTC+ 0 时区 例如; 2017-03-01 01:28:33
@@ -45,7 +47,7 @@ public class TimeUtils {
      */
     public static String getTimeFriendlyNormal(String timestr) {
         String result = "1分钟前";
-        long timesamp = string2Millis(timestr);
+        long timesamp = utc2LocalLong(timestr);
         switch (getifferenceDays(timesamp)) {
             case 0:
                 result = getFriendlyTimeForBeforHour(timesamp, result);
@@ -54,28 +56,81 @@ public class TimeUtils {
                 result = "昨天";
                 break;
             case 2:
-                result = "两天前";
+                result = "2天前";
                 break;
             case 3:
-                result = "三天前";
+                result = "3天前";
                 break;
             case 4:
-                result = "四天前";
+                result = "4天前";
                 break;
             case 5:
-                result = "五天前";
+                result = "5天前";
                 break;
             case 6:
-                result = "六天前";
+                result = "6天前";
                 break;
             case 7:
-                result = "七天前";
+                result = "7天前";
                 break;
             case 8:
-                result = "八天前";
+                result = "8天前";
                 break;
             case 9:
-                result = "九天前";
+                result = "9天前";
+                break;
+
+            default:
+                result = getStandardTimeWithMothAndDay(timesamp);
+                break;
+        }
+        return result;
+    }
+
+    /**
+     * 动态列表 \评论列表 时间戳格式转换
+     * 一分钟内显示一分钟
+     * 一小时内显示几分钟前
+     * 一天内显示几小时前
+     * 1天到2天显示昨天
+     * 2天到9天显示几天前
+     * 9天以上显示月日如（05-21）
+     *
+     * @param timesamp 时间 例如; 2017-03-01 01:28:33
+     * @return 友好时间字符串
+     */
+    public static String getTimeFriendlyNormal(long timesamp) {
+        String result = "1分钟前";
+        switch (getifferenceDays(timesamp)) {
+            case 0:
+                result = getFriendlyTimeForBeforHour(timesamp, result);
+                break;
+            case 1:
+                result = "昨天";
+                break;
+            case 2:
+                result = "2天前";
+                break;
+            case 3:
+                result = "3天前";
+                break;
+            case 4:
+                result = "4天前";
+                break;
+            case 5:
+                result = "5天前";
+                break;
+            case 6:
+                result = "6天前";
+                break;
+            case 7:
+                result = "7天前";
+                break;
+            case 8:
+                result = "8天前";
+                break;
+            case 9:
+                result = "9天前";
                 break;
 
             default:
@@ -86,6 +141,7 @@ public class TimeUtils {
     }
 
 
+
     /**
      * 聊天详情页 备注：聊天时间显示间隔6分钟
      * <p>
@@ -93,7 +149,7 @@ public class TimeUtils {
      * 一小时内显示几分钟前，
      * 一天内显示几小时前，
      * 1天到2天显示如（昨天 20:36），
-     * 2天到9天显示如（五天前 20：34），
+     * 2天到9天显示如（5天前 20：34），
      * 9天以上显示如（02-28 19:15）
      *
      * @param timesamp 时间戳 单位 ms
@@ -111,14 +167,14 @@ public class TimeUtils {
      * 一小时内显示几分钟前，
      * 一天内显示几小时前，
      * 1天到2天显示如（昨天 20:36），
-     * 2天到9天显示如（五天前 20：34），
+     * 2天到9天显示如（5天前 20：34），
      * 9天以上显示如（02-28 19:15）
      *
      * @param timestr 时间 例如; 2017-03-01 01:28:33
      * @return 友好时间字符串
      */
     public static String getTimeFriendlyForDetail(String timestr) {
-        long timesamp = string2Millis(timestr);
+        long timesamp = utc2LocalLong(timestr);
         return handleDetailTime(timesamp);
     }
 
@@ -133,7 +189,7 @@ public class TimeUtils {
      */
     public static String getTimeFriendlyForUserHome(String timestr) {
         String result = "1分钟前";
-        long timesamp = string2Millis(timestr);
+        long timesamp = utc2LocalLong(timestr);
         switch (getifferenceDays(timesamp)) {
             case 0:
                 result = "今,天";
@@ -170,25 +226,25 @@ public class TimeUtils {
                 result = "昨天 " + getStandardTimeWithHour(timesamp);
                 break;
             case 2:
-                result = "两天前 " + getStandardTimeWithHour(timesamp);
+                result = "2天前 " + getStandardTimeWithHour(timesamp);
                 break;
             case 3:
-                result = "三天前 " + getStandardTimeWithHour(timesamp);
+                result = "3天前 " + getStandardTimeWithHour(timesamp);
                 break;
             case 4:
-                result = "四天前 " + getStandardTimeWithHour(timesamp);
+                result = "4天前 " + getStandardTimeWithHour(timesamp);
                 break;
             case 5:
-                result = "五天前 " + getStandardTimeWithHour(timesamp);
+                result = "5天前 " + getStandardTimeWithHour(timesamp);
                 break;
             case 6:
-                result = "六天前 " + getStandardTimeWithHour(timesamp);
+                result = "6天前 " + getStandardTimeWithHour(timesamp);
                 break;
             case 7:
-                result = "七天前 " + getStandardTimeWithHour(timesamp);
+                result = "7天前 " + getStandardTimeWithHour(timesamp);
                 break;
             case 8:
-                result = "八天前 " + getStandardTimeWithHour(timesamp);
+                result = "8天前 " + getStandardTimeWithHour(timesamp);
                 break;
             case 9:
                 result = "九天前 " + getStandardTimeWithHour(timesamp);
@@ -199,6 +255,34 @@ public class TimeUtils {
                 break;
         }
         return result;
+    }
+
+    /**
+     * 获取当前 0 时区的时间戳
+     *
+     * @return
+     */
+    public static long getCurrenZeroTime() {
+        //1、取得本地时间：
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        //2、取得时间偏移量：
+        int zoneOffset = cal.get(java.util.Calendar.ZONE_OFFSET);
+        //3、取得夏令时差：
+        int dstOffset = cal.get(java.util.Calendar.DST_OFFSET);
+        //4、从本地时间里扣除这些差量，即可以取得UTC时间：
+        cal.add(java.util.Calendar.MILLISECOND, -(zoneOffset + dstOffset));
+        //之后，您再通过调用cal.get(int x)或cal.getTimeInMillis()方法所取得的时间即是UTC标准时间。
+        return cal.getTimeInMillis();
+    }
+
+    /**
+     * 获取当前 0 时区的时间戳
+     *
+     * @return
+     */
+    public static String getCurrenZeroTimeStr() {
+
+        return millis2String(getCurrenZeroTime());
     }
 
 
@@ -316,8 +400,8 @@ public class TimeUtils {
      * @param time 时间字符串
      * @return 毫秒时间戳
      */
-    public static long string2Millis(String time) {
-        return string2Millis(time, DEFAULT_PATTERN);
+    public static long string2MillisDefaultLocal(String time) {
+        return string2MillisDefaultLocal(time, DEFAULT_PATTERN);
     }
 
     /**
@@ -328,12 +412,75 @@ public class TimeUtils {
      * @param pattern 时间格式
      * @return 毫秒时间戳
      */
-    public static long string2Millis(String time, String pattern) {
+    public static long string2MillisDefaultLocal(String time, String pattern) {
+        return string2Millis(time, pattern, Locale.getDefault());
+    }
+
+    /**
+     * 将时间字符串转为时间戳
+     * <p>time格式为pattern</p>
+     *
+     * @param time    时间字符串
+     * @param pattern 时间格式
+     * @return 毫秒时间戳
+     */
+    public static long string2Millis(String time, String pattern, Locale locale) {
+        return string2MillisDefaultLocal(time, pattern, locale);
+    }
+
+    /**
+     * 将时间字符串转为时间戳
+     * <p>time格式为pattern</p>
+     *
+     * @param time    时间字符串
+     * @param pattern 时间格式
+     * @param locale  时间域
+     * @return 毫秒时间戳
+     */
+    public static long string2MillisDefaultLocal(String time, String pattern, Locale locale) {
         try {
-            return new SimpleDateFormat(pattern, Locale.getDefault()).parse(time).getTime();
+            return new SimpleDateFormat(pattern, locale).parse(time).getTime();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return -1;
+    }
+
+    /**
+     * 将Server传送的UTC时间转换为指定时区的时间
+     */
+    public static String utc2LocalStr(String utcTime) {
+        SimpleDateFormat utcFormater = new SimpleDateFormat(DEFAULT_PATTERN);
+        utcFormater.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date gpsUTCDate = null;
+        try {
+            gpsUTCDate = utcFormater.parse(utcTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return millis2String(System.currentTimeMillis());
+        }
+        SimpleDateFormat localFormater = new SimpleDateFormat(DEFAULT_PATTERN);
+        localFormater.setTimeZone(TimeZone.getDefault());
+        String localTime = localFormater.format(gpsUTCDate.getTime());
+        return localTime;
+    }
+
+    /**
+     * 将Server传送的UTC时间转换为指定时区的时间
+     */
+    public static long utc2LocalLong(String utcTime) {
+        SimpleDateFormat utcFormater = new SimpleDateFormat(DEFAULT_PATTERN);
+        utcFormater.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date gpsUTCDate = null;
+        try {
+            gpsUTCDate = utcFormater.parse(utcTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return System.currentTimeMillis();
+        }
+        SimpleDateFormat localFormater = new SimpleDateFormat(DEFAULT_PATTERN);
+        localFormater.setTimeZone(TimeZone.getDefault());
+        String localTime = localFormater.format(gpsUTCDate.getTime());
+        return string2MillisDefaultLocal(localTime);
     }
 }

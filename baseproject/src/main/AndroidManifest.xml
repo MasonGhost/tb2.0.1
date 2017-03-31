@@ -50,10 +50,17 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
+        <!--分享编辑页(只有新浪微博精简版，豆瓣人人腾讯微博需要)：-->
+        <activity
+            android:name="com.umeng.socialize.editorpage.ShareActivity"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.UMDefault"
+            />
+
         <!--&lt;!&ndash;glide配置&ndash;&gt;-->
-        <!--<meta-data-->
-            <!--android:name="com.zhiyicx.thinksnsplus.config.GlideConfiguration"-->
-            <!--android:value="GlideModule"/>-->
+        <meta-data
+        android:name="com.zhiyicx.thinksnsplus.config.GlideConfiguration"
+        android:value="GlideModule"/>
 
         <!--图片选择器：photopicker-->
         <activity

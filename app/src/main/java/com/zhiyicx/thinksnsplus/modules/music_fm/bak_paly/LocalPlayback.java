@@ -12,7 +12,6 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
 
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProvider;
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProviderSource;
@@ -74,7 +73,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
 
     private Callback mCallback;
 
-    private final MusicProvider mMusicProvider;
+    private MusicProvider mMusicProvider;
 
     private volatile boolean mAudioNoisyReceiverRegistered;
 
@@ -441,5 +440,9 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
             mContext.unregisterReceiver(mAudioNoisyReceiver);
             mAudioNoisyReceiverRegistered = false;
         }
+    }
+
+    public void setMusicProvider(MusicProvider musicProvider) {
+        mMusicProvider = musicProvider;
     }
 }

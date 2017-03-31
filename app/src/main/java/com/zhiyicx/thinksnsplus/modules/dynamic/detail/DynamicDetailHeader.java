@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -15,17 +16,17 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListFragment;
+import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 
 import java.util.ArrayList;
@@ -44,17 +45,25 @@ public class DynamicDetailHeader {
     private TextView mContent;
     private TextView mTitle;
     private View mDynamicDetailHeader;
+    private FrameLayout fl_comment_count_container;
+    private Context mContext;
+    private int screenWidth;
+    private int picWidth;
 
     public View getDynamicDetailHeader() {
         return mDynamicDetailHeader;
     }
 
     public DynamicDetailHeader(Context context) {
+        this.mContext = context;
         mDynamicDetailHeader = LayoutInflater.from(context).inflate(R.layout.view_header_dynamic_detial, null);
         mDynamicDetailHeader.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
         mTitle = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_title);
         mContent = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_content);
+        fl_comment_count_container = (FrameLayout) mDynamicDetailHeader.findViewById(R.id.fl_comment_count_container);
         mPhotoContainer = (LinearLayout) mDynamicDetailHeader.findViewById(R.id.ll_dynamic_photos_container);
+        screenWidth = UIUtils.getWindowWidth(context);
+        picWidth = UIUtils.getWindowWidth(context) - context.getResources().getDimensionPixelSize(R.dimen.spacing_normal) * 2;
     }
 
     /**
@@ -82,10 +91,10 @@ public class DynamicDetailHeader {
         List<ImageBean> photoList = dynamicDetailBean.getStorages();
         if (photoList != null) {
             for (int i = 0; i < photoList.size(); i++) {
-                ImageBean imageBean = photoList.get(i);
-                showContentImage(context, imageBean, i, i == photoList.size() - 1, mPhotoContainer);
+                showContentImage(context, photoList, i, i == photoList.size() - 1, mPhotoContainer);
             }
         }
+        setImageClickListener(photoList);
     }
 
     /**
@@ -108,9 +117,9 @@ public class DynamicDetailHeader {
         List<ImageBean> imageBeanList = null;
         if (userInfoList != null && !userInfoList.isEmpty()) {
             imageBeanList = new ArrayList<>();
-            for (FollowFansBean followFansBean : userInfoList) {
+            for (int i = userInfoList.size() - 1; i >= 0; i--) {
                 ImageBean imageBean = new ImageBean();
-                imageBean.setStorage_id(TextUtils.isEmpty(followFansBean.getTargetUserInfo().getAvatar()) ? 0 : Integer.parseInt(followFansBean.getTargetUserInfo().getAvatar()));
+                imageBean.setStorage_id(TextUtils.isEmpty(userInfoList.get(i).getTargetUserInfo().getAvatar()) ? 0 : Integer.parseInt(userInfoList.get(i).getTargetUserInfo().getAvatar()));
                 imageBeanList.add(imageBean);
             }
         }
@@ -127,41 +136,67 @@ public class DynamicDetailHeader {
                 mDynamicDetailHeader.getContext().startActivity(intent);
             }
         });
-
-        ((TextView) mDynamicDetailHeader.findViewById(R.id.tv_comment_count)).setText(mDynamicDetailHeader.getResources().getString(R.string.dynamic_comment_count, dynamicBean.getTool().getFeed_comment_count()));
+        if (dynamicBean.getTool().getFeed_comment_count() <= 0) {
+            fl_comment_count_container.setVisibility(View.GONE);
+        } else {
+            ((TextView) mDynamicDetailHeader.findViewById(R.id.tv_comment_count)).setText(mDynamicDetailHeader.getResources().getString(R.string.dynamic_comment_count, dynamicBean.getTool().getFeed_comment_count()));
+            fl_comment_count_container.setVisibility(View.VISIBLE);
+        }
     }
 
-    private void showContentImage(Context context, ImageBean imageBean, final int position, boolean lastImg, LinearLayout photoContainer) {
+    private void showContentImage(Context context, List<ImageBean> photoList, final int position, boolean lastImg, LinearLayout photoContainer) {
+        ImageBean imageBean = photoList.get(position);
         View view = LayoutInflater.from(context).inflate(R.layout.view_dynamic_detail_photos, null);
         FilterImageView imageView = (FilterImageView) view.findViewById(R.id.dynamic_content_img);
         // 提前设置图片控件的大小，使得占位图显示
-        int width = UIUtils.getWindowWidth(context) - context.getResources().getDimensionPixelSize(R.dimen.spacing_normal) * 2;
-        int height = (int) (imageBean.getHeight() * width / imageBean.getWidth());
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, height);
+        int height = (int) (imageBean.getHeight() * picWidth / imageBean.getWidth());
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(picWidth, height);
         layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
         imageView.setLayoutParams(layoutParams);
         // 隐藏最后一张图的下间距
         if (lastImg) {
             view.findViewById(R.id.img_divider).setVisibility(View.GONE);
         }
-
-        LogUtils.i("content_image-->" + "ImageBean--》" + imageBean.toString()
-        );
-
+        int part = (int) (screenWidth / imageBean.getWidth() * 100);
+        if (part > 100) {
+            part = 100;
+        }
         AppApplication.AppComponentHolder.getAppComponent().imageLoader()
                 .loadImage(context, GlideImageConfig.builder()
                         .placeholder(R.drawable.shape_default_image)
                         .errorPic(R.drawable.shape_default_image)
-                        .url(String.format(ApiConfig.IMAGE_PATH, imageBean.getStorage_id(), 50))
+                        .url(String.format(ApiConfig.IMAGE_PATH, imageBean.getStorage_id(), part))
                         .imagerView(imageView)
                         .build()
                 );
         photoContainer.addView(view);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ToastUtils.showToast(position + "");
-            }
-        });
+    }
+
+    /**
+     * 设置图片点击事件
+     */
+    private void setImageClickListener(final List<ImageBean> photoList) {
+
+        final ArrayList<AnimationRectBean> animationRectBeanArrayList
+                = new ArrayList<AnimationRectBean>();
+        for (int i = 0; i < mPhotoContainer.getChildCount(); i++) {
+            final View photoView = mPhotoContainer.getChildAt(i);
+            ImageView imageView = (ImageView) photoView.findViewById(R.id.dynamic_content_img);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (animationRectBeanArrayList.isEmpty()) {
+                        for (int i = 0; i < mPhotoContainer.getChildCount(); i++) {
+                            View photoView = mPhotoContainer.getChildAt(i);
+                            ImageView imageView = (ImageView) photoView.findViewById(R.id.dynamic_content_img);
+                            AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
+                            animationRectBeanArrayList.add(rect);
+                        }
+                    }
+
+                    GalleryActivity.startToGallery(mContext, mPhotoContainer.indexOfChild(photoView), photoList, animationRectBeanArrayList);
+                }
+            });
+        }
     }
 }

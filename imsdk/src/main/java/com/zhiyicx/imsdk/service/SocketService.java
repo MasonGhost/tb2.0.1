@@ -159,6 +159,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                      */
                     if (System.currentTimeMillis() - sendTime > HEART_PING_PONG_RATE && sendTime > responsTime) {
                         socketReconnect();
+                        heartRateThreadSleep(HEART_BEAT_RATE_INTERVAL_FOR_CPU);
                         continue;
                     }
                     /**
@@ -176,20 +177,23 @@ public class SocketService extends BaseService implements ImService.ImListener {
                         } else {
                             socketReconnect();
                         }
-                    } else {
-                        /**
-                         * 防止cpu占用过高卡顿
-                         */
-                        try {
-                            Thread.sleep(HEART_BEAT_RATE_INTERVAL_FOR_CPU);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
                     }
                 }
+                heartRateThreadSleep(HEART_BEAT_RATE_INTERVAL_FOR_CPU);
             }
         }
     };
+
+    private void heartRateThreadSleep(long heartBeatRateIntervalForCpu) {
+        /**
+         * 防止cpu占用过高卡顿
+         */
+        try {
+            Thread.sleep(heartBeatRateIntervalForCpu);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * 根据软件在前台还是后台，以及当前的网络状况，修改心跳的频率
@@ -256,11 +260,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                     }
                 }
                 //防止cpu占用过高
-                try {
-                    Thread.sleep(MESSAGE_SEND_INTERVAL_FOR_CPU);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                heartRateThreadSleep(MESSAGE_SEND_INTERVAL_FOR_CPU);
             }
 
         }
@@ -1495,8 +1495,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                      */
                     mService.sendGetConversatonInfo(eventContainer.mMessageContainer.msg.cid, "");
                 }
-                if (eventContainer.mMessageContainer.msg.rt || (conversation != null && conversation.getType() != Conversation.CONVERSATION_TYPE_CHAROOM))
-                    MessageDao.getInstance(getApplicationContext()).insertOrUpdateMessage(eventContainer.mMessageContainer.msg);
+                MessageDao.getInstance(getApplicationContext()).insertOrUpdateMessage(eventContainer.mMessageContainer.msg);
                 return false;
             }
         }

@@ -3,6 +3,7 @@ package com.zhiyicx.common.base;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -130,6 +131,23 @@ public abstract class BaseFragment<P extends IBasePresenter> extends SkinBaseFra
      * 初始化就可以了
      */
     public void setData() {
+
+    }
+    /**
+     * 添加返回按键的监听方法，在它所依附的activity中调用
+     *
+     * @param keyCode
+     * @param event
+     * @return false 表示down事件未处理，会继续传递，交给up处理，知道结束或true停止
+     */
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        return false;
+    }
+
+    /**
+     * 系统返回键按下
+     */
+    public void onBackPressed() {
 
     }
 

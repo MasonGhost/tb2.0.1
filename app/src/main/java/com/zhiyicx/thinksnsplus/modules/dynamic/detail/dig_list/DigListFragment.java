@@ -4,15 +4,12 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -26,7 +23,6 @@ import javax.inject.Inject;
 
 public class DigListFragment extends TSListFragment<DigListContract.Presenter, FollowFansBean> implements DigListContract.View {
     public static final String DIG_LIST_DATA = "dig_list_data";// 传入点赞榜的数据
-    private List<FollowFansBean> mDatas = new ArrayList<>();
     @Inject
     public DigListPresenter mDigListPresenter;
     // 从动态详情传递过来的动态数据，已经包括了第一页的点赞列表，所以不需要从数据库拿取
@@ -49,7 +45,7 @@ public class DigListFragment extends TSListFragment<DigListContract.Presenter, F
 
     @Override
     protected MultiItemTypeAdapter<FollowFansBean> getAdapter() {
-        return new DigListAdapter(getContext(), R.layout.item_dig_list, mDatas, mPresenter);
+        return new DigListAdapter(getContext(), R.layout.item_dig_list, mListDatas, mPresenter);
     }
 
     @Override

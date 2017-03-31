@@ -31,9 +31,8 @@
     <TextView
         android:id="@+id/tv_pop_bottom"
         style="@style/style_action_list_item"
-        android:layout_marginTop="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_small"
         tools:text="@string/cancel"
         />
 </LinearLayout>
-
 

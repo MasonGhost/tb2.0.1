@@ -1,7 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -17,7 +17,6 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
@@ -41,7 +40,6 @@ import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -62,6 +60,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.Presenter, DynamicCommentBean> implements DynamicDetailContract.View, OnUserInfoClickListener, OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener {
     public static final String DYNAMIC_DETAIL_DATA = "dynamic_detail_data";
+    public static final String DYNAMIC_LIST_NEED_REFRESH = "dynamic_list_need_refresh";
     public static final String DYNAMIC_DETAIL_DATA_TYPE = "dynamic_detail_data_type";
     public static final String DYNAMIC_DETAIL_DATA_POSITION = "dynamic_detail_data_position";
     public static final String LOOK_COMMENT_MORE = "look_comment_more";
@@ -70,6 +69,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     private static final int DYNAMIC_ITEM_DIG = 1;
     //private static final int DYNAMIC_ITEM_COMMENT >1;
 
+    @BindView(R.id.behavior_demo_coordinatorLayout)
+    CoordinatorLayout mCoordinatorLayout;
     @BindView(R.id.dd_dynamic_tool)
     DynamicDetailMenuView mDdDynamicTool;
     @BindView(R.id.tv_toolbar_center)
@@ -89,7 +90,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     private DynamicBean mDynamicBean;// 上一个页面传进来的数据
     private FollowFansBean mFollowFansBean;// 用户关注状态
-    private List<DynamicCommentBean> mDatas = new ArrayList<>();
     private boolean mIsLookMore = false;
     private DynamicDetailHeader mDynamicDetailHeader;
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
@@ -111,10 +111,12 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     protected float getItemDecorationSpacing() {
         return 0;
     }
+
     @Override
     protected boolean setUseSatusbar() {
         return true;
     }
+
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_dynamic_detail;
@@ -123,6 +125,27 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     protected boolean setUseStatusView() {
         return false;
+    }
+
+    @Override
+    protected boolean setUseCenterLoading() {
+        return true;
+    }
+
+    @Override
+    protected void setLoadingHolderClick() {
+        super.setLoadingHolderClick();
+        mPresenter.getDetailAll(mDynamicBean.getFeed_id(), DEFAULT_PAGE_MAX_ID, mDynamicBean.getUser_id() + "");
+    }
+
+    /**
+     * 特别修改
+     *
+     * @return
+     */
+    @Override
+    protected int getstatusbarAndToolbarHeight() {
+        return getResources().getDimensionPixelSize(R.dimen.toolbar_and_statusbar_height);
     }
 
     @Override
@@ -138,7 +161,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      * 初始化监听
      */
     private void initListener() {
-
+        mCoordinatorLayout.setEnabled(false);
         RxView.clicks(mTvToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(new Action1<Void>() {
@@ -170,6 +193,14 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
                     }
                 });
+        RxView.clicks(mTvToolbarCenter)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        onUserInfoClick(mDynamicBean.getUserInfoBean());
+                    }
+                });
         mIlvComment.setOnSendClickListener(this);
     }
 
@@ -177,10 +208,12 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
         mDynamicDetailHeader = new DynamicDetailHeader(getContext());
         mHeaderAndFooterWrapper.addHeaderView(mDynamicDetailHeader.getDynamicDetailHeader());
+        View mFooterView =new View(getContext());
+        mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
+        mHeaderAndFooterWrapper.addFootView(mFooterView);
         mRvList.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
-
 
     @Override
     protected void initData() {
@@ -189,24 +222,18 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         if (bundle != null && bundle.containsKey(DYNAMIC_DETAIL_DATA)) {
             mIsLookMore = bundle.getBoolean(LOOK_COMMENT_MORE);
             mDynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
-            setToolBarUser(mDynamicBean);// 设置标题用户
-            initBottomToolData(mDynamicBean);// 初始化底部工具栏数据
-            // 设置动态详情列表数据
-            mDynamicDetailHeader.setDynamicDetial(mDynamicBean);
-            updateCommentCountAndDig();
-            onNetResponseSuccess(mDynamicBean.getComments(), false);
-            mPresenter.getDynamicDigList(mDynamicBean.getFeed_id(), 0L);
-            mPresenter.requestNetData(0L, false);// 获取评论列表
-            if (mIsLookMore) {
-                mRvList.scrollToPosition(1);
+            if (mDynamicBean.getDigUserInfoList() == null) {
+                mPresenter.getDetailAll(mDynamicBean.getFeed_id(), DEFAULT_PAGE_MAX_ID, mDynamicBean.getUser_id() + "");
+            } else {
+                allDataReady();
             }
+
         }
     }
 
-
     @Override
     protected MultiItemTypeAdapter<DynamicCommentBean> getAdapter() {
-        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mDatas);
+        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
         DynamicDetailCommentItem dynamicDetailCommentItem = new DynamicDetailCommentItem();
         dynamicDetailCommentItem.setOnUserInfoClickListener(this);
         adapter.addItemViewDelegate(dynamicDetailCommentItem);
@@ -263,16 +290,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                         mTvToolbarCenter.setCompoundDrawables(resource, null, null, null);
                     }
                 });
-        // 如果当前动态所属用户，就是当前用户，隐藏关注按钮
-        long user_id = dynamicBean.getUser_id();
-        if (user_id == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-            mTvToolbarRight.setVisibility(View.GONE);
-        } else {
-            // 获取用户关注状态
-            mPresenter.getUserFollowState(user_id + "");
-            mTvToolbarRight.setVisibility(View.VISIBLE);
-        }
-
     }
 
     @Override
@@ -308,11 +325,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
-    public List<DynamicCommentBean> getDatas() {
-        return mDatas;
-    }
-
-    @Override
     public Bundle getArgumentsBundle() {
         return getArguments();
     }
@@ -323,20 +335,48 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
-    public void refresh() {
+    public void refreshData() {
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
     @Override
-    public void refresh(int position) {
+    public void refreshData(int position) {
         mHeaderAndFooterWrapper.notifyItemChanged(position);
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        UmengSharePolicyImpl.onActivityResult(requestCode, resultCode, data, getContext());
+    public void allDataReady() {
+        closeLoading();
+        mCoordinatorLayout.setEnabled(true);
+        setAllData();
     }
+
+    @Override
+    public void loadAllError() {
+        showLoadError();
+    }
+
+    private void setAllData() {
+        setToolBarUser(mDynamicBean);// 设置标题用户
+        initBottomToolData(mDynamicBean);// 初始化底部工具栏数据
+//        设置动态详情列表数据
+        mDynamicDetailHeader.setDynamicDetial(mDynamicBean);
+        updateCommentCountAndDig();
+        onNetResponseSuccess(mDynamicBean.getComments(), false);
+        if (mIsLookMore) {
+            mRvList.scrollToPosition(1);
+        }
+        // 如果当前动态所属用户，就是当前用户，隐藏关注按钮
+        long user_id = mDynamicBean.getUser_id();
+        if (AppApplication.getmCurrentLoginAuth() != null && user_id == AppApplication.getmCurrentLoginAuth().getUser_id()) {
+            mTvToolbarRight.setVisibility(View.GONE);
+        } else {
+            // 获取用户关注状态
+            mPresenter.getUserFollowState(user_id + "");
+            mTvToolbarRight.setVisibility(View.VISIBLE);
+        }
+    }
+
 
     /**
      * 设置底部工具栏UI
@@ -383,8 +423,10 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                                 mDynamicBean.getFeed_id(), mDynamicBean.getTool());
                         break;
                     case DynamicDetailMenuView.ITEM_POSITION_1:
+                        // 评论
                         showCommentView();
                         mReplyUserId = 0;
+                        mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
                         break;
                     case DynamicDetailMenuView.ITEM_POSITION_2:
                         // 分享
@@ -439,21 +481,26 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         DeviceUtils.hideSoftKeyboard(getContext(), v);
         mIlvComment.setVisibility(View.GONE);
         mVShadow.setVisibility(View.GONE);
-        mLLBottomMenuContainer.setVisibility(View.VISIBLE);
         mPresenter.sendComment(mReplyUserId, text);
+        mLLBottomMenuContainer.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        if (mDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-            initLoginOutPopupWindow(mDatas.get(position).getComment_id(), position);
-            mDeletCommentPopWindow.show();
+        position = position - 1;// 减去 header
+        if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
+            if (mListDatas.get(position).getComment_id() != null) {
+                initLoginOutPopupWindow(mListDatas.get(position).getComment_id(), position);
+                mDeletCommentPopWindow.show();
+            } else {
+                return;
+            }
         } else {
-            mReplyUserId = mDatas.get(position).getUser_id();
+            mReplyUserId = mListDatas.get(position).getUser_id();
             showCommentView();
-            String contentHint = "";
-            if (mDatas.get(position).getReply_to_user_id() != mDynamicBean.getUser_id()) {
-                contentHint = getString(R.string.reply, mDatas.get(position).getCommentUser().getName());
+            String contentHint = getString(R.string.default_input_hint);
+            if (mListDatas.get(position).getReply_to_user_id() != mDynamicBean.getUser_id()) {
+                contentHint = getString(R.string.reply, mListDatas.get(position).getCommentUser().getName());
             }
             mIlvComment.setEtContentHint(contentHint);
         }
@@ -478,9 +525,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      * @param commentPosition current comment position
      */
     private void initLoginOutPopupWindow(final long comment_id, final int commentPosition) {
-        if (mDeletCommentPopWindow != null) {
-            return;
-        }
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_comment))
                 .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))

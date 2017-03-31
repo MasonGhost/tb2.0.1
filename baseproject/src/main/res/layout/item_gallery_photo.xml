@@ -3,26 +3,24 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black"
     android:fillViewport="true"
     >
 
-    <me.iwf.photopicker.widget.TouchImageView
+    <ImageView
         android:id="@+id/iv_orin_pager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
         android:visibility="invisible"
         />
 
-    <me.iwf.photopicker.widget.TouchImageView
+    <ImageView
         android:id="@+id/iv_pager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
-        android:scaleType="fitCenter"
         />
 
     <ProgressBar
@@ -30,20 +28,20 @@
         style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/themeColor"
+        android:indeterminateTintMode="src_atop"/>
 
     <!--查看全屏-->
     <TextView
         android:id="@+id/tv_origin_photo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/origin_btn_width"
+        android:layout_height="@dimen/origin_btn_height"
         android:layout_gravity="center_horizontal|bottom"
-        android:layout_marginBottom="@dimen/spacing_big_large"
+        android:layout_marginBottom="@dimen/spacing_bigger_large"
         android:background="@drawable/shape_bg_button_see_origin_photo"
-        android:paddingBottom="@dimen/spacing_tiny"
-        android:paddingLeft="@dimen/spacing_small"
-        android:paddingRight="@dimen/spacing_small"
-        android:paddingTop="@dimen/spacing_tiny"
         android:text="@string/see_origin_photo"
-        android:textColor="@color/white"/>
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="@dimen/size_content_assist"/>
 </FrameLayout>

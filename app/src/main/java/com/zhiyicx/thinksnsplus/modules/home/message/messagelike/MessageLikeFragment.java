@@ -23,7 +23,6 @@ import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -40,7 +39,6 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Presenter, MessageItemBean> implements MessageLikeContract.View {
 
     private ImageLoader mImageLoader;
-    private List<MessageItemBean> mMessageItemBeen = new ArrayList<>();
 
     public MessageLikeFragment() {
     }
@@ -65,13 +63,13 @@ public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Pres
     @Override
     protected void initData() {
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        initCommentAndLike(mMessageItemBeen);
+        initCommentAndLike(mListDatas);
         refreshData();
     }
 
     @Override
     protected CommonAdapter<MessageItemBean> getAdapter() {
-        return new CommonAdapter<MessageItemBean>(getActivity(), R.layout.item_message_like_list, mMessageItemBeen) {
+        return new CommonAdapter<MessageItemBean>(getActivity(), R.layout.item_message_like_list, mListDatas) {
             @Override
             protected void convert(ViewHolder holder, MessageItemBean messageItemBean, int position) {
                 setItemData(holder, messageItemBean, position);

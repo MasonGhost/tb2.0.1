@@ -1,11 +1,11 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import android.app.Application;
 import android.util.SparseArray;
 
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.GsonFollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -30,15 +30,15 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
     private FollowFansClient mFollowFansClient;
     protected UserInfoRepository mUserInfoRepository;
 
-    public FollowFansListRepository(ServiceManager serviceManager) {
+    public FollowFansListRepository(ServiceManager serviceManager, Application context) {
         mFollowFansClient = serviceManager.getFollowFansClient();
-        mUserInfoRepository = new UserInfoRepository(serviceManager);
+        mUserInfoRepository = new UserInfoRepository(serviceManager,context);
     }
 
     @Override
     public Observable<BaseJson<List<FollowFansBean>>> getFollowListFromNet(final long userId, int maxId) {
         // 将网络请求获取的数据，通过map转换
-        return mFollowFansClient.getUserFollowsList(userId, maxId)
+        return mFollowFansClient.getUserFollowsList(userId, maxId, TSListFragment.DEFAULT_PAGE_SIZE)
                 .flatMap(new Func1<BaseJson<GsonFollowFansBean>, Observable<BaseJson<List<FollowFansBean>>>>() {
                     @Override
                     public Observable<BaseJson<List<FollowFansBean>>> call(BaseJson<GsonFollowFansBean> gsonFollowFansBeanBaseJson) {
@@ -52,7 +52,7 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
     @Override
     public Observable<BaseJson<List<FollowFansBean>>> getFansListFromNet(final long userId, int maxId) {
         // 将网络请求获取的数据，通过map转换
-        return mFollowFansClient.getUserFansList(userId, maxId)
+        return mFollowFansClient.getUserFansList(userId, maxId,TSListFragment.DEFAULT_PAGE_SIZE)
                 .flatMap(new Func1<BaseJson<GsonFollowFansBean>, Observable<BaseJson<List<FollowFansBean>>>>() {
                     @Override
                     public Observable<BaseJson<List<FollowFansBean>>> call(BaseJson<GsonFollowFansBean> gsonFollowFansBeanBaseJson) {

@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_play;
 
+import android.app.Application;
+
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicPlayRepository;
 
@@ -26,8 +28,9 @@ class MusicPlayPresenterModule {
     }
 
     @Provides
-    MusicPlayContract.Repository provideMusicRepository(ServiceManager serviceManager) {
-        return new MusicPlayRepository(serviceManager);
+    MusicPlayContract.Repository provideMusicRepository(ServiceManager serviceManager,
+                                                        Application application) {
+        return new MusicPlayRepository(serviceManager,application);
     }
 
 }

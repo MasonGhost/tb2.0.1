@@ -4,15 +4,11 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -31,15 +27,17 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
 
     // 获取页面类型的key
     public static final String PAGE_TYPE = "page_type";
+    // 获取用户id，决定这是谁的关注粉丝列表
+    public static final String PAGE_DATA = "page_data";
     @Inject
     FollowFansListPresenter mFollowFansListPresenter;
-    private List<FollowFansBean> datas = new ArrayList<>();
     private int pageType;// 页面类型，由上一个页面决定
-    private AuthBean mAuthBean;
+    private long userId;// 上一个页面传过来的用户id
+    //private AuthBean mAuthBean;
 
     @Override
     protected CommonAdapter<FollowFansBean> getAdapter() {
-        return new FollowFansListAdapter(getContext(), R.layout.item_follow_fans_list, datas, pageType, mPresenter);
+        return new FollowFansListAdapter(getContext(), R.layout.item_follow_fans_list, mListDatas, pageType, mPresenter);
     }
 
     @Override
@@ -54,10 +52,10 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
                 .followFansListPresenterModule(new FollowFansListPresenterModule(FollowFansListFragment.this))
                 .build().inject(this);
         pageType = getArguments().getInt(PAGE_TYPE, FOLLOW_FRAGMENT_PAGE);
-        mAuthBean = AppApplication.getmCurrentLoginAuth();
+        userId = getArguments().getLong(PAGE_DATA);
+        //mAuthBean = AppApplication.getmCurrentLoginAuth();
         super.initView(rootView);
     }
-
 
     @Override
     protected boolean showToolbar() {
@@ -96,12 +94,12 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
 
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
-        mPresenter.requestNetData(maxId, isLoadMore, mAuthBean.getUser_id(), pageType);
+        mPresenter.requestNetData(maxId, isLoadMore, userId, pageType);
     }
 
     @Override
     protected List<FollowFansBean> requestCacheData(Long maxId, boolean isLoadMore) {
-        return mPresenter.requestCacheData(maxId, isLoadMore, mAuthBean.getUser_id(), pageType);
+        return mPresenter.requestCacheData(maxId, isLoadMore, userId, pageType);
     }
 
     public static FollowFansListFragment initFragment(Bundle bundle) {
@@ -122,7 +120,7 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
 
     @Override
     public List<FollowFansBean> getFollowListData() {
-        return mAdapter.getDatas();
+        return mListDatas;
     }
 
     @Override

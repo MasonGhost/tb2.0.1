@@ -5,21 +5,25 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
-import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMyCatesBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
 import com.zhiyicx.thinksnsplus.modules.information.infochannel.ChannelActivity;
-import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
+import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment;
 import com.zhiyicx.thinksnsplus.modules.information.infosearch.SearchActivity;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
@@ -39,7 +43,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.functions.Action1;
-import rx.functions.Func2;
+import rx.functions.Func1;
 
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment
         .BUNDLE_INFO_TYPE;
@@ -48,7 +52,7 @@ import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoLis
  * @Author Jliuer
  * @Date 2017/03/03
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 资讯的分类
  */
 public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoContainerPresenter>
         implements InfoMainContract.InfoContainerView {
@@ -60,7 +64,10 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     @BindView(R.id.fragment_infocontainer_content)
     ViewPager mFragmentInfocontainerContent;
 
+    public static final String SUBSCRIBE_EXTRA = "mycates";
     protected static final int DEFAULT_OFFSET_PAGE = 3;
+    public static final String RECOMMEND_INFO = "-1";
+    public static final int REQUEST_CODE = 0;
     // 定义默认样式值
     private static final int DEFAULT_TAB_UNSELECTED_TEXTCOLOR = com.zhiyicx.baseproject.R.color
             .normal_for_assist_text;// 缺省的tab未选择文字
@@ -88,24 +95,22 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
 
     private List<String> mTitle;
     private List<Fragment> mFragments;
-    private TSViewPagerAdapter mTSViewPagerAdapter;
+    private MyAdapter mMyAdapter;
     private InfoTypeBean mInfoTypeBean;
+    private CommonNavigator mCommonNavigator;
 
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_infocontainer;
     }
 
-
     @Override
     protected void initView(View rootView) {
-        mPresenter.getInfoType();
         mFragmentInfocontainerContent.setOffscreenPageLimit(DEFAULT_OFFSET_PAGE);
-        mTSViewPagerAdapter = new TSViewPagerAdapter(getFragmentManager());
+        mMyAdapter = new MyAdapter(getFragmentManager());
         initMagicIndicator(initTitles());
-        mTSViewPagerAdapter.bindData(initFragments());
-        mFragmentInfocontainerContent.setAdapter(mTSViewPagerAdapter);
-
+        initFragments();
+        mFragmentInfocontainerContent.setAdapter(mMyAdapter);
     }
 
     @Override
@@ -125,6 +130,28 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
 
     @Override
     protected void initData() {
+        mPresenter.getInfoType();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data != null) {
+            mTitle.clear();
+            mFragments.clear();
+            mInfoTypeBean = data.getBundleExtra(SUBSCRIBE_EXTRA).getParcelable(SUBSCRIBE_EXTRA);
+
+            Observable.from(mInfoTypeBean.getMy_cates())
+                    .subscribe(new Action1<InfoTypeMyCatesBean>() {
+                        @Override
+                        public void call(InfoTypeMyCatesBean myCatesBean) {
+                            mTitle.add(myCatesBean.getName());
+                            mFragments.add(InfoListFragment.newInstance(myCatesBean.getId() + ""));
+                        }
+                    });
+            mMyAdapter.notifyDataSetChanged();
+            mCommonNavigator.notifyDataSetChanged();
+        }
 
     }
 
@@ -143,8 +170,8 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
         Intent intent = new Intent(getActivity(), ChannelActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_INFO_TYPE, mInfoTypeBean);
-        intent.putExtra(BUNDLE_INFO_TYPE,bundle);
-        startActivity(intent);
+        intent.putExtra(BUNDLE_INFO_TYPE, bundle);
+        startActivityForResult(intent, REQUEST_CODE);
         getActivity().overridePendingTransition(R.anim.slide_from_top_enter, R.anim
                 .slide_from_top_quit);
     }
@@ -152,25 +179,26 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     @Override
     public void setInfoType(InfoTypeBean infoType) {
         mInfoTypeBean = infoType;
-        Observable.from(infoType.getMy_cates()).subscribe(new Action1<InfoTypeBean.MyCatesBean>() {
-            @Override
-            public void call(InfoTypeBean.MyCatesBean myCatesBean) {
-                mTitle.add(myCatesBean.getName());
-                mFragments.add(InfoListFragment.newInstance(myCatesBean.getId() + ""));
-            }
-        });
+        mInfoTypeBean.getMy_cates().add(0, new InfoTypeMyCatesBean(-1L, getString(R.string
+                .info_recommend)));
 
-        Observable.from(infoType.getMore_cates()).subscribe(new Action1<InfoTypeBean
-                .MoreCatesBean>() {
-            @Override
-            public void call(InfoTypeBean.MoreCatesBean moreCatesBean) {
-                mTitle.add(moreCatesBean.getName());
-                mFragments.add(InfoListFragment.newInstance(moreCatesBean.getId() + ""));
-            }
-        });
-
+        Observable.from(infoType.getMy_cates())
+                .filter(new Func1<InfoTypeMyCatesBean, Boolean>() {
+                    @Override
+                    public Boolean call(InfoTypeMyCatesBean myCatesBean) {
+                        return mInfoTypeBean.getMy_cates().indexOf(myCatesBean) != 0
+                                && !mTitle.contains(myCatesBean.getName());
+                    }
+                })
+                .subscribe(new Action1<InfoTypeMyCatesBean>() {
+                    @Override
+                    public void call(InfoTypeMyCatesBean myCatesBean) {
+                        mTitle.add(myCatesBean.getName());
+                        mFragments.add(InfoListFragment.newInstance(myCatesBean.getId() + ""));
+                    }
+                });
+        mMyAdapter.notifyDataSetChanged();
         initMagicIndicator(mTitle);
-        mTSViewPagerAdapter.bindData(mFragments);
     }
 
     @Override
@@ -193,11 +221,9 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
 
     }
 
-
     protected List<String> initTitles() {
         if (mTitle == null) {
             mTitle = new ArrayList<>();
-            mTitle.add(getString(R.string.info_hot));
             mTitle.add(getString(R.string.info_recommend));
         }
         return mTitle;
@@ -206,16 +232,15 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     protected List<Fragment> initFragments() {
         if (mFragments == null) {
             mFragments = new ArrayList<>();
-            mFragments.add(InfoListFragment.newInstance("1"));
-            mFragments.add(InfoListFragment.newInstance("2"));
+            mFragments.add(InfoListFragment.newInstance(RECOMMEND_INFO));
         }
         return mFragments;
     }
 
     private void initMagicIndicator(final List<String> mStringList) {
         mFragmentInfocontainerIndoctor.setBackgroundColor(Color.WHITE);
-        CommonNavigator commonNavigator = new CommonNavigator(getActivity());
-        commonNavigator.setAdapter(new CommonNavigatorAdapter() {
+        mCommonNavigator = new CommonNavigator(getActivity());
+        mCommonNavigator.setAdapter(new CommonNavigatorAdapter() {
 
             @Override
             public int getCount() {
@@ -229,9 +254,12 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
                         (context);
                 simplePagerTitleView.setNormalColor(ContextCompat.getColor(context,
                         DEFAULT_TAB_UNSELECTED_TEXTCOLOR));
+
                 simplePagerTitleView.setSelectedColor(ContextCompat.getColor(context,
                         DEFAULT_TAB_SELECTED_TEXTCOLOR));
+
                 simplePagerTitleView.setText(mStringList.get(index));
+
                 simplePagerTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, context.getResources
                         ().getInteger(DEFAULT_TAB_TEXTSIZE));
 
@@ -244,11 +272,9 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
                 return simplePagerTitleView;
             }
 
-
             @Override
             public IPagerIndicator getIndicator(Context context) {
                 LinePagerIndicator linePagerIndicator = new LinePagerIndicator(context);
-                //linePagerIndicator.setMode(LinePagerIndicator.MODE_WRAP_CONTENT);// 适应文字长度
                 linePagerIndicator.setMode(LinePagerIndicator.MODE_MATCH_EDGE);// 占满
                 linePagerIndicator.setXOffset(UIUtil.dip2px(context, context.getResources()
                         .getInteger(DEFAULT_TAB_PADDING)));// 每个item边缘到指示器的边缘距离
@@ -259,8 +285,30 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
                 return linePagerIndicator;
             }
         });
-
-        mFragmentInfocontainerIndoctor.setNavigator(commonNavigator);
+        mFragmentInfocontainerIndoctor.setNavigator(mCommonNavigator);
         ViewPagerHelper.bind(mFragmentInfocontainerIndoctor, mFragmentInfocontainerContent);
+
+    }
+
+    class MyAdapter extends FragmentStatePagerAdapter {
+
+        public MyAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragments.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragments.size();
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
+        }
     }
 }

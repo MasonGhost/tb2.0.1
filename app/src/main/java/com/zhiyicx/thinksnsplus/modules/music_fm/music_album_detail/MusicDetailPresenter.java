@@ -13,7 +13,7 @@ import javax.inject.Inject;
  * @Author Jliuer
  * @Date 2017/02/14
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 专辑详情
  */
 @FragmentScoped
 public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repository,
@@ -42,7 +42,7 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
                 .subscribe(new BaseSubscribe<MusicAlbumDetailsBean>() {
                     @Override
                     protected void onSuccess(MusicAlbumDetailsBean data) {
-
+                        mRootView.setMusicAblum(data);
                     }
 
                     @Override

@@ -1,8 +1,13 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center;
 
-import com.zhiyicx.baseproject.config.ApiConfig;
+import android.os.Bundle;
+
+import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.thridmanager.share.ShareContent;
+import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -25,7 +30,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.jetbrains.annotations.NotNull;
-import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,9 +38,16 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_POSITION;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_LIST_NEED_REFRESH;
 
 /**
  * @author LiuChao
@@ -45,6 +57,7 @@ import rx.schedulers.Schedulers;
  */
 @FragmentScoped
 public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContract.Repository, PersonalCenterContract.View> implements PersonalCenterContract.Presenter {
+    private static final int NEED_INTERFACE_NUM = 3;
     @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
     @Inject
@@ -59,14 +72,23 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
     DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
     @Inject
     DynamicDetailBeanGreenDaoImpl mDynamicDetailBeanGreenDao;
+    @Inject
+    FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
+
+    @Inject
+    public SharePolicy mSharePolicy;
+
+    private int mInterfaceNum = 0;//纪录请求接口数量，用于统计接口是否全部请求完成，需要接口全部请求完成后在显示界面
 
     @Inject
     public PersonalCenterPresenter(PersonalCenterContract.Repository repository, PersonalCenterContract.View rootView) {
         super(repository, rootView);
     }
 
-    @Inject
-    FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
@@ -80,23 +102,36 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore, long user_id) {
+        if (AppApplication.getmCurrentLoginAuth() == null) {
+            return;
+        }
         Subscription subscription = mRepository.getDynamicListForSomeone(user_id, maxId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribe<List<DynamicBean>>() {
                     @Override
                     protected void onSuccess(List<DynamicBean> data) {
+                        mInterfaceNum++;
                         mRootView.onNetResponseSuccess(data, isLoadMore);
+                        allready();
                     }
 
                     @Override
                     protected void onFailure(String message) {
-                        mRootView.showMessage(message);
+                        if (mInterfaceNum >= NEED_INTERFACE_NUM) {
+                            mRootView.showMessage(message);
+                        } else {
+                            mRootView.loadAllError();
+                        }
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        mRootView.onResponseError(throwable, isLoadMore);
+                        if (mInterfaceNum >= NEED_INTERFACE_NUM) {
+                            mRootView.onResponseError(throwable, isLoadMore);
+                        } else {
+                            mRootView.loadAllError();
+                        }
                     }
                 });
         addSubscrebe(subscription);
@@ -109,23 +144,28 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
 
     @Override
     public void initFollowState(long user_id) {
+        if (AppApplication.getmCurrentLoginAuth() == null) {
+            return;
+        }
         Subscription subscription = mRepository.getUserFollowState(user_id + "")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribe<FollowFansBean>() {
                     @Override
                     protected void onSuccess(FollowFansBean data) {
+                        mInterfaceNum++;
                         mRootView.setFollowState(data);
+                        allready();
                     }
 
                     @Override
                     protected void onFailure(String message) {
-
+                        mRootView.loadAllError();
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-
+                        mRootView.loadAllError();
                     }
                 });
         addSubscrebe(subscription);
@@ -133,30 +173,8 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
 
     @Override
     public void handleFollow(FollowFansBean followFansBean) {
-        BackgroundRequestTaskBean backgroundRequestTaskBean = null;
-        if (followFansBean.getOrigin_follow_status() == FollowFansBean.UNFOLLOWED_STATE) {
-            // 当前未关注，进行关注
-            followFansBean.setOrigin_follow_status(FollowFansBean.IFOLLOWED_STATE);
-            EventBus.getDefault().post(followFansBean, EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW);
-            // 进行后台任务请求
-            backgroundRequestTaskBean = new BackgroundRequestTaskBean();
-            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST);
-            backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_FOLLOW_USER);
-        } else {
-            // 已关注，取消关注
-            followFansBean.setOrigin_follow_status(FollowFansBean.UNFOLLOWED_STATE);
-            EventBus.getDefault().post(followFansBean, EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW);
-            // 进行后台任务请求
-            backgroundRequestTaskBean = new BackgroundRequestTaskBean();
-            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
-            backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_CANCEL_FOLLOW_USER);
-        }
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("user_id", followFansBean.getTargetUserId() + "");
-        backgroundRequestTaskBean.setParams(hashMap);
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
-        // 本地数据库和ui进行刷新
-        mFollowFansBeanGreenDao.insertOrReplace(followFansBean);
+        mUserInfoRepository.handleFollow(followFansBean);
+        // ui进行刷新
         mRootView.setFollowState(followFansBean);
     }
 
@@ -219,6 +237,19 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
     }
 
     @Override
+    public void shareUserInfo(UserInfoBean userInfoBean) {
+        ShareContent shareContent = new ShareContent();
+        shareContent.setTitle(userInfoBean.getName());
+        shareContent.setContent(userInfoBean.getIntro());
+        if (userInfoBean.getAvatar() != null) {
+            shareContent.setImage(ImageUtils.imagePathConvert(userInfoBean.getAvatar(), 100));
+        }
+        shareContent.setUrl("http://www.thinksns.com/index.html");
+        mSharePolicy.setShareContent(shareContent);
+        mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
+    }
+
+    @Override
     public boolean insertOrUpdateData(@NotNull List<DynamicBean> data) {
         mRepository.updateOrInsertDynamic(data);
         return true;
@@ -226,26 +257,37 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
 
     @Override
     public void setCurrentUserInfo(Long userId) {
+        if (AppApplication.getmCurrentLoginAuth() == null) {
+            return;
+        }
         Subscription subscription = mRepository.getCurrentUserInfo(userId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribe<UserInfoBean>() {
                     @Override
                     protected void onSuccess(UserInfoBean data) {
+                        mInterfaceNum++;
                         mRootView.setHeaderInfo(data);
+                        allready();
                     }
 
                     @Override
                     protected void onFailure(String message) {
-
+                        mRootView.loadAllError();
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-
+                        mRootView.loadAllError();
                     }
                 });
         addSubscrebe(subscription);
+    }
+
+    private void allready() {
+        if (mInterfaceNum == NEED_INTERFACE_NUM) {
+            mRootView.allDataReady();
+        }
     }
 
 
@@ -261,33 +303,44 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
         if (feed_id == null || feed_id == 0) {
             return;
         }
-        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getDatas().get(postion).getTool());
+        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(postion).getTool());
         mRepository.handleLike(isLiked, feed_id);
 
     }
 
     @Override
+    public void handleViewCount(Long feed_id, int position) {
+        if (feed_id == null || feed_id == 0) {
+            return;
+        }
+        mRootView.getListDatas().get(position).getTool().setFeed_view_count(mRootView.getListDatas().get(position).getTool().getFeed_view_count() + 1);
+        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(position).getTool());
+        mRepository.handleDynamicViewCount(feed_id);
+        mRootView.refreshData();
+    }
+
+    @Override
     public void reSendDynamic(int position) {
         // 将动态信息存入数据库
-        mDynamicBeanGreenDao.insertOrReplace(mRootView.getDatas().get(position));
-        mDynamicDetailBeanGreenDao.insertOrReplace(mRootView.getDatas().get(position).getFeed());
+        mDynamicBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(position));
+        mDynamicDetailBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(position).getFeed());
         // 发送动态
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.SEND_DYNAMIC);
         HashMap<String, Object> params = new HashMap<>();
         // feed_mark作为参数
-        params.put("params", mRootView.getDatas().get(position).getFeed_mark());
+        params.put("params", mRootView.getListDatas().get(position).getFeed_mark());
         backgroundRequestTaskBean.setParams(params);
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
     }
 
     @Override
     public void deleteComment(DynamicBean dynamicBean, int dynamicPosition, long comment_id, int commentPositon) {
-        mRootView.getDatas().get(dynamicPosition).getTool().setFeed_comment_count(dynamicBean.getTool().getFeed_comment_count() - 1);
-        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getDatas().get(dynamicPosition).getTool());
+        mRootView.getListDatas().get(dynamicPosition).getTool().setFeed_comment_count(dynamicBean.getTool().getFeed_comment_count() - 1);
+        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(dynamicPosition).getTool());
         mDynamicCommentBeanGreenDao.deleteSingleCache(dynamicBean.getComments().get(commentPositon));
-        mRootView.getDatas().get(dynamicPosition).getComments().remove(commentPositon);
-        mRootView.refresh();
+        mRootView.getListDatas().get(dynamicPosition).getComments().remove(commentPositon);
+        mRootView.refreshData();
         mRepository.deleteComment(dynamicBean.getFeed_id(), comment_id);
     }
 
@@ -303,7 +356,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
         DynamicCommentBean creatComment = new DynamicCommentBean();
         creatComment.setState(DynamicCommentBean.SEND_ING);
         creatComment.setComment_content(commentContent);
-        creatComment.setFeed_mark(mRootView.getDatas().get(mCurrentPostion).getFeed_mark());
+        creatComment.setFeed_mark(mRootView.getListDatas().get(mCurrentPostion).getFeed_mark());
         String comment_mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis();
         creatComment.setComment_mark(Long.parseLong(comment_mark));
         creatComment.setReply_to_user_id(replyToUserId);
@@ -316,18 +369,139 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
         }
         creatComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
         creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id()));
-        creatComment.setCreated_at(TimeUtils.millis2String(System.currentTimeMillis()));
+        creatComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         List<DynamicCommentBean> commentBeanList = new ArrayList<>();
         commentBeanList.add(creatComment);
-        commentBeanList.addAll(mRootView.getDatas().get(mCurrentPostion).getComments());
-        mRootView.getDatas().get(mCurrentPostion).getComments().clear();
-        mRootView.getDatas().get(mCurrentPostion).getComments().addAll(commentBeanList);
-        mRootView.getDatas().get(mCurrentPostion).getTool().setFeed_comment_count(mRootView.getDatas().get(mCurrentPostion).getTool().getFeed_comment_count() + 1);
-        mRootView.refresh();
+        commentBeanList.addAll(mRootView.getListDatas().get(mCurrentPostion).getComments());
+        mRootView.getListDatas().get(mCurrentPostion).getComments().clear();
+        mRootView.getListDatas().get(mCurrentPostion).getComments().addAll(commentBeanList);
+        mRootView.getListDatas().get(mCurrentPostion).getTool().setFeed_comment_count(mRootView.getListDatas().get(mCurrentPostion).getTool().getFeed_comment_count() + 1);
+        mRootView.refreshData();
 
-        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getDatas().get(mCurrentPostion).getTool());
+        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(mCurrentPostion).getTool());
         mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
-        mRepository.sendComment(commentContent, mRootView.getDatas().get(mCurrentPostion).getFeed_id(), replyToUserId, creatComment.getComment_mark());
+        mRepository.sendComment(commentContent, mRootView.getListDatas().get(mCurrentPostion).getFeed_id(), replyToUserId, creatComment.getComment_mark());
+
+    }
+
+    /**
+     * 通过 feedMark 获取当前数据的位置
+     *
+     * @param feedMark
+     * @return
+     */
+    @Override
+    public int getCurrenPosiotnInDataList(long feedMark) {
+        int position = -1;
+        int size = mRootView.getListDatas().size();
+        for (int i = 0; i < size; i++) {
+            if (feedMark == mRootView.getListDatas().get(i).getFeed_mark()) {
+                position = i;
+                break;
+            }
+        }
+        return position;
+    }
+
+    /**
+     * 处理发送动态数据
+     *
+     * @param dynamicCommentBean
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_DYNAMIC_LIST)
+    public void handleSendComment(DynamicCommentBean dynamicCommentBean) {
+        Observable.just(dynamicCommentBean)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<DynamicCommentBean, Integer>() {
+                    @Override
+                    public Integer call(DynamicCommentBean dynamicCommentBean) {
+                        int size = mRootView.getListDatas().size();
+                        int dynamicPosition = -1;
+                        for (int i = 0; i < size; i++) {
+                            if (mRootView.getListDatas().get(i).getFeed_mark().equals(dynamicCommentBean.getFeed_mark())) {
+                                dynamicPosition = i;
+                                break;
+                            }
+                        }
+                        if (dynamicPosition != -1) {// 如果列表有当前评论
+                            int commentSize = mRootView.getListDatas().get(dynamicPosition).getComments().size();
+                            for (int i = 0; i < commentSize; i++) {
+                                if (mRootView.getListDatas().get(dynamicPosition).getComments().get(i).getFeed_mark().equals(dynamicCommentBean.getFeed_mark())) {
+                                    mRootView.getListDatas().get(dynamicPosition).getComments().get(i).setState(dynamicCommentBean.getState());
+                                    mRootView.getListDatas().get(dynamicPosition).getComments().get(i).setComment_id(dynamicCommentBean.getComment_id());
+                                    mRootView.getListDatas().get(dynamicPosition).getComments().get(i).setComment_mark(dynamicCommentBean.getComment_mark());
+                                    break;
+                                }
+                            }
+                        }
+                        return dynamicPosition;
+                    }
+                })
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer integer) {
+                        if (integer != -1) {
+                            mRootView.refreshData();
+                        }
+
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
+
+    }
+
+    /**
+     * 动态详情处理了数据
+     * 处理更新动态数据
+     *
+     * @param data
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_DYNAMIC)
+    public void updateDynamic(Bundle data) {
+        Observable.just(data)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<Bundle, Integer>() {
+                    @Override
+                    public Integer call(Bundle bundle) {
+                        int position = bundle.getInt(DYNAMIC_DETAIL_DATA_POSITION);
+                        boolean isNeedRefresh = bundle.getBoolean(DYNAMIC_LIST_NEED_REFRESH);
+                        DynamicBean dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
+                        int size = mRootView.getListDatas().size();
+                        int dynamicPosition = -1;
+                        for (int i = 0; i < size; i++) {
+                            if (mRootView.getListDatas().get(i).getFeed_mark().equals(dynamicBean.getFeed_mark())) {
+                                dynamicPosition = i;
+                                break;
+                            }
+                        }
+                        if (dynamicPosition != -1) {// 如果列表有当前评论
+                            mRootView.getListDatas().set(position, dynamicBean);
+                        }
+
+                        return isNeedRefresh ? dynamicPosition : -1;
+                    }
+                })
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer integer) {
+                        if (integer != -1) {
+                            mRootView.refreshData();
+                        }
+
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
+
 
     }
 

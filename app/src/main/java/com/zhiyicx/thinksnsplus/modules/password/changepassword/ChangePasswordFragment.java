@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.password.changepassword;
 
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -22,9 +23,9 @@ public class ChangePasswordFragment extends TSFragment<ChangePasswordContract.Pr
 
 
     @BindView(R.id.et_old_password)
-    PasswordEditText mEtOldPassword;
+    EditText mEtOldPassword;
     @BindView(R.id.et_new_password)
-    PasswordEditText mEtNewPassword;
+    EditText mEtNewPassword;
     @BindView(R.id.et_sure_new_password)
     PasswordEditText mEtSureNewPassword;
     @BindView(R.id.tv_error_tip)
@@ -85,7 +86,7 @@ public class ChangePasswordFragment extends TSFragment<ChangePasswordContract.Pr
                         setConfirmEnable();
                     }
                 });
-        // 旧密码观察
+        // 新密码观察
         RxTextView.textChanges(mEtNewPassword)
                 .compose(this.<CharSequence>bindToLifecycle())
                 .subscribe(new Action1<CharSequence>() {
@@ -95,7 +96,7 @@ public class ChangePasswordFragment extends TSFragment<ChangePasswordContract.Pr
                         setConfirmEnable();
                     }
                 });
-        // 旧密码观察
+        // 确认新密码观察
         RxTextView.textChanges(mEtSureNewPassword)
                 .compose(this.<CharSequence>bindToLifecycle())
                 .subscribe(new Action1<CharSequence>() {
@@ -153,4 +154,3 @@ public class ChangePasswordFragment extends TSFragment<ChangePasswordContract.Pr
         getActivity().finish();
     }
 }
-

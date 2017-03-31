@@ -1,6 +1,0 @@
-<resources>
-    <style name="activity_topin_bottomout" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-    </style>
-</resources>

@@ -15,13 +15,12 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSActivity;
-import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayService;
 
-import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album.MusicListFragment
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListFragment
         .BUNDLE_MUSIC_ABLUM;
 
 public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicDetailFragment>
@@ -59,10 +58,11 @@ public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicD
 
     @Override
     protected void componentInject() {
-        DaggerMusicDetailComponent.builder().appComponent(AppApplication.AppComponentHolder
-                .getAppComponent()).musicDetailPresenterModule(new MusicDetailPresenterModule
-                (mMusicDetailFragment))
-                .build();
+        DaggerMusicDetailComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .musicDetailPresenterModule(new MusicDetailPresenterModule(mMusicDetailFragment))
+                .build()
+                .inject(this);
     }
 
     @Override
@@ -141,11 +141,11 @@ public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicD
     }
 
     protected void showPlaybackControls() {
-        if (NetUtils.netIsConnected(this)) {
-            getSupportFragmentManager().beginTransaction()
-                    .show(mPlayBackFragment)
-                    .commit();
-        }
+//        if (NetUtils.netIsConnected(this)) {
+//            getSupportFragmentManager().beginTransaction()
+//                    .show(mPlayBackFragment)
+//                    .commit();
+//        }
     }
 
     protected void hidePlaybackControls() {

@@ -23,7 +23,6 @@ import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -41,7 +40,6 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
 
 
     private ImageLoader mImageLoader;
-    private List<MessageItemBean> mMessageItemBeen = new ArrayList<>();
 
     public MessageCommentFragment() {
     }
@@ -67,7 +65,7 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
 
     @Override
     protected CommonAdapter<MessageItemBean> getAdapter() {
-        return new CommonAdapter<MessageItemBean>(getActivity(), R.layout.item_message_comment_list, mMessageItemBeen) {
+        return new CommonAdapter<MessageItemBean>(getActivity(), R.layout.item_message_comment_list, mListDatas) {
             @Override
             protected void convert(ViewHolder holder, MessageItemBean messageItemBean, int position) {
                 setItemData(holder, messageItemBean, position);
@@ -79,7 +77,7 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
     @Override
     protected void initData() {
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        initCommentAndLike(mMessageItemBeen);
+        initCommentAndLike(mListDatas);
         refreshData();
     }
 

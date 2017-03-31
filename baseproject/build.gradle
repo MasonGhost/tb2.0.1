@@ -13,8 +13,8 @@ android {
 
         // 友盟三方key配置
         manifestPlaceholders = [
-                TECENT_APPID: 100424468,
-                UMENG_APPKEY: "d1b01388780156949b02cadd",
+                TECENT_APPID: 1105978541,
+                UMENG_APPKEY: "58d0998e9f06fd05680011f6",
         ]
 
     }
@@ -29,6 +29,7 @@ android {
         }
     }
 }
+
 configurations.all {
     resolutionStrategy {
         force 'com.android.support:support-annotations:25.0.1'
@@ -61,8 +62,15 @@ dependencies {
     // Dagger dependencies
     compile dataDependences.dagger
     // 刷新:三方库compat版本过高，使用主工程的版本
-    compile(dataDependences.refresh){
-        exclude group: 'com.android.support', module:'support-compat'
+    compile(dataDependences.refresh) {
+        exclude group: 'com.android.support', module: 'support-compat'
+    }
+
+    compile dataDependences.swipeLayout;
+    compile (dataDependences.recyclerviewAnimator){
+        exclude group:'com.android.support',module:'appcompat-v7'
+        exclude group:'com.android.support',module:'recyclerview-v7'
+
     }
     provided dataDependences.javaxAnnotation
     provided dataDependences.daggerCompiler
@@ -79,4 +87,5 @@ dependencies {
     androidTestCompile 'org.mockito:mockito-core:1.9.5'
     androidTestCompile 'com.google.dexmaker:dexmaker:1.1'
     androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.1'
+    compile project(':mysnackbar')
 }

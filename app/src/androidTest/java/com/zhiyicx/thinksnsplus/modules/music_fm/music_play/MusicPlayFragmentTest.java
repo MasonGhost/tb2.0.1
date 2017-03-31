@@ -11,7 +11,6 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static org.junit.Assert.assertTrue;
 
@@ -42,23 +41,23 @@ public class MusicPlayFragmentTest extends AcitivityTest {
         assertTrue(true);
     }
 
-    @Test
-    public void testPlayOrPauseMusic() {
-        bt_palyOrPause.perform(click());
-    }
-
-    @Test
-    public void testChangeOrder() {
-        bt_order.perform(click());
-    }
-
-    @Test
-    public void testPreMusic() {
-        bt_previous.perform(click());
-    }
-
-    @Test
-    public void testNextMusic() {
-        bt_next.perform(click());
-    }
+//    @Test
+//    public void testPlayOrPauseMusic() {
+//        bt_palyOrPause.perform(click());
+//    }
+//
+//    @Test
+//    public void testChangeOrder() {
+//        bt_order.perform(click());
+//    }
+//
+//    @Test
+//    public void testPreMusic() {
+//        bt_previous.perform(click());
+//    }
+//
+//    @Test
+//    public void testNextMusic() {
+//        bt_next.perform(click());
+//    }
 }

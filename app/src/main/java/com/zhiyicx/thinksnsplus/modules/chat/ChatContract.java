@@ -7,6 +7,7 @@ import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -59,6 +60,7 @@ public interface ChatContract {
 
         /**
          * 更新对话信息
+         *
          * @param conversation
          */
         void updateConversation(Conversation conversation);
@@ -102,6 +104,8 @@ public interface ChatContract {
         List<MessageItemBean> getConversionListData(long userId);
 
         /**
+         * 获取聊天列表信息
+         *
          * @param cid
          * @param mid
          * @return
@@ -144,8 +148,10 @@ public interface ChatContract {
 
         /**
          * 创建对话
-         * @param user_id 目标对象的 user_id
+         *
+         * @param userInfoBean 目标对象的用户信息
+         * @param text    文本消息，单独创建的时候，传空
          */
-        void createChat(int user_id);
+        void createChat(UserInfoBean userInfoBean, String text);
     }
 }

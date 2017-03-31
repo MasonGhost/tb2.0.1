@@ -1,17 +1,19 @@
 <resources>
     <!-- 异常输出内容 -->
     <string name="err_share_no_content">分享内容不能为空</string>
-    <string name="err_net_not_work">当前网络状况不佳</string>
+    <string name="err_net_not_work">网络请求失败，请重新加载</string>
     <string name="erro_argument_in_method">方法使用了不合法的参数</string>
     <string name="data_load_error">数据加载失败</string>
     <string name="load_error">加载失败</string>
+    <string name="loading">加载更多</string>
     <string name="no_data">没有任何内容</string>
     <string name="no_more_data">没有更多数据了</string>
     <!-- 通用 -->
     <string name="statistical_unit_million">万</string>
     <string name="cancel">取消</string>
+    <string name="delete">删除</string>
     <string name="close">关闭</string>
-    <string name="seconds">秒后重发</string>
+    <string name="seconds">s后重发</string>
     <string name="username">用户名</string>
     <string name="password">密码</string>
     <string name="old_password">旧密码</string>
@@ -26,11 +28,14 @@
     <string name="female">女</string>
     <string name="keep_secret">保密</string>
     <string name="complete">完成</string>
+    <string name="completed">已完成</string>
     <string name="send_success">发送成功</string>
     <string name="send_failure">发送失败</string>
     <string name="send">发送</string>
     <string name="sure">确认</string>
     <string name="change_head_icon">更换头像</string>
+    <string name="change_bg_cover">更换封面</string>
+    <string name="crop_photo">裁剪图片</string>
     <string name="publish">发布</string>
     <string name="intro_default">这个家伙很懒，没有留下任何</string>
     <!-- 注册 -->
@@ -39,23 +44,24 @@
     <string name="username_toast_hint">@string/username_input_hint</string>
     <string name="username_toast_not_number_start_hint">用户名不能以数字开头</string>
     <string name="username_toast_not_symbol_hint">用户名只能包含数字、字母和下划线</string>
-    <string name="immediate_regist">立即注册</string>
+    <string name="immediate_regist">注册</string>
     <string name="vertify_code_input_hint">输入验证码</string>
     <string name="phone_number_input_hint">输入11位手机号</string>
     <string name="phone_number_toast_hint">请输入正确的手机号</string>
     <string name="password_input_hint">输入6位以上登录密码</string>
-    <string name="password_toast_hint">请输入6-16位密码</string>
-    <string name="old_password_toast_hint">请输入6-16位旧密码</string>
-    <string name="new_password_toast_hint">请输入6-16位新密码</string>
-    <string name="sure_new_password_toast_hint">请输入6-16位确认密码</string>
-    <string name="password_diffrent">新密码输入不一致</string>
+    <string name="password_toast_hint">密码长度不能低于6位</string>
+    <string name="old_password_toast_hint">输入6位以上登录密码</string>
+    <string name="new_password_toast_hint">输入6位以上登录密码</string>
+    <string name="sure_new_password_toast_hint">输入6位以上登录密码</string>
+    <string name="password_diffrent">两次密码输入不一致</string>
     <string name="find_password_success">找回密码成功</string>
-    <string name="change_password_success">修改密码成功</string>
+    <string name="change_password_success">更改成功</string>
 
     <!-- 拍照相关 -->
-    <string name="choose_from_photo">从相册选取</string>
+    <string name="choose_from_photo">从相册中选择</string>
     <string name="choose_from_camera">拍照</string>
     <string name="choose_max_photos">你最多可以选择%1$d张图片</string>
+    <string name="album_image_count">%1$d张</string>
     <!--  登录  -->
     <string name="bt_login">登录</string>
     <string name="no_login">不登录，先随便逛逛</string>
@@ -75,9 +81,14 @@
 
     <!--音乐FM-->
     <string name="music_fm">音乐FM</string>
+    <string name="music_order_nomal">顺序播放</string>
+    <string name="music_order_random">随机播放</string>
+    <string name="music_order_single">单曲循环</string>
+
     <!--资讯-->
     <string name="info_editor">编辑</string>
-    <string name="info_sort">长按可排序</string>
+    <string name="info_sort">长按可编辑</string>
+    <string name="info_delete">点击可删除</string>
     <string name="info_subscribed">我的订阅</string>
     <string name="info_unsubscribe">更多订阅</string>
     <string name="info_search">搜索</string>
@@ -86,6 +97,8 @@
     <string name="info_collect">收藏</string>
     <string name="info_hot">热门</string>
     <string name="info_recommend">推荐</string>
+    <string name="info_close">收起</string>
+
 
     <!--分享类型-->
     <string name="qq_share">QQ</string>

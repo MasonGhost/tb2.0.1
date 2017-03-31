@@ -28,22 +28,16 @@ public interface DynamicContract {
         String getDynamicType();
 
         /**
-         * 获取列表数据
          *
-         * @return
          */
-        List<DynamicBean> getDatas();
+        void closeInputView();
 
         /**
-         * 获取列表数据
+         * 展示新的动态
          *
-         * @return
+         * @param position -1 表示刷新列表 >=0 表示刷新指定位置的数据
          */
-        void refresh();
-
-        void refresh(int position);
-
-        void onSendClick(android.view.View v, String text);
+        void showNewDynamic(int position);
 
     }
 
@@ -63,6 +57,14 @@ public interface DynamicContract {
         void handleLike(boolean isLiked, Long feed_id, int postion);
 
         /**
+         * add viewcount
+         *
+         * @param feed_id
+         * @param position
+         */
+        void handleViewCount(Long feed_id, int position);
+
+        /**
          * resend dynamic
          *
          * @param position
@@ -71,19 +73,29 @@ public interface DynamicContract {
 
         /**
          * delete a comment
-         * @param dynamicBean   is that comment belong to feed
-         * @param dynamicPositon currren item dynamic position
-         * @param comment_id comment's id
+         *
+         * @param dynamicBean     is that comment belong to feed
+         * @param dynamicPositon  currren item dynamic position
+         * @param comment_id      comment's id
          * @param commentPosition comment curren position
          */
-        void deleteComment(DynamicBean dynamicBean, int dynamicPositon, long comment_id,int commentPosition);
+        void deleteComment(DynamicBean dynamicBean, int dynamicPositon, long comment_id, int commentPosition);
 
         /**
          * send a comment
-         * @param mCurrentPostion  current dynamic position
-         * @param replyToUserId comment  to who
+         *
+         * @param mCurrentPostion current dynamic position
+         * @param replyToUserId   comment  to who
          * @param commentContent  comment content
          */
         void sendComment(int mCurrentPostion, long replyToUserId, String commentContent);
+
+        /**
+         * 通过 feedMark 获取当前数据的位置
+         *
+         * @param feedMark
+         * @return
+         */
+        int getCurrenPosiotnInDataList(long feedMark);
     }
 }

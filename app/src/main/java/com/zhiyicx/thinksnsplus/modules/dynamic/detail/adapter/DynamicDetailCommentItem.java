@@ -100,7 +100,7 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
 
     protected List<Link> setLiknks(ViewHolder holder, final DynamicCommentBean dynamicCommentBean, int position) {
         List<Link> links = new ArrayList<>();
-        if (dynamicCommentBean.getReplyUser() != null && dynamicCommentBean.getReplyUser().getName() != null) {
+        if (dynamicCommentBean.getReply_to_user_id() != 0 && dynamicCommentBean.getReplyUser() != null && dynamicCommentBean.getReplyUser().getName() != null) {
             Link replyNameLink = new Link(dynamicCommentBean.getReplyUser().getName())
                     .setTextColor(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.important_for_content))                  // optional, defaults to holo blue
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) // optional, defaults to holo blue
@@ -139,7 +139,7 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
     private String handleName(DynamicCommentBean dynamicCommentBean) {
         String content = "";
         if (dynamicCommentBean.getReply_to_user_id() != 0) { // 当没有回复者时，就是回复评论
-            content += " 回复 " + dynamicCommentBean.getReplyUser().getName() + " " + dynamicCommentBean.getComment_content();
+            content += "回复 " + dynamicCommentBean.getReplyUser().getName() + " " + dynamicCommentBean.getComment_content();
         } else {
             content = dynamicCommentBean.getComment_content();
         }

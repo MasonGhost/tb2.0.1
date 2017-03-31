@@ -9,10 +9,12 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CREATE_CONVERSAITON;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CONVERSAITON_LIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SINGLE_CONVERSAITON;
 
 /**
  * @author jungle68
@@ -36,8 +38,22 @@ public interface ChatInfoClient {
     @POST(APP_PATH_CREATE_CONVERSAITON)
     Observable<BaseJson<Conversation>> createConversaiton(@Field("type") int type, @Field("name") String name, @Field("pwd") String pwd, @Field("uids") String uids);
 
+    /**
+     * 获取登陆用户的对话列表
+     *
+     * @return
+     */
     @GET(APP_PATH_GET_CONVERSAITON_LIST)
     Observable<BaseJson<List<Conversation>>> getConversaitonList();
+
+    /**
+     * 获取单个对话信息
+     *
+     * @param cid 对话 id  特别说明 地址中的cid为对话id,如果该对话id不存在会返回错误
+     * @return
+     */
+    @GET(APP_PATH_GET_SINGLE_CONVERSAITON)
+    Observable<BaseJson<Conversation>> getSingleConversaiton(@Path("cid") int cid);
 
 
 }

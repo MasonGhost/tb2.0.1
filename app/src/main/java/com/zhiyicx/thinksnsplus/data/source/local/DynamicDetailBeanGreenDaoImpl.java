@@ -16,7 +16,6 @@ import javax.inject.Inject;
  * @date 2017/2/24
  * @contact email:450127106@qq.com
  */
-
 public class DynamicDetailBeanGreenDaoImpl extends CommonCacheImpl<DynamicDetailBean> {
     @Inject
     public DynamicDetailBeanGreenDaoImpl(Application context) {
@@ -40,7 +39,8 @@ public class DynamicDetailBeanGreenDaoImpl extends CommonCacheImpl<DynamicDetail
 
     @Override
     public DynamicDetailBean getSingleDataFromCache(Long primaryKey) {
-        return null;
+        DynamicDetailBeanDao dynamicDetailBeanDao = getWDaoSession().getDynamicDetailBeanDao();
+        return dynamicDetailBeanDao.load(primaryKey);
     }
 
     @Override
@@ -50,17 +50,20 @@ public class DynamicDetailBeanGreenDaoImpl extends CommonCacheImpl<DynamicDetail
 
     @Override
     public void clearTable() {
-
+        DynamicDetailBeanDao dynamicDetailBeanDao = getWDaoSession().getDynamicDetailBeanDao();
+        dynamicDetailBeanDao.deleteAll();
     }
 
     @Override
     public void deleteSingleCache(Long primaryKey) {
-
+        DynamicDetailBeanDao dynamicDetailBeanDao = getWDaoSession().getDynamicDetailBeanDao();
+        dynamicDetailBeanDao.deleteByKey(primaryKey);
     }
 
     @Override
     public void deleteSingleCache(DynamicDetailBean dta) {
-
+        DynamicDetailBeanDao dynamicDetailBeanDao = getWDaoSession().getDynamicDetailBeanDao();
+        dynamicDetailBeanDao.delete(dta);
     }
 
     @Override

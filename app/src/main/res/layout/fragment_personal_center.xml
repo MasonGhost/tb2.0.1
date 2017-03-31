@@ -118,7 +118,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:paddingRight="@dimen/spacing_mid"
-                android:src="@mipmap/topbar_more_white"/>
+                android:src="@mipmap/detail_ico_share_normal"/>
         </RelativeLayout>
 
         <include layout="@layout/include_horizontal_divider"></include>

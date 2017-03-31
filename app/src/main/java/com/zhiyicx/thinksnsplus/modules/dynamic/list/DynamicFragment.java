@@ -1,21 +1,27 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
+import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.common.utils.AndroidBug5497Workaround;
+import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
@@ -33,7 +39,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForS
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForThreeImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
-import com.zhiyicx.thinksnsplus.modules.gallery.GalleryFragment;
+import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
@@ -69,14 +75,16 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     public static final long ITEM_SPACING = 5L; // 单位dp
     @BindView(R.id.fl_container)
     FrameLayout mFlContainer;
+    @BindView(R.id.ilv_comment)
+    InputLimitView mIlvComment;
+    @BindView(R.id.v_shadow)
+    View mVShadow;
 
 
     @Inject
     DynamicPresenter mDynamicPresenter;  // 仅用于构造
     private String mDynamicType = ApiConfig.DYNAMIC_TYPE_NEW;
 
-
-    private List<DynamicBean> mDynamicBeens = new ArrayList<>();
     private ActionPopupWindow mDeletCommentPopWindow;
     private int mCurrentPostion;// 当前评论的动态位置
     private long mReplyToUserId;// 被评论者的 id
@@ -103,6 +111,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
     protected boolean setUseSatusbar() {
         return true;
     }
@@ -115,6 +128,21 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        initInputView();
+        if ((Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT)) {
+            AndroidBug5497Workaround.assistActivity(getActivity());
+        }
+    }
+
+    private void initInputView() {
+        mVShadow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeInputView();
+            }
+        });
+
+        mIlvComment.setOnSendClickListener(this);
     }
 
     @Override
@@ -128,13 +156,13 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
-    protected boolean getPullDownRefreshEnable() {
+    protected boolean isRefreshEnable() {
         return true;
     }
 
     @Override
     protected MultiItemTypeAdapter getAdapter() {
-        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mDynamicBeens);
+        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mListDatas);
         setAdapter(adapter, new DynamicListBaseItem(getContext()));
         setAdapter(adapter, new DynamicListItemForOneImage(getContext()));
         setAdapter(adapter, new DynamicListItemForTwoImage(getContext()));
@@ -215,12 +243,17 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 imageBeanList.add(imageBean);
             }
         }
-        Intent intent = new Intent(getActivity(), GalleryActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(GalleryFragment.BUNDLE_IMAGS, (ArrayList<? extends Parcelable>) imageBeanList);
-        bundle.putInt(GalleryFragment.BUNDLE_IMAGS_POSITON, position);
-        intent.putExtras(bundle);
-        startActivity(intent);
+        ArrayList<AnimationRectBean> animationRectBeanArrayList
+                = new ArrayList<AnimationRectBean>();
+        for (int i = 0; i < imageBeanList.size(); i++) {
+            int id = UIUtils.getResourceByName("siv_" + i, "id", getContext());
+            ImageView imageView = holder.getView(id);
+
+            AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
+            animationRectBeanArrayList.add(rect);
+        }
+
+        GalleryActivity.startToGallery(getContext(), position, imageBeanList, animationRectBeanArrayList);
     }
 
     /**
@@ -239,19 +272,32 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
-    public List<DynamicBean> getDatas() {
-        return mDynamicBeens;
+    public void closeInputView() {
+        if (mIlvComment.getVisibility() == View.VISIBLE) {
+            mIlvComment.setVisibility(View.GONE);
+            DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+        }
+        mVShadow.setVisibility(View.GONE);
+        if (mOnCommentClickListener != null) {
+            mOnCommentClickListener.onButtonMenuShow(true);
+        }
     }
 
     @Override
-    public void refresh() {
-        refreshData();
-    }
-
-    @Override
-    public void refresh(int position) {
-        LogUtils.d(TAG, "mDynamicBeens    position  = " + mDynamicBeens.toString());
-        refreshData(position);
+    public void showNewDynamic(int position) {
+        if (position == -1) {
+            // 添加一条新动态
+            refreshData();
+            // 回到顶部
+            mRvList.smoothScrollToPosition(0);
+            Fragment parentFragment = getParentFragment();
+            if(parentFragment!=null&&parentFragment instanceof MainFragment){
+                MainFragment mainFragment= (MainFragment) parentFragment;
+                mainFragment.setPagerSelection(MainFragment.PAGER_NEWEST_DYNAMIC_LIST_POSITION);
+            }
+        } else {
+            refreshData(position);
+        }
     }
 
     /**
@@ -261,8 +307,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onReSendClick(int position) {
-        mDynamicBeens.get(position).setState(DynamicBean.SEND_ING);
-        refresh();
+        mListDatas.get(position).setState(DynamicBean.SEND_ING);
+        refreshData();
         mPresenter.reSendDynamic(position);
     }
 
@@ -283,7 +329,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         switch (viewPosition) { // 0 1 2 3 代表 view item 位置
             case 0: // 喜欢
                 // 还未发送成功的动态列表不查看详情
-                if (mAdapter.getItem(dataPosition).getFeed_id() == null || mAdapter.getItem(dataPosition).getFeed_id() == 0) {
+                if (mListDatas.get(dataPosition).getFeed_id() == null || mListDatas.get(dataPosition).getFeed_id() == 0) {
                     return;
                 }
                 handleLike(dataPosition);
@@ -291,10 +337,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
             case 1: // 评论
                 // 还未发送成功的动态列表不查看详情
-                if (mAdapter.getItem(dataPosition).getFeed_id() == null || mAdapter.getItem(dataPosition).getFeed_id() == 0) {
+                if (mListDatas.get(dataPosition).getFeed_id() == null || mListDatas.get(dataPosition).getFeed_id() == 0) {
                     return;
                 }
                 showCommentView();
+                mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
                 mCurrentPostion = dataPosition;
                 mReplyToUserId = 0;// 0 代表评论动态
                 break;
@@ -320,12 +367,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     private void handleLike(int dataPosition) {
         // 先更新界面，再后台处理
-        mDynamicBeens.get(dataPosition).getTool().setIs_digg_feed(mDynamicBeens.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ? DynamicToolBean.STATUS_DIGG_FEED_CHECKED : DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED);
-        mDynamicBeens.get(dataPosition).getTool().setFeed_digg_count(mDynamicBeens.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ?
-                mDynamicBeens.get(dataPosition).getTool().getFeed_digg_count() - 1 : mDynamicBeens.get(dataPosition).getTool().getFeed_digg_count() + 1);
-        refresh();
-        mPresenter.handleLike(mDynamicBeens.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED,
-                mDynamicBeens.get(dataPosition).getFeed().getFeed_id(), dataPosition);
+        mListDatas.get(dataPosition).getTool().setIs_digg_feed(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ? DynamicToolBean.STATUS_DIGG_FEED_CHECKED : DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED);
+        mListDatas.get(dataPosition).getTool().setFeed_digg_count(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ?
+                mListDatas.get(dataPosition).getTool().getFeed_digg_count() - 1 : mListDatas.get(dataPosition).getTool().getFeed_digg_count() + 1);
+        refreshData();
+        mPresenter.handleLike(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED,
+                mListDatas.get(dataPosition).getFeed().getFeed_id(), dataPosition);
     }
 
     @Override
@@ -341,20 +388,22 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onCommentContentClick(DynamicBean dynamicBean, int position) {
-        mCurrentPostion = mAdapter.getDatas().indexOf(dynamicBean);
+        mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
         if (dynamicBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-            initLoginOutPopupWindow(dynamicBean, mCurrentPostion, position);
-            mDeletCommentPopWindow.show();
+            if (dynamicBean.getComments().get(position).getComment_id() != null) {
+                initLoginOutPopupWindow(dynamicBean, mCurrentPostion, position);
+                mDeletCommentPopWindow.show();
+            } else {
+                return;
+            }
         } else {
             showCommentView();
             mReplyToUserId = dynamicBean.getComments().get(position).getUser_id();
-            String contentHint = "";
+            String contentHint = getString(R.string.default_input_hint);
             if (dynamicBean.getComments().get(position).getReply_to_user_id() != dynamicBean.getUser_id()) {
                 contentHint = getString(R.string.reply, dynamicBean.getComments().get(position).getCommentUser().getName());
             }
-            if (mOnCommentClickListener != null) {
-                mOnCommentClickListener.setCommentHint(contentHint);
-            }
+            mIlvComment.setEtContentHint(contentHint);
         }
 
     }
@@ -370,9 +419,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      * @param text
      */
     @Override
-    public void onSendClick(View v, String text) {
-        mPresenter.sendComment(mCurrentPostion, mReplyToUserId, text);
+    public void onSendClick(View v, final String text) {
         com.zhiyicx.imsdk.utils.common.DeviceUtils.hideSoftKeyboard(getContext(), v);
+        mIlvComment.setVisibility(View.GONE);
+        mVShadow.setVisibility(View.GONE);
+        mPresenter.sendComment(mCurrentPostion, mReplyToUserId, text);
         showBottomView(true);
     }
 
@@ -389,7 +440,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void onMoreCommentClick(View view, DynamicBean dynamicBean) {
-        goDynamicDetail(mAdapter.getDatas().indexOf(dynamicBean), true);
+
+        int position = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
+        goDynamicDetail(position, true);
     }
 
     /**
@@ -400,9 +453,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      * @param commentPosition current comment position
      */
     private void initLoginOutPopupWindow(final DynamicBean dynamicBean, final int dynamicPositon, final int commentPosition) {
-        if (mDeletCommentPopWindow != null) {
-            return;
-        }
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_comment))
                 .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
@@ -430,6 +480,19 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     private void showBottomView(boolean isShow) {
+        if (isShow) {
+            mVShadow.setVisibility(View.GONE);
+            mIlvComment.setVisibility(View.GONE);
+            mIlvComment.clearFocus();
+            mIlvComment.setSendButtonVisiable(false);
+            DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+        } else {
+            mVShadow.setVisibility(View.VISIBLE);
+            mIlvComment.setVisibility(View.VISIBLE);
+            mIlvComment.getFocus();
+            mIlvComment.setSendButtonVisiable(true);
+            DeviceUtils.showSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+        }
         if (mOnCommentClickListener != null) {
             mOnCommentClickListener.onButtonMenuShow(isShow);
         }
@@ -437,12 +500,13 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     private void goDynamicDetail(int position, boolean isLookMoreComment) {
         // 还未发送成功的动态列表不查看详情
-        if (mAdapter.getItem(position).getFeed_id() == null || mAdapter.getItem(position).getFeed_id() == 0) {
+        if (mListDatas.get(position).getFeed_id() == null || mListDatas.get(position).getFeed_id() == 0) {
             return;
         }
+        mPresenter.handleViewCount(mListDatas.get(position).getFeed_id(), position);
         Intent intent = new Intent(getActivity(), DynamicDetailActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(DYNAMIC_DETAIL_DATA, mAdapter.getItem(position));
+        bundle.putParcelable(DYNAMIC_DETAIL_DATA, mListDatas.get(position));
         bundle.putString(DYNAMIC_DETAIL_DATA_TYPE, getDynamicType());
         bundle.putInt(DYNAMIC_DETAIL_DATA_POSITION, position);
         bundle.putBoolean(LOOK_COMMENT_MORE, isLookMoreComment);
@@ -450,10 +514,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         startActivity(intent);
     }
 
-
     public interface OnCommentClickListener {
         void onButtonMenuShow(boolean isShow);
-
-        void setCommentHint(String hintStr);
     }
 }

@@ -118,11 +118,10 @@ public class PhotoGridAdapter extends SelectableAdapter<PhotoGridAdapter.PhotoVi
             if (canLoadImage) {
                 glide
                         .load(new File(photo.getPath()))
+                        .asBitmap()
                         .centerCrop()
                         .dontAnimate()
-                        .thumbnail(0.5f)
-                        .skipMemoryCache(true)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .thumbnail(0.1f)
                         .override(imageSize, imageSize)
                         .placeholder(R.drawable.__picker_shape_default_image)
                         .error(R.drawable.__picker_shape_default_image)

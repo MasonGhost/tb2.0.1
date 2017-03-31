@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.information.infomain;
 
+import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
@@ -35,11 +36,11 @@ public interface InfoMainContract {
     /**
      * 内层内容列表
      */
-    interface InfoListView extends ITSListView<InfoListBean,InfoListPresenter> {
+    interface InfoListView extends ITSListView<BaseListBean,InfoListPresenter> {
         String getInfoType();
     }
 
-    interface InfoListPresenter extends ITSListPresenter<InfoListBean> {
+    interface InfoListPresenter extends ITSListPresenter<BaseListBean> {
         void getInfoList(String cate_id, long max_id,
                          long limit, long page);
     }
@@ -54,7 +55,7 @@ public interface InfoMainContract {
          * @param page    翻页页码（热门和推荐列表 加载所需传入）
          * @return
          */
-        Observable<BaseJson<List<InfoListBean>>> getInfoList(String cate_id, long max_id,
+        Observable<BaseJson<InfoListBean>> getInfoList(String cate_id, long max_id,
                                                              long page);
     }
 }

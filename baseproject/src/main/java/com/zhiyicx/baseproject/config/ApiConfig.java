@@ -24,20 +24,20 @@ public class ApiConfig {
      * 测试服务器：http://192.168.2.222:8080/mockjs/2/test-get-repose-head-normal?
      */
 
-//    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 测试服务器
+//    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
+
     public static final String APP_DOMAIN = "http://192.168.2.222/";// 测试服务器
     // public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
+    public static final String APP_IM_DOMAIN = "192.168.2.222:9900";// im 测试服务器
+    // public static final String APP_IM_DOMAIN = "ws://tsplus.zhibocloud.cn:9900";// im 正式服务器
 
-    public static final String URL_ABOUT_US = "http://blog.csdn" +
-            ".net/hellohhj/article/details/50467502";// 关于我们网站
+
+    public static final String URL_ABOUT_US = "http://www.thinksns.com/index.html";// 关于我们网站
 
     // 图片地址
     public static final String IMAGE_PATH = APP_DOMAIN + "api/v1/storages/%s/%d";// 带质量压缩
     // 图片地址
     public static final String NO_PROCESS_IMAGE_PATH = APP_DOMAIN + "api/v1/storages/%s";// 不带质量压缩
-
-    // 每次从服务器获取数据，一页的最大数量
-    public static final int MAX_NUMBER_PER_PAGE = 10;
 
     /*******************************************  接口 Path
      * *********************************************/
@@ -65,8 +65,8 @@ public class ApiConfig {
      * 聊天相关
      */
     public static final String APP_PATH_CREATE_CONVERSAITON = "api/v1/im/conversations";// 创建对话
-    public static final String APP_PATH_GET_CONVERSAITON_LIST =
-            "api/v1/im/conversations/list/all";// 创建对话
+    public static final String APP_PATH_GET_CONVERSAITON_LIST = "api/v1/im/conversations/list/all";// 获取登陆用户的对话列表
+    public static final String APP_PATH_GET_SINGLE_CONVERSAITON = "api/v1/im/conversations/{cid}";// 获取单个对话信息
 
     /**
      * 关注粉丝 FollowFansClient
@@ -80,7 +80,7 @@ public class ApiConfig {
     public static final String APP_PATH_FOLLOW_USER = "api/v1/users/follow";// 关注用户
     public static final String APP_PATH_CANCEL_FOLLOW_USER = "api/v1/users/unFollow";// 取消用户关注
     public static final String APP_PATH_GET_USER_FOLLOW_STATE = "api/v1/users/followstatus";//
- // 获取用户关注状态
+    // 获取用户关注状态
 
     /**
      * 动态相关
@@ -96,7 +96,6 @@ public class ApiConfig {
     public static final String DYNAMIC_TYPE_FOLLOWS = "follows"; // 关注动态
     public static final String DYNAMIC_TYPE_HOTS = "hots"; // 热门动态
     public static final String DYNAMIC_TYPE_SOMEONE = "users/%s"; // 某个人的动态列表,%s表示用户id
-    public static final int DYNAMIC_PAGE_LIMIT = 10;// 不传 服务器默认10条
     // 点赞一条动态,取消点赞
     public static final String APP_PATH_DYNAMIC_HANDLE_LIKE = "api/v1/feeds/{feed_id}/digg";
     public static final String APP_PATH_DYNAMIC_HANDLE_LIKE_FORMAT = "api/v1/feeds/%s/digg";
@@ -111,18 +110,41 @@ public class ApiConfig {
     // 收藏动态，取消收藏
     public static final String APP_PATH_HANDLE_COLLECT = "api/v1/feeds/{feed_id}/collection";
     public static final String APP_PATH_HANDLE_COLLECT_FORMAT = "api/v1/feeds/%s/collection";
+    // 增加动态浏览量
+    public static final String APP_PATH_HANDLE_DYNAMIC_VIEWCOUNT = "api/v1/feeds/{feed_id}/viewcount";
 
     /**
      * 资讯相关
      */
     public static final String APP_PATH_INFO_TYPE = "api/v1/news/cates";// 资讯分类列表
     public static final String APP_PATH_INFO_LIST = "api/v1/news";// 资讯列表
+    public static final String APP_PATH_INFO_COMMENT = "api/v1/news/{news_id}/comment";// 评论资讯
+    public static final String APP_PATH_INFO_COMMENT_FORMAT = "api/v1/news/%s/comment";// 评论资讯
+    // 删除资讯评论
+    public static final String APP_PATH_INFO_DELETE_COMMENT_FORMAT = "api/v1/news/%s/comment/%s";
+    // 删除资讯评论
+    public static final String APP_PATH_INFO_DELETE_COMMENT = "api/v1/news/{news_id}/comment/{comment_id}";
+    public static final String APP_PATH_INFO_COMMENT_LIST =
+            "api/v1/news/{feed_id}/comments";// 资讯评论列表
+    public static final String APP_PATH_INFO_COLLECT = "api/v1/news/{news_id}/collection";// 收藏资讯
+    public static final String APP_PATH_INFO_COLLECT_FORMAT = "api/v1/news/%s/collection";// 收藏资讯
     public static final String APP_PATH_INFO_FOLLOW_LIST = "api/v1/news/cates/follow";// 订阅资讯频道
+    public static final String APP_PATH_INFO_SEARCH = "/api/v1/news/search";// 订阅资讯频道
+    public static final String APP_PATH_INFO_DETAILS = "/api/v1/news/{news_id}";// 资讯详情网页
+    public static final String APP_PATH_INFO_DETAILS_FORMAT = "/api/v1/news/%d";// 资讯详情网页
 
     /**
      * 音乐相关
      */
     public static final String APP_PATH_MUSIC_ABLUM_LIST = "api/v1/music/specials";// 专辑列表
+    public static final String APP_PATH_MUSIC_DETAILS = "api/v1/music/{music_id}";// 歌曲详情
+    public static final String APP_PATH_MUSIC_COMMENT = "api/v1/music/{music_id}/comment";// 评论歌曲
+    public static final String APP_PATH_MUSIC_ABLUM_COMMENT =
+            "api/v1/music/specail/{special_id}/comment";// 评论专辑
+    public static final String APP_PATH_MUSIC_ABLUM_COLLECT =
+            "api/v1/music/special/{special_id}/collection";// 收藏专辑
+    public static final String APP_PATH_MUSIC_DIGG = "api/v1/music/{music_id}/digg";// 音乐点赞
+    public static final String APP_PATH_MUSIC_DIGG_FORMAT = "api/v1/music/%s/digg";// 音乐点赞
     public static final String APP_PATH_MUSIC_ABLUM_DETAILS =
             "api/v1/music/specials/{special_id}";// 专辑详情
 
@@ -138,6 +160,11 @@ public class ApiConfig {
     public static final String APP_PATH_DELETE_STORAGE_TASK =
             "api/v1/storages/task/{storage_task_id}";// 通知服务器，删除当前上传文件
     public static final String APP_PATH_HANDLE_BACKGROUND_TASK = "{path}";// 处理后台任务
+
+    public static final String APP_PATH_GET_COMPONENT_STATUS = "api/v1/system/component/status";// 查看扩展包安装状态
+    public static final String APP_PATH_GET_COMPONENT_CONFIGS = "api/v1/system/component/configs";// 获取扩展包配置信息
+    public static final String APP_PATH_GET_COMPONENT_CONFIGS_IM = "im";// 获取扩展包配置信息 类容
+
 
     /**
      * 仅仅测试使用

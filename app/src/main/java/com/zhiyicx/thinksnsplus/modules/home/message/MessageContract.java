@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 
 import java.util.List;
@@ -26,14 +25,6 @@ public interface MessageContract {
 
         void updateLikeItemData(MessageItemBean messageItemBean);
 
-        void refreshLastClicikPostion(int position, MessageItemBean messageItemBean);
-
-        /**
-         * 更新未读消息数量
-         *
-         * @param message 对话信息
-         */
-        void refreshMessageUnreadNum(Message message);
     }
 
     /**
@@ -46,7 +37,14 @@ public interface MessageContract {
          * @param user_id 用户 id
          * @return
          */
-        Observable<BaseJson<List<MessageItemBean>>> getMessageList(int user_id);
+        Observable<BaseJson<List<MessageItemBean>>> getConversationList(int user_id);
+
+        /**
+         * 通过 对话 id 获取对话信息
+         * @param cid 对话 id
+         * @return
+         */
+        Observable<BaseJson<MessageItemBean>> getSingleConversation(int cid);
     }
 
     interface Presenter extends ITSListPresenter<MessageItemBean> {
@@ -54,6 +52,25 @@ public interface MessageContract {
 
         MessageItemBean updateLikeItemData();
 
-        void refreshLastClicikPostion(int position, MessageItemBean messageItemBean);
+        /**
+         * 刷新是否显示底部红点
+         * 刷新当条item 的未读数
+         *
+         * @param position                当条数据位置
+         */
+        void refreshLastClicikPostion(int position);
+
+        /**
+         *  删除本地对话
+         * @param messageItemBean
+         */
+        void deletConversation(MessageItemBean messageItemBean);
+
+        /**
+         * 通过 对话 id 获取对话信息
+         * @param cid 对话 id
+         * @return
+         */
+        void getSingleConversation(int cid);
     }
 }

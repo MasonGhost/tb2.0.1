@@ -88,7 +88,7 @@ public class DynamicListMenuView extends FrameLayout {
     int mTextNormalColor = R.color.normal_for_disable_button_text;// 正常文本颜色
     protected
     @ColorRes
-    int mTextCheckedColor = R.color.normal_for_disable_button_text;// 选中文本颜色
+    int mTextCheckedColor = R.color.important_for_note;// 选中文本颜色
 
     public DynamicListMenuView(Context context) {
         super(context);

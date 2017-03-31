@@ -122,7 +122,7 @@ public class HttpClientModule {
     @Singleton
     @Provides
     public File provideCacheFile(Application application) {
-        return FileUtils.getCacheFile(application);
+        return FileUtils.getCacheFile(application,false);
     }
 
     /**

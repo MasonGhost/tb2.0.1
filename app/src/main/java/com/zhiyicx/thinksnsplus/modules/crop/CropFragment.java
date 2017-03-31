@@ -29,6 +29,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.trycatch.mysnackbar.Prompt;
+import com.trycatch.mysnackbar.TSnackbar;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropActivity;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
@@ -56,6 +58,7 @@ import butterknife.ButterKnife;
 import static android.app.Activity.RESULT_OK;
 import static com.yalantis.ucrop.UCrop.EXSTRA_IMAGESOURCE_PADDING;
 import static com.yalantis.ucrop.UCrop.EXSTRA_OVERLAY_PADDING;
+import static com.yalantis.ucrop.UCrop.Options.EXTRA_UCROP_TITLE_TEXT_TOOLBAR;
 
 /**
  * @author LiuChao
@@ -92,6 +95,7 @@ public class CropFragment extends TSFragment {
     private GestureCropImageView mGestureCropImageView;
     private OverlayView mOverlayView;
     private View mBlockingView;
+    private TSnackbar mTSnackbar;
 
     private Bitmap.CompressFormat mCompressFormat = DEFAULT_COMPRESS_FORMAT;
     private int mCompressQuality = DEFAULT_COMPRESS_QUALITY;
@@ -124,7 +128,7 @@ public class CropFragment extends TSFragment {
 
     @Override
     protected String setCenterTitle() {
-        return getString(R.string.crop_head_icon);
+        return getArguments().getString(EXTRA_UCROP_TITLE_TEXT_TOOLBAR);
     }
 
     @Override
@@ -305,19 +309,32 @@ public class CropFragment extends TSFragment {
     }
 
     protected void cropAndSaveImage() {
+
+        mTSnackbar = TSnackbar.make(mSnackRootView, R.string.crop_ing, TSnackbar.LENGTH_INDEFINITE)
+                .setPromptThemBackground(Prompt.SUCCESS)
+                .addIconProgressLoading(0, true, false);
+        mTSnackbar.show();
         mBlockingView.setClickable(true);
         mGestureCropImageView.cropAndSaveImage(mCompressFormat, mCompressQuality, new BitmapCropCallback() {
 
             @Override
             public void onBitmapCropped(@NonNull Uri resultUri, int imageWidth, int imageHeight) {
+
+                TSnackbar.getTSnackBar(mTSnackbar, mSnackRootView, getString(R.string.crop_success), TSnackbar.LENGTH_SHORT)
+                        .setPromptThemBackground(Prompt.SUCCESS)
+                        .show();
+
                 setResultUri(resultUri, mGestureCropImageView.getTargetAspectRatio(), imageWidth, imageHeight);
                 mActivity.finish();
             }
 
             @Override
             public void onCropFailure(@NonNull Throwable t) {
+
+                TSnackbar.getTSnackBar(mTSnackbar, mSnackRootView, getString(R.string.crop_failure), TSnackbar.LENGTH_SHORT)
+                        .setPromptThemBackground(Prompt.ERROR)
+                        .show();
                 setResultError(t);
-                mActivity.finish();
             }
         });
     }
@@ -334,4 +351,5 @@ public class CropFragment extends TSFragment {
     protected void setResultError(Throwable throwable) {
         mActivity.setResult(UCrop.RESULT_ERROR, new Intent().putExtra(UCrop.EXTRA_ERROR, throwable));
     }
+
 }

@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -38,8 +37,6 @@ public class MusicProvider {
 
     private final ConcurrentMap<String, MutableMediaMetadata> mMusicListById;
 
-    private final Set<String> mFavoriteTracks;
-
     enum State {
         NON_INITIALIZED, INITIALIZING, INITIALIZED
     }
@@ -58,7 +55,6 @@ public class MusicProvider {
         mSource = source;
         mMusicListByGenre = new ConcurrentHashMap<>();
         mMusicListById = new ConcurrentHashMap<>();
-        mFavoriteTracks = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
     }
 
     public Iterable<String> getGenres() {
@@ -145,7 +141,8 @@ public class MusicProvider {
             }
             return;
         }
-
+        mMusicListByGenre.clear();
+        mMusicListById.clear();
         new AsyncTask<Void, Void, State>() {
             @Override
             protected State doInBackground(Void... params) {
@@ -176,6 +173,7 @@ public class MusicProvider {
             list.add(m.metadata);
         }
         mMusicListByGenre = newMusicListByGenre;
+
     }
 
     private synchronized void retrieveMedia() {
@@ -206,7 +204,6 @@ public class MusicProvider {
         if (!MediaIDHelper.isBrowseable(mediaId)) {
             return mediaItems;
         }
-
         if (MEDIA_ID_ROOT.equals(mediaId)) {
             for (String genre : getGenres()) {
                 for (MediaMetadataCompat metadata : mMusicListByGenre.get(genre)) {

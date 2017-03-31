@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly;
 
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.media.MediaMetadataCompat;
@@ -27,8 +26,6 @@ public class QueueManager {
 
     private MetadataUpdateListener mListener;
 
-    private Resources mResources;
-
     private List<MediaSessionCompat.QueueItem> mPlayingQueue;
 
     private List<MediaSessionCompat.QueueItem> mCacheQueue;
@@ -36,11 +33,9 @@ public class QueueManager {
     private int mCurrentIndex;
 
     public QueueManager(@NonNull MusicProvider musicProvider,
-                        @NonNull Resources resources,
                         @NonNull MetadataUpdateListener listener) {
         this.mMusicProvider = musicProvider;
         this.mListener = listener;
-        this.mResources = resources;
 
         mPlayingQueue = Collections.synchronizedList(new ArrayList<MediaSessionCompat.QueueItem>());
         mCurrentIndex = 0;
@@ -180,6 +175,14 @@ public class QueueManager {
             String albumUri = metadata.getDescription().getIconUri().toString();
 
         }
+    }
+
+    public MusicProvider getMusicProvider() {
+        return mMusicProvider;
+    }
+
+    public void setMusicProvider(MusicProvider musicProvider) {
+        mMusicProvider = musicProvider;
     }
 
     public interface MetadataUpdateListener {

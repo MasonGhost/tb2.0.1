@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/white"
-              android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+    >
     <!--用户编辑页面，简介编辑的布局-->
     <!--简介编辑框-->
     <EditText
@@ -12,20 +12,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
+        android:gravity="top|left"
         android:hint="@string/edit_introduce"
         android:text=""
-        android:gravity="top|left"
         android:textColor="@color/important_for_content"
-        android:textColorHint="@color/normal_for_assist_text"
+        android:textColorHint="@color/general_for_hint"
         android:textSize="@dimen/size_sub_title"/>
     <!--字数提示-->
     <TextView
         android:id="@+id/tv_limit_tip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_large"
+        android:layout_alignEnd="@id/et_content"
+        android:layout_alignRight="@id/et_content"
+        android:layout_alignBottom="@id/et_content"
         android:gravity="right"
         android:textColor="@color/important_for_note"
         android:textSize="@dimen/size_note_assist"
         tools:text="210/255"/>
-</LinearLayout>
+</RelativeLayout>

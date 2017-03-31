@@ -45,22 +45,16 @@ public interface PersonalCenterContract {
          * 设置通知服务器封面更新的状态
          */
         void setChangeUserCoverState(boolean changeSuccess);
-        /**
-         * 获取列表数据
-         *
-         * @return
-         */
-        List<DynamicBean> getDatas();
 
         /**
-         * 获取列表数据
-         *
-         * @return
+         * 所有接口都请求完毕后回调
          */
-        void refresh();
+        void allDataReady();
 
-        void refresh(int position);
-
+        /**
+         * 加载失败
+         */
+        void loadAllError();
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
@@ -87,6 +81,7 @@ public interface PersonalCenterContract {
     }
 
     interface Presenter extends DynamicContract.Presenter {
+
         void setCurrentUserInfo(Long userId);
 
         /**
@@ -130,5 +125,12 @@ public interface PersonalCenterContract {
          * @param imagePath       上传封面的本地路径
          */
         void changeUserCover(UserInfoBean userInfoBean, int storage_task_id, String imagePath);
+
+        /**
+         * 分享用户信息
+         *
+         * @param userInfoBean
+         */
+        void shareUserInfo(UserInfoBean userInfoBean);
     }
 }

@@ -1,13 +1,12 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.InfoMainClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -34,10 +33,10 @@ public class InfoMainRepository implements InfoMainContract.Reppsitory {
     }
 
     @Override
-    public Observable<BaseJson<List<InfoListBean>>> getInfoList(String cate_id,
+    public Observable<BaseJson<InfoListBean>> getInfoList(String cate_id,
                                                                 long max_id,
                                                                 long page) {
-        return mInfoMainClient.getInfoList(cate_id, max_id, null, page);
+        return mInfoMainClient.getInfoList(cate_id, max_id,  Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE), page);
     }
 
 

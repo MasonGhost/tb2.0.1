@@ -15,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 import java.lang.reflect.Field;
@@ -34,7 +35,7 @@ public class PagerRecyclerView extends RecyclerView {
     /**
      * 划出多少触发下一页
      */
-    private float mTriggerOffset = 0.25f;
+    private float mTriggerOffset = 0.2f;
 
     /**
      * 惯性速率
@@ -49,7 +50,7 @@ public class PagerRecyclerView extends RecyclerView {
 
     private int mPositionBeforeScroll = -1;
 
-    private boolean mSinglePageFling;
+    private boolean mSinglePageFling = true;
 
     /**
      * 滑动停止后是否需要调整
@@ -346,7 +347,7 @@ public class PagerRecyclerView extends RecyclerView {
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-        //记录拖动的最大/最小距离
+        // 记录拖动的最大/最小距离
         if (e.getAction() == MotionEvent.ACTION_MOVE) {
             if (mCurView != null) {
                 mMaxLeftWhenDragging = Math.max(mCurView.getLeft(), mMaxLeftWhenDragging);
@@ -403,14 +404,23 @@ public class PagerRecyclerView extends RecyclerView {
 
                         if (spanX > mCurView.getWidth() * mTriggerOffset && mCurView.getLeft() >=
                                 mMaxLeftWhenDragging) {
-                            if (!reverseLayout) targetPosition--;
-                            else targetPosition++;
+                            if (!reverseLayout) {
+                                LogUtils.d("targetPosition--");
+                                targetPosition--;
+                            } else {
+                                targetPosition++;
+                            }
                         } else if (spanX < mCurView.getWidth() * -mTriggerOffset && mCurView
                                 .getLeft() <= mMinLeftWhenDragging) {
-                            if (!reverseLayout) targetPosition++;
-                            else targetPosition--;
+                            if (!reverseLayout) {
+                                LogUtils.d("targetPosition++");
+                                targetPosition++;
+                            } else {
+                                targetPosition--;
+                            }
                         }// 如果不想滚动，不改变targetPosition，没有达到临界值。
                     } else {
+                        LogUtils.d("canScrollVertically()");
                         int spanY = mCurView.getTop() - mFirstTopWhenDragging;
                         if (spanY > mCurView.getHeight() * mTriggerOffset && mCurView.getTop() >=
                                 mMaxTopWhenDragging) {
@@ -490,7 +500,7 @@ public class PagerRecyclerView extends RecyclerView {
      */
     protected void adjustPositionX(int velocityX) {
         if (reverseLayout) velocityX *= -1;
-
+        LogUtils.d("adjustPositionX");
         int childCount = getChildCount();
         if (childCount > 0) {
             int curPosition = RecyclerViewUtils.getCenterXChildPosition(this);
@@ -582,10 +592,13 @@ public class PagerRecyclerView extends RecyclerView {
     }
 
     private int safeTargetPosition(int position, int count) {
+
         if (position < 0) {
+            LogUtils.d("position < 0");
             return 0;
         }
         if (position >= count) {
+            LogUtils.d("position >= count");
             return count - 1;
         }
         return position;

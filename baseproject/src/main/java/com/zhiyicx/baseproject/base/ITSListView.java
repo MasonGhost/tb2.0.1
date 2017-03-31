@@ -53,5 +53,26 @@ public interface ITSListView<T,P> extends IBaseView<P> {
      */
     int getPage();
 
+    /**
+     * 获取数据源数据
+     * @return
+     */
+    List<T> getListDatas();
+
+    /**
+     * 刷新数据
+     */
+     void refreshData();
+
+    /**
+     * 刷新数据
+     */
+     void refreshData(List<T> datas);
+
+    /**
+     * 刷新单条数据
+     */
+     void refreshData(int index);
+
 
 }

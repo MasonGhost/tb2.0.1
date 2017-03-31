@@ -42,7 +42,7 @@
         <activity
             android:name=".modules.home.HomeActivity"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
+            android:windowSoftInputMode="adjustResize">
         </activity>
         <activity android:name=".modules.settings.SettingsActivity">
         </activity>
@@ -62,7 +62,8 @@
         </activity>
         <activity android:name=".modules.settings.aboutus.AboutUsActivity">
         </activity>
-        <activity android:name=".modules.edit_userinfo.UserInfoActivity">
+        <activity
+            android:name=".modules.edit_userinfo.UserInfoActivity">
         </activity>
         <activity android:name=".modules.home.message.messagecomment.MessageCommentActivity">
         </activity>
@@ -74,13 +75,15 @@
         </activity>
         <activity android:name=".modules.photopicker.PhotoAlbumDetailsActivity">
         </activity>
-        <activity android:name=".modules.photopicker.PhotoViewActivity">
+        <activity
+            android:name=".modules.photopicker.PhotoViewActivity"
+            android:theme="@style/TransParentTheme">
         </activity>
         <activity
             android:name=".modules.gallery.GalleryActivity"
-            android:theme="@style/FullScreenTheme">
+            android:theme="@style/GalleryTheme">
         </activity>
-        <activity android:name=".modules.music_fm.music_album.MusicListActivity"/>
+        <activity android:name=".modules.music_fm.music_album_list.MusicListActivity"/>
         <activity android:name=".modules.follow_fans.FollowFansListActivity">
         </activity>
         <activity android:name=".modules.music_fm.music_album_detail.MusicDetailActivity"/>
@@ -122,6 +125,8 @@
                 // 例如锁屏被唤醒
             </intent-filter>
         </receiver>
+        <!-- 极光推送 -->
+        <receiver android:name=".jpush.JpushReceiver"/>
 
         <!-- #########################################      后台任务相关service       ################################ -->
         <service android:name=".service.backgroundtask.BackgroundTaskHandleService"/>
@@ -131,14 +136,34 @@
 
         <activity
             android:name=".modules.dynamic.detail.DynamicDetailActivity"
-            android:windowSoftInputMode="adjustResize"
-            >
+            android:windowSoftInputMode="adjustResize">
         </activity>
         <activity android:name=".modules.dynamic.detail.dig_list.DigListActivity">
         </activity>
         <activity
             android:name=".modules.personal_center.PersonalCenterActivity"
             android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity android:name=".modules.music_fm.music_comment.MusicCommentActivity">
+        </activity>
+        <!-- 新浪分享-->
+        <activity
+            android:name=".WBShareActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:launchMode="singleTop"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
         </activity>
     </application>
 

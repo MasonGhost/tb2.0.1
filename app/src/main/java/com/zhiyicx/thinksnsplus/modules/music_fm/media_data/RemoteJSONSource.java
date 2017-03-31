@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.media_data;
 import android.support.v4.media.MediaMetadataCompat;
 
 
+import com.zhiyicx.common.dagger.scope.FragmentScoped;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,13 +21,10 @@ import java.util.Iterator;
  * @Author Jliuer
  * @Date 2017/2/19/13:05
  * @Email Jliuer@aliyun.com
- * @Description 测试数据。。。
+ * @Description
  */
+@FragmentScoped
 public class RemoteJSONSource implements MusicProviderSource {
-
-
-    protected static final String CATALOG_URL =
-            "http://storage.googleapis.com/automotive-media/music.json";
 
     private static final String JSON_MUSIC = "music";
     private static final String JSON_TITLE = "title";
@@ -45,26 +44,6 @@ public class RemoteJSONSource implements MusicProviderSource {
             tracks.add(buildForTest(i));
         }
         return tracks.iterator();
-
-//        try {
-//            int slashPos = CATALOG_URL.lastIndexOf('/');
-//            String path = CATALOG_URL.substring(0, slashPos + 1);
-//            JSONObject jsonObj = fetchJSONFromUrl(CATALOG_URL);
-//
-//            if (jsonObj != null) {
-//                JSONArray jsonTracks = jsonObj.getJSONArray(JSON_MUSIC);
-//
-//                if (jsonTracks != null) {
-//                    for (int j = 0; j < jsonTracks.length(); j++) {
-//                        tracks.add(buildFromJSON(jsonTracks.getJSONObject(j), path));
-//                    }
-//                }
-//            }
-//
-//            return tracks.iterator();
-//        } catch (JSONException e) {
-//            throw new RuntimeException("Could not retrieve music list", e);
-//        }
     }
 
     private MediaMetadataCompat buildForTest(int i) {
@@ -76,6 +55,7 @@ public class RemoteJSONSource implements MusicProviderSource {
         if (i % 2 == 0) {
             testSongUrl = testSongUrl_;
         }
+
         //noinspection ResourceType
         return new MediaMetadataCompat.Builder()
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, i + "")

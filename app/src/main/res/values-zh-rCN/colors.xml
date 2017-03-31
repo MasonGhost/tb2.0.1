@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- 主页底部导航栏-->
-    <color name="home_bottom_navigate_bg">#363844</color>
-    <color name="home_bottom_navigate_text_normal">#707c81</color>
-
-</resources>
-

@@ -9,6 +9,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.net.UpLoadFile;
 import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.imsdk.entity.IMConfig;
+import com.zhiyicx.imsdk.receiver.NetChangeReceiver;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
@@ -18,18 +19,22 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.BackgroundRequestTaskBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.InfoCommentListBeanDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SendDynamicRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
+import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 
 import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,6 +53,7 @@ import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_DYNAMIC_LIST;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_INFO_LIST;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_DYNAMIC_TO_LIST;
 
 /**
@@ -61,6 +67,7 @@ public class BackgroundTaskHandler {
     private static final int RETRY_MAX_COUNT = 3; // 最大重试次
     private static final int RETRY_INTERVAL_TIME = 2; // 循环间隔时间 单位 s
     private static final long MESSAGE_SEND_INTERVAL_FOR_CPU = 500;// 消息发送间隔时间，防止 cpu 占用过高
+    private static final long MESSAGE_SEND_INTERVAL_FOR_CPU_TIME_OUT = 2000;// 消息发送间隔时间，防止 cpu 占用过高
 
     @Inject
     Application mContext;
@@ -82,12 +89,16 @@ public class BackgroundTaskHandler {
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
     @Inject
     DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
+    @Inject
+    InfoCommentListBeanDaoImpl mInfoCommentListBeanDao;
 
     private Queue<BackgroundRequestTaskBean> mTaskBeanConcurrentLinkedQueue = new ConcurrentLinkedQueue<>();// 线程安全的队列
 
     private List<BackgroundRequestTaskBean> mBackgroundRequestTaskBeanCaches = new ArrayList<>();
 
     private boolean mIsExit = false; // 是否关闭
+
+    private boolean mIsNetConnected = false;
 
     public BackgroundTaskHandler() {
         init();
@@ -121,16 +132,17 @@ public class BackgroundTaskHandler {
         AppApplication.AppComponentHolder.getAppComponent().inject(this);
         getCacheData();
         new Thread(handleTaskRunnable).start();
-//        EventBus.getDefault().register(this);
+        EventBus.getDefault().register(this);
+        mIsNetConnected = NetUtils.netIsConnected(mContext);
     }
-//
-//    /**
-//     * 网络变化监听，暂时不需要 ，配合 Evnetbus 使用
-//     */
-//    @Subscriber(tag = NetChangeReceiver.EVENT_NETWORK_CONNECTED)
-//    public void onNetConnected() {
-//
-//    }
+
+    /**
+     * 网络变化监听，暂时不需要 ，配合 Evnetbus 使用
+     */
+    @Subscriber(tag = NetChangeReceiver.EVENT_NETWORK_CONNECTED)
+    public void onNetConnected() {
+        mIsNetConnected = true;
+    }
 
 
     /**
@@ -152,7 +164,7 @@ public class BackgroundTaskHandler {
         @Override
         public void run() {
             while (!mIsExit) {
-                if (NetUtils.netIsConnected(mContext) && !mTaskBeanConcurrentLinkedQueue.isEmpty()) {
+                if (mIsNetConnected && !mTaskBeanConcurrentLinkedQueue.isEmpty()) {
                     BackgroundRequestTaskBean backgroundRequestTaskBean = mTaskBeanConcurrentLinkedQueue.poll();
                     handleTask(backgroundRequestTaskBean);
                 }
@@ -163,7 +175,7 @@ public class BackgroundTaskHandler {
                 mBackgroundRequestTaskBeanGreenDao.saveMultiData(mBackgroundRequestTaskBeanCaches);
             }
             // 取消 event 监听
-//            EventBus.getDefault().unregister(BackgroundTaskHandler.this);
+            EventBus.getDefault().unregister(BackgroundTaskHandler.this);
         }
     };
 
@@ -173,7 +185,11 @@ public class BackgroundTaskHandler {
     private void threadSleep() {
         //防止cpu占用过高
         try {
-            Thread.sleep(MESSAGE_SEND_INTERVAL_FOR_CPU);
+            if (mIsNetConnected) {
+                Thread.sleep(MESSAGE_SEND_INTERVAL_FOR_CPU);
+            } else {
+                Thread.sleep(MESSAGE_SEND_INTERVAL_FOR_CPU_TIME_OUT);
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -258,6 +274,9 @@ public class BackgroundTaskHandler {
             case SEND_COMMENT:
                 sendComment(backgroundRequestTaskBean);
                 break;
+            case SEND_INFO_COMMENT:
+                sendInfoComment(backgroundRequestTaskBean);
+                break;
             default:
         }
 
@@ -325,7 +344,7 @@ public class BackgroundTaskHandler {
                         IMConfig imConfig = new IMConfig();
                         imConfig.setImUid(data.getUser_id());
                         imConfig.setToken(data.getIm_password());
-                        imConfig.setWeb_socket_authority("ws://192.168.2.222:9900"); // TODO: 2017/1/20  服务器统一配置接口返回数据 ws://218.244.149.144:9900
+                        imConfig.setWeb_socket_authority("ws://"+mAuthRepository.getComponentConfigLocal().get(0).getValue());
                         mAuthRepository.saveIMConfig(imConfig);
                         mAuthRepository.loginIM();
                     }
@@ -365,6 +384,7 @@ public class BackgroundTaskHandler {
                         mUserInfoBeanGreenDao.insertOrReplace(data);
                         // 用户信息获取成功后就可以通知界面刷新了
                         EventBus.getDefault().post(data, EventBusTagConfig.EVENT_USERINFO_UPDATE);
+                        new JpushAlias(mContext, data.get(0).getUser_id() + "");// 设置极光推送别名
                     }
 
                     @Override
@@ -446,7 +466,7 @@ public class BackgroundTaskHandler {
                         mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
                         // 发送动态到动态列表：状态为发送成功
                         dynamicBean.setState(DynamicBean.SEND_SUCCESS);
-                        dynamicBean.setFeed_id(((Double)data).longValue());
+                        dynamicBean.setFeed_id(((Double) data).longValue());
                         mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
                         EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
                     }
@@ -487,7 +507,7 @@ public class BackgroundTaskHandler {
                     @Override
                     protected void onSuccess(Object data) {
                         mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
-                        dynamicCommentBean.setComment_id(((Double)data).longValue());
+                        dynamicCommentBean.setComment_id(((Double) data).longValue());
                         dynamicCommentBean.setState(DynamicBean.SEND_SUCCESS);
                         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
                         EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
@@ -505,6 +525,46 @@ public class BackgroundTaskHandler {
                         dynamicCommentBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
                         EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
+                    }
+                });
+
+    }
+
+    /**
+     * 处理资讯评论发送的后台任务
+     */
+    private void sendInfoComment(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
+
+        final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
+        final Long commentMark = (Long) params.get("comment_mark");
+        final InfoCommentListBean infoCommentListBean = mInfoCommentListBeanDao.getCommentByCommentMark
+                (commentMark);
+        // 发送动态到动态列表：状态为发送中
+        mServiceManager.getCommonClient()
+                .handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
+                .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
+                .subscribe(new BaseSubscribe<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                        infoCommentListBean.setId(((Double) data).intValue());
+                        infoCommentListBean.setState(DynamicBean.SEND_SUCCESS);
+                        mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
+                        EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
+                    }
+
+                    @Override
+                    protected void onFailure(String message) {
+                        infoCommentListBean.setState(DynamicBean.SEND_ERROR);
+                        mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
+                        EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        infoCommentListBean.setState(DynamicBean.SEND_ERROR);
+                        mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
+                        EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
                     }
                 });
 

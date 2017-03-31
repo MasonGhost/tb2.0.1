@@ -11,23 +11,15 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.TimeUtils;
-import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagelike.MessageLikeActivity;
-import com.zhy.adapter.recyclerview.CommonAdapter;
-import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
-import org.simple.eventbus.EventBus;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -42,7 +34,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/5
  * @Contact master.jungle68@gmail.com
  */
-public class MessageFragment extends TSListFragment<MessageContract.Presenter, MessageItemBean> implements MessageContract.View, MultiItemTypeAdapter.OnItemClickListener {
+public class MessageFragment extends TSListFragment<MessageContract.Presenter, MessageItemBean> implements MessageContract.View, MessageAdapter.OnSwipItemClickListener {
     private static final int ITEM_TYPE_COMMNETED = 0;
     private static final int ITEM_TYPE_LIKED = 1;
 
@@ -50,7 +42,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     @Inject
     protected MessagePresenter mMessagePresenter;
-    private List<MessageItemBean> mMessageItemBeen = new ArrayList<>();
+
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     private int mLastClickPostion = -1;// 纪录上次聊天 item ,用于单条刷新
 
@@ -66,7 +58,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     protected int setLeftImg() {
         return 0;
     }
-
 
     @Override
     protected boolean setUseSatusbar() {
@@ -89,6 +80,10 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         initHeaderView();
     }
 
+    @Override
+    protected boolean isRefreshEnable() {
+        return false;
+    }
 
     /**
      * 是否需要上拉加载
@@ -117,23 +112,20 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         super.onResume();
         if (mLastClickPostion != -1) {
             // 刷新当条信息内容
-            mPresenter.refreshLastClicikPostion(mLastClickPostion, mMessageItemBeen.get(mLastClickPostion));
+            mPresenter.refreshLastClicikPostion(mLastClickPostion);
+            mLastClickPostion = -1;
         }
-        // 是否显示底部红点
-        boolean isShowMessgeTip = false;
-        for (MessageItemBean messageItemBean : mMessageItemBeen) {
-            if (messageItemBean.getUnReadMessageNums() > 0) {
-                isShowMessgeTip = true;
-                break;
-            }
+        if (getListDatas().size() > 0) {
+            mPresenter.refreshLastClicikPostion(0);
         }
-        EventBus.getDefault().post(isShowMessgeTip, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED);
     }
 
     @Override
-    protected CommonAdapter getAdapter() {
-        CommonAdapter commonAdapter = new MessageAdapter(getActivity(), R.layout.item_message_list, mMessageItemBeen);
-        commonAdapter.setOnItemClickListener(this);
+    protected RecyclerView.Adapter getAdapter() {
+
+//        MessageSwipeAdapter commonAdapter =new MessageSwipeAdapter(getContext(),mListDatas);
+        MessageAdapter commonAdapter = new MessageAdapter(getActivity(), R.layout.item_message_list, mListDatas);
+        commonAdapter.setOnSwipItemClickListener(this);
         return commonAdapter;
     }
 
@@ -142,7 +134,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
      */
     private void initHeaderView() {
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
-
         mHeaderView = LayoutInflater.from(getContext()).inflate(R.layout.view_header_message_list, null);
         mHeaderAndFooterWrapper.addHeaderView(mHeaderView);
         mRvList.setAdapter(mHeaderAndFooterWrapper);
@@ -225,44 +216,23 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     @Override
     public void updateCommnetItemData(MessageItemBean messageItemBean) {
-        mMessageItemBeen.set(ITEM_TYPE_COMMNETED, messageItemBean);
+        mListDatas.set(ITEM_TYPE_COMMNETED, messageItemBean);
     }
 
     @Override
     public void updateLikeItemData(MessageItemBean messageItemBean) {
-        mMessageItemBeen.set(ITEM_TYPE_LIKED, messageItemBean);
+        mListDatas.set(ITEM_TYPE_LIKED, messageItemBean);
     }
 
     @Override
-    public void refreshLastClicikPostion(int position, MessageItemBean messageItemBean) {
-        mMessageItemBeen.set(position, messageItemBean);
+    public void refreshData() {
+        super.refreshData();
         mHeaderAndFooterWrapper.notifyDataSetChanged();
-        mLastClickPostion = -1;
     }
 
-    /**
-     * 更新未读消息
-     *
-     * @param message 对话信息
-     */
     @Override
-    public void refreshMessageUnreadNum(Message message) {
-        int size = mMessageItemBeen.size();
-        boolean isHasConversion = false; // 对话是否存在
-        for (int i = 0; i < size; i++) {
-            if (mMessageItemBeen.get(i).getConversation().getCid() == message.getCid()) {
-                mMessageItemBeen.get(i).setUnReadMessageNums(mMessageItemBeen.get(i).getUnReadMessageNums() + 1);
-                mMessageItemBeen.get(i).getConversation().setLast_message_text(message.getTxt());
-                mMessageItemBeen.get(i).getConversation().setLast_message_time(message.getCreate_time());
-                refreshLastClicikPostion(i, mMessageItemBeen.get(i));
-                isHasConversion = true;
-                break;
-            }
-        }
-        if (!isHasConversion) {
-            mPresenter.requestNetData(0L, false);
-        }
-
+    public void refreshData(int index) {
+        mHeaderAndFooterWrapper.notifyItemChanged(index);
     }
 
     @Override
@@ -280,16 +250,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         showMessageNotSticky(message);
     }
 
-    @Override
-    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        position = position - 1;//  减去 heder 占用的 1 个位置
-        toChat(mMessageItemBeen.get(position), position);
-    }
-
-    @Override
-    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
-        return false;
-    }
 
     /**
      * 进入聊天页
@@ -304,5 +264,19 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         to.putExtras(bundle);
         startActivity(to);
         mLastClickPostion = positon;//
+    }
+
+    @Override
+    public void onLeftClick(int position) {
+        position = position - 1;// 减去 header
+        toChat(mListDatas.get(position), position);
+    }
+
+    @Override
+    public void onRightClick(int position) {
+        position = position - 1;// 减去 header
+        mPresenter.deletConversation(mListDatas.get(position));
+        mListDatas.remove(position);
+        refreshData();
     }
 }

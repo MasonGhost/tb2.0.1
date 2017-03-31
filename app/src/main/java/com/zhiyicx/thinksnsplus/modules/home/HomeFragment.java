@@ -21,6 +21,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
@@ -30,11 +31,15 @@ import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 
 /**
  * @Describe
@@ -83,6 +88,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     LinearLayout mLlBottomContainer;
     private TSViewPagerAdapter mHomePager;
     private PhotoSelectorImpl mPhotoSelector;
+    private JpushAlias mJpushAlias;
 
 
     public static HomeFragment newInstance() {
@@ -113,6 +119,11 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
     protected void initView(View rootView) {
         initViewPager();
         longClickSendTextDynamic();
@@ -131,6 +142,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         initListener();
         changeNavigationButton(PAGE_HOME);
         mVpHome.setCurrentItem(PAGE_HOME, false);
+        mJpushAlias = new JpushAlias(getContext(), AppApplication.getmCurrentLoginAuth().getUser_id() + "");// 设置极光推送别名
+        mJpushAlias.setAlias();
     }
 
     @Override
@@ -311,12 +324,18 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 
     @Override
     public void onButtonMenuShow(boolean isShow) {
-        System.out.println("isShow = " + isShow);
-        mLlBottomContainer.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        if (isShow) {
+            Observable.timer(getResources().getInteger(android.R.integer.config_mediumAnimTime), TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()).map(new Func1<Long, Object>() {
+                @Override
+                public Object call(Long aLong) {
+                    mLlBottomContainer.setVisibility(View.VISIBLE);
+                    return null;
+                }
+            }).subscribe();
+        } else {
+            mLlBottomContainer.setVisibility(View.GONE);
+        }
+
     }
 
-    @Override
-    public void setCommentHint(String hintStr) {
-
-    }
 }

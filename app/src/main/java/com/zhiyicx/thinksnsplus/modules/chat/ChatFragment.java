@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.chat;
 
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
@@ -103,7 +104,9 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
                 //若不可视区域高度大于1/3屏幕高度，则键盘显示
                 if (rootInvisibleHeight > (1 / 3 * dispayHeight)) {
                     mKeyboradIsOpen = true;
-                    mMessageList.scrollToBottom();
+                    if (mMessageItemBean.getConversation() != null) {// 如果对话没有创建，不做处理
+                        mMessageList.scrollToBottom();
+                    }
                 } else {
                     //键盘隐藏
                     mKeyboradIsOpen = false;
@@ -113,6 +116,8 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
             }
         });
 
+        mIlvContainer.setEtContentHint(getString(R.string.default_input_chat_hint));
+
     }
 
     @Override
@@ -121,7 +126,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
         if (mMessageItemBean.getConversation() == null) { // 先获取本地信息，如果本地信息存在，直接使用，如果没有直接创建
             Conversation conversation = ConversationDao.getInstance(getContext()).getPrivateChatConversationByUids(AppApplication.getmCurrentLoginAuth().getUser_id(), mMessageItemBean.getUserInfo().getUser_id().intValue());
             if (conversation == null) {
-                mPresenter.createChat(mMessageItemBean.getUserInfo().getUser_id().intValue());
+                mPresenter.createChat(mMessageItemBean.getUserInfo(), null);
             } else {
                 mMessageItemBean.setConversation(conversation);
                 initMessageList();
@@ -161,7 +166,14 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
      */
     @Override
     public void onSendClick(View v, String text) {
-        mPresenter.sendTextMessage(text, mMessageItemBean.getConversation().getCid());
+        if (TextUtils.isEmpty(text)) {
+            return;
+        }
+        if (mMessageItemBean.getConversation() != null) {
+            mPresenter.sendTextMessage(text, mMessageItemBean.getConversation().getCid());
+        } else {
+            mPresenter.createChat(mMessageItemBean.getUserInfo(), text);
+        }
     }
 
     /*******************************************  聊天 item 点击事件 *********************************************/
@@ -270,7 +282,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
         for (int i = 0; i < size; i++) {
             if (mDatas.get(i).getLastMessage().getId() == message.getId()) {
                 mDatas.get(i).setLastMessage(message);
-                mMessageList.refresh(i);
+//                mMessageList.refresh(i); 没有 UI 更新 ，所以不刷新
                 break;
             }
         }

@@ -40,7 +40,8 @@ public class DynamicToolBeanGreenDaoImpl extends CommonCacheImpl<DynamicToolBean
 
     @Override
     public DynamicToolBean getSingleDataFromCache(Long primaryKey) {
-        return null;
+        DynamicToolBeanDao dynamicToolBeanDao = getWDaoSession().getDynamicToolBeanDao();
+        return dynamicToolBeanDao.load(primaryKey);
     }
 
     @Override
@@ -50,17 +51,20 @@ public class DynamicToolBeanGreenDaoImpl extends CommonCacheImpl<DynamicToolBean
 
     @Override
     public void clearTable() {
-
+        DynamicToolBeanDao dynamicToolBeanDao = getWDaoSession().getDynamicToolBeanDao();
+        dynamicToolBeanDao.deleteAll();
     }
 
     @Override
     public void deleteSingleCache(Long primaryKey) {
-
+        DynamicToolBeanDao dynamicToolBeanDao = getWDaoSession().getDynamicToolBeanDao();
+        dynamicToolBeanDao.deleteByKey(primaryKey);
     }
 
     @Override
     public void deleteSingleCache(DynamicToolBean dta) {
-
+        DynamicToolBeanDao dynamicToolBeanDao = getWDaoSession().getDynamicToolBeanDao();
+        dynamicToolBeanDao.delete(dta);
     }
 
     @Override

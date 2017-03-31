@@ -3,7 +3,6 @@ package com.zhiyicx.baseproject.impl.share;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -14,6 +13,7 @@ import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.media.UMImage;
+import com.umeng.socialize.media.UMWeb;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.config.UmengConfig;
 import com.zhiyicx.baseproject.widget.popwindow.RecyclerViewPopupWindow;
@@ -21,6 +21,7 @@ import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -35,6 +36,7 @@ import java.util.List;
  * @Contact master.jungle68@gmail.com
  */
 public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListener {
+    private static final int SHARE_COLUMS = 5;// item 列数
 
     /**
      * 友盟初始化
@@ -42,15 +44,17 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
     static {
         PlatformConfig.setQQZone(UmengConfig.QQ_APPID, UmengConfig.QQ_SECRETKEY);
         PlatformConfig.setWeixin(UmengConfig.WEIXIN_APPID, UmengConfig.WEIXIN_SECRETKEY);
-        PlatformConfig.setSinaWeibo(UmengConfig.SINA_APPID, UmengConfig.SINA_SECRETKEY);
-        Config.REDIRECT_URL = UmengConfig.SINA_SECRETKEY;
+        PlatformConfig.setSinaWeibo(UmengConfig.SINA_APPID, UmengConfig.SINA_SECRETKEY, UmengConfig.SINA_RESULT_RUL);
     }
 
     private Context mContext;
     private ShareContent mShareContent;
     private RecyclerViewPopupWindow mRecyclerViewPopupWindow;
 
+    OnShareCallbackListener mOnShareCallbackListener;
+
     public UmengSharePolicyImpl(Context mContext) {
+        mOnShareCallbackListener = this;
         this.mContext = mContext;
         init(mContext);
     }
@@ -64,6 +68,7 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
     private void init(Context mContext) {
 
         UMShareAPI.get(mContext);
+        Config.DEBUG = true;
         initSharePopupWindow();
     }
 
@@ -80,6 +85,15 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
      */
     public static void onActivityResult(int requestCode, int resultCode, Intent data, Context context) {
         UMShareAPI.get(context).onActivityResult(requestCode, resultCode, data);
+    }
+
+    /**
+     * 在使用分享或者授权的Activity中，重写onDestory()方法：
+     *
+     * @param activity
+     */
+    public static void onDestroy(Activity activity) {
+        UMShareAPI.get(activity).release();
     }
 
     /**
@@ -172,35 +186,49 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
     private void shareActionConfig(Activity activity, final OnShareCallbackListener l, SHARE_MEDIA share_media) {
         ShareAction shareAction = new ShareAction(activity);
         shareAction.setPlatform(share_media);
-        if (!TextUtils.isEmpty(mShareContent.getTitle())) {
-            shareAction.withTitle(mShareContent.getTitle());
-        }
+        UMImage image = null;
         if (!TextUtils.isEmpty(mShareContent.getContent())) {
             shareAction.withText(mShareContent.getContent());
         }
         if (!TextUtils.isEmpty(mShareContent.getImage())) {
-            UMImage image = new UMImage(activity, mShareContent.getImage());
-            shareAction.withMedia(image);
+            image = new UMImage(activity, mShareContent.getImage());
         }
         if (0 != mShareContent.getResImage()) {
-            UMImage image = new UMImage(activity, mShareContent.getResImage());
-            shareAction.withMedia(image);
+            image = new UMImage(activity, mShareContent.getResImage());
         }
         if (null != mShareContent.getBitmap()) {
-            UMImage image = new UMImage(activity, mShareContent.getBitmap());
-            shareAction.withMedia(image);
+            image = new UMImage(activity, mShareContent.getBitmap());
         }
         if (null != mShareContent.getFile()) {
-            UMImage image = new UMImage(activity, mShareContent.getFile());
-            shareAction.withMedia(image);
+            image = new UMImage(activity, mShareContent.getFile());
         }
         if (!TextUtils.isEmpty(mShareContent.getUrl())) {
-            shareAction.withTargetUrl(mShareContent.getUrl());
+            UMWeb web = new UMWeb(mShareContent.getUrl());
+            if (!TextUtils.isEmpty(mShareContent.getTitle())) {
+                web.setTitle(mShareContent.getTitle());//标题
+            }
+            if (!TextUtils.isEmpty(mShareContent.getContent())) {
+                web.setDescription(mShareContent.getContent());
+            }
+            if (image != null) {
+                web.setThumb(image);
+            }
+            shareAction.withMedia(web);
+        } else {
+            shareAction.withMedia(image);
         }
         shareAction.setCallback(new UMShareListener() {
             @Override
+            public void onStart(SHARE_MEDIA share_media) {
+                if (l != null) {
+                    Share share = changeShare(share_media);
+                    l.onStart(share);
+                }
+            }
+
+            @Override
             public void onResult(SHARE_MEDIA share_media) {
-                if (l == null) {
+                if (l != null) {
                     Share share = changeShare(share_media);
                     l.onSuccess(share);
                 }
@@ -208,7 +236,7 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
 
             @Override
             public void onError(SHARE_MEDIA share_media, Throwable throwable) {
-                if (l == null) {
+                if (l != null) {
                     Share share = changeShare(share_media);
                     l.onError(share, throwable);
                 }
@@ -216,7 +244,7 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
 
             @Override
             public void onCancel(SHARE_MEDIA share_media) {
-                if (l == null) {
+                if (l != null) {
                     Share share = changeShare(share_media);
                     l.onCancel(share);
                 }
@@ -257,18 +285,27 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
     }
 
     @Override
-    public void onSuccess(Share share) {
+    public void onStart(Share share) {
+        LogUtils.i(" share start");
+    }
 
+    @Override
+    public void onSuccess(Share share) {
+        LogUtils.i(" share success");
+        mRecyclerViewPopupWindow.hide();
     }
 
     @Override
     public void onError(Share share, Throwable throwable) {
-
+        LogUtils.i(" share onError");
+        throwable.printStackTrace();
+        mRecyclerViewPopupWindow.hide();
     }
 
     @Override
     public void onCancel(Share share) {
-
+        LogUtils.i(" share cancle");
+        mRecyclerViewPopupWindow.hide();
     }
 
     private static class ShareBean {
@@ -296,7 +333,8 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
 
         mRecyclerViewPopupWindow = RecyclerViewPopupWindow.Builder()
                 .isOutsideTouch(true)
-                .asGrid(5)
+                .asGrid(SHARE_COLUMS)// 列数
+                .itemSpacing(mContext.getResources().getDimensionPixelSize(R.dimen.spacing_mid)) // 间距
                 .with((Activity) mContext)
                 .adapter(new CommonAdapter<ShareBean>(mContext, R.layout.item_share_popup_window, mDatas) {
                     @Override
@@ -308,19 +346,19 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
                             public void onClick(View v) {
                                 switch (position) {
                                     case 0:
-                                        shareQQ((Activity) mContext, UmengSharePolicyImpl.this);
+                                        shareQQ((Activity) mContext, mOnShareCallbackListener);
                                         break;
                                     case 1:
-                                        shareZone((Activity) mContext, UmengSharePolicyImpl.this);
+                                        shareZone((Activity) mContext, mOnShareCallbackListener);
                                         break;
                                     case 2:
-                                        shareWechat((Activity) mContext, UmengSharePolicyImpl.this);
+                                        shareWechat((Activity) mContext, mOnShareCallbackListener);
                                         break;
                                     case 3:
-                                        shareMoment((Activity) mContext, UmengSharePolicyImpl.this);
+                                        shareMoment((Activity) mContext, mOnShareCallbackListener);
                                         break;
                                     case 4:
-                                        shareWeibo((Activity) mContext, UmengSharePolicyImpl.this);
+                                        shareWeibo((Activity) mContext, mOnShareCallbackListener);
                                         break;
                                     default:
                                 }

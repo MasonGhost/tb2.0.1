@@ -41,7 +41,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     @BindView(R.id.et_regist_phone)
     DeleteEditText mEtRegistPhone;
     @BindView(R.id.bt_regist_send_vertify_code)
-    Button mBtRegistSendVertifyCode;
+    TextView mBtRegistSendVertifyCode;
     @BindView(R.id.iv_vertify_loading)
     ImageView mIvVertifyLoading;
     @BindView(R.id.et_regist_vertify_code)
@@ -86,7 +86,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
 
     @Override
     protected String setCenterTitle() {
-        return getString(R.string.immediate_regist);
+        return getString(R.string.regist);
     }
 
     @Override

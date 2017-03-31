@@ -1,11 +1,19 @@
 package com.zhiyicx.thinksnsplus.modules.gallery;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author LiuChao
@@ -21,7 +29,7 @@ public class GalleryActivity extends TSActivity {
         //无title
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         //全屏
-        getWindow().setFlags(WindowManager.LayoutParams. FLAG_FULLSCREEN , WindowManager.LayoutParams. FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
     }
 
@@ -33,5 +41,25 @@ public class GalleryActivity extends TSActivity {
     @Override
     protected Fragment getFragment() {
         return GalleryFragment.initFragment(getIntent().getExtras());
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        ((GalleryFragment) mContanierFragment).backPress();
+    }
+
+    public void superBackpress() {
+        GalleryActivity.super.onBackPressed();
+    }
+
+    public static void startToGallery(Context context, int position, List<ImageBean> imageBeanList, List<AnimationRectBean> animationRectBeanList) {
+        Intent intent = new Intent(context, GalleryActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(GalleryFragment.BUNDLE_IMAGS, (ArrayList<? extends Parcelable>) imageBeanList);
+        bundle.putInt(GalleryFragment.BUNDLE_IMAGS_POSITON, position);
+        bundle.putParcelableArrayList("rect", (ArrayList<? extends Parcelable>) animationRectBeanList);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 }

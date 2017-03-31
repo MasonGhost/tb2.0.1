@@ -106,7 +106,7 @@ public class DynamicListRecycleItem extends DynamicListBaseItem {
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(holder.getConvertView().getContext(), colums);
         recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.addItemDecoration(new GridDecoration(mContext, R.drawable.shape_recyclerview_divider_white_small))
+        recyclerView.addItemDecoration(new GridDecoration(mContext, R.drawable.shape_recyclerview_divider_for_share))
         ;//设置Item的间隔
         List<String> testdata = new ArrayList<>();
         for (int i = 0; i < dynamicBean.getFeed().getStorages().size(); i++) {

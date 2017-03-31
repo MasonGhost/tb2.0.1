@@ -6,12 +6,13 @@ import android.widget.ImageView;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.Transformer;
-import com.youth.banner.loader.ImageLoader;
 import com.zhiyicx.baseproject.base.BaseListBean;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.InfoBannerBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
+import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -25,30 +26,24 @@ public class InfoBannerItem implements ItemViewDelegate<BaseListBean> {
 
     @Override
     public boolean isForViewType(BaseListBean item, int position) {
-        return item instanceof InfoBannerBean;
+        return (item instanceof InfoListBean.RecommendBean) && position == 0;
     }
 
     @Override
-    public void convert(ViewHolder holder, BaseListBean baseListBean, BaseListBean lastT, int
-            position) {
-
-        InfoBannerBean realData = (InfoBannerBean) baseListBean;
+    public void convert(ViewHolder holder, BaseListBean baseListBean, BaseListBean lastT,
+                        int position) {
+        InfoListBean.RecommendBean realData = (InfoListBean.RecommendBean) baseListBean;
+        String url = String.format(ApiConfig.IMAGE_PATH, realData.getCover().getId(), 50);
         Banner banner = holder.getView(R.id.item_banner);
-        banner.setImageLoader(new GlideImageLoader(realData.getIamges().get(position)));
-        banner.setImages(realData.getIamges());
+        banner.setImageLoader(new GlideImageLoader());
+        banner.addImages(url);
         banner.setDelayTime(5000);
         banner.setIndicatorGravity(BannerConfig.RIGHT);
         banner.setBannerAnimation(Transformer.CubeIn);
         banner.start();
     }
 
-    private class GlideImageLoader extends ImageLoader {
-
-        String url;
-
-        GlideImageLoader(String url) {
-            this.url = url;
-        }
+    private class GlideImageLoader extends com.youth.banner.loader.ImageLoader {
 
         @Override
         public void displayImage(Context context, Object path, ImageView imageView) {
@@ -56,10 +51,11 @@ public class InfoBannerItem implements ItemViewDelegate<BaseListBean> {
                     .imageLoader()
                     .loadImage(context, GlideImageConfig.builder()
                             .imagerView(imageView)
-                            .url(url)
+                            .url((String) path)
                             .errorPic(R.mipmap.npc)
                             .build());
         }
 
     }
+
 }

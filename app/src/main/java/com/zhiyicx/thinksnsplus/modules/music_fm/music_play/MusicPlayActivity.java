@@ -1,22 +1,26 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_play;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailFragment
+        .MUSIC_INFO;
 
 public class MusicPlayActivity extends TSActivity<MusicPlayPresenter, MusicPlayFragment> {
 
-    private MusicPlayFragment mMusicPlayFragment;
-
     @Override
     protected MusicPlayFragment getFragment() {
-        mMusicPlayFragment = new MusicPlayFragment();
-        return mMusicPlayFragment;
+        return MusicPlayFragment.newInstance(getIntent().getBundleExtra(MUSIC_INFO));
     }
 
     @Override
     protected void componentInject() {
-        DaggerMusicPlayComponent.builder().appComponent(AppApplication.AppComponentHolder
-                .getAppComponent()).musicPlayPresenterModule(new MusicPlayPresenterModule
-                (mContanierFragment)).build();
+        DaggerMusicPlayComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .musicPlayPresenterModule(new MusicPlayPresenterModule(mContanierFragment))
+                .shareModule(new ShareModule(this))
+                .build()
+                .inject(this);
     }
 }

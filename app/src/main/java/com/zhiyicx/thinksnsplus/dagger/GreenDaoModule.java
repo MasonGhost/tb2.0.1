@@ -9,6 +9,9 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.InfoCommentListBeanDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.InfoListBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.InfoTypeBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 
 import dagger.Module;
@@ -32,7 +35,8 @@ public class GreenDaoModule {
     }
 
     @Provides
-    public BackgroundRequestTaskBeanGreenDaoImpl provideBackgroundRequestTaskBeanGreenDaoImpl(Application application) {
+    public BackgroundRequestTaskBeanGreenDaoImpl provideBackgroundRequestTaskBeanGreenDaoImpl
+            (Application application) {
         return new BackgroundRequestTaskBeanGreenDaoImpl(application);
     }
 
@@ -59,6 +63,21 @@ public class GreenDaoModule {
     @Provides
     public DynamicToolBeanGreenDaoImpl provideDynamicToolBeanGreenDaoImpl(Application application) {
         return new DynamicToolBeanGreenDaoImpl(application);
+    }
+
+    @Provides
+    public InfoTypeBeanGreenDaoImpl provideInfoTypeBeanGreenDaoImpl(Application application) {
+        return new InfoTypeBeanGreenDaoImpl(application);
+    }
+
+    @Provides
+    public InfoListBeanGreenDaoImpl provideInfoListBeanGreenDaoImpl(Application application) {
+        return new InfoListBeanGreenDaoImpl(application);
+    }
+
+    @Provides
+    public InfoCommentListBeanDaoImpl provideInfoCommentListBeanDaoImpl(Application application) {
+        return new InfoCommentListBeanDaoImpl(application);
     }
 
 }

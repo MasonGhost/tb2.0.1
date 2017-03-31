@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 
 import android.app.Application;
 
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
@@ -33,8 +32,8 @@ public class UserInfoPresenterModule {
     }
 
     @Provides
-    UserInfoContract.Repository provideUserInfoContractRepository(ServiceManager serviceManager) {
-        return new UserInfoRepository(serviceManager);
+    UserInfoContract.Repository provideUserInfoContractRepository(ServiceManager serviceManager, Application application) {
+        return new UserInfoRepository(serviceManager,application);
     }
 
     @Provides

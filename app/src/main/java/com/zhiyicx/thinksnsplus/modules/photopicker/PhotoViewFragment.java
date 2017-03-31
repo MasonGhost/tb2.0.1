@@ -1,48 +1,49 @@
 package com.zhiyicx.thinksnsplus.modules.photopicker;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.ObjectAnimator;
-import com.nineoldandroids.view.ViewHelper;
-import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 
 import org.simple.eventbus.EventBus;
-import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import me.iwf.photopicker.adapter.PhotoPagerAdapter;
 
-import static android.app.Activity.RESULT_OK;
-import static android.widget.Toast.LENGTH_LONG;
-import static me.iwf.photopicker.PhotoPicker.KEY_SELECTED_PHOTOS;
+import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment.EXTRA_BACK_HERE;
+
 
 /**
  * @author LiuChao
@@ -52,34 +53,33 @@ import static me.iwf.photopicker.PhotoPicker.KEY_SELECTED_PHOTOS;
  */
 
 public class PhotoViewFragment extends TSFragment {
-    @BindView(R.id.vp_photos)
-    ViewPager mViewPager;
+
 
     public final static String ARG_SELCTED_PATH = "ARG_SELECTED_PATHS";// 传进来的已经被选择的图片
     public final static String ARG_ALL_PATH = "ARG_ALL_PATHS";// 传进来的所有的图片路径
     public final static String ARG_CURRENT_ITEM = "ARG_CURRENT_ITEM";
+
+    @BindView(R.id.vp_photos)
+    ViewPager mViewPager;
     @BindView(R.id.rb_select_photo)
     CheckBox mRbSelectPhoto;
     @BindView(R.id.bt_complete)
     TextView mBtComplete;
+    @BindView(R.id.activity_photo_view)
+    LinearLayout mActivityPhotoView;
+    @BindView(R.id.rl_bottom_container)
+    RelativeLayout mRlBottomContainer;
+    @BindView(R.id.tv_toolbar_left)
+    ImageView mTvToolbarLeft;
+    @BindView(R.id.toolbar_layout)
+    LinearLayout mToolbarLayout;
 
     private ArrayList<String> seletedPaths;
     private ArrayList<String> allPaths;
-    private PhotoPagerAdapter mPagerAdapter;
+    private SectionsPagerAdapter mPagerAdapter;
 
-    public final static long ANIM_DURATION = 200L;
-
-    public final static String ARG_THUMBNAIL_TOP = "THUMBNAIL_TOP";
-    public final static String ARG_THUMBNAIL_LEFT = "THUMBNAIL_LEFT";
-    public final static String ARG_THUMBNAIL_WIDTH = "THUMBNAIL_WIDTH";
-    public final static String ARG_THUMBNAIL_HEIGHT = "THUMBNAIL_HEIGHT";
-    public final static String ARG_HAS_ANIM = "HAS_ANIM";
     public final static String ARG_MAX_COUNT = "MAX_COUNT";
 
-    private int thumbnailTop = 0;
-    private int thumbnailLeft = 0;
-    private int thumbnailWidth = 0;
-    private int thumbnailHeight = 0;
     private int maxCount = 0;
 
     private boolean hasAnim = false;
@@ -95,6 +95,7 @@ public class PhotoViewFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
+        mViewPager.setBackgroundColor(Color.argb(0, 255, 255, 255));
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.setCurrentItem(currentItem);
         mViewPager.setOffscreenPageLimit(0);
@@ -107,9 +108,8 @@ public class PhotoViewFragment extends TSFragment {
             @Override
             public void onPageSelected(int position) {
                 hasAnim = currentItem == position;
-                // ToastUtils.showToast("页数--》position" + position + "currentItem-->" + currentItem + "---" + mViewPager.getCurrentItem());
-                // 是否包含了已经选中的图片该图片
-                mRbSelectPhoto.setChecked(seletedPaths.contains(mPagerAdapter.getPathAtPosition(position)));
+                // 是否包含了已经选中的图片
+                mRbSelectPhoto.setChecked(seletedPaths.contains(allPaths.get(position)));
 
             }
 
@@ -122,40 +122,46 @@ public class PhotoViewFragment extends TSFragment {
         //mBtComplete.setEnabled(seletedPaths.size() > 0);
         mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(), maxCount));
         // 初始化选择checkbox
-        mRbSelectPhoto.setChecked(seletedPaths.contains(mPagerAdapter.getPathAtPosition(currentItem)));
+        mRbSelectPhoto.setChecked(seletedPaths.contains(allPaths.get(currentItem)));
         mRbSelectPhoto.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                String path = mPagerAdapter.getPathAtPosition(mViewPager.getCurrentItem());
+                String path = allPaths.get(mViewPager.getCurrentItem());
                 // 达到最大选择数量，添加新的图片，进行提示
                 if (seletedPaths.size() >= maxCount && !seletedPaths.contains(path) && isChecked) {
-                    Toast.makeText(getActivity(), getString(me.iwf.photopicker.R.string.__picker_over_max_count_tips, maxCount),
-                            LENGTH_LONG).show();
+                    ToastUtils.showToast(getString(R.string.choose_max_photos, maxCount));
                     mRbSelectPhoto.setChecked(false);
                     return;
                 }
                 if (isChecked) {
+                    // 当前选择该图片，如果还没有添加过，就进行添加
                     if (!seletedPaths.contains(path)) {
                         seletedPaths.add(path);
                     }
                 } else {
+                    // 当前取消选择改图片，直接移除
                     seletedPaths.remove(path);
                 }
-
+                // 没有选择图片时，是否可以点击完成，应该可以点击，所以注释了下面的代码
+                // mBtComplete.setEnabled(seletedPaths.size() > 0);
                 // 重置当前的选择数量
-                //mBtComplete.setEnabled(seletedPaths.size() > 0);
                 mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(), maxCount));
                 // 通知图片列表进行刷新
                 // 在 PhotoAlbumDetailsFragment 的 refreshDataAndUI() 方法中进行订阅
-                EventBus.getDefault().post(seletedPaths, EventBusTagConfig.EVENT_SELECTED_PHOTO_UPDATE);
+                // EventBus.getDefault().post(seletedPaths, EventBusTagConfig.EVENT_SELECTED_PHOTO_UPDATE);
             }
         });
     }
 
     @Override
+    protected boolean showToolbar() {
+        return false;
+    }
+
+    @Override
     protected boolean showToolBarDivider() {
-        return true;
+        return false;
     }
 
     @Override
@@ -168,44 +174,6 @@ public class PhotoViewFragment extends TSFragment {
         return true;
     }
 
-    public static PhotoViewFragment newInstance(List<String> selectedPaths, List<String> allPhotos, int currentItem, int maxCount) {
-
-        PhotoViewFragment f = new PhotoViewFragment();
-
-        Bundle args = new Bundle();
-        args.putStringArrayList(ARG_SELCTED_PATH, (ArrayList<String>) selectedPaths);
-        args.putStringArrayList(ARG_ALL_PATH, (ArrayList<String>) allPhotos);
-        args.putInt(ARG_CURRENT_ITEM, currentItem);
-        args.putBoolean(ARG_HAS_ANIM, false);
-        args.putInt(ARG_MAX_COUNT, maxCount);
-        f.setArguments(args);
-
-        return f;
-    }
-
-
-    public static PhotoViewFragment newInstance(List<String> selectedPaths, List<String> allPhotos, int currentItem, int[] screenLocation, int thumbnailWidth, int thumbnailHeight, int maxCount) {
-
-        PhotoViewFragment f = newInstance(selectedPaths, allPhotos, currentItem, maxCount);
-
-        f.getArguments().putInt(ARG_THUMBNAIL_LEFT, screenLocation[0]);
-        f.getArguments().putInt(ARG_THUMBNAIL_TOP, screenLocation[1]);
-        f.getArguments().putInt(ARG_THUMBNAIL_WIDTH, thumbnailWidth);
-        f.getArguments().putInt(ARG_THUMBNAIL_HEIGHT, thumbnailHeight);
-        f.getArguments().putBoolean(ARG_HAS_ANIM, true);
-
-        return f;
-    }
-
-    public void setPhotos(List<String> paths, int currentItem) {
-        this.allPaths.clear();
-        this.allPaths.addAll(paths);
-        this.currentItem = currentItem;
-
-        mViewPager.setCurrentItem(currentItem);
-        mViewPager.getAdapter().notifyDataSetChanged();
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -216,31 +184,11 @@ public class PhotoViewFragment extends TSFragment {
             seletedPaths = bundle.getStringArrayList(ARG_SELCTED_PATH);
             seletedPaths = (ArrayList<String>) seletedPaths.clone();// 克隆一份，防止改变数据源
             allPaths = bundle.getStringArrayList(ARG_ALL_PATH);
-            hasAnim = bundle.getBoolean(ARG_HAS_ANIM);
             currentItem = bundle.getInt(ARG_CURRENT_ITEM);
-            thumbnailTop = bundle.getInt(ARG_THUMBNAIL_TOP);
-            thumbnailLeft = bundle.getInt(ARG_THUMBNAIL_LEFT);
-            thumbnailWidth = bundle.getInt(ARG_THUMBNAIL_WIDTH);
-            thumbnailHeight = bundle.getInt(ARG_THUMBNAIL_HEIGHT);
+            rectList = bundle.getParcelableArrayList("rect");
             maxCount = bundle.getInt(ARG_MAX_COUNT);
         }
-        mPagerAdapter = new PhotoPagerAdapter(Glide.with(this), allPaths);
-    }
-
-    public ViewPager getViewPager() {
-        return mViewPager;
-    }
-
-    public ArrayList<String> getAllPaths() {
-        return allPaths;
-    }
-
-    public ArrayList<String> getSeletedPaths() {
-        return seletedPaths;
-    }
-
-    public int getCurrentItem() {
-        return mViewPager.getCurrentItem();
+        mPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
     }
 
     @Override
@@ -256,13 +204,150 @@ public class PhotoViewFragment extends TSFragment {
         }
     }
 
-    @OnClick(R.id.bt_complete)
-    public void onClick() {
+    @OnClick({R.id.tv_toolbar_left, R.id.bt_complete})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tv_toolbar_left:
+                getActivity().onBackPressed();
+                break;
+            case R.id.bt_complete:
+                setResult(false);
+                break;
+        }
+    }
+
+    public static PhotoViewFragment newInstance(List<String> selectedPaths, List<String> allPhotos, ArrayList<AnimationRectBean> animationRectBeen, int currentItem, int maxCount) {
+
+        PhotoViewFragment f = new PhotoViewFragment();
+        Bundle args = new Bundle();
+        args.putStringArrayList(ARG_SELCTED_PATH, (ArrayList<String>) selectedPaths);
+        args.putStringArrayList(ARG_ALL_PATH, (ArrayList<String>) allPhotos);
+        args.putInt(ARG_CURRENT_ITEM, currentItem);
+        args.putInt(ARG_MAX_COUNT, maxCount);
+        args.putParcelableArrayList("rect", animationRectBeen);
+        f.setArguments(args);
+        return f;
+    }
+
+
+    ////////////////////////////////缩放动画//////////////////////////////////
+    private SparseArray<PhotoViewPictureContainerFragment> fragmentMap
+            = new SparseArray<>();
+    private boolean alreadyAnimateIn = false;
+    private ArrayList<AnimationRectBean> rectList;
+
+    /**
+     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+     * one of the sections/tabs/pages.
+     */
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            // getItem is called to instantiate the fragment for the given page.
+            // Return a PlaceholderFragment (defined as a static inner class below).
+            PhotoViewPictureContainerFragment fragment = fragmentMap.get(position);
+            if (fragment == null) {
+
+                boolean animateIn = (currentItem == position) && !alreadyAnimateIn;
+                fragment = PhotoViewPictureContainerFragment
+                        .newInstance(allPaths.get(position), rectList.get(position), animateIn,
+                                currentItem == position);
+                alreadyAnimateIn = true;
+                fragmentMap.put(position, fragment);
+            }
+            // PlaceholderFragment.newInstance(imageBeanList.get(position));
+            return fragment;
+        }
+
+        @Override
+        public int getCount() {
+            // Show 3 total pages.
+            return allPaths.size();
+        }
+
+        @Override
+        public void setPrimaryItem(ViewGroup container, int position, Object object) {
+            super.setPrimaryItem(container, position, object);
+            if (object instanceof Fragment) {
+                fragmentMap.put(position, (PhotoViewPictureContainerFragment) object);
+            }
+        }
+
+    }
+
+    /////////////////////////////////处理转场缩放动画/////////////////////////////////////
+
+    private ColorDrawable backgroundColor;
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public void showBackgroundImmediately() {
+        if (mRootView.getBackground() == null) {
+            backgroundColor = new ColorDrawable(Color.WHITE);
+            mViewPager.setBackground(backgroundColor);
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public ObjectAnimator showBackgroundAnimate() {
+        backgroundColor = new ColorDrawable(Color.WHITE);
+        // mViewPager.setBackground(backgroundColor);
+        // ((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
+        ObjectAnimator bgAnim = ObjectAnimator
+                .ofInt(backgroundColor, "alpha", 0, 255);
+        bgAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mViewPager.setBackground(backgroundColor);
+            }
+        });
+        return bgAnim;
+    }
+
+    public void backPress() {
+        LogUtils.i("PhotoVIew_toolbar_height" + mToolbarLayout.getHeight());
+        PhotoViewPictureContainerFragment fragment = fragmentMap.get(mViewPager.getCurrentItem());
+        if (fragment != null && fragment.canAnimateCloseActivity()) {
+            backgroundColor = new ColorDrawable(Color.WHITE);
+            ObjectAnimator bgAnim = ObjectAnimator.ofInt(backgroundColor, "alpha", 0);
+            bgAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    mViewPager.setBackground(backgroundColor);
+                }
+            });
+            bgAnim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    setResult(true);
+                    getActivity().overridePendingTransition(-1, -1);
+                }
+            });
+            fragment.animationExit(bgAnim);
+        } else {
+            setResult(true);
+            ((PhotoViewActivity) getActivity()).superBackpress();
+        }
+    }
+
+    /**
+     * 设置退出方法
+     *
+     * @param backToPhotoAlbum 如果回到图片列表页面，是否停留
+     */
+    private void setResult(boolean backToPhotoAlbum) {
         // 完成图片选择，处理图片返回结果
         Intent it = new Intent();
         it.putStringArrayListExtra("photos", seletedPaths);
+        it.putExtra(EXTRA_BACK_HERE, backToPhotoAlbum);
         getActivity().setResult(Activity.RESULT_OK, it);
         getActivity().finish();
-
     }
+
 }

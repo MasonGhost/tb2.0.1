@@ -5,17 +5,17 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
-    android:paddingBottom="@dimen/spacing_normal"
+    android:paddingBottom="@dimen/spacing_mid"
     android:paddingLeft="@dimen/spacing_normal"
-    android:paddingRight="@dimen/spacing_mid"
-    android:paddingTop="@dimen/spacing_normal">
+    android:paddingTop="@dimen/spacing_mid">
 
     <com.zhiyicx.baseproject.widget.imageview.FilterImageView
         android:id="@+id/iv_headpic"
         app:pressShape="circle"
+        android:layout_marginRight="@dimen/spacing_mid"
         android:layout_width="@dimen/headpic_for_list"
         android:layout_height="@dimen/headpic_for_list"
-        android:src="@mipmap/ic_launcher"/>
+        android:src="@drawable/shape_default_image_circle"/>
 
 
     <TextView
@@ -25,7 +25,8 @@
         android:layout_toRightOf="@id/iv_headpic"
         android:ellipsize="end"
         android:maxLines="1"
-        android:paddingLeft="@dimen/spacing_normal"
+        android:includeFontPadding="false"
+        android:layout_marginTop="@dimen/dismiss_height"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_content_comment"
         android:text="张三 "/>
@@ -37,11 +38,11 @@
         android:layout_below="@id/tv_name"
         android:layout_toLeftOf="@+id/iv_user_follow"
         android:layout_toRightOf="@id/iv_headpic"
+        android:includeFontPadding="false"
         android:ellipsize="end"
-        android:gravity="bottom"
+        android:gravity="top"
         android:maxLines="1"
-        android:paddingLeft="@dimen/spacing_normal"
-        android:paddingTop="@dimen/spacing_small"
+        android:layout_marginTop="@dimen/spacing_normal"
         android:textColor="@color/normal_for_assist_text"
         android:textSize="@dimen/size_content"
         android:text="走在风中今天阳光突然好温柔，天的温柔地的温柔想你抱着我"/>
@@ -54,8 +55,9 @@
         android:layout_toRightOf="@id/iv_headpic"
         android:ellipsize="end"
         android:maxLines="1"
-        android:paddingLeft="@dimen/spacing_normal"
-        android:paddingTop="@dimen/spacing_small"
+        android:gravity="top"
+        android:includeFontPadding="false"
+        android:layout_marginTop="@dimen/spacing_normal"
         android:textColor="@color/normal_for_assist_text"
         android:textSize="@dimen/size_content_assist"
         android:text="点赞 56万"/>
@@ -63,10 +65,12 @@
     <ImageView
         android:id="@+id/iv_user_follow"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/spacing_mid"
+        android:paddingLeft="@dimen/spacing_mid"
+        android:paddingRight="@dimen/spacing_mid"
         android:src="@mipmap/ico_me_follow"/>
 
 </RelativeLayout>

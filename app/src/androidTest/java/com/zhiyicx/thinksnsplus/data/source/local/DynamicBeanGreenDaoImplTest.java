@@ -49,6 +49,7 @@ public class DynamicBeanGreenDaoImplTest {
         }
         mDynamicBeanGreenDao.insertOrReplace(datas);
         List<DynamicBean> result = mDynamicBeanGreenDao.getMySendingUnSuccessDynamic(1L);
+        System.out.println("result = " + result.toString());
         Assert.assertTrue(result.size() > 0);
         result.get(0).setUser_id(2);
         mDynamicBeanGreenDao.insertOrReplace(result.get(0));

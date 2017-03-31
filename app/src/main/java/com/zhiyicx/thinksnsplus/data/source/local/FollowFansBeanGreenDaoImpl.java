@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.content.Context;
 
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
@@ -39,7 +40,8 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
 
     @Override
     public FollowFansBean getSingleDataFromCache(Long primaryKey) {
-        return null;
+        FollowFansBeanDao followFansBeanDao = getWDaoSession().getFollowFansBeanDao();
+        return followFansBeanDao.load(primaryKey);
     }
 
     @Override
@@ -53,12 +55,14 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
 
     @Override
     public void deleteSingleCache(Long primaryKey) {
-
+        FollowFansBeanDao followFansBeanDao = getWDaoSession().getFollowFansBeanDao();
+        followFansBeanDao.deleteByKey(primaryKey);
     }
 
     @Override
     public void deleteSingleCache(FollowFansBean dta) {
-
+        FollowFansBeanDao followFansBeanDao = getWDaoSession().getFollowFansBeanDao();
+        followFansBeanDao.delete(dta);
     }
 
     @Override
@@ -103,7 +107,7 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
                 , userId + ""
                 , FollowFansBean.IFOLLOWED_STATE + ""
                 , maxId + ""
-                , ApiConfig.MAX_NUMBER_PER_PAGE + "");
+                , TSListFragment.DEFAULT_PAGE_SIZE + "");
         LogUtils.i("fansList_db-->" + followFansBeanList.size() + followFansBeanList.toString());
         return followFansBeanList;
     }
@@ -126,7 +130,7 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
                 , userId + ""
                 , FollowFansBean.IFOLLOWED_STATE + ""
                 , maxId + ""
-                , ApiConfig.MAX_NUMBER_PER_PAGE + ""
+                , TSListFragment.DEFAULT_PAGE_SIZE + ""
         );
         LogUtils.i("followList_db-->" + followFansBeanList.size() + followFansBeanList.toString());
         return followFansBeanList;
@@ -152,7 +156,7 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
                 , FollowFansBean.IFOLLOWED_STATE + ""
                 , FollowFansBean.IFOLLOWED_STATE + ""
                 , maxId + ""
-                , ApiConfig.MAX_NUMBER_PER_PAGE + "");
+                , TSListFragment.DEFAULT_PAGE_SIZE + "");
         return followFansBeanList;
 
     }
