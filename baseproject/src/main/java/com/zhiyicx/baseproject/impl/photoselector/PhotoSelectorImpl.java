@@ -115,7 +115,16 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
         options.setCropFrameColor(Color.TRANSPARENT);// 设置内矩形边框线条颜色
         options.setShowCropGrid(false);// 是否展示内矩形的分割线
         options.setToolbarCancelDrawable(R.mipmap.topbar_back);
-        options.setToolbarTitle(mContext.getString(R.string.change_head_icon));
+        switch (mCropShape) {
+            case SHAPE_SQUARE:// 更换头像
+                options.setToolbarTitle(mContext.getString(R.string.change_head_icon));
+                break;
+            case SHAPE_RCTANGLE:// 更换封面
+                options.setToolbarTitle(mContext.getString(R.string.change_bg_cover));
+                break;
+            default:// 一般不会发生
+                options.setToolbarTitle(mContext.getString(R.string.crop_photo));
+        }
         options.setDimmedLayerColor(Color.argb(0xcc, 0xff, 0xff, 0xff));// 设置蒙层的颜色
         options.setRootViewBackgroundColor(Color.WHITE);// 设置图片背景颜色
         options.setToolbarColor(ContextCompat.getColor(mContext, R.color.white));
@@ -125,7 +134,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
 
 
     /**
-     * 统一的判断是否需要进行裁剪的逻辑:单张需要裁剪，多张不需要裁剪
+     * 统一的判断是否需要进行裁剪的逻辑:指定是否需要裁剪
      *
      * @return
      */
@@ -242,11 +251,11 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
      */
     private void initCropShape(UCrop uCrop, UCrop.Options options) {
         switch (mCropShape) {
-            case SHAPE_SQUARE:
+            case SHAPE_SQUARE:// 更换头像
                 uCrop.withAspectRatio(1, 1);
                 options.setCropViewPadding(ConvertUtils.dp2px(mContext, SQUARE_LEFT_MARGIN), 0);
                 break;
-            case SHAPE_RCTANGLE:
+            case SHAPE_RCTANGLE:// 更换封面
                 uCrop.withAspectRatio(1, 0.5f);// 矩形高度为屏幕宽度的一半
                 options.setCropViewPadding(0, 0);
                 break;

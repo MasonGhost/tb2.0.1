@@ -33,6 +33,8 @@
     <string name="send">发送</string>
     <string name="sure">确认</string>
     <string name="change_head_icon">更换头像</string>
+    <string name="change_bg_cover">更换封面</string>
+    <string name="crop_photo">裁剪图片</string>
     <string name="publish">发布</string>
     <string name="intro_default">这个家伙很懒，没有留下任何</string>
     <!-- 注册 -->
