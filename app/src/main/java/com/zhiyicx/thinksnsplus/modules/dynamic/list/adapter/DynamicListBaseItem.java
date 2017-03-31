@@ -7,19 +7,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -173,7 +171,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
             DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
             DynamicToolBean dynamicToolBean = dynamicBean.getTool();
             if (dynamicToolBean != null) {
-                dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicToolBean.getFeed_digg_count()), dynamicToolBean.getIs_digg_feed() == STATUS_DIGG_FEED_CHECKED, 0);
+                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicToolBean.getFeed_digg_count()), dynamicToolBean.getIs_digg_feed() == STATUS_DIGG_FEED_CHECKED, 0);
                 dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicToolBean.getFeed_comment_count()), false, 1);
                 dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicToolBean.getFeed_view_count()), false, 2);
             }

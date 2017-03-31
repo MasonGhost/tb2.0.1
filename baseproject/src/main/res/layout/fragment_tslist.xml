@@ -36,4 +36,9 @@
                 android:layout_height="wrap_content"></com.zhiyicx.baseproject.widget.refresh.RefreshFooterView>
         </com.aspsine.swipetoloadlayout.SwipeToLoadLayout>
     </LinearLayout>
+    <com.zhiyicx.baseproject.widget.EmptyView
+        android:id="@+id/empty_view"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"></com.zhiyicx.baseproject.widget.EmptyView>
 </FrameLayout>
