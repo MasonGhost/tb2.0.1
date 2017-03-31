@@ -13,10 +13,8 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.graphics.Palette;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -25,18 +23,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.Target;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideStokeTransform;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -58,7 +48,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
@@ -439,20 +428,20 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         Glide.with(getContext())
                 .load(ImageUtils.imagePathConvert(mMusicAlbumListBean.getStorage().getId() + "",
                         ImageZipConfig.IMAGE_70_ZIP))
-
-                .bitmapTransform(new GlideStokeTransform(getActivity(), 4))
+                .asBitmap()
+                .transform(new GlideStokeTransform(getActivity(), 20))
                 .placeholder(R.mipmap.icon_256)
                 .error(R.mipmap.icon_256)
-                .into(new GlideDrawableImageViewTarget(mFragmentMusicDetailHeadIamge){
+                .into(new SimpleTarget<Bitmap>() {
                     @Override
-                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super
-                            GlideDrawable> animation) {
-//                        mBgBitmap = ((GlideBitmapDrawable)resource.getCurrent()).getBitmap();
-//                        mPalette = Palette.from(mBgBitmap).generate();
-//                        BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap
-//                                (mBgBitmap, mBgBitmap.getWidth(), mBgBitmap.getHeight()));
-//                        mFragmentMusicDetailHeadInfo.setBackgroundDrawable(drawable);
-                        super.onResourceReady(resource, animation);
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap>
+                            glideAnimation) {
+                        mBgBitmap = resource.copy(Bitmap.Config.RGB_565, false);
+                        mFragmentMusicDetailHeadIamge.setImageBitmap(resource);
+                        mPalette = Palette.from(mBgBitmap).generate();
+                        BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap
+                                (mBgBitmap, mBgBitmap.getWidth(), mBgBitmap.getHeight()));
+                        mFragmentMusicDetailHeadInfo.setBackgroundDrawable(drawable);
                     }
                 });
     }

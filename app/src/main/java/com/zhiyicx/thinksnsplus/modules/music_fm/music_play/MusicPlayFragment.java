@@ -383,6 +383,10 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 startActivity(intent);
                 break;
             case R.id.fragment_music_paly_order: // 播放顺序
+                mDefalultOrder++;
+                if (mDefalultOrder > 2) {
+                    mDefalultOrder = 0;
+                }
                 Bundle bundle = new Bundle();
                 bundle.putInt(ORDER_ACTION, mDefalultOrder);
                 getActivity().getSupportMediaController().getTransportControls()
@@ -391,10 +395,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 mFragmentMusicPalyOrder.setImageResource(mOrderModule[mDefalultOrder]);
                 SharePreferenceUtils.setInterger(getActivity(),
                         SharePreferenceTagConfig.SHAREPREFERENCE_TAG_MUSIC, mDefalultOrder);
-                mDefalultOrder++;
-                if (mDefalultOrder > 2) {
-                    mDefalultOrder = 0;
-                }
 
                 break;
             case R.id.fragment_music_paly_preview:// 上一首歌

@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.zhiyicx.common.utils.log.LogUtils;
+
 public class LoopPagerRecyclerView extends PagerRecyclerView {
 
     public LoopPagerRecyclerView(Context context) {
@@ -80,6 +82,7 @@ public class LoopPagerRecyclerView extends PagerRecyclerView {
     }
 
     private int transformInnerPositionIfNeed(int position) {
+
         final int actualItemCount = getActualItemCountFromAdapter();//正确的item个数
 
         final int actualCurrentPosition = getCurrentPosition() % actualItemCount;//正确的当前位置
