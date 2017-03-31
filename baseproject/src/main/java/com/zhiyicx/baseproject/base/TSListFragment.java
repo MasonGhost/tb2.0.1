@@ -431,7 +431,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         if (!isLoadMore && (mListDatas.size() == 0)) { // 刷新
             mEmptyView.setErrorType(EmptyView.STATE_NETWORK_ERROR);
             mAdapter.notifyDataSetChanged();
-            mEmptyView.setVisibility(View.VISIBLE);
+            if (mHeaderAndFooterWrapper.getHeadersCount() <= 0) {
+                mEmptyView.setVisibility(View.VISIBLE);
+            }
         } else { // 加载更多
             showMessageNotSticky(getString(R.string.err_net_not_work));
 
@@ -464,7 +466,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
             } else {
                 mEmptyView.setErrorImag(setEmptView());
                 refreshData();
-                mEmptyView.setVisibility(View.VISIBLE);
+                if (mHeaderAndFooterWrapper.getHeadersCount() <= 0) {
+                    mEmptyView.setVisibility(View.VISIBLE);
+                }
             }
 
 

@@ -194,7 +194,7 @@ public class AuthRepository implements IAuthRepository {
      */
     public List<ComponentConfigBean> getComponentConfigLocal() {
         List<ComponentConfigBean> result = SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_COMPONENT_CONFIG);
-        if (result == null) { //本地默认地址
+        if (result == null || result.size() == 0) { //本地默认地址
             result = new ArrayList<>();
             ComponentConfigBean componentConfigBean = new ComponentConfigBean();
             componentConfigBean.setName("serverurl");
