@@ -125,8 +125,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                     }
                 });
         mTvTopTip = (TextView) rootView.findViewById(R.id.tv_top_tip_text);
-        mEmptyView = new EmptyView(getContext());
-        mEmptyView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        mEmptyView = (EmptyView) rootView.findViewById(R.id.empty_view);
+//        mEmptyView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mEmptyView.setErrorImag(setEmptView());
         mEmptyView.setNeedTextTip(false);
         mEmptyView.setNeedClickLoadState(false);
@@ -152,9 +152,10 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mAdapter = getAdapter();
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
         mHeaderAndFooterWrapper.addFootView(getFooterView());
-        mEmptyWrapper = new EmptyWrapper(mHeaderAndFooterWrapper);
-        mEmptyWrapper.setEmptyView(mEmptyView);
-        mRvList.setAdapter(mEmptyWrapper);
+        mRvList.setAdapter(mHeaderAndFooterWrapper);
+//        mEmptyWrapper = new EmptyWrapper(mHeaderAndFooterWrapper);
+//        mEmptyWrapper.setEmptyView(mEmptyView);
+//        mRvList.setAdapter(mEmptyWrapper);
     }
 
     /**
@@ -342,7 +343,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void refreshData() {
-        mEmptyWrapper.notifyDataSetChanged();
+        mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
     /**
@@ -350,7 +351,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void refreshData(List<T> datas) {
-        mEmptyWrapper.notifyDataSetChanged();
+        mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
     /**
@@ -358,7 +359,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void refreshData(int index) {
-        mEmptyWrapper.notifyItemChanged(index);
+        mHeaderAndFooterWrapper.notifyItemChanged(index);
     }
 
     @Override
@@ -430,6 +431,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         if (!isLoadMore && (mListDatas.size() == 0)) { // 刷新
             mEmptyView.setErrorType(EmptyView.STATE_NETWORK_ERROR);
             mAdapter.notifyDataSetChanged();
+            if (mHeaderAndFooterWrapper.getHeadersCount() <= 0) {
+                mEmptyView.setVisibility(View.VISIBLE);
+            }
         } else { // 加载更多
             showMessageNotSticky(getString(R.string.err_net_not_work));
 
@@ -457,11 +461,17 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 // 内存处理数据
                 mListDatas.addAll(data);
                 mMaxId = getMaxId(data);
+                refreshData();
+                mEmptyView.setVisibility(View.GONE);
             } else {
                 mEmptyView.setErrorImag(setEmptView());
+                refreshData();
+                if (mHeaderAndFooterWrapper.getHeadersCount() <= 0) {
+                    mEmptyView.setVisibility(View.VISIBLE);
+                }
             }
 
-            refreshData();
+
         } else { // 加载更多
             if (data != null && data.size() != 0) {
                 mTvNoMoredataText.setVisibility(View.GONE);

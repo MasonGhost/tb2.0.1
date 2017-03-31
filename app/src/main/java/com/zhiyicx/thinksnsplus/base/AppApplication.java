@@ -69,9 +69,9 @@ public class AppApplication extends TSApplication {
         super.onCreate();
         FreelineCore.init(this);
         initComponent();
-        if (mAuthRepository.getComponentStatusLocal().isIm()) { // 是否安装了 IM
+//        if (mAuthRepository.getComponentStatusLocal().isIm()) { // 是否安装了 IM
             ZBIMSDK.init(getContext());
-        }
+//        }
         BackgroundTaskManager.getInstance(getContext()).startBackgroundTask();// 开启后台任务
         // 极光推送
         JPushInterface.setDebugMode(true);
