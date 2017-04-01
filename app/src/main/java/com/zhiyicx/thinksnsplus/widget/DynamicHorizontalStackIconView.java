@@ -15,6 +15,7 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBoundTransform;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.utils.ImageUtils;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -115,14 +116,14 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
      * 设置点赞数量
      */
     public void setDigCount(int digCount) {
-        this.digCount.setText(mContext.getString(R.string.dynamic_dig_count, digCount));
+        this.digCount.setText(mContext.getString(R.string.dynamic_dig_count, ConvertUtils.numberConvert(digCount)));
     }
 
     /**
      * 设置浏览人数
      */
     public void setViewerCount(int viewerCount) {
-        this.viewerCount.setText(mContext.getString(R.string.dynamic_viewer_count, viewerCount));
+        this.viewerCount.setText(mContext.getString(R.string.dynamic_viewer_count, ConvertUtils.numberConvert(viewerCount)));
     }
 
     /**

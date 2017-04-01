@@ -172,10 +172,9 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
             DynamicToolBean dynamicToolBean = dynamicBean.getTool();
             if (dynamicToolBean != null) {
                 dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicToolBean.getFeed_digg_count()), dynamicToolBean.getIs_digg_feed() == STATUS_DIGG_FEED_CHECKED, 0);
-                dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicToolBean.getFeed_comment_count()), false, 1);
-                dynamicListMenuView.setItemTextAndStatus(String.valueOf(dynamicToolBean.getFeed_view_count()), false, 2);
+                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicToolBean.getFeed_comment_count()), false, 1);
+                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicToolBean.getFeed_view_count()), false, 2);
             }
-
 
             dynamicListMenuView.setItemOnClick(new DynamicListMenuView.OnItemClickListener() {
                 @Override
