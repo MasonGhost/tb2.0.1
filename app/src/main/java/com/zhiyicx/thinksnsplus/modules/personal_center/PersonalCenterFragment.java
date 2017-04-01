@@ -124,8 +124,10 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     private PhotoSelectorImpl mPhotoSelector;
     private String imagePath;// 上传的封面图片的本地路径
     private ActionPopupWindow mDeletCommentPopWindow;
+    private ActionPopupWindow mReSendCommentPopWindow;
     private int mCurrentPostion;// 当前评论的动态位置
     private long mReplyToUserId;// 被评论者的 id
+
 
     @Override
     protected void initView(View rootView) {
@@ -488,7 +490,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void onCommentStateClick(DynamicCommentBean dynamicCommentBean, int position) {
-        showMessage("点击了评论失败状态");
+        initReSendCommentPopupWindow(dynamicCommentBean, mListDatas.get(mPresenter.getCurrenPosiotnInDataList(dynamicCommentBean.getFeed_mark())).getFeed_id());
+        mReSendCommentPopWindow.show();
     }
 
     @Override
@@ -657,6 +660,34 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                     @Override
                     public void onBottomClicked() {
                         mDeletCommentPopWindow.hide();
+                    }
+                })
+                .build();
+    }
+
+    /**
+     * 初始化重发评论选择弹框
+     */
+    private void initReSendCommentPopupWindow(final DynamicCommentBean commentBean, final long feed_id) {
+        mReSendCommentPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.dynamic_list_resend_comment))
+                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+                        mReSendCommentPopWindow.hide();
+                        mPresenter.reSendComment(commentBean, feed_id);
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mReSendCommentPopWindow.hide();
                     }
                 })
                 .build();

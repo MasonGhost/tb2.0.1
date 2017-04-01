@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -86,6 +85,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private String mDynamicType = ApiConfig.DYNAMIC_TYPE_NEW;
 
     private ActionPopupWindow mDeletCommentPopWindow;
+    private ActionPopupWindow mReSendCommentPopWindow;
     private int mCurrentPostion;// 当前评论的动态位置
     private long mReplyToUserId;// 被评论者的 id
 
@@ -291,8 +291,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             // 回到顶部
             mRvList.smoothScrollToPosition(0);
             Fragment parentFragment = getParentFragment();
-            if(parentFragment!=null&&parentFragment instanceof MainFragment){
-                MainFragment mainFragment= (MainFragment) parentFragment;
+            if (parentFragment != null && parentFragment instanceof MainFragment) {
+                MainFragment mainFragment = (MainFragment) parentFragment;
                 mainFragment.setPagerSelection(MainFragment.PAGER_NEWEST_DYNAMIC_LIST_POSITION);
             }
         } else {
@@ -391,7 +391,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
         if (dynamicBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
             if (dynamicBean.getComments().get(position).getComment_id() != null) {
-                initLoginOutPopupWindow(dynamicBean, mCurrentPostion, position);
+                initDeletCommentPopupWindow(dynamicBean, mCurrentPostion, position);
                 mDeletCommentPopWindow.show();
             } else {
                 return;
@@ -435,7 +435,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onCommentStateClick(DynamicCommentBean dynamicCommentBean, int position) {
-        showMessage("点击了评论失败状态");
+        initReSendCommentPopupWindow(dynamicCommentBean, mListDatas.get(mPresenter.getCurrenPosiotnInDataList(dynamicCommentBean.getFeed_mark())).getFeed_id());
+        mReSendCommentPopWindow.show();
     }
 
     @Override
@@ -452,7 +453,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      * @param dynamicPositon  dynamic comment position
      * @param commentPosition current comment position
      */
-    private void initLoginOutPopupWindow(final DynamicBean dynamicBean, final int dynamicPositon, final int commentPosition) {
+    private void initDeletCommentPopupWindow(final DynamicBean dynamicBean, final int dynamicPositon, final int commentPosition) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_comment))
                 .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
@@ -473,6 +474,36 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     @Override
                     public void onBottomClicked() {
                         mDeletCommentPopWindow.hide();
+                        showBottomView(true);
+                    }
+                })
+                .build();
+    }
+
+    /**
+     * 初始化重发评论选择弹框
+     */
+    private void initReSendCommentPopupWindow(final DynamicCommentBean commentBean, final long feed_id) {
+        mReSendCommentPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.dynamic_list_resend_comment))
+                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+                        mReSendCommentPopWindow.hide();
+                        mPresenter.reSendComment(commentBean, feed_id);
+                        showBottomView(true);
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mReSendCommentPopWindow.hide();
                         showBottomView(true);
                     }
                 })

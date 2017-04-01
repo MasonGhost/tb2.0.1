@@ -267,6 +267,13 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
         mRepository.deleteComment(dynamicBean.getFeed_id(), comment_id);
     }
 
+    @Override
+    public void reSendComment(DynamicCommentBean commentBean, long feed_id) {
+        commentBean.setState(DynamicCommentBean.SEND_ING);
+        mRepository.sendComment(commentBean.getComment_content(), feed_id, commentBean.getReply_to_user_id(), commentBean.getComment_mark());
+        mRootView.refreshData();
+    }
+
     /**
      * send a commment
      *
@@ -288,7 +295,6 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
             userInfoBean.setUser_id(replyToUserId);
             creatComment.setReplyUser(userInfoBean);
         } else {
-
             creatComment.setReplyUser(mUserInfoBeanGreenDao.getSingleDataFromCache(replyToUserId));
         }
         creatComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
