@@ -214,6 +214,31 @@ public class DynamicListMenuView extends FrameLayout {
     }
 
     /**
+     *  设置 item 可见
+     * @param position
+     * @param visibility
+     */
+    public void setItemPositionVisiable(int position,int visibility){
+
+        switch (position) {
+            case ITEM_POSITION_0:
+               mLlDynamicListLike.setVisibility(visibility);
+                break;
+            case ITEM_POSITION_1:
+                mLlDynamicListComment.setVisibility(visibility);
+
+                break;
+            case ITEM_POSITION_2:
+                mLlDynamicListPageviews.setVisibility(visibility);
+                break;
+            case ITEM_POSITION_3:
+                mFlDynamicListMore.setVisibility(visibility);
+                break;
+            default:
+        }
+    }
+
+    /**
      * 设置 item 状态
      *
      * @param isChecked     是否选中
