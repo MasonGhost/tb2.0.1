@@ -40,6 +40,11 @@ public interface ChatContract {
         void reFreshMessage(ChatItemBean chatItemBean);
 
         /**
+         * 刷新列表数据
+         */
+        void refreshData();
+
+        /**
          * 滑动内容到底部
          */
         void smoothScrollToBottom();

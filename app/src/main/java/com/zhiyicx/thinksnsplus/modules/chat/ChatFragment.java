@@ -268,6 +268,11 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     }
 
     @Override
+    public void refreshData() {
+        mMessageList.refresh();
+    }
+
+    @Override
     public void smoothScrollToBottom() {
         mMessageList.smoothScrollToBottom();
     }

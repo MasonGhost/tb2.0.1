@@ -107,7 +107,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     public void reSendText(ChatItemBean chatItemBean) {
         chatItemBean.getLastMessage().setCreate_time(System.currentTimeMillis());
         ChatClient.getInstance(mContext).sendMessage(chatItemBean.getLastMessage());
-        mRootView.reFreshMessage(chatItemBean);
+        mRootView.refreshData();
     }
 
     @Override

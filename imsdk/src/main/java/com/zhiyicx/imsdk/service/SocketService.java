@@ -293,8 +293,9 @@ public class SocketService extends BaseService implements ImService.ImListener {
     private void sendTimeOutMsg(MessageContainer messageContainer) {
         EventContainer eventContainer = new EventContainer();
         eventContainer.mMessageContainer = messageContainer;
-        if (eventContainer.mMessageContainer.msg != null) {
+        if (eventContainer.mMessageContainer.msg != null) { // 更新状态
             eventContainer.mMessageContainer.msg.setSend_status(MessageStatus.SEND_FAIL);
+            MessageDao.getInstance(getApplicationContext()).insertOrUpdateMessage(eventContainer.mMessageContainer.msg);
         }
         eventContainer.mEvent = messageContainer.mEvent;
         if (messageContainer.mEvent.equals(ImService.MSG)) {
