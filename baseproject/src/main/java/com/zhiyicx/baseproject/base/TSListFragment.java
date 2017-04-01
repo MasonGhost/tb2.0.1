@@ -19,7 +19,6 @@ import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
-import com.zhy.adapter.recyclerview.wrapper.EmptyWrapper;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import org.jetbrains.annotations.NotNull;
@@ -55,7 +54,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     protected RecyclerView.Adapter mAdapter;
 
-    protected EmptyWrapper mEmptyWrapper;
     protected HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     private View mFooterView;
 
@@ -135,7 +133,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        mRefreshlayout.setRefreshing(true);
+                        onEmptyViewClick();
                     }
                 });
         mRefreshlayout.setOnRefreshListener(this);
@@ -156,6 +154,13 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 //        mEmptyWrapper = new EmptyWrapper(mHeaderAndFooterWrapper);
 //        mEmptyWrapper.setEmptyView(mEmptyView);
 //        mRvList.setAdapter(mEmptyWrapper);
+    }
+
+    /**
+     * 缺省图被点击
+     */
+    protected void onEmptyViewClick() {
+        mRefreshlayout.setRefreshing(true);
     }
 
     /**

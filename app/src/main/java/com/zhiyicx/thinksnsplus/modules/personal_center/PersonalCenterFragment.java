@@ -124,8 +124,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     private PhotoSelectorImpl mPhotoSelector;
     private String imagePath;// 上传的封面图片的本地路径
     private ActionPopupWindow mDeletCommentPopWindow;
+    private ActionPopupWindow mDeletDynamicPopWindow;
+    private ActionPopupWindow mReSendCommentPopWindow;
     private int mCurrentPostion;// 当前评论的动态位置
     private long mReplyToUserId;// 被评论者的 id
+
 
     @Override
     protected void initView(View rootView) {
@@ -137,7 +140,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                         .SHAPE_RCTANGLE))
                 .build().photoSelectorImpl();
         initToolBar();
-        View mFooterView =new View(getContext());
+        View mFooterView = new View(getContext());
         mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
         mHeaderAndFooterWrapper.addFootView(mFooterView);
         mPersonalCenterHeaderViewItem = new PersonalCenterHeaderViewItem(getActivity(), mPhotoSelector, mRvList, mHeaderAndFooterWrapper, mLlToolbarContainerParent);
@@ -147,6 +150,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.v_horizontal_line), TOOLBAR_DIVIDER_RGB, 255);
         mPersonalCenterHeaderViewItem.setToolbarIconColor(Color.argb(255, TOOLBAR_BLACK_ICON[0],
                 TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
+    }
+
+    @Override
+    protected boolean usePermisson() {
+        return true;
     }
 
     private void initListener() {
@@ -358,7 +366,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 break;
 
             case 3: // 更多
-                showMessage("点击了跟多");
+                initDeletDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition);
+                mDeletDynamicPopWindow.show();
                 break;
             default:
                 onItemClick(null, null, (dataPosition + 1)); // 加上 header
@@ -433,7 +442,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 getActivity().finish();
                 break;
             case R.id.iv_more:
-            mPresenter.shareUserInfo(mUserInfoBean);
+                mPresenter.shareUserInfo(mUserInfoBean);
 
                 break;
         }
@@ -472,6 +481,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
+        if (photoList.isEmpty()) {
+            return;
+        }
         // 选择图片完毕后，开始上传封面图片
         ImageBean imageBean = photoList.get(0);
         imagePath = imageBean.getImgUrl();
@@ -488,7 +500,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void onCommentStateClick(DynamicCommentBean dynamicCommentBean, int position) {
-        showMessage("点击了评论失败状态");
+        initReSendCommentPopupWindow(dynamicCommentBean, mListDatas.get(mPresenter.getCurrenPosiotnInDataList(dynamicCommentBean.getFeed_mark())).getFeed_id());
+        mReSendCommentPopWindow.show();
     }
 
     @Override
@@ -657,6 +670,64 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                     @Override
                     public void onBottomClicked() {
                         mDeletCommentPopWindow.hide();
+                    }
+                })
+                .build();
+    }
+
+    /**
+     * 初始化动态删除选择弹框
+     *
+     * @param dynamicBean curent dynamic
+     * @param position    curent dynamic postion
+     */
+    private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean, int position) {
+        mDeletDynamicPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.dynamic_list_delete_dynamic))
+                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+                        mDeletDynamicPopWindow.hide();
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mDeletDynamicPopWindow.hide();
+                    }
+                })
+                .build();
+    }
+
+    /**
+     * 初始化重发评论选择弹框
+     */
+    private void initReSendCommentPopupWindow(final DynamicCommentBean commentBean, final long feed_id) {
+        mReSendCommentPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.dynamic_list_resend_comment))
+                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+                        mReSendCommentPopWindow.hide();
+                        mPresenter.reSendComment(commentBean, feed_id);
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mReSendCommentPopWindow.hide();
                     }
                 })
                 .build();

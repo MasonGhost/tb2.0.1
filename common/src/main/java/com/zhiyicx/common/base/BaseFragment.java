@@ -31,7 +31,7 @@ public abstract class BaseFragment<P extends IBasePresenter> extends SkinBaseFra
     protected P mPresenter;
     private Unbinder mUnbinder;
     protected LayoutInflater mLayoutInflater;
-    protected RxPermissions mRxPermissions;
+    public RxPermissions mRxPermissions;
 
     @Nullable
     @Override

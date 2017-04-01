@@ -142,6 +142,11 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     }
 
     @Override
+    protected boolean usePermisson() {
+        return true;
+    }
+
+    @Override
     protected void initData() {
         mPresenter.initUserInfo();
         ////////////////////////监听所有的用户信息变化///////////////////////////////
@@ -407,6 +412,9 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
+        if(photoList.isEmpty()){
+            return;
+        }
         path = photoList.get(0).getImgUrl();
         // 开始上传
         mPresenter.changeUserHeadIcon(path);

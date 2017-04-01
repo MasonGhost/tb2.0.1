@@ -1,7 +1,10 @@
 package com.zhiyicx.thinksnsplus.widget.chat;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.R;
@@ -71,7 +74,7 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
     }
 
     @Override
-    public void convert(ViewHolder holder, final ChatItemBean chatItemBean, ChatItemBean lastChatItemBean, int position) {
+    public void convert(final ViewHolder holder, final ChatItemBean chatItemBean, ChatItemBean lastChatItemBean, int position) {
 //        holder.getView(R.id.rl_chat_bubble).setBackgroundDrawable(mBubbleBg);
         // 显示时间的，最大间隔时间；当两条消息间隔 > MAX_SPACING_TIME 时显示时间
         if (lastChatItemBean == null || (chatItemBean.getLastMessage().getCreate_time() - lastChatItemBean.getLastMessage().getCreate_time()) >= (MAX_SPACING_TIME * ConstantConfig.MIN)) {
@@ -160,28 +163,33 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
 
                 }
             };
-            View.OnClickListener mOnItemClick = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mMessageListItemClickListener.onItemClickListener(chatItemBean);
-                }
-            };
 
-            View.OnLongClickListener mOnItemLongClick = new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    return mMessageListItemClickListener.onItemLongClickListener(chatItemBean);
-                }
-            };
             holder.setOnClickListener(R.id.msg_status, mStatusClick);
             holder.setOnClickListener(R.id.tv_chat_name, mUserInfoClick);
             holder.setOnLongClickListener(R.id.tv_chat_name, mUserInfoLongClick);
             holder.setOnClickListener(R.id.iv_chat_headpic, mUserInfoClick);
             holder.setOnLongClickListener(R.id.iv_chat_headpic, mUserInfoLongClick);
             holder.setOnClickListener(R.id.rl_chat_bubble, mBubbleClick);
-            holder.setOnLongClickListener(R.id.rl_chat_bubble, mBubbleLongClick);
-            holder.getConvertView().setOnClickListener(mOnItemClick);
-            holder.getConvertView().setOnLongClickListener(mOnItemLongClick);
+//            holder.setOnLongClickListener(R.id.rl_chat_bubble, mBubbleLongClick);
+            holder.getConvertView().setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_UP:
+                        case MotionEvent.ACTION_CANCEL:
+                            InputMethodManager inputMethodManager = (InputMethodManager) holder.getConvertView().getContext().getSystemService(
+                                    Context.INPUT_METHOD_SERVICE);
+                            if (inputMethodManager.isActive()) {
+                                inputMethodManager.hideSoftInputFromWindow(
+                                        v.getWindowToken(), 0);
+                                return true;
+                            }
+                            break;
+                        default:
+                    }
+                    return false;
+                }
+            });
         }
 
     }

@@ -15,7 +15,7 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
-import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -34,8 +34,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import solid.ren.skinlibrary.SkinLoaderListener;
-import solid.ren.skinlibrary.loader.SkinManager;
 
 /**
  * @Describe 我的页面
@@ -253,10 +251,10 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         mTvUserSignature.setText(userInfoBean.getIntro());
         // 设置粉丝数
         String followedCount = TextUtils.isEmpty(userInfoBean.getFollowed_count()) ? "0" : userInfoBean.getFollowed_count();
-        mTvFansCount.setText(followedCount);
+        mTvFansCount.setText(ConvertUtils.numberConvert(Integer.parseInt(followedCount)));
         // 设置关注数
         String followingCount = TextUtils.isEmpty(userInfoBean.getFollowing_count()) ? "0" : userInfoBean.getFollowing_count();
-        mTvFollowCount.setText(followingCount);
+        mTvFollowCount.setText(ConvertUtils.numberConvert(Integer.parseInt(followingCount)));
     }
 
     @Override

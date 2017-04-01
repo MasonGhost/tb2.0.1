@@ -110,7 +110,7 @@ public class ChatClient implements ChatSoupport, ImMsgReceveListener, ImStatusLi
     public void sendMessage(Message message) {
         message.setIs_read(true);// 标记为已经读消息
         message.setSend_status(MessageStatus.SENDING);//发送状态
-        MessageDao.getInstance(mContext).insertMessage(message);// 单聊保存到数据库
+        MessageDao.getInstance(mContext).insertOrUpdateMessage(message);// 单聊保存到数据库
         ZBIMClient.getInstance().sendMessage(message);
     }
 

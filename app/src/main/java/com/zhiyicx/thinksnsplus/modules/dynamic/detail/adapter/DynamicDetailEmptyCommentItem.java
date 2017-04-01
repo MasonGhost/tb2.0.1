@@ -31,7 +31,7 @@ public class DynamicDetailEmptyCommentItem implements ItemViewDelegate<DynamicCo
     public void convert(ViewHolder holder, DynamicCommentBean dynamicCommentBean, DynamicCommentBean lastT, int position) {
         EmptyView emptyView = holder.getView(R.id.comment_emptyview);
         emptyView.setNeedTextTip(false);
-        emptyView.setErrorType(EmptyView.STATE_NODATA_ENABLE_CLICK);
+        emptyView.setErrorType(EmptyView.STATE_NODATA);
     }
 
 

@@ -37,7 +37,7 @@
     <string name="change_bg_cover">更换封面</string>
     <string name="crop_photo">裁剪图片</string>
     <string name="publish">发布</string>
-    <string name="intro_default">这个家伙很懒，没有留下任何</string>
+    <string name="intro_default">这家伙很懒,什么都没有留下</string>
     <!-- 注册 -->
     <string name="regist">注册</string>
     <string name="username_input_hint">输入2-8位用户名</string>
@@ -57,11 +57,16 @@
     <string name="find_password_success">找回密码成功</string>
     <string name="change_password_success">更改成功</string>
 
-    <!-- 拍照相关 -->
+    <!-- 拍照相册相关 -->
     <string name="choose_from_photo">从相册中选择</string>
     <string name="choose_from_camera">拍照</string>
     <string name="choose_max_photos">你最多可以选择%1$d张图片</string>
     <string name="album_image_count">%1$d张</string>
+    <string name="start_camera_fail">启动相机失败</string>
+    <string name="crop_fail">裁剪失败</string>
+    <string name="camera_permission">相机权限设置</string>
+    <string name="setting_permission">去设置</string>
+    <string name="setting_permission_hint">请为TS+开放相机权限: 手机设置-授权管理-TS+(打开)</string>
     <!--  登录  -->
     <string name="bt_login">登录</string>
     <string name="no_login">不登录，先随便逛逛</string>
