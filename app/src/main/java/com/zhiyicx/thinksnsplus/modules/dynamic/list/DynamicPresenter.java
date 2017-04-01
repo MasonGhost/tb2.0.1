@@ -274,6 +274,11 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
         mRootView.refreshData();
     }
 
+    @Override
+    public void deleteDynamic(DynamicBean dynamicBean, int position) {
+
+    }
+
     /**
      * send a commment
      *

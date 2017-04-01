@@ -124,6 +124,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     private PhotoSelectorImpl mPhotoSelector;
     private String imagePath;// 上传的封面图片的本地路径
     private ActionPopupWindow mDeletCommentPopWindow;
+    private ActionPopupWindow mDeletDynamicPopWindow;
     private ActionPopupWindow mReSendCommentPopWindow;
     private int mCurrentPostion;// 当前评论的动态位置
     private long mReplyToUserId;// 被评论者的 id
@@ -139,7 +140,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                         .SHAPE_RCTANGLE))
                 .build().photoSelectorImpl();
         initToolBar();
-        View mFooterView =new View(getContext());
+        View mFooterView = new View(getContext());
         mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
         mHeaderAndFooterWrapper.addFootView(mFooterView);
         mPersonalCenterHeaderViewItem = new PersonalCenterHeaderViewItem(getActivity(), mPhotoSelector, mRvList, mHeaderAndFooterWrapper, mLlToolbarContainerParent);
@@ -360,7 +361,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 break;
 
             case 3: // 更多
-                showMessage("点击了跟多");
+                initDeletDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition);
+                mDeletDynamicPopWindow.show();
                 break;
             default:
                 onItemClick(null, null, (dataPosition + 1)); // 加上 header
@@ -435,7 +437,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 getActivity().finish();
                 break;
             case R.id.iv_more:
-            mPresenter.shareUserInfo(mUserInfoBean);
+                mPresenter.shareUserInfo(mUserInfoBean);
 
                 break;
         }
@@ -660,6 +662,36 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                     @Override
                     public void onBottomClicked() {
                         mDeletCommentPopWindow.hide();
+                    }
+                })
+                .build();
+    }
+
+    /**
+     * 初始化动态删除选择弹框
+     *
+     * @param dynamicBean curent dynamic
+     * @param position    curent dynamic postion
+     */
+    private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean, int position) {
+        mDeletDynamicPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.dynamic_list_delete_dynamic))
+                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+                        mDeletDynamicPopWindow.hide();
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mDeletDynamicPopWindow.hide();
                     }
                 })
                 .build();

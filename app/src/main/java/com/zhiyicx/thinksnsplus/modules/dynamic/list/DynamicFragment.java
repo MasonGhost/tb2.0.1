@@ -85,6 +85,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private String mDynamicType = ApiConfig.DYNAMIC_TYPE_NEW;
 
     private ActionPopupWindow mDeletCommentPopWindow;
+    private ActionPopupWindow mDeletDynamicPopWindow;
     private ActionPopupWindow mReSendCommentPopWindow;
     private int mCurrentPostion;// 当前评论的动态位置
     private long mReplyToUserId;// 被评论者的 id
@@ -351,8 +352,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 break;
 
             case 3: // 更多
-                showMessage("点击了跟多");
-
+                initDeletDynamicPopupWindow(mListDatas.get(dataPosition),dataPosition);
+                mDeletDynamicPopWindow.show();
                 break;
             default:
                 onItemClick(null, null, dataPosition);
@@ -474,6 +475,38 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     @Override
                     public void onBottomClicked() {
                         mDeletCommentPopWindow.hide();
+                        showBottomView(true);
+                    }
+                })
+                .build();
+    }
+
+    /**
+     * 初始化动态删除选择弹框
+     *
+     * @param dynamicBean curent dynamic
+     * @param position curent dynamic postion
+     */
+    private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean,int position) {
+        mDeletDynamicPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.dynamic_list_delete_dynamic))
+                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+                        mDeletDynamicPopWindow.hide();
+                        showBottomView(true);
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mDeletDynamicPopWindow.hide();
                         showBottomView(true);
                     }
                 })

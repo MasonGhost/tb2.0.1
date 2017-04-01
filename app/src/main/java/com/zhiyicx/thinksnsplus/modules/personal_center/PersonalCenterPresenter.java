@@ -351,6 +351,11 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
         mRootView.refreshData();
     }
 
+    @Override
+    public void deleteDynamic(DynamicBean dynamicBean, int position) {
+
+    }
+
     /**
      * send a commment
      *

@@ -84,10 +84,19 @@ public interface DynamicContract {
 
         /**
          * 重发评论
+         *
          * @param commentBean
          * @param feed_id
          */
-        void reSendComment(DynamicCommentBean commentBean,long feed_id);
+        void reSendComment(DynamicCommentBean commentBean, long feed_id);
+
+        /**
+         * 删除动态
+         *
+         * @param dynamicBean
+         * @param position
+         */
+        void deleteDynamic(DynamicBean dynamicBean,int position);
 
         /**
          * send a comment
