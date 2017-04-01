@@ -13,6 +13,7 @@ import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.ChatType;
 import com.zhiyicx.imsdk.db.dao.ConversationDao;
 import com.zhiyicx.imsdk.entity.Conversation;
@@ -195,7 +196,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
      */
     @Override
     public void onBubbleClick(ChatItemBean message) {
-        showMessage(message.getLastMessage().getTxt());
+        LogUtils.d("--------------onBubbleClick-----------" + message.getLastMessage().getTxt());
 
     }
 
@@ -207,7 +208,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
      */
     @Override
     public boolean onBubbleLongClick(ChatItemBean message) {
-        showMessage(message.getLastMessage().getTxt());
+        LogUtils.d("--------------onBubbleLongClick-----------" + message.getLastMessage().getTxt());
         return true;
     }
 
@@ -282,7 +283,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
         for (int i = 0; i < size; i++) {
             if (mDatas.get(i).getLastMessage().getId() == message.getId()) {
                 mDatas.get(i).setLastMessage(message);
-//                mMessageList.refresh(i); 没有 UI 更新 ，所以不刷新
+                mMessageList.refresh(); // 没有 UI 更新 ，所以不刷新
                 break;
             }
         }
