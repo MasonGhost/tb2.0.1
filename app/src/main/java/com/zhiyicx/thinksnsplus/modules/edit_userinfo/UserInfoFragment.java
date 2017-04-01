@@ -142,6 +142,11 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     }
 
     @Override
+    protected boolean usePermisson() {
+        return true;
+    }
+
+    @Override
     protected void initData() {
         mPresenter.initUserInfo();
         ////////////////////////监听所有的用户信息变化///////////////////////////////

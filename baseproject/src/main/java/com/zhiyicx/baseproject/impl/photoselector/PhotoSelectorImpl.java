@@ -1,30 +1,46 @@
 package com.zhiyicx.baseproject.impl.photoselector;
 
+import android.Manifest;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.support.v4.BuildConfig;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
+import android.view.View;
 
+import com.jakewharton.rxbinding.view.RxView;
+import com.tbruyelle.rxpermissions.Permission;
 import com.yalantis.ucrop.UCrop;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.config.PathConfig;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import me.iwf.photopicker.PhotoPicker;
+import rx.Observable;
+import rx.functions.Action1;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -46,15 +62,16 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
     private static final int MAX_DEFAULT_COUNT = 9;
 
     private IPhotoBackListener mTIPhotoBackListener;
-    private Fragment mFragment;
+    private BaseFragment mFragment;
     private Context mContext;
     private File takePhotoFolder;// 拍照后照片的存放目录
-    private Uri mTakePhotoUri;// 拍照后照片的uri
+    private String mTakePhotoPath;// 拍照后照片的图片路径
     private int mCropShape;
     private int maxCount;// 可选的最大图片数量
     private ArrayList<ImageBean> photosList;// 存储已选择图片
+    private ActionPopupWindow mActionPopupWindow;
 
-    public PhotoSelectorImpl(IPhotoBackListener iPhotoBackListener, Fragment mFragment, int cropShape) {
+    public PhotoSelectorImpl(IPhotoBackListener iPhotoBackListener, BaseFragment mFragment, int cropShape) {
         takePhotoFolder = new File(Environment.getExternalStorageDirectory(), PathConfig.CAMERA_PHOTO_PATH);
         mTIPhotoBackListener = iPhotoBackListener;
         this.mFragment = mFragment;
@@ -76,29 +93,59 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                 .start(mContext, mFragment);
     }
 
+    boolean getCameraPermissonSuccess = false;
+
     @Override
     public void getPhotoFromCamera(ArrayList<String> selectedPhotos) {
+        // 添加相机权限设置
+        mFragment.mRxPermissions
+                .requestEach(Manifest.permission.CAMERA)
+                .subscribe(new Action1<Permission>() {
+                    @Override
+                    public void call(Permission permission) {
+                        if (permission.granted) {
+                            // 权限被允许
+                            getCameraPermissonSuccess = true;
+                        } else if (permission.shouldShowRequestPermissionRationale) {
+                            // 权限没有被彻底禁止
+                            getCameraPermissonSuccess = false;
+                        } else {
+                            // 权限被彻底禁止
+                            mTIPhotoBackListener.getPhotoFailure("cannot start camera");
+                            getCameraPermissonSuccess = false;
+                            initPermissionPopUpWindow();
+                            mActionPopupWindow.show();
+                        }
+                    }
+                });
+
+        if (!getCameraPermissonSuccess) {
+            return;
+        }
         this.maxCount = 1;// 从相机拿到的是单张的图片
+        // 在sd卡中创建文件夹，用来保存app拍摄的图片
         boolean suc = FileUtils.createOrExistsDir(takePhotoFolder);
         File toFile = new File(takePhotoFolder, "IMG" + format() + ".jpg");
+        mTakePhotoPath = toFile.getAbsolutePath();
         if (suc) {
-            mTakePhotoUri = Uri.fromFile(toFile);
+            photosList.clear();// 清空之前的图片，重新装载
+            // 添加已选择的图片，防止丢失
+            if (selectedPhotos != null) {
+                for (String pic : selectedPhotos) {
+                    ImageBean imageBean = new ImageBean();
+                    imageBean.setImgUrl(pic);
+                    photosList.add(imageBean);
+                }
+            }
+
+            Uri mTakePhotoUri = FileProvider.getUriForFile(mFragment.getContext(), "ThinkSNSFileProvider", toFile);
             Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mTakePhotoUri);
             mFragment.startActivityForResult(captureIntent, CAMERA_PHOTO_CODE);
+
         } else {
             // 无法启动相机
             mTIPhotoBackListener.getPhotoFailure("cannot start camera");
-        }
-
-        photosList.clear();// 清空之前的图片，重新装载
-        // 添加已选择的图片，防止丢失
-        if (selectedPhotos != null) {
-            for (String pic : selectedPhotos) {
-                ImageBean imageBean = new ImageBean();
-                imageBean.setImgUrl(pic);
-                photosList.add(imageBean);
-            }
         }
 
     }
@@ -156,15 +203,14 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             // 从相机中获取照片
-            if (requestCode == CAMERA_PHOTO_CODE && mTakePhotoUri != null) {
-                String path = mTakePhotoUri.getPath();
-                if (new File(path).exists()) {
+            if (requestCode == CAMERA_PHOTO_CODE && !TextUtils.isEmpty(mTakePhotoPath)) {
+                if (new File(mTakePhotoPath).exists()) {
                     // 是否需要剪裁，不需要就直接返回结果
-                    if (isNeededCraft(path)) {
-                        startToCraft(path);
+                    if (isNeededCraft(mTakePhotoPath)) {
+                        startToCraft(mTakePhotoPath);
                     } else {
                         ImageBean imageBean = new ImageBean();
-                        imageBean.setImgUrl(path);
+                        imageBean.setImgUrl(mTakePhotoPath);
                         photosList.add(imageBean);
                         mTIPhotoBackListener.getPhotoSuccess(photosList);
                     }
@@ -272,6 +318,37 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                 break;
             default:
         }
+    }
+
+    /**
+     * 添加用户完全禁止
+     */
+    private void initPermissionPopUpWindow() {
+        if (mActionPopupWindow != null) {
+            return;
+        }
+        mActionPopupWindow = ActionPopupWindow.builder()
+                .with(mFragment.getActivity())
+                .bottomStr(mFragment.getString(R.string.cancel))
+                .item1Str("手机权限申请")
+                .item2Str("去设置")
+                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
+                    @Override
+                    public void onItem2Clicked() {
+                        DeviceUtils.openAppDetail(mFragment.getContext());
+                        mActionPopupWindow.hide();
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mActionPopupWindow.hide();
+                    }
+                })
+                .isFocus(true)
+                .isOutsideTouch(true)
+                .backgroundAlpha(0.8f)
+                .build();
     }
 
 }

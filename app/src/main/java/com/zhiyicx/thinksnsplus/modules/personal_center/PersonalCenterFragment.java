@@ -137,7 +137,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                         .SHAPE_RCTANGLE))
                 .build().photoSelectorImpl();
         initToolBar();
-        View mFooterView =new View(getContext());
+        View mFooterView = new View(getContext());
         mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
         mHeaderAndFooterWrapper.addFootView(mFooterView);
         mPersonalCenterHeaderViewItem = new PersonalCenterHeaderViewItem(getActivity(), mPhotoSelector, mRvList, mHeaderAndFooterWrapper, mLlToolbarContainerParent);
@@ -147,6 +147,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.v_horizontal_line), TOOLBAR_DIVIDER_RGB, 255);
         mPersonalCenterHeaderViewItem.setToolbarIconColor(Color.argb(255, TOOLBAR_BLACK_ICON[0],
                 TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
+    }
+
+    @Override
+    protected boolean usePermisson() {
+        return true;
     }
 
     private void initListener() {
@@ -433,7 +438,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 getActivity().finish();
                 break;
             case R.id.iv_more:
-            mPresenter.shareUserInfo(mUserInfoBean);
+                mPresenter.shareUserInfo(mUserInfoBean);
 
                 break;
         }
@@ -472,7 +477,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
-        if(photoList.isEmpty()){
+        if (photoList.isEmpty()) {
             return;
         }
         // 选择图片完毕后，开始上传封面图片
