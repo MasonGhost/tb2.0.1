@@ -71,7 +71,6 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(BUNDLE_INFO, realData);
                 bundle.putString(BUNDLE_INFO_TYPE, mInfoType);
-                LogUtils.d(realData.toString());
                 intent.putExtra(BUNDLE_INFO, bundle);
                 startActivity(intent);
             }
