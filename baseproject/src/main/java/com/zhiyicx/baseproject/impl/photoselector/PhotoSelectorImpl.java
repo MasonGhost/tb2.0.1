@@ -24,6 +24,7 @@ import com.yalantis.ucrop.UCrop;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.config.PathConfig;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.baseproject.widget.popwindow.PermissionPopupWindow;
 import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -321,17 +322,18 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
     }
 
     /**
-     * 添加用户完全禁止
+     * 添加用户完全禁止权限后的提示弹框
      */
     private void initPermissionPopUpWindow() {
         if (mActionPopupWindow != null) {
             return;
         }
-        mActionPopupWindow = ActionPopupWindow.builder()
+        mActionPopupWindow = PermissionPopupWindow.builder()
+                .permissionName(mFragment.getString(R.string.camera_permission))
                 .with(mFragment.getActivity())
                 .bottomStr(mFragment.getString(R.string.cancel))
-                .item1Str("手机权限申请")
-                .item2Str("去设置")
+                .item1Str(mFragment.getString(R.string.setting_permission_hint))
+                .item2Str(mFragment.getString(R.string.setting_permission))
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
                     public void onItem2Clicked() {

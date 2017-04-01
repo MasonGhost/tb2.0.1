@@ -28,7 +28,7 @@ public class ActionPopupWindow extends PopupWindow {
 
     private Activity mActivity;
     private View mParentView;
-    private View mContentView;
+    protected View mContentView;
     private String mItem1Str;
     private String mItem2Str;
     private String mItem3Str;
@@ -49,7 +49,7 @@ public class ActionPopupWindow extends PopupWindow {
         this.mItem1Str = builder.mItem1Str;
         this.mItem2Str = builder.mItem2Str;
         this.mItem3Str = builder.mItem3Str;
-        this.mItem1Color=builder.mItem1Color;
+        this.mItem1Color = builder.mItem1Color;
         this.mBottomStr = builder.mBottomStr;
         this.mIsOutsideTouch = builder.mIsOutsideTouch;
         this.mIsFocus = builder.mIsFocus;
@@ -58,10 +58,21 @@ public class ActionPopupWindow extends PopupWindow {
         this.mActionPopupWindowItem2ClickListener = builder.mActionPopupWindowItem2ClickListener;
         this.mActionPopupWindowItem3ClickListener = builder.mActionPopupWindowItem3ClickListener;
         this.mActionPopupWindowBottomClickListener = builder.mActionPopupWindowBottomClickListener;
-        initView();
+        if (canInitView()) {
+            initView();
+        }
     }
 
-    private void initView() {
+    /**
+     * 子类重新调用initView
+     *
+     * @return
+     */
+    protected boolean canInitView() {
+        return true;
+    }
+
+    protected void initView() {
         initLayout();
         setWidth(LinearLayout.LayoutParams.MATCH_PARENT);
         setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -80,8 +91,12 @@ public class ActionPopupWindow extends PopupWindow {
         ((TextView) mContentView.findViewById(R.id.tv_pop_item1)).setTextColor(res);
     }
 
-    private void initLayout() {
-        mContentView = LayoutInflater.from(mActivity).inflate(R.layout.ppw_for_action, null);
+    protected int getLayoutId() {
+        return R.layout.ppw_for_action;
+    }
+
+    protected void initLayout() {
+        mContentView = LayoutInflater.from(mActivity).inflate(getLayoutId(), null);
         if (!TextUtils.isEmpty(mItem1Str)) {
             TextView item1View = (TextView) mContentView.findViewById(R.id.tv_pop_item1);
             item1View.setVisibility(View.VISIBLE);
@@ -94,7 +109,7 @@ public class ActionPopupWindow extends PopupWindow {
                     }
                 }
             });
-            if(mItem1Color!=0){
+            if (mItem1Color != 0) {
                 item1View.setTextColor(mItem1Color);
             }
         }
@@ -183,7 +198,7 @@ public class ActionPopupWindow extends PopupWindow {
         dismiss();
     }
 
-    public static final class Builder {
+    public static class Builder {
         private Activity mActivity;
         private View parentView;
         private String mItem1Str;
@@ -199,7 +214,7 @@ public class ActionPopupWindow extends PopupWindow {
         private ActionPopupWindowItem3ClickListener mActionPopupWindowItem3ClickListener;
         private ActionPopupWindow.ActionPopupWindowBottomClickListener mActionPopupWindowBottomClickListener;
 
-        private Builder() {
+        protected Builder() {
         }
 
         public ActionPopupWindow.Builder with(Activity activity) {
@@ -231,6 +246,7 @@ public class ActionPopupWindow extends PopupWindow {
             this.mBottomStr = bottomStr;
             return this;
         }
+
         public ActionPopupWindow.Builder item1StrColor(int color) {
             this.mItem1Color = color;
             return this;
