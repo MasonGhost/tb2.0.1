@@ -8,10 +8,11 @@ import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
+import com.trycatch.mysnackbar.Prompt;
+import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.common.config.ConstantConfig;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.ChatType;
@@ -104,14 +105,14 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
                 int dispayHeight = UIUtils.getWindowHeight(getContext());
                 //若不可视区域高度大于1/3屏幕高度，则键盘显示
                 if (rootInvisibleHeight > (1 / 3 * dispayHeight)) {
-                    mKeyboradIsOpen = true;
+//                    mKeyboradIsOpen = true;
                     if (mMessageItemBean.getConversation() != null) {// 如果对话没有创建，不做处理
                         mMessageList.scrollToBottom();
                     }
                 } else {
                     //键盘隐藏
-                    mKeyboradIsOpen = false;
-                    mIlvContainer.clearFocus();// 主动失去焦点
+//                    mKeyboradIsOpen = false;
+//                    mIlvContainer.clearFocus();// 主动失去焦点
                 }
 //                mIlvContainer.setSendButtonVisiable(mKeyboradIsOpen); 不需要隐藏
             }
@@ -156,7 +157,9 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     @Override
     public void showMessage(String message) {
-        ToastUtils.showToast(message);
+        TSnackbar.make(mSnackRootView, message, TSnackbar.LENGTH_SHORT)
+                .setPromptThemBackground(Prompt.SUCCESS)
+                .show();
     }
 
 
@@ -196,7 +199,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
      */
     @Override
     public void onBubbleClick(ChatItemBean message) {
-        LogUtils.d("--------------onBubbleClick-----------" + message.getLastMessage().getTxt());
+        LogUtils.d("----------------onBubbleClick----------");
 
     }
 
@@ -208,7 +211,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
      */
     @Override
     public boolean onBubbleLongClick(ChatItemBean message) {
-        LogUtils.d("--------------onBubbleLongClick-----------" + message.getLastMessage().getTxt());
+        LogUtils.d("----------------onBubbleLongClick----------");
         return true;
     }
 
@@ -233,28 +236,6 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
         showMessage(chatItemBean.getUserInfo().getName());
         return true;
     }
-
-    /**
-     * item 点击
-     *
-     * @param message
-     */
-    @Override
-    public void onItemClickListener(ChatItemBean message) {
-    }
-
-    /**
-     * item 长按
-     *
-     * @param message
-     * @return
-     */
-    @Override
-    public boolean onItemLongClickListener(ChatItemBean message) {
-        showMessage(message.getLastMessage().getTxt());
-        return true;
-    }
-
 
     @Override
     public void setChatTitle(@NotNull String titleStr) {
@@ -288,7 +269,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
         for (int i = 0; i < size; i++) {
             if (mDatas.get(i).getLastMessage().getId() == message.getId()) {
                 mDatas.get(i).setLastMessage(message);
-                mMessageList.refresh(); // 没有 UI 更新 ，所以不刷新
+                mMessageList.refresh(); // 没有 UI 更新 ，可以不刷新
                 break;
             }
         }

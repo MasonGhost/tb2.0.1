@@ -11,7 +11,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.FrameLayout;
 
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
@@ -57,6 +56,9 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
 
     protected MessageSendItemDelagate mMessageSendItemDelagate;
     protected MessageReceiveItemDelagate mMessageReceiveItemDelagate;
+    private LinearLayoutManager mLinearLayoutManager;
+
+    private int mLastVisibleItemPosition;//　记录上次加载的最有一个 item
 
     public ChatMessageList(Context context) {
         super(context);
@@ -109,19 +111,15 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
         mRefreshLayout = (SwipeToLoadLayout) findViewById(R.id.refreshlayout);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.swipe_target);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+        mLinearLayoutManager = new LinearLayoutManager(context);
+        mRecyclerView.setLayoutManager(mLinearLayoutManager);
         mRecyclerView.addItemDecoration(new LinearDecoration(0, ConvertUtils.dp2px(getContext(), RECYCLEVIEW_ITEMDECORATION_SPACING), 0, 0));//设置Item的间隔
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());//设置动画
         mRefreshLayout.setRefreshEnabled(true);
         mRefreshLayout.setOnRefreshListener(this);
-        setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DeviceUtils.hideSoftKeyboard(mContext, mRecyclerView);
-            }
-        });
+
     }
 
     /**
@@ -141,10 +139,26 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
         messageAdapter.addItemViewDelegate(mMessageSendItemDelagate);
         messageAdapter.addItemViewDelegate(mMessageReceiveItemDelagate);
         // TODO: 2017/1/7 添加图片、视频、音频等Delegate
-        // set message adapter
         mRecyclerView.setAdapter(messageAdapter);
         mRecyclerView.setItemAnimator(new SlideInUpAnimator());
         mRecyclerView.getItemAnimator().setAddDuration(300);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if ((mLastVisibleItemPosition == (messageAdapter.getItemCount() - 1))) {
+                        DeviceUtils.showSoftKeyboard(mContext, mRecyclerView);
+                    }
+                    mLastVisibleItemPosition = mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
     }
 
     /**
@@ -236,10 +250,6 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
         void onUserInfoClick(ChatItemBean chatItemBean);
 
         boolean onUserInfoLongClick(ChatItemBean chatItemBean);
-
-        void onItemClickListener(ChatItemBean chatItemBean);
-
-        boolean onItemLongClickListener(ChatItemBean chatItemBean);
     }
 
     public void setMessageListItemClickListener(MessageListItemClickListener messageListItemClickListener) {
