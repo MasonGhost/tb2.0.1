@@ -208,7 +208,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
         mDynamicDetailHeader = new DynamicDetailHeader(getContext());
         mHeaderAndFooterWrapper.addHeaderView(mDynamicDetailHeader.getDynamicDetailHeader());
-        View mFooterView =new View(getContext());
+        View mFooterView = new View(getContext());
         mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
         mHeaderAndFooterWrapper.addFootView(mFooterView);
         mRvList.setAdapter(mHeaderAndFooterWrapper);
@@ -488,6 +488,9 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         position = position - 1;// 减去 header
+        if (position == mListDatas.size() - 1) { //如果的最后一个，则点击的是缺省图
+            return;
+        }
         if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
             if (mListDatas.get(position).getComment_id() != null) {
                 initLoginOutPopupWindow(mListDatas.get(position).getComment_id(), position);
