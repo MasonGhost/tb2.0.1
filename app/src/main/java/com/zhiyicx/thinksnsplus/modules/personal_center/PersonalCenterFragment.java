@@ -472,6 +472,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
+        if(photoList.isEmpty()){
+            return;
+        }
         // 选择图片完毕后，开始上传封面图片
         ImageBean imageBean = photoList.get(0);
         imagePath = imageBean.getImgUrl();

@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 
 import com.yalantis.ucrop.UCrop;
 import com.zhiyicx.baseproject.R;
@@ -135,12 +136,14 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
 
     /**
      * 统一的判断是否需要进行裁剪的逻辑:指定是否需要裁剪
+     * 添加一个imgPath参数，如果没有选择图片，就跳过剪切的逻辑
      *
      * @return
      */
     @Override
-    public boolean isNeededCraft() {
-        return mCropShape != NO_CRAFT;
+    public boolean isNeededCraft(String imgPath) {
+
+        return mCropShape != NO_CRAFT && !TextUtils.isEmpty(imgPath);
     }
 
     /**
@@ -157,7 +160,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                 String path = mTakePhotoUri.getPath();
                 if (new File(path).exists()) {
                     // 是否需要剪裁，不需要就直接返回结果
-                    if (isNeededCraft()) {
+                    if (isNeededCraft(path)) {
                         startToCraft(path);
                     } else {
                         ImageBean imageBean = new ImageBean();
@@ -185,14 +188,22 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
             if (requestCode == 1000) {
                 photosList.clear();// 清空之前的图片，重新装载
                 ArrayList<String> photos = data.getStringArrayListExtra("photos");
-                if (isNeededCraft()) {
-                    startToCraft(photos.get(0));
+                String craftPath = "";
+                if (photos == null || photos.isEmpty()) {
+                    craftPath = "";
+                } else {
+                    craftPath = photos.get(0);
+                }
+                if (isNeededCraft(craftPath)) {
+                    startToCraft(craftPath);
                 } else {
                     for (String imgUrl : photos) {
                         ImageBean imageBean = new ImageBean();
                         imageBean.setImgUrl(imgUrl);
                         photosList.add(imageBean);
                     }
+                    // 需要注意的是：用户有可能清空之前选择的所有图片，然后返回，这样就没有图片了
+                    // 需要注意有可能造成的数组越界
                     mTIPhotoBackListener.getPhotoSuccess(photosList);
                 }
             }
