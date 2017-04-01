@@ -402,9 +402,9 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 if (mPhonographAnimate != null && mPhonographAnimate.isStarted()) {
                     pauseAnimation();
                 }
-                
-                mFragmentMusicPalyRv.smoothScrollToPosition(mFragmentMusicPalyRv
-                        .getActualCurrentPosition() - 1);
+                mFragmentMusicPalyRv.smoothScrollToPosition(
+                        mFragmentMusicPalyRv.getCurrentPosition() - 1
+                );
 
                 mFragmentMusicPalyProgress.setProgress(0);
                 break;
@@ -435,8 +435,10 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 if (mPhonographAnimate != null && mPhonographAnimate.isStarted()) {
                     pauseAnimation();
                 }
-                mFragmentMusicPalyRv.smoothScrollToPosition(mFragmentMusicPalyRv
-                        .getActualCurrentPosition() + 1);
+
+                mFragmentMusicPalyRv.smoothScrollToPosition(
+                        mFragmentMusicPalyRv.getCurrentPosition() + 1
+                );
                 mFragmentMusicPalyProgress.setProgress(0);
                 break;
             case R.id.fragment_music_paly_list:// 歌曲目录
@@ -495,7 +497,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 mCurrentValue = 0;
                 int realPosition = newPosition % mMusicList.size();
                 stopAnimation(mCurrentView);
-                ToastUtils.showToast("OnPageChanged:::" + newPosition);
+                ToastUtils.showToast("OnPageChanged:::" + realPosition);
                 mCurrentMusic = mMusicList.get(realPosition);
 
                 if (mCurrentMusic.getMusic_info().getIsdiggmusic() == 1) {
@@ -588,19 +590,28 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         isConnected = true;
     }
 
+    /**
+     * 更新音乐信息
+     * @param description 音乐信息数据
+     */
     private void updateMediaDescription(MediaDescriptionCompat description) {
         if (description == null) {
             return;
         } else {
             mMediaDescriptionCompat = description;
-
             mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
                     .transformation(new GlideMusicBgTransform(getActivity()))
                     .imagerView(mFragmentMusicPalyBg)
                     .url(description.getIconUri() + "")
                     .build());
+            View item=RecyclerViewUtils
+                    .getCenterXChild(mFragmentMusicPalyRv);
+            ImageView image =(ImageView) item.findViewById(R.id.fragment_music_paly_img);
 
-
+            mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
+                    .imagerView(image)
+                    .url(description.getIconUri() + "")
+                    .build());
         }
 
     }
@@ -718,7 +729,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             doPointOutAnimation(500, 0);
             mFragmentMusicPalyRv.setSpeed(100);
             mFragmentMusicPalyRv.smoothScrollToPosition(mFragmentMusicPalyRv
-                    .getActualCurrentPosition() + 1);
+                    .getCurrentPosition() + 1);
             mFragmentMusicPalyRv.setSpeed(250);
         }
         Log.e("MUSIC_END", "" + orderType);
@@ -873,7 +884,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             @Override
             public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int
                     position) {
-                return false;
+                return true;
             }
         });
         return mAdapter;

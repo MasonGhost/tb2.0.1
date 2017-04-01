@@ -139,7 +139,6 @@ public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Rep
         if (mRootView.getInfoType()<0){
             return;// 搜索出来的资讯，收藏状态有待优化
         }
-
         mInfoListBeanGreenDao.saveCollect(mRootView.getInfoType(), mRootView.getNewsId().intValue
                 (), is_collection_news);
         EventBus.getDefault().post(mRootView.getCurrentInfo(), EVENT_SEND_INFO_LIST_COLLECT);
