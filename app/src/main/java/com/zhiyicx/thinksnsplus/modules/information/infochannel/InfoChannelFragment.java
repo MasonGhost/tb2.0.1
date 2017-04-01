@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMoreCatesBean;
@@ -23,9 +25,11 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.functions.Action1;
 
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.container
         .InfoContainerFragment.SUBSCRIBE_EXTRA;
@@ -145,77 +149,9 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
         mMyCatesBeen = mInfoTypeBean.getMy_cates();
         mMoreCatesBeen = mInfoTypeBean.getMore_cates();
 
-        mSubscribeAdapter = new CommonAdapter<InfoTypeMyCatesBean>(getActivity(), R.layout
-                .item_info_channel, mMyCatesBeen) {
-            @Override
-            protected void convert(ViewHolder holder, InfoTypeMyCatesBean data
-                    , final int position) {
-                ImageView delete = holder.getView(R.id.item_info_channel_deal);
-                if (position == 0) {
-                    holder.getView(R.id.item_info_channel).setBackgroundResource(R.drawable
-                            .item_channel_bg_blue);
-                } else {
-                    holder.getView(R.id.item_info_channel).setBackgroundResource(R.drawable
-                            .item_channel_bg_normal);
-                }
-                if (isEditor && position != 0) {
-                    delete.setVisibility(View.VISIBLE);
-                } else {
-                    delete.setVisibility(View.GONE);
-                }
-                holder.setText(R.id.item_info_channel, data.getName());
-            }
-        };
-        mSubscribeAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                if (isEditor && position != 0) {
-                    InfoTypeMyCatesBean bean = mMyCatesBeen.get(position);
-                    mSubscribeAdapter.removeItem(position);
-                    mUnSubscribeAdapter.addItem(new InfoTypeMoreCatesBean(bean.getId(),
-                            bean.getName()));
-                }
-            }
+        mFragmentChannelContentSubscribed.setAdapter(initSubscribeAdapter());
 
-            @Override
-            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int
-                    position) {
-                if (!isEditor) {
-                    mFragmentChannelEditor.performClick();
-                }
-                return false;
-            }
-        });
-
-        mFragmentChannelContentSubscribed.setAdapter(mSubscribeAdapter);
-        mUnSubscribeAdapter = new CommonAdapter<InfoTypeMoreCatesBean>(getActivity(),
-                R.layout.item_info_channel, mMoreCatesBeen) {
-            @Override
-            protected void convert(ViewHolder holder, InfoTypeMoreCatesBean data,
-                                   int position) {
-                holder.setText(R.id.item_info_channel, data.getName());
-            }
-        };
-
-        mFragmentChannelContentUnsubscribe.setAdapter(mUnSubscribeAdapter);
-        mUnSubscribeAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                InfoTypeMoreCatesBean bean = mMoreCatesBeen.get(position);
-                mSubscribeAdapter.addItem(new InfoTypeMyCatesBean(bean.getId(),
-                        bean.getName()));
-                mUnSubscribeAdapter.removeItem(position);
-                if (!isEditor) {
-                    mFragmentChannelEditor.performClick();
-                }
-            }
-
-            @Override
-            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int
-                    position) {
-                return false;
-            }
-        });
+        mFragmentChannelContentUnsubscribe.setAdapter(initUnsubscribeAdapter());
     }
 
     @OnClick({R.id.fragment_channel_editor, R.id.fragment_channel_complete})
@@ -285,5 +221,137 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
             }
         }
         return ids.toString();
+    }
+
+    private CommonAdapter initUnsubscribeAdapter() {
+        mUnSubscribeAdapter = new CommonAdapter<InfoTypeMoreCatesBean>(getActivity(),
+                R.layout.item_info_channel, mMoreCatesBeen) {
+            @Override
+            protected void convert(ViewHolder holder, InfoTypeMoreCatesBean data,
+                                   int position) {
+                holder.setText(R.id.item_info_channel, data.getName());
+            }
+
+            @Override
+            protected void setListener(ViewGroup parent,final ViewHolder viewHolder, int viewType) {
+                RxView.clicks(viewHolder.itemView)
+                        .throttleFirst(1, TimeUnit.SECONDS)
+                        .compose(bindToLifecycle())
+                        .subscribe(new Action1<Object>() {
+                            @Override
+                            public void call(Object o) {
+                                if (mOnItemClickListener != null) {
+                                    int position = viewHolder.getAdapterPosition();
+                                    mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
+                                }
+                            }
+                        });
+
+                viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        if (mOnItemClickListener != null) {
+                            int position = viewHolder.getAdapterPosition();
+                            return mOnItemClickListener.onItemLongClick(v, viewHolder, position);
+                        }
+                        return true;
+                    }
+                });
+            }
+        };
+
+        mUnSubscribeAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                InfoTypeMoreCatesBean bean = mMoreCatesBeen.get(position);
+                mSubscribeAdapter.addItem(new InfoTypeMyCatesBean(bean.getId(),
+                        bean.getName()));
+                mUnSubscribeAdapter.removeItem(position);
+                if (!isEditor) {
+                    mFragmentChannelEditor.performClick();
+                }
+            }
+
+            @Override
+            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int
+                    position) {
+                return false;
+            }
+        });
+
+        return mUnSubscribeAdapter;
+    }
+
+    private CommonAdapter initSubscribeAdapter() {
+        mSubscribeAdapter = new CommonAdapter<InfoTypeMyCatesBean>(getActivity(), R.layout
+                .item_info_channel, mMyCatesBeen) {
+            @Override
+            protected void convert(ViewHolder holder, InfoTypeMyCatesBean data
+                    , final int position) {
+                ImageView delete = holder.getView(R.id.item_info_channel_deal);
+                if (position == 0) {
+                    holder.getView(R.id.item_info_channel).setBackgroundResource(R.drawable
+                            .item_channel_bg_blue);
+                } else {
+                    holder.getView(R.id.item_info_channel).setBackgroundResource(R.drawable
+                            .item_channel_bg_normal);
+                }
+                if (isEditor && position != 0) {
+                    delete.setVisibility(View.VISIBLE);
+                } else {
+                    delete.setVisibility(View.GONE);
+                }
+                holder.setText(R.id.item_info_channel, data.getName());
+            }
+
+            @Override
+            protected void setListener(ViewGroup parent,final ViewHolder viewHolder, int viewType) {
+                RxView.clicks(viewHolder.itemView)
+                        .throttleFirst(1, TimeUnit.SECONDS)
+                        .compose(bindToLifecycle())
+                        .subscribe(new Action1<Object>() {
+                            @Override
+                            public void call(Object o) {
+                                if (mOnItemClickListener != null) {
+                                    int position = viewHolder.getAdapterPosition();
+                                    mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
+                                }
+                            }
+                        });
+
+                viewHolder.getConvertView().setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        if (mOnItemClickListener != null) {
+                            int position = viewHolder.getAdapterPosition();
+                            return mOnItemClickListener.onItemLongClick(v, viewHolder, position);
+                        }
+                        return true;
+                    }
+                });
+            }
+        };
+        mSubscribeAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                if (isEditor && position != 0) {
+                    InfoTypeMyCatesBean bean = mMyCatesBeen.get(position);
+                    mSubscribeAdapter.removeItem(position);
+                    mUnSubscribeAdapter.addItem(new InfoTypeMoreCatesBean(bean.getId(),
+                            bean.getName()));
+                }
+            }
+
+            @Override
+            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int
+                    position) {
+                if (!isEditor) {
+                    mFragmentChannelEditor.performClick();
+                }
+                return false;
+            }
+        });
+
+        return mSubscribeAdapter;
     }
 }
