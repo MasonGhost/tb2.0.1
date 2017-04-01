@@ -123,7 +123,6 @@
                 android:text="(共18首)"
                 android:textColor="@color/normal_for_assist_text"
                 android:textSize="@dimen/size_content_comment"/>
-
         </LinearLayout>
 
         <View

@@ -50,63 +50,69 @@ public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
     public Observable<BaseJson<List<InfoCommentListBean>>> getInfoCommentList(String feed_id,
                                                                               Long max_id, Long
                                                                                       limit) {
-        return mInfoMainClient.getInfoCommentList(feed_id, max_id,  Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
+        return mInfoMainClient.getInfoCommentList(feed_id, max_id,
+                Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
                 .flatMap(new Func1<BaseJson<List<InfoCommentListBean>>,
                         Observable<BaseJson<List<InfoCommentListBean>>>>() {
 
                     @Override
                     public Observable<BaseJson<List<InfoCommentListBean>>> call
                             (final BaseJson<List<InfoCommentListBean>> listBaseJson) {
-                        final List<Long> user_ids = new ArrayList<>();
-                        for (InfoCommentListBean commentListBean : listBaseJson.getData()) {
-                            user_ids.add(commentListBean.getUser_id());
-                            user_ids.add(commentListBean.getReply_to_user_id());
-                        }
 
-                        return mUserInfoRepository.getUserInfo(user_ids).map(new Func1<BaseJson<List<UserInfoBean>>,
-                                BaseJson<List<InfoCommentListBean>>>() {
-
-                            @Override
-                            public BaseJson<List<InfoCommentListBean>> call(BaseJson<List
-                                    <UserInfoBean>> userinfobeans) {
-                                if (userinfobeans.isStatus()) { //
-                                    // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
-                                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new
-                                            SparseArray<>();
-                                    for (UserInfoBean userInfoBean : userinfobeans.getData()) {
-                                        userInfoBeanSparseArray.put(userInfoBean.getUser_id()
-                                                .intValue(), userInfoBean);
-                                    }
-                                    for (InfoCommentListBean commentListBean : listBaseJson
-                                            .getData()) {
-                                        commentListBean.setFromUserInfoBean
-                                                (userInfoBeanSparseArray.get((int) commentListBean
-                                                        .getUser_id()));
-                                        if (commentListBean.getReply_to_user_id() == 0) { // 如果
-                                            // reply_user_id = 0 回复动态
-                                            UserInfoBean userInfoBean = new UserInfoBean();
-                                            userInfoBean.setUser_id(0L);
-                                            commentListBean.setToUserInfoBean(userInfoBean);
-                                        } else {
-                                            commentListBean.setToUserInfoBean
-                                                    (userInfoBeanSparseArray.get(
-                                                            (int) commentListBean
-                                                                    .getReply_to_user_id()));
-                                        }
-
-                                    }
-                                    AppApplication.AppComponentHolder.getAppComponent()
-                                            .userInfoBeanGreenDao().insertOrReplace(userinfobeans
-                                            .getData());
-                                } else {
-                                    listBaseJson.setStatus(userinfobeans.isStatus());
-                                    listBaseJson.setCode(userinfobeans.getCode());
-                                    listBaseJson.setMessage(userinfobeans.getMessage());
-                                }
-
-                                return listBaseJson;
+                        if (listBaseJson.getData().isEmpty()){
+                            return Observable.just(listBaseJson);
+                        }else{
+                            final List<Long> user_ids = new ArrayList<>();
+                            for (InfoCommentListBean commentListBean : listBaseJson.getData()) {
+                                user_ids.add(commentListBean.getUser_id());
+                                user_ids.add(commentListBean.getReply_to_user_id());
                             }
-                        });
+
+                            return mUserInfoRepository.getUserInfo(user_ids).map(new Func1<BaseJson<List<UserInfoBean>>,
+                                    BaseJson<List<InfoCommentListBean>>>() {
+
+                                @Override
+                                public BaseJson<List<InfoCommentListBean>> call(BaseJson<List
+                                        <UserInfoBean>> userinfobeans) {
+                                    if (userinfobeans.isStatus()) { //
+                                        // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new
+                                                SparseArray<>();
+                                        for (UserInfoBean userInfoBean : userinfobeans.getData()) {
+                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id()
+                                                    .intValue(), userInfoBean);
+                                        }
+                                        for (InfoCommentListBean commentListBean : listBaseJson
+                                                .getData()) {
+                                            commentListBean.setFromUserInfoBean
+                                                    (userInfoBeanSparseArray.get((int) commentListBean
+                                                            .getUser_id()));
+                                            if (commentListBean.getReply_to_user_id() == 0) { // 如果
+                                                // reply_user_id = 0 回复动态
+                                                UserInfoBean userInfoBean = new UserInfoBean();
+                                                userInfoBean.setUser_id(0L);
+                                                commentListBean.setToUserInfoBean(userInfoBean);
+                                            } else {
+                                                commentListBean.setToUserInfoBean
+                                                        (userInfoBeanSparseArray.get(
+                                                                (int) commentListBean
+                                                                        .getReply_to_user_id()));
+                                            }
+
+                                        }
+                                        AppApplication.AppComponentHolder.getAppComponent()
+                                                .userInfoBeanGreenDao().insertOrReplace(userinfobeans
+                                                .getData());
+                                    } else {
+                                        listBaseJson.setStatus(userinfobeans.isStatus());
+                                        listBaseJson.setCode(userinfobeans.getCode());
+                                        listBaseJson.setMessage(userinfobeans.getMessage());
+                                    }
+
+                                    return listBaseJson;
+                                }
+                            });
+                        }
                     }
                 });
     }

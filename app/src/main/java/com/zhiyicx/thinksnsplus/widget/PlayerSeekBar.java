@@ -11,6 +11,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.SeekBar;
 
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 
@@ -67,16 +68,15 @@ public class PlayerSeekBar extends SeekBar {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected synchronized void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (drawLoading) {
             canvas.save();
-            degree = ((int) (degree + 30.0F));
+            degree = ((int) (degree + 3.0F));
             degree %= 360;
             matrix.reset();
-            matrix.postRotate(degree, loading.getWidth() / 2, loading.getHeight() / 2);
             matrix.setScale(0.3f, 0.3f, loading.getWidth() / 2, loading.getHeight() / 2);
-
+            matrix.postRotate(degree, loading.getWidth() / 2, loading.getHeight() / 2);
             canvas.translate(getPaddingLeft() + getThumb().getBounds().left + getThumb().getBounds
                             ().width() / 2 - loading.getWidth() / 2 - getThumbOffset(),
                     getPaddingTop() + getThumb().getBounds().top + getThumb().getBounds().height()

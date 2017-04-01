@@ -39,6 +39,36 @@ public class ConvertUtils {
 
     private static final char hexDigits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
+
+    /**
+     * 数字格式转换，超过 9999 用 “1万”
+     * ⦁	数字不展示超过五位数，超过9999则显示1W（W大写），超过11000则显示1.1W、1.2W，超过99999则显示10W、11W
+     *
+     * @param number
+     * @return
+     */
+    public static String numberConvert(int number) {
+        if (number > 9999) {
+            if (number >= 100000) {
+                return number / 10000 + "W";
+            } else {
+                return number / 10000 + "." + ((number / 10) / 1000) + "W";
+            }
+        }
+        return String.valueOf(number);
+    }
+    /**
+     * ⦁	消息的字数显示不超过99，超过99均显示99
+     *
+     * @param number
+     * @return
+     */
+    public static String messageNumberConvert(int number) {
+        if (number > 99) {
+           return String.valueOf(99);
+        }
+        return String.valueOf(number);
+    }
     /**
      * byteArr 转 hexString
      * <p>例如：</p>

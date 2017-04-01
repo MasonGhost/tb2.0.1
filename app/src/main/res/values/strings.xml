@@ -68,12 +68,20 @@
 
     <!--裁剪-->
     <string name="crop_head_icon">更换头像</string>
+    <string name="crop_bg_cover">更换封面</string>
+    <string name="crop_ing">图片裁剪中...</string>
+    <string name="crop_success">图片裁剪成功</string>
+    <string name="crop_failure">图片裁剪失败</string>
     <!--相册-->
     <string name="album_list">相册</string>
     <string name="preview">预览</string>
     <string name="album_selected_count">完成(%1$d/%2$d)</string>
     <string name="album_selected">选择</string>
     <string name="save_to_photo">保存至手机相册</string>
+    <string name="save_success">图片保存成功:</string>
+    <string name="save_failure1">图片保存失败</string>
+    <string name="save_failure2">sd卡不存在</string>
+    <string name="all_photos">所有图片</string>
 
     <!--音乐FM-->
     <string name="music_fm">音乐FM</string>
@@ -88,10 +96,10 @@
     <string name="dynamic_content_hint">输入要说的话，图文结合更精彩哦</string>
     <string name="dynamic_send_cancel_hint">你还有没有发布的内容，是否放弃发布？</string>
     <!--动态详情-->
-    <string name="dynamic_dig_count">%1$d人点赞</string>
-    <string name="dynamic_comment_count">%1$d条评论</string>
+    <string name="dynamic_dig_count">%1$s人点赞</string>
+    <string name="dynamic_comment_count">%1$s条评论</string>
     <string name="dynamic_publish_time">发布于%1$s</string>
-    <string name="dynamic_viewer_count">%1$d人浏览</string>
+    <string name="dynamic_viewer_count">%1$s人浏览</string>
     <string name="dynamic_like">喜欢</string>
     <string name="dig_list">点赞榜</string>
 
@@ -105,4 +113,6 @@
     <string name="share">分享</string>
     <string name="favorite">收藏</string>
     <string name="get_dynamic_dig_list_failure">获取点赞列表失败</string>
+    <string name="default_input_hint">随便说说~</string>
+    <string name="default_input_chat_hint">说点什么</string>
 </resources>

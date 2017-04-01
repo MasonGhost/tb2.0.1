@@ -46,7 +46,7 @@ public class TimeUtils {
      * @return 友好时间字符串
      */
     public static String getTimeFriendlyNormal(String timestr) {
-        String result = "1分钟前";
+        String result = "1分钟内";
         long timesamp = utc2LocalLong(timestr);
         switch (getifferenceDays(timesamp)) {
             case 0:
@@ -100,7 +100,7 @@ public class TimeUtils {
      * @return 友好时间字符串
      */
     public static String getTimeFriendlyNormal(long timesamp) {
-        String result = "1分钟前";
+        String result = "1分钟内";
         switch (getifferenceDays(timesamp)) {
             case 0:
                 result = getFriendlyTimeForBeforHour(timesamp, result);
@@ -145,7 +145,7 @@ public class TimeUtils {
     /**
      * 聊天详情页 备注：聊天时间显示间隔6分钟
      * <p>
-     * 一分钟内显示一分钟
+     * 一分钟内显示一分钟内
      * 一小时内显示几分钟前，
      * 一天内显示几小时前，
      * 1天到2天显示如（昨天 20:36），
@@ -163,7 +163,7 @@ public class TimeUtils {
     /**
      * 详情页(动态详情页、聊天详情页) 备注：聊天时间显示间隔6分钟
      * <p>
-     * 一分钟内显示一分钟
+     * 一分钟内显示一分钟内
      * 一小时内显示几分钟前，
      * 一天内显示几小时前，
      * 1天到2天显示如（昨天 20:36），
@@ -188,7 +188,7 @@ public class TimeUtils {
      * @return 友好的时间字符串
      */
     public static String getTimeFriendlyForUserHome(String timestr) {
-        String result = "1分钟前";
+        String result = "1分钟内";
         long timesamp = utc2LocalLong(timestr);
         switch (getifferenceDays(timesamp)) {
             case 0:
@@ -206,7 +206,7 @@ public class TimeUtils {
     }
 
     /**
-     * 一分钟内显示一分钟
+     * 一分钟内显示一分钟内
      * 一小时内显示几分钟前，
      * 一天内显示几小时前，
      * 1天到2天显示如（昨天 20:36），
@@ -217,7 +217,7 @@ public class TimeUtils {
      * @return
      */
     private static String handleDetailTime(long timesamp) {
-        String result = "1分钟前";
+        String result = "1分钟内";
         switch (getifferenceDays(timesamp)) {
             case 0:
                 result = getFriendlyTimeForBeforHour(timesamp, result);
