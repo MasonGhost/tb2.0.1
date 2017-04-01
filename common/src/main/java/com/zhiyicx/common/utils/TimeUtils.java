@@ -46,7 +46,7 @@ public class TimeUtils {
      * @return 友好时间字符串
      */
     public static String getTimeFriendlyNormal(String timestr) {
-        String result = "1分钟前";
+        String result = "1分钟内";
         long timesamp = utc2LocalLong(timestr);
         switch (getifferenceDays(timesamp)) {
             case 0:
@@ -100,7 +100,7 @@ public class TimeUtils {
      * @return 友好时间字符串
      */
     public static String getTimeFriendlyNormal(long timesamp) {
-        String result = "1分钟前";
+        String result = "1分钟内";
         switch (getifferenceDays(timesamp)) {
             case 0:
                 result = getFriendlyTimeForBeforHour(timesamp, result);
@@ -188,7 +188,7 @@ public class TimeUtils {
      * @return 友好的时间字符串
      */
     public static String getTimeFriendlyForUserHome(String timestr) {
-        String result = "1分钟前";
+        String result = "1分钟内";
         long timesamp = utc2LocalLong(timestr);
         switch (getifferenceDays(timesamp)) {
             case 0:
@@ -217,7 +217,7 @@ public class TimeUtils {
      * @return
      */
     private static String handleDetailTime(long timesamp) {
-        String result = "1分钟前";
+        String result = "1分钟内";
         switch (getifferenceDays(timesamp)) {
             case 0:
                 result = getFriendlyTimeForBeforHour(timesamp, result);
