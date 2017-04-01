@@ -104,7 +104,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
                 int rootInvisibleHeight = mRlContainer.getRootView().getHeight() - rect.bottom;
                 int dispayHeight = UIUtils.getWindowHeight(getContext());
                 //若不可视区域高度大于1/3屏幕高度，则键盘显示
-                if (rootInvisibleHeight > (1 / 3 * dispayHeight)) {
+                if (rootInvisibleHeight > (dispayHeight * (1f / 3))) {
 //                    mKeyboradIsOpen = true;
                     if (mMessageItemBean.getConversation() != null) {// 如果对话没有创建，不做处理
                         mMessageList.scrollToBottom();
