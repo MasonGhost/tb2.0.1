@@ -216,8 +216,6 @@ public class GalleryFragment extends TSFragment {
         circleNavigator.setCircleSpacing(UIUtil.dip2px(getContext(), 5));
         circleNavigator.setNormalCircleColor(Color.argb(102, 99, 99, 99));
         circleNavigator.setSelectedCircleColor(Color.argb(255, 99, 99, 99));
-        circleNavigator.setNormalCircleColor(Color.argb(102, 255, 0, 0));
-        circleNavigator.setSelectedCircleColor(Color.argb(255, 255, 255, 255));
         circleNavigator.setFollowTouch(false);
         circleNavigator.setCircleClickListener(new ScaleCircleNavigator.OnCircleClickListener() {
             @Override
