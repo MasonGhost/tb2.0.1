@@ -1,4 +1,4 @@
-﻿2017年2月10日 10:46:48
+﻿2017年4月3日 14:09:22
 # app测试概述
 按照测试用例，进行单元测试编写。为什么要写单元测试：
 - 提高代码质量，写出良好的单元测试对代码有较高的要求
@@ -19,6 +19,26 @@
 指定这个对象的某些方法的行为，返回特定的值，或者是执行特定的动作
 
 反过来说如果想要实现上面的两个目的，需要一个特定的对象，而这个对象就需要Mockito框架提供。
+
+### Monkey 压力测试
+```java
+/**
+ * monkey 作用的包：com.ckt.android.junit
+ * 产生时间序列的种子值：500
+ * 忽略程序崩溃、 忽略超时、 监视本地程序崩溃、 详细信息级别为2， 产生10000个事件 。
+ */
+adb shell monkey -p com.zhiyicx.thinksnsplus -s 500 --ignore-crashes
+--ignore-timeouts --monitor-native-crashes -v -v 10000 > E:\monkey_log\java_monkey_log.txt
+
+```
+强制停止`Monkey`测试
+```java
+adb shell ps | awk '/com\.android\.commands\.monkey/ { system("adb shell kill " $2) }'
+
+
+```
+
+
 
 ### Dagger2
 这里对[Dagger2进行了简单说明](../common/DAGGER2.md)
