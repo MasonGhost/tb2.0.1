@@ -83,6 +83,7 @@
         android:layout_toRightOf="@id/iv_headpic"
         android:maxLines="1"
         android:paddingTop="@dimen/spacing_small"
+        android:paddingBottom="@dimen/spacing_mid"
         android:textColor="@color/general_for_hint"
         android:textSize="@dimen/size_icon_assist"
         tools:text="6分钟前"/>
@@ -92,6 +93,5 @@
         style="@style/style_divider_horizontal_light"
         android:layout_toRightOf="@+id/iv_headpic"
         android:layout_below="@+id/tv_time"
-        android:layout_marginTop="@dimen/spacing_mid"
         />
 </RelativeLayout>

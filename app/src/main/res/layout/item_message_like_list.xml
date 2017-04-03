@@ -5,22 +5,22 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
-    android:paddingBottom="@dimen/spacing_normal"
-    android:paddingLeft="@dimen/spacing_small"
-    android:paddingRight="@dimen/spacing_small"
-    android:paddingTop="@dimen/spacing_normal"
+    android:paddingLeft="@dimen/spacing_normal"
+    android:paddingTop="@dimen/spacing_mid"
     tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
 
     <com.zhiyicx.baseproject.widget.imageview.FilterImageView
         android:id="@+id/iv_headpic"
         app:pressShape="circle"
         android:layout_width="@dimen/headpic_for_list"
+        android:layout_marginRight="@dimen/spacing_mid"
         android:layout_height="@dimen/headpic_for_list"
         tools:src="@mipmap/ic_launcher"/>
 
     <FrameLayout
         android:id="@+id/fl_detial"
         android:layout_width="@dimen/rec_image_for_list"
+        android:layout_marginRight="@dimen/spacing_normal"
         android:layout_height="@dimen/rec_image_for_list"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
@@ -52,7 +52,7 @@
         android:layout_marginRight="@dimen/spacing_normal"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@id/fl_detial"
-        android:src="@mipmap/msg_box_succeed"/>
+        android:src="@mipmap/home_ico_good_high"/>
 
     <TextView
         android:id="@+id/tv_name"
@@ -62,7 +62,6 @@
         android:layout_toRightOf="@id/iv_headpic"
         android:ellipsize="end"
         android:maxLines="1"
-        android:paddingLeft="@dimen/spacing_normal"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_content"
         tools:text="张三 "/>
@@ -76,11 +75,17 @@
         android:layout_toRightOf="@id/iv_headpic"
         android:ellipsize="end"
         android:maxLines="1"
-        android:paddingLeft="@dimen/spacing_normal"
         android:paddingTop="@dimen/spacing_small"
+        android:paddingBottom="@dimen/spacing_mid"
         android:textColor="@color/general_for_hint"
-        android:textSize="@dimen/size_content_assist"
+        android:textSize="@dimen/size_icon_assist"
         tools:text="6分钟前"/>
 
+    <View
+        android:id="@+id/v_bottom_line"
+        style="@style/style_divider_horizontal_light"
+        android:layout_toRightOf="@+id/iv_headpic"
+        android:layout_below="@+id/tv_time"
+        />
 
 </RelativeLayout>

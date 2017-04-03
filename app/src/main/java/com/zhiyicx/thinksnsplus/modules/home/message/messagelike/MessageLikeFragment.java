@@ -9,7 +9,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
@@ -61,6 +61,11 @@ public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Pres
     }
 
     @Override
+    protected float getItemDecorationSpacing() {
+        return 0;
+    }
+
+    @Override
     protected void initData() {
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         initCommentAndLike(mListDatas);
@@ -85,7 +90,7 @@ public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Pres
         UserInfoBean testUserinfo = new UserInfoBean();
         testUserinfo.setAvatar("http://image.xinmin.cn/2017/01/11/bedca80cdaa44849a813e7820fff8a26.jpg");
         testUserinfo.setName("颤三");
-        testUserinfo.setUser_id(123l);
+        testUserinfo.setUser_id(12l);
         MessageItemBean commentItem = new MessageItemBean();
         commentItem.setUserInfo(testUserinfo);
         Conversation commentMessage = new Conversation();
@@ -126,6 +131,11 @@ public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Pres
      */
 
     private void setItemData(ViewHolder holder, final MessageItemBean messageItemBean, int position) {
+        if (position == mListDatas.size() - 1) {
+            holder.setVisible(R.id.v_bottom_line, View.GONE);
+        } else {
+            holder.setVisible(R.id.v_bottom_line, View.VISIBLE);
+        }
         mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
                 .url(messageItemBean.getUserInfo().getAvatar())
                 .transformation(new GlideCircleTransform(getContext()))
@@ -145,7 +155,7 @@ public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Pres
         }
 
         holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getName());
-        holder.setText(R.id.tv_time, ConvertUtils.millis2FitTimeSpan(messageItemBean.getConversation().getLast_message_time(), 3));
+        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(messageItemBean.getConversation().getLast_message_time()));
         // 响应事件
         RxView.clicks(holder.getView(R.id.tv_name))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
