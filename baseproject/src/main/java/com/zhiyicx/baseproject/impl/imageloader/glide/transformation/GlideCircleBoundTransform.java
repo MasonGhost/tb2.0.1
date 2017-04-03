@@ -9,7 +9,7 @@ import android.graphics.Paint;
 
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
-
+import com.zhiyicx.baseproject.R;
 
 
 /**
@@ -20,16 +20,18 @@ import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
  */
 
 public class GlideCircleBoundTransform extends BitmapTransformation {
+    private Context mContext;
     public GlideCircleBoundTransform(Context context) {
         super(context);
+        this.mContext=context.getApplicationContext();
     }
 
     @Override
     protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
-        return circleCrop(pool, toTransform);
+        return circleCrop(mContext,pool, toTransform);
     }
 
-    private static Bitmap circleCrop(BitmapPool pool, Bitmap source) {
+    private static Bitmap circleCrop(Context context,BitmapPool pool, Bitmap source) {
         if (source == null) return null;
 
         int size = Math.min(source.getWidth(), source.getHeight());
@@ -54,14 +56,13 @@ public class GlideCircleBoundTransform extends BitmapTransformation {
         paint1.setColor(Color.WHITE);
         canvas.drawCircle(r, r, r, paint1);
 
-
         //画图片
         Paint paint = new Paint();
         paint.setShader(new BitmapShader(squared, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP));
         paint.setAntiAlias(true);
-        canvas.drawCircle(r, r, r - 3, paint);
+        canvas.drawCircle(r, r, r -context.getResources().getDimensionPixelSize(R.dimen.spacing_tiny) , paint);
 
-        return result;
+        return squared;
     }
 
     @Override

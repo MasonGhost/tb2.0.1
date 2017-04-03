@@ -207,8 +207,8 @@ public class PersonalCenterHeaderViewItem {
         // 显示头像
         mImageLoader.loadImage(mActivity, GlideImageConfig.builder()
                 .url(ImageUtils.imagePathConvert(userInfoBean.getAvatar(), ImageZipConfig.IMAGE_70_ZIP))
-                .placeholder(R.drawable.shape_default_image_circle)
-                .errorPic(R.drawable.shape_default_image_circle)
+                .placeholder(R.drawable.shape_default_image_circle_with_strike)
+                .errorPic(R.drawable.shape_default_image_circle_with_strike)
                 .imagerView(iv_head_icon)
                 .transformation(new GlideCircleBoundTransform(mActivity))
                 .build());
