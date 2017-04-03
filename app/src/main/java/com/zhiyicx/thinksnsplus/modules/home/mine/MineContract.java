@@ -20,10 +20,6 @@ public interface MineContract {
          */
         void setUserInfo(UserInfoBean userInfoBean);
 
-        /**
-         * 设置关注数量
-         */
-        void updateUserFollowCount(int stateFollow);
     }
 
     interface Presenter extends IBasePresenter {

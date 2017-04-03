@@ -108,7 +108,7 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
             case FollowFansListFragment.FANS_FRAGMENT_PAGE:
                 datas = followFansBeanDao.queryDeep(" where " + FollowFansBeanDao
                                 .Properties.OriginUserId.columnName + " = ? and "
-                                + FollowFansBeanDao.Properties.Target_follow_status.columnName + " = ? and" // 目标用户对我的关注状态为关注
+                                + FollowFansBeanDao.Properties.Target_follow_status.columnName + " = ? " // 目标用户对我的关注状态为关注
                         , user_id + ""
                         , FollowFansBean.IFOLLOWED_STATE + ""
                 );
