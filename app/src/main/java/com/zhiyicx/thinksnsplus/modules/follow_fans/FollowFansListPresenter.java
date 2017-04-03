@@ -38,6 +38,9 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
     @Inject
     UserInfoRepository mUserInfoRepository;
 
+    private int mPageType;
+    private long mUserId;
+
     @Inject
     public FollowFansListPresenter(FollowFansListContract.Repository repository,
                                    FollowFansListContract.View rootView) {
@@ -63,12 +66,15 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<FollowFansBean> data) {
+        mFollowFansBeanGreenDao.deleteDataByType(mPageType, mUserId);
         mFollowFansBeanGreenDao.insertOrReplace(data);
         return true;
     }
 
     @Override
     public void requestNetData(final Long maxId, final boolean isLoadMore, final long userId, final int pageType) {
+        this.mUserId = userId;
+        this.mPageType = pageType;
         Observable<BaseJson<List<FollowFansBean>>> observable = null;
         if (pageType == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
             observable = mRepository.getFollowListFromNet(userId, maxId.intValue());
@@ -81,7 +87,6 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
                 .subscribe(new BaseSubscribe<List<FollowFansBean>>() {
                     @Override
                     protected void onSuccess(List<FollowFansBean> data) {
-                        insertOrUpdateData(data);// 保存到数据库
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 

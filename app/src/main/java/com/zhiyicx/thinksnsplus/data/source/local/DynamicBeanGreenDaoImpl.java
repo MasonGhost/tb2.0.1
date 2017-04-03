@@ -92,6 +92,7 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
             case ApiConfig.DYNAMIC_TYPE_NEW:
 
                 break;
+            default:
         }
         if (datas != null) {
             dynamicBeanDao.insertOrReplaceInTx(datas);
