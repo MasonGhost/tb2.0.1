@@ -352,7 +352,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 break;
 
             case 3: // 更多
-                initDeletDynamicPopupWindow(mListDatas.get(dataPosition),dataPosition);
+                initDeletDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition);
                 mDeletDynamicPopWindow.show();
                 break;
             default:
@@ -485,9 +485,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      * 初始化动态删除选择弹框
      *
      * @param dynamicBean curent dynamic
-     * @param position curent dynamic postion
+     * @param position    curent dynamic postion
      */
-    private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean,int position) {
+    private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean, int position) {
         mDeletDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_dynamic))
                 .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
