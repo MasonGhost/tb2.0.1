@@ -9,7 +9,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
@@ -151,9 +151,9 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
             holder.setText(R.id.tv_deatil, messageItem.getConversation().getLast_message_text());
         }
 
-        // holder.setText(R.id.tv_name, messageItem.getUserInfo().getUserName());
+        holder.setText(R.id.tv_name, messageItem.getUserInfo().getName());
         holder.setText(R.id.tv_content, messageItem.getConversation().getLast_message_text());
-        holder.setText(R.id.tv_time, ConvertUtils.millis2FitTimeSpan(messageItem.getConversation().getLast_message_time(), 3));
+        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(messageItem.getConversation().getLast_message_time()));
 
         // 响应事件
         RxView.clicks(holder.getView(R.id.tv_name))

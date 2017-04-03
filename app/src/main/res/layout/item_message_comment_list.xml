@@ -5,15 +5,16 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
-    android:paddingBottom="@dimen/spacing_normal"
-    android:paddingLeft="@dimen/spacing_small"
-    android:paddingRight="@dimen/spacing_small"
-    android:paddingTop="@dimen/spacing_normal"
+    android:paddingBottom="@dimen/spacing_mid"
+    android:paddingLeft="@dimen/spacing_normal"
+    android:paddingRight="@dimen/spacing_normal"
+    android:paddingTop="@dimen/spacing_mid"
     tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
 
     <com.zhiyicx.baseproject.widget.imageview.FilterImageView
         android:id="@+id/iv_headpic"
         android:layout_width="@dimen/headpic_for_list"
+        android:layout_marginRight="@dimen/spacing_mid"
         app:pressShape="circle"
         android:layout_height="@dimen/headpic_for_list"
         tools:src="@mipmap/ic_launcher"/>
@@ -22,6 +23,7 @@
         android:id="@+id/fl_detial"
         android:layout_width="@dimen/rec_image_for_list"
         android:layout_height="@dimen/rec_image_for_list"
+        android:layout_marginLeft="@dimen/spacing_normal"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:background="@color/bgColor">
@@ -52,8 +54,9 @@
         android:layout_toLeftOf="@id/fl_detial"
         android:layout_toRightOf="@id/iv_headpic"
         android:ellipsize="end"
+        android:includeFontPadding="false"
         android:maxLines="1"
-        android:paddingLeft="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/textview_spacing_offset_height"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_content_comment"
         tools:text="张三 "/>
@@ -66,9 +69,7 @@
         android:layout_toLeftOf="@id/fl_detial"
         android:layout_toRightOf="@id/iv_headpic"
         android:ellipsize="end"
-        android:gravity="bottom"
         android:maxLines="1"
-        android:paddingLeft="@dimen/spacing_normal"
         android:paddingTop="@dimen/spacing_small"
         android:textColor="@color/normal_for_assist_text"
         android:textSize="@dimen/size_content"
@@ -81,12 +82,10 @@
         android:layout_below="@id/tv_content"
         android:layout_toLeftOf="@id/fl_detial"
         android:layout_toRightOf="@id/iv_headpic"
-        android:ellipsize="end"
         android:maxLines="1"
-        android:paddingLeft="@dimen/spacing_normal"
         android:paddingTop="@dimen/spacing_small"
         android:textColor="@color/general_for_hint"
-        android:textSize="@dimen/size_content_assist"
+        android:textSize="@dimen/size_icon_assist"
         tools:text="6分钟前"/>
 
 
