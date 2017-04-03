@@ -57,6 +57,10 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
         return getString(R.string.comment);
     }
 
+    @Override
+    protected float getItemDecorationSpacing() {
+        return 0;
+    }
 
     @Override
     protected void initView(View rootView) {
@@ -133,6 +137,11 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
 
     private void setItemData(ViewHolder holder, final MessageItemBean messageItem, int position) {
 
+        if (position == mListDatas.size() - 1) {
+            holder.setVisible(R.id.v_bottom_line, View.GONE);
+        } else {
+            holder.setVisible(R.id.v_bottom_line, View.VISIBLE);
+        }
         mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
                 .url(messageItem.getUserInfo().getAvatar())
                 .transformation(new GlideCircleTransform(getContext()))
