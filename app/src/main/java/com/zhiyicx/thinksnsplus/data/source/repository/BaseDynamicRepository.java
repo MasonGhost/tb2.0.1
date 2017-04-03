@@ -239,13 +239,14 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     }
 
     @Override
-    public void updateOrInsertDynamic(List<DynamicBean> dynamicBeens) {
+    public void updateOrInsertDynamic(List<DynamicBean> dynamicBeens, final String type) {
 
         Observable.just(dynamicBeens)
                 .observeOn(Schedulers.io())
                 .subscribe(new Action1<List<DynamicBean>>() {
                     @Override
                     public void call(List<DynamicBean> datas) {
+                        mDynamicBeanGreenDao.deleteDynamicByType(type); // 清除旧数据
                         List<DynamicDetailBean> dynamicDetailBeen = new ArrayList<>();
                         List<DynamicCommentBean> dynamicCommentBeen = new ArrayList<>();
                         List<DynamicToolBean> dynamicToolBeen = new ArrayList<>();

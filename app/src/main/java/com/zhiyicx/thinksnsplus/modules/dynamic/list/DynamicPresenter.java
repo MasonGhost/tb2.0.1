@@ -178,7 +178,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
      * @param data
      */
     private void insertOrUpdateDynamicDB(@NotNull List<DynamicBean> data) {
-        mRepository.updateOrInsertDynamic(data);
+        mRepository.updateOrInsertDynamic(data,mRootView.getDynamicType());
 
     }
 

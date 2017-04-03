@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.personal_center;
 import android.os.Bundle;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
@@ -251,7 +252,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<DynamicBean> data) {
-        mRepository.updateOrInsertDynamic(data);
+        mRepository.updateOrInsertDynamic(data, ApiConfig.DYNAMIC_TYPE_NEW);
         return true;
     }
 

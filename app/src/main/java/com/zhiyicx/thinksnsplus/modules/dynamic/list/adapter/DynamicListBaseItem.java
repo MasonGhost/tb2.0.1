@@ -164,10 +164,15 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                 holder.setText(R.id.tv_title, title);
             }
             String content = dynamicBean.getFeed().getContent();
-            if (content.length() > mContentMaxShowNum) {
-                content = content.substring(0, mContentMaxShowNum) + "...";
+            if(TextUtils.isEmpty(content)){
+                holder.setVisible(R.id.tv_content, View.GONE);
+            }else {
+                if (content.length() > mContentMaxShowNum) {
+                    content = content.substring(0, mContentMaxShowNum) + "...";
+                }
+                holder.setText(R.id.tv_content, content);
+                holder.setVisible(R.id.tv_content, View.VISIBLE);
             }
-            holder.setText(R.id.tv_content, content);
             DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
             DynamicToolBean dynamicToolBean = dynamicBean.getTool();
             if (dynamicToolBean != null) {

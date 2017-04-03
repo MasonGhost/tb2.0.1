@@ -67,8 +67,9 @@ public interface IDynamicReppsitory {
      * 插入或者更新动态列表
      *
      * @param datas
+     * @param type
      */
-    void updateOrInsertDynamic(List<DynamicBean> datas);
+    void updateOrInsertDynamic(List<DynamicBean> datas,String type);
 
     /**
      * 取消动态点赞
