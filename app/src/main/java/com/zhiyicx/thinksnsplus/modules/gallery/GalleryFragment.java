@@ -64,6 +64,11 @@ public class GalleryFragment extends TSFragment {
     }
 
     @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
     protected void initView(View rootView) {
         currentItem = getArguments().getInt(BUNDLE_IMAGS_POSITON);
         rectList = getArguments().getParcelableArrayList("rect");
@@ -204,8 +209,10 @@ public class GalleryFragment extends TSFragment {
         circleNavigator.setMaxRadius(UIUtil.dip2px(getContext(), 2.5));
         circleNavigator.setMinRadius(UIUtil.dip2px(getContext(), 2.4));
         circleNavigator.setCircleSpacing(UIUtil.dip2px(getContext(), 5));
-        circleNavigator.setNormalCircleColor(Color.argb(102, 99, 99, 99));
-        circleNavigator.setSelectedCircleColor(Color.argb(255, 99, 99, 99));
+      /*  circleNavigator.setNormalCircleColor(Color.argb(102, 99, 99, 99));
+        circleNavigator.setSelectedCircleColor(Color.argb(255, 99, 99, 99));*/
+        circleNavigator.setNormalCircleColor(Color.argb(102, 255, 0, 0));
+        circleNavigator.setSelectedCircleColor(Color.argb(255, 255, 255, 255));
         circleNavigator.setFollowTouch(false);
         circleNavigator.setCircleClickListener(new ScaleCircleNavigator.OnCircleClickListener() {
             @Override
