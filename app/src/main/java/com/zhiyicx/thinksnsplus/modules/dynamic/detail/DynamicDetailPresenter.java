@@ -154,6 +154,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         if (data == null) {
             return false;
         }
+        mDynamicCommentBeanGreenDao.deleteCacheByFeedMark(mRootView.getCurrentDynamic().getFeed_mark());// 删除本条动态的本地评论
         mDynamicCommentBeanGreenDao.insertOrReplace(data);
         return true;
     }

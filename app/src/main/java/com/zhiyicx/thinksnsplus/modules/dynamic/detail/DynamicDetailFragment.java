@@ -159,7 +159,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     private void initToolbar() {
-        mToolbar.setPadding(0,DeviceUtils.getStatuBarHeight(getContext()),0,0);
+        mToolbar.setPadding(0, DeviceUtils.getStatuBarHeight(getContext()), 0, 0);
     }
 
     /**

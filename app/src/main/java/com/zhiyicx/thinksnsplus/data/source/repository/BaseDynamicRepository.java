@@ -381,7 +381,6 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                 user_ids.add(dynamicCommentBean.getReply_to_user_id());
                                 dynamicCommentBean.setFeed_mark(feed_mark);
                             }
-                            mDynamicCommentBeanGreenDao.deleteCacheByFeedMark(feed_mark);// 删除本条动态的本地评论
                             return mUserInfoRepository.getUserInfo(user_ids)
                                     .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<DynamicCommentBean>>>() {
                                         @Override
