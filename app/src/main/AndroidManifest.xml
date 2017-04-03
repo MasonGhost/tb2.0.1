@@ -75,7 +75,8 @@
         <activity android:name=".modules.settings.aboutus.AboutUsActivity">
         </activity>
         <activity
-            android:name=".modules.edit_userinfo.UserInfoActivity">
+            android:name=".modules.edit_userinfo.UserInfoActivity"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
         </activity>
         <activity android:name=".modules.home.message.messagecomment.MessageCommentActivity">
         </activity>
