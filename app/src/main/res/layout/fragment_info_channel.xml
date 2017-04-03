@@ -61,7 +61,7 @@
 
         <android.support.v7.widget.RecyclerView
             android:layout_gravity="center"
-            android:layout_margin="@dimen/spacing_small"
+            android:padding="@dimen/spacing_small"
             android:id="@+id/fragment_channel_content_subscribed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

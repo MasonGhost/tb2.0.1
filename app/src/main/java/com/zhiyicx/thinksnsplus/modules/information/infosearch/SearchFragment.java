@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.information.infosearch;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -30,6 +31,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO;
+import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO_TYPE;
+
 /**
  * @Author Jliuer
  * @Date 2017/03/06
@@ -56,13 +60,13 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        mRvList.setVisibility(View.GONE);
+        mEmptyView.setVisibility(View.GONE);
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         mFragmentInfoSearchEdittext.setOnEditorActionListener(
                 new TextView.OnEditorActionListener() {
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                         if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                            requestNetData(mMaxId, false);
+                            requestNetData(0L, false);
                             return true;
                         }
                         return false;
@@ -90,9 +94,9 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
     @Override
     protected MultiItemTypeAdapter getAdapter() {
         return new CommonAdapter<InfoListBean.ListBean>(getActivity(),
-                R.layout.item_info, mData) {
+                R.layout.item_info, mListDatas) {
             @Override
-            protected void convert(ViewHolder holder, InfoListBean.ListBean realData,
+            protected void convert(ViewHolder holder,final InfoListBean.ListBean realData,
                                    final int position) {
                 final TextView title = holder.getView(R.id.item_info_title);
                 ImageView imageView = holder.getView(R.id.item_info_imag);
@@ -117,7 +121,11 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
                         }
                         title.setTextColor(getResources()
                                 .getColor(R.color.normal_for_assist_text));
-                        startActivity(new Intent(getActivity(), InfoDetailsActivity.class));
+                        Intent intent = new Intent(getActivity(), InfoDetailsActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(BUNDLE_INFO, realData);
+                        intent.putExtra(BUNDLE_INFO, bundle);
+                        startActivity(intent);
                     }
                 });
             }
@@ -142,12 +150,5 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
     @Override
     public void onCacheResponseSuccess(@NotNull List<InfoListBean.ListBean> data, boolean
             isLoadMore) {
-    }
-
-    @Override
-    public void onNetResponseSuccess(@NotNull List<InfoListBean.ListBean> data, boolean
-            isLoadMore) {
-        mRvList.setVisibility(View.VISIBLE);
-        super.onNetResponseSuccess(data, isLoadMore);
     }
 }

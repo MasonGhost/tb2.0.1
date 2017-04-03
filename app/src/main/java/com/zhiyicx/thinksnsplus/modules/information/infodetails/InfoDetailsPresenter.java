@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.information.infodetails;
 
+import android.text.TextUtils;
+
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -133,6 +135,10 @@ public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Rep
         mRootView.setCollect(isUnCollected);
         int is_collection_news = isUnCollected ? 1 : 0;
         mRootView.getCurrentInfo().setIs_collection_news(is_collection_news);
+
+        if (mRootView.getInfoType()<0){
+            return;// 搜索出来的资讯，收藏状态有待优化
+        }
         mInfoListBeanGreenDao.saveCollect(mRootView.getInfoType(), mRootView.getNewsId().intValue
                 (), is_collection_news);
         EventBus.getDefault().post(mRootView.getCurrentInfo(), EVENT_SEND_INFO_LIST_COLLECT);

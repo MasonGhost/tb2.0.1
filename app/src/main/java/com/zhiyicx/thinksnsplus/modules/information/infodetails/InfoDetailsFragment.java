@@ -182,7 +182,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     public int getInfoType() {
-        return Integer.valueOf(getArguments().getString(BUNDLE_INFO_TYPE));
+        return Integer.valueOf(getArguments().getString(BUNDLE_INFO_TYPE,"-1"));
     }
 
     @Override

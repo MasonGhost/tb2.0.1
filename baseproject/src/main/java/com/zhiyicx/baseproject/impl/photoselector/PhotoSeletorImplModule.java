@@ -2,6 +2,8 @@ package com.zhiyicx.baseproject.impl.photoselector;
 
 import android.support.v4.app.Fragment;
 
+import com.zhiyicx.common.base.BaseFragment;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -14,10 +16,10 @@ import dagger.Provides;
 @Module
 public class PhotoSeletorImplModule {
     private PhotoSelectorImpl.IPhotoBackListener mPhotoBackListener;
-    private Fragment mFragment;
+    private BaseFragment mFragment;
     private int mCropShape;// 裁剪框的形状
 
-    public PhotoSeletorImplModule(PhotoSelectorImpl.IPhotoBackListener photoBackListener, Fragment fragment, int cropShape) {
+    public PhotoSeletorImplModule(PhotoSelectorImpl.IPhotoBackListener photoBackListener, BaseFragment fragment, int cropShape) {
         mPhotoBackListener = photoBackListener;
         this.mFragment = fragment;
         this.mCropShape = cropShape;

@@ -152,6 +152,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
     }
 
+    @Override
+    protected boolean usePermisson() {
+        return true;
+    }
+
     private void initListener() {
         // 添加关注点击事件
         RxView.clicks(mLlFollowContainer)
@@ -476,6 +481,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
+        if (photoList.isEmpty()) {
+            return;
+        }
         // 选择图片完毕后，开始上传封面图片
         ImageBean imageBean = photoList.get(0);
         imagePath = imageBean.getImgUrl();

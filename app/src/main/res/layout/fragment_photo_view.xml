@@ -15,10 +15,10 @@
         android:background="@color/white">
 
         <ImageView
-            android:layout_gravity="center_vertical"
             android:id="@+id/tv_toolbar_left"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
             android:paddingLeft="@dimen/toolbar_padding_left"
             android:paddingRight="@dimen/toolbar_padding_right"
             android:src="@mipmap/topbar_back"
@@ -44,6 +44,7 @@
         android:layout_height="@dimen/photo_selector_bottom_view"
         android:background="@color/white">
 
+        <!--文字底部添加了2dp的padding，否则无法和图片垂直居中，why？-->
         <CheckBox
             android:id="@+id/rb_select_photo"
             android:layout_width="wrap_content"
@@ -51,6 +52,7 @@
             android:layout_marginLeft="@dimen/spacing_normal"
             android:button="@drawable/selector_button_select_stated"
             android:gravity="center"
+            android:paddingBottom="@dimen/spacing_tiny"
             android:paddingLeft="@dimen/spacing_small"
             android:text="@string/album_selected"/>
 

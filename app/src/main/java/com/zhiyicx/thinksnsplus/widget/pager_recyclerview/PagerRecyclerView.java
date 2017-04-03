@@ -420,7 +420,6 @@ public class PagerRecyclerView extends RecyclerView {
                             }
                         }// 如果不想滚动，不改变targetPosition，没有达到临界值。
                     } else {
-                        LogUtils.d("canScrollVertically()");
                         int spanY = mCurView.getTop() - mFirstTopWhenDragging;
                         if (spanY > mCurView.getHeight() * mTriggerOffset && mCurView.getTop() >=
                                 mMaxTopWhenDragging) {
@@ -500,7 +499,6 @@ public class PagerRecyclerView extends RecyclerView {
      */
     protected void adjustPositionX(int velocityX) {
         if (reverseLayout) velocityX *= -1;
-        LogUtils.d("adjustPositionX");
         int childCount = getChildCount();
         if (childCount > 0) {
             int curPosition = RecyclerViewUtils.getCenterXChildPosition(this);
@@ -539,7 +537,6 @@ public class PagerRecyclerView extends RecyclerView {
 
     protected void adjustPositionY(int velocityY) {
         if (reverseLayout) velocityY *= -1;
-
         int childCount = getChildCount();
         if (childCount > 0) {
             int curPosition = RecyclerViewUtils.getCenterYChildPosition(this);
@@ -592,13 +589,10 @@ public class PagerRecyclerView extends RecyclerView {
     }
 
     private int safeTargetPosition(int position, int count) {
-
         if (position < 0) {
-            LogUtils.d("position < 0");
             return 0;
         }
         if (position >= count) {
-            LogUtils.d("position >= count");
             return count - 1;
         }
         return position;
@@ -632,6 +626,10 @@ public class PagerRecyclerView extends RecyclerView {
         if (mOnPageChangedListeners != null) {
             mOnPageChangedListeners.clear();
         }
+    }
+
+    public View getmCurView() {
+        return mCurView;
     }
 
     public interface OnPageChangedListener {
