@@ -397,7 +397,8 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_DYNAMIC_TO_LIST)
     public void handleSendDynamic(DynamicBean dynamicBean) {
-        if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW)) {
+        if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW)
+                ||mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) {
             int position = hasDynamicContanied(dynamicBean);
             if (position != -1) {// 如果列表有当前数据
                 mRootView.showNewDynamic(position);
