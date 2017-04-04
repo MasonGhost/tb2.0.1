@@ -24,10 +24,13 @@ public interface MusicCommentContract {
 
     interface Presenter extends ITSListPresenter<MusicCommentListBean>{
         void requestNetData(String music_id,Long maxId, boolean isLoadMore);
+        void sendComment(String musci_id,String content);
     }
 
     interface Repository{
         Observable<BaseJson<List<MusicCommentListBean>>> getMusicCommentList(String music_id,
                                                                              long max_id);
+
+        void sendComment(String musci_id, String content);
     }
 }
