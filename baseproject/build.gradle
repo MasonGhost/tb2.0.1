@@ -72,6 +72,7 @@ dependencies {
         exclude group:'com.android.support',module:'recyclerview-v7'
 
     }
+    compile dataDependences.umeng
     provided dataDependences.javaxAnnotation
     provided dataDependences.daggerCompiler
     apt dataDependences.daggerCompiler

@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import com.antfortune.freeline.FreelineCore;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.google.gson.Gson;
+import com.umeng.analytics.MobclickAgent;
 import com.zhiyicx.baseproject.base.TSApplication;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.base.BaseJson;
@@ -76,6 +77,7 @@ public class AppApplication extends TSApplication {
         // 极光推送
         JPushInterface.setDebugMode(true);
         JPushInterface.init(this);
+        MobclickAgent.setDebugMode( true );
     }
 
     /**

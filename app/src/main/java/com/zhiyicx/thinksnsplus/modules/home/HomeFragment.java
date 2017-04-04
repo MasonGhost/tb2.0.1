@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
@@ -147,6 +148,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         mVpHome.setCurrentItem(PAGE_HOME, false);
         mJpushAlias = new JpushAlias(getContext(), AppApplication.getmCurrentLoginAuth().getUser_id() + "");// 设置极光推送别名
         mJpushAlias.setAlias();
+
+        Glide.with(getActivity()).load("");
     }
 
     @Override
