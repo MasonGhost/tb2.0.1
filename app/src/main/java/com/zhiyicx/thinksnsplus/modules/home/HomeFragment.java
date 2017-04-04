@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
@@ -40,6 +41,8 @@ import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+
+import static com.zhiyicx.common.utils.StatusBarUtils.STATUS_TYPE_ANDROID_M;
 
 /**
  * @Describe
