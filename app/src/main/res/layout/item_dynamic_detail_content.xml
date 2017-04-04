@@ -4,7 +4,8 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:background="@color/white"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              android:paddingTop="@dimen/spacing_normal_large">
     <!--动态标题-->
     <TextView
         android:id="@+id/tv_dynamic_title"
@@ -14,7 +15,6 @@
         android:paddingBottom="@dimen/spacing_normal_large"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingRight="@dimen/spacing_normal"
-        android:paddingTop="@dimen/spacing_normal_large"
         android:textColor="@color/themeColor"
         android:textSize="@dimen/size_primary_title"
         tools:text="一碗饭的时间"/>
@@ -24,8 +24,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_large"
-        android:visibility="gone"
-        android:orientation="vertical"></LinearLayout>
+        android:orientation="vertical"
+        android:visibility="gone"></LinearLayout>
     <!--动态内容-->
     <TextView
         android:id="@+id/tv_dynamic_content"
@@ -33,6 +33,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingRight="@dimen/spacing_normal"
+        android:paddingBottom="@dimen/spacing_normal_large"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_content"
         tools:text="北京时间3月1日，名记马克-斯坦推特爆料，刚刚与费城76人完成买断的安德鲁-博古特，正式确认将与克利夫兰骑士签约。

@@ -90,7 +90,7 @@ public class DynamicDetailHeader {
         final Context context = mTitle.getContext();
         // 设置图片
         List<ImageBean> photoList = dynamicDetailBean.getStorages();
-        if (photoList != null) {
+        if (photoList != null&&!photoList.isEmpty()) {
             mPhotoContainer.setVisibility(View.VISIBLE);
             for (int i = 0; i < photoList.size(); i++) {
                 showContentImage(context, photoList, i, i == photoList.size() - 1, mPhotoContainer);

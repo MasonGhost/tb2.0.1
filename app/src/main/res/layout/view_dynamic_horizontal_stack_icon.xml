@@ -6,8 +6,7 @@
               android:background="@color/white"
               android:gravity="center_vertical"
               android:orientation="horizontal"
-              android:paddingBottom="@dimen/spacing_normal_large"
-              android:paddingTop="@dimen/spacing_normal_large">
+              android:paddingBottom="@dimen/spacing_normal_large">
 
     <LinearLayout
         android:id="@+id/ll_dig_container"
