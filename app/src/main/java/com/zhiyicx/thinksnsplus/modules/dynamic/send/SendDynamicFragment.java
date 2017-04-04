@@ -106,6 +106,11 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         handleBack();
     }
 
+    @Override
+    protected boolean usePermisson() {
+        return true;
+    }
+
     /**
      * 处理取消发布动态
      */
