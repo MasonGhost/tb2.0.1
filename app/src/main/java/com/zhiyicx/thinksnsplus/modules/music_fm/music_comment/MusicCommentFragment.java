@@ -92,6 +92,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     @Override
     public void onSendClick(View v, String text) {
         DeviceUtils.hideSoftKeyboard(getContext(), v);
+        mEmptyView.setVisibility(View.GONE);
         mPresenter.sendComment(mCurrentMusic.getMusic_info().getId()+"", text);
     }
 

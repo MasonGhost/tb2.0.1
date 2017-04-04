@@ -69,10 +69,6 @@ public class PhotoViewFragment extends TSFragment {
     LinearLayout mActivityPhotoView;
     @BindView(R.id.rl_bottom_container)
     RelativeLayout mRlBottomContainer;
-    @BindView(R.id.tv_toolbar_left)
-    ImageView mTvToolbarLeft;
-    @BindView(R.id.toolbar_layout)
-    LinearLayout mToolbarLayout;
 
     private ArrayList<String> seletedPaths;
     private ArrayList<String> allPaths;
@@ -156,12 +152,17 @@ public class PhotoViewFragment extends TSFragment {
 
     @Override
     protected boolean showToolbar() {
-        return false;
+        return true;
     }
 
     @Override
     protected boolean showToolBarDivider() {
-        return false;
+        return true;
+    }
+
+    @Override
+    protected void setLeftClick() {
+        getActivity().onBackPressed();
     }
 
     @Override
@@ -204,12 +205,9 @@ public class PhotoViewFragment extends TSFragment {
         }
     }
 
-    @OnClick({R.id.tv_toolbar_left, R.id.bt_complete})
+    @OnClick({R.id.bt_complete})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.tv_toolbar_left:
-                getActivity().onBackPressed();
-                break;
             case R.id.bt_complete:
                 setResult(false);
                 break;
@@ -309,7 +307,6 @@ public class PhotoViewFragment extends TSFragment {
     }
 
     public void backPress() {
-        LogUtils.i("PhotoVIew_toolbar_height" + mToolbarLayout.getHeight());
         PhotoViewPictureContainerFragment fragment = fragmentMap.get(mViewPager.getCurrentItem());
         if (fragment != null && fragment.canAnimateCloseActivity()) {
             backgroundColor = new ColorDrawable(Color.WHITE);

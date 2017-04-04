@@ -33,8 +33,8 @@ import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailCommentItem;
-import com.zhiyicx.thinksnsplus.widget.EmptyItem;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.widget.DynamicCommentEmptyItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
@@ -145,7 +145,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      */
     @Override
     protected int getstatusbarAndToolbarHeight() {
-        return getResources().getDimensionPixelSize(R.dimen.toolbar_and_statusbar_height);
+        return getResources().getDimensionPixelSize(R.dimen.toolbar_height_include_line_height) + DeviceUtils.getStatuBarHeight(getContext());
     }
 
     @Override
@@ -242,8 +242,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         DynamicDetailCommentItem dynamicDetailCommentItem = new DynamicDetailCommentItem();
         dynamicDetailCommentItem.setOnUserInfoClickListener(this);
         adapter.addItemViewDelegate(dynamicDetailCommentItem);
-        EmptyItem emptyItem = new EmptyItem();
-        adapter.addItemViewDelegate(emptyItem);
+        DynamicCommentEmptyItem dynamicCommentEmptyItem = new DynamicCommentEmptyItem();
+        adapter.addItemViewDelegate(dynamicCommentEmptyItem);
         adapter.setOnItemClickListener(this);
         return adapter;
     }
@@ -344,9 +344,19 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
+
     @Override
     public void refreshData(int position) {
         mHeaderAndFooterWrapper.notifyItemChanged(position);
+    }
+
+    @Override
+    public void onNetResponseSuccess(@NotNull List<DynamicCommentBean> data, boolean isLoadMore) {
+        if (!isLoadMore && data.isEmpty()) { // 增加空数据，用于显示占位图
+            DynamicCommentBean emptyData = new DynamicCommentBean();
+            data.add(emptyData);
+        }
+        super.onNetResponseSuccess(data, isLoadMore);
     }
 
     @Override
@@ -493,9 +503,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         position = position - 1;// 减去 header
-        if (position == mListDatas.size() - 1) { //如果的最后一个，则点击的是缺省图
-            return;
-        }
         if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
             if (mListDatas.get(position).getComment_id() != null) {
                 initLoginOutPopupWindow(mListDatas.get(position).getComment_id(), position);
@@ -557,12 +564,4 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .build();
     }
 
-    @Override
-    public void onNetResponseSuccess(@NotNull List<DynamicCommentBean> data, boolean isLoadMore) {
-        if (!isLoadMore && data.isEmpty()) { // 增加空数据，用于显示占位图
-            DynamicCommentBean emptyData = new DynamicCommentBean();
-            data.add(emptyData);
-        }
-        super.onNetResponseSuccess(data, isLoadMore);
-    }
 }
