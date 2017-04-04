@@ -273,8 +273,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     protected MultiItemTypeAdapter<DynamicBean> getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mListDatas);
-        setAdapter(adapter, new PersonalCenterDynamicListBaseItem(getContext()));
+        // 按照添加顺序，先判断成功后，后面的item就不会继续判断了，类似if else
         setAdapter(adapter, new PersonalCenterDynamicListForZeroImage(getContext()));
+        //setAdapter(adapter, new PersonalCenterDynamicListBaseItem(getContext()));
         setAdapter(adapter, new PersonalCenterDynamicListItemForOneImage(getContext()));
         setAdapter(adapter, new PersonalCenterDynamicListItemForTwoImage(getContext()));
         setAdapter(adapter, new PersonalCenterDynamicListItemForThreeImage(getContext()));
