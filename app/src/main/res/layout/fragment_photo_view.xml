@@ -7,27 +7,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
-    <LinearLayout
-        android:id="@+id/toolbar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_height"
-        android:background="@color/white">
-
-        <ImageView
-            android:id="@+id/tv_toolbar_left"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:paddingLeft="@dimen/toolbar_padding_left"
-            android:paddingRight="@dimen/toolbar_padding_right"
-            android:src="@mipmap/topbar_back"
-            />
-    </LinearLayout>
-
-
-    <include layout="@layout/include_horizontal_divider"></include>
-
     <com.zhiyicx.baseproject.widget.photoview.HackyViewPager
         android:id="@+id/vp_photos"
         android:layout_width="match_parent"
