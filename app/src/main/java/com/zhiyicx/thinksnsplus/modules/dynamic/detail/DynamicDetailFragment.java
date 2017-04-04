@@ -33,7 +33,7 @@ import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailCommentItem;
-import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailEmptyCommentItem;
+import com.zhiyicx.thinksnsplus.widget.EmptyItem;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
@@ -242,8 +242,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         DynamicDetailCommentItem dynamicDetailCommentItem = new DynamicDetailCommentItem();
         dynamicDetailCommentItem.setOnUserInfoClickListener(this);
         adapter.addItemViewDelegate(dynamicDetailCommentItem);
-        DynamicDetailEmptyCommentItem dynamicDetailEmptyCommentItem = new DynamicDetailEmptyCommentItem();
-        adapter.addItemViewDelegate(dynamicDetailEmptyCommentItem);
+        EmptyItem emptyItem = new EmptyItem();
+        adapter.addItemViewDelegate(emptyItem);
         adapter.setOnItemClickListener(this);
         return adapter;
     }

@@ -4,12 +4,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
-import com.zhiyicx.baseproject.R;
 
 
 /**
@@ -19,19 +17,22 @@ import com.zhiyicx.baseproject.R;
  * @Contact master.jungle68@gmail.com
  */
 
-public class GlideCircleBoundTransform extends BitmapTransformation {
-    private Context mContext;
-    public GlideCircleBoundTransform(Context context) {
+public class GlideCircleBorderTransform extends BitmapTransformation {
+    private int mBorderWith;
+    private int mBorderColor;
+
+    public GlideCircleBorderTransform(Context context, int borderWith, int borderColor) {
         super(context);
-        this.mContext=context.getApplicationContext();
+        this.mBorderColor = borderColor;
+        this.mBorderWith = borderWith;
     }
 
     @Override
     protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
-        return circleCrop(mContext,pool, toTransform);
+        return circleCrop(pool, toTransform);
     }
 
-    private static Bitmap circleCrop(Context context,BitmapPool pool, Bitmap source) {
+    private Bitmap circleCrop(BitmapPool pool, Bitmap source) {
         if (source == null) return null;
 
         int size = Math.min(source.getWidth(), source.getHeight());
@@ -53,16 +54,17 @@ public class GlideCircleBoundTransform extends BitmapTransformation {
         //画轮廓
         Paint paint1 = new Paint();
         paint1.setAntiAlias(true);
-        paint1.setColor(Color.WHITE);
+        paint1.setColor(mBorderColor);
         canvas.drawCircle(r, r, r, paint1);
+
 
         //画图片
         Paint paint = new Paint();
         paint.setShader(new BitmapShader(squared, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP));
         paint.setAntiAlias(true);
-        canvas.drawCircle(r, r, r -context.getResources().getDimensionPixelSize(R.dimen.spacing_tiny) , paint);
+        canvas.drawCircle(r, r, r - mBorderWith, paint);
 
-        return squared;
+        return result;
     }
 
     @Override

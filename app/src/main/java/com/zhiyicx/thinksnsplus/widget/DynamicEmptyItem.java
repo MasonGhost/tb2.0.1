@@ -1,10 +1,8 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter;
-
-import android.text.TextUtils;
+package com.zhiyicx.thinksnsplus.widget;
 
 import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -15,7 +13,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
  * @Contact master.jungle68@gmail.com
  */
 
-public class DynamicDetailEmptyCommentItem implements ItemViewDelegate<DynamicCommentBean> {
+public class DynamicEmptyItem implements ItemViewDelegate<DynamicBean> {
 
     @Override
     public int getItemViewLayoutId() {
@@ -23,12 +21,12 @@ public class DynamicDetailEmptyCommentItem implements ItemViewDelegate<DynamicCo
     }
 
     @Override
-    public boolean isForViewType(DynamicCommentBean item, int position) {
-        return TextUtils.isEmpty(item.getComment_content());
+    public boolean isForViewType(DynamicBean item, int position) {
+        return item != null && item.getFeed_mark() == null;
     }
 
     @Override
-    public void convert(ViewHolder holder, DynamicCommentBean dynamicCommentBean, DynamicCommentBean lastT, int position) {
+    public void convert(ViewHolder holder, DynamicBean baseListBean, DynamicBean lastT, int position) {
         EmptyView emptyView = holder.getView(R.id.comment_emptyview);
         emptyView.setNeedTextTip(false);
         emptyView.setErrorType(EmptyView.STATE_NODATA);

@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -139,7 +140,12 @@ public class UserInfoRepository implements UserInfoContract.Repository {
             backgroundRequestTaskBean = new BackgroundRequestTaskBean();
             backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST);
             backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_FOLLOW_USER);
-            mineUserInfo.setFollowing_count(String.valueOf(Integer.valueOf(mineUserInfo.getFollowing_count()) + 1));
+            if (TextUtils.isEmpty(mineUserInfo.getFollowing_count())) {
+                mineUserInfo.setFollowing_count(String.valueOf(Integer.valueOf(mineUserInfo.getFollowing_count()) + 1));
+            } else {
+                mineUserInfo.setFollowing_count(String.valueOf(1));
+            }
+
         } else {
             // 已关注，取消关注
             followFansBean.setOrigin_follow_status(FollowFansBean.UNFOLLOWED_STATE);
@@ -148,7 +154,12 @@ public class UserInfoRepository implements UserInfoContract.Repository {
             backgroundRequestTaskBean = new BackgroundRequestTaskBean();
             backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
             backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_CANCEL_FOLLOW_USER);
-            mineUserInfo.setFollowing_count(String.valueOf(Integer.valueOf(mineUserInfo.getFollowing_count()) - 1));
+            try {
+                mineUserInfo.setFollowing_count(String.valueOf(Integer.valueOf(mineUserInfo.getFollowing_count()) - 1));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("user_id", followFansBean.getTargetUserId() + "");

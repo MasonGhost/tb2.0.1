@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -56,11 +55,13 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDy
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForThreeImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem;
+import com.zhiyicx.thinksnsplus.widget.DynamicEmptyItem;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
-import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -283,6 +284,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         setAdapter(adapter, new PersonalCenterDynamicListItemForSevenImage(getContext()));
         setAdapter(adapter, new PersonalCenterDynamicListItemForEightImage(getContext()));
         setAdapter(adapter, new PersonalCenterDynamicListItemForNineImage(getContext()));
+        DynamicEmptyItem emptyItem = new DynamicEmptyItem();
+        adapter.addItemViewDelegate(emptyItem);
         adapter.setOnItemClickListener(this);
         return adapter;
     }
@@ -432,8 +435,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
         return false;
     }
-
-    boolean isDark = false;
 
     @OnClick({R.id.iv_back, R.id.iv_more})
     public void onClick(View view) {
@@ -737,5 +738,14 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     public void onMoreCommentClick(View view, DynamicBean dynamicBean) {
         int position = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
         goDynamicDetail(position, true);
+    }
+
+    @Override
+    public void onNetResponseSuccess(@NotNull List<DynamicBean> data, boolean isLoadMore) {
+        if (!isLoadMore && data.isEmpty()) { // 增加空数据，用于显示占位图
+            DynamicBean emptyData = new DynamicBean();
+            data.add(emptyData);
+        }
+        super.onNetResponseSuccess(data, isLoadMore);
     }
 }
