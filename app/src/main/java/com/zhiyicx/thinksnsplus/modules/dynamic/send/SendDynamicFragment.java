@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
@@ -106,11 +107,19 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         handleBack();
     }
 
+    @Override
+    protected boolean usePermisson() {
+        return true;
+    }
+
     /**
      * 处理取消发布动态
      */
     private void handleBack() {
-        if (!TextUtils.isEmpty(mEtDynamicContent.getInputContent()) || !TextUtils.isEmpty(mEtDynamicTitle.getInputContent()) || selectedPhotos != null) {
+        if (!TextUtils.isEmpty(mEtDynamicContent.getInputContent()) // 有正文
+                // || !TextUtils.isEmpty(mEtDynamicTitle.getInputContent())//
+                // 有图片，并且长度大于1，因为为1的时候是，占位图
+                || (selectedPhotos != null && selectedPhotos.size() > 1)) {
             DeviceUtils.hideSoftKeyboard(getContext(), mEtDynamicContent);
             initCanclePopupWindow();
             mCanclePopupWindow.show();
@@ -231,6 +240,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
                         .NO_CRAFT))
                 .build().photoSelectorImpl();
+        Glide.with(getActivity()).load("");
     }
 
     @Override
@@ -351,6 +361,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         }
         dynamicDetailBean.setFeed_from(ApiConfig.ANDROID_PLATFORM);
         DynamicBean dynamicBean = new DynamicBean();
+        dynamicBean.setIsFollowed(true); // 因为关注里面需要显示我的动态
         dynamicBean.setFeed(dynamicDetailBean);
         dynamicBean.setState(DynamicBean.SEND_ING);
         dynamicBean.setFeed_mark(feedMark);
@@ -480,7 +491,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         } else {
             int oldSize = 0;
             // 最后一张是占位图
-            if (TextUtils.isEmpty(oldList.get(oldList.size()-1).getImgUrl())) {
+            if (TextUtils.isEmpty(oldList.get(oldList.size() - 1).getImgUrl())) {
                 oldSize = oldList.size() - 1;
             } else {
                 oldSize = oldList.size();

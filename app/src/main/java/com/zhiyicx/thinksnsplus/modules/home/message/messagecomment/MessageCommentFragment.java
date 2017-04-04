@@ -9,7 +9,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
@@ -19,7 +19,7 @@ import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -57,6 +57,10 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
         return getString(R.string.comment);
     }
 
+    @Override
+    protected float getItemDecorationSpacing() {
+        return 0;
+    }
 
     @Override
     protected void initView(View rootView) {
@@ -89,7 +93,7 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
         UserInfoBean testUserinfo = new UserInfoBean();
         testUserinfo.setAvatar("http://image.xinmin.cn/2017/01/11/bedca80cdaa44849a813e7820fff8a26.jpg");
         testUserinfo.setName("颤三");
-        testUserinfo.setUser_id(123l);
+        testUserinfo.setUser_id(10L);
         MessageItemBean commentItem = new MessageItemBean();
         commentItem.setUserInfo(testUserinfo);
         Conversation commentMessage = new Conversation();
@@ -118,7 +122,7 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
         testMessage.setCreate_time(System.currentTimeMillis());
         test.setConversation(likeMessage);
         test.setUnReadMessageNums((int) (Math.random() * 10));
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i <3; i++) {
             messageItemBeen.add(test);
         }
     }
@@ -133,6 +137,11 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
 
     private void setItemData(ViewHolder holder, final MessageItemBean messageItem, int position) {
 
+        if (position == mListDatas.size() - 1) {
+            holder.setVisible(R.id.v_bottom_line, View.GONE);
+        } else {
+            holder.setVisible(R.id.v_bottom_line, View.VISIBLE);
+        }
         mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
                 .url(messageItem.getUserInfo().getAvatar())
                 .transformation(new GlideCircleTransform(getContext()))
@@ -151,9 +160,9 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
             holder.setText(R.id.tv_deatil, messageItem.getConversation().getLast_message_text());
         }
 
-        // holder.setText(R.id.tv_name, messageItem.getUserInfo().getUserName());
+        holder.setText(R.id.tv_name, messageItem.getUserInfo().getName());
         holder.setText(R.id.tv_content, messageItem.getConversation().getLast_message_text());
-        holder.setText(R.id.tv_time, ConvertUtils.millis2FitTimeSpan(messageItem.getConversation().getLast_message_time(), 3));
+        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(messageItem.getConversation().getLast_message_time()));
 
         // 响应事件
         RxView.clicks(holder.getView(R.id.tv_name))
@@ -161,7 +170,7 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        toUserCenter();
+                        toUserCenter( messageItem.getUserInfo());
                     }
                 });
         RxView.clicks(holder.getView(R.id.iv_headpic))
@@ -169,7 +178,7 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        toUserCenter();
+                        toUserCenter( messageItem.getUserInfo());
                     }
                 });
         RxView.clicks(holder.getConvertView())
@@ -214,9 +223,8 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
     /**
      * 前往用户个人中心
      */
-    private void toUserCenter() {
-        Intent to = new Intent(getActivity(), UserInfoActivity.class);
-        startActivity(to);
+    private void toUserCenter(UserInfoBean userInfoBean) {
+        PersonalCenterFragment.startToPersonalCenter(getActivity(),userInfoBean);
     }
 
     @Override
@@ -231,7 +239,7 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
 
     @Override
     public void hideLoading() {
-        mRefreshlayout.setRefreshing(false);
+
     }
 
     @Override

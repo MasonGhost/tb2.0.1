@@ -33,6 +33,9 @@ public class EventBusTagConfig {
     // 资讯收藏
     public static final String EVENT_SEND_INFO_LIST_COLLECT = "event_send__info_list_collect";
 
+    // 资讯收藏--针对搜索的内存数据处理
+    public static final String EVENT_SEND_INFO_LIST_COLLECT_SERACH = "event_send__info_list_collect_serach";
+
     // 音乐播放缓冲进度
     public static final String EVENT_SEND_MUSIC_CACHE_PROGRESS = "event_send_music_cache_progress";
     // 音乐加载

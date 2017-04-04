@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -56,11 +55,13 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDy
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForThreeImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem;
+import com.zhiyicx.thinksnsplus.widget.DynamicEmptyItem;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
-import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,8 +125,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     private PhotoSelectorImpl mPhotoSelector;
     private String imagePath;// 上传的封面图片的本地路径
     private ActionPopupWindow mDeletCommentPopWindow;
+    private ActionPopupWindow mDeletDynamicPopWindow;
+    private ActionPopupWindow mReSendCommentPopWindow;
     private int mCurrentPostion;// 当前评论的动态位置
     private long mReplyToUserId;// 被评论者的 id
+
 
     @Override
     protected void initView(View rootView) {
@@ -137,7 +141,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                         .SHAPE_RCTANGLE))
                 .build().photoSelectorImpl();
         initToolBar();
-        View mFooterView =new View(getContext());
+        View mFooterView = new View(getContext());
         mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
         mHeaderAndFooterWrapper.addFootView(mFooterView);
         mPersonalCenterHeaderViewItem = new PersonalCenterHeaderViewItem(getActivity(), mPhotoSelector, mRvList, mHeaderAndFooterWrapper, mLlToolbarContainerParent);
@@ -147,6 +151,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.v_horizontal_line), TOOLBAR_DIVIDER_RGB, 255);
         mPersonalCenterHeaderViewItem.setToolbarIconColor(Color.argb(255, TOOLBAR_BLACK_ICON[0],
                 TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
+    }
+
+    @Override
+    protected boolean usePermisson() {
+        return true;
     }
 
     private void initListener() {
@@ -264,8 +273,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     protected MultiItemTypeAdapter<DynamicBean> getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mListDatas);
-        setAdapter(adapter, new PersonalCenterDynamicListBaseItem(getContext()));
+        // 按照添加顺序，先判断成功后，后面的item就不会继续判断了，类似if else
         setAdapter(adapter, new PersonalCenterDynamicListForZeroImage(getContext()));
+        //setAdapter(adapter, new PersonalCenterDynamicListBaseItem(getContext()));
         setAdapter(adapter, new PersonalCenterDynamicListItemForOneImage(getContext()));
         setAdapter(adapter, new PersonalCenterDynamicListItemForTwoImage(getContext()));
         setAdapter(adapter, new PersonalCenterDynamicListItemForThreeImage(getContext()));
@@ -275,6 +285,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         setAdapter(adapter, new PersonalCenterDynamicListItemForSevenImage(getContext()));
         setAdapter(adapter, new PersonalCenterDynamicListItemForEightImage(getContext()));
         setAdapter(adapter, new PersonalCenterDynamicListItemForNineImage(getContext()));
+        DynamicEmptyItem emptyItem = new DynamicEmptyItem();
+        adapter.addItemViewDelegate(emptyItem);
         adapter.setOnItemClickListener(this);
         return adapter;
     }
@@ -358,7 +370,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 break;
 
             case 3: // 更多
-                showMessage("点击了跟多");
+                initDeletDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition);
+                mDeletDynamicPopWindow.show();
                 break;
             default:
                 onItemClick(null, null, (dataPosition + 1)); // 加上 header
@@ -424,8 +437,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         return false;
     }
 
-    boolean isDark = false;
-
     @OnClick({R.id.iv_back, R.id.iv_more})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -433,7 +444,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 getActivity().finish();
                 break;
             case R.id.iv_more:
-            mPresenter.shareUserInfo(mUserInfoBean);
+                mPresenter.shareUserInfo(mUserInfoBean);
 
                 break;
         }
@@ -472,6 +483,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
+        if (photoList.isEmpty()) {
+            return;
+        }
         // 选择图片完毕后，开始上传封面图片
         ImageBean imageBean = photoList.get(0);
         imagePath = imageBean.getImgUrl();
@@ -488,7 +502,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void onCommentStateClick(DynamicCommentBean dynamicCommentBean, int position) {
-        showMessage("点击了评论失败状态");
+        initReSendCommentPopupWindow(dynamicCommentBean, mListDatas.get(mPresenter.getCurrenPosiotnInDataList(dynamicCommentBean.getFeed_mark())).getFeed_id());
+        mReSendCommentPopWindow.show();
     }
 
     @Override
@@ -662,9 +677,76 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .build();
     }
 
+    /**
+     * 初始化动态删除选择弹框
+     *
+     * @param dynamicBean curent dynamic
+     * @param position    curent dynamic postion
+     */
+    private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean, int position) {
+        mDeletDynamicPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.dynamic_list_delete_dynamic))
+                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+                        mDeletDynamicPopWindow.hide();
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mDeletDynamicPopWindow.hide();
+                    }
+                })
+                .build();
+    }
+
+    /**
+     * 初始化重发评论选择弹框
+     */
+    private void initReSendCommentPopupWindow(final DynamicCommentBean commentBean, final long feed_id) {
+        mReSendCommentPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.dynamic_list_resend_comment))
+                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+                        mReSendCommentPopWindow.hide();
+                        mPresenter.reSendComment(commentBean, feed_id);
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mReSendCommentPopWindow.hide();
+                    }
+                })
+                .build();
+    }
+
     @Override
     public void onMoreCommentClick(View view, DynamicBean dynamicBean) {
         int position = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
         goDynamicDetail(position, true);
+    }
+
+    @Override
+    public void onNetResponseSuccess(@NotNull List<DynamicBean> data, boolean isLoadMore) {
+        if (!isLoadMore && data.isEmpty()) { // 增加空数据，用于显示占位图
+            DynamicBean emptyData = new DynamicBean();
+            data.add(emptyData);
+        }
+        super.onNetResponseSuccess(data, isLoadMore);
     }
 }

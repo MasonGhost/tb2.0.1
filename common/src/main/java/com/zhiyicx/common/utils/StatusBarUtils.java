@@ -79,6 +79,7 @@ public class StatusBarUtils {
      * @return 1:MIUUI 2:Flyme 3:android6.0
      */
     public static int statusBarLightMode(Activity activity) {
+
         int result = 0;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (MIUISetStatusBarLightMode(activity.getWindow(), true)) {

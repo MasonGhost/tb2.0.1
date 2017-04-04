@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 public class GuideFragment extends TSFragment<GuideContract.Presenter> implements GuideContract.View {
@@ -15,7 +16,6 @@ public class GuideFragment extends TSFragment<GuideContract.Presenter> implement
 
     @Override
     protected void initView(View rootView) {
-
     }
 
     @Override
@@ -49,4 +49,3 @@ public class GuideFragment extends TSFragment<GuideContract.Presenter> implement
         getActivity().finish();
     }
 }
-

@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.widget;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +13,10 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBoundTransform;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBorderTransform;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.utils.ImageUtils;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -94,7 +96,7 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
                     ImageBean imageBean = imageBeanList.get(i);
                     AppApplication.AppComponentHolder.getAppComponent().imageLoader()
                             .loadImage(mContext, GlideImageConfig.builder()
-                                    .transformation(new GlideCircleBoundTransform(mContext))
+                                    .transformation(new GlideCircleBorderTransform(mContext,mContext.getResources().getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(mContext,R.color.white)))
                                     .placeholder(R.drawable.shape_default_image_circle_with_strike)
                                     .errorPic(R.drawable.shape_default_image_circle_with_strike)
                                     .imagerView(mImageViews[i])
@@ -115,14 +117,14 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
      * 设置点赞数量
      */
     public void setDigCount(int digCount) {
-        this.digCount.setText(mContext.getString(R.string.dynamic_dig_count, digCount));
+        this.digCount.setText(mContext.getString(R.string.dynamic_dig_count, ConvertUtils.numberConvert(digCount)));
     }
 
     /**
      * 设置浏览人数
      */
     public void setViewerCount(int viewerCount) {
-        this.viewerCount.setText(mContext.getString(R.string.dynamic_viewer_count, viewerCount));
+        this.viewerCount.setText(mContext.getString(R.string.dynamic_viewer_count, ConvertUtils.numberConvert(viewerCount)));
     }
 
     /**

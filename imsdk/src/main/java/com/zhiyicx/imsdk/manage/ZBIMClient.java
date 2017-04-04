@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.zhiyicx.imsdk.core.ImService;
 import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
+import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.EventContainer;
 import com.zhiyicx.imsdk.entity.GiftMessage;
 import com.zhiyicx.imsdk.entity.IMConfig;
@@ -399,8 +400,9 @@ public class ZBIMClient implements IMSoupport {
             case ImService.WEBSOCKET_SENDMESSAGE_TIMEOUT:
                 if (mImTimeOutListener != null) {
                     for (ImTimeoutListener listener : mImTimeOutListener) {
-                        if (listener != null)
+                        if (listener != null) {
                             listener.onMessageTimeout(eventContainer.mMessageContainer.msg);
+                        }
                     }
                 }
                 break;

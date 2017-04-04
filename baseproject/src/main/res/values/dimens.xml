@@ -2,8 +2,9 @@
 <resources>
     <!--toolbar-->
     <dimen name="toolbar_height">44dp</dimen>
-    <dimen name="statusbar_height">26dp</dimen>
-    <dimen name="toolbar_and_statusbar_height">70dp</dimen>
+    <dimen name="statusbar_height">24dp</dimen>
+    <dimen name="toolbar_height_include_line_height">44.5dp</dimen>
+    <dimen name="toolbar_and_statusbar_height">68dp</dimen>
     <dimen name="toolbar_padding_left">15dp</dimen>
     <dimen name="toolbar_padding_right">15dp</dimen>
     <dimen name="toolbar_left_text_size">@dimen/size_sub_title</dimen>
@@ -44,7 +45,7 @@
     <!-- 光标宽度 -->
     <dimen name="cursor_with">1dp</dimen>
     <!-- 补位宽度 -->
-    <dimen name="dismiss_height">-1.5dp</dimen>
+    <dimen name="textview_spacing_offset_height">-1.5dp</dimen>
     <!-- 加载更多 -->
     <dimen name="load_more_height">30dp</dimen>
     <!--#########################################      圆角尺寸       ################################-->

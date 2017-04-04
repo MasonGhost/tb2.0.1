@@ -39,6 +39,11 @@ public class GalleryPictureContainerFragment extends TSFragment {
     }
 
     @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
     protected void initData() {
         Bundle bundle = getArguments();
         ImageBean imageBean = bundle.getParcelable("url");

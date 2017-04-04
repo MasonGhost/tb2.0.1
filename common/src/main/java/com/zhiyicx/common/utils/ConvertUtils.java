@@ -57,7 +57,18 @@ public class ConvertUtils {
         }
         return String.valueOf(number);
     }
-
+    /**
+     * ⦁	消息的字数显示不超过99，超过99均显示99
+     *
+     * @param number
+     * @return
+     */
+    public static String messageNumberConvert(int number) {
+        if (number > 99) {
+           return String.valueOf(99);
+        }
+        return String.valueOf(number);
+    }
     /**
      * byteArr 转 hexString
      * <p>例如：</p>

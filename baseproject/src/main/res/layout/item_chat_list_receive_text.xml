@@ -38,6 +38,7 @@
             <TextView
                 android:id="@+id/tv_chat_content"
                 style="@style/style_chat_content"
+                android:textIsSelectable="true"
                 tools:text="22222222222222222222222222222222222222222222222222222222222222222222222222"/>
         </RelativeLayout>
 

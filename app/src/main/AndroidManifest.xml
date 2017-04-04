@@ -28,6 +28,18 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/TSTheme">
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="ThinkSNSFileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"
+                tools:replace="android:resource"></meta-data>
+        </provider>
+
         <activity
             android:name=".modules.guide.GuideActivity"
             android:theme="@style/BackGroundLauncherTheme">
@@ -63,7 +75,8 @@
         <activity android:name=".modules.settings.aboutus.AboutUsActivity">
         </activity>
         <activity
-            android:name=".modules.edit_userinfo.UserInfoActivity">
+            android:name=".modules.edit_userinfo.UserInfoActivity"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
         </activity>
         <activity android:name=".modules.home.message.messagecomment.MessageCommentActivity">
         </activity>
@@ -150,16 +163,16 @@
         <activity
             android:name=".WBShareActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".wxapi.WXEntryActivity"
-            android:launchMode="singleTop"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>

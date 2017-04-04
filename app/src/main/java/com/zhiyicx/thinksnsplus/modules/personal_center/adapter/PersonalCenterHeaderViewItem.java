@@ -19,11 +19,12 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBoundTransform;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBorderTransform;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ColorPhrase;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.ZoomView;
@@ -206,10 +207,10 @@ public class PersonalCenterHeaderViewItem {
         // 显示头像
         mImageLoader.loadImage(mActivity, GlideImageConfig.builder()
                 .url(ImageUtils.imagePathConvert(userInfoBean.getAvatar(), ImageZipConfig.IMAGE_70_ZIP))
-                .placeholder(R.drawable.shape_default_image_circle)
-                .errorPic(R.drawable.shape_default_image_circle)
+                .placeholder(R.drawable.shape_default_image_circle_with_strike)
+                .errorPic(R.drawable.shape_default_image_circle_with_strike)
                 .imagerView(iv_head_icon)
-                .transformation(new GlideCircleBoundTransform(mActivity))
+                .transformation(new GlideCircleBorderTransform(mActivity,mActivity.getResources().getDimensionPixelSize(R.dimen.spacing_tiny),ContextCompat.getColor(mActivity,R.color.white)))
                 .build());
         // 设置用户名
         tv_user_name.setText(userInfoBean.getName());
@@ -219,7 +220,7 @@ public class PersonalCenterHeaderViewItem {
         tv_user_intro.setText(userInfoBean.getIntro());
 
         // 设置关注人数
-        String followContent = "关注 " + "<" + (TextUtils.isEmpty(userInfoBean.getFollowing_count()) ? "0" : userInfoBean.getFollowing_count()) + ">";
+        String followContent = "关注 " + "<" + ConvertUtils.numberConvert(Integer.parseInt((TextUtils.isEmpty(userInfoBean.getFollowing_count()) ? "0" : userInfoBean.getFollowing_count()))) + ">";
         CharSequence followString = ColorPhrase.from(followContent).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(mActivity, R.color.themeColor))
                 .outerColor(ContextCompat.getColor(mActivity, R.color.normal_for_assist_text))
@@ -227,7 +228,7 @@ public class PersonalCenterHeaderViewItem {
         tv_user_follow.setText(followString);
 
         // 设置粉丝人数
-        String fansContent = "粉丝 " + "<" + (TextUtils.isEmpty(userInfoBean.getFollowed_count()) ? "0" : userInfoBean.getFollowed_count()) + ">";
+        String fansContent = "粉丝 " + "<" + ConvertUtils.numberConvert(Integer.parseInt((TextUtils.isEmpty(userInfoBean.getFollowed_count()) ? "0" : userInfoBean.getFollowed_count()))) + ">";
         CharSequence fansString = ColorPhrase.from(fansContent).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(mActivity, R.color.themeColor))
                 .outerColor(ContextCompat.getColor(mActivity, R.color.normal_for_assist_text))

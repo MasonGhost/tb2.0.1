@@ -75,7 +75,7 @@ public class QueueManager {
     public boolean skipQueuePosition(int amount) {
         int index = mCurrentIndex + amount;
         if (index < 0) {
-            index = 0;
+            index = mPlayingQueue.size() - 1;
         } else {
             index %= mPlayingQueue.size();
         }
@@ -108,7 +108,7 @@ public class QueueManager {
 
     public void setNormalQueue(String mediaId) {
         setCurrentQueue("normal_queue_title",
-                mCacheQueue,mediaId);
+                mCacheQueue, mediaId);
         updateMetadata();
     }
 

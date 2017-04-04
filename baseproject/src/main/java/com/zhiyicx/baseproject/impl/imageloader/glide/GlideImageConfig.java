@@ -1,8 +1,9 @@
 package com.zhiyicx.baseproject.impl.imageloader.glide;
 
+import android.graphics.Bitmap;
 import android.widget.ImageView;
 
-import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
+import com.bumptech.glide.load.Transformation;
 import com.zhiyicx.common.utils.imageloader.config.ImageConfig;
 
 /**
@@ -13,7 +14,7 @@ import com.zhiyicx.common.utils.imageloader.config.ImageConfig;
  */
 
 public class GlideImageConfig extends ImageConfig {
-    private BitmapTransformation transformation;
+    private Transformation<Bitmap> transformation;
 
 
     private GlideImageConfig(Buidler builder) {
@@ -25,7 +26,7 @@ public class GlideImageConfig extends ImageConfig {
         this.transformation = builder.transformation;
     }
 
-    public BitmapTransformation getTransformation() {
+    public Transformation<Bitmap> getTransformation() {
         return transformation;
     }
 
@@ -40,7 +41,7 @@ public class GlideImageConfig extends ImageConfig {
         private ImageView imageView;
         private int placeholder;
         private int errorPic;
-        private BitmapTransformation transformation;
+        private Transformation<Bitmap> transformation;
 
         private Buidler() {
         }
@@ -55,7 +56,7 @@ public class GlideImageConfig extends ImageConfig {
             return this;
         }
 
-        public Buidler transformation(BitmapTransformation transformation) {
+        public Buidler transformation(Transformation<Bitmap> transformation) {
             this.transformation = transformation;
             return this;
         }

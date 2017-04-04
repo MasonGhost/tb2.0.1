@@ -66,6 +66,39 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
 
     }
 
+    /**
+     * 清除本地动态，通过 type
+     *
+     * @param type
+     */
+    public void deleteDynamicByType(String type) {
+        DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
+        List<DynamicBean> datas = null;
+        switch (type) {
+            case ApiConfig.DYNAMIC_TYPE_FOLLOWS:
+                datas = dynamicBeanDao.queryDeep(" where " + " T." + DynamicBeanDao.Properties.IsFollowed.columnName + " = 1 "); // 0 false 1 true
+                for (DynamicBean data : datas) {
+                    data.setIsFollowed(false);
+                }
+
+                break;
+            case ApiConfig.DYNAMIC_TYPE_HOTS:
+                datas = dynamicBeanDao.queryDeep(" where " + " T." + DynamicBeanDao.Properties.Hot_creat_time.columnName + " < " + System.currentTimeMillis()); // 0 false 1 true
+                for (DynamicBean data : datas) {
+                    data.setHot_creat_time(0L);
+                }
+
+                break;
+            case ApiConfig.DYNAMIC_TYPE_NEW:
+
+                break;
+            default:
+        }
+        if (datas != null) {
+            dynamicBeanDao.insertOrReplaceInTx(datas);
+        }
+    }
+
     @Override
     public void updateSingleData(DynamicBean newData) {
 

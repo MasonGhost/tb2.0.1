@@ -57,12 +57,12 @@
             android:visibility="visible"/>
 
         <View
+            android:layout_alignParentBottom="true"
             style="@style/style_divider_horizontal_light"/>
 
     </RelativeLayout>
 
     <include
-        layout="@layout/fragment_tslist"
-        />
+        layout="@layout/fragment_tslist"/>
 
 </LinearLayout>

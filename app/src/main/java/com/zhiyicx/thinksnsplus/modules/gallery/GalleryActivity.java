@@ -23,16 +23,6 @@ import java.util.List;
  */
 public class GalleryActivity extends TSActivity {
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        //无title
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //全屏
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        super.onCreate(savedInstanceState);
-    }
-
     @Override
     protected void componentInject() {
 

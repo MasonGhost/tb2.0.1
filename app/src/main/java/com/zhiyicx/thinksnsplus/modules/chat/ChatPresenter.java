@@ -105,9 +105,8 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
      */
     @Override
     public void reSendText(ChatItemBean chatItemBean) {
-        chatItemBean.getLastMessage().setCreate_time(System.currentTimeMillis());
         ChatClient.getInstance(mContext).sendMessage(chatItemBean.getLastMessage());
-        mRootView.reFreshMessage(chatItemBean);
+        mRootView.refreshData();
     }
 
     @Override
@@ -211,6 +210,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGETIMEOUT)
     private void onMessageTimeout(Message message) {
+        System.out.println(" 超时   message = " + message);
         mRootView.updateMessageStatus(message);
     }
 }

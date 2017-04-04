@@ -18,6 +18,7 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.BadgeView;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.imsdk.core.ChatType;
 import com.zhiyicx.thinksnsplus.R;
@@ -96,7 +97,12 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
         } else {
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(messageItemBean.getConversation().getLast_message_time()));
         }
-        ((BadgeView) holder.getView(R.id.tv_tip)).setBadgeCount(messageItemBean.getUnReadMessageNums());
+        try {
+            ((BadgeView) holder.getView(R.id.tv_tip)).setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert(messageItemBean.getUnReadMessageNums())));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         // 右边
         final SwipeLayout swipeLayout = holder.getView(R.id.swipe);
         swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);

@@ -33,8 +33,8 @@ import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailCommentItem;
-import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailEmptyCommentItem;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.widget.DynamicCommentEmptyItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
@@ -145,16 +145,21 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      */
     @Override
     protected int getstatusbarAndToolbarHeight() {
-        return getResources().getDimensionPixelSize(R.dimen.toolbar_and_statusbar_height);
+        return getResources().getDimensionPixelSize(R.dimen.toolbar_height_include_line_height) + DeviceUtils.getStatuBarHeight(getContext());
     }
 
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        initToolbar();
         initBottomToolUI();
         initBottomToolListener();
         initHeaderView();
         initListener();
+    }
+
+    private void initToolbar() {
+        mToolbar.setPadding(0, DeviceUtils.getStatuBarHeight(getContext()), 0, 0);
     }
 
     /**
@@ -208,7 +213,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
         mDynamicDetailHeader = new DynamicDetailHeader(getContext());
         mHeaderAndFooterWrapper.addHeaderView(mDynamicDetailHeader.getDynamicDetailHeader());
-        View mFooterView =new View(getContext());
+        View mFooterView = new View(getContext());
         mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
         mHeaderAndFooterWrapper.addFootView(mFooterView);
         mRvList.setAdapter(mHeaderAndFooterWrapper);
@@ -237,8 +242,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         DynamicDetailCommentItem dynamicDetailCommentItem = new DynamicDetailCommentItem();
         dynamicDetailCommentItem.setOnUserInfoClickListener(this);
         adapter.addItemViewDelegate(dynamicDetailCommentItem);
-        DynamicDetailEmptyCommentItem dynamicDetailEmptyCommentItem = new DynamicDetailEmptyCommentItem();
-        adapter.addItemViewDelegate(dynamicDetailEmptyCommentItem);
+        DynamicCommentEmptyItem dynamicCommentEmptyItem = new DynamicCommentEmptyItem();
+        adapter.addItemViewDelegate(dynamicCommentEmptyItem);
         adapter.setOnItemClickListener(this);
         return adapter;
     }
@@ -339,9 +344,19 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
+
     @Override
     public void refreshData(int position) {
         mHeaderAndFooterWrapper.notifyItemChanged(position);
+    }
+
+    @Override
+    public void onNetResponseSuccess(@NotNull List<DynamicCommentBean> data, boolean isLoadMore) {
+        if (!isLoadMore && data.isEmpty()) { // 增加空数据，用于显示占位图
+            DynamicCommentBean emptyData = new DynamicCommentBean();
+            data.add(emptyData);
+        }
+        super.onNetResponseSuccess(data, isLoadMore);
     }
 
     @Override
@@ -549,12 +564,4 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .build();
     }
 
-    @Override
-    public void onNetResponseSuccess(@NotNull List<DynamicCommentBean> data, boolean isLoadMore) {
-        if (!isLoadMore && data.isEmpty()) { // 增加空数据，用于显示占位图
-            DynamicCommentBean emptyData = new DynamicCommentBean();
-            data.add(emptyData);
-        }
-        super.onNetResponseSuccess(data, isLoadMore);
-    }
 }

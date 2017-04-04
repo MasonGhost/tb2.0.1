@@ -15,6 +15,8 @@
  */
 package com.zhiyicx.thinksnsplus.widget.pager_recyclerview.itemtouch;
 
+import android.support.v7.widget.RecyclerView;
+
 /**
  * @author legendary_tym
  * @Title SpicyCommunity
@@ -28,7 +30,12 @@ public class DefaultItemTouchHelper extends TItemTouchHelper {
 
     public DefaultItemTouchHelper(
             DefaultItemTouchHelpCallback.OnItemTouchCallbackListener onItemTouchCallbackListener) {
-        super(new DefaultItemTouchHelpCallback(onItemTouchCallbackListener));
+        super(new DefaultItemTouchHelpCallback(onItemTouchCallbackListener) {
+            @Override
+            protected boolean canScaleOnLongTouch() {
+                return false;
+            }
+        });
         itemTouchHelpCallback = (DefaultItemTouchHelpCallback) getCallback();
     }
 

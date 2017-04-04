@@ -3,11 +3,11 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 import android.content.Context;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
+import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 
 import java.util.List;
 
@@ -85,6 +85,40 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
         }
         FollowFansBeanDao followFansBeanDao = getWDaoSession().getFollowFansBeanDao();
         followFansBeanDao.insertOrReplaceInTx(newData);
+    }
+
+    /**
+     * 清除数据
+     *
+     * @param type
+     * @param user_id
+     */
+    public void deleteDataByType(int type, Long user_id) {
+        FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
+        List<FollowFansBean> datas;
+        switch (type) {
+            case FollowFansListFragment.FOLLOW_FRAGMENT_PAGE:
+                datas = followFansBeanDao.queryDeep(" where " + FollowFansBeanDao
+                                .Properties.OriginUserId.columnName + " = ? and "
+                                + FollowFansBeanDao.Properties.Target_follow_status.columnName + " = ? "// 目标用户对我的关注状态为关注
+
+                        , user_id + "", FollowFansBean.IFOLLOWED_STATE + "");
+                followFansBeanDao.deleteInTx(datas);
+                break;
+            case FollowFansListFragment.FANS_FRAGMENT_PAGE:
+                datas = followFansBeanDao.queryDeep(" where " + FollowFansBeanDao
+                                .Properties.OriginUserId.columnName + " = ? and "
+                                + FollowFansBeanDao.Properties.Target_follow_status.columnName + " = ? " // 目标用户对我的关注状态为关注
+                        , user_id + ""
+                        , FollowFansBean.IFOLLOWED_STATE + ""
+                );
+                followFansBeanDao.deleteInTx(datas);
+                break;
+
+            default:
+
+        }
+
     }
 
     /**

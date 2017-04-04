@@ -33,7 +33,7 @@ public interface IPhotoSelector<T> {
     /**
      * 判断是否需要裁剪
      */
-    boolean isNeededCraft();
+    boolean isNeededCraft(String imgPath);
 
 
 }

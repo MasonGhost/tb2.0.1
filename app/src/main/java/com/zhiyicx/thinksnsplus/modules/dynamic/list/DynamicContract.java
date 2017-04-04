@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
 import java.util.List;
@@ -80,6 +81,22 @@ public interface DynamicContract {
          * @param commentPosition comment curren position
          */
         void deleteComment(DynamicBean dynamicBean, int dynamicPositon, long comment_id, int commentPosition);
+
+        /**
+         * 重发评论
+         *
+         * @param commentBean
+         * @param feed_id
+         */
+        void reSendComment(DynamicCommentBean commentBean, long feed_id);
+
+        /**
+         * 删除动态
+         *
+         * @param dynamicBean
+         * @param position
+         */
+        void deleteDynamic(DynamicBean dynamicBean,int position);
 
         /**
          * send a comment

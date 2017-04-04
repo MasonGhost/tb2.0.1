@@ -239,13 +239,14 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     }
 
     @Override
-    public void updateOrInsertDynamic(List<DynamicBean> dynamicBeens) {
+    public void updateOrInsertDynamic(List<DynamicBean> dynamicBeens, final String type) {
 
         Observable.just(dynamicBeens)
                 .observeOn(Schedulers.io())
                 .subscribe(new Action1<List<DynamicBean>>() {
                     @Override
                     public void call(List<DynamicBean> datas) {
+                        mDynamicBeanGreenDao.deleteDynamicByType(type); // 清除旧数据
                         List<DynamicDetailBean> dynamicDetailBeen = new ArrayList<>();
                         List<DynamicCommentBean> dynamicCommentBeen = new ArrayList<>();
                         List<DynamicToolBean> dynamicToolBeen = new ArrayList<>();
@@ -303,7 +304,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     @Override
     public Observable<BaseJson<List<FollowFansBean>>> getDynamicDigList(Long feed_id, Long
             max_id) {
-        return mDynamicClient.getDynamicDigList(feed_id, max_id,TSListFragment.DEFAULT_PAGE_SIZE)
+        return mDynamicClient.getDynamicDigList(feed_id, max_id, TSListFragment.DEFAULT_PAGE_SIZE)
                 .flatMap(new Func1<BaseJson<List<DynamicDigListBean>>, Observable<BaseJson<List<FollowFansBean>>>>() {
                     @Override
                     public Observable<BaseJson<List<FollowFansBean>>> call(BaseJson<List<DynamicDigListBean>> listBaseJson) {
@@ -380,7 +381,6 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                 user_ids.add(dynamicCommentBean.getReply_to_user_id());
                                 dynamicCommentBean.setFeed_mark(feed_mark);
                             }
-                            mDynamicCommentBeanGreenDao.deleteCacheByFeedMark(feed_mark);// 删除本条动态的本地评论
                             return mUserInfoRepository.getUserInfo(user_ids)
                                     .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<DynamicCommentBean>>>() {
                                         @Override

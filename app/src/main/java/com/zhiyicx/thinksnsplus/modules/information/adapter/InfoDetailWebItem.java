@@ -258,6 +258,8 @@ public abstract class InfoDetailWebItem implements ItemViewDelegate<InfoCommentL
 
     private void initWebViewData(WebView mWebView) {
         WebSettings mWebSettings = mWebView.getSettings();
+        mWebSettings.setSupportZoom(true);
+        mWebSettings.setTextSize(WebSettings.TextSize.LARGEST);
         mWebSettings.setUseWideViewPort(true);
         mWebSettings.setLoadWithOverviewMode(true);
         mWebSettings.setSupportZoom(true);

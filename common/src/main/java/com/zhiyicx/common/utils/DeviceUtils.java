@@ -360,6 +360,17 @@ public class DeviceUtils {
     }
 
     /**
+     * 进入app设置详情页面
+     */
+    public static void openAppDetail(Context context){
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+        intent.setData(Uri.fromParts("package", context.getPackageName(), null));
+        context.startActivity(intent);
+    }
+
+    /**
      * 是否是中文语言
      * @param context
      * @return

@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -19,6 +20,7 @@ import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
@@ -53,6 +55,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     private UserInfoClient mUserInfoClient;
     private CommonClient mCommonClient;
     private CacheImp<AuthBean> cacheImp;
+    private UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     private FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
     private DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
     private Context mContext;
@@ -64,6 +67,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         mCommonClient = serviceManager.getCommonClient();
         mFollowFansBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().followFansBeanGreenDao();
         mDynamicBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicBeanGreenDao();
+        mUserInfoBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao();
     }
 
     @Override
@@ -127,6 +131,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     @Override
     public void handleFollow(FollowFansBean followFansBean) {
         BackgroundRequestTaskBean backgroundRequestTaskBean = null;
+        UserInfoBean mineUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache(Long.valueOf(AppApplication.getmCurrentLoginAuth().getUser_id()));
         if (followFansBean.getOrigin_follow_status() == FollowFansBean.UNFOLLOWED_STATE) {
             // 当前未关注，进行关注
             followFansBean.setOrigin_follow_status(FollowFansBean.IFOLLOWED_STATE);
@@ -135,6 +140,12 @@ public class UserInfoRepository implements UserInfoContract.Repository {
             backgroundRequestTaskBean = new BackgroundRequestTaskBean();
             backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST);
             backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_FOLLOW_USER);
+            if (TextUtils.isEmpty(mineUserInfo.getFollowing_count())) {
+                mineUserInfo.setFollowing_count(String.valueOf(Integer.valueOf(mineUserInfo.getFollowing_count()) + 1));
+            } else {
+                mineUserInfo.setFollowing_count(String.valueOf(1));
+            }
+
         } else {
             // 已关注，取消关注
             followFansBean.setOrigin_follow_status(FollowFansBean.UNFOLLOWED_STATE);
@@ -143,6 +154,12 @@ public class UserInfoRepository implements UserInfoContract.Repository {
             backgroundRequestTaskBean = new BackgroundRequestTaskBean();
             backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
             backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_CANCEL_FOLLOW_USER);
+            try {
+                mineUserInfo.setFollowing_count(String.valueOf(Integer.valueOf(mineUserInfo.getFollowing_count()) - 1));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("user_id", followFansBean.getTargetUserId() + "");
@@ -150,6 +167,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
         // 本地数据库,关注状态
         mFollowFansBeanGreenDao.insertOrReplace(followFansBean);
+        mUserInfoBeanGreenDao.insertOrReplace(mineUserInfo);
         // 更新动态关注状态
         mDynamicBeanGreenDao.updateFollowStateByUserId(followFansBean.getTargetUserId(), followFansBean.getOrigin_follow_status() != FollowFansBean.UNFOLLOWED_STATE);
 
