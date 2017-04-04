@@ -94,7 +94,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                         if (listBaseJson.isStatus()) {
                             insertOrUpdateDynamicDB(listBaseJson.getData()); // 更新数据库
                             if (!isLoadMore) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
-                                if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW)) {
+                                if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW)||mRootView.getDynamicType().equals((ApiConfig.DYNAMIC_TYPE_FOLLOWS))) {
                                     List<DynamicBean> data = getDynamicBeenFromDB();
                                     data.addAll(listBaseJson.getData());
                                     listBaseJson.setData(data);
@@ -179,7 +179,6 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
      */
     private void insertOrUpdateDynamicDB(@NotNull List<DynamicBean> data) {
         mRepository.updateOrInsertDynamic(data,mRootView.getDynamicType());
-
     }
 
     /**
