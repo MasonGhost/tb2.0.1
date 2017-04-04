@@ -164,6 +164,11 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     }
 
     @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
     public boolean onLongClick(View v) {
         if (mActionPopupWindow == null) {
             mActionPopupWindow = ActionPopupWindow.builder()

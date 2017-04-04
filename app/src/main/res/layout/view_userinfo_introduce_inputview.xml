@@ -9,6 +9,7 @@
     <!--简介编辑框-->
     <EditText
         android:id="@+id/et_content"
+        style="@style/style_edit_cursor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -23,9 +24,9 @@
         android:id="@+id/tv_limit_tip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/et_content"
         android:layout_alignEnd="@id/et_content"
         android:layout_alignRight="@id/et_content"
-        android:layout_alignBottom="@id/et_content"
         android:gravity="right"
         android:textColor="@color/important_for_note"
         android:textSize="@dimen/size_note_assist"

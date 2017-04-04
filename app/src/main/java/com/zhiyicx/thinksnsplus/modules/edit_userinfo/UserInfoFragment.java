@@ -1,9 +1,15 @@
 package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 
 import android.content.Intent;
+import android.graphics.Rect;
+import android.os.Build;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,10 +30,12 @@ import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.utils.ImageUtils;
-import com.zhiyicx.baseproject.widget.dialog.LoadingDialog;
+import com.zhiyicx.baseproject.widget.dragview.DragViewGroup;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -39,10 +47,15 @@ import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 
 /**
  * @author LiuChao
@@ -52,10 +65,8 @@ import rx.functions.Action1;
  */
 public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> implements
         UserInfoContract.View, PhotoSelectorImpl.IPhotoBackListener {
-
     private static final int LOCATION_2LEVEL = 2;// 地区选择可选的级数为2，2级联动
     private static final int LOCATION_3LEVEL = 3;// 地区选择可选的级数为3
-
     /**
      * 定义这些常数，用来封装被修改的用户信息
      * 通过hashmap进行封装，而不是使用Usrinfobean，主要是以后可能配置用户信息，方便以后拓展
@@ -90,6 +101,10 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     TextView mTvEditIntroduce;
     @BindView(R.id.ll_container)
     LinearLayout mLlContainer;
+    @BindView(R.id.v_horizontal_line)
+    View mVHorizontalLine;
+    @BindView(R.id.dv_view_group)
+    DragViewGroup mDvViewGroup;
 
     private TSnackbar mTSnackbarUserInfo;
     private TSnackbar mTSnackbarUploadIcon;
@@ -139,7 +154,47 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .build().photoSelectorImpl();
 
         initCityPickerView();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            AndroidBug5497Workaround.assistActivity(getActivity());
+        }
+
+        RxView.globalLayouts(mDvViewGroup)
+                .flatMap(new Func1<Void, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(Void aVoid) {
+                        Rect rect = new Rect();
+                        //获取root在窗体的可视区域
+                        mDvViewGroup.getWindowVisibleDisplayFrame(rect);
+                        //获取root在窗体的不可视区域高度(被其他View遮挡的区域高度)
+                        int rootInvisibleHeight = mDvViewGroup.getRootView().getHeight() - rect.bottom;
+                        int dispayHeight = UIUtils.getWindowHeight(getContext());
+                        LogUtils.i("rootInvisibleHeight-->" + rootInvisibleHeight + "  dispayHeight-->" + dispayHeight);
+                        return Observable.just(rootInvisibleHeight > (dispayHeight * (1f / 3)));
+                    }
+                })
+                // 监听键盘弹起隐藏状态时，会多次调用globalLayouts方法，为了避免多个数据导致状态判断出错，只取200ms内最后一次数据
+                .debounce(getResources().getInteger(android.R.integer.config_mediumAnimTime), TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        //若不可视区域高度大于1/3屏幕高度，则键盘显示
+                        LogUtils.i(TAG + "---RxView   " + aBoolean);
+                        if (aBoolean) {
+                        } else {
+                            //键盘隐藏,清除焦点
+                            if (mEtUserIntroduce.getEtContent().hasFocus()) {
+                                mEtUserIntroduce.getEtContent().clearFocus();
+                            }
+                            if (mEtUserName.hasFocus()) {
+                                mEtUserName.clearFocus();
+                            }
+                        }
+                    }
+                });
     }
+
 
     @Override
     protected boolean usePermisson() {
@@ -275,6 +330,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 break;
             case R.id.tv_edit_introduce:
                 mEtUserIntroduce.getEtContent().requestFocus();
+                mEtUserIntroduce.getEtContent().requestFocusFromTouch();
+                DeviceUtils.showSoftKeyboard(getContext(), mEtUserIntroduce.getEtContent());
                 break;
             default:
         }
@@ -412,7 +469,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
-        if(photoList.isEmpty()){
+        if (photoList.isEmpty()) {
             return;
         }
         path = photoList.get(0).getImgUrl();
@@ -695,4 +752,11 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         }
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: inflate a fragment view
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        ButterKnife.bind(this, rootView);
+        return rootView;
+    }
 }

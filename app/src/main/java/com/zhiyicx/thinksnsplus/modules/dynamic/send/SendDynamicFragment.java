@@ -106,11 +106,19 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         handleBack();
     }
 
+    @Override
+    protected boolean usePermisson() {
+        return true;
+    }
+
     /**
      * 处理取消发布动态
      */
     private void handleBack() {
-        if (!TextUtils.isEmpty(mEtDynamicContent.getInputContent()) || !TextUtils.isEmpty(mEtDynamicTitle.getInputContent()) || selectedPhotos != null) {
+        if (!TextUtils.isEmpty(mEtDynamicContent.getInputContent()) // 有正文
+                // || !TextUtils.isEmpty(mEtDynamicTitle.getInputContent())//
+                // 有图片，并且长度大于1，因为为1的时候是，占位图
+                || (selectedPhotos != null && selectedPhotos.size() > 1)) {
             DeviceUtils.hideSoftKeyboard(getContext(), mEtDynamicContent);
             initCanclePopupWindow();
             mCanclePopupWindow.show();
@@ -480,7 +488,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         } else {
             int oldSize = 0;
             // 最后一张是占位图
-            if (TextUtils.isEmpty(oldList.get(oldList.size()-1).getImgUrl())) {
+            if (TextUtils.isEmpty(oldList.get(oldList.size() - 1).getImgUrl())) {
                 oldSize = oldList.size() - 1;
             } else {
                 oldSize = oldList.size();

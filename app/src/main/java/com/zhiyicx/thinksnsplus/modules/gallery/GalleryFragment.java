@@ -26,6 +26,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
 import net.lucode.hackware.magicindicator.buildins.UIUtil;
+import net.lucode.hackware.magicindicator.buildins.circlenavigator.CircleNavigator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,6 +65,11 @@ public class GalleryFragment extends TSFragment {
     }
 
     @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
     protected void initView(View rootView) {
         currentItem = getArguments().getInt(BUNDLE_IMAGS_POSITON);
         rectList = getArguments().getParcelableArrayList("rect");
@@ -75,7 +81,9 @@ public class GalleryFragment extends TSFragment {
         // 大于一张图片才会显示小圆点，否则隐藏
         if (allImages != null && allImages.size() > 1) {
             addCircleNavigator();
+            mMiIndicator.onPageSelected(currentItem);
         }
+
     }
 
     @Override
@@ -201,8 +209,10 @@ public class GalleryFragment extends TSFragment {
         // 添加指示器
         ScaleCircleNavigator circleNavigator = new ScaleCircleNavigator(getContext());
         circleNavigator.setCircleCount(mPagerAdapter.getCount());
+        // 需要注意这两个值2.5 和2.1，他如果相同，就会出现不显示颜色的bug，另外在有些手机上，可能因为
+        // 两个值太接近，也不显示颜色
         circleNavigator.setMaxRadius(UIUtil.dip2px(getContext(), 2.5));
-        circleNavigator.setMinRadius(UIUtil.dip2px(getContext(), 2.4));
+        circleNavigator.setMinRadius(UIUtil.dip2px(getContext(), 2.1));
         circleNavigator.setCircleSpacing(UIUtil.dip2px(getContext(), 5));
         circleNavigator.setNormalCircleColor(Color.argb(102, 99, 99, 99));
         circleNavigator.setSelectedCircleColor(Color.argb(255, 99, 99, 99));
@@ -215,5 +225,6 @@ public class GalleryFragment extends TSFragment {
         });
         mMiIndicator.setNavigator(circleNavigator);
         ViewPagerHelper.bind(mMiIndicator, mVpPhotos);
+
     }
 }

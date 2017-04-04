@@ -110,6 +110,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         intent.setClass(getContext(), PhotoAlbumListActivity.class);
         intent.putExtras(bundle);
         startActivityForResult(intent, TO_ALBUM_LIST_REQUEST_CODE);
+        getActivity().overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
     }
 
     @Override
