@@ -53,6 +53,7 @@
         android:layout_toLeftOf="@+id/fl_tip"
         android:layout_toRightOf="@+id/iv_headpic"
         android:paddingBottom="@dimen/spacing_mid"
+        android:layout_marginTop="@dimen/textview_spacing_offset_height"
         android:textColor="@color/normal_for_assist_text"
         android:textSize="@dimen/size_content_comment"
         tools:text="我送第几个 "/>

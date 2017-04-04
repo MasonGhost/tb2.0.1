@@ -26,7 +26,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:includeFontPadding="false"
-        android:layout_marginTop="@dimen/dismiss_height"
+        android:layout_marginTop="@dimen/textview_spacing_offset_height"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_content_comment"
         android:text="张三 "/>

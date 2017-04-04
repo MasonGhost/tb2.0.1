@@ -151,10 +151,15 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        initToolbar();
         initBottomToolUI();
         initBottomToolListener();
         initHeaderView();
         initListener();
+    }
+
+    private void initToolbar() {
+        mToolbar.setPadding(0, DeviceUtils.getStatuBarHeight(getContext()), 0, 0);
     }
 
     /**

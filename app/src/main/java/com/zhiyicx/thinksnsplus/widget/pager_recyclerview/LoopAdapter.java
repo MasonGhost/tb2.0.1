@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.widget.pager_recyclerview;
 
 import android.support.v7.widget.RecyclerView;
-
 /**
  * @Author Jliuer
  * @Date 2017/02/16
@@ -35,13 +34,20 @@ public class LoopAdapter<VH extends RecyclerView.ViewHolder>
 
     @Override
     public int getItemCount() {
-        return Integer.MAX_VALUE;
+        if (getActualItemCount() > 0) {
+            return Integer.MAX_VALUE;
+        } else {
+            return super.getItemCount();
+        }
     }
-
 
     @Override
     public int getItemViewType(int position) {
-        return super.getItemViewType(getActualPosition(position));
+        if (getActualItemCount() > 0) {
+            return super.getItemViewType(getActualPosition(position));
+        } else {
+            return 0;
+        }
     }
 
     @Override
@@ -60,9 +66,9 @@ public class LoopAdapter<VH extends RecyclerView.ViewHolder>
      * @param position
      * @return
      */
-    private int getActualPosition(int position) {
+    public int getActualPosition(int position) {
         int actualPosition = position;
-        if (position >= getActualItemCount()) {// 模以item个数，完成一个循环了
+        if (getActualItemCount() > 0 && position >= getActualItemCount()) {
             actualPosition = position % getActualItemCount();
         }
         return actualPosition;

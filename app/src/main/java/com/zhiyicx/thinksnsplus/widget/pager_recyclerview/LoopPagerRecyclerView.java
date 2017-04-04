@@ -6,7 +6,12 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.zhiyicx.common.utils.log.LogUtils;
-
+/**
+ * @Author Jliuer
+ * @Date 2017/2/17/12:54
+ * @Email Jliuer@aliyun.com
+ * @Description 无限滑动的  viewpager 特性的 RecyclerView
+ */
 public class LoopPagerRecyclerView extends PagerRecyclerView {
 
     public LoopPagerRecyclerView(Context context) {
@@ -48,8 +53,7 @@ public class LoopPagerRecyclerView extends PagerRecyclerView {
      */
     @Override
     public void smoothScrollToPosition(int position) {
-        int transformedPosition = transformInnerPositionIfNeed(position);
-        super.smoothScrollToPosition(transformedPosition);
+        super.smoothScrollToPosition(position);
     }
 
     @Override

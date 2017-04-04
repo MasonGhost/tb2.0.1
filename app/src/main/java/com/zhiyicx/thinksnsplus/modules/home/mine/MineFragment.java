@@ -19,7 +19,6 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
@@ -98,6 +97,19 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .minePresenterModule(new MinePresenterModule(this))
                 .build().inject(this);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            mPresenter.getUserInfoFromDB();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         mPresenter.getUserInfoFromDB();
     }
 
@@ -257,23 +269,4 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         mTvFollowCount.setText(ConvertUtils.numberConvert(Integer.parseInt(followingCount)));
     }
 
-    @Override
-    public void updateUserFollowCount(int stateFollow) {
-        switch (stateFollow) {
-            case FollowFansBean.IFOLLOWED_STATE:
-                // 添加一个关注
-                int addCount = Integer.parseInt(mUserInfoBean.getFollowing_count()) + 1;
-                addCount = addCount < 0 ? 0 : addCount;
-                mUserInfoBean.setFollowing_count(addCount + "");
-                break;
-            case FollowFansBean.UNFOLLOWED_STATE:
-                // 取消一个关注
-                int decreaseCount = Integer.parseInt(mUserInfoBean.getFollowing_count()) - 1;
-                decreaseCount = decreaseCount < 0 ? 0 : decreaseCount;
-                mUserInfoBean.setFollowing_count(decreaseCount + "");
-                break;
-            default:
-        }
-        mTvFollowCount.setText(mUserInfoBean.getFollowing_count());
-    }
 }

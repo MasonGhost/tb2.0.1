@@ -1,13 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.home.mine;
 
-import com.umeng.socialize.utils.Log;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 
@@ -65,11 +62,4 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
         }
     }
 
-    /**
-     * 其他地方进行了关注或者取消关注的操作,更新关注数量
-     */
-    @Subscriber(tag = EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW)
-    public void upDataFollowCount(FollowFansBean followFansBean) {
-        mRootView.updateUserFollowCount(followFansBean.getOrigin_follow_status());
-    }
 }

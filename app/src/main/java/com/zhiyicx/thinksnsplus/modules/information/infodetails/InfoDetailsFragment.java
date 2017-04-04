@@ -109,7 +109,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-
+        initToolbar();
         mInfoMation = (InfoListBean.ListBean) getArguments().getSerializable(BUNDLE_INFO);
 
         mTvToolbarCenter.setVisibility(View.VISIBLE);
@@ -120,6 +120,9 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         initBottomToolListener();
         initListener();
         setCollect(mInfoMation.getIs_collection_news() == 1);
+    }
+    private void initToolbar() {
+        mToolbar.setPadding(0,DeviceUtils.getStatuBarHeight(getContext()),0,0);
     }
 
     @Override
@@ -179,7 +182,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     public int getInfoType() {
-        return Integer.valueOf(getArguments().getString(BUNDLE_INFO_TYPE));
+        return Integer.valueOf(getArguments().getString(BUNDLE_INFO_TYPE,"-1"));
     }
 
     @Override

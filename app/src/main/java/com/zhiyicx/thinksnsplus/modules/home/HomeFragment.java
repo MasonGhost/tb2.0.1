@@ -325,7 +325,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     @Override
     public void onButtonMenuShow(boolean isShow) {
         if (isShow) {
-            Observable.timer(getResources().getInteger(android.R.integer.config_mediumAnimTime), TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()).map(new Func1<Long, Object>() {
+            Observable.timer(getResources().getInteger(android.R.integer.config_longAnimTime), TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()).map(new Func1<Long, Object>() {
                 @Override
                 public Object call(Long aLong) {
                     mLlBottomContainer.setVisibility(View.VISIBLE);
