@@ -1,8 +1,9 @@
 package com.zhiyicx.thinksnsplus.data.source.local;
 
-import android.content.Context;
+import android.app.Application;
 
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.List;
@@ -17,19 +18,22 @@ import javax.inject.Inject;
  */
 public class MusicCommentListBeanGreenDaoImpl extends CommonCacheImpl<MusicCommentListBean> {
 
+    private MusicCommentListBeanDao mMusicCommentListBeanDao;
+
     @Inject
-    public MusicCommentListBeanGreenDaoImpl(Context context) {
+    public MusicCommentListBeanGreenDaoImpl(Application context) {
         super(context);
+        mMusicCommentListBeanDao = getWDaoSession().getMusicCommentListBeanDao();
     }
 
     @Override
     public long saveSingleData(MusicCommentListBean singleData) {
-        return 0;
+        return mMusicCommentListBeanDao.insertOrReplace(singleData);
     }
 
     @Override
     public void saveMultiData(List<MusicCommentListBean> multiData) {
-
+        mMusicCommentListBeanDao.insertOrReplaceInTx(multiData);
     }
 
     @Override
@@ -39,12 +43,12 @@ public class MusicCommentListBeanGreenDaoImpl extends CommonCacheImpl<MusicComme
 
     @Override
     public MusicCommentListBean getSingleDataFromCache(Long primaryKey) {
-        return null;
+        return mMusicCommentListBeanDao.load(primaryKey);
     }
 
     @Override
     public List<MusicCommentListBean> getMultiDataFromCache() {
-        return null;
+        return mMusicCommentListBeanDao.loadAll();
     }
 
     @Override
@@ -59,16 +63,16 @@ public class MusicCommentListBeanGreenDaoImpl extends CommonCacheImpl<MusicComme
 
     @Override
     public void deleteSingleCache(MusicCommentListBean dta) {
-
+        mMusicCommentListBeanDao.delete(dta);
     }
 
     @Override
     public void updateSingleData(MusicCommentListBean newData) {
-
+        mMusicCommentListBeanDao.insertOrReplace(newData);
     }
 
     @Override
     public long insertOrReplace(MusicCommentListBean newData) {
-        return 0;
+        return mMusicCommentListBeanDao.insertOrReplace(newData);
     }
 }

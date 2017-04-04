@@ -44,7 +44,7 @@ public class MusicAlbumListBeanGreenDaoImpl extends CommonCacheImpl<MusicAlbumLi
 
     @Override
     public MusicAlbumListBean getSingleDataFromCache(Long primaryKey) {
-        return mMusicAlbumListBeanDao.load(primaryKey.intValue());
+        return mMusicAlbumListBeanDao.load(primaryKey);
     }
 
     @Override
