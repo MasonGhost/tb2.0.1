@@ -1,10 +1,13 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.util.SparseArray;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.utils.ImageUtils;
+import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
@@ -80,7 +83,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
     public SharePolicy mSharePolicy;
 
     private int mInterfaceNum = 0;//纪录请求接口数量，用于统计接口是否全部请求完成，需要接口全部请求完成后在显示界面
-
+    SparseArray<Long> msendingStatus = new SparseArray<>();
     @Inject
     public PersonalCenterPresenter(PersonalCenterContract.Repository repository, PersonalCenterContract.View rootView) {
         super(repository, rootView);
@@ -109,6 +112,28 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
         Subscription subscription = mRepository.getDynamicListForSomeone(user_id, maxId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<BaseJson<List<DynamicBean>>, BaseJson<List<DynamicBean>>>() {
+                    @Override
+                    public BaseJson<List<DynamicBean>> call(BaseJson<List<DynamicBean>> listBaseJson) {
+                        if (listBaseJson.isStatus()) {
+                            if (!isLoadMore) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
+                                    List<DynamicBean> data = getDynamicBeenFromDB();
+                                    data.addAll(listBaseJson.getData());
+                                    listBaseJson.setData(data);
+                            }
+                            for (int i = 0; i < listBaseJson.getData().size(); i++) { // 把自己发的评论加到评论列表的前面
+                                List<DynamicCommentBean> dynamicCommentBeen = mDynamicCommentBeanGreenDao.getMySendingComment(listBaseJson.getData().get(i).getFeed_mark());
+                                if (!dynamicCommentBeen.isEmpty()) {
+                                    dynamicCommentBeen.addAll(listBaseJson.getData().get(i).getComments());
+                                    listBaseJson.getData().get(i).getComments().clear();
+                                    listBaseJson.getData().get(i).getComments().addAll(dynamicCommentBeen);
+                                }
+                            }
+
+                        }
+                        return listBaseJson;
+                    }
+                })
                 .subscribe(new BaseSubscribe<List<DynamicBean>>() {
                     @Override
                     protected void onSuccess(List<DynamicBean> data) {
@@ -284,7 +309,18 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
                 });
         addSubscrebe(subscription);
     }
-
+    @NonNull
+    private List<DynamicBean> getDynamicBeenFromDB() {
+        if (AppApplication.getmCurrentLoginAuth() == null) {
+            return new ArrayList<DynamicBean>();
+        }
+        List<DynamicBean> datas = mDynamicBeanGreenDao.getMySendingUnSuccessDynamic((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+        msendingStatus.clear();
+        for (int i = 0; i < datas.size(); i++) {
+            msendingStatus.put(i, datas.get(i).getFeed_mark());
+        }
+        return datas;
+    }
     private void allready() {
         if (mInterfaceNum == NEED_INTERFACE_NUM) {
             mRootView.allDataReady();
