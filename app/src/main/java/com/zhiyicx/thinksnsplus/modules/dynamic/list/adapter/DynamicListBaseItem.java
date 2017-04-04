@@ -121,7 +121,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
     @Override
     public boolean isForViewType(DynamicBean item, int position) {
         // 当本地和服务器都没有图片的时候，使用
-        return (item == null || item.getFeed() == null) || (item.getFeed().getStorages() == null || item.getFeed().getStorages().size() == getImageCounts())
+        return item.getFeed_mark() != null && (item.getFeed().getStorages() == null || item.getFeed().getStorages().size() == getImageCounts())
                 && (item.getFeed().getLocalPhotos() == null || item.getFeed().getLocalPhotos().size() == getImageCounts());
     }
 
@@ -164,9 +164,9 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                 holder.setText(R.id.tv_title, title);
             }
             String content = dynamicBean.getFeed().getContent();
-            if(TextUtils.isEmpty(content)){
+            if (TextUtils.isEmpty(content)) {
                 holder.setVisible(R.id.tv_content, View.GONE);
-            }else {
+            } else {
                 if (content.length() > mContentMaxShowNum) {
                     content = content.substring(0, mContentMaxShowNum) + "...";
                 }
@@ -180,10 +180,10 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                 dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicToolBean.getFeed_comment_count()), false, 1);
                 dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicToolBean.getFeed_view_count()), false, 2);
             }
-            if(dynamicBean.getUser_id()==AppApplication.getmCurrentLoginAuth().getUser_id()){
-                dynamicListMenuView.setItemPositionVisiable(3,View.VISIBLE);
-            }else {
-                dynamicListMenuView.setItemPositionVisiable(3,View.GONE);
+            if (dynamicBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
+                dynamicListMenuView.setItemPositionVisiable(3, View.VISIBLE);
+            } else {
+                dynamicListMenuView.setItemPositionVisiable(3, View.GONE);
             }
 
             dynamicListMenuView.setItemOnClick(new DynamicListMenuView.OnItemClickListener() {

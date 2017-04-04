@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBoundTransform;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBorderTransform;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
@@ -210,7 +210,7 @@ public class PersonalCenterHeaderViewItem {
                 .placeholder(R.drawable.shape_default_image_circle_with_strike)
                 .errorPic(R.drawable.shape_default_image_circle_with_strike)
                 .imagerView(iv_head_icon)
-                .transformation(new GlideCircleBoundTransform(mActivity))
+                .transformation(new GlideCircleBorderTransform(mActivity,mActivity.getResources().getDimensionPixelSize(R.dimen.spacing_tiny),ContextCompat.getColor(mActivity,R.color.white)))
                 .build());
         // 设置用户名
         tv_user_name.setText(userInfoBean.getName());
