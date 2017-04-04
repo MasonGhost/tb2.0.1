@@ -82,7 +82,9 @@ public class PhotoAlbumListFragment extends TSFragment {
 
     @Override
     protected void setRightClick() {
+
         getActivity().finish();
+        getActivity().overridePendingTransition(R.anim.slide_from_right_in, R.anim.slide_from_left_out);
     }
 
     @Override
@@ -116,6 +118,8 @@ public class PhotoAlbumListFragment extends TSFragment {
                         intent.putExtras(bundle);
                         getActivity().setResult(Activity.RESULT_OK, intent);
                         getActivity().finish();
+                        // 从右边进入，从左边出去
+                        getActivity().overridePendingTransition(R.anim.slide_from_right_in, R.anim.slide_from_left_out);
                     }
                 });
             }
