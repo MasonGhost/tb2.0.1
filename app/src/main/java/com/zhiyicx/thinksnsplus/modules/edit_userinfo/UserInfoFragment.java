@@ -184,10 +184,10 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                         if (aBoolean) {
                         } else {
                             //键盘隐藏,清除焦点
-                            if (mEtUserIntroduce.getEtContent().hasFocus()) {
+                            if (mEtUserIntroduce != null && mEtUserIntroduce.getEtContent().hasFocus()) {
                                 mEtUserIntroduce.getEtContent().clearFocus();
                             }
-                            if (mEtUserName.hasFocus()) {
+                            if (mEtUserName != null && mEtUserName.hasFocus()) {
                                 mEtUserName.clearFocus();
                             }
                         }
