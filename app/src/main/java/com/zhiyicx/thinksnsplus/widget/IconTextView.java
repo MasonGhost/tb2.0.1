@@ -203,6 +203,15 @@ public class IconTextView extends View {
         }
     }
 
+    public void setIconRes(int iconRes) {
+        if (iconRes > 0) {
+            mDrawable = getResources().getDrawable(iconRes);
+            fixDrawableSize();
+            requestLayout();
+            invalidate();
+        }
+    }
+
     public void setDirection(Direction direction) {
         if (mDirection != direction) {
             mDirection = direction;
@@ -342,36 +351,36 @@ public class IconTextView extends View {
         mDrawable.setBounds(mIconBound);
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mStartX = (int) event.getX();
-                mStartY = (int) event.getY();
-                inTapRegion = true;
-                break;
-            case MotionEvent.ACTION_MOVE:
-                int dx = (int) (event.getX() - mStartX);
-                int dy = (int) (event.getY() - mStartY);
-
-                int touchSlop = dx * dx + dy * dy;
-                if (touchSlop > mTouchSlop) {
-                    inTapRegion = false;
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-                if (inTapRegion) {
-                    if ((mStartX > mCacheBound.left && mStartX < mCacheBound.right)
-                            && (mStartY > mCacheBound.top && mStartY < mCacheBound.bottom)) {
-                        if (mOnIconTextClickListener != null) {
-                            mOnIconTextClickListener.onIconTextClick(this);
-                        }
-                    }
-                }
-                break;
-        }
-        return true;
-    }
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//        switch (event.getAction()) {
+//            case MotionEvent.ACTION_DOWN:
+//                mStartX = (int) event.getX();
+//                mStartY = (int) event.getY();
+//                inTapRegion = true;
+//                break;
+//            case MotionEvent.ACTION_MOVE:
+//                int dx = (int) (event.getX() - mStartX);
+//                int dy = (int) (event.getY() - mStartY);
+//
+//                int touchSlop = dx * dx + dy * dy;
+//                if (touchSlop > mTouchSlop) {
+//                    inTapRegion = false;
+//                }
+//                break;
+//            case MotionEvent.ACTION_UP:
+//                if (inTapRegion) {
+//                    if ((mStartX > mCacheBound.left && mStartX < mCacheBound.right)
+//                            && (mStartY > mCacheBound.top && mStartY < mCacheBound.bottom)) {
+//                        if (mOnIconTextClickListener != null) {
+//                            mOnIconTextClickListener.onIconTextClick(this);
+//                        }
+//                    }
+//                }
+//                break;
+//        }
+//        return true;
+//    }
 
     @Override
     protected void onDraw(Canvas canvas) {

@@ -31,19 +31,21 @@ import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.animation.ValueAnimator;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideMusicBgTransform;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentActivity;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentHeader;
 import com.zhiyicx.thinksnsplus.widget.MusicListPopupWindow;
 import com.zhiyicx.thinksnsplus.widget.PlayerSeekBar;
 import com.zhiyicx.thinksnsplus.widget.pager_recyclerview.LoopPagerRecyclerView;
@@ -72,10 +74,8 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERLOOP;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERSINGLE;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDER_ACTION;
-import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailFragment
-        .MUSIC_INFO;
-import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment
-        .CURRENT_MUSIC;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailFragment.MUSIC_INFO;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT;
 
 /**
  * @Author Jliuer
@@ -369,7 +369,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 if (mCurrentMusic.getMusic_info().getIsdiggmusic() == 1) {
                     mCurrentMusic.getMusic_info().setIsdiggmusic(0);
                     mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_normal);
-
                 } else {
                     mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_high);
                     mCurrentMusic.getMusic_info().setIsdiggmusic(1);
@@ -378,8 +377,14 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             case R.id.fragment_music_paly_comment: // 评论
                 Intent intent = new Intent(getActivity(), MusicCommentActivity.class);
                 Bundle musicBundle = new Bundle();
-                musicBundle.putSerializable(CURRENT_MUSIC, mCurrentMusic);
-                intent.putExtra(CURRENT_MUSIC, musicBundle);
+                MusicCommentHeader.HeaderInfo headerInfo=new MusicCommentHeader.HeaderInfo();
+                headerInfo.setId(mCurrentMusic.getId());
+                headerInfo.setTitle(mCurrentMusic.getMusic_info().getTitle());
+                headerInfo.setLitenerCount(mCurrentMusic.getMusic_info().getTaste_count()+"");
+                headerInfo.setImageUrl(ImageUtils.imagePathConvert(mCurrentMusic.getMusic_info().getSinger().getCover().getId() + "",
+                        ImageZipConfig.IMAGE_70_ZIP));
+                musicBundle.putSerializable(CURRENT_COMMENT, headerInfo);
+                intent.putExtra(CURRENT_COMMENT, musicBundle);
                 startActivity(intent);
                 break;
             case R.id.fragment_music_paly_order: // 播放顺序
@@ -592,6 +597,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     /**
      * 更新音乐信息
+     *
      * @param description 音乐信息数据
      */
     private void updateMediaDescription(MediaDescriptionCompat description) {
@@ -604,9 +610,9 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                     .imagerView(mFragmentMusicPalyBg)
                     .url(description.getIconUri() + "")
                     .build());
-            View item=RecyclerViewUtils
+            View item = RecyclerViewUtils
                     .getCenterXChild(mFragmentMusicPalyRv);
-            ImageView image =(ImageView) item.findViewById(R.id.fragment_music_paly_img);
+            ImageView image = (ImageView) item.findViewById(R.id.fragment_music_paly_img);
 
             mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
                     .imagerView(image)
