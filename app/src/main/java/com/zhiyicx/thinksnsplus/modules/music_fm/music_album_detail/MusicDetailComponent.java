@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail;
 
+import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;
 import com.zhiyicx.thinksnsplus.base.InjectComponent;
@@ -13,6 +14,6 @@ import dagger.Component;
  * @Description
  */
 @FragmentScoped
-@Component(dependencies = AppComponent.class, modules = MusicDetailPresenterModule.class)
+@Component(dependencies = AppComponent.class, modules ={ShareModule.class,MusicDetailPresenterModule.class} )
 interface MusicDetailComponent extends InjectComponent<MusicDetailActivity> {
 }

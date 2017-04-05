@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail;
 
+import android.app.Application;
+
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicDetailRepository;
 
@@ -26,8 +28,9 @@ class MusicDetailPresenterModule {
     }
 
     @Provides
-    MusicDetailContract.Repository provideMusicRepository(ServiceManager serviceManager) {
-        return new MusicDetailRepository(serviceManager);
+    MusicDetailContract.Repository provideMusicRepository(ServiceManager serviceManager,
+                                                          Application application) {
+        return new MusicDetailRepository(serviceManager,application);
     }
 
 }
