@@ -24,6 +24,7 @@ public class ImageBean implements Parcelable, Serializable {  //Serializable 用
     private double width;
     private double height;
     private int part;// 图片压缩比例
+    private String imgMimeType;// 图片类型
 
     public int getPart() {
         return part;
@@ -69,7 +70,12 @@ public class ImageBean implements Parcelable, Serializable {  //Serializable 用
         this.storage_id = storage_id;
     }
 
-    public ImageBean() {
+    public String getImgMimeType() {
+        return imgMimeType;
+    }
+
+    public void setImgMimeType(String imgMimeType) {
+        this.imgMimeType = imgMimeType;
     }
 
     @Override
@@ -80,7 +86,11 @@ public class ImageBean implements Parcelable, Serializable {  //Serializable 用
                 ", width=" + width +
                 ", height=" + height +
                 ", part=" + part +
+                ", imgMimeType='" + imgMimeType + '\'' +
                 '}';
+    }
+
+    public ImageBean() {
     }
 
     @Override
@@ -95,6 +105,7 @@ public class ImageBean implements Parcelable, Serializable {  //Serializable 用
         dest.writeDouble(this.width);
         dest.writeDouble(this.height);
         dest.writeInt(this.part);
+        dest.writeString(this.imgMimeType);
     }
 
     protected ImageBean(Parcel in) {
@@ -103,6 +114,7 @@ public class ImageBean implements Parcelable, Serializable {  //Serializable 用
         this.width = in.readDouble();
         this.height = in.readDouble();
         this.part = in.readInt();
+        this.imgMimeType = in.readString();
     }
 
     public static final Creator<ImageBean> CREATOR = new Creator<ImageBean>() {

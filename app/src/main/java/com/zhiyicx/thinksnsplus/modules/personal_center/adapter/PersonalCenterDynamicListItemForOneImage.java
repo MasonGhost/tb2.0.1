@@ -2,12 +2,14 @@ package com.zhiyicx.thinksnsplus.modules.personal_center.adapter;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -67,29 +69,17 @@ public class PersonalCenterDynamicListItemForOneImage extends PersonalCenterDyna
         int height;
         int proportion; // 压缩比例
         int currentWith = getCurrenItemWith(part);
-        if (dynamicBean.getFeed().getStorages() == null || dynamicBean.getFeed().getStorages().size() == 0) {// 本地图片
-            BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(dynamicBean.getFeed().getLocalPhotos().get(0));
-//            with = option.outWidth > currentWith ? currentWith : option.outWidth;
-            with = currentWith;
-            height = with * option.outHeight / option.outWidth;
-            height = height > mImageMaxHeight ? mImageMaxHeight : height;
-            proportion = ((with / option.outWidth) * 100);
-        } else {
-//            with = (int) dynamicBean.getFeed().getStorages().get(0).getWidth() > currentWith ? currentWith : (int) dynamicBean.getFeed().getStorages().get(0).getWidth();
-            with = currentWith;
-            height = (int) (with * dynamicBean.getFeed().getStorages().get(0).getHeight() / dynamicBean.getFeed().getStorages().get(0).getWidth());
-            height = height > mImageMaxHeight ? mImageMaxHeight : height;
-            proportion = (int) ((with / dynamicBean.getFeed().getStorages().get(0).getWidth()) * 100);
-        }
-        if ((dynamicBean.getFeed().getStorages() == null || dynamicBean.getFeed().getStorages().size() == IMAGE_COUNTS)
-                && (dynamicBean.getFeed().getLocalPhotos() == null || dynamicBean.getFeed().getLocalPhotos().size() == IMAGE_COUNTS)) {
-            view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
-        }
+        with = currentWith;
+        ImageBean imageBean = dynamicBean.getFeed().getStorages().get(positon);
+        height = (int) (with * imageBean.getHeight() / imageBean.getWidth());
+        height = height > mImageMaxHeight ? mImageMaxHeight : height;
+        proportion = (int) ((with / imageBean.getWidth()) * 100);
+        view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
         String url;
-        if (dynamicBean.getFeed().getStorages() != null && dynamicBean.getFeed().getStorages().size() > 0) {
-            url = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getFeed().getStorages().get(positon).getStorage_id(), proportion);
+        if (TextUtils.isEmpty(imageBean.getImgUrl())) {
+            url = String.format(ApiConfig.IMAGE_PATH, imageBean.getStorage_id(), proportion);
         } else {
-            url = dynamicBean.getFeed().getLocalPhotos().get(positon);
+            url = imageBean.getImgUrl();
         }
         Glide.with(mContext)
                 .load(url)
