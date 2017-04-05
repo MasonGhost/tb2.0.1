@@ -142,7 +142,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.err_net_not_work));
                     }
                 });
     }
@@ -195,22 +195,22 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONNECTED)
     private void onConnected() {
-        mRootView.showMessage("IM 聊天加载成功");
+//        mRootView.showSnackSuccessMessage("IM 聊天加载成功");
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONDISCONNECT)
     private void onDisconnect(int code, String reason) {
-        mRootView.showMessage("IM 聊天断开" + reason);
+//        mRootView.showSnackSuccessMessage("IM 聊天断开" + reason);
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONERROR)
     private void onError(Exception error) {
-        mRootView.showMessage("IM 聊天错误" + error.toString());
+//        mRootView.showSnackSuccessMessage("IM 聊天错误" + error.toString());
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGETIMEOUT)
     private void onMessageTimeout(Message message) {
-        System.out.println(" 超时   message = " + message);
+//        System.out.println(" 超时   message = " + message);
         mRootView.updateMessageStatus(message);
     }
 }

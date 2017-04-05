@@ -1,5 +1,7 @@
 package com.zhiyicx.common.mvp.i;
 
+import com.trycatch.mysnackbar.Prompt;
+
 /**
  * @Describe view 公用接口
  * @Author Jungle68
@@ -28,6 +30,21 @@ public interface IBaseView<VP> {
     /**
      * 从顶部显示信息
      */
-    void showSnackMessage(String message);
+    void showSnackMessage(String message, Prompt prompt);
+
+    /**
+     * 从顶部显示成功信息
+     */
+    void showSnackSuccessMessage(String message);
+
+    /**
+     * 从顶部显示失败信息
+     */
+    void showSnackErrorMessage(String message);
+
+    /**
+     * 从顶部显示警告信息
+     */
+    void showSnackWarningMessage(String message);
 
 }

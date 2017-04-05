@@ -8,8 +8,6 @@ import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
-import com.trycatch.mysnackbar.Prompt;
-import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.common.config.ConstantConfig;
@@ -139,29 +137,10 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     }
 
-
-    @Override
-    public void setPresenter(ChatContract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
     @Override
     public void hideLoading() {
         mMessageList.getRefreshLayout().setRefreshing(false);
     }
-
-    @Override
-    public void showMessage(String message) {
-        TSnackbar.make(mSnackRootView, message, TSnackbar.LENGTH_SHORT)
-                .setPromptThemBackground(Prompt.SUCCESS)
-                .show();
-    }
-
 
     /**
      * 发送按钮被点击
@@ -233,7 +212,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
      */
     @Override
     public boolean onUserInfoLongClick(ChatItemBean chatItemBean) {
-        showMessage(chatItemBean.getUserInfo().getName());
+        showSnackSuccessMessage(chatItemBean.getUserInfo().getName());
         return true;
     }
 

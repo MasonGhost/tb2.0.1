@@ -248,26 +248,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         return adapter;
     }
 
-    @Override
-    public void setPresenter(DynamicDetailContract.Presenter presenter) {
-        this.mPresenter = presenter;
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showMessage(String message) {
-
-    }
-
     public static DynamicDetailFragment initFragment(Bundle bundle) {
         DynamicDetailFragment dynamicDetailFragment = new DynamicDetailFragment();
         dynamicDetailFragment.setArguments(bundle);

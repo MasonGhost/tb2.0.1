@@ -123,7 +123,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     @Override
     public void setPresenter(P presenter) {
-      this.mPresenter=presenter;
+        this.mPresenter = presenter;
     }
 
     @Override
@@ -137,12 +137,26 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     @Override
-    public void showSnackMessage(String message) {
+    public void showSnackMessage(String message, Prompt prompt) {
         TSnackbar.make(mSnackRootView, message, TSnackbar.LENGTH_SHORT)
-                .setPromptThemBackground(Prompt.SUCCESS)
+                .setPromptThemBackground(prompt)
                 .show();
     }
 
+    @Override
+    public void showSnackSuccessMessage(String message) {
+        showSnackMessage(message,Prompt.SUCCESS);
+    }
+
+    @Override
+    public void showSnackErrorMessage(String message) {
+        showSnackMessage(message,Prompt.ERROR);
+    }
+
+    @Override
+    public void showSnackWarningMessage(String message) {
+        showSnackMessage(message,Prompt.WARNING);
+    }
 
     @Override
     public void showMessage(String message) {

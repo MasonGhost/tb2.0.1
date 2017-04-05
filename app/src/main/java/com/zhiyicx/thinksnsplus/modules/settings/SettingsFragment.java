@@ -91,7 +91,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        showSnackMessage("vertify");
+                        showSnackSuccessMessage("vertify");
                     }
                 });
         // 修改密码

@@ -114,6 +114,7 @@ dependencies {
     compile dataDependences.multidex
     testCompile testDependencies.multidexTest
     compile project(':skinlibrary')
+    compile project(':mysnackbar')
     // 指示器
     compile dataDependences.magicIndicator
 }

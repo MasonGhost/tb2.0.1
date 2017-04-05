@@ -312,12 +312,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    public void setPresenter(PersonalCenterContract.Presenter presenter) {
-        this.mPresenter = presenter;
-    }
-
-
-    @Override
     public void onImageClick(ViewHolder holder, DynamicBean dynamicBean, int position) {
         List<ImageBean> imageBeanList = new ArrayList<>();
         if (dynamicBean.getFeed().getStorages() != null) {
