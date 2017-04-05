@@ -173,6 +173,14 @@ public class ApiConfig {
     public static final String APP_PATH_GET_COMPONENT_CONFIGS = "api/v1/system/component/configs";// 获取扩展包配置信息
     public static final String APP_PATH_GET_COMPONENT_CONFIGS_IM = "im";// 获取扩展包配置信息 类容
 
+    /**
+     * 分享相关
+     */
+    public static final String APP_PATH_SHARE_USERINFO = APP_DOMAIN+"profile/%s";// 用户信息分享地址 url/profile/{user_id}
+    public static final String APP_PATH_SHARE_DYNAMIC = APP_DOMAIN+"feeds/detail/%s";// 动态信息分享地址 url/feeds/detail/{feed_id}
+
+
+
 
     /**
      * 仅仅测试使用

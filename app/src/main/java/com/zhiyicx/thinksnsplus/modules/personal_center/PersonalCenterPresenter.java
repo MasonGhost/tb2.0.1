@@ -271,7 +271,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
         if (userInfoBean.getAvatar() != null) {
             shareContent.setImage(ImageUtils.imagePathConvert(userInfoBean.getAvatar(), 100));
         }
-        shareContent.setUrl("http://www.thinksns.com/index.html");
+        shareContent.setUrl(String.format(ApiConfig.APP_PATH_SHARE_USERINFO, userInfoBean.getUser_id()));
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
     }
