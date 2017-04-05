@@ -56,4 +56,9 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
                     }
                 });
     }
+
+    @Override
+    public void handleCollect(boolean isUnCollected,String special_id) {
+        mMusicDetailRepository.handleCollect(isUnCollected,special_id);
+    }
 }

@@ -55,7 +55,7 @@ public class MusicCommentItem implements ItemViewDelegate<MusicCommentListBean> 
 
     @Override
     public boolean isForViewType(MusicCommentListBean item, int position) {
-        return position == 0 || !TextUtils.isEmpty(item.getComment_content());
+        return !TextUtils.isEmpty(item.getComment_content());
     }
 
     @Override

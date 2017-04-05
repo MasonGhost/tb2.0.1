@@ -40,8 +40,9 @@
         android:layout_gravity="center_horizontal|bottom"
         android:layout_marginBottom="@dimen/spacing_bigger_large"
         android:background="@drawable/shape_bg_button_see_origin_photo"
-        android:text="@string/see_origin_photo"
         android:gravity="center"
+        android:text="@string/see_origin_photo"
         android:textColor="@color/white"
-        android:textSize="@dimen/size_content_assist"/>
+        android:textSize="@dimen/size_content_assist"
+        android:visibility="gone"/>
 </FrameLayout>

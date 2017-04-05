@@ -4,14 +4,22 @@ import android.os.Parcel;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Unique;
+import org.greenrobot.greendao.annotation.Generated;
+
 /**
  * @Author Jliuer
  * @Date 2017/03/16
  * @Email Jliuer@aliyun.com
  * @Description
  */
+@Entity
 public class MusicCommentListBean extends BaseListBean {
-
+    public static final int SEND_ERROR = 0;
+    public static final int SEND_ING = 1;
+    public static final int SEND_SUCCESS = 2;
     /**
      * id : 4
      * created_at : 2017-03-15 07:56:22
@@ -22,8 +30,9 @@ public class MusicCommentListBean extends BaseListBean {
      * music_id : 1
      * special_id : 0
      */
-
-    private int id;
+    @Id(autoincrement = true)
+    Long _id;
+    private int id = -1;
     private String created_at;
     private String updated_at;
     private String comment_content;
@@ -31,6 +40,7 @@ public class MusicCommentListBean extends BaseListBean {
     private int reply_to_user_id;
     private int music_id;
     private int special_id;
+    private int state = SEND_SUCCESS;
 
     public int getId() {
         return id;
@@ -114,6 +124,22 @@ public class MusicCommentListBean extends BaseListBean {
         dest.writeInt(this.special_id);
     }
 
+    public Long get_id() {
+        return this._id;
+    }
+
+    public void set_id(Long _id) {
+        this._id = _id;
+    }
+
+    public int getState() {
+        return this.state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+
     public MusicCommentListBean() {
     }
 
@@ -129,7 +155,25 @@ public class MusicCommentListBean extends BaseListBean {
         this.special_id = in.readInt();
     }
 
-    public static final Creator<MusicCommentListBean> CREATOR = new Creator<MusicCommentListBean>() {
+    @Generated(hash = 1918542083)
+    public MusicCommentListBean(Long _id, int id, String created_at, String updated_at,
+                                String comment_content, int user_id, int reply_to_user_id, int
+                                            music_id, int special_id,
+                                int state) {
+        this._id = _id;
+        this.id = id;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.comment_content = comment_content;
+        this.user_id = user_id;
+        this.reply_to_user_id = reply_to_user_id;
+        this.music_id = music_id;
+        this.special_id = special_id;
+        this.state = state;
+    }
+
+    public static final Creator<MusicCommentListBean> CREATOR = new Creator<MusicCommentListBean>
+            () {
         @Override
         public MusicCommentListBean createFromParcel(Parcel source) {
             return new MusicCommentListBean(source);

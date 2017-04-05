@@ -539,7 +539,7 @@ public class BackgroundTaskHandler {
         final Long commentMark = (Long) params.get("comment_mark");
         final InfoCommentListBean infoCommentListBean = mInfoCommentListBeanDao.getCommentByCommentMark
                 (commentMark);
-        // 发送动态到动态列表：状态为发送中
+
         mServiceManager.getCommonClient()
                 .handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))

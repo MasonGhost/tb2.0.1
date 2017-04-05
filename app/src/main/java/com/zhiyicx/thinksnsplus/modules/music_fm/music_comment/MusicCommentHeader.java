@@ -28,6 +28,7 @@ public class MusicCommentHeader {
 
     private TextView mTitle;
     private TextView mListenCount;
+    private TextView mCommentCount;
     private ImageView mHeaderImag;
     private ImageLoader mImageLoader;
 
@@ -41,6 +42,7 @@ public class MusicCommentHeader {
 
         mTitle = (TextView) mMusicCommentHeader.findViewById(R.id.head_info_music_title);
         mListenCount = (TextView) mMusicCommentHeader.findViewById(R.id.head_info_music_listen);
+        mCommentCount = (TextView) mMusicCommentHeader.findViewById(R.id.tv_comment_count);
         mHeaderImag = (ImageView) mMusicCommentHeader.findViewById(R.id.head_info_music_comment);
     }
 
@@ -58,5 +60,10 @@ public class MusicCommentHeader {
                 .imagerView(mHeaderImag)
                 .url(url)
                 .build());
+        setCommentList(0);
+    }
+
+    public void setCommentList(int size){
+        mCommentCount.setText(mContext.getResources().getString(R.string.dynamic_comment_count,size));
     }
 }

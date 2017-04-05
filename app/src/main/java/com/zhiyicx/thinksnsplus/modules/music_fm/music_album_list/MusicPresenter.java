@@ -4,6 +4,7 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
+import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicRepository;
 
 import org.jetbrains.annotations.NotNull;
@@ -29,6 +30,9 @@ public class MusicPresenter extends BasePresenter<MusicContract.Repository, Musi
     MusicRepository mMusicRepository;
 
     @Inject
+    MusicAlbumListBeanGreenDaoImpl mMusicAlbumListDao;
+
+    @Inject
     public MusicPresenter(MusicContract.Repository repository, MusicContract.View rootView) {
         super(repository, rootView);
     }
@@ -49,6 +53,7 @@ public class MusicPresenter extends BasePresenter<MusicContract.Repository, Musi
                 .subscribe(new BaseSubscribe<List<MusicAlbumListBean>>() {
                     @Override
                     protected void onSuccess(List<MusicAlbumListBean> data) {
+                        mMusicAlbumListDao.saveMultiData(data);
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 
