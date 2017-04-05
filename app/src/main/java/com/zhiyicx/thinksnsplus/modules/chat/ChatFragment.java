@@ -4,10 +4,10 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.common.config.ConstantConfig;
@@ -30,6 +30,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 /**
  * @Describe
@@ -91,33 +95,41 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
         mIlvContainer.setOnSendClickListener(this);
         mIlvContainer.setSendButtonVisiable(true); // 保持显示
         // 软键盘控制区
-        mRlContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-
-                Rect rect = new Rect();
-                //获取root在窗体的可视区域
-                mRlContainer.getWindowVisibleDisplayFrame(rect);
-                //获取root在窗体的不可视区域高度(被其他View遮挡的区域高度)
-                int rootInvisibleHeight = mRlContainer.getRootView().getHeight() - rect.bottom;
-                int dispayHeight = UIUtils.getWindowHeight(getContext());
-                //若不可视区域高度大于1/3屏幕高度，则键盘显示
-                if (rootInvisibleHeight > (dispayHeight * (1f / 3))) {
-//                    mKeyboradIsOpen = true;
-                    if (mMessageItemBean.getConversation() != null) {// 如果对话没有创建，不做处理
-                        mMessageList.scrollToBottom();
+        RxView.globalLayouts(mRlContainer)
+                .flatMap(new Func1<Void, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(Void aVoid) {
+                        Rect rect = new Rect();
+                        //获取root在窗体的可视区域
+                        mRlContainer.getWindowVisibleDisplayFrame(rect);
+                        //获取root在窗体的不可视区域高度(被其他View遮挡的区域高度)
+                        int rootInvisibleHeight = mRlContainer.getRootView().getHeight() - rect.bottom;
+                        int dispayHeight = UIUtils.getWindowHeight(getContext());
+                        return Observable.just(rootInvisibleHeight > (dispayHeight * (1f / 3)));
                     }
-                } else {
-                    //键盘隐藏
-//                    mKeyboradIsOpen = false;
-//                    mIlvContainer.clearFocus();// 主动失去焦点
-                }
-//                mIlvContainer.setSendButtonVisiable(mKeyboradIsOpen); 不需要隐藏
-            }
-        });
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        //若不可视区域高度大于1/3屏幕高度，则键盘显示
+                        LogUtils.i(TAG + "---RxView   " + aBoolean);
+                        if (aBoolean) {
+                            if (!mKeyboradIsOpen && mMessageItemBean.getConversation() != null) {// 如果对话没有创建，不做处理
+                                mMessageList.scrollToBottom();
+                            }
+                            mKeyboradIsOpen = true;
+                        } else {
+                            //键盘隐藏
+                            mKeyboradIsOpen = false;
+//                            mIlvContainer.clearFocus();// 主动失去焦点
+                        }
+//                        mIlvContainer.setSendButtonVisiable(mKeyboradIsOpen);//      不需要隐藏
 
+                    }
+                });
         mIlvContainer.setEtContentHint(getString(R.string.default_input_chat_hint));
-
     }
 
     @Override
@@ -224,7 +236,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     @Override
     public void reFreshMessage(ChatItemBean chatItemBean) {
         mDatas.add(chatItemBean);
-        mMessageList.refresh();
+        mMessageList.refreshSoomthBottom();
     }
 
     @Override
