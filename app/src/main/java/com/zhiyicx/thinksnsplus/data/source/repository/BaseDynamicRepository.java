@@ -213,6 +213,28 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                 });
     }
 
+    /**
+     * 删除动态
+     *
+     * @param feed_id
+     */
+    @Override
+    public void deleteDynamic(Long feed_id) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("feed_id", feed_id);
+        // 后台处理
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DELETE_DYNAMIC, feed_id));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+    }
+
+    /**
+     * 删除评论
+     *
+     * @param feed_id
+     * @param comment_id
+     */
     @Override
     public void deleteComment(Long feed_id, Long comment_id) {
         BackgroundRequestTaskBean backgroundRequestTaskBean;

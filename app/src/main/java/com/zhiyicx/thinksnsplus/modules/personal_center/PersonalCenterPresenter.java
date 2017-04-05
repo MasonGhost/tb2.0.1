@@ -394,9 +394,16 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
     @Override
     public void deleteDynamic(DynamicBean dynamicBean, int position) {
 
+        mDynamicBeanGreenDao.deleteSingleCache(dynamicBean);
+        mRootView.getListDatas().remove(position);
         if (mRootView.getListDatas().isEmpty()) {// 添加暂未图
             mRootView.getListDatas().add(new DynamicBean());
         }
+        mRootView.refreshData();
+        if (dynamicBean.getFeed_id() != null && dynamicBean.getFeed_id() != 0) {
+            mRepository.deleteDynamic(dynamicBean.getFeed_id());
+        }
+
 
     }
 
