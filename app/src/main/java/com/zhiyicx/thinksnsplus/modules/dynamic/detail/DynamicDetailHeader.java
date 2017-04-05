@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -15,8 +16,10 @@ import android.widget.TextView;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -90,15 +93,15 @@ public class DynamicDetailHeader {
         final Context context = mTitle.getContext();
         // 设置图片
         List<ImageBean> photoList = dynamicDetailBean.getStorages();
-        if (photoList != null&&!photoList.isEmpty()) {
+        if (photoList == null || photoList.isEmpty()) {
+            mPhotoContainer.setVisibility(View.GONE);
+        } else {
             mPhotoContainer.setVisibility(View.VISIBLE);
             for (int i = 0; i < photoList.size(); i++) {
                 showContentImage(context, photoList, i, i == photoList.size() - 1, mPhotoContainer);
             }
-        } else {
-            mPhotoContainer.setVisibility(View.GONE);
+            setImageClickListener(photoList);
         }
-        setImageClickListener(photoList);
     }
 
     /**
@@ -152,24 +155,34 @@ public class DynamicDetailHeader {
         ImageBean imageBean = photoList.get(position);
         View view = LayoutInflater.from(context).inflate(R.layout.view_dynamic_detail_photos, null);
         FilterImageView imageView = (FilterImageView) view.findViewById(R.id.dynamic_content_img);
-        // 提前设置图片控件的大小，使得占位图显示
-        int height = (int) (imageBean.getHeight() * picWidth / imageBean.getWidth());
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(picWidth, height);
-        layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
-        imageView.setLayoutParams(layoutParams);
         // 隐藏最后一张图的下间距
         if (lastImg) {
             view.findViewById(R.id.img_divider).setVisibility(View.GONE);
         }
-        int part = (int) (screenWidth / imageBean.getWidth() * 100);
-        if (part > 100) {
-            part = 100;
+
+        String imgUrl = "";
+        // 如果有本地图片，优先显示本地图片
+        int height = 0;// 图片需要显示的高度
+        if (TextUtils.isEmpty(imageBean.getImgUrl())) {
+            height = (int) (imageBean.getHeight() * picWidth / imageBean.getWidth());
+            int part = (int) (screenWidth / imageBean.getWidth() * 100);
+            if (part > 100) {
+                part = 100;
+            }
+            imgUrl = String.format(ApiConfig.IMAGE_PATH, imageBean.getStorage_id(), part);
+        } else {
+            height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            imgUrl = imageBean.getImgUrl();
         }
+        // 提前设置图片控件的大小，使得占位图显示
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(picWidth, height);
+        layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
+        imageView.setLayoutParams(layoutParams);
         AppApplication.AppComponentHolder.getAppComponent().imageLoader()
                 .loadImage(context, GlideImageConfig.builder()
                         .placeholder(R.drawable.shape_default_image)
                         .errorPic(R.drawable.shape_default_image)
-                        .url(String.format(ApiConfig.IMAGE_PATH, imageBean.getStorage_id(), part))
+                        .url(imgUrl)
                         .imagerView(imageView)
                         .build()
                 );

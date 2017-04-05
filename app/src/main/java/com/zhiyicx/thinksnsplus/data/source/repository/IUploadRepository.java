@@ -18,10 +18,13 @@ public interface IUploadRepository {
     /**
      * 上传单个文件
      *
-     * @param params   文件流需要的参数字段名，好像这儿随便来一个就可以了，但是不能没有
-     * @param filePath 文件本地路径
-     * @param isPic    是否上传的图片，这样在获取mime时，可以方便一点
+     * @param params      文件流需要的参数字段名，好像这儿随便来一个就可以了，但是不能没有
+     * @param filePath    文件本地路径
+     * @param mimeType    文件类型
+     * @param isPic       是否上传的图片，这样在获取mime时，可以方便一点
+     * @param photoHeight 图片高度
+     * @param photoWidth  图片宽度
      * @return
      */
-    Observable<BaseJson<Integer>> upLoadSingleFile(String params, String filePath, boolean isPic);
+    Observable<BaseJson<Integer>> upLoadSingleFile(String params, String filePath, String mimeType, boolean isPic, int photoWidth, int photoHeight);
 }

@@ -52,7 +52,7 @@ public class UpLoadRepository implements IUploadRepository {
     }
 
     @Override
-    public Observable<BaseJson<Integer>> upLoadSingleFile(final String params, final String filePath, boolean isPic) {
+    public Observable<BaseJson<Integer>> upLoadSingleFile(final String params, final String filePath, String mimeType, boolean isPic, int photoWidth, int photoHeight) {
         File file = new File(filePath);
         // 封装上传文件的参数
         HashMap<String, String> paramMap = new HashMap<>();
@@ -60,10 +60,9 @@ public class UpLoadRepository implements IUploadRepository {
         paramMap.put("origin_filename", file.getName());
         // 如果是图片就处理图片
         if (isPic) {
-            BitmapFactory.Options options = DrawableProvider.getPicsWHByFile(filePath);
-            paramMap.put("mime_type", options.outMimeType);
-            paramMap.put("width", options.outWidth + "");// 如果是图片就选择宽高
-            paramMap.put("height", options.outHeight + "");// 如果是图片就选择宽高
+            paramMap.put("mime_type", mimeType);
+            paramMap.put("width", photoWidth + "");// 如果是图片就选择宽高
+            paramMap.put("height", photoHeight + "");// 如果是图片就选择宽高
         } else {
             paramMap.put("mime_type", FileUtils.getMimeType(filePath));
         }

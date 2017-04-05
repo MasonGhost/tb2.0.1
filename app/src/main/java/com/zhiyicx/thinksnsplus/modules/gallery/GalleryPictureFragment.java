@@ -239,6 +239,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         LogUtils.i("imageBean = " + imageBean.toString());
 
         if (imageBean.getImgUrl() != null) {
+
             // 加载本地图片
             Glide.with(context)
                     .load(imageBean.getImgUrl())

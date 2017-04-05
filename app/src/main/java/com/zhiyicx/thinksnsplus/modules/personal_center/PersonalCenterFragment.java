@@ -320,16 +320,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void onImageClick(ViewHolder holder, DynamicBean dynamicBean, int position) {
-        List<ImageBean> imageBeanList = new ArrayList<>();
-        if (dynamicBean.getFeed().getStorages() != null) {
-            imageBeanList = dynamicBean.getFeed().getStorages();
-        } else {
-            for (int i = 0; i < dynamicBean.getFeed().getLocalPhotos().size(); i++) {
-                ImageBean imageBean = new ImageBean();
-                imageBean.setImgUrl(dynamicBean.getFeed().getLocalPhotos().get(i));
-                imageBeanList.add(imageBean);
-            }
-        }
+        List<ImageBean> imageBeanList = dynamicBean.getFeed().getStorages();
         ArrayList<AnimationRectBean> animationRectBeanArrayList
                 = new ArrayList<AnimationRectBean>();
         for (int i = 0; i < imageBeanList.size(); i++) {

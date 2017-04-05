@@ -237,22 +237,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onImageClick(ViewHolder holder, DynamicBean dynamicBean, int position) {
-        List<ImageBean> imageBeanList = new ArrayList<>();
-        if (dynamicBean.getFeed().getStorages() != null) {
-            imageBeanList = dynamicBean.getFeed().getStorages();
-        } else {
-            for (int i = 0; i < dynamicBean.getFeed().getLocalPhotos().size(); i++) {
-                ImageBean imageBean = new ImageBean();
-                imageBean.setImgUrl(dynamicBean.getFeed().getLocalPhotos().get(i));
-                imageBeanList.add(imageBean);
-            }
-        }
+        List<ImageBean> imageBeanList = dynamicBean.getFeed().getStorages();
         ArrayList<AnimationRectBean> animationRectBeanArrayList
                 = new ArrayList<AnimationRectBean>();
         for (int i = 0; i < imageBeanList.size(); i++) {
             int id = UIUtils.getResourceByName("siv_" + i, "id", getContext());
             ImageView imageView = holder.getView(id);
-
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
             animationRectBeanArrayList.add(rect);
         }
@@ -503,7 +493,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     @Override
                     public void onItem1Clicked() {
                         mDeletDynamicPopWindow.hide();
-                        mPresenter.deleteDynamic(dynamicBean,position);
+                        mPresenter.deleteDynamic(dynamicBean, position);
                         showBottomView(true);
                     }
                 })
