@@ -369,6 +369,10 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getCurrentDynamic().getTool());
         mDynamicCommentBeanGreenDao.deleteSingleCache(mRootView.getCurrentDynamic().getComments().get(commentPositon));
         mRootView.getListDatas().remove(commentPositon);
+        if(mRootView.getListDatas().isEmpty()){
+            DynamicCommentBean emptyData = new DynamicCommentBean();
+            mRootView.getListDatas().add(emptyData);
+        }
         mRootView.refreshData();
         mRootView.updateCommentCountAndDig();
         mRepository.deleteComment(mRootView.getCurrentDynamic().getFeed_id(), comment_id);

@@ -142,7 +142,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     protected int getstatusbarAndToolbarHeight() {
-        return getResources().getDimensionPixelSize(R.dimen.toolbar_and_statusbar_height);
+        return getResources().getDimensionPixelSize(R.dimen.toolbar_height_include_line_height)+DeviceUtils.getStatuBarHeight(getContext());
     }
 
     @Override

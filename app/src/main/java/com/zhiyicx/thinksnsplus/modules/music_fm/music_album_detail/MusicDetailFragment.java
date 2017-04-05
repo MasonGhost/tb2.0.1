@@ -15,6 +15,7 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -48,6 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
@@ -419,7 +421,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
     private void dealBg() {
         mFragmentMusicDetailName.setText(mMusicAlbumListBean.getTitle());
-        mFragmentMusicDetailDec.setText(mMusicAlbumListBean.describeContents() + "");
+        mFragmentMusicDetailDec.setText(mMusicAlbumListBean.getIntro());
         mFragmentMusicDetailShare.setText(mMusicAlbumListBean.getShare_count() + "");
         mFragmentMusicDetailComment.setText(mMusicAlbumListBean.getComment_count() + "");
         mFragmentMusicDetailFavorite.setText(mMusicAlbumListBean.getCollect_count() + "");
@@ -447,7 +449,8 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     }
 
     @OnClick({R.id.fragment_music_detail_playvolume, R.id.fragment_music_detail_share, R.id
-            .fragment_music_detail_comment, R.id.fragment_music_detail_favorite})
+            .fragment_music_detail_comment, R.id.fragment_music_detail_favorite,
+            R.id.fragment_music_detail_back})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.fragment_music_detail_playvolume:
@@ -458,7 +461,21 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 break;
             case R.id.fragment_music_detail_favorite:
                 break;
+            case R.id.fragment_music_detail_back:
+                getActivity().finish();
+                break;
+            default:
+                break;
         }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
+            savedInstanceState) {
+        // TODO: inflate a fragment view
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        ButterKnife.bind(this, rootView);
+        return rootView;
     }
 
     public interface MediaBrowserCompatProvider {

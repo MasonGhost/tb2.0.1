@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.widget;
 
-import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
@@ -13,7 +12,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
  * @Contact master.jungle68@gmail.com
  */
 
-public class EmptyItem implements ItemViewDelegate<BaseListBean> {
+public abstract class EmptyItem<T> implements ItemViewDelegate<T> {
 
     @Override
     public int getItemViewLayoutId() {
@@ -21,12 +20,10 @@ public class EmptyItem implements ItemViewDelegate<BaseListBean> {
     }
 
     @Override
-    public boolean isForViewType(BaseListBean item, int position) {
-        return item.getMaxId() == null;
-    }
+    public abstract boolean isForViewType(T item, int position);
 
     @Override
-    public void convert(ViewHolder holder, BaseListBean baseListBean, BaseListBean lastT, int position) {
+    public void convert(ViewHolder holder, T baseListBean, T lastT, int position) {
         EmptyView emptyView = holder.getView(R.id.comment_emptyview);
         emptyView.setNeedTextTip(false);
         emptyView.setErrorType(EmptyView.STATE_NODATA);

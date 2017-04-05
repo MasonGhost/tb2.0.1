@@ -25,10 +25,11 @@ public interface MusicDetailContract {
 
     interface Presenter extends IBasePresenter {
         void getMusicAblum(String id);
-
+        void handleCollect(boolean isUnCollected,String special_id);
     }
 
     interface Repository {
         Observable<BaseJson<MusicAlbumDetailsBean>> getMusicAblum(String id);
+        void handleCollect(boolean isCollected ,String special_id);
     }
 }

@@ -84,6 +84,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
 
     private int mInterfaceNum = 0;//纪录请求接口数量，用于统计接口是否全部请求完成，需要接口全部请求完成后在显示界面
     SparseArray<Long> msendingStatus = new SparseArray<>();
+
     @Inject
     public PersonalCenterPresenter(PersonalCenterContract.Repository repository, PersonalCenterContract.View rootView) {
         super(repository, rootView);
@@ -117,9 +118,9 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
                     public BaseJson<List<DynamicBean>> call(BaseJson<List<DynamicBean>> listBaseJson) {
                         if (listBaseJson.isStatus()) {
                             if (!isLoadMore) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
-                                    List<DynamicBean> data = getDynamicBeenFromDB();
-                                    data.addAll(listBaseJson.getData());
-                                    listBaseJson.setData(data);
+                                List<DynamicBean> data = getDynamicBeenFromDB();
+                                data.addAll(listBaseJson.getData());
+                                listBaseJson.setData(data);
                             }
                             for (int i = 0; i < listBaseJson.getData().size(); i++) { // 把自己发的评论加到评论列表的前面
                                 List<DynamicCommentBean> dynamicCommentBeen = mDynamicCommentBeanGreenDao.getMySendingComment(listBaseJson.getData().get(i).getFeed_mark());
@@ -309,6 +310,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
                 });
         addSubscrebe(subscription);
     }
+
     @NonNull
     private List<DynamicBean> getDynamicBeenFromDB() {
         if (AppApplication.getmCurrentLoginAuth() == null) {
@@ -321,6 +323,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
         }
         return datas;
     }
+
     private void allready() {
         if (mInterfaceNum == NEED_INTERFACE_NUM) {
             mRootView.allDataReady();
@@ -390,6 +393,10 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
 
     @Override
     public void deleteDynamic(DynamicBean dynamicBean, int position) {
+
+        if (mRootView.getListDatas().isEmpty()) {// 添加暂未图
+            mRootView.getListDatas().add(new DynamicBean());
+        }
 
     }
 

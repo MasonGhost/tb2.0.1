@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_comment;
 
+import android.app.Application;
+
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicCommentRepositroty;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicRepository;
@@ -28,7 +30,9 @@ public class MusicCommentPresenterModule {
     }
 
     @Provides
-    MusicCommentContract.Repository provideMusicCommentRepository(ServiceManager serviceManager) {
-        return new MusicCommentRepositroty(serviceManager);
+    MusicCommentContract.Repository provideMusicCommentRepository(Application application,
+                                                                  ServiceManager
+                                                                  serviceManager) {
+        return new MusicCommentRepositroty(application,serviceManager);
     }
 }

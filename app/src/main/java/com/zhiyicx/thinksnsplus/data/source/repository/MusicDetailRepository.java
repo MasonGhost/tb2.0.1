@@ -33,4 +33,9 @@ public class MusicDetailRepository implements MusicDetailContract.Repository {
     public Observable<BaseJson<MusicAlbumDetailsBean>> getMusicAblum(String id) {
         return mMusicClient.getMusicAblum(id);
     }
+
+    @Override
+    public void handleCollect(boolean isCollected, String special_id) {
+
+    }
 }
