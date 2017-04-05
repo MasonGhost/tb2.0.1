@@ -244,7 +244,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
                         // 修改成功后，关闭页面
                         mRootView.setChangeUserCoverState(true);
                         // 将本地图片路径作为storageId保存到数据库
-                        userInfoBean.setAvatar(imagePath);
+                        userInfoBean.setCover(imagePath);
                         // 更新用户数据库
                         mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
                     }
