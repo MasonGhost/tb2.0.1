@@ -23,10 +23,13 @@ import android.widget.TextView;
 
 import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.ResourceDecoder;
 import com.bumptech.glide.load.ResourceEncoder;
+import com.bumptech.glide.load.data.DataFetcher;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.Resource;
+import com.bumptech.glide.load.model.stream.StreamModelLoader;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.load.resource.gifbitmap.GifBitmapWrapper;
 import com.bumptech.glide.request.RequestListener;
@@ -55,6 +58,7 @@ import com.zhiyicx.thinksnsplus.utils.TransferImageAnimationUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.TimeUnit;
 
@@ -249,7 +253,30 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             // 加载网络图片
             int with = (int) (mScreenWith);
             int height = (int) (with * imageBean.getHeight() / imageBean.getWidth());
-            DrawableRequestBuilder thumbnailBuilder = Glide
+            Glide.with(context)
+                    .using(cacheOnlyStreamLoader)
+                    .load(String.format(ApiConfig.IMAGE_PATH, mImageBean.getStorage_id(), 100))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.drawable.shape_default_image)
+                    .error(R.drawable.shape_default_image)
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            LogUtils.i("onException--->");
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            LogUtils.i("onResourceReady--->");
+                            return false;
+                        }
+                    })
+                    .thumbnail(0.5f)
+                    .centerCrop()
+                    .into(new GallarySimpleTarget(rect));
+
+/*            DrawableRequestBuilder thumbnailBuilder = Glide
                     .with(context)
                     .load(new CustomImageSizeModelImp(imageBean)
                             .requestCustomSizeUrl())
@@ -262,7 +289,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     .error(R.drawable.shape_default_image)
                     .thumbnail(thumbnailBuilder)
                     .centerCrop()
-                    .into(new GallarySimpleTarget(rect));
+                    .into(new GallarySimpleTarget(rect));*/
         }
     }
 
@@ -289,6 +316,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     }
                 }))
                 .load(imageUrl)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.shape_default_image)
                 .error(R.drawable.shape_default_image)
                 .into(new SimpleTarget<GlideDrawable>() {
@@ -410,6 +438,12 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
 
         @Override
         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+            LogUtils.i("onResourceReady--->" + resource == null ? "null" : "not null");
+            if (resource == null) {
+                return;
+            }
+
+
             mPbProgress.setVisibility(View.GONE);
             mIvPager.setImageDrawable(resource);
             mPhotoViewAttacherNormal.update();
@@ -419,6 +453,34 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                 startInAnim(rect);
             }
         }
+
     }
+
+    private static final StreamModelLoader<String> cacheOnlyStreamLoader = new StreamModelLoader<String>() {
+        @Override
+        public DataFetcher<InputStream> getResourceFetcher(final String model, int i, int i1) {
+            return new DataFetcher<InputStream>() {
+                @Override
+                public InputStream loadData(Priority priority) throws Exception {
+                    throw new IOException();
+                }
+
+                @Override
+                public void cleanup() {
+
+                }
+
+                @Override
+                public String getId() {
+                    return model;
+                }
+
+                @Override
+                public void cancel() {
+
+                }
+            };
+        }
+    };
 
 }
