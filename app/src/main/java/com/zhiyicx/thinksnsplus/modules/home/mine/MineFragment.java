@@ -220,26 +220,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     }
 
     @Override
-    public void setPresenter(MineContract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showMessage(String message) {
-
-    }
-
-    @Override
     public void setUserInfo(UserInfoBean userInfoBean) {
         if (userInfoBean == null) {
             return;

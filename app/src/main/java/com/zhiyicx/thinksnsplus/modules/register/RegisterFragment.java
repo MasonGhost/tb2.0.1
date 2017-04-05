@@ -202,17 +202,6 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    public void setPresenter(RegisterContract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
-
-    @Override
     public void setVertifyCodeBtEnabled(boolean isEnable) {
         mIsVertifyCodeEnalbe = isEnable;
         mBtRegistSendVertifyCode.setEnabled(isEnable);
@@ -246,16 +235,6 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     @Override
     public void goHome() {
         startActivity(new Intent(getActivity(), HomeActivity.class));
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
     }
 
     @Override

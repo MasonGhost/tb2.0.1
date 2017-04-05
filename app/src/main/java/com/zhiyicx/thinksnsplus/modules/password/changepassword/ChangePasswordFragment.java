@@ -113,21 +113,6 @@ public class ChangePasswordFragment extends TSFragment<ChangePasswordContract.Pr
     }
 
     @Override
-    public void setPresenter(ChangePasswordContract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
     public void showMessage(String message) {
         if (TextUtils.isEmpty(message)) {
             mTvErrorTip.setVisibility(View.INVISIBLE);
