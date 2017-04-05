@@ -15,6 +15,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.trycatch.mysnackbar.Prompt;
+import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -467,17 +469,20 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     public void setUpLoadCoverState(boolean upLoadState, int taskId) {
         if (upLoadState) {
             // 封面图片上传成功
-            ToastUtils.showToast("封面上传成功");
             // 通知服务器，更改用户信息
             mPresenter.changeUserCover(mUserInfoBean, taskId, imagePath);
         } else {
-            ToastUtils.showToast("封面上传失败");
+            TSnackbar.make(mSnackRootView, R.string.cover_uploadFailure, TSnackbar.LENGTH_SHORT)
+                    .setPromptThemBackground(Prompt.ERROR)
+                    .show();
         }
     }
 
     @Override
     public void setChangeUserCoverState(boolean changeSuccess) {
-        ToastUtils.showToast(changeSuccess ? "封面修改成功" : "封面修改失败");
+        TSnackbar.make(mSnackRootView, changeSuccess ? R.string.cover_change_success : R.string.cover_change_failure, TSnackbar.LENGTH_SHORT)
+                .setPromptThemBackground(changeSuccess ? Prompt.SUCCESS : Prompt.ERROR)
+                .show();
     }
 
     @Override
@@ -488,9 +493,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         // 选择图片完毕后，开始上传封面图片
         ImageBean imageBean = photoList.get(0);
         imagePath = imageBean.getImgUrl();
-        // 加载本地图片
-        mPresenter.uploadUserCover(imagePath);
         // 上传本地图片
+        mPresenter.uploadUserCover(imagePath);
+        // 加载本地图片
         mPersonalCenterHeaderViewItem.upDateUserCover(imagePath);
     }
 
@@ -695,7 +700,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                     @Override
                     public void onItem1Clicked() {
                         mDeletDynamicPopWindow.hide();
-                        mPresenter.deleteDynamic(dynamicBean,position);
+                        mPresenter.deleteDynamic(dynamicBean, position);
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
