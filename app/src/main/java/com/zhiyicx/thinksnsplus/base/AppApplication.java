@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 
 import com.antfortune.freeline.FreelineCore;
 import com.danikula.videocache.HttpProxyCacheServer;
@@ -77,7 +78,7 @@ public class AppApplication extends TSApplication {
         // 极光推送
         JPushInterface.setDebugMode(true);
         JPushInterface.init(this);
-        MobclickAgent.setDebugMode( true );
+        MobclickAgent.setDebugMode(true);
         System.out.println("getPackageName() = " + getPackageName());
     }
 
@@ -111,60 +112,32 @@ public class AppApplication extends TSApplication {
                 // token过期，调到登陆页面重新请求token,
                 LogUtils.i("baseJson-->" + httpResult);
                 BaseJson baseJson = new Gson().fromJson(httpResult, BaseJson.class);
-                if (baseJson != null && (baseJson.getCode() == ErrorCodeConfig.TOKEN_EXPIERD
-                        || baseJson.getCode() == ErrorCodeConfig.NEED_RELOGIN
-                        || baseJson.getCode() == ErrorCodeConfig.OTHER_DEVICE_LOGIN
-                        || baseJson.getCode() == ErrorCodeConfig.USER_AUTH_FAIL
-                        || baseJson.getCode() == ErrorCodeConfig.USER_NOT_FOUND
-                        || baseJson.getCode() == ErrorCodeConfig.TOKEN_NOT_EXIST)) {
-                    // 跳到登陆页面，销毁之前的所有页面,添加弹框处理提示
-                    // 通过rxjava在主线程处理弹框
-                    Observable.empty()
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doOnCompleted(new Action0() {
-                                @Override
-                                public void call() {
-                                    if (alertDialog == null) {
-                                        alertDialog = new AlertDialog.Builder(ActivityHandler
-                                                .getInstance().currentActivity())
-                                                .setTitle(R.string.token_expiers)
-                                                .setPositiveButton(R.string.sure, new
-                                                        DialogInterface.OnClickListener() {
-                                                            @Override
-                                                            public void onClick(DialogInterface
-                                                                                        dialogInterface,
-                                                                                int i) {
-                                                                // TODO: 2017/2/8  清理登录信息 token 信息
-                                                                mAuthRepository.clearAuthBean();
-                                                                BackgroundTaskManager.getInstance
-                                                                        (getContext())
-                                                                        .closeBackgroundTask();//
-                                                                // 关闭后台任务
-                                                                Intent intent = new Intent
-                                                                        (getContext(),
-                                                                                LoginActivity
-                                                                                        .class);
-                                                                ActivityHandler.getInstance()
-                                                                        .currentActivity()
-                                                                        .startActivity
-                                                                                (intent);
-                                                                alertDialog.dismiss();
-                                                            }
-                                                        })
-                                                .create();
-                                    }
-                                    alertDialog.setCanceledOnTouchOutside(false);
-                                    alertDialog.show();
-
-                                }
-                            })
-                            .doOnError(new Action1<Throwable>() {
-                                @Override
-                                public void call(Throwable throwable) {
-                                    throwable.printStackTrace();
-                                }
-                            })
-                            .subscribe();
+                String tipStr = null;
+                if (baseJson != null) {
+                    switch (baseJson.getCode()) {
+                        case ErrorCodeConfig.TOKEN_EXPIERD:
+                            tipStr = getString(R.string.code_1012);
+                            break;
+                        case ErrorCodeConfig.NEED_RELOGIN:
+                            tipStr = getString(R.string.code_1013);
+                            break;
+                        case ErrorCodeConfig.NEED_NO_DEVICE:
+                            tipStr = getString(R.string.code_1014);
+                            break;
+                        case ErrorCodeConfig.OTHER_DEVICE_LOGIN:
+                            tipStr = getString(R.string.code_1015);
+                            break;
+                        case ErrorCodeConfig.TOKEN_NOT_EXIST:
+                            tipStr = getString(R.string.code_1016);
+                            break;
+                        case ErrorCodeConfig.USER_AUTH_FAIL:
+                            tipStr = getString(R.string.code_1099);
+                            break;
+                        default:
+                    }
+                    if (!TextUtils.isEmpty(tipStr)) {
+                        handleAuthFail(tipStr);
+                    }
                 }
                 return response;
             }
@@ -181,6 +154,62 @@ public class AppApplication extends TSApplication {
                 return request;
             }
         };
+    }
+
+    /**
+     * 认证失败弹框
+     *
+     * @param tipStr
+     */
+    private void handleAuthFail(final String tipStr) {
+        // 跳到登陆页面，销毁之前的所有页面,添加弹框处理提示
+        // 通过rxjava在主线程处理弹框
+        Observable.empty()
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnCompleted(new Action0() {
+                    @Override
+                    public void call() {
+                        if (alertDialog == null) {
+                            alertDialog = new AlertDialog.Builder(ActivityHandler
+                                    .getInstance().currentActivity())
+                                    .setTitle(tipStr)
+                                    .setPositiveButton(R.string.sure, new
+                                            DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface
+                                                                            dialogInterface,
+                                                                    int i) {
+                                                    // TODO: 2017/2/8  清理登录信息 token 信息
+                                                    mAuthRepository.clearAuthBean();
+                                                    BackgroundTaskManager.getInstance
+                                                            (getContext())
+                                                            .closeBackgroundTask();//
+                                                    // 关闭后台任务
+                                                    Intent intent = new Intent
+                                                            (getContext(),
+                                                                    LoginActivity
+                                                                            .class);
+                                                    ActivityHandler.getInstance()
+                                                            .currentActivity()
+                                                            .startActivity
+                                                                    (intent);
+                                                    alertDialog.dismiss();
+                                                }
+                                            })
+                                    .create();
+                        }
+                        alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.show();
+
+                    }
+                })
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                })
+                .subscribe();
     }
 
     /**
