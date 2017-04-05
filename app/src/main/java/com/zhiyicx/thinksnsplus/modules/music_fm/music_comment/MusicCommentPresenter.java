@@ -6,7 +6,9 @@ import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicCommentListBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicCommentRepositroty;
 
 import org.jetbrains.annotations.NotNull;
@@ -35,6 +37,9 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
 
     @Inject
     MusicCommentListBeanGreenDaoImpl mCommentListBeanGreenDao;
+
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
     public MusicCommentPresenter(MusicCommentContract.Repository repository, MusicCommentContract
@@ -72,13 +77,29 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
     }
 
     @Override
-    public void sendComment(String musci_id, String content) {
-        mRepository.sendComment(musci_id, content);
+    public void sendComment(int reply_id, String content) {
+        mRepository.sendComment(reply_id, content);
+
         MusicCommentListBean createComment = new MusicCommentListBean();
         createComment.setState(SEND_ING);
+        createComment.setReply_to_user_id(reply_id);
         createComment.setComment_content(content);
+        String comment_mark = AppApplication.getmCurrentLoginAuth().getUser_id()
+                + "" + System.currentTimeMillis();
+        createComment.setComment_mark(Long.parseLong(comment_mark));
         createComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
         createComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
+
+        if (reply_id == 0) {// 回复资讯
+            UserInfoBean userInfoBean = new UserInfoBean();
+            userInfoBean.setUser_id((long) reply_id);
+            createComment.setToUserInfoBean(userInfoBean);
+        } else {
+            createComment.setToUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache(
+                    (long) reply_id));
+        }
+        createComment.setFromUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache((long)
+                AppApplication.getmCurrentLoginAuth().getUser_id()));
         mCommentListBeanGreenDao.insertOrReplace(createComment);
         mRootView.getListDatas().add(0, createComment);
         mRootView.refreshData();

@@ -37,6 +37,8 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentActivity;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentHeader;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 import com.zhiyicx.thinksnsplus.widget.IconTextView;
@@ -51,10 +53,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
-import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListFragment
-        .BUNDLE_MUSIC_ABLUM;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListFragment.BUNDLE_MUSIC_ABLUM;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT;
 
 /**
  * @Author Jliuer
@@ -96,6 +99,10 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     IconTextView mFragmentMusicDetailComment;
     @BindView(R.id.fragment_music_detail_favorite)
     IconTextView mFragmentMusicDetailFavorite;
+    @BindView(R.id.fragment_music_detail_music_count)
+    TextView fragmentMusicDetailMusicCount;
+
+    Unbinder unbinder;
 
     private CommonAdapter mAdapter;
     private List<MediaBrowserCompat.MediaItem> mAdapterList = new ArrayList<>();
@@ -128,6 +135,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                     }
                     mAdapter.notifyDataSetChanged();
                     mCurrentMediaId = metadata.getDescription().getMediaId();
+                    mPresenter.getMusicDetails(mCurrentMediaId);
                 }
 
                 @Override
@@ -142,6 +150,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 public void onChildrenLoaded(@NonNull String parentId,
                                              @NonNull List<MediaBrowserCompat.MediaItem> children) {
                     mAdapter.dataChange(children);
+                    fragmentMusicDetailMusicCount.setText(String.format("(共%d首)",children.size()));
                 }
 
                 @Override
@@ -254,6 +263,9 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @Override
     public void setMusicAblum(MusicAlbumDetailsBean musicAblum) {
         mAlbumDetailsBean = musicAblum;
+        if (mAlbumDetailsBean.getIs_collection() != 0) {
+            mFragmentMusicDetailFavorite.setIconRes(R.mipmap.detail_ico_collect);
+        }
         if (mCompatProvider.getMediaBrowser().isConnected()) {
             onConnected();
         }
@@ -272,6 +284,16 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @Override
     public void showMessage(String message) {
 
+    }
+
+    @Override
+    public void setCollect(boolean isCollected) {
+        if (isCollected) {
+            mFragmentMusicDetailFavorite.setIconRes(R.mipmap.detail_ico_collect);
+        } else {
+            mFragmentMusicDetailFavorite.setIconRes(R.mipmap.music_ico_collect);
+        }
+        mFragmentMusicDetailFavorite.setText(mAlbumDetailsBean.getCollect_count() + "");
     }
 
     @Override
@@ -337,7 +359,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 if (cachedState == null || cachedState != state) {
                     holder.itemView.setTag(R.id.tag_mediaitem_state_cache, state);
                 }
-
                 if (mCurrentMediaId.equals(MediaIDHelper.extractMusicIDFromMediaID(item.getMediaId
                         ()))) {
                     musicName.setTextColor(getResources().getColor(R.color.important_for_theme));
@@ -402,7 +423,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 state = getStateFromController();
             }
         }
-
         return state;
     }
 
@@ -456,10 +476,23 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
             case R.id.fragment_music_detail_playvolume:
                 break;
             case R.id.fragment_music_detail_share:
+                mPresenter.shareMusicAlbum();
                 break;
             case R.id.fragment_music_detail_comment:
+                Intent intent = new Intent(getActivity(), MusicCommentActivity.class);
+                Bundle musicBundle = new Bundle();
+                MusicCommentHeader.HeaderInfo headerInfo = new MusicCommentHeader.HeaderInfo();
+                headerInfo.setId(mMusicAlbumListBean.getId());
+                headerInfo.setTitle(mMusicAlbumListBean.getTitle());
+                headerInfo.setLitenerCount(mMusicAlbumListBean.getTaste_count() + "");
+                headerInfo.setImageUrl(ImageUtils.imagePathConvert(mMusicAlbumListBean.getStorage().getId() + "",
+                        ImageZipConfig.IMAGE_70_ZIP));
+                musicBundle.putSerializable(CURRENT_COMMENT, headerInfo);
+                intent.putExtra(CURRENT_COMMENT, musicBundle);
+                startActivity(intent);
                 break;
             case R.id.fragment_music_detail_favorite:
+                mPresenter.handleCollect(mAlbumDetailsBean.getIs_collection() == 0, mAlbumDetailsBean.getId() + "");
                 break;
             case R.id.fragment_music_detail_back:
                 getActivity().finish();
@@ -470,12 +503,8 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
-            savedInstanceState) {
-        // TODO: inflate a fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        ButterKnife.bind(this, rootView);
-        return rootView;
+    public MusicAlbumDetailsBean getCurrentAblum() {
+        return mAlbumDetailsBean;
     }
 
     public interface MediaBrowserCompatProvider {

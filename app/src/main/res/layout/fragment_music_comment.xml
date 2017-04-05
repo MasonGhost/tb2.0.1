@@ -20,6 +20,7 @@
         android:visibility="gone"/>
 
     <com.zhiyicx.baseproject.widget.InputLimitView
+        app:layout_behavior="com.zhiyicx.thinksnsplus.widget.coordinatorlayout.BottomLayoutBehavior"
         android:id="@+id/ilv_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -11,6 +11,7 @@ import java.util.List;
 
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -20,9 +21,11 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_ABLUM_COLL
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_ABLUM_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_ABLUM_DETAILS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_ABLUM_LIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_ABLUM_SHARE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_DETAILS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_DIGG;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_SHARE;
 
 
 /**
@@ -81,4 +84,12 @@ public interface MusicClient {
     // 取消收藏专辑
     @DELETE(APP_PATH_MUSIC_ABLUM_COLLECT)
     Observable<BaseJson<Integer>> cancelCollectAblum(@Path("special_id") String special_id);
+
+    // 分享歌曲
+    @PATCH(APP_PATH_MUSIC_SHARE)
+    Observable<BaseJson<Integer>> shareMusic(@Path("music_id") String music_id);
+
+    // 分享专辑
+    @PATCH(APP_PATH_MUSIC_ABLUM_SHARE)
+    Observable<BaseJson<Integer>> shareMusicAblum(@Path("special_id") String special_id);
 }

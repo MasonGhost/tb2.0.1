@@ -225,6 +225,16 @@ public class BackgroundTaskHandler {
                 }
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 break;
+
+            case PATCH:
+
+                if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
+                    EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
+                    return;
+                }
+                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
+                PatchMethod(backgroundRequestTaskBean);
+                break;
             /**
              * 通用 DELETE 接口处理
              */
@@ -288,6 +298,30 @@ public class BackgroundTaskHandler {
     private void postMethod(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
 
         mServiceManager.getCommonClient().handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
+                .subscribe(new BaseSubscribe<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                    }
+
+                    @Override
+                    protected void onFailure(String message) {
+                        addBackgroundRequestTask(backgroundRequestTaskBean);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        addBackgroundRequestTask(backgroundRequestTaskBean);
+                    }
+                });
+    }
+
+    /**
+     * 处理Patch请求类型的后台任务
+     */
+    private void PatchMethod(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
+
+        mServiceManager.getCommonClient().handleBackGroundTaskPatch(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
                 .subscribe(new BaseSubscribe<Object>() {
                     @Override
                     protected void onSuccess(Object data) {

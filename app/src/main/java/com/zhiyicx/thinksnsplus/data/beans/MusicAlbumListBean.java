@@ -6,15 +6,16 @@ import android.os.Parcelable;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.annotation.Unique;
+
+import java.io.Serializable;
 
 /**
  * @Author Jliuer
@@ -23,9 +24,10 @@ import org.greenrobot.greendao.annotation.Unique;
  * @Description 专辑列表
  */
 @Entity
-public class MusicAlbumListBean extends BaseListBean{
+public class MusicAlbumListBean extends BaseListBean implements Serializable {
 
-
+    @Transient
+    private static final long serialVersionUID = 1L;
     /**
      * id : 1
      * created_at : 2017-03-10 18:05:02
@@ -46,7 +48,7 @@ public class MusicAlbumListBean extends BaseListBean{
     private String created_at;
     private String updated_at;
     private String title;
-    @Convert(converter = MusicAlbumLIstConverter.class,columnType = String.class)
+    @Convert(converter = MusicAlbumLIstConverter.class, columnType = String.class)
     private StorageBean storage;
     private int taste_count;
     private String intro;
@@ -126,7 +128,9 @@ public class MusicAlbumListBean extends BaseListBean{
         this.collect_count = collect_count;
     }
 
-    public static class StorageBean implements Parcelable{
+    public static class StorageBean implements Parcelable, Serializable {
+        @Transient
+        private static final long serialVersionUID = 1L;
         /**
          * id : 5
          * image_width : 1080
@@ -196,8 +200,7 @@ public class MusicAlbumListBean extends BaseListBean{
     }
 
 
-
-    public static class MusicAlbumLIstConverter implements PropertyConverter<StorageBean,String>{
+    public static class MusicAlbumLIstConverter implements PropertyConverter<StorageBean, String> {
         @Override
         public StorageBean convertToEntityProperty(String databaseValue) {
             if (databaseValue == null) {
@@ -209,7 +212,6 @@ public class MusicAlbumListBean extends BaseListBean{
         @Override
         public String convertToDatabaseValue(StorageBean entityProperty) {
             if (entityProperty == null) {
-                LogUtils.d("entityProperty==null");
                 return null;
             }
             return ConvertUtils.object2Base64Str(entityProperty);
@@ -269,8 +271,8 @@ public class MusicAlbumListBean extends BaseListBean{
 
     @Generated(hash = 42072982)
     public MusicAlbumListBean(Long _id, int id, String created_at, String updated_at, String title,
-            StorageBean storage, int taste_count, String intro, int share_count, int comment_count,
-            int collect_count) {
+                              StorageBean storage, int taste_count, String intro, int share_count, int comment_count,
+                              int collect_count) {
         this._id = _id;
         this.id = id;
         this.created_at = created_at;
