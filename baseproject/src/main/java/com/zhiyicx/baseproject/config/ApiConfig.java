@@ -25,10 +25,11 @@ public class ApiConfig {
      */
 
 //    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
-
-    public static final String APP_DOMAIN = "http://192.168.2.222/";// 测试服务器
     // public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
+    public static final String APP_DOMAIN = "http://192.168.2.222/";// 测试服务器
     public static final String APP_IM_DOMAIN = "192.168.2.222:9900";// im 测试服务器
+
+    // public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
     // public static final String APP_IM_DOMAIN = "ws://tsplus.zhibocloud.cn:9900";// im 正式服务器
 
 
@@ -86,6 +87,7 @@ public class ApiConfig {
      * 动态相关
      */
     public static final String APP_PATH_SEND_DYNAMIC = "api/v1/feeds";// 发布动态
+    public static final String APP_PATH_DELETE_DYNAMIC = "api/v1/feeds/%s";// 删除一条动态
     // 获取动态列表
     // 最新：/api/v1/feeds;
     // 关注：/api/v1/feeds/follows;
@@ -128,7 +130,7 @@ public class ApiConfig {
     public static final String APP_PATH_INFO_DELETE_COMMENT = "api/v1/news/{news_id}/comment/{comment_id}";
 
     // 资讯评论列表
-    public static final String APP_PATH_INFO_COMMENT_LIST =  "api/v1/news/{feed_id}/comments";//
+    public static final String APP_PATH_INFO_COMMENT_LIST = "api/v1/news/{feed_id}/comments";//
 
     public static final String APP_PATH_INFO_COLLECT = "api/v1/news/{news_id}/collection";// 收藏资讯
     public static final String APP_PATH_INFO_COLLECT_FORMAT = "api/v1/news/%s/collection";// 收藏资讯
@@ -171,6 +173,14 @@ public class ApiConfig {
     public static final String APP_PATH_GET_COMPONENT_STATUS = "api/v1/system/component/status";// 查看扩展包安装状态
     public static final String APP_PATH_GET_COMPONENT_CONFIGS = "api/v1/system/component/configs";// 获取扩展包配置信息
     public static final String APP_PATH_GET_COMPONENT_CONFIGS_IM = "im";// 获取扩展包配置信息 类容
+
+    /**
+     * 分享相关
+     */
+    public static final String APP_PATH_SHARE_USERINFO = APP_DOMAIN+"profile/%s";// 用户信息分享地址 url/profile/{user_id}
+    public static final String APP_PATH_SHARE_DYNAMIC = APP_DOMAIN+"feeds/detail/%s";// 动态信息分享地址 url/feeds/detail/{feed_id}
+
+
 
 
     /**

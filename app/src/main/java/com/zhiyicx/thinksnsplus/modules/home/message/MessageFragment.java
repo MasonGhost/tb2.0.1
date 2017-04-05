@@ -208,12 +208,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         startActivity(to);
     }
 
-    // Fragment 注入 ,不需要该方法
-    @Override
-    public void setPresenter(MessageContract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
     @Override
     public void updateCommnetItemData(MessageItemBean messageItemBean) {
         mListDatas.set(ITEM_TYPE_COMMNETED, messageItemBean);
@@ -233,10 +227,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     public void refreshData(int index) {
         mHeaderAndFooterWrapper.notifyItemChanged(index);
-    }
-
-    @Override
-    public void showLoading() {
     }
 
     @Override

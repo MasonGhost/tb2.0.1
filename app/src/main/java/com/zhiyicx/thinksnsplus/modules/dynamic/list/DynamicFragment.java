@@ -206,11 +206,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         super.initData();
     }
 
-    @Override
-    public void setPresenter(DynamicContract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
     /**
      * 由于热门和关注和最新的 max_id 不同，所以特殊处理
      *
@@ -490,7 +485,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      * @param dynamicBean curent dynamic
      * @param position    curent dynamic postion
      */
-    private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean, int position) {
+    private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean, final int position) {
         mDeletDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_dynamic))
                 .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
@@ -503,6 +498,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     @Override
                     public void onItem1Clicked() {
                         mDeletDynamicPopWindow.hide();
+                        mPresenter.deleteDynamic(dynamicBean, position);
                         showBottomView(true);
                     }
                 })

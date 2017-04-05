@@ -244,7 +244,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
                         // 修改成功后，关闭页面
                         mRootView.setChangeUserCoverState(true);
                         // 将本地图片路径作为storageId保存到数据库
-                        userInfoBean.setAvatar(imagePath);
+                        userInfoBean.setCover(imagePath);
                         // 更新用户数据库
                         mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
                     }
@@ -271,7 +271,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
         if (userInfoBean.getAvatar() != null) {
             shareContent.setImage(ImageUtils.imagePathConvert(userInfoBean.getAvatar(), 100));
         }
-        shareContent.setUrl("http://www.thinksns.com/index.html");
+        shareContent.setUrl(String.format(ApiConfig.APP_PATH_SHARE_USERINFO, userInfoBean.getUser_id()));
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
     }
@@ -394,9 +394,16 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
     @Override
     public void deleteDynamic(DynamicBean dynamicBean, int position) {
 
+        mDynamicBeanGreenDao.deleteSingleCache(dynamicBean);
+        mRootView.getListDatas().remove(position);
         if (mRootView.getListDatas().isEmpty()) {// 添加暂未图
             mRootView.getListDatas().add(new DynamicBean());
         }
+        mRootView.refreshData();
+        if (dynamicBean.getFeed_id() != null && dynamicBean.getFeed_id() != 0) {
+            mRepository.deleteDynamic(dynamicBean.getFeed_id());
+        }
+
 
     }
 

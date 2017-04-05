@@ -1,6 +1,7 @@
 package com.zhiyicx.common.utils;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipboardManager;
@@ -32,6 +33,9 @@ import java.util.List;
  */
 
 public class DeviceUtils {
+    private static final String TAG = "DeviceUtils";
+
+
     /**
      * 发送邮件
      *
@@ -107,7 +111,7 @@ public class DeviceUtils {
     /**
      * 获得屏幕宽度
      */
-    public static int getScreenWidth(Context context){
+    public static int getScreenWidth(Context context) {
         WindowManager wm = (WindowManager) context
                 .getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics outMetrics = new DisplayMetrics();
@@ -118,7 +122,7 @@ public class DeviceUtils {
     /**
      * 获得屏幕高度
      */
-    public static int getScreenHeight(Context context){
+    public static int getScreenHeight(Context context) {
         WindowManager wm = (WindowManager) context
                 .getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics outMetrics = new DisplayMetrics();
@@ -179,6 +183,12 @@ public class DeviceUtils {
         clip.setText(string);
     }
 
+    /**
+     * 开启 app
+     *
+     * @param context
+     * @param packageName
+     */
     public static void openApp(Context context, String packageName) {
         Intent mainIntent = context.getPackageManager()
                 .getLaunchIntentForPackage(packageName);
@@ -187,6 +197,30 @@ public class DeviceUtils {
         } else {
         }
         context.startActivity(mainIntent);
+    }
+
+    /**
+     * 判断应用是否已经启动
+     *
+     * @param context     一个context
+     * @param packageName 要判断应用的包名
+     * @return boolean
+     */
+    public static boolean isAppAlive(Context context, String packageName) {
+        ActivityManager activityManager =
+                (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> processInfos
+                = activityManager.getRunningAppProcesses();
+        for (int i = 0; i < processInfos.size(); i++) {
+            if (processInfos.get(i).processName.equals(packageName)) {
+                Log.i(TAG,
+                        String.format("the %s is running, isAppAlive return true", packageName));
+                return true;
+            }
+        }
+        Log.i(TAG,
+                String.format("the %s is not running, isAppAlive return false", packageName));
+        return false;
     }
 
     public static String getIMEI(Context context) {
@@ -362,7 +396,7 @@ public class DeviceUtils {
     /**
      * 进入app设置详情页面
      */
-    public static void openAppDetail(Context context){
+    public static void openAppDetail(Context context) {
         Intent intent = new Intent();
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
@@ -372,6 +406,7 @@ public class DeviceUtils {
 
     /**
      * 是否是中文语言
+     *
      * @param context
      * @return
      */
@@ -399,6 +434,7 @@ public class DeviceUtils {
                 Context.INPUT_METHOD_SERVICE)).toggleSoftInput(0,
                 InputMethodManager.HIDE_NOT_ALWAYS);
     }
+
     /**
      * 隐藏软键盘
      *
@@ -414,6 +450,7 @@ public class DeviceUtils {
             inputMethodManager.hideSoftInputFromWindow(
                     view.getWindowToken(), 0);
     }
+
     /**
      * 是否是横屏
      *

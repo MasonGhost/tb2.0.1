@@ -15,6 +15,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.trycatch.mysnackbar.Prompt;
+import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -43,7 +45,6 @@ import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
-import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListBaseItem;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListForZeroImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForEightImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForFiveImage;
@@ -265,8 +266,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    protected void setLoadingHolderClick() {
-        super.setLoadingHolderClick();
+    protected void setLoadingViewHolderClick() {
+        super.setLoadingViewHolderClick();
         requestData();
     }
 
@@ -309,12 +310,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         // 获取动态列表
         mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false, mUserInfoBean.getUser_id());
     }
-
-    @Override
-    public void setPresenter(PersonalCenterContract.Presenter presenter) {
-        this.mPresenter = presenter;
-    }
-
 
     @Override
     public void onImageClick(ViewHolder holder, DynamicBean dynamicBean, int position) {
@@ -390,7 +385,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void allDataReady() {
-        closeLoading();
+        closeLoadingView();
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent, STATUS_RGB, 0);
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.rl_toolbar_container), TOOLBAR_RGB, 0);
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.v_horizontal_line), TOOLBAR_DIVIDER_RGB, 0);
@@ -406,7 +401,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void loadAllError() {
-        showLoadError();
+        showLoadViewLoadError();
     }
 
     @Override
@@ -468,17 +463,20 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     public void setUpLoadCoverState(boolean upLoadState, int taskId) {
         if (upLoadState) {
             // 封面图片上传成功
-            ToastUtils.showToast("封面上传成功");
             // 通知服务器，更改用户信息
             mPresenter.changeUserCover(mUserInfoBean, taskId, imagePath);
         } else {
-            ToastUtils.showToast("封面上传失败");
+            TSnackbar.make(mSnackRootView, R.string.cover_uploadFailure, TSnackbar.LENGTH_SHORT)
+                    .setPromptThemBackground(Prompt.ERROR)
+                    .show();
         }
     }
 
     @Override
     public void setChangeUserCoverState(boolean changeSuccess) {
-        ToastUtils.showToast(changeSuccess ? "封面修改成功" : "封面修改失败");
+        TSnackbar.make(mSnackRootView, changeSuccess ? R.string.cover_change_success : R.string.cover_change_failure, TSnackbar.LENGTH_SHORT)
+                .setPromptThemBackground(changeSuccess ? Prompt.SUCCESS : Prompt.ERROR)
+                .show();
     }
 
     @Override
@@ -489,9 +487,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         // 选择图片完毕后，开始上传封面图片
         ImageBean imageBean = photoList.get(0);
         imagePath = imageBean.getImgUrl();
-        // 加载本地图片
-        mPresenter.uploadUserCover(imagePath);
         // 上传本地图片
+        mPresenter.uploadUserCover(imagePath);
+        // 加载本地图片
         mPersonalCenterHeaderViewItem.upDateUserCover(imagePath);
     }
 
@@ -683,7 +681,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      * @param dynamicBean curent dynamic
      * @param position    curent dynamic postion
      */
-    private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean, int position) {
+    private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean, final int position) {
         mDeletDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_dynamic))
                 .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
@@ -696,6 +694,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                     @Override
                     public void onItem1Clicked() {
                         mDeletDynamicPopWindow.hide();
+                        mPresenter.deleteDynamic(dynamicBean, position);
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {

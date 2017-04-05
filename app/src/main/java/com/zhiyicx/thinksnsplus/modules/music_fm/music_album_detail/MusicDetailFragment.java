@@ -507,12 +507,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         return mAlbumDetailsBean;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
-
     public interface MediaBrowserCompatProvider {
         MediaBrowserCompat getMediaBrowser();
     }

@@ -46,6 +46,13 @@ public interface IDynamicReppsitory {
     void handleLike(boolean isLiked, final Long feed_id);
 
     /**
+     * 删除动态
+     *
+     * @param feed_id
+     */
+    void deleteDynamic(final Long feed_id);
+
+    /**
      * 删除评论
      *
      * @param feed_id

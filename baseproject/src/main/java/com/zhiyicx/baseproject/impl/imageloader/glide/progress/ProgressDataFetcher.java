@@ -5,6 +5,7 @@ import android.os.Message;
 
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.data.DataFetcher;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.io.IOException;
 import java.io.InputStream;

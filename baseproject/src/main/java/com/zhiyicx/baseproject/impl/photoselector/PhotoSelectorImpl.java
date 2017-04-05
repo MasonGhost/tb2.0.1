@@ -153,7 +153,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
 
     @Override
     public void startToCraft(String imgPath) {
-        String destinationFileName = "SampleCropImage.jpg";
+        String destinationFileName = "SampleCropImage" + format() + ".jpg";
         UCrop uCrop = UCrop.of(Uri.fromFile(new File(imgPath)), Uri.fromFile(new File(mFragment.getActivity().getCacheDir(), destinationFileName)));
         UCrop.Options options = new UCrop.Options();
         initCropShape(uCrop, options);

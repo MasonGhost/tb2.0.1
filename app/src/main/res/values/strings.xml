@@ -88,7 +88,9 @@
 
     <!--动态列表-->
     <string name="dynamic_list_more_comment">查看全部评论</string>
+    <string name="dynamic_list_delete_dynamic">删除动态</string>
     <string name="dynamic_list_delete_comment">删除评论</string>
+    <string name="dynamic_list_resend_comment">重发评论</string>
     <string name="reply">回复%s:</string>
     <!--发布动态-->
     <string name="send_dynamic">发布动态</string>
@@ -115,4 +117,5 @@
     <string name="get_dynamic_dig_list_failure">获取点赞列表失败</string>
     <string name="default_input_hint">随便说说~</string>
     <string name="default_input_chat_hint">说点什么</string>
+    <string name="see_origin_photos_failure">查看失败</string>
 </resources>
