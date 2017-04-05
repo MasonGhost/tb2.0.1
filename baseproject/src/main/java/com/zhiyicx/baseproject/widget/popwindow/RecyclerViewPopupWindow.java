@@ -116,7 +116,11 @@ public class RecyclerViewPopupWindow extends PopupWindow {
     }
 
     public void hide() {
-        dismiss();
+        try {
+            dismiss();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static RecyclerViewPopupWindow.Builder Builder() {

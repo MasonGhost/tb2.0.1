@@ -15,9 +15,6 @@ import com.zhiyicx.thinksnsplus.data.source.repository.MusicDetailRepository;
 
 import javax.inject.Inject;
 
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAILS_FORMAT;
-
 /**
  * @Author Jliuer
  * @Date 2017/02/14
@@ -111,7 +108,7 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
         shareContent.setTitle(mRootView.getCurrentAblum().getTitle());
         shareContent.setImage(ImageUtils.imagePathConvert(mRootView.getCurrentAblum()
                 .getStorage() + "", 100));
-        shareContent.setUrl("www.baidu.com");
+        shareContent.setUrl("http://www.baidu.com");
 
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
