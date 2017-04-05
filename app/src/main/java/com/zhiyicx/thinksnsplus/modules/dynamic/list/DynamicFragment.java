@@ -37,6 +37,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForS
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForSixImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForThreeImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForTwoImage;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForZeroImage;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
@@ -167,7 +168,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mListDatas);
-        setAdapter(adapter, new DynamicListBaseItem(getContext()));
+        setAdapter(adapter, new DynamicListItemForZeroImage(getContext()));
         setAdapter(adapter, new DynamicListItemForOneImage(getContext()));
         setAdapter(adapter, new DynamicListItemForTwoImage(getContext()));
         setAdapter(adapter, new DynamicListItemForThreeImage(getContext()));
