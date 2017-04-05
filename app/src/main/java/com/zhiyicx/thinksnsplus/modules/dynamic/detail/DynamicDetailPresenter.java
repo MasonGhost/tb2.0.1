@@ -322,7 +322,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         if (mRootView.getCurrentDynamic().getFeed().getStorages() != null && mRootView.getCurrentDynamic().getFeed().getStorages().size() > 0) {
             shareContent.setImage(ImageUtils.imagePathConvert(mRootView.getCurrentDynamic().getFeed().getStorages().get(0).getStorage_id() + "", 100));
         }
-        shareContent.setUrl("http://www.thinksns.com/index.html");
+        shareContent.setUrl(String.format(ApiConfig.APP_PATH_SHARE_DYNAMIC,mRootView.getCurrentDynamic().getFeed_id()==null?"":mRootView.getCurrentDynamic().getFeed_id()));
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
     }

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.tbruyelle.rxpermissions.RxPermissions;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
+import com.zhiyicx.common.mvp.i.IBaseView;
 
 import org.simple.eventbus.EventBus;
 
@@ -23,7 +24,7 @@ import solid.ren.skinlibrary.base.SkinBaseFragment;
  * @Date 2016/12/15
  * @Contact 335891510@qq.com
  */
-public abstract class BaseFragment<P extends IBasePresenter> extends SkinBaseFragment {
+public abstract class BaseFragment<P extends IBasePresenter> extends SkinBaseFragment implements IBaseView<P>{
     protected final String TAG = this.getClass().getSimpleName();
 
     protected View mRootView;

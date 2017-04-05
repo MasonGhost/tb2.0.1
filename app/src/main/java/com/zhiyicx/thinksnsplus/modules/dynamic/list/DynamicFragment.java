@@ -206,11 +206,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         super.initData();
     }
 
-    @Override
-    public void setPresenter(DynamicContract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
     /**
      * 由于热门和关注和最新的 max_id 不同，所以特殊处理
      *

@@ -15,13 +15,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.trycatch.mysnackbar.Prompt;
+import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.UIUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -109,7 +110,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                     .subscribe(new Action1<Void>() {
                         @Override
                         public void call(Void aVoid) {
-                            setLoadingHolderClick();
+                            setLoadingViewHolderClick();
                         }
                     });
 
@@ -120,10 +121,52 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         return linearLayout;
     }
 
+    @Override
+    public void setPresenter(P presenter) {
+        this.mPresenter = presenter;
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
+    }
+
+    @Override
+    public void showSnackMessage(String message, Prompt prompt) {
+        TSnackbar.make(mSnackRootView, message, TSnackbar.LENGTH_SHORT)
+                .setPromptThemBackground(prompt)
+                .show();
+    }
+
+    @Override
+    public void showSnackSuccessMessage(String message) {
+        showSnackMessage(message,Prompt.SUCCESS);
+    }
+
+    @Override
+    public void showSnackErrorMessage(String message) {
+        showSnackMessage(message,Prompt.ERROR);
+    }
+
+    @Override
+    public void showSnackWarningMessage(String message) {
+        showSnackMessage(message,Prompt.WARNING);
+    }
+
+    @Override
+    public void showMessage(String message) {
+
+    }
+
     /**
      * 关闭加载动画
      */
-    protected void closeLoading() {
+    protected void closeLoadingView() {
         if (mCenterLoadingView == null)
             throw new NullPointerException("loadingView is null,you must use setUseCenterLoading() and return true");
         if (mCenterLoadingView.getVisibility() == View.VISIBLE) {
@@ -133,7 +176,10 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
     }
 
-    protected void showLoading() {
+    /**
+     * 开启加载动画
+     */
+    protected void showLoadingView() {
         if (mCenterLoadingView == null)
             throw new NullPointerException("loadingView is null,you must use setUseCenterLoading() and return true");
         if (mCenterLoadingView.getVisibility() == View.GONE) {
@@ -147,7 +193,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     /**
      * 加载失败，占位图点击事件
      */
-    protected void setLoadingHolderClick() {
+    protected void setLoadingViewHolderClick() {
         if (mCenterLoadingView == null)
             throw new NullPointerException("loadingView is null,you must use setUseCenterLoading() and return true");
         mCenterLoadingView.findViewById(R.id.iv_center_load).setVisibility(View.VISIBLE);
@@ -158,7 +204,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     /**
      * 显示加载失败
      */
-    protected void showLoadError() {
+    protected void showLoadViewLoadError() {
         if (mCenterLoadingView == null)
             throw new NullPointerException("loadingView is null,you must use setUseCenterLoading() and return true");
         ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).stop();
@@ -168,7 +214,6 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        LogUtils.d("TAG ----------------- = " + TAG);
     }
 
     /**
@@ -176,7 +221,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      *
      * @param resId
      */
-    protected void setLoadHolderIma(@DrawableRes int resId) {
+    protected void setLoadViewHolderImag(@DrawableRes int resId) {
         if (mCenterLoadingView == null)
             throw new NullPointerException("loadingView is null,you must use setUseCenterLoading() and return true");
         ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_holder)).setImageResource(resId);

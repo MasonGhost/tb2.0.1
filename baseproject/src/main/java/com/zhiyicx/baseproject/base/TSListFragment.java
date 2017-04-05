@@ -89,11 +89,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     }
 
     @Override
-    public void showLoading() {
-
-    }
-
-    @Override
     public void hideLoading() {
         mRefreshlayout.setRefreshing(false);
         mRefreshlayout.setLoadingMore(false);
