@@ -683,7 +683,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      * @param dynamicBean curent dynamic
      * @param position    curent dynamic postion
      */
-    private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean, int position) {
+    private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean, final int position) {
         mDeletDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_dynamic))
                 .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
@@ -696,6 +696,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                     @Override
                     public void onItem1Clicked() {
                         mDeletDynamicPopWindow.hide();
+                        mPresenter.deleteDynamic(dynamicBean,position);
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {

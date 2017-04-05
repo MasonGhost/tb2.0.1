@@ -23,12 +23,11 @@ public class ApiConfig {
      * 网络根地址  http://192.168.10.222/
      * 测试服务器：http://192.168.2.222:8080/mockjs/2/test-get-repose-head-normal?
      */
-
-    //public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
-
-   public static final String APP_DOMAIN = "http://192.168.2.222/";// 测试服务器
     // public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
+    public static final String APP_DOMAIN = "http://192.168.2.222/";// 测试服务器
     public static final String APP_IM_DOMAIN = "192.168.2.222:9900";// im 测试服务器
+
+    // public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
     // public static final String APP_IM_DOMAIN = "ws://tsplus.zhibocloud.cn:9900";// im 正式服务器
 
 
@@ -86,6 +85,7 @@ public class ApiConfig {
      * 动态相关
      */
     public static final String APP_PATH_SEND_DYNAMIC = "api/v1/feeds";// 发布动态
+    public static final String APP_PATH_DELETE_DYNAMIC = "/api/v1/feeds/%s";// 删除一条动态
     // 获取动态列表
     // 最新：/api/v1/feeds;
     // 关注：/api/v1/feeds/follows;
@@ -128,7 +128,7 @@ public class ApiConfig {
     public static final String APP_PATH_INFO_DELETE_COMMENT = "api/v1/news/{news_id}/comment/{comment_id}";
 
     // 资讯评论列表
-    public static final String APP_PATH_INFO_COMMENT_LIST =  "api/v1/news/{feed_id}/comments";//
+    public static final String APP_PATH_INFO_COMMENT_LIST = "api/v1/news/{feed_id}/comments";//
 
     public static final String APP_PATH_INFO_COLLECT = "api/v1/news/{news_id}/collection";// 收藏资讯
     public static final String APP_PATH_INFO_COLLECT_FORMAT = "api/v1/news/%s/collection";// 收藏资讯

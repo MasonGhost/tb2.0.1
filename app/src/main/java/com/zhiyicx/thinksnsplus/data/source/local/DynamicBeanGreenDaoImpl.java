@@ -63,7 +63,8 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
 
     @Override
     public void deleteSingleCache(DynamicBean dta) {
-
+        DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
+        dynamicBeanDao.delete(dta);
     }
 
     /**
