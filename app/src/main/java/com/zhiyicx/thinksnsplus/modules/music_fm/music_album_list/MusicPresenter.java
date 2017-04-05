@@ -1,7 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list;
 
+import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.thridmanager.share.ShareContent;
+import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumListBeanGreenDaoImpl;
@@ -74,7 +77,7 @@ public class MusicPresenter extends BasePresenter<MusicContract.Repository, Musi
 
     @Override
     public List requestCacheData(Long maxId, boolean isLoadMore) {
-        return new ArrayList();
+        return mMusicAlbumListDao.getMultiDataFromCache();
     }
 
     @Override

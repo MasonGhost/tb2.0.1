@@ -15,6 +15,7 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
@@ -61,6 +62,7 @@ public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicD
         DaggerMusicDetailComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .musicDetailPresenterModule(new MusicDetailPresenterModule(mMusicDetailFragment))
+                .shareModule(new ShareModule(this))
                 .build()
                 .inject(this);
     }

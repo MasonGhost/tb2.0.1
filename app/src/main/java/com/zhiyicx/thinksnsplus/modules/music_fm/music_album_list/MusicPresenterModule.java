@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list;
 
+import android.app.Application;
 import android.support.v4.media.MediaBrowserCompat;
 
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;

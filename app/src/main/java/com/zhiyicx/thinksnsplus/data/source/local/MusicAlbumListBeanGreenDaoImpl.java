@@ -34,7 +34,7 @@ public class MusicAlbumListBeanGreenDaoImpl extends CommonCacheImpl<MusicAlbumLi
 
     @Override
     public void saveMultiData(List<MusicAlbumListBean> multiData) {
-       mMusicAlbumListBeanDao.insertOrReplaceInTx(multiData);
+        mMusicAlbumListBeanDao.insertOrReplaceInTx(multiData);
     }
 
     @Override

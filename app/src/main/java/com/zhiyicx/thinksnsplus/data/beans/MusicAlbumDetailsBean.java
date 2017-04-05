@@ -39,7 +39,16 @@ public class MusicAlbumDetailsBean implements Serializable {
     private int share_count;
     private int comment_count;
     private int collect_count;
+    private int is_collection;
     private List<MusicsBean> musics;
+
+    public int getIs_collection() {
+        return is_collection;
+    }
+
+    public void setIs_collection(int is_collection) {
+        this.is_collection = is_collection;
+    }
 
     public int getId() {
         return id;
