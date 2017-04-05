@@ -342,12 +342,12 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
         @Override
         public void onLoadFinish() {
-            closeLoading();
+            closeLoadingView();
         }
 
         @Override
         public void onLoadStart() {
-            showLoading();
+            showLoadingView();
         }
 
         @Override
@@ -386,12 +386,12 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
         @Override
         public void onLoadFinish() {
-            closeLoading();
+            closeLoadingView();
         }
 
         @Override
         public void onLoadStart() {
-            showLoading();
+            showLoadingView();
         }
     }
 

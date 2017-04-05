@@ -133,8 +133,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
-    protected void setLoadingHolderClick() {
-        super.setLoadingHolderClick();
+    protected void setLoadingViewHolderClick() {
+        super.setLoadingViewHolderClick();
         mPresenter.getDetailAll(mDynamicBean.getFeed_id(), DEFAULT_PAGE_MAX_ID, mDynamicBean.getUser_id() + "");
     }
 
@@ -361,14 +361,14 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public void allDataReady() {
-        closeLoading();
+        closeLoadingView();
         mCoordinatorLayout.setEnabled(true);
         setAllData();
     }
 
     @Override
     public void loadAllError() {
-        showLoadError();
+        showLoadViewLoadError();
     }
 
     private void setAllData() {

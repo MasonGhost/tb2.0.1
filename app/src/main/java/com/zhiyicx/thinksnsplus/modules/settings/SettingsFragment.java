@@ -6,8 +6,6 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.trycatch.mysnackbar.Prompt;
-import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.common.utils.DialogUtils;
@@ -81,35 +79,6 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-    }
-
-    @Override
-    public void setPresenter(SettingsContract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showMessage(String message) {
-        TSnackbar.make(mSnackRootView, message, TSnackbar.LENGTH_SHORT)
-                .setPromptThemBackground(Prompt.SUCCESS)
-                .show();
-    }
-
-    @Override
     public void setCacheDirSize(String size) {
         mBtCleanCache.setRightText(size);
     }
@@ -122,7 +91,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        showMessage("vertify");
+                        showSnackMessage("vertify");
                     }
                 });
         // 修改密码

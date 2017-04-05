@@ -64,17 +64,17 @@ public class SettingsPresenter extends BasePresenter<SettingsContract.Repository
                     @Override
                     public void call(Boolean isDelete) {
                         if (isDelete) {
-                            mRootView.showMessage(mContext.getString(R.string.clean_success));// 删除成功
+                            mRootView.showSnackMessage(mContext.getString(R.string.clean_success));// 删除成功
                             mRootView.setCacheDirSize(mContext.getString(R.string.cache_zero_size));//将缓存大小改为 0b
                         } else {
-                            mRootView.showMessage(mContext.getString(R.string.clean_failure));
+                            mRootView.showSnackMessage(mContext.getString(R.string.clean_failure));
                         }
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
                         throwable.printStackTrace();
-                        mRootView.showMessage(mContext.getString(R.string.clean_failure));
+                        mRootView.showSnackMessage(mContext.getString(R.string.clean_failure));
                     }
                 });
         addSubscrebe(cleanCacheSub);
