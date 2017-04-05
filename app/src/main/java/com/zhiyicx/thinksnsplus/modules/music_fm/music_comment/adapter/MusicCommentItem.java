@@ -59,30 +59,25 @@ public class MusicCommentItem implements ItemViewDelegate<MusicCommentListBean> 
     }
 
     @Override
-    public void convert(ViewHolder holder, MusicCommentListBean dynamicCommentBean,
+    public void convert(ViewHolder holder, MusicCommentListBean musicCommentListBean,
                         MusicCommentListBean lastT, int position) {
-//        holder.setText(R.id.tv_name, dynamicCommentBean.getCommentUser().getName());
-//        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicCommentBean.getCreated_at()));
-//        holder.setText(R.id.tv_content, setShowText(dynamicCommentBean, position));
-//        List<Link> links = setLiknks(holder, dynamicCommentBean, position);
-//        if (!links.isEmpty()) {
-//            LinkBuilder.on((TextView) holder.getView(R.id.tv_content))
-//                    .addLinks(links)
-//                    .build();
-//        }
-//
-//        AppApplication.AppComponentHolder.getAppComponent()
-//                .imageLoader()
-//                .loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
-//                        .url(ImageUtils.imagePathConvert(dynamicCommentBean.getCommentUser().getAvatar(), ImageZipConfig.IMAGE_26_ZIP))
-//                        .placeholder(R.drawable.shape_default_image_circle)
-//                        .transformation(new GlideCircleTransform(holder.getConvertView().getContext()))
-//                        .errorPic(R.drawable.shape_default_image_circle)
-//                        .imagerView((ImageView) holder.getView(R.id.iv_headpic))
-//                        .build()
-//                );
-//        setUserInfoClick(holder.getView(R.id.tv_name), dynamicCommentBean.getCommentUser());
-//        setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicCommentBean.getCommentUser());
+        AppApplication.AppComponentHolder.getAppComponent()
+                .imageLoader()
+                .loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
+                        .url(ImageUtils.imagePathConvert(musicCommentListBean
+                                .getFromUserInfoBean()
+                                .getAvatar(), ImageZipConfig.IMAGE_26_ZIP))
+                        .placeholder(R.drawable.shape_default_image_circle)
+                        .transformation(new GlideCircleTransform(holder.getConvertView()
+                                .getContext()))
+                        .errorPic(R.drawable.shape_default_image_circle)
+                        .imagerView((ImageView) holder.getView(R.id.iv_headpic))
+                        .build()
+                );
+        holder.setText(R.id.tv_name, musicCommentListBean.getFromUserInfoBean().getName());
+        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(musicCommentListBean
+                .getCreated_at()));
+        holder.setText(R.id.tv_content, setShowText(musicCommentListBean, position));
     }
 
     private void setUserInfoClick(View v, final UserInfoBean userInfoBean) {
@@ -96,8 +91,8 @@ public class MusicCommentItem implements ItemViewDelegate<MusicCommentListBean> 
         });
     }
 
-    protected String setShowText(DynamicCommentBean dynamicCommentBean, int position) {
-        return handleName(dynamicCommentBean);
+    protected String setShowText(MusicCommentListBean musicCommentListBean, int position) {
+        return handleName(musicCommentListBean);
     }
 
     protected List<Link> setLiknks(ViewHolder holder, final DynamicCommentBean dynamicCommentBean, int position) {
@@ -135,15 +130,16 @@ public class MusicCommentItem implements ItemViewDelegate<MusicCommentListBean> 
     /**
      * 处理名字的颜色与点击
      *
-     * @param dynamicCommentBean
+     * @param musicCommentListBean
      * @return
      */
-    private String handleName(DynamicCommentBean dynamicCommentBean) {
+    private String handleName(MusicCommentListBean musicCommentListBean) {
         String content = "";
-        if (dynamicCommentBean.getReply_to_user_id() != 0) { // 当没有回复者时，就是回复评论
-            content += " 回复 " + dynamicCommentBean.getReplyUser().getName() + " " + dynamicCommentBean.getComment_content();
+        if (musicCommentListBean.getReply_to_user_id() != 0) { // 当没有回复者时，就是回复评论
+            content += " 回复 " + musicCommentListBean.getToUserInfoBean().getName() + " " +
+                    musicCommentListBean.getComment_content();
         } else {
-            content = dynamicCommentBean.getComment_content();
+            content = musicCommentListBean.getComment_content();
         }
         return content;
     }
