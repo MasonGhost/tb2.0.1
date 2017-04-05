@@ -108,10 +108,10 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
     public void shareMusicAlbum() {
         ShareContent shareContent = new ShareContent();
 
-        shareContent.setTitle(mRootView.getCurrentAblum().getTitle());
-        shareContent.setImage(ImageUtils.imagePathConvert(mRootView.getCurrentAblum()
-                .getStorage() + "", 100));
-        shareContent.setUrl("www.baidu.com");
+        shareContent.setTitle(mRootView.getmMusicAlbumListBean().getTitle());
+        shareContent.setImage(ImageUtils.imagePathConvert(mRootView.getmMusicAlbumListBean()
+                .getStorage().getId() + "", 100));
+        shareContent.setUrl("http://www.huya.com");
 
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());

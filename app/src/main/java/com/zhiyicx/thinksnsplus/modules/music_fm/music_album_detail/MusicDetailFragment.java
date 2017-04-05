@@ -507,6 +507,11 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         return mAlbumDetailsBean;
     }
 
+    @Override
+    public MusicAlbumListBean getmMusicAlbumListBean() {
+        return mMusicAlbumListBean;
+    }
+
     public interface MediaBrowserCompatProvider {
         MediaBrowserCompat getMediaBrowser();
     }
