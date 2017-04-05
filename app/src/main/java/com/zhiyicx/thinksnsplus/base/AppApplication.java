@@ -78,6 +78,7 @@ public class AppApplication extends TSApplication {
         JPushInterface.setDebugMode(true);
         JPushInterface.init(this);
         MobclickAgent.setDebugMode( true );
+        System.out.println("getPackageName() = " + getPackageName());
     }
 
     /**
