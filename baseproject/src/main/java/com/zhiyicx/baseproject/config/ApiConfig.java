@@ -24,9 +24,9 @@ public class ApiConfig {
      * 测试服务器：http://192.168.2.222:8080/mockjs/2/test-get-repose-head-normal?
      */
 
-    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
+//    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
 
-//    public static final String APP_DOMAIN = "http://192.168.2.222/";// 测试服务器
+    public static final String APP_DOMAIN = "http://192.168.2.222/";// 测试服务器
     // public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
     public static final String APP_IM_DOMAIN = "192.168.2.222:9900";// im 测试服务器
     // public static final String APP_IM_DOMAIN = "ws://tsplus.zhibocloud.cn:9900";// im 正式服务器
@@ -147,14 +147,13 @@ public class ApiConfig {
     // 评论歌曲
     public static final String APP_PATH_MUSIC_COMMENT_FORMAT = "api/v1/music/%s/comment";
 
-    public static final String APP_PATH_MUSIC_ABLUM_COMMENT =
-            "api/v1/music/specail/{special_id}/comment";// 评论专辑
-    public static final String APP_PATH_MUSIC_ABLUM_COLLECT =
-            "api/v1/music/special/{special_id}/collection";// 收藏专辑
+    public static final String APP_PATH_MUSIC_ABLUM_COMMENT = "api/v1/music/specail/{special_id}/comment";// 评论专辑
+    public static final String APP_PATH_MUSIC_ABLUM_COLLECT = "api/v1/music/special/{special_id}/collection";// 收藏专辑
     public static final String APP_PATH_MUSIC_DIGG = "api/v1/music/{music_id}/digg";// 音乐点赞
     public static final String APP_PATH_MUSIC_DIGG_FORMAT = "api/v1/music/%s/digg";// 音乐点赞
-    public static final String APP_PATH_MUSIC_ABLUM_DETAILS =
-            "api/v1/music/specials/{special_id}";// 专辑详情
+    public static final String APP_PATH_MUSIC_ABLUM_DETAILS = "api/v1/music/specials/{special_id}";// 专辑详情
+    public static final String APP_PATH_MUSIC_SHARE = "api/v1/music/%s/share";// 分享歌曲
+    public static final String APP_PATH_MUSIC_ABLUM_SHARE = "api/v1/music/special/%s/share";// 分享专辑
 
 
     /**
