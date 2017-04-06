@@ -134,6 +134,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        setLoadViewHolderImag(R.mipmap.img_default_internet);
         // 初始化图片选择器
         mPhotoSelector = DaggerPhotoSelectorImplComponent
                 .builder()

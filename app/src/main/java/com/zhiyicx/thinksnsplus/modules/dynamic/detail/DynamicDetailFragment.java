@@ -151,6 +151,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        setLoadViewHolderImag(R.mipmap.img_default_internet);
         initToolbar();
         initBottomToolUI();
         initBottomToolListener();
