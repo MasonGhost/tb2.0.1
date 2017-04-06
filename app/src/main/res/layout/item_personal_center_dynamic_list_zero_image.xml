@@ -18,101 +18,114 @@
         android:visibility="gone"
         app:pressShape="circle"/>
 
+
     <LinearLayout
-        android:id="@+id/ll_time_container"
-        android:layout_width="@dimen/headpic_for_list"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_normal"
-        android:gravity="center"
-        android:orientation="vertical">
-        <!--左侧时间-->
-        <TextView
-            android:id="@+id/tv_time_up"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-            android:textColor="@color/important_for_content"
-            android:textSize="@dimen/size_dynamic_day"
-            tools:text="今天"/>
-
-        <TextView
-            android:id="@+id/tv_time_down"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_time_up"
-            android:layout_marginBottom="@dimen/spacing_normal"
-            android:layout_marginTop="@dimen/spacing_small"
-            android:includeFontPadding="false"
-            android:textColor="@color/important_for_content"
-            android:textSize="@dimen/size_icon_assist"
-            tools:text="今天"/>
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/tv_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_mid"
-        android:layout_toRightOf="@id/ll_time_container"
-        android:maxLength="@integer/username_max_length"
-        android:maxLines="1"
-        android:paddingLeft="@dimen/spacing_normal"
-        android:paddingStart="@dimen/spacing_normal"
-        android:textColor="@color/important_for_content"
-        android:textSize="@dimen/size_content_comment"
-        android:visibility="gone"
-        tools:text="张三"/>
-
-    <TextView
-        android:id="@+id/tv_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/tv_title"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="@dimen/spacing_normal"
-        android:gravity="right"
-        android:maxLines="1"
-        android:textColor="@color/general_for_hint"
-        android:textSize="@dimen/size_icon_assist"
-        android:visibility="gone"
-        tools:text="2016-05-06"/>
-
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_name"
-        android:layout_marginRight="@dimen/spacing_normal"
-        android:layout_toRightOf="@+id/ll_time_container"
-        android:includeFontPadding="false"
-        android:paddingBottom="@dimen/spacing_normal"
-        android:paddingLeft="@dimen/spacing_normal"
-        android:paddingStart="@dimen/spacing_normal"
-        android:textColor="@color/themeColor"
-        android:textSize="@dimen/size_sub_title"
-        tools:text="了解到富士康垃圾管理的高考了了"/>
-
-    <TextView
-        android:id="@+id/tv_content"
+        android:id="@+id/ll_detail_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_title"
-        android:layout_marginRight="@dimen/spacing_normal"
-        android:layout_toRightOf="@+id/ll_time_container"
-        android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
-        android:maxLength="@integer/dynamic_list_content_max_show_size"
-        android:paddingBottom="@dimen/spacing_normal"
-        android:paddingLeft="@dimen/spacing_normal"
-        android:textColor="@color/normal_for_dynamic_list_content"
-        android:textSize="@dimen/size_content_assist"
-        tools:text="了解到富士康垃圾管理的高考了了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送"
-        />
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/ll_time_container"
+            android:layout_width="@dimen/headpic_for_list"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:layout_marginBottom="@dimen/spacing_normal"
+            android:gravity="center"
+            android:orientation="vertical">
+            <!--左侧时间-->
+            <TextView
+                android:id="@+id/tv_time_up"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:includeFontPadding="false"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_dynamic_day"
+                tools:text="今天"/>
+
+            <TextView
+                android:id="@+id/tv_time_down"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_time_up"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:gravity="center_horizontal"
+                android:includeFontPadding="false"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_icon_assist"
+                tools:text="今天"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/ll_time_container">
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_mid"
+                android:maxLength="@integer/username_max_length"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/spacing_normal"
+                android:paddingStart="@dimen/spacing_normal"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content_comment"
+                android:visibility="gone"
+                tools:text="张三"/>
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/tv_title"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/spacing_normal"
+                android:gravity="right"
+                android:maxLines="1"
+                android:textColor="@color/general_for_hint"
+                android:textSize="@dimen/size_icon_assist"
+                android:visibility="gone"
+                tools:text="2016-05-06"/>
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_name"
+                android:layout_marginRight="@dimen/spacing_normal"
+                android:includeFontPadding="false"
+                android:paddingBottom="@dimen/spacing_normal"
+                android:paddingLeft="@dimen/spacing_normal"
+                android:paddingStart="@dimen/spacing_normal"
+                android:textColor="@color/themeColor"
+                android:textSize="@dimen/size_sub_title"
+                tools:text="了解到富士康垃圾管理的高考了了"/>
+
+            <TextView
+                android:id="@+id/tv_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_title"
+                android:layout_marginRight="@dimen/spacing_normal"
+                android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
+                android:maxLength="@integer/dynamic_list_content_max_show_size"
+                android:paddingBottom="@dimen/spacing_normal"
+                android:paddingLeft="@dimen/spacing_normal"
+                android:textColor="@color/normal_for_dynamic_list_content"
+                android:textSize="@dimen/size_content_assist"
+                tools:text="了解到富士康垃圾管理的高考了了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送"
+                />
+        </RelativeLayout>
+    </LinearLayout>
 
     <View
         android:id="@+id/v_line"
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_line"
-        android:layout_below="@+id/tv_content"
+        android:layout_below="@+id/ll_detail_container"
         android:background="@color/general_for_line_light"/>
 
     <com.zhiyicx.baseproject.widget.DynamicListMenuView
@@ -120,9 +133,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/v_line"
+        android:layout_marginLeft="@dimen/zero_image_left_margin"
         android:layout_marginRight="@dimen/spacing_normal"
         android:layout_marginTop="@dimen/divider_line"
-        android:layout_toRightOf="@+id/ll_time_container"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingRight="@dimen/spacing_tiny">
 
@@ -134,7 +147,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/dlmv_menu"
-        android:layout_toRightOf="@+id/ll_time_container"
+        android:layout_marginLeft="@dimen/zero_image_left_margin"
         />
 
     <com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView
