@@ -61,7 +61,7 @@ public class AutoLoadRecyclerView extends RecyclerView  {
      */
     private class AutoLoadScrollListener extends OnScrollListener {
 
-//        private ImageLoader imageLoader;
+        private ImageLoader imageLoader;
         private final boolean pauseOnScroll;
         private final boolean pauseOnFling;
 
