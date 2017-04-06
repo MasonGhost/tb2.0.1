@@ -6,21 +6,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
-import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListContract;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -64,8 +60,8 @@ public class DigListAdapter extends CommonAdapter<FollowFansBean> {
                     .imagerView(filterImageView)
                     .transformation(new GlideCircleTransform(filterImageView.getContext()))
                     .url(ImageUtils.imagePathConvert(userInfoBean.getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
-                    .placeholder(R.drawable.shape_default_image_circle)
-                    .errorPic(R.drawable.shape_default_image_circle)
+                    .placeholder(R.mipmap.pic_default_portrait1)
+                    .errorPic(R.mipmap.pic_default_portrait1)
                     .build());
             RxView.clicks(holder.getConvertView())
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)

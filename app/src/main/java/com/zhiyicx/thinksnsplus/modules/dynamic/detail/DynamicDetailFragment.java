@@ -278,8 +278,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         Glide.with(getContext())
                 .load(ImageUtils.imagePathConvert(dynamicBean.getUserInfoBean().getAvatar(), ImageZipConfig.IMAGE_26_ZIP))
                 .bitmapTransform(new GlideCircleTransform(getContext()))
-                .placeholder(R.drawable.shape_default_image_circle)
-                .error(R.drawable.shape_default_image_circle)
+                .placeholder(R.mipmap.pic_default_portrait1)
+                .error(R.mipmap.pic_default_portrait1)
                 .into(new SimpleTarget<GlideDrawable>() {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {

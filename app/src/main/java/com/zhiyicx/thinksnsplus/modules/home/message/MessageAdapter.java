@@ -75,7 +75,7 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
                 AppApplication.AppComponentHolder.getAppComponent().imageLoader().loadImage(mContext, GlideImageConfig.builder()
                         .url(ImageUtils.imagePathConvert(messageItemBean.getUserInfo().getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
                         .transformation(new GlideCircleTransform(mContext))
-                        .errorPic(R.drawable.shape_default_image_circle)
+                        .errorPic(R.mipmap.pic_default_portrait1)
                         .imagerView((ImageView) holder.getView(R.id.iv_headpic))
                         .build()
                 );

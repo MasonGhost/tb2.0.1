@@ -234,8 +234,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 .transformation(new GlideCircleTransform(getContext()))
                 .imagerView(mIvHeadIcon)
                 .url(ImageUtils.imagePathConvert(mUserInfoBean.getAvatar(), ImageZipConfig.IMAGE_60_ZIP))
-                .placeholder(R.drawable.shape_default_image_circle)
-                .errorPic(R.drawable.shape_default_image_circle)
+                .placeholder(R.mipmap.pic_default_portrait1)
+                .errorPic(R.mipmap.pic_default_portrait1)
                 .build());
         // 设置用户名
         mTvUserName.setText(userInfoBean.getName());

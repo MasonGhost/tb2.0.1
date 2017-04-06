@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
@@ -146,9 +144,9 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
             String userIconUrl = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getUserInfoBean().getAvatar(), ImageZipConfig.IMAGE_38_ZIP);
             mImageLoader.loadImage(mContext, GlideImageConfig.builder()
                     .url(userIconUrl)
-                    .placeholder(R.drawable.shape_default_image_circle)
+                    .placeholder(R.mipmap.pic_default_portrait1)
                     .transformation(new GlideCircleTransform(mContext))
-                    .errorPic(R.drawable.shape_default_image_circle)
+                    .errorPic(R.mipmap.pic_default_portrait1)
                     .imagerView((ImageView) holder.getView(R.id.iv_headpic))
                     .build());
             holder.setText(R.id.tv_name, dynamicBean.getUserInfoBean().getName());
