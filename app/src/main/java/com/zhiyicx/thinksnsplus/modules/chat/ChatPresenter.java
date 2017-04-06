@@ -9,7 +9,9 @@ import com.zhiyicx.imsdk.core.ChatType;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
+import com.zhiyicx.imsdk.entity.MessageStatus;
 import com.zhiyicx.imsdk.manage.ChatClient;
+import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
@@ -92,9 +94,12 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     @Override
     public void sendTextMessage(String text, int cid) {
         Message message = ChatClient.getInstance(mContext).sendTextMsg(text, cid, "");// usid 暂不使用
-        message.setCreate_time(System.currentTimeMillis());
-        message.setUid(AppApplication.getmCurrentLoginAuth() != null ? AppApplication.getmCurrentLoginAuth().getUser_id() : 0);
-        message.setIs_read(true);
+        message.setUid(AppApplication.getmCurrentLoginAuth() != null ? AppApplication.getmCurrentLoginAuth().getUser_id() : 0);// 更新
+        if (!ZBIMClient.getInstance().isConnected()) { // IM 没有连接成功
+            message.setSend_status(MessageStatus.SEND_FAIL);
+        }
+        message.setIs_read(true); // 更新
+        MessageDao.getInstance(mContext).insertOrUpdateMessage(message); // 更新
         updateMessage(message);
     }
 
@@ -105,8 +110,10 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
      */
     @Override
     public void reSendText(ChatItemBean chatItemBean) {
-        ChatClient.getInstance(mContext).sendMessage(chatItemBean.getLastMessage());
-        mRootView.refreshData();
+        if (ZBIMClient.getInstance().isConnected()) {
+            ChatClient.getInstance(mContext).sendMessage(chatItemBean.getLastMessage());
+            mRootView.refreshData();
+        }
     }
 
     @Override

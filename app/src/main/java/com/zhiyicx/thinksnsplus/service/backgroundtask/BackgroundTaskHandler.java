@@ -149,7 +149,10 @@ public class BackgroundTaskHandler {
      * 获取缓存中没有被执行的数据
      */
     private void getCacheData() {
-        List<BackgroundRequestTaskBean> cacheDatas = mBackgroundRequestTaskBeanGreenDao.getMultiDataFromCache();
+        if (AppApplication.getmCurrentLoginAuth() == null) {
+            return;
+        }
+        List<BackgroundRequestTaskBean> cacheDatas = mBackgroundRequestTaskBeanGreenDao.getMultiDataFromCacheByUserId(Long.valueOf(AppApplication.getmCurrentLoginAuth().getUser_id()));
         if (cacheDatas != null) {
             for (BackgroundRequestTaskBean tmp : cacheDatas) {
                 mTaskBeanConcurrentLinkedQueue.add(tmp);

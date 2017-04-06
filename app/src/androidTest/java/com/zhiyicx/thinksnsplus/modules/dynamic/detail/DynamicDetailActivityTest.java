@@ -66,7 +66,6 @@ public class DynamicDetailActivityTest {
                     dynamicDetailBean.setStorages(new ArrayList<ImageBean>());
                     dynamicDetailBean.setStorage_task_ids(new ArrayList<Integer>());
                     dynamicDetailBean.setContent("hello jungle68");
-                    dynamicDetailBean.setLocalPhotos(new ArrayList<String>());
                     UserInfoBean userInfoBean=new UserInfoBean();
                     userInfoBean.setUser_id((long) 10);
                     userInfoBean.setName("jungle68");
