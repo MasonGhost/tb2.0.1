@@ -381,10 +381,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     public void onLoadMore() {
-        if (mMaxId == null || mMaxId == 0) {
-            mRefreshlayout.setLoadingMore(false);
-            return;
-        }
         mPage++;
         requestNetData(mMaxId, true);
     }
@@ -494,7 +490,10 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     }
 
     protected Long getMaxId(@NotNull List<T> data) {
-        return data.get(data.size() - 1).getMaxId();
+        if (mListDatas.size() > 0) {
+            return mListDatas.get(mListDatas.size() - 1).getMaxId();
+        }
+        return DEFAULT_PAGE_MAX_ID;
     }
 
     /**
