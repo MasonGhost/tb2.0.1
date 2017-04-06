@@ -305,6 +305,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     @Override
     protected void initView(View rootView) {
         initListener();
+        mFragmentMusicPalyProgress.setThumb(R.mipmap.music_pic_progressbar_circle);
         mMusicAlbumDetailsBean = (MusicAlbumDetailsBean) getArguments().getSerializable
                 (MUSIC_INFO);
         mMusicList = mMusicAlbumDetailsBean.getMusics();
@@ -377,10 +378,10 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             case R.id.fragment_music_paly_comment: // 评论
                 Intent intent = new Intent(getActivity(), MusicCommentActivity.class);
                 Bundle musicBundle = new Bundle();
-                MusicCommentHeader.HeaderInfo headerInfo=new MusicCommentHeader.HeaderInfo();
+                MusicCommentHeader.HeaderInfo headerInfo = new MusicCommentHeader.HeaderInfo();
                 headerInfo.setId(mCurrentMusic.getId());
                 headerInfo.setTitle(mCurrentMusic.getMusic_info().getTitle());
-                headerInfo.setLitenerCount(mCurrentMusic.getMusic_info().getTaste_count()+"");
+                headerInfo.setLitenerCount(mCurrentMusic.getMusic_info().getTaste_count() + "");
                 headerInfo.setImageUrl(ImageUtils.imagePathConvert(mCurrentMusic.getMusic_info().getSinger().getCover().getId() + "",
                         ImageZipConfig.IMAGE_70_ZIP));
                 musicBundle.putSerializable(CURRENT_COMMENT, headerInfo);

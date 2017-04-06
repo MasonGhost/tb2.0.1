@@ -11,7 +11,6 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.SeekBar;
 
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 
@@ -36,7 +35,6 @@ public class PlayerSeekBar extends SeekBar {
 
     public PlayerSeekBar(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setThumb(getContext().getResources().getDrawable(R.mipmap.music_pic_progressbar_circle));
     }
 
     public void setLoading(boolean loading) {
@@ -57,6 +55,10 @@ public class PlayerSeekBar extends SeekBar {
         if ((localRect != null) && (drawable != null)) {
             drawable.setBounds(localRect);
         }
+    }
+
+    public void setThumb(int res){
+        setThumb(getContext().getResources().getDrawable(res));
     }
 
     @Override
