@@ -381,10 +381,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     public void onLoadMore() {
-        if (mMaxId == null || mMaxId == 0) {
-            mRefreshlayout.setLoadingMore(false);
-            return;
-        }
         mPage++;
         requestNetData(mMaxId, true);
     }
@@ -470,8 +466,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                     mEmptyView.setVisibility(View.VISIBLE);
                 }
             }
-
-
         } else { // 加载更多
             if (data != null && data.size() != 0) {
                 mTvNoMoredataText.setVisibility(View.GONE);
@@ -483,22 +477,23 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 mListDatas.addAll(data);
                 refreshData();
                 mMaxId = getMaxId(data);
-            } else {
-                mRefreshlayout.setLoadMoreEnabled(false);
-                if (mListDatas.size() >= DEFAULT_PAGE_SIZE) {
-                    mTvNoMoredataText.setVisibility(View.VISIBLE);
-                    mRvList.smoothScrollToPosition(mListDatas.size() - 1);
-                }
             }
         }
-        // 数据加载后，所有的数据数量小于一页，说明没有更多数据了，就不要上拉加载了
-        if (mListDatas.size() < DEFAULT_PAGE_SIZE) {
+        // 数据加载后，所有的数据数量小于一页，说明没有更多数据了，就不要上拉加载了(除开缓存)
+        if (!isFromCache && (data == null || data.size() < DEFAULT_PAGE_SIZE)) {
             mRefreshlayout.setLoadMoreEnabled(false);
+            if (mListDatas.size() >= DEFAULT_PAGE_SIZE) {
+                mTvNoMoredataText.setVisibility(View.VISIBLE);
+                mRvList.scrollToPosition(mAdapter.getItemCount() - 1);
+            }
         }
     }
 
     protected Long getMaxId(@NotNull List<T> data) {
-        return data.get(data.size() - 1).getMaxId();
+        if (mListDatas.size() > 0) {
+            return mListDatas.get(mListDatas.size() - 1).getMaxId();
+        }
+        return DEFAULT_PAGE_MAX_ID;
     }
 
     /**

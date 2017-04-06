@@ -173,15 +173,23 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
     /**
      * refresh
      */
-    public void refresh() {
+    public void refreshSoomthBottom() {
         if (messageAdapter != null) {
-            scrollToBottom();
             messageAdapter.notifyDataSetChanged();
-//            messageAdapter.notifyItemInserted(messageAdapter.getItemCount());
+//            messageAdapter.notifyItemInserted(messageAdapter.getItemCount()-1);
+            smoothScrollToBottom();
 
         }
     }
 
+    /**
+     * refresh
+     */
+    public void refresh() {
+        if (messageAdapter != null) {
+            messageAdapter.notifyDataSetChanged();
+        }
+    }
 
     /**
      * refresh and jump to the position
@@ -212,6 +220,10 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
 
     public SwipeToLoadLayout getRefreshLayout() {
         return mRefreshLayout;
+    }
+
+    public MultiItemTypeAdapter getMessageAdapter() {
+        return messageAdapter;
     }
 
     public Message getItem(int position) {

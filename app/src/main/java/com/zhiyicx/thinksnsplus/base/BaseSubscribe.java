@@ -131,7 +131,7 @@ public abstract class BaseSubscribe<T> extends Subscriber<BaseJson<T>> {
                 } else {
                     tBaseJson.setMessage(message);
                 }
-                onFailure(tBaseJson.getMessage());
+                onFailure(tBaseJson.getMessage(), tBaseJson.getCode());
             }
         } else { // 204 等没有结构体的数据
             onSuccess(null);
@@ -149,8 +149,9 @@ public abstract class BaseSubscribe<T> extends Subscriber<BaseJson<T>> {
      * 服务器正确接收到请求，主动返回错误状态以及数据
      *
      * @param message 错误信息
+     * @param code
      */
-    protected abstract void onFailure(String message);
+    protected abstract void onFailure(String message, int code);
 
     /**
      * 系统级错误，网络错误，系统内核错误等

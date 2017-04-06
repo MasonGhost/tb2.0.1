@@ -146,7 +146,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 closeInputView();
             }
         });
-
         mIlvComment.setOnSendClickListener(this);
     }
 
@@ -215,13 +214,14 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     protected Long getMaxId(@NotNull List<DynamicBean> data) {
-        switch (getDynamicType()) {
-            case ApiConfig.DYNAMIC_TYPE_HOTS:
-                return data.get(data.size() - 1).getHot_creat_time();
-            case ApiConfig.DYNAMIC_TYPE_FOLLOWS:
-            case ApiConfig.DYNAMIC_TYPE_NEW:
-            default:
-                return data.get(data.size() - 1).getFeed_id();
+        if (mListDatas.size() > 0) {
+            if (getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {
+                return mListDatas.get(mListDatas.size() - 1).getHot_creat_time();
+            } else {
+                return mListDatas.get(mListDatas.size() - 1).getFeed_id();
+            }
+        } else {
+            return DEFAULT_PAGE_MAX_ID;
         }
     }
 
@@ -567,6 +567,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         intent.putExtras(bundle);
         startActivity(intent);
     }
+
 
     public interface OnCommentClickListener {
         void onButtonMenuShow(boolean isShow);

@@ -112,7 +112,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         mRootView.setUpLoadHeadIconState(-1, 0);
                     }
 
@@ -144,7 +144,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         // 修改失败，好尴尬
                         mRootView.setChangeUserInfoState(-1, "");
                     }

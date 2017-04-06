@@ -68,7 +68,7 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         mRootView.showMessage(message);
                     }
 

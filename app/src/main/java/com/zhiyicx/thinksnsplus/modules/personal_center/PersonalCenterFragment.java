@@ -26,7 +26,6 @@ import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -135,6 +134,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        setLoadViewHolderImag(R.mipmap.img_default_internet);
         // 初始化图片选择器
         mPhotoSelector = DaggerPhotoSelectorImplComponent
                 .builder()
@@ -439,6 +439,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     public void setHeaderInfo(UserInfoBean userInfoBean) {
         if (userInfoBean != null) {
+            this.mUserInfoBean = userInfoBean;
             setBottomVisible(userInfoBean.getUser_id());
             mPersonalCenterHeaderViewItem.initHeaderViewData(userInfoBean);
         }
@@ -524,14 +525,14 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     private void initToolBar() {
-        // toolBar设置状态栏高度的marginTop
+        // toolBar 设置状态栏高度的 marginTop
         int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelSize(R.dimen.divider_line);
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
         mLlToolbarContainerParent.setLayoutParams(layoutParams);
     }
 
     /**
-     * 设置底部view的关注状态
+     * 设置底部 view 的关注状态
      */
     private void setBottomFollowState(int state) {
         switch (state) {
@@ -566,7 +567,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     /**
-     * 设置底部view的可见性;如果进入了当前登录用户的主页，需要隐藏底部状态栏
+     * 设置底部 view 的可见性;如果进入了当前登录用户的主页，需要隐藏底部状态栏
      *
      * @param currentUserID
      */
@@ -685,6 +686,13 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                     @Override
                     public void onItem1Clicked() {
                         mDeletDynamicPopWindow.hide();
+                        int currenDynamicCounts = 0;
+                        try {
+                            currenDynamicCounts = Integer.parseInt(mUserInfoBean.getFeeds_count());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        mPersonalCenterHeaderViewItem.upDateDynamicNums(currenDynamicCounts);
                         mPresenter.deleteDynamic(dynamicBean, position);
                     }
                 })

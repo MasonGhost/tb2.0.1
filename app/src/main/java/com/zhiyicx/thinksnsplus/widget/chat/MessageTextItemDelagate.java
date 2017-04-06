@@ -116,9 +116,9 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
             holder.setVisible(R.id.iv_chat_headpic, View.VISIBLE);
             mImageLoader.loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
                     .url(ImageUtils.imagePathConvert(chatItemBean.getUserInfo().getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
-                    .placeholder(R.drawable.shape_default_image_circle)
+                    .placeholder(R.mipmap.pic_default_portrait1)
                     .transformation(new GlideCircleTransform(holder.getConvertView().getContext()))
-                    .errorPic(R.drawable.shape_default_image_circle)
+                    .errorPic(R.mipmap.pic_default_portrait1)
                     .imagerView((ImageView) holder.getView(R.id.iv_chat_headpic))
                     .build()
             );

@@ -176,26 +176,6 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         }
     }
 
-    @Override
-    public void setPresenter(LoginContract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showMessage(String message) {
-
-    }
-
     /**
      * 设置登录按钮是否可点击
      */

@@ -243,27 +243,6 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         mTvMine.setTextColor(position == PAGE_MINE ? checkedColor : unckeckedColor);
     }
 
-
-    @Override
-    public void setPresenter(HomeContract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showMessage(String message) {
-
-    }
-
     @Override
     public void setMessageTipVisable(boolean tipVisable) {
         if (tipVisable) {

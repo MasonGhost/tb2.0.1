@@ -24,26 +24,6 @@ public class GuideFragment extends TSFragment<GuideContract.Presenter> implement
     }
 
     @Override
-    public void setPresenter(GuideContract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showMessage(String message) {
-
-    }
-
-    @Override
     public void startActivity(Class aClass) {
         startActivity(new Intent(getActivity(), aClass));
         getActivity().finish();

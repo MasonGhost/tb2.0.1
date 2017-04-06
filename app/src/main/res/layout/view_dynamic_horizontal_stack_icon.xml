@@ -38,7 +38,7 @@
                 android:layout_height="@dimen/headpic_for_assist"
                 android:layout_marginRight="@dimen/spacing_normal"
                 android:layout_toLeftOf="@id/tv_dig_count"
-                android:src="@drawable/shape_default_image_circle"
+                android:src="@mipmap/pic_default_portrait2"
                 />
 
             <ImageView
@@ -47,7 +47,7 @@
                 android:layout_height="@dimen/headpic_for_assist"
                 android:layout_marginRight="@dimen/head4_right_margin"
                 android:layout_toLeftOf="@id/tv_dig_count"
-                android:src="@drawable/shape_default_image_circle"
+                android:src="@mipmap/pic_default_portrait2"
                 />
 
             <ImageView
@@ -56,7 +56,7 @@
                 android:layout_height="@dimen/headpic_for_assist"
                 android:layout_marginRight="@dimen/head3_right_margin"
                 android:layout_toLeftOf="@id/tv_dig_count"
-                android:src="@drawable/shape_default_image_circle"
+                android:src="@mipmap/pic_default_portrait2"
                 />
 
             <ImageView
@@ -65,7 +65,7 @@
                 android:layout_height="@dimen/headpic_for_assist"
                 android:layout_marginRight="@dimen/head2_right_margin"
                 android:layout_toLeftOf="@id/tv_dig_count"
-                android:src="@drawable/shape_default_image_circle"
+                android:src="@mipmap/pic_default_portrait2"
                 />
 
             <ImageView
@@ -74,7 +74,7 @@
                 android:layout_height="@dimen/headpic_for_assist"
                 android:layout_marginRight="@dimen/head1_right_margin"
                 android:layout_toLeftOf="@id/tv_dig_count"
-                android:src="@drawable/shape_default_image_circle"
+                android:src="@mipmap/pic_default_portrait2"
                 />
 
         </RelativeLayout>

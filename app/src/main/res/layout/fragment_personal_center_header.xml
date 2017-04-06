@@ -30,7 +30,7 @@
             android:layout_height="@dimen/headpic_for_user_home"
             android:layout_gravity="center_horizontal|bottom"
             android:scaleType="centerCrop"
-            android:src="@drawable/shape_default_image_circle_with_strike"/>
+            android:src="@mipmap/pic_default_portrait2"/>
 
     </FrameLayout>
 

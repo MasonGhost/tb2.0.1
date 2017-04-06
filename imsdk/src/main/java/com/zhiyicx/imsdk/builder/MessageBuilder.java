@@ -333,6 +333,7 @@ public class MessageBuilder {
         msg.cid = cid;
         msg.rt = rt;
         msg.type = type;
+        msg.create_time=System.currentTimeMillis();
         return msg;
     }
 
@@ -344,6 +345,7 @@ public class MessageBuilder {
         msg.cid = cid;
         msg.rt = rt;
         msg.type = type;
+        msg.create_time=System.currentTimeMillis();
         return msg;
 
     }
@@ -353,6 +355,7 @@ public class MessageBuilder {
         Message msg = createMessage(msgid, cid, ZBUSID, type, rt);
         msg.txt = text;
         msg.to = uids;
+        msg.create_time=System.currentTimeMillis();
         return msg;
     }
 
@@ -363,6 +366,7 @@ public class MessageBuilder {
         msg.ext.customID = customID;
         msg.txt = text;
         msg.to = uids;
+        msg.create_time=System.currentTimeMillis();
         return msg;
     }
 }

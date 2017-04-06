@@ -71,7 +71,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         mRootView.showMessage(message);
                     }
 
@@ -183,7 +183,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
 
                     }
 

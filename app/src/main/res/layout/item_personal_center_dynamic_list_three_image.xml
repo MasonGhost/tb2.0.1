@@ -14,7 +14,7 @@
         android:layout_width="@dimen/headpic_for_list"
         android:layout_height="@dimen/headpic_for_list"
         android:layout_marginLeft="@dimen/spacing_normal"
-        android:src="@drawable/shape_default_image_circle"
+        android:src="@mipmap/pic_default_portrait1"
         android:visibility="gone"
         app:pressShape="circle"/>
 

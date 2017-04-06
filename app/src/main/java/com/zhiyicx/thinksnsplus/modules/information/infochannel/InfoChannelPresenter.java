@@ -5,7 +5,6 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoTypeBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.InfoChannelRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.InfoMainRepository;
 
 import javax.inject.Inject;
 
@@ -54,7 +53,7 @@ public class InfoChannelPresenter extends BasePresenter<InfoChannelConstract.Rep
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
 
                     }
 

@@ -69,7 +69,7 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         // 登录失败
                         mRootView.setLoginState(false);
                         mRootView.showErrorTips(message);

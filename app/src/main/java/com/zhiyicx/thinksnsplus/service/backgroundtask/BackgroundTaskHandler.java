@@ -13,6 +13,7 @@ import com.zhiyicx.imsdk.receiver.NetChangeReceiver;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -149,7 +150,10 @@ public class BackgroundTaskHandler {
      * 获取缓存中没有被执行的数据
      */
     private void getCacheData() {
-        List<BackgroundRequestTaskBean> cacheDatas = mBackgroundRequestTaskBeanGreenDao.getMultiDataFromCache();
+        if (AppApplication.getmCurrentLoginAuth() == null) {
+            return;
+        }
+        List<BackgroundRequestTaskBean> cacheDatas = mBackgroundRequestTaskBeanGreenDao.getMultiDataFromCacheByUserId(Long.valueOf(AppApplication.getmCurrentLoginAuth().getUser_id()));
         if (cacheDatas != null) {
             for (BackgroundRequestTaskBean tmp : cacheDatas) {
                 mTaskBeanConcurrentLinkedQueue.add(tmp);
@@ -305,8 +309,12 @@ public class BackgroundTaskHandler {
                     }
 
                     @Override
-                    protected void onFailure(String message) {
-                        addBackgroundRequestTask(backgroundRequestTaskBean);
+                    protected void onFailure(String message, int code) {
+                        if (checkIsNeedReRequest(code)) {
+                            addBackgroundRequestTask(backgroundRequestTaskBean);
+                        } else {
+                            mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                        }
                     }
 
                     @Override
@@ -329,8 +337,12 @@ public class BackgroundTaskHandler {
                     }
 
                     @Override
-                    protected void onFailure(String message) {
-                        addBackgroundRequestTask(backgroundRequestTaskBean);
+                    protected void onFailure(String message, int code) {
+                        if (checkIsNeedReRequest(code)) {
+                            addBackgroundRequestTask(backgroundRequestTaskBean);
+                        } else {
+                            mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                        }
                     }
 
                     @Override
@@ -355,8 +367,12 @@ public class BackgroundTaskHandler {
                     }
 
                     @Override
-                    protected void onFailure(String message) {
-                        addBackgroundRequestTask(backgroundRequestTaskBean);
+                    protected void onFailure(String message, int code) {
+                        if (checkIsNeedReRequest(code)) {
+                            addBackgroundRequestTask(backgroundRequestTaskBean);
+                        } else {
+                            mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                        }
                     }
 
                     @Override
@@ -384,8 +400,12 @@ public class BackgroundTaskHandler {
                     }
 
                     @Override
-                    protected void onFailure(String message) {
-                        addBackgroundRequestTask(backgroundRequestTaskBean);
+                    protected void onFailure(String message, int code) {
+                        if (checkIsNeedReRequest(code)) {
+                            addBackgroundRequestTask(backgroundRequestTaskBean);
+                        } else {
+                            mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                        }
                     }
 
                     @Override
@@ -422,8 +442,12 @@ public class BackgroundTaskHandler {
                     }
 
                     @Override
-                    protected void onFailure(String message) {
-                        addBackgroundRequestTask(backgroundRequestTaskBean);
+                    protected void onFailure(String message, int code) {
+                        if (checkIsNeedReRequest(code)) {
+                            addBackgroundRequestTask(backgroundRequestTaskBean);
+                        } else {
+                            mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                        }
                     }
 
                     @Override
@@ -509,7 +533,7 @@ public class BackgroundTaskHandler {
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         // 发送动态到动态列表：状态为发送失败
                         dynamicBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
@@ -551,7 +575,7 @@ public class BackgroundTaskHandler {
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         dynamicCommentBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
                         EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
@@ -591,7 +615,7 @@ public class BackgroundTaskHandler {
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         infoCommentListBean.setState(DynamicBean.SEND_ERROR);
                         mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
                         EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
@@ -605,5 +629,47 @@ public class BackgroundTaskHandler {
                     }
                 });
 
+    }
+
+    /**
+     * 检测是否需要重新请求
+     *
+     * @param code
+     * @return true 需要
+     */
+    private boolean checkIsNeedReRequest(int code) {
+        boolean result;
+        switch (code) {
+            case ErrorCodeConfig.STOREAGE_UPLOAD_FAIL:
+                result = true;
+                break;
+            case ErrorCodeConfig.IM_CREATE_CHAT_AUTH_FAIL:
+                result = true;
+                break;
+            case ErrorCodeConfig.IM_CREATE_CONVERSATION_FAIL:
+                result = true;
+                break;
+            case ErrorCodeConfig.IM_UPDATE_AUTH_FAIL:
+                result = true;
+                break;
+            case ErrorCodeConfig.IM_DELETE_CONVERSATION_FAIL:
+                result = true;
+                break;
+            case ErrorCodeConfig.IM_HANDLE_CONVERSATION_MEMBER_FAIL:
+                result = true;
+                break;
+            case ErrorCodeConfig.IM_QUIT_CONVERSATION_FAIL:
+                result = true;
+                break;
+            case ErrorCodeConfig.IM_DELDETE_CONVERSATION_FAIL:
+                result = true;
+                break;
+            case ErrorCodeConfig.DYNAMIC_HANDLE_FAIL:
+                result = true;
+                break;
+            default:
+                result = false;
+        }
+        return result;
     }
 }
