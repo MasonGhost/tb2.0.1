@@ -65,6 +65,19 @@
     <string name="code_3013">退出对话操作失败</string>
     <string name="code_3014">移除对话成员失败</string>
 
+    <!--#########################################      动态模块       ################################-->
+
+    <string name="code_6001">发布动态内容不能发布为空</string>
+    <string name="code_6002">发布动态发布user_id不能为空</string>
+    <string name="code_6003">要查询的动态id不能为空</string>
+    <string name="code_6004">查询的动态不存在或已删除</string>
+    <string name="code_6005">已赞过该动态</string>
+    <string name="code_6006">未对该动态点赞</string>
+    <string name="code_6007">评论内容不能为空</string>
+    <string name="code_6008">已收藏该动态</string>
+    <string name="code_6009">未收藏该动态</string>
+    <string name="code_60010">操作失败</string>
+
 
     <!--#########################################      系统配置模块       ################################-->
 

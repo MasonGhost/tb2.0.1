@@ -30,4 +30,10 @@ public class ErrorCodeConfig {
     public static final int IM_QUIT_CONVERSATION_FAIL = 3013;// 退出对话操作失败
     public static final int IM_DELDETE_CONVERSATION_FAIL = 3014;// 移除对话成员失败
     public static final int DYNAMIC_HANDLE_FAIL = 6010;// 	操作失败
+
+    /**
+     * 需要手动处理
+     */
+    public static final int DYNAMIC_HAS_BE_DELETED = 6004;// 	查询的动态不存在或已删除
+
 }

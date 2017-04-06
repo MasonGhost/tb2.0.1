@@ -51,6 +51,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     private boolean mIscUseSatusbar = false;// 内容是否需要占用状态栏
     protected ViewGroup mSnackRootView;
+    private boolean mIsNeedClick = true;// 缺省图是否需要点击
 
 
     @Override
@@ -92,7 +93,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         FrameLayout frameLayout = new FrameLayout(getActivity());
         frameLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         // 内容区域
-        View bodyContainer = mLayoutInflater.inflate(getBodyLayoutId(), null);
+        final View bodyContainer = mLayoutInflater.inflate(getBodyLayoutId(), null);
         bodyContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         frameLayout.addView(bodyContainer);
         // 加载动画
@@ -110,7 +111,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                     .subscribe(new Action1<Void>() {
                         @Override
                         public void call(Void aVoid) {
-                            setLoadingViewHolderClick();
+                            if (mIsNeedClick) {
+                                setLoadingViewHolderClick();
+                            }
                         }
                     });
 
@@ -145,17 +148,17 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     @Override
     public void showSnackSuccessMessage(String message) {
-        showSnackMessage(message,Prompt.SUCCESS);
+        showSnackMessage(message, Prompt.SUCCESS);
     }
 
     @Override
     public void showSnackErrorMessage(String message) {
-        showSnackMessage(message,Prompt.ERROR);
+        showSnackMessage(message, Prompt.ERROR);
     }
 
     @Override
     public void showSnackWarningMessage(String message) {
-        showSnackMessage(message,Prompt.WARNING);
+        showSnackMessage(message, Prompt.WARNING);
     }
 
     @Override
@@ -196,17 +199,33 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     protected void setLoadingViewHolderClick() {
         if (mCenterLoadingView == null)
             throw new NullPointerException("loadingView is null,you must use setUseCenterLoading() and return true");
+        mCenterLoadingView.setVisibility(View.VISIBLE);
         mCenterLoadingView.findViewById(R.id.iv_center_load).setVisibility(View.VISIBLE);
         mCenterLoadingView.findViewById(R.id.iv_center_holder).setVisibility(View.GONE);
         ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).start();
+
     }
 
     /**
      * 显示加载失败
      */
     protected void showLoadViewLoadError() {
+        showErrorImage();
+        mIsNeedClick = true;
+    }
+
+    /**
+     * 显示加载失败
+     */
+    protected void showLoadViewLoadErrorDisableClick() {
+        showErrorImage();
+        mIsNeedClick = false;
+    }
+
+    private void showErrorImage() {
         if (mCenterLoadingView == null)
             throw new NullPointerException("loadingView is null,you must use setUseCenterLoading() and return true");
+        mCenterLoadingView.setVisibility(View.VISIBLE);
         ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).stop();
         mCenterLoadingView.findViewById(R.id.iv_center_holder).setVisibility(View.VISIBLE);
     }

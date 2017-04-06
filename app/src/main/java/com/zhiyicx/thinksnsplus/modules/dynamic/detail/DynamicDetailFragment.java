@@ -151,7 +151,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        setLoadViewHolderImag(R.mipmap.img_default_internet);
         initToolbar();
         initBottomToolUI();
         initBottomToolListener();
@@ -228,12 +227,25 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         if (bundle != null && bundle.containsKey(DYNAMIC_DETAIL_DATA)) {
             mIsLookMore = bundle.getBoolean(LOOK_COMMENT_MORE);
             mDynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
+            if (mPresenter.checkCurrentDynamicIsDeleted(mDynamicBean.getUser_id(),mDynamicBean.getFeed_mark())) {// 检测动态是否已经被删除了
+                dynamicHasBeDeleted();
+                return;
+            }
             if (mDynamicBean.getDigUserInfoList() == null) {
                 mPresenter.getDetailAll(mDynamicBean.getFeed_id(), DEFAULT_PAGE_MAX_ID, mDynamicBean.getUser_id() + "");
             } else {
                 allDataReady();
             }
 
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mPresenter.checkCurrentDynamicIsDeleted(mDynamicBean.getUser_id(),mDynamicBean.getFeed_mark())) {// 检测动态是否已经被删除了
+            dynamicHasBeDeleted();
+            return;
         }
     }
 
@@ -349,7 +361,18 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public void loadAllError() {
+        setLoadViewHolderImag(R.mipmap.img_default_internet);
+        mTvToolbarRight.setVisibility(View.GONE);
+        mTvToolbarCenter.setVisibility(View.GONE);
         showLoadViewLoadError();
+    }
+
+    @Override
+    public void dynamicHasBeDeleted() {
+        setLoadViewHolderImag(R.mipmap.img_default_delete);
+        mTvToolbarRight.setVisibility(View.GONE);
+        mTvToolbarCenter.setVisibility(View.GONE);
+        showLoadViewLoadErrorDisableClick();
     }
 
     private void setAllData() {

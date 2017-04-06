@@ -21,6 +21,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
+import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -224,8 +225,12 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
 
                     @Override
                     protected void onFailure(String message, int code) {
-                        LogUtils.e(message);
-                        mRootView.loadAllError();
+                        LogUtils.i(message);
+                        if (code == ErrorCodeConfig.DYNAMIC_HAS_BE_DELETED) {
+                            mRootView.dynamicHasBeDeleted();
+                        } else {
+                            mRootView.loadAllError();
+                        }
                     }
 
                     @Override
@@ -381,6 +386,21 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         mRootView.refreshData();
         mRootView.updateCommentCountAndDig();
         mRepository.deleteComment(mRootView.getCurrentDynamic().getFeed_id(), comment_id);
+    }
+
+    /**
+     * check current dynamic is has been deleted
+     *
+     * @param user_id   the dynamic is belong to
+     * @param feed_mark the dynamic's feed_mark
+     * @return
+     */
+    @Override
+    public boolean checkCurrentDynamicIsDeleted(Long user_id, Long feed_mark) {
+        if (user_id == AppApplication.getmCurrentLoginAuth().getUser_id() && mDynamicBeanGreenDao.getDynamicByFeedMark(feed_mark) == null) { // 检查当前动态是否已经被删除了
+            return true;
+        }
+        return false;
     }
 
     /**
