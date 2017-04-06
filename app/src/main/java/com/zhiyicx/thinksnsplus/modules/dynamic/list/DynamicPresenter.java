@@ -120,7 +120,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         mRootView.showMessage(message);
                     }
 

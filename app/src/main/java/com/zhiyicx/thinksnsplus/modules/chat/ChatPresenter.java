@@ -143,7 +143,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         mRootView.showMessage(message);
                     }
 

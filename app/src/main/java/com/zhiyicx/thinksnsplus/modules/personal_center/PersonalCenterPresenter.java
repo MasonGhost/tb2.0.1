@@ -150,7 +150,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         if (mInterfaceNum >= NEED_INTERFACE_NUM) {
                             mRootView.showMessage(message);
                         } else {
@@ -192,7 +192,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         mRootView.loadAllError();
                     }
 
@@ -225,7 +225,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         mRootView.setUpLoadCoverState(false, 0);
                     }
 
@@ -257,7 +257,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         // 修改失败，好尴尬
                         mRootView.setChangeUserCoverState(false);
                     }
@@ -308,7 +308,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         mRootView.loadAllError();
                     }
 

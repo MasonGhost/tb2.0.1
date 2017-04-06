@@ -1,10 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list;
 
-import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.common.thridmanager.share.ShareContent;
-import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumListBeanGreenDaoImpl;
@@ -12,7 +9,6 @@ import com.zhiyicx.thinksnsplus.data.source.repository.MusicRepository;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -61,7 +57,7 @@ public class MusicPresenter extends BasePresenter<MusicContract.Repository, Musi
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         mRootView.showMessage(message);
                     }
 

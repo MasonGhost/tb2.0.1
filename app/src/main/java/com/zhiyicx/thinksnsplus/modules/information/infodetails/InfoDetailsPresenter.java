@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.information.infodetails;
 
-import android.text.TextUtils;
-
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -102,7 +100,7 @@ public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Rep
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         mRootView.showMessage(message);
                     }
 

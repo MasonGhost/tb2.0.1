@@ -126,7 +126,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         mRootView.showMessage(message);
                     }
 
@@ -223,7 +223,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         LogUtils.e(message);
                         mRootView.loadAllError();
                     }
@@ -250,7 +250,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
 
                     }
 

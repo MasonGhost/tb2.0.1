@@ -55,7 +55,7 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
 
                     }
 
@@ -76,7 +76,7 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
 
                     }
 
