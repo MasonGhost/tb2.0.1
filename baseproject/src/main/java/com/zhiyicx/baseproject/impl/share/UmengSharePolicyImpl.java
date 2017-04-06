@@ -51,6 +51,10 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
     private ShareContent mShareContent;
     private RecyclerViewPopupWindow mRecyclerViewPopupWindow;
 
+    public void setOnShareCallbackListener(OnShareCallbackListener onShareCallbackListener) {
+        mOnShareCallbackListener = onShareCallbackListener;
+    }
+
     OnShareCallbackListener mOnShareCallbackListener;
 
     public UmengSharePolicyImpl(Context mContext) {
@@ -232,6 +236,7 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
                     Share share = changeShare(share_media);
                     l.onSuccess(share);
                 }
+                mRecyclerViewPopupWindow.hide();
             }
 
             @Override
@@ -240,6 +245,7 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
                     Share share = changeShare(share_media);
                     l.onError(share, throwable);
                 }
+                mRecyclerViewPopupWindow.hide();
             }
 
             @Override
@@ -248,6 +254,7 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
                     Share share = changeShare(share_media);
                     l.onCancel(share);
                 }
+                mRecyclerViewPopupWindow.hide();
             }
         });
         shareAction.share();
@@ -292,20 +299,18 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
     @Override
     public void onSuccess(Share share) {
         LogUtils.i(" share success");
-        mRecyclerViewPopupWindow.hide();
+
     }
 
     @Override
     public void onError(Share share, Throwable throwable) {
         LogUtils.i(" share onError");
         throwable.printStackTrace();
-        mRecyclerViewPopupWindow.hide();
     }
 
     @Override
     public void onCancel(Share share) {
         LogUtils.i(" share cancle");
-        mRecyclerViewPopupWindow.hide();
     }
 
     private static class ShareBean {
