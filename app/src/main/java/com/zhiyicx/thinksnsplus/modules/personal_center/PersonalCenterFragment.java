@@ -26,7 +26,6 @@ import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -439,6 +438,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     public void setHeaderInfo(UserInfoBean userInfoBean) {
         if (userInfoBean != null) {
+            this.mUserInfoBean = userInfoBean;
             setBottomVisible(userInfoBean.getUser_id());
             mPersonalCenterHeaderViewItem.initHeaderViewData(userInfoBean);
         }

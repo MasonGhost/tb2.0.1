@@ -301,6 +301,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
                 .subscribe(new BaseSubscribe<UserInfoBean>() {
                     @Override
                     protected void onSuccess(UserInfoBean data) {
+                        mUserInfoBeanGreenDao.insertOrReplace(data);
                         mInterfaceNum++;
                         mRootView.setHeaderInfo(data);
                         allready();
