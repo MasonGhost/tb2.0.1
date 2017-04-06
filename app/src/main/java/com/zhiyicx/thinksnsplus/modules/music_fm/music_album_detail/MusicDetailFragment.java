@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
+import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,6 +34,7 @@ import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
@@ -149,14 +151,21 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 @Override
                 public void onChildrenLoaded(@NonNull String parentId,
                                              @NonNull List<MediaBrowserCompat.MediaItem> children) {
+                    MediaSessionCompat.QueueItem mCurrentMusic = AppApplication.getmQueueManager().getCurrentMusic();
+                    if (mCurrentMusic != null) {
+                        mCurrentMediaId = MediaIDHelper.extractMusicIDFromMediaID(mCurrentMusic.getDescription().getMediaId());
+                    }
+                    LogUtils.d("onChildrenLoaded:::"+mCurrentMediaId);
+                    fragmentMusicDetailMusicCount.setText(String.format("(共%d首)", children.size()));
                     mAdapter.dataChange(children);
-                    fragmentMusicDetailMusicCount.setText(String.format("(共%d首)",children.size()));
                 }
 
                 @Override
                 public void onError(@NonNull String id) {
 
                 }
+
+
             };
 
     public static MusicDetailFragment newInstance(Bundle param) {
@@ -322,6 +331,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         if (mMediaId == null) {
             mMediaId = mCompatProvider.getMediaBrowser().getRoot();
         }
+        LogUtils.d(mMediaId);
         mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
         mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
         MediaControllerCompat controller = getActivity()
