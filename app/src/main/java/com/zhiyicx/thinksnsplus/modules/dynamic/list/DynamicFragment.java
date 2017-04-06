@@ -146,7 +146,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 closeInputView();
             }
         });
-
         mIlvComment.setOnSendClickListener(this);
     }
 
