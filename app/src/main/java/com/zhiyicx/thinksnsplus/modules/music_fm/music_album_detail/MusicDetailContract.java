@@ -39,6 +39,8 @@ public interface MusicDetailContract {
         void handleCollect(boolean isUnCollected, String special_id);
 
         void getMusicDetails(String music_id);
+
+        MusicAlbumDetailsBean getCacheAblumDetail(int id);
     }
 
     interface Repository {

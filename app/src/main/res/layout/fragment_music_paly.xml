@@ -141,9 +141,9 @@
 
                 <com.zhiyicx.thinksnsplus.widget.PlayerSeekBar
                     android:id="@+id/fragment_music_paly_progress"
-                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:max="100"
                     android:maxHeight="3dp"
