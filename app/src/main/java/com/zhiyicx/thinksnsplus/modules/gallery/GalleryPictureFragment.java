@@ -317,7 +317,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                 .using(new ProgressModelLoader(new Handler() {
                     @Override
                     public void handleMessage(Message msg) {
-                        // 这部分的图片，都是通过OKHttp从网络获取的，如果改图片从glide缓存中读取，不会经过这儿
+                        // 这部分的图片，都是通过 OKHttp 从网络获取的，如果改图片从 glide缓 存中读取，不会经过这儿
                         if (msg.what == ProgressListener.SEND_LOAD_PROGRESS && mTvOriginPhoto != null) {
                             int totalReadBytes = msg.arg1;
                             int lengthBytes = msg.arg2;
@@ -514,4 +514,11 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         }
     };
 
+    @Override
+    public void onDestroy() {
+        //Glide.with(this).onDestroy(); 太慢了，流量都跑完了
+        LogUtils.i(TAG + "-->onDestroy");
+        // Glide.clear(mTvOriginPhoto);
+        super.onDestroy();
+    }
 }
