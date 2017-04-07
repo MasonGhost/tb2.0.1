@@ -222,6 +222,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                     @Override
                     public void onItem1Clicked() {
                         ToastUtils.showToast("暂无接口");
+                        mPresenter.deleteComment(data);
                         mDeletCommentPopWindow.hide();
                     }
                 })
