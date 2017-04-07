@@ -135,7 +135,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_mid"
             android:layout_marginRight="@dimen/spacing_mid"
-            android:overScrollMode="never" />
+            android:overScrollMode="never"/>
 
     </com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout>
 
@@ -172,7 +172,6 @@
                 android:id="@+id/fragment_music_detail_center_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Climber's High"
                 android:textColor="@color/white"
                 android:textSize="@dimen/size_primary_title"
                 android:visibility="gone" />
@@ -181,7 +180,6 @@
                 android:id="@+id/fragment_music_detail_center_sub_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="踏风而来，随风而去"
                 android:textColor="@color/white"
                 android:textSize="@dimen/size_content"
                 android:visibility="gone" />
