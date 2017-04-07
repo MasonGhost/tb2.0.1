@@ -323,7 +323,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
     @NonNull
     private List<DynamicBean> getDynamicBeenFromDB() {
         if (AppApplication.getmCurrentLoginAuth() == null) {
-            return new ArrayList<DynamicBean>();
+            return new ArrayList<>();
         }
         List<DynamicBean> datas = mDynamicBeanGreenDao.getMySendingUnSuccessDynamic((long) AppApplication.getmCurrentLoginAuth().getUser_id());
         msendingStatus.clear();
