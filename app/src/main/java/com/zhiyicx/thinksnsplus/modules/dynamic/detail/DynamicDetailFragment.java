@@ -1,10 +1,13 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.DragEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -24,6 +27,7 @@ import com.zhiyicx.baseproject.widget.InputLimitView.OnSendClickListener;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -207,6 +211,33 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                     }
                 });
         mIlvComment.setOnSendClickListener(this);
+
+      /*  mRvList.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                LogUtils.i(TAG + "mRvList  setOnTouchListener  "+mRvList.getTop());
+                if(mRvList.getTop()<=0){
+                    mRefreshlayout.setRefreshEnabled(false);
+                }else{
+                    mRefreshlayout.setRefreshEnabled(true);
+                }
+                return false;
+            }
+        });
+
+        mRefreshlayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                LogUtils.i(TAG + "mRefreshlayout  setOnTouchListener  "+  mRvList.getTop());
+                if(mRvList.getTop()<=0){
+                    mRefreshlayout.setRefreshEnabled(false);
+                }else{
+                    mRefreshlayout.setRefreshEnabled(true);
+                }
+                return false;
+            }
+        });*/
+        
     }
 
     private void initHeaderView() {
@@ -227,7 +258,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         if (bundle != null && bundle.containsKey(DYNAMIC_DETAIL_DATA)) {
             mIsLookMore = bundle.getBoolean(LOOK_COMMENT_MORE);
             mDynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
-            if (mPresenter.checkCurrentDynamicIsDeleted(mDynamicBean.getUser_id(),mDynamicBean.getFeed_mark())) {// 检测动态是否已经被删除了
+            if (mPresenter.checkCurrentDynamicIsDeleted(mDynamicBean.getUser_id(), mDynamicBean.getFeed_mark())) {// 检测动态是否已经被删除了
                 dynamicHasBeDeleted();
                 return;
             }
@@ -243,7 +274,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     public void onResume() {
         super.onResume();
-        if (mPresenter.checkCurrentDynamicIsDeleted(mDynamicBean.getUser_id(),mDynamicBean.getFeed_mark())) {// 检测动态是否已经被删除了
+        if (mPresenter.checkCurrentDynamicIsDeleted(mDynamicBean.getUser_id(), mDynamicBean.getFeed_mark())) {// 检测动态是否已经被删除了
             dynamicHasBeDeleted();
             return;
         }

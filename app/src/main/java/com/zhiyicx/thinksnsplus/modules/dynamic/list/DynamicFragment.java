@@ -39,6 +39,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForT
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForZeroImage;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
+import com.zhiyicx.thinksnsplus.modules.home.HomeFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
@@ -280,10 +281,17 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             refreshData();
             // 回到顶部
             mRvList.smoothScrollToPosition(0);
-            Fragment parentFragment = getParentFragment();
-            if (parentFragment != null && parentFragment instanceof MainFragment) {
-                MainFragment mainFragment = (MainFragment) parentFragment;
-                mainFragment.setPagerSelection(MainFragment.PAGER_NEWEST_DYNAMIC_LIST_POSITION);
+            // viewpager切换到关注列表
+            Fragment parentFragmentMain = getParentFragment();
+            if (parentFragmentMain != null && parentFragmentMain instanceof MainFragment) {
+                MainFragment mainFragment = (MainFragment) parentFragmentMain;
+                mainFragment.setPagerSelection(MainFragment.PAGER_FOLLOW_DYNAMIC_LIST_POSITION);
+                // 主页切换到首页
+                Fragment parentFragmentHome = mainFragment.getParentFragment();
+                if(parentFragmentHome!=null&&parentFragmentHome instanceof HomeFragment){
+                    HomeFragment homeFragment= (HomeFragment) parentFragmentHome;
+                    homeFragment.setPagerSelection(HomeFragment.PAGE_HOME);
+                }
             }
         } else {
             refreshData(position);
