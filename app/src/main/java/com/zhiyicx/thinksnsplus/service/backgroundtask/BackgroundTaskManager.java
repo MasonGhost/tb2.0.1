@@ -62,8 +62,8 @@ public class BackgroundTaskManager {
      * 关闭后台任务
      */
     public void closeBackgroundTask() {
-//        if (mIsServiceStart && mContext.stopService(new Intent(mContext, BackgroundTaskHandleService.class))) {
-//            mIsServiceStart = false;
-//        }
+        if (mIsServiceStart && mContext.stopService(new Intent(mContext, BackgroundTaskHandleService.class))) {
+            mIsServiceStart = false;
+        }
     }
 }

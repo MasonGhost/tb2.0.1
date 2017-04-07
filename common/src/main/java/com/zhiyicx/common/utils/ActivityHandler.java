@@ -14,6 +14,10 @@ import java.util.Stack;
 
 public class ActivityHandler {
 
+    public static Stack<Activity> getActivityStack() {
+        return activityStack;
+    }
+
     private static Stack<Activity> activityStack;
     private volatile static ActivityHandler instance;
 

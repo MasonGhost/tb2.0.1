@@ -26,8 +26,8 @@ import butterknife.BindView;
  * @Contact master.jungle68@gmail.com
  */
 public class MainFragment extends TSViewPagerFragment implements DynamicFragment.OnCommentClickListener {
-    // 最新动态列表位置，如果更新了，记得修改这儿
-    public static final int PAGER_NEWEST_DYNAMIC_LIST_POSITION = 2;
+    // 关注动态列表位置，如果更新了，记得修改这儿
+    public static final int PAGER_FOLLOW_DYNAMIC_LIST_POSITION = 0;
     @BindView(R.id.v_status_bar_placeholder)
     View mStatusBarPlaceholder;
     @BindView(R.id.v_shadow)
