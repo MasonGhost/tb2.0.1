@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -19,6 +20,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -350,14 +352,21 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         dynamicDetailBean.setContent(mEtDynamicContent.getInputContent());
         dynamicDetailBean.setTitle(mEtDynamicTitle.getInputContent());
         if (selectedPhotos != null && !selectedPhotos.isEmpty()) {
-            List<String> photos = new ArrayList<>();
+            List<ImageBean> photos = new ArrayList<>();
             // 最后一张占位图，扔掉
             for (int i = 0; i < selectedPhotos.size(); i++) {
                 if (!TextUtils.isEmpty(selectedPhotos.get(i).getImgUrl())) {
-                    photos.add(selectedPhotos.get(i).getImgUrl());
+                    ImageBean imageBean = new ImageBean();
+                    imageBean.setImgUrl(selectedPhotos.get(i).getImgUrl());
+                    BitmapFactory.Options options = DrawableProvider.getPicsWHByFile(selectedPhotos.get(i).getImgUrl());
+                    imageBean.setHeight(options.outHeight);
+                    imageBean.setWidth(options.outWidth);
+                    imageBean.setImgMimeType(options.outMimeType);
+                    photos.add(imageBean);
                 }
             }
-            dynamicDetailBean.setLocalPhotos(photos);
+
+            dynamicDetailBean.setStorages(photos);
         }
         dynamicDetailBean.setFeed_from(ApiConfig.ANDROID_PLATFORM);
         DynamicBean dynamicBean = new DynamicBean();

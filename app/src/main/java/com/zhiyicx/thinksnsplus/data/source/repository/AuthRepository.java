@@ -116,7 +116,7 @@ public class AuthRepository implements IAuthRepository {
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
 
                     }
 
@@ -223,7 +223,7 @@ public class AuthRepository implements IAuthRepository {
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
 
                     }
 
@@ -246,7 +246,7 @@ public class AuthRepository implements IAuthRepository {
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
 
                     }
 

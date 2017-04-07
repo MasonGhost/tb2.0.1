@@ -73,9 +73,9 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
                 .imageLoader()
                 .loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
                         .url(ImageUtils.imagePathConvert(dynamicCommentBean.getCommentUser().getAvatar(), ImageZipConfig.IMAGE_26_ZIP))
-                        .placeholder(R.drawable.shape_default_image_circle)
+                        .placeholder(R.mipmap.pic_default_portrait1)
                         .transformation(new GlideCircleTransform(holder.getConvertView().getContext()))
-                        .errorPic(R.drawable.shape_default_image_circle)
+                        .errorPic(R.mipmap.pic_default_portrait1)
                         .imagerView((ImageView) holder.getView(R.id.iv_headpic))
                         .build()
                 );

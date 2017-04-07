@@ -127,7 +127,7 @@ public class PersonalCenterHeaderViewItem {
     public void initHeaderView(boolean isSetScrollListener) {
         headerView = LayoutInflater.from(mActivity).inflate(R.layout.fragment_personal_center_header, null);
         initHeaderViewUI(headerView);
-        mHeaderAndFooterWrapper .addHeaderView(headerView);
+        mHeaderAndFooterWrapper.addHeaderView(headerView);
         mRecyclerView.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
         // 设置recyclerview的滑动监听，用来处理toolbar透明渐变的效果
@@ -207,10 +207,10 @@ public class PersonalCenterHeaderViewItem {
         // 显示头像
         mImageLoader.loadImage(mActivity, GlideImageConfig.builder()
                 .url(ImageUtils.imagePathConvert(userInfoBean.getAvatar(), ImageZipConfig.IMAGE_70_ZIP))
-                .placeholder(R.drawable.shape_default_image_circle_with_strike)
-                .errorPic(R.drawable.shape_default_image_circle_with_strike)
+                .placeholder(R.mipmap.pic_default_portrait2)
+                .errorPic(R.mipmap.pic_default_portrait2)
                 .imagerView(iv_head_icon)
-                .transformation(new GlideCircleBorderTransform(mActivity,mActivity.getResources().getDimensionPixelSize(R.dimen.spacing_tiny),ContextCompat.getColor(mActivity,R.color.white)))
+                .transformation(new GlideCircleBorderTransform(mActivity, mActivity.getResources().getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(mActivity, R.color.white)))
                 .build());
         // 设置用户名
         tv_user_name.setText(userInfoBean.getName());
@@ -237,17 +237,13 @@ public class PersonalCenterHeaderViewItem {
 
         // 设置动态数量
         String dynamicCountString = userInfoBean.getFeeds_count();
+        int dynamicCountInt;
         if (!TextUtils.isEmpty(dynamicCountString)) {
-            int dynamicCountInt = Integer.parseInt(dynamicCountString);
-            if (dynamicCountInt <= 0) {
-                ll_dynamic_count_container.setVisibility(View.GONE);
-            } else {
-                tv_dynamic_count.setText(mActivity.getString(R.string.dynamic_count, dynamicCountString));
-            }
+            dynamicCountInt = Integer.parseInt(dynamicCountString);
         } else {
-            ll_dynamic_count_container.setVisibility(View.GONE);
+            dynamicCountInt = 0;
         }
-
+        upDateDynamicNums(dynamicCountInt);
         // 设置封面
         setUserCover(userInfoBean.getCover());
         // 设置封面切换
@@ -381,9 +377,27 @@ public class PersonalCenterHeaderViewItem {
                 .build());
     }
 
+    /**
+     * 更新封面
+     *
+     * @param coverImage
+     */
     public void upDateUserCover(String coverImage) {
         setUserCover(coverImage);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
+    }
+
+    /**
+     * 更新动态数量
+     *
+     * @param dynamicCountInt
+     */
+    public void upDateDynamicNums(int dynamicCountInt) {
+        if (dynamicCountInt <= 0) {
+            ll_dynamic_count_container.setVisibility(View.GONE);
+        } else {
+            tv_dynamic_count.setText(mActivity.getString(R.string.dynamic_count, String.valueOf(dynamicCountInt)));
+        }
     }
 
 }

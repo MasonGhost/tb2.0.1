@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 
@@ -95,5 +96,9 @@ public class PhotoViewPictureContainerFragment extends TSFragment {
         }
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LogUtils.i(TAG+"onDestroy");
+    }
 }

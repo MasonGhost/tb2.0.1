@@ -120,7 +120,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         mRootView.showMessage(message);
                     }
 
@@ -137,7 +137,12 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
         List<DynamicBean> datas = null;
         switch (mRootView.getDynamicType()) {
             case ApiConfig.DYNAMIC_TYPE_FOLLOWS:
-                datas = mDynamicBeanGreenDao.getFollowedDynamicList(maxId);
+                if (!isLoadMore) {// 刷新
+                    datas = getDynamicBeenFromDB();
+                    datas.addAll(mDynamicBeanGreenDao.getFollowedDynamicList(maxId));
+                } else {
+                    datas = mDynamicBeanGreenDao.getFollowedDynamicList(maxId);
+                }
                 break;
             case ApiConfig.DYNAMIC_TYPE_HOTS:
                 datas = mDynamicBeanGreenDao.getHotDynamicList(maxId);
@@ -177,6 +182,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
      *
      * @param data
      */
+
     private void insertOrUpdateDynamicDB(@NotNull List<DynamicBean> data) {
         mRepository.updateOrInsertDynamic(data, mRootView.getDynamicType());
     }

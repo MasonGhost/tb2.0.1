@@ -1,7 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 
+import android.graphics.BitmapFactory;
+
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -97,8 +100,9 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
     @Override
     public void changeUserHeadIcon(String filePath) {
         mRootView.setUpLoadHeadIconState(0, 0);
+        BitmapFactory.Options options = DrawableProvider.getPicsWHByFile(filePath);
         Subscription subscription = mIUploadRepository.upLoadSingleFile("pic",
-                filePath, true)
+                filePath, options.outMimeType, true, options.outWidth, options.outHeight)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribe<Integer>() {
@@ -108,7 +112,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         mRootView.setUpLoadHeadIconState(-1, 0);
                     }
 
@@ -140,7 +144,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         // 修改失败，好尴尬
                         mRootView.setChangeUserInfoState(-1, "");
                     }

@@ -67,7 +67,7 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                         }
 
                         @Override
-                        protected void onFailure(String message) {
+                        protected void onFailure(String message, int code) {
                             mRootView.showMessage(message);
                         }
 
@@ -86,7 +86,7 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                         }
 
                         @Override
-                        protected void onFailure(String message) {
+                        protected void onFailure(String message, int code) {
                             mRootView.showMessage(message);
                         }
 

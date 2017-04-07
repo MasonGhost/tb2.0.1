@@ -457,7 +457,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         LogUtils.d(message);
                     }
 

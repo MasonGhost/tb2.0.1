@@ -239,13 +239,14 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         LogUtils.i("imageBean = " + imageBean.toString());
 
         if (imageBean.getImgUrl() != null) {
+
             // 加载本地图片
             Glide.with(context)
                     .load(imageBean.getImgUrl())
                     .placeholder(R.drawable.shape_default_image)
                     .error(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .thumbnail(0.5f)
+                    .thumbnail(0.1f)
                     .override(800, 800)
                     .centerCrop()
                     .into(new GallarySimpleTarget(rect));
@@ -317,7 +318,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     @Override
                     public void handleMessage(Message msg) {
                         // 这部分的图片，都是通过OKHttp从网络获取的，如果改图片从glide缓存中读取，不会经过这儿
-                        if (msg.what == ProgressListener.SEND_LOAD_PROGRESS) {
+                        if (msg.what == ProgressListener.SEND_LOAD_PROGRESS && mTvOriginPhoto != null) {
                             int totalReadBytes = msg.arg1;
                             int lengthBytes = msg.arg2;
                             int progressResult = (int) (((float) totalReadBytes / (float) lengthBytes) * 100);

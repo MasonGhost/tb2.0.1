@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.infomation.infomain;
 
 import android.support.test.rule.ActivityTestRule;
 
-import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
@@ -50,7 +49,7 @@ public class InfoActivityTest extends AcitivityTest {
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
 
                     }
 

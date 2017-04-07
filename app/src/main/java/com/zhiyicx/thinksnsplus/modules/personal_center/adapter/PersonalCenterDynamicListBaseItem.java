@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center.adapter;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.TextView;
 
 import com.zhiyicx.common.utils.TimeUtils;
@@ -33,10 +34,12 @@ public class PersonalCenterDynamicListBaseItem extends DynamicListBaseItem {
         if (timeString.equals("今,天") || timeString.equals("昨,天")) {
             timeString = timeString.replace(",", "\n");
             timeUp.setText(timeString);
+            timeDown.setVisibility(View.GONE);
         } else {
             String[] dayAndMonth = timeString.split(",");
             timeUp.setText(dayAndMonth[0]);
             timeDown.setText(dayAndMonth[1]);
+            timeDown.setVisibility(View.VISIBLE);
         }
     }
 

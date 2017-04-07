@@ -140,7 +140,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
             backgroundRequestTaskBean = new BackgroundRequestTaskBean();
             backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST);
             backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_FOLLOW_USER);
-            if (TextUtils.isEmpty(mineUserInfo.getFollowing_count())) {
+            if (!TextUtils.isEmpty(mineUserInfo.getFollowing_count())) {
                 mineUserInfo.setFollowing_count(String.valueOf(Integer.valueOf(mineUserInfo.getFollowing_count()) + 1));
             } else {
                 mineUserInfo.setFollowing_count(String.valueOf(1));

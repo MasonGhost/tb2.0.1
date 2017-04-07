@@ -15,9 +15,6 @@ import com.zhiyicx.thinksnsplus.data.source.repository.MusicDetailRepository;
 
 import javax.inject.Inject;
 
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAILS_FORMAT;
-
 /**
  * @Author Jliuer
  * @Date 2017/02/14
@@ -58,7 +55,7 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
 
                     }
 
@@ -79,7 +76,7 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
 
                     }
 
@@ -108,10 +105,10 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
     public void shareMusicAlbum() {
         ShareContent shareContent = new ShareContent();
 
-        shareContent.setTitle(mRootView.getmMusicAlbumListBean().getTitle());
-        shareContent.setImage(ImageUtils.imagePathConvert(mRootView.getmMusicAlbumListBean()
-                .getStorage().getId() + "", 100));
-        shareContent.setUrl("http://www.huya.com");
+        shareContent.setTitle(mRootView.getCurrentAblum().getTitle());
+        shareContent.setImage(ImageUtils.imagePathConvert(mRootView.getCurrentAblum()
+                .getStorage() + "", 100));
+        shareContent.setUrl("http://www.baidu.com");
 
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());

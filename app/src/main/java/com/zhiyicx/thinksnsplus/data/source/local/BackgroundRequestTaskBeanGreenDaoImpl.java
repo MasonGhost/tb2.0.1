@@ -49,6 +49,20 @@ public class BackgroundRequestTaskBeanGreenDaoImpl extends CommonCacheImpl<Backg
         return backgroundRequestTaskBeanDao.loadAll();
     }
 
+    /**
+     * 获取某个人的后台任务列表
+     *
+     * @param user_id
+     * @return
+     */
+    public List<BackgroundRequestTaskBean> getMultiDataFromCacheByUserId(Long user_id) {
+        BackgroundRequestTaskBeanDao backgroundRequestTaskBeanDao = getRDaoSession().getBackgroundRequestTaskBeanDao();
+        List<BackgroundRequestTaskBean> datas = backgroundRequestTaskBeanDao.queryBuilder()
+                .where(BackgroundRequestTaskBeanDao.Properties.User_id.eq(user_id))
+                .list();
+        return datas;
+    }
+
     @Override
     public void clearTable() {
 

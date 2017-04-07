@@ -33,7 +33,6 @@ public class DynamicDetailBeanGreenDaoImplTest {
         mDynamicDetailBean.setContent("hello jungle68");
         mDynamicDetailBean.setFeed_content("hello feed_content");
         mDynamicDetailBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
-        mDynamicDetailBean.setLocalPhotos(new ArrayList<String>());
         mDynamicDetailBean.setStorages(new ArrayList<ImageBean>());
         mDynamicDetailBean.setFeed_id(System.currentTimeMillis());
         mDynamicDetailBean.setFeed_title("jundle68 dynamic title");
@@ -95,7 +94,6 @@ public class DynamicDetailBeanGreenDaoImplTest {
         Assert.assertTrue(!TextUtils.isEmpty(dynamicToolBean.getFeed_content()));
         Assert.assertTrue(!TextUtils.isEmpty(dynamicToolBean.getTitle()));
         Assert.assertTrue(null != dynamicToolBean.getStorages());
-        Assert.assertTrue(null != dynamicToolBean.getLocalPhotos());
     }
 
 }

@@ -91,7 +91,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         Throwable throwable = new Throwable(message);
                         mRootView.onResponseError(throwable, isLoadMore);
                     }

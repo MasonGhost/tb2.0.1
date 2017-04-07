@@ -79,7 +79,7 @@ public class DigListPresenter extends BasePresenter<DigListContract.Repository, 
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         mRootView.showMessage(message);
                     }
 

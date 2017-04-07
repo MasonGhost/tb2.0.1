@@ -39,8 +39,6 @@ public class DynamicDetailBean implements Parcelable {
     private List<ImageBean> storages;// 图片的云端存储id
     @Convert(converter = IntegerParamsConverter.class, columnType = String.class)
     private List<Integer> storage_task_ids;// 图片的云端存储id
-    @Convert(converter = StringParamsConverter.class, columnType = String.class)
-    private List<String> localPhotos;// 本地图片的路径
 
     public Long getFeed_mark() {
         return feed_mark;
@@ -88,14 +86,6 @@ public class DynamicDetailBean implements Parcelable {
 
     public void setFeed_from(int feed_from) {
         this.feed_from = feed_from;
-    }
-
-    public List<String> getLocalPhotos() {
-        return localPhotos;
-    }
-
-    public void setLocalPhotos(List<String> localPhotos) {
-        this.localPhotos = localPhotos;
     }
 
     public List<Integer> getStorage_task_ids() {
@@ -177,29 +167,6 @@ public class DynamicDetailBean implements Parcelable {
         }
     }
 
-    /**
-     * list<String> 转 String 形式存入数据库
-     */
-    public static class StringParamsConverter implements PropertyConverter<List<String>, String> {
-
-        @Override
-        public List<String> convertToEntityProperty(String databaseValue) {
-            if (databaseValue == null) {
-                return null;
-            }
-            return ConvertUtils.base64Str2Object(databaseValue);
-        }
-
-        @Override
-        public String convertToDatabaseValue(List<String> entityProperty) {
-            if (entityProperty == null) {
-                return null;
-            }
-            return ConvertUtils.object2Base64Str(entityProperty);
-        }
-    }
-
-
     public List<ImageBean> getStorages() {
         return this.storages;
     }
@@ -234,7 +201,6 @@ public class DynamicDetailBean implements Parcelable {
                 ", created_at=" + created_at +
                 ", feed_from=" + feed_from +
                 ", storages=" + storages +
-                ", localPhotos=" + localPhotos +
                 '}';
     }
 
@@ -254,7 +220,6 @@ public class DynamicDetailBean implements Parcelable {
         dest.writeInt(this.feed_from);
         dest.writeTypedList(this.storages);
         dest.writeList(this.storage_task_ids);
-        dest.writeStringList(this.localPhotos);
     }
 
     public DynamicDetailBean() {
@@ -270,13 +235,11 @@ public class DynamicDetailBean implements Parcelable {
         this.storages = in.createTypedArrayList(ImageBean.CREATOR);
         this.storage_task_ids = new ArrayList<Integer>();
         in.readList(this.storage_task_ids, Integer.class.getClassLoader());
-        this.localPhotos = in.createStringArrayList();
     }
 
-    @Generated(hash = 134391061)
+    @Generated(hash = 1476015793)
     public DynamicDetailBean(Long feed_mark, Long feed_id, String feed_title, String feed_content,
-            String created_at, int feed_from, List<ImageBean> storages, List<Integer> storage_task_ids,
-            List<String> localPhotos) {
+            String created_at, int feed_from, List<ImageBean> storages, List<Integer> storage_task_ids) {
         this.feed_mark = feed_mark;
         this.feed_id = feed_id;
         this.feed_title = feed_title;
@@ -285,7 +248,6 @@ public class DynamicDetailBean implements Parcelable {
         this.feed_from = feed_from;
         this.storages = storages;
         this.storage_task_ids = storage_task_ids;
-        this.localPhotos = localPhotos;
     }
 
     public static final Creator<DynamicDetailBean> CREATOR = new Creator<DynamicDetailBean>() {

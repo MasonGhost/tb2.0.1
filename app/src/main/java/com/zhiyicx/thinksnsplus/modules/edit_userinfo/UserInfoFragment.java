@@ -9,7 +9,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -441,8 +440,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
                 .url(ImageUtils.imagePathConvert(mUserInfoBean.getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
-                .errorPic(R.drawable.shape_default_image_circle)
-                .placeholder(R.drawable.shape_default_image_circle)
+                .errorPic(R.mipmap.pic_default_portrait1)
+                .placeholder(R.mipmap.pic_default_portrait1)
                 .imagerView(mIvHeadIcon)
                 .transformation(new GlideCircleTransform(getContext()))
                 .build());

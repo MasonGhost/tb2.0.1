@@ -37,6 +37,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForS
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForSixImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForThreeImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForTwoImage;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForZeroImage;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
@@ -145,7 +146,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 closeInputView();
             }
         });
-
         mIlvComment.setOnSendClickListener(this);
     }
 
@@ -167,7 +167,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mListDatas);
-        setAdapter(adapter, new DynamicListBaseItem(getContext()));
+        setAdapter(adapter, new DynamicListItemForZeroImage(getContext()));
         setAdapter(adapter, new DynamicListItemForOneImage(getContext()));
         setAdapter(adapter, new DynamicListItemForTwoImage(getContext()));
         setAdapter(adapter, new DynamicListItemForThreeImage(getContext()));
@@ -214,13 +214,14 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     protected Long getMaxId(@NotNull List<DynamicBean> data) {
-        switch (getDynamicType()) {
-            case ApiConfig.DYNAMIC_TYPE_HOTS:
-                return data.get(data.size() - 1).getHot_creat_time();
-            case ApiConfig.DYNAMIC_TYPE_FOLLOWS:
-            case ApiConfig.DYNAMIC_TYPE_NEW:
-            default:
-                return data.get(data.size() - 1).getFeed_id();
+        if (mListDatas.size() > 0) {
+            if (getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {
+                return mListDatas.get(mListDatas.size() - 1).getHot_creat_time();
+            } else {
+                return mListDatas.get(mListDatas.size() - 1).getFeed_id();
+            }
+        } else {
+            return DEFAULT_PAGE_MAX_ID;
         }
     }
 
@@ -232,22 +233,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onImageClick(ViewHolder holder, DynamicBean dynamicBean, int position) {
-        List<ImageBean> imageBeanList = new ArrayList<>();
-        if (dynamicBean.getFeed().getStorages() != null) {
-            imageBeanList = dynamicBean.getFeed().getStorages();
-        } else {
-            for (int i = 0; i < dynamicBean.getFeed().getLocalPhotos().size(); i++) {
-                ImageBean imageBean = new ImageBean();
-                imageBean.setImgUrl(dynamicBean.getFeed().getLocalPhotos().get(i));
-                imageBeanList.add(imageBean);
-            }
-        }
+        List<ImageBean> imageBeanList = dynamicBean.getFeed().getStorages();
         ArrayList<AnimationRectBean> animationRectBeanArrayList
                 = new ArrayList<AnimationRectBean>();
         for (int i = 0; i < imageBeanList.size(); i++) {
             int id = UIUtils.getResourceByName("siv_" + i, "id", getContext());
             ImageView imageView = holder.getView(id);
-
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
             animationRectBeanArrayList.add(rect);
         }
@@ -576,6 +567,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         intent.putExtras(bundle);
         startActivity(intent);
     }
+
 
     public interface OnCommentClickListener {
         void onButtonMenuShow(boolean isShow);

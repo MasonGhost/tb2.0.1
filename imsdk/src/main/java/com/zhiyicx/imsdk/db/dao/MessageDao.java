@@ -144,8 +144,9 @@ public class MessageDao extends BaseDao implements MessageDaoSoupport {
         map.put(COLUMN_NAME_MESSAGE_IS_READ, isRead(message.is_read));
         map.put(COLUMN_NAME_MESSAGE_SEND_STATUS, message.send_status);
         map.put(COLUMN_NAME_MESSAGE_IS_DEL, isDel(message.is_del));
-        if (message.create_time == 0)//  消息的MID，`(mid >> 23) + 1451577600000` 为毫秒时间戳
+        if (message.mid != 0) {//  消息的MID，`(mid >> 23) + 1451577600000` 为毫秒时间戳
             message.create_time = (message.mid >> 23) + TIME_DEFAULT_ADD;
+        }
         map.put(COLUMN_NAME_MESSAGE_CREATE_TIME, message.create_time);
         String uid = null;
         if (message.to != null)
