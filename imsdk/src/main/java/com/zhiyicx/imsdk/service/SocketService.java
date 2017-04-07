@@ -382,6 +382,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        System.out.println("---------------SocketService = ---------------------------------------------------");
         if (mService != null) {
             mService.disconnect();
         }

@@ -174,6 +174,7 @@ public class BackgroundTaskHandler {
                 }
                 threadSleep();
             }
+            System.out.println("---------------handleTaskRunnable = ---------------------------------------------------");
             // 存储未执行的数据到数据库，下次执行
             if (mBackgroundRequestTaskBeanCaches.size() > 0) {
                 mBackgroundRequestTaskBeanGreenDao.saveMultiData(mBackgroundRequestTaskBeanCaches);
