@@ -13,7 +13,7 @@
             layout="@layout/view_top_tip"
             />
 
-        <com.aspsine.swipetoloadlayout.SwipeToLoadLayout
+        <com.zhiyicx.baseproject.widget.refresh.CoodinatorLayoutAndRecyclerViewRefreshLayout
             android:id="@+id/refreshlayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -34,7 +34,7 @@
                 android:id="@id/swipe_load_more_footer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"></com.zhiyicx.baseproject.widget.refresh.RefreshFooterView>
-        </com.aspsine.swipetoloadlayout.SwipeToLoadLayout>
+        </com.zhiyicx.baseproject.widget.refresh.CoodinatorLayoutAndRecyclerViewRefreshLayout>
     </LinearLayout>
     <com.zhiyicx.baseproject.widget.EmptyView
         android:id="@+id/empty_view"
