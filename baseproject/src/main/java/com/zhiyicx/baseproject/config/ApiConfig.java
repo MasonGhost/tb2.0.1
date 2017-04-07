@@ -24,13 +24,12 @@ public class ApiConfig {
      * 测试服务器：http://192.168.2.222:8080/mockjs/2/test-get-repose-head-normal?
      */
 
-//    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
-    // public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
-    public static final String APP_DOMAIN = "http://192.168.2.222/";// 测试服务器
-    public static final String APP_IM_DOMAIN = "192.168.2.222:9900";// im 测试服务器
-//
-//     public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
-//     public static final String APP_IM_DOMAIN = "ws://tsplus.zhibocloud.cn:9900";// im 正式服务器
+    //public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
+    //public static final String APP_DOMAIN = "http://192.168.2.222/";// 测试服务器
+    // public static final String APP_IM_DOMAIN = "192.168.2.222:9900";// im 测试服务器
+
+    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
+    public static final String APP_IM_DOMAIN = "ws://tsplus.zhibocloud.cn:9900";// im 正式服务器
 
 
     public static final String URL_ABOUT_US = "http://www.thinksns.com/index.html";// 关于我们网站
@@ -177,10 +176,8 @@ public class ApiConfig {
     /**
      * 分享相关
      */
-    public static final String APP_PATH_SHARE_USERINFO = APP_DOMAIN+"profile/%s";// 用户信息分享地址 url/profile/{user_id}
-    public static final String APP_PATH_SHARE_DYNAMIC = APP_DOMAIN+"feeds/detail/%s";// 动态信息分享地址 url/feeds/detail/{feed_id}
-
-
+    public static final String APP_PATH_SHARE_USERINFO = APP_DOMAIN + "profile/%s";// 用户信息分享地址 url/profile/{user_id}
+    public static final String APP_PATH_SHARE_DYNAMIC = APP_DOMAIN + "feeds/detail/%s";// 动态信息分享地址 url/feeds/detail/{feed_id}
 
 
     /**
