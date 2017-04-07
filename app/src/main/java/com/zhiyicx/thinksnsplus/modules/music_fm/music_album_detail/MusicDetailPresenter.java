@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
+import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumDetailsBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicDetailRepository;
 
 import javax.inject.Inject;
@@ -27,6 +28,9 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
 
     @Inject
     MusicDetailRepository mMusicDetailRepository;
+
+    @Inject
+    MusicAlbumDetailsBeanGreenDaoImpl mMusicAlbumDetailsBeanGreenDao;
 
     @Inject
     public SharePolicy mSharePolicy;
@@ -47,10 +51,16 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
 
     @Override
     public void getMusicAblum(String id) {
+        MusicAlbumDetailsBean cacheData=getCacheAblumDetail(Integer.valueOf(id));
+        if (cacheData!=null){
+            mRootView.setMusicAblum(cacheData);
+        }
+
         mMusicDetailRepository.getMusicAblum(id).compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribe<MusicAlbumDetailsBean>() {
                     @Override
                     protected void onSuccess(MusicAlbumDetailsBean data) {
+                        mMusicAlbumDetailsBeanGreenDao.insertOrReplace(data);
                         mRootView.setMusicAblum(data);
                     }
 
@@ -96,6 +106,9 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
         mRootView.getCurrentAblum().setIs_collection(is_collect == 0 ? 1 : 0);
         int countChange = isUnCollected ? 1 : -1;
         mRootView.getCurrentAblum().setCollect_count(mRootView.getCurrentAblum().getCollect_count() + countChange);
+
+        mMusicAlbumDetailsBeanGreenDao.insertOrReplace(mRootView.getCurrentAblum());
+
         mRootView.setCollect(isUnCollected);
         mMusicDetailRepository.handleCollect(isUnCollected, special_id);
 
@@ -114,5 +127,10 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
 
         mMusicDetailRepository.shareAblum(mRootView.getCurrentAblum().getId()+"");
+    }
+
+    @Override
+    public MusicAlbumDetailsBean getCacheAblumDetail(int id) {
+        return mMusicAlbumDetailsBeanGreenDao.getAblumByID(id);
     }
 }

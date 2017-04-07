@@ -365,8 +365,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 showCommentView();
                 String contentHint = getString(R.string.default_input_hint);
                 if (mListDatas.get(position).getReply_to_user_id() != mInfoMation.getId()) {
-                    contentHint = getString(R.string.reply, mListDatas.get(position).getUser_id()
-                            + "");
+                    contentHint = getString(R.string.reply, mListDatas.get(position).getFromUserInfoBean().getName());
                 }
                 mIlvComment.setEtContentHint(contentHint);
             }
@@ -411,8 +410,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 showCommentView();
                 String contentHint = getString(R.string.default_input_hint);
                 if (mListDatas.get(position).getReply_to_user_id() != mInfoMation.getId()) {
-                    contentHint = getString(R.string.reply, mListDatas.get(position).getUser_id()
-                            + "");
+                    contentHint = getString(R.string.reply, mListDatas.get(position).getFromUserInfoBean().getName());
                 }
                 mIlvComment.setEtContentHint(contentHint);
             }

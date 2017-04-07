@@ -40,6 +40,7 @@ import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
@@ -211,6 +212,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
             if (metadata != null) {
+                mToolbarCenter.setText(metadata.getText(MediaMetadataCompat.METADATA_KEY_ALBUM));
                 mCurrentMediaId = metadata.getDescription().getMediaId();
                 mListPopupWindow.getAdapter().notifyDataSetChanged();
                 updateMediaDescription(metadata.getDescription());
@@ -314,6 +316,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     @Override
     protected void initView(View rootView) {
         initListener();
+        mToolbarCenter.setText(AppApplication.getmQueueManager().getCurrentMusic().getDescription().getTitle());
         mFragmentMusicPalyProgress.setThumb(R.mipmap.music_pic_progressbar_circle);
         mMusicAlbumDetailsBean = (MusicAlbumDetailsBean) getArguments().getSerializable
                 (MUSIC_INFO);
@@ -391,6 +394,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 Intent intent = new Intent(getActivity(), MusicCommentActivity.class);
                 Bundle musicBundle = new Bundle();
                 MusicCommentHeader.HeaderInfo headerInfo = new MusicCommentHeader.HeaderInfo();
+                headerInfo.setCommentCount(mCurrentMusic.getMusic_info().getComment_count());
                 headerInfo.setId(mCurrentMusic.getId());
                 headerInfo.setTitle(mCurrentMusic.getMusic_info().getTitle());
                 headerInfo.setLitenerCount(mCurrentMusic.getMusic_info().getTaste_count() + "");
@@ -517,9 +521,8 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 mCurrentValue = 0;
                 int realPosition = newPosition % mMusicList.size();
                 stopAnimation(mCurrentView);
-                ToastUtils.showToast("OnPageChanged:::" + realPosition);
                 mCurrentMusic = mMusicList.get(realPosition);
-                mToolbarCenter.setText(mCurrentMusic.getMusic_info().getTitle());
+
                 if (mCurrentMusic.getMusic_info().getIsdiggmusic() == 1) {
                     mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_high);
                 } else {
