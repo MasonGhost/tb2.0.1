@@ -155,7 +155,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                     if (mCurrentMusic != null) {
                         mCurrentMediaId = MediaIDHelper.extractMusicIDFromMediaID(mCurrentMusic.getDescription().getMediaId());
                     }
-                    LogUtils.d("onChildrenLoaded:::"+mCurrentMediaId);
                     fragmentMusicDetailMusicCount.setText(String.format("(共%d首)", children.size()));
                     mAdapter.dataChange(children);
                 }
@@ -272,6 +271,9 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @Override
     public void setMusicAblum(MusicAlbumDetailsBean musicAblum) {
         mAlbumDetailsBean = musicAblum;
+        mFragmentMusicDetailCenterTitle.setText(mAlbumDetailsBean.getTitle());
+        mFragmentMusicDetailCenterSubTitle.setText(mAlbumDetailsBean.getIntro());
+        mFragmentMusicDetailDec.setText(mAlbumDetailsBean.getIntro());
         if (mAlbumDetailsBean.getIs_collection() != 0) {
             mFragmentMusicDetailFavorite.setIconRes(R.mipmap.detail_ico_collect);
         }
@@ -331,7 +333,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         if (mMediaId == null) {
             mMediaId = mCompatProvider.getMediaBrowser().getRoot();
         }
-        LogUtils.d(mMediaId);
         mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
         mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
         MediaControllerCompat controller = getActivity()
