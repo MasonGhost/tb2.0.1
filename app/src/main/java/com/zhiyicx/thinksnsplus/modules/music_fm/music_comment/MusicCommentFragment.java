@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
@@ -26,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -49,6 +51,9 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
 
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     public static final String CURRENT_COMMENT = "current_comment";
+    public static final String CURRENT_COMMENT_TYPE_ABLUM = "special";
+    public static final String CURRENT_COMMENT_TYPE_MUSIC = "music";
+    public static final String CURRENT_COMMENT_TYPE = "type";
     private MusicCommentHeader.HeaderInfo mHeaderInfo;
     private MusicCommentHeader mMusicCommentHeader;
     private int mReplyUserId = 0;// 被评论者的 id ,评论动态 id = 0
@@ -63,6 +68,12 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        mIlvComment.post(new Runnable() {
+            @Override
+            public void run() {
+                mRvList.setPadding(0,0,0,mIlvComment.getHeight());
+            }
+        });
         mMusicCommentHeader = new MusicCommentHeader(getActivity());
 
         mHeaderInfo = (MusicCommentHeader.HeaderInfo) getArguments()
@@ -104,6 +115,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     public void onSendClick(View v, String text) {
         DeviceUtils.hideSoftKeyboard(getContext(), v);
         mEmptyView.setVisibility(View.GONE);
+        mReplyUserId=mHeaderInfo.getId();
         mPresenter.sendComment(mReplyUserId, text);
     }
 
@@ -151,7 +163,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
 
     @Override
     public void refreshData() {
-        super.refreshData();
+        mHeaderAndFooterWrapper.notifyDataSetChanged();
         mMusicCommentHeader.setCommentList(mListDatas.size());
     }
 
@@ -173,6 +185,11 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
 //        }
         mMusicCommentHeader.setCommentList(data.size());
         super.onNetResponseSuccess(data, isLoadMore);
+    }
+
+    @Override
+    public String getType() {
+        return getArguments().getString(CURRENT_COMMENT_TYPE,"");
     }
 
     private void initLisener() {

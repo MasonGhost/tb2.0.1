@@ -14,5 +14,7 @@
     <!--个人中心动态数量view高度-->
     <dimen name="personal_center_dynamic_count_view_height">37dp</dimen>
     <dimen name="personal_center_bottom_view_height">46dp</dimen>
+    <!--没有图的item，工具栏的左边margin-->
+    <dimen name="zero_image_left_margin">48dp</dimen>
 
 </resources>

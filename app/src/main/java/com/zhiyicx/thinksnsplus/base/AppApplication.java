@@ -27,6 +27,7 @@ import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
+import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.QueueManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MusicWindows;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
@@ -63,6 +64,7 @@ public class AppApplication extends TSApplication {
     private AlertDialog alertDialog; // token 过期弹框
     private static AuthBean mCurrentLoginAuth; //当前登录用户的信息
     private static HttpProxyCacheServer mMediaProxyCacheServer;
+    private static QueueManager mQueueManager;
     public static List<String> sOverRead = new ArrayList<>();
     private static MusicWindows sMusicWindows;
 
@@ -310,4 +312,11 @@ public class AppApplication extends TSApplication {
                 .build();
     }
 
+    public static QueueManager getmQueueManager() {
+        return mQueueManager;
+    }
+
+    public static void setmQueueManager(QueueManager mQueueManager) {
+        AppApplication.mQueueManager = mQueueManager;
+    }
 }

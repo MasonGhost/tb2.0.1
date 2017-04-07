@@ -34,6 +34,7 @@ public class MusicAlbumDetailsBean implements Serializable {
     private String created_at;
     private String updated_at;
     private String title;
+    private String intro;
     private int storage;
     private int taste_count;
     private int share_count;
@@ -41,6 +42,14 @@ public class MusicAlbumDetailsBean implements Serializable {
     private int collect_count;
     private int is_collection;
     private List<MusicsBean> musics;
+
+    public String getIntro() {
+        return intro;
+    }
+
+    public void setIntro(String intro) {
+        this.intro = intro;
+    }
 
     public int getIs_collection() {
         return is_collection;

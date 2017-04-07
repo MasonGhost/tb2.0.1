@@ -70,7 +70,7 @@ public class MusicDetailRepository implements MusicDetailContract.Repository {
                                     (BackgroundTaskRequestMethodConfig.DELETE, params);
                         }
                         backgroundRequestTaskBean.setPath(String.format(ApiConfig
-                                .APP_PATH_INFO_COLLECT_FORMAT, special_id));
+                                .APP_PATH_MUSIC_ABLUM_COLLECT_FORMAT, special_id));
                         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
                                 (backgroundRequestTaskBean);
                     }

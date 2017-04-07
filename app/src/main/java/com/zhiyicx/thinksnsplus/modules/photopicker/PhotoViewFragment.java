@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.SparseArray;
 import android.view.View;
@@ -229,16 +230,11 @@ public class PhotoViewFragment extends TSFragment {
 
 
     ////////////////////////////////缩放动画//////////////////////////////////
-    private SparseArray<PhotoViewPictureContainerFragment> fragmentMap
-            = new SparseArray<>();
     private boolean alreadyAnimateIn = false;
     private ArrayList<AnimationRectBean> rectList;
+    private PhotoViewPictureContainerFragment mPhotoViewPictureContainerFragment;
 
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -246,36 +242,25 @@ public class PhotoViewFragment extends TSFragment {
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            PhotoViewPictureContainerFragment fragment = fragmentMap.get(position);
-            if (fragment == null) {
-
-                boolean animateIn = (currentItem == position) && !alreadyAnimateIn;
-                fragment = PhotoViewPictureContainerFragment
-                        .newInstance(allPaths.get(position), rectList.get(position), animateIn,
-                                currentItem == position);
-                alreadyAnimateIn = true;
-                fragmentMap.put(position, fragment);
-            }
-            // PlaceholderFragment.newInstance(imageBeanList.get(position));
+            boolean animateIn = (currentItem == position) && !alreadyAnimateIn;
+            Fragment fragment = PhotoViewPictureContainerFragment
+                    .newInstance(allPaths.get(position), rectList.get(position), animateIn,
+                            currentItem == position);
+            alreadyAnimateIn = true;
             return fragment;
         }
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
             return allPaths.size();
         }
 
         @Override
         public void setPrimaryItem(ViewGroup container, int position, Object object) {
             super.setPrimaryItem(container, position, object);
-            if (object instanceof Fragment) {
-                fragmentMap.put(position, (PhotoViewPictureContainerFragment) object);
-            }
+            // 获取到当前的fragment，保留引用，退出时使用
+            mPhotoViewPictureContainerFragment = (PhotoViewPictureContainerFragment) object;
         }
-
     }
 
     /////////////////////////////////处理转场缩放动画/////////////////////////////////////
@@ -307,8 +292,7 @@ public class PhotoViewFragment extends TSFragment {
     }
 
     public void backPress() {
-        PhotoViewPictureContainerFragment fragment = fragmentMap.get(mViewPager.getCurrentItem());
-        if (fragment != null && fragment.canAnimateCloseActivity()) {
+        if (mPhotoViewPictureContainerFragment != null && mPhotoViewPictureContainerFragment.canAnimateCloseActivity()) {
             backgroundColor = new ColorDrawable(Color.WHITE);
             ObjectAnimator bgAnim = ObjectAnimator.ofInt(backgroundColor, "alpha", 0);
             bgAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -326,7 +310,7 @@ public class PhotoViewFragment extends TSFragment {
                     getActivity().overridePendingTransition(-1, -1);
                 }
             });
-            fragment.animationExit(bgAnim);
+            mPhotoViewPictureContainerFragment.animationExit(bgAnim);
         } else {
             setResult(true);
             ((PhotoViewActivity) getActivity()).superBackpress();

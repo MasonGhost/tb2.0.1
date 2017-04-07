@@ -14,10 +14,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.photoview.PhotoViewAttacher;
 import com.zhiyicx.common.utils.DrawableProvider;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.utils.TransferImageAnimationUtil;
@@ -50,6 +52,7 @@ public class PhotoViewPictureFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
+
         mPhotoViewAttacher = new PhotoViewAttacher(ivAnimation);
         mPhotoViewAttacher.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
             @Override
@@ -77,21 +80,19 @@ public class PhotoViewPictureFragment extends TSFragment {
         final AnimationRectBean rect = getArguments().getParcelable("rect");
         animateIn = getArguments().getBoolean("animationIn");// 是否需要放缩动画，除了第一次进入需要，其他时候应该禁止
 
-        Glide.with(getContext())
+        Glide.with(this)
                 .load(new File(path))
                 .centerCrop()
-                .crossFade()
+                .dontAnimate()
+                .dontTransform()
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .override(800, 800)// 这儿很重要，图片太大，会很卡，并且内存溢出
                 .thumbnail(0.1f)
-                .into(new SimpleTarget<GlideDrawable>() {
+                .into(new ImageViewTarget<GlideDrawable>(ivAnimation) {
                     @Override
-                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                        // 为什么会为空
-                        if (ivAnimation == null) {
-                            return;
-                        }
-                        ivAnimation.setImageDrawable(resource);
+                    protected void setResource(GlideDrawable glideDrawable) {
+                        LogUtils.i(TAG + "setResource");
+                        ivAnimation.setImageDrawable(glideDrawable);
                         mPhotoViewAttacher.update();
                         // 获取到模糊图进行放大动画
                         if (!hasAnim && animateIn) {
@@ -138,6 +139,12 @@ public class PhotoViewPictureFragment extends TSFragment {
             }
         };
         TransferImageAnimationUtil.startInAnim(rect, ivAnimation, endAction);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LogUtils.i(TAG + "onDestroy");
     }
 
 }

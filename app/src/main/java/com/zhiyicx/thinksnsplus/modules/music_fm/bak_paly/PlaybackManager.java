@@ -294,8 +294,6 @@ public class PlaybackManager implements Playback.Callback {
                 updatePlaybackState("Could not find music");
             }
         }
-
-
     }
 
     public Playback getPlayback() {

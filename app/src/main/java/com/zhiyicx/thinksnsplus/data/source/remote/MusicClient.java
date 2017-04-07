@@ -19,6 +19,7 @@ import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_ABLUM_COLLECT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_ABLUM_COMMENT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_ABLUM_COMMENT_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_ABLUM_DETAILS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_ABLUM_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_ABLUM_SHARE;
@@ -46,9 +47,11 @@ public interface MusicClient {
     Observable<BaseJson<MusicAlbumDetailsBean>> getMusicAblum(@Path("special_id") String id);
 
     // 获取专辑评论列表
-    @GET(APP_PATH_MUSIC_ABLUM_COMMENT)
-    Observable<BaseJson<List<AblumCommentListBean>>> getAblumCommentList(@Path("music_id") String
-                                                                                 music_id);
+    @GET(APP_PATH_MUSIC_ABLUM_COMMENT_LIST)
+    Observable<BaseJson<List<MusicCommentListBean>>> getAblumCommentList(@Path("special_id") String
+                                                                                 music_id,
+                                                                         @Query("max_id") Long max_id,
+                                                                         @Query("limit") Long limit);
 
     // 获取歌曲详情
     @GET(APP_PATH_MUSIC_DETAILS)

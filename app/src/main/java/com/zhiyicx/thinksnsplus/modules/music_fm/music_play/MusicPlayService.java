@@ -16,6 +16,7 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.LocalPlayback;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager;
@@ -160,7 +161,7 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
 
     @Override
     public void onNotificationRequired() {
-        mMediaNotificationManager.startNotification();
+//        mMediaNotificationManager.startNotification();
     }
 
     @Override
@@ -176,7 +177,6 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
     @Override
     public void onCustomAction(String action, Bundle extras) {
         MusicAlbumDetailsBean musicAblum = (MusicAlbumDetailsBean) extras.getSerializable(MUSIC_ACTION);
-        LogUtils.d(action + musicAblum);
         if (musicAblum!=null){
             MusicProvider newMusicProvider = new MusicProvider(new MusicAblumInfo(musicAblum));
             newMusicProvider.retrieveMediaAsync(null);// 很重要
@@ -238,6 +238,7 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
                 mLocalPlayback);
         mPlaybackManager.updatePlaybackState(null);
         mSession.setCallback(mPlaybackManager.getMediaSessionCallback());
+        AppApplication.setmQueueManager(mQueueManager);
     }
 
 }
