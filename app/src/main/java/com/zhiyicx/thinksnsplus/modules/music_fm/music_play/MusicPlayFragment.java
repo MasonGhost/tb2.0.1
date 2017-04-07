@@ -18,6 +18,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -46,6 +47,7 @@ import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentHeader;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
 import com.zhiyicx.thinksnsplus.widget.MusicListPopupWindow;
 import com.zhiyicx.thinksnsplus.widget.PlayerSeekBar;
 import com.zhiyicx.thinksnsplus.widget.pager_recyclerview.LoopPagerRecyclerView;
@@ -74,8 +76,12 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERLOOP;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERSINGLE;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDER_ACTION;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicAblumInfo.METADATA_KEY_GENRE;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailFragment.MUSIC_INFO;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT_TYPE_MUSIC;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper.MEDIA_ID_MUSICS_BY_GENRE;
 
 /**
  * @Author Jliuer
@@ -94,6 +100,8 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     ImageView mFragmentMusicPalyLike;
     @BindView(R.id.fragment_music_paly_comment)
     ImageView mFragmentMusicPalyComment;
+    @BindView(R.id.fragment_music_paly_comment_count)
+    TextView mFragmentMusicPalyCommentCount;
     @BindView(R.id.fragment_music_paly_lyrics)
     ImageView mFragmentMusicPalyLyrics;
     @BindView(R.id.fragment_music_paly_progress)
@@ -253,6 +261,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             mDefalultOrder = SharePreferenceUtils.getInterger(getActivity(),
                     SharePreferenceTagConfig.SHAREPREFERENCE_TAG_MUSIC);
             if (mDefalultOrder != -1) {
+                mListPopupWindow.setOrder(mDefalultOrder);
                 mFragmentMusicPalyOrder.setImageResource(mOrderModule[mDefalultOrder]);
             } else {
                 mDefalultOrder = ORDERLOOP;
@@ -305,11 +314,15 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     @Override
     protected void initView(View rootView) {
         initListener();
+        mFragmentMusicPalyProgress.setThumb(R.mipmap.music_pic_progressbar_circle);
         mMusicAlbumDetailsBean = (MusicAlbumDetailsBean) getArguments().getSerializable
                 (MUSIC_INFO);
         mMusicList = mMusicAlbumDetailsBean.getMusics();
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-
+        MediaSessionCompat.QueueItem mCurrentMusic = AppApplication.getmQueueManager().getCurrentMusic();
+        if (mCurrentMusic != null) {
+            mCurrentMediaId = MediaIDHelper.extractMusicIDFromMediaID(mCurrentMusic.getDescription().getMediaId());
+        }
         mFragmentMusicPalyLrc.setMovementMethod(ScrollingMovementMethod.getInstance());
         mListPopupWindow = MusicListPopupWindow.Builder()
                 .with(getActivity())
@@ -377,13 +390,14 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             case R.id.fragment_music_paly_comment: // 评论
                 Intent intent = new Intent(getActivity(), MusicCommentActivity.class);
                 Bundle musicBundle = new Bundle();
-                MusicCommentHeader.HeaderInfo headerInfo=new MusicCommentHeader.HeaderInfo();
+                MusicCommentHeader.HeaderInfo headerInfo = new MusicCommentHeader.HeaderInfo();
                 headerInfo.setId(mCurrentMusic.getId());
                 headerInfo.setTitle(mCurrentMusic.getMusic_info().getTitle());
-                headerInfo.setLitenerCount(mCurrentMusic.getMusic_info().getTaste_count()+"");
+                headerInfo.setLitenerCount(mCurrentMusic.getMusic_info().getTaste_count() + "");
                 headerInfo.setImageUrl(ImageUtils.imagePathConvert(mCurrentMusic.getMusic_info().getSinger().getCover().getId() + "",
                         ImageZipConfig.IMAGE_70_ZIP));
                 musicBundle.putSerializable(CURRENT_COMMENT, headerInfo);
+                musicBundle.putString(CURRENT_COMMENT_TYPE,CURRENT_COMMENT_TYPE_MUSIC);
                 intent.putExtra(CURRENT_COMMENT, musicBundle);
                 startActivity(intent);
                 break;
@@ -392,6 +406,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 if (mDefalultOrder > 2) {
                     mDefalultOrder = 0;
                 }
+                mListPopupWindow.setOrder(mDefalultOrder);
                 Bundle bundle = new Bundle();
                 bundle.putInt(ORDER_ACTION, mDefalultOrder);
                 getActivity().getSupportMediaController().getTransportControls()
@@ -504,7 +519,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 stopAnimation(mCurrentView);
                 ToastUtils.showToast("OnPageChanged:::" + realPosition);
                 mCurrentMusic = mMusicList.get(realPosition);
-
+                mToolbarCenter.setText(mCurrentMusic.getMusic_info().getTitle());
                 if (mCurrentMusic.getMusic_info().getIsdiggmusic() == 1) {
                     mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_high);
                 } else {
@@ -513,17 +528,13 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 if (mCurrentMusic.getMusic_info().getComment_count() > 0) {
                     mFragmentMusicPalyComment.setImageResource(
                             R.mipmap.music_ico_comment_incomplete);
-                    BadgeView badgeView = new BadgeView(getActivity());
-                    badgeView.setTargetView(mFragmentMusicPalyComment);
-                    badgeView.setBadgeCount(mCurrentMusic.getMusic_info().getComment_count());
-                    badgeView.setBadgeMargin(0, 14, 20, 0);
-                    badgeView.setTextColor(getResources().getColor(
-                            R.color.normal_for_dynamic_list_content));
-                    badgeView.setBackgroundColor(0x00000000);
+                    mFragmentMusicPalyCommentCount.setText("" + mCurrentMusic.getMusic_info().getComment_count());
                 } else {
                     mFragmentMusicPalyComment.setImageResource(
                             R.mipmap.music_ico_comment_complete);
+                    mFragmentMusicPalyCommentCount.setText("");
                 }
+
 
                 mFragmentMusicPalyLrc.setText(mCurrentMusic.getMusic_info().getLyric());
 
@@ -607,6 +618,8 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             mMediaDescriptionCompat = description;
             mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
                     .transformation(new GlideMusicBgTransform(getActivity()))
+                    .errorPic(R.drawable.shape_default_image)
+                    .placeholder(R.drawable.shape_default_image)
                     .imagerView(mFragmentMusicPalyBg)
                     .url(description.getIconUri() + "")
                     .build());
@@ -616,6 +629,8 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
             mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
                     .imagerView(image)
+                    .errorPic(R.drawable.shape_default_image)
+                    .placeholder(R.drawable.shape_default_image)
                     .url(description.getIconUri() + "")
                     .build());
         }
@@ -853,7 +868,12 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                ToastUtils.showToast("position:" + position);
+                MusicAlbumDetailsBean.MusicsBean musicsBean = mMusicList.get(position);
+                MediaControllerCompat controllerCompat = getActivity()
+                        .getSupportMediaController();
+                String id = MediaIDHelper.createMediaID("" + musicsBean.getMusic_info().getId(), MEDIA_ID_MUSICS_BY_GENRE, METADATA_KEY_GENRE);
+                controllerCompat.getTransportControls()
+                        .playFromMediaId(id, null);
             }
 
             @Override
@@ -877,6 +897,8 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                         o.getMusic_info().getSinger().getCover().getId(), 50);
                 mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
                         .imagerView(image)
+                        .errorPic(R.drawable.shape_default_image)
+                        .placeholder(R.drawable.shape_default_image)
                         .url(imageUrl)
                         .build());
             }
@@ -884,7 +906,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         mAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                ToastUtils.showToast(position + "");
+
             }
 
             @Override

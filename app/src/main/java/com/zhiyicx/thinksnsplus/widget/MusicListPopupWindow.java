@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 
@@ -229,15 +230,18 @@ public class MusicListPopupWindow extends PopupWindow {
         switch (order) {
             case ORDERRANDOM:
                 mTileTextView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap
-                        .music_ico_random, 0, 0, 0);
+                        .music_ico_random_grey, 0, 0, 0);
+                mTileTextView.setText(R.string.music_order_random);
                 break;
             case ORDERSINGLE:
                 mTileTextView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap
                         .music_ico_single_grey, 0, 0, 0);
+                mTileTextView.setText(R.string.music_order_single);
                 break;
             default:
                 mTileTextView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap
                         .music_ico_inorder_grey, 0, 0, 0);
+                mTileTextView.setText(R.string.music_order_nomal);
                 break;
         }
     }

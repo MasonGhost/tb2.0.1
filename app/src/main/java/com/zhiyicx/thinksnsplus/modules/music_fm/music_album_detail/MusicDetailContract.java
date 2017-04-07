@@ -27,6 +27,8 @@ public interface MusicDetailContract {
         void setCollect(boolean isCollected);
 
         MusicAlbumDetailsBean getCurrentAblum();
+
+        MusicAlbumListBean getmMusicAlbumListBean();
     }
 
     interface Presenter extends IBasePresenter {
