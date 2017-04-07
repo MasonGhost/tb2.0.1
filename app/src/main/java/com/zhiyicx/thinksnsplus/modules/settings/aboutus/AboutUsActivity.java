@@ -21,7 +21,7 @@ public class AboutUsActivity extends TSActivity<RegisterPresenter, AboutUsFragme
 
     @Override
     protected AboutUsFragment getFragment() {
-        return AboutUsFragment.newInstance();
+        return AboutUsFragment.newInstance(getIntent().getExtras());
     }
 
     /**

@@ -33,6 +33,7 @@ public class ApiConfig {
 
 
     public static final String URL_ABOUT_US = "http://www.thinksns.com/index.html";// 关于我们网站
+    public static final String URL_JIPU_SHOP= "http://demo.jipukeji.com";// 极铺购物地址
 
     // 图片地址
     public static final String IMAGE_PATH = APP_DOMAIN + "api/v1/storages/%s/%d";// 带质量压缩

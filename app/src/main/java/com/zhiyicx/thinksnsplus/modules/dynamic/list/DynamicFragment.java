@@ -89,6 +89,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private ActionPopupWindow mDeletCommentPopWindow;
     private ActionPopupWindow mDeletDynamicPopWindow;
     private ActionPopupWindow mReSendCommentPopWindow;
+    private ActionPopupWindow mReSendDynamicPopWindow;
     private int mCurrentPostion;// 当前评论的动态位置
     private long mReplyToUserId;// 被评论者的 id
 
@@ -288,8 +289,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 mainFragment.setPagerSelection(MainFragment.PAGER_FOLLOW_DYNAMIC_LIST_POSITION);
                 // 主页切换到首页
                 Fragment parentFragmentHome = mainFragment.getParentFragment();
-                if(parentFragmentHome!=null&&parentFragmentHome instanceof HomeFragment){
-                    HomeFragment homeFragment= (HomeFragment) parentFragmentHome;
+                if (parentFragmentHome != null && parentFragmentHome instanceof HomeFragment) {
+                    HomeFragment homeFragment = (HomeFragment) parentFragmentHome;
                     homeFragment.setPagerSelection(HomeFragment.PAGE_HOME);
                 }
             }
@@ -299,15 +300,14 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     /**
-     * resend click
+     * dynamic resend click
      *
      * @param position
      */
     @Override
     public void onReSendClick(int position) {
-        mListDatas.get(position).setState(DynamicBean.SEND_ING);
-        refreshData();
-        mPresenter.reSendDynamic(position);
+        initReSendDynamicPopupWindow(position);
+        mReSendDynamicPopWindow.show();
     }
 
 
@@ -506,6 +506,36 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     public void onBottomClicked() {
                         mDeletDynamicPopWindow.hide();
                         showBottomView(true);
+                    }
+                })
+                .build();
+    }
+
+    /**
+     * 初始化重发动态选择弹框
+     */
+    private void initReSendDynamicPopupWindow(final int position) {
+        mReSendDynamicPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.dynamic_list_resend_dynamic))
+                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+                        mReSendDynamicPopWindow.hide();
+                        mListDatas.get(position).setState(DynamicBean.SEND_ING);
+                        refreshData();
+                        mPresenter.reSendDynamic(position);
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mReSendDynamicPopWindow.hide();
                     }
                 })
                 .build();
