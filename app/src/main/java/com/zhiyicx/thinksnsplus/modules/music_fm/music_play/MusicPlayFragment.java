@@ -45,6 +45,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
+import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProviderSource;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentHeader;
@@ -212,6 +213,15 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
             if (metadata != null) {
+                //noinspection ResourceType
+                String musicUrl=metadata.getString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE);
+                boolean isCached=AppApplication.getProxy().isCached(musicUrl);
+                LogUtils.d("isCached:::"+isCached);
+                LogUtils.d("thread:::"+Thread.currentThread().getName());
+                if (isCached){
+                    mFragmentMusicPalyProgress.setSecondaryProgress(70);
+                }
+                LogUtils.d("Second:::"+mFragmentMusicPalyProgress.getSecondaryProgress());
                 mToolbarCenter.setText(metadata.getText(MediaMetadataCompat.METADATA_KEY_ALBUM));
                 mCurrentMediaId = metadata.getDescription().getMediaId();
                 mListPopupWindow.getAdapter().notifyDataSetChanged();
@@ -317,10 +327,13 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     protected void initView(View rootView) {
         initListener();
         mToolbarCenter.setText(AppApplication.getmQueueManager().getCurrentMusic().getDescription().getTitle());
-        mFragmentMusicPalyProgress.setThumb(R.mipmap.music_pic_progressbar_circle);
+
+        AppApplication.getmQueueManager().getCurrentMusic().getDescription().getMediaUri();
+
         mMusicAlbumDetailsBean = (MusicAlbumDetailsBean) getArguments().getSerializable
                 (MUSIC_INFO);
         mMusicList = mMusicAlbumDetailsBean.getMusics();
+
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         MediaSessionCompat.QueueItem mCurrentMusic = AppApplication.getmQueueManager().getCurrentMusic();
         if (mCurrentMusic != null) {
@@ -367,115 +380,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     @Override
     public void showMessage(String message) {
 
-    }
-
-    @OnClick({R.id.fragment_music_paly_share, R.id.fragment_music_paly_like, R.id
-            .fragment_music_paly_comment, R.id.fragment_music_paly_lyrics, R.id
-            .fragment_music_paly_order, R.id.fragment_music_paly_preview, R.id
-            .fragment_music_paly_palyer, R.id.fragment_music_paly_nextview, R.id
-            .fragment_music_paly_list, R.id.fragment_music_paly_bg, R.id.fragment_music_paly_lrc})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.fragment_music_paly_share:// 分享
-                mPresenter.shareMusic();
-                break;
-            case R.id.fragment_music_paly_like: // 点赞
-                mPresenter.handleLike(mCurrentMusic.getMusic_info().getIsdiggmusic() == 0,
-                        mMediaDescriptionCompat.getMediaId());
-                if (mCurrentMusic.getMusic_info().getIsdiggmusic() == 1) {
-                    mCurrentMusic.getMusic_info().setIsdiggmusic(0);
-                    mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_normal);
-                } else {
-                    mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_high);
-                    mCurrentMusic.getMusic_info().setIsdiggmusic(1);
-                }
-                break;
-            case R.id.fragment_music_paly_comment: // 评论
-                Intent intent = new Intent(getActivity(), MusicCommentActivity.class);
-                Bundle musicBundle = new Bundle();
-                MusicCommentHeader.HeaderInfo headerInfo = new MusicCommentHeader.HeaderInfo();
-                headerInfo.setCommentCount(mCurrentMusic.getMusic_info().getComment_count());
-                headerInfo.setId(mCurrentMusic.getId());
-                headerInfo.setTitle(mCurrentMusic.getMusic_info().getTitle());
-                headerInfo.setLitenerCount(mCurrentMusic.getMusic_info().getTaste_count() + "");
-                headerInfo.setImageUrl(ImageUtils.imagePathConvert(mCurrentMusic.getMusic_info().getSinger().getCover().getId() + "",
-                        ImageZipConfig.IMAGE_70_ZIP));
-                musicBundle.putSerializable(CURRENT_COMMENT, headerInfo);
-                musicBundle.putString(CURRENT_COMMENT_TYPE,CURRENT_COMMENT_TYPE_MUSIC);
-                intent.putExtra(CURRENT_COMMENT, musicBundle);
-                startActivity(intent);
-                break;
-            case R.id.fragment_music_paly_order: // 播放顺序
-                mDefalultOrder++;
-                if (mDefalultOrder > 2) {
-                    mDefalultOrder = 0;
-                }
-                mListPopupWindow.setOrder(mDefalultOrder);
-                Bundle bundle = new Bundle();
-                bundle.putInt(ORDER_ACTION, mDefalultOrder);
-                getActivity().getSupportMediaController().getTransportControls()
-                        .sendCustomAction(ORDER_ACTION, bundle);
-
-                mFragmentMusicPalyOrder.setImageResource(mOrderModule[mDefalultOrder]);
-                SharePreferenceUtils.setInterger(getActivity(),
-                        SharePreferenceTagConfig.SHAREPREFERENCE_TAG_MUSIC, mDefalultOrder);
-
-                break;
-            case R.id.fragment_music_paly_preview:// 上一首歌
-                rxStopProgress();
-                if (mPhonographAnimate != null && mPhonographAnimate.isStarted()) {
-                    pauseAnimation();
-                }
-                mFragmentMusicPalyRv.smoothScrollToPosition(
-                        mFragmentMusicPalyRv.getCurrentPosition() - 1
-                );
-
-                mFragmentMusicPalyProgress.setProgress(0);
-                break;
-            case R.id.fragment_music_paly_palyer:// 播放暂停
-                PlaybackStateCompat state = getActivity().getSupportMediaController()
-                        .getPlaybackState();
-                if (state != null) {
-                    MediaControllerCompat.TransportControls controls =
-                            getActivity().getSupportMediaController().getTransportControls();
-                    switch (state.getState()) {
-                        case PlaybackStateCompat.STATE_PLAYING:
-                        case PlaybackStateCompat.STATE_BUFFERING:
-                            controls.pause();
-                            rxStopProgress();
-                            break;
-                        case PlaybackStateCompat.STATE_PAUSED:
-                        case PlaybackStateCompat.STATE_STOPPED:
-                            controls.play();
-                            rxStartProgress();
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                break;
-            case R.id.fragment_music_paly_nextview:// 下一首
-                rxStopProgress();
-                if (mPhonographAnimate != null && mPhonographAnimate.isStarted()) {
-                    pauseAnimation();
-                }
-
-                mFragmentMusicPalyRv.smoothScrollToPosition(
-                        mFragmentMusicPalyRv.getCurrentPosition() + 1
-                );
-                mFragmentMusicPalyProgress.setProgress(0);
-                break;
-            case R.id.fragment_music_paly_list:// 歌曲目录
-                mListPopupWindow.show();
-                break;
-//            case R.id.fragment_music_paly_bg:
-            case R.id.fragment_music_paly_lyrics:// 歌词显示
-//            case R.id.fragment_music_paly_lrc:
-                handleLrc();
-                break;
-            default:
-                break;
-        }
     }
 
     /**
@@ -628,6 +532,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                     .build());
             View item = RecyclerViewUtils
                     .getCenterXChild(mFragmentMusicPalyRv);
+
             ImageView image = (ImageView) item.findViewById(R.id.fragment_music_paly_img);
 
             mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
@@ -735,14 +640,13 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     @Subscriber(tag = EVENT_SEND_MUSIC_CACHE_PROGRESS, mode = ThreadMode.MAIN)
     public void onBufferingUpdate(int progress) {
-        mFragmentMusicPalyProgress.setSecondaryProgress(mFragmentMusicPalyProgress.getMax()
-                * progress);
-        Log.e("MUSIC_CACHE_PROGRESS", "" + progress);
+        mFragmentMusicPalyProgress.setSecondaryProgress(progress);
+        LogUtils.d("MUSIC_CACHE_PROGRESS", "" + progress);
     }
 
     @Subscriber(tag = EVENT_SEND_MUSIC_LOAD, mode = ThreadMode.MAIN)
     public void onMusicLoading(boolean l) {
-        Log.e("MUSIC_LOAD", "" + l + "");
+        LogUtils.d("MUSIC_LOADING", "" + l + "");
         mFragmentMusicPalyProgress.setLoading(l);
     }
 
@@ -756,7 +660,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                     .getCurrentPosition() + 1);
             mFragmentMusicPalyRv.setSpeed(250);
         }
-        Log.e("MUSIC_END", "" + orderType);
+        LogUtils.d("MUSIC_END", "" + orderType);
     }
 
     /**
@@ -931,5 +835,114 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
         mFragmentMusicPalyLrc.setVisibility(mFragmentMusicPalyLrc.getVisibility() == View
                 .VISIBLE ? View.GONE : View.VISIBLE);
+    }
+
+    @OnClick({R.id.fragment_music_paly_share, R.id.fragment_music_paly_like, R.id
+            .fragment_music_paly_comment, R.id.fragment_music_paly_lyrics, R.id
+            .fragment_music_paly_order, R.id.fragment_music_paly_preview, R.id
+            .fragment_music_paly_palyer, R.id.fragment_music_paly_nextview, R.id
+            .fragment_music_paly_list, R.id.fragment_music_paly_bg, R.id.fragment_music_paly_lrc})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.fragment_music_paly_share:// 分享
+                mPresenter.shareMusic();
+                break;
+            case R.id.fragment_music_paly_like: // 点赞
+                mPresenter.handleLike(mCurrentMusic.getMusic_info().getIsdiggmusic() == 0,
+                        mMediaDescriptionCompat.getMediaId());
+                if (mCurrentMusic.getMusic_info().getIsdiggmusic() == 1) {
+                    mCurrentMusic.getMusic_info().setIsdiggmusic(0);
+                    mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_normal);
+                } else {
+                    mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_high);
+                    mCurrentMusic.getMusic_info().setIsdiggmusic(1);
+                }
+                break;
+            case R.id.fragment_music_paly_comment: // 评论
+                Intent intent = new Intent(getActivity(), MusicCommentActivity.class);
+                Bundle musicBundle = new Bundle();
+                MusicCommentHeader.HeaderInfo headerInfo = new MusicCommentHeader.HeaderInfo();
+                headerInfo.setCommentCount(mCurrentMusic.getMusic_info().getComment_count());
+                headerInfo.setId(mCurrentMusic.getId());
+                headerInfo.setTitle(mCurrentMusic.getMusic_info().getTitle());
+                headerInfo.setLitenerCount(mCurrentMusic.getMusic_info().getTaste_count() + "");
+                headerInfo.setImageUrl(ImageUtils.imagePathConvert(mCurrentMusic.getMusic_info().getSinger().getCover().getId() + "",
+                        ImageZipConfig.IMAGE_70_ZIP));
+                musicBundle.putSerializable(CURRENT_COMMENT, headerInfo);
+                musicBundle.putString(CURRENT_COMMENT_TYPE,CURRENT_COMMENT_TYPE_MUSIC);
+                intent.putExtra(CURRENT_COMMENT, musicBundle);
+                startActivity(intent);
+                break;
+            case R.id.fragment_music_paly_order: // 播放顺序
+                mDefalultOrder++;
+                if (mDefalultOrder > 2) {
+                    mDefalultOrder = 0;
+                }
+                mListPopupWindow.setOrder(mDefalultOrder);
+                Bundle bundle = new Bundle();
+                bundle.putInt(ORDER_ACTION, mDefalultOrder);
+                getActivity().getSupportMediaController().getTransportControls()
+                        .sendCustomAction(ORDER_ACTION, bundle);
+
+                mFragmentMusicPalyOrder.setImageResource(mOrderModule[mDefalultOrder]);
+                SharePreferenceUtils.setInterger(getActivity(),
+                        SharePreferenceTagConfig.SHAREPREFERENCE_TAG_MUSIC, mDefalultOrder);
+
+                break;
+            case R.id.fragment_music_paly_preview:// 上一首歌
+                rxStopProgress();
+                if (mPhonographAnimate != null && mPhonographAnimate.isStarted()) {
+                    pauseAnimation();
+                }
+                mFragmentMusicPalyRv.smoothScrollToPosition(
+                        mFragmentMusicPalyRv.getCurrentPosition() - 1
+                );
+
+                mFragmentMusicPalyProgress.setProgress(0);
+                break;
+            case R.id.fragment_music_paly_palyer:// 播放暂停
+                PlaybackStateCompat state = getActivity().getSupportMediaController()
+                        .getPlaybackState();
+                if (state != null) {
+                    MediaControllerCompat.TransportControls controls =
+                            getActivity().getSupportMediaController().getTransportControls();
+                    switch (state.getState()) {
+                        case PlaybackStateCompat.STATE_PLAYING:
+                        case PlaybackStateCompat.STATE_BUFFERING:
+                            controls.pause();
+                            rxStopProgress();
+                            break;
+                        case PlaybackStateCompat.STATE_PAUSED:
+                        case PlaybackStateCompat.STATE_STOPPED:
+                            controls.play();
+                            rxStartProgress();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                break;
+            case R.id.fragment_music_paly_nextview:// 下一首
+                rxStopProgress();
+                if (mPhonographAnimate != null && mPhonographAnimate.isStarted()) {
+                    pauseAnimation();
+                }
+
+                mFragmentMusicPalyRv.smoothScrollToPosition(
+                        mFragmentMusicPalyRv.getCurrentPosition() + 1
+                );
+                mFragmentMusicPalyProgress.setProgress(0);
+                break;
+            case R.id.fragment_music_paly_list:// 歌曲目录
+                mListPopupWindow.show();
+                break;
+//            case R.id.fragment_music_paly_bg:
+            case R.id.fragment_music_paly_lyrics:// 歌词显示
+//            case R.id.fragment_music_paly_lrc:
+                handleLrc();
+                break;
+            default:
+                break;
+        }
     }
 }

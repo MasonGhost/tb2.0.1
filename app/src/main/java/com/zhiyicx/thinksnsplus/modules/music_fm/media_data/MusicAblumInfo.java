@@ -55,6 +55,7 @@ public class MusicAblumInfo implements MusicProviderSource {
                 .putString(MediaMetadataCompat.METADATA_KEY_GENRE, METADATA_KEY_GENRE)
                 .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, imageUrl)
                 .putString(MediaMetadataCompat.METADATA_KEY_TITLE, needData.getTitle())
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI,musicUrl)
                 .build();
     }
 }

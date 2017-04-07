@@ -22,6 +22,8 @@
             android:animateLayoutChanges="true">
 
             <TextView
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="20dp"
                 android:id="@+id/fragment_music_paly_lrc"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -94,7 +96,6 @@
                         android:layout_marginLeft="-8dp"
                         android:layout_marginTop="-5dp"
                         android:layout_toRightOf="@+id/fragment_music_paly_comment"
-                        android:text="sssssss"
                         android:textSize="10sp"
                         android:textColor="@color/__picker_black_40"/>
 
@@ -142,14 +143,15 @@
                 <com.zhiyicx.thinksnsplus.widget.PlayerSeekBar
                     android:id="@+id/fragment_music_paly_progress"
                     android:layout_width="0dp"
+                    style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
                     android:layout_gravity="center"
+                    android:indeterminate="false"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:max="100"
                     android:maxHeight="3dp"
                     android:minHeight="3dp"
                     android:progressDrawable="@drawable/music_seekbar_style"
-                    android:secondaryProgress="0"
                     android:thumb="@mipmap/music_pic_progressbar_circle"/>
 
                 <TextView

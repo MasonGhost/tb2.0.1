@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * @Author Jliuer
  * @Date 2017/03/02
@@ -150,7 +152,45 @@ public class MusicDetaisBean implements Parcelable {
         private String created_at;
         private String updated_at;
         private String name;
-        private int cover;
+        private CoverBean cover;
+
+        public static class CoverBean implements Serializable {
+            private static final long serialVersionUID = 1L;
+            /**
+             * id : 2
+             * image_width : 3264
+             * image_height : 2448
+             */
+
+            private int id;
+            private int image_width;
+            private int image_height;
+
+            public int getId() {
+                return id;
+            }
+
+            public void setId(int id) {
+                this.id = id;
+            }
+
+            public int getImage_width() {
+                return image_width;
+            }
+
+            public void setImage_width(int image_width) {
+                this.image_width = image_width;
+            }
+
+            public int getImage_height() {
+                return image_height;
+            }
+
+            public void setImage_height(int image_height) {
+                this.image_height = image_height;
+            }
+        }
+
 
         public int getId() {
             return id;
@@ -184,13 +224,18 @@ public class MusicDetaisBean implements Parcelable {
             this.name = name;
         }
 
-        public int getCover() {
+        public CoverBean getCover() {
             return cover;
         }
 
-        public void setCover(int cover) {
+        public void setCover(CoverBean cover) {
             this.cover = cover;
         }
+
+
+        public SingerBean() {
+        }
+
 
         @Override
         public int describeContents() {
@@ -203,10 +248,7 @@ public class MusicDetaisBean implements Parcelable {
             dest.writeString(this.created_at);
             dest.writeString(this.updated_at);
             dest.writeString(this.name);
-            dest.writeInt(this.cover);
-        }
-
-        public SingerBean() {
+            dest.writeSerializable(this.cover);
         }
 
         protected SingerBean(Parcel in) {
@@ -214,7 +256,7 @@ public class MusicDetaisBean implements Parcelable {
             this.created_at = in.readString();
             this.updated_at = in.readString();
             this.name = in.readString();
-            this.cover = in.readInt();
+            this.cover = (CoverBean) in.readSerializable();
         }
 
         public static final Creator<SingerBean> CREATOR = new Creator<SingerBean>() {

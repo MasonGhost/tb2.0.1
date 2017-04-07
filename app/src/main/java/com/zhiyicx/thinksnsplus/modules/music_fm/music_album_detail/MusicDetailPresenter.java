@@ -51,10 +51,10 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
 
     @Override
     public void getMusicAblum(String id) {
-        MusicAlbumDetailsBean cacheData=getCacheAblumDetail(Integer.valueOf(id));
-        if (cacheData!=null){
-            mRootView.setMusicAblum(cacheData);
-        }
+//        MusicAlbumDetailsBean cacheData = getCacheAblumDetail(Integer.valueOf(id));
+//        if (cacheData != null) {
+//            mRootView.setMusicAblum(cacheData);
+//        }
 
         mMusicDetailRepository.getMusicAblum(id).compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribe<MusicAlbumDetailsBean>() {
@@ -126,7 +126,7 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
 
-        mMusicDetailRepository.shareAblum(mRootView.getCurrentAblum().getId()+"");
+        mMusicDetailRepository.shareAblum(mRootView.getCurrentAblum().getId() + "");
     }
 
     @Override

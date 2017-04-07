@@ -4,7 +4,6 @@
     <!-- 未选中 -->
     <item android:id="@android:id/background">
         <shape>
-            <size android:height="@dimen/spacing_small_3dp"/>
             <corners android:radius="@dimen/spacing_small"/>
             <solid android:color="@color/normal_for_disable_button_text"/>
         </shape>
@@ -13,7 +12,6 @@
     <item android:id="@android:id/secondaryProgress">
         <clip>
             <shape>
-                <size android:height="@dimen/spacing_small_3dp"/>
                 <corners android:radius="@dimen/spacing_small"/>
                 <solid android:color="@color/normal_for_assist_text"/>
             </shape>
@@ -24,7 +22,6 @@
     <item android:id="@android:id/progress">
         <clip>
             <shape>
-                <size android:height="@dimen/spacing_small_3dp"/>
                 <corners android:radius="@dimen/spacing_small"/>
                 <solid android:color="@color/normal_for_dynamic_list_content"/>
             </shape>
