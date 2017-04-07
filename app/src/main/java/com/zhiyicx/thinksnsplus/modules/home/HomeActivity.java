@@ -124,21 +124,4 @@ public class HomeActivity extends TSActivity {
         return null;
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        System.out.println("---------------------HomeActivity-----onPause--------------- " );
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        System.out.println("---------------------HomeActivity-----onStop--------------- " );
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        System.out.println("---------------------HomeActivity-----onDestroy--------------- " );
-    }
 }

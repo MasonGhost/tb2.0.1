@@ -36,7 +36,7 @@ public class BackgroundTaskHandleService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        System.out.println("---------------mBackgroundTaskHandler = ---------------------------------------------------");
+        System.out.println("------------------------BackgroundTaskHandleService---------------onDestroy-------------");
         mBackgroundTaskHandler.stopTask();
         EventBus.getDefault().unregister(this);
 
