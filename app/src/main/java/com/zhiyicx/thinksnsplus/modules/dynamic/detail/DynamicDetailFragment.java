@@ -211,33 +211,12 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                     }
                 });
         mIlvComment.setOnSendClickListener(this);
-
-      /*  mRvList.setOnTouchListener(new View.OnTouchListener() {
+        mToolbar.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                LogUtils.i(TAG + "mRvList  setOnTouchListener  "+mRvList.getTop());
-                if(mRvList.getTop()<=0){
-                    mRefreshlayout.setRefreshEnabled(false);
-                }else{
-                    mRefreshlayout.setRefreshEnabled(true);
-                }
-                return false;
+            public void onSystemUiVisibilityChange(int visibility) {
+
             }
         });
-
-        mRefreshlayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                LogUtils.i(TAG + "mRefreshlayout  setOnTouchListener  "+  mRvList.getTop());
-                if(mRvList.getTop()<=0){
-                    mRefreshlayout.setRefreshEnabled(false);
-                }else{
-                    mRefreshlayout.setRefreshEnabled(true);
-                }
-                return false;
-            }
-        });*/
-        
     }
 
     private void initHeaderView() {
