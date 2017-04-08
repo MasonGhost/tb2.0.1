@@ -12,6 +12,7 @@ import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.io.Serializable;
 import java.util.List;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * @author LiuChao
@@ -27,7 +28,7 @@ public class ChannelInfoBean implements Parcelable {
     private String updated_at;// 更新时间
     private String title;// 频道标题
     private String description; // 频道描述
-    private int follow_count;// 关注数量
+    private int follow_count;// 订阅数量
     private int feed_count;// 分享数量
     @Convert(converter = DataConverter.class, columnType = String.class)
     private ChannelCoverBean cover;// 频道封面
@@ -98,6 +99,7 @@ public class ChannelInfoBean implements Parcelable {
 
     // 频道封面
     public static class ChannelCoverBean implements Parcelable, Serializable {
+        private static final long serialVersionUID = -1424606641213510836L;
         private int id;// 图片资源id
         private int image_width;
         private int image_height;
@@ -208,6 +210,19 @@ public class ChannelInfoBean implements Parcelable {
         this.follow_count = in.readInt();
         this.feed_count = in.readInt();
         this.cover = in.readParcelable(ChannelCoverBean.class.getClassLoader());
+    }
+
+    @Generated(hash = 473063215)
+    public ChannelInfoBean(Long id, String created_at, String updated_at, String title,
+            String description, int follow_count, int feed_count, ChannelCoverBean cover) {
+        this.id = id;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.title = title;
+        this.description = description;
+        this.follow_count = follow_count;
+        this.feed_count = feed_count;
+        this.cover = cover;
     }
 
     public static final Creator<ChannelInfoBean> CREATOR = new Creator<ChannelInfoBean>() {

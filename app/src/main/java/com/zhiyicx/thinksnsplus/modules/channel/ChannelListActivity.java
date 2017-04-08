@@ -3,10 +3,17 @@ package com.zhiyicx.thinksnsplus.modules.channel;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class ChannelListActivity extends AppCompatActivity {
+import com.zhiyicx.baseproject.base.TSActivity;
+
+public class ChannelListActivity extends TSActivity<ChannelListPresenter, ChannelListViewPagerFragment>  {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected ChannelListViewPagerFragment getFragment() {
+        return null;
+    }
+
+    @Override
+    protected void componentInject() {
+
     }
 }
