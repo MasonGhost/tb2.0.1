@@ -61,23 +61,26 @@ public class MusicCommentItem implements ItemViewDelegate<MusicCommentListBean> 
     @Override
     public void convert(ViewHolder holder, MusicCommentListBean musicCommentListBean,
                         MusicCommentListBean lastT, int position) {
-        AppApplication.AppComponentHolder.getAppComponent()
-                .imageLoader()
-                .loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
-                        .url(ImageUtils.imagePathConvert(musicCommentListBean
-                                .getFromUserInfoBean()
-                                .getAvatar(), ImageZipConfig.IMAGE_26_ZIP))
-                        .placeholder(R.drawable.shape_default_image_circle)
-                        .transformation(new GlideCircleTransform(holder.getConvertView()
-                                .getContext()))
-                        .errorPic(R.drawable.shape_default_image_circle)
-                        .imagerView((ImageView) holder.getView(R.id.iv_headpic))
-                        .build()
-                );
-        holder.setText(R.id.tv_name, musicCommentListBean.getFromUserInfoBean().getName());
-        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(musicCommentListBean
-                .getCreated_at()));
-        holder.setText(R.id.tv_content, setShowText(musicCommentListBean, position));
+        if (musicCommentListBean.getFromUserInfoBean()!=null){
+            AppApplication.AppComponentHolder.getAppComponent()
+                    .imageLoader()
+                    .loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
+                            .url(ImageUtils.imagePathConvert(musicCommentListBean
+                                    .getFromUserInfoBean()
+                                    .getAvatar(), ImageZipConfig.IMAGE_26_ZIP))
+                            .placeholder(R.drawable.shape_default_image_circle)
+                            .transformation(new GlideCircleTransform(holder.getConvertView()
+                                    .getContext()))
+                            .errorPic(R.drawable.shape_default_image_circle)
+                            .imagerView((ImageView) holder.getView(R.id.iv_headpic))
+                            .build()
+                    );
+            holder.setText(R.id.tv_name, musicCommentListBean.getFromUserInfoBean().getName());
+            holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(musicCommentListBean
+                    .getCreated_at()));
+            holder.setText(R.id.tv_content, setShowText(musicCommentListBean, position));
+        }
+
     }
 
     private void setUserInfoClick(View v, final UserInfoBean userInfoBean) {

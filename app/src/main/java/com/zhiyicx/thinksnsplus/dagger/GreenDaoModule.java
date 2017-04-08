@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoCommentListBeanDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoTypeBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumDetailsBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicCommentListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -89,6 +90,11 @@ public class GreenDaoModule {
     @Provides
     public MusicCommentListBeanGreenDaoImpl provideMusicCommentListBeanGreenDaoImpl(Application application) {
         return new MusicCommentListBeanGreenDaoImpl(application);
+    }
+
+    @Provides
+    public MusicAlbumDetailsBeanGreenDaoImpl provideMusicAlbumDetailsBeanGreenDaoImpl(Application application) {
+        return new MusicAlbumDetailsBeanGreenDaoImpl(application);
     }
 
 }

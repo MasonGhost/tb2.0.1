@@ -55,6 +55,13 @@ public interface PersonalCenterContract {
          * 加载失败
          */
         void loadAllError();
+
+        /**
+         * 动态改变的数量
+         *
+         * @param changeNums
+         */
+        void updateDynamicCounts(int changeNums);
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存

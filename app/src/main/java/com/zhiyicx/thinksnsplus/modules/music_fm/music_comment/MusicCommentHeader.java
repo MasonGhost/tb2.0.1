@@ -75,6 +75,7 @@ public class MusicCommentHeader {
                 .imagerView(mHeaderImag)
                 .url(headInfo.getImageUrl())
                 .build());
+        setCommentList(headInfo.getCommentCount());
     }
 
     public void setCommentList(int size) {
@@ -87,6 +88,15 @@ public class MusicCommentHeader {
         private String title;
         private String litenerCount;
         private String imageUrl;
+        private int commentCount;
+
+        public int getCommentCount() {
+            return commentCount;
+        }
+
+        public void setCommentCount(int commentCount) {
+            this.commentCount = commentCount;
+        }
 
         public int getId() {
             return id;

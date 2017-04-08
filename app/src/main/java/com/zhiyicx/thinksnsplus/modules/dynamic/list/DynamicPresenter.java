@@ -214,7 +214,13 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
         List<DynamicBean> datas = mDynamicBeanGreenDao.getMySendingUnSuccessDynamic((long) AppApplication.getmCurrentLoginAuth().getUser_id());
         msendingStatus.clear();
         for (int i = 0; i < datas.size(); i++) {
+            if (mRootView.getListDatas() == null || mRootView.getListDatas().size() == 0) {// 第一次加载的时候将自己没有发送成功的动态状态修改为失败
+                datas.get(i).setState(DynamicBean.SEND_ERROR);
+            }
             msendingStatus.put(i, datas.get(i).getFeed_mark());
+        }
+        if (mRootView.getListDatas() == null || mRootView.getListDatas().size() == 0) {// 第一次加载的时候将自己没有发送成功的动态状态修改为失败
+            mDynamicBeanGreenDao.insertOrReplace(datas);
         }
         return datas;
     }
@@ -349,7 +355,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
     }
 
     /**
-     * 处理发送动态数据
+     * 处理发送评论数据
      *
      * @param dynamicCommentBean
      */

@@ -319,4 +319,5 @@ public class AppApplication extends TSApplication {
     public static void setmQueueManager(QueueManager mQueueManager) {
         AppApplication.mQueueManager = mQueueManager;
     }
+
 }

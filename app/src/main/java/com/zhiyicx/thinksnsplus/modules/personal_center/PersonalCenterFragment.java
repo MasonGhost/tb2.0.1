@@ -127,6 +127,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     private ActionPopupWindow mDeletCommentPopWindow;
     private ActionPopupWindow mDeletDynamicPopWindow;
     private ActionPopupWindow mReSendCommentPopWindow;
+    private ActionPopupWindow mReSendDynamicPopWindow;
     private int mCurrentPostion;// 当前评论的动态位置
     private long mReplyToUserId;// 被评论者的 id
 
@@ -405,9 +406,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void onReSendClick(int position) {
-        mListDatas.get(position).setState(DynamicBean.SEND_ING);
-        refreshData();
-        mPresenter.reSendDynamic(position);
+        position = position - 1;// 去掉 header
+        initReSendDynamicPopupWindow(position);
+        mReSendDynamicPopWindow.show();
     }
 
 
@@ -686,13 +687,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                     @Override
                     public void onItem1Clicked() {
                         mDeletDynamicPopWindow.hide();
-                        int currenDynamicCounts = 0;
-                        try {
-                            currenDynamicCounts = Integer.parseInt(mUserInfoBean.getFeeds_count());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        mPersonalCenterHeaderViewItem.upDateDynamicNums(currenDynamicCounts);
+                        updateDynamicCounts(-1);
                         mPresenter.deleteDynamic(dynamicBean, position);
                     }
                 })
@@ -703,6 +698,22 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                     }
                 })
                 .build();
+    }
+
+    @Override
+    public void updateDynamicCounts(int changeNums) {
+        int currenDynamicCounts = 0;
+        try {
+            currenDynamicCounts = Integer.parseInt(mUserInfoBean.getFeeds_count());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        currenDynamicCounts += changeNums;
+        if (currenDynamicCounts < 0) {
+            currenDynamicCounts = 0;
+        }
+        mUserInfoBean.setFeeds_count(String.valueOf(currenDynamicCounts));
+        mPersonalCenterHeaderViewItem.upDateDynamicNums(currenDynamicCounts);
     }
 
     /**
@@ -728,6 +739,36 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                     @Override
                     public void onBottomClicked() {
                         mReSendCommentPopWindow.hide();
+                    }
+                })
+                .build();
+    }
+
+    /**
+     * 初始化重发动态选择弹框
+     */
+    private void initReSendDynamicPopupWindow(final int position) {
+        mReSendDynamicPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.dynamic_list_resend_dynamic))
+                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+                        mReSendDynamicPopWindow.hide();
+                        mListDatas.get(position).setState(DynamicBean.SEND_ING);
+                        refreshData();
+                        mPresenter.reSendDynamic(position);
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mReSendDynamicPopWindow.hide();
                     }
                 })
                 .build();

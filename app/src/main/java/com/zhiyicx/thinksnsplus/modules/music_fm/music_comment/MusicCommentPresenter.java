@@ -140,8 +140,15 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
     }
 
     @Override
+    public void deleteComment(MusicCommentListBean data) {
+        mCommentListBeanGreenDao.deleteSingleCache(data);
+        mRootView.getListDatas().remove(data);
+        mRootView.refreshData();
+    }
+
+    @Override
     public List<MusicCommentListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return new ArrayList();
+        return mCommentListBeanGreenDao.getMultiDataFromCache();
     }
 
     @Override

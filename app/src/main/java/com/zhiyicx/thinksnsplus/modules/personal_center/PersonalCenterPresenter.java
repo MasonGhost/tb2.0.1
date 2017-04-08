@@ -125,8 +125,10 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
                         if (listBaseJson.isStatus()) {
                             if (!isLoadMore) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
                                 List<DynamicBean> data = getDynamicBeenFromDB();
+                                mRootView.updateDynamicCounts(data.size());//修改动态条数
                                 data.addAll(listBaseJson.getData());
                                 listBaseJson.setData(data);
+
                             }
                             for (int i = 0; i < listBaseJson.getData().size(); i++) { // 把自己发的评论加到评论列表的前面
                                 List<DynamicCommentBean> dynamicCommentBeen = mDynamicCommentBeanGreenDao.getMySendingComment(listBaseJson.getData().get(i).getFeed_mark());
@@ -323,7 +325,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
     @NonNull
     private List<DynamicBean> getDynamicBeenFromDB() {
         if (AppApplication.getmCurrentLoginAuth() == null) {
-            return new ArrayList<DynamicBean>();
+            return new ArrayList<>();
         }
         List<DynamicBean> datas = mDynamicBeanGreenDao.getMySendingUnSuccessDynamic((long) AppApplication.getmCurrentLoginAuth().getUser_id());
         msendingStatus.clear();

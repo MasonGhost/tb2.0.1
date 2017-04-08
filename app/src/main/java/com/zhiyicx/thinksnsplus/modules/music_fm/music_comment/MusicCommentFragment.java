@@ -4,22 +4,19 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 
-import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
-import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.adapter.MusicCommentItem;
-import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.adapter.MusicEmptyCommentItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
@@ -27,14 +24,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
-import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Author Jliuer
@@ -71,7 +64,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
         mIlvComment.post(new Runnable() {
             @Override
             public void run() {
-                mRvList.setPadding(0,0,0,mIlvComment.getHeight());
+                mRvList.setPadding(0, 0, 0, mIlvComment.getHeight());
             }
         });
         mMusicCommentHeader = new MusicCommentHeader(getActivity());
@@ -115,7 +108,8 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     public void onSendClick(View v, String text) {
         DeviceUtils.hideSoftKeyboard(getContext(), v);
         mEmptyView.setVisibility(View.GONE);
-        mReplyUserId=mHeaderInfo.getId();
+        mReplyUserId = mHeaderInfo.getId();
+        mHeaderInfo.setCommentCount(mHeaderInfo.getCommentCount() + 1);
         mPresenter.sendComment(mReplyUserId, text);
     }
 
@@ -131,6 +125,9 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        position = position - 1;
+        LogUtils.d(mListDatas.get(position).getUser_id());
+        LogUtils.d(AppApplication.getmCurrentLoginAuth().getUser_id());
         if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth()
                 .getUser_id()) {// 自己的评论
             if (mListDatas.get(position).getId() != -1) {
@@ -144,8 +141,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
             showCommentView();
             String contentHint = getString(R.string.default_input_hint);
             if (mListDatas.get(position).getReply_to_user_id() != mHeaderInfo.getId()) {
-                contentHint = getString(R.string.reply, mListDatas.get(position).getUser_id()
-                        + "");
+                contentHint = getString(R.string.reply, mListDatas.get(position).getFromUserInfoBean().getName());
             }
             mIlvComment.setEtContentHint(contentHint);
         }
@@ -164,7 +160,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     @Override
     public void refreshData() {
         mHeaderAndFooterWrapper.notifyDataSetChanged();
-        mMusicCommentHeader.setCommentList(mListDatas.size());
+        mMusicCommentHeader.setCommentList(mHeaderInfo.getCommentCount());
     }
 
     @Override
@@ -189,7 +185,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
 
     @Override
     public String getType() {
-        return getArguments().getString(CURRENT_COMMENT_TYPE,"");
+        return getArguments().getString(CURRENT_COMMENT_TYPE, "");
     }
 
     private void initLisener() {
@@ -216,6 +212,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
                     public void onItem1Clicked() {
+                        ToastUtils.showToast("暂无接口");
 //                        mPresenter.deleteComment(data);
                         mDeletCommentPopWindow.hide();
                     }

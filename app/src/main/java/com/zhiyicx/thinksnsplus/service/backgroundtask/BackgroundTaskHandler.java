@@ -7,6 +7,7 @@ import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.net.UpLoadFile;
+import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.imsdk.receiver.NetChangeReceiver;
@@ -66,9 +67,9 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_DYNAM
 
 public class BackgroundTaskHandler {
     private static final int RETRY_MAX_COUNT = 3; // 最大重试次
-    private static final int RETRY_INTERVAL_TIME = 2; // 循环间隔时间 单位 s
-    private static final long MESSAGE_SEND_INTERVAL_FOR_CPU = 500;// 消息发送间隔时间，防止 cpu 占用过高
-    private static final long MESSAGE_SEND_INTERVAL_FOR_CPU_TIME_OUT = 2000;// 消息发送间隔时间，防止 cpu 占用过高
+    private static final int RETRY_INTERVAL_TIME = 5; // 循环间隔时间 单位 s
+    private static final long MESSAGE_SEND_INTERVAL_FOR_CPU = 1000;// 消息发送间隔时间，防止 cpu 占用过高
+    private static final long MESSAGE_SEND_INTERVAL_FOR_CPU_TIME_OUT = 3000;// 消息发送间隔时间，防止 cpu 占用过高
 
     @Inject
     Application mContext;
@@ -167,13 +168,15 @@ public class BackgroundTaskHandler {
     private Runnable handleTaskRunnable = new Runnable() {
         @Override
         public void run() {
-            while (!mIsExit) {
+
+            while (!mIsExit && ActivityHandler.getInstance().getActivityStack() != null) {
                 if (mIsNetConnected && !mTaskBeanConcurrentLinkedQueue.isEmpty()) {
                     BackgroundRequestTaskBean backgroundRequestTaskBean = mTaskBeanConcurrentLinkedQueue.poll();
                     handleTask(backgroundRequestTaskBean);
                 }
                 threadSleep();
             }
+            mIsExit = true;
             // 存储未执行的数据到数据库，下次执行
             if (mBackgroundRequestTaskBeanCaches.size() > 0) {
                 mBackgroundRequestTaskBeanGreenDao.saveMultiData(mBackgroundRequestTaskBeanCaches);

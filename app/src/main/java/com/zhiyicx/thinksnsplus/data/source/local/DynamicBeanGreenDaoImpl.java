@@ -64,7 +64,15 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
 
     @Override
     public void deleteSingleCache(DynamicBean dta) {
+        if (dta == null) {
+            return;
+        }
         DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
+        if (dta.getId() == null) {
+            dta = dynamicBeanDao.queryBuilder()
+                    .where(DynamicBeanDao.Properties.Feed_mark.eq(dta.getFeed_mark()))
+                    .unique();
+        }
         dynamicBeanDao.delete(dta);
     }
 
@@ -176,6 +184,7 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
 
     /**
      * 通过 feed_mark 获取动态
+     *
      * @param feed_mark
      * @return
      */

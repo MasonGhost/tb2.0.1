@@ -1,7 +1,7 @@
 <resources>
     <!-- 异常输出内容 -->
     <string name="err_share_no_content">分享内容不能为空</string>
-    <string name="err_net_not_work">网络请求失败，请重新加载</string>
+    <string name="err_net_not_work">网络不可用，请检查！</string>
     <string name="erro_argument_in_method">方法使用了不合法的参数</string>
     <string name="data_load_error">数据加载失败</string>
     <string name="load_error">加载失败</string>

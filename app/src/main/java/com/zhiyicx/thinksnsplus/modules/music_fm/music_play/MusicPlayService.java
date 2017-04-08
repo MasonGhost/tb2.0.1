@@ -176,6 +176,7 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
 
     @Override
     public void onCustomAction(String action, Bundle extras) {
+        LogUtils.d("onCustomAction");
         MusicAlbumDetailsBean musicAblum = (MusicAlbumDetailsBean) extras.getSerializable(MUSIC_ACTION);
         if (musicAblum!=null){
             MusicProvider newMusicProvider = new MusicProvider(new MusicAblumInfo(musicAblum));

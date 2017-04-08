@@ -91,6 +91,7 @@
     <string name="dynamic_list_delete_dynamic">删除动态</string>
     <string name="dynamic_list_delete_comment">删除评论</string>
     <string name="dynamic_list_resend_comment">重发评论</string>
+    <string name="dynamic_list_resend_dynamic">重发动态</string>
     <string name="reply">回复%s:</string>
     <!--发布动态-->
     <string name="send_dynamic">发布动态</string>
@@ -110,6 +111,9 @@
     <string name="dynamic_count">%1$s个动态</string>
     <string name="followed">已关注</string>
     <string name="followed_eachother">互相关注</string>
+    <string name="cover_change_success">封面修改成功</string>
+    <string name="cover_change_failure">封面修改失败</string>
+    <string name="cover_uploadFailure">封面上传失败</string>
     <!--代码中的string-->
     <string name="token_expiers">token过期，请重新登陆</string>
     <string name="share">分享</string>

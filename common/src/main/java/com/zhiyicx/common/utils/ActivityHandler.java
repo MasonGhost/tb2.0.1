@@ -14,7 +14,11 @@ import java.util.Stack;
 
 public class ActivityHandler {
 
-    private static Stack<Activity> activityStack;
+    public static Stack<Activity> getActivityStack() {
+        return activityStack;
+    }
+
+    private static Stack<Activity> activityStack = new Stack<>();
     private volatile static ActivityHandler instance;
 
     private ActivityHandler() {
@@ -39,9 +43,6 @@ public class ActivityHandler {
      * 添加 Activity 到堆栈
      */
     public void addActivity(Activity activity) {
-        if (activityStack == null) {
-            activityStack = new Stack<Activity>();
-        }
         activityStack.add(activity);
     }
 
