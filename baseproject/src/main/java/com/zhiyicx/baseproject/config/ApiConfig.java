@@ -33,7 +33,7 @@ public class ApiConfig {
 
 
     public static final String URL_ABOUT_US = "http://www.thinksns.com/index.html";// 关于我们网站
-    public static final String URL_JIPU_SHOP= "http://demo.jipukeji.com";// 极铺购物地址
+    public static final String URL_JIPU_SHOP = "http://demo.jipukeji.com";// 极铺购物地址
 
     // 图片地址
     public static final String IMAGE_PATH = APP_DOMAIN + "api/v1/storages/%s/%d";// 带质量压缩
@@ -206,4 +206,15 @@ public class ApiConfig {
      * 仅仅测试使用
      */
     public static final String APP_PATH_TOKEN_EXPIERD = "api/music_window_rotate-token";// token过期处理
+
+    /**
+     * 频道相关
+     */
+    // 处理频道订阅取消订阅的接口
+    public static final String APP_PATH_HANDLE_SUBSCRIB_CHANNEL = "api/v1/channels/{channel_id}/follow";
+    // 获取频道列表
+    public static final String APP_PATH_GET_CHANNEL = "api/v1/channels/{type}";
+    public static final String CHANNEL_TYPE_ALL_CHANNEL = "";// 所有的频道
+    public static final String CHANNEL_TYPE_SUBSCRIB_CHANNEL = "my";// 我订阅的频道
+
 }

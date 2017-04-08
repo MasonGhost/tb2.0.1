@@ -23,6 +23,7 @@ public class ServiceManager {
     private InfoMainClient mInfoMainClient;
     private FollowFansClient mFollowFansClient;
     private DynamicClient mDynamicClient;
+    private ChannelClient mChannelClient;
 
     /**
      * 如果需要添加 service 只需在构造方法中添加对应的 service,在提供 get 方法返回出去,只要在 ServiceModule 提供了该 service
@@ -40,7 +41,8 @@ public class ServiceManager {
             , MusicClient musicClient
             , InfoMainClient infoMainClient
             , FollowFansClient followFansClient
-            , DynamicClient mDynamicClient) {
+            , DynamicClient mDynamicClient
+            , ChannelClient mChannelClient) {
         this.mCommonClient = commonClient;
         this.mLoginClient = loginClient;
         this.mRegisterClient = registerClient;
@@ -51,6 +53,7 @@ public class ServiceManager {
         this.mInfoMainClient = infoMainClient;
         this.mFollowFansClient = followFansClient;
         this.mDynamicClient = mDynamicClient;
+        this.mChannelClient = mChannelClient;
     }
 
     public CommonClient getCommonClient() {
@@ -91,5 +94,9 @@ public class ServiceManager {
 
     public DynamicClient getDynamicClient() {
         return mDynamicClient;
+    }
+
+    public ChannelClient getChannelClient() {
+        return mChannelClient;
     }
 }

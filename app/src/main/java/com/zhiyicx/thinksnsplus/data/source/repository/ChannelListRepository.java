@@ -12,7 +12,8 @@ import com.zhiyicx.thinksnsplus.modules.channel.ChannelListContract;
  * @contact email:450127106@qq.com
  */
 
-public class ChannelListRepository implements ChannelListContract.Repository {
+public class ChannelListRepository extends BaseChannelRepository implements ChannelListContract.Repository {
     public ChannelListRepository(ServiceManager serviceManager, Application context) {
+        super(serviceManager, context);
     }
 }
