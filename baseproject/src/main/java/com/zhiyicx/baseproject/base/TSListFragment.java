@@ -66,10 +66,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     protected RecyclerView.LayoutManager layoutManager;
 
 
-    protected EmptyView mEmptyView;
-
-    // 当前数据加载状态
-    protected int mEmptyState = EmptyView.STATE_DEFAULT;
+    protected EmptyView mEmptyView; // 因为添加了 header 和 footer 故取消了 adater 的 emptyview，改为手动判断
 
     protected Long mMaxId = DEFAULT_PAGE_MAX_ID; // 纪录当前列表 item id 最大值，用于分页
 
@@ -119,7 +116,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 });
         mTvTopTip = (TextView) rootView.findViewById(R.id.tv_top_tip_text);
         mEmptyView = (EmptyView) rootView.findViewById(R.id.empty_view);
-//        mEmptyView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mEmptyView.setErrorImag(setEmptView());
         mEmptyView.setNeedTextTip(false);
         mEmptyView.setNeedClickLoadState(false);
@@ -146,9 +142,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
         mHeaderAndFooterWrapper.addFootView(getFooterView());
         mRvList.setAdapter(mHeaderAndFooterWrapper);
-//        mEmptyWrapper = new EmptyWrapper(mHeaderAndFooterWrapper);
-//        mEmptyWrapper.setEmptyView(mEmptyView);
-//        mRvList.setAdapter(mEmptyWrapper);
     }
 
     /**
@@ -343,7 +336,16 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void refreshData() {
+        setEmptyView();
         mHeaderAndFooterWrapper.notifyDataSetChanged();
+    }
+
+    private void setEmptyView() {
+        if (mListDatas.isEmpty() && mHeaderAndFooterWrapper.getHeadersCount() <= 0) {
+            mEmptyView.setVisibility(View.VISIBLE);
+        }else {
+            mEmptyView.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -351,6 +353,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void refreshData(List<T> datas) {
+        setEmptyView();
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
@@ -359,6 +362,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void refreshData(int index) {
+        setEmptyView();
         mHeaderAndFooterWrapper.notifyItemChanged(index);
     }
 

@@ -60,6 +60,7 @@
     <string name="is_sure_clean_cache">确定清理缓存？</string>
     <string name="about_us">关于我们</string>
     <string name="login_out">退出登录</string>
+    <string name="login_out_sure">退出</string>
     <string name="is_sure_login_out">确定退出登录？</string>
     <string name="clean_success">删除成功</string>
     <string name="clean_failure">删除失败!</string>
@@ -91,7 +92,7 @@
     <string name="dynamic_list_delete_dynamic">删除动态</string>
     <string name="dynamic_list_delete_comment">删除评论</string>
     <string name="dynamic_list_resend_comment">重发评论</string>
-    <string name="dynamic_list_resend_dynamic">重发动态</string>
+    <string name="dynamic_list_resend_dynamic">重新发送</string>
     <string name="reply">回复%s:</string>
     <!--发布动态-->
     <string name="send_dynamic">发布动态</string>

@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.zhiyicx.common.base.BaseJson;
@@ -71,7 +72,7 @@ public class MessageRepository implements MessageContract.Repository {
                                 MessageItemBean messageItemBean = new MessageItemBean();
                                 Message message = MessageDao.getInstance(mContext).getLastMessageByCid(tmp.getCid());
                                 if (message != null) {
-                                    tmp.setLast_message_text(message.getTxt());
+                                    tmp.setLast_message(message);
                                     tmp.setLast_message_time(message.getCreate_time());
                                 }
                                 tmp.setIm_uid(AppApplication.getmCurrentLoginAuth().getUser_id());
@@ -137,6 +138,21 @@ public class MessageRepository implements MessageContract.Repository {
                         }
                     }
                 })
+                //去除没有聊过天的数据
+                .map(new Func1<BaseJson<List<MessageItemBean>>, BaseJson<List<MessageItemBean>>>() {
+                    @Override
+                    public BaseJson<List<MessageItemBean>> call(BaseJson<List<MessageItemBean>> listBaseJson) {
+                        if (listBaseJson.isStatus() && !listBaseJson.getData().isEmpty()) {
+                            int size = listBaseJson.getData().size();
+                            for (int i = 0; i < size; i++) {
+                                if (listBaseJson.getData().get(i).getConversation().getLast_message() != null && TextUtils.isEmpty(listBaseJson.getData().get(i).getConversation().getLast_message().getTxt())) {
+                                    listBaseJson.getData().remove(i);
+                                }
+                            }
+                        }
+                        return listBaseJson;
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread());
 
     }
@@ -152,7 +168,7 @@ public class MessageRepository implements MessageContract.Repository {
         return mChatInfoClient.getSingleConversaiton(cid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .retryWhen(new RetryWithDelay(MAX_RETRY_COUNTS,RETRY_DELAY_TIME))
+                .retryWhen(new RetryWithDelay(MAX_RETRY_COUNTS, RETRY_DELAY_TIME))
                 .flatMap(new Func1<BaseJson<Conversation>, Observable<BaseJson<MessageItemBean>>>() {
                              @Override
                              public Observable<BaseJson<MessageItemBean>> call(BaseJson<Conversation> conversationBaseJson) {
@@ -163,7 +179,7 @@ public class MessageRepository implements MessageContract.Repository {
                                      MessageItemBean messageItemBean = new MessageItemBean();
                                      Message message = MessageDao.getInstance(mContext).getLastMessageByCid(tmp.getCid());
                                      if (message != null) {
-                                         tmp.setLast_message_text(message.getTxt());
+                                         tmp.setLast_message(message);
                                          tmp.setLast_message_time(message.getCreate_time());
                                      }
                                      tmp.setIm_uid(AppApplication.getmCurrentLoginAuth().getUser_id());

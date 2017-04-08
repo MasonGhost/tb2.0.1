@@ -12,6 +12,7 @@ import com.zhiyicx.imsdk.db.base.ZBSqlHelper;
 import com.zhiyicx.imsdk.db.dao.soupport.ConversationDaoSoupport;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
+import com.zhiyicx.imsdk.utils.MessageHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,7 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
     public static final String COLUMN_NAME_CONVERSATION_PAIR = "pair";
     public static final String COLUMN_NAME_CONVERSATION_PWD = "pwd";
     public static final String COLUMN_NAME_CONVERSATION_LAST_MESSAGE_TIME = "last_message_time";
-    public static final String COLUMN_NAME_CONVERSATION_LAST_MESSAGE_TEXT = "last_message_text";
+    public static final String COLUMN_NAME_CONVERSATION_LAST_MESSAGE = "last_message";
     public static final String COLUMN_NAME_CONVERSATION_USIDS = "usids";
 
 
@@ -102,7 +103,7 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
             map.put(COLUMN_NAME_CONVERSATION_PAIR, conversation.getPair());
             map.put(COLUMN_NAME_CONVERSATION_PWD, conversation.getPwd());
             map.put(COLUMN_NAME_CONVERSATION_LAST_MESSAGE_TIME, conversation.getLast_message_time());
-            map.put(COLUMN_NAME_CONVERSATION_LAST_MESSAGE_TEXT, conversation.getLast_message_text());
+            map.put(COLUMN_NAME_CONVERSATION_LAST_MESSAGE, getLast_messageByBase64(conversation.getLast_message()));
             map.put(COLUMN_NAME_CONVERSATION_USIDS, conversation.getUsids());
             map.put(COLUMN_NAME_CONVERSATION_IS_DEL, isDel(conversation.is_del()));
             map.put(COLUMN_NAME_CONVERSATION_IM_UID, conversation.getIm_uid());
@@ -157,7 +158,7 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
         Cursor cursor = database.query(
                 TABLE_NAME,
                 null,
-                COLUMN_NAME_CONVERSATION_USIDS + " = ? or "+COLUMN_NAME_CONVERSATION_USIDS+" = ? ", new String[]{originUid + "," + targetUid, targetUid + "," + originUid}, null, null,
+                COLUMN_NAME_CONVERSATION_USIDS + " = ? or " + COLUMN_NAME_CONVERSATION_USIDS + " = ? ", new String[]{originUid + "," + targetUid, targetUid + "," + originUid}, null, null,
                 null);
         List<Conversation> conversations = getConversations(cursor);
         cursor.close();
@@ -193,7 +194,7 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
             Message tmp = MessageDao.getInstance(context).getLastMessageByCid(conversations.get(i).getCid());
             if (tmp == null) continue;
             conversations.get(i).setLast_message_time(tmp.getCreate_time());
-            conversations.get(i).setLast_message_text(tmp.getTxt());
+            conversations.get(i).setLast_message(tmp);
             if (tmp.getExt() != null)
                 conversations.get(i).setUsids(tmp.getExt().getZBUSID());
         }
@@ -314,8 +315,8 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
                 cv.put(COLUMN_NAME_CONVERSATION_PWD, conversation.getPwd());
             if (conversation.getLast_message_time() != 0)
                 cv.put(COLUMN_NAME_CONVERSATION_LAST_MESSAGE_TIME, conversation.getLast_message_time());
-            if (!TextUtils.isEmpty(conversation.getLast_message_text()))
-                cv.put(COLUMN_NAME_CONVERSATION_LAST_MESSAGE_TEXT, conversation.getLast_message_text());
+            if (conversation.getLast_message() != null)
+                cv.put(COLUMN_NAME_CONVERSATION_LAST_MESSAGE, getLast_messageByBase64(conversation.getLast_message()));
             if (!TextUtils.isEmpty(conversation.getUsids()))
                 cv.put(COLUMN_NAME_CONVERSATION_USIDS, conversation.getUsids());
 
@@ -338,6 +339,14 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
             return true;
         else
             return false;
+    }
+
+    private String getLast_messageByBase64(Message message) {
+        return MessageHelper.object2Base64Str(message);
+    }
+
+    private Message getLast_messageByBase64(String string) {
+        return MessageHelper.base64Str2Object(string);
     }
 
     /**
@@ -406,8 +415,8 @@ public class ConversationDao extends BaseDao implements ConversationDaoSoupport 
                         .getColumnIndex(COLUMN_NAME_CONVERSATION_PWD)));
                 conversation.setLast_message_time(cursor.getLong(cursor
                         .getColumnIndex(COLUMN_NAME_CONVERSATION_LAST_MESSAGE_TIME)));
-                conversation.setLast_message_text(cursor.getString(cursor
-                        .getColumnIndex(COLUMN_NAME_CONVERSATION_LAST_MESSAGE_TEXT)));
+                conversation.setLast_message(getLast_messageByBase64(cursor.getString(cursor
+                        .getColumnIndex(COLUMN_NAME_CONVERSATION_LAST_MESSAGE))));
                 conversation.setUsids(cursor.getString(cursor
                         .getColumnIndex(COLUMN_NAME_CONVERSATION_USIDS)));
                 conversation.setIm_uid(cursor.getInt(cursor

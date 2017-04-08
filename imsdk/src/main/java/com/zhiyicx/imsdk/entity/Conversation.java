@@ -37,7 +37,7 @@ public class Conversation implements Serializable {
     private String pair;
     private String pwd;
     private long last_message_time;
-    private String last_message_text;
+    private Message last_message;
     @SerializedName("uids")
     private String usids;//聊天对方的usids
     private boolean is_del;
@@ -111,6 +111,9 @@ public class Conversation implements Serializable {
     }
 
     public long getLast_message_time() {
+        if (last_message_time == 0 && last_message != null) {
+            last_message_time = last_message.getCreate_time();
+        }
         return last_message_time;
     }
 
@@ -118,12 +121,12 @@ public class Conversation implements Serializable {
         this.last_message_time = last_message_time;
     }
 
-    public String getLast_message_text() {
-        return last_message_text;
+    public Message getLast_message() {
+        return last_message;
     }
 
-    public void setLast_message_text(String last_message_text) {
-        this.last_message_text = last_message_text;
+    public void setLast_message(Message last_message) {
+        this.last_message = last_message;
     }
 
     public String getUsids() {
@@ -160,7 +163,7 @@ public class Conversation implements Serializable {
                 ", pair='" + pair + '\'' +
                 ", pwd='" + pwd + '\'' +
                 ", last_message_time=" + last_message_time +
-                ", last_message_text='" + last_message_text + '\'' +
+                ", last_message=" + last_message +
                 ", usids='" + usids + '\'' +
                 ", is_del=" + is_del +
                 ", im_uid=" + im_uid +
