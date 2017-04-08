@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white">
+    <!--频道列表item-->
+    <com.zhiyicx.baseproject.widget.imageview.FilterImageView
+        android:id="@+id/iv_channel_cover"
+        android:layout_width="@dimen/rec_image_for_list_normal"
+        android:layout_height="@dimen/rec_image_for_list_normal"
+        android:layout_marginBottom="@dimen/spacing_mid"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_mid"
+        android:src="@drawable/shape_default_image"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/spacing_mid"
+        android:layout_toLeftOf="@+id/tv_channel_subscrib"
+        android:layout_toRightOf="@id/iv_channel_cover"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_channel_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="我是频道名称"/>
+
+        <TextView
+            android:id="@+id/iv_channel_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_channel_name"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="我是频道描述内容,我想我有很多文字，一直到超过一行"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_channel_subscrib"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/spacing_mid"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:text="订阅"/>
+
+</RelativeLayout>

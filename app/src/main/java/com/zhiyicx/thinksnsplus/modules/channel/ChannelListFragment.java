@@ -1,11 +1,15 @@
 package com.zhiyicx.thinksnsplus.modules.channel;
 
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
+import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import javax.inject.Inject;
 
@@ -23,7 +27,17 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        return null;
+        for (int i = 0; i < 10; i++) {
+            mListDatas.add(new ChannelSubscripBean());
+        }
+        CommonAdapter<ChannelSubscripBean> commonAdapter = new CommonAdapter<ChannelSubscripBean>(getContext()
+                , R.layout.item_channel_list, mListDatas) {
+            @Override
+            protected void convert(ViewHolder holder, ChannelSubscripBean channelSubscripBean, int position) {
+
+            }
+        };
+        return commonAdapter;
     }
 
     @Override
@@ -31,7 +45,23 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
         DaggerChannelListPresenterComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .channelListPresenterModule(new ChannelListPresenterModule(this))
-                .build();
+                .build().inject(this);
         super.initView(rootView);
+    }
+
+    @Override
+    protected boolean showToolbar() {
+        return false;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    public static ChannelListFragment newInstance(Bundle bundle) {
+        ChannelListFragment channelListFragment = new ChannelListFragment();
+        channelListFragment.setArguments(bundle);
+        return channelListFragment;
     }
 }
