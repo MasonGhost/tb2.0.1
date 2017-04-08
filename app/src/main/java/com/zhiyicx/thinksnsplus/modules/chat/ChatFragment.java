@@ -94,6 +94,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     protected void initView(View rootView) {
         mIlvContainer.setOnSendClickListener(this);
         mIlvContainer.setSendButtonVisiable(true); // 保持显示
+        mIlvContainer.getFocus();
         // 软键盘控制区
         RxView.globalLayouts(mRlContainer)
                 .flatMap(new Func1<Void, Observable<Boolean>>() {
@@ -135,6 +136,8 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     @Override
     protected void initData() {
         getIntentData();
+        mMessageList.setMessageListItemClickListener(this);
+        mMessageList.setRefreshListener(this);
         if (mMessageItemBean.getConversation() == null) { // 先获取本地信息，如果本地信息存在，直接使用，如果没有直接创建
             Conversation conversation = ConversationDao.getInstance(getContext()).getPrivateChatConversationByUids(AppApplication.getmCurrentLoginAuth().getUser_id(), mMessageItemBean.getUserInfo().getUser_id().intValue());
             if (conversation == null) {
@@ -274,6 +277,10 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     @Override
     public void onRefresh() {
+        if (mMessageItemBean.getConversation() == null) {
+            hideLoading();
+            return;
+        }
         List<ChatItemBean> chatItemBeen = mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), mDatas.size() > 0 ? mDatas.get(0).getLastMessage().getCreate_time() : (System.currentTimeMillis() + ConstantConfig.DAY));
         chatItemBeen.addAll(mDatas);
         mDatas.clear();
@@ -288,10 +295,8 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     public void initMessageList() {
         mDatas.addAll(mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), (System.currentTimeMillis() + ConstantConfig.DAY)));
-        mMessageList.setMessageListItemClickListener(this);
         mMessageList.init(mMessageItemBean.getConversation().getType() == ChatType.CHAT_TYPE_PRIVATE ? mMessageItemBean.getUserInfo().getName() : getString(R.string.default_message_group)
                 , mMessageItemBean.getConversation().getType(), mDatas);
-        mMessageList.setRefreshListener(this);
         mMessageList.scrollToBottom();
     }
 }
