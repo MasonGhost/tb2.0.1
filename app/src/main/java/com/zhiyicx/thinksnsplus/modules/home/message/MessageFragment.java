@@ -43,7 +43,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Inject
     protected MessagePresenter mMessagePresenter;
 
-    private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     private int mLastClickPostion = -1;// 纪录上次聊天 item ,用于单条刷新
 
     public static MessageFragment newInstance() {
