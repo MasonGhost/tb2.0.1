@@ -180,11 +180,11 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
             tvHeaderLikeTime = (TextView) headerview.findViewById(R.id.tv_header_like_time);
             tvHeaderLikeTip = (BadgeView) headerview.findViewById(R.id.tv_header_like_tip);
         }
-        tvHeaderCommentContent.setText(commentItemData.getConversation().getLast_message_text());
+        tvHeaderCommentContent.setText(commentItemData.getConversation().getLast_message().getTxt());
         tvHeaderCommentTime.setText(TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(commentItemData.getConversation().getLast_message_time())));
         tvHeaderCommentTip.setBadgeCount(commentItemData.getUnReadMessageNums());
 
-        tvHeaderLikeContent.setText(likedItemData.getConversation().getLast_message_text());
+        tvHeaderLikeContent.setText(likedItemData.getConversation().getLast_message().getTxt());
         tvHeaderLikeTime.setText(TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(commentItemData.getConversation().getLast_message_time())));
         tvHeaderLikeTip.setBadgeCount(likedItemData.getUnReadMessageNums());
         refreshData();

@@ -107,12 +107,15 @@ public class ChatRepository implements ChatContract.Repository {
         if (conversations == null || conversations.size() == 0) {
             return messageItemBeens;
         }
-        for (int i = 0; i < conversations.size(); i++) {
+        int size = conversations.size();
+        for (int i = 0; i < size; i++) {
             Conversation tmp = conversations.get(i);
             Message message = MessageDao.getInstance(mContext).getLastMessageByCid(tmp.getCid());
             if (message != null) {
-                tmp.setLast_message_text(message.getTxt());
+                tmp.setLast_message(message);
                 tmp.setLast_message_time(message.getCreate_time());
+            } else { // 去除没有聊天消息的
+                continue;
             }
             UserInfoBean toChatUserInfo;
             if (tmp.getType() == ChatType.CHAT_TYPE_PRIVATE) {// 私聊
@@ -143,6 +146,7 @@ public class ChatRepository implements ChatContract.Repository {
 
     /**
      * 获取聊天列表信息
+     *
      * @param cid
      * @param creat_time
      * @return

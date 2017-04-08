@@ -21,6 +21,7 @@ import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.imsdk.core.ChatType;
+import com.zhiyicx.imsdk.entity.MessageStatus;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
@@ -91,7 +92,11 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
                 break;
             default:
         }
-        holder.setText(R.id.tv_content, messageItemBean.getConversation().getLast_message_text());
+        if (messageItemBean.getConversation().getLast_message().getSend_status()== MessageStatus.SEND_FAIL) {
+            holder.setText(R.id.tv_content,holder.getConvertView().getResources().getString(R.string.send_fail) );
+        } else {
+            holder.setText(R.id.tv_content, messageItemBean.getConversation().getLast_message().getTxt());
+        }
         if (messageItemBean.getConversation().getLast_message_time() == 0) {
             holder.setText(R.id.tv_time, "");
         } else {

@@ -72,7 +72,7 @@ public class MessageRepository implements MessageContract.Repository {
                                 MessageItemBean messageItemBean = new MessageItemBean();
                                 Message message = MessageDao.getInstance(mContext).getLastMessageByCid(tmp.getCid());
                                 if (message != null) {
-                                    tmp.setLast_message_text(message.getTxt());
+                                    tmp.setLast_message(message);
                                     tmp.setLast_message_time(message.getCreate_time());
                                 }
                                 tmp.setIm_uid(AppApplication.getmCurrentLoginAuth().getUser_id());
@@ -145,7 +145,7 @@ public class MessageRepository implements MessageContract.Repository {
                         if (listBaseJson.isStatus() && !listBaseJson.getData().isEmpty()) {
                             int size = listBaseJson.getData().size();
                             for (int i = 0; i < size; i++) {
-                                if (TextUtils.isEmpty(listBaseJson.getData().get(i).getConversation().getLast_message_text())) {
+                                if (listBaseJson.getData().get(i).getConversation().getLast_message() != null && TextUtils.isEmpty(listBaseJson.getData().get(i).getConversation().getLast_message().getTxt())) {
                                     listBaseJson.getData().remove(i);
                                 }
                             }
@@ -179,7 +179,7 @@ public class MessageRepository implements MessageContract.Repository {
                                      MessageItemBean messageItemBean = new MessageItemBean();
                                      Message message = MessageDao.getInstance(mContext).getLastMessageByCid(tmp.getCid());
                                      if (message != null) {
-                                         tmp.setLast_message_text(message.getTxt());
+                                         tmp.setLast_message(message);
                                          tmp.setLast_message_time(message.getCreate_time());
                                      }
                                      tmp.setIm_uid(AppApplication.getmCurrentLoginAuth().getUser_id());

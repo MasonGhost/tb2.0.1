@@ -76,7 +76,7 @@ public class ZBSqlHelper extends SQLiteOpenHelper {
                     ConversationDao.COLUMN_NAME_CONVERSATION_PAIR + TEXT_TYPE + COMMA_SEP +
                     ConversationDao.COLUMN_NAME_CONVERSATION_PWD + TEXT_TYPE + COMMA_SEP +
                     ConversationDao.COLUMN_NAME_CONVERSATION_USIDS + TEXT_TYPE + COMMA_SEP +
-                    ConversationDao.COLUMN_NAME_CONVERSATION_LAST_MESSAGE_TEXT + TEXT_TYPE + COMMA_SEP +
+                    ConversationDao.COLUMN_NAME_CONVERSATION_LAST_MESSAGE + TEXT_TYPE + COMMA_SEP +
                     ConversationDao.COLUMN_NAME_CONVERSATION_LAST_MESSAGE_TIME + INTEGER_TYPE + COMMA_SEP +
                     ConversationDao.COLUMN_NAME_CONVERSATION_IS_DEL + INTEGER_TYPE + COMMA_SEP +
                     ConversationDao.COLUMN_NAME_CONVERSATION_IM_UID + INTEGER_TYPE  +COMMA_SEP +

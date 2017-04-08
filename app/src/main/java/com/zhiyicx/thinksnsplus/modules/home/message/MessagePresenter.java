@@ -108,8 +108,10 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         if (mItemBeanComment == null) {
             mItemBeanComment = new MessageItemBean();
             Conversation commentMessage = new Conversation();
-            commentMessage.setLast_message_text("还没有人"
+            Message message=new Message();
+            message.setTxt("还没有人"
                     + mContext.getString(R.string.comment_me));
+            commentMessage.setLast_message(message);
             commentMessage.setLast_message_time(System.currentTimeMillis() / 1000);
             mItemBeanComment.setConversation(commentMessage);
             mItemBeanComment.setUnReadMessageNums(Math.round(0));
@@ -121,11 +123,13 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     public MessageItemBean updateLikeItemData() {
         if (mItemBeanLike == null) {
             mItemBeanLike = new MessageItemBean();
-            Conversation likeMessage = new Conversation();
-            likeMessage.setLast_message_text("还没有人"
+            Conversation likeConversation = new Conversation();
+            Message message=new Message();
+            message.setTxt("还没有人"
                     + mContext.getString(R.string.like_me));
-            likeMessage.setLast_message_time(System.currentTimeMillis() / 1000);
-            mItemBeanLike.setConversation(likeMessage);
+            likeConversation.setLast_message(message);
+            likeConversation.setLast_message_time(System.currentTimeMillis() / 1000);
+            mItemBeanLike.setConversation(likeConversation);
             mItemBeanLike.setUnReadMessageNums(Math.round(0));
         }
         return mItemBeanLike;
@@ -144,7 +148,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         Message message = MessageDao.getInstance(mContext).getLastMessageByCid(mRootView.getListDatas().get(positon).getConversation().getCid());
         if (message != null) {
             mRootView.getListDatas().get(positon).getConversation().setLast_message_time(message.getCreate_time());
-            mRootView.getListDatas().get(positon).getConversation().setLast_message_text(message.getTxt());
+            mRootView.getListDatas().get(positon).getConversation().setLast_message(message);
         }
         mRootView.getListDatas().get(positon).setUnReadMessageNums(0);
 
@@ -210,7 +214,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         for (int i = 0; i < size; i++) {
             if (mRootView.getListDatas().get(i).getConversation().getCid() == message.getCid()) {
                 mRootView.getListDatas().get(i).setUnReadMessageNums(mRootView.getListDatas().get(i).getUnReadMessageNums() + 1);
-                mRootView.getListDatas().get(i).getConversation().setLast_message_text(message.getTxt());
+                mRootView.getListDatas().get(i).getConversation().setLast_message(message);
                 mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
                 mRootView.refreshData(); // 加上 header 的位置
                 isHasConversion = true;
