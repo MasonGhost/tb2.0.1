@@ -52,8 +52,6 @@ public class MusicCommentListBean extends BaseListBean {
     private Long comment_mark;
     private int state = SEND_SUCCESS;
 
-
-
     public int getId() {
         return id;
     }
