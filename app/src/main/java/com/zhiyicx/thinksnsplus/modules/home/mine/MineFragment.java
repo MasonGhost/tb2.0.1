@@ -90,7 +90,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     protected void initView(View rootView) {
     }
 
-
     @Override
     protected void initData() {
         DaggerMinePresenterComponent.builder()
