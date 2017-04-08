@@ -1,8 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.channel;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
+import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansViewPagerFragment;
 
 import java.util.List;
 
@@ -27,5 +29,11 @@ public class ChannelListViewPagerFragment extends TSViewPagerFragment<ChannelLis
     @Override
     protected void initData() {
 
+    }
+
+    public static ChannelListViewPagerFragment newInstance(Bundle bundle) {
+        ChannelListViewPagerFragment channelListViewPagerFragment = new ChannelListViewPagerFragment();
+        channelListViewPagerFragment.setArguments(bundle);
+        return channelListViewPagerFragment;
     }
 }

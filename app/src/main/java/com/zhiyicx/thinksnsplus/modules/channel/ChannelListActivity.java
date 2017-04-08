@@ -5,15 +5,15 @@ import android.os.Bundle;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 
-public class ChannelListActivity extends TSActivity<ChannelListPresenter, ChannelListViewPagerFragment>  {
+public class ChannelListActivity extends TSActivity<ChannelListPresenter, ChannelListViewPagerFragment> {
 
     @Override
     protected ChannelListViewPagerFragment getFragment() {
-        return null;
+        return ChannelListViewPagerFragment.newInstance(getIntent().getExtras());
     }
 
     @Override
     protected void componentInject() {
-
+        
     }
 }
