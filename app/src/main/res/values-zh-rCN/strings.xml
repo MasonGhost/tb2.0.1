@@ -115,6 +115,11 @@
     <string name="cover_change_success">封面修改成功</string>
     <string name="cover_change_failure">封面修改失败</string>
     <string name="cover_uploadFailure">封面上传失败</string>
+
+    <!--频道-->
+    <string name="subscrip_channel">我订阅的</string>
+    <string name="all_channel">全部频道</string>
+
     <!--代码中的string-->
     <string name="token_expiers">token过期，请重新登陆</string>
     <string name="share">分享</string>

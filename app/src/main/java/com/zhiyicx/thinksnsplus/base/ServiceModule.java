@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.base;
 
 
+import com.zhiyicx.thinksnsplus.data.source.remote.ChannelClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ChatInfoClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
@@ -71,7 +72,7 @@ public class ServiceModule {
         return retrofit.create(UserInfoClient.class);
     }
 
-  /**
+    /**
      * 聊天信息的网络接口
      *
      * @param retrofit 网络框架
@@ -130,10 +131,17 @@ public class ServiceModule {
     FollowFansClient provideFollowFansClient(Retrofit retrofit) {
         return retrofit.create(FollowFansClient.class);
     }
+
     @Singleton
     @Provides
-    DynamicClient provideDynamicClient(Retrofit retrofit){
+    DynamicClient provideDynamicClient(Retrofit retrofit) {
         return retrofit.create(DynamicClient.class);
+    }
+
+    @Singleton
+    @Provides
+    ChannelClient provideChannelClient(Retrofit retrofit) {
+        return retrofit.create(ChannelClient.class);
     }
 
 }
