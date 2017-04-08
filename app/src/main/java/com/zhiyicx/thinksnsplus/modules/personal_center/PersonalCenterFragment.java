@@ -406,6 +406,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void onReSendClick(int position) {
+        position = position - 1;// 去掉 header
         initReSendDynamicPopupWindow(position);
         mReSendDynamicPopWindow.show();
     }
@@ -686,13 +687,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                     @Override
                     public void onItem1Clicked() {
                         mDeletDynamicPopWindow.hide();
-                        int currenDynamicCounts = 0;
-                        try {
-                            currenDynamicCounts = Integer.parseInt(mUserInfoBean.getFeeds_count());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        mPersonalCenterHeaderViewItem.upDateDynamicNums(currenDynamicCounts);
+                        updateDynamicCounts(-1);
                         mPresenter.deleteDynamic(dynamicBean, position);
                     }
                 })
@@ -703,6 +698,22 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                     }
                 })
                 .build();
+    }
+
+    @Override
+    public void updateDynamicCounts(int changeNums) {
+        int currenDynamicCounts = 0;
+        try {
+            currenDynamicCounts = Integer.parseInt(mUserInfoBean.getFeeds_count());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        currenDynamicCounts += changeNums;
+        if (currenDynamicCounts < 0) {
+            currenDynamicCounts = 0;
+        }
+        mUserInfoBean.setFeeds_count(String.valueOf(currenDynamicCounts));
+        mPersonalCenterHeaderViewItem.upDateDynamicNums(currenDynamicCounts);
     }
 
     /**
@@ -732,6 +743,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 })
                 .build();
     }
+
     /**
      * 初始化重发动态选择弹框
      */
@@ -761,6 +773,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 })
                 .build();
     }
+
     @Override
     public void onMoreCommentClick(View view, DynamicBean dynamicBean) {
         int position = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());

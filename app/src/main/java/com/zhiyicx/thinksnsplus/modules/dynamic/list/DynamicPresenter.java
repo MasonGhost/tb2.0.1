@@ -355,7 +355,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
     }
 
     /**
-     * 处理发送动态数据
+     * 处理发送评论数据
      *
      * @param dynamicCommentBean
      */

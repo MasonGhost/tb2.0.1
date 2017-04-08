@@ -168,6 +168,7 @@ public class BackgroundTaskHandler {
     private Runnable handleTaskRunnable = new Runnable() {
         @Override
         public void run() {
+
             while (!mIsExit && ActivityHandler.getInstance().getActivityStack() != null) {
                 if (mIsNetConnected && !mTaskBeanConcurrentLinkedQueue.isEmpty()) {
                     BackgroundRequestTaskBean backgroundRequestTaskBean = mTaskBeanConcurrentLinkedQueue.poll();

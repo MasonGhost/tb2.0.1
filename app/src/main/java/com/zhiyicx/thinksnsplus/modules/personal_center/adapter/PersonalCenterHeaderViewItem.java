@@ -396,8 +396,10 @@ public class PersonalCenterHeaderViewItem {
         if (dynamicCountInt <= 0) {
             ll_dynamic_count_container.setVisibility(View.GONE);
         } else {
+            ll_dynamic_count_container.setVisibility(View.VISIBLE);
             tv_dynamic_count.setText(mActivity.getString(R.string.dynamic_count, String.valueOf(dynamicCountInt)));
         }
+        mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
 }
