@@ -21,6 +21,7 @@ import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -108,7 +109,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         if (mItemBeanComment == null) {
             mItemBeanComment = new MessageItemBean();
             Conversation commentMessage = new Conversation();
-            Message message=new Message();
+            Message message = new Message();
             message.setTxt("还没有人"
                     + mContext.getString(R.string.comment_me));
             commentMessage.setLast_message(message);
@@ -124,7 +125,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         if (mItemBeanLike == null) {
             mItemBeanLike = new MessageItemBean();
             Conversation likeConversation = new Conversation();
-            Message message=new Message();
+            Message message = new Message();
             message.setTxt("还没有人"
                     + mContext.getString(R.string.like_me));
             likeConversation.setLast_message(message);
@@ -216,6 +217,9 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                 mRootView.getListDatas().get(i).setUnReadMessageNums(mRootView.getListDatas().get(i).getUnReadMessageNums() + 1);
                 mRootView.getListDatas().get(i).getConversation().setLast_message(message);
                 mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
+                if (i != 0) {
+                    Collections.swap(mRootView.getListDatas(), i, 0);
+                }
                 mRootView.refreshData(); // 加上 header 的位置
                 isHasConversion = true;
                 break;
