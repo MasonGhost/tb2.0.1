@@ -68,8 +68,18 @@ public class DynamicCommentBeanGreenDaoImpl extends CommonCacheImpl<DynamicComme
 
     @Override
     public void deleteSingleCache(DynamicCommentBean dynamicCommentBean) {
+        if (dynamicCommentBean == null) {
+            return;
+        }
         DynamicCommentBeanDao dynamicCommentBeanDao = getWDaoSession().getDynamicCommentBeanDao();
+        if (dynamicCommentBean.get_id() == null) {
+            dynamicCommentBean = dynamicCommentBeanDao.queryBuilder()
+                    .where(DynamicCommentBeanDao.Properties.Feed_mark.eq(dynamicCommentBean.getComment_mark()))
+                    .unique();
+        }
         dynamicCommentBeanDao.delete(dynamicCommentBean);
+
+
     }
 
     /**

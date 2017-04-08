@@ -15,6 +15,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.trycatch.mysnackbar.Prompt;
+import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -24,7 +26,6 @@ import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -43,7 +44,6 @@ import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
-import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListBaseItem;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListForZeroImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForEightImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForFiveImage;
@@ -127,6 +127,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     private ActionPopupWindow mDeletCommentPopWindow;
     private ActionPopupWindow mDeletDynamicPopWindow;
     private ActionPopupWindow mReSendCommentPopWindow;
+    private ActionPopupWindow mReSendDynamicPopWindow;
     private int mCurrentPostion;// 当前评论的动态位置
     private long mReplyToUserId;// 被评论者的 id
 
@@ -134,6 +135,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        setLoadViewHolderImag(R.mipmap.img_default_internet);
         // 初始化图片选择器
         mPhotoSelector = DaggerPhotoSelectorImplComponent
                 .builder()
@@ -265,8 +267,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    protected void setLoadingHolderClick() {
-        super.setLoadingHolderClick();
+    protected void setLoadingViewHolderClick() {
+        super.setLoadingViewHolderClick();
         requestData();
     }
 
@@ -311,23 +313,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    public void setPresenter(PersonalCenterContract.Presenter presenter) {
-        this.mPresenter = presenter;
-    }
-
-
-    @Override
     public void onImageClick(ViewHolder holder, DynamicBean dynamicBean, int position) {
-        List<ImageBean> imageBeanList = new ArrayList<>();
-        if (dynamicBean.getFeed().getStorages() != null) {
-            imageBeanList = dynamicBean.getFeed().getStorages();
-        } else {
-            for (int i = 0; i < dynamicBean.getFeed().getLocalPhotos().size(); i++) {
-                ImageBean imageBean = new ImageBean();
-                imageBean.setImgUrl(dynamicBean.getFeed().getLocalPhotos().get(i));
-                imageBeanList.add(imageBean);
-            }
-        }
+        List<ImageBean> imageBeanList = dynamicBean.getFeed().getStorages();
         ArrayList<AnimationRectBean> animationRectBeanArrayList
                 = new ArrayList<AnimationRectBean>();
         for (int i = 0; i < imageBeanList.size(); i++) {
@@ -390,7 +377,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void allDataReady() {
-        closeLoading();
+        closeLoadingView();
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent, STATUS_RGB, 0);
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.rl_toolbar_container), TOOLBAR_RGB, 0);
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.v_horizontal_line), TOOLBAR_DIVIDER_RGB, 0);
@@ -406,7 +393,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void loadAllError() {
-        showLoadError();
+        showLoadViewLoadError();
     }
 
     @Override
@@ -419,9 +406,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void onReSendClick(int position) {
-        mListDatas.get(position).setState(DynamicBean.SEND_ING);
-        refreshData();
-        mPresenter.reSendDynamic(position);
+        position = position - 1;// 去掉 header
+        initReSendDynamicPopupWindow(position);
+        mReSendDynamicPopWindow.show();
     }
 
 
@@ -453,6 +440,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     public void setHeaderInfo(UserInfoBean userInfoBean) {
         if (userInfoBean != null) {
+            this.mUserInfoBean = userInfoBean;
             setBottomVisible(userInfoBean.getUser_id());
             mPersonalCenterHeaderViewItem.initHeaderViewData(userInfoBean);
         }
@@ -468,17 +456,20 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     public void setUpLoadCoverState(boolean upLoadState, int taskId) {
         if (upLoadState) {
             // 封面图片上传成功
-            ToastUtils.showToast("封面上传成功");
             // 通知服务器，更改用户信息
             mPresenter.changeUserCover(mUserInfoBean, taskId, imagePath);
         } else {
-            ToastUtils.showToast("封面上传失败");
+            TSnackbar.make(mSnackRootView, R.string.cover_uploadFailure, TSnackbar.LENGTH_SHORT)
+                    .setPromptThemBackground(Prompt.ERROR)
+                    .show();
         }
     }
 
     @Override
     public void setChangeUserCoverState(boolean changeSuccess) {
-        ToastUtils.showToast(changeSuccess ? "封面修改成功" : "封面修改失败");
+        TSnackbar.make(mSnackRootView, changeSuccess ? R.string.cover_change_success : R.string.cover_change_failure, TSnackbar.LENGTH_SHORT)
+                .setPromptThemBackground(changeSuccess ? Prompt.SUCCESS : Prompt.ERROR)
+                .show();
     }
 
     @Override
@@ -489,9 +480,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         // 选择图片完毕后，开始上传封面图片
         ImageBean imageBean = photoList.get(0);
         imagePath = imageBean.getImgUrl();
-        // 加载本地图片
-        mPresenter.uploadUserCover(imagePath);
         // 上传本地图片
+        mPresenter.uploadUserCover(imagePath);
+        // 加载本地图片
         mPersonalCenterHeaderViewItem.upDateUserCover(imagePath);
     }
 
@@ -535,14 +526,14 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     private void initToolBar() {
-        // toolBar设置状态栏高度的marginTop
+        // toolBar 设置状态栏高度的 marginTop
         int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelSize(R.dimen.divider_line);
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
         mLlToolbarContainerParent.setLayoutParams(layoutParams);
     }
 
     /**
-     * 设置底部view的关注状态
+     * 设置底部 view 的关注状态
      */
     private void setBottomFollowState(int state) {
         switch (state) {
@@ -577,7 +568,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     /**
-     * 设置底部view的可见性;如果进入了当前登录用户的主页，需要隐藏底部状态栏
+     * 设置底部 view 的可见性;如果进入了当前登录用户的主页，需要隐藏底部状态栏
      *
      * @param currentUserID
      */
@@ -683,7 +674,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      * @param dynamicBean curent dynamic
      * @param position    curent dynamic postion
      */
-    private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean, int position) {
+    private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean, final int position) {
         mDeletDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_dynamic))
                 .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
@@ -696,6 +687,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                     @Override
                     public void onItem1Clicked() {
                         mDeletDynamicPopWindow.hide();
+                        updateDynamicCounts(-1);
+                        mPresenter.deleteDynamic(dynamicBean, position);
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
@@ -705,6 +698,22 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                     }
                 })
                 .build();
+    }
+
+    @Override
+    public void updateDynamicCounts(int changeNums) {
+        int currenDynamicCounts = 0;
+        try {
+            currenDynamicCounts = Integer.parseInt(mUserInfoBean.getFeeds_count());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        currenDynamicCounts += changeNums;
+        if (currenDynamicCounts < 0) {
+            currenDynamicCounts = 0;
+        }
+        mUserInfoBean.setFeeds_count(String.valueOf(currenDynamicCounts));
+        mPersonalCenterHeaderViewItem.upDateDynamicNums(currenDynamicCounts);
     }
 
     /**
@@ -730,6 +739,36 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                     @Override
                     public void onBottomClicked() {
                         mReSendCommentPopWindow.hide();
+                    }
+                })
+                .build();
+    }
+
+    /**
+     * 初始化重发动态选择弹框
+     */
+    private void initReSendDynamicPopupWindow(final int position) {
+        mReSendDynamicPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.dynamic_list_resend_dynamic))
+                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+                        mReSendDynamicPopWindow.hide();
+                        mListDatas.get(position).setState(DynamicBean.SEND_ING);
+                        refreshData();
+                        mPresenter.reSendDynamic(position);
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mReSendDynamicPopWindow.hide();
                     }
                 })
                 .build();

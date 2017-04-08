@@ -7,12 +7,14 @@ import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.net.UpLoadFile;
+import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.imsdk.receiver.NetChangeReceiver;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -65,9 +67,9 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_DYNAM
 
 public class BackgroundTaskHandler {
     private static final int RETRY_MAX_COUNT = 3; // 最大重试次
-    private static final int RETRY_INTERVAL_TIME = 2; // 循环间隔时间 单位 s
-    private static final long MESSAGE_SEND_INTERVAL_FOR_CPU = 500;// 消息发送间隔时间，防止 cpu 占用过高
-    private static final long MESSAGE_SEND_INTERVAL_FOR_CPU_TIME_OUT = 2000;// 消息发送间隔时间，防止 cpu 占用过高
+    private static final int RETRY_INTERVAL_TIME = 5; // 循环间隔时间 单位 s
+    private static final long MESSAGE_SEND_INTERVAL_FOR_CPU = 1000;// 消息发送间隔时间，防止 cpu 占用过高
+    private static final long MESSAGE_SEND_INTERVAL_FOR_CPU_TIME_OUT = 3000;// 消息发送间隔时间，防止 cpu 占用过高
 
     @Inject
     Application mContext;
@@ -149,7 +151,10 @@ public class BackgroundTaskHandler {
      * 获取缓存中没有被执行的数据
      */
     private void getCacheData() {
-        List<BackgroundRequestTaskBean> cacheDatas = mBackgroundRequestTaskBeanGreenDao.getMultiDataFromCache();
+        if (AppApplication.getmCurrentLoginAuth() == null) {
+            return;
+        }
+        List<BackgroundRequestTaskBean> cacheDatas = mBackgroundRequestTaskBeanGreenDao.getMultiDataFromCacheByUserId(Long.valueOf(AppApplication.getmCurrentLoginAuth().getUser_id()));
         if (cacheDatas != null) {
             for (BackgroundRequestTaskBean tmp : cacheDatas) {
                 mTaskBeanConcurrentLinkedQueue.add(tmp);
@@ -163,13 +168,15 @@ public class BackgroundTaskHandler {
     private Runnable handleTaskRunnable = new Runnable() {
         @Override
         public void run() {
-            while (!mIsExit) {
+
+            while (!mIsExit && ActivityHandler.getInstance().getActivityStack() != null) {
                 if (mIsNetConnected && !mTaskBeanConcurrentLinkedQueue.isEmpty()) {
                     BackgroundRequestTaskBean backgroundRequestTaskBean = mTaskBeanConcurrentLinkedQueue.poll();
                     handleTask(backgroundRequestTaskBean);
                 }
                 threadSleep();
             }
+            mIsExit = true;
             // 存储未执行的数据到数据库，下次执行
             if (mBackgroundRequestTaskBeanCaches.size() > 0) {
                 mBackgroundRequestTaskBeanGreenDao.saveMultiData(mBackgroundRequestTaskBeanCaches);
@@ -224,6 +231,16 @@ public class BackgroundTaskHandler {
                     return;
                 }
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
+                break;
+
+            case PATCH:
+
+                if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
+                    EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
+                    return;
+                }
+                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
+                PatchMethod(backgroundRequestTaskBean);
                 break;
             /**
              * 通用 DELETE 接口处理
@@ -295,8 +312,40 @@ public class BackgroundTaskHandler {
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
+                        if (checkIsNeedReRequest(code)) {
+                            addBackgroundRequestTask(backgroundRequestTaskBean);
+                        } else {
+                            mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                        }
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
                         addBackgroundRequestTask(backgroundRequestTaskBean);
+                    }
+                });
+    }
+
+    /**
+     * 处理Patch请求类型的后台任务
+     */
+    private void PatchMethod(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
+
+        mServiceManager.getCommonClient().handleBackGroundTaskPatch(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
+                .subscribe(new BaseSubscribe<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        if (checkIsNeedReRequest(code)) {
+                            addBackgroundRequestTask(backgroundRequestTaskBean);
+                        } else {
+                            mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                        }
                     }
 
                     @Override
@@ -321,8 +370,12 @@ public class BackgroundTaskHandler {
                     }
 
                     @Override
-                    protected void onFailure(String message) {
-                        addBackgroundRequestTask(backgroundRequestTaskBean);
+                    protected void onFailure(String message, int code) {
+                        if (checkIsNeedReRequest(code)) {
+                            addBackgroundRequestTask(backgroundRequestTaskBean);
+                        } else {
+                            mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                        }
                     }
 
                     @Override
@@ -344,14 +397,18 @@ public class BackgroundTaskHandler {
                         IMConfig imConfig = new IMConfig();
                         imConfig.setImUid(data.getUser_id());
                         imConfig.setToken(data.getIm_password());
-                        imConfig.setWeb_socket_authority("ws://"+mAuthRepository.getComponentConfigLocal().get(0).getValue());
+                        imConfig.setWeb_socket_authority("ws://" + mAuthRepository.getComponentConfigLocal().get(0).getValue());
                         mAuthRepository.saveIMConfig(imConfig);
                         mAuthRepository.loginIM();
                     }
 
                     @Override
-                    protected void onFailure(String message) {
-                        addBackgroundRequestTask(backgroundRequestTaskBean);
+                    protected void onFailure(String message, int code) {
+                        if (checkIsNeedReRequest(code)) {
+                            addBackgroundRequestTask(backgroundRequestTaskBean);
+                        } else {
+                            mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                        }
                     }
 
                     @Override
@@ -388,8 +445,12 @@ public class BackgroundTaskHandler {
                     }
 
                     @Override
-                    protected void onFailure(String message) {
-                        addBackgroundRequestTask(backgroundRequestTaskBean);
+                    protected void onFailure(String message, int code) {
+                        if (checkIsNeedReRequest(code)) {
+                            addBackgroundRequestTask(backgroundRequestTaskBean);
+                        } else {
+                            mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                        }
                     }
 
                     @Override
@@ -413,15 +474,19 @@ public class BackgroundTaskHandler {
         // 存入数据库
         // ....
         final DynamicDetailBean dynamicDetailBean = dynamicBean.getFeed();
-        List<String> photos = dynamicDetailBean.getLocalPhotos();
+        List<ImageBean> photos = dynamicDetailBean.getStorages();
         Observable<BaseJson<Object>> observable = null;
         // 有图片需要上传时：先处理图片上传任务，成功后，获取任务id，发布动态
         if (photos != null && !photos.isEmpty()) {
             // 先处理图片上传，图片上传成功后，在进行动态发布
             List<Observable<BaseJson<Integer>>> upLoadPics = new ArrayList<>();
             for (int i = 0; i < photos.size(); i++) {
-                String filePath = photos.get(i);
-                upLoadPics.add(mUpLoadRepository.upLoadSingleFile("file" + i, filePath, true));
+                ImageBean imageBean = photos.get(i);
+                String filePath = imageBean.getImgUrl();
+                int photoWidth = (int) imageBean.getWidth();
+                int photoHeight = (int) imageBean.getHeight();
+                String photoMimeType = imageBean.getImgMimeType();
+                upLoadPics.add(mUpLoadRepository.upLoadSingleFile("file" + i, filePath, photoMimeType, true, photoWidth, photoHeight));
             }
             observable = // 组合多个图片上传任务
                     Observable.combineLatest(upLoadPics, new FuncN<List<Integer>>() {
@@ -454,7 +519,6 @@ public class BackgroundTaskHandler {
         } else {
             // 没有图片上传任务，直接发布动态
             observable = mSendDynamicRepository.sendDynamic(dynamicDetailBean);// 进行动态发布的请求
-
         }
         observable.subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
@@ -472,7 +536,7 @@ public class BackgroundTaskHandler {
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         // 发送动态到动态列表：状态为发送失败
                         dynamicBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
@@ -514,7 +578,7 @@ public class BackgroundTaskHandler {
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         dynamicCommentBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
                         EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
@@ -539,7 +603,7 @@ public class BackgroundTaskHandler {
         final Long commentMark = (Long) params.get("comment_mark");
         final InfoCommentListBean infoCommentListBean = mInfoCommentListBeanDao.getCommentByCommentMark
                 (commentMark);
-        // 发送动态到动态列表：状态为发送中
+
         mServiceManager.getCommonClient()
                 .handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
@@ -554,7 +618,7 @@ public class BackgroundTaskHandler {
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         infoCommentListBean.setState(DynamicBean.SEND_ERROR);
                         mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
                         EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
@@ -568,5 +632,47 @@ public class BackgroundTaskHandler {
                     }
                 });
 
+    }
+
+    /**
+     * 检测是否需要重新请求
+     *
+     * @param code
+     * @return true 需要
+     */
+    private boolean checkIsNeedReRequest(int code) {
+        boolean result;
+        switch (code) {
+            case ErrorCodeConfig.STOREAGE_UPLOAD_FAIL:
+                result = true;
+                break;
+            case ErrorCodeConfig.IM_CREATE_CHAT_AUTH_FAIL:
+                result = true;
+                break;
+            case ErrorCodeConfig.IM_CREATE_CONVERSATION_FAIL:
+                result = true;
+                break;
+            case ErrorCodeConfig.IM_UPDATE_AUTH_FAIL:
+                result = true;
+                break;
+            case ErrorCodeConfig.IM_DELETE_CONVERSATION_FAIL:
+                result = true;
+                break;
+            case ErrorCodeConfig.IM_HANDLE_CONVERSATION_MEMBER_FAIL:
+                result = true;
+                break;
+            case ErrorCodeConfig.IM_QUIT_CONVERSATION_FAIL:
+                result = true;
+                break;
+            case ErrorCodeConfig.IM_DELDETE_CONVERSATION_FAIL:
+                result = true;
+                break;
+            case ErrorCodeConfig.DYNAMIC_HANDLE_FAIL:
+                result = true;
+                break;
+            default:
+                result = false;
+        }
+        return result;
     }
 }

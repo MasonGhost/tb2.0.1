@@ -11,10 +11,12 @@ import android.support.annotation.NonNull;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
+import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -32,10 +34,13 @@ import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentActivity;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentHeader;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 import com.zhiyicx.thinksnsplus.widget.IconTextView;
@@ -48,11 +53,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
-import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListFragment
-        .BUNDLE_MUSIC_ABLUM;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListFragment.BUNDLE_MUSIC_ABLUM;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT;
 
 /**
  * @Author Jliuer
@@ -94,6 +101,8 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     IconTextView mFragmentMusicDetailComment;
     @BindView(R.id.fragment_music_detail_favorite)
     IconTextView mFragmentMusicDetailFavorite;
+    @BindView(R.id.fragment_music_detail_music_count)
+    TextView fragmentMusicDetailMusicCount;
 
     private CommonAdapter mAdapter;
     private List<MediaBrowserCompat.MediaItem> mAdapterList = new ArrayList<>();
@@ -116,6 +125,9 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     private MusicAlbumListBean mMusicAlbumListBean;
     private MusicAlbumDetailsBean mAlbumDetailsBean;
 
+    /**
+     * 音乐切换回掉
+     */
     private final MediaControllerCompat.Callback mMediaControllerCallback =
             new MediaControllerCompat.Callback() {
                 @Override
@@ -126,6 +138,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                     }
                     mAdapter.notifyDataSetChanged();
                     mCurrentMediaId = metadata.getDescription().getMediaId();
+                    mPresenter.getMusicDetails(mCurrentMediaId);
                 }
 
                 @Override
@@ -134,11 +147,19 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 }
             };
 
+    /**
+     * 音乐数据变更回掉
+     */
     private final MediaBrowserCompat.SubscriptionCallback mSubscriptionCallback =
             new MediaBrowserCompat.SubscriptionCallback() {
                 @Override
                 public void onChildrenLoaded(@NonNull String parentId,
                                              @NonNull List<MediaBrowserCompat.MediaItem> children) {
+                    MediaSessionCompat.QueueItem mCurrentMusic = AppApplication.getmQueueManager().getCurrentMusic();
+                    if (mCurrentMusic != null) {
+                        mCurrentMediaId = MediaIDHelper.extractMusicIDFromMediaID(mCurrentMusic.getDescription().getMediaId());
+                    }
+                    fragmentMusicDetailMusicCount.setText(String.format("(共%d首)", children.size()));
                     mAdapter.dataChange(children);
                 }
 
@@ -179,41 +200,13 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @Override
     protected void initData() {
         mMusicAlbumListBean = getArguments().getParcelable(BUNDLE_MUSIC_ABLUM);
-        dealBg();
-        mPresenter.getMusicAblum(1 + "");
+        mAlbumDetailsBean = mPresenter.getCacheAblumDetail(mMusicAlbumListBean.getId());
+        initHeadInfo(mMusicAlbumListBean);
+        mPresenter.getMusicAblum(mMusicAlbumListBean.getId() + "");
         mAdapter = getCommonAdapter();
-
-        mBgBitmap = BitmapFactory
-                .decodeResource(getResources(), R.mipmap.icon_256);
-        mPalette = Palette.from(mBgBitmap).generate();
-        BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap
-                (mBgBitmap, mBgBitmap.getWidth(), mBgBitmap.getHeight()));
-        mFragmentMusicDetailHeadInfo.setBackgroundDrawable(drawable);
-
-        mFragmentMusicDetailScrollview.setOnHeadFlingListener(new NestedScrollLineayLayout
-                .OnHeadFlingListener() {
-            @Override
-            public void onHeadFling(int scrollY) {
-                int distance = mFragmentMusicDetailScrollview.getTopViewHeight();
-                int alpha = 255 * scrollY / distance;
-                alpha = alpha > 255 ? 255 : alpha;
-                mFragmentMusicDetailTitle.setBackgroundColor(mPalette.getDarkVibrantColor
-                        (0xffdedede));
-                if ((float) alpha / 255f > 0.7) {
-                    mFragmentMusicDetailCenterTitle.setVisibility(View.VISIBLE);
-                    mFragmentMusicDetailCenterSubTitle.setVisibility(View.VISIBLE);
-                } else {
-                    mFragmentMusicDetailCenterTitle.setVisibility(View.GONE);
-                    mFragmentMusicDetailCenterSubTitle.setVisibility(View.GONE);
-                }
-                mFragmentMusicDetailTitle.getBackground().setAlpha(alpha);
-
-            }
-        });
-
         mRvMusicDetailList.setAdapter(mAdapter);
         mRvMusicDetailList.setLayoutManager(new LinearLayoutManager(getActivity()));
-
+        initTitle();
     }
 
     @Override
@@ -252,6 +245,12 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @Override
     public void setMusicAblum(MusicAlbumDetailsBean musicAblum) {
         mAlbumDetailsBean = musicAblum;
+        mFragmentMusicDetailCenterTitle.setText(mAlbumDetailsBean.getTitle());
+        mFragmentMusicDetailCenterSubTitle.setText(mAlbumDetailsBean.getIntro());
+        mFragmentMusicDetailDec.setText(mAlbumDetailsBean.getIntro());
+        if (mAlbumDetailsBean.getIs_collection() != 0) {
+            mFragmentMusicDetailFavorite.setIconRes(R.mipmap.detail_ico_collect);
+        }
         if (mCompatProvider.getMediaBrowser().isConnected()) {
             onConnected();
         }
@@ -270,6 +269,16 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @Override
     public void showMessage(String message) {
 
+    }
+
+    @Override
+    public void setCollect(boolean isCollected) {
+        if (isCollected) {
+            mFragmentMusicDetailFavorite.setIconRes(R.mipmap.detail_ico_collect);
+        } else {
+            mFragmentMusicDetailFavorite.setIconRes(R.mipmap.music_ico_collect);
+        }
+        mFragmentMusicDetailFavorite.setText(mAlbumDetailsBean.getCollect_count() + "");
     }
 
     @Override
@@ -335,7 +344,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 if (cachedState == null || cachedState != state) {
                     holder.itemView.setTag(R.id.tag_mediaitem_state_cache, state);
                 }
-
                 if (mCurrentMediaId.equals(MediaIDHelper.extractMusicIDFromMediaID(item.getMediaId
                         ()))) {
                     musicName.setTextColor(getResources().getColor(R.color.important_for_theme));
@@ -400,7 +408,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 state = getStateFromController();
             }
         }
-
         return state;
     }
 
@@ -417,16 +424,56 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         }
     }
 
-    private void dealBg() {
-        mFragmentMusicDetailName.setText(mMusicAlbumListBean.getTitle());
-        mFragmentMusicDetailDec.setText(mMusicAlbumListBean.describeContents() + "");
-        mFragmentMusicDetailShare.setText(mMusicAlbumListBean.getShare_count() + "");
-        mFragmentMusicDetailComment.setText(mMusicAlbumListBean.getComment_count() + "");
-        mFragmentMusicDetailFavorite.setText(mMusicAlbumListBean.getCollect_count() + "");
-        mFragmentMusicDetailPlayvolume.setText(mMusicAlbumListBean.getTaste_count() + "");
+    @Override
+    public MusicAlbumDetailsBean getCurrentAblum() {
+        return mAlbumDetailsBean;
+    }
+
+    @Override
+    public MusicAlbumListBean getmMusicAlbumListBean() {
+        return mMusicAlbumListBean;
+    }
+
+    private void initTitle() {
+        mBgBitmap = BitmapFactory
+                .decodeResource(getResources(), R.mipmap.icon_256);
+        mPalette = Palette.from(mBgBitmap).generate();
+        BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap
+                (mBgBitmap, mBgBitmap.getWidth(), mBgBitmap.getHeight()));
+        mFragmentMusicDetailHeadInfo.setBackgroundDrawable(drawable);
+
+        mFragmentMusicDetailScrollview.setOnHeadFlingListener(new NestedScrollLineayLayout
+                .OnHeadFlingListener() {
+            @Override
+            public void onHeadFling(int scrollY) {
+                int distance = mFragmentMusicDetailScrollview.getTopViewHeight();
+                int alpha = 255 * scrollY / distance;
+                alpha = alpha > 255 ? 255 : alpha;
+                mFragmentMusicDetailTitle.setBackgroundColor(mPalette.getDarkVibrantColor
+                        (0xffdedede));
+                if ((float) alpha / 255f > 0.7) {
+                    mFragmentMusicDetailCenterTitle.setVisibility(View.VISIBLE);
+                    mFragmentMusicDetailCenterSubTitle.setVisibility(View.VISIBLE);
+                } else {
+                    mFragmentMusicDetailCenterTitle.setVisibility(View.GONE);
+                    mFragmentMusicDetailCenterSubTitle.setVisibility(View.GONE);
+                }
+                mFragmentMusicDetailTitle.getBackground().setAlpha(alpha);
+
+            }
+        });
+    }
+
+    private void initHeadInfo(MusicAlbumListBean albumListBean) {
+        mFragmentMusicDetailName.setText(albumListBean.getTitle());
+        mFragmentMusicDetailDec.setText(albumListBean.getIntro());
+        mFragmentMusicDetailShare.setText(albumListBean.getShare_count() + "");
+        mFragmentMusicDetailComment.setText(albumListBean.getComment_count() + "");
+        mFragmentMusicDetailFavorite.setText(albumListBean.getCollect_count() + "");
+        mFragmentMusicDetailPlayvolume.setText(albumListBean.getTaste_count() + "");
 
         Glide.with(getContext())
-                .load(ImageUtils.imagePathConvert(mMusicAlbumListBean.getStorage().getId() + "",
+                .load(ImageUtils.imagePathConvert(albumListBean.getStorage().getId() + "",
                         ImageZipConfig.IMAGE_70_ZIP))
                 .asBitmap()
                 .transform(new GlideStokeTransform(getActivity(), 20))
@@ -446,22 +493,46 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 });
     }
 
+    public interface MediaBrowserCompatProvider {
+        MediaBrowserCompat getMediaBrowser();
+    }
+
+    public class MusicAblumHeadInfo {
+        private int iamgeId;
+    }
+
     @OnClick({R.id.fragment_music_detail_playvolume, R.id.fragment_music_detail_share, R.id
-            .fragment_music_detail_comment, R.id.fragment_music_detail_favorite})
+            .fragment_music_detail_comment, R.id.fragment_music_detail_favorite,
+            R.id.fragment_music_detail_back})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.fragment_music_detail_playvolume:
                 break;
             case R.id.fragment_music_detail_share:
+                mPresenter.shareMusicAlbum();
                 break;
             case R.id.fragment_music_detail_comment:
+                Intent intent = new Intent(getActivity(), MusicCommentActivity.class);
+                Bundle musicBundle = new Bundle();
+                MusicCommentHeader.HeaderInfo headerInfo = new MusicCommentHeader.HeaderInfo();
+                headerInfo.setCommentCount(mMusicAlbumListBean.getComment_count());
+                headerInfo.setId(mMusicAlbumListBean.getId());
+                headerInfo.setTitle(mMusicAlbumListBean.getTitle());
+                headerInfo.setLitenerCount(mMusicAlbumListBean.getTaste_count() + "");
+                headerInfo.setImageUrl(ImageUtils.imagePathConvert(mMusicAlbumListBean.getStorage().getId() + "",
+                        ImageZipConfig.IMAGE_70_ZIP));
+                musicBundle.putSerializable(CURRENT_COMMENT, headerInfo);
+                intent.putExtra(CURRENT_COMMENT, musicBundle);
+                startActivity(intent);
                 break;
             case R.id.fragment_music_detail_favorite:
+                mPresenter.handleCollect(mAlbumDetailsBean.getIs_collection() == 0, mAlbumDetailsBean.getId() + "");
+                break;
+            case R.id.fragment_music_detail_back:
+                getActivity().finish();
+                break;
+            default:
                 break;
         }
-    }
-
-    public interface MediaBrowserCompatProvider {
-        MediaBrowserCompat getMediaBrowser();
     }
 }

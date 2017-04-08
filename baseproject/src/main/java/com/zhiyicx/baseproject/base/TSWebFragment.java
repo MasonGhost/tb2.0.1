@@ -32,7 +32,6 @@ import java.util.regex.Pattern;
 import rx.functions.Action1;
 
 import static com.umeng.socialize.utils.DeviceConfig.context;
-import static com.zhiyicx.common.base.BaseApplication.getContext;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -208,6 +207,9 @@ public abstract class TSWebFragment extends TSFragment {
             // 判断标题 title 中是否包含有“error”字段，如果包含“error”字段，则设置加载失败，显示加载失败的视图
             if (!TextUtils.isEmpty(title) && title.toLowerCase().contains("error")) {
                 mIsLoadError = true;
+            }else {
+                mToolbarCenter.setVisibility(View.VISIBLE);
+                mToolbarCenter.setText(title);
             }
 
 

@@ -49,7 +49,7 @@ public class InfoSearchPresenter extends BasePresenter<SearchContract.Repository
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
 
                     }
 

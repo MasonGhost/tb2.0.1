@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/ilv_container"
-        app:showName="false"
+        app:showName="true"
         app:showUserAvatar="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"

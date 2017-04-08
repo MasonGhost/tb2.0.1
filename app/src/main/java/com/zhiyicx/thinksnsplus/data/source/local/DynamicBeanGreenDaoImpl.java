@@ -42,7 +42,8 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
 
     @Override
     public DynamicBean getSingleDataFromCache(Long primaryKey) {
-        return null;
+        DynamicBeanDao dynamicBeanDao = getWDaoSession().getDynamicBeanDao();
+        return dynamicBeanDao.load(primaryKey);
     }
 
     @Override
@@ -63,7 +64,16 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
 
     @Override
     public void deleteSingleCache(DynamicBean dta) {
-
+        if (dta == null) {
+            return;
+        }
+        DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
+        if (dta.getId() == null) {
+            dta = dynamicBeanDao.queryBuilder()
+                    .where(DynamicBeanDao.Properties.Feed_mark.eq(dta.getFeed_mark()))
+                    .unique();
+        }
+        dynamicBeanDao.delete(dta);
     }
 
     /**
@@ -172,7 +182,12 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
                 , new String[]{String.valueOf(userId)});
     }
 
-
+    /**
+     * 通过 feed_mark 获取动态
+     *
+     * @param feed_mark
+     * @return
+     */
     public DynamicBean getDynamicByFeedMark(Long feed_mark) {
         DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
         List<DynamicBean> datas = dynamicBeanDao.queryDeep(" where " + " T." + DynamicBeanDao.Properties.Feed_mark.columnName + " = ? "// feedId倒序

@@ -11,6 +11,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
@@ -119,7 +122,25 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());//设置动画
         mRefreshLayout.setRefreshEnabled(true);
         mRefreshLayout.setOnRefreshListener(this);
-
+        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        InputMethodManager inputMethodManager = (InputMethodManager)mRecyclerView.getContext().getSystemService(
+                                Context.INPUT_METHOD_SERVICE);
+                        if (inputMethodManager.isActive()) {
+                            inputMethodManager.hideSoftInputFromWindow(
+                                    v.getWindowToken(), 0);
+                            return true;
+                        }
+                        break;
+                    default:
+                }
+                return false;
+            }
+        });
     }
 
     /**
@@ -173,15 +194,23 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
     /**
      * refresh
      */
-    public void refresh() {
+    public void refreshSoomthBottom() {
         if (messageAdapter != null) {
-            scrollToBottom();
             messageAdapter.notifyDataSetChanged();
-//            messageAdapter.notifyItemInserted(messageAdapter.getItemCount());
+//            messageAdapter.notifyItemInserted(messageAdapter.getItemCount()-1);
+            smoothScrollToBottom();
 
         }
     }
 
+    /**
+     * refresh
+     */
+    public void refresh() {
+        if (messageAdapter != null) {
+            messageAdapter.notifyDataSetChanged();
+        }
+    }
 
     /**
      * refresh and jump to the position
@@ -212,6 +241,10 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
 
     public SwipeToLoadLayout getRefreshLayout() {
         return mRefreshLayout;
+    }
+
+    public MultiItemTypeAdapter getMessageAdapter() {
+        return messageAdapter;
     }
 
     public Message getItem(int position) {

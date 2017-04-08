@@ -1,4 +1,4 @@
-2017年3月2日11:03:02
+2017年4月5日14:38:55
 # app module
 
 项目结构目录：
@@ -47,8 +47,9 @@
  - repository目录: 数据源，或者称为model层的实现
 
 ###modules目录
-    ts项目的功能模块
+    ts项目的功能模块<br>
 
+   gallery[图片查看器的实现](GALLERY.md)
 
 [文件上传功能实现](UPLOADFILE.md)<br>
 当前项目所使用的所有接口[API.md](API.md)

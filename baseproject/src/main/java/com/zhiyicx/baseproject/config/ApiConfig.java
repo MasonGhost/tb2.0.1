@@ -24,14 +24,16 @@ public class ApiConfig {
      * 测试服务器：http://192.168.2.222:8080/mockjs/2/test-get-repose-head-normal?
      */
 
-//    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
-        public static final String APP_DOMAIN = "http://192.168.2.222/";// 测试服务器
-    // public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
-    public static final String APP_IM_DOMAIN = "192.168.2.222:9900";// im 测试服务器
-//    public static final String APP_IM_DOMAIN = "ws://tsplus.zhibocloud.cn:9900";// im 正式服务器
+    //public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
+    //public static final String APP_DOMAIN = "http://192.168.2.222/";// 测试服务器
+    // public static final String APP_IM_DOMAIN = "192.168.2.222:9900";// im 测试服务器
+
+    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
+    public static final String APP_IM_DOMAIN = "ws://tsplus.zhibocloud.cn:9900";// im 正式服务器
 
 
     public static final String URL_ABOUT_US = "http://www.thinksns.com/index.html";// 关于我们网站
+    public static final String URL_JIPU_SHOP = "http://demo.jipukeji.com";// 极铺购物地址
 
     // 图片地址
     public static final String IMAGE_PATH = APP_DOMAIN + "api/v1/storages/%s/%d";// 带质量压缩
@@ -85,6 +87,7 @@ public class ApiConfig {
      * 动态相关
      */
     public static final String APP_PATH_SEND_DYNAMIC = "api/v1/feeds";// 发布动态
+    public static final String APP_PATH_DELETE_DYNAMIC = "api/v1/feeds/%s";// 删除一条动态
     // 获取动态列表
     // 最新：/api/v1/feeds;
     // 关注：/api/v1/feeds/follows;
@@ -119,33 +122,61 @@ public class ApiConfig {
     public static final String APP_PATH_INFO_LIST = "api/v1/news";// 资讯列表
     public static final String APP_PATH_INFO_COMMENT = "api/v1/news/{news_id}/comment";// 评论资讯
     public static final String APP_PATH_INFO_COMMENT_FORMAT = "api/v1/news/%s/comment";// 评论资讯
+
     // 删除资讯评论
     public static final String APP_PATH_INFO_DELETE_COMMENT_FORMAT = "api/v1/news/%s/comment/%s";
-    // 删除资讯评论
     public static final String APP_PATH_INFO_DELETE_COMMENT = "api/v1/news/{news_id}/comment/{comment_id}";
-    public static final String APP_PATH_INFO_COMMENT_LIST =
-            "api/v1/news/{feed_id}/comments";// 资讯评论列表
-    public static final String APP_PATH_INFO_COLLECT = "api/v1/news/{news_id}/collection";// 收藏资讯
-    public static final String APP_PATH_INFO_COLLECT_FORMAT = "api/v1/news/%s/collection";// 收藏资讯
-    public static final String APP_PATH_INFO_FOLLOW_LIST = "api/v1/news/cates/follow";// 订阅资讯频道
-    public static final String APP_PATH_INFO_SEARCH = "/api/v1/news/search";// 订阅资讯频道
-    public static final String APP_PATH_INFO_DETAILS = "/api/v1/news/{news_id}";// 资讯详情网页
-    public static final String APP_PATH_INFO_DETAILS_FORMAT = "/api/v1/news/%d";// 资讯详情网页
+
+    // 资讯评论列表
+    public static final String APP_PATH_INFO_COMMENT_LIST = "api/v1/news/{feed_id}/comments";//
+
+    // 收藏资讯
+    public static final String APP_PATH_INFO_COLLECT = "api/v1/news/{news_id}/collection";
+    public static final String APP_PATH_INFO_COLLECT_FORMAT = "api/v1/news/%s/collection";
+
+    // 订阅资讯频道
+    public static final String APP_PATH_INFO_FOLLOW_LIST = "api/v1/news/cates/follow";
+    public static final String APP_PATH_INFO_SEARCH = "/api/v1/news/search";
+
+    // 资讯详情网页
+    public static final String APP_PATH_INFO_DETAILS = "/api/v1/news/{news_id}";
+    public static final String APP_PATH_INFO_DETAILS_FORMAT = "/api/v1/news/%d";
 
     /**
      * 音乐相关
      */
     public static final String APP_PATH_MUSIC_ABLUM_LIST = "api/v1/music/specials";// 专辑列表
-    public static final String APP_PATH_MUSIC_DETAILS = "api/v1/music/{music_id}";// 歌曲详情
-    public static final String APP_PATH_MUSIC_COMMENT = "api/v1/music/{music_id}/comment";// 评论歌曲
-    public static final String APP_PATH_MUSIC_ABLUM_COMMENT =
-            "api/v1/music/specail/{special_id}/comment";// 评论专辑
-    public static final String APP_PATH_MUSIC_ABLUM_COLLECT =
-            "api/v1/music/special/{special_id}/collection";// 收藏专辑
-    public static final String APP_PATH_MUSIC_DIGG = "api/v1/music/{music_id}/digg";// 音乐点赞
-    public static final String APP_PATH_MUSIC_DIGG_FORMAT = "api/v1/music/%s/digg";// 音乐点赞
-    public static final String APP_PATH_MUSIC_ABLUM_DETAILS =
-            "api/v1/music/specials/{special_id}";// 专辑详情
+
+    // 歌曲详情
+    public static final String APP_PATH_MUSIC_DETAILS = "api/v1/music/{music_id}";
+
+    // 评论歌曲
+    public static final String APP_PATH_MUSIC_COMMENT = "api/v1/music/{music_id}/comment";
+    public static final String APP_PATH_MUSIC_COMMENT_FORMAT = "api/v1/music/%s/comment";
+
+    // 评论专辑
+    public static final String APP_PATH_MUSIC_ABLUM_COMMENT = "api/v1/music/special/{special_id}/comment";
+    public static final String APP_PATH_MUSIC_ABLUM_COMMENT_FORMAT = "api/v1/music/special/%s/comment";
+
+    // 专辑评论列表
+    public static final String APP_PATH_MUSIC_ABLUM_COMMENT_LIST = "api/v1/music/special/{special_id}/comment";
+
+    // 收藏专辑
+    public static final String APP_PATH_MUSIC_ABLUM_COLLECT = "api/v1/music/special/{special_id}/collection";
+    public static final String APP_PATH_MUSIC_ABLUM_COLLECT_FORMAT = "api/v1/music/special/%s/collection";
+
+    // 音乐点赞
+    public static final String APP_PATH_MUSIC_DIGG = "api/v1/music/{music_id}/digg";
+    public static final String APP_PATH_MUSIC_DIGG_FORMAT = "api/v1/music/%s/digg";
+
+    // 专辑详情
+    public static final String APP_PATH_MUSIC_ABLUM_DETAILS = "api/v1/music/specials/{special_id}";
+
+    // 分享歌曲
+    public static final String APP_PATH_MUSIC_SHARE = "api/v1/music/%s/share";
+
+    // 分享专辑
+    public static final String APP_PATH_MUSIC_ABLUM_SHARE = "api/v1/music/special/%s/share";
 
 
     /**
@@ -164,9 +195,26 @@ public class ApiConfig {
     public static final String APP_PATH_GET_COMPONENT_CONFIGS = "api/v1/system/component/configs";// 获取扩展包配置信息
     public static final String APP_PATH_GET_COMPONENT_CONFIGS_IM = "im";// 获取扩展包配置信息 类容
 
+    /**
+     * 分享相关
+     */
+    public static final String APP_PATH_SHARE_USERINFO = APP_DOMAIN + "profile/%s";// 用户信息分享地址 url/profile/{user_id}
+    public static final String APP_PATH_SHARE_DYNAMIC = APP_DOMAIN + "feeds/detail/%s";// 动态信息分享地址 url/feeds/detail/{feed_id}
+
 
     /**
      * 仅仅测试使用
      */
     public static final String APP_PATH_TOKEN_EXPIERD = "api/music_window_rotate-token";// token过期处理
+
+    /**
+     * 频道相关
+     */
+    // 处理频道订阅取消订阅的接口
+    public static final String APP_PATH_HANDLE_SUBSCRIB_CHANNEL = "api/v1/channels/{channel_id}/follow";
+    // 获取频道列表
+    public static final String APP_PATH_GET_CHANNEL = "api/v1/channels/{type}";
+    public static final String CHANNEL_TYPE_ALL_CHANNEL = "";// 所有的频道
+    public static final String CHANNEL_TYPE_SUBSCRIB_CHANNEL = "my";// 我订阅的频道
+
 }

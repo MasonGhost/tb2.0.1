@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.follow_fans;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
@@ -20,7 +19,6 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -130,8 +128,8 @@ public class FollowFansListAdapter extends CommonAdapter<FollowFansBean> {
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
                 .url(ImageUtils.imagePathConvert(userInfoBean.getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
-                .errorPic(R.drawable.shape_default_image_circle)
-                .placeholder(R.drawable.shape_default_image_circle)
+                .errorPic(R.mipmap.pic_default_portrait1)
+                .placeholder(R.mipmap.pic_default_portrait1)
                 .transformation(new GlideCircleTransform(getContext()))
                 .imagerView(headPic)
                 .build()

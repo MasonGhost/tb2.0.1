@@ -81,6 +81,11 @@ public interface DynamicDetailContract {
          */
         void loadAllError();
 
+        /**
+         * 动态已经被删除了
+         */
+        void dynamicHasBeDeleted();
+
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
@@ -152,5 +157,13 @@ public interface DynamicDetailContract {
          * @param commentPosition comment curren position
          */
         void deleteComment(long comment_id, int commentPosition);
+
+        /**
+         *  check current dynamic is has been deleted
+         * @param user_id the dynamic is belong to
+         * @param feed_mark the dynamic's feed_mark
+         * @return
+         */
+        boolean checkCurrentDynamicIsDeleted(Long user_id,Long feed_mark);
     }
 }

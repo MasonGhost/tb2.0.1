@@ -1,7 +1,7 @@
 <resources>
     <!-- 异常输出内容 -->
     <string name="err_share_no_content">分享内容不能为空</string>
-    <string name="err_net_not_work">网络请求失败，请重新加载</string>
+    <string name="err_net_not_work">网络不可用，请检查！</string>
     <string name="erro_argument_in_method">方法使用了不合法的参数</string>
     <string name="data_load_error">数据加载失败</string>
     <string name="load_error">加载失败</string>
@@ -57,11 +57,16 @@
     <string name="find_password_success">找回密码成功</string>
     <string name="change_password_success">更改成功</string>
 
-    <!-- 拍照相关 -->
+    <!-- 拍照相册相关 -->
     <string name="choose_from_photo">从相册中选择</string>
     <string name="choose_from_camera">拍照</string>
     <string name="choose_max_photos">你最多可以选择%1$d张图片</string>
     <string name="album_image_count">%1$d张</string>
+    <string name="start_camera_fail">启动相机失败</string>
+    <string name="crop_fail">裁剪失败</string>
+    <string name="camera_permission">相机权限设置</string>
+    <string name="setting_permission">去设置</string>
+    <string name="setting_permission_hint">请为TS+开放相机权限: 手机设置-授权管理-TS+(打开)</string>
     <!--  登录  -->
     <string name="bt_login">登录</string>
     <string name="no_login">不登录，先随便逛逛</string>

@@ -17,6 +17,10 @@ import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.utils.recycleviewdecoration.ShareDecoration;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+
 /**
  * @author LiuChao
  * @describe 用于分享的弹框
@@ -116,7 +120,22 @@ public class RecyclerViewPopupWindow extends PopupWindow {
     }
 
     public void hide() {
-        dismiss();
+        Observable.just(0)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer integer) {
+                        dismiss();
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        dismiss();
+                    }
+                });
+
+
     }
 
     public static RecyclerViewPopupWindow.Builder Builder() {

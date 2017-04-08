@@ -12,7 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 public abstract class BaseDao {
     private final String TAG = getClass().getSimpleName();
 
-    protected static final int VERSION = 1;
+    protected static final int VERSION = 2;
     protected static final String DB_NAME = "zycxIM.db";
 
     public static final long TIME_DEFAULT_ADD = 1451577600000L; //  消息的MID，`(mid >> 23) + 1451577600000` 为毫秒时间戳

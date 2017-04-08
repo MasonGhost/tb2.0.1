@@ -23,10 +23,13 @@ import android.widget.TextView;
 
 import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.ResourceDecoder;
 import com.bumptech.glide.load.ResourceEncoder;
+import com.bumptech.glide.load.data.DataFetcher;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.Resource;
+import com.bumptech.glide.load.model.stream.StreamModelLoader;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.load.resource.gifbitmap.GifBitmapWrapper;
 import com.bumptech.glide.request.RequestListener;
@@ -55,6 +58,7 @@ import com.zhiyicx.thinksnsplus.utils.TransferImageAnimationUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.TimeUnit;
 
@@ -207,7 +211,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     }
 
     public void saveImage() {
-        // 通过GLide获取bitmap
+        // 通过GLide获取bitmap,有缓存读缓存
         Glide.with(getActivity())
                 .load(String.format(ApiConfig.IMAGE_PATH, mImageBean.getStorage_id(), 100))
                 .asBitmap()
@@ -235,13 +239,14 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         LogUtils.i("imageBean = " + imageBean.toString());
 
         if (imageBean.getImgUrl() != null) {
+
             // 加载本地图片
             Glide.with(context)
                     .load(imageBean.getImgUrl())
                     .placeholder(R.drawable.shape_default_image)
                     .error(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .thumbnail(0.5f)
+                    .thumbnail(0.1f)
                     .override(800, 800)
                     .centerCrop()
                     .into(new GallarySimpleTarget(rect));
@@ -254,28 +259,66 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     .load(new CustomImageSizeModelImp(imageBean)
                             .requestCustomSizeUrl())
                     .diskCacheStrategy(DiskCacheStrategy.ALL);
+
+            // 尝试从缓存获取原图
             Glide.with(context)
-                    .using(new CustomImageModelLoader(context))
-                    .load(new CustomImageSizeModelImp(imageBean))
+                    .using(cacheOnlyStreamLoader)// 不从网络读取原图
+                    .load(String.format(ApiConfig.IMAGE_PATH, mImageBean.getStorage_id(), 100))
+                    .thumbnail(thumbnailBuilder)// 加载缩略图，上一个页面已经缓存好了，直接读取
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.shape_default_image)
                     .error(R.drawable.shape_default_image)
-                    .thumbnail(thumbnailBuilder)
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            LogUtils.i(TAG + "加载原图失败");
+                            mTvOriginPhoto.setVisibility(View.VISIBLE);
+                            // 原图没有缓存，从cacheOnlyStreamLoader抛出异常，在这儿加载高清图
+                            Glide.with(context)
+                                    .using(new CustomImageModelLoader(context))
+                                    .load(new CustomImageSizeModelImp(imageBean))
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .placeholder(R.drawable.shape_default_image)
+                                    .error(R.drawable.shape_default_image)
+                                    .centerCrop()
+                                    .into(new SimpleTarget<GlideDrawable>() {
+                                        @Override
+                                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                                            LogUtils.i(TAG + "加载高清图成功");
+                                            mIvPager.setImageDrawable(resource);
+                                            mPhotoViewAttacherNormal.update();
+                                        }
+                                    });
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            // 只有获取load的图片才会走这儿，缩略图不会
+                            LogUtils.i(TAG + "加载原图成功");
+                            mTvOriginPhoto.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
                     .centerCrop()
                     .into(new GallarySimpleTarget(rect));
+
+
         }
     }
 
     // 加载原图:
     private void loadOriginImage(String imageUrl) {
+        // 禁止点击查看原图按钮
+        mTvOriginPhoto.setClickable(false);
         // 刚点击查看原图，可能会有一段时间，进行重定位请求，所以立即设置进度
         mTvOriginPhoto.setText("0%");
         Glide.with(context)
                 .using(new ProgressModelLoader(new Handler() {
                     @Override
                     public void handleMessage(Message msg) {
-                        // 这部分的图片，都是通过OKHttp从网络获取的，如果改图片从glide缓存中读取，不会经过这儿
-                        if (msg.what == ProgressListener.SEND_LOAD_PROGRESS) {
+                        // 这部分的图片，都是通过 OKHttp 从网络获取的，如果改图片从 glide缓 存中读取，不会经过这儿
+                        if (msg.what == ProgressListener.SEND_LOAD_PROGRESS && mTvOriginPhoto != null) {
                             int totalReadBytes = msg.arg1;
                             int lengthBytes = msg.arg2;
                             int progressResult = (int) (((float) totalReadBytes / (float) lengthBytes) * 100);
@@ -289,8 +332,25 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     }
                 }))
                 .load(imageUrl)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.shape_default_image)
                 .error(R.drawable.shape_default_image)
+                .listener(new RequestListener<String, GlideDrawable>() {
+                    @Override
+                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                        LogUtils.i("loadOriginImage  onException");
+                        // 如果通过okhttp查看原图，失败，在这儿接收异常
+                        mTvOriginPhoto.setText(getString(R.string.see_origin_photos_failure));
+                        // 查看失败可以再次点击
+                        mTvOriginPhoto.setClickable(true);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        return false;
+                    }
+                })
                 .into(new SimpleTarget<GlideDrawable>() {
                           @Override
                           public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
@@ -410,15 +470,55 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
 
         @Override
         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+            if (resource == null) {
+                return;
+            }
             mPbProgress.setVisibility(View.GONE);
             mIvPager.setImageDrawable(resource);
             mPhotoViewAttacherNormal.update();
             // 获取到模糊图进行放大动画
             if (!hasAnim) {
+                LogUtils.i(TAG + "加载缩略图成功");
                 hasAnim = true;
                 startInAnim(rect);
             }
         }
+
     }
 
+    private static final StreamModelLoader<String> cacheOnlyStreamLoader = new StreamModelLoader<String>() {
+        @Override
+        public DataFetcher<InputStream> getResourceFetcher(final String model, int i, int i1) {
+            return new DataFetcher<InputStream>() {
+                @Override
+                public InputStream loadData(Priority priority) throws Exception {
+                    // 如果是从网络获取图片肯定会走这儿，直接抛出异常，缓存从其他方法获取
+                    throw new IOException();
+                }
+
+                @Override
+                public void cleanup() {
+
+                }
+
+                @Override
+                public String getId() {
+                    return model;
+                }
+
+                @Override
+                public void cancel() {
+
+                }
+            };
+        }
+    };
+
+    @Override
+    public void onDestroy() {
+        //Glide.with(this).onDestroy(); 太慢了，流量都跑完了
+        LogUtils.i(TAG + "-->onDestroy");
+        // Glide.clear(mTvOriginPhoto);
+        super.onDestroy();
+    }
 }

@@ -1,6 +1,7 @@
 package com.zhiyicx.imsdk.utils;
 
 import android.text.TextUtils;
+import android.util.Base64;
 
 import com.zhiyicx.imsdk.core.ImService;
 import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
@@ -9,8 +10,11 @@ import com.zhiyicx.imsdk.entity.MessageContainer;
 import org.msgpack.MessagePack;
 import org.msgpack.packer.Packer;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -499,6 +503,44 @@ public class MessageHelper {
         System.arraycopy(b, 0, result, a.length, b.length);
         return result;
     }
+
+    public static <T> T base64Str2Object(String productBase64) {
+        T device = null;
+        if (productBase64 == null) {
+            return null;
+        }
+        // 读取字节
+        byte[] base64 = Base64.decode(productBase64.getBytes(), Base64.DEFAULT);
+
+        // 封装到字节流
+        ByteArrayInputStream bais = new ByteArrayInputStream(base64);
+        try {
+            // 再次封装
+            ObjectInputStream bis = new ObjectInputStream(bais);
+            // 读取对象
+            device = (T) bis.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return device;
+    }
+
+    public static <T> String object2Base64Str(T object) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {   //Device为自定义类
+            // 创建对象输出流，并封装字节流
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            // 将对象写入字节流
+            oos.writeObject(object);
+            // 将字节流编码成base64的字符串
+            return new String(Base64.encode(baos
+                    .toByteArray(), Base64.DEFAULT));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
 }
 

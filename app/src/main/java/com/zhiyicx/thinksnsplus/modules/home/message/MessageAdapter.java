@@ -21,6 +21,7 @@ import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.imsdk.core.ChatType;
+import com.zhiyicx.imsdk.entity.MessageStatus;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
@@ -75,7 +76,7 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
                 AppApplication.AppComponentHolder.getAppComponent().imageLoader().loadImage(mContext, GlideImageConfig.builder()
                         .url(ImageUtils.imagePathConvert(messageItemBean.getUserInfo().getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
                         .transformation(new GlideCircleTransform(mContext))
-                        .errorPic(R.drawable.shape_default_image_circle)
+                        .errorPic(R.mipmap.pic_default_portrait1)
                         .imagerView((ImageView) holder.getView(R.id.iv_headpic))
                         .build()
                 );
@@ -91,7 +92,11 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
                 break;
             default:
         }
-        holder.setText(R.id.tv_content, messageItemBean.getConversation().getLast_message_text());
+        if (messageItemBean.getConversation().getLast_message().getSend_status()== MessageStatus.SEND_FAIL) {
+            holder.setText(R.id.tv_content,holder.getConvertView().getResources().getString(R.string.send_fail) );
+        } else {
+            holder.setText(R.id.tv_content, messageItemBean.getConversation().getLast_message().getTxt());
+        }
         if (messageItemBean.getConversation().getLast_message_time() == 0) {
             holder.setText(R.id.tv_time, "");
         } else {

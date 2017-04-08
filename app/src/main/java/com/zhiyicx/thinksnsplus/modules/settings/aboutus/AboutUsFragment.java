@@ -19,16 +19,32 @@ import java.util.List;
  */
 
 public class AboutUsFragment extends TSWebFragment {
+    public static final String BUNDLE_PARAMS_WEB_URL = "web_url";
+    public static final String BUNDLE_PARAMS_WEB_TITLE = "web_title";
 
     private String mUrl = ApiConfig.URL_ABOUT_US;
+    private String mTitle = "";
 
     public AboutUsFragment() {
         // Required empty public constructor
     }
 
-    public static AboutUsFragment newInstance() {
+    public static AboutUsFragment newInstance(Bundle bundle) {
         AboutUsFragment fragment = new AboutUsFragment();
+        if (bundle != null) {
+            fragment.setArguments(bundle);
+        }
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mTitle = getString(R.string.about_us);
+        if (getArguments() != null) {
+            mUrl = getArguments().getString(BUNDLE_PARAMS_WEB_URL);
+            mTitle = getArguments().getString(BUNDLE_PARAMS_WEB_TITLE);
+        }
     }
 
     @Override
@@ -39,7 +55,7 @@ public class AboutUsFragment extends TSWebFragment {
 
     @Override
     protected String setCenterTitle() {
-        return getString(R.string.about_us);
+        return mTitle;
     }
 
 
@@ -53,4 +69,3 @@ public class AboutUsFragment extends TSWebFragment {
 
     }
 }
-

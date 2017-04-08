@@ -18,6 +18,7 @@ import java.util.Iterator;
 public class MusicAblumInfo implements MusicProviderSource {
 
     private MusicAlbumDetailsBean mAlbumDetailsBean;
+    public static final String METADATA_KEY_GENRE="_tym_";
 
     public MusicAblumInfo(MusicAlbumDetailsBean albumDetailsBean) {
         mAlbumDetailsBean = albumDetailsBean;
@@ -48,12 +49,13 @@ public class MusicAblumInfo implements MusicProviderSource {
                         ""+needData.getId())
                 .putString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE,
                         ""+musicUrl)
-                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, ""+needData.getTitle())
+                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, needData.getTitle())
                 .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, needData.getSinger().getName())
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, needData.getLast_time()*1000)
-                .putString(MediaMetadataCompat.METADATA_KEY_GENRE, "tym_test")
+                .putString(MediaMetadataCompat.METADATA_KEY_GENRE, METADATA_KEY_GENRE)
                 .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, imageUrl)
                 .putString(MediaMetadataCompat.METADATA_KEY_TITLE, needData.getTitle())
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI,musicUrl)
                 .build();
     }
 }

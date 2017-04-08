@@ -85,7 +85,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         mRootView.showMessage(message);
                         mRootView.setVertifyCodeBtEnabled(true);
                         mRootView.setVertifyCodeLoadin(false);
@@ -142,7 +142,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         mRootView.setRegisterBtEnabled(true);
                         mRootView.showMessage(message);
                     }

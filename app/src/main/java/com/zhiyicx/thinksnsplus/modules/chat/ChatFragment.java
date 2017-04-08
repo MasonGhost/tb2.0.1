@@ -4,12 +4,10 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
-import com.trycatch.mysnackbar.Prompt;
-import com.trycatch.mysnackbar.TSnackbar;
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.common.config.ConstantConfig;
@@ -32,6 +30,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 /**
  * @Describe
@@ -92,39 +94,50 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     protected void initView(View rootView) {
         mIlvContainer.setOnSendClickListener(this);
         mIlvContainer.setSendButtonVisiable(true); // 保持显示
+        mIlvContainer.getFocus();
         // 软键盘控制区
-        mRlContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-
-                Rect rect = new Rect();
-                //获取root在窗体的可视区域
-                mRlContainer.getWindowVisibleDisplayFrame(rect);
-                //获取root在窗体的不可视区域高度(被其他View遮挡的区域高度)
-                int rootInvisibleHeight = mRlContainer.getRootView().getHeight() - rect.bottom;
-                int dispayHeight = UIUtils.getWindowHeight(getContext());
-                //若不可视区域高度大于1/3屏幕高度，则键盘显示
-                if (rootInvisibleHeight > (dispayHeight * (1f / 3))) {
-//                    mKeyboradIsOpen = true;
-                    if (mMessageItemBean.getConversation() != null) {// 如果对话没有创建，不做处理
-                        mMessageList.scrollToBottom();
+        RxView.globalLayouts(mRlContainer)
+                .flatMap(new Func1<Void, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(Void aVoid) {
+                        Rect rect = new Rect();
+                        //获取root在窗体的可视区域
+                        mRlContainer.getWindowVisibleDisplayFrame(rect);
+                        //获取root在窗体的不可视区域高度(被其他View遮挡的区域高度)
+                        int rootInvisibleHeight = mRlContainer.getRootView().getHeight() - rect.bottom;
+                        int dispayHeight = UIUtils.getWindowHeight(getContext());
+                        return Observable.just(rootInvisibleHeight > (dispayHeight * (1f / 3)));
                     }
-                } else {
-                    //键盘隐藏
-//                    mKeyboradIsOpen = false;
-//                    mIlvContainer.clearFocus();// 主动失去焦点
-                }
-//                mIlvContainer.setSendButtonVisiable(mKeyboradIsOpen); 不需要隐藏
-            }
-        });
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        //若不可视区域高度大于1/3屏幕高度，则键盘显示
+                        LogUtils.i(TAG + "---RxView   " + aBoolean);
+                        if (aBoolean) {
+                            if (!mKeyboradIsOpen && mMessageItemBean.getConversation() != null) {// 如果对话没有创建，不做处理
+                                mMessageList.scrollToBottom();
+                            }
+                            mKeyboradIsOpen = true;
+                        } else {
+                            //键盘隐藏
+                            mKeyboradIsOpen = false;
+//                            mIlvContainer.clearFocus();// 主动失去焦点
+                        }
+//                        mIlvContainer.setSendButtonVisiable(mKeyboradIsOpen);//      不需要隐藏
 
+                    }
+                });
         mIlvContainer.setEtContentHint(getString(R.string.default_input_chat_hint));
-
     }
 
     @Override
     protected void initData() {
         getIntentData();
+        mMessageList.setMessageListItemClickListener(this);
+        mMessageList.setRefreshListener(this);
         if (mMessageItemBean.getConversation() == null) { // 先获取本地信息，如果本地信息存在，直接使用，如果没有直接创建
             Conversation conversation = ConversationDao.getInstance(getContext()).getPrivateChatConversationByUids(AppApplication.getmCurrentLoginAuth().getUser_id(), mMessageItemBean.getUserInfo().getUser_id().intValue());
             if (conversation == null) {
@@ -139,29 +152,10 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     }
 
-
-    @Override
-    public void setPresenter(ChatContract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
     @Override
     public void hideLoading() {
         mMessageList.getRefreshLayout().setRefreshing(false);
     }
-
-    @Override
-    public void showMessage(String message) {
-        TSnackbar.make(mSnackRootView, message, TSnackbar.LENGTH_SHORT)
-                .setPromptThemBackground(Prompt.SUCCESS)
-                .show();
-    }
-
 
     /**
      * 发送按钮被点击
@@ -233,7 +227,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
      */
     @Override
     public boolean onUserInfoLongClick(ChatItemBean chatItemBean) {
-        showMessage(chatItemBean.getUserInfo().getName());
+        showSnackSuccessMessage(chatItemBean.getUserInfo().getName());
         return true;
     }
 
@@ -245,7 +239,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     @Override
     public void reFreshMessage(ChatItemBean chatItemBean) {
         mDatas.add(chatItemBean);
-        mMessageList.refresh();
+        mMessageList.refreshSoomthBottom();
     }
 
     @Override
@@ -283,6 +277,10 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     @Override
     public void onRefresh() {
+        if (mMessageItemBean.getConversation() == null) {
+            hideLoading();
+            return;
+        }
         List<ChatItemBean> chatItemBeen = mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), mDatas.size() > 0 ? mDatas.get(0).getLastMessage().getCreate_time() : (System.currentTimeMillis() + ConstantConfig.DAY));
         chatItemBeen.addAll(mDatas);
         mDatas.clear();
@@ -297,10 +295,8 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     public void initMessageList() {
         mDatas.addAll(mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), (System.currentTimeMillis() + ConstantConfig.DAY)));
-        mMessageList.setMessageListItemClickListener(this);
         mMessageList.init(mMessageItemBean.getConversation().getType() == ChatType.CHAT_TYPE_PRIVATE ? mMessageItemBean.getUserInfo().getName() : getString(R.string.default_message_group)
                 , mMessageItemBean.getConversation().getType(), mDatas);
-        mMessageList.setRefreshListener(this);
         mMessageList.scrollToBottom();
     }
 }

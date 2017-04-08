@@ -3,6 +3,7 @@ package com.zhiyicx.baseproject.widget.popwindow;
 import android.app.Activity;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -34,6 +35,7 @@ public class ActionPopupWindow extends PopupWindow {
     private String mItem3Str;
     private String mBottomStr;
     private int mItem1Color;
+    private int mItem2Color;
     private boolean mIsOutsideTouch;
     private boolean mIsFocus;
     private float mAlpha;
@@ -50,6 +52,7 @@ public class ActionPopupWindow extends PopupWindow {
         this.mItem2Str = builder.mItem2Str;
         this.mItem3Str = builder.mItem3Str;
         this.mItem1Color = builder.mItem1Color;
+        this.mItem2Color = builder.mItem2Color;
         this.mBottomStr = builder.mBottomStr;
         this.mIsOutsideTouch = builder.mIsOutsideTouch;
         this.mIsFocus = builder.mIsFocus;
@@ -110,7 +113,7 @@ public class ActionPopupWindow extends PopupWindow {
                 }
             });
             if (mItem1Color != 0) {
-                item1View.setTextColor(mItem1Color);
+                item1View.setTextColor(ContextCompat.getColor(mActivity,mItem2Color));
             }
         }
         if (!TextUtils.isEmpty(mItem2Str)) {
@@ -125,6 +128,9 @@ public class ActionPopupWindow extends PopupWindow {
                     }
                 }
             });
+            if (mItem2Color != 0) {
+                item2View.setTextColor(ContextCompat.getColor(mActivity,mItem2Color));
+            }
         }
         if (!TextUtils.isEmpty(mItem3Str)) {
             TextView item3View = (TextView) mContentView.findViewById(R.id.tv_pop_item3);
@@ -206,6 +212,7 @@ public class ActionPopupWindow extends PopupWindow {
         private String mItem3Str;
         private String mBottomStr;
         private int mItem1Color;
+        private int mItem2Color;
         private float mAlpha;
         private boolean mIsOutsideTouch = true;// 默认为true
         private boolean mIsFocus = true;// 默认为true
@@ -249,6 +256,11 @@ public class ActionPopupWindow extends PopupWindow {
 
         public ActionPopupWindow.Builder item1StrColor(int color) {
             this.mItem1Color = color;
+            return this;
+        }
+
+        public ActionPopupWindow.Builder item2StrColor(int color) {
+            this.mItem2Color = color;
             return this;
         }
 

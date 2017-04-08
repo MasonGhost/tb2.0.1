@@ -94,8 +94,10 @@ public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Pres
         MessageItemBean commentItem = new MessageItemBean();
         commentItem.setUserInfo(testUserinfo);
         Conversation commentMessage = new Conversation();
-        commentMessage.setLast_message_text("默默的小红大家来到江苏高考加分临时价格来看大幅减少了国家法律的世界观浪费时间管理方式的建立各级地方楼市困局"
+        Message message=new Message();
+        message.setTxt("默默的小红大家来到江苏高考加分临时价格来看大幅减少了国家法律的世界观浪费时间管理方式的建立各级地方楼市困局"
                 + getString(R.string.comment_me));
+        commentMessage.setLast_message(message);
         commentMessage.setLast_message_time(System.currentTimeMillis());
         commentItem.setConversation(commentMessage);
         commentItem.setUnReadMessageNums(Math.round(15));
@@ -104,8 +106,10 @@ public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Pres
         MessageItemBean likedmessageItemBean = new MessageItemBean();
         likedmessageItemBean.setUserInfo(testUserinfo);
         Conversation likeMessage = new Conversation();
-        likeMessage.setLast_message_text("一叶之秋、晴天色"
+        Message message1=new Message();
+        message1.setTxt("一叶之秋、晴天色"
                 + getString(R.string.like_me));
+        likeMessage.setLast_message(message1);
         likeMessage.setLast_message_time(System.currentTimeMillis());
         likedmessageItemBean.setConversation(likeMessage);
         likedmessageItemBean.setUnReadMessageNums(Math.round(15));
@@ -151,7 +155,7 @@ public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Pres
         } else {
             holder.setVisible(R.id.iv_detail_image, View.GONE);
             holder.setVisible(R.id.tv_deatil, View.VISIBLE);
-            holder.setText(R.id.tv_deatil, messageItemBean.getConversation().getLast_message_text());
+            holder.setText(R.id.tv_deatil, messageItemBean.getConversation().getLast_message().getTxt());
         }
 
         holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getName());

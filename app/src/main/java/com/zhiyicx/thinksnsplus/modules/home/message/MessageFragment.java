@@ -43,7 +43,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Inject
     protected MessagePresenter mMessagePresenter;
 
-    private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     private int mLastClickPostion = -1;// 纪录上次聊天 item ,用于单条刷新
 
     public static MessageFragment newInstance() {
@@ -181,11 +180,11 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
             tvHeaderLikeTime = (TextView) headerview.findViewById(R.id.tv_header_like_time);
             tvHeaderLikeTip = (BadgeView) headerview.findViewById(R.id.tv_header_like_tip);
         }
-        tvHeaderCommentContent.setText(commentItemData.getConversation().getLast_message_text());
+        tvHeaderCommentContent.setText(commentItemData.getConversation().getLast_message().getTxt());
         tvHeaderCommentTime.setText(TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(commentItemData.getConversation().getLast_message_time())));
         tvHeaderCommentTip.setBadgeCount(commentItemData.getUnReadMessageNums());
 
-        tvHeaderLikeContent.setText(likedItemData.getConversation().getLast_message_text());
+        tvHeaderLikeContent.setText(likedItemData.getConversation().getLast_message().getTxt());
         tvHeaderLikeTime.setText(TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(commentItemData.getConversation().getLast_message_time())));
         tvHeaderLikeTip.setBadgeCount(likedItemData.getUnReadMessageNums());
         refreshData();
@@ -208,12 +207,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         startActivity(to);
     }
 
-    // Fragment 注入 ,不需要该方法
-    @Override
-    public void setPresenter(MessageContract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
     @Override
     public void updateCommnetItemData(MessageItemBean messageItemBean) {
         mListDatas.set(ITEM_TYPE_COMMNETED, messageItemBean);
@@ -233,10 +226,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     public void refreshData(int index) {
         mHeaderAndFooterWrapper.notifyItemChanged(index);
-    }
-
-    @Override
-    public void showLoading() {
     }
 
     @Override

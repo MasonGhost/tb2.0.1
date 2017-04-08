@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.dagger;
 
 import android.app.Application;
 
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.BackgroundRequestTaskBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
@@ -12,6 +11,9 @@ import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoCommentListBeanDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoTypeBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumDetailsBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumListBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.MusicCommentListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 
 import dagger.Module;
@@ -78,6 +80,21 @@ public class GreenDaoModule {
     @Provides
     public InfoCommentListBeanDaoImpl provideInfoCommentListBeanDaoImpl(Application application) {
         return new InfoCommentListBeanDaoImpl(application);
+    }
+
+    @Provides
+    public MusicAlbumListBeanGreenDaoImpl provideMusicAlbumListDaoImpl(Application application) {
+        return new MusicAlbumListBeanGreenDaoImpl(application);
+    }
+
+    @Provides
+    public MusicCommentListBeanGreenDaoImpl provideMusicCommentListBeanGreenDaoImpl(Application application) {
+        return new MusicCommentListBeanGreenDaoImpl(application);
+    }
+
+    @Provides
+    public MusicAlbumDetailsBeanGreenDaoImpl provideMusicAlbumDetailsBeanGreenDaoImpl(Application application) {
+        return new MusicAlbumDetailsBeanGreenDaoImpl(application);
     }
 
 }

@@ -37,7 +37,9 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForS
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForSixImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForThreeImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForTwoImage;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForZeroImage;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
+import com.zhiyicx.thinksnsplus.modules.home.HomeFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
@@ -87,6 +89,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private ActionPopupWindow mDeletCommentPopWindow;
     private ActionPopupWindow mDeletDynamicPopWindow;
     private ActionPopupWindow mReSendCommentPopWindow;
+    private ActionPopupWindow mReSendDynamicPopWindow;
     private int mCurrentPostion;// 当前评论的动态位置
     private long mReplyToUserId;// 被评论者的 id
 
@@ -145,7 +148,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 closeInputView();
             }
         });
-
         mIlvComment.setOnSendClickListener(this);
     }
 
@@ -167,7 +169,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mListDatas);
-        setAdapter(adapter, new DynamicListBaseItem(getContext()));
+        setAdapter(adapter, new DynamicListItemForZeroImage(getContext()));
         setAdapter(adapter, new DynamicListItemForOneImage(getContext()));
         setAdapter(adapter, new DynamicListItemForTwoImage(getContext()));
         setAdapter(adapter, new DynamicListItemForThreeImage(getContext()));
@@ -206,11 +208,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         super.initData();
     }
 
-    @Override
-    public void setPresenter(DynamicContract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
     /**
      * 由于热门和关注和最新的 max_id 不同，所以特殊处理
      *
@@ -219,13 +216,14 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     protected Long getMaxId(@NotNull List<DynamicBean> data) {
-        switch (getDynamicType()) {
-            case ApiConfig.DYNAMIC_TYPE_HOTS:
-                return data.get(data.size() - 1).getHot_creat_time();
-            case ApiConfig.DYNAMIC_TYPE_FOLLOWS:
-            case ApiConfig.DYNAMIC_TYPE_NEW:
-            default:
-                return data.get(data.size() - 1).getFeed_id();
+        if (mListDatas.size() > 0) {
+            if (getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {
+                return mListDatas.get(mListDatas.size() - 1).getHot_creat_time();
+            } else {
+                return mListDatas.get(mListDatas.size() - 1).getFeed_id();
+            }
+        } else {
+            return DEFAULT_PAGE_MAX_ID;
         }
     }
 
@@ -237,22 +235,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onImageClick(ViewHolder holder, DynamicBean dynamicBean, int position) {
-        List<ImageBean> imageBeanList = new ArrayList<>();
-        if (dynamicBean.getFeed().getStorages() != null) {
-            imageBeanList = dynamicBean.getFeed().getStorages();
-        } else {
-            for (int i = 0; i < dynamicBean.getFeed().getLocalPhotos().size(); i++) {
-                ImageBean imageBean = new ImageBean();
-                imageBean.setImgUrl(dynamicBean.getFeed().getLocalPhotos().get(i));
-                imageBeanList.add(imageBean);
-            }
-        }
+        List<ImageBean> imageBeanList = dynamicBean.getFeed().getStorages();
         ArrayList<AnimationRectBean> animationRectBeanArrayList
                 = new ArrayList<AnimationRectBean>();
         for (int i = 0; i < imageBeanList.size(); i++) {
             int id = UIUtils.getResourceByName("siv_" + i, "id", getContext());
             ImageView imageView = holder.getView(id);
-
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
             animationRectBeanArrayList.add(rect);
         }
@@ -294,10 +282,17 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             refreshData();
             // 回到顶部
             mRvList.smoothScrollToPosition(0);
-            Fragment parentFragment = getParentFragment();
-            if (parentFragment != null && parentFragment instanceof MainFragment) {
-                MainFragment mainFragment = (MainFragment) parentFragment;
-                mainFragment.setPagerSelection(MainFragment.PAGER_NEWEST_DYNAMIC_LIST_POSITION);
+            // viewpager切换到关注列表
+            Fragment parentFragmentMain = getParentFragment();
+            if (parentFragmentMain != null && parentFragmentMain instanceof MainFragment) {
+                MainFragment mainFragment = (MainFragment) parentFragmentMain;
+                mainFragment.setPagerSelection(MainFragment.PAGER_FOLLOW_DYNAMIC_LIST_POSITION);
+                // 主页切换到首页
+                Fragment parentFragmentHome = mainFragment.getParentFragment();
+                if (parentFragmentHome != null && parentFragmentHome instanceof HomeFragment) {
+                    HomeFragment homeFragment = (HomeFragment) parentFragmentHome;
+                    homeFragment.setPagerSelection(HomeFragment.PAGE_HOME);
+                }
             }
         } else {
             refreshData(position);
@@ -305,15 +300,14 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     /**
-     * resend click
+     * dynamic resend click
      *
      * @param position
      */
     @Override
     public void onReSendClick(int position) {
-        mListDatas.get(position).setState(DynamicBean.SEND_ING);
-        refreshData();
-        mPresenter.reSendDynamic(position);
+        initReSendDynamicPopupWindow(position);
+        mReSendDynamicPopWindow.show();
     }
 
 
@@ -490,7 +484,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      * @param dynamicBean curent dynamic
      * @param position    curent dynamic postion
      */
-    private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean, int position) {
+    private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean, final int position) {
         mDeletDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_dynamic))
                 .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
@@ -503,6 +497,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     @Override
                     public void onItem1Clicked() {
                         mDeletDynamicPopWindow.hide();
+                        mPresenter.deleteDynamic(dynamicBean, position);
                         showBottomView(true);
                     }
                 })
@@ -511,6 +506,36 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     public void onBottomClicked() {
                         mDeletDynamicPopWindow.hide();
                         showBottomView(true);
+                    }
+                })
+                .build();
+    }
+
+    /**
+     * 初始化重发动态选择弹框
+     */
+    private void initReSendDynamicPopupWindow(final int position) {
+        mReSendDynamicPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.dynamic_list_resend_dynamic))
+                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+                        mReSendDynamicPopWindow.hide();
+                        mListDatas.get(position).setState(DynamicBean.SEND_ING);
+                        refreshData();
+                        mPresenter.reSendDynamic(position);
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mReSendDynamicPopWindow.hide();
                     }
                 })
                 .build();
@@ -580,6 +605,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         intent.putExtras(bundle);
         startActivity(intent);
     }
+
 
     public interface OnCommentClickListener {
         void onButtonMenuShow(boolean isShow);

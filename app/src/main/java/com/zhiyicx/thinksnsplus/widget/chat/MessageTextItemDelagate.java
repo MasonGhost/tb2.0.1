@@ -1,10 +1,7 @@
 package com.zhiyicx.thinksnsplus.widget.chat;
 
-import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.R;
@@ -116,9 +113,9 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
             holder.setVisible(R.id.iv_chat_headpic, View.VISIBLE);
             mImageLoader.loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
                     .url(ImageUtils.imagePathConvert(chatItemBean.getUserInfo().getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
-                    .placeholder(R.drawable.shape_default_image_circle)
+                    .placeholder(R.mipmap.pic_default_portrait1)
                     .transformation(new GlideCircleTransform(holder.getConvertView().getContext()))
-                    .errorPic(R.drawable.shape_default_image_circle)
+                    .errorPic(R.mipmap.pic_default_portrait1)
                     .imagerView((ImageView) holder.getView(R.id.iv_chat_headpic))
                     .build()
             );
@@ -171,25 +168,6 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
             holder.setOnLongClickListener(R.id.iv_chat_headpic, mUserInfoLongClick);
             holder.setOnClickListener(R.id.rl_chat_bubble, mBubbleClick);
 //            holder.setOnLongClickListener(R.id.rl_chat_bubble, mBubbleLongClick);
-            holder.getConvertView().setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    switch (event.getAction()) {
-                        case MotionEvent.ACTION_UP:
-                        case MotionEvent.ACTION_CANCEL:
-                            InputMethodManager inputMethodManager = (InputMethodManager) holder.getConvertView().getContext().getSystemService(
-                                    Context.INPUT_METHOD_SERVICE);
-                            if (inputMethodManager.isActive()) {
-                                inputMethodManager.hideSoftInputFromWindow(
-                                        v.getWindowToken(), 0);
-                                return true;
-                            }
-                            break;
-                        default:
-                    }
-                    return false;
-                }
-            });
         }
 
     }

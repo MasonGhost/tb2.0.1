@@ -167,4 +167,7 @@ public interface CommonClient {
     @POST(APP_PATH_TOKEN_EXPIERD)
     Observable<BaseJson> testTokenExpierd(@Query("requestState") String requestState);
 
+    @Multipart
+    @PATCH(APP_PATH_HANDLE_BACKGROUND_TASK)
+    Observable<BaseJson<Object>> handleBackGroundTaskPatch(@Path("path") String path,@Part List<MultipartBody.Part> partList);
 }

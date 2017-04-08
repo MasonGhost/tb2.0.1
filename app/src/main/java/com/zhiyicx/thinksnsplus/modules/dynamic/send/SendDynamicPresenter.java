@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -52,8 +53,8 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
 
     @Override
     public void sendDynamic(DynamicBean dynamicBean) {
-        if (dynamicBean.getFeed().getLocalPhotos() == null) { // 当没有图片的时候，给一个占位数组
-            dynamicBean.getFeed().setLocalPhotos(new ArrayList<String>());
+        if (dynamicBean.getFeed().getStorages() == null) { // 当没有图片的时候，给一个占位数组
+            dynamicBean.getFeed().setStorages(new ArrayList<ImageBean>());
         }
         dynamicBean.setComments(new ArrayList<DynamicCommentBean>());
         dynamicBean.setState(DynamicBean.SEND_ING);

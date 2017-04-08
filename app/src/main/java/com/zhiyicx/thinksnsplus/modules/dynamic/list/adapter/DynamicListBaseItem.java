@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +11,10 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
@@ -121,8 +120,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
     @Override
     public boolean isForViewType(DynamicBean item, int position) {
         // 当本地和服务器都没有图片的时候，使用
-        return item.getFeed_mark() != null && (item.getFeed().getStorages() == null || item.getFeed().getStorages().size() == getImageCounts())
-                && (item.getFeed().getLocalPhotos() == null || item.getFeed().getLocalPhotos().size() == getImageCounts());
+        return item.getFeed_mark() != null && (item.getFeed().getStorages() != null && item.getFeed().getStorages().size() == getImageCounts());
     }
 
     /**
@@ -146,9 +144,9 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
             String userIconUrl = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getUserInfoBean().getAvatar(), ImageZipConfig.IMAGE_38_ZIP);
             mImageLoader.loadImage(mContext, GlideImageConfig.builder()
                     .url(userIconUrl)
-                    .placeholder(R.drawable.shape_default_image_circle)
+                    .placeholder(R.mipmap.pic_default_portrait1)
                     .transformation(new GlideCircleTransform(mContext))
-                    .errorPic(R.drawable.shape_default_image_circle)
+                    .errorPic(R.mipmap.pic_default_portrait1)
                     .imagerView((ImageView) holder.getView(R.id.iv_headpic))
                     .build());
             holder.setText(R.id.tv_name, dynamicBean.getUserInfoBean().getName());
@@ -251,11 +249,15 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
      */
     protected void initImageView(final ViewHolder holder, ImageView view, final DynamicBean dynamicBean, final int positon, int part) {
         int propPart = getProportion(view, dynamicBean, part);
-        String url;
+        String url = "";
         if (dynamicBean.getFeed().getStorages() != null && dynamicBean.getFeed().getStorages().size() > 0) {
-            url = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getFeed().getStorages().get(positon).getStorage_id(), propPart);
-        } else {
-            url = dynamicBean.getFeed().getLocalPhotos().get(positon);
+            ImageBean imageBean = dynamicBean.getFeed().getStorages().get(positon);
+            if (TextUtils.isEmpty(imageBean.getImgUrl())) {
+                url = String.format(ApiConfig.IMAGE_PATH, imageBean.getStorage_id(), propPart);
+            } else {
+                url = imageBean.getImgUrl();
+            }
+
         }
         mImageLoader.loadImage(mContext, GlideImageConfig.builder()
                 .url(url)
@@ -296,14 +298,9 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
         int height;
         int proportion; // 压缩比例
         int currentWith = getCurrenItemWith(part);
-        if (dynamicBean.getFeed().getStorages() == null || dynamicBean.getFeed().getStorages().size() == 0) {// 本地图片
-            BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(dynamicBean.getFeed().getLocalPhotos().get(0));
-            with = option.outWidth > currentWith ? currentWith : option.outWidth;
-            proportion = (int) ((with / option.outWidth) * 100);
-        } else {
-            with = (int) dynamicBean.getFeed().getStorages().get(0).getWidth() > currentWith ? currentWith : (int) dynamicBean.getFeed().getStorages().get(0).getWidth();
-            proportion = (int) ((with / dynamicBean.getFeed().getStorages().get(0).getWidth()) * 100);
-        }
+        ImageBean imageBean = dynamicBean.getFeed().getStorages().get(0);
+        with = (int) imageBean.getWidth() > currentWith ? currentWith : (int) imageBean.getWidth();
+        proportion = (int) ((with / imageBean.getWidth()) * 100);
         height = with;
         return proportion;
     }

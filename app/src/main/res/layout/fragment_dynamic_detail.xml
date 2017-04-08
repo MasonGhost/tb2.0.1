@@ -30,7 +30,7 @@
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center_horizontal"
-                    android:drawableLeft="@drawable/shape_default_image_circle"
+                    android:drawableLeft="@mipmap/pic_default_portrait1"
                     android:drawablePadding="@dimen/spacing_small"
                     android:gravity="center"
                     android:visibility="invisible"

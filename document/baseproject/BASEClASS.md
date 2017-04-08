@@ -1,4 +1,4 @@
-2017年3月22日 17:54:44
+2017年4月5日 15:49:45
 # 关于TSActivity和TSFragment
 
 本项目中，所有的实际功能和ui都放在TSFragment中，而TSActivity只是针对fragment进行控制，
@@ -30,8 +30,9 @@
  - 提供选择 Eventbus 注册
  - 提供[权限管理类](../common/PERMISSION.md)
  - 提供换肤管理
+ - 提供类是 QQ 的从顶部弹出的提示信息
 
-
+[]()
 ## TSFragment
 
  - 提供状态栏的浸入式

@@ -66,10 +66,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     protected RecyclerView.LayoutManager layoutManager;
 
 
-    protected EmptyView mEmptyView;
-
-    // 当前数据加载状态
-    protected int mEmptyState = EmptyView.STATE_DEFAULT;
+    protected EmptyView mEmptyView; // 因为添加了 header 和 footer 故取消了 adater 的 emptyview，改为手动判断
 
     protected Long mMaxId = DEFAULT_PAGE_MAX_ID; // 纪录当前列表 item id 最大值，用于分页
 
@@ -86,11 +83,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     @Override
     protected int setToolBarBackgroud() {
         return R.color.white;
-    }
-
-    @Override
-    public void showLoading() {
-
     }
 
     @Override
@@ -124,7 +116,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 });
         mTvTopTip = (TextView) rootView.findViewById(R.id.tv_top_tip_text);
         mEmptyView = (EmptyView) rootView.findViewById(R.id.empty_view);
-//        mEmptyView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mEmptyView.setErrorImag(setEmptView());
         mEmptyView.setNeedTextTip(false);
         mEmptyView.setNeedClickLoadState(false);
@@ -151,9 +142,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
         mHeaderAndFooterWrapper.addFootView(getFooterView());
         mRvList.setAdapter(mHeaderAndFooterWrapper);
-//        mEmptyWrapper = new EmptyWrapper(mHeaderAndFooterWrapper);
-//        mEmptyWrapper.setEmptyView(mEmptyView);
-//        mRvList.setAdapter(mEmptyWrapper);
     }
 
     /**
@@ -348,7 +336,16 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void refreshData() {
+        setEmptyView();
         mHeaderAndFooterWrapper.notifyDataSetChanged();
+    }
+
+    private void setEmptyView() {
+        if (mListDatas.isEmpty() && mHeaderAndFooterWrapper.getHeadersCount() <= 0) {
+            mEmptyView.setVisibility(View.VISIBLE);
+        }else {
+            mEmptyView.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -356,6 +353,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void refreshData(List<T> datas) {
+        setEmptyView();
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
@@ -364,6 +362,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void refreshData(int index) {
+        setEmptyView();
         mHeaderAndFooterWrapper.notifyItemChanged(index);
     }
 
@@ -386,10 +385,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     public void onLoadMore() {
-        if (mMaxId == null || mMaxId == 0) {
-            mRefreshlayout.setLoadingMore(false);
-            return;
-        }
         mPage++;
         requestNetData(mMaxId, true);
     }
@@ -475,8 +470,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                     mEmptyView.setVisibility(View.VISIBLE);
                 }
             }
-
-
         } else { // 加载更多
             if (data != null && data.size() != 0) {
                 mTvNoMoredataText.setVisibility(View.GONE);
@@ -488,22 +481,23 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 mListDatas.addAll(data);
                 refreshData();
                 mMaxId = getMaxId(data);
-            } else {
-                mRefreshlayout.setLoadMoreEnabled(false);
-                if (mListDatas.size() >= DEFAULT_PAGE_SIZE) {
-                    mTvNoMoredataText.setVisibility(View.VISIBLE);
-                    mRvList.smoothScrollToPosition(mListDatas.size() - 1);
-                }
             }
         }
-        // 数据加载后，所有的数据数量小于一页，说明没有更多数据了，就不要上拉加载了
-        if (mListDatas.size() < DEFAULT_PAGE_SIZE) {
+        // 数据加载后，所有的数据数量小于一页，说明没有更多数据了，就不要上拉加载了(除开缓存)
+        if (!isFromCache && (data == null || data.size() < DEFAULT_PAGE_SIZE)) {
             mRefreshlayout.setLoadMoreEnabled(false);
+            if (mListDatas.size() >= DEFAULT_PAGE_SIZE) {
+                mTvNoMoredataText.setVisibility(View.VISIBLE);
+                mRvList.scrollToPosition(mAdapter.getItemCount() - 1);
+            }
         }
     }
 
     protected Long getMaxId(@NotNull List<T> data) {
-        return data.get(data.size() - 1).getMaxId();
+        if (mListDatas.size() > 0) {
+            return mListDatas.get(mListDatas.size() - 1).getMaxId();
+        }
+        return DEFAULT_PAGE_MAX_ID;
     }
 
     /**

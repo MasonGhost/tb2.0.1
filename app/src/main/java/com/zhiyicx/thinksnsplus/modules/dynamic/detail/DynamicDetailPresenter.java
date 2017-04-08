@@ -5,18 +5,23 @@ import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
+import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
+import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -62,7 +67,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  */
 @FragmentScoped
 public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.Repository,
-        DynamicDetailContract.View> implements DynamicDetailContract.Presenter {
+        DynamicDetailContract.View> implements DynamicDetailContract.Presenter, OnShareCallbackListener {
 
     @Inject
     DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
@@ -122,7 +127,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         mRootView.showMessage(message);
                     }
 
@@ -219,9 +224,13 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
                     }
 
                     @Override
-                    protected void onFailure(String message) {
-                        LogUtils.e(message);
-                        mRootView.loadAllError();
+                    protected void onFailure(String message, int code) {
+                        LogUtils.i(message);
+                        if (code == ErrorCodeConfig.DYNAMIC_HAS_BE_DELETED) {
+                            mRootView.dynamicHasBeDeleted();
+                        } else {
+                            mRootView.loadAllError();
+                        }
                     }
 
                     @Override
@@ -246,7 +255,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
 
                     }
 
@@ -316,13 +325,14 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
 
     @Override
     public void shareDynamic() {
+        ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(mRootView.getCurrentDynamic().getFeed().getTitle());
         shareContent.setContent(mRootView.getCurrentDynamic().getFeed().getContent());
         if (mRootView.getCurrentDynamic().getFeed().getStorages() != null && mRootView.getCurrentDynamic().getFeed().getStorages().size() > 0) {
             shareContent.setImage(ImageUtils.imagePathConvert(mRootView.getCurrentDynamic().getFeed().getStorages().get(0).getStorage_id() + "", 100));
         }
-        shareContent.setUrl("http://www.thinksns.com/index.html");
+        shareContent.setUrl(String.format(ApiConfig.APP_PATH_SHARE_DYNAMIC, mRootView.getCurrentDynamic().getFeed_id() == null ? "" : mRootView.getCurrentDynamic().getFeed_id()));
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
     }
@@ -369,13 +379,28 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getCurrentDynamic().getTool());
         mDynamicCommentBeanGreenDao.deleteSingleCache(mRootView.getCurrentDynamic().getComments().get(commentPositon));
         mRootView.getListDatas().remove(commentPositon);
-        if(mRootView.getListDatas().isEmpty()){
+        if (mRootView.getListDatas().isEmpty()) {
             DynamicCommentBean emptyData = new DynamicCommentBean();
             mRootView.getListDatas().add(emptyData);
         }
         mRootView.refreshData();
         mRootView.updateCommentCountAndDig();
         mRepository.deleteComment(mRootView.getCurrentDynamic().getFeed_id(), comment_id);
+    }
+
+    /**
+     * check current dynamic is has been deleted
+     *
+     * @param user_id   the dynamic is belong to
+     * @param feed_mark the dynamic's feed_mark
+     * @return
+     */
+    @Override
+    public boolean checkCurrentDynamicIsDeleted(Long user_id, Long feed_mark) {
+        if (user_id == AppApplication.getmCurrentLoginAuth().getUser_id() && mDynamicBeanGreenDao.getDynamicByFeedMark(feed_mark) == null) { // 检查当前动态是否已经被删除了
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -484,4 +509,23 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         mIsNeedDynamicListRefresh = needDynamicListRefresh;
     }
 
+    @Override
+    public void onStart(Share share) {
+
+    }
+
+    @Override
+    public void onSuccess(Share share) {
+        mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_sccuess));
+    }
+
+    @Override
+    public void onError(Share share, Throwable throwable) {
+        mRootView.showSnackErrorMessage(mContext.getString(R.string.share_fail));
+    }
+
+    @Override
+    public void onCancel(Share share) {
+        mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_cancel));
+    }
 }

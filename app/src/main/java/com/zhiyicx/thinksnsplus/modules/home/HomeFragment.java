@@ -192,7 +192,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     private void initViewPager() {
         //设置缓存的个数
         mVpHome.setOffscreenPageLimit(PAGE_NUMS);
-        mHomePager = new TSViewPagerAdapter(getActivity().getSupportFragmentManager());
+        mHomePager = new TSViewPagerAdapter(getChildFragmentManager());
         List<Fragment> mFragmentList = new ArrayList<>();
         mFragmentList.add(MainFragment.newInstance(this));
         mFragmentList.add(FindFragment.newInstance());
@@ -200,6 +200,13 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         mFragmentList.add(MineFragment.newInstance());
         mHomePager.bindData(mFragmentList);//将List设置给adapter
         mVpHome.setAdapter(mHomePager);
+    }
+
+    /**
+     * viewpager切换的公开方法
+     */
+    public void setPagerSelection(int position) {
+        mVpHome.setCurrentItem(position);
     }
 
     /**
@@ -241,27 +248,6 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         mTvMessage.setTextColor(position == PAGE_MESSAGE ? checkedColor : unckeckedColor);
         mIvMine.setImageResource(position == PAGE_MINE ? R.mipmap.common_ico_bottom_me_high : R.mipmap.common_ico_bottom_me_normal);
         mTvMine.setTextColor(position == PAGE_MINE ? checkedColor : unckeckedColor);
-    }
-
-
-    @Override
-    public void setPresenter(HomeContract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showMessage(String message) {
-
     }
 
     @Override

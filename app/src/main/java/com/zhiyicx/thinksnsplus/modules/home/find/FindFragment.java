@@ -5,10 +5,14 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.channel.ChannelListActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.AboutUsActivity;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.AboutUsFragment;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -98,6 +102,7 @@ public class FindFragment extends TSFragment {
                 startActivity(new Intent(getActivity(), InfoActivity.class));
                 break;
             case R.id.find_chanel:
+                startActivity(new Intent(getActivity(), ChannelListActivity.class));
                 break;
             case R.id.find_active:
                 break;
@@ -105,6 +110,11 @@ public class FindFragment extends TSFragment {
                 startActivity(new Intent(getActivity(), MusicListActivity.class));
                 break;
             case R.id.find_buy:
+                Intent intent=new Intent(getActivity(), AboutUsActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putString(AboutUsFragment.BUNDLE_PARAMS_WEB_URL, ApiConfig.URL_JIPU_SHOP);
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
             case R.id.find_person:
                 break;

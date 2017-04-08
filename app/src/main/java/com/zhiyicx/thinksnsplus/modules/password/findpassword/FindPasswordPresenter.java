@@ -83,7 +83,7 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         mRootView.showMessage(message);
                     }
 
@@ -121,7 +121,7 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         mRootView.showMessage(message);
                         mRootView.setVertifyCodeBtEnabled(true);
                         mRootView.setVertifyCodeLoading(false);
@@ -185,4 +185,3 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
 
 
 }
-

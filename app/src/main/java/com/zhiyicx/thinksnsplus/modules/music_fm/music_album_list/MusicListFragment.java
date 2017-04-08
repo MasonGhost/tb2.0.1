@@ -10,7 +10,10 @@ import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.baseproject.utils.ImageUtils;
+import com.zhiyicx.common.utils.imageloader.config.ImageConfig;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.recycleviewdecoration.TGridDecoration;
 import com.zhiyicx.thinksnsplus.R;
@@ -54,11 +57,6 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     }
 
     @Override
-    protected boolean isNeedRefreshDataWhenComeIn() {
-        return true;
-    }
-
-    @Override
     public void setPresenter(MusicContract.Presenter presenter) {
         mPresenter = presenter;
     }
@@ -91,12 +89,12 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
             protected void convert(ViewHolder holder, MusicAlbumListBean musicListBean, int
                     position) {
                 ImageView imag = holder.getView(R.id.music_list_image);
-                String url = String.format(ApiConfig.IMAGE_PATH,
-                        musicListBean.getStorage().getId(), 50);
                 mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
-                        .placeholder(R.mipmap.img_default_nothing)
+                        .placeholder(R.drawable.shape_default_image)
+                        .errorPic(R.drawable.shape_default_image)
                         .imagerView(imag)
-                        .url(url)
+                        .url(ImageUtils.imagePathConvert(musicListBean.getStorage().getId()+"",
+                                ImageZipConfig.IMAGE_70_ZIP))
                         .build());
                 holder.setText(R.id.music_list_taste_count, "" + musicListBean.getTaste_count());
                 holder.setText(R.id.music_list_title, musicListBean.getTitle());

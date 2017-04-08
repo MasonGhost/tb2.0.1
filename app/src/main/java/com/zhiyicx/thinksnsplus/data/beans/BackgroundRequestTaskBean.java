@@ -1,15 +1,17 @@
 package com.zhiyicx.thinksnsplus.data.beans;
+
+
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.util.HashMap;
-import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * @Describe 后台任务模型
@@ -23,7 +25,7 @@ public class BackgroundRequestTaskBean {
     @Id(autoincrement = true)
     private Long backgroundtask_id;
 
-
+    private Long user_id;// 任务所属人的 id
     private int max_retry_count = DEFAULT_MAX_RETRY_COUNT; // 最大重新请求次数
     /**
      * @see <a herf="http://greenrobot.org/objectbox/documentation/custom-types/">
@@ -38,44 +40,35 @@ public class BackgroundRequestTaskBean {
 
     public BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig methodType) {
         this.methodType = methodType;
+        init();
     }
-
 
     public BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig methodType, HashMap<String, Object> params) {
         this.methodType = methodType;
         this.params = params;
-    }
-
-    public BackgroundRequestTaskBean(String path, HashMap<String, Object> params) {
-        this.path = path;
-        this.params = params;
-    }
-
-    public BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig methodType, String path, HashMap<String, Object> params) {
-        this.methodType = methodType;
-        this.path = path;
-        this.params = params;
-    }
-
-    public BackgroundRequestTaskBean(int max_retry_count, BackgroundTaskRequestMethodConfig methodType, String path,
-                                     HashMap<String, Object> params) {
-        this.max_retry_count = max_retry_count;
-        this.methodType = methodType;
-        this.path = path;
-        this.params = params;
+        init();
     }
 
     public BackgroundRequestTaskBean() {
+        init();
     }
 
-    @Keep
-    public BackgroundRequestTaskBean(Long backgroundtask_id, int max_retry_count, BackgroundTaskRequestMethodConfig methodType, String path,
-                                     HashMap<String, Object> params) {
+    @Generated(hash = 2105330257)
+    public BackgroundRequestTaskBean(Long backgroundtask_id, Long user_id, int max_retry_count, BackgroundTaskRequestMethodConfig methodType,
+                                     String path, HashMap<String, Object> params) {
         this.backgroundtask_id = backgroundtask_id;
+        this.user_id = user_id;
         this.max_retry_count = max_retry_count;
         this.methodType = methodType;
         this.path = path;
         this.params = params;
+    }
+
+    private void init() {
+        if (AppApplication.getmCurrentLoginAuth() == null) {
+            this.user_id = 0L;
+        }
+        this.user_id = Long.valueOf(AppApplication.getmCurrentLoginAuth().getUser_id());
     }
 
     public BackgroundTaskRequestMethodConfig getMethodType() {
@@ -116,6 +109,14 @@ public class BackgroundRequestTaskBean {
 
     public void setBackgroundtask_id(Long backgroundtask_id) {
         this.backgroundtask_id = backgroundtask_id;
+    }
+
+    public Long getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(Long user_id) {
+        this.user_id = user_id;
     }
 
     /**
@@ -166,6 +167,7 @@ public class BackgroundRequestTaskBean {
     public String toString() {
         return "BackgroundRequestTaskBean{" +
                 "backgroundtask_id=" + backgroundtask_id +
+                ", user_id=" + user_id +
                 ", max_retry_count=" + max_retry_count +
                 ", methodType=" + methodType +
                 ", path='" + path + '\'' +
@@ -173,4 +175,3 @@ public class BackgroundRequestTaskBean {
                 '}';
     }
 }
-

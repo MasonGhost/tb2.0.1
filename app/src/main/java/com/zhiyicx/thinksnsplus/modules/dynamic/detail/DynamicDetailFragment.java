@@ -1,10 +1,13 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.DragEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -24,6 +27,7 @@ import com.zhiyicx.baseproject.widget.InputLimitView.OnSendClickListener;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -133,8 +137,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
-    protected void setLoadingHolderClick() {
-        super.setLoadingHolderClick();
+    protected void setLoadingViewHolderClick() {
+        super.setLoadingViewHolderClick();
         mPresenter.getDetailAll(mDynamicBean.getFeed_id(), DEFAULT_PAGE_MAX_ID, mDynamicBean.getUser_id() + "");
     }
 
@@ -207,6 +211,12 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                     }
                 });
         mIlvComment.setOnSendClickListener(this);
+        mToolbar.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+            @Override
+            public void onSystemUiVisibilityChange(int visibility) {
+
+            }
+        });
     }
 
     private void initHeaderView() {
@@ -227,12 +237,25 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         if (bundle != null && bundle.containsKey(DYNAMIC_DETAIL_DATA)) {
             mIsLookMore = bundle.getBoolean(LOOK_COMMENT_MORE);
             mDynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
+            if (mPresenter.checkCurrentDynamicIsDeleted(mDynamicBean.getUser_id(), mDynamicBean.getFeed_mark())) {// 检测动态是否已经被删除了
+                dynamicHasBeDeleted();
+                return;
+            }
             if (mDynamicBean.getDigUserInfoList() == null) {
                 mPresenter.getDetailAll(mDynamicBean.getFeed_id(), DEFAULT_PAGE_MAX_ID, mDynamicBean.getUser_id() + "");
             } else {
                 allDataReady();
             }
 
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mPresenter.checkCurrentDynamicIsDeleted(mDynamicBean.getUser_id(), mDynamicBean.getFeed_mark())) {// 检测动态是否已经被删除了
+            dynamicHasBeDeleted();
+            return;
         }
     }
 
@@ -246,26 +269,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         adapter.addItemViewDelegate(dynamicCommentEmptyItem);
         adapter.setOnItemClickListener(this);
         return adapter;
-    }
-
-    @Override
-    public void setPresenter(DynamicDetailContract.Presenter presenter) {
-        this.mPresenter = presenter;
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showMessage(String message) {
-
     }
 
     public static DynamicDetailFragment initFragment(Bundle bundle) {
@@ -285,8 +288,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         Glide.with(getContext())
                 .load(ImageUtils.imagePathConvert(dynamicBean.getUserInfoBean().getAvatar(), ImageZipConfig.IMAGE_26_ZIP))
                 .bitmapTransform(new GlideCircleTransform(getContext()))
-                .placeholder(R.drawable.shape_default_image_circle)
-                .error(R.drawable.shape_default_image_circle)
+                .placeholder(R.mipmap.pic_default_portrait1)
+                .error(R.mipmap.pic_default_portrait1)
                 .into(new SimpleTarget<GlideDrawable>() {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
@@ -361,14 +364,25 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public void allDataReady() {
-        closeLoading();
+        closeLoadingView();
         mCoordinatorLayout.setEnabled(true);
         setAllData();
     }
 
     @Override
     public void loadAllError() {
-        showLoadError();
+        setLoadViewHolderImag(R.mipmap.img_default_internet);
+        mTvToolbarRight.setVisibility(View.GONE);
+        mTvToolbarCenter.setVisibility(View.GONE);
+        showLoadViewLoadError();
+    }
+
+    @Override
+    public void dynamicHasBeDeleted() {
+        setLoadViewHolderImag(R.mipmap.img_default_delete);
+        mTvToolbarRight.setVisibility(View.GONE);
+        mTvToolbarCenter.setVisibility(View.GONE);
+        showLoadViewLoadErrorDisableClick();
     }
 
     private void setAllData() {

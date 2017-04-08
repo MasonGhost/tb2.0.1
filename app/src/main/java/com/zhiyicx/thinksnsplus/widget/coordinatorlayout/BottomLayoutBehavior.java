@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -16,6 +17,8 @@ import com.zhiyicx.common.utils.log.LogUtils;
  */
 
 public class BottomLayoutBehavior extends CoordinatorLayout.Behavior<View> {
+
+    private static final String TAG = "BottomLayoutBehavior";
 
     public BottomLayoutBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -30,10 +33,52 @@ public class BottomLayoutBehavior extends CoordinatorLayout.Behavior<View> {
     @Override
     public boolean onDependentViewChanged(CoordinatorLayout parent, View child, View dependency) {
         float translationY = Math.abs(dependency.getTop());//获取更随布局的顶部位置
-        LogUtils.i("CoordinatorLayout-->  dependency-->" + dependency.getHeight() + " child-->" + child.getHeight());
+        LogUtils.i(TAG+"CoordinatorLayout-->  dependency-->" + dependency.getHeight() + " child-->" + child.getHeight()+"");
         // 因为底部控件必ToolBar高，此时如果移动相同的距离，底部控件会还有一截露出来，好尴尬- 。-
         translationY = translationY * child.getHeight() / dependency.getHeight();
         child.setTranslationY(translationY);
         return true;
+    }
+
+    @Override
+    public boolean onTouchEvent(CoordinatorLayout parent, View child, MotionEvent ev) {
+        LogUtils.i(TAG+"onTouchEvent");
+        return super.onTouchEvent(parent, child, ev);
+    }
+
+    @Override
+    public boolean onNestedPreFling(CoordinatorLayout coordinatorLayout, View child, View target, float velocityX, float velocityY) {
+        LogUtils.i(TAG+"onNestedPreFling   "+"velocityY"+velocityY);
+        return super.onNestedPreFling(coordinatorLayout, child, target, velocityX, velocityY);
+    }
+
+    @Override
+    public boolean onNestedFling(CoordinatorLayout coordinatorLayout, View child, View target, float velocityX, float velocityY, boolean consumed) {
+        LogUtils.i(TAG+"onNestedFling   "+"velocityY"+velocityY);
+        return super.onNestedFling(coordinatorLayout, child, target, velocityX, velocityY, consumed);
+    }
+
+    @Override
+    public void onNestedScroll(CoordinatorLayout coordinatorLayout, View child, View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
+        LogUtils.i(TAG+"onNestedScroll   "+"dyConsumed"+dyConsumed);
+        super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
+    }
+
+    @Override
+    public void onNestedPreScroll(CoordinatorLayout coordinatorLayout, View child, View target, int dx, int dy, int[] consumed) {
+        LogUtils.i(TAG+"onNestedPreScroll   "+"dy"+dy);
+        super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed);
+    }
+
+    @Override
+    public void onStopNestedScroll(CoordinatorLayout coordinatorLayout, View child, View target) {
+        LogUtils.i(TAG+"onStopNestedScroll   ");
+        super.onStopNestedScroll(coordinatorLayout, child, target);
+    }
+
+    @Override
+    public boolean onStartNestedScroll(CoordinatorLayout coordinatorLayout, View child, View directTargetChild, View target, int nestedScrollAxes) {
+        LogUtils.i(TAG+"onStartNestedScroll   "+"nestedScrollAxes"+nestedScrollAxes);
+        return super.onStartNestedScroll(coordinatorLayout, child, directTargetChild, target, nestedScrollAxes);
     }
 }

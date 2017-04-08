@@ -13,6 +13,7 @@ import org.msgpack.type.Value;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -214,4 +215,17 @@ public class MessageHelperTest {
         Assert.assertNotEquals(resut, MessageHelper.getRecievedBody(ZipHelper.compressForGzip(input_zlib)));
         System.out.println("3333-------" + MessageHelper.getRecievedBody(ZipHelper.compressForGzip(input_zlib)));
     }
+
+    @Test
+    public void  testListSet(){
+
+        List<String> data=new ArrayList<>();
+        data.add("123");
+        data.add("456");
+        Collections.swap(data,0,1);
+
+
+        System.out.println("data.toString() = " + data.toString());
+    }
+
 }

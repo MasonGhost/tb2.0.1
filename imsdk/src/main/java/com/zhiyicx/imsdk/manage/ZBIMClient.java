@@ -5,7 +5,6 @@ import android.text.TextUtils;
 
 import com.zhiyicx.imsdk.core.ImService;
 import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
-import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.EventContainer;
 import com.zhiyicx.imsdk.entity.GiftMessage;
 import com.zhiyicx.imsdk.entity.IMConfig;
@@ -47,6 +46,12 @@ public class ZBIMClient implements IMSoupport {
     private List<ImMsgReceveListener> mImMsgReceveListener = new ArrayList<>();
     private List<ImStatusListener> mImStatusListener = new ArrayList<>();
     private List<ImTimeoutListener> mImTimeOutListener = new ArrayList<>();
+    private boolean mIsConnected;// IM 是否已经连接
+
+    public boolean isConnected() {
+        return mIsConnected;
+    }
+
     public void addImTimeoutListener(ImTimeoutListener imTimeoutListener) {
         mImTimeOutListener.add(imTimeoutListener);
     }
@@ -376,6 +381,7 @@ public class ZBIMClient implements IMSoupport {
                             listener.onConnected();
                     }
                 }
+                mIsConnected = true;
                 break;
             case ImService.WEBSOCKET_DISCONNECTED:
                 LogUtils.debugInfo("---------测试断线连接-------2----------WEBSOCKET_DISCONNECTED----------");
@@ -385,6 +391,7 @@ public class ZBIMClient implements IMSoupport {
                             listener.onDisconnect(bundle.getInt(KEY_DISCONNECTED_CODE), bundle.getString(KEY_DISCONNECTED_REASON));
                     }
                 }
+                mIsConnected = false;
                 break;
             case ImService.WEBSOCKET_CONNECTED_ERR:
                 if (mImStatusListener != null) {

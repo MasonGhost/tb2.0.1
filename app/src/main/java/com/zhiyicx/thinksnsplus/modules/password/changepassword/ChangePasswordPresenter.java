@@ -55,7 +55,7 @@ public class ChangePasswordPresenter extends BasePresenter<ChangePasswordContrac
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         mRootView.showMessage(message);
                     }
 

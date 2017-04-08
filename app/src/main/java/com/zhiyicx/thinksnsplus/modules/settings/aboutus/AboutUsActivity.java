@@ -21,7 +21,7 @@ public class AboutUsActivity extends TSActivity<RegisterPresenter, AboutUsFragme
 
     @Override
     protected AboutUsFragment getFragment() {
-        return AboutUsFragment.newInstance();
+        return AboutUsFragment.newInstance(getIntent().getExtras());
     }
 
     /**
@@ -39,4 +39,3 @@ public class AboutUsActivity extends TSActivity<RegisterPresenter, AboutUsFragme
         return super.onKeyDown(keyCode, event);
     }
 }
-

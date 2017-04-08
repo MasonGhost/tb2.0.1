@@ -94,7 +94,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                         if (listBaseJson.isStatus()) {
                             insertOrUpdateDynamicDB(listBaseJson.getData()); // 更新数据库
                             if (!isLoadMore) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
-                                if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW)||mRootView.getDynamicType().equals((ApiConfig.DYNAMIC_TYPE_FOLLOWS))) {
+                                if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW) || mRootView.getDynamicType().equals((ApiConfig.DYNAMIC_TYPE_FOLLOWS))) {
                                     List<DynamicBean> data = getDynamicBeenFromDB();
                                     data.addAll(listBaseJson.getData());
                                     listBaseJson.setData(data);
@@ -120,7 +120,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message, int code) {
                         mRootView.showMessage(message);
                     }
 
@@ -137,7 +137,12 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
         List<DynamicBean> datas = null;
         switch (mRootView.getDynamicType()) {
             case ApiConfig.DYNAMIC_TYPE_FOLLOWS:
-                datas = mDynamicBeanGreenDao.getFollowedDynamicList(maxId);
+                if (!isLoadMore) {// 刷新
+                    datas = getDynamicBeenFromDB();
+                    datas.addAll(mDynamicBeanGreenDao.getFollowedDynamicList(maxId));
+                } else {
+                    datas = mDynamicBeanGreenDao.getFollowedDynamicList(maxId);
+                }
                 break;
             case ApiConfig.DYNAMIC_TYPE_HOTS:
                 datas = mDynamicBeanGreenDao.getHotDynamicList(maxId);
@@ -177,8 +182,9 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
      *
      * @param data
      */
+
     private void insertOrUpdateDynamicDB(@NotNull List<DynamicBean> data) {
-        mRepository.updateOrInsertDynamic(data,mRootView.getDynamicType());
+        mRepository.updateOrInsertDynamic(data, mRootView.getDynamicType());
     }
 
     /**
@@ -208,7 +214,13 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
         List<DynamicBean> datas = mDynamicBeanGreenDao.getMySendingUnSuccessDynamic((long) AppApplication.getmCurrentLoginAuth().getUser_id());
         msendingStatus.clear();
         for (int i = 0; i < datas.size(); i++) {
+            if (mRootView.getListDatas() == null || mRootView.getListDatas().size() == 0) {// 第一次加载的时候将自己没有发送成功的动态状态修改为失败
+                datas.get(i).setState(DynamicBean.SEND_ERROR);
+            }
             msendingStatus.put(i, datas.get(i).getFeed_mark());
+        }
+        if (mRootView.getListDatas() == null || mRootView.getListDatas().size() == 0) {// 第一次加载的时候将自己没有发送成功的动态状态修改为失败
+            mDynamicBeanGreenDao.insertOrReplace(datas);
         }
         return datas;
     }
@@ -275,7 +287,12 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
 
     @Override
     public void deleteDynamic(DynamicBean dynamicBean, int position) {
-
+        mDynamicBeanGreenDao.deleteSingleCache(dynamicBean);
+        mRootView.getListDatas().remove(position);
+        mRootView.refreshData();
+        if (dynamicBean.getFeed_id() != null && dynamicBean.getFeed_id() != 0) {
+            mRepository.deleteDynamic(dynamicBean.getFeed_id());
+        }
     }
 
     /**
@@ -338,7 +355,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
     }
 
     /**
-     * 处理发送动态数据
+     * 处理发送评论数据
      *
      * @param dynamicCommentBean
      */
@@ -398,7 +415,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_DYNAMIC_TO_LIST)
     public void handleSendDynamic(DynamicBean dynamicBean) {
         if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW)
-                ||mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) {
+                || mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) {
             int position = hasDynamicContanied(dynamicBean);
             if (position != -1) {// 如果列表有当前数据
                 mRootView.showNewDynamic(position);

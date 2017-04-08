@@ -4,7 +4,21 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.base.BaseListBean;
+import com.zhiyicx.common.utils.ConvertUtils;
+
+import org.greenrobot.greendao.annotation.Convert;
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.ToOne;
+import org.greenrobot.greendao.annotation.Transient;
+import org.greenrobot.greendao.annotation.Unique;
+import org.greenrobot.greendao.converter.PropertyConverter;
+
+import java.io.Serializable;
+import org.greenrobot.greendao.DaoException;
 
 /**
  * @Author Jliuer
@@ -12,29 +26,38 @@ import com.zhiyicx.baseproject.base.BaseListBean;
  * @Email Jliuer@aliyun.com
  * @Description 专辑列表
  */
-public class MusicAlbumListBean extends BaseListBean{
+@Entity
+public class MusicAlbumListBean extends BaseListBean implements Serializable {
 
+    @Transient
+    private static final long serialVersionUID = 1L;
     /**
-     * id : 2
-     * created_at : 2017-03-15 17:04:31
-     * updated_at : 2017-03-15 17:04:34
-     * title : 专辑2
-     * storage : {"id":5,"image_width":1080,"image_height":1800}
+     * id : 1
+     * created_at : 2017-03-10 18:05:02
+     * updated_at : 2017-03-10 18:05:03
+     * title : 专辑1
+     * intro : 这里是简介
+     * storage : 1
      * taste_count : 0
      * share_count : 0
      * comment_count : 0
      * collect_count : 0
      */
-
+    @Id(autoincrement = true)
+    Long _id;
+    @Unique
     private int id;
     private String created_at;
     private String updated_at;
     private String title;
+    @Convert(converter = MusicAlbumLIstConverter.class, columnType = String.class)
     private StorageBean storage;
     private int taste_count;
+    private String intro;
     private int share_count;
     private int comment_count;
     private int collect_count;
+    private int is_collection;
 
     public int getId() {
         return id;
@@ -108,7 +131,9 @@ public class MusicAlbumListBean extends BaseListBean{
         this.collect_count = collect_count;
     }
 
-    public static class StorageBean implements Parcelable{
+    public static class StorageBean implements Parcelable, Serializable {
+        @Transient
+        private static final long serialVersionUID = 1L;
         /**
          * id : 5
          * image_width : 1080
@@ -177,6 +202,25 @@ public class MusicAlbumListBean extends BaseListBean{
         };
     }
 
+
+    public static class MusicAlbumLIstConverter implements PropertyConverter<StorageBean, String> {
+        @Override
+        public StorageBean convertToEntityProperty(String databaseValue) {
+            if (databaseValue == null) {
+                return null;
+            }
+            return ConvertUtils.base64Str2Object(databaseValue);
+        }
+
+        @Override
+        public String convertToDatabaseValue(StorageBean entityProperty) {
+            if (entityProperty == null) {
+                return null;
+            }
+            return ConvertUtils.object2Base64Str(entityProperty);
+        }
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -196,6 +240,32 @@ public class MusicAlbumListBean extends BaseListBean{
         dest.writeInt(this.collect_count);
     }
 
+    public String getIntro() {
+        return this.intro;
+    }
+
+    public void setIntro(String intro) {
+        this.intro = intro;
+    }
+
+    public Long get_id() {
+        return this._id;
+    }
+
+    public void set_id(Long _id) {
+        this._id = _id;
+    }
+
+    public int getIs_collection() {
+        return this.is_collection;
+    }
+
+    public void setIs_collection(int is_collection) {
+        this.is_collection = is_collection;
+    }
+
+
+
     public MusicAlbumListBean() {
     }
 
@@ -210,6 +280,23 @@ public class MusicAlbumListBean extends BaseListBean{
         this.share_count = in.readInt();
         this.comment_count = in.readInt();
         this.collect_count = in.readInt();
+    }
+
+    @Generated(hash = 1923011377)
+    public MusicAlbumListBean(Long _id, int id, String created_at, String updated_at, String title, StorageBean storage,
+            int taste_count, String intro, int share_count, int comment_count, int collect_count, int is_collection) {
+        this._id = _id;
+        this.id = id;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.title = title;
+        this.storage = storage;
+        this.taste_count = taste_count;
+        this.intro = intro;
+        this.share_count = share_count;
+        this.comment_count = comment_count;
+        this.collect_count = collect_count;
+        this.is_collection = is_collection;
     }
 
     public static final Creator<MusicAlbumListBean> CREATOR = new Creator<MusicAlbumListBean>() {

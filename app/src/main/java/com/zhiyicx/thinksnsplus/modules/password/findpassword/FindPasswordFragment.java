@@ -172,22 +172,6 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
         setConfirmEnable();
     }
 
-
-    @Override
-    public void setPresenter(FindPasswordContract.Presenter presenter) {
-        this.mPresenter = presenter;
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
     @Override
     public void showMessage(String message) {
         if (TextUtils.isEmpty(message)) {
@@ -245,4 +229,3 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
         }
     }
 }
-
