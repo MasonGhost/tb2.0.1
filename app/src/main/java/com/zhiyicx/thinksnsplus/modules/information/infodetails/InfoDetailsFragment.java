@@ -199,12 +199,12 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     public void onNetResponseSuccess(@NotNull List<InfoCommentListBean> data, boolean isLoadMore) {
         if (!isLoadMore) {
             InfoCommentListBean position_zero = new InfoCommentListBean();
-            position_zero.setId(mInfoMation.getId());
-            data.add(0, position_zero);
             if (data.isEmpty()) {
+                position_zero.setId(mInfoMation.getId());
                 InfoCommentListBean emptyData = new InfoCommentListBean();
                 data.add(emptyData);
             }
+            data.add(0, position_zero);
         }
         super.onNetResponseSuccess(data, isLoadMore);
     }

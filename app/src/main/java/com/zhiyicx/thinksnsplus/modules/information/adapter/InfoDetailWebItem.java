@@ -250,8 +250,12 @@ public abstract class InfoDetailWebItem implements ItemViewDelegate<InfoCommentL
         initWebViewData(web);
         web.loadUrl(String.format(APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
                 infoCommentListBean.getId()));
-        holder.setText(R.id.tv_comment_count,
-                mContext.getResources().getString(R.string.dynamic_comment_count,getDatasize()));
+        if (infoCommentListBean.getId() < 0) {
+            holder.setText(R.id.tv_comment_count,
+                    mContext.getResources().getString(R.string.dynamic_comment_count, getDatasize() + ""));
+        } else {
+            holder.getView(R.id.info_detail_comment).setVisibility(View.GONE);
+        }
     }
 
     public abstract int getDatasize();
