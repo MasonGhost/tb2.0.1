@@ -65,7 +65,6 @@
         android:layout_marginRight="@dimen/spacing_normal"
         android:background="@drawable/shape_channel_list_subscrib_button"
         android:button="@null"
-        android:checked="false"
         android:drawableLeft="@drawable/selector_channel_list_subscrib_button_left_drawable"
         android:drawablePadding="@dimen/spacing_small_3dp"
         android:paddingLeft="@dimen/spacing_normal"

@@ -68,4 +68,14 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
     public int getPageType() {
         return pageType;
     }
+
+    @Override
+    public void refreshSubscribState(int position) {
+        refreshData();
+    }
+
+    @Override
+    public void refreshSubscribState() {
+
+    }
 }

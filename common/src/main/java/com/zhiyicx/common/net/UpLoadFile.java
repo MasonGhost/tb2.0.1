@@ -89,6 +89,10 @@ public class UpLoadFile {
                 }
             }
         }
+        // 如果没有任何参数传入，又调用了该方法，需要传一个缺省参数， Multipart body must have at least one part.
+        if ((params == null || params.isEmpty()) && (filePathList == null || filePathList.isEmpty())) {
+            builder.addFormDataPart("hehe", "hehe");
+        }
         List<MultipartBody.Part> parts = builder.build().parts();
         return parts;
     }

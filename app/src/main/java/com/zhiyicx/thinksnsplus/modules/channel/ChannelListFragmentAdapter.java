@@ -3,14 +3,18 @@ package com.zhiyicx.thinksnsplus.modules.channel;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -20,6 +24,11 @@ import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import rx.functions.Action1;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @author LiuChao
@@ -37,11 +46,12 @@ public class ChannelListFragmentAdapter extends CommonAdapter<ChannelSubscripBea
     }
 
     @Override
-    protected void convert(ViewHolder holder, ChannelSubscripBean channelSubscripBean, int position) {
+    protected void convert(ViewHolder holder, final ChannelSubscripBean channelSubscripBean, final int position) {
         ImageView iv_channel_cover = holder.getView(R.id.iv_channel_cover);
         TextView tv_channel_name = holder.getView(R.id.tv_channel_name);
         TextView tv_channel_feed_count = holder.getView(R.id.tv_channel_feed_count);
         TextView tv_channel_follow_count = holder.getView(R.id.tv_channel_follow_count);
+        CheckBox tv_channel_subscrib = holder.getView(R.id.tv_channel_subscrib);
 
         ChannelInfoBean channelInfoBean = channelSubscripBean.getChannelInfoBean();
         // 设置封面
@@ -76,5 +86,17 @@ public class ChannelListFragmentAdapter extends CommonAdapter<ChannelSubscripBea
                 .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
                 .format();
         tv_channel_follow_count.setText(followString);
+
+        // 设置订阅状态
+        tv_channel_subscrib.setChecked(channelSubscripBean.getChannelSubscriped());
+        RxView.clicks(tv_channel_subscrib)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        mPresenter.handleChannelSubscrib(position, channelSubscripBean);
+                    }
+                });
+
     }
 }

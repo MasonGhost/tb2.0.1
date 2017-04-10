@@ -61,7 +61,7 @@ public class ChannelListPresenter extends BasePresenter<ChannelListContract.Repo
 
     @Override
     public List<ChannelSubscripBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-       /* int pageType = mRootView.getPageType();
+        int pageType = mRootView.getPageType();
         AuthBean authBean = AppApplication.getmCurrentLoginAuth();
         List<ChannelSubscripBean> channelSubscripBeanList = null;
         switch (pageType) {
@@ -73,8 +73,8 @@ public class ChannelListPresenter extends BasePresenter<ChannelListContract.Repo
                 break;
             default:
         }
-        return channelSubscripBeanList;*/
-        return null;
+        return channelSubscripBeanList;
+        //return null;
     }
 
     @Override
@@ -104,7 +104,9 @@ public class ChannelListPresenter extends BasePresenter<ChannelListContract.Repo
     }
 
     @Override
-    public void handleChannelSubscrib() {
-
+    public void handleChannelSubscrib(int position, ChannelSubscripBean channelSubscripBean) {
+        mRepository.handleSubscribChannel(channelSubscripBean);
+        // 通知刷新列表
+        mRootView.refreshData();
     }
 }

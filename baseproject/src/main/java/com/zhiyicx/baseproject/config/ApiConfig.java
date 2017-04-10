@@ -212,6 +212,7 @@ public class ApiConfig {
      */
     // 处理频道订阅取消订阅的接口
     public static final String APP_PATH_HANDLE_SUBSCRIB_CHANNEL = "api/v1/channels/{channel_id}/follow";
+    public static final String APP_PATH_HANDLE_SUBSCRIB_CHANNEL_S = "api/v1/channels/%s/follow";
     // 获取频道列表
     public static final String APP_PATH_GET_CHANNEL = "api/v1/channels/{type}";
     public static final String CHANNEL_TYPE_ALL_CHANNEL = "";// 所有的频道
