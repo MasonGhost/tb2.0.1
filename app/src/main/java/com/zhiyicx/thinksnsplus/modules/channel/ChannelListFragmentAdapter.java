@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.channel;
 
 import android.content.Context;
+import android.nfc.Tag;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.widget.CheckBox;
@@ -16,6 +17,7 @@ import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
@@ -38,6 +40,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 
 public class ChannelListFragmentAdapter extends CommonAdapter<ChannelSubscripBean> {
+    private static final String TAG = "ChannelListFragmentAdap";
     private ChannelListContract.Presenter mPresenter;
 
     public ChannelListFragmentAdapter(Context context, int layoutId, List<ChannelSubscripBean> datas, ChannelListContract.Presenter presenter) {
@@ -58,7 +61,11 @@ public class ChannelListFragmentAdapter extends CommonAdapter<ChannelSubscripBea
         ChannelInfoBean.ChannelCoverBean channelCoverBean = channelInfoBean.getCover();
         // 计算图片压缩比
         int imageViewWidth = getContext().getResources().getDimensionPixelSize(R.dimen.rec_image_for_list_normal);// 获取图片控件宽高
-        int port = (int) (imageViewWidth * 1.0f / channelCoverBean.getImage_width());
+        int port = (int) (imageViewWidth * 100.0f / channelCoverBean.getImage_width());
+        if (port > 100) {
+            port = 100;
+        }
+        LogUtils.i(TAG+"channelCoverBean  "+channelCoverBean);
         String imgUrl = String.format(ApiConfig.IMAGE_PATH, channelCoverBean.getId(), port);
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()

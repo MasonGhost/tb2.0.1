@@ -3,11 +3,14 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 import android.content.Context;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
+
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.List;
 
@@ -53,7 +56,8 @@ public class ChannelSubscripBeanGreenDaoImpl extends CommonCacheImpl<ChannelSubs
 
     @Override
     public void clearTable() {
-
+        ChannelSubscripBeanDao channelSubscripBeanDao = getWDaoSession().getChannelSubscripBeanDao();
+        channelSubscripBeanDao.deleteAll();
     }
 
     @Override
@@ -117,6 +121,18 @@ public class ChannelSubscripBeanGreenDaoImpl extends CommonCacheImpl<ChannelSubs
                 , userId + ""
                 , "1");
         return channelSubscripBeanList;
+    }
+
+    /**
+     * 清空所有和userId相同的频道
+     *
+     * @param userId
+     */
+    public void clearTableByUserId(long userId) {
+        ChannelSubscripBeanDao channelSubscripBeanDao = getWDaoSession().getChannelSubscripBeanDao();
+        QueryBuilder queryBuilder = channelSubscripBeanDao.queryBuilder();
+        queryBuilder.where(ChannelSubscripBeanDao.Properties.UserId.eq(userId));
+        channelSubscripBeanDao.deleteInTx(queryBuilder.list());
     }
 
 }

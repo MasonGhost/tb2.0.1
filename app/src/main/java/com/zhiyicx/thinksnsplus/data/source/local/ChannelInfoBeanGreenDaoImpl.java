@@ -4,9 +4,12 @@ import android.content.Context;
 
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
+
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.List;
 
@@ -52,7 +55,8 @@ public class ChannelInfoBeanGreenDaoImpl extends CommonCacheImpl<ChannelInfoBean
 
     @Override
     public void clearTable() {
-
+        ChannelSubscripBeanDao channelSubscripBeanDao = getWDaoSession().getChannelSubscripBeanDao();
+        channelSubscripBeanDao.deleteAll();
     }
 
     @Override
@@ -80,4 +84,5 @@ public class ChannelInfoBeanGreenDaoImpl extends CommonCacheImpl<ChannelInfoBean
         ChannelInfoBeanDao channelInfoBeanDao = getWDaoSession().getChannelInfoBeanDao();
         channelInfoBeanDao.insertOrReplaceInTx(newData);
     }
+
 }

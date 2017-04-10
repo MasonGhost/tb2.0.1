@@ -3,14 +3,20 @@ package com.zhiyicx.thinksnsplus.modules.channel;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
+import com.zhiyicx.thinksnsplus.data.source.local.ChannelInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelSubscripBeanGreenDaoImpl;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
+import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -32,10 +38,17 @@ public class ChannelListPresenter extends BasePresenter<ChannelListContract.Repo
         implements ChannelListContract.Presenter {
     @Inject
     ChannelSubscripBeanGreenDaoImpl mChannelSubscripBeanGreenDao;
+    @Inject
+    ChannelInfoBeanGreenDaoImpl mChannelInfoBeanGreenDao;
 
     @Inject
     public ChannelListPresenter(ChannelListContract.Repository repository, ChannelListContract.View rootView) {
         super(repository, rootView);
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
     }
 
     @Override
@@ -74,12 +87,12 @@ public class ChannelListPresenter extends BasePresenter<ChannelListContract.Repo
             default:
         }
         return channelSubscripBeanList;
-        //return null;
     }
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<ChannelSubscripBean> data) {
-        return false;
+        // 在repository中进行了清空表，和添加数据的操作
+        return true;
     }
 
     private void dealWithChannelNetData(Long maxId, final boolean isLoadMore, Observable<BaseJson<List<ChannelSubscripBean>>> observable) {
@@ -106,7 +119,24 @@ public class ChannelListPresenter extends BasePresenter<ChannelListContract.Repo
     @Override
     public void handleChannelSubscrib(int position, ChannelSubscripBean channelSubscripBean) {
         mRepository.handleSubscribChannel(channelSubscripBean);
-        // 通知刷新列表
-        mRootView.refreshData();
+        EventBus.getDefault().post(channelSubscripBean, EventBusTagConfig.EVENT_CHANNEL_SUBSCRIB);
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_CHANNEL_SUBSCRIB)
+    public void uploadChannelSubscribState(ChannelSubscripBean channelSubscripBean) {
+        List<ChannelSubscripBean> currentPageData = mRootView.getChannelListData();
+        int position = currentPageData.indexOf(channelSubscripBean);
+        LogUtils.i("uploadChannelSubscribState page " + mRootView.getPageType() + "  position " + position);
+        // 如果当前列表存在这样的数据，刷新该数据
+        if (position > -1) {
+            //更新item的状态
+            ChannelSubscripBean currentItem = currentPageData.get(position);
+            currentItem.setChannelSubscriped(channelSubscripBean.getChannelSubscriped());
+            mRootView.refreshData(position);
+        } else {
+            // 如果不存在就添加近列表
+            currentPageData.add(0, channelSubscripBean);
+            mRootView.refreshData();
+        }
     }
 }

@@ -18,22 +18,6 @@ import rx.Observable;
 public interface IBaseChannelRepository {
 
     /**
-     * 取消频道订阅
-     *
-     * @param channel_id
-     * @return
-     */
-    Observable<BaseJson<Object>> cancleSubscribChannel(long channel_id);
-
-    /**
-     * 订阅频道
-     *
-     * @param channel_id
-     * @return
-     */
-    Observable<BaseJson<Object>> subscribChannel(long channel_id);
-
-    /**
      * 处理订阅状态
      *
      * @param channelSubscripBean
@@ -44,10 +28,11 @@ public interface IBaseChannelRepository {
     /**
      * 获取频道列表
      *
-     * @param type type 频道类型 “”表示所有的频道  “my”表示我关注的频道 在APiConfig中定义了这两个常量
+     * @param type   type 频道类型 “”表示所有的频道  “my”表示我关注的频道 在APiConfig中定义了这两个常量
+     * @param userId 请求频道列表的用户,作为拓展字段如果有其他用户需要请求频道列表，使用该字段
      * @return
      */
-    Observable<BaseJson<List<ChannelSubscripBean>>> getChannelList(@Path("type") String type);
+    Observable<BaseJson<List<ChannelSubscripBean>>> getChannelList(@Path("type") String type, long userId);
 
 
 }

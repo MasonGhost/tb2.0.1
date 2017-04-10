@@ -39,6 +39,11 @@ public interface ChannelListContract {
          */
         void refreshSubscribState();
 
+        /**
+         * 获取频道列表数据
+         */
+        List<ChannelSubscripBean> getChannelListData();
+
     }
 
     interface Presenter extends ITSListPresenter<ChannelSubscripBean> {

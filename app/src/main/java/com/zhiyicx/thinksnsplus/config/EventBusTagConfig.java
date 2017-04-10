@@ -48,6 +48,9 @@ public class EventBusTagConfig {
     // 对某人进行关注或者取消关注，需要改变个人主页关注数量
     public static final String EVENT_FOLLOW_AND_CANCEL_FOLLOW = "event_follow_and_cancle_follow";
 
+    // 频道进行订阅或者取消订阅
+    public static final String EVENT_CHANNEL_SUBSCRIB = "event_channel_subscrib";
+
 
     /*******************************************
      * IM 相关

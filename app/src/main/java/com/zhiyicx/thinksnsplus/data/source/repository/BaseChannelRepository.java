@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
+import com.zhiyicx.thinksnsplus.data.source.local.ChannelInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelSubscripBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ChannelClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -36,22 +37,14 @@ public class BaseChannelRepository implements IBaseChannelRepository {
     protected ChannelClient mChannelClient;
     protected Context mContext;
     protected ChannelSubscripBeanGreenDaoImpl mChannelSubscripBeanGreenDao;
+    protected ChannelInfoBeanGreenDaoImpl mChannelInfoBeanGreenDao;
 
     @Inject
     public BaseChannelRepository(ServiceManager serviceManager, Application context) {
         mChannelClient = serviceManager.getChannelClient();
         this.mContext = context;
         mChannelSubscripBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().channelSubscripBeanGreenDaoImpl();
-    }
-
-    @Override
-    public Observable<BaseJson<Object>> cancleSubscribChannel(long channel_id) {
-        return mChannelClient.cancleSubscribChannel(channel_id);
-    }
-
-    @Override
-    public Observable<BaseJson<Object>> subscribChannel(long channel_id) {
-        return mChannelClient.subscribChannel(channel_id);
+        mChannelInfoBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().channelInfoBeanGreenDaoImpl();
     }
 
     @Override
@@ -78,7 +71,7 @@ public class BaseChannelRepository implements IBaseChannelRepository {
     }
 
     @Override
-    public Observable<BaseJson<List<ChannelSubscripBean>>> getChannelList(@Path("type") String type) {
+    public Observable<BaseJson<List<ChannelSubscripBean>>> getChannelList(@Path("type") final String type, final long userId) {
         // 将获取到的ChannelInfoBean类型的频道列表，通过map转换成ChannelSubscripBean类型的数据
         return mChannelClient.getChannelList(type)
                 .map(new Func1<BaseJson<List<ChannelInfoBean>>, BaseJson<List<ChannelSubscripBean>>>() {
@@ -96,12 +89,21 @@ public class BaseChannelRepository implements IBaseChannelRepository {
                                     ChannelSubscripBean channelSubscripBean = new ChannelSubscripBean();
                                     channelSubscripBean.setId(channelInfoBean.getId());// 设置频道id
                                     channelSubscripBean.setChannelInfoBean(channelInfoBean);// 设置频道信息
-                                    //channelSubscripBean.setChannelSubscriped();// 设置订阅状态
-                                    //channelSubscripBean.setUserId();// 设置请求的用户id
+                                    // 如果是获取我订阅的频道，设置订阅状态为1
+                                    if (type == ApiConfig.CHANNEL_TYPE_MY_SUBSCRIB_CHANNEL) {
+                                        channelInfoBean.setFollow_status(1);
+                                    }
+                                    channelSubscripBean.setChannelSubscriped(channelInfoBean.getFollow_status() == 0 ? false : true);// 设置订阅状态
+                                    channelSubscripBean.setUserId(userId);// 设置请求的用户id
+                                    channelSubscripBean.setUserIdAndIdforUnique("");// 添加唯一约束，防止数据重复
                                     channelSubscripBeanList.add(channelSubscripBean);
                                 }
                             }
                             channelSubscripBeanBaseJson.setData(channelSubscripBeanList);
+                            mChannelInfoBeanGreenDao.insertOrReplace(channelInfoBeanList);
+                            mChannelSubscripBeanGreenDao.clearTable();
+                            mChannelSubscripBeanGreenDao.insertOrReplace(channelSubscripBeanList);
+
                         } else {
                             channelSubscripBeanBaseJson.setData(null);
                         }

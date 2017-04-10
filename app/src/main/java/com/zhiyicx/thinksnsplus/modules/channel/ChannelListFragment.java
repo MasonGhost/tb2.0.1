@@ -11,6 +11,8 @@ import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 /**
@@ -43,6 +45,26 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
     }
 
     @Override
+    protected boolean isRefreshEnable() {
+        return false;
+    }
+
+    @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return true;
+    }
+
+    @Override
+    protected boolean isNeedRefreshAnimation() {
+        return false;
+    }
+
+    @Override
+    protected boolean isLoadingMoreEnable() {
+        return false;
+    }
+
+    @Override
     protected void initData() {
         pageType = getArguments().getInt(ChannelListViewPagerFragment.PAGE_TYPE);
         super.initData();
@@ -71,11 +93,16 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
 
     @Override
     public void refreshSubscribState(int position) {
-        refreshData();
+        refreshData(position);
     }
 
     @Override
     public void refreshSubscribState() {
+        refreshData();
+    }
 
+    @Override
+    public List<ChannelSubscripBean> getChannelListData() {
+        return mListDatas;
     }
 }
