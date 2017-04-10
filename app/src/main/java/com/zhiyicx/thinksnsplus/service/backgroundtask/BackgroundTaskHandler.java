@@ -667,9 +667,6 @@ public class BackgroundTaskHandler {
             case ErrorCodeConfig.IM_DELDETE_CONVERSATION_FAIL:
                 result = true;
                 break;
-            case ErrorCodeConfig.DYNAMIC_HANDLE_FAIL:
-                result = true;
-                break;
             default:
                 result = false;
         }

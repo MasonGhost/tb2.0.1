@@ -128,7 +128,6 @@ public class JpushReceiver extends BroadcastReceiver {
 //            if(isChat) {
 //                launchIntent.putExtra("type", "message");
 //            }
-
             context.startActivity(launchIntent);
         }
     }
