@@ -6,6 +6,7 @@ import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicCommentListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicCommentRepositroty;
@@ -64,6 +65,7 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                         @Override
                         protected void onSuccess(List<MusicCommentListBean> data) {
                             mRootView.onNetResponseSuccess(data, isLoadMore);
+                            mCommentListBeanGreenDao.saveMultiData(data);
                         }
 
                         @Override
@@ -83,6 +85,7 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                         @Override
                         protected void onSuccess(List<MusicCommentListBean> data) {
                             mRootView.onNetResponseSuccess(data, isLoadMore);
+                            mCommentListBeanGreenDao.saveMultiData(data);
                         }
 
                         @Override
@@ -107,7 +110,7 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
         }else{
             path=APP_PATH_MUSIC_ABLUM_COMMENT_FORMAT;
         }
-        mRepository.sendComment(reply_id, content, path);
+        mRepository.sendComment(mRootView.getCommentId(), content, path);
 
         MusicCommentListBean createComment = new MusicCommentListBean();
         createComment.setState(SEND_ING);
@@ -119,14 +122,14 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
         createComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
         createComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
 
-//        if (reply_id == 0) {// 回复资讯
-//            UserInfoBean userInfoBean = new UserInfoBean();
-//            userInfoBean.setUser_id((long) reply_id);
-//            createComment.setToUserInfoBean(userInfoBean);
-//        } else {
-//            createComment.setToUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache(
-//                    (long) reply_id));
-//        }
+        if (reply_id == 0) {// 回复资讯
+            UserInfoBean userInfoBean = new UserInfoBean();
+            userInfoBean.setUser_id((long) reply_id);
+            createComment.setToUserInfoBean(userInfoBean);
+        } else {
+            createComment.setToUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache(
+                    (long) reply_id));
+        }
         createComment.setFromUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache((long)
                 AppApplication.getmCurrentLoginAuth().getUser_id()));
         mCommentListBeanGreenDao.insertOrReplace(createComment);
@@ -142,6 +145,7 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
     @Override
     public void deleteComment(MusicCommentListBean data) {
         mCommentListBeanGreenDao.deleteSingleCache(data);
+        mRepository.deleteComment(mRootView.getCommentId(),data.getComment_id());
         mRootView.getListDatas().remove(data);
         mRootView.refreshData();
     }

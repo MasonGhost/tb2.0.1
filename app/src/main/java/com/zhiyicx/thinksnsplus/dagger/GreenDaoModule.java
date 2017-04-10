@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.dagger;
 import android.app.Application;
 
 import com.zhiyicx.thinksnsplus.data.source.local.BackgroundRequestTaskBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.ChannelInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.ChannelSubscripBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
@@ -95,6 +97,16 @@ public class GreenDaoModule {
     @Provides
     public MusicAlbumDetailsBeanGreenDaoImpl provideMusicAlbumDetailsBeanGreenDaoImpl(Application application) {
         return new MusicAlbumDetailsBeanGreenDaoImpl(application);
+    }
+
+    @Provides
+    public ChannelSubscripBeanGreenDaoImpl provideChannelSubscripBeanGreenDaoImpl(Application application) {
+        return new ChannelSubscripBeanGreenDaoImpl(application);
+    }
+
+    @Provides
+    public ChannelInfoBeanGreenDaoImpl provideChannelInfoBeanGreenDaoImpl(Application application) {
+        return new ChannelInfoBeanGreenDaoImpl(application);
     }
 
 }

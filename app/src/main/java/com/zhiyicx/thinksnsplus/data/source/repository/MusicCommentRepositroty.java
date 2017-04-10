@@ -187,4 +187,10 @@ public class MusicCommentRepositroty implements MusicCommentContract.Repository 
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
                 (backgroundRequestTaskBean);
     }
+
+    @Override
+    public void deleteComment(int music_id, int comment_id) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+    }
 }

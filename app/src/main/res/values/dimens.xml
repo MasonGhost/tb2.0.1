@@ -16,5 +16,9 @@
     <dimen name="personal_center_bottom_view_height">46dp</dimen>
     <!--没有图的item，工具栏的左边margin-->
     <dimen name="zero_image_left_margin">48dp</dimen>
+    <!--频道列表-->
+    <!--频道订阅按钮宽度-->
+    <dimen name="channel_subscrib_btn_width">63dp</dimen>
+    <dimen name="channel_subscrib_btn_height">25dp</dimen>
 
 </resources>

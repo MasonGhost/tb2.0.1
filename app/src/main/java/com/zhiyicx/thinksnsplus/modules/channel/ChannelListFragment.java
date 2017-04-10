@@ -11,6 +11,10 @@ import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
 import javax.inject.Inject;
 
 /**
@@ -24,20 +28,18 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
         implements ChannelListContract.View {
     @Inject
     ChannelListPresenter mChannelListPresenter;
+    private int pageType = 0;// 上一个Fragment传递过来的页面类型
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        for (int i = 0; i < 10; i++) {
-            mListDatas.add(new ChannelSubscripBean());
-        }
-        CommonAdapter<ChannelSubscripBean> commonAdapter = new CommonAdapter<ChannelSubscripBean>(getContext()
-                , R.layout.item_channel_list, mListDatas) {
-            @Override
-            protected void convert(ViewHolder holder, ChannelSubscripBean channelSubscripBean, int position) {
-
-            }
-        };
+        CommonAdapter<ChannelSubscripBean> commonAdapter = new ChannelListFragmentAdapter(getContext()
+                , R.layout.item_channel_list, mListDatas, mPresenter);
         return commonAdapter;
+    }
+
+    @Override
+    protected boolean setUseCenterLoading() {
+        return true;
     }
 
     @Override
@@ -47,6 +49,44 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
                 .channelListPresenterModule(new ChannelListPresenterModule(this))
                 .build().inject(this);
         super.initView(rootView);
+    }
+
+    @Override
+    public void onNetResponseSuccess(@NotNull List<ChannelSubscripBean> data, boolean isLoadMore) {
+        super.onNetResponseSuccess(data, isLoadMore);
+        closeLoadingView();
+    }
+
+    @Override
+    public void onCacheResponseSuccess(@NotNull List<ChannelSubscripBean> data, boolean isLoadMore) {
+        super.onCacheResponseSuccess(data, isLoadMore);
+        closeLoadingView();
+    }
+
+    @Override
+    protected boolean isRefreshEnable() {
+        return false;
+    }
+
+    @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return false;
+    }
+
+    @Override
+    protected boolean isNeedRefreshAnimation() {
+        return false;
+    }
+
+    @Override
+    protected boolean isLoadingMoreEnable() {
+        return false;
+    }
+
+    @Override
+    protected void initData() {
+        pageType = getArguments().getInt(ChannelListViewPagerFragment.PAGE_TYPE);
+        super.initData();
     }
 
     @Override
@@ -63,5 +103,25 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
         ChannelListFragment channelListFragment = new ChannelListFragment();
         channelListFragment.setArguments(bundle);
         return channelListFragment;
+    }
+
+    @Override
+    public int getPageType() {
+        return pageType;
+    }
+
+    @Override
+    public void refreshSubscribState(int position) {
+        refreshData(position);
+    }
+
+    @Override
+    public void refreshSubscribState() {
+        refreshData();
+    }
+
+    @Override
+    public List<ChannelSubscripBean> getChannelListData() {
+        return mListDatas;
     }
 }

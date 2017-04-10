@@ -119,6 +119,8 @@
     <!--频道-->
     <string name="subscrip_channel">我订阅的</string>
     <string name="all_channel">全部频道</string>
+    <string name="channel_share">分享</string>
+    <string name="channel_follow">关注</string>
 
     <!--代码中的string-->
     <string name="token_expiers">token过期，请重新登陆</string>

@@ -46,7 +46,7 @@ public class CoodinatorLayoutAndRecyclerViewRefreshLayout extends SwipeToLoadLay
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        LogUtils.i(TAG + "onLayout");
+//        LogUtils.i(TAG + "onLayout");
         init();
     }
 
@@ -66,7 +66,7 @@ public class CoodinatorLayoutAndRecyclerViewRefreshLayout extends SwipeToLoadLay
                 if (Math.abs(dY) / Math.abs(dX) >= 1 && dY > 0) {
                     int[] location = new int[2];
                     getLocationOnScreen(location);
-                    LogUtils.i(TAG + "getY" + getY() + "getTop" + getTop() + "location" + location[1] + "startY  " + startY);
+//                    LogUtils.i(TAG + "getY" + getY() + "getTop" + getTop() + "location" + location[1] + "startY  " + startY);
                     if (location[1] < startY) {
                         return false;
                     }

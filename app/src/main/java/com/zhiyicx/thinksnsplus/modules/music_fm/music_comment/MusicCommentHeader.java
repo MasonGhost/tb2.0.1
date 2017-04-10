@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -35,6 +36,7 @@ public class MusicCommentHeader {
     private TextView mCommentCount;
     private ImageView mHeaderImag;
     private ImageLoader mImageLoader;
+    private FrameLayout mCommentCountView;
 
     public MusicCommentHeader(Context context) {
         this.mContext = context;
@@ -44,6 +46,7 @@ public class MusicCommentHeader {
         mMusicCommentHeader.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
+        mCommentCountView = (FrameLayout) mMusicCommentHeader.findViewById(R.id.head_info_music_comment_count);
         mTitle = (TextView) mMusicCommentHeader.findViewById(R.id.head_info_music_title);
         mListenCount = (TextView) mMusicCommentHeader.findViewById(R.id.head_info_music_listen);
         mCommentCount = (TextView) mMusicCommentHeader.findViewById(R.id.tv_comment_count);
@@ -79,7 +82,13 @@ public class MusicCommentHeader {
     }
 
     public void setCommentList(int size) {
-        mCommentCount.setText(mContext.getResources().getString(R.string.dynamic_comment_count, "" + size));
+        if (size > 0) {
+            mCommentCountView.setVisibility(View.VISIBLE);
+            mCommentCount.setText(mContext.getResources().getString(R.string.dynamic_comment_count, "" + size));
+        } else {
+            mCommentCountView.setVisibility(View.GONE);
+        }
+
     }
 
     public static class HeaderInfo implements Serializable {

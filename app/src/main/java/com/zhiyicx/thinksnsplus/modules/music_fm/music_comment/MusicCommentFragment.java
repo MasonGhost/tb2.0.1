@@ -17,6 +17,7 @@ import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.adapter.MusicCommentItem;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.adapter.MusicEmptyCommentItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
@@ -61,7 +62,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        mIlvComment.post(new Runnable() {
+        mIlvComment.post(new Runnable() { // 处理评论框位置协调
             @Override
             public void run() {
                 mRvList.setPadding(0, 0, 0, mIlvComment.getHeight());
@@ -86,10 +87,9 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     protected MultiItemTypeAdapter<MusicCommentListBean> getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
         MusicCommentItem musicCommentItem = new MusicCommentItem();
-
         musicCommentItem.setOnUserInfoClickListener(this);
         adapter.addItemViewDelegate(musicCommentItem);
-//        adapter.addItemViewDelegate(new MusicEmptyCommentItem());
+        adapter.addItemViewDelegate(new MusicEmptyCommentItem());
         adapter.setOnItemClickListener(this);
         return adapter;
     }
@@ -107,10 +107,13 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     @Override
     public void onSendClick(View v, String text) {
         DeviceUtils.hideSoftKeyboard(getContext(), v);
-        mEmptyView.setVisibility(View.GONE);
-        mReplyUserId = mHeaderInfo.getId();
         mHeaderInfo.setCommentCount(mHeaderInfo.getCommentCount() + 1);
         mPresenter.sendComment(mReplyUserId, text);
+    }
+
+    @Override
+    public int getCommentId() {
+        return mHeaderInfo.getId();
     }
 
     @Override
@@ -175,10 +178,10 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
 
     @Override
     public void onNetResponseSuccess(@NotNull List<MusicCommentListBean> data, boolean isLoadMore) {
-//        if (!isLoadMore && data.isEmpty()) { // 增加空数据，用于显示占位图
-//            MusicCommentListBean emptyData = new MusicCommentListBean();
-//            data.add(emptyData);
-//        }
+        if (!isLoadMore && data.isEmpty()) { // 增加空数据，用于显示占位图
+            MusicCommentListBean emptyData = new MusicCommentListBean();
+            data.add(emptyData);
+        }
         mMusicCommentHeader.setCommentList(data.size());
         super.onNetResponseSuccess(data, isLoadMore);
     }
@@ -197,7 +200,6 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
         // 评论
         mIlvComment.setVisibility(View.VISIBLE);
         mIlvComment.setSendButtonVisiable(true);
-//        mIlvComment.getFocus();
     }
 
     private void initLoginOutPopupWindow(final MusicCommentListBean data) {
@@ -213,7 +215,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                     @Override
                     public void onItem1Clicked() {
                         ToastUtils.showToast("暂无接口");
-//                        mPresenter.deleteComment(data);
+                        mPresenter.deleteComment(data);
                         mDeletCommentPopWindow.hide();
                     }
                 })
