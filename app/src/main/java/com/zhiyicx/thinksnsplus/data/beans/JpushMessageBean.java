@@ -8,7 +8,7 @@ package com.zhiyicx.thinksnsplus.data.beans;
  */
 
 public class JpushMessageBean {
-    
+
     private String message;
     private String type;
     private String action;
