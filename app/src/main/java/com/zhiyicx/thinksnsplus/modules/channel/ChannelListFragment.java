@@ -11,6 +11,8 @@ import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -36,6 +38,11 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
     }
 
     @Override
+    protected boolean setUseCenterLoading() {
+        return true;
+    }
+
+    @Override
     protected void initView(View rootView) {
         DaggerChannelListPresenterComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
@@ -45,13 +52,25 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
     }
 
     @Override
+    public void onNetResponseSuccess(@NotNull List<ChannelSubscripBean> data, boolean isLoadMore) {
+        super.onNetResponseSuccess(data, isLoadMore);
+        closeLoadingView();
+    }
+
+    @Override
+    public void onCacheResponseSuccess(@NotNull List<ChannelSubscripBean> data, boolean isLoadMore) {
+        super.onCacheResponseSuccess(data, isLoadMore);
+        closeLoadingView();
+    }
+
+    @Override
     protected boolean isRefreshEnable() {
         return false;
     }
 
     @Override
     protected boolean isNeedRefreshDataWhenComeIn() {
-        return true;
+        return false;
     }
 
     @Override
