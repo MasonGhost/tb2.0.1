@@ -76,7 +76,7 @@
     <string name="code_6007">评论内容不能为空</string>
     <string name="code_6008">已收藏该动态</string>
     <string name="code_6009">未收藏该动态</string>
-    <string name="code_60010">操作失败</string>
+    <string name="code_60010">请勿重复操作</string>
 
 
     <!--#########################################      系统配置模块       ################################-->
