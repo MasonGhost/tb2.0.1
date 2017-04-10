@@ -53,7 +53,7 @@
         </LinearLayout>
     </LinearLayout>
 
-    <TextView
+    <CheckBox
         android:id="@+id/tv_channel_subscrib"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -61,6 +61,12 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/spacing_mid"
         android:layout_marginRight="@dimen/spacing_normal"
-        android:text="订阅"/>
+        android:background="@drawable/shape_channel_list_subscrib_button"
+        android:button="@null"
+        android:checked="true"
+        android:drawableLeft="@drawable/selector_channel_list_subscrib_button_left_drawable"
+        android:gravity="center"
+        android:text="订阅"
+        android:textColor="@color/selector_channel_list_subscrib_button_divider"/>
 
 </RelativeLayout>

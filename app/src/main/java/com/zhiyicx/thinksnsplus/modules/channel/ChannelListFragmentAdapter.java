@@ -70,7 +70,7 @@ public class ChannelListFragmentAdapter extends CommonAdapter<ChannelSubscripBea
         tv_channel_feed_count.setText(feedString);
         // 设置订阅人数
         String followCountNumber = ConvertUtils.numberConvert(channelInfoBean.getFollow_count());
-        String followContent = getContext().getString(R.string.channel_share) + " " + "<" + followCountNumber + ">";
+        String followContent = getContext().getString(R.string.channel_follow) + " " + "<" + followCountNumber + ">";
         CharSequence followString = ColorPhrase.from(followContent).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
