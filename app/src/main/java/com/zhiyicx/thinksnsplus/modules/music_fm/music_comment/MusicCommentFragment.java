@@ -107,9 +107,13 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     @Override
     public void onSendClick(View v, String text) {
         DeviceUtils.hideSoftKeyboard(getContext(), v);
-        mReplyUserId = mHeaderInfo.getId();
         mHeaderInfo.setCommentCount(mHeaderInfo.getCommentCount() + 1);
         mPresenter.sendComment(mReplyUserId, text);
+    }
+
+    @Override
+    public int getCommentId() {
+        return mHeaderInfo.getId();
     }
 
     @Override
@@ -211,7 +215,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                     @Override
                     public void onItem1Clicked() {
                         ToastUtils.showToast("暂无接口");
-//                        mPresenter.deleteComment(data);
+                        mPresenter.deleteComment(data);
                         mDeletCommentPopWindow.hide();
                     }
                 })

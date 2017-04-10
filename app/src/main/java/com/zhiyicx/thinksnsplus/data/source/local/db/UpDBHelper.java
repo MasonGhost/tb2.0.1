@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMoreCatesBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMyCatesBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBeanDao;
 
 import org.greenrobot.greendao.database.Database;
@@ -43,5 +44,6 @@ public class UpDBHelper extends DaoMaster.OpenHelper {
         MigrationHelper.getInstance().migrate(db, InfoTypeMoreCatesBeanDao.class);
         MigrationHelper.getInstance().migrate(db, InfoListBeanDao.class);
         MigrationHelper.getInstance().migrate(db, InfoCommentListBeanDao.class);
+        MigrationHelper.getInstance().migrate(db, MusicCommentListBeanDao.class);
     }
 }

@@ -11,7 +11,6 @@ import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
-import org.greenrobot.greendao.annotation.NotNull;
 
 /**
  * @Author Jliuer
@@ -34,9 +33,9 @@ public class MusicCommentListBean extends BaseListBean {
      * music_id : 1
      * special_id : 0
      */
-    @Id(autoincrement = true)
-    Long _id;
-    private int id = -1;
+    @Id
+    private Long id;
+    private int comment_id = -1;
     private String created_at;
     private String updated_at;
     private String comment_content;
@@ -52,12 +51,16 @@ public class MusicCommentListBean extends BaseListBean {
     private Long comment_mark;
     private int state = SEND_SUCCESS;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public int getComment_id() {
+        return comment_id;
+    }
+
+    public void setComment_id(int comment_id) {
+        this.comment_id = comment_id;
     }
 
     public String getCreated_at() {
@@ -116,31 +119,16 @@ public class MusicCommentListBean extends BaseListBean {
         this.special_id = special_id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+        this.comment_id = id.intValue();
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeInt(this.id);
-        dest.writeString(this.created_at);
-        dest.writeString(this.updated_at);
-        dest.writeString(this.comment_content);
-        dest.writeInt(this.user_id);
-        dest.writeInt(this.reply_to_user_id);
-        dest.writeInt(this.music_id);
-        dest.writeInt(this.special_id);
-    }
-
-    public Long get_id() {
-        return this._id;
-    }
-
-    public void set_id(Long _id) {
-        this._id = _id;
-    }
 
     public int getState() {
         return this.state;
@@ -224,24 +212,12 @@ public class MusicCommentListBean extends BaseListBean {
     public MusicCommentListBean() {
     }
 
-    protected MusicCommentListBean(Parcel in) {
-        super(in);
-        this.id = in.readInt();
-        this.created_at = in.readString();
-        this.updated_at = in.readString();
-        this.comment_content = in.readString();
-        this.user_id = in.readInt();
-        this.reply_to_user_id = in.readInt();
-        this.music_id = in.readInt();
-        this.special_id = in.readInt();
-    }
-
-    @Generated(hash = 1940892176)
-    public MusicCommentListBean(Long _id, int id, String created_at, String updated_at,
-            String comment_content, int user_id, int reply_to_user_id, int music_id, int special_id,
-            Long comment_mark, int state) {
-        this._id = _id;
+    @Generated(hash = 742266630)
+    public MusicCommentListBean(Long id, int comment_id, String created_at, String updated_at,
+            String comment_content, int user_id, int reply_to_user_id, int music_id,
+            int special_id, Long comment_mark, int state) {
         this.id = id;
+        this.comment_id = comment_id;
         this.created_at = created_at;
         this.updated_at = updated_at;
         this.comment_content = comment_content;
@@ -253,22 +229,14 @@ public class MusicCommentListBean extends BaseListBean {
         this.state = state;
     }
 
-    public static final Creator<MusicCommentListBean> CREATOR = new Creator<MusicCommentListBean>
-            () {
-        @Override
-        public MusicCommentListBean createFromParcel(Parcel source) {
-            return new MusicCommentListBean(source);
-        }
-
-        @Override
-        public MusicCommentListBean[] newArray(int size) {
-            return new MusicCommentListBean[size];
-        }
-    };
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 195439560)
     private transient MusicCommentListBeanDao myDao;
     @Generated(hash = 386266430)
