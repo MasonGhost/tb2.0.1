@@ -31,7 +31,10 @@ public interface ChannelListContract {
     }
 
     interface Presenter extends ITSListPresenter<ChannelSubscripBean> {
-
+        /**
+         * 处理用户订阅状态
+         */
+        void handleChannelSubscrib();
     }
 
     interface Repository {

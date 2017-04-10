@@ -3,8 +3,11 @@ package com.zhiyicx.thinksnsplus.modules.channel;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
+import com.zhiyicx.thinksnsplus.data.source.local.ChannelSubscripBeanGreenDaoImpl;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -27,6 +30,9 @@ import rx.schedulers.Schedulers;
 @FragmentScoped
 public class ChannelListPresenter extends BasePresenter<ChannelListContract.Repository, ChannelListContract.View>
         implements ChannelListContract.Presenter {
+    @Inject
+    ChannelSubscripBeanGreenDaoImpl mChannelSubscripBeanGreenDao;
+
     @Inject
     public ChannelListPresenter(ChannelListContract.Repository repository, ChannelListContract.View rootView) {
         super(repository, rootView);
@@ -55,7 +61,19 @@ public class ChannelListPresenter extends BasePresenter<ChannelListContract.Repo
 
     @Override
     public List<ChannelSubscripBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+        int pageType = mRootView.getPageType();
+        AuthBean authBean = AppApplication.getmCurrentLoginAuth();
+        List<ChannelSubscripBean> channelSubscripBeanList = null;
+        switch (pageType) {
+            case ChannelListViewPagerFragment.PAGE_MY_SUBSCRIB_CHANNEL_LIST:
+                channelSubscripBeanList = mChannelSubscripBeanGreenDao.getSomeOneSubscribChannelList(authBean.getUser_id());
+                break;
+            case ChannelListViewPagerFragment.PAGE_ALL_CHANNEL_LIST:
+                channelSubscripBeanList = mChannelSubscripBeanGreenDao.getAllChannelList(authBean.getUser_id());
+                break;
+            default:
+        }
+        return channelSubscripBeanList;
     }
 
     @Override
@@ -82,5 +100,10 @@ public class ChannelListPresenter extends BasePresenter<ChannelListContract.Repo
             }
         });
         addSubscrebe(subscription);
+    }
+
+    @Override
+    public void handleChannelSubscrib() {
+
     }
 }

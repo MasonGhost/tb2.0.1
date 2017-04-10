@@ -2,7 +2,11 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.content.Context;
 
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
+import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.List;
@@ -69,6 +73,50 @@ public class ChannelSubscripBeanGreenDaoImpl extends CommonCacheImpl<ChannelSubs
 
     @Override
     public long insertOrReplace(ChannelSubscripBean newData) {
-        return 0;
+        if (newData == null) {
+            return -1;
+        }
+        ChannelSubscripBeanDao channelSubscripBeanDao = getWDaoSession().getChannelSubscripBeanDao();
+        return channelSubscripBeanDao.insertOrReplace(newData);
     }
+
+    public void insertOrReplace(List<ChannelSubscripBean> newData) {
+        if (newData == null) {
+            return;
+        }
+        ChannelSubscripBeanDao channelSubscripBeanDao = getWDaoSession().getChannelSubscripBeanDao();
+        channelSubscripBeanDao.insertOrReplaceInTx(newData);
+    }
+
+    /**
+     * 获取所有的频道列表，当前没有传入 maxid，因为界面会直接显示所有的频道
+     * ChannelSubscriped 订阅状态 0 false 1 true
+     *
+     * @param userId 表中存的是该 userid 请求得到的频道列表，主要是为了突出重复
+     */
+    public List<ChannelSubscripBean> getAllChannelList(long userId) {
+        ChannelSubscripBeanDao channelSubscripBeanDao = getRDaoSession().getChannelSubscripBeanDao();
+        List<ChannelSubscripBean> channelSubscripBeanList = channelSubscripBeanDao.queryDeep(" where "
+                        + ChannelSubscripBeanDao.Properties.UserId.columnName + " = ? "
+                        + " order by " + "T.\"" + ChannelSubscripBeanDao.Properties.Id.columnName + "\"" + " DESC"// 按频道id倒序
+                , userId + "");
+        return channelSubscripBeanList;
+    }
+
+    /**
+     * 获取某人订阅的频道列表，当前没有传入 maxid，因为界面会直接显示所有的频道
+     *
+     * @param userId 当前 userid 的用户所关注的频道列表
+     */
+    public List<ChannelSubscripBean> getSomeOneSubscribChannelList(long userId) {
+        ChannelSubscripBeanDao channelSubscripBeanDao = getRDaoSession().getChannelSubscripBeanDao();
+        List<ChannelSubscripBean> channelSubscripBeanList = channelSubscripBeanDao.queryDeep(" where "
+                        + ChannelSubscripBeanDao.Properties.UserId.columnName + " = ? and "
+                        + ChannelSubscripBeanDao.Properties.ChannelSubscriped.columnName + " = ? " // 订阅状态
+                        + " order by " + "T.\"" + ChannelSubscripBeanDao.Properties.Id.columnName + "\"" + " DESC"// 按频道id倒序
+                , userId + ""
+                , "1");
+        return channelSubscripBeanList;
+    }
+
 }

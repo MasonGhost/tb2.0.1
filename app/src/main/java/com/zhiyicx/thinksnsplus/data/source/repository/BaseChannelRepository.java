@@ -1,12 +1,18 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
+import android.content.Context;
 
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
+import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
+import com.zhiyicx.thinksnsplus.data.source.local.ChannelSubscripBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ChannelClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
+import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +32,14 @@ import rx.functions.Func1;
 
 public class BaseChannelRepository implements IBaseChannelRepository {
     protected ChannelClient mChannelClient;
+    protected Context mContext;
+    @Inject
+    ChannelSubscripBeanGreenDaoImpl mChannelSubscripBeanGreenDao;
 
     @Inject
     public BaseChannelRepository(ServiceManager serviceManager, Application context) {
         mChannelClient = serviceManager.getChannelClient();
+        this.mContext = context;
     }
 
     @Override
@@ -40,6 +50,29 @@ public class BaseChannelRepository implements IBaseChannelRepository {
     @Override
     public Observable<BaseJson<Object>> subscribChannel(long channel_id) {
         return mChannelClient.subscribChannel(channel_id);
+    }
+
+    @Override
+    public void handleSubscribChannel(ChannelSubscripBean channelSubscripBean) {
+        // 更改数据源，切换订阅状态
+        channelSubscripBean.setChannelSubscriped(!channelSubscripBean.getChannelSubscriped());
+        // 发送订阅后台处理任务
+        BackgroundRequestTaskBean backgroundRequestTaskBean = null;
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean();
+        if (channelSubscripBean.getChannelSubscriped()) {
+            // 已经订阅，变为未订阅
+            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
+
+        } else {
+            // 未订阅，变为已订阅
+            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST);
+        }
+        // 设置请求路径
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_HANDLE_SUBSCRIB_CHANNEL, channelSubscripBean.getId()));
+        // 启动后台任务
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+        // 更新数据库
+        mChannelSubscripBeanGreenDao.insertOrReplace(channelSubscripBean);
     }
 
     @Override

@@ -3,6 +3,9 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 import android.content.Context;
 
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.List;
@@ -69,6 +72,12 @@ public class ChannelInfoBeanGreenDaoImpl extends CommonCacheImpl<ChannelInfoBean
 
     @Override
     public long insertOrReplace(ChannelInfoBean newData) {
-        return 0;
+        ChannelInfoBeanDao channelInfoBeanDao = getWDaoSession().getChannelInfoBeanDao();
+        return channelInfoBeanDao.insertOrReplace(newData);
+    }
+
+    public void insertOrReplace(List<ChannelInfoBean> newData) {
+        ChannelInfoBeanDao channelInfoBeanDao = getWDaoSession().getChannelInfoBeanDao();
+        channelInfoBeanDao.insertOrReplaceInTx(newData);
     }
 }

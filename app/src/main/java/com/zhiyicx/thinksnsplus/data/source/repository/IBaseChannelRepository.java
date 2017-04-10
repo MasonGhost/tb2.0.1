@@ -34,10 +34,20 @@ public interface IBaseChannelRepository {
     Observable<BaseJson<Object>> subscribChannel(long channel_id);
 
     /**
+     * 处理订阅状态
+     *
+     * @param channelSubscripBean
+     */
+
+    void handleSubscribChannel(ChannelSubscripBean channelSubscripBean);
+
+    /**
      * 获取频道列表
      *
      * @param type type 频道类型 “”表示所有的频道  “my”表示我关注的频道 在APiConfig中定义了这两个常量
      * @return
      */
     Observable<BaseJson<List<ChannelSubscripBean>>> getChannelList(@Path("type") String type);
+
+
 }
