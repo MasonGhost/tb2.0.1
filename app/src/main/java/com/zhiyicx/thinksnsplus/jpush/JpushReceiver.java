@@ -39,7 +39,6 @@ public class JpushReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Bundle bundle = intent.getExtras();
         LogUtils.d(TAG, "[JpushReceiver] onReceive - " + intent.getAction() + ", extras: " + printBundle(bundle));
-        appIsFroeground(context);
         if (JPushInterface.ACTION_REGISTRATION_ID.equals(intent.getAction())) {
             String regId = bundle.getString(JPushInterface.EXTRA_REGISTRATION_ID);
             LogUtils.d(TAG, "[JpushReceiver] 接收注册消息Registration Id : " + regId);
@@ -71,12 +70,10 @@ public class JpushReceiver extends BroadcastReceiver {
     //send msg to MainActivity
     private void handleCustomMessage(Context context, Bundle bundle) {
         JpushMessageBean jpushMessageBean = packgeJpushMessage(bundle, false);
-//        if (DeviceUtils.isAppAlive(context, context.getPackageName())) {
-//
-//        } else {
-        NotificationUtil notiUtil = new NotificationUtil(context);
-        notiUtil.postNotification(jpushMessageBean);
-//        }
+        if (!BackgroundUtil.getLinuxCoreInfoForIsForeground(context, context.getPackageName())) {   // 应用在后台
+            NotificationUtil notiUtil = new NotificationUtil(context);
+            notiUtil.postNotification(jpushMessageBean);
+        }
 
     }
 
@@ -148,15 +145,6 @@ public class JpushReceiver extends BroadcastReceiver {
             }
         }
         return sb.toString();
-    }
-
-    private void appIsFroeground(Context mContext) {
-
-        if (BackgroundUtil.getLinuxCoreInfo(mContext,mContext.getPackageName())) {
-            LogUtils.d("-----------------appIsFroeground-------------true---------");
-        }else {
-            LogUtils.d("-----------------appIsFroeground-------------false---------");
-        }
     }
 
 
