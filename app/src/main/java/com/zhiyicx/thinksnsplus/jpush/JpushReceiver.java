@@ -7,9 +7,12 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
+import com.zhiyicx.thinksnsplus.utils.NotificationUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,12 +43,12 @@ public class JpushReceiver extends BroadcastReceiver {
 
         } else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
             LogUtils.d(TAG, "[JpushReceiver] 接收到推送下来的自定义消息: " + bundle.getString(JPushInterface.EXTRA_MESSAGE));
-            processCustomMessage(context, bundle);
-
+            processCustomMessage(context, bundle, false);
         } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
             LogUtils.d(TAG, "[JpushReceiver] 接收到推送下来的通知");
             int notifactionId = bundle.getInt(JPushInterface.EXTRA_NOTIFICATION_ID);
             LogUtils.d(TAG, "[JpushReceiver] 接收到推送下来的通知的ID: " + notifactionId);
+            processCustomMessage(context, bundle, true);
 
         } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
             LogUtils.d(TAG, "[JpushReceiver] 用户点击打开了通知");
@@ -104,23 +107,26 @@ public class JpushReceiver extends BroadcastReceiver {
     }
 
     //send msg to MainActivity
-    private void processCustomMessage(Context context, Bundle bundle) {
-        String message = bundle.getString(JPushInterface.EXTRA_MESSAGE);
+    private void processCustomMessage(Context context, Bundle bundle, boolean isNofiy) {
         String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
-        LogUtils.d(TAG,"message = " + message);
-        LogUtils.d(TAG,"extras = " + extras);
+        JpushMessageBean jpushMessageBean = new Gson().fromJson(extras, JpushMessageBean.class);
+        jpushMessageBean.setMessage(bundle.getString(JPushInterface.EXTRA_MESSAGE) + (isNofiy ? "通知" : "自定义消息"));
+        LogUtils.d(TAG, "extras = " + extras);
+        LogUtils.d(TAG, "jpushMessageBean = " + jpushMessageBean.toString());
+        NotificationUtil notiUtil = new NotificationUtil(context);
+        notiUtil.postNotification(jpushMessageBean);
     }
 
-    private void hanldeMessage(Context context,Bundle bundle){
+    private void hanldeMessage(Context context, Bundle bundle) {
         //判断app进程是否存活
-        if(DeviceUtils.isAppAlive(context, context.getPackageName())){
+        if (DeviceUtils.isAppAlive(context, context.getPackageName())) {
             Intent mainIntent = new Intent(context, HomeActivity.class);
             //将MainAtivity的launchMode设置成SingleTask, 或者在下面flag中加上Intent.FLAG_CLEAR_TOP,
             //如果Task栈中有MainActivity的实例，就会把它移到栈顶，把在它之上的Activity都清理出栈，
             //如果Task栈不存在MainActivity实例，则在栈顶创建
             mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(mainIntent);
-        }else {
+        } else {
             //如果app进程已经被杀死，先重新启动app
             Log.i(TAG, "the app process is dead");
             Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());

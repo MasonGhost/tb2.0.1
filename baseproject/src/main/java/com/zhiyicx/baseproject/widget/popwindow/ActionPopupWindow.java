@@ -3,7 +3,6 @@ package com.zhiyicx.baseproject.widget.popwindow;
 import android.app.Activity;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -113,7 +112,7 @@ public class ActionPopupWindow extends PopupWindow {
                 }
             });
             if (mItem1Color != 0) {
-                item1View.setTextColor(ContextCompat.getColor(mActivity,mItem2Color));
+                item1View.setTextColor(mItem1Color);
             }
         }
         if (!TextUtils.isEmpty(mItem2Str)) {
@@ -129,7 +128,7 @@ public class ActionPopupWindow extends PopupWindow {
                 }
             });
             if (mItem2Color != 0) {
-                item2View.setTextColor(ContextCompat.getColor(mActivity,mItem2Color));
+                item2View.setTextColor(mItem2Color);
             }
         }
         if (!TextUtils.isEmpty(mItem3Str)) {

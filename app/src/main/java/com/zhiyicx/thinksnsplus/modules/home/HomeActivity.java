@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.home;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.common.utils.ActivityUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -29,6 +31,7 @@ public class HomeActivity extends TSActivity {
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
+        LogUtils.d(TAG," = --------onCreate------------------");
     }
 
     @Override
@@ -69,6 +72,7 @@ public class HomeActivity extends TSActivity {
         }
         return result;
     }
+
     public static String getDeviceInfo(Context context) {
         try {
             org.json.JSONObject json = new org.json.JSONObject();
@@ -124,4 +128,10 @@ public class HomeActivity extends TSActivity {
         return null;
     }
 
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        LogUtils.d(TAG," = --------onNewIntent------------------");
+    }
 }

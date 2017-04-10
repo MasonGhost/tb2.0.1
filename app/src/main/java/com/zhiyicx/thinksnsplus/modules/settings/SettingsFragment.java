@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.settings;
 
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -180,7 +181,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
         mLoginoutPopupWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.is_sure_login_out))
                 .item2Str(getString(R.string.login_out_sure))
-                .item2StrColor(R.color.important_for_note)
+                .item2StrColor(ContextCompat.getColor(getContext(),R.color.important_for_note))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
