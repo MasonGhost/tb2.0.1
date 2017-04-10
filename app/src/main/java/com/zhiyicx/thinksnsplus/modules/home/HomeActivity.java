@@ -28,6 +28,8 @@ import java.lang.reflect.Method;
  */
 
 public class HomeActivity extends TSActivity {
+    public static final String BIND_JPUSH_MESSAGE ="jpush_message" ;
+
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);

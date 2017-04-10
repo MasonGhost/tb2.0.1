@@ -1,5 +1,8 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * @Describe
  * @Author Jungle68
@@ -7,7 +10,7 @@ package com.zhiyicx.thinksnsplus.data.beans;
  * @Contact master.jungle68@gmail.com
  */
 
-public class JpushMessageBean {
+public class JpushMessageBean implements Parcelable {
 
     private String message;
     private String type;
@@ -45,4 +48,37 @@ public class JpushMessageBean {
                 ", action='" + action + '\'' +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.message);
+        dest.writeString(this.type);
+        dest.writeString(this.action);
+    }
+
+    public JpushMessageBean() {
+    }
+
+    protected JpushMessageBean(Parcel in) {
+        this.message = in.readString();
+        this.type = in.readString();
+        this.action = in.readString();
+    }
+
+    public static final Parcelable.Creator<JpushMessageBean> CREATOR = new Parcelable.Creator<JpushMessageBean>() {
+        @Override
+        public JpushMessageBean createFromParcel(Parcel source) {
+            return new JpushMessageBean(source);
+        }
+
+        @Override
+        public JpushMessageBean[] newArray(int size) {
+            return new JpushMessageBean[size];
+        }
+    };
 }
