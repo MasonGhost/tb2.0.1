@@ -28,9 +28,6 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        for (int i = 0; i < 10; i++) {
-            mListDatas.add(new ChannelSubscripBean());
-        }
         CommonAdapter<ChannelSubscripBean> commonAdapter = new ChannelListFragmentAdapter(getContext()
                 , R.layout.item_channel_list, mListDatas, mPresenter);
         return commonAdapter;

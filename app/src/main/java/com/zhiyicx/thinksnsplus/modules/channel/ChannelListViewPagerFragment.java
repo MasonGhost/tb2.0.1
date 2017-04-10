@@ -38,7 +38,7 @@ public class ChannelListViewPagerFragment extends TSViewPagerFragment<ChannelLis
         subscripChannelBundle.putInt(PAGE_TYPE, PAGE_MY_SUBSCRIB_CHANNEL_LIST);
         Fragment subscripChannelFragment = ChannelListFragment.newInstance(subscripChannelBundle);
         Bundle allChannelBundle = new Bundle();
-        subscripChannelBundle.putInt(PAGE_TYPE, PAGE_ALL_CHANNEL_LIST);
+        allChannelBundle.putInt(PAGE_TYPE, PAGE_ALL_CHANNEL_LIST);
         Fragment allChannelFragment = ChannelListFragment.newInstance(allChannelBundle);
         return Arrays.asList(subscripChannelFragment, allChannelFragment);
     }
