@@ -11,8 +11,8 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.channel.ChannelListActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.AboutUsActivity;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.AboutUsFragment;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBFragment;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -110,9 +110,9 @@ public class FindFragment extends TSFragment {
                 startActivity(new Intent(getActivity(), MusicListActivity.class));
                 break;
             case R.id.find_buy:
-                Intent intent=new Intent(getActivity(), AboutUsActivity.class);
+                Intent intent=new Intent(getActivity(), CustomWEBActivity.class);
                 Bundle bundle=new Bundle();
-                bundle.putString(AboutUsFragment.BUNDLE_PARAMS_WEB_URL, ApiConfig.URL_JIPU_SHOP);
+                bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, ApiConfig.URL_JIPU_SHOP);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;

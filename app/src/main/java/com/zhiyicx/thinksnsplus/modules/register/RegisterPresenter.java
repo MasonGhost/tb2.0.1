@@ -11,6 +11,8 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
@@ -37,6 +39,10 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
 
     @Inject
     IAuthRepository mAuthRepository;
+
+
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     CountDownTimer timer = new CountDownTimer(mTimeOut, S_TO_MS_SPACING) {
 
@@ -113,7 +119,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
      * @param password    密码
      */
     @Override
-    public void register(String name, String phone, String vertifyCode, String password) {
+    public void register(final String name, final String phone, String vertifyCode, String password) {
         if (checkUsername(name)) {
             return;
         }
@@ -133,6 +139,11 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
                     public void onSuccess(AuthBean data) {
                         mRootView.setRegisterBtEnabled(true);
                         mAuthRepository.saveAuthBean(data);// 保存登录认证信息
+                        UserInfoBean registerUserInfo = new UserInfoBean();
+                        registerUserInfo.setUser_id(Long.valueOf(data.getUser_id()));
+                        registerUserInfo.setName(name);
+                        registerUserInfo.setPhone(phone);
+                        mUserInfoBeanGreenDao.insertOrReplace(registerUserInfo);
                         // 获取用户信息
                         getUserInfo(data);
                         // IM 登录 需要 token ,所以需要先保存登录信息

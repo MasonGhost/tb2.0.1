@@ -519,7 +519,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 }
                 areaText2 = areaText2.equals(getString(R.string.all)) ? "" : areaText2;//如果为全部则不显示
                 areaText3 = areaText3.equals(getString(R.string.all)) ? "" : areaText3;//如果为全部则不显示
-                setCity(areaText1 + areaText2 + areaText3);
+                setCity(areaText1 + "  " + areaText2 + areaText3);
                 mCityOption1 = options1;
                 mCityOption2 = options2;
                 mCityOption3 = options3;
@@ -758,4 +758,5 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         ButterKnife.bind(this, rootView);
         return rootView;
     }
+
 }

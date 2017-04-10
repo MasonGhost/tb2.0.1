@@ -1,8 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.KeyEvent;
 
 import com.zhiyicx.baseproject.base.TSActivity;
@@ -29,4 +26,5 @@ public class UserInfoActivity extends TSActivity<UserInfoPresenter, UserInfoFrag
         boolean flag = mContanierFragment.onKeyDown(keyCode, event);
         return flag ? true : super.onKeyDown(keyCode, event);
     }
+
 }

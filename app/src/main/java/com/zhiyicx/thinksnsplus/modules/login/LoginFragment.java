@@ -11,6 +11,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.LoadingButton;
+import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.password.findpassword.FindPasswordActivity;
@@ -160,6 +161,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
             mEtLoginPassword.setText("");
             mEtLoginPhone.setText("");
             mEtLoginPhone.requestFocus();
+            DeviceUtils.hideSoftKeyboard(getContext(),mEtLoginPassword);
             Intent it = new Intent();
             it.setClass(getActivity(), HomeActivity.class);
             startActivity(it);

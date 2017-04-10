@@ -6,7 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.zhiyicx.common.config.ConstantConfig.REGEX_DATE;
-import static com.zhiyicx.common.config.ConstantConfig.REGEX_DOUBLE_BYTE_CHAR;
 import static com.zhiyicx.common.config.ConstantConfig.REGEX_EMAIL;
 import static com.zhiyicx.common.config.ConstantConfig.REGEX_ID_CARD15;
 import static com.zhiyicx.common.config.ConstantConfig.REGEX_ID_CARD18;
@@ -18,6 +17,7 @@ import static com.zhiyicx.common.config.ConstantConfig.REGEX_TEL;
 import static com.zhiyicx.common.config.ConstantConfig.REGEX_URL;
 import static com.zhiyicx.common.config.ConstantConfig.REGEX_USERNAME;
 import static com.zhiyicx.common.config.ConstantConfig.REGEX_ZH;
+import static com.zhiyicx.common.config.ConstantConfig.REGEX_ZH_;
 
 /**
  * <pre>
@@ -118,6 +118,28 @@ public class RegexUtils {
     }
 
     /**
+     * 验证是否包含中文
+     *
+     * @param str
+     * @return
+     */
+    public static boolean isContainChinese(String str) {
+
+        Pattern p = Pattern.compile(REGEX_ZH_);
+        Matcher m = p.matcher(str);
+        if (m.find()) {
+            return true;
+        }
+        return false;
+    }
+
+    public static int getChineseCouns(String str) {
+        String regEx = REGEX_ZH_;
+        String term = str.replaceAll(regEx, "aa");
+        return term.length() - str.length();
+    }
+
+    /**
      * 验证用户名
      * <p>不能以数字开通</p>
      *
@@ -130,15 +152,22 @@ public class RegexUtils {
 
     /**
      * 用户名至少为 length 个英文字符,用户名至少为 length/3 个中文字符 ,至少length个字节
+     * 至少两个文字 一个中文一个英文 , 用户名至少为 4 个英文字符 ，用户名至少为 2 个中文字符
      * <p>不能以数字开通</p>
      *
      * @param input 待验证文本
      * @return {@code true}: 匹配<br>{@code false}: 不匹配
      */
     public static boolean isUsernameLength(CharSequence input, int minLength, int maxLength) {
+        int chineseCount = getChineseCouns(input.toString());
         int charLength = "帅".getBytes().length;
+        int currentChineseByteLenght = chineseCount * charLength;
         int length = input.toString().getBytes().length;
-        return length >= minLength * charLength && length <= maxLength * charLength;
+        if (currentChineseByteLenght > 0) {// 有中文
+            return length >= (currentChineseByteLenght + (minLength - chineseCount)) && (length <= currentChineseByteLenght + (maxLength - chineseCount));
+        } else {
+            return length >= 4 && length <= maxLength;
+        }
     }
 
     /**

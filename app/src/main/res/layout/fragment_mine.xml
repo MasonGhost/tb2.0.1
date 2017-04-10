@@ -219,9 +219,5 @@
             app:rightImage="@mipmap/ic_arrow_smallgrey"
             app:showLine="false"></com.zhiyicx.baseproject.widget.button.CombinationButton>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:background="@color/themeColor"></LinearLayout>
     </LinearLayout>
 </com.zhiyicx.baseproject.widget.dragview.OverScrollView>

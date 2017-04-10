@@ -7,6 +7,7 @@
     <dimen name="toolbar_and_statusbar_height">68dp</dimen>
     <dimen name="toolbar_padding_left">15dp</dimen>
     <dimen name="toolbar_padding_right">15dp</dimen>
+    <dimen name="toolbar_center_margin">100dp</dimen>
     <dimen name="toolbar_left_text_size">@dimen/size_sub_title</dimen>
     <dimen name="toolbar_center_text_size">@dimen/size_primary_title</dimen>
     <dimen name="toolbar_right_text_size">@dimen/size_sub_title</dimen>
