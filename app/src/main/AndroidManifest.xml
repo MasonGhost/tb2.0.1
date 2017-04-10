@@ -54,7 +54,7 @@
         <activity
             android:name=".modules.home.HomeActivity"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
         </activity>
         <activity android:name=".modules.settings.SettingsActivity">
         </activity>
