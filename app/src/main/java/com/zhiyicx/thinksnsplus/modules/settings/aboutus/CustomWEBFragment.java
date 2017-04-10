@@ -18,19 +18,19 @@ import java.util.List;
  * @Contact master.jungle68@gmail.com
  */
 
-public class AboutUsFragment extends TSWebFragment {
+public class CustomWEBFragment extends TSWebFragment {
     public static final String BUNDLE_PARAMS_WEB_URL = "web_url";
     public static final String BUNDLE_PARAMS_WEB_TITLE = "web_title";
 
     private String mUrl = ApiConfig.URL_ABOUT_US;
     private String mTitle = "";
 
-    public AboutUsFragment() {
+    public CustomWEBFragment() {
         // Required empty public constructor
     }
 
-    public static AboutUsFragment newInstance(Bundle bundle) {
-        AboutUsFragment fragment = new AboutUsFragment();
+    public static CustomWEBFragment newInstance(Bundle bundle) {
+        CustomWEBFragment fragment = new CustomWEBFragment();
         if (bundle != null) {
             fragment.setArguments(bundle);
         }
