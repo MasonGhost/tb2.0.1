@@ -155,8 +155,8 @@ public class ApiConfig {
     public static final String APP_PATH_MUSIC_COMMENT_FORMAT = "api/v1/music/%s/comment";
 
     // 删除音乐评论
-    public static final String APP_PATH_MUSIC_DELETE_COMMENT_FORMAT = "api/v1/news/{music_id}/comment/{comment_id}";
-    public static final String APP_PATH_MUSIC_DELETE_COMMENT = "api/v1/music/{music_id}/comment";
+    public static final String APP_PATH_MUSIC_DELETE_COMMENT_FORMAT = "api/v1/music/comment/%s";
+    public static final String APP_PATH_MUSIC_DELETE_COMMENT = "api/v1/music/comment/{comment_id}";
 
     // 评论专辑
     public static final String APP_PATH_MUSIC_ABLUM_COMMENT = "api/v1/music/special/{special_id}/comment";
