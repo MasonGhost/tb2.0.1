@@ -288,10 +288,10 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     @Override
     public void onStop() {
         super.onStop();
-//        if (mMediaBrowserCompat != null) {
-//            isConnected = false;
-//            mMediaBrowserCompat.disconnect();
-//        }
+        if (mMediaBrowserCompat != null) {// 状态重置
+            isConnected = false;
+            mMediaBrowserCompat.disconnect();// 结束断开，启动后重新连接
+        }
         if (getActivity().getSupportMediaController() != null) {
             getActivity().getSupportMediaController().unregisterCallback(mCallback);
         }
@@ -325,6 +325,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     @Override
     protected void initView(View rootView) {
+        mFragmentMusicPalyProgress.setThumb(R.mipmap.music_pic_progressbar_circle);
         initListener();
         mToolbarCenter.setText(AppApplication.getmQueueManager().getCurrentMusic().getDescription().getTitle());
 

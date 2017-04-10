@@ -66,6 +66,8 @@
             android:src="@mipmap/ic_arrow_smallgrey"/>
     </RelativeLayout>
     <FrameLayout
+        android:visibility="gone"
+        android:id="@+id/head_info_music_comment_count"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_small"
