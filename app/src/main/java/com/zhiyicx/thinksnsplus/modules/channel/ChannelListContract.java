@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListContract;
 
 import java.util.List;
 
+import retrofit2.http.Path;
 import rx.Observable;
 
 /**
@@ -20,6 +21,12 @@ import rx.Observable;
 
 public interface ChannelListContract {
     interface View extends ITSListView<ChannelSubscripBean, ChannelListContract.Presenter> {
+        /**
+         * 获取页面类型
+         *
+         * @return
+         */
+        int getPageType();
 
     }
 
@@ -28,6 +35,18 @@ public interface ChannelListContract {
     }
 
     interface Repository {
+        /**
+         * 获取我订阅的频道
+         *
+         * @return
+         */
+        Observable<BaseJson<List<ChannelSubscripBean>>> getMySubscribChannelList();
 
+        /**
+         * 获取所有的频道
+         *
+         * @return
+         */
+        Observable<BaseJson<List<ChannelSubscripBean>>> getAllChannelList();
     }
 }

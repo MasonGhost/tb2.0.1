@@ -24,19 +24,15 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
         implements ChannelListContract.View {
     @Inject
     ChannelListPresenter mChannelListPresenter;
+    private int pageType = 0;// 上一个Fragment传递过来的页面类型
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
         for (int i = 0; i < 10; i++) {
             mListDatas.add(new ChannelSubscripBean());
         }
-        CommonAdapter<ChannelSubscripBean> commonAdapter = new CommonAdapter<ChannelSubscripBean>(getContext()
-                , R.layout.item_channel_list, mListDatas) {
-            @Override
-            protected void convert(ViewHolder holder, ChannelSubscripBean channelSubscripBean, int position) {
-
-            }
-        };
+        CommonAdapter<ChannelSubscripBean> commonAdapter = new ChannelListFragmentAdapter(getContext()
+                , R.layout.item_channel_list, mListDatas, mPresenter);
         return commonAdapter;
     }
 
@@ -47,6 +43,12 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
                 .channelListPresenterModule(new ChannelListPresenterModule(this))
                 .build().inject(this);
         super.initView(rootView);
+    }
+
+    @Override
+    protected void initData() {
+        pageType = getArguments().getInt(ChannelListViewPagerFragment.PAGE_TYPE);
+        super.initData();
     }
 
     @Override
@@ -63,5 +65,10 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
         ChannelListFragment channelListFragment = new ChannelListFragment();
         channelListFragment.setArguments(bundle);
         return channelListFragment;
+    }
+
+    @Override
+    public int getPageType() {
+        return pageType;
     }
 }

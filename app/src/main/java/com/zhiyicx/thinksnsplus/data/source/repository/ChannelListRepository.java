@@ -2,8 +2,15 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
 
+import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.channel.ChannelListContract;
+
+import java.util.List;
+
+import rx.Observable;
 
 /**
  * @author LiuChao
@@ -15,5 +22,15 @@ import com.zhiyicx.thinksnsplus.modules.channel.ChannelListContract;
 public class ChannelListRepository extends BaseChannelRepository implements ChannelListContract.Repository {
     public ChannelListRepository(ServiceManager serviceManager, Application context) {
         super(serviceManager, context);
+    }
+
+    @Override
+    public Observable<BaseJson<List<ChannelSubscripBean>>> getMySubscribChannelList() {
+        return getChannelList(ApiConfig.CHANNEL_TYPE_MY_SUBSCRIB_CHANNEL);
+    }
+
+    @Override
+    public Observable<BaseJson<List<ChannelSubscripBean>>> getAllChannelList() {
+        return getChannelList(ApiConfig.CHANNEL_TYPE_ALL_CHANNEL);
     }
 }

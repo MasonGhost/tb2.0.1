@@ -1,7 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.channel;
 
+import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 
 import org.jetbrains.annotations.NotNull;
@@ -9,6 +11,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * @author LiuChao
@@ -26,6 +34,22 @@ public class ChannelListPresenter extends BasePresenter<ChannelListContract.Repo
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
+        int pageType = mRootView.getPageType();
+        Observable<BaseJson<List<ChannelSubscripBean>>> observable = null;
+        switch (pageType) {
+            case ChannelListViewPagerFragment.PAGE_MY_SUBSCRIB_CHANNEL_LIST:
+                observable = mRepository.getMySubscribChannelList()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
+                break;
+            case ChannelListViewPagerFragment.PAGE_ALL_CHANNEL_LIST:
+                observable = mRepository.getAllChannelList()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
+                break;
+            default:
+        }
+        dealWithChannelNetData(maxId, isLoadMore, observable);
 
     }
 
@@ -37,5 +61,26 @@ public class ChannelListPresenter extends BasePresenter<ChannelListContract.Repo
     @Override
     public boolean insertOrUpdateData(@NotNull List<ChannelSubscripBean> data) {
         return false;
+    }
+
+    private void dealWithChannelNetData(Long maxId, final boolean isLoadMore, Observable<BaseJson<List<ChannelSubscripBean>>> observable) {
+        Subscription subscription = observable.subscribe(new BaseSubscribe<List<ChannelSubscripBean>>() {
+            @Override
+            protected void onSuccess(List<ChannelSubscripBean> data) {
+                mRootView.onNetResponseSuccess(data, isLoadMore);
+            }
+
+            @Override
+            protected void onFailure(String message, int code) {
+                Throwable throwable = new Throwable(message);
+                mRootView.onResponseError(throwable, isLoadMore);
+            }
+
+            @Override
+            protected void onException(Throwable throwable) {
+                mRootView.onResponseError(throwable, isLoadMore);
+            }
+        });
+        addSubscrebe(subscription);
     }
 }

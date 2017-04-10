@@ -215,6 +215,6 @@ public class ApiConfig {
     // 获取频道列表
     public static final String APP_PATH_GET_CHANNEL = "api/v1/channels/{type}";
     public static final String CHANNEL_TYPE_ALL_CHANNEL = "";// 所有的频道
-    public static final String CHANNEL_TYPE_SUBSCRIB_CHANNEL = "my";// 我订阅的频道
+    public static final String CHANNEL_TYPE_MY_SUBSCRIB_CHANNEL = "my";// 我订阅的频道
 
 }

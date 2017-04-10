@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.ChannelClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -48,17 +49,28 @@ public class BaseChannelRepository implements IBaseChannelRepository {
                 .map(new Func1<BaseJson<List<ChannelInfoBean>>, BaseJson<List<ChannelSubscripBean>>>() {
                     @Override
                     public BaseJson<List<ChannelSubscripBean>> call(BaseJson<List<ChannelInfoBean>> listBaseJson) {
+                        BaseJson<List<ChannelSubscripBean>> channelSubscripBeanBaseJson = new BaseJson<List<ChannelSubscripBean>>();
+                        channelSubscripBeanBaseJson.setCode(listBaseJson.getCode());
+                        channelSubscripBeanBaseJson.setMessage(listBaseJson.getMessage());
+                        channelSubscripBeanBaseJson.setStatus(listBaseJson.isStatus());
                         if (listBaseJson.isStatus() || listBaseJson.getCode() == 0) {
                             List<ChannelInfoBean> channelInfoBeanList = listBaseJson.getData();
-                            if (channelInfoBeanList == null || channelInfoBeanList.isEmpty()) {
-
-                            } else {
+                            List<ChannelSubscripBean> channelSubscripBeanList = new ArrayList<ChannelSubscripBean>();
+                            if (channelInfoBeanList != null) {
                                 for (ChannelInfoBean channelInfoBean : channelInfoBeanList) {
                                     ChannelSubscripBean channelSubscripBean = new ChannelSubscripBean();
+                                    channelSubscripBean.setId(channelInfoBean.getId());// 设置频道id
+                                    channelSubscripBean.setChannelInfoBean(channelInfoBean);// 设置频道信息
+                                    //channelSubscripBean.setChannelSubscriped();// 设置订阅状态
+                                    //channelSubscripBean.setUserId();// 设置请求的用户id
+                                    channelSubscripBeanList.add(channelSubscripBean);
                                 }
                             }
+                            channelSubscripBeanBaseJson.setData(channelSubscripBeanList);
+                        } else {
+                            channelSubscripBeanBaseJson.setData(null);
                         }
-                        return null;
+                        return channelSubscripBeanBaseJson;
                     }
                 });
     }
