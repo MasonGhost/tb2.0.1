@@ -105,6 +105,10 @@ public class ConstantConfig {
     /**
      * 正则：汉字
      */
+    public static final String REGEX_ZH_ = "[\\u4e00-\\u9fa5]";
+    /**
+     * 正则：汉字
+     */
     public static final String REGEX_ZH = "^[\\u4e00-\\u9fa5]+$";
     /**
      * 正则：用户名，不能以数字开头,不能有emoji

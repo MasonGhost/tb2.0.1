@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
@@ -46,6 +47,8 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
 
     @Inject
     UserInfoRepository mUserInfoRepository;
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     /**
      * 将Presenter从传入fragment
@@ -89,6 +92,7 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
                 .subscribe(new BaseSubscribe<List<UserInfoBean>>() {
                     @Override
                     protected void onSuccess(List<UserInfoBean> data) {
+                        mUserInfoBeanGreenDao.insertOrReplace(data);
                         mRootView.setLoginState(true);
                     }
 
