@@ -18,6 +18,15 @@ import java.util.List;
  */
 
 public class ChannelListViewPagerFragment extends TSViewPagerFragment<ChannelListContract.Presenter> {
+
+    /**
+     * 页面类型
+     */
+    public static final int PAGE_MY_SUBSCRIB_CHANNEL_LIST = 0;
+    public static final int PAGE_ALL_CHANNEL_LIST = 1;
+    public static final String PAGE_TYPE = "page_type";
+
+
     @Override
     protected List<String> initTitles() {
         return Arrays.asList(getString(R.string.subscrip_channel), getString(R.string.all_channel));
@@ -25,8 +34,12 @@ public class ChannelListViewPagerFragment extends TSViewPagerFragment<ChannelLis
 
     @Override
     protected List<Fragment> initFragments() {
-        Fragment subscripChannelFragment = ChannelListFragment.newInstance(getArguments());
-        Fragment allChannelFragment = ChannelListFragment.newInstance(getArguments());
+        Bundle subscripChannelBundle = new Bundle();
+        subscripChannelBundle.putInt(PAGE_TYPE, PAGE_MY_SUBSCRIB_CHANNEL_LIST);
+        Fragment subscripChannelFragment = ChannelListFragment.newInstance(subscripChannelBundle);
+        Bundle allChannelBundle = new Bundle();
+        allChannelBundle.putInt(PAGE_TYPE, PAGE_ALL_CHANNEL_LIST);
+        Fragment allChannelFragment = ChannelListFragment.newInstance(allChannelBundle);
         return Arrays.asList(subscripChannelFragment, allChannelFragment);
     }
 

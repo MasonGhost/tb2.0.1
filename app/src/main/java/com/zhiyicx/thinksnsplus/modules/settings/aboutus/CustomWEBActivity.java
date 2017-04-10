@@ -6,13 +6,13 @@ import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter;
 
 /**
- * @Describe 关于我们
+ * @Describe 关于我们等网页
  * @Author Jungle68
  * @Date 2017/1/10
  * @Contact master.jungle68@gmail.com
  */
 
-public class AboutUsActivity extends TSActivity<RegisterPresenter, AboutUsFragment> {
+public class CustomWEBActivity extends TSActivity<RegisterPresenter, CustomWEBFragment> {
 
     @Override
     protected void componentInject() {
@@ -20,8 +20,8 @@ public class AboutUsActivity extends TSActivity<RegisterPresenter, AboutUsFragme
     }
 
     @Override
-    protected AboutUsFragment getFragment() {
-        return AboutUsFragment.newInstance(getIntent().getExtras());
+    protected CustomWEBFragment getFragment() {
+        return CustomWEBFragment.newInstance(getIntent().getExtras());
     }
 
     /**

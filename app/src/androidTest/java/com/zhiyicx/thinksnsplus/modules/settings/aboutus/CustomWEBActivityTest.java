@@ -21,14 +21,14 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
  * @Date 2017/2/5
  * @Contact master.jungle68@gmail.com
  */
-public class AboutUsActivityTest {
-    AboutUsFragment mAboutUsFragment;
+public class CustomWEBActivityTest {
+    CustomWEBFragment mCustomWEBFragment;
     @Rule
-    public ActivityTestRule<AboutUsActivity> mActivityRule = new ActivityTestRule(AboutUsActivity.class);
+    public ActivityTestRule<CustomWEBActivity> mActivityRule = new ActivityTestRule(CustomWEBActivity.class);
 
     @Before
     public void init() {
-        mAboutUsFragment = mActivityRule.getActivity().getFragment();
+        mCustomWEBFragment = mActivityRule.getActivity().getFragment();
     }
 
     @Test
@@ -41,8 +41,8 @@ public class AboutUsActivityTest {
 
     @Test
     public void setProgerss() {
-        mAboutUsFragment.setNeedProgress(true);
-        Assert.assertTrue(mAboutUsFragment.isNeedProgress());
+        mCustomWEBFragment.setNeedProgress(true);
+        Assert.assertTrue(mCustomWEBFragment.isNeedProgress());
     }
 
 

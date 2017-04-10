@@ -11,6 +11,7 @@ import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.NotNull;
+import org.greenrobot.greendao.annotation.Unique;
 
 /**
  * @author LiuChao
@@ -22,6 +23,8 @@ import org.greenrobot.greendao.annotation.NotNull;
 public class ChannelSubscripBean extends BaseListBean implements Parcelable {
     @Id(autoincrement = true)
     private Long key;
+    @Unique
+    private String userIdAndIdforUnique;//将用户id和id组合作为唯一约束
     private long userId;// 和该频道产生联系的用户
     private boolean channelSubscriped;// 频道是否被订阅
     private long id;// 频道id
@@ -44,6 +47,15 @@ public class ChannelSubscripBean extends BaseListBean implements Parcelable {
 
     public void setChannelSubscriped(boolean channelSubscriped) {
         this.channelSubscriped = channelSubscriped;
+    }
+
+    public String getUserIdAndIdforUnique() {
+        return userIdAndIdforUnique;
+    }
+
+    public void setUserIdAndIdforUnique(String userIdAndIdforUnique) {
+        // 添加数据库唯一约束键
+        this.userIdAndIdforUnique = userId + "$" + id;
     }
 
     public long getId() {
@@ -70,21 +82,6 @@ public class ChannelSubscripBean extends BaseListBean implements Parcelable {
         mUserInfoBean = userInfoBean;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.key);
-        dest.writeLong(this.userId);
-        dest.writeByte(this.channelSubscriped ? (byte) 1 : (byte) 0);
-        dest.writeLong(this.id);
-        dest.writeParcelable(this.mChannelInfoBean, flags);
-        dest.writeParcelable(this.mUserInfoBean, flags);
-    }
-
     public Long getKey() {
         return this.key;
     }
@@ -97,7 +94,9 @@ public class ChannelSubscripBean extends BaseListBean implements Parcelable {
         return this.channelSubscriped;
     }
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 521097787)
     public ChannelInfoBean getMChannelInfoBean() {
         long __key = this.id;
@@ -116,12 +115,13 @@ public class ChannelSubscripBean extends BaseListBean implements Parcelable {
         return mChannelInfoBean;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 649410201)
     public void setMChannelInfoBean(@NotNull ChannelInfoBean mChannelInfoBean) {
         if (mChannelInfoBean == null) {
-            throw new DaoException(
-                    "To-one property 'id' has not-null constraint; cannot set to-one to null");
+            throw new DaoException("To-one property 'id' has not-null constraint; cannot set to-one to null");
         }
         synchronized (this) {
             this.mChannelInfoBean = mChannelInfoBean;
@@ -130,7 +130,9 @@ public class ChannelSubscripBean extends BaseListBean implements Parcelable {
         }
     }
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 1510937107)
     public UserInfoBean getMUserInfoBean() {
         long __key = this.userId;
@@ -149,12 +151,13 @@ public class ChannelSubscripBean extends BaseListBean implements Parcelable {
         return mUserInfoBean;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 1569339064)
     public void setMUserInfoBean(@NotNull UserInfoBean mUserInfoBean) {
         if (mUserInfoBean == null) {
-            throw new DaoException(
-                    "To-one property 'userId' has not-null constraint; cannot set to-one to null");
+            throw new DaoException("To-one property 'userId' has not-null constraint; cannot set to-one to null");
         }
         synchronized (this) {
             this.mUserInfoBean = mUserInfoBean;
@@ -199,6 +202,62 @@ public class ChannelSubscripBean extends BaseListBean implements Parcelable {
         myDao.update(this);
     }
 
+    public ChannelSubscripBean() {
+    }
+
+    @Generated(hash = 1879086995)
+    public ChannelSubscripBean(Long key, String userIdAndIdforUnique, long userId, boolean channelSubscriped,
+                               long id) {
+        this.key = key;
+        this.userIdAndIdforUnique = userIdAndIdforUnique;
+        this.userId = userId;
+        this.channelSubscriped = channelSubscriped;
+        this.id = id;
+    }
+
+    /**
+     * Used to resolve relations
+     */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /**
+     * Used for active entity operations.
+     */
+    @Generated(hash = 1284161844)
+    private transient ChannelSubscripBeanDao myDao;
+    @Generated(hash = 2019625659)
+    private transient Long mChannelInfoBean__resolvedKey;
+    @Generated(hash = 2004141746)
+    private transient Long mUserInfoBean__resolvedKey;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null && obj instanceof ChannelSubscripBean) {
+            ChannelSubscripBean channelSubscripBean = (ChannelSubscripBean) obj;
+            if (channelSubscripBean.getId() == this.id && channelSubscripBean.getUserId() == this.userId) {
+                return true;
+            }
+        }
+        return super.equals(obj);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.key);
+        dest.writeString(this.userIdAndIdforUnique);
+        dest.writeLong(this.userId);
+        dest.writeByte(this.channelSubscriped ? (byte) 1 : (byte) 0);
+        dest.writeLong(this.id);
+        dest.writeParcelable(this.mChannelInfoBean, flags);
+        dest.writeParcelable(this.mUserInfoBean, flags);
+    }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1110154875)
     public void __setDaoSession(DaoSession daoSession) {
@@ -206,24 +265,15 @@ public class ChannelSubscripBean extends BaseListBean implements Parcelable {
         myDao = daoSession != null ? daoSession.getChannelSubscripBeanDao() : null;
     }
 
-    public ChannelSubscripBean() {
-    }
-
     protected ChannelSubscripBean(Parcel in) {
+        super(in);
         this.key = (Long) in.readValue(Long.class.getClassLoader());
+        this.userIdAndIdforUnique = in.readString();
         this.userId = in.readLong();
         this.channelSubscriped = in.readByte() != 0;
         this.id = in.readLong();
         this.mChannelInfoBean = in.readParcelable(ChannelInfoBean.class.getClassLoader());
         this.mUserInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
-    }
-
-    @Generated(hash = 2071005325)
-    public ChannelSubscripBean(Long key, long userId, boolean channelSubscriped, long id) {
-        this.key = key;
-        this.userId = userId;
-        this.channelSubscriped = channelSubscriped;
-        this.id = id;
     }
 
     public static final Creator<ChannelSubscripBean> CREATOR = new Creator<ChannelSubscripBean>() {
@@ -237,14 +287,4 @@ public class ChannelSubscripBean extends BaseListBean implements Parcelable {
             return new ChannelSubscripBean[size];
         }
     };
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /** Used for active entity operations. */
-    @Generated(hash = 1284161844)
-    private transient ChannelSubscripBeanDao myDao;
-    @Generated(hash = 2019625659)
-    private transient Long mChannelInfoBean__resolvedKey;
-    @Generated(hash = 2004141746)
-    private transient Long mUserInfoBean__resolvedKey;
 }

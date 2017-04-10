@@ -10,7 +10,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.password.changepassword.ChangePasswordActivity;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.AboutUsActivity;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -122,7 +122,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        startActivity(new Intent(getActivity(), AboutUsActivity.class));
+                        startActivity(new Intent(getActivity(), CustomWEBActivity.class));
                     }
                 });
         // 退出登录

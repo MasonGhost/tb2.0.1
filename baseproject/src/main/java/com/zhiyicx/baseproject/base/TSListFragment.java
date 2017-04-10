@@ -145,10 +145,34 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     }
 
     /**
+     * 刷新数据的方式：方式1：启用下拉列表动画，调用onRefresh接口刷新数据 方式2：不启用下拉列表动画，仅仅调用刷新数据的方法
+     *
+     * @return needRefreshAnimation 是否需要启用下拉动画进行刷新
+     */
+    protected boolean isNeedRefreshAnimation() {
+        return true;
+    }
+
+    /**
+     * 通过getDataRefreshType的返回值，判断进行刷新的方式
+     *
+     * @return
+     */
+    private void getNewDataFromNet() {
+        if (isNeedRefreshAnimation()) {
+            mRefreshlayout.setRefreshing(true);
+        } else {
+            mMaxId = DEFAULT_PAGE_MAX_ID;
+            mPage = DEFAULT_PAGE;
+            requestNetData(mMaxId, false);
+        }
+    }
+
+    /**
      * 缺省图被点击
      */
     protected void onEmptyViewClick() {
-        mRefreshlayout.setRefreshing(true);
+        getNewDataFromNet();
     }
 
     /**
@@ -343,7 +367,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     private void setEmptyView() {
         if (mListDatas.isEmpty() && mHeaderAndFooterWrapper.getHeadersCount() <= 0) {
             mEmptyView.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             mEmptyView.setVisibility(View.GONE);
         }
     }
@@ -375,6 +399,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     public List<T> getListDatas() {
         return mListDatas;
     }
+
 
     @Override
     public void onRefresh() {
@@ -409,14 +434,14 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     public void onCacheResponseSuccess(@NotNull List<T> data, boolean isLoadMore) {
         handleRefreshState(isLoadMore);
         if (!isLoadMore && (data == null || data.size() == 0)) {// 如果没有缓存，直接拉取服务器数据
-            mRefreshlayout.setRefreshing(true);
+            getNewDataFromNet();
         } else {
             // 如果数据库有数据就先显示
             handleReceiveData(data, isLoadMore, true);
             // 如果需要刷新数据，就进行刷新，因为数据库一般都会比服务器先加载完数据，
             // 这样就能实现，数据库先加载到界面，随后刷新服务器数据的效果
             if (isNeedRefreshDataWhenComeIn()) {
-                mRefreshlayout.setRefreshing(true);
+                getNewDataFromNet();
             }
         }
     }

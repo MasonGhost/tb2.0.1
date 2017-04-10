@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.DaoMaster;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBeanDao;
@@ -45,5 +47,7 @@ public class UpDBHelper extends DaoMaster.OpenHelper {
         MigrationHelper.getInstance().migrate(db, InfoListBeanDao.class);
         MigrationHelper.getInstance().migrate(db, InfoCommentListBeanDao.class);
         MigrationHelper.getInstance().migrate(db, MusicCommentListBeanDao.class);
+        MigrationHelper.getInstance().migrate(db, ChannelSubscripBeanDao.class);
+        MigrationHelper.getInstance().migrate(db, ChannelInfoBeanDao.class);
     }
 }
