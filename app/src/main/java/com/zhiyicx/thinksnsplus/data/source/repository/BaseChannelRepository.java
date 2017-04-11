@@ -116,7 +116,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
     }
 
     @Override
-    public Observable<BaseJson<List<DynamicBean>>> getDynamicListFromChannel(long channel_id, int max_id) {
+    public Observable<BaseJson<List<DynamicBean>>> getDynamicListFromChannel(long channel_id, long max_id) {
         return dealWithDynamicList(mChannelClient.getDynamicListFromChannel(channel_id, TSListFragment.DEFAULT_PAGE_SIZE, max_id), "", false);
     }
 

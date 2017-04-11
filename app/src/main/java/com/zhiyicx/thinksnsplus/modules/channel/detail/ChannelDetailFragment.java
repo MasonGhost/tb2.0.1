@@ -75,9 +75,10 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
 
     @Override
     protected void initData() {
-        mRefreshlayout.setRefreshEnabled(isRefreshEnable());
         mChannelSubscripBean = getArguments().getParcelable(CHANNEL_HEADER_INFO_DATA);
         mItemChannelDetailHeader.initHeaderViewData(mChannelSubscripBean);
+        mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
+        super.initData();
     }
 
     @Override
@@ -98,6 +99,11 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     @Override
     protected boolean showToolBarDivider() {
         return false;
+    }
+
+    @Override
+    protected boolean setUseCenterLoading() {
+        return true;
     }
 
     @Override
@@ -138,4 +144,18 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         adapter.addItemViewDelegate(dynamicListBaseItem);
     }
 
+    @Override
+    public void allDataReady() {
+        closeLoadingView();
+    }
+
+    @Override
+    public void loadAllError() {
+        showLoadViewLoadError();
+    }
+
+    @Override
+    public long getChannelId() {
+        return mChannelSubscripBean.getId();
+    }
 }

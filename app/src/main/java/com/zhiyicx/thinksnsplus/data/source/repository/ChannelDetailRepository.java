@@ -5,6 +5,8 @@ import android.app.Application;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailContract;
 
+import javax.inject.Inject;
+
 /**
  * @author LiuChao
  * @describe
@@ -13,6 +15,7 @@ import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailContract;
  */
 
 public class ChannelDetailRepository extends BaseChannelRepository implements ChannelDetailContract.Repository {
+    @Inject
     public ChannelDetailRepository(ServiceManager serviceManager, Application context) {
         super(serviceManager, context);
     }

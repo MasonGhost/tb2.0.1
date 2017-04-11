@@ -58,5 +58,5 @@ public interface ChannelClient {
      */
     @GET(ApiConfig.APP_PATH_GET_CHANNEL_DYNAMIC_LIST)
     Observable<BaseJson<List<DynamicBean>>> getDynamicListFromChannel(@Path("channel_id") long channel_id,
-                                                                      @Query("limit") int limit, @Query("max_id") int max_id);
+                                                                      @Query("limit") int limit, @Query("max_id") long max_id);
 }

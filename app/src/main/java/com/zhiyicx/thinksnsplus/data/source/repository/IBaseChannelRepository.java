@@ -40,6 +40,6 @@ public interface IBaseChannelRepository {
      *
      * @return
      */
-    Observable<BaseJson<List<DynamicBean>>> getDynamicListFromChannel(long channel_id,int max_id);
+    Observable<BaseJson<List<DynamicBean>>> getDynamicListFromChannel(long channel_id,long max_id);
 
 }

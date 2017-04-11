@@ -14,7 +14,21 @@ import com.zhiyicx.thinksnsplus.data.source.repository.IBaseChannelRepository;
 
 public interface ChannelDetailContract {
     interface View extends ITSListView<DynamicBean, Presenter> {
+        /**
+         * 所有接口都请求完毕后回调
+         */
+        void allDataReady();
 
+        /**
+         * 加载失败
+         */
+        void loadAllError();
+
+        /**
+         * 获取频道id
+         * @return
+         */
+        long getChannelId();
     }
 
     interface Repository extends IBaseChannelRepository {
