@@ -49,6 +49,9 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     private MessageItemBean mItemBeanComment;
     private MessageItemBean mItemBeanLike;
 
+    private List<JpushMessageBean> mCommentJpushMessageBeen = new ArrayList<>();
+    private List<JpushMessageBean> mDigJpushMessageBeen = new ArrayList<>();
+
     @Inject
     public MessagePresenter(MessageContract.Repository repository, MessageContract.View rootView) {
         super(repository, rootView);
@@ -98,6 +101,9 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
      */
     @Override
     public List<MessageItemBean> requestCacheData(Long maxId, boolean isLoadMore) {
+
+        // TODO: 2017/4/11 获取数据库中的推送消息
+        mRootView.updateLikeItemData(mItemBeanLike);
         if (mAuthRepository.getAuthBean() == null) {
             return new ArrayList<>();
         }
