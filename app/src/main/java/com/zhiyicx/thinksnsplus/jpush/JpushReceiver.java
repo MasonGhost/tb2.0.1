@@ -108,6 +108,7 @@ public class JpushReceiver extends BroadcastReceiver {
         String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
         JpushMessageBean jpushMessageBean = new Gson().fromJson(extras, JpushMessageBean.class);
         jpushMessageBean.setMessage(bundle.getString(JPushInterface.EXTRA_MESSAGE) + (isNofiy ? "通知" : "自定义消息"));
+        LogUtils.d(TAG, "-----------------extras = " + extras);
         LogUtils.d(TAG, "-----------------jpushMessageBean = " + jpushMessageBean.toString());
         EventBus.getDefault().post(jpushMessageBean, EventBusTagConfig.EVENT_JPUSH_RECIEVED_MESSAGE);
         return jpushMessageBean;
