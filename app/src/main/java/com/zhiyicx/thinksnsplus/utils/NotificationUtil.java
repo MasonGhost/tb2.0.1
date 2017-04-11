@@ -6,8 +6,10 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 
 import com.zhiyicx.baseproject.R;
+import com.zhiyicx.common.utils.appprocess.BackgroundUtil;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 
@@ -36,12 +38,28 @@ public class NotificationUtil {
     }
 
     /**
+     * 显示通知
+     *
+     * @param context
+     * @param jpushMessageBean
+     */
+    public static void showNotifyMessage(Context context, JpushMessageBean jpushMessageBean) {
+        if (!BackgroundUtil.getLinuxCoreInfoForIsForeground(context, context.getPackageName())) {   // 应用在后台
+            NotificationUtil notiUtil = new NotificationUtil(context);
+            notiUtil.postNotification(jpushMessageBean);
+        }
+    }
+
+    /**
      * 普通的Notification
      */
     public void postNotification(JpushMessageBean jpushMessageBean) {
         Notification.Builder builder = new Notification.Builder(context);
         Intent intent = new Intent(context, HomeActivity.class);  //需要跳转指定的页面
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(HomeActivity.BUNDLE_JPUSH_MESSAGE, jpushMessageBean);
+        intent.putExtras(bundle);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
         builder.setSmallIcon(R.mipmap.icon_256);// 设置图标
@@ -49,6 +67,7 @@ public class NotificationUtil {
         builder.setContentText(jpushMessageBean.getMessage());// 设置通知的内容
         builder.setWhen(System.currentTimeMillis());// 设置通知来到的时间
         builder.setTicker("new message");// 第一次提示消失的时候显示在通知栏上的
+        builder.setPriority(Notification.PRIORITY_MAX);
         builder.setNumber(1);
         Notification notification = builder.build();
         notification.flags = Notification.FLAG_AUTO_CANCEL;

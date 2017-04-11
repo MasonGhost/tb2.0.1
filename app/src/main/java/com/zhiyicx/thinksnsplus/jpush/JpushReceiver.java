@@ -10,7 +10,6 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.appprocess.BackgroundUtil;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
@@ -70,10 +69,7 @@ public class JpushReceiver extends BroadcastReceiver {
     //send msg to MainActivity
     private void handleCustomMessage(Context context, Bundle bundle) {
         JpushMessageBean jpushMessageBean = packgeJpushMessage(bundle, false);
-        if (!BackgroundUtil.getLinuxCoreInfoForIsForeground(context, context.getPackageName())) {   // 应用在后台
-            NotificationUtil notiUtil = new NotificationUtil(context);
-            notiUtil.postNotification(jpushMessageBean);
-        }
+        NotificationUtil.showNotifyMessage(context,jpushMessageBean);
 
     }
 
