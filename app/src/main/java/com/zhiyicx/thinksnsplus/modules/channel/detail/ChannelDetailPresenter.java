@@ -129,7 +129,7 @@ public class ChannelDetailPresenter extends BasePresenter<ChannelDetailContract.
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<DynamicBean> data) {
+    public boolean insertOrUpdateData(@NotNull List<DynamicBean> data,boolean isLoadMore) {
         return false;
     }
 
