@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.tbruyelle.rxpermissions.RxPermissions;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 import org.simple.eventbus.EventBus;
 
@@ -46,6 +47,7 @@ public abstract class BaseFragment<P extends IBasePresenter> extends SkinBaseFra
             mRxPermissions.setLogging(true);
         }
         initView(mRootView);
+        LogUtils.d("------------------"+TAG+"--------------------");
         return mRootView;
     }
 

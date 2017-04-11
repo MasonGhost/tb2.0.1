@@ -77,7 +77,7 @@ public class MusicPresenter extends BasePresenter<MusicContract.Repository, Musi
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<MusicAlbumListBean> data) {
+    public boolean insertOrUpdateData(@NotNull List<MusicAlbumListBean> data, boolean isLoadMore) {
         return false;
     }
 }

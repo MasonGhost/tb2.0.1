@@ -20,6 +20,7 @@ import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
@@ -62,6 +63,7 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
     private LinearLayoutManager mLinearLayoutManager;
 
     private int mLastVisibleItemPosition;//　记录上次加载的最有一个 item
+    private boolean mIsHandledDrag;// 标记是否已经处理过拖动事件了
 
     public ChatMessageList(Context context) {
         super(context);
@@ -125,22 +127,37 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
         mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                LogUtils.d("event = " + event.getAction());
                 switch (event.getAction()) {
-                    case MotionEvent.ACTION_UP:
-                    case MotionEvent.ACTION_CANCEL:
-                        InputMethodManager inputMethodManager = (InputMethodManager)mRecyclerView.getContext().getSystemService(
-                                Context.INPUT_METHOD_SERVICE);
-                        if (inputMethodManager.isActive()) {
-                            inputMethodManager.hideSoftInputFromWindow(
-                                    v.getWindowToken(), 0);
-                            return true;
+                    case MotionEvent.ACTION_MOVE:
+                        if (!mIsHandledDrag) {
+                            mIsHandledDrag = true;
+                            if (handleSoftInput(v)) return false;
                         }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        mIsHandledDrag = false;
+                        if (handleSoftInput(v)) return true;
+                        break;
+                    case MotionEvent.ACTION_CANCEL:
+                        if (handleSoftInput(v)) return true;
                         break;
                     default:
                 }
                 return false;
             }
         });
+    }
+
+    private boolean handleSoftInput(View v) {
+        InputMethodManager inputMethodManager = (InputMethodManager) mRecyclerView.getContext().getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        if (inputMethodManager.isActive()) {
+            inputMethodManager.hideSoftInputFromWindow(
+                    v.getWindowToken(), 0);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -159,6 +176,18 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
         mMessageReceiveItemDelagate.setMessageListItemClickListener(mMessageListItemClickListener);
         messageAdapter.addItemViewDelegate(mMessageSendItemDelagate);
         messageAdapter.addItemViewDelegate(mMessageReceiveItemDelagate);
+        messageAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                DeviceUtils.hideSoftKeyboard(mContext, mRecyclerView);
+            }
+
+            @Override
+            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+                DeviceUtils.hideSoftKeyboard(mContext, mRecyclerView);
+                return false;
+            }
+        });
         // TODO: 2017/1/7 添加图片、视频、音频等Delegate
         mRecyclerView.setAdapter(messageAdapter);
         mRecyclerView.setItemAnimator(new SlideInUpAnimator());

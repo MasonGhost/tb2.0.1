@@ -143,7 +143,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                     .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<DynamicBean>>>() {
                                         @Override
                                         public BaseJson<List<DynamicBean>> call(BaseJson<List<UserInfoBean>> userinfobeans) {
-                                            if (userinfobeans.isStatus()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                            if (userinfobeans.isStatus() && !userinfobeans.getData().isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
                                                 SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
                                                 for (UserInfoBean userInfoBean : userinfobeans.getData()) {
                                                     userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);

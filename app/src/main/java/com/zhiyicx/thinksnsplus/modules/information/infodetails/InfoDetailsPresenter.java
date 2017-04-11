@@ -242,7 +242,7 @@ public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Rep
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<InfoCommentListBean> data) {
+    public boolean insertOrUpdateData(@NotNull List<InfoCommentListBean> data, boolean isLoadMore) {
         return false;
     }
 }

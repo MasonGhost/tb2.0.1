@@ -67,7 +67,7 @@ public class InfoSearchPresenter extends BasePresenter<SearchContract.Repository
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<InfoListBean.ListBean> data) {
+    public boolean insertOrUpdateData(@NotNull List<InfoListBean.ListBean> data, boolean isLoadMore) {
         return false;
     }
 

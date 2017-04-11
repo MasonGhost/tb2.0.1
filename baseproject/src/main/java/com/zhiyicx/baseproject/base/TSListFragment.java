@@ -94,6 +94,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     @Override
     public void showMessage(String message) {
         showMessageNotSticky(message);
+        hideLoading();
     }
 
     @Override
@@ -481,7 +482,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
             if (data != null && data.size() != 0) {
                 if (!isFromCache) {
                     // 更新缓存
-                    mPresenter.insertOrUpdateData(data);
+                    mPresenter.insertOrUpdateData(data, isLoadMore);
                 }
                 // 内存处理数据
                 mListDatas.addAll(data);
@@ -500,7 +501,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 mTvNoMoredataText.setVisibility(View.GONE);
                 if (!isFromCache) {
                     // 更新缓存
-                    mPresenter.insertOrUpdateData(data);
+                    mPresenter.insertOrUpdateData(data, isLoadMore);
                 }
                 // 内存处理数据
                 mListDatas.addAll(data);

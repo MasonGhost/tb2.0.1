@@ -468,6 +468,10 @@ public class BackgroundTaskHandler {
         final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
         final Long feedMark = (Long) params.get("params");
         final DynamicBean dynamicBean = mDynamicBeanGreenDao.getDynamicByFeedMark(feedMark);
+        if(dynamicBean==null){
+            mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+            return;
+        }
         // 发送动态到动态列表：状态为发送中
         dynamicBean.setState(DynamicBean.SEND_ING);
 
@@ -563,6 +567,10 @@ public class BackgroundTaskHandler {
         final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
         final Long commentMark = (Long) params.get("comment_mark");
         final DynamicCommentBean dynamicCommentBean = mDynamicCommentBeanGreenDao.getCommentByCommentMark(commentMark);
+        if (dynamicCommentBean == null) {
+            mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+            return;
+        }
         // 发送动态到动态列表：状态为发送中
         mServiceManager.getCommonClient()
                 .handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
@@ -603,7 +611,10 @@ public class BackgroundTaskHandler {
         final Long commentMark = (Long) params.get("comment_mark");
         final InfoCommentListBean infoCommentListBean = mInfoCommentListBeanDao.getCommentByCommentMark
                 (commentMark);
-
+        if (infoCommentListBean == null) {
+            mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+            return;
+        }
         mServiceManager.getCommonClient()
                 .handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
@@ -665,9 +676,6 @@ public class BackgroundTaskHandler {
                 result = true;
                 break;
             case ErrorCodeConfig.IM_DELDETE_CONVERSATION_FAIL:
-                result = true;
-                break;
-            case ErrorCodeConfig.DYNAMIC_HANDLE_FAIL:
                 result = true;
                 break;
             default:

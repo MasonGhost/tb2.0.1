@@ -144,7 +144,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
 
                     @Override
                     protected void onFailure(String message, int code) {
-                        mRootView.showMessage(message);
+                        mRootView.showSnackWarningMessage(mContext.getString(R.string.im_not_work));
                     }
 
                     @Override

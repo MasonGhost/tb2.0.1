@@ -43,7 +43,7 @@ public class MessageCommentPresenter extends BasePresenter<MessageCommentContrac
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<MessageItemBean> data) {
+    public boolean insertOrUpdateData(@NotNull List<MessageItemBean> data, boolean isLoadMore) {
         return false;
     }
 }

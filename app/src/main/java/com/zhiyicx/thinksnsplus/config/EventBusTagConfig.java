@@ -52,9 +52,9 @@ public class EventBusTagConfig {
     public static final String EVENT_CHANNEL_SUBSCRIB = "event_channel_subscrib";
 
 
-    /*******************************************
-     * IM 相关
-     *********************************************/
+    /**
+     *  IM 相关
+     */
     public static final String EVENT_IM_ONMESSAGERECEIVED = "onMessageReceived";
     public static final String EVENT_IM_ONMESSAGEACKRECEIVED = "onMessageACKReceived";
     public static final String EVENT_IM_ONCONNECTED = "onConnected";
@@ -64,5 +64,9 @@ public class EventBusTagConfig {
     public static final String EVENT_IM_SETMESSAGETIPVISABLE = "setMessageTipVisable";
     public static final String EVENT_IM_ONCONVERSATIONCRATED = "onConversationCrated";
 
+    /**
+     * Jpush  推送相关
+     */
+    public static final String EVENT_JPUSH_RECIEVED_MESSAGE= "onJpushMessageRecieved";
 
 }
