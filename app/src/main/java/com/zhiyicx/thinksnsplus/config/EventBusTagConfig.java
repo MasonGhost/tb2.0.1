@@ -67,6 +67,6 @@ public class EventBusTagConfig {
     /**
      * Jpush  推送相关
      */
-    public static final String EVENT_JPUSH_RECIEVED_MESSAGE= "onJpushMessageRecieved";
+    public static final String EVENT_JPUSH_RECIEVED_MESSAGE_UPDATE_MESSAGE_LIST = "onJpushMessageRecievedUpdateMessageList";
 
 }
