@@ -155,7 +155,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<DynamicCommentBean> data) {
+    public boolean insertOrUpdateData(@NotNull List<DynamicCommentBean> data, boolean isLoadMore) {
         if (data == null) {
             return false;
         }

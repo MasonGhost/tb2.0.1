@@ -16,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
-import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -24,7 +23,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -90,7 +88,7 @@ public class ChannelListPresenter extends BasePresenter<ChannelListContract.Repo
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<ChannelSubscripBean> data) {
+    public boolean insertOrUpdateData(@NotNull List<ChannelSubscripBean> data, boolean isLoadMore) {
         // 在repository中进行了清空表，和添加数据的操作
         return true;
     }

@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.rank;
 
+import android.app.Application;
+
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.RankRepository;
 
@@ -28,8 +30,8 @@ public class RankPresenterModule {
 
 
     @Provides
-    RankContract.Repository provideRankContractRepository(ServiceManager serviceManager){
-        return new RankRepository(serviceManager);
+    RankContract.Repository provideRankContractRepository(ServiceManager serviceManager, Application application){
+        return new RankRepository(serviceManager,application);
     }
 
 }

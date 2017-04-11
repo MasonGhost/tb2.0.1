@@ -4,6 +4,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
+import com.zhiyicx.thinksnsplus.data.beans.DigBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
@@ -80,6 +81,13 @@ public interface UserInfoContract {
          * @param followFansBean
          */
         void handleFollow(FollowFansBean followFansBean);
+
+        /**
+         * 获取点赞排行榜
+         * @param page
+         * @return
+         */
+        Observable<BaseJson<List<DigBean>>> getDidRankList(int page);
 
     }
 

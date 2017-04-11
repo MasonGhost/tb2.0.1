@@ -108,7 +108,7 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<BaseListBean> data) {
+    public boolean insertOrUpdateData(@NotNull List<BaseListBean> data, boolean isLoadMore) {
         return false;
     }
 

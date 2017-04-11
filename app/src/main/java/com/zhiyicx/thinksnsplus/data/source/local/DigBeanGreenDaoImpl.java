@@ -1,17 +1,19 @@
 package com.zhiyicx.thinksnsplus.data.source.local;
 
-import android.content.Context;
+import android.app.Application;
 
 import com.zhiyicx.thinksnsplus.data.beans.DigBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
 
 /**
- * @Describe  赞列表数据库
+ * @Describe 赞列表数据库
  * @Author Jungle68
  * @Date 2017/4/11
  * @Contact master.jungle68@gmail.com
@@ -20,7 +22,7 @@ import javax.inject.Inject;
 public class DigBeanGreenDaoImpl extends CommonCacheImpl<DigBean> {
 
     @Inject
-    public DigBeanGreenDaoImpl(Context context) {
+    public DigBeanGreenDaoImpl(Application context) {
         super(context);
     }
 
@@ -50,7 +52,21 @@ public class DigBeanGreenDaoImpl extends CommonCacheImpl<DigBean> {
     @Override
     public List<DigBean> getMultiDataFromCache() {
         DigBeanDao digBeanDao = getRDaoSession().getDigBeanDao();
-        return digBeanDao.loadAll();
+        List<DigBean> datas = digBeanDao.loadAll();
+
+        Collections.sort(datas, new Comparator<DigBean>() {
+            @Override
+            public int compare(DigBean o1, DigBean o2) {
+                try {
+                    return Integer.parseInt(o2.getValue()) - Integer.parseInt(o1.getValue());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return 0;
+                }
+            }
+        });
+
+        return datas;
     }
 
     @Override
@@ -82,4 +98,5 @@ public class DigBeanGreenDaoImpl extends CommonCacheImpl<DigBean> {
         DigBeanDao digBeanDao = getWDaoSession().getDigBeanDao();
         return digBeanDao.insertOrReplace(newData);
     }
+
 }

@@ -23,6 +23,11 @@ public class RankFragment extends TSListFragment<RankContract.Presenter, DigBean
     }
 
     @Override
+    protected String setCenterTitle() {
+        return getString(R.string.dig_ranking);
+    }
+
+    @Override
     protected boolean isNeedRefreshDataWhenComeIn() {
         return true;
     }
@@ -33,13 +38,8 @@ public class RankFragment extends TSListFragment<RankContract.Presenter, DigBean
     }
 
     @Override
-    protected boolean showToolbar() {
-        return false;
-    }
-
-    @Override
-    protected boolean showToolBarDivider() {
-        return false;
+    protected void initData() {
+        super.initData();
     }
 
     @Override

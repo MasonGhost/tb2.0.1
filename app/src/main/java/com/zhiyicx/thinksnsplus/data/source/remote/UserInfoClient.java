@@ -74,8 +74,8 @@ public interface UserInfoClient {
      * @return
      */
     @GET(ApiConfig.APP_PATH_GET_DIGGS_RANK)
-    Observable<BaseJson<List<DigBean>>> getRankList(@Query("page") Long page,
-                                                    @Query("limit") Long limit);
+    Observable<BaseJson<List<DigBean>>> getDigRankList(@Query("page") int page,
+                                                    @Query("limit") int limit);
 
 
 }

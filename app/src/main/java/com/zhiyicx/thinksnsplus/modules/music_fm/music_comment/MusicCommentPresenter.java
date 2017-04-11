@@ -13,7 +13,6 @@ import com.zhiyicx.thinksnsplus.data.source.repository.MusicCommentRepositroty;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -156,7 +155,7 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<MusicCommentListBean> data) {
+    public boolean insertOrUpdateData(@NotNull List<MusicCommentListBean> data, boolean isLoadMore) {
         return false;
     }
 

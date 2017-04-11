@@ -27,6 +27,7 @@ import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.rank.RankActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
 
 import javax.inject.Inject;
@@ -179,6 +180,10 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 startActivity(intent);
                 break;
             case R.id.bt_ranking:
+
+                Intent toRank = new Intent(getContext(), RankActivity.class);
+                startActivity(toRank);
+
                 // 加载主题库方法，用于测试主题切换
                /* SkinManager.getInstance().loadSkin("tsplustheme.skin", new SkinLoaderListener() {
                     @Override

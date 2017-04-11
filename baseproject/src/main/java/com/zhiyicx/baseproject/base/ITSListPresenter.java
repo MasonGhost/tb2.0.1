@@ -33,5 +33,5 @@ public interface ITSListPresenter<T extends BaseListBean> extends IBasePresenter
     /**
      * 插入或者更新缓存
      */
-    boolean insertOrUpdateData(@NotNull List<T> data);
+    boolean insertOrUpdateData(@NotNull List<T> data, boolean isLoadMore);
 }

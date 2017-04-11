@@ -3,9 +3,11 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 import android.app.Application;
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.SparseArray;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.cache.CacheImp;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
@@ -16,6 +18,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
+import com.zhiyicx.thinksnsplus.data.beans.DigBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
@@ -171,6 +174,46 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         // 更新动态关注状态
         mDynamicBeanGreenDao.updateFollowStateByUserId(followFansBean.getTargetUserId(), followFansBean.getOrigin_follow_status() != FollowFansBean.UNFOLLOWED_STATE);
 
+    }
+
+    @Override
+    public Observable<BaseJson<List<DigBean>>> getDidRankList(int page) {
+        return mUserInfoClient.getDigRankList(page, TSListFragment.DEFAULT_PAGE_SIZE)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<BaseJson<List<DigBean>>, Observable<BaseJson<List<DigBean>>>>() {
+                    @Override
+                    public Observable<BaseJson<List<DigBean>>> call(final BaseJson<List<DigBean>> listBaseJson) {
+                        if (listBaseJson.isStatus() && !listBaseJson.getData().isEmpty()) {
+                            List<Long> userIds = new ArrayList();
+                            for (DigBean digBean : listBaseJson.getData()) {
+                                userIds.add(digBean.getUser_id());
+                            }
+                            return getUserInfo(userIds)
+                                    .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<DigBean>>>() {
+                                        @Override
+                                        public BaseJson<List<DigBean>> call(BaseJson<List<UserInfoBean>> userinfobeans) {
+                                            if (userinfobeans.isStatus() && !userinfobeans.getData().isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                                for (UserInfoBean userInfoBean : userinfobeans.getData()) {
+                                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                                }
+                                                for (DigBean digBean : listBaseJson.getData()) {
+                                                    digBean.setDigUserInfo(userInfoBeanSparseArray.get(digBean.getUser_id().intValue()));
+                                                }
+                                                AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao().insertOrReplace(userinfobeans.getData());
+                                            } else {
+                                                listBaseJson.setStatus(userinfobeans.isStatus());
+                                                listBaseJson.setCode(userinfobeans.getCode());
+                                                listBaseJson.setMessage(userinfobeans.getMessage());
+                                            }
+                                            return listBaseJson;
+                                        }
+                                    });
+                        }
+                        return Observable.just(listBaseJson);
+                    }
+                });
     }
 
 
