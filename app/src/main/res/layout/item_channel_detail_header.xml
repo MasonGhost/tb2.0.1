@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:id="@+id/fl_header_container"
+             android:layout_width="match_parent"
+             android:layout_height="350dp"
+             android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/iv_channel_bg_cover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/girl_xinyuanjieyi"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/iv_channel_header_icon"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="100dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/girl_head_xinyuanjieyi"/>
+
+        <TextView
+            android:id="@+id/tv_channel_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:maxLines="1"
+            android:text="走在冷风中"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:id="@+id/tv_channel_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="怎么连复杂的故事背后，都是我听朋友说，行走在在冬野的冷风中"
+            android:textColor="@color/white"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_subscrib_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="订阅 16"
+                android:textColor="@color/white"/>
+
+            <TextView
+                android:id="@+id/tv_share_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:text="分享 26"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

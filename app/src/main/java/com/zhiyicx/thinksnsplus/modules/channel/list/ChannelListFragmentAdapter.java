@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.channel.list;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -17,6 +19,8 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
+import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailFragment;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -60,7 +64,7 @@ public class ChannelListFragmentAdapter extends CommonAdapter<ChannelSubscripBea
         if (port > 100) {
             port = 100;
         }
-        LogUtils.i(TAG+"channelCoverBean  "+channelCoverBean);
+        LogUtils.i(TAG + "channelCoverBean  " + channelCoverBean);
         String imgUrl = String.format(ApiConfig.IMAGE_PATH, channelCoverBean.getId(), port);
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
@@ -100,5 +104,21 @@ public class ChannelListFragmentAdapter extends CommonAdapter<ChannelSubscripBea
                     }
                 });
 
+        RxView.clicks(holder.getConvertView())
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        toChannelDetailPage(getContext(), channelSubscripBean);
+                    }
+                });
+    }
+
+    private void toChannelDetailPage(Context context, ChannelSubscripBean channelSubscripBean) {
+        Intent intent = new Intent(context, ChannelDetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ChannelDetailFragment.CHANNEL_HEADER_INFO_DATA, channelSubscripBean);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 }
