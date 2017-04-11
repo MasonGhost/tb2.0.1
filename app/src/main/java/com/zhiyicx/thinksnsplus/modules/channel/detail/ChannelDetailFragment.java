@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.InputLimitView;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -80,6 +82,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        initToolBar();
         mItemChannelDetailHeader = new ItemChannelDetailHeader(getActivity(), mRvList, mHeaderAndFooterWrapper, mLlToolbarContainerParent);
         mItemChannelDetailHeader.initHeaderView(true);
         RxView.clicks(mBtnSendDynamic)
@@ -181,5 +184,12 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     @Override
     public long getChannelId() {
         return mChannelSubscripBean.getId();
+    }
+
+    private void initToolBar() {
+        // toolBar 设置状态栏高度的 marginTop
+        int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelSize(R.dimen.divider_line);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
+        mLlToolbarContainerParent.setLayoutParams(layoutParams);
     }
 }

@@ -2,19 +2,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:id="@+id/fl_header_container"
              android:layout_width="match_parent"
-             android:layout_height="350dp"
+             android:layout_height="wrap_content"
              android:orientation="vertical">
-
-    <ImageView
-        android:id="@+id/iv_channel_bg_cover"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/girl_xinyuanjieyi"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="center"
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
@@ -50,6 +44,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
             android:layout_marginTop="15dp"
             android:orientation="horizontal">
 

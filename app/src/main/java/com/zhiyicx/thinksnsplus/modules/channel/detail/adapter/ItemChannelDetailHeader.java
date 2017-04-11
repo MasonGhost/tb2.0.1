@@ -2,11 +2,14 @@ package com.zhiyicx.thinksnsplus.modules.channel.detail.adapter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -17,14 +20,19 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBorderTransform;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideStokeTransform;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.ZoomView;
@@ -53,7 +61,6 @@ public class ItemChannelDetailHeader {
     /**********************************
      * headerView控件
      ********************************/
-    private ImageView iv_channel_bg_cover;//背景图
     private ImageView iv_channel_header_icon;// 频道头像
     private TextView tv_channel_name;//频道名称
     private TextView tv_channel_description;//频道简介
@@ -206,13 +213,29 @@ public class ItemChannelDetailHeader {
         ChannelInfoBean channelInfoBean = channelSubscripBean.getChannelInfoBean();
         // 显示头像
         ChannelInfoBean.ChannelCoverBean channelCoverBean = channelInfoBean.getCover();
-        mImageLoader.loadImage(mActivity, GlideImageConfig.builder()
-                .url(ImageUtils.imagePathConvert(channelCoverBean.getId() + "", ImageZipConfig.IMAGE_70_ZIP))
-                .placeholder(R.mipmap.pic_default_portrait2)
-                .errorPic(R.mipmap.pic_default_portrait2)
-                .imagerView(iv_channel_header_icon)
-                .transformation(new GlideCircleBorderTransform(mActivity, mActivity.getResources().getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(mActivity, R.color.white)))
-                .build());
+
+        Glide.with(mActivity)
+                .load(ImageUtils.imagePathConvert(channelCoverBean.getId() + "",
+                        ImageZipConfig.IMAGE_70_ZIP))
+                .asBitmap()
+                .transform(new GlideStokeTransform(mActivity, 20))
+                .placeholder(R.mipmap.icon_256)
+                .error(R.mipmap.icon_256)
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap>
+                            glideAnimation) {
+                        Bitmap mBgBitmap = resource.copy(Bitmap.Config.RGB_565, false);
+                        // 设置封面
+                        iv_channel_header_icon.setImageBitmap(resource);
+                        Palette mPalette = Palette.from(mBgBitmap).generate();
+                        // 设置封面
+                        BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap
+                                (mBgBitmap, mBgBitmap.getWidth(), mBgBitmap.getHeight()));
+                        fl_header_container.setBackgroundDrawable(drawable);
+                    }
+                });
+
         // 设置频道名称
         tv_channel_name.setText(channelInfoBean.getTitle());
         // 标题栏的频道名称
@@ -224,14 +247,13 @@ public class ItemChannelDetailHeader {
         // 设置分享人数
         tv_share_count.setText(channelInfoBean.getFeed_count() + "");
         // 设置封面
-        //setUserCover(userInfoBean.getCover());
+
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
     private void initHeaderViewUI(View headerView) {
         ViewGroup.LayoutParams headerLayoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         headerView.setLayoutParams(headerLayoutParams);
-        iv_channel_bg_cover = (ImageView) headerView.findViewById(R.id.iv_channel_bg_cover);
         iv_channel_header_icon = (ImageView) headerView.findViewById(R.id.iv_channel_header_icon);
         tv_channel_name = (TextView) headerView.findViewById(R.id.tv_channel_name);
         tv_channel_description = (TextView) headerView.findViewById(R.id.tv_channel_description);
@@ -239,27 +261,16 @@ public class ItemChannelDetailHeader {
         tv_share_count = (TextView) headerView.findViewById(R.id.tv_share_count);
         fl_header_container = (FrameLayout) headerView.findViewById(R.id.fl_header_container);
         // 高度为屏幕宽度一半加上20dp
-        int width = UIUtils.getWindowWidth(mActivity);
-        int height = width;
-        LinearLayout.LayoutParams containerLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
-        fl_header_container.setLayoutParams(containerLayoutParams);
+        int width = headerLayoutParams.width;
+        int height = headerLayoutParams.height;
+        LogUtils.i("initHeaderViewUI width " + width + " height " + height);
+     /*   LinearLayout.LayoutParams containerLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
+        fl_header_container.setLayoutParams(containerLayoutParams);*/
         // 添加头部放缩
-        new ZoomView(fl_header_container, mActivity, mRecyclerView, width, height).initZoom();
+        // new ZoomView(fl_header_container, mActivity, mRecyclerView, width, height).initZoom();
 
     }
 
-    /**
-     * 设置用户的封面
-     */
-    private void setUserCover(String coverImage) {
-        // 设置封面
-        mImageLoader.loadImage(mActivity, GlideImageConfig.builder()
-                .placeholder(R.mipmap.default_pic_personal)
-                .errorPic(R.mipmap.default_pic_personal)
-                .url(ImageUtils.imagePathConvert(coverImage, 100))// 显示原图
-                .imagerView(iv_channel_bg_cover)
-                .build());
-    }
 
     public void setViewColorWithAlpha(View v, int[] colorRGB, int alpha) {
         int color = Color.argb(alpha, colorRGB[0], colorRGB[1], colorRGB[2]);
