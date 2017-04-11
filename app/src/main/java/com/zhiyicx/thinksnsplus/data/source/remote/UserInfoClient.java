@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.data.beans.DigBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -63,5 +64,18 @@ public interface UserInfoClient {
      */
     @GET(ApiConfig.APP_PATH_GET_USER_FOLLOW_STATE)
     Observable<BaseJson<List<FollowFansBean>>> getUserFollowState(@Query("user_ids") String user_ids);
+
+
+    /**
+     * 用户点赞排行
+     *
+     * @param page  页码 默认为 1
+     * @param limit 返回数据条数 默认15条
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_GET_DIGGS_RANK)
+    Observable<BaseJson<List<DigBean>>> getRankList(@Query("page") Long page,
+                                                    @Query("limit") Long limit);
+
 
 }

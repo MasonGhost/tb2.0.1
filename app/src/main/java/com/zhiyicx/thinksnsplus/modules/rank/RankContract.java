@@ -3,7 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.rank;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.DigBean;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import rx.Observable;
  */
 
 public interface RankContract {
-    interface View extends ITSListView<FollowFansBean, Presenter> {
+    interface View extends ITSListView<DigBean, Presenter> {
         /**
          * 更新列表的关注状态
          *
@@ -27,13 +27,9 @@ public interface RankContract {
 
         void upDateFollowFansState();
 
-        /**
-         * 获取页面类型
-         */
-        int getPageType();
     }
 
-    interface Presenter extends ITSListPresenter<FollowFansBean> {
+    interface Presenter extends ITSListPresenter<DigBean> {
         /**
          * 重写获取网络数据的方法，添加方法参数
          *
@@ -44,7 +40,7 @@ public interface RankContract {
          */
         void requestNetData(Long maxId, boolean isLoadMore, long userId, int pageType);
 
-        List<FollowFansBean> requestCacheData(Long maxId, boolean isLoadMore, long userId, int pageType);
+        List<DigBean> requestCacheData(Long maxId, boolean isLoadMore, long userId, int pageType);
 
         /**
          * 关注用户
@@ -52,16 +48,14 @@ public interface RankContract {
          * @param index          item所在的列表位置
          * @param followFansBean 被关注的用户id
          */
-        void followUser(int index, FollowFansBean followFansBean);
+        void followUser(int index, DigBean followFansBean);
 
-        void cancleFollowUser(int index, FollowFansBean followFansBean);
+        void cancleFollowUser(int index, DigBean followFansBean);
     }
 
     interface Repository {
 
-        Observable<BaseJson<List<FollowFansBean>>> getFollowListFromNet(long userId, int maxId);
-
-        Observable<BaseJson<List<FollowFansBean>>> getFansListFromNet(long userId, int maxId);
+        Observable<BaseJson<List<DigBean>>> getRankListFromNet(long userId, int page);
 
         Observable<BaseJson> followUser(long followedId);
 

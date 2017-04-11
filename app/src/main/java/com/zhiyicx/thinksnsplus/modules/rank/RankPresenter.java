@@ -1,7 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.rank;
 
 import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.DigBean;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -31,17 +31,17 @@ public class RankPresenter extends BasePresenter<RankContract.Repository, RankCo
     }
 
     @Override
-    public List<FollowFansBean> requestCacheData(Long maxId, boolean isLoadMore, long userId, int pageType) {
+    public List<DigBean> requestCacheData(Long maxId, boolean isLoadMore, long userId, int pageType) {
         return null;
     }
 
     @Override
-    public void followUser(int index, FollowFansBean followFansBean) {
+    public void followUser(int index, DigBean followFansBean) {
 
     }
 
     @Override
-    public void cancleFollowUser(int index, FollowFansBean followFansBean) {
+    public void cancleFollowUser(int index, DigBean followFansBean) {
 
     }
 
@@ -51,12 +51,12 @@ public class RankPresenter extends BasePresenter<RankContract.Repository, RankCo
     }
 
     @Override
-    public List<FollowFansBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+    public List<DigBean> requestCacheData(Long max_Id, boolean isLoadMore) {
         return null;
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<FollowFansBean> data) {
+    public boolean insertOrUpdateData(@NotNull List<DigBean> data) {
         return false;
     }
 }
