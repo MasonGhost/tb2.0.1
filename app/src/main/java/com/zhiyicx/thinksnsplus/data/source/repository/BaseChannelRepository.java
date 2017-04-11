@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 import android.app.Application;
 import android.content.Context;
 
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -10,6 +11,7 @@ import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelSubscripBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ChannelClient;
@@ -33,7 +35,7 @@ import rx.functions.Func1;
  * @contact email:450127106@qq.com
  */
 
-public class BaseChannelRepository implements IBaseChannelRepository {
+public class BaseChannelRepository extends BaseDynamicRepository implements IBaseChannelRepository {
     protected ChannelClient mChannelClient;
     protected Context mContext;
     protected ChannelSubscripBeanGreenDaoImpl mChannelSubscripBeanGreenDao;
@@ -41,6 +43,7 @@ public class BaseChannelRepository implements IBaseChannelRepository {
 
     @Inject
     public BaseChannelRepository(ServiceManager serviceManager, Application context) {
+        super(serviceManager, context);
         mChannelClient = serviceManager.getChannelClient();
         this.mContext = context;
         mChannelSubscripBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().channelSubscripBeanGreenDaoImpl();
@@ -111,4 +114,11 @@ public class BaseChannelRepository implements IBaseChannelRepository {
                     }
                 });
     }
+
+    @Override
+    public Observable<BaseJson<List<DynamicBean>>> getDynamicListFromChannel(long channel_id, int max_id) {
+        return dealWithDynamicList(mChannelClient.getDynamicListFromChannel(channel_id, TSListFragment.DEFAULT_PAGE_SIZE, max_id), "", false);
+    }
+
+
 }

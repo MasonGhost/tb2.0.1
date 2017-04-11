@@ -224,5 +224,6 @@ public class ApiConfig {
     // 发送动态到频道
     public static final String APP_PATH_SEND_DYNAMIC_TO_CHANNEL = "api/v1/channels/{channel_id}/feed";
     public static final String APP_PATH_SEND_DYNAMIC_TO_CHANNEL_S = "api/v1/channels/%s/feed";
-
+    // 获取频道的动态列表
+    public static final String APP_PATH_GET_CHANNEL_DYNAMIC_LIST = "api/v1/channels/{channel_id}/feeds";
 }
