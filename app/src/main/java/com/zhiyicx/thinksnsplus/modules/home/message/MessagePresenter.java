@@ -159,19 +159,10 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         mRootView.getListDatas().get(positon).setUnReadMessageNums(0);
 
         mRootView.refreshData(); // 刷新加上 header
+        checkBottomMessageTip();
 
-        // 是否显示底部红点
-        boolean isShowMessgeTip = false;
-        for (MessageItemBean messageItemBean : mRootView.getListDatas()) {
-            if (messageItemBean.getUnReadMessageNums() > 0) {
-                isShowMessgeTip = true;
-                break;
-            }
-        }
-        EventBus.getDefault().post(isShowMessgeTip, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED);
 
     }
-
 
     @Override
     public void deletConversation(MessageItemBean messageItemBean) {
@@ -311,6 +302,21 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
 
         }
 
+    }
+
+    /**
+     * 检测底部小红点是否需要显示
+     */
+    private void checkBottomMessageTip() {
+        // 是否显示底部红点
+        boolean isShowMessgeTip = false;
+        for (MessageItemBean messageItemBean : mRootView.getListDatas()) {
+            if (messageItemBean.getUnReadMessageNums() > 0) {
+                isShowMessgeTip = true;
+                break;
+            }
+        }
+        EventBus.getDefault().post(isShowMessgeTip, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED);
     }
 
 }
