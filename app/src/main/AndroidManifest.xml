@@ -191,6 +191,8 @@
         </activity>
         <activity android:name=".modules.channel.list.ChannelListActivity">
         </activity>
+        <activity android:name=".modules.channel.detail.ChannelDetailActivity">
+        </activity>
     </application>
 
 </manifest>

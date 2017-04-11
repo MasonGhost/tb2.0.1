@@ -8,7 +8,6 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
-import com.zhiyicx.thinksnsplus.modules.channel.DaggerChannelListPresenterComponent;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 
 import org.jetbrains.annotations.NotNull;
