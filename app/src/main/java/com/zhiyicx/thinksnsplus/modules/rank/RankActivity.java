@@ -3,11 +3,11 @@ package com.zhiyicx.thinksnsplus.modules.rank;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
-public class RankActivity extends TSActivity<RankPresenter,RankFragment> {
+public class RankActivity extends TSActivity<RankPresenter, RankFragment> {
 
     @Override
     protected RankFragment getFragment() {
-        return new RankFragment();
+        return RankFragment.newInstance(getIntent().getExtras());
     }
 
     @Override

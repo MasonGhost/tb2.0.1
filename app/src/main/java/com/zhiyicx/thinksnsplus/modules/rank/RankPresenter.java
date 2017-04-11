@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.rank;
 
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
-import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -19,8 +18,6 @@ import javax.inject.Inject;
 
 public class RankPresenter extends BasePresenter<RankContract.Repository, RankContract.View> implements RankContract.Presenter {
 
-    @Inject
-    IAuthRepository mIAuthRepository;
 
     @Inject
     public RankPresenter(RankContract.Repository repository, RankContract.View rootView) {

@@ -71,7 +71,7 @@ public class RankFragment extends TSListFragment<RankContract.Presenter, FollowF
         return mPresenter.requestCacheData(maxId, isLoadMore, userId, pageType);
     }
 
-    public static RankFragment initFragment(Bundle bundle) {
+    public static RankFragment newInstance(Bundle bundle) {
         RankFragment rankFragment = new RankFragment();
         rankFragment.setArguments(bundle);
         return rankFragment;
