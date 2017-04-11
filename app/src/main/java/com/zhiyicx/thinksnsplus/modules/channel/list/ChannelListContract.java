@@ -1,16 +1,13 @@
-package com.zhiyicx.thinksnsplus.modules.channel;
+package com.zhiyicx.thinksnsplus.modules.channel.list;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBaseChannelRepository;
-import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListContract;
 
 import java.util.List;
 
-import retrofit2.http.Path;
 import rx.Observable;
 
 /**

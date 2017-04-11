@@ -23,6 +23,8 @@ public class EventBusTagConfig {
 
     // 发送动态到动态列表
     public static final String EVENT_SEND_DYNAMIC_TO_LIST = "event_send_dynamic_to_List";
+    // 发送动态到频道动态列表
+    public static final String EVENT_SEND_DYNAMIC_TO_CHANNEL="event_send_dynamic_to_channel";
     //更新动态列表
     public static final String EVENT_UPDATE_DYNAMIC = "event_update_dynamic";
     // 动态列表发送评论
@@ -53,7 +55,7 @@ public class EventBusTagConfig {
 
 
     /**
-     *  IM 相关
+     * IM 相关
      */
     public static final String EVENT_IM_ONMESSAGERECEIVED = "onMessageReceived";
     public static final String EVENT_IM_ONMESSAGEACKRECEIVED = "onMessageACKReceived";

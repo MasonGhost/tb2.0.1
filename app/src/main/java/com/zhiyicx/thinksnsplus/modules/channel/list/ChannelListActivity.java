@@ -1,7 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.channel;
-
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+package com.zhiyicx.thinksnsplus.modules.channel.list;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 

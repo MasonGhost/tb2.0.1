@@ -16,7 +16,6 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -31,10 +30,10 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideStokeTransform;
 import com.zhiyicx.baseproject.utils.ImageUtils;
+import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
@@ -42,6 +41,7 @@ import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentHeader;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.WindowUtils;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 import com.zhiyicx.thinksnsplus.widget.IconTextView;
 import com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout;
@@ -53,9 +53,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListFragment.BUNDLE_MUSIC_ABLUM;
@@ -183,6 +181,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @Override
     protected void initView(View rootView) {
         ViewGroup.LayoutParams titleParam;
+
         int titleHeight;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             titleHeight = ConvertUtils.dp2px(getActivity(), 84);
@@ -245,6 +244,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @Override
     public void setMusicAblum(MusicAlbumDetailsBean musicAblum) {
         mAlbumDetailsBean = musicAblum;
+        WindowUtils.showPopupWindow(BaseApplication.getContext());
         mFragmentMusicDetailCenterTitle.setText(mAlbumDetailsBean.getTitle());
         mFragmentMusicDetailCenterSubTitle.setText(mAlbumDetailsBean.getIntro());
         mFragmentMusicDetailDec.setText(mAlbumDetailsBean.getIntro());
@@ -374,6 +374,11 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                             metadata.getDescription());
                 }
                 startActivity(intent);
+//                MediaSessionCompat.QueueItem mCurrentMusic = AppApplication.getmQueueManager().getCurrentMusic();
+//                if (mCurrentMusic != null) {
+//                    mMediaId = mCurrentMusic.getDescription().getMediaId();
+//                }
+
                 if (item.isPlayable()) {
                     MediaControllerCompat controllerCompat = getActivity()
                             .getSupportMediaController();

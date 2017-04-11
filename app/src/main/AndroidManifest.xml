@@ -244,8 +244,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".modules.channel.ChannelListActivity"
+            android:name=".modules.channel.list.ChannelListActivity"
             android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".modules.channel.detail.ChannelDetailActivity"
+            android:screenOrientation="portrait">
+
         </activity>
     </application>
 

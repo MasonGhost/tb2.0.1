@@ -36,6 +36,13 @@ public interface DynamicClient {
     Observable<BaseJson<Object>> sendDynamic(@Body RequestBody body);
 
     /**
+     * 发布动态到频道
+     */
+    @Headers({"Content-type:application/json;charset=UTF-8"})
+    @POST(ApiConfig.APP_PATH_SEND_DYNAMIC_TO_CHANNEL)
+    Observable<BaseJson<Object>> sendDynamicToChannel(@Path("channel_id") long channel_id, @Body RequestBody body);
+
+    /**
      * 获取动态列表
      *
      * @param type   "" 代表最新；follows 代表关注 ； hots 代表热门
@@ -73,7 +80,7 @@ public interface DynamicClient {
      * @return
      */
     @GET(ApiConfig.APP_PATH_DYNAMIC_DIG_LIST)
-    Observable<BaseJson<List<DynamicDigListBean>>> getDynamicDigList(@Path("feed_id") Long feed_id, @Query("max_id") Long max_id,@Query("limit") Integer limitCount);
+    Observable<BaseJson<List<DynamicDigListBean>>> getDynamicDigList(@Path("feed_id") Long feed_id, @Query("max_id") Long max_id, @Query("limit") Integer limitCount);
 
     /**
      * 收藏动态
@@ -99,7 +106,7 @@ public interface DynamicClient {
      * @return
      */
     @GET(ApiConfig.APP_PATH_DYNAMIC_COMMENT_LIST)
-    Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentList(@Path("feed_id") Long feed_id, @Query("max_id") Long max_id,@Query("limit") Long limit);
+    Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentList(@Path("feed_id") Long feed_id, @Query("max_id") Long max_id, @Query("limit") Long limit);
 
     /**
      * 增加动态浏览量

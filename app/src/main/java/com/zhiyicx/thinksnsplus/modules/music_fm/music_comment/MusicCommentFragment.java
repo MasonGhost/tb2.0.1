@@ -5,6 +5,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
@@ -25,10 +26,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Author Jliuer
@@ -42,6 +46,8 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
 
     @BindView(R.id.ilv_comment)
     InputLimitView mIlvComment;
+    @BindView(R.id.v_shadow)
+    View mVShadow;
 
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     public static final String CURRENT_COMMENT = "current_comment";
@@ -62,6 +68,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        mIlvComment.setSendButtonVisiable(true);
         mIlvComment.post(new Runnable() { // 处理评论框位置协调
             @Override
             public void run() {
@@ -129,8 +136,6 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         position = position - 1;
-        LogUtils.d(mListDatas.get(position).getUser_id());
-        LogUtils.d(AppApplication.getmCurrentLoginAuth().getUser_id());
         if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth()
                 .getUser_id()) {// 自己的评论
             if (mListDatas.get(position).getId() != -1) {
@@ -192,14 +197,27 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     }
 
     private void initLisener() {
-        showCommentView();
+        RxView.clicks(mVShadow)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        mIlvComment.setVisibility(View.GONE);
+                        mIlvComment.clearFocus();
+                        DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+                        mVShadow.setVisibility(View.GONE);
+
+                    }
+                });
         mIlvComment.setOnSendClickListener(this);
     }
 
     public void showCommentView() {
         // 评论
-        mIlvComment.setVisibility(View.VISIBLE);
         mIlvComment.setSendButtonVisiable(true);
+        mIlvComment.getFocus();
+        mVShadow.setVisibility(View.VISIBLE);
+        DeviceUtils.showSoftKeyboard(getActivity(), mIlvComment.getEtContent());
     }
 
     private void initLoginOutPopupWindow(final MusicCommentListBean data) {
@@ -214,7 +232,6 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
                     public void onItem1Clicked() {
-                        ToastUtils.showToast("暂无接口");
                         mPresenter.deleteComment(data);
                         mDeletCommentPopWindow.hide();
                     }

@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -48,4 +50,13 @@ public interface ChannelClient {
      */
     @GET(ApiConfig.APP_PATH_GET_CHANNEL)
     Observable<BaseJson<List<ChannelInfoBean>>> getChannelList(@Path("type") String type);
+
+    /**
+     * 获取频道的动态列表
+     *
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_GET_CHANNEL_DYNAMIC_LIST)
+    Observable<BaseJson<List<DynamicBean>>> getDynamicListFromChannel(@Path("channel_id") long channel_id,
+                                                                      @Query("limit") int limit, @Query("max_id") long max_id);
 }
