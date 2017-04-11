@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
 import com.antfortune.freeline.FreelineCore;
@@ -31,6 +32,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.QueueManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.WindowUtils;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.io.File;
@@ -330,7 +332,7 @@ public class AppApplication extends TSApplication {
 
             @Override
             public void onActivityStarted(Activity activity) {
-                if (mActivityCount == 0 && getmQueueManager() != null) {// 切到前台
+                if (!(activity instanceof MusicPlayActivity)&&((AppCompatActivity)activity).getSupportMediaController()!=null){
                     WindowUtils.showPopupWindow(AppApplication.this);
                 }
                 mActivityCount++;
@@ -354,6 +356,7 @@ public class AppApplication extends TSApplication {
 
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+
             }
         });
     }
