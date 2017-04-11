@@ -35,7 +35,7 @@ public interface MusicCommentContract {
 
         Observable<BaseJson<List<MusicCommentListBean>>> getAblumCommentList(String special_id,
                                                                              Long max_id);
-        void sendComment(int reply_id, String content,String path);
+        void sendComment(int music_id,int reply_id, String content,String path);
 
         void deleteComment(int music_id,int comment_id);
     }

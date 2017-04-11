@@ -328,9 +328,9 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         mFragmentMusicPalyProgress.setThumb(R.mipmap.music_pic_progressbar_circle);
         initListener();
         mToolbarCenter.setText(AppApplication.getmQueueManager().getCurrentMusic().getDescription().getTitle());
+        if (getArguments()!=null){
 
-        AppApplication.getmQueueManager().getCurrentMusic().getDescription().getMediaUri();
-
+        }
         mMusicAlbumDetailsBean = (MusicAlbumDetailsBean) getArguments().getSerializable
                 (MUSIC_INFO);
         mMusicList = mMusicAlbumDetailsBean.getMusics();

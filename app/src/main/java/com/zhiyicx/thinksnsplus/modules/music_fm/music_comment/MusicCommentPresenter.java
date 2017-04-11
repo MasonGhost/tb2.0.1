@@ -110,7 +110,7 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
         }else{
             path=APP_PATH_MUSIC_ABLUM_COMMENT_FORMAT;
         }
-        mRepository.sendComment(mRootView.getCommentId(), content, path);
+        mRepository.sendComment(mRootView.getCommentId(),reply_id, content, path);
 
         MusicCommentListBean createComment = new MusicCommentListBean();
         createComment.setState(SEND_ING);
