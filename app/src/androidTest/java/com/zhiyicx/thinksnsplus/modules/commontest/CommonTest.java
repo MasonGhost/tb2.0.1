@@ -5,8 +5,10 @@ import android.text.TextUtils;
 
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.modules.AcitivityTest;
 import com.zhiyicx.thinksnsplus.modules.RxUnitTestTools;
@@ -17,6 +19,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
@@ -237,24 +240,26 @@ public class CommonTest extends AcitivityTest {
     @Test
     public void testLong2Int() throws Exception {
         Long a = 10000L;
-        int b=10000;
-        assertTrue(b==a.intValue());
+        int b = 10000;
+        assertTrue(b == a.intValue());
     }
 
     /**
-     *  equestest
+     * equestest
+     *
      * @throws Exception
      */
     @Test
     public void testEques() throws Exception {
-        String  a = "123";
-        int b=123;
+        String a = "123";
+        int b = 123;
         assertFalse(a.equals(b));
         assertTrue(a.equals(String.valueOf(b)));
     }
 
     /**
      * 引用测试
+     *
      * @throws Exception
      */
     @Test
@@ -263,10 +268,33 @@ public class CommonTest extends AcitivityTest {
         a.add(1);
         a.add(2);
 
-        List<Integer> b=a;
+        List<Integer> b = a;
         b.clear();
         b.add(3);
         System.out.println("a = " + a);
         System.out.println("b = " + b);
+    }
+
+    /**
+     * summary
+     * steps
+     * expected
+     */
+    @Test
+    public void hashMapSerilizable() throws Exception {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+        sendDynamicDataBean.setDynamicChannlId(1000);
+        sendDynamicDataBean.setDynamicBelong(20);
+        hashMap.put("h1", "111");
+        hashMap.put("h2", "222");
+        hashMap.put("h3", "333");
+        hashMap.put("h4", sendDynamicDataBean);
+        String baseString = ConvertUtils.object2Base64Str(hashMap);
+        System.out.println("hashMapSerilizable-->String" + baseString);
+        HashMap<String, Object> base64Str2Object = ConvertUtils.base64Str2Object(baseString);
+        System.out.println("hashMapSerilizable-->Object" + base64Str2Object);
+        SendDynamicDataBean s = (SendDynamicDataBean) base64Str2Object.get("h4");
+        System.out.println("hashMapSerilizable-->SendDynamicDataBean" + s);
     }
 }

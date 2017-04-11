@@ -1,15 +1,19 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Parcelable;
+
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
+
+import java.util.ArrayList;
 
 
 public class SendDynamicActivity extends TSActivity<SendDynamicPresenter, SendDynamicFragment> {
-    public static final String DYNAMIC_TYPE = "dynamic_type";// 动态类型
-    public static final String DYNAMIC_PHOTOS = "dynamic_photos";// 进入页面已经选好的图片
-    public static final int PHOTO_TEXT_DYNAMIC = 0;// 图片文字动态
-    public static final int TEXT_ONLY_DYNAMIC = 1;// 纯文字动态
-
+    public static final String SEND_DYNAMIC_DATA = "send_dynamic_data";// 发送动态需要的一些数据，从上一个页面发送过来
 
     @Override
     protected SendDynamicFragment getFragment() {
@@ -27,5 +31,14 @@ public class SendDynamicActivity extends TSActivity<SendDynamicPresenter, SendDy
     @Override
     public void onBackPressed() {
         mContanierFragment.onBackPressed();
+    }
+
+    public static void startToSendDynamicActivity(Context context, SendDynamicDataBean sendDynamicDataBean) {
+        // 跳转到发送动态页面
+        Intent it = new Intent(context, SendDynamicActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(SendDynamicActivity.SEND_DYNAMIC_DATA, sendDynamicDataBean);
+        it.putExtras(bundle);
+        context.startActivity(it);
     }
 }

@@ -23,6 +23,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
@@ -267,11 +268,11 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         mFlAdd.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Intent it = new Intent(getContext(), SendDynamicActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putInt(SendDynamicActivity.DYNAMIC_TYPE, SendDynamicActivity.TEXT_ONLY_DYNAMIC);
-                it.putExtras(bundle);
-                startActivity(it);
+                // 跳转到发送动态页面
+                SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+                sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
+                sendDynamicDataBean.setDynamicType(SendDynamicDataBean.TEXT_ONLY_DYNAMIC);
+                SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
                 return true;
             }
         });
@@ -295,12 +296,11 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
         // 跳转到发送动态页面
-        Intent it = new Intent(getContext(), SendDynamicActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(SendDynamicActivity.DYNAMIC_PHOTOS, (ArrayList<? extends Parcelable>) photoList);
-        bundle.putInt(SendDynamicActivity.DYNAMIC_TYPE, SendDynamicActivity.PHOTO_TEXT_DYNAMIC);
-        it.putExtras(bundle);
-        startActivity(it);
+        SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+        sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
+        sendDynamicDataBean.setDynamicPrePhotos(photoList);
+        sendDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
+        SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
     }
 
     @Override

@@ -31,6 +31,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
@@ -304,6 +305,17 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     }
 
     @Override
+    public SendDynamicDataBean getDynamicSendData() {
+        Bundle bundle = getArguments();
+        SendDynamicDataBean sendDynamicDataBean = null;
+        if (bundle != null) {
+            sendDynamicDataBean = bundle.getParcelable(SendDynamicActivity.SEND_DYNAMIC_DATA);
+        }
+        return sendDynamicDataBean;
+    }
+
+
+    @Override
     protected void setRightClick() {
         mPresenter.sendDynamic(packageDynamicData());
     }
@@ -467,20 +479,21 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     private void initDynamicType() {
         Bundle bundle = getArguments();
         if (bundle != null) {
-            dynamicType = bundle.getInt(SendDynamicActivity.DYNAMIC_TYPE);
-            List<ImageBean> originPhotos = bundle.getParcelableArrayList(SendDynamicActivity.DYNAMIC_PHOTOS);
+            SendDynamicDataBean sendDynamicDataBean = bundle.getParcelable(SendDynamicActivity.SEND_DYNAMIC_DATA);
+            dynamicType = sendDynamicDataBean.getDynamicType();
+            List<ImageBean> originPhotos = sendDynamicDataBean.getDynamicPrePhotos();
             if (originPhotos != null) {
                 selectedPhotos = new ArrayList<>(MAX_PHOTOS);
                 selectedPhotos.addAll(originPhotos);
             }
         }
         switch (dynamicType) {
-            case SendDynamicActivity.PHOTO_TEXT_DYNAMIC:
+            case SendDynamicDataBean.PHOTO_TEXT_DYNAMIC:
                 // 没有图片就初始化这些
                 initPhotoSelector();
                 initPhotoList(bundle);
                 break;
-            case SendDynamicActivity.TEXT_ONLY_DYNAMIC:
+            case SendDynamicDataBean.TEXT_ONLY_DYNAMIC:
                 mRvPhotoList.setVisibility(View.GONE);// 隐藏图片控件
                 break;
             default:
