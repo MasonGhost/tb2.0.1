@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.home;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
@@ -43,7 +42,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 
-import static com.zhiyicx.common.utils.StatusBarUtils.STATUS_TYPE_ANDROID_M;
+import static com.zhiyicx.thinksnsplus.modules.home.HomeActivity.BUNDLE_JPUSH_MESSAGE;
 
 /**
  * @Describe
@@ -95,9 +94,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     private JpushAlias mJpushAlias;
 
 
-    public static HomeFragment newInstance() {
+    public static HomeFragment newInstance(Bundle args) {
         HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
     }
@@ -145,7 +143,11 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 .inject(this);
         initListener();
         changeNavigationButton(PAGE_HOME);
-        mVpHome.setCurrentItem(PAGE_HOME, false);
+        if (getArguments() != null && getArguments().getParcelable(BUNDLE_JPUSH_MESSAGE) != null) {
+            checkBottomItem(HomeFragment.PAGE_MESSAGE);
+        } else {
+            mVpHome.setCurrentItem(PAGE_HOME, false);
+        }
         mJpushAlias = new JpushAlias(getContext(), AppApplication.getmCurrentLoginAuth().getUser_id() + "");// 设置极光推送别名
         mJpushAlias.setAlias();
 
@@ -258,6 +260,11 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
             mVMessageTip.setVisibility(View.INVISIBLE);
         }
 
+    }
+
+    @Override
+    public void checkBottomItem(int positon) {
+        mVpHome.setCurrentItem(positon, false);
     }
 
     /**

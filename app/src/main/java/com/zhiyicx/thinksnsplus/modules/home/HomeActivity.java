@@ -12,13 +12,14 @@ import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.common.utils.ActivityUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Method;
+
 
 /**
  * @Describe
@@ -28,12 +29,23 @@ import java.lang.reflect.Method;
  */
 
 public class HomeActivity extends TSActivity {
-    public static final String BIND_JPUSH_MESSAGE ="jpush_message" ;
+    public static final String BUNDLE_JPUSH_MESSAGE = "jpush_message";
 
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
-        LogUtils.d(TAG," = --------onCreate------------------");
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            JpushMessageBean jpushMessageBean = bundle.getParcelable(BUNDLE_JPUSH_MESSAGE);
+            if (jpushMessageBean != null) {
+                ((HomeContract.View) mContanierFragment).checkBottomItem(HomeFragment.PAGE_MESSAGE);
+            }
+        }
     }
 
     @Override
@@ -43,7 +55,7 @@ public class HomeActivity extends TSActivity {
 
     @Override
     protected Fragment getFragment() {
-        return HomeFragment.newInstance();
+        return HomeFragment.newInstance(getIntent().getExtras());
     }
 
     @Override
@@ -131,9 +143,4 @@ public class HomeActivity extends TSActivity {
     }
 
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        LogUtils.d(TAG," = --------onNewIntent------------------");
-    }
 }
