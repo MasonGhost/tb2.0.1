@@ -175,15 +175,16 @@ public class MusicCommentRepositroty implements MusicCommentContract.Repository 
     }
 
     @Override
-    public void sendComment(int reply_id, String content,String path) {
+    public void sendComment(int music_id,int reply_id, String content,String path) {
         BackgroundRequestTaskBean backgroundRequestTaskBean;
         HashMap<String, Object> params = new HashMap<>();
         params.put("comment_content", content);
+        params.put("reply_to_user_id", reply_id);
         // 后台处理
         backgroundRequestTaskBean = new BackgroundRequestTaskBean
                 (BackgroundTaskRequestMethodConfig.POST, params);
         backgroundRequestTaskBean.setPath(String.format(path,
-                reply_id));
+                music_id));
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
                 (backgroundRequestTaskBean);
     }
@@ -192,5 +193,13 @@ public class MusicCommentRepositroty implements MusicCommentContract.Repository 
     public void deleteComment(int music_id, int comment_id) {
         BackgroundRequestTaskBean backgroundRequestTaskBean;
         HashMap<String, Object> params = new HashMap<>();
+        params.put("comment_id", comment_id);
+        // 后台处理
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                (BackgroundTaskRequestMethodConfig.DELETE, params);
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig
+                .APP_PATH_MUSIC_DELETE_COMMENT_FORMAT,comment_id));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
+                (backgroundRequestTaskBean);
     }
 }

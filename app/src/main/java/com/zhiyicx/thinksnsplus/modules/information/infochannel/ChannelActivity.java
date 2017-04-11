@@ -1,9 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.information.infochannel;
 
-import android.os.Bundle;
 
 import com.zhiyicx.baseproject.base.TSActivity;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 

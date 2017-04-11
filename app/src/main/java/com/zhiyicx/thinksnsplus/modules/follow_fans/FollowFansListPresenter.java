@@ -65,7 +65,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<FollowFansBean> data) {
+    public boolean insertOrUpdateData(@NotNull List<FollowFansBean> data, boolean isLoadMore) {
         mFollowFansBeanGreenDao.deleteDataByType(mPageType, mUserId);
         mFollowFansBeanGreenDao.insertOrReplace(data);
         return true;

@@ -8,6 +8,8 @@ import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * @Describe 用户信息存储实现
  * @Author Jungle68
@@ -16,6 +18,7 @@ import java.util.List;
  */
 
 public class BackgroundRequestTaskBeanGreenDaoImpl extends CommonCacheImpl<BackgroundRequestTaskBean> {
+    @Inject
     public BackgroundRequestTaskBeanGreenDaoImpl(Context context) {
         super(context);
     }

@@ -170,10 +170,11 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
      * 此处需要先存入数据库，方便处理动态的状态，故此处不需要再次更新数据库
      *
      * @param data
+     * @param isLoadMore
      * @return
      */
     @Override
-    public boolean insertOrUpdateData(@NotNull List<DynamicBean> data) {
+    public boolean insertOrUpdateData(@NotNull List<DynamicBean> data, boolean isLoadMore) {
         return true;
     }
 

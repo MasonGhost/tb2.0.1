@@ -80,8 +80,8 @@ public class ApiConfig {
             "api/v1/follows/followeds/{user_id}/{max_id}";// 获取用户粉丝列表
     public static final String APP_PATH_FOLLOW_USER = "api/v1/users/follow";// 关注用户
     public static final String APP_PATH_CANCEL_FOLLOW_USER = "api/v1/users/unFollow";// 取消用户关注
-    public static final String APP_PATH_GET_USER_FOLLOW_STATE = "api/v1/users/followstatus";//
-    // 获取用户关注状态
+    public static final String APP_PATH_GET_USER_FOLLOW_STATE = "api/v1/users/followstatus";// 获取用户关注状态
+    public static final String APP_PATH_GET_DIGGS_RANK = "api/v1/diggsrank";//  用户点赞排行
 
     /**
      * 动态相关

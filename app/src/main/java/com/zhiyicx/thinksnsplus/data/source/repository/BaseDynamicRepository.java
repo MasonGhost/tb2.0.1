@@ -111,9 +111,9 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
      */
     @Override
     public Observable<BaseJson<List<DynamicBean>>> getDynamicList(final String type, Long max_id, int page, final boolean isLoadMore) {
+
         return dealWithDynamicList(mDynamicClient.getDynamicList(type, max_id,
                 Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE), page), type, isLoadMore);
-
     }
 
     /**

@@ -44,7 +44,7 @@ public class MessageLikePresenter extends BasePresenter<MessageLikeContract.Repo
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<MessageItemBean> data) {
+    public boolean insertOrUpdateData(@NotNull List<MessageItemBean> data, boolean isLoadMore) {
         return false;
     }
 }

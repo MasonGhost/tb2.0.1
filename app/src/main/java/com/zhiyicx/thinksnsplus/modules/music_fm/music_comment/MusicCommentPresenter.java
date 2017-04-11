@@ -13,7 +13,6 @@ import com.zhiyicx.thinksnsplus.data.source.repository.MusicCommentRepositroty;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -110,7 +109,7 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
         }else{
             path=APP_PATH_MUSIC_ABLUM_COMMENT_FORMAT;
         }
-        mRepository.sendComment(mRootView.getCommentId(), content, path);
+        mRepository.sendComment(mRootView.getCommentId(),reply_id, content, path);
 
         MusicCommentListBean createComment = new MusicCommentListBean();
         createComment.setState(SEND_ING);
@@ -156,7 +155,7 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<MusicCommentListBean> data) {
+    public boolean insertOrUpdateData(@NotNull List<MusicCommentListBean> data, boolean isLoadMore) {
         return false;
     }
 

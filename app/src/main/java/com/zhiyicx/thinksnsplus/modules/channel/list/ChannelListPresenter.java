@@ -88,7 +88,7 @@ public class ChannelListPresenter extends BasePresenter<ChannelListContract.Repo
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<ChannelSubscripBean> data) {
+    public boolean insertOrUpdateData(@NotNull List<ChannelSubscripBean> data, boolean isLoadMore) {
         // 在repository中进行了清空表，和添加数据的操作
         return true;
     }

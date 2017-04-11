@@ -100,7 +100,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<MessageItemBean> data) {
+    public boolean insertOrUpdateData(@NotNull List<MessageItemBean> data, boolean isLoadMore) {
         return mChatRepository.insertOrUpdateMessageItemBean(data);
     }
 

@@ -50,6 +50,7 @@ public class MusicAblumInfo implements MusicProviderSource {
                 .putString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE,
                         ""+musicUrl)
                 .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, needData.getTitle())
+                .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, needData.getSinger().getName())
                 .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, needData.getSinger().getName())
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, needData.getLast_time()*1000)
                 .putString(MediaMetadataCompat.METADATA_KEY_GENRE, METADATA_KEY_GENRE)

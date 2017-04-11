@@ -1,10 +1,13 @@
 package com.zhiyicx.thinksnsplus.base;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
 import com.antfortune.freeline.FreelineCore;
@@ -28,7 +31,8 @@ import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.QueueManager;
-import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MusicWindows;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.WindowUtils;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.io.File;
@@ -57,7 +61,6 @@ import rx.functions.Action1;
  * @Date 2016/12/16
  * @Contact 335891510@qq.com
  */
-
 public class AppApplication extends TSApplication {
     @Inject
     AuthRepository mAuthRepository;
@@ -66,7 +69,7 @@ public class AppApplication extends TSApplication {
     private static HttpProxyCacheServer mMediaProxyCacheServer;
     private static QueueManager mQueueManager;
     public static List<String> sOverRead = new ArrayList<>();
-    private static MusicWindows sMusicWindows;
+    public int mActivityCount = 0;
 
     @Override
     public void onCreate() {
@@ -82,6 +85,7 @@ public class AppApplication extends TSApplication {
         JPushInterface.init(this);
         MobclickAgent.setDebugMode(true);
         System.out.println("getPackageName() = " + getPackageName());
+        registerActivityCallBacks();
     }
 
     /**
@@ -299,11 +303,6 @@ public class AppApplication extends TSApplication {
                 .mMediaProxyCacheServer = newProxy()) : AppApplication.mMediaProxyCacheServer;
     }
 
-    public static MusicWindows getMusicWindows() {
-        return sMusicWindows == null ? new MusicWindows(BaseApplication.getContext()) :
-                sMusicWindows;
-    }
-
     private static HttpProxyCacheServer newProxy() {
         return new HttpProxyCacheServer.Builder(BaseApplication.getContext())
                 .cacheDirectory(new File(FileUtils.getCacheFile(BaseApplication.getContext(), false)// liuchao 2017.3.27修改获取缓存历经
@@ -318,6 +317,48 @@ public class AppApplication extends TSApplication {
 
     public static void setmQueueManager(QueueManager mQueueManager) {
         AppApplication.mQueueManager = mQueueManager;
+    }
+
+    private void registerActivityCallBacks() {
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+                mActivityCount--;
+                if (mActivityCount == 0) {// 切到后台
+                    WindowUtils.hidePopupWindow();
+                }
+            }
+
+            @Override
+            public void onActivityStarted(Activity activity) {
+                if (!(activity instanceof MusicPlayActivity)&&((AppCompatActivity)activity).getSupportMediaController()!=null){
+                    WindowUtils.showPopupWindow(AppApplication.this);
+                }
+                mActivityCount++;
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+            }
+
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+
+            }
+        });
     }
 
 }
