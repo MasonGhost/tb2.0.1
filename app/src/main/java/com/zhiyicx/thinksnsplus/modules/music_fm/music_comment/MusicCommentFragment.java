@@ -129,8 +129,6 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         position = position - 1;
-        LogUtils.d(mListDatas.get(position).getUser_id());
-        LogUtils.d(AppApplication.getmCurrentLoginAuth().getUser_id());
         if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth()
                 .getUser_id()) {// 自己的评论
             if (mListDatas.get(position).getId() != -1) {
@@ -214,7 +212,6 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
                     public void onItem1Clicked() {
-                        ToastUtils.showToast("暂无接口");
                         mPresenter.deleteComment(data);
                         mDeletCommentPopWindow.hide();
                     }

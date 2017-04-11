@@ -48,8 +48,9 @@ public class RequestIntercept implements Interceptor {
         }
         //打印url信息
         String logUrl = request.url() + "";
+        String method = request.method();
         logUrl = URLDecoder.decode(logUrl, "utf-8");
-        LogUtils.d(TAG, "Sending Request %s on %n Params --->  %s%n Connection ---> %s%n Headers ---> %s", logUrl
+        LogUtils.d(TAG, "Sending " + method + " Request %s on %n Params --->  %s%n Connection ---> %s%n Headers ---> %s", logUrl
                 , request.body() != null ? parseParams(request.body(), requestbuffer) : "null"
                 , chain.connection()
                 , request.headers());
@@ -98,7 +99,7 @@ public class RequestIntercept implements Interceptor {
 
     @NonNull
     public static String parseParams(RequestBody body, Buffer requestbuffer) throws UnsupportedEncodingException {
-        if (body.contentType()!=null&&!body.contentType().toString().contains("multipart")) {
+        if (body.contentType() != null && !body.contentType().toString().contains("multipart")) {
             return URLDecoder.decode(requestbuffer.readUtf8(), "UTF-8");
         }
         return "null";
