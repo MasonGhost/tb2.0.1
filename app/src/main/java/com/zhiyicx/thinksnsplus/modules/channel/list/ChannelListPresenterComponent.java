@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.channel;
+package com.zhiyicx.thinksnsplus.modules.channel.list;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;

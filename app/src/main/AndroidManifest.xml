@@ -189,7 +189,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity android:name=".modules.channel.ChannelListActivity">
+        <activity android:name=".modules.channel.list.ChannelListActivity">
         </activity>
     </application>
 

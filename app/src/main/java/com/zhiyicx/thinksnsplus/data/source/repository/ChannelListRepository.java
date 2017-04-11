@@ -8,7 +8,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.modules.channel.ChannelListContract;
+import com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListContract;
 
 import java.util.List;
 
