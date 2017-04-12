@@ -103,6 +103,7 @@ public class JpushReceiver extends BroadcastReceiver {
     private JpushMessageBean packgeJpushMessage(Bundle bundle, boolean isNofiy) {
         String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
         JpushMessageBean jpushMessageBean = new Gson().fromJson(extras, JpushMessageBean.class);
+        jpushMessageBean.setCreat_time(System.currentTimeMillis());
         jpushMessageBean.setNofity(isNofiy);
         jpushMessageBean.setMessage(bundle.getString(JPushInterface.EXTRA_MESSAGE) + (isNofiy ? " - 通知" : " - 自定义消息"));
         jpushMessageBean.setExtras(extras);

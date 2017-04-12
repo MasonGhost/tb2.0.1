@@ -63,9 +63,9 @@ public class NotificationUtil {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
         builder.setSmallIcon(R.mipmap.icon_256);// 设置图标
-        builder.setContentTitle("标题9527");// 设置通知的标题
+        builder.setContentTitle(context.getString(R.string.app_name));// 设置通知的标题
         builder.setContentText(jpushMessageBean.getMessage());// 设置通知的内容
-        builder.setWhen(System.currentTimeMillis());// 设置通知来到的时间
+        builder.setWhen(jpushMessageBean.getCreat_time());// 设置通知来到的时间
         builder.setTicker("new message");// 第一次提示消失的时候显示在通知栏上的
         builder.setPriority(Notification.PRIORITY_MAX);
         builder.setNumber(1);

@@ -76,7 +76,7 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
 
     }
 
-    @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED)
+    @Subscriber(tag = EventBusTagConfig.EVENT_IM_SETMESSAGETIPVISABLE)
     public void setMessageTipVisable(boolean isShow) {
         mRootView.setMessageTipVisable(isShow);
     }

@@ -112,7 +112,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
             // 刷新当条信息内容
             mPresenter.refreshLastClicikPostion(mLastClickPostion);
             mLastClickPostion = -1;
-        }else{
+        } else {
             refreshData();
         }
 //        if (getListDatas().size() > 0) {
@@ -211,14 +211,15 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     public void updateCommnetItemData(MessageItemBean messageItemBean) {
 //        mListDatas.set(ITEM_TYPE_COMMNETED, messageItemBean); 以 item 的形式呈现
-
         updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter.updateLikeItemData());
+        refreshData();
     }
 
     @Override
     public void updateLikeItemData(MessageItemBean messageItemBean) {
 //        mListDatas.set(ITEM_TYPE_LIKED, messageItemBean);
         updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter.updateLikeItemData());
+        refreshData();
     }
 
     @Override
