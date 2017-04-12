@@ -71,8 +71,8 @@ public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Pres
 
     @Override
     protected void initData() {
+        super.initData();
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        refreshData();
     }
 
     @Override
