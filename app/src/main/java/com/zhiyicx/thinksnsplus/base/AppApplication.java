@@ -332,9 +332,6 @@ public class AppApplication extends TSApplication {
 
             @Override
             public void onActivityStarted(Activity activity) {
-                if (!(activity instanceof MusicPlayActivity)&&((AppCompatActivity)activity).getSupportMediaController()!=null){
-                    WindowUtils.showPopupWindow(AppApplication.this);
-                }
                 mActivityCount++;
             }
 
@@ -344,6 +341,12 @@ public class AppApplication extends TSApplication {
 
             @Override
             public void onActivityResumed(Activity activity) {
+                if ((activity instanceof MusicPlayActivity)) {
+                    WindowUtils.hidePopupWindow();
+                } else {
+                    WindowUtils.showPopupWindow(AppApplication.this);
+                }
+
             }
 
             @Override

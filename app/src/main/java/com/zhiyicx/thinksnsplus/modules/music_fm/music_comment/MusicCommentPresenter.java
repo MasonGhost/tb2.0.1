@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_comment;
 
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.TimeUtils;
@@ -10,6 +11,8 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicCommentListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicCommentRepositroty;
+import com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment.CommentBean;
+import com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment.CommentCore;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -144,7 +147,15 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
     @Override
     public void deleteComment(MusicCommentListBean data) {
         mCommentListBeanGreenDao.deleteSingleCache(data);
-        mRepository.deleteComment(mRootView.getCommentId(),data.getComment_id());
+        CommentBean commentBean=new CommentBean();
+        commentBean.setComment_id(data.getComment_id());
+        commentBean.setNetRequestUrl(String.format(ApiConfig
+                .APP_PATH_MUSIC_DELETE_COMMENT_FORMAT,data.getComment_id()));
+        CommentCore.getInstance(CommentCore.CommentState.DELETE)
+                .set$$Comment(commentBean)
+                .handleComment();
+
+//        mRepository.deleteComment(mRootView.getCommentId(),data.getComment_id());
         mRootView.getListDatas().remove(data);
         mRootView.refreshData();
     }
