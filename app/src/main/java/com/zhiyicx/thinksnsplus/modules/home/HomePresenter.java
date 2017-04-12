@@ -10,7 +10,10 @@ import com.zhiyicx.imsdk.manage.listener.ImMsgReceveListener;
 import com.zhiyicx.imsdk.manage.listener.ImStatusListener;
 import com.zhiyicx.imsdk.manage.listener.ImTimeoutListener;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
+import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.utils.NotificationUtil;
 
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
@@ -64,6 +67,13 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
     public void onMessageReceived(Message message) {
         setMessageTipVisable(true);
         EventBus.getDefault().post(message, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED);
+        JpushMessageBean jpushMessageBean = new JpushMessageBean();
+        jpushMessageBean.setType(JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM);
+        jpushMessageBean.setMessage(message.getTxt());
+        jpushMessageBean.setNofity(false);
+        NotificationUtil.showNotifyMessage(mContext, jpushMessageBean);
+
+
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED)

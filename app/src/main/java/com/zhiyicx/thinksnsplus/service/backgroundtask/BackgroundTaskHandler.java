@@ -8,7 +8,9 @@ import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.net.UpLoadFile;
 import com.zhiyicx.common.utils.ActivityHandler;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.NetUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.imsdk.receiver.NetChangeReceiver;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
@@ -22,6 +24,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.BackgroundRequestTaskBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
@@ -34,6 +37,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.SendDynamicRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
+import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
@@ -56,6 +60,7 @@ import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_DYNAMIC_LIST;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_INFO_LIST;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_DYNAMIC_TO_CHANNEL;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_DYNAMIC_TO_LIST;
 
 /**
@@ -467,8 +472,18 @@ public class BackgroundTaskHandler {
     private void sendDynamic(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
         final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
         final Long feedMark = (Long) params.get("params");
+        SendDynamicDataBean sendDynamicDataBean = (SendDynamicDataBean) params.get("sendDynamicDataBean");
+        final int dynamicBelong;
+        final long channel_id;
+        if (sendDynamicDataBean != null) {
+            dynamicBelong = sendDynamicDataBean.getDynamicBelong();
+            channel_id = sendDynamicDataBean.getDynamicChannlId();
+        } else {
+            dynamicBelong = SendDynamicDataBean.MORMAL_DYNAMIC;
+            channel_id = 0;
+        }
         final DynamicBean dynamicBean = mDynamicBeanGreenDao.getDynamicByFeedMark(feedMark);
-        if(dynamicBean==null){
+        if (dynamicBean == null) {
             mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
             return;
         }
@@ -517,12 +532,12 @@ public class BackgroundTaskHandler {
                                 imageBeens.add(new ImageBean(integers.get(i)));
                             }
                             dynamicDetailBean.setStorage_task_ids(integers);
-                            return mSendDynamicRepository.sendDynamic(dynamicDetailBean);// 进行动态发布的请求
+                            return mSendDynamicRepository.sendDynamic(dynamicDetailBean, dynamicBelong, channel_id);// 进行动态发布的请求
                         }
                     });
         } else {
             // 没有图片上传任务，直接发布动态
-            observable = mSendDynamicRepository.sendDynamic(dynamicDetailBean);// 进行动态发布的请求
+            observable = mSendDynamicRepository.sendDynamic(dynamicDetailBean, dynamicBelong, channel_id);// 进行动态发布的请求
         }
         observable.subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
@@ -536,7 +551,7 @@ public class BackgroundTaskHandler {
                         dynamicBean.setState(DynamicBean.SEND_SUCCESS);
                         dynamicBean.setFeed_id(((Double) data).longValue());
                         mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
-                        EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
+                        sendDynamicByEventBus(dynamicBelong, dynamicBean);
                     }
 
                     @Override
@@ -544,7 +559,7 @@ public class BackgroundTaskHandler {
                         // 发送动态到动态列表：状态为发送失败
                         dynamicBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
-                        EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
+                        sendDynamicByEventBus(dynamicBelong, dynamicBean);
                     }
 
                     @Override
@@ -553,10 +568,22 @@ public class BackgroundTaskHandler {
                         // 发送动态到动态列表：状态为发送失败
                         dynamicBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
-                        EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
+                        sendDynamicByEventBus(dynamicBelong, dynamicBean);
                     }
                 });
 
+    }
+
+    private void sendDynamicByEventBus(int dynamicBelong, DynamicBean dynamicBean) {
+        switch (dynamicBelong) {
+            case SendDynamicDataBean.MORMAL_DYNAMIC:
+                EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
+                break;
+            case SendDynamicDataBean.CHANNEL_DYNAMIC:
+                EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_CHANNEL);
+                break;
+            default:
+        }
     }
 
     /**

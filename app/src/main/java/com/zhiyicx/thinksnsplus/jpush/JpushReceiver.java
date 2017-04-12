@@ -10,7 +10,6 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.appprocess.BackgroundUtil;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
@@ -70,10 +69,7 @@ public class JpushReceiver extends BroadcastReceiver {
     //send msg to MainActivity
     private void handleCustomMessage(Context context, Bundle bundle) {
         JpushMessageBean jpushMessageBean = packgeJpushMessage(bundle, false);
-        if (!BackgroundUtil.getLinuxCoreInfoForIsForeground(context, context.getPackageName())) {   // 应用在后台
-            NotificationUtil notiUtil = new NotificationUtil(context);
-            notiUtil.postNotification(jpushMessageBean);
-        }
+        NotificationUtil.showNotifyMessage(context,jpushMessageBean);
 
     }
 
@@ -84,7 +80,7 @@ public class JpushReceiver extends BroadcastReceiver {
         if (DeviceUtils.isAppAlive(context, context.getPackageName())) {
             Intent mainIntent = new Intent(context, HomeActivity.class);
             Bundle msgBundle = new Bundle();
-            msgBundle.putParcelable(HomeActivity.BIND_JPUSH_MESSAGE, jpushMessageBean);
+            msgBundle.putParcelable(HomeActivity.BUNDLE_JPUSH_MESSAGE, jpushMessageBean);
             mainIntent.putExtras(msgBundle);
             //将MainAtivity的launchMode设置成SingleTask, 或者在下面flag中加上Intent.FLAG_CLEAR_TOP,
             //如果Task栈中有MainActivity的实例，就会把它移到栈顶，把在它之上的Activity都清理出栈，
@@ -97,7 +93,7 @@ public class JpushReceiver extends BroadcastReceiver {
             Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
             launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             Bundle msgBundle = new Bundle();
-            msgBundle.putParcelable(HomeActivity.BIND_JPUSH_MESSAGE, jpushMessageBean);
+            msgBundle.putParcelable(HomeActivity.BUNDLE_JPUSH_MESSAGE, jpushMessageBean);
             launchIntent.putExtras(msgBundle);
             context.startActivity(launchIntent);
         }
@@ -107,10 +103,11 @@ public class JpushReceiver extends BroadcastReceiver {
     private JpushMessageBean packgeJpushMessage(Bundle bundle, boolean isNofiy) {
         String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
         JpushMessageBean jpushMessageBean = new Gson().fromJson(extras, JpushMessageBean.class);
-        jpushMessageBean.setMessage(bundle.getString(JPushInterface.EXTRA_MESSAGE) + (isNofiy ? "通知" : "自定义消息"));
+        jpushMessageBean.setNofity(isNofiy);
+        jpushMessageBean.setMessage(bundle.getString(JPushInterface.EXTRA_MESSAGE) + (isNofiy ? " - 通知" : " - 自定义消息"));
+        jpushMessageBean.setExtras(extras);
+        EventBus.getDefault().post(jpushMessageBean, EventBusTagConfig.EVENT_JPUSH_RECIEVED_MESSAGE_UPDATE_MESSAGE_LIST);
         LogUtils.d(TAG, "-----------------extras = " + extras);
-        LogUtils.d(TAG, "-----------------jpushMessageBean = " + jpushMessageBean.toString());
-        EventBus.getDefault().post(jpushMessageBean, EventBusTagConfig.EVENT_JPUSH_RECIEVED_MESSAGE);
         return jpushMessageBean;
     }
 

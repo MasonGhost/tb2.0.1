@@ -12,9 +12,19 @@ import android.os.Parcelable;
 
 public class JpushMessageBean implements Parcelable {
 
-    private String message;
-    private String type;
-    private String action;
+    private String message;  // 基本消息
+    private String type; //  type 推送模块类型
+    private String action; // action 推送操作类型
+    private boolean isNofity; // 是通知还是透传消息，true 代表通知
+    private String extras;  //　额外数据
+
+    public String getExtras() {
+        return extras;
+    }
+
+    public void setExtras(String extras) {
+        this.extras = extras;
+    }
 
     public String getMessage() {
         return message;
@@ -40,12 +50,25 @@ public class JpushMessageBean implements Parcelable {
         this.action = action;
     }
 
+    public boolean isNofity() {
+        return isNofity;
+    }
+
+    public void setNofity(boolean nofity) {
+        isNofity = nofity;
+    }
+
+    public JpushMessageBean() {
+    }
+
     @Override
     public String toString() {
         return "JpushMessageBean{" +
                 "message='" + message + '\'' +
                 ", type='" + type + '\'' +
                 ", action='" + action + '\'' +
+                ", isNofity=" + isNofity +
+                ", extras='" + extras + '\'' +
                 '}';
     }
 
@@ -59,18 +82,19 @@ public class JpushMessageBean implements Parcelable {
         dest.writeString(this.message);
         dest.writeString(this.type);
         dest.writeString(this.action);
-    }
-
-    public JpushMessageBean() {
+        dest.writeByte(this.isNofity ? (byte) 1 : (byte) 0);
+        dest.writeString(this.extras);
     }
 
     protected JpushMessageBean(Parcel in) {
         this.message = in.readString();
         this.type = in.readString();
         this.action = in.readString();
+        this.isNofity = in.readByte() != 0;
+        this.extras = in.readString();
     }
 
-    public static final Parcelable.Creator<JpushMessageBean> CREATOR = new Parcelable.Creator<JpushMessageBean>() {
+    public static final Creator<JpushMessageBean> CREATOR = new Creator<JpushMessageBean>() {
         @Override
         public JpushMessageBean createFromParcel(Parcel source) {
             return new JpushMessageBean(source);

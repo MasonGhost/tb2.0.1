@@ -175,38 +175,39 @@ public class AppApplication extends TSApplication {
                 .doOnCompleted(new Action0() {
                     @Override
                     public void call() {
-                        if (alertDialog == null) {
-                            alertDialog = new AlertDialog.Builder(ActivityHandler
-                                    .getInstance().currentActivity())
-                                    .setTitle(tipStr)
-                                    .setPositiveButton(R.string.sure, new
-                                            DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface
-                                                                            dialogInterface,
-                                                                    int i) {
-                                                    // TODO: 2017/2/8  清理登录信息 token 信息
-                                                    mAuthRepository.clearAuthBean();
-                                                    BackgroundTaskManager.getInstance
-                                                            (getContext())
-                                                            .closeBackgroundTask();//
-                                                    // 关闭后台任务
-                                                    Intent intent = new Intent
-                                                            (getContext(),
-                                                                    LoginActivity
-                                                                            .class);
-                                                    ActivityHandler.getInstance()
-                                                            .currentActivity()
-                                                            .startActivity
-                                                                    (intent);
-                                                    alertDialog.dismiss();
-                                                }
-                                            })
-                                    .create();
-                        }
+                        alertDialog = new AlertDialog.Builder(ActivityHandler
+                                .getInstance().currentActivity())
+                                .setTitle(tipStr)
+                                .setPositiveButton(R.string.sure, new
+                                        DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface
+                                                                        dialogInterface,
+                                                                int i) {
+                                                // TODO: 2017/2/8  清理登录信息 token 信息
+                                                mAuthRepository.clearAuthBean();
+                                                BackgroundTaskManager.getInstance
+                                                        (getContext())
+                                                        .closeBackgroundTask();//
+                                                // 关闭后台任务
+                                                Intent intent = new Intent
+                                                        (getContext(),
+                                                                LoginActivity
+                                                                        .class);
+                                                ActivityHandler.getInstance()
+                                                        .currentActivity()
+                                                        .startActivity
+                                                                (intent);
+                                                alertDialog.dismiss();
+                                            }
+                                        })
+                                .create();
                         alertDialog.setCanceledOnTouchOutside(false);
-                        alertDialog.show();
-
+                        try {
+                            alertDialog.show();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 })
                 .doOnError(new Action1<Throwable>() {

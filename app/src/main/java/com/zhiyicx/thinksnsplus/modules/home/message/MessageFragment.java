@@ -103,7 +103,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                 .build()
                 .inject(this);
         super.initData();// 需要在 dagger 注入后
-        updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter.updateLikeItemData());
     }
 
     @Override
@@ -113,10 +112,12 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
             // 刷新当条信息内容
             mPresenter.refreshLastClicikPostion(mLastClickPostion);
             mLastClickPostion = -1;
+        }else{
+            refreshData();
         }
-        if (getListDatas().size() > 0) {
-            mPresenter.refreshLastClicikPostion(0);
-        }
+//        if (getListDatas().size() > 0) {
+//            mPresenter.refreshLastClicikPostion(0);
+//        }
     }
 
     @Override
@@ -209,12 +210,15 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     @Override
     public void updateCommnetItemData(MessageItemBean messageItemBean) {
-        mListDatas.set(ITEM_TYPE_COMMNETED, messageItemBean);
+//        mListDatas.set(ITEM_TYPE_COMMNETED, messageItemBean); 以 item 的形式呈现
+
+        updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter.updateLikeItemData());
     }
 
     @Override
     public void updateLikeItemData(MessageItemBean messageItemBean) {
-        mListDatas.set(ITEM_TYPE_LIKED, messageItemBean);
+//        mListDatas.set(ITEM_TYPE_LIKED, messageItemBean);
+        updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter.updateLikeItemData());
     }
 
     @Override

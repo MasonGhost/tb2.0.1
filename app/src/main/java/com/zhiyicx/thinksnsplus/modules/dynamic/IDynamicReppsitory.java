@@ -22,9 +22,11 @@ public interface IDynamicReppsitory {
      * publish dynamic
      *
      * @param dynamicDetailBean dynamic content
+     * @param channel_id        如果动态是被发送到频道，需要channel_id
+     * @param dynamicBelong     判断动态是被发送到哪儿
      * @return basejson, object is null
      */
-    Observable<BaseJson<Object>> sendDynamic(DynamicDetailBean dynamicDetailBean);
+    Observable<BaseJson<Object>> sendDynamic(DynamicDetailBean dynamicDetailBean, int dynamicBelong, long channel_id);
 
     /**
      * get dynamic list
@@ -76,7 +78,7 @@ public interface IDynamicReppsitory {
      * @param datas
      * @param type
      */
-    void updateOrInsertDynamic(List<DynamicBean> datas,String type);
+    void updateOrInsertDynamic(List<DynamicBean> datas, String type);
 
     /**
      * 取消动态点赞

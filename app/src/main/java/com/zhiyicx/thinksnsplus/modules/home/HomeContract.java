@@ -22,6 +22,12 @@ public interface HomeContract {
          */
         void setMessageTipVisable(boolean isVisiable);
 
+        /**
+         * 选择 item
+         * @param positon
+         */
+        void checkBottomItem(int positon);
+
     }
 
     /**

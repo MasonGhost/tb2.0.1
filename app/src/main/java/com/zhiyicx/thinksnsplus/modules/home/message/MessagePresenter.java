@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.home.message;
 
+import com.google.gson.Gson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.ActivityHandler;
@@ -11,12 +12,16 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
+import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatContract;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
@@ -43,6 +48,9 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     AuthRepository mAuthRepository;
     private MessageItemBean mItemBeanComment;
     private MessageItemBean mItemBeanLike;
+
+    private List<JpushMessageBean> mCommentJpushMessageBeen = new ArrayList<>();
+    private List<JpushMessageBean> mDigJpushMessageBeen = new ArrayList<>();
 
     @Inject
     public MessagePresenter(MessageContract.Repository repository, MessageContract.View rootView) {
@@ -93,6 +101,9 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
      */
     @Override
     public List<MessageItemBean> requestCacheData(Long maxId, boolean isLoadMore) {
+
+        // TODO: 2017/4/11 获取数据库中的推送消息
+        mRootView.updateLikeItemData(mItemBeanLike);
         if (mAuthRepository.getAuthBean() == null) {
             return new ArrayList<>();
         }
@@ -154,19 +165,10 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         mRootView.getListDatas().get(positon).setUnReadMessageNums(0);
 
         mRootView.refreshData(); // 刷新加上 header
+        checkBottomMessageTip();
 
-        // 是否显示底部红点
-        boolean isShowMessgeTip = false;
-        for (MessageItemBean messageItemBean : mRootView.getListDatas()) {
-            if (messageItemBean.getUnReadMessageNums() > 0) {
-                isShowMessgeTip = true;
-                break;
-            }
-        }
-        EventBus.getDefault().post(isShowMessgeTip, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED);
 
     }
-
 
     @Override
     public void deletConversation(MessageItemBean messageItemBean) {
@@ -262,6 +264,65 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     private void onConversationCreated(MessageItemBean messageItemBean) {
         mRootView.getListDatas().add(0, messageItemBean);
         mRootView.refreshData();
+    }
+
+    /**
+     * 推送相关
+     *
+     * @param jpushMessageBean
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_JPUSH_RECIEVED_MESSAGE_UPDATE_MESSAGE_LIST)
+    private void onJpushMessageRecieved(JpushMessageBean jpushMessageBean) {
+
+        switch (jpushMessageBean.getType()) {
+            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM: // 推送携带的消息  {"seq":36,"msg_type":0,"cid":1,"mid":338248648800337924,"type":"im","uid":20}
+                Message message = new Gson().fromJson(jpushMessageBean.getExtras(), Message.class);
+                try {
+                    JSONObject jsonObject = new JSONObject(jpushMessageBean.getExtras());
+                    message.setType(jsonObject.getInt("msg_type"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                message.setCreate_time(message.getMid() >> 23 + MessageDao.TIME_DEFAULT_ADD);
+                message.setTxt(jpushMessageBean.getMessage());
+                MessageDao.getInstance(mContext).insertOrUpdateMessage(message);
+                onMessageReceived(message);
+
+                break;
+            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_FEED:
+            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_CHANNEL:
+            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_MUSIC:
+            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_NEWS:
+            default:
+                switch (jpushMessageBean.getAction()) {
+                    case JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_COMMENT:
+
+                        break;
+                    case JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_DIGG:
+
+                        break;
+                    default:
+                        break;
+                }
+                break;
+
+        }
+
+    }
+
+    /**
+     * 检测底部小红点是否需要显示
+     */
+    private void checkBottomMessageTip() {
+        // 是否显示底部红点
+        boolean isShowMessgeTip = false;
+        for (MessageItemBean messageItemBean : mRootView.getListDatas()) {
+            if (messageItemBean.getUnReadMessageNums() > 0) {
+                isShowMessgeTip = true;
+                break;
+            }
+        }
+        EventBus.getDefault().post(isShowMessgeTip, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED);
     }
 
 }

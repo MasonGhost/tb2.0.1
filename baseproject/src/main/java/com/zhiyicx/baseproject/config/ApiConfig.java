@@ -25,12 +25,11 @@ public class ApiConfig {
      */
 
     //public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
-    public static final String APP_DOMAIN = "http://192.168.2.222/";// 测试服务器
-    public static final String APP_IM_DOMAIN = "192.168.2.222:9900";// im 测试服务器
+//    public static final String APP_DOMAIN = "http://192.168.2.222/";// 测试服务器
+//    public static final String APP_IM_DOMAIN = "192.168.2.222:9900";// im 测试服务器
 
-    //public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
-    //public static final String APP_IM_DOMAIN = "ws://tsplus.zhibocloud.cn:9900";// im 正式服务器
-
+    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
+    public static final String APP_IM_DOMAIN = "ws://tsplus.zhibocloud.cn:9900";// im 正式服务器
 
 
     public static final String URL_ABOUT_US = "http://www.thinksns.com/index.html";// 关于我们网站
@@ -222,5 +221,9 @@ public class ApiConfig {
     public static final String APP_PATH_GET_CHANNEL = "api/v1/channels/{type}";
     public static final String CHANNEL_TYPE_ALL_CHANNEL = "";// 所有的频道
     public static final String CHANNEL_TYPE_MY_SUBSCRIB_CHANNEL = "my";// 我订阅的频道
-
+    // 发送动态到频道
+    public static final String APP_PATH_SEND_DYNAMIC_TO_CHANNEL = "api/v1/channels/{channel_id}/feed";
+    public static final String APP_PATH_SEND_DYNAMIC_TO_CHANNEL_S = "api/v1/channels/%s/feed";
+    // 获取频道的动态列表
+    public static final String APP_PATH_GET_CHANNEL_DYNAMIC_LIST = "api/v1/channels/{channel_id}/feeds";
 }

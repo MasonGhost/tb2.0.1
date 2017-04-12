@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 
 import java.util.List;
 
@@ -34,5 +35,11 @@ public interface IBaseChannelRepository {
      */
     Observable<BaseJson<List<ChannelSubscripBean>>> getChannelList(@Path("type") String type, long userId);
 
+    /**
+     * 获取频道的动态列表
+     *
+     * @return
+     */
+    Observable<BaseJson<List<DynamicBean>>> getDynamicListFromChannel(long channel_id,long max_id);
 
 }

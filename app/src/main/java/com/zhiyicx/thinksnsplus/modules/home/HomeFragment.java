@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.home;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
@@ -23,6 +22,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
@@ -43,7 +43,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 
-import static com.zhiyicx.common.utils.StatusBarUtils.STATUS_TYPE_ANDROID_M;
+import static com.zhiyicx.thinksnsplus.modules.home.HomeActivity.BUNDLE_JPUSH_MESSAGE;
 
 /**
  * @Describe
@@ -95,9 +95,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     private JpushAlias mJpushAlias;
 
 
-    public static HomeFragment newInstance() {
+    public static HomeFragment newInstance(Bundle args) {
         HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
     }
@@ -145,7 +144,11 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 .inject(this);
         initListener();
         changeNavigationButton(PAGE_HOME);
-        mVpHome.setCurrentItem(PAGE_HOME, false);
+        if (getArguments() != null && getArguments().getParcelable(BUNDLE_JPUSH_MESSAGE) != null) {
+            checkBottomItem(HomeFragment.PAGE_MESSAGE);
+        } else {
+            mVpHome.setCurrentItem(PAGE_HOME, false);
+        }
         mJpushAlias = new JpushAlias(getContext(), AppApplication.getmCurrentLoginAuth().getUser_id() + "");// 设置极光推送别名
         mJpushAlias.setAlias();
 
@@ -260,6 +263,11 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 
     }
 
+    @Override
+    public void checkBottomItem(int positon) {
+        mVpHome.setCurrentItem(positon, false);
+    }
+
     /**
      * 长按动态发送按钮，进入纯文字的动态发布
      */
@@ -267,11 +275,11 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         mFlAdd.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Intent it = new Intent(getContext(), SendDynamicActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putInt(SendDynamicActivity.DYNAMIC_TYPE, SendDynamicActivity.TEXT_ONLY_DYNAMIC);
-                it.putExtras(bundle);
-                startActivity(it);
+                // 跳转到发送动态页面
+                SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+                sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
+                sendDynamicDataBean.setDynamicType(SendDynamicDataBean.TEXT_ONLY_DYNAMIC);
+                SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
                 return true;
             }
         });
@@ -295,12 +303,11 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
         // 跳转到发送动态页面
-        Intent it = new Intent(getContext(), SendDynamicActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(SendDynamicActivity.DYNAMIC_PHOTOS, (ArrayList<? extends Parcelable>) photoList);
-        bundle.putInt(SendDynamicActivity.DYNAMIC_TYPE, SendDynamicActivity.PHOTO_TEXT_DYNAMIC);
-        it.putExtras(bundle);
-        startActivity(it);
+        SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+        sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
+        sendDynamicDataBean.setDynamicPrePhotos(photoList);
+        sendDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
+        SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
     }
 
     @Override

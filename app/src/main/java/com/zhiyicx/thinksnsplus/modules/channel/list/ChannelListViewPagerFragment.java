@@ -1,11 +1,10 @@
-package com.zhiyicx.thinksnsplus.modules.channel;
+package com.zhiyicx.thinksnsplus.modules.channel.list;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansViewPagerFragment;
 
 import java.util.Arrays;
 import java.util.List;

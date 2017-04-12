@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.channel;
+package com.zhiyicx.thinksnsplus.modules.channel.list;
 
 import android.app.Application;
 
