@@ -50,8 +50,7 @@ public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicD
     @Override
     protected MusicDetailFragment getFragment() {
         mMediaBrowserCompat = new MediaBrowserCompat(this, new ComponentName(this,
-                MusicPlayService.class)
-                , mConnectionCallback, null);
+                MusicPlayService.class), mConnectionCallback, null);
         mMusicDetailFragment = MusicDetailFragment.newInstance(getIntent()
                 .getBundleExtra(BUNDLE_MUSIC_ABLUM));
         return mMusicDetailFragment;

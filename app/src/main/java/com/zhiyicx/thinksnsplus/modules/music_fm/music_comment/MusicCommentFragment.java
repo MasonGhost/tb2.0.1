@@ -168,6 +168,10 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     @Override
     public void refreshData() {
         mHeaderAndFooterWrapper.notifyDataSetChanged();
+        if (mListDatas.get(mListDatas.size()-1).getComment_content()==null){
+            mMusicCommentHeader.setCommentList(0);
+            return;
+        }
         mMusicCommentHeader.setCommentList(mHeaderInfo.getCommentCount());
     }
 
@@ -186,8 +190,10 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
         if (!isLoadMore && data.isEmpty()) { // 增加空数据，用于显示占位图
             MusicCommentListBean emptyData = new MusicCommentListBean();
             data.add(emptyData);
+            mMusicCommentHeader.setCommentList(0);
+        }else if(!isLoadMore&&!data.isEmpty()){
+            mMusicCommentHeader.setCommentList(data.size());
         }
-        mMusicCommentHeader.setCommentList(data.size());
         super.onNetResponseSuccess(data, isLoadMore);
     }
 
@@ -232,6 +238,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
                     public void onItem1Clicked() {
+                        mHeaderInfo.setCommentCount(mHeaderInfo.getCommentCount() - 1);
                         mPresenter.deleteComment(data);
                         mDeletCommentPopWindow.hide();
                     }
@@ -244,4 +251,5 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 })
                 .build();
     }
+
 }
