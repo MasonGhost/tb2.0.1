@@ -111,10 +111,11 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
      * @return
      */
     @Override
-    public Observable<BaseJson<List<DynamicBean>>> getDynamicList(final String type, Long max_id, int page, Long[] feeds_id, final boolean isLoadMore) {
-
+    public Observable<BaseJson<List<DynamicBean>>> getDynamicList(final String type, Long max_id, int page, String feeds_id, final boolean isLoadMore) {
+        feeds_id=feeds_id.replace("[","");
+        feeds_id=feeds_id.replace("]","");
         return dealWithDynamicList(mDynamicClient.getDynamicList(type, max_id,
-                Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE), page,feeds_id), type, isLoadMore);
+                Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE), page, feeds_id), type, isLoadMore);
     }
 
     /**
@@ -326,7 +327,6 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     }
 
     /**
-     *
      * @param feed_mark dyanmic feed mark
      * @param feed_id   dyanmic detail id
      * @param max_id    max_id
@@ -386,13 +386,14 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     }
 
     /**
-     *
      * @param comment_ids 评论id 以逗号隔开或者数组形式传入
      * @return
      */
     @Override
     public Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentListByCommentIds(
-            final Long[] comment_ids, final Long feed_mark) {
+            String comment_ids) {
+        comment_ids = comment_ids.replace("[", "");
+        comment_ids = comment_ids.replace("]", "");
         return mDynamicClient.getDynamicCommentListByCommentsId(comment_ids)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -404,7 +405,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                             for (DynamicCommentBean dynamicCommentBean : listBaseJson.getData()) {
                                 user_ids.add(dynamicCommentBean.getUser_id());
                                 user_ids.add(dynamicCommentBean.getReply_to_user_id());
-                                dynamicCommentBean.setFeed_mark(feed_mark);
+//                                dynamicCommentBean.setFeed_mark(feed_mark);
                             }
                             return mUserInfoRepository.getUserInfo(user_ids)
                                     .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<DynamicCommentBean>>>() {

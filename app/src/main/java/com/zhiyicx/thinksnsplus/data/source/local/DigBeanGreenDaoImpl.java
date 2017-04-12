@@ -2,7 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
 
-import com.zhiyicx.thinksnsplus.data.beans.DigBean;
+import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
@@ -19,7 +19,7 @@ import javax.inject.Inject;
  * @Contact master.jungle68@gmail.com
  */
 
-public class DigBeanGreenDaoImpl extends CommonCacheImpl<DigBean> {
+public class DigBeanGreenDaoImpl extends CommonCacheImpl<DigRankBean> {
 
     @Inject
     public DigBeanGreenDaoImpl(Application context) {
@@ -27,13 +27,13 @@ public class DigBeanGreenDaoImpl extends CommonCacheImpl<DigBean> {
     }
 
     @Override
-    public long saveSingleData(DigBean singleData) {
+    public long saveSingleData(DigRankBean singleData) {
         DigBeanDao digBeanDao = getWDaoSession().getDigBeanDao();
         return digBeanDao.insert(singleData);
     }
 
     @Override
-    public void saveMultiData(List<DigBean> multiData) {
+    public void saveMultiData(List<DigRankBean> multiData) {
         DigBeanDao digBeanDao = getWDaoSession().getDigBeanDao();
         digBeanDao.insertOrReplaceInTx(multiData);
     }
@@ -44,19 +44,19 @@ public class DigBeanGreenDaoImpl extends CommonCacheImpl<DigBean> {
     }
 
     @Override
-    public DigBean getSingleDataFromCache(Long primaryKey) {
+    public DigRankBean getSingleDataFromCache(Long primaryKey) {
         DigBeanDao digBeanDao = getRDaoSession().getDigBeanDao();
         return digBeanDao.load(primaryKey);
     }
 
     @Override
-    public List<DigBean> getMultiDataFromCache() {
+    public List<DigRankBean> getMultiDataFromCache() {
         DigBeanDao digBeanDao = getRDaoSession().getDigBeanDao();
-        List<DigBean> datas = digBeanDao.loadAll();
+        List<DigRankBean> datas = digBeanDao.loadAll();
 
-        Collections.sort(datas, new Comparator<DigBean>() {
+        Collections.sort(datas, new Comparator<DigRankBean>() {
             @Override
-            public int compare(DigBean o1, DigBean o2) {
+            public int compare(DigRankBean o1, DigRankBean o2) {
                 try {
                     return Integer.parseInt(o2.getValue()) - Integer.parseInt(o1.getValue());
                 } catch (Exception e) {
@@ -82,19 +82,19 @@ public class DigBeanGreenDaoImpl extends CommonCacheImpl<DigBean> {
     }
 
     @Override
-    public void deleteSingleCache(DigBean dta) {
+    public void deleteSingleCache(DigRankBean dta) {
         DigBeanDao digBeanDao = getWDaoSession().getDigBeanDao();
         digBeanDao.delete(dta);
     }
 
     @Override
-    public void updateSingleData(DigBean newData) {
+    public void updateSingleData(DigRankBean newData) {
         DigBeanDao digBeanDao = getWDaoSession().getDigBeanDao();
         digBeanDao.update(newData);
     }
 
     @Override
-    public long insertOrReplace(DigBean newData) {
+    public long insertOrReplace(DigRankBean newData) {
         DigBeanDao digBeanDao = getWDaoSession().getDigBeanDao();
         return digBeanDao.insertOrReplace(newData);
     }

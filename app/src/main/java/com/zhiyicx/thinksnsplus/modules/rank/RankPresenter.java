@@ -2,7 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.rank;
 
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
-import com.zhiyicx.thinksnsplus.data.beans.DigBean;
+import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DigBeanGreenDaoImpl;
 
 import org.jetbrains.annotations.NotNull;
@@ -33,9 +33,9 @@ public class RankPresenter extends BasePresenter<RankContract.Repository, RankCo
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
         Subscription subscription = mRepository.getDidRankList(mRootView.getPage())
-                .subscribe(new BaseSubscribe<List<DigBean>>() {
+                .subscribe(new BaseSubscribe<List<DigRankBean>>() {
                     @Override
-                    protected void onSuccess(List<DigBean> data) {
+                    protected void onSuccess(List<DigRankBean> data) {
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 
@@ -53,13 +53,13 @@ public class RankPresenter extends BasePresenter<RankContract.Repository, RankCo
     }
 
     @Override
-    public List<DigBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        List<DigBean> cacheData = mDigBeanGreenDao.getMultiDataFromCache();
+    public List<DigRankBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+        List<DigRankBean> cacheData = mDigBeanGreenDao.getMultiDataFromCache();
         return cacheData;
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<DigBean> data, boolean isLoadMore) {
+    public boolean insertOrUpdateData(@NotNull List<DigRankBean> data, boolean isLoadMore) {
         if (!isLoadMore) { // 刷新的时候清除数据
             mDigBeanGreenDao.clearTable();
         }

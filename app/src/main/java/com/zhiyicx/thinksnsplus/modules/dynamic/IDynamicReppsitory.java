@@ -38,7 +38,7 @@ public interface IDynamicReppsitory {
      * @param isLoadMore 是否是刷新
      * @return dynamic list
      */
-    Observable<BaseJson<List<DynamicBean>>> getDynamicList(String type, Long max_id, int page,Long[] feed_ids, boolean isLoadMore);
+    Observable<BaseJson<List<DynamicBean>>> getDynamicList(String type, Long max_id, int page,String feed_ids, boolean isLoadMore);
 
     /**
      * 动态点赞
@@ -122,10 +122,9 @@ public interface IDynamicReppsitory {
      * 根据 id 获取评论列表
      *
      * @param comment_ids 评论id 以逗号隔开或者数组形式传入
-     * @param feed_mark dyanmic feed mark
      * @return
      */
-    Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentListByCommentIds(Long[] comment_ids,Long feed_mark);
+    Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentListByCommentIds(String comment_ids);
 
     /**
      * 增加动态浏览量

@@ -53,7 +53,7 @@ public interface DynamicClient {
      * @return dynamic list
      */
     @GET(ApiConfig.APP_PATH_GET_DYNAMIC_LIST)
-    Observable<BaseJson<List<DynamicBean>>> getDynamicList(@Path("type") String type, @Query("max_id") Long max_id, @Query("limit") Long limit, @Query("page") int page, @Query("feed_ids") Long[] feed_ids);
+    Observable<BaseJson<List<DynamicBean>>> getDynamicList(@Path("type") String type, @Query("max_id") Long max_id, @Query("limit") Long limit, @Query("page") int page, @Query("feed_ids") String feed_ids);
 
     /**
      * #点赞一条动态
@@ -116,7 +116,7 @@ public interface DynamicClient {
      * @return
      */
     @GET(ApiConfig.APP_PATH_DYNAMIC_COMMENT_LIST_BY_COMMENT_ID)
-    Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentListByCommentsId(@Query("comment_ids ") Long[] comment_ids);
+    Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentListByCommentsId(@Query("comment_ids") String comment_ids);
 
     /**
      * 增加动态浏览量

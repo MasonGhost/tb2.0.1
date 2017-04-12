@@ -18,7 +18,9 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
-import com.zhiyicx.thinksnsplus.data.beans.DigBean;
+import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
+import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
+import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
@@ -177,29 +179,29 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     }
 
     @Override
-    public Observable<BaseJson<List<DigBean>>> getDidRankList(int page) {
+    public Observable<BaseJson<List<DigRankBean>>> getDidRankList(int page) {
         return mUserInfoClient.getDigRankList(page, TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<BaseJson<List<DigBean>>, Observable<BaseJson<List<DigBean>>>>() {
+                .flatMap(new Func1<BaseJson<List<DigRankBean>>, Observable<BaseJson<List<DigRankBean>>>>() {
                     @Override
-                    public Observable<BaseJson<List<DigBean>>> call(final BaseJson<List<DigBean>> listBaseJson) {
+                    public Observable<BaseJson<List<DigRankBean>>> call(final BaseJson<List<DigRankBean>> listBaseJson) {
                         if (listBaseJson.isStatus() && !listBaseJson.getData().isEmpty()) {
                             List<Long> userIds = new ArrayList();
-                            for (DigBean digBean : listBaseJson.getData()) {
-                                userIds.add(digBean.getUser_id());
+                            for (DigRankBean digRankBean : listBaseJson.getData()) {
+                                userIds.add(digRankBean.getUser_id());
                             }
                             return getUserInfo(userIds)
-                                    .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<DigBean>>>() {
+                                    .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<DigRankBean>>>() {
                                         @Override
-                                        public BaseJson<List<DigBean>> call(BaseJson<List<UserInfoBean>> userinfobeans) {
+                                        public BaseJson<List<DigRankBean>> call(BaseJson<List<UserInfoBean>> userinfobeans) {
                                             if (userinfobeans.isStatus() && !userinfobeans.getData().isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
                                                 SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
                                                 for (UserInfoBean userInfoBean : userinfobeans.getData()) {
                                                     userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                                 }
-                                                for (DigBean digBean : listBaseJson.getData()) {
-                                                    digBean.setDigUserInfo(userInfoBeanSparseArray.get(digBean.getUser_id().intValue()));
+                                                for (DigRankBean digRankBean : listBaseJson.getData()) {
+                                                    digRankBean.setDigUserInfo(userInfoBeanSparseArray.get(digRankBean.getUser_id().intValue()));
                                                 }
                                                 AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao().insertOrReplace(userinfobeans.getData());
                                             } else {
@@ -214,6 +216,16 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                         return Observable.just(listBaseJson);
                     }
                 });
+    }
+
+    @Override
+    public Observable<BaseJson<List<DigedBean>>> getMyDiggs(int max_id) {
+        return mUserInfoClient.getMyDiggs(max_id,TSListFragment.DEFAULT_PAGE_SIZE);
+    }
+
+    @Override
+    public Observable<BaseJson<List<CommentedBean>>> getMyComments(int max_id) {
+        return mUserInfoClient.getMyComments(max_id,TSListFragment.DEFAULT_PAGE_SIZE);
     }
 
 

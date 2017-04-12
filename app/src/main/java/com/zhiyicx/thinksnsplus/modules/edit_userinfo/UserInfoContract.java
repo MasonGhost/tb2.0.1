@@ -4,7 +4,9 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
-import com.zhiyicx.thinksnsplus.data.beans.DigBean;
+import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
+import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
+import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
@@ -87,7 +89,23 @@ public interface UserInfoContract {
          * @param page
          * @return
          */
-        Observable<BaseJson<List<DigBean>>> getDidRankList(int page);
+        Observable<BaseJson<List<DigRankBean>>> getDidRankList(int page);
+
+        /**
+         * 获取用户收到的点赞
+         * @param max_id
+         * @return
+         */
+        Observable<BaseJson<List<DigedBean>>> getMyDiggs(int max_id);
+
+
+        /**
+         * 获取用户收到的评论
+         * @param max_id
+         * @return
+         */
+        Observable<BaseJson<List<CommentedBean>>> getMyComments(int max_id);
+
 
     }
 

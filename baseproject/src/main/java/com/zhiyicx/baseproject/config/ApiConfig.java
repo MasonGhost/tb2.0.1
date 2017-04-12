@@ -25,11 +25,11 @@ public class ApiConfig {
      */
 
     //public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
-//    public static final String APP_DOMAIN = "http://192.168.2.222/";// 测试服务器
-//    public static final String APP_IM_DOMAIN = "192.168.2.222:9900";// im 测试服务器
+    public static final String APP_DOMAIN = "http://192.168.2.222/";// 测试服务器
+    public static final String APP_IM_DOMAIN = "192.168.2.222:9900";// im 测试服务器
 
-    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
-    public static final String APP_IM_DOMAIN = "ws://tsplus.zhibocloud.cn:9900";// im 正式服务器
+//    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
+//    public static final String APP_IM_DOMAIN = "ws://tsplus.zhibocloud.cn:9900";// im 正式服务器
 
 
     public static final String URL_ABOUT_US = "http://www.thinksns.com/index.html";// 关于我们网站
@@ -116,6 +116,13 @@ public class ApiConfig {
     public static final String APP_PATH_HANDLE_COLLECT_FORMAT = "api/v1/feeds/%s/collection";
     // 增加动态浏览量
     public static final String APP_PATH_HANDLE_DYNAMIC_VIEWCOUNT = "api/v1/feeds/{feed_id}/viewcount";
+
+    // 获取用户收到的点赞
+    public static final String APP_PATH_GET_MY_DIGGS= "api/v1/users/mydiggs";
+
+    // 获取用户收到的评论
+    public static final String APP_PATH_GET_MY_COMMENTS= "api/v1/users/mycomments";
+
 
     /**
      * 资讯相关
