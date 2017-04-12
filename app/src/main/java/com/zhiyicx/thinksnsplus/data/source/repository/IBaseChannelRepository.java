@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ import rx.Observable;
  * @contact email:450127106@qq.com
  */
 
-public interface IBaseChannelRepository {
+public interface IBaseChannelRepository extends IDynamicReppsitory{
 
     /**
      * 处理订阅状态

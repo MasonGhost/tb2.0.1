@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBaseChannelRepository;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
 
 /**
  * @author LiuChao
@@ -35,7 +36,7 @@ public interface ChannelDetailContract {
 
     }
 
-    interface Presenter extends ITSListPresenter<DynamicBean> {
+    interface Presenter extends DynamicContract.Presenter {
 
     }
 }
