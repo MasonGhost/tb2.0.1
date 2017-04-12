@@ -25,6 +25,7 @@ import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentEmp
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailWebItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
+import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -96,8 +97,14 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         multiItemTypeAdapter.addItemViewDelegate(new InfoDetailWebItem(getActivity(), new
                 ItemOnWebEventListener()) {
             @Override
-            public int getDatasize() {
-                return mListDatas.size() - 1;
+            public void dealCommentCount(ViewHolder holder) {
+                if (mListDatas.get(mListDatas.size()-1).getComment_content()!=null) {
+                    holder.getView(R.id.info_detail_comment).setVisibility(View.VISIBLE);
+                    holder.setText(R.id.tv_comment_count,
+                            getActivity().getResources().getString(R.string.dynamic_comment_count, mListDatas.size()-1 + ""));
+                } else {
+                    holder.getView(R.id.info_detail_comment).setVisibility(View.GONE);
+                }
             }
         });
         multiItemTypeAdapter.addItemViewDelegate(new InfoDetailCommentItem(new
@@ -216,6 +223,14 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         mVShadow.setVisibility(View.GONE);
         mPresenter.sendComment(mReplyUserId, text);
         mLLBottomMenuContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void refreshData() {
+
+
+
+        super.refreshData();
     }
 
     private void initBottomToolStyle() {
@@ -403,6 +418,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                     initLoginOutPopupWindow(mListDatas.get(position));
                     mDeletCommentPopWindow.show();
                 } else {
+
                     return;
                 }
             } else {

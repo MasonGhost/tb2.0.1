@@ -117,7 +117,7 @@ public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Rep
         shareContent.setTitle(mRootView.getCurrentInfo().getTitle());
         shareContent.setUrl(String.format(APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
                 mRootView.getCurrentInfo().getId()));
-        if (mRootView.getCurrentInfo().getStorage()!=null){
+        if (mRootView.getCurrentInfo().getStorage() != null) {
             shareContent.setImage(ImageUtils.imagePathConvert(mRootView.getCurrentInfo()
                     .getStorage().getId() + "", 100));
         }
@@ -134,7 +134,7 @@ public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Rep
         int is_collection_news = isUnCollected ? 1 : 0;
         mRootView.getCurrentInfo().setIs_collection_news(is_collection_news);
 
-        if (mRootView.getInfoType()<0){
+        if (mRootView.getInfoType() < 0) {
             return;// 搜索出来的资讯，收藏状态有待优化
         }
         mInfoListBeanGreenDao.saveCollect(mRootView.getInfoType(), mRootView.getNewsId().intValue
@@ -147,6 +147,12 @@ public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Rep
     public void deleteComment(InfoCommentListBean data) {
         mInfoCommentListBeanDao.deleteSingleCache(data);
         mRootView.getListDatas().remove(data);
+        if (mRootView.getListDatas().size() == 1) {// 占位
+            InfoCommentListBean position_zero = new InfoCommentListBean();
+            position_zero.setId(mRootView.getNewsId().intValue());
+            InfoCommentListBean emptyData = new InfoCommentListBean();
+            mRootView.getListDatas().add(emptyData);
+        }
         mRootView.refreshData();
         mRepository.deleteComment(mRootView.getNewsId().intValue(), data.getId());
     }
@@ -230,6 +236,9 @@ public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Rep
         createComment.setFromUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache((long)
                 AppApplication.getmCurrentLoginAuth().getUser_id()));
         mInfoCommentListBeanDao.insertOrReplace(createComment);
+        if (mRootView.getListDatas().get(1).getComment_content() == null) {
+            mRootView.getListDatas().remove(1);// 去掉占位图
+        }
         mRootView.getListDatas().add(1, createComment);
         mRootView.refreshData();
         mRepository.sendComment(content, mRootView.getNewsId(), reply_id,
