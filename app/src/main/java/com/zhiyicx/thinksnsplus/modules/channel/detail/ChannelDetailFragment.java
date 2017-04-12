@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -62,7 +63,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     @BindView(R.id.tv_channel_name)
     TextView mTvChannelName;
     @BindView(R.id.iv_subscrib_btn)
-    ImageView mIvSubscribBtn;
+    TextView mIvSubscribBtn;
     @BindView(R.id.rl_toolbar_container)
     RelativeLayout mRlToolbarContainer;
     @BindView(R.id.v_horizontal_line)

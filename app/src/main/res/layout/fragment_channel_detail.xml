@@ -48,15 +48,23 @@
                 android:textSize="@dimen/toolbar_center_text_size"
                 tools:text="阿超的小蝴蝶"/>
 
-            <ImageView
+            <com.zhiyicx.thinksnsplus.widget.ColorFilterTextView
                 android:id="@+id/iv_subscrib_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="@dimen/channel_subscrib_btn_width"
+                android:layout_height="@dimen/channel_subscrib_btn_height"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:paddingLeft="@dimen/spacing_mid"
-                android:paddingRight="@dimen/spacing_mid"
-                android:src="@mipmap/detail_ico_share_normal"/>
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:background="@drawable/shape_channel_detail_subscrib_button"
+                android:button="@null"
+                android:drawableLeft="@mipmap/channel_ico_add_white"
+                android:drawablePadding="@dimen/spacing_small_3dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/spacing_normal"
+                android:text="订阅"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_content_comment"/>
         </RelativeLayout>
 
         <include layout="@layout/include_horizontal_divider"></include>
