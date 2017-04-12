@@ -132,6 +132,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                         SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
                     }
                 });
+        initListener();
     }
 
     @Override
@@ -225,6 +226,23 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelSize(R.dimen.divider_line);
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
         mLlToolbarContainerParent.setLayoutParams(layoutParams);
+    }
+
+    private void initListener() {
+        RxView.clicks(mVShadow)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        mIlvComment.setVisibility(View.GONE);
+                        mIlvComment.clearFocus();
+                        DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+                        mVShadow.setVisibility(View.GONE);
+
+                    }
+                });
+
+        mIlvComment.setOnSendClickListener(this);
     }
 
     @Override
