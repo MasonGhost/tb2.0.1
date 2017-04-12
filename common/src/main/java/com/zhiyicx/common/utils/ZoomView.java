@@ -25,6 +25,10 @@ import com.zhiyicx.common.utils.log.LogUtils;
 public class ZoomView {
     // 手指移动的最大放缩距离，单位像素
     private static final int MAX_DEFAULT_DISTANCE = 500;
+    // 最小可刷新的距离：手指移动累计位移如果小于它，就无法刷新
+    public static final int CAN_REFRESH_DISTANCE = 200;
+    // 滑动系数，用来处理手指滑动和布局放大的系数比：布局放大尺寸=手指滑动距离*DEFAULT_MOVE_RATIO
+    public static final float DEFAULT_MOVE_RATIO = 0.6f;
     // 是否正在放大
     private Boolean mScaling = false;
     // 记录首次按下位置
@@ -40,6 +44,9 @@ public class ZoomView {
     private int originWidth, originHeight;
     // 这个值可以有构造方法传入，先放这儿，留给有缘人
     private int max_distance = MAX_DEFAULT_DISTANCE;
+    private int can_refresh_distance = CAN_REFRESH_DISTANCE;
+    //监听刷新
+    private ZoomTouchListenerForRefresh mZoomTouchListenerForRefresh;
 
     public ZoomView(View zoomView, Activity activity, RecyclerView recyclerView, int originWidth, int originHeight) {
         this.zoomView = zoomView;
@@ -48,6 +55,8 @@ public class ZoomView {
         mLinearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
         this.originHeight = originHeight;
         this.originWidth = originWidth;
+        // 最大拉动放大距离为屏幕高度一半
+        max_distance = DeviceUtils.getScreenHeight(activity) / 2;
     }
 
     /**
@@ -69,9 +78,22 @@ public class ZoomView {
                     case MotionEvent.ACTION_UP:
                         mScaling = false;
                         replyImage();
+                        int upCanAcessDistance = (int) (event.getY() - mFirstPosition);// 手指移动距离
+                        int upScaleDistance = (int) (upCanAcessDistance * DEFAULT_MOVE_RATIO);// 添加移动参数，增大移动距离和放大尺寸的比例
+                        int upDistance = upScaleDistance * originHeight / originWidth;//计算释放时控件垂直方向总的位移
+                        if (mZoomTouchListenerForRefresh != null) {
+                            // 监听控件移动距离
+                            mZoomTouchListenerForRefresh.moving(upDistance);
+                        }
+                        if (upDistance >= can_refresh_distance) {
+                            // 可刷新区域
+                            if (mZoomTouchListenerForRefresh != null) {
+                                mZoomTouchListenerForRefresh.refreshStart(upDistance);
+                            }
+                        }
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        LogUtils.i("zoomView-->"+zoomView.getTop());
+                        LogUtils.i("zoomView-->" + zoomView.getTop());
                         if (!mScaling) {
                             //当图片也就是第一个item完全可见的时候，记录触摸屏幕的位置
                             if (mLinearLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
@@ -80,9 +102,22 @@ public class ZoomView {
                                 break;
                             }
                         }
-                        int distance = (int) ((event.getY() - mFirstPosition) * 0.6); // 滚动距离乘以一个系数
-                        if (distance < 0||distance>max_distance) {
+                        // 实际监听到的滑动距离：第一个item完全可见的时候
+                        int canAcessDistance = (int) (event.getY() - mFirstPosition);
+                        int scaleDistance = (int) (canAcessDistance * DEFAULT_MOVE_RATIO); // 滚动距离乘以一个系数
+                        int distance = scaleDistance * originHeight / originWidth;//计算释放时控件垂直方向总的位移
+                        if (mZoomTouchListenerForRefresh != null) {
+                            // 监听控件移动距离
+                            mZoomTouchListenerForRefresh.moving(distance);
+                        }
+                        // 控制最大的下拉距离
+                        if (distance < 0 || distance > max_distance) {
                             break;
+                        }
+
+                        if (mZoomTouchListenerForRefresh != null) {
+                            // 是否处于可刷新区域
+                            mZoomTouchListenerForRefresh.canRefresh(distance, distance >= can_refresh_distance);
                         }
                         // 处理放大，需要注意的是，被放缩的控件一定要在父布局的水平方向居中显示，这样放大，才会往两边扩展
                         mScaling = true;
@@ -119,6 +154,44 @@ public class ZoomView {
             }
         });
         anim.start();
+
+    }
+
+    public void setZoomTouchListenerForRefresh(ZoomTouchListenerForRefresh zoomTouchListenerForRefresh) {
+        this.mZoomTouchListenerForRefresh = zoomTouchListenerForRefresh;
+    }
+
+    /**
+     * 监听zoomviewTouch事件:用于刷新等操作
+     */
+    public interface ZoomTouchListenerForRefresh {
+
+        /**
+         * 手指移动，监听滑动距离和方向
+         *
+         * @param moveDistance 控件移动距离
+         */
+        void moving(int moveDistance);
+
+        /**
+         * 刷新开始
+         *
+         * @param moveDistance 控件移动距离
+         */
+        void refreshStart(int moveDistance);
+
+        /**
+         * 刷新完成:该接口方法需要用户手动调用
+         */
+        void refreshEnd();
+
+        /**
+         * 监听可刷新状态
+         *
+         * @param canRefresh   控件到该处，如果释放，是否可以刷新
+         * @param moveDistance 控件移动距离
+         */
+        void canRefresh(int moveDistance, boolean canRefresh);
 
     }
 

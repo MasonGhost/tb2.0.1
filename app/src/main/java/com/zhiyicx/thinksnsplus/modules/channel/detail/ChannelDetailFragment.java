@@ -20,6 +20,7 @@ import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
+import com.zhiyicx.common.utils.ZoomView;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -51,6 +52,8 @@ import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,6 +104,8 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     InputLimitView mIlvComment;
     @BindView(R.id.btn_send_dynamic)
     ImageView mBtnSendDynamic;
+    @BindView(R.id.iv_refresh)
+    ImageView mIvRefresh;
 
     private ItemChannelDetailHeader mItemChannelDetailHeader;
     private ChannelSubscripBean mChannelSubscripBean;// 从上一个页面传过来的频道信息
@@ -115,7 +120,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     protected void initView(View rootView) {
         super.initView(rootView);
         initToolBar();
-        mItemChannelDetailHeader = new ItemChannelDetailHeader(getActivity(), mRvList, mHeaderAndFooterWrapper, mLlToolbarContainerParent);
+        mItemChannelDetailHeader = new ItemChannelDetailHeader(getActivity(), mRvList, mHeaderAndFooterWrapper, mLlToolbarContainerParent, mPresenter);
         mItemChannelDetailHeader.initHeaderView(true);
         RxView.clicks(mBtnSendDynamic)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -234,6 +239,20 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
             // 取消订阅失败
         }
         initSubscribState(channelSubscripBean);
+    }
+
+    @Override
+    public void onNetResponseSuccess(@NotNull List<DynamicBean> data, boolean isLoadMore) {
+        super.onNetResponseSuccess(data, isLoadMore);
+        // 网络数据请求结束
+        mItemChannelDetailHeader.refreshEnd();
+    }
+
+    @Override
+    public void onResponseError(Throwable throwable, boolean isLoadMore) {
+        super.onResponseError(throwable, isLoadMore);
+        // 网络数据请求结束
+        mItemChannelDetailHeader.refreshEnd();
     }
 
     @OnClick(R.id.iv_back)
@@ -586,5 +605,4 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     private void setBtnSendDynamicClickState(boolean clickable) {
         mBtnSendDynamic.setClickable(clickable);
     }
-
 }

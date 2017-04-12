@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.shapes.RoundRectShape;
@@ -52,6 +53,8 @@ import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailContract;
+import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailPresenter;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhiyicx.thinksnsplus.widget.ColorFilterTextView;
@@ -66,7 +69,7 @@ import static com.zhiyicx.thinksnsplus.R.id.fl_cover_contaner;
  * @contact email:450127106@qq.com
  */
 
-public class ItemChannelDetailHeader {
+public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRefresh {
     /**********************************
      * headerView控件
      ********************************/
@@ -87,6 +90,8 @@ public class ItemChannelDetailHeader {
     private ColorFilterTextView subscribBtn;
     private TextView channelName;
     private View bootomDivider;// 底部的分割线
+    private ImageView refreshImage;// 刷新小菊花
+    private ChannelDetailContract.Presenter mChannelDetailPresenter;
 
     private ImageLoader mImageLoader;
 
@@ -129,7 +134,7 @@ public class ItemChannelDetailHeader {
 
     private View headerView;
 
-    public ItemChannelDetailHeader(Activity activity, RecyclerView recyclerView, HeaderAndFooterWrapper headerAndFooterWrapper, View mToolBarContainer) {
+    public ItemChannelDetailHeader(Activity activity, RecyclerView recyclerView, HeaderAndFooterWrapper headerAndFooterWrapper, View mToolBarContainer, ChannelDetailContract.Presenter channelDetailPresenter) {
         mActivity = activity;
         mRecyclerView = recyclerView;
         mHeaderAndFooterWrapper = headerAndFooterWrapper;
@@ -140,6 +145,8 @@ public class ItemChannelDetailHeader {
         subscribBtn = (ColorFilterTextView) mToolBarContainer.findViewById(R.id.iv_subscrib_btn);
         channelName = (TextView) mToolBarContainer.findViewById(R.id.tv_channel_name);
         bootomDivider = mToolBarContainer.findViewById(R.id.v_horizontal_line);
+        refreshImage = (ImageView) mToolBarContainer.findViewById(R.id.iv_refresh);
+        this.mChannelDetailPresenter = channelDetailPresenter;
         // 设置初始透明度为0
         setViewColorWithAlpha(channelName, TITLE_RGB, 0);
         setViewColorWithAlpha(mToolBarContainer, STATUS_RGB, 0);
@@ -296,18 +303,16 @@ public class ItemChannelDetailHeader {
         tv_subscrib_count = (TextView) headerView.findViewById(R.id.tv_subscrib_count);
         tv_share_count = (TextView) headerView.findViewById(R.id.tv_share_count);
         fl_header_container = (LinearLayout) headerView.findViewById(R.id.fl_header_container);
-        // 高度为屏幕宽度一半加上20dp
-        int width = headerLayoutParams.width;
-        int height = headerLayoutParams.height;
-        LogUtils.i("initHeaderViewUI width " + width + " height " + height);
-     /*   LinearLayout.LayoutParams containerLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
-        fl_header_container.setLayoutParams(containerLayoutParams);*/
         // 添加头部放缩
         fl_header_container.post(new Runnable() {
             @Override
             public void run() {
-                LogUtils.i("post run"+fl_header_container.getWidth()+"  "+fl_header_container.getHeight());
-                new ZoomView(fl_header_container, mActivity, mRecyclerView, fl_header_container.getWidth(), fl_header_container.getHeight()).initZoom();
+                LogUtils.i("post run" + fl_header_container.getWidth() + "  " + fl_header_container.getHeight());
+                // 通过post获取控件宽高后，创建缩放头部
+                ZoomView zoomView = new ZoomView(fl_header_container, mActivity, mRecyclerView, fl_header_container.getWidth(), fl_header_container.getHeight());
+                zoomView.initZoom();
+                // 添加刷新监听
+                zoomView.setZoomTouchListenerForRefresh(ItemChannelDetailHeader.this);
             }
         });
     }
@@ -323,4 +328,31 @@ public class ItemChannelDetailHeader {
     }
 
 
+    @Override
+    public void moving(int moveDistance) {
+
+    }
+
+    @Override
+    public void refreshStart(int moveDistance) {
+        // 在网络请求结束后，进行调用
+        mChannelDetailPresenter.requestNetData(0l, false);
+        ((AnimationDrawable) refreshImage.getDrawable()).start();
+
+    }
+
+    @Override
+    public void refreshEnd() {
+        ((AnimationDrawable) refreshImage.getDrawable()).stop();
+        refreshImage.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void canRefresh(int moveDistance, boolean canRefresh) {
+        if (canRefresh) {
+            refreshImage.setVisibility(View.VISIBLE);
+        } else {
+            refreshImage.setVisibility(View.GONE);
+        }
+    }
 }
