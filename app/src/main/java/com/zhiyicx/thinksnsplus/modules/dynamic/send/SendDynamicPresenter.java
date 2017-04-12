@@ -64,9 +64,6 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
         dynamicBean.setComments(new ArrayList<DynamicCommentBean>());
         dynamicBean.setState(DynamicBean.SEND_ING);
         dynamicBean.setUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache(dynamicBean.getUser_id()));
-        // 将动态信息存入数据库
-        mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
-        mDynamicDetailBeanGreenDao.insertOrReplace(dynamicBean.getFeed());
         // 发送动态
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.SEND_DYNAMIC);
@@ -78,10 +75,14 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
         switch (dynamicBelong) {
             case SendDynamicDataBean.MORMAL_DYNAMIC:
+                // 将动态信息存入数据库
+                mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
+                mDynamicDetailBeanGreenDao.insertOrReplace(dynamicBean.getFeed());
                 EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
                 break;
             case SendDynamicDataBean.CHANNEL_DYNAMIC:
-                EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_CHANNEL);
+                // 发送到频道，不做处理
+                //EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_CHANNEL);
                 break;
             default:
         }

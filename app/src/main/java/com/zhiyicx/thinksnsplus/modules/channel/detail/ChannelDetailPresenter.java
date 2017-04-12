@@ -145,6 +145,7 @@ public class ChannelDetailPresenter extends BasePresenter<ChannelDetailContract.
 
     @Override
     public List<DynamicBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+        // 频道的动态不要从数据库拉取数据
         return null;
     }
 
