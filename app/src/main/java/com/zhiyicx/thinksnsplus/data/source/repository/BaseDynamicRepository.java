@@ -28,7 +28,6 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
-import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.ArrayList;
@@ -104,16 +103,18 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     /**
      * get dynamic list
      *
-     * @param type   "" 代表最新；follows 代表关注 ； hots 代表热门
-     * @param max_id 用来翻页的记录id(对应数据体里的feed_id ,最新和关注选填)
-     * @param page   页码 热门选填
+     * @param type       "" 代表最新；follows 代表关注 ； hots 代表热门
+     * @param max_id     用来翻页的记录id(对应数据体里的feed_id ,最新和关注选填)
+     * @param page       页码 热门选填
+     * @param feeds_id
+     * @param isLoadMore 是否是刷新
      * @return
      */
     @Override
-    public Observable<BaseJson<List<DynamicBean>>> getDynamicList(final String type, Long max_id, int page, final boolean isLoadMore) {
+    public Observable<BaseJson<List<DynamicBean>>> getDynamicList(final String type, Long max_id, int page, Long[] feeds_id, final boolean isLoadMore) {
 
         return dealWithDynamicList(mDynamicClient.getDynamicList(type, max_id,
-                Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE), page), type, isLoadMore);
+                Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE), page,feeds_id), type, isLoadMore);
     }
 
     /**
@@ -324,10 +325,75 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                 });
     }
 
+    /**
+     *
+     * @param feed_mark dyanmic feed mark
+     * @param feed_id   dyanmic detail id
+     * @param max_id    max_id
+     * @return
+     */
     @Override
     public Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentList(
             final Long feed_mark, Long feed_id, Long max_id) {
         return mDynamicClient.getDynamicCommentList(feed_id, max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<BaseJson<List<DynamicCommentBean>>, Observable<BaseJson<List<DynamicCommentBean>>>>() {
+                    @Override
+                    public Observable<BaseJson<List<DynamicCommentBean>>> call(final BaseJson<List<DynamicCommentBean>> listBaseJson) {
+                        if (listBaseJson.isStatus() && listBaseJson.getData() != null && !listBaseJson.getData().isEmpty()) {
+                            final List<Long> user_ids = new ArrayList<>();
+                            for (DynamicCommentBean dynamicCommentBean : listBaseJson.getData()) {
+                                user_ids.add(dynamicCommentBean.getUser_id());
+                                user_ids.add(dynamicCommentBean.getReply_to_user_id());
+                                dynamicCommentBean.setFeed_mark(feed_mark);
+                            }
+                            return mUserInfoRepository.getUserInfo(user_ids)
+                                    .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<DynamicCommentBean>>>() {
+                                        @Override
+                                        public BaseJson<List<DynamicCommentBean>> call(BaseJson<List<UserInfoBean>> userinfobeans) {
+                                            if (userinfobeans.isStatus()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                                for (UserInfoBean userInfoBean : userinfobeans.getData()) {
+                                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                                }
+                                                for (int i = 0; i < listBaseJson.getData().size(); i++) {
+                                                    listBaseJson.getData().get(i).setCommentUser(userInfoBeanSparseArray.get((int) listBaseJson.getData().get(i).getUser_id()));
+                                                    if (listBaseJson.getData().get(i).getReply_to_user_id() == 0) { // 如果 reply_user_id = 0 回复动态
+                                                        UserInfoBean userInfoBean = new UserInfoBean();
+                                                        userInfoBean.setUser_id(0L);
+                                                        listBaseJson.getData().get(i).setReplyUser(userInfoBean);
+                                                    } else {
+                                                        listBaseJson.getData().get(i).setReplyUser(userInfoBeanSparseArray.get((int) listBaseJson.getData().get(i).getReply_to_user_id()));
+                                                    }
+                                                }
+                                                AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao().insertOrReplace(userinfobeans.getData());
+                                            } else {
+                                                listBaseJson.setStatus(userinfobeans.isStatus());
+                                                listBaseJson.setCode(userinfobeans.getCode());
+                                                listBaseJson.setMessage(userinfobeans.getMessage());
+                                            }
+                                            return listBaseJson;
+                                        }
+                                    });
+                        } else {
+                            return Observable.just(listBaseJson);
+                        }
+
+                    }
+
+                });
+    }
+
+    /**
+     *
+     * @param comment_ids 评论id 以逗号隔开或者数组形式传入
+     * @return
+     */
+    @Override
+    public Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentListByCommentIds(
+            final Long[] comment_ids, final Long feed_mark) {
+        return mDynamicClient.getDynamicCommentListByCommentsId(comment_ids)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<BaseJson<List<DynamicCommentBean>>, Observable<BaseJson<List<DynamicCommentBean>>>>() {
