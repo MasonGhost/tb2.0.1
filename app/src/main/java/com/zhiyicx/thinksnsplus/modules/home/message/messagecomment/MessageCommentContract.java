@@ -28,6 +28,14 @@ public interface MessageCommentContract {
 
     interface Presenter extends ITSListPresenter<CommentedBean> {
 
+        /**
+         * send a comment
+         *
+         * @param mCurrentPostion current item position
+         * @param replyToUserId   comment  to who
+         * @param commentContent  comment content
+         */
+        void sendComment(int mCurrentPostion, long replyToUserId, String commentContent);
 
     }
 

@@ -70,4 +70,9 @@ public class MessageCommentPresenter extends BasePresenter<MessageCommentContrac
         mCommentedBeanGreenDao.saveMultiData(data);
         return true;
     }
+
+    @Override
+    public void sendComment(int mCurrentPostion, long replyToUserId, String commentContent) {
+
+    }
 }

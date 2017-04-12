@@ -166,6 +166,8 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
      * @param commentedBean
      */
     private void toDetail(CommentedBean commentedBean) {
+
+
     }
 
     /**
