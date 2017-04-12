@@ -242,8 +242,8 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                                                     userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                                 }
                                                 for (DigedBean digedBean : listBaseJson.getData()) {
-                                                    digedBean.setDigUserInfo(userInfoBeanSparseArray.get((int) digedBean.getUser_id()));
-                                                    digedBean.setDigedUserInfo(userInfoBeanSparseArray.get((int) digedBean.getTo_user_id()));
+                                                    digedBean.setDigUserInfo(userInfoBeanSparseArray.get( digedBean.getUser_id().intValue()));
+                                                    digedBean.setDigedUserInfo(userInfoBeanSparseArray.get(digedBean.getTo_user_id().intValue()));
                                                 }
                                                 AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao().insertOrReplace(userinfobeans.getData());
                                             } else {
@@ -270,10 +270,10 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                     public Observable<BaseJson<List<CommentedBean>>> call(final BaseJson<List<CommentedBean>> listBaseJson) {
                         if (listBaseJson.isStatus() && !listBaseJson.getData().isEmpty()) {
                             List<Long> userIds = new ArrayList();
-                            for (CommentedBean digedBean : listBaseJson.getData()) {
-                                userIds.add(digedBean.getUser_id());
-                                userIds.add(digedBean.getTo_user_id());
-                                userIds.add(digedBean.getReply_to_user_id());
+                            for (CommentedBean commentedBean : listBaseJson.getData()) {
+                                userIds.add(commentedBean.getUser_id());
+                                userIds.add(commentedBean.getTo_user_id());
+                                userIds.add(commentedBean.getReply_to_user_id());
                             }
                             return getUserInfo(userIds)
                                     .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<CommentedBean>>>() {
@@ -285,9 +285,15 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                                                     userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                                 }
                                                 for (CommentedBean commentedBean : listBaseJson.getData()) {
-                                                    commentedBean.setCommentUserInfo(userInfoBeanSparseArray.get((int) commentedBean.getUser_id()));
-                                                    commentedBean.setSourceUserInfo(userInfoBeanSparseArray.get((int) commentedBean.getTo_user_id()));
-                                                    commentedBean.setReplyUserInfo(userInfoBeanSparseArray.get((int) commentedBean.getReply_to_user_id()));
+                                                    commentedBean.setCommentUserInfo(userInfoBeanSparseArray.get(commentedBean.getUser_id().intValue()));
+                                                    commentedBean.setSourceUserInfo(userInfoBeanSparseArray.get( commentedBean.getTo_user_id().intValue()));
+                                                    if(commentedBean.getReply_to_user_id()==0){ // 用于占位
+                                                        UserInfoBean userinfo = new UserInfoBean();
+                                                        userinfo.setUser_id(0L);
+                                                        commentedBean.setReplyUserInfo(userinfo);
+                                                    }else {
+                                                        commentedBean.setReplyUserInfo(userInfoBeanSparseArray.get((int) commentedBean.getReply_to_user_id().intValue()));
+                                                    }
                                                 }
                                                 AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao().insertOrReplace(userinfobeans.getData());
                                             } else {

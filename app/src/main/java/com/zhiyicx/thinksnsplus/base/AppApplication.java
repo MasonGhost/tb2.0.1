@@ -362,4 +362,9 @@ public class AppApplication extends TSApplication {
         });
     }
 
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        LogUtils.e("---------------------------------------------onLowMemory---------------------------------------------------");
+    }
 }

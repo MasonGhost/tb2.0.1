@@ -3,7 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 import android.app.Application;
 
 import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
-import com.zhiyicx.thinksnsplus.data.beans.DigBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.DigRankBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.Collections;
@@ -19,23 +19,23 @@ import javax.inject.Inject;
  * @Contact master.jungle68@gmail.com
  */
 
-public class DigBeanGreenDaoImpl extends CommonCacheImpl<DigRankBean> {
+public class DigRankBeanGreenDaoImpl extends CommonCacheImpl<DigRankBean> {
 
     @Inject
-    public DigBeanGreenDaoImpl(Application context) {
+    public DigRankBeanGreenDaoImpl(Application context) {
         super(context);
     }
 
     @Override
     public long saveSingleData(DigRankBean singleData) {
-        DigBeanDao digBeanDao = getWDaoSession().getDigBeanDao();
-        return digBeanDao.insert(singleData);
+        DigRankBeanDao digRankBeanDao = getWDaoSession().getDigRankBeanDao();
+        return digRankBeanDao.insert(singleData);
     }
 
     @Override
     public void saveMultiData(List<DigRankBean> multiData) {
-        DigBeanDao digBeanDao = getWDaoSession().getDigBeanDao();
-        digBeanDao.insertOrReplaceInTx(multiData);
+        DigRankBeanDao digRankBeanDao = getWDaoSession().getDigRankBeanDao();
+        digRankBeanDao.insertOrReplaceInTx(multiData);
     }
 
     @Override
@@ -45,14 +45,14 @@ public class DigBeanGreenDaoImpl extends CommonCacheImpl<DigRankBean> {
 
     @Override
     public DigRankBean getSingleDataFromCache(Long primaryKey) {
-        DigBeanDao digBeanDao = getRDaoSession().getDigBeanDao();
-        return digBeanDao.load(primaryKey);
+        DigRankBeanDao digRankBeanDao = getRDaoSession().getDigRankBeanDao();
+        return digRankBeanDao.load(primaryKey);
     }
 
     @Override
     public List<DigRankBean> getMultiDataFromCache() {
-        DigBeanDao digBeanDao = getRDaoSession().getDigBeanDao();
-        List<DigRankBean> datas = digBeanDao.loadAll();
+        DigRankBeanDao digRankBeanDao = getRDaoSession().getDigRankBeanDao();
+        List<DigRankBean> datas = digRankBeanDao.loadAll();
 
         Collections.sort(datas, new Comparator<DigRankBean>() {
             @Override
@@ -71,32 +71,32 @@ public class DigBeanGreenDaoImpl extends CommonCacheImpl<DigRankBean> {
 
     @Override
     public void clearTable() {
-        DigBeanDao digBeanDao = getWDaoSession().getDigBeanDao();
-        digBeanDao.deleteAll();
+        DigRankBeanDao digRankBeanDao = getWDaoSession().getDigRankBeanDao();
+        digRankBeanDao.deleteAll();
     }
 
     @Override
     public void deleteSingleCache(Long primaryKey) {
-        DigBeanDao digBeanDao = getWDaoSession().getDigBeanDao();
-        digBeanDao.deleteByKey(primaryKey);
+        DigRankBeanDao digRankBeanDao = getWDaoSession().getDigRankBeanDao();
+        digRankBeanDao.deleteByKey(primaryKey);
     }
 
     @Override
     public void deleteSingleCache(DigRankBean dta) {
-        DigBeanDao digBeanDao = getWDaoSession().getDigBeanDao();
-        digBeanDao.delete(dta);
+        DigRankBeanDao digRankBeanDao = getWDaoSession().getDigRankBeanDao();
+        digRankBeanDao.delete(dta);
     }
 
     @Override
     public void updateSingleData(DigRankBean newData) {
-        DigBeanDao digBeanDao = getWDaoSession().getDigBeanDao();
-        digBeanDao.update(newData);
+        DigRankBeanDao digRankBeanDao = getWDaoSession().getDigRankBeanDao();
+        digRankBeanDao.update(newData);
     }
 
     @Override
     public long insertOrReplace(DigRankBean newData) {
-        DigBeanDao digBeanDao = getWDaoSession().getDigBeanDao();
-        return digBeanDao.insertOrReplace(newData);
+        DigRankBeanDao digRankBeanDao = getWDaoSession().getDigRankBeanDao();
+        return digRankBeanDao.insertOrReplace(newData);
     }
 
 }

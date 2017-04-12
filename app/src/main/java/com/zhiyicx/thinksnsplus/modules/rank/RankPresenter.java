@@ -3,7 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.rank;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
-import com.zhiyicx.thinksnsplus.data.source.local.DigBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DigRankBeanGreenDaoImpl;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -23,7 +23,7 @@ import rx.Subscription;
 public class RankPresenter extends BasePresenter<RankContract.Repository, RankContract.View> implements RankContract.Presenter {
 
     @Inject
-    DigBeanGreenDaoImpl mDigBeanGreenDao;
+    DigRankBeanGreenDaoImpl mDigBeanGreenDao;
 
     @Inject
     public RankPresenter(RankContract.Repository repository, RankContract.View rootView) {

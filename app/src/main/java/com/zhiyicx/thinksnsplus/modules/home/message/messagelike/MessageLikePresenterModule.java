@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagelike;
 
+import android.app.Application;
+
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.MessageLikeRepository;
 
@@ -27,7 +29,7 @@ public class MessageLikePresenterModule {
 
 
     @Provides
-    MessageLikeContract.Repository provideMessageLikeContractRepository(ServiceManager serviceManager) {
-        return new MessageLikeRepository(serviceManager);
+    MessageLikeContract.Repository provideMessageLikeContractRepository(ServiceManager serviceManager, Application application) {
+        return new MessageLikeRepository(serviceManager,application);
     }
 }
