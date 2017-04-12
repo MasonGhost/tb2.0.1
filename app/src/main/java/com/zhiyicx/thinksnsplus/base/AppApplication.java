@@ -341,11 +341,11 @@ public class AppApplication extends TSApplication {
 
             @Override
             public void onActivityResumed(Activity activity) {
-                if ((activity instanceof MusicPlayActivity)) {
-                    WindowUtils.hidePopupWindow();
-                } else {
-                    WindowUtils.showPopupWindow(AppApplication.this);
-                }
+//                if ((activity instanceof MusicPlayActivity)) {
+//                    WindowUtils.hidePopupWindow();
+//                } else if (((AppCompatActivity) activity).getSupportMediaController() != null) {
+//                    WindowUtils.showPopupWindow(AppApplication.this);
+//                }
 
             }
 

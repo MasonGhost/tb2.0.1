@@ -12,11 +12,13 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
 
+import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProvider;
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProviderSource;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.WindowUtils;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayService;
 
 import org.simple.eventbus.EventBus;
@@ -93,6 +95,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
     private final IntentFilter mAudioNoisyIntentFilter =
             new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
 
+    // Audio输出通道切换的事件的捕获与处理
     private final BroadcastReceiver mAudioNoisyReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -102,6 +105,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
                     i.setAction(MusicPlayService.ACTION_CMD);
                     i.putExtra(MusicPlayService.CMD_NAME, MusicPlayService.CMD_PAUSE);
                     mContext.startService(i);
+                }else{
                 }
             }
         }
@@ -181,7 +185,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
             mCurrentMediaId = mediaId;
         }
 
-        if (mState == PlaybackStateCompat.STATE_PAUSED && !mediaHasChanged && mMediaPlayer !=
+        if (!mediaHasChanged && mMediaPlayer !=
                 null) { //没有切歌
             configMediaPlayerState();
         } else {
@@ -323,7 +327,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
             if (mPlayOnFocusGain) {
                 if (mMediaPlayer != null && !mMediaPlayer.isPlaying()) {
                     if (mCurrentPosition == mMediaPlayer.getCurrentPosition()) {
-                        mMediaPlayer.start();
+                        mMediaPlayer.start(); // 进入界面后是否自动播放
                         mState = PlaybackStateCompat.STATE_PLAYING;
                     } else {
                         mMediaPlayer.seekTo(mCurrentPosition);

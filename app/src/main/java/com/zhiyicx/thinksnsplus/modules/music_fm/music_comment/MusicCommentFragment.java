@@ -172,7 +172,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
             mMusicCommentHeader.setCommentList(0);
             return;
         }
-        mMusicCommentHeader.setCommentList(mListDatas.size());
+        mMusicCommentHeader.setCommentList(mHeaderInfo.getCommentCount());
     }
 
     @Override
@@ -238,6 +238,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
                     public void onItem1Clicked() {
+                        mHeaderInfo.setCommentCount(mHeaderInfo.getCommentCount() - 1);
                         mPresenter.deleteComment(data);
                         mDeletCommentPopWindow.hide();
                     }
@@ -250,4 +251,5 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 })
                 .build();
     }
+
 }

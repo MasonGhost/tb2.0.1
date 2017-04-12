@@ -161,7 +161,6 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
 //        mRepository.deleteComment(mRootView.getCommentId(),data.getComment_id());
         mRootView.getListDatas().remove(data);
         if (mRootView.getListDatas().size() == 0) {// 占位
-            MusicCommentListBean position_zero = new MusicCommentListBean();
             MusicCommentListBean emptyData = new MusicCommentListBean();
             mRootView.getListDatas().add(emptyData);
         }
