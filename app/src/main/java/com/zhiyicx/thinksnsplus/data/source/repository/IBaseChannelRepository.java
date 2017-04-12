@@ -17,15 +17,22 @@ import rx.Observable;
  * @contact email:450127106@qq.com
  */
 
-public interface IBaseChannelRepository extends IDynamicReppsitory{
+public interface IBaseChannelRepository extends IDynamicReppsitory {
 
     /**
-     * 处理订阅状态
+     * 在server处理订阅状态
      *
      * @param channelSubscripBean
      */
 
     void handleSubscribChannel(ChannelSubscripBean channelSubscripBean);
+
+    /**
+     * 在fragment中处理订阅状态
+     *
+     * @param channelSubscripBean
+     */
+    Observable<BaseJson<Object>> handleSubscribChannelByFragment(ChannelSubscripBean channelSubscripBean);
 
     /**
      * 获取频道列表
@@ -41,6 +48,6 @@ public interface IBaseChannelRepository extends IDynamicReppsitory{
      *
      * @return
      */
-    Observable<BaseJson<List<DynamicBean>>> getDynamicListFromChannel(long channel_id,long max_id);
+    Observable<BaseJson<List<DynamicBean>>> getDynamicListFromChannel(long channel_id, long max_id);
 
 }

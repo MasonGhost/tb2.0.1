@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.channel.detail;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.zhiyicx.common.base.BaseJson;
@@ -15,6 +16,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
+import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -28,6 +30,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
@@ -161,6 +164,11 @@ public class ChannelDetailPresenter extends BasePresenter<ChannelDetailContract.
             msendingStatus.put(i, datas.get(i).getFeed_mark());
         }
         return datas;
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
     }
 
     private void allready() {
@@ -405,4 +413,33 @@ public class ChannelDetailPresenter extends BasePresenter<ChannelDetailContract.
 
     }
 
+    @Override
+    public void handleChannelSubscrib(final ChannelSubscripBean channelSubscripBean) {
+        Subscription subscription = mRepository.handleSubscribChannelByFragment(channelSubscripBean)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribe<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        // 发送到可能的地方，改变订阅状态
+                        mRootView.subscribChannelState(true, channelSubscripBean, "");
+                        EventBus.getDefault().post(channelSubscripBean, EventBusTagConfig.EVENT_CHANNEL_SUBSCRIB);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        mRootView.subscribChannelState(false, channelSubscripBean, message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        String message = throwable.getMessage();
+                        if (TextUtils.isEmpty(message)) {
+                            message = mContext.getString(R.string.err_net_not_work);
+                        }
+                        mRootView.subscribChannelState(false, channelSubscripBean, message);
+                    }
+                });
+        addSubscrebe(subscription);
+    }
 }

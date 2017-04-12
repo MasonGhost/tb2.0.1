@@ -26,6 +26,7 @@ import javax.inject.Inject;
 
 import retrofit2.http.Path;
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -71,6 +72,34 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
         channelSubscripBean.setChannelSubscriped(!channelSubscripBean.getChannelSubscriped());
         // 更新数据库
         mChannelSubscripBeanGreenDao.insertOrReplace(channelSubscripBean);
+    }
+
+    @Override
+    public Observable<BaseJson<Object>> handleSubscribChannelByFragment(final ChannelSubscripBean channelSubscripBean) {
+        boolean subscribState = channelSubscripBean.getChannelSubscriped();
+        long channelId = channelSubscripBean.getId();
+        Observable<BaseJson<Object>> observable = null;
+        if (subscribState) {
+            // 已经订阅，变为未订阅
+            observable = mChannelClient.cancleSubscribChannel(channelId);
+        } else {
+            // 未订阅，变为已订阅
+            observable = mChannelClient.subscribChannel(channelId);
+        }
+        return observable.doOnNext(new Action1<BaseJson<Object>>() {
+            @Override
+            public void call(BaseJson<Object> objectBaseJson) {
+                if (objectBaseJson.isStatus() || objectBaseJson.getCode() == 0) {
+                    // 服务器返回正常状态：操作数据库，数据源
+                    // 更改数据源，切换订阅状态
+                    channelSubscripBean.setChannelSubscriped(!channelSubscripBean.getChannelSubscriped());
+                    // 更新数据库
+                    mChannelSubscripBeanGreenDao.insertOrReplace(channelSubscripBean);
+                } else {
+                    // 返回错误状态，表明订阅或者取消订阅失败，不要改变当前状态
+                }
+            }
+        });
     }
 
     @Override

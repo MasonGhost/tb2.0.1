@@ -2,14 +2,11 @@ package com.zhiyicx.thinksnsplus.modules.channel.detail;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,7 +16,6 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
-import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -62,6 +58,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
@@ -138,6 +135,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     @Override
     protected void initData() {
         mChannelSubscripBean = getArguments().getParcelable(CHANNEL_HEADER_INFO_DATA);
+        initSubscribState(mChannelSubscripBean);
         mItemChannelDetailHeader.initHeaderViewData(mChannelSubscripBean);
         mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
         super.initData();
@@ -221,28 +219,25 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         return mChannelSubscripBean.getId();
     }
 
-    private void initToolBar() {
-        // toolBar 设置状态栏高度的 marginTop
-        int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelSize(R.dimen.divider_line);
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
-        mLlToolbarContainerParent.setLayoutParams(layoutParams);
+    @Override
+    public void subscribChannelState(boolean stateSuccess, ChannelSubscripBean channelSubscripBean, String message) {
+        boolean subscribState = channelSubscripBean.getChannelSubscriped();// 操作后的订阅状态
+        if (stateSuccess && subscribState) {
+            // 订阅成功
+        } else if (!stateSuccess && subscribState) {
+            // 订阅失败
+            showSnackErrorMessage(message);
+        } else if (stateSuccess && !subscribState) {
+            // 取消订阅成功
+        } else if (!stateSuccess && !subscribState) {
+            // 取消订阅失败
+        }
+        initSubscribState(channelSubscripBean);
     }
 
-    private void initListener() {
-        RxView.clicks(mVShadow)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        mIlvComment.setVisibility(View.GONE);
-                        mIlvComment.clearFocus();
-                        DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
-                        mVShadow.setVisibility(View.GONE);
-
-                    }
-                });
-
-        mIlvComment.setOnSendClickListener(this);
+    @OnClick(R.id.iv_back)
+    public void onClick() {
+        getActivity().finish();
     }
 
     @Override
@@ -378,7 +373,6 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         mPresenter.handleLike(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED,
                 mListDatas.get(dataPosition).getFeed().getFeed_id(), dataPosition);
     }
-
 
     private void showCommentView() {
         // 评论
@@ -524,4 +518,67 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         intent.putExtras(bundle);
         startActivity(intent);
     }
+
+    private void initToolBar() {
+        // toolBar 设置状态栏高度的 marginTop
+        int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelSize(R.dimen.divider_line);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
+        mLlToolbarContainerParent.setLayoutParams(layoutParams);
+
+    }
+
+    private void initListener() {
+        RxView.clicks(mVShadow)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        mIlvComment.setVisibility(View.GONE);
+                        mIlvComment.clearFocus();
+                        DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+                        mVShadow.setVisibility(View.GONE);
+
+                    }
+                });
+
+        RxView.clicks(mIvSubscribBtn)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        // 进行订阅
+                        mPresenter.handleChannelSubscrib(mChannelSubscripBean);
+                        // 处理订阅ui逻辑：先处理ui,并未可订阅状态的ui，不可点击发送动态
+                        mIvSubscribBtn.setVisibility(View.GONE);
+                        mBtnSendDynamic.setVisibility(View.VISIBLE);
+                        setBtnSendDynamicClickState(false);
+                    }
+                });
+
+        mIlvComment.setOnSendClickListener(this);
+
+    }
+
+    /**
+     * 处理订阅状态对应的不同逻辑:
+     */
+    private void initSubscribState(ChannelSubscripBean channelSubscripBean) {
+        Boolean subscribState = channelSubscripBean.getChannelSubscriped();
+        if (subscribState) {
+            // 订阅后，显示发送动态按钮，隐藏订阅按钮
+            mIvSubscribBtn.setVisibility(View.GONE);
+            mBtnSendDynamic.setVisibility(View.VISIBLE);
+            setBtnSendDynamicClickState(true);
+        } else {
+            // 未订阅，隐藏发送动态的按钮，显示订阅按钮
+            mIvSubscribBtn.setVisibility(View.VISIBLE);
+            mBtnSendDynamic.setVisibility(View.GONE);
+            setBtnSendDynamicClickState(false);
+        }
+    }
+
+    private void setBtnSendDynamicClickState(boolean clickable) {
+        mBtnSendDynamic.setClickable(clickable);
+    }
+
 }

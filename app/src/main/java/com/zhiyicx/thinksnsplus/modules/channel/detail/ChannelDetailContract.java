@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.channel.detail;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
+import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBaseChannelRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
@@ -27,9 +28,18 @@ public interface ChannelDetailContract {
 
         /**
          * 获取频道id
+         *
          * @return
          */
         long getChannelId();
+
+        /**
+         * 处理订阅后的状态
+         *
+         * @param stateSuccess 订阅是否成功
+         * @param message      接口返回message
+         */
+        void subscribChannelState(boolean stateSuccess, ChannelSubscripBean channelSubscripBean, String message);
     }
 
     interface Repository extends IBaseChannelRepository {
@@ -37,6 +47,9 @@ public interface ChannelDetailContract {
     }
 
     interface Presenter extends DynamicContract.Presenter {
-
+        /**
+         * 处理用户订阅状态
+         */
+        void handleChannelSubscrib(ChannelSubscripBean channelSubscripBean);
     }
 }
