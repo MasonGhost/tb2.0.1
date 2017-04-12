@@ -220,12 +220,88 @@ public class UserInfoRepository implements UserInfoContract.Repository {
 
     @Override
     public Observable<BaseJson<List<DigedBean>>> getMyDiggs(int max_id) {
-        return mUserInfoClient.getMyDiggs(max_id,TSListFragment.DEFAULT_PAGE_SIZE);
+        return mUserInfoClient.getMyDiggs(max_id, TSListFragment.DEFAULT_PAGE_SIZE)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<BaseJson<List<DigedBean>>, Observable<BaseJson<List<DigedBean>>>>() {
+                    @Override
+                    public Observable<BaseJson<List<DigedBean>>> call(final BaseJson<List<DigedBean>> listBaseJson) {
+                        if (listBaseJson.isStatus() && !listBaseJson.getData().isEmpty()) {
+                            List<Long> userIds = new ArrayList();
+                            for (DigedBean digedBean : listBaseJson.getData()) {
+                                userIds.add(digedBean.getUser_id());
+                                userIds.add(digedBean.getTo_user_id());
+                            }
+                            return getUserInfo(userIds)
+                                    .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<DigedBean>>>() {
+                                        @Override
+                                        public BaseJson<List<DigedBean>> call(BaseJson<List<UserInfoBean>> userinfobeans) {
+                                            if (userinfobeans.isStatus() && !userinfobeans.getData().isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                                for (UserInfoBean userInfoBean : userinfobeans.getData()) {
+                                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                                }
+                                                for (DigedBean digedBean : listBaseJson.getData()) {
+                                                    digedBean.setDigUserInfo(userInfoBeanSparseArray.get((int) digedBean.getUser_id()));
+                                                    digedBean.setDigedUserInfo(userInfoBeanSparseArray.get((int) digedBean.getTo_user_id()));
+                                                }
+                                                AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao().insertOrReplace(userinfobeans.getData());
+                                            } else {
+                                                listBaseJson.setStatus(userinfobeans.isStatus());
+                                                listBaseJson.setCode(userinfobeans.getCode());
+                                                listBaseJson.setMessage(userinfobeans.getMessage());
+                                            }
+                                            return listBaseJson;
+                                        }
+                                    });
+                        }
+                        return Observable.just(listBaseJson);
+                    }
+                });
     }
 
     @Override
     public Observable<BaseJson<List<CommentedBean>>> getMyComments(int max_id) {
-        return mUserInfoClient.getMyComments(max_id,TSListFragment.DEFAULT_PAGE_SIZE);
+        return mUserInfoClient.getMyComments(max_id, TSListFragment.DEFAULT_PAGE_SIZE)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<BaseJson<List<CommentedBean>>, Observable<BaseJson<List<CommentedBean>>>>() {
+                    @Override
+                    public Observable<BaseJson<List<CommentedBean>>> call(final BaseJson<List<CommentedBean>> listBaseJson) {
+                        if (listBaseJson.isStatus() && !listBaseJson.getData().isEmpty()) {
+                            List<Long> userIds = new ArrayList();
+                            for (CommentedBean digedBean : listBaseJson.getData()) {
+                                userIds.add(digedBean.getUser_id());
+                                userIds.add(digedBean.getTo_user_id());
+                                userIds.add(digedBean.getReply_to_user_id());
+                            }
+                            return getUserInfo(userIds)
+                                    .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<CommentedBean>>>() {
+                                        @Override
+                                        public BaseJson<List<CommentedBean>> call(BaseJson<List<UserInfoBean>> userinfobeans) {
+                                            if (userinfobeans.isStatus() && !userinfobeans.getData().isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                                for (UserInfoBean userInfoBean : userinfobeans.getData()) {
+                                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                                }
+                                                for (CommentedBean commentedBean : listBaseJson.getData()) {
+                                                    commentedBean.setCommentUserInfo(userInfoBeanSparseArray.get((int) commentedBean.getUser_id()));
+                                                    commentedBean.setSourceUserInfo(userInfoBeanSparseArray.get((int) commentedBean.getTo_user_id()));
+                                                    commentedBean.setReplyUserInfo(userInfoBeanSparseArray.get((int) commentedBean.getReply_to_user_id()));
+                                                }
+                                                AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao().insertOrReplace(userinfobeans.getData());
+                                            } else {
+                                                listBaseJson.setStatus(userinfobeans.isStatus());
+                                                listBaseJson.setCode(userinfobeans.getCode());
+                                                listBaseJson.setMessage(userinfobeans.getMessage());
+                                            }
+                                            return listBaseJson;
+                                        }
+                                    });
+                        }
+                        return Observable.just(listBaseJson);
+                    }
+                });
     }
 
 

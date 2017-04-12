@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * @Describe
@@ -147,6 +148,19 @@ public class JpushMessageBean implements Parcelable {
         this.isNofity = in.readByte() != 0;
         this.extras = in.readString();
         this.isRead = in.readByte() != 0;
+    }
+
+    @Generated(hash = 332466957)
+    public JpushMessageBean(long creat_time, long user_id, String message, String type,
+            String action, boolean isNofity, String extras, boolean isRead) {
+        this.creat_time = creat_time;
+        this.user_id = user_id;
+        this.message = message;
+        this.type = type;
+        this.action = action;
+        this.isNofity = isNofity;
+        this.extras = extras;
+        this.isRead = isRead;
     }
 
     public static final Creator<JpushMessageBean> CREATOR = new Creator<JpushMessageBean>() {
