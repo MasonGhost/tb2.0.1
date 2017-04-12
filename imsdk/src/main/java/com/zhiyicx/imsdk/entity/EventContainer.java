@@ -22,6 +22,7 @@ public class EventContainer implements Serializable {
     public ChatRoomContainer mChatRoomContainer;
     public Conversation mConver;
     public List<Conversation> mConversations;
+    public AuthData mAuthData;
 
     public EventContainer() {
     }
@@ -39,6 +40,7 @@ public class EventContainer implements Serializable {
                 ", mChatRoomContainer=" + mChatRoomContainer +
                 ", mConver=" + mConver +
                 ", mConversations=" + mConversations +
+                ", mAuthData=" + mAuthData +
                 '}';
     }
 }

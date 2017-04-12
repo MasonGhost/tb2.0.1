@@ -6,6 +6,7 @@ import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.imsdk.db.dao.ConversationDao;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
+import com.zhiyicx.imsdk.entity.AuthData;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.R;
@@ -263,6 +264,10 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         }
     }
 
+    @Subscriber(tag = EventBusTagConfig.EVENT_IM_AUTHSUCESSED)
+    private void onAuthSuccessed(AuthData authData) {
+//        mRootView.showSnackSuccessMessage("IM 聊天加载成功");
+    }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONNECTED)
     private void onConnected() {

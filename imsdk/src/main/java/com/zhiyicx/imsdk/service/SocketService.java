@@ -14,6 +14,7 @@ import com.zhiyicx.imsdk.core.autobahn.WebSocket;
 import com.zhiyicx.imsdk.db.base.BaseDao;
 import com.zhiyicx.imsdk.db.dao.ConversationDao;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
+import com.zhiyicx.imsdk.entity.AuthData;
 import com.zhiyicx.imsdk.entity.ChatRoom;
 import com.zhiyicx.imsdk.entity.ChatRoomContainer;
 import com.zhiyicx.imsdk.entity.ChatRoomErr;
@@ -969,17 +970,18 @@ public class SocketService extends BaseService implements ImService.ImListener {
             eventContainer.errMsg = jsonObject.getString("msg");
             eventContainer.err = code;
             switch (code) {
-                case AUTH_FAILED_ERR_UID_OR_PWD: //1021
+                case AUTH_FAILED_ERR_UID_OR_PWD: // 1021 User disabled 被禁用
                     eventContainer.disa = jsonObject.getLong("disa");
 
                     break;
-                case AUTH_FAILED_NO_UID_OR_PWD:
+                case AUTH_FAILED_NO_UID_OR_PWD:// 1020 Auth failed  认证失败
 
                     break;
                 default:
             }
         } else if (jsonObject.has("ping")) {
-
+            AuthData authData = gson.fromJson(jsonObject.toString(), AuthData.class);
+            eventContainer.mAuthData = authData;
         }
         return eventContainer;
     }
@@ -1002,8 +1004,6 @@ public class SocketService extends BaseService implements ImService.ImListener {
                     sendImBroadCast(tmp);
 
             }
-
-
         }
         eventContainer = null;
         return eventContainer;
