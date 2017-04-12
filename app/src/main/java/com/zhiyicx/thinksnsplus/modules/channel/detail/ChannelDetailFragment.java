@@ -66,6 +66,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_POSITION;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.LOOK_COMMENT_MORE;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM_SPACING;
 
 /**
  * @author LiuChao
@@ -246,6 +247,11 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         mIlvComment.setVisibility(View.GONE);
         mVShadow.setVisibility(View.GONE);
         mPresenter.sendComment(mCurrentPostion, mReplyToUserId, text);
+    }
+
+    @Override
+    protected float getItemDecorationSpacing() {
+        return ITEM_SPACING;
     }
 
     @Override
