@@ -135,6 +135,9 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
         createComment.setFromUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache((long)
                 AppApplication.getmCurrentLoginAuth().getUser_id()));
         mCommentListBeanGreenDao.insertOrReplace(createComment);
+        if (mRootView.getListDatas().get(0).getComment_content() == null) {
+            mRootView.getListDatas().remove(0);// 去掉占位图
+        }
         mRootView.getListDatas().add(0, createComment);
         mRootView.refreshData();
     }
@@ -157,6 +160,11 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
 
 //        mRepository.deleteComment(mRootView.getCommentId(),data.getComment_id());
         mRootView.getListDatas().remove(data);
+        if (mRootView.getListDatas().size() == 0) {// 占位
+            MusicCommentListBean position_zero = new MusicCommentListBean();
+            MusicCommentListBean emptyData = new MusicCommentListBean();
+            mRootView.getListDatas().add(emptyData);
+        }
         mRootView.refreshData();
     }
 

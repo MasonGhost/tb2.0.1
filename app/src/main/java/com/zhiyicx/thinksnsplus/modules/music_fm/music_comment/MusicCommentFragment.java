@@ -168,7 +168,11 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     @Override
     public void refreshData() {
         mHeaderAndFooterWrapper.notifyDataSetChanged();
-        mMusicCommentHeader.setCommentList(mHeaderInfo.getCommentCount());
+        if (mListDatas.get(mListDatas.size()-1).getComment_content()==null){
+            mMusicCommentHeader.setCommentList(0);
+            return;
+        }
+        mMusicCommentHeader.setCommentList(mListDatas.size());
     }
 
     @Override
@@ -186,8 +190,10 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
         if (!isLoadMore && data.isEmpty()) { // 增加空数据，用于显示占位图
             MusicCommentListBean emptyData = new MusicCommentListBean();
             data.add(emptyData);
+            mMusicCommentHeader.setCommentList(0);
+        }else if(!isLoadMore&&!data.isEmpty()){
+            mMusicCommentHeader.setCommentList(data.size());
         }
-        mMusicCommentHeader.setCommentList(data.size());
         super.onNetResponseSuccess(data, isLoadMore);
     }
 
