@@ -75,7 +75,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     @BindView(R.id.ilv_comment)
     InputLimitView mIlvComment;
     @BindView(R.id.btn_send_dynamic)
-    FloatingActionButton mBtnSendDynamic;
+    ImageView mBtnSendDynamic;
     public static final String CHANNEL_HEADER_INFO_DATA = "channel_header_info_data";
     private ItemChannelDetailHeader mItemChannelDetailHeader;
     private ChannelSubscripBean mChannelSubscripBean;// 从上一个页面传过来的频道信息

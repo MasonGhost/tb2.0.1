@@ -90,10 +90,13 @@
 
     </com.zhiyicx.baseproject.widget.InputLimitView>
     <!--发送按钮-->
-    <android.support.design.widget.FloatingActionButton
+    <ImageView
         android:id="@+id/btn_send_dynamic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/channel_detail_float_btn_height"
+        android:layout_height="@dimen/channel_detail_float_btn_height"
         android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="20dp"
+        android:scaleType="fitXY"
+        android:translationZ="@dimen/spacing_mid"
+        android:src="@mipmap/channel_btn_suspension"/>
 </FrameLayout>

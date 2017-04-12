@@ -25,6 +25,8 @@
     <dimen name="photo_selector_bottom_complete_width_view">70dp</dimen>
     <dimen name="photo_selector_bottom_complete_height_view">29dp</dimen>
     <dimen name="photo_album_list_picture_height">60dp</dimen>
+    <!--频道详情悬浮按钮宽高  40dp+8dp空白-->
+    <dimen name="channel_detail_float_btn_height">48dp</dimen>
     <!--刷新控件header的高度-->
     <dimen name="refresh_header_height">40dp</dimen>
     <!--登录注册编辑框左边的文字宽度-->

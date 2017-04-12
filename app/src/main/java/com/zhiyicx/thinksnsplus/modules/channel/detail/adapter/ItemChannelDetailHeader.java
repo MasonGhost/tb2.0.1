@@ -75,7 +75,7 @@ public class ItemChannelDetailHeader {
     private TextView tv_channel_description;//频道简介
     private TextView tv_subscrib_count;//订阅数量
     private TextView tv_share_count;// 分享数量
-    private FrameLayout fl_header_container;// 布局根结点
+    private LinearLayout fl_header_container;// 布局根结点
 
     private Activity mActivity;
     private RecyclerView mRecyclerView;
@@ -295,7 +295,7 @@ public class ItemChannelDetailHeader {
         tv_channel_description = (TextView) headerView.findViewById(R.id.tv_channel_description);
         tv_subscrib_count = (TextView) headerView.findViewById(R.id.tv_subscrib_count);
         tv_share_count = (TextView) headerView.findViewById(R.id.tv_share_count);
-        fl_header_container = (FrameLayout) headerView.findViewById(R.id.fl_header_container);
+        fl_header_container = (LinearLayout) headerView.findViewById(R.id.fl_header_container);
         // 高度为屏幕宽度一半加上20dp
         int width = headerLayoutParams.width;
         int height = headerLayoutParams.height;
@@ -303,8 +303,13 @@ public class ItemChannelDetailHeader {
      /*   LinearLayout.LayoutParams containerLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
         fl_header_container.setLayoutParams(containerLayoutParams);*/
         // 添加头部放缩
-        // new ZoomView(fl_header_container, mActivity, mRecyclerView, width, height).initZoom();
-
+        fl_header_container.post(new Runnable() {
+            @Override
+            public void run() {
+                LogUtils.i("post run"+fl_header_container.getWidth()+"  "+fl_header_container.getHeight());
+                new ZoomView(fl_header_container, mActivity, mRecyclerView, fl_header_container.getWidth(), fl_header_container.getHeight()).initZoom();
+            }
+        });
     }
 
     public void setViewColorWithAlpha(View v, int[] colorRGB, int alpha) {
