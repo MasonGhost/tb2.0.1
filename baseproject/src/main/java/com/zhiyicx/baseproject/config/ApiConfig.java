@@ -129,7 +129,9 @@ public class ApiConfig {
      * 资讯相关
      */
     public static final String APP_PATH_INFO_TYPE = "api/v1/news/cates";// 资讯分类列表
-    public static final String APP_PATH_INFO_LIST = "api/v1/news";// 资讯列表
+    public static final String APP_PATH_INFO_LIST = "api/v1/news/{type}";// 资讯列表
+    public static final String INFO_TYPE_NORMAL = "";// 普通的资讯列表，通过cate_uid获取
+    public static final String INFO_TYPE_COLLECTIONS = "collections";
     public static final String APP_PATH_INFO_COMMENT = "api/v1/news/{news_id}/comment";// 评论资讯
     public static final String APP_PATH_INFO_COMMENT_FORMAT = "api/v1/news/%s/comment";// 评论资讯
 

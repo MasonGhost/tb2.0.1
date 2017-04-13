@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
@@ -34,9 +35,19 @@ public class InfoMainRepository implements InfoMainContract.Reppsitory {
 
     @Override
     public Observable<BaseJson<InfoListBean>> getInfoList(String cate_id,
-                                                                long max_id,
-                                                                long page) {
-        return mInfoMainClient.getInfoList(cate_id, max_id,  Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE), page);
+                                                          long max_id,
+                                                          long page) {
+        // 如果传入的cate_id是collections，表示需要获取收藏列表，那么path需要添加该字段；
+        // 如果传入的cate_id表示的是咨询列表类型，那么path为空即可
+        String type = "";
+        switch (cate_id) {
+            case ApiConfig.INFO_TYPE_COLLECTIONS:
+                type = ApiConfig.INFO_TYPE_COLLECTIONS;
+                break;
+            default:
+                type = "";
+        }
+        return mInfoMainClient.getInfoList(type, cate_id, max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE), page);
     }
 
 

@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.information.infomain.list;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoListBeanGreenDaoImpl;
@@ -81,14 +82,20 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
     }
 
     @Override
-    public List<BaseListBean> requestCacheData(Long max_Id,final boolean isLoadMore) {
+    public List<BaseListBean> requestCacheData(Long max_Id, final boolean isLoadMore) {
         final List<BaseListBean> localData = new ArrayList<>();
         Observable.just(mInfoListBeanGreenDao)
                 .map(new Func1<InfoListBeanGreenDaoImpl, InfoListBean>() {
                     @Override
                     public InfoListBean call(InfoListBeanGreenDaoImpl infoListBeanGreenDao) {
-                        return infoListBeanGreenDao
-                                .getInfoListByInfoType(Integer.valueOf(mRootView.getInfoType()));
+                        try {
+                            int type = Integer.valueOf(mRootView.getInfoType());
+                            return infoListBeanGreenDao
+                                    .getInfoListByInfoType(type);
+                        } catch (NumberFormatException e) {
+                            ToastUtils.showToast("资讯类型不合法");
+                        }
+                        return null;
                     }
                 })
                 .filter(new Func1<InfoListBean, Boolean>() {

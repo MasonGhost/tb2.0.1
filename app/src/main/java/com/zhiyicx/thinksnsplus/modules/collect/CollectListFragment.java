@@ -58,7 +58,7 @@ public class CollectListFragment extends TSViewPagerFragment<CollectListPresente
     @Override
     protected List<Fragment> initFragments() {
         Fragment dynamicListFragment = CollectDynamicListFragment.newInstance();
-        Fragment infoListFragment = InfoListFragment.newInstance(RECOMMEND_INFO);
+        Fragment infoListFragment = InfoListFragment.newInstance("collections");
         // Fragment albumListFragment = new MusicListFragment();
         return Arrays.asList(dynamicListFragment
                 , infoListFragment
