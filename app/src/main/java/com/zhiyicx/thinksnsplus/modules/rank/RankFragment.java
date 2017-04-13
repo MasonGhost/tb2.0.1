@@ -5,7 +5,7 @@ import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.DigBean;
+import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 
 /**
@@ -14,11 +14,11 @@ import com.zhy.adapter.recyclerview.CommonAdapter;
  * @Date 2017/1/
  * @Contact master.jungle68@gmail.com
  */
-public class RankFragment extends TSListFragment<RankContract.Presenter, DigBean> implements RankContract.View {
+public class RankFragment extends TSListFragment<RankContract.Presenter, DigRankBean> implements RankContract.View {
 
 
     @Override
-    protected CommonAdapter<DigBean> getAdapter() {
+    protected CommonAdapter<DigRankBean> getAdapter() {
         return new RankAdapter(getContext(), R.layout.item_mine_dig_list, mListDatas);
     }
 

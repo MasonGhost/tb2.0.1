@@ -2,7 +2,9 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.data.beans.DigBean;
+import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
+import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
+import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -74,8 +76,30 @@ public interface UserInfoClient {
      * @return
      */
     @GET(ApiConfig.APP_PATH_GET_DIGGS_RANK)
-    Observable<BaseJson<List<DigBean>>> getDigRankList(@Query("page") int page,
-                                                    @Query("limit") int limit);
+    Observable<BaseJson<List<DigRankBean>>> getDigRankList(@Query("page") int page,
+                                                           @Query("limit") int limit);
 
+
+    /**
+     * 获取用户收到的点赞
+     *
+     * @param max_id  用来翻页数据体记录id
+     * @param limit 返回数据条数 默认15条
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_GET_MY_DIGGS)
+    Observable<BaseJson<List<DigedBean>>> getMyDiggs(@Query("max_id") int max_id,
+                                                     @Query("limit") int limit);
+
+    /**
+     * 获取用户收到的评论
+     *
+     * @param max_id  用来翻页数据体记录id
+     * @param limit 返回数据条数 默认15条
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_GET_MY_COMMENTS)
+    Observable<BaseJson<List<CommentedBean>>> getMyComments(@Query("max_id") int max_id,
+                                                            @Query("limit") int limit);
 
 }

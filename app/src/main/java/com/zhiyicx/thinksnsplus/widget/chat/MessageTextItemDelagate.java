@@ -100,7 +100,9 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
                 break;
             default:
         }
-
+        if (chatItemBean.getUserInfo() == null) {
+            return;
+        }
         // 是否需要显示名字
         if (mIsShowName) {
             holder.setVisible(R.id.tv_chat_name, View.VISIBLE);

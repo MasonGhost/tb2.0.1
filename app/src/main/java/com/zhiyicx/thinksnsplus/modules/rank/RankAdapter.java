@@ -15,7 +15,7 @@ import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.DigBean;
+import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -35,20 +35,20 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @contact email:450127106@qq.com
  */
 
-public class RankAdapter extends CommonAdapter<DigBean> {
+public class RankAdapter extends CommonAdapter<DigRankBean> {
 
-    public RankAdapter(Context context, int layoutId, List<DigBean> datas) {
+    public RankAdapter(Context context, int layoutId, List<DigRankBean> datas) {
         super(context, layoutId, datas);
     }
 
     @Override
-    protected void convert(ViewHolder holder, DigBean digBean, int position) {
-        setItemData(holder, digBean, position);
+    protected void convert(ViewHolder holder, DigRankBean digRankBean, int position) {
+        setItemData(holder, digRankBean, position);
     }
 
-    private void setItemData(final ViewHolder holder, final DigBean digBean, final int position) {
+    private void setItemData(final ViewHolder holder, final DigRankBean digRankBean, final int position) {
         // 设置关注状态   暂时没有关注操作
-//        switch (digBean.getFollowState()) {
+//        switch (digRankBean.getFollowState()) {
 //            case FollowFansBean.IFOLLOWED_STATE:
 //                holder.setImageResource(R.id.iv_user_follow, R.mipmap.ico_me_followed);
 //                break;
@@ -71,13 +71,13 @@ public class RankAdapter extends CommonAdapter<DigBean> {
 //                        // 添加关注，或者取消关注
 //                        // 关注列表的逻辑操作：关注，互相关注 ---》未关注
 //                        // 粉丝列表的逻辑操作：互相关注 ---》未关注
-////                        LogUtils.i("old_state--》" + digBean.getFollowState());
+////                        LogUtils.i("old_state--》" + digRankBean.getFollowState());
 //
 //                    }
 //                });
 
         // 设置用户信息
-        final UserInfoBean userInfoBean = digBean.getDigUserInfo();
+        final UserInfoBean userInfoBean = digRankBean.getDigUserInfo();
         if (userInfoBean == null) {
             // 这种情况一般不会发生，为了防止崩溃，做处理
             return;
@@ -90,7 +90,7 @@ public class RankAdapter extends CommonAdapter<DigBean> {
         // 设置用户名，用户简介
         holder.setText(R.id.tv_name, userInfoBean.getName());
         holder.setText(R.id.tv_user_signature, userInfoBean.getIntro());
-        holder.setText(R.id.tv_rank, digBean.getValue());
+        holder.setText(R.id.tv_rank, digRankBean.getValue());
         // 修改点赞数量颜色
         String digCountString = userInfoBean.getDiggs_count();
         // 当前没有获取到点赞数量，设置为0，否则ColorPhrase会抛出异常

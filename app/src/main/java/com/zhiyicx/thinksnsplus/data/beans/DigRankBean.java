@@ -17,7 +17,7 @@ import org.greenrobot.greendao.DaoException;
  * @Contact master.jungle68@gmail.com
  */
 @Entity
-public class DigBean extends BaseListBean {
+public class DigRankBean extends BaseListBean {
     /**
      * id : 6
      * user_id : 2
@@ -30,28 +30,15 @@ public class DigBean extends BaseListBean {
     private UserInfoBean digUserInfo;// 点赞人的用户信息
     private String value;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public Long getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(Long user_id) {
-        this.user_id = user_id;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
+    @Override
+    public String toString() {
+        return "DigRankBean{" +
+                "id=" + id +
+                ", user_id=" + user_id +
+                ", value='" + value  +
+                '}';
     }
 
     @Override
@@ -62,56 +49,34 @@ public class DigBean extends BaseListBean {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
-        dest.writeLong(this.id);
-        dest.writeLong(this.user_id);
+        dest.writeValue(this.id);
+        dest.writeValue(this.user_id);
+        dest.writeParcelable(this.digUserInfo, flags);
         dest.writeString(this.value);
     }
 
-    protected DigBean(Parcel in) {
-        super(in);
-        this.id = in.readLong();
-        this.user_id = in.readLong();
-        this.value = in.readString();
+    public Long getId() {
+        return this.id;
     }
 
-    @Generated(hash = 491025592)
-    public DigBean(Long id, Long user_id, String value) {
+    public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getUser_id() {
+        return this.user_id;
+    }
+
+    public void setUser_id(Long user_id) {
         this.user_id = user_id;
+    }
+
+    public String getValue() {
+        return this.value;
+    }
+
+    public void setValue(String value) {
         this.value = value;
-    }
-
-    @Generated(hash = 842146675)
-    public DigBean() {
-    }
-
-    public static final Creator<DigBean> CREATOR = new Creator<DigBean>() {
-        @Override
-        public DigBean createFromParcel(Parcel source) {
-            return new DigBean(source);
-        }
-
-        @Override
-        public DigBean[] newArray(int size) {
-            return new DigBean[size];
-        }
-    };
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /** Used for active entity operations. */
-    @Generated(hash = 316156123)
-    private transient DigBeanDao myDao;
-    @Generated(hash = 81788119)
-    private transient Long digUserInfo__resolvedKey;
-
-    @Override
-    public String toString() {
-        return "DigBean{" +
-                "id=" + id +
-                ", user_id=" + user_id +
-                ", value='" + value + '\'' +
-                '}';
     }
 
     /** To-one relationship, resolved on first access. */
@@ -181,10 +146,47 @@ public class DigBean extends BaseListBean {
     }
 
     /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 248443797)
+    @Generated(hash = 870461787)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getDigBeanDao() : null;
+        myDao = daoSession != null ? daoSession.getDigRankBeanDao() : null;
     }
 
+    public DigRankBean() {
+    }
+
+    protected DigRankBean(Parcel in) {
+        super(in);
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.user_id = (Long) in.readValue(Long.class.getClassLoader());
+        this.digUserInfo = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.value = in.readString();
+    }
+
+    @Generated(hash = 1514262402)
+    public DigRankBean(Long id, Long user_id, String value) {
+        this.id = id;
+        this.user_id = user_id;
+        this.value = value;
+    }
+
+    public static final Creator<DigRankBean> CREATOR = new Creator<DigRankBean>() {
+        @Override
+        public DigRankBean createFromParcel(Parcel source) {
+            return new DigRankBean(source);
+        }
+
+        @Override
+        public DigRankBean[] newArray(int size) {
+            return new DigRankBean[size];
+        }
+    };
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 774043907)
+    private transient DigRankBeanDao myDao;
+    @Generated(hash = 81788119)
+    private transient Long digUserInfo__resolvedKey;
 }

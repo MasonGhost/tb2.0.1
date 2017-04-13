@@ -5,6 +5,7 @@ import android.content.Context;
 import com.zhiyicx.imsdk.builder.MessageBuilder;
 import com.zhiyicx.imsdk.core.ImService;
 import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
+import com.zhiyicx.imsdk.entity.AuthData;
 import com.zhiyicx.imsdk.entity.ChatRoomContainer;
 import com.zhiyicx.imsdk.entity.ChatRoomDataCount;
 import com.zhiyicx.imsdk.entity.Conversation;
@@ -286,6 +287,12 @@ public class ChatRoomClient implements ChatRoomSoupport, ImMsgReceveListener, Im
             mImMsgReceveListener.onConversationMCACKReceived(conversations);
     }
 
+
+    @Override
+    public void onAuthSuccess(AuthData authData) {
+        if (mImStatusListener != null)
+            mImStatusListener.onAuthSuccess(authData);
+    }
 
     /**
      * 连接状态监听

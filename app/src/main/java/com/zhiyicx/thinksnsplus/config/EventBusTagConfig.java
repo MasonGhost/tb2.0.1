@@ -60,6 +60,7 @@ public class EventBusTagConfig {
     public static final String EVENT_IM_ONMESSAGERECEIVED = "onMessageReceived";
     public static final String EVENT_IM_ONMESSAGEACKRECEIVED = "onMessageACKReceived";
     public static final String EVENT_IM_ONCONNECTED = "onConnected";
+    public static final String EVENT_IM_AUTHSUCESSED = "onauthSucessed";
     public static final String EVENT_IM_ONDISCONNECT = "onDisconnect";
     public static final String EVENT_IM_ONERROR = "onError";
     public static final String EVENT_IM_ONMESSAGETIMEOUT = "onMessageTimeout";

@@ -6,6 +6,7 @@ import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.imsdk.db.dao.ConversationDao;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
+import com.zhiyicx.imsdk.entity.AuthData;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.R;
@@ -15,6 +16,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.source.local.JpushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatContract;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
@@ -41,16 +43,18 @@ import rx.functions.Action0;
  */
 @FragmentScoped
 public class MessagePresenter extends BasePresenter<MessageContract.Repository, MessageContract.View> implements MessageContract.Presenter {
+
     @Inject
     ChatContract.Repository mChatRepository;
 
     @Inject
     AuthRepository mAuthRepository;
+
+    @Inject
+    JpushMessageBeanGreenDaoImpl mJpushMessageBeanGreenDao;
+
     private MessageItemBean mItemBeanComment;
     private MessageItemBean mItemBeanLike;
-
-    private List<JpushMessageBean> mCommentJpushMessageBeen = new ArrayList<>();
-    private List<JpushMessageBean> mDigJpushMessageBeen = new ArrayList<>();
 
     @Inject
     public MessagePresenter(MessageContract.Repository repository, MessageContract.View rootView) {
@@ -101,8 +105,6 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
      */
     @Override
     public List<MessageItemBean> requestCacheData(Long maxId, boolean isLoadMore) {
-
-        // TODO: 2017/4/11 获取数据库中的推送消息
         mRootView.updateLikeItemData(mItemBeanLike);
         if (mAuthRepository.getAuthBean() == null) {
             return new ArrayList<>();
@@ -117,33 +119,56 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
 
     @Override
     public MessageItemBean updateCommnetItemData() {
+
+        List<JpushMessageBean> mCommentJpushMessageBeen = mJpushMessageBeanGreenDao.getCommentJpushMessage();
+
         if (mItemBeanComment == null) {
             mItemBeanComment = new MessageItemBean();
             Conversation commentMessage = new Conversation();
             Message message = new Message();
-            message.setTxt("还没有人"
-                    + mContext.getString(R.string.comment_me));
             commentMessage.setLast_message(message);
-            commentMessage.setLast_message_time(System.currentTimeMillis() / 1000);
             mItemBeanComment.setConversation(commentMessage);
-            mItemBeanComment.setUnReadMessageNums(Math.round(0));
         }
+        for (JpushMessageBean jpushMessageBean : mCommentJpushMessageBeen) {
+            if (jpushMessageBean.getCreat_time() > mItemBeanComment.getConversation().getLast_message_time()) {
+                mItemBeanComment.getConversation().setLast_message_time(jpushMessageBean.getCreat_time());
+            }
+            if (!jpushMessageBean.isRead()) {
+                mItemBeanComment.setUnReadMessageNums(mItemBeanComment.getUnReadMessageNums() + 1);
+            }
+            // TODO: 2017/4/12 添加用户信息
+        }
+        mItemBeanComment.getConversation().getLast_message().setTxt("还没有人"
+                + mContext.getString(R.string.comment_me));
+
+
         return mItemBeanComment;
     }
 
     @Override
     public MessageItemBean updateLikeItemData() {
+        List<JpushMessageBean> mDigJpushMessageBeen = mJpushMessageBeanGreenDao.getDigJpushMessage();
+
         if (mItemBeanLike == null) {
             mItemBeanLike = new MessageItemBean();
             Conversation likeConversation = new Conversation();
             Message message = new Message();
-            message.setTxt("还没有人"
-                    + mContext.getString(R.string.like_me));
             likeConversation.setLast_message(message);
-            likeConversation.setLast_message_time(System.currentTimeMillis() / 1000);
             mItemBeanLike.setConversation(likeConversation);
-            mItemBeanLike.setUnReadMessageNums(Math.round(0));
         }
+        for (JpushMessageBean jpushMessageBean : mDigJpushMessageBeen) {
+            if (jpushMessageBean.getCreat_time() > mItemBeanLike.getConversation().getLast_message_time()) {
+                mItemBeanLike.getConversation().setLast_message_time(jpushMessageBean.getCreat_time());
+            }
+            if (!jpushMessageBean.isRead()) {
+                mItemBeanLike.setUnReadMessageNums(mItemBeanLike.getUnReadMessageNums() + 1);
+            }
+            // TODO: 2017/4/12 添加用户信息
+        }
+
+        mItemBeanLike.getConversation().getLast_message().setTxt("还没有人"
+                + mContext.getString(R.string.like_me));
+
         return mItemBeanLike;
     }
 
@@ -239,6 +264,10 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         }
     }
 
+    @Subscriber(tag = EventBusTagConfig.EVENT_IM_AUTHSUCESSED)
+    private void onAuthSuccessed(AuthData authData) {
+//        mRootView.showSnackSuccessMessage("IM 聊天加载成功");
+    }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONNECTED)
     private void onConnected() {
@@ -322,7 +351,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                 break;
             }
         }
-        EventBus.getDefault().post(isShowMessgeTip, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED);
+        EventBus.getDefault().post(isShowMessgeTip, EventBusTagConfig.EVENT_IM_SETMESSAGETIPVISABLE);
     }
 
 }

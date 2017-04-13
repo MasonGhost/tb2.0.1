@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.home;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.imsdk.entity.AuthData;
 import com.zhiyicx.imsdk.entity.ChatRoomContainer;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
@@ -76,7 +77,7 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
 
     }
 
-    @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED)
+    @Subscriber(tag = EventBusTagConfig.EVENT_IM_SETMESSAGETIPVISABLE)
     public void setMessageTipVisable(boolean isShow) {
         mRootView.setMessageTipVisable(isShow);
     }
@@ -104,6 +105,11 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
     @Override
     public void synchronousInitiaMessage(int limit) {
 
+    }
+
+    @Override
+    public void onAuthSuccess(AuthData authData) {
+        EventBus.getDefault().post(authData, EventBusTagConfig.EVENT_IM_AUTHSUCESSED);
     }
 
     @Override

@@ -459,7 +459,17 @@ public class ZBIMClient implements IMSoupport {
              * 登录认证
              */
             case ImService.AUTH:
-
+                if (mImStatusListener != null) {
+                    for (ImStatusListener listener : mImStatusListener) {
+                        if (listener != null) {
+                            if (eventContainer.err == 0) {
+                                listener.onAuthSuccess(eventContainer.mAuthData);
+                            } else {
+                                listener.onError((Exception) bundle.getSerializable(KEY_CONNECTED_ERR));
+                            }
+                        }
+                    }
+                }
                 break;
 
             default:

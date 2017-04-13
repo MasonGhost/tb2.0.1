@@ -7,6 +7,7 @@ import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.ChatType;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
+import com.zhiyicx.imsdk.entity.AuthData;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.entity.MessageStatus;
@@ -198,6 +199,11 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         }
         chatItemBean.setUserInfo(userInfoBean);
         mRootView.reFreshMessage(chatItemBean);
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_IM_AUTHSUCESSED)
+    private void onAuthSuccessed(AuthData authData) {
+//        mRootView.showSnackSuccessMessage("IM 聊天加载成功");
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONNECTED)

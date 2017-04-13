@@ -108,12 +108,21 @@ public class ApiConfig {
     // 获取点赞列表
     public static final String APP_PATH_DYNAMIC_DIG_LIST = "api/v1/feeds/{feed_id}/diggusers";
     // 一条动态的评论列表
-    public static final String APP_PATH_DYNAMIC_COMMENT_LIST = "api/v1/feeds/{feed_id}/comments";
+    public static final String APP_PATH_DYNAMIC_COMMENT_LIST= "api/v1/feeds/{feed_id}/comments";
+    // 根据id获取评论列表
+    public static final String APP_PATH_DYNAMIC_COMMENT_LIST_BY_COMMENT_ID  = "api/v1/feeds/comments";
     // 收藏动态，取消收藏
     public static final String APP_PATH_HANDLE_COLLECT = "api/v1/feeds/{feed_id}/collection";
     public static final String APP_PATH_HANDLE_COLLECT_FORMAT = "api/v1/feeds/%s/collection";
     // 增加动态浏览量
     public static final String APP_PATH_HANDLE_DYNAMIC_VIEWCOUNT = "api/v1/feeds/{feed_id}/viewcount";
+
+    // 获取用户收到的点赞
+    public static final String APP_PATH_GET_MY_DIGGS= "api/v1/users/mydiggs";
+
+    // 获取用户收到的评论
+    public static final String APP_PATH_GET_MY_COMMENTS= "api/v1/users/mycomments";
+
 
     /**
      * 资讯相关

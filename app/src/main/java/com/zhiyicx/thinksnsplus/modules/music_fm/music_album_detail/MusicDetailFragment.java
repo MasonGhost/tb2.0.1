@@ -244,7 +244,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @Override
     public void setMusicAblum(MusicAlbumDetailsBean musicAblum) {
         mAlbumDetailsBean = musicAblum;
-        WindowUtils.showPopupWindow(BaseApplication.getContext());
         mFragmentMusicDetailCenterTitle.setText(mAlbumDetailsBean.getTitle());
         mFragmentMusicDetailCenterSubTitle.setText(mAlbumDetailsBean.getIntro());
         mFragmentMusicDetailDec.setText(mAlbumDetailsBean.getIntro());
