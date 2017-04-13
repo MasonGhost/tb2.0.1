@@ -57,7 +57,7 @@ public class ImService {
      * 获取指定序号消息
      */
     public static final String CONVR_MSG_PLUCK = "convr.msg.pluck";
-    public static final String CONVR_MSG_SYNC = "convr.msg.sync";
+    public static final String CONVR_MSG_SYNC = "convr.msg.syncAsc";
 
     /**
      * 获取会话信息
@@ -308,10 +308,11 @@ public class ImService {
      * @param limit
      * @param msgid
      */
-    public boolean sendSyncMessage(int cid, int gt, int lt, int limit, int msgid) {
+    public boolean sendSyncMessage(int cid, int gt, int lt, int order,int limit, int msgid) {
 
         Map<String, Object> params = new HashMap<>();
         params.put("cid", cid);
+        params.put("order", order);
         if (gt > 0) {
             params.put("gt", gt);
         }

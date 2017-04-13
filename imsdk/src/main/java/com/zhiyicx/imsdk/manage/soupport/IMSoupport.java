@@ -86,16 +86,26 @@ public interface IMSoupport {
      * @param gt
      * @param lt
      */
-    void sync(int cid, int gt, int lt, int msgid);
+    void syncAsc(int cid, int gt, int lt, int msgid);
+
+    /**
+     * 获取指定序号消息
+     *    "order":0, // 服务端查询时的排序方式，可选，默认0； 0正序、1倒序。 注意返回的始终是正序
+     *    "limit": 100, // 需要获取的消息数量，可选，最大100，默认100；一般在未指定lt时提供
+     * @param cid 要获取到对话的ID， 无符号长整型，必填
+     * @param gt   获取消息序号将大于此序号，可选，默认0
+     * @param lt 获取消息序号将小于此序号，可选，默认不限制； lt-gt应<=100
+     */
+    void syncDesc(int cid, int gt, int lt, int msgid);
 
     /**
      * 获取房间中已有的最新几条消息消息
      *
-     * @param cid  房间号
+     * @param cid   房间号
      * @param limit 消息数量
      * @param msgid 消息id
      */
-    void syncLastMessage(int cid,int limit, int msgid);
+    void syncLastMessage(int cid, int limit, int msgid);
 
     /**
      * 尝试重新连接
