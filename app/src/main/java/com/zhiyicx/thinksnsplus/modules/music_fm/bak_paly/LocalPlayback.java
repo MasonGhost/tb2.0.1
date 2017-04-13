@@ -180,6 +180,9 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
         registerAudioNoisyReceiver();
         String mediaId = item.getDescription().getMediaId();
         boolean mediaHasChanged = !TextUtils.equals(mediaId, mCurrentMediaId);
+        LogUtils.d("mCurrentPosition:::mCurrentMediaId"+mCurrentMediaId);
+        LogUtils.d("mCurrentPosition:::mediaId"+mediaId);
+
         if (mediaHasChanged) {
             mCurrentPosition = 0;
             mCurrentMediaId = mediaId;
@@ -187,6 +190,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
 
         if (!mediaHasChanged && mMediaPlayer !=
                 null) { //没有切歌
+            LogUtils.d("mCurrentPosition:::没有切歌");
             configMediaPlayerState();
         } else {
             mState = PlaybackStateCompat.STATE_STOPPED;
@@ -329,7 +333,9 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
                     if (mCurrentPosition == mMediaPlayer.getCurrentPosition()) {
                         mMediaPlayer.start(); // 进入界面后是否自动播放
                         mState = PlaybackStateCompat.STATE_PLAYING;
+                        LogUtils.d("mCurrentPosition == mMediaPlayer.start()");
                     } else {
+                        LogUtils.d("mCurrentPosition == mMediaPlayer.seekTo");
                         mMediaPlayer.seekTo(mCurrentPosition);
                         mState = PlaybackStateCompat.STATE_BUFFERING;
                     }

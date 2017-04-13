@@ -51,8 +51,8 @@ public class PlaybackManager implements Playback.Callback {
 
     public void handlePlayRequest() {
         MediaSessionCompat.QueueItem currentMusic = mQueueManager.getCurrentMusic();
-        currentMusicMediaId = currentMusic.getDescription().getMediaId();
         if (currentMusic != null) {
+            currentMusicMediaId = currentMusic.getDescription().getMediaId();
             mServiceCallback.onPlaybackStart();
             mPlayback.play(currentMusic);
         }
@@ -241,6 +241,7 @@ public class PlaybackManager implements Playback.Callback {
         public void onPlayFromMediaId(String mediaId, Bundle extras) {
             mQueueManager.setQueueFromMusic(mediaId);
             handlePlayRequest();
+            LogUtils.d("mCurrentPosition:::handlePlayRequest::onPlayFromMediaId");
         }
 
         @Override
