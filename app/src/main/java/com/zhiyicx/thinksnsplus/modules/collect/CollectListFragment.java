@@ -2,10 +2,12 @@ package com.zhiyicx.thinksnsplus.modules.collect;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.collect.dynamic.CollectDynamicListFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListFragment;
@@ -27,12 +29,24 @@ public class CollectListFragment extends TSViewPagerFragment<CollectListPresente
     protected List<String> initTitles() {
 
         return Arrays.asList(getString(R.string.collect_dynamic)
-                , getString(R.string.collect_activity)
-                , getString(R.string.collect_album));
+                , getString(R.string.collect_info)
+                // , getString(R.string.collect_album)
+        );
+    }
+
+    @Override
+    protected void initView(View rootView) {
+        super.initView(rootView);
+        mTsvToolbar.setLeftImg(0);
     }
 
     @Override
     protected boolean showToolbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
         return true;
     }
 
@@ -43,10 +57,13 @@ public class CollectListFragment extends TSViewPagerFragment<CollectListPresente
 
     @Override
     protected List<Fragment> initFragments() {
-        Fragment dynamicListFragment = DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, null);
+        Fragment dynamicListFragment = CollectDynamicListFragment.newInstance();
         Fragment infoListFragment = InfoListFragment.newInstance(RECOMMEND_INFO);
-        Fragment albumListFragment = new MusicListFragment();
-        return Arrays.asList(dynamicListFragment, infoListFragment, albumListFragment);
+        // Fragment albumListFragment = new MusicListFragment();
+        return Arrays.asList(dynamicListFragment
+                , infoListFragment
+                //, albumListFragment
+        );
     }
 
     @Override
