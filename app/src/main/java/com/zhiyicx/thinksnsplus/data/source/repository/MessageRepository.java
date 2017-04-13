@@ -67,7 +67,7 @@ public class MessageRepository implements MessageContract.Repository {
                         if (listBaseJson.isStatus() && !listBaseJson.getData().isEmpty()) {
                             List<MessageItemBean> datas = new ArrayList<>();
                             baseJson.setData(datas);
-                            List<Long> integers = new ArrayList<>();
+                            List<Object> integers = new ArrayList<>();
                             for (Conversation tmp : listBaseJson.getData()) {
                                 MessageItemBean messageItemBean = new MessageItemBean();
                                 Message message = MessageDao.getInstance(mContext).getLastMessageByCid(tmp.getCid());
@@ -94,7 +94,12 @@ public class MessageRepository implements MessageContract.Repository {
                                     long toChatUser_id = Long.valueOf((uidsTmp[0].equals(AppApplication.getmCurrentLoginAuth().getUser_id() + "") ? uidsTmp[1] : uidsTmp[0]));
                                     integers.add(toChatUser_id);
                                 }
-                                userInfoBean.setUser_id(integers.get(0) == AppApplication.getmCurrentLoginAuth().getUser_id() ? integers.get(1) : integers.get(0));//保存聊天对象的 user_id ，如果是群聊暂不处理
+                                try {
+                                    userInfoBean.setUser_id((Long) integers.get(0) == AppApplication.getmCurrentLoginAuth().getUser_id() ? (Long) integers.get(1) : (Long) integers.get(0));//保存聊天对象的 user_id ，如果是群聊暂不处理
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                                 messageItemBean.setUserInfo(userInfoBean);
                                 // 获取未读消息数量
                                 int unreadMessageCount = MessageDao.getInstance(mContext).getUnReadMessageCount(tmp.getCid());
@@ -174,7 +179,7 @@ public class MessageRepository implements MessageContract.Repository {
                              public Observable<BaseJson<MessageItemBean>> call(BaseJson<Conversation> conversationBaseJson) {
                                  final BaseJson<MessageItemBean> baseJson = new BaseJson();
                                  if (conversationBaseJson.isStatus()) {
-                                     List<Long> integers = new ArrayList<>();
+                                     List<Object> integers = new ArrayList<>();
                                      Conversation tmp = conversationBaseJson.getData();
                                      MessageItemBean messageItemBean = new MessageItemBean();
                                      Message message = MessageDao.getInstance(mContext).getLastMessageByCid(tmp.getCid());
@@ -201,7 +206,12 @@ public class MessageRepository implements MessageContract.Repository {
                                          long toChatUser_id = Long.valueOf((uidsTmp[0].equals(AppApplication.getmCurrentLoginAuth().getUser_id() + "") ? uidsTmp[1] : uidsTmp[0]));
                                          integers.add(toChatUser_id);
                                      }
-                                     userInfoBean.setUser_id(integers.get(0) == AppApplication.getmCurrentLoginAuth().getUser_id() ? integers.get(1) : integers.get(0));//保存聊天对象的 user_id ，如果是群聊暂不处理
+                                     try {
+                                         userInfoBean.setUser_id((Long) integers.get(0) == AppApplication.getmCurrentLoginAuth().getUser_id() ? (Long) integers.get(1) : (Long) integers.get(0));//保存聊天对象的 user_id ，如果是群聊暂不处理
+
+                                     } catch (Exception e) {
+                                         e.printStackTrace();
+                                     }
                                      messageItemBean.setUserInfo(userInfoBean);
                                      // 获取未读消息数量
                                      int unreadMessageCount = MessageDao.getInstance(mContext).getUnReadMessageCount(tmp.getCid());

@@ -78,7 +78,7 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
                             // IM 登录 需要 token ,所以需要先保存登录信息
                             handleIMLogin();
                             // 获取用户信息
-                            List<Long> userids = new ArrayList<>();
+                            List<Object> userids = new ArrayList<>();
                             userids.add(Long.valueOf(authBeanBaseJson.getData().getUser_id()));
                             return mUserInfoRepository.getUserInfo(userids);
                         }

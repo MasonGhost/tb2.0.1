@@ -62,7 +62,7 @@ public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
                         if (listBaseJson.getData().isEmpty()){
                             return Observable.just(listBaseJson);
                         }else{
-                            final List<Long> user_ids = new ArrayList<>();
+                            final List<Object> user_ids = new ArrayList<>();
                             for (InfoCommentListBean commentListBean : listBaseJson.getData()) {
                                 user_ids.add(commentListBean.getUser_id());
                                 user_ids.add(commentListBean.getReply_to_user_id());

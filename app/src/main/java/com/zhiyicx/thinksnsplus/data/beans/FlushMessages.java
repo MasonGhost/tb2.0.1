@@ -19,6 +19,7 @@ public class FlushMessages {
      * uids :
      * count : 0
      * time : 2017-04-13 3:31:10
+     * max_id : 1
      */
     @Id
     long id;
@@ -27,14 +28,17 @@ public class FlushMessages {
     private String uids;
     private int count;
     private String time;
+    private long max_id;
 
-    @Generated(hash = 1857906646)
-    public FlushMessages(long id, String key, String uids, int count, String time) {
+    @Generated(hash = 587326329)
+    public FlushMessages(long id, String key, String uids, int count, String time,
+            long max_id) {
         this.id = id;
         this.key = key;
         this.uids = uids;
         this.count = count;
         this.time = time;
+        this.max_id = max_id;
     }
 
     @Generated(hash = 505793851)
@@ -91,4 +95,13 @@ public class FlushMessages {
     public void setTime(String time) {
         this.time = time;
     }
+
+    public long getMax_id() {
+        return this.max_id;
+    }
+
+    public void setMax_id(long max_id) {
+        this.max_id = max_id;
+    }
+
 }
