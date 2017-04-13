@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.home.message;
 
-import com.google.gson.Gson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.ActivityHandler;
@@ -22,8 +21,6 @@ import com.zhiyicx.thinksnsplus.modules.chat.ChatContract;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
@@ -304,18 +301,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     private void onJpushMessageRecieved(JpushMessageBean jpushMessageBean) {
 
         switch (jpushMessageBean.getType()) {
-            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM: // 推送携带的消息  {"seq":36,"msg_type":0,"cid":1,"mid":338248648800337924,"type":"im","uid":20}
-                Message message = new Gson().fromJson(jpushMessageBean.getExtras(), Message.class);
-                try {
-                    JSONObject jsonObject = new JSONObject(jpushMessageBean.getExtras());
-                    message.setType(jsonObject.getInt("msg_type"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                message.setCreate_time(message.getMid() >> 23 + MessageDao.TIME_DEFAULT_ADD);
-                message.setTxt(jpushMessageBean.getMessage());
-                MessageDao.getInstance(mContext).insertOrUpdateMessage(message);
-                onMessageReceived(message);
+            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM: // 推送携带的消息  {"seq":36,"msg_type":0,"cid":1,"mid":338248648800337924,"type":"im","uid":20} IM 消息通过IM接口 同步，故不需要对 推送消息做处理
 
                 break;
             case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_FEED:
@@ -325,12 +311,10 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
             default:
                 switch (jpushMessageBean.getAction()) {
                     case JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_COMMENT:
-
-                        break;
                     case JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_DIGG:
-
-                        break;
                     default:
+                        // 服务器同步未读评论和点赞消息
+
                         break;
                 }
                 break;

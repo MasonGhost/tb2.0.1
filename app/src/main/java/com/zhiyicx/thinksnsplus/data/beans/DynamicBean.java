@@ -18,7 +18,6 @@ import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,7 +46,7 @@ public class DynamicBean extends BaseListBean {
     private DynamicToolBean tool;
     @ToOne(joinProperty = "user_id")// DynamicBean 的 user_id作为外键
     private UserInfoBean userInfoBean;
-    // DynamicBean的feed_id与DynamicCommentBean的feed_id关联
+    // DynamicBean 的 feed_mark 与 DynamicCommentBean 的 feed_mark 关联
     @ToMany(joinProperties = {@JoinProperty(name = "feed_mark", referencedName = "feed_mark")})
     private List<DynamicCommentBean> comments;
 
