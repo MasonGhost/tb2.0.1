@@ -7,6 +7,7 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
+import com.zhiyicx.imsdk.core.autobahn.WampMessage;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
@@ -14,7 +15,11 @@ import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumDetailsBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicDetailRepository;
 
+import org.simple.eventbus.EventBus;
+
 import javax.inject.Inject;
+
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_ABLUM_COLLECT;
 
 /**
  * @Author Jliuer
@@ -34,6 +39,11 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
 
     @Inject
     public SharePolicy mSharePolicy;
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
 
     @Inject
     public MusicDetailPresenter(MusicDetailContract.Repository repository, MusicDetailContract
@@ -104,11 +114,12 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
         }
         int is_collect = mRootView.getCurrentAblum().getIs_collection();
         mRootView.getCurrentAblum().setIs_collection(is_collect == 0 ? 1 : 0);
+        mRootView.getmMusicAlbumListBean().setIs_collection(is_collect);
         int countChange = isUnCollected ? 1 : -1;
+        mRootView.getmMusicAlbumListBean().setCollect_count(mRootView.getCurrentAblum().getCollect_count() + countChange);
         mRootView.getCurrentAblum().setCollect_count(mRootView.getCurrentAblum().getCollect_count() + countChange);
-
         mMusicAlbumDetailsBeanGreenDao.insertOrReplace(mRootView.getCurrentAblum());
-
+        EventBus.getDefault().post(mRootView.getmMusicAlbumListBean(),EVENT_ABLUM_COLLECT);
         mRootView.setCollect(isUnCollected);
         mMusicDetailRepository.handleCollect(isUnCollected, special_id);
 

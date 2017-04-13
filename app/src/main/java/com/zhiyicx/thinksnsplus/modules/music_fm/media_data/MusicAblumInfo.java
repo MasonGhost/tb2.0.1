@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.media_data;
 
 import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.RatingCompat;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -50,7 +51,7 @@ public class MusicAblumInfo implements MusicProviderSource {
                 .putString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE,
                         ""+musicUrl)
                 .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, needData.getTitle())
-                .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, needData.getSinger().getName())
+                .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, needData.getIsdiggmusic()+"")
                 .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, needData.getSinger().getName())
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, needData.getLast_time()*1000)
                 .putString(MediaMetadataCompat.METADATA_KEY_GENRE, METADATA_KEY_GENRE)
