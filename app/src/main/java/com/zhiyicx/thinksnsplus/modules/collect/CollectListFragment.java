@@ -7,6 +7,7 @@ import android.view.View;
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.collect.album.CollectAlbumListFragment;
 import com.zhiyicx.thinksnsplus.modules.collect.dynamic.CollectDynamicListFragment;
 import com.zhiyicx.thinksnsplus.modules.collect.info.CollectInformationListFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
@@ -31,7 +32,7 @@ public class CollectListFragment extends TSViewPagerFragment<CollectListPresente
 
         return Arrays.asList(getString(R.string.collect_dynamic)
                 , getString(R.string.collect_info)
-                // , getString(R.string.collect_album)
+                , getString(R.string.collect_album)
         );
     }
 
@@ -60,10 +61,10 @@ public class CollectListFragment extends TSViewPagerFragment<CollectListPresente
     protected List<Fragment> initFragments() {
         Fragment dynamicListFragment = CollectDynamicListFragment.newInstance();
         Fragment infoListFragment = CollectInformationListFragment.newInstance();
-        // Fragment albumListFragment = new MusicListFragment();
+        Fragment albumListFragment = CollectAlbumListFragment.newInstance();
         return Arrays.asList(dynamicListFragment
                 , infoListFragment
-                //, albumListFragment
+                , albumListFragment
         );
     }
 
