@@ -172,13 +172,13 @@
             app:leftImage="@mipmap/ico_me_ranklist"
             app:leftText="@string/ranking"
             app:rightImage="@mipmap/ic_arrow_smallgrey"
-            app:showLine="false"></com.zhiyicx.baseproject.widget.button.CombinationButton>
+            app:showLine="true"></com.zhiyicx.baseproject.widget.button.CombinationButton>
         <!--金币-->
         <com.zhiyicx.baseproject.widget.button.CombinationButton
             android:id="@+id/bt_gold"
             android:layout_width="match_parent"
             android:layout_height="@dimen/full_button_height"
-            android:visibility="gone"
+            android:visibility="visible"
             app:dividerLeftMargin="@dimen/spacing_normal"
             app:dividerRightMargin="@dimen/spacing_normal"
             app:leftImage="@mipmap/ico_me_goldcoin"

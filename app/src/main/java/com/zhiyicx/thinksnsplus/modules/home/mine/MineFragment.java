@@ -20,6 +20,7 @@ import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.collect.CollectListActivity;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
@@ -208,7 +209,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 });*/
                 break;
             case R.id.bt_gold:
-                startActivity(new Intent(getActivity(), GalleryActivity.class));
+                startActivity(new Intent(getActivity(), CollectListActivity.class));
                 break;
             case R.id.bt_suggestion:
                 //LoadingDialogUtils.showStateSuccess(getContext());

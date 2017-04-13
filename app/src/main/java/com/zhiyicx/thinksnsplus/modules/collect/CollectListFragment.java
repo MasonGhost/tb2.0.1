@@ -1,0 +1,62 @@
+package com.zhiyicx.thinksnsplus.modules.collect;
+
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+
+import com.zhiyicx.baseproject.base.TSViewPagerFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
+import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListFragment;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static com.zhiyicx.thinksnsplus.modules.information.infomain.container.InfoContainerFragment.RECOMMEND_INFO;
+
+/**
+ * @author LiuChao
+ * @describe
+ * @date 2017/4/13
+ * @contact email:450127106@qq.com
+ */
+
+public class CollectListFragment extends TSViewPagerFragment<CollectListPresenter> {
+    @Override
+    protected List<String> initTitles() {
+
+        return Arrays.asList(getString(R.string.collect_dynamic)
+                , getString(R.string.collect_activity)
+                , getString(R.string.collect_album));
+    }
+
+    @Override
+    protected boolean showToolbar() {
+        return true;
+    }
+
+    @Override
+    protected String setCenterTitle() {
+        return getString(R.string.collect);
+    }
+
+    @Override
+    protected List<Fragment> initFragments() {
+        Fragment dynamicListFragment = DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, null);
+        Fragment infoListFragment = InfoListFragment.newInstance(RECOMMEND_INFO);
+        Fragment albumListFragment = new MusicListFragment();
+        return Arrays.asList(dynamicListFragment, infoListFragment, albumListFragment);
+    }
+
+    @Override
+    protected void initData() {
+
+    }
+
+    public static CollectListFragment newInstance(Bundle bundle) {
+        CollectListFragment collectListFragment = new CollectListFragment();
+        collectListFragment.setArguments(bundle);
+        return collectListFragment;
+    }
+}
