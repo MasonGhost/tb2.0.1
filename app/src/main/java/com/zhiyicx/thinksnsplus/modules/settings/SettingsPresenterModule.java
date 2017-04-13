@@ -32,9 +32,4 @@ public class SettingsPresenterModule {
     SettingsContract.Repository provideRegisterContractRepository(ServiceManager serviceManager) {
         return new SettingsRepository(serviceManager);
     }
-
-    @Provides
-    IAuthRepository provideIAuthRepository(AuthRepository authRepository) {
-        return authRepository;
-    }
 }

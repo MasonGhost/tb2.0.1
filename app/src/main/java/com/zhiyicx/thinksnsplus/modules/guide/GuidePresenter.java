@@ -2,7 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.guide;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 
@@ -18,7 +18,7 @@ import javax.inject.Inject;
 public class GuidePresenter extends BasePresenter<GuideContract.Repository, GuideContract.View> implements GuideContract.Presenter {
 
     @Inject
-    IAuthRepository mIAuthRepository;
+    AuthRepository mIAuthRepository;
 
     @Inject
     public GuidePresenter(GuideContract.Repository repository, GuideContract.View rootView) {

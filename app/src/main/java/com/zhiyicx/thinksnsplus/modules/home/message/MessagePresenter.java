@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.home.message;
 
+import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.ActivityHandler;
@@ -13,10 +14,12 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
+import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.source.local.JpushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatContract;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 
@@ -30,6 +33,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.functions.Action0;
 
 /**
@@ -48,6 +52,8 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     AuthRepository mAuthRepository;
 
     @Inject
+    UserInfoRepository mUserInfoRepository;
+    @Inject
     JpushMessageBeanGreenDaoImpl mJpushMessageBeanGreenDao;
 
     private MessageItemBean mItemBeanComment;
@@ -57,6 +63,13 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     public MessagePresenter(MessageContract.Repository repository, MessageContract.View rootView) {
         super(repository, rootView);
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        handleFlushMessage();
+    }
+
 
     @Override
     protected boolean useEventBus() {
@@ -314,14 +327,23 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                     case JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_DIGG:
                     default:
                         // 服务器同步未读评论和点赞消息
-
+                        handleFlushMessage();
                         break;
                 }
                 break;
 
         }
-
     }
+
+    /**
+     * 处理 获取用户收到的最新消息
+     * @return
+     */
+    private Observable<BaseJson<List<FlushMessages>>> handleFlushMessage() {
+//        return mUserInfoRepository.getMyFlushMessage();
+        return null;
+    }
+
 
     /**
      * 检测底部小红点是否需要显示
