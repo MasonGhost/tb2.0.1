@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -115,9 +116,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         } else {
             refreshData();
         }
-//        if (getListDatas().size() > 0) {
-//            mPresenter.refreshLastClicikPostion(0);
-//        }
     }
 
     @Override
@@ -162,6 +160,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                         @Override
                         public void call(Void aVoid) {
                             toCommentList();
+                            mPresenter.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_COMMENTS);
                         }
                     });
             liked = headerview.findViewById(R.id.rl_liked);
@@ -171,6 +170,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                         @Override
                         public void call(Void aVoid) {
                             toLikeList();
+                            mPresenter.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_DIGGS);
                         }
                     });
             tvHeaderCommentContent = (TextView) headerview.findViewById(R.id.tv_header_comment_content);

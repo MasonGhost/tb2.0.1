@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
 
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessagesDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
@@ -52,6 +53,34 @@ public class FlushMessageBeanGreenDaoImpl extends CommonCacheImpl<FlushMessages>
         FlushMessagesDao flushMessagesDao = getRDaoSession().getFlushMessagesDao();
         List<FlushMessages> datas = flushMessagesDao.loadAll();
         return datas;
+    }
+
+    /**
+     * 通过 key 标记消息已读
+     * @param key
+     */
+    public void readMessageByKey(String key) {
+        FlushMessagesDao flushMessagesDao = getRDaoSession().getFlushMessagesDao();
+        List<FlushMessages> datas = flushMessagesDao.loadAll();
+        if (datas.isEmpty()) {
+            return;
+        }
+        for (FlushMessages flushMessages : datas) {
+            switch (flushMessages.getKey()) {
+                case ApiConfig.FLUSHMESSAGES_KEY_COMMENTS:
+                    flushMessages.setCount(0);
+                    break;
+                case ApiConfig.FLUSHMESSAGES_KEY_DIGGS:
+                    flushMessages.setCount(0);
+                    break;
+                case ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS:
+                    flushMessages.setCount(0);
+                    break;
+                default:
+                    break;
+            }
+        }
+        flushMessagesDao.insertOrReplaceInTx(datas);
     }
 
     @Override

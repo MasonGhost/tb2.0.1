@@ -19,10 +19,14 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
+import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
@@ -36,6 +40,7 @@ import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -67,6 +72,12 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
 
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+
+    @Inject
+    CommentedBeanGreenDaoImpl mCommentedBeanGreenDao;
+
+    @Inject
+    DigedBeanGreenDaoImpl mDigedBeanGreenDao;
 
     private MessageItemBean mItemBeanComment;
     private MessageItemBean mItemBeanDigg;
@@ -250,6 +261,11 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                 });
     }
 
+    @Override
+    public void readMessageByKey(String key) {
+        mFlushMessageBeanGreenDao.readMessageByKey(key);
+    }
+
     /*******************************************
      * IM 相关
      *********************************************/
@@ -421,7 +437,6 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     }
 
     private void handleFlushMessageForItem(List<FlushMessages> flushMessages) {
-        mFlushMessageBeanGreenDao.saveMultiData(flushMessages);
         for (FlushMessages flushMessage : flushMessages) {
             switch (flushMessage.getKey()) {
                 case ApiConfig.FLUSHMESSAGES_KEY_COMMENTS:
@@ -437,6 +452,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                     break;
             }
         }
+        mFlushMessageBeanGreenDao.saveMultiData(flushMessages);
     }
 
     private void handleItemBean(MessageItemBean messageItemBean, FlushMessages flushMessage) {
@@ -446,10 +462,20 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
             case ApiConfig.FLUSHMESSAGES_KEY_COMMENTS:
                 textEndTip = mContext.getString(R.string.comment_me);
                 max_user_nums = MAX_USER_NUMS_COMMENT;
+                CommentedBean lastCommentedBean = mCommentedBeanGreenDao.getLastData();
+                if (lastCommentedBean != null && lastCommentedBean.getId() > flushMessage.getMax_id()) {
+                    flushMessage.setCount(0);
+                }
+
                 break;
             case ApiConfig.FLUSHMESSAGES_KEY_DIGGS:
                 textEndTip = mContext.getString(R.string.like_me);
                 max_user_nums = MAX_USER_NUMS_DIGG;
+                DigedBean lastDiggBend = mDigedBeanGreenDao.getLastData();
+                if (lastDiggBend != null && lastDiggBend.getId() > flushMessage.getMax_id()) {
+                    flushMessage.setCount(0);
+                }
+
                 break;
             default:
                 break;
@@ -462,13 +488,17 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
             messageItemBean.setConversation(commentMessage);
         }
         messageItemBean.setUnReadMessageNums(flushMessage.getCount());
-        messageItemBean.getConversation().setLast_message_time(TextUtils.isEmpty(flushMessage.getTime()) ? System.currentTimeMillis() : TimeUtils.utc2LocalLong(flushMessage.getTime()));
-        messageItemBean.getConversation().getLast_message().setCreate_time(TextUtils.isEmpty(flushMessage.getTime()) ? System.currentTimeMillis() : TimeUtils.utc2LocalLong(flushMessage.getTime()));
+        messageItemBean.getConversation().setLast_message_time(TextUtils.isEmpty(flushMessage.getTime()) ? System.currentTimeMillis() : TimeUtils.string2MillisDefaultLocal(flushMessage.getTime()));
+        messageItemBean.getConversation().getLast_message().setCreate_time(TextUtils.isEmpty(flushMessage.getTime()) ? System.currentTimeMillis() : TimeUtils.string2MillisDefaultLocal(flushMessage.getTime()));
         String text = "还没有人";
         if (!TextUtils.isEmpty(flushMessage.getUids())) {
             text = "";
             String[] uids = flushMessage.getUids().split(",");
-            for (int i = 0; i < uids.length; i++) {
+            HashSet<String> ueridSet = new HashSet<>();
+            for (int i = 0; i < uids.length; i++) { // 用户 信息去重
+                ueridSet.add(uids[i]);
+            }
+            for (int i = 0; i < ueridSet.size(); i++) {
                 if (i < max_user_nums) {
                     try {
                         UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(Long.valueOf(uids[i]));

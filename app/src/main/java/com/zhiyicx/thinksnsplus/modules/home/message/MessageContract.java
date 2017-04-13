@@ -74,5 +74,11 @@ public interface MessageContract {
          * @return
          */
         void getSingleConversation(int cid);
+
+        /**
+         * 通过 key 标记消息已读
+         * @param key
+         */
+        void readMessageByKey(String key);
     }
 }
