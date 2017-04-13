@@ -30,7 +30,8 @@ public class CollectListFragment extends TSViewPagerFragment<CollectListPresente
     @Override
     protected List<String> initTitles() {
 
-        return Arrays.asList(getString(R.string.collect_dynamic)
+        return Arrays.asList(
+                getString(R.string.collect_dynamic)
                 , getString(R.string.collect_info)
                 , getString(R.string.collect_album)
         );
@@ -62,7 +63,8 @@ public class CollectListFragment extends TSViewPagerFragment<CollectListPresente
         Fragment dynamicListFragment = CollectDynamicListFragment.newInstance();
         Fragment infoListFragment = CollectInformationListFragment.newInstance();
         Fragment albumListFragment = CollectAlbumListFragment.newInstance();
-        return Arrays.asList(dynamicListFragment
+        return Arrays.asList(
+                dynamicListFragment
                 , infoListFragment
                 , albumListFragment
         );

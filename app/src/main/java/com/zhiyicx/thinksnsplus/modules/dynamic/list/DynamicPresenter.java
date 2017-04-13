@@ -155,7 +155,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                     datas = mDynamicBeanGreenDao.getNewestDynamicList(maxId);
                 }
             case ApiConfig.DYNAMIC_TYPE_MY_COLLECTION:
-                datas = new ArrayList<>();
+                datas = mDynamicBeanGreenDao.getMyCollectDynamic();
                 break;
             default:
         }

@@ -35,6 +35,11 @@ public class CollectDynamicListFragment extends DynamicFragment {
         return false;
     }
 
+    @Override
+    protected boolean setUseSatusbar() {
+        return false;
+    }
+
     protected void setAdapter(MultiItemTypeAdapter adapter, DynamicListBaseItem dynamicListBaseItem) {
         dynamicListBaseItem.setOnImageClickListener(this);
         dynamicListBaseItem.setOnUserInfoClickListener(this);
