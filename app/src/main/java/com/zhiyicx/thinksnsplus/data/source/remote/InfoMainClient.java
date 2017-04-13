@@ -17,6 +17,7 @@ import retrofit2.http.Query;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COLLECT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COLLECT_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COMMENT_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_FOLLOW_LIST;
@@ -40,9 +41,15 @@ public interface InfoMainClient {
     // 获取某类资讯列表
     @GET(APP_PATH_INFO_LIST)
     Observable<BaseJson<InfoListBean>> getInfoList(@Query("cate_id") String cate_id,
-                                                         @Query("max_id") Long max_id,
-                                                         @Query("limit") Long limit,
-                                                         @Query("page") Long page);
+                                                   @Query("max_id") Long max_id,
+                                                   @Query("limit") Long limit,
+                                                   @Query("page") Long page);
+
+    // 获取收藏的资讯列表
+    @GET(APP_PATH_INFO_COLLECT_LIST)
+    Observable<BaseJson<List<InfoListBean.ListBean>>> getInfoCollectList(@Query("max_id") Long max_id,
+                                                                         @Query("limit") Long limit,
+                                                                         @Query("page") Long page);
 
     // 订阅某类资讯
     @FormUrlEncoded
@@ -65,12 +72,13 @@ public interface InfoMainClient {
 
     @GET(APP_PATH_INFO_SEARCH)
     Observable<BaseJson<List<InfoListBean.ListBean>>> searchInfoList(@Query("key") String key,
-                                                   @Query("max_id") Long max_id,
-                                                   @Query("limit") Long limit);
+                                                                     @Query("max_id") Long max_id,
+                                                                     @Query("limit") Long limit);
 
     /**
      * 对一条资讯或一条资讯评论进行评论
-     * @param comment_content 内容
+     *
+     * @param comment_content  内容
      * @param reply_to_user_id 被评论者id 对评论进行评论时传入
      * @return
      */

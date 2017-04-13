@@ -72,7 +72,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         InputLimitView.OnSendClickListener, DynamicContract.View, DynamicListCommentView.OnCommentClickListener, DynamicListCommentView.OnMoreCommentClickListener,
         DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, OnUserInfoClickListener,
         MultiItemTypeAdapter.OnItemClickListener {
-    private static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
+    protected static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
     public static final long ITEM_SPACING = 5L; // 单位dp
     @BindView(R.id.fl_container)
     FrameLayout mFlContainer;
@@ -184,7 +184,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         return adapter;
     }
 
-    private void setAdapter(MultiItemTypeAdapter adapter, DynamicListBaseItem dynamicListBaseItem) {
+    protected void setAdapter(MultiItemTypeAdapter adapter, DynamicListBaseItem dynamicListBaseItem) {
         dynamicListBaseItem.setOnImageClickListener(this);
         dynamicListBaseItem.setOnUserInfoClickListener(this);
         dynamicListBaseItem.setOnMenuItemClickLisitener(this);

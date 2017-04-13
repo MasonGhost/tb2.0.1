@@ -252,6 +252,9 @@
             android:screenOrientation="portrait">
 
         </activity>
+        <activity
+            android:name=".modules.collect.CollectListActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

@@ -1,25 +1,26 @@
-package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list;
+package com.zhiyicx.thinksnsplus.modules.collect.album;
 
-import android.app.Application;
 import android.support.v4.media.MediaBrowserCompat;
 
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicRepository;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicContract;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicPresenterModule;
 
 import dagger.Module;
 import dagger.Provides;
 
 /**
- * @Author Jliuer
- * @Date 2017/02/13
- * @Email Jliuer@aliyun.com
- * @Description
+ * @author LiuChao
+ * @describe
+ * @date 2017/4/13
+ * @contact email:450127106@qq.com
  */
 @Module
-public class MusicPresenterModule {
+public class CollectAlbumPresenterModule {
     private MusicContract.View view;
 
-    public MusicPresenterModule(MusicContract.View view) {
+    public CollectAlbumPresenterModule(MusicContract.View view) {
         this.view = view;
     }
 
@@ -30,11 +31,11 @@ public class MusicPresenterModule {
 
     @Provides
     MusicContract.Repository provideMusicRepository(ServiceManager serviceManager) {
-        return new MusicRepository(serviceManager);
+        return new CollectAlbumListRepository(serviceManager);
     }
 
     @Provides
-    MediaBrowserCompat provideMediaBrowserCompat(){
+    MediaBrowserCompat provideMediaBrowserCompat() {
         return null;
     }
 }

@@ -26,9 +26,6 @@ public class MusicPresenter extends BasePresenter<MusicContract.Repository, Musi
         implements MusicContract.Presenter {
 
     @Inject
-    MusicRepository mMusicRepository;
-
-    @Inject
     MusicAlbumListBeanGreenDaoImpl mMusicAlbumListDao;
 
     @Inject
@@ -47,7 +44,7 @@ public class MusicPresenter extends BasePresenter<MusicContract.Repository, Musi
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        Subscription subscription = mMusicRepository.getMusicAblumList(maxId)
+        Subscription subscription = mRepository.getMusicAblumList(maxId)
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribe<List<MusicAlbumListBean>>() {
                     @Override
@@ -73,7 +70,7 @@ public class MusicPresenter extends BasePresenter<MusicContract.Repository, Musi
 
     @Override
     public List requestCacheData(Long maxId, boolean isLoadMore) {
-        return mMusicAlbumListDao.getMultiDataFromCache();
+        return mRepository.getMusicAlbumFromCache(maxId);
     }
 
     @Override

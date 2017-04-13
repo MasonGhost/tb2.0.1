@@ -98,6 +98,7 @@ public class ApiConfig {
     public static final String DYNAMIC_TYPE_FOLLOWS = "follows"; // 关注动态
     public static final String DYNAMIC_TYPE_HOTS = "hots"; // 热门动态
     public static final String DYNAMIC_TYPE_SOMEONE = "users/%s"; // 某个人的动态列表,%s表示用户id
+    public static final String DYNAMIC_TYPE_MY_COLLECTION = "collections";// 我收藏的动态列表
     // 点赞一条动态,取消点赞
     public static final String APP_PATH_DYNAMIC_HANDLE_LIKE = "api/v1/feeds/{feed_id}/digg";
     public static final String APP_PATH_DYNAMIC_HANDLE_LIKE_FORMAT = "api/v1/feeds/%s/digg";
@@ -108,9 +109,9 @@ public class ApiConfig {
     // 获取点赞列表
     public static final String APP_PATH_DYNAMIC_DIG_LIST = "api/v1/feeds/{feed_id}/diggusers";
     // 一条动态的评论列表
-    public static final String APP_PATH_DYNAMIC_COMMENT_LIST= "api/v1/feeds/{feed_id}/comments";
+    public static final String APP_PATH_DYNAMIC_COMMENT_LIST = "api/v1/feeds/{feed_id}/comments";
     // 根据id获取评论列表
-    public static final String APP_PATH_DYNAMIC_COMMENT_LIST_BY_COMMENT_ID  = "api/v1/feeds/comments";
+    public static final String APP_PATH_DYNAMIC_COMMENT_LIST_BY_COMMENT_ID = "api/v1/feeds/comments";
     // 收藏动态，取消收藏
     public static final String APP_PATH_HANDLE_COLLECT = "api/v1/feeds/{feed_id}/collection";
     public static final String APP_PATH_HANDLE_COLLECT_FORMAT = "api/v1/feeds/%s/collection";
@@ -118,10 +119,10 @@ public class ApiConfig {
     public static final String APP_PATH_HANDLE_DYNAMIC_VIEWCOUNT = "api/v1/feeds/{feed_id}/viewcount";
 
     // 获取用户收到的点赞
-    public static final String APP_PATH_GET_MY_DIGGS= "api/v1/users/mydiggs";
+    public static final String APP_PATH_GET_MY_DIGGS = "api/v1/users/mydiggs";
 
     // 获取用户收到的评论
-    public static final String APP_PATH_GET_MY_COMMENTS= "api/v1/users/mycomments";
+    public static final String APP_PATH_GET_MY_COMMENTS = "api/v1/users/mycomments";
 
 
     /**
@@ -129,6 +130,8 @@ public class ApiConfig {
      */
     public static final String APP_PATH_INFO_TYPE = "api/v1/news/cates";// 资讯分类列表
     public static final String APP_PATH_INFO_LIST = "api/v1/news";// 资讯列表
+    public static final String APP_PATH_INFO_COLLECT_LIST = "api/v1/news/collections";// 普通的资讯列表，通过cate_uid获取
+    public static final String INFO_TYPE_COLLECTIONS = "-1000";// 资讯收藏列表
     public static final String APP_PATH_INFO_COMMENT = "api/v1/news/{news_id}/comment";// 评论资讯
     public static final String APP_PATH_INFO_COMMENT_FORMAT = "api/v1/news/%s/comment";// 评论资讯
 
@@ -155,6 +158,7 @@ public class ApiConfig {
      * 音乐相关
      */
     public static final String APP_PATH_MUSIC_ABLUM_LIST = "api/v1/music/specials";// 专辑列表
+    public static final String APP_PATH_MUSIC_COLLECT_ABLUM_LIST = "api/v1/music/special/collections";// 专辑列表
 
     // 歌曲详情
     public static final String APP_PATH_MUSIC_DETAILS = "api/v1/music/{music_id}";

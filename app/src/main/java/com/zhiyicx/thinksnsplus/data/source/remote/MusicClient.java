@@ -23,6 +23,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_ABLUM_COMM
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_ABLUM_DETAILS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_ABLUM_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_ABLUM_SHARE;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_COLLECT_ABLUM_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_DETAILS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_DIGG;
@@ -41,6 +42,11 @@ public interface MusicClient {
     @GET(APP_PATH_MUSIC_ABLUM_LIST)
     Observable<BaseJson<List<MusicAlbumListBean>>> getMusicList(@Query("max_id") Long max_id,
                                                                 @Query("limit") Long limit);
+
+    // 获取收藏专辑列表
+    @GET(APP_PATH_MUSIC_COLLECT_ABLUM_LIST)
+    Observable<BaseJson<List<MusicAlbumListBean>>> getCollectMusicList(@Query("max_id") Long max_id,
+                                                                       @Query("limit") Long limit);
 
     // 获取专辑详情
     @GET(APP_PATH_MUSIC_ABLUM_DETAILS)
