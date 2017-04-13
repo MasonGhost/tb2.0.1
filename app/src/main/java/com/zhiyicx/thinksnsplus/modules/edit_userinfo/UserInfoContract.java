@@ -71,7 +71,7 @@ public interface UserInfoContract {
          * @param user_ids 用户 id 数组
          * @return
          */
-        Observable<BaseJson<List<UserInfoBean>>> getUserInfo(List<Long> user_ids);
+        Observable<BaseJson<List<UserInfoBean>>> getUserInfo(List<Object> user_ids);
 
         /**
          * 获取用户关注状态

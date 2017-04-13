@@ -1,9 +1,13 @@
 package com.zhiyicx.thinksnsplus.modules.home.message;
 
-import com.zhiyicx.common.base.BaseJson;
+import android.text.TextUtils;
+
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.ActivityHandler;
+import com.zhiyicx.common.utils.SharePreferenceUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.imsdk.db.dao.ConversationDao;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.AuthData;
@@ -14,10 +18,13 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
+import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
-import com.zhiyicx.thinksnsplus.data.source.local.JpushMessageBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatContract;
@@ -33,7 +40,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.functions.Action0;
 
 /**
@@ -44,6 +50,8 @@ import rx.functions.Action0;
  */
 @FragmentScoped
 public class MessagePresenter extends BasePresenter<MessageContract.Repository, MessageContract.View> implements MessageContract.Presenter {
+    private static final int MAX_USER_NUMS_COMMENT = 3;
+    private static final int MAX_USER_NUMS_DIGG = 2;
 
     @Inject
     ChatContract.Repository mChatRepository;
@@ -53,8 +61,12 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
 
     @Inject
     UserInfoRepository mUserInfoRepository;
+
     @Inject
-    JpushMessageBeanGreenDaoImpl mJpushMessageBeanGreenDao;
+    FlushMessageBeanGreenDaoImpl mFlushMessageBeanGreenDao;
+
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     private MessageItemBean mItemBeanComment;
     private MessageItemBean mItemBeanLike;
@@ -115,6 +127,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
      */
     @Override
     public List<MessageItemBean> requestCacheData(Long maxId, boolean isLoadMore) {
+        handleFlushMessageForItem(mFlushMessageBeanGreenDao.getMultiDataFromCache()); // 处理本地消息
         mRootView.updateLikeItemData(mItemBeanLike);
         if (mAuthRepository.getAuthBean() == null) {
             return new ArrayList<>();
@@ -129,27 +142,27 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
 
     @Override
     public MessageItemBean updateCommnetItemData() {
-
-        List<JpushMessageBean> mCommentJpushMessageBeen = mJpushMessageBeanGreenDao.getCommentJpushMessage();
-
-        if (mItemBeanComment == null) {
-            mItemBeanComment = new MessageItemBean();
-            Conversation commentMessage = new Conversation();
-            Message message = new Message();
-            commentMessage.setLast_message(message);
-            mItemBeanComment.setConversation(commentMessage);
-        }
-        for (JpushMessageBean jpushMessageBean : mCommentJpushMessageBeen) {
-            if (jpushMessageBean.getCreat_time() > mItemBeanComment.getConversation().getLast_message_time()) {
-                mItemBeanComment.getConversation().setLast_message_time(jpushMessageBean.getCreat_time());
-            }
-            if (!jpushMessageBean.isRead()) {
-                mItemBeanComment.setUnReadMessageNums(mItemBeanComment.getUnReadMessageNums() + 1);
-            }
-            // TODO: 2017/4/12 添加用户信息
-        }
-        mItemBeanComment.getConversation().getLast_message().setTxt("还没有人"
-                + mContext.getString(R.string.comment_me));
+//  长期注释：用于评论的、点赞的和下面的对话信息一样，不需要头部时
+//        List<JpushMessageBean> mCommentJpushMessageBeen = mJpushMessageBeanGreenDao.getCommentJpushMessage();
+//
+//        if (mItemBeanComment == null) {
+//            mItemBeanComment = new MessageItemBean();
+//            Conversation commentMessage = new Conversation();
+//            Message message = new Message();
+//            commentMessage.setLast_message(message);
+//            mItemBeanComment.setConversation(commentMessage);
+//        }
+//        for (JpushMessageBean jpushMessageBean : mCommentJpushMessageBeen) {
+//            if (jpushMessageBean.getCreat_time() > mItemBeanComment.getConversation().getLast_message_time()) {
+//                mItemBeanComment.getConversation().setLast_message_time(jpushMessageBean.getCreat_time());
+//            }
+//            if (!jpushMessageBean.isRead()) {
+//                mItemBeanComment.setUnReadMessageNums(mItemBeanComment.getUnReadMessageNums() + 1);
+//            }
+//            // TODO: 2017/4/12 添加用户信息
+//        }
+//        mItemBeanComment.getConversation().getLast_message().setTxt("还没有人"
+//                + mContext.getString(R.string.comment_me));
 
 
         return mItemBeanComment;
@@ -157,27 +170,28 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
 
     @Override
     public MessageItemBean updateLikeItemData() {
-        List<JpushMessageBean> mDigJpushMessageBeen = mJpushMessageBeanGreenDao.getDigJpushMessage();
-
-        if (mItemBeanLike == null) {
-            mItemBeanLike = new MessageItemBean();
-            Conversation likeConversation = new Conversation();
-            Message message = new Message();
-            likeConversation.setLast_message(message);
-            mItemBeanLike.setConversation(likeConversation);
-        }
-        for (JpushMessageBean jpushMessageBean : mDigJpushMessageBeen) {
-            if (jpushMessageBean.getCreat_time() > mItemBeanLike.getConversation().getLast_message_time()) {
-                mItemBeanLike.getConversation().setLast_message_time(jpushMessageBean.getCreat_time());
-            }
-            if (!jpushMessageBean.isRead()) {
-                mItemBeanLike.setUnReadMessageNums(mItemBeanLike.getUnReadMessageNums() + 1);
-            }
-            // TODO: 2017/4/12 添加用户信息
-        }
-
-        mItemBeanLike.getConversation().getLast_message().setTxt("还没有人"
-                + mContext.getString(R.string.like_me));
+        //  长期注释：用于评论的、点赞的和下面的对话信息一样，不需要头部时
+//        List<JpushMessageBean> mDigJpushMessageBeen = mJpushMessageBeanGreenDao.getDigJpushMessage();
+//
+//        if (mItemBeanLike == null) {
+//            mItemBeanLike = new MessageItemBean();
+//            Conversation likeConversation = new Conversation();
+//            Message message = new Message();
+//            likeConversation.setLast_message(message);
+//            mItemBeanLike.setConversation(likeConversation);
+//        }
+//        for (JpushMessageBean jpushMessageBean : mDigJpushMessageBeen) {
+//            if (jpushMessageBean.getCreat_time() > mItemBeanLike.getConversation().getLast_message_time()) {
+//                mItemBeanLike.getConversation().setLast_message_time(jpushMessageBean.getCreat_time());
+//            }
+//            if (!jpushMessageBean.isRead()) {
+//                mItemBeanLike.setUnReadMessageNums(mItemBeanLike.getUnReadMessageNums() + 1);
+//            }
+//            // TODO: 2017/4/12 添加用户信息
+//        }
+//
+//        mItemBeanLike.getConversation().getLast_message().setTxt("还没有人"
+//                + mContext.getString(R.string.like_me));
 
         return mItemBeanLike;
     }
@@ -337,11 +351,145 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
 
     /**
      * 处理 获取用户收到的最新消息
+     *
      * @return
      */
-    private Observable<BaseJson<List<FlushMessages>>> handleFlushMessage() {
-//        return mUserInfoRepository.getMyFlushMessage();
-        return null;
+    private void handleFlushMessage() {
+        Long last_request_time = SharePreferenceUtils.getLong(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_LAST_FLUSHMESSAGE_TIME);
+        if (last_request_time == 0) {
+            last_request_time = System.currentTimeMillis() / 1000;
+        }
+        final Long finalLast_request_time = last_request_time + 1; // 加一秒钟，防止数据重复
+        mUserInfoRepository.getMyFlushMessage(last_request_time, "")
+                .subscribe(new BaseSubscribe<List<FlushMessages>>() {
+                    @Override
+                    protected void onSuccess(List<FlushMessages> data) {
+                        SharePreferenceUtils.saveLong(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_LAST_FLUSHMESSAGE_TIME, finalLast_request_time);
+                        FlushMessages commentFlushMessage = null;
+                        FlushMessages diggFlushMessage = null;
+                        FlushMessages followFlushMessage = null;
+                        for (FlushMessages flushMessages : data) {
+                            switch (flushMessages.getKey()) {
+                                case ApiConfig.FLUSHMESSAGES_KEY_COMMENTS:
+                                    commentFlushMessage = flushMessages;
+                                    break;
+                                case ApiConfig.FLUSHMESSAGES_KEY_DIGGS:
+                                    diggFlushMessage = flushMessages;
+                                    break;
+                                case ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS:
+                                    followFlushMessage = flushMessages;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        List<FlushMessages> flushMessages = mFlushMessageBeanGreenDao.getMultiDataFromCache();
+                        if (!flushMessages.isEmpty()) {
+                            for (FlushMessages flushMessage : flushMessages) {
+                                switch (flushMessage.getKey()) {
+                                    case ApiConfig.FLUSHMESSAGES_KEY_COMMENTS:
+                                        MessagePresenter.this.handleFlushMessage(commentFlushMessage, flushMessage);
+                                        break;
+                                    case ApiConfig.FLUSHMESSAGES_KEY_DIGGS:
+                                        MessagePresenter.this.handleFlushMessage(diggFlushMessage, flushMessage);
+                                        break;
+                                    case ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS:
+                                        MessagePresenter.this.handleFlushMessage(followFlushMessage, flushMessage);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                            handleFlushMessageForItem(flushMessages);
+                        } else {
+                            handleFlushMessageForItem(data);
+                        }
+
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+
+                    }
+                });
+    }
+
+    private void handleFlushMessageForItem(List<FlushMessages> flushMessages) {
+        mFlushMessageBeanGreenDao.saveMultiData(flushMessages);
+        for (FlushMessages flushMessage : flushMessages) {
+            switch (flushMessage.getKey()) {
+                case ApiConfig.FLUSHMESSAGES_KEY_COMMENTS:
+
+                    handleItemBean(mItemBeanComment, flushMessage);
+                    break;
+                case ApiConfig.FLUSHMESSAGES_KEY_DIGGS:
+                    handleItemBean(mItemBeanLike, flushMessage);
+                    break;
+                case ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS:
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    private void handleItemBean(MessageItemBean messageItemBean, FlushMessages flushMessage) {
+        String textEndTip = "";
+        int max_user_nums = MAX_USER_NUMS_COMMENT;
+        switch (flushMessage.getKey()) {
+            case ApiConfig.FLUSHMESSAGES_KEY_COMMENTS:
+                textEndTip = mContext.getString(R.string.comment_me);
+                max_user_nums = MAX_USER_NUMS_COMMENT;
+                break;
+            case ApiConfig.FLUSHMESSAGES_KEY_DIGGS:
+                textEndTip = mContext.getString(R.string.like_me);
+                max_user_nums = MAX_USER_NUMS_DIGG;
+                break;
+            default:
+                break;
+        }
+        if (messageItemBean == null) {
+            messageItemBean = new MessageItemBean();
+            Conversation commentMessage = new Conversation();
+            Message message = new Message();
+            commentMessage.setLast_message(message);
+            messageItemBean.setConversation(commentMessage);
+        }
+        messageItemBean.setUnReadMessageNums(flushMessage.getCount());
+        messageItemBean.getConversation().setLast_message_time(TimeUtils.utc2LocalLong(flushMessage.getTime()));
+        messageItemBean.getConversation().getLast_message().setCreate_time(TimeUtils.utc2LocalLong(flushMessage.getTime()));
+        String text = "还没有人";
+        if (!TextUtils.isEmpty(flushMessage.getUids())) {
+            text = "";
+            String[] uids = flushMessage.getUids().split(",");
+            for (int i = 0; i < uids.length; i++) {
+                if (i < max_user_nums) {
+                    try {
+                        UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(Long.valueOf(uids[i]));
+                        text += userInfoBean.getName() + "、";
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        messageItemBean.getConversation().getLast_message().setTxt(text
+                + textEndTip);
+        checkBottomMessageTip();
+        mRootView.updateLikeItemData(mItemBeanLike);
+    }
+
+    private void handleFlushMessage(FlushMessages commentFlushMessage, FlushMessages flushMessage) {
+        if (commentFlushMessage == null) {
+            return;
+        }
+        flushMessage.setCount(flushMessage.getCount() + commentFlushMessage.getCount());
+        flushMessage.setUids(flushMessage.getUids() + (TextUtils.isEmpty(commentFlushMessage.getUids()) ? "" : "," + commentFlushMessage.getUids()));
     }
 
 
@@ -350,13 +498,23 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
      */
     private void checkBottomMessageTip() {
         // 是否显示底部红点
-        boolean isShowMessgeTip = false;
-        for (MessageItemBean messageItemBean : mRootView.getListDatas()) {
-            if (messageItemBean.getUnReadMessageNums() > 0) {
-                isShowMessgeTip = true;
-                break;
+        boolean isShowMessgeTip;
+        if (mItemBeanLike != null && mItemBeanComment != null && mItemBeanLike.getUnReadMessageNums() == 0 && mItemBeanComment.getUnReadMessageNums() == 0) {
+            isShowMessgeTip = false;
+        } else {
+            isShowMessgeTip = true;
+        }
+        if (isShowMessgeTip) {
+            for (MessageItemBean messageItemBean : mRootView.getListDatas()) {
+                if (messageItemBean.getUnReadMessageNums() > 0) {
+                    isShowMessgeTip = true;
+                    break;
+                } else {
+                    isShowMessgeTip = false;
+                }
             }
         }
+
         EventBus.getDefault().post(isShowMessgeTip, EventBusTagConfig.EVENT_IM_SETMESSAGETIPVISABLE);
     }
 
