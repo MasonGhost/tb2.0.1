@@ -8,6 +8,7 @@ import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.collect.dynamic.CollectDynamicListFragment;
+import com.zhiyicx.thinksnsplus.modules.collect.info.CollectInformationListFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListFragment;
@@ -58,7 +59,7 @@ public class CollectListFragment extends TSViewPagerFragment<CollectListPresente
     @Override
     protected List<Fragment> initFragments() {
         Fragment dynamicListFragment = CollectDynamicListFragment.newInstance();
-        Fragment infoListFragment = InfoListFragment.newInstance("collections");
+        Fragment infoListFragment = CollectInformationListFragment.newInstance();
         // Fragment albumListFragment = new MusicListFragment();
         return Arrays.asList(dynamicListFragment
                 , infoListFragment
