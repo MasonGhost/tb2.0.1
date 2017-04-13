@@ -182,11 +182,21 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
             tvHeaderLikeTip = (BadgeView) headerview.findViewById(R.id.tv_header_like_tip);
         }
         tvHeaderCommentContent.setText(commentItemData.getConversation().getLast_message().getTxt());
-        tvHeaderCommentTime.setText(TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(commentItemData.getConversation().getLast_message_time())));
+        if(commentItemData.getConversation().getLast_message_time()==0){
+            tvHeaderCommentTime.setVisibility(View.INVISIBLE);
+        }else {
+            tvHeaderCommentTime.setVisibility(View.VISIBLE);
+            tvHeaderCommentTime.setText(TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(commentItemData.getConversation().getLast_message_time())));
+        }
         tvHeaderCommentTip.setBadgeCount(commentItemData.getUnReadMessageNums());
 
         tvHeaderLikeContent.setText(likedItemData.getConversation().getLast_message().getTxt());
-        tvHeaderLikeTime.setText(TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(commentItemData.getConversation().getLast_message_time())));
+        if(likedItemData.getConversation().getLast_message_time()==0){
+            tvHeaderLikeTime.setVisibility(View.INVISIBLE);
+        }else {
+            tvHeaderLikeTime.setVisibility(View.VISIBLE);
+            tvHeaderLikeTime.setText(TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(likedItemData.getConversation().getLast_message_time())));
+        }
         tvHeaderLikeTip.setBadgeCount(likedItemData.getUnReadMessageNums());
         refreshData();
     }
