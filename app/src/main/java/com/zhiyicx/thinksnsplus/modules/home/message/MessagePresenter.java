@@ -359,12 +359,12 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         if (last_request_time == 0) {
             last_request_time = System.currentTimeMillis() / 1000;
         }
-        final Long finalLast_request_time = last_request_time + 1; // 加一秒钟，防止数据重复
+        last_request_time++;//  由于请求接口数据时间是以秒级时间戳 建议调用传入时间间隔1秒以上 以防止数据重复
         mUserInfoRepository.getMyFlushMessage(last_request_time, "")
                 .subscribe(new BaseSubscribe<List<FlushMessages>>() {
                     @Override
                     protected void onSuccess(List<FlushMessages> data) {
-                        SharePreferenceUtils.saveLong(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_LAST_FLUSHMESSAGE_TIME, finalLast_request_time);
+                        SharePreferenceUtils.saveLong(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_LAST_FLUSHMESSAGE_TIME, System.currentTimeMillis() / 1000);
                         FlushMessages commentFlushMessage = null;
                         FlushMessages diggFlushMessage = null;
                         FlushMessages followFlushMessage = null;
@@ -462,7 +462,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
             messageItemBean.setConversation(commentMessage);
         }
         messageItemBean.setUnReadMessageNums(flushMessage.getCount());
-        messageItemBean.getConversation().setLast_message_time(TextUtils.isEmpty(flushMessage.getTime()) ?System.currentTimeMillis() : TimeUtils.utc2LocalLong(flushMessage.getTime()));
+        messageItemBean.getConversation().setLast_message_time(TextUtils.isEmpty(flushMessage.getTime()) ? System.currentTimeMillis() : TimeUtils.utc2LocalLong(flushMessage.getTime()));
         messageItemBean.getConversation().getLast_message().setCreate_time(TextUtils.isEmpty(flushMessage.getTime()) ? System.currentTimeMillis() : TimeUtils.utc2LocalLong(flushMessage.getTime()));
         String text = "还没有人";
         if (!TextUtils.isEmpty(flushMessage.getUids())) {
@@ -506,7 +506,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         Message diggmessage = new Message();
         diggConveration.setLast_message(diggmessage);
         mItemBeanDigg.setConversation(diggConveration);
-                mItemBeanDigg.getConversation().getLast_message().setTxt("还没有人"
+        mItemBeanDigg.getConversation().getLast_message().setTxt("还没有人"
                 + mContext.getString(R.string.like_me));
 
     }
