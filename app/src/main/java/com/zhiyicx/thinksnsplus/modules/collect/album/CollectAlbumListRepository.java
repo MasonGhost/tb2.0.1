@@ -26,4 +26,8 @@ public class CollectAlbumListRepository extends MusicRepository {
     public Observable<BaseJson<List<MusicAlbumListBean>>> getMusicAblumList(long max_id) {
         return mMusicClient.getCollectMusicList(max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE));
     }
+
+    public List<MusicAlbumListBean> getMusicAlbumFromCache(long maxId) {
+        return mMusicAlbumListDao.getMyCollectAlbum();
+    }
 }

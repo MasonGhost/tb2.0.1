@@ -70,7 +70,7 @@ public class MusicPresenter extends BasePresenter<MusicContract.Repository, Musi
 
     @Override
     public List requestCacheData(Long maxId, boolean isLoadMore) {
-        return mMusicAlbumListDao.getMultiDataFromCache();
+        return mRepository.getMusicAlbumFromCache(maxId);
     }
 
     @Override
