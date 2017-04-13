@@ -98,10 +98,10 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 ItemOnWebEventListener()) {
             @Override
             public void dealCommentCount(ViewHolder holder) {
-                if (mListDatas.get(mListDatas.size()-1).getComment_content()!=null) {
+                if (mListDatas.get(mListDatas.size() - 1).getComment_content() != null) {
                     holder.getView(R.id.info_detail_comment).setVisibility(View.VISIBLE);
                     holder.setText(R.id.tv_comment_count,
-                            getActivity().getResources().getString(R.string.dynamic_comment_count, mListDatas.size()-1 + ""));
+                            getActivity().getResources().getString(R.string.dynamic_comment_count, mListDatas.size() - 1 + ""));
                 } else {
                     holder.getView(R.id.info_detail_comment).setVisibility(View.GONE);
                 }
@@ -128,8 +128,9 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         initListener();
         setCollect(mInfoMation.getIs_collection_news() == 1);
     }
+
     private void initToolbar() {
-        mToolbar.setPadding(0,DeviceUtils.getStatuBarHeight(getContext()),0,0);
+        mToolbar.setPadding(0, DeviceUtils.getStatuBarHeight(getContext()), 0, 0);
     }
 
     @Override
@@ -149,7 +150,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     protected int getstatusbarAndToolbarHeight() {
-        return getResources().getDimensionPixelSize(R.dimen.toolbar_height_include_line_height)+DeviceUtils.getStatuBarHeight(getContext());
+        return getResources().getDimensionPixelSize(R.dimen.toolbar_height_include_line_height) + DeviceUtils.getStatuBarHeight(getContext());
     }
 
     @Override
@@ -189,7 +190,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     public int getInfoType() {
-        return Integer.valueOf(getArguments().getString(BUNDLE_INFO_TYPE,"-1"));
+        return Integer.valueOf(getArguments().getString(BUNDLE_INFO_TYPE, "-100"));
     }
 
     @Override
@@ -199,6 +200,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     public void setCollect(boolean isCollected) {
+
         mDdDynamicTool.setItemIsChecked(isCollected, ITEM_POSITION_0);
     }
 
@@ -229,7 +231,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     public void refreshData() {
 
 
-
         super.refreshData();
     }
 
@@ -239,7 +240,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         mDdDynamicTool.setImageNormalResourceIds(new int[]{R.mipmap.detail_ico_good_uncollect,
                 R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal,
                 //R.mipmap.home_ico_more
-                DEFAULT_RESOURES_ID });
+                DEFAULT_RESOURES_ID});
 
         mDdDynamicTool.setImageCheckedResourceIds(new int[]{R.mipmap.detail_ico_collect,
                 R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal, R.mipmap

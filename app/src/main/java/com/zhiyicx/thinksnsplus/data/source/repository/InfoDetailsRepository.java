@@ -6,6 +6,7 @@ import android.util.SparseArray;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
@@ -131,9 +132,11 @@ public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
                         if (aBoolean) {
                             backgroundRequestTaskBean = new BackgroundRequestTaskBean
                                     (BackgroundTaskRequestMethodConfig.POST, params);
+                            LogUtils.d(backgroundRequestTaskBean.getMethodType());
                         } else {
                             backgroundRequestTaskBean = new BackgroundRequestTaskBean
                                     (BackgroundTaskRequestMethodConfig.DELETE, params);
+                            LogUtils.d(backgroundRequestTaskBean.getMethodType());
                         }
                         backgroundRequestTaskBean.setPath(String.format(ApiConfig
                                 .APP_PATH_INFO_COLLECT_FORMAT, news_id));

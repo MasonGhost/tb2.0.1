@@ -55,6 +55,15 @@ public class EventBusTagConfig {
 
 
     /**
+     * 音乐相关
+     */
+    // 音乐专辑收藏
+    public static final String EVENT_ABLUM_COLLECT = "event_ablum_collect";
+
+    // 音乐单曲喜欢
+    public static final String EVENT_MUSIC_LIKE = "event_music_like";
+
+    /**
      * IM 相关
      */
     public static final String EVENT_IM_ONMESSAGERECEIVED = "onMessageReceived";

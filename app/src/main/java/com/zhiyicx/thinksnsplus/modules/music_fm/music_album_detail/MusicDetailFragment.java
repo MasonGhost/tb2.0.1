@@ -34,6 +34,7 @@ import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
@@ -49,12 +50,20 @@ import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import org.simple.eventbus.Subscriber;
+import org.simple.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_ABLUM_COLLECT;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_LIKE;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListFragment.BUNDLE_MUSIC_ABLUM;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT;
@@ -174,6 +183,11 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     }
 
     @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_music_detail;
     }
@@ -247,6 +261,9 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         mFragmentMusicDetailCenterTitle.setText(mAlbumDetailsBean.getTitle());
         mFragmentMusicDetailCenterSubTitle.setText(mAlbumDetailsBean.getIntro());
         mFragmentMusicDetailDec.setText(mAlbumDetailsBean.getIntro());
+
+        mMusicAlbumListBean.setIs_collection(mAlbumDetailsBean.getIs_collection());
+
         if (mAlbumDetailsBean.getIs_collection() != 0) {
             mFragmentMusicDetailFavorite.setIconRes(R.mipmap.detail_ico_collect);
         }
@@ -373,10 +390,10 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                             metadata.getDescription());
                 }
                 startActivity(intent);
-//                MediaSessionCompat.QueueItem mCurrentMusic = AppApplication.getmQueueManager().getCurrentMusic();
-//                if (mCurrentMusic != null) {
-//                    mMediaId = mCurrentMusic.getDescription().getMediaId();
-//                }
+                MediaSessionCompat.QueueItem mCurrentMusic = AppApplication.getmQueueManager().getCurrentMusic();
+                if (mCurrentMusic != null) {
+                    mMediaId = mCurrentMusic.getDescription().getMediaId();
+                }
 
                 if (item.isPlayable()) {
                     MediaControllerCompat controllerCompat = getActivity()
@@ -538,5 +555,23 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
             default:
                 break;
         }
+    }
+
+    @Subscriber(tag = EVENT_MUSIC_LIKE, mode = ThreadMode.MAIN)
+    public void onLikeCountUpdate(final MusicAlbumDetailsBean.MusicsBean e_albumListBean) {
+
+        Observable.from(mAlbumDetailsBean.getMusics()).filter(new Func1<MusicAlbumDetailsBean.MusicsBean, Boolean>() {
+            @Override
+            public Boolean call(MusicAlbumDetailsBean.MusicsBean musicsBean) {
+                return e_albumListBean.getId() == musicsBean.getId();
+            }
+        }).subscribe(new Action1<MusicAlbumDetailsBean.MusicsBean>() {
+            @Override
+            public void call(MusicAlbumDetailsBean.MusicsBean musicsBean) {
+                musicsBean.getMusic_info().setIsdiggmusic(e_albumListBean.getMusic_info().getIsdiggmusic());
+                musicsBean.getMusic_info().setComment_count(e_albumListBean.getMusic_info().getComment_count());
+            }
+        });
+        LogUtils.d("EVENT_MUSIC_LIKE");
     }
 }
