@@ -64,8 +64,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     CombinationButton mBtPersonalPage;
     @BindView(R.id.bt_ranking)
     CombinationButton mBtRanking;
-    @BindView(R.id.bt_gold)
-    CombinationButton mBtGold;
+    @BindView(R.id.bt_collect)
+    CombinationButton mBtCollect;
     @BindView(R.id.bt_suggestion)
     CombinationButton mBtSuggestion;
     @BindView(R.id.bt_question_answer)
@@ -149,7 +149,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         return R.color.white;
     }
 
-    @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_gold, R.id.bt_suggestion, R.id.bt_question_answer, R.id.bt_setting})
+    @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_collect, R.id.bt_suggestion, R.id.bt_question_answer, R.id.bt_setting})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_userinfo_container:
@@ -208,7 +208,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                     }
                 });*/
                 break;
-            case R.id.bt_gold:
+            case R.id.bt_collect:
                 startActivity(new Intent(getActivity(), CollectListActivity.class));
                 break;
             case R.id.bt_suggestion:
