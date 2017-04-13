@@ -158,6 +158,7 @@ public class ApiConfig {
      * 音乐相关
      */
     public static final String APP_PATH_MUSIC_ABLUM_LIST = "api/v1/music/specials";// 专辑列表
+    public static final String APP_PATH_MUSIC_COLLECT_ABLUM_LIST = "api/v1/music/specials/collections";// 专辑列表
 
     // 歌曲详情
     public static final String APP_PATH_MUSIC_DETAILS = "api/v1/music/{music_id}";

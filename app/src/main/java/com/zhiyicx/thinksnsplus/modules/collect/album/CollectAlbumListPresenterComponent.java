@@ -14,6 +14,6 @@ import dagger.Component;
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-@Component(dependencies = AppComponent.class, modules = MusicPresenterModule.class)
+@Component(dependencies = AppComponent.class, modules = CollectAlbumPresenterModule.class)
 public interface CollectAlbumListPresenterComponent extends InjectComponent<CollectAlbumListFragment> {
 }

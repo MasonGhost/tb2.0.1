@@ -21,9 +21,13 @@ public class CollectAlbumListFragment extends MusicListFragment {
 
     @Override
     protected void initData() {
-        DaggerCollectAlbumListPresenterComponent.builder()
+       /* DaggerCollectAlbumListPresenterComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .musicPresenterModule(new MusicPresenterModule(this))
+                .build().inject(this);*/
+        DaggerCollectAlbumListPresenterComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .collectAlbumPresenterModule(new CollectAlbumPresenterModule(this))
                 .build().inject(this);
         super.initData();
     }

@@ -31,7 +31,7 @@ import rx.schedulers.Schedulers;
  */
 
 public class MusicRepository implements MusicContract.Repository {
-    private MusicClient mMusicClient;
+    protected MusicClient mMusicClient;
     @Inject
     public MusicRepository(ServiceManager serviceManager) {
         mMusicClient = serviceManager.getMusicClient();
