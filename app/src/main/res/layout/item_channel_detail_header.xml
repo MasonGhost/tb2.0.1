@@ -31,6 +31,7 @@
             android:layout_marginTop="10dp"
             android:maxLines="1"
             android:textColor="@color/white"
+            android:textSize="@dimen/size_sub_title"
             tools:text="走在冷风中"/>
 
         <TextView
@@ -41,7 +42,8 @@
             android:layout_marginRight="20dp"
             android:layout_marginTop="10dp"
             android:gravity="center"
-            android:textColor="@color/white"
+            android:textColor="@color/channel_detail_white_alpha"
+            android:textSize="@dimen/size_content_assist"
             tools:text="怎么连复杂的故事背后，都是我听朋友说，行走在在冬野的冷风中"/>
 
         <LinearLayout
@@ -55,7 +57,8 @@
                 android:id="@+id/tv_subscrib_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
+                android:textColor="@color/channel_detail_white_alpha"
+                android:textSize="@dimen/size_content_assist"
                 tools:text="订阅 16"/>
 
             <TextView
@@ -63,7 +66,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:textColor="@color/white"
+                android:textColor="@color/channel_detail_white_alpha"
+                android:textSize="@dimen/size_content_assist"
                 tools:text="分享 26"/>
         </LinearLayout>
 
