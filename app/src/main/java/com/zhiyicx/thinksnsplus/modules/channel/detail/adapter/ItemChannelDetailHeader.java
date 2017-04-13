@@ -2,11 +2,18 @@ package com.zhiyicx.thinksnsplus.modules.channel.detail.adapter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.shapes.RoundRectShape;
+import android.graphics.drawable.shapes.Shape;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
@@ -15,6 +22,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,6 +40,7 @@ import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.UIUtils;
@@ -44,8 +53,11 @@ import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailContract;
+import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailPresenter;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
+import com.zhiyicx.thinksnsplus.widget.ColorFilterTextView;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import static com.zhiyicx.thinksnsplus.R.id.fl_cover_contaner;
@@ -57,7 +69,7 @@ import static com.zhiyicx.thinksnsplus.R.id.fl_cover_contaner;
  * @contact email:450127106@qq.com
  */
 
-public class ItemChannelDetailHeader {
+public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRefresh {
     /**********************************
      * headerView控件
      ********************************/
@@ -66,7 +78,7 @@ public class ItemChannelDetailHeader {
     private TextView tv_channel_description;//频道简介
     private TextView tv_subscrib_count;//订阅数量
     private TextView tv_share_count;// 分享数量
-    private FrameLayout fl_header_container;// 布局根结点
+    private LinearLayout fl_header_container;// 布局根结点
 
     private Activity mActivity;
     private RecyclerView mRecyclerView;
@@ -75,9 +87,11 @@ public class ItemChannelDetailHeader {
     private View mToolBarContainer;// 需要变换透明度的标题栏
     private View mToolBar;
     private ImageView back;
-    private ImageView subscribBtn;
+    private ColorFilterTextView subscribBtn;
     private TextView channelName;
     private View bootomDivider;// 底部的分割线
+    private ImageView refreshImage;// 刷新小菊花
+    private ChannelDetailContract.Presenter mChannelDetailPresenter;
 
     private ImageLoader mImageLoader;
 
@@ -85,6 +99,7 @@ public class ItemChannelDetailHeader {
      * 标题文字的颜色:#333333
      **/
     public static int[] TITLE_RGB = {51, 51, 51};
+
     /**
      * 状态栏的颜色变化，也就是toolbar上半部分的底色:#ffffff
      **/
@@ -108,10 +123,18 @@ public class ItemChannelDetailHeader {
      * toolbar图标黑色：从顶部往下滑
      **/
     public static int[] TOOLBAR_BLACK_ICON = {51, 51, 51};
+    /**
+     * toolbar右边订阅图标白色：滑到顶部的时候
+     */
+    public static int[] TOOLBAR_RIGHT_WHITE = {255, 255, 255};
+    /**
+     * toolbar右边订阅图标主题色：从顶部往下滑动的时候
+     */
+    public static int[] TOOLBAR_RIGHT_BLUE = {89, 182, 215};
 
     private View headerView;
 
-    public ItemChannelDetailHeader(Activity activity, RecyclerView recyclerView, HeaderAndFooterWrapper headerAndFooterWrapper, View mToolBarContainer) {
+    public ItemChannelDetailHeader(Activity activity, RecyclerView recyclerView, HeaderAndFooterWrapper headerAndFooterWrapper, View mToolBarContainer, ChannelDetailContract.Presenter channelDetailPresenter) {
         mActivity = activity;
         mRecyclerView = recyclerView;
         mHeaderAndFooterWrapper = headerAndFooterWrapper;
@@ -119,9 +142,11 @@ public class ItemChannelDetailHeader {
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         mToolBar = mToolBarContainer.findViewById(R.id.rl_toolbar_container);
         back = (ImageView) mToolBarContainer.findViewById(R.id.iv_back);
-        subscribBtn = (ImageView) mToolBarContainer.findViewById(R.id.iv_subscrib_btn);
+        subscribBtn = (ColorFilterTextView) mToolBarContainer.findViewById(R.id.iv_subscrib_btn);
         channelName = (TextView) mToolBarContainer.findViewById(R.id.tv_channel_name);
         bootomDivider = mToolBarContainer.findViewById(R.id.v_horizontal_line);
+        refreshImage = (ImageView) mToolBarContainer.findViewById(R.id.iv_refresh);
+        this.mChannelDetailPresenter = channelDetailPresenter;
         // 设置初始透明度为0
         setViewColorWithAlpha(channelName, TITLE_RGB, 0);
         setViewColorWithAlpha(mToolBarContainer, STATUS_RGB, 0);
@@ -167,10 +192,14 @@ public class ItemChannelDetailHeader {
                         // 设置ImageView的ColorFilter从而改变图标的颜色
                         setToolbarIconColor(Color.argb(255, TOOLBAR_WHITE_ICON[0],
                                 TOOLBAR_WHITE_ICON[1], TOOLBAR_WHITE_ICON[2]));
+                        setRightTextViewColor(Color.argb(255, TOOLBAR_RIGHT_WHITE[0],
+                                TOOLBAR_RIGHT_WHITE[1], TOOLBAR_RIGHT_WHITE[2]));
                         setViewColorWithAlpha(channelName, TITLE_RGB, 0);// 用户名不可见
                     } else {
                         setToolbarIconColor(Color.argb((int) alpha, TOOLBAR_BLACK_ICON[0],
                                 TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
+                        setRightTextViewColor(Color.argb((int) alpha, TOOLBAR_RIGHT_BLUE[0],
+                                TOOLBAR_RIGHT_BLUE[1], TOOLBAR_RIGHT_BLUE[2]));
                         setViewColorWithAlpha(channelName, TITLE_RGB, (int) alpha);
                     }
                     // 尝试设置状态栏文字成白色
@@ -184,6 +213,8 @@ public class ItemChannelDetailHeader {
 
                     setToolbarIconColor(Color.argb(255, TOOLBAR_BLACK_ICON[0],
                             TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
+                    setRightTextViewColor(Color.argb(255, TOOLBAR_RIGHT_BLUE[0],
+                            TOOLBAR_RIGHT_BLUE[1], TOOLBAR_RIGHT_BLUE[2]));
                     // 尝试设置状态栏文字成黑色
                     StatusBarUtils.statusBarLightMode(mActivity);
                 }
@@ -195,6 +226,8 @@ public class ItemChannelDetailHeader {
                     setViewColorWithAlpha(bootomDivider, TOOLBAR_DIVIDER_RGB, 0);
                     setToolbarIconColor(Color.argb(255, TOOLBAR_WHITE_ICON[0]
                             , TOOLBAR_WHITE_ICON[1], TOOLBAR_WHITE_ICON[2]));
+                    setRightTextViewColor(Color.argb(255, TOOLBAR_RIGHT_WHITE[0],
+                            TOOLBAR_RIGHT_WHITE[1], TOOLBAR_RIGHT_WHITE[2]));
                     // 尝试设置状态栏文字成白色
                     StatusBarUtils.statusBarDarkMode(mActivity);
                 }
@@ -206,7 +239,17 @@ public class ItemChannelDetailHeader {
     public void setToolbarIconColor(int argb) {
         PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(argb, PorterDuff.Mode.SRC_ATOP);
         back.setColorFilter(colorFilter);// 纯黑色
-        subscribBtn.setColorFilter(colorFilter);// 纯黑色
+        //subscribBtn.setColorFilter(colorFilter);// 纯黑色
+    }
+
+    public void setRightTextViewColor(int argb) {
+        Drawable[] drawables = subscribBtn.getCompoundDrawables();
+        Drawable leftDrawable = drawables[0];
+        PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(argb, PorterDuff.Mode.SRC_ATOP);
+        leftDrawable.setColorFilter(colorFilter);
+        subscribBtn.setColorFilter(colorFilter);
+        Drawable drawable = subscribBtn.getBackground();
+        drawable.setColorFilter(colorFilter);
     }
 
     public void initHeaderViewData(final ChannelSubscripBean channelSubscripBean) {
@@ -259,18 +302,20 @@ public class ItemChannelDetailHeader {
         tv_channel_description = (TextView) headerView.findViewById(R.id.tv_channel_description);
         tv_subscrib_count = (TextView) headerView.findViewById(R.id.tv_subscrib_count);
         tv_share_count = (TextView) headerView.findViewById(R.id.tv_share_count);
-        fl_header_container = (FrameLayout) headerView.findViewById(R.id.fl_header_container);
-        // 高度为屏幕宽度一半加上20dp
-        int width = headerLayoutParams.width;
-        int height = headerLayoutParams.height;
-        LogUtils.i("initHeaderViewUI width " + width + " height " + height);
-     /*   LinearLayout.LayoutParams containerLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
-        fl_header_container.setLayoutParams(containerLayoutParams);*/
+        fl_header_container = (LinearLayout) headerView.findViewById(R.id.fl_header_container);
         // 添加头部放缩
-        // new ZoomView(fl_header_container, mActivity, mRecyclerView, width, height).initZoom();
-
+        fl_header_container.post(new Runnable() {
+            @Override
+            public void run() {
+                LogUtils.i("post run" + fl_header_container.getWidth() + "  " + fl_header_container.getHeight());
+                // 通过post获取控件宽高后，创建缩放头部
+                ZoomView zoomView = new ZoomView(fl_header_container, mActivity, mRecyclerView, fl_header_container.getWidth(), fl_header_container.getHeight());
+                zoomView.initZoom();
+                // 添加刷新监听
+                zoomView.setZoomTouchListenerForRefresh(ItemChannelDetailHeader.this);
+            }
+        });
     }
-
 
     public void setViewColorWithAlpha(View v, int[] colorRGB, int alpha) {
         int color = Color.argb(alpha, colorRGB[0], colorRGB[1], colorRGB[2]);
@@ -282,4 +327,32 @@ public class ItemChannelDetailHeader {
         v.setBackgroundColor(color);
     }
 
+
+    @Override
+    public void moving(int moveDistance) {
+
+    }
+
+    @Override
+    public void refreshStart(int moveDistance) {
+        // 在网络请求结束后，进行调用
+        mChannelDetailPresenter.requestNetData(0l, false);
+        ((AnimationDrawable) refreshImage.getDrawable()).start();
+
+    }
+
+    @Override
+    public void refreshEnd() {
+        ((AnimationDrawable) refreshImage.getDrawable()).stop();
+        refreshImage.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void canRefresh(int moveDistance, boolean canRefresh) {
+        if (canRefresh) {
+            refreshImage.setVisibility(View.VISIBLE);
+        } else {
+            refreshImage.setVisibility(View.GONE);
+        }
+    }
 }

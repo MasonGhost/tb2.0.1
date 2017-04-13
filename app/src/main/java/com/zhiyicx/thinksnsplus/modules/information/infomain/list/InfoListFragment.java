@@ -132,6 +132,11 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
     protected Long getMaxId(@NotNull List<BaseListBean> data) {
         InfoListBean.ListBean needData = (InfoListBean.ListBean) data.get(data.size() - 1);
         return (long) needData.getId();

@@ -1,8 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.information.infomain.list;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoListBeanGreenDaoImpl;
@@ -60,9 +63,15 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
                     @Override
                     protected void onSuccess(InfoListBean data) {
                         List<BaseListBean> list = new ArrayList<>();
-                        list.addAll(data.getRecommend());
-                        list.addAll(data.getList());
-                        data.setInfo_type(Integer.valueOf(mRootView.getInfoType()));
+                        if (data.getRecommend() != null) {
+                            list.addAll(data.getRecommend());
+                        }
+                        if (data.getList() != null) {
+                            list.addAll(data.getList());
+                        }
+                        String typeString = mRootView.getInfoType();
+                        int type = Integer.valueOf(typeString);
+                        data.setInfo_type(type);
                         mInfoListBeanGreenDao.insertOrReplace(data);
                         mRootView.onNetResponseSuccess(list, isLoadMore);
                     }
@@ -74,6 +83,7 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
 
                     @Override
                     protected void onException(Throwable throwable) {
+                        LogUtils.i("onException" + throwable.getMessage());
                         mRootView.onResponseError(throwable, isLoadMore);
                     }
                 });
@@ -81,14 +91,16 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
     }
 
     @Override
-    public List<BaseListBean> requestCacheData(Long max_Id,final boolean isLoadMore) {
+    public List<BaseListBean> requestCacheData(Long max_Id, final boolean isLoadMore) {
         final List<BaseListBean> localData = new ArrayList<>();
         Observable.just(mInfoListBeanGreenDao)
                 .map(new Func1<InfoListBeanGreenDaoImpl, InfoListBean>() {
                     @Override
                     public InfoListBean call(InfoListBeanGreenDaoImpl infoListBeanGreenDao) {
+                        String typeString = mRootView.getInfoType();
+                        int type = Integer.valueOf(typeString);
                         return infoListBeanGreenDao
-                                .getInfoListByInfoType(Integer.valueOf(mRootView.getInfoType()));
+                                .getInfoListByInfoType(type);
                     }
                 })
                 .filter(new Func1<InfoListBean, Boolean>() {
@@ -99,8 +111,12 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
                 }).subscribe(new Action1<InfoListBean>() {
             @Override
             public void call(InfoListBean data) {
-                localData.addAll(data.getRecommend());
-                localData.addAll(data.getList());
+                if (data.getRecommend() != null) {
+                    localData.addAll(data.getRecommend());
+                }
+                if (data.getList() != null) {
+                    localData.addAll(data.getList());
+                }
                 data.setInfo_type(Integer.valueOf(mRootView.getInfoType()));
             }
         });

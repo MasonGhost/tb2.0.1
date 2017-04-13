@@ -224,7 +224,8 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
 
                     @Override
                     public void onCurrentQueueIndexUpdated(int queueIndex) {
-                        mPlaybackManager.handlePlayRequest();
+                        LogUtils.d("mCurrentPosition:::handlePlayRequest::onCurrentQueueIndexUpdated");
+//                        mPlaybackManager.handlePlayRequest();
                     }
 
                     @Override

@@ -134,7 +134,7 @@ public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Rep
         int is_collection_news = isUnCollected ? 1 : 0;
         mRootView.getCurrentInfo().setIs_collection_news(is_collection_news);
 
-        if (mRootView.getInfoType() < 0) {
+        if (mRootView.getInfoType() == -100) {
             return;// 搜索出来的资讯，收藏状态有待优化
         }
         mInfoListBeanGreenDao.saveCollect(mRootView.getInfoType(), mRootView.getNewsId().intValue

@@ -17,15 +17,17 @@ import rx.Observable;
  */
 public interface MusicContract {
 
-    interface View extends ITSListView<MusicAlbumListBean,Presenter> {
+    interface View extends ITSListView<MusicAlbumListBean, Presenter> {
 
     }
 
     interface Presenter extends ITSListPresenter<MusicAlbumListBean> {
-
+        void updateOneMusic(MusicAlbumListBean albumListBean);
     }
 
     interface Repository {
         Observable<BaseJson<List<MusicAlbumListBean>>> getMusicAblumList(long max_id);
+
+        List<MusicAlbumListBean> getMusicAlbumFromCache(long maxId);
     }
 }

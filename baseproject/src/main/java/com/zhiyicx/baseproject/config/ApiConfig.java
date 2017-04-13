@@ -28,8 +28,8 @@ public class ApiConfig {
     public static final String APP_DOMAIN = "http://192.168.2.222/";// 测试服务器
     public static final String APP_IM_DOMAIN = "192.168.2.222:9900";// im 测试服务器
 
-//    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
-//    public static final String APP_IM_DOMAIN = "ws://tsplus.zhibocloud.cn:9900";// im 正式服务器
+    // public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
+    // public static final String APP_IM_DOMAIN = "ws://tsplus.zhibocloud.cn:9900";// im 正式服务器
 
 
     public static final String URL_ABOUT_US = "http://www.thinksns.com/index.html";// 关于我们网站
@@ -102,6 +102,7 @@ public class ApiConfig {
     public static final String DYNAMIC_TYPE_FOLLOWS = "follows"; // 关注动态
     public static final String DYNAMIC_TYPE_HOTS = "hots"; // 热门动态
     public static final String DYNAMIC_TYPE_SOMEONE = "users/%s"; // 某个人的动态列表,%s表示用户id
+    public static final String DYNAMIC_TYPE_MY_COLLECTION = "collections";// 我收藏的动态列表
     // 点赞一条动态,取消点赞
     public static final String APP_PATH_DYNAMIC_HANDLE_LIKE = "api/v1/feeds/{feed_id}/digg";
     public static final String APP_PATH_DYNAMIC_HANDLE_LIKE_FORMAT = "api/v1/feeds/%s/digg";
@@ -126,6 +127,8 @@ public class ApiConfig {
      */
     public static final String APP_PATH_INFO_TYPE = "api/v1/news/cates";// 资讯分类列表
     public static final String APP_PATH_INFO_LIST = "api/v1/news";// 资讯列表
+    public static final String APP_PATH_INFO_COLLECT_LIST = "api/v1/news/collections";// 普通的资讯列表，通过cate_uid获取
+    public static final String INFO_TYPE_COLLECTIONS = "-1000";// 资讯收藏列表
     public static final String APP_PATH_INFO_COMMENT = "api/v1/news/{news_id}/comment";// 评论资讯
     public static final String APP_PATH_INFO_COMMENT_FORMAT = "api/v1/news/%s/comment";// 评论资讯
 
@@ -152,6 +155,7 @@ public class ApiConfig {
      * 音乐相关
      */
     public static final String APP_PATH_MUSIC_ABLUM_LIST = "api/v1/music/specials";// 专辑列表
+    public static final String APP_PATH_MUSIC_COLLECT_ABLUM_LIST = "api/v1/music/special/collections";// 专辑列表
 
     // 歌曲详情
     public static final String APP_PATH_MUSIC_DETAILS = "api/v1/music/{music_id}";

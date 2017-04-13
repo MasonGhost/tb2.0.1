@@ -542,42 +542,46 @@ public class BackgroundTaskHandler {
                 .subscribe(new BaseSubscribe<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
-                        // 动态发送成功
-                        mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
                         // 发送动态到动态列表：状态为发送成功
-                        dynamicBean.setState(DynamicBean.SEND_SUCCESS);
-                        dynamicBean.setFeed_id(((Double) data).longValue());
-                        mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
-                        sendDynamicByEventBus(dynamicBelong, dynamicBean);
+                        sendDynamicByEventBus(dynamicBelong, dynamicBean, true, backgroundRequestTaskBean, data);
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
                         // 发送动态到动态列表：状态为发送失败
-                        dynamicBean.setState(DynamicBean.SEND_ERROR);
-                        mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
-                        sendDynamicByEventBus(dynamicBelong, dynamicBean);
+
+                        sendDynamicByEventBus(dynamicBelong, dynamicBean, false, backgroundRequestTaskBean, null);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         throwable.printStackTrace();
                         // 发送动态到动态列表：状态为发送失败
-                        dynamicBean.setState(DynamicBean.SEND_ERROR);
-                        mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
-                        sendDynamicByEventBus(dynamicBelong, dynamicBean);
+                        sendDynamicByEventBus(dynamicBelong, dynamicBean, false, backgroundRequestTaskBean, null);
                     }
                 });
 
     }
 
-    private void sendDynamicByEventBus(int dynamicBelong, DynamicBean dynamicBean) {
+    private void sendDynamicByEventBus(int dynamicBelong, DynamicBean dynamicBean, boolean sendSuccess
+            , BackgroundRequestTaskBean backgroundRequestTaskBean, Object data) {
         switch (dynamicBelong) {
             case SendDynamicDataBean.MORMAL_DYNAMIC:
                 EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
+                if (sendSuccess) {
+                    // 动态发送成功
+                    mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                    dynamicBean.setState(DynamicBean.SEND_SUCCESS);
+                    dynamicBean.setFeed_id(((Double) data).longValue());
+                    mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
+                } else {
+                    dynamicBean.setState(DynamicBean.SEND_ERROR);
+                    mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
+                }
                 break;
             case SendDynamicDataBean.CHANNEL_DYNAMIC:
-                EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_CHANNEL);
+                // 频道发送动态，不会显示在界面上,不用存在数据库中，不用做任何处理
+                //EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_CHANNEL);
                 break;
             default:
         }

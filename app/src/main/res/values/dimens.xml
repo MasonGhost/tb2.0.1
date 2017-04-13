@@ -20,5 +20,6 @@
     <!--频道订阅按钮宽度-->
     <dimen name="channel_subscrib_btn_width">63dp</dimen>
     <dimen name="channel_subscrib_btn_height">25dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 
 </resources>

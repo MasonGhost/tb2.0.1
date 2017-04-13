@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:id="@+id/fl_header_container"
+             xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
+             android:layout_gravity="center_horizontal"
+             android:background="@color/white"
              android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/fl_header_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:gravity="center_horizontal"
+        android:gravity="center_horizontal|bottom"
         android:orientation="vertical">
 
         <ImageView
@@ -19,7 +22,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="100dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/girl_head_xinyuanjieyi"/>
+            tools:src="@drawable/girl_head_xinyuanjieyi"/>
 
         <TextView
             android:id="@+id/tv_channel_name"
@@ -27,8 +30,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:maxLines="1"
-            android:text="走在冷风中"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_sub_title"
+            tools:text="走在冷风中"/>
 
         <TextView
             android:id="@+id/tv_channel_description"
@@ -38,8 +42,9 @@
             android:layout_marginRight="20dp"
             android:layout_marginTop="10dp"
             android:gravity="center"
-            android:text="怎么连复杂的故事背后，都是我听朋友说，行走在在冬野的冷风中"
-            android:textColor="@color/white"/>
+            android:textColor="@color/channel_detail_white_alpha"
+            android:textSize="@dimen/size_content_assist"
+            tools:text="怎么连复杂的故事背后，都是我听朋友说，行走在在冬野的冷风中"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -52,16 +57,23 @@
                 android:id="@+id/tv_subscrib_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="订阅 16"
-                android:textColor="@color/white"/>
+                android:textColor="@color/channel_detail_white_alpha"
+                android:textSize="@dimen/size_content_assist"
+                tools:text="订阅 16"/>
 
             <TextView
                 android:id="@+id/tv_share_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:text="分享 26"
-                android:textColor="@color/white"/>
+                android:textColor="@color/channel_detail_white_alpha"
+                android:textSize="@dimen/size_content_assist"
+                tools:text="分享 26"/>
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_small"
+            android:background="@color/bgColor"></View>
     </LinearLayout>
 </FrameLayout>

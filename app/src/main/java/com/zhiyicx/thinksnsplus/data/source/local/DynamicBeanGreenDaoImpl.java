@@ -6,6 +6,8 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.List;
@@ -196,6 +198,20 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
             return datas.get(0);
         }
         return null;
+    }
+
+    /**
+     * 获取我收藏的动态
+     *
+     * @return
+     */
+    public List<DynamicBean> getMyCollectDynamic() {
+        DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
+        List<DynamicBean> datas = dynamicBeanDao.queryDeep(" where "
+                        + " T1." + DynamicToolBeanDao.Properties.Is_collection_feed.columnName + " = ? "
+                        + " ORDER BY  T." + DynamicBeanDao.Properties.Feed_mark.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// 按照Feedmark倒序：userId+时间戳 ：越新的动态，feedmark越大
+                , "1");
+        return datas;
     }
 
     /**

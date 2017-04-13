@@ -9,12 +9,11 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.utils.ImageUtils;
-import com.zhiyicx.common.utils.imageloader.config.ImageConfig;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.TGridDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -25,8 +24,16 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.Subscriber;
+import org.simple.eventbus.ThreadMode;
 
 import java.util.List;
+
+import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
+
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_ABLUM_COLLECT;
 
 /**
  * @Author Jliuer
@@ -39,7 +46,10 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
 
     private ImageLoader mImageLoader;
     public static final String BUNDLE_MUSIC_ABLUM = "music_ablum";
-
+    /**
+     * 数量改变 event_bus 来的
+     */
+    private MusicAlbumListBean mMusicAlbumListBean;
 
     @Override
     protected void initData() {
@@ -84,7 +94,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     @Override
     protected CommonAdapter<MusicAlbumListBean> getAdapter() {
         CommonAdapter<MusicAlbumListBean> comAdapter = new CommonAdapter<MusicAlbumListBean>
-                (getActivity(), R.layout.item_music_list,mListDatas) {
+                (getActivity(), R.layout.item_music_list, mListDatas) {
             @Override
             protected void convert(ViewHolder holder, MusicAlbumListBean musicListBean, int
                     position) {
@@ -93,11 +103,13 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
                         .placeholder(R.drawable.shape_default_image)
                         .errorPic(R.drawable.shape_default_image)
                         .imagerView(imag)
-                        .url(ImageUtils.imagePathConvert(musicListBean.getStorage().getId()+"",
+                        .url(ImageUtils.imagePathConvert(musicListBean.getStorage().getId() + "",
                                 ImageZipConfig.IMAGE_70_ZIP))
                         .build());
-                holder.setText(R.id.music_list_taste_count, "" + musicListBean.getTaste_count());
+
+                holder.setText(R.id.music_list_taste_count, "" + musicListBean.getCollect_count());
                 holder.setText(R.id.music_list_title, musicListBean.getTitle());
+
             }
         };
 
@@ -123,5 +135,33 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     @Override
     protected Long getMaxId(@NotNull List<MusicAlbumListBean> data) {
         return (long) data.get(data.size() - 1).getId();
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    @Subscriber(tag = EVENT_ABLUM_COLLECT, mode = ThreadMode.MAIN)
+    public void onCollectCountUpdate(MusicAlbumListBean e_albumListBean) {
+        mMusicAlbumListBean = e_albumListBean;
+        Observable.from(mListDatas).filter(new Func1<MusicAlbumListBean, Boolean>() {
+            @Override
+            public Boolean call(MusicAlbumListBean albumListBean) {
+                return mMusicAlbumListBean.getId() == albumListBean.getId();
+            }
+        }).subscribe(new Action1<MusicAlbumListBean>() {
+            @Override
+            public void call(MusicAlbumListBean albumListBean_same) {
+                albumListBean_same.setCollect_count(mMusicAlbumListBean.getCollect_count());
+                albumListBean_same.setShare_count(mMusicAlbumListBean.getShare_count());
+                albumListBean_same.setIs_collection(mMusicAlbumListBean.getIs_collection());
+                albumListBean_same.setComment_count(mMusicAlbumListBean.getComment_count());
+                albumListBean_same.setTaste_count(mMusicAlbumListBean.getTaste_count());
+                mPresenter.updateOneMusic(albumListBean_same);
+                mHeaderAndFooterWrapper.notifyDataSetChanged();
+            }
+        });
+        LogUtils.d("EVENT_ABLUM_COLLECT");
     }
 }

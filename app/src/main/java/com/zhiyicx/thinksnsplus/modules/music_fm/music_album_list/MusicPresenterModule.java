@@ -16,10 +16,10 @@ import dagger.Provides;
  * @Description
  */
 @Module
-class MusicPresenterModule {
+public class MusicPresenterModule {
     private MusicContract.View view;
 
-    MusicPresenterModule(MusicContract.View view) {
+    public MusicPresenterModule(MusicContract.View view) {
         this.view = view;
     }
 

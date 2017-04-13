@@ -30,7 +30,6 @@ public interface ChannelClient {
      * @param channel_id
      * @return
      */
-    @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_HANDLE_SUBSCRIB_CHANNEL)
     Observable<BaseJson<Object>> subscribChannel(@Path("channel_id") long channel_id);
 
