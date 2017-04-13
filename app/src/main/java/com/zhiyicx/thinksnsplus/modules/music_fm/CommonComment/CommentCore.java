@@ -4,7 +4,7 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment;
  * @Author Jliuer
  * @Date 2017/04/12/9:46
  * @Email Jliuer@aliyun.com
- * @Description  评论处理类
+ * @Description 评论处理类
  */
 public class CommentCore implements ICommentBean {
 
@@ -35,7 +35,7 @@ public class CommentCore implements ICommentBean {
     }
 
     public void handleComment() {
-        if (mCommentBean==null){
+        if (mCommentBean == null) {
             return;
         }
         CommentCore core = this;
@@ -53,8 +53,8 @@ public class CommentCore implements ICommentBean {
         return mCommentBean;
     }
 
-    public enum CommentState{
-        SEND(SENDCOMMENT),DELETE(DELETECOMMENT);
+    public enum CommentState {
+        SEND(SENDCOMMENT), DELETE(DELETECOMMENT);
 
         private ICommentEvent mCommentEvent;
 

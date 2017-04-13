@@ -132,7 +132,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_music_detail_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/spacing_mid"
             android:layout_marginRight="@dimen/spacing_mid"
             android:overScrollMode="never"/>
