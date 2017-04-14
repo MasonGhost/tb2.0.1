@@ -1,10 +1,10 @@
-<FrameLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/behavior_demo_coordinatorLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <include
         layout="@layout/fragment_tslist"
@@ -78,22 +78,19 @@
         <include layout="@layout/include_horizontal_divider"></include>
 
     </LinearLayout>
+
     <!--发送动态按钮-->
     <ImageView
         android:id="@+id/btn_send_dynamic"
         android:layout_width="@dimen/channel_detail_float_btn_height"
         android:layout_height="@dimen/channel_detail_float_btn_height"
         android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="@dimen/floating_button_bottom_margin"
         android:scaleType="fitXY"
-        android:src="@mipmap/channel_btn_suspension"/>
+        android:src="@mipmap/channel_btn_suspension"
+        app:layout_behavior="com.zhiyicx.thinksnsplus.widget.coordinatorlayout.ScrollAwareFABBehavior"/>
+
     <!--灰色背景-->
-    <View
-        android:id="@+id/v_shadow"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/masked_color"
-        android:visibility="gone"/>
     <!--评论输入框-->
     <com.zhiyicx.baseproject.widget.InputLimitView
         android:id="@+id/ilv_comment"
@@ -107,4 +104,11 @@
 
     </com.zhiyicx.baseproject.widget.InputLimitView>
 
-</FrameLayout>
+    <View
+        android:id="@+id/v_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/masked_color"
+        android:visibility="gone"/>
+
+</android.support.design.widget.CoordinatorLayout>

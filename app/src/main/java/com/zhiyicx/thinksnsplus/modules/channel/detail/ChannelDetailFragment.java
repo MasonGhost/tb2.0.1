@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.modules.channel.detail;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -589,7 +591,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     private void initToolBar() {
         // toolBar 设置状态栏高度的 marginTop
         int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelSize(R.dimen.divider_line);
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
+        CoordinatorLayout.LayoutParams layoutParams = new CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
         mLlToolbarContainerParent.setLayoutParams(layoutParams);
 
     }
