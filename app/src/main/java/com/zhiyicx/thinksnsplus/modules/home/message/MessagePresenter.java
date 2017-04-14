@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.ActivityHandler;
@@ -372,10 +373,9 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     private void handleFlushMessage() {
         Long last_request_time = SharePreferenceUtils.getLong(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_LAST_FLUSHMESSAGE_TIME);
         if (last_request_time == 0) {
-            last_request_time = System.currentTimeMillis() / 1000;
+            last_request_time = System.currentTimeMillis() / 1000 - ConstantConfig.HOUR / 1000;
         }
         last_request_time++;//  由于请求接口数据时间是以秒级时间戳 建议调用传入时间间隔1秒以上 以防止数据重复
-
         mUserInfoRepository.getMyFlushMessage(last_request_time, "")
                 .doOnSubscribe(new Action0() {
                     @Override

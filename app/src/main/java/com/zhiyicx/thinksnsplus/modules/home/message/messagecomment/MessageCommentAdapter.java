@@ -209,9 +209,7 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
                 intent.putExtra(BUNDLE_INFO, bundle);
                 break;
             default:
-                intent = new Intent(mContext, DynamicDetailActivity.class);
-                intent.putExtras(bundle);
-                break;
+                return;
 
         }
         mContext.startActivity(intent);

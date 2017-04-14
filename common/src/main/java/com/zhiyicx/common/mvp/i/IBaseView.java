@@ -47,4 +47,11 @@ public interface IBaseView<VP> {
      */
     void showSnackWarningMessage(String message);
 
+    /**
+     * 从顶部显示持续 加载信息，直到下一个出现，或者手动停止
+     *
+     * @param message
+     */
+    void showSnackLoadingMessage(String message);
+
 }
