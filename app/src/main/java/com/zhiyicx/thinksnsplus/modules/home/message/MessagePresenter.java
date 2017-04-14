@@ -10,7 +10,6 @@ import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.imsdk.db.dao.ConversationDao;
-import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.AuthData;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
@@ -45,8 +44,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * @Describe
@@ -211,24 +215,31 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     /**
      * 刷新是否显示底部红点
      * 刷新当条item 的未读数
-     *
-     * @param positon 当条数据位置
      */
     @Override
-    public void refreshLastClicikPostion(int positon) {
-
-        // 刷新当条item 的未读数
-        Message message = MessageDao.getInstance(mContext).getLastMessageByCid(mRootView.getListDatas().get(positon).getConversation().getCid());
-        if (message != null) {
-            mRootView.getListDatas().get(positon).getConversation().setLast_message_time(message.getCreate_time());
-            mRootView.getListDatas().get(positon).getConversation().setLast_message(message);
-        }
-        mRootView.getListDatas().get(positon).setUnReadMessageNums(0);
-
-        mRootView.refreshData(); // 刷新加上 header
-        checkBottomMessageTip();
-
-
+    public void refreshConversationReadMessage() {
+        Subscription represhSu = Observable.just("")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<String, List<MessageItemBean>>() {
+                    @Override
+                    public List<MessageItemBean> call(String s) {
+                        return mChatRepository.getConversionListData(mAuthRepository.getAuthBean().getUser_id());
+                    }
+                })
+                .subscribe(new Action1<List<MessageItemBean>>() {
+                    @Override
+                    public void call(List<MessageItemBean> data) {
+                        mRootView.onCacheResponseSuccess(data, false);
+                        checkBottomMessageTip();
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
+        addSubscrebe(represhSu);
     }
 
     @Override
