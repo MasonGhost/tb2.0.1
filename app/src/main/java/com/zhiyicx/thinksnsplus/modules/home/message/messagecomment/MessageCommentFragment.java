@@ -2,12 +2,15 @@ package com.zhiyicx.thinksnsplus.modules.home.message.messagecomment;
 
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
@@ -28,7 +31,14 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 public class MessageCommentFragment extends TSListFragment<MessageCommentContract.Presenter, CommentedBean> implements MessageCommentContract.View, InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener {
-
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.tv_toolbar_center)
+    TextView mTvToolBarCenter;
+    @BindView(R.id.tv_toolbar_left)
+    TextView mTvToolBarLeft;
+    @BindView(R.id.tv_toolbar_right)
+    TextView mTvToolBarRight;
     @BindView(R.id.ilv_comment)
     InputLimitView mIlvComment;
     @BindView(R.id.v_shadow)
@@ -63,15 +73,8 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
 
     @Override
     protected int getBodyLayoutId() {
-        return R.layout.fragment_list_with_input;
+        return R.layout.fragment_list_with_input_and_toolbar;
     }
-
-
-    @Override
-    protected String setCenterTitle() {
-        return getString(R.string.comment);
-    }
-
     @Override
     protected boolean isNeedRefreshDataWhenComeIn() {
         return true;
@@ -85,6 +88,7 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        initToolbar();
         initInputView();
     }
 
@@ -99,6 +103,19 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
     protected void initData() {
         super.initData();
 
+    }
+
+    private void initToolbar() {
+        mToolbar.setBackgroundResource(R.color.white);
+        mToolbar.setPadding(0, DeviceUtils.getStatuBarHeight(getContext()), 0, 0);
+        mTvToolBarCenter.setText(R.string.comment);
+        mTvToolBarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), setLeftImg()), null, null, null);
+        mTvToolBarLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setLeftClick();
+            }
+        });
     }
 
     private void initInputView() {
