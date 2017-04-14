@@ -7,12 +7,16 @@ import android.view.View;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.adapter.MusicCommentItem;
@@ -31,6 +35,7 @@ import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentAdapter.BUNDLE_SOURCE_ID;
 
 /**
  * @Author Jliuer
@@ -79,8 +84,10 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 .getSerializable(CURRENT_COMMENT);
         if (mHeaderInfo != null) {
             mMusicCommentHeader.setHeadInfo(mHeaderInfo);
-        }else{
-
+        } else {
+            Long ids = getArguments().getLong(BUNDLE_SOURCE_ID);
+            mHeaderInfo = new MusicCommentHeader.HeaderInfo();
+            mHeaderInfo.setId(ids.intValue());
         }
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
 
@@ -88,6 +95,12 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
         mRvList.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
         initLisener();
+    }
+
+    @Override
+    public void setHeaderInfo(MusicCommentHeader.HeaderInfo headerInfo) {
+        mHeaderInfo = headerInfo;
+        mMusicCommentHeader.setHeadInfo(mHeaderInfo);
     }
 
     @Override
@@ -168,7 +181,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     @Override
     public void refreshData() {
         mHeaderAndFooterWrapper.notifyDataSetChanged();
-        if (mListDatas.get(mListDatas.size()-1).getComment_content()==null){
+        if (mListDatas.get(mListDatas.size() - 1).getComment_content() == null) {
             mMusicCommentHeader.setCommentList(0);
             return;
         }
@@ -191,7 +204,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
             MusicCommentListBean emptyData = new MusicCommentListBean();
             data.add(emptyData);
             mMusicCommentHeader.setCommentList(0);
-        }else if(!isLoadMore&&!data.isEmpty()){
+        } else if (!isLoadMore && !data.isEmpty()) {
             mMusicCommentHeader.setCommentList(data.size());
         }
         super.onNetResponseSuccess(data, isLoadMore);

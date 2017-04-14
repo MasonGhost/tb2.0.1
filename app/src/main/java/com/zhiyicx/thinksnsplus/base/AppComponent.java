@@ -11,6 +11,8 @@ import com.zhiyicx.thinksnsplus.dagger.GreenDaoModule;
 import com.zhiyicx.thinksnsplus.data.source.local.CacheManager;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelSubscripBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
@@ -18,7 +20,6 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoTypeBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumDetailsBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -70,6 +71,8 @@ public interface AppComponent extends InjectComponent<AppApplication> {
     DynamicBeanGreenDaoImpl dynamicBeanGreenDao();
 
     DynamicCommentBeanGreenDaoImpl dynamicCommentBeanGreenDao();
+    DigedBeanGreenDaoImpl digedBeanGreenDao();
+    CommentedBeanGreenDaoImpl commentedBeanGreenDao();
 
     DynamicDetailBeanGreenDaoImpl dynamicDetailBeanGreenDao();
 

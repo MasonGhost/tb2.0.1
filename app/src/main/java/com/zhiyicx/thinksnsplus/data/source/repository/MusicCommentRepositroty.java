@@ -10,7 +10,9 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
+import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.MusicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -37,11 +39,13 @@ public class MusicCommentRepositroty implements MusicCommentContract.Repository 
     MusicClient mMusicClient;
     Context mContext;
     protected UserInfoRepository mUserInfoRepository;
+    MusicDetailRepository mMusicDetailRepository;
 
     @Inject
     public MusicCommentRepositroty(Application application, ServiceManager serviceManager) {
         mMusicClient = serviceManager.getMusicClient();
         mContext = application;
+        mMusicDetailRepository = new MusicDetailRepository(serviceManager, application);
         mUserInfoRepository = new UserInfoRepository(serviceManager, application);
     }
 
@@ -175,7 +179,7 @@ public class MusicCommentRepositroty implements MusicCommentContract.Repository 
     }
 
     @Override
-    public void sendComment(int music_id,int reply_id, String content,String path) {
+    public void sendComment(int music_id, int reply_id, String content, String path) {
         BackgroundRequestTaskBean backgroundRequestTaskBean;
         HashMap<String, Object> params = new HashMap<>();
         params.put("comment_content", content);
@@ -198,8 +202,18 @@ public class MusicCommentRepositroty implements MusicCommentContract.Repository 
         backgroundRequestTaskBean = new BackgroundRequestTaskBean
                 (BackgroundTaskRequestMethodConfig.DELETE, params);
         backgroundRequestTaskBean.setPath(String.format(ApiConfig
-                .APP_PATH_MUSIC_DELETE_COMMENT_FORMAT,comment_id));
+                .APP_PATH_MUSIC_DELETE_COMMENT_FORMAT, comment_id));
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
                 (backgroundRequestTaskBean);
+    }
+
+    @Override
+    public Observable<BaseJson<MusicDetaisBean>> getMusicDetails(String music_id) {
+        return mMusicClient.getMusicDetails(music_id);
+    }
+
+    @Override
+    public Observable<BaseJson<MusicAlbumDetailsBean>> getMusicAblum(String id) {
+        return mMusicClient.getMusicAblum(id);
     }
 }

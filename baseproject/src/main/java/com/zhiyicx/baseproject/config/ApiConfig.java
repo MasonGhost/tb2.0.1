@@ -106,7 +106,7 @@ public class ApiConfig {
     // 点赞一条动态,取消点赞
     public static final String APP_PATH_DYNAMIC_HANDLE_LIKE = "api/v1/feeds/{feed_id}/digg";
     public static final String APP_PATH_DYNAMIC_HANDLE_LIKE_FORMAT = "api/v1/feeds/%s/digg";
-    // 删除一条评论
+    // 删除一条评论评论
     public static final String APP_PATH_DYNAMIC_DELETE_COMMENT = "api/v1/feeds/%s/comment/%s";
     // 对一条动态或一条动态评论进行评论
     public static final String APP_PATH_DYNAMIC_SEND_COMMENT = "api/v1/feeds/%s/comment";

@@ -113,7 +113,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
     private CommonAdapter mAdapter;
     private List<MediaBrowserCompat.MediaItem> mAdapterList = new ArrayList<>();
-    private ImageLoader mImageLoader;
 
     private static final String ARG_MEDIA_ID = "media_id";
     public static final String MUSIC_INFO = "music_info";
@@ -207,7 +206,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 .MATCH_PARENT, titleHeight);
         mFragmentMusicDetailScrollview.setNotConsumeHeight(titleHeight);
         mFragmentMusicDetailTitle.setLayoutParams(titleParam);
-        mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
     }
 
     @Override

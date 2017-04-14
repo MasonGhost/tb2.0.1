@@ -1,12 +1,16 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_comment;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicCommentListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -140,6 +144,61 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
         }
         mRootView.getListDatas().add(0, createComment);
         mRootView.refreshData();
+    }
+
+    @Override
+    public void getMusicDetails(String music_id) {
+        mRepository.getMusicDetails(music_id).compose(mSchedulersTransformer)
+                .subscribe(new BaseSubscribe<MusicDetaisBean>() {
+                    @Override
+                    protected void onSuccess(MusicDetaisBean data) {
+                        MusicCommentHeader.HeaderInfo headerInfo=new MusicCommentHeader.HeaderInfo();
+                        headerInfo.setCommentCount(data.getComment_count());
+                        headerInfo.setId(data.getId());
+                        headerInfo.setLitenerCount(data.getTaste_count()+"");
+                        headerInfo.setImageUrl(ImageUtils.imagePathConvert(data.getSinger().getCover().getId() + "",
+                                ImageZipConfig.IMAGE_70_ZIP));
+                        headerInfo.setTitle(data.getTitle());
+                        mRootView.setHeaderInfo(headerInfo);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+
+                    }
+                });
+    }
+
+    @Override
+    public void getMusicAblum(String id) {
+        mRepository.getMusicAblum(id).compose(mSchedulersTransformer)
+                .subscribe(new BaseSubscribe<MusicAlbumDetailsBean>() {
+                    @Override
+                    protected void onSuccess(MusicAlbumDetailsBean data) {
+                        MusicCommentHeader.HeaderInfo headerInfo=new MusicCommentHeader.HeaderInfo();
+                        headerInfo.setCommentCount(data.getComment_count());
+                        headerInfo.setId(data.getId());
+                        headerInfo.setLitenerCount(data.getTaste_count()+"");
+                        headerInfo.setImageUrl(ImageUtils.imagePathConvert(data.getStorage() + "",ImageZipConfig.IMAGE_70_ZIP));
+                        headerInfo.setTitle(data.getTitle());
+                        mRootView.setHeaderInfo(headerInfo);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+
+                    }
+                });
     }
 
     @Override
