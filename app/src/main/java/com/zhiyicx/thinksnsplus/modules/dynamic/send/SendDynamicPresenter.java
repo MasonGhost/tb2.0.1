@@ -71,8 +71,6 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
         // feed_mark作为参数
         params.put("params", dynamicBean.getFeed_mark());
         params.put("sendDynamicDataBean", sendDynamicDataBean);
-        backgroundRequestTaskBean.setParams(params);
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
         switch (dynamicBelong) {
             case SendDynamicDataBean.MORMAL_DYNAMIC:
                 // 将动态信息存入数据库
@@ -81,12 +79,15 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
                 EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
                 break;
             case SendDynamicDataBean.CHANNEL_DYNAMIC:
+                // 没有存入数据库，所以通过map传到后台
+                params.put("dynamicbean", dynamicBean);
                 // 发送到频道，不做处理
                 EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_CHANNEL);
                 break;
             default:
         }
-
+        backgroundRequestTaskBean.setParams(params);
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
         mRootView.sendDynamicComplete();// 发送动态放到后台任务处理，关闭当前的动态发送页面
 
     }

@@ -18,7 +18,10 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
+import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -91,7 +94,8 @@ import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalC
 
 public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.Presenter, DynamicBean> implements ChannelDetailContract.View, DynamicListBaseItem.OnReSendClickListener,
         DynamicNoPullRecycleView.OnCommentStateClickListener, DynamicListCommentView.OnCommentClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, OnUserInfoClickListener,
-        DynamicListCommentView.OnMoreCommentClickListener, InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener {
+        DynamicListCommentView.OnMoreCommentClickListener, InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener
+        , PhotoSelectorImpl.IPhotoBackListener {
 
     public static final String CHANNEL_HEADER_INFO_DATA = "channel_header_info_data";
 
@@ -126,12 +130,14 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     private ActionPopupWindow mReSendDynamicPopWindow;
     private int mCurrentPostion;// 当前评论的动态位置
     private long mReplyToUserId;// 被评论者的 id
+    private PhotoSelectorImpl mPhotoSelector;
 
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         setLoadViewHolderImag(R.mipmap.img_default_internet);
         initToolBar();
+        initPhotoPicker();
         View mFooterView = new View(getContext());
         mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
         mHeaderAndFooterWrapper.addFootView(mFooterView);
@@ -630,14 +636,10 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                     @Override
                     public void call(Void aVoid) {
                         // 跳转到发送动态页面
-                        SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
-                        sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.CHANNEL_DYNAMIC);
-                        sendDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
-                        sendDynamicDataBean.setDynamicChannlId(mChannelSubscripBean.getId());
-                        SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
+                        clickSendPhotoTextDynamic();
                     }
                 });
-
+        longClickSendTextDynamic();
         mIlvComment.setOnSendClickListener(this);
 
     }
@@ -662,5 +664,60 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
 
     private void setBtnSendDynamicClickState(boolean clickable) {
         mBtnSendDynamic.setClickable(clickable);
+    }
+
+    /**
+     * 点击动态发送按钮，进入文字图片的动态发布
+     */
+    private void clickSendPhotoTextDynamic() {
+        mPhotoSelector.getPhotoListFromSelector(9, null);
+    }
+
+    private void initPhotoPicker() {
+        mPhotoSelector = DaggerPhotoSelectorImplComponent
+                .builder()
+                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
+                        .NO_CRAFT))
+                .build().photoSelectorImpl();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPhotoSelector.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void getPhotoSuccess(List<ImageBean> photoList) {
+        // 跳转到发送动态页面
+        SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+        sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.CHANNEL_DYNAMIC);
+        sendDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
+        sendDynamicDataBean.setDynamicPrePhotos(photoList);
+        sendDynamicDataBean.setDynamicChannlId(mChannelSubscripBean.getId());
+        SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
+    }
+
+    @Override
+    public void getPhotoFailure(String errorMsg) {
+
+    }
+
+    /**
+     * 长按动态发送按钮，进入纯文字的动态发布
+     */
+    private void longClickSendTextDynamic() {
+        mBtnSendDynamic.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                // 跳转到发送动态页面
+                SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+                sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.CHANNEL_DYNAMIC);
+                sendDynamicDataBean.setDynamicType(SendDynamicDataBean.TEXT_ONLY_DYNAMIC);
+                sendDynamicDataBean.setDynamicChannlId(mChannelSubscripBean.getId());
+                SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
+                return true;
+            }
+        });
     }
 }
