@@ -59,7 +59,7 @@ public class MusicCommentRepositroty implements MusicCommentContract.Repository 
                         if (listBaseJson.getData().isEmpty()) {
                             return Observable.just(listBaseJson);
                         } else {
-                            final List<Long> user_ids = new ArrayList<>();
+                            final List<Object> user_ids = new ArrayList<>();
                             for (MusicCommentListBean commentListBean : listBaseJson.getData()) {
                                 user_ids.add((long) commentListBean.getUser_id());
                                 user_ids.add((long) commentListBean.getReply_to_user_id());
@@ -123,7 +123,7 @@ public class MusicCommentRepositroty implements MusicCommentContract.Repository 
                         if (listBaseJson.getData().isEmpty()) {
                             return Observable.just(listBaseJson);
                         } else {
-                            final List<Long> user_ids = new ArrayList<>();
+                            final List<Object> user_ids = new ArrayList<>();
                             for (MusicCommentListBean commentListBean : listBaseJson.getData()) {
                                 user_ids.add((long) commentListBean.getUser_id());
                                 user_ids.add((long) commentListBean.getReply_to_user_id());

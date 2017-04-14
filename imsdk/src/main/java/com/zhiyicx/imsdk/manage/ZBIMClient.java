@@ -40,13 +40,23 @@ public class ZBIMClient implements IMSoupport {
     public static final String KEY_DISCONNECTED_CODE = "disconnected_code";
     public static final String KEY_DISCONNECTED_REASON = "disconnected_reason";
     public static final String KEY_CONNECTED_ERR = "connected_err";
-
+    /**
+     * 消息同步排序方式
+     */
+    public static final int SYN_ASC = 0;
+    public static final int SYN_DESC = 1;
 
     private volatile static ZBIMClient sZBIMClient;
     private List<ImMsgReceveListener> mImMsgReceveListener = new ArrayList<>();
     private List<ImStatusListener> mImStatusListener = new ArrayList<>();
     private List<ImTimeoutListener> mImTimeOutListener = new ArrayList<>();
     private boolean mIsConnected;// IM 是否已经连接
+
+    private boolean mIsLogin; // IM 是否登录成功
+
+    public boolean isLogin() {
+        return mIsLogin;
+    }
 
     public boolean isConnected() {
         return mIsConnected;
@@ -239,18 +249,42 @@ public class ZBIMClient implements IMSoupport {
 
     /**
      * 通过消息序号同步消息
+     * "order":0, // 服务端查询时的排序方式，可选，默认0； 0正序、1倒序。 注意返回的始终是正序
      *
-     * @param cid
-     * @param gt
-     * @param lt
+     * @param cid 要获取到对话的ID， 无符号长整型，必填
+     * @param gt  获取消息序号将大于此序号，可选，默认0
+     * @param lt  获取消息序号将小于此序号，可选，默认不限制； lt-gt应<=100
      */
     @Override
-    public void sync(int cid, int gt, int lt, int msgid) {
+    public void syncAsc(int cid, int gt, int lt, int msgid) {
         Bundle bundle = new Bundle();
         bundle.putInt(SocketService.EVENT_SOCKET_TAG, SocketService.TAG_IM_SYNC);
         bundle.putInt(SocketService.BUNDLE_ROOMID, cid);
         bundle.putInt(SocketService.BUNDLE_MSG_GT, gt);
         bundle.putInt(SocketService.BUNDLE_MSG_LT, lt);
+        bundle.putInt(SocketService.BUNDLE_MSG_ORDER, SYN_ASC); // 1 代表倒序
+        bundle.putInt(SocketService.BUNDLE_MSG_ID, msgid);
+        toIMSocketService(bundle);
+    }
+
+    /**
+     * 获取指定序号消息
+     * "order":0, // 服务端查询时的排序方式，可选，默认0； 0正序、1倒序。 注意返回的始终是正序
+     * "limit": 100, // 需要获取的消息数量，可选，最大100，默认100；一般在未指定lt时提供
+     *
+     * @param cid   要获取到对话的ID， 无符号长整型，必填
+     * @param gt    获取消息序号将大于此序号，可选，默认0
+     * @param lt    获取消息序号将小于此序号，可选，默认不限制； lt-gt应<=100
+     * @param msgid
+     */
+    @Override
+    public void syncDesc(int cid, int gt, int lt, int msgid) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(SocketService.EVENT_SOCKET_TAG, SocketService.TAG_IM_SYNC);
+        bundle.putInt(SocketService.BUNDLE_ROOMID, cid);
+        bundle.putInt(SocketService.BUNDLE_MSG_GT, gt);
+        bundle.putInt(SocketService.BUNDLE_MSG_LT, lt);
+        bundle.putInt(SocketService.BUNDLE_MSG_ORDER, SYN_DESC); // 1 代表倒序
         bundle.putInt(SocketService.BUNDLE_MSG_ID, msgid);
         toIMSocketService(bundle);
     }
@@ -391,6 +425,7 @@ public class ZBIMClient implements IMSoupport {
                             listener.onDisconnect(bundle.getInt(KEY_DISCONNECTED_CODE), bundle.getString(KEY_DISCONNECTED_REASON));
                     }
                 }
+                mIsLogin = false;
                 mIsConnected = false;
                 break;
             case ImService.WEBSOCKET_CONNECTED_ERR:
@@ -464,11 +499,18 @@ public class ZBIMClient implements IMSoupport {
                         if (listener != null) {
                             if (eventContainer.err == 0) {
                                 listener.onAuthSuccess(eventContainer.mAuthData);
+
                             } else {
                                 listener.onError((Exception) bundle.getSerializable(KEY_CONNECTED_ERR));
+
                             }
                         }
                     }
+                }
+                if (eventContainer.err == 0) {
+                    mIsLogin = false;
+                } else {
+                    mIsLogin = true;
                 }
                 break;
 

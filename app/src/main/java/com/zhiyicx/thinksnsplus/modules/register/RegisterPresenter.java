@@ -14,7 +14,7 @@ import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
-import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.HashMap;
@@ -38,7 +38,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
     private int mTimeOut = SNS_TIME;
 
     @Inject
-    IAuthRepository mAuthRepository;
+    AuthRepository mAuthRepository;
 
 
     @Inject

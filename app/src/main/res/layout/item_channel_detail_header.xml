@@ -17,10 +17,10 @@
 
         <ImageView
             android:id="@+id/iv_channel_header_icon"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="@dimen/rec_image_for_list_normal"
+            android:layout_height="@dimen/rec_image_for_list_normal"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="@dimen/header_icon_top_margin"
             android:scaleType="centerCrop"
             tools:src="@drawable/girl_head_xinyuanjieyi"/>
 
@@ -28,34 +28,39 @@
             android:id="@+id/tv_channel_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/spacing_mid"
             android:maxLines="1"
             android:textColor="@color/white"
+            android:textSize="@dimen/size_sub_title"
             tools:text="走在冷风中"/>
 
         <TextView
             android:id="@+id/tv_channel_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginLeft="@dimen/spacing_normal_large"
+            android:layout_marginRight="@dimen/spacing_normal_large"
+            android:layout_marginTop="@dimen/spacing_mid"
             android:gravity="center"
-            android:textColor="@color/white"
+            android:includeFontPadding="false"
+            android:maxLines="2"
+            android:textColor="@color/channel_detail_white_alpha"
+            android:textSize="@dimen/size_content_assist"
             tools:text="怎么连复杂的故事背后，都是我听朋友说，行走在在冬野的冷风中"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginBottom="@dimen/spacing_normal_large"
+            android:layout_marginTop="@dimen/spacing_normal_large"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/tv_subscrib_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
+                android:textColor="@color/channel_detail_white_alpha"
+                android:textSize="@dimen/size_content_assist"
                 tools:text="订阅 16"/>
 
             <TextView
@@ -63,7 +68,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:textColor="@color/white"
+                android:textColor="@color/channel_detail_white_alpha"
+                android:textSize="@dimen/size_content_assist"
                 tools:text="分享 26"/>
         </LinearLayout>
 

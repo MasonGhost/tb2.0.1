@@ -79,7 +79,7 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
      */
     private Observable<BaseJson<List<FollowFansBean>>> packageData(BaseJson<GsonFollowFansBean> gsonFollowFansBeanBaseJson, final long userId, final List<FollowFansBean> followFansBeanList) {
         if (gsonFollowFansBeanBaseJson.isStatus() && followFansBeanList != null && !followFansBeanList.isEmpty()) {
-            List<Long> targetUserIds = new ArrayList<Long>();
+            List<Object> targetUserIds = new ArrayList<>();
             for (FollowFansBean followFansBean : followFansBeanList) {
                 targetUserIds.add(followFansBean.getTargetUserId());
             }

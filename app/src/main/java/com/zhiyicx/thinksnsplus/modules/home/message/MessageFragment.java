@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home.message;
 
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -59,6 +61,11 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     @Override
+    protected int setRightImg() {
+        return R.drawable.frame_loading_grey;
+    }
+
+    @Override
     protected boolean setUseSatusbar() {
         return true;
     }
@@ -76,6 +83,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        mToolbarRight.setVisibility(View.GONE);
         initHeaderView();
     }
 
@@ -115,9 +123,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         } else {
             refreshData();
         }
-//        if (getListDatas().size() > 0) {
-//            mPresenter.refreshLastClicikPostion(0);
-//        }
     }
 
     @Override
@@ -162,6 +167,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                         @Override
                         public void call(Void aVoid) {
                             toCommentList();
+                            mPresenter.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_COMMENTS);
                         }
                     });
             liked = headerview.findViewById(R.id.rl_liked);
@@ -171,6 +177,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                         @Override
                         public void call(Void aVoid) {
                             toLikeList();
+                            mPresenter.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_DIGGS);
                         }
                     });
             tvHeaderCommentContent = (TextView) headerview.findViewById(R.id.tv_header_comment_content);
@@ -182,11 +189,21 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
             tvHeaderLikeTip = (BadgeView) headerview.findViewById(R.id.tv_header_like_tip);
         }
         tvHeaderCommentContent.setText(commentItemData.getConversation().getLast_message().getTxt());
-        tvHeaderCommentTime.setText(TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(commentItemData.getConversation().getLast_message_time())));
+        if (commentItemData.getConversation().getLast_message_time() == 0) {
+            tvHeaderCommentTime.setVisibility(View.INVISIBLE);
+        } else {
+            tvHeaderCommentTime.setVisibility(View.VISIBLE);
+            tvHeaderCommentTime.setText(TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(commentItemData.getConversation().getLast_message_time())));
+        }
         tvHeaderCommentTip.setBadgeCount(commentItemData.getUnReadMessageNums());
 
         tvHeaderLikeContent.setText(likedItemData.getConversation().getLast_message().getTxt());
-        tvHeaderLikeTime.setText(TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(commentItemData.getConversation().getLast_message_time())));
+        if (likedItemData.getConversation().getLast_message_time() == 0) {
+            tvHeaderLikeTime.setVisibility(View.INVISIBLE);
+        } else {
+            tvHeaderLikeTime.setVisibility(View.VISIBLE);
+            tvHeaderLikeTime.setText(TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(likedItemData.getConversation().getLast_message_time())));
+        }
         tvHeaderLikeTip.setBadgeCount(likedItemData.getUnReadMessageNums());
         refreshData();
     }
@@ -220,6 +237,19 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 //        mListDatas.set(ITEM_TYPE_LIKED, messageItemBean);
         updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter.updateLikeItemData());
         refreshData();
+    }
+
+    @Override
+    public void showTopRightLoading() {
+        ((AnimationDrawable)(mToolbarRight.getCompoundDrawables())[2]).start();
+        mToolbarRight.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void closeTopRightLoading() {
+        ((AnimationDrawable)(mToolbarRight.getCompoundDrawables())[2]).stop();
+        mToolbarRight.setVisibility(View.GONE);
+
     }
 
     @Override

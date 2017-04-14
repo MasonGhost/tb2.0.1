@@ -18,6 +18,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBeanDao;
  * @Email Jliuer@aliyun.com
  * @Description
  */
+@Entity
 public class CommentBean {
     protected static final int SEND_ERROR = 0;
     protected static final int SEND_ING = 1;
@@ -39,6 +40,16 @@ public class CommentBean {
     protected Long comment_mark;
     protected int state = SEND_SUCCESS;
     protected String netRequestUrl;
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 1673291628)
+    private transient CommentBeanDao myDao;
+    @Generated(hash = 386266430)
+    private transient Integer fromUserInfoBean__resolvedKey;
+    @Generated(hash = 1650243776)
+    private transient Integer toUserInfoBean__resolvedKey;
 
     @Generated(hash = 192514366)
     public CommentBean(Long id, int comment_id, String created_at,
@@ -60,17 +71,6 @@ public class CommentBean {
     @Generated(hash = 373728077)
     public CommentBean() {
     }
-
-    @Generated(hash = 386266430)
-    private transient Integer fromUserInfoBean__resolvedKey;
-    @Generated(hash = 1650243776)
-    private transient Integer toUserInfoBean__resolvedKey;
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /** Used for active entity operations. */
-    @Generated(hash = 1673291628)
-    private transient CommentBeanDao myDao;
 
     public String getNetRequestUrl() {
         return netRequestUrl;
@@ -214,4 +214,5 @@ public class CommentBean {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getCommentBeanDao() : null;
     }
+
 }

@@ -2,11 +2,13 @@ package com.zhiyicx.thinksnsplus.modules.home;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.AuthData;
 import com.zhiyicx.imsdk.entity.ChatRoomContainer;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.manage.ChatClient;
+import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.imsdk.manage.listener.ImMsgReceveListener;
 import com.zhiyicx.imsdk.manage.listener.ImStatusListener;
 import com.zhiyicx.imsdk.manage.listener.ImTimeoutListener;
@@ -22,6 +24,10 @@ import org.simple.eventbus.Subscriber;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -110,6 +116,32 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
     @Override
     public void onAuthSuccess(AuthData authData) {
         EventBus.getDefault().post(authData, EventBusTagConfig.EVENT_IM_AUTHSUCESSED);
+        synIMMessage(authData);
+    }
+
+    /**
+     * IM 消息同步
+     *
+     * @param authData
+     */
+    private void synIMMessage(AuthData authData) {
+        Observable.from(authData.getSeqs()) // 消息同步
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(new Action1<AuthData.SeqsBean>() {
+                    @Override
+                    public void call(AuthData.SeqsBean seqsBean) {
+                        Message message = MessageDao.getInstance(mContext).getLastMessageByCid(seqsBean.getCid());
+                        if (message != null && message.getSeq() < seqsBean.getSeq()) {
+                            ZBIMClient.getInstance().syncAsc(message.getCid(), message.getSeq(), seqsBean.getSeq(), (int) System.currentTimeMillis());
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
     }
 
     @Override

@@ -21,6 +21,7 @@ import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
+import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
@@ -37,6 +38,7 @@ import org.simple.eventbus.EventBus;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -75,6 +77,11 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         mUserInfoBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao();
     }
 
+    /**
+     * 获取 地区列表
+     *
+     * @return
+     */
     @Override
     public Observable<ArrayList<AreaBean>> getAreaList() {
         Observable<ArrayList<AreaBean>> observable = Observable.create(new Observable.OnSubscribe<ArrayList<AreaBean>>() {
@@ -95,6 +102,12 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         return observable;
     }
 
+    /**
+     * 修改用户信息
+     *
+     * @param userInfos 用户需要修改的信息，通过 hashMap 传递，key 表示请求字段，value 表示修改的值
+     * @return
+     */
     @Override
     public Observable<BaseJson> changeUserInfo(HashMap<String, String> userInfos) {
         return mUserInfoClient.changeUserInfo(userInfos);
@@ -107,7 +120,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      * @return
      */
     @Override
-    public Observable<BaseJson<List<UserInfoBean>>> getUserInfo(List<Long> user_ids) {
+    public Observable<BaseJson<List<UserInfoBean>>> getUserInfo(List<Object> user_ids) {
         HashMap<String, Object> datas = new HashMap<>();
         datas.put("user_ids", user_ids);
         RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(datas));
@@ -116,6 +129,12 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                         observeOn(AndroidSchedulers.mainThread());
     }
 
+    /**
+     * 获取用户关注状态
+     *
+     * @param user_ids
+     * @return
+     */
     @Override
     public Observable<BaseJson<List<FollowFansBean>>> getUserFollowState(String user_ids) {
         return mUserInfoClient.getUserFollowState(user_ids)
@@ -133,6 +152,11 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                 });
     }
 
+    /**
+     * 关注操作
+     *
+     * @param followFansBean
+     */
     @Override
     public void handleFollow(FollowFansBean followFansBean) {
         BackgroundRequestTaskBean backgroundRequestTaskBean = null;
@@ -178,6 +202,12 @@ public class UserInfoRepository implements UserInfoContract.Repository {
 
     }
 
+    /**
+     * 获取点赞排行榜
+     *
+     * @param page
+     * @return
+     */
     @Override
     public Observable<BaseJson<List<DigRankBean>>> getDidRankList(int page) {
         return mUserInfoClient.getDigRankList(page, TSListFragment.DEFAULT_PAGE_SIZE)
@@ -187,7 +217,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                     @Override
                     public Observable<BaseJson<List<DigRankBean>>> call(final BaseJson<List<DigRankBean>> listBaseJson) {
                         if (listBaseJson.isStatus() && !listBaseJson.getData().isEmpty()) {
-                            List<Long> userIds = new ArrayList();
+                            List<Object> userIds = new ArrayList();
                             for (DigRankBean digRankBean : listBaseJson.getData()) {
                                 userIds.add(digRankBean.getUser_id());
                             }
@@ -218,6 +248,12 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                 });
     }
 
+    /**
+     * 获取我收到的赞的列表
+     *
+     * @param max_id
+     * @return
+     */
     @Override
     public Observable<BaseJson<List<DigedBean>>> getMyDiggs(int max_id) {
         return mUserInfoClient.getMyDiggs(max_id, TSListFragment.DEFAULT_PAGE_SIZE)
@@ -227,7 +263,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                     @Override
                     public Observable<BaseJson<List<DigedBean>>> call(final BaseJson<List<DigedBean>> listBaseJson) {
                         if (listBaseJson.isStatus() && !listBaseJson.getData().isEmpty()) {
-                            List<Long> userIds = new ArrayList();
+                            List<Object> userIds = new ArrayList();
                             for (DigedBean digedBean : listBaseJson.getData()) {
                                 userIds.add(digedBean.getUser_id());
                                 userIds.add(digedBean.getTo_user_id());
@@ -242,7 +278,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                                                     userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                                 }
                                                 for (DigedBean digedBean : listBaseJson.getData()) {
-                                                    digedBean.setDigUserInfo(userInfoBeanSparseArray.get( digedBean.getUser_id().intValue()));
+                                                    digedBean.setDigUserInfo(userInfoBeanSparseArray.get(digedBean.getUser_id().intValue()));
                                                     digedBean.setDigedUserInfo(userInfoBeanSparseArray.get(digedBean.getTo_user_id().intValue()));
                                                 }
                                                 AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao().insertOrReplace(userinfobeans.getData());
@@ -260,6 +296,12 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                 });
     }
 
+    /**
+     * 获取我收到的评论列表
+     *
+     * @param max_id
+     * @return
+     */
     @Override
     public Observable<BaseJson<List<CommentedBean>>> getMyComments(int max_id) {
         return mUserInfoClient.getMyComments(max_id, TSListFragment.DEFAULT_PAGE_SIZE)
@@ -269,7 +311,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                     @Override
                     public Observable<BaseJson<List<CommentedBean>>> call(final BaseJson<List<CommentedBean>> listBaseJson) {
                         if (listBaseJson.isStatus() && !listBaseJson.getData().isEmpty()) {
-                            List<Long> userIds = new ArrayList();
+                            List<Object> userIds = new ArrayList();
                             for (CommentedBean commentedBean : listBaseJson.getData()) {
                                 userIds.add(commentedBean.getUser_id());
                                 userIds.add(commentedBean.getTo_user_id());
@@ -286,12 +328,12 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                                                 }
                                                 for (CommentedBean commentedBean : listBaseJson.getData()) {
                                                     commentedBean.setCommentUserInfo(userInfoBeanSparseArray.get(commentedBean.getUser_id().intValue()));
-                                                    commentedBean.setSourceUserInfo(userInfoBeanSparseArray.get( commentedBean.getTo_user_id().intValue()));
-                                                    if(commentedBean.getReply_to_user_id()==0){ // 用于占位
+                                                    commentedBean.setSourceUserInfo(userInfoBeanSparseArray.get(commentedBean.getTo_user_id().intValue()));
+                                                    if (commentedBean.getReply_to_user_id() == 0) { // 用于占位
                                                         UserInfoBean userinfo = new UserInfoBean();
                                                         userinfo.setUser_id(0L);
                                                         commentedBean.setReplyUserInfo(userinfo);
-                                                    }else {
+                                                    } else {
                                                         commentedBean.setReplyUserInfo(userInfoBeanSparseArray.get((int) commentedBean.getReply_to_user_id().intValue()));
                                                     }
                                                 }
@@ -310,5 +352,48 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                 });
     }
 
+    /**
+     * 获取用户收到的最新消息
+     *
+     * @param time 零时区的秒级时间戳
+     * @param key  查询关键字 默认查询全部 多个以逗号隔开 可选参数有 diggs comments follows
+     * @return
+     */
+    @Override
+    public Observable<BaseJson<List<FlushMessages>>> getMyFlushMessage(long time, String key) {
+        return mUserInfoClient.getMyFlushMessages(time, key).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<BaseJson<List<FlushMessages>>, Observable<BaseJson<List<FlushMessages>>>>() {
+                    @Override
+                    public Observable<BaseJson<List<FlushMessages>>> call(final BaseJson<List<FlushMessages>> listBaseJson) {
+                        if (listBaseJson.isStatus() && !listBaseJson.getData().isEmpty()) {
+                            List<Object> userIdstmp = new ArrayList();
+                            for (FlushMessages flushMessages : listBaseJson.getData()) {
+                                if (!TextUtils.isEmpty(flushMessages.getUids())) {
+                                    userIdstmp.addAll(Arrays.asList(flushMessages.getUids().split(",")));
+                                }
+                            }
+                            if (userIdstmp.isEmpty()) {
+                                return Observable.just(listBaseJson);
+                            }
+                            return getUserInfo(userIdstmp)
+                                    .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<FlushMessages>>>() {
+                                        @Override
+                                        public BaseJson<List<FlushMessages>> call(BaseJson<List<UserInfoBean>> userinfobeans) {
+                                            if (userinfobeans.isStatus() && !userinfobeans.getData().isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                                AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao().insertOrReplace(userinfobeans.getData());
+                                            } else {
+                                                listBaseJson.setStatus(userinfobeans.isStatus());
+                                                listBaseJson.setCode(userinfobeans.getCode());
+                                                listBaseJson.setMessage(userinfobeans.getMessage());
+                                            }
+                                            return listBaseJson;
+                                        }
+                                    });
+                        }
+                        return Observable.just(listBaseJson);
+                    }
+                });
+    }
 
 }

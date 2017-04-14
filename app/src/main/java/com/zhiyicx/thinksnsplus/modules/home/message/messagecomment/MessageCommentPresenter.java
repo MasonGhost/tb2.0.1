@@ -73,6 +73,6 @@ public class MessageCommentPresenter extends BasePresenter<MessageCommentContrac
 
     @Override
     public void sendComment(int mCurrentPostion, long replyToUserId, String commentContent) {
-
+        // TODO: 2017/4/14 评论操作
     }
 }

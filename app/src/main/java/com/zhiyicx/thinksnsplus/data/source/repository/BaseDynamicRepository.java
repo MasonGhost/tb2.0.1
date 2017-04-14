@@ -273,7 +273,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                         // 获取点赞的用户id列表
                         // 服务器返回数据
                         if (listBaseJson.isStatus() && dynamicDigListBeanList != null && !dynamicDigListBeanList.isEmpty()) {
-                            List<Long> targetUserIds = new ArrayList<Long>();
+                            List<Object> targetUserIds = new ArrayList<>();
                             String userIdString = "";
                             for (int i = 0; i < dynamicDigListBeanList.size(); i++) {
                                 DynamicDigListBean dynamicDigListBean = dynamicDigListBeanList.get(i);
@@ -342,7 +342,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                     @Override
                     public Observable<BaseJson<List<DynamicCommentBean>>> call(final BaseJson<List<DynamicCommentBean>> listBaseJson) {
                         if (listBaseJson.isStatus() && listBaseJson.getData() != null && !listBaseJson.getData().isEmpty()) {
-                            final List<Long> user_ids = new ArrayList<>();
+                            final List<Object> user_ids = new ArrayList<>();
                             for (DynamicCommentBean dynamicCommentBean : listBaseJson.getData()) {
                                 user_ids.add(dynamicCommentBean.getUser_id());
                                 user_ids.add(dynamicCommentBean.getReply_to_user_id());
@@ -401,7 +401,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                     @Override
                     public Observable<BaseJson<List<DynamicCommentBean>>> call(final BaseJson<List<DynamicCommentBean>> listBaseJson) {
                         if (listBaseJson.isStatus() && listBaseJson.getData() != null && !listBaseJson.getData().isEmpty()) {
-                            final List<Long> user_ids = new ArrayList<>();
+                            final List<Object> user_ids = new ArrayList<>();
                             for (DynamicCommentBean dynamicCommentBean : listBaseJson.getData()) {
                                 user_ids.add(dynamicCommentBean.getUser_id());
                                 user_ids.add(dynamicCommentBean.getReply_to_user_id());
@@ -479,7 +479,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                     @Override
                     public Observable<BaseJson<List<DynamicBean>>> call(final BaseJson<List<DynamicBean>> listBaseJson) {
                         if (listBaseJson.isStatus() && listBaseJson.getData() != null && !listBaseJson.getData().isEmpty()) {
-                            final List<Long> user_ids = new ArrayList<>();
+                            final List<Object> user_ids = new ArrayList<>();
                             if (!isLoadMore && type.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {// 如果是热门，需要初始化时间
                                 for (int i = listBaseJson.getData().size() - 1; i >= 0; i--) {
                                     listBaseJson.getData().get(i).setHot_creat_time(System.currentTimeMillis());

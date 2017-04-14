@@ -100,7 +100,7 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
 
     protected List<Link> setLiknks(ViewHolder holder, final DynamicCommentBean dynamicCommentBean, int position) {
         List<Link> links = new ArrayList<>();
-        if (dynamicCommentBean.getReply_to_user_id() != 0 && dynamicCommentBean.getReplyUser() != null && dynamicCommentBean.getReplyUser().getName() != null) {
+        if (dynamicCommentBean.getReplyUser() != null &&  dynamicCommentBean.getReply_to_user_id() != 0 && dynamicCommentBean.getReplyUser().getName() != null) {
             Link replyNameLink = new Link(dynamicCommentBean.getReplyUser().getName())
                     .setTextColor(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.important_for_content))                  // optional, defaults to holo blue
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) // optional, defaults to holo blue

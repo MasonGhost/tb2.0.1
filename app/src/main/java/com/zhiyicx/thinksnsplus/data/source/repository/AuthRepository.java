@@ -21,6 +21,8 @@ import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.ComponentConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.ComponentStatusBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
+import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
@@ -54,21 +56,28 @@ public class AuthRepository implements IAuthRepository {
     private UserInfoClient mUserInfoClient;
     private CommonClient mCommonClient;
     private Context mContext;
-
+    @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
+    @Inject
     DynamicDetailBeanGreenDaoImpl mDynamicDetailBeanGreenDao;
+    @Inject
     DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
+    @Inject
     DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
+    @Inject
+    DigedBeanGreenDaoImpl mDigedBeanGreenDao;
+    @Inject
+    CommentedBeanGreenDaoImpl mCommentedBeanGreenDao;
 
     @Inject
     public AuthRepository(ServiceManager serviceManager, Application context) {
         mUserInfoClient = serviceManager.getUserInfoClient();
         mCommonClient = serviceManager.getCommonClient();
         mContext = context;
-        mDynamicBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicBeanGreenDao();
-        mDynamicDetailBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicDetailBeanGreenDao();
-        mDynamicToolBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicToolBeanGreenDao();
-        mDynamicCommentBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicCommentBeanGreenDao();
+//        mDynamicBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicBeanGreenDao();
+//        mDynamicDetailBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicDetailBeanGreenDao();
+//        mDynamicToolBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicToolBeanGreenDao();
+//        mDynamicCommentBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicCommentBeanGreenDao();
     }
 
 
@@ -142,6 +151,8 @@ public class AuthRepository implements IAuthRepository {
         mDynamicCommentBeanGreenDao.clearTable();
         mDynamicDetailBeanGreenDao.clearTable();
         mDynamicToolBeanGreenDao.clearTable();
+        mDigedBeanGreenDao.clearTable();
+        mCommentedBeanGreenDao.clearTable();
         MessageDao.getInstance(context).delDataBase();
         return SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_AUTHBEAN)
                 && SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_IMCONFIG);
