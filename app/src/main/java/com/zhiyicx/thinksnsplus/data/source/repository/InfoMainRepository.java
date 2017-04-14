@@ -5,6 +5,7 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
+import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.InfoMainClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
@@ -45,12 +46,12 @@ public class InfoMainRepository implements InfoMainContract.Reppsitory {
         switch (cate_id) {
             case ApiConfig.INFO_TYPE_COLLECTIONS:
                 return mInfoMainClient.getInfoCollectList(max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE), page)
-                        .map(new Func1<BaseJson<List<InfoListBean.ListBean>>, BaseJson<InfoListBean>>() {
+                        .map(new Func1<BaseJson<List<InfoListDataBean>>, BaseJson<InfoListBean>>() {
                             @Override
-                            public BaseJson<InfoListBean> call(BaseJson<List<InfoListBean.ListBean>> listBaseJson) {
+                            public BaseJson<InfoListBean> call(BaseJson<List<InfoListDataBean>> listBaseJson) {
                                 // 重新封装网络数据
-                                List<InfoListBean.ListBean> listBeanList = listBaseJson.getData();
-                                BaseJson<InfoListBean> infoListBeanBaseJson = new BaseJson<InfoListBean>();
+                                List<InfoListDataBean> listBeanList = listBaseJson.getData();
+                                BaseJson<InfoListBean> infoListBeanBaseJson = new BaseJson<>();
                                 InfoListBean infoListBean = new InfoListBean();
                                 infoListBean.setList(listBeanList);
                                 infoListBean.setInfo_type(Integer.parseInt(cate_id));

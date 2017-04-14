@@ -20,6 +20,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
+import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoCommentAdapter;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentItem;
@@ -79,7 +80,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     /**
      * 传入的资讯信息
      */
-    private InfoListBean.ListBean mInfoMation;
+    private InfoListDataBean mInfoMation;
 
     private int mReplyUserId;// 被评论者的 id ,评论动态 id = 0
 
@@ -118,9 +119,9 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     protected void initView(View rootView) {
         super.initView(rootView);
         initToolbar();
-        mInfoMation = (InfoListBean.ListBean) getArguments().getSerializable(BUNDLE_INFO);
+        mInfoMation = (InfoListDataBean) getArguments().getSerializable(BUNDLE_INFO);
         if (mInfoMation == null) {
-            mInfoMation = new InfoListBean.ListBean();
+            mInfoMation = new InfoListDataBean();
             Long ids = getArguments().getLong(BUNDLE_SOURCE_ID);
             mInfoMation.setId(ids.intValue());
         }
@@ -185,7 +186,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     }
 
     @Override
-    public InfoListBean.ListBean getCurrentInfo() {
+    public InfoListDataBean getCurrentInfo() {
         return mInfoMation;
     }
 

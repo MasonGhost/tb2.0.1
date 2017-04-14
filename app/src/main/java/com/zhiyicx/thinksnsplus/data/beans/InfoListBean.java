@@ -5,10 +5,13 @@ import android.os.Parcelable;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.info.InfoRecommendBean;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.Transient;
@@ -18,6 +21,9 @@ import org.greenrobot.greendao.converter.PropertyConverter;
 import java.io.Serializable;
 import java.util.List;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.DaoException;
+import com.zhiyicx.thinksnsplus.data.beans.info.InfoRecommendBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBeanDao;
 
 /**
  * @Author Jliuer
@@ -30,434 +36,129 @@ public class InfoListBean extends BaseListBean implements Serializable{
 
     @Transient
     private static final long serialVersionUID = 1L;
-
     @Id
     @Unique
-    private Long id;
     private int info_type;
-    @ToMany(referencedJoinProperty  = "info_type")
-    private List<ListBean> list;
-    @ToMany(referencedJoinProperty  = "info_type")
-    private List<RecommendBean> recommend;
-
-    public List<ListBean> getList() {
-        return list;
+    @ToMany(joinProperties = {@JoinProperty(name = "info_type", referencedName = "info_type")})
+    private List<InfoListDataBean> list;
+    @ToMany(joinProperties = {@JoinProperty(name = "info_type", referencedName = "info_type")})
+    private List<InfoRecommendBean> recommend;
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 1359304970)
+    private transient InfoListBeanDao myDao;
+    @Generated(hash = 1443485232)
+    public InfoListBean(int info_type) {
+        this.info_type = info_type;
+    }
+    @Generated(hash = 1530804200)
+    public InfoListBean() {
+    }
+    public int getInfo_type() {
+        return this.info_type;
+    }
+    public void setInfo_type(int info_type) {
+        this.info_type = info_type;
     }
 
-    public void setList(List<ListBean> list) {
+    @Keep
+    public void setList(List<InfoListDataBean> list) {
         this.list = list;
     }
-
-    public List<RecommendBean> getRecommend() {
-        return recommend;
-    }
-
-    public void setRecommend(List<RecommendBean> recommend) {
+    @Keep
+    public void setRecommend(List<InfoRecommendBean> recommend) {
         this.recommend = recommend;
     }
 
-    @Entity
-    public static class ListBean extends BaseListBean implements Serializable{
-        @Transient
-        private static final long serialVersionUID = 1L;
-        /**
-         * id : 1
-         * title : 123123
-         * updated_at : 2017-03-13 09:59:32
-         * storage : {"id":1,"image_width":null,"image_height":null}
-         */
-        @Id(autoincrement = true)
-        private Long _id;
-        @Unique
-        private int id;
-        private int info_type;
-        private int is_collection_news;
-        private String title;
-        private String from;
-        private String updated_at;
-        @Convert(converter = InfoStorageBeanConverter.class,columnType = String.class)
-        private StorageBean storage;
-
-        @Override
-        public String toString() {
-            return ""+id+"\n"+title+"\n"+"is_collection_news:"+(is_collection_news==1)
-                    +"\n"+from+"\n"+updated_at;
-        }
-
-        public int getInfo_type() {
-            return info_type;
-        }
-
-        public void setInfo_type(int info_type) {
-            this.info_type = info_type;
-        }
-
-        public int getIs_collection_news() {
-            return is_collection_news;
-        }
-
-        public void setIs_collection_news(int is_collection_news) {
-            this.is_collection_news = is_collection_news;
-        }
-
-        public String getFrom() {
-            return from;
-        }
-
-        public void setFrom(String from) {
-            this.from = from;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
-
-        public String getUpdated_at() {
-            return updated_at;
-        }
-
-        public void setUpdated_at(String updated_at) {
-            this.updated_at = updated_at;
-        }
-
-        public StorageBean getStorage() {
-            return storage;
-        }
-
-        public void setStorage(StorageBean storage) {
-            this.storage = storage;
-        }
-
-        public static class StorageBean implements Parcelable ,Serializable{
-            @Transient
-            private static final long serialVersionUID = 1L;
-            /**
-             * id : 1
-             * image_width : null
-             * image_height : null
-             */
-
-            private int id;
-            private int image_width;
-            private int image_height;
-
-            public int getId() {
-                return id;
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 2050825902)
+    public List<InfoListDataBean> getList() {
+        if (list == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
             }
-
-            public void setId(int id) {
-                this.id = id;
-            }
-
-            public int getImage_width() {
-                return image_width;
-            }
-
-            public void setImage_width(int image_width) {
-                this.image_width = image_width;
-            }
-
-            public int getImage_height() {
-                return image_height;
-            }
-
-            public void setImage_height(int image_height) {
-                this.image_height = image_height;
-            }
-
-            public StorageBean() {
-            }
-
-            @Override
-            public int describeContents() {
-                return 0;
-            }
-
-            @Override
-            public void writeToParcel(Parcel dest, int flags) {
-                dest.writeInt(this.id);
-                dest.writeInt(this.image_width);
-                dest.writeInt(this.image_height);
-            }
-
-            protected StorageBean(Parcel in) {
-                this.id = in.readInt();
-                this.image_width = in.readInt();
-                this.image_height = in.readInt();
-            }
-
-            public static final Creator<StorageBean> CREATOR = new Creator<StorageBean>() {
-                @Override
-                public StorageBean createFromParcel(Parcel source) {
-                    return new StorageBean(source);
+            InfoListDataBeanDao targetDao = daoSession.getInfoListDataBeanDao();
+            List<InfoListDataBean> listNew = targetDao
+                    ._queryInfoListBean_List(info_type);
+            synchronized (this) {
+                if (list == null) {
+                    list = listNew;
                 }
-
-                @Override
-                public StorageBean[] newArray(int size) {
-                    return new StorageBean[size];
-                }
-            };
-        }
-
-        public ListBean() {
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            super.writeToParcel(dest, flags);
-            dest.writeInt(this.id);
-            dest.writeInt(this.is_collection_news);
-            dest.writeString(this.title);
-            dest.writeString(this.from);
-            dest.writeString(this.updated_at);
-            dest.writeParcelable(this.storage, flags);
-        }
-
-        protected ListBean(Parcel in) {
-            super(in);
-            this.id = in.readInt();
-            this.is_collection_news = in.readInt();
-            this.title = in.readString();
-            this.from = in.readString();
-            this.updated_at = in.readString();
-            this.storage = in.readParcelable(StorageBean.class.getClassLoader());
-        }
-
-        public static final Creator<ListBean> CREATOR = new Creator<ListBean>() {
-            @Override
-            public ListBean createFromParcel(Parcel source) {
-                return new ListBean(source);
             }
-
-            @Override
-            public ListBean[] newArray(int size) {
-                return new ListBean[size];
-            }
-        };
+        }
+        return list;
     }
-
-    @Entity
-    public static class RecommendBean extends BaseListBean implements  Serializable{
-        @Transient
-        private static final long serialVersionUID = 1L;
-        /**
-         * id : 1
-         * created_at : 2017-03-16 11:31:52
-         * updated_at : 2017-03-16 11:31:52
-         * cate_id : 2
-         * news_id : 1
-         * cover : {"id":1,"image_width":null,"image_height":null}
-         * sort : 0
-         */
-        @Id(autoincrement = true)
-        Long _id;
-        @Unique
-        private int id;
-        private int info_type;
-        private String created_at;
-        private String updated_at;
-        private int cate_id;
-        private int news_id;
-        @Convert(converter = InfoCoverBeanConverter.class,columnType = String.class)
-        private CoverBean cover;
-        private int sort;
-
-        public int getInfo_type() {
-            return info_type;
-        }
-
-        public void setInfo_type(int info_type) {
-            this.info_type = info_type;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public String getCreated_at() {
-            return created_at;
-        }
-
-        public void setCreated_at(String created_at) {
-            this.created_at = created_at;
-        }
-
-        public String getUpdated_at() {
-            return updated_at;
-        }
-
-        public void setUpdated_at(String updated_at) {
-            this.updated_at = updated_at;
-        }
-
-        public int getCate_id() {
-            return cate_id;
-        }
-
-        public void setCate_id(int cate_id) {
-            this.cate_id = cate_id;
-        }
-
-        public int getNews_id() {
-            return news_id;
-        }
-
-        public void setNews_id(int news_id) {
-            this.news_id = news_id;
-        }
-
-        public CoverBean getCover() {
-            return cover;
-        }
-
-        public void setCover(CoverBean cover) {
-            this.cover = cover;
-        }
-
-        public int getSort() {
-            return sort;
-        }
-
-        public void setSort(int sort) {
-            this.sort = sort;
-        }
-
-        public static class CoverBean implements Parcelable,Serializable {
-            @Transient
-            private static final long serialVersionUID = 1L;
-            /**
-             * id : 1
-             * image_width : null
-             * image_height : null
-             */
-
-            private int id;
-            private int image_width;
-            private int image_height;
-
-            public int getId() {
-                return id;
-            }
-
-            public void setId(int id) {
-                this.id = id;
-            }
-
-            public int getImage_width() {
-                return image_width;
-            }
-
-            public void setImage_width(int image_width) {
-                this.image_width = image_width;
-            }
-
-            public int getImage_height() {
-                return image_height;
-            }
-
-            public void setImage_height(int image_height) {
-                this.image_height = image_height;
-            }
-
-            @Override
-            public int describeContents() {
-                return 0;
-            }
-
-            @Override
-            public void writeToParcel(Parcel dest, int flags) {
-                dest.writeInt(this.id);
-                dest.writeInt(this.image_width);
-                dest.writeInt(this.image_height);
-            }
-
-            public CoverBean() {
-            }
-
-            protected CoverBean(Parcel in) {
-                this.id = in.readInt();
-                this.image_width = in.readInt();
-                this.image_height = in.readInt();
-            }
-
-            public static final Creator<CoverBean> CREATOR = new Creator<CoverBean>() {
-                @Override
-                public CoverBean createFromParcel(Parcel source) {
-                    return new CoverBean(source);
-                }
-
-                @Override
-                public CoverBean[] newArray(int size) {
-                    return new CoverBean[size];
-                }
-            };
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            super.writeToParcel(dest, flags);
-            dest.writeInt(this.id);
-            dest.writeString(this.created_at);
-            dest.writeString(this.updated_at);
-            dest.writeInt(this.cate_id);
-            dest.writeInt(this.news_id);
-            dest.writeParcelable(this.cover, flags);
-            dest.writeInt(this.sort);
-        }
-
-        public RecommendBean() {
-        }
-
-        protected RecommendBean(Parcel in) {
-            super(in);
-            this.id = in.readInt();
-            this.created_at = in.readString();
-            this.updated_at = in.readString();
-            this.cate_id = in.readInt();
-            this.news_id = in.readInt();
-            this.cover = in.readParcelable(CoverBean.class.getClassLoader());
-            this.sort = in.readInt();
-        }
-
-        public static final Creator<RecommendBean> CREATOR = new Creator<RecommendBean>() {
-            @Override
-            public RecommendBean createFromParcel(Parcel source) {
-                return new RecommendBean(source);
-            }
-
-            @Override
-            public RecommendBean[] newArray(int size) {
-                return new RecommendBean[size];
-            }
-        };
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 589833612)
+    public synchronized void resetList() {
+        list = null;
     }
-
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 1664827480)
+    public List<InfoRecommendBean> getRecommend() {
+        if (recommend == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            InfoRecommendBeanDao targetDao = daoSession.getInfoRecommendBeanDao();
+            List<InfoRecommendBean> recommendNew = targetDao
+                    ._queryInfoListBean_Recommend(info_type);
+            synchronized (this) {
+                if (recommend == null) {
+                    recommend = recommendNew;
+                }
+            }
+        }
+        return recommend;
+    }
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 1253671557)
+    public synchronized void resetRecommend() {
+        recommend = null;
+    }
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 128553479)
+    public void delete() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.delete(this);
+    }
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 1942392019)
+    public void refresh() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.refresh(this);
+    }
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 713229351)
+    public void update() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.update(this);
+    }
     @Override
     public int describeContents() {
         return 0;
@@ -466,41 +167,21 @@ public class InfoListBean extends BaseListBean implements Serializable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
+        dest.writeInt(this.info_type);
         dest.writeTypedList(this.list);
         dest.writeTypedList(this.recommend);
     }
-
-    public Long getId() {
-        return this.id;
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 1149138458)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getInfoListBeanDao() : null;
     }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public int getInfo_type() {
-        return this.info_type;
-    }
-
-    public void setInfo_type(int info_type) {
-        this.info_type = info_type;
-    }
-
-    public InfoListBean() {
-    }
-
     protected InfoListBean(Parcel in) {
         super(in);
-        this.list = in.createTypedArrayList(ListBean.CREATOR);
-        this.recommend = in.createTypedArrayList(RecommendBean.CREATOR);
-    }
-
-    @Generated(hash = 1580739463)
-    public InfoListBean(Long id, int info_type, List<ListBean> list, List<RecommendBean> recommend) {
-        this.id = id;
-        this.info_type = info_type;
-        this.list = list;
-        this.recommend = recommend;
+        this.info_type = in.readInt();
+        this.list = in.createTypedArrayList(InfoListDataBean.CREATOR);
+        this.recommend = in.createTypedArrayList(InfoRecommendBean.CREATOR);
     }
 
     public static final Creator<InfoListBean> CREATOR = new Creator<InfoListBean>() {
@@ -514,44 +195,4 @@ public class InfoListBean extends BaseListBean implements Serializable{
             return new InfoListBean[size];
         }
     };
-
-    public static class InfoStorageBeanConverter implements PropertyConverter<List<RecommendBean>,
-            String> {
-
-        @Override
-        public List<RecommendBean> convertToEntityProperty(String databaseValue) {
-            if (databaseValue == null) {
-                return null;
-            }
-            return ConvertUtils.base64Str2Object(databaseValue);
-        }
-
-        @Override
-        public String convertToDatabaseValue(List<RecommendBean> entityProperty) {
-            if (entityProperty == null) {
-                return null;
-            }
-            return ConvertUtils.object2Base64Str(entityProperty);
-        }
-    }
-
-    public static class InfoCoverBeanConverter implements PropertyConverter<RecommendBean.CoverBean,String> {
-
-        @Override
-        public RecommendBean.CoverBean convertToEntityProperty(String databaseValue) {
-            if (databaseValue == null) {
-                return null;
-            }
-            return ConvertUtils.base64Str2Object(databaseValue);
-        }
-
-        @Override
-        public String convertToDatabaseValue(RecommendBean.CoverBean entityProperty) {
-            if (entityProperty == null) {
-                return null;
-            }
-            return ConvertUtils.object2Base64Str(entityProperty);
-        }
-    }
-
 }

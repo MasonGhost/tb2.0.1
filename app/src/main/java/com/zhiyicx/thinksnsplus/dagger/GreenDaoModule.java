@@ -12,6 +12,8 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoCommentListBeanDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoListBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.InfoListDataBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.InfoRecommendBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoTypeBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumDetailsBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumListBeanGreenDaoImpl;
@@ -108,5 +110,16 @@ public class GreenDaoModule {
     public ChannelInfoBeanGreenDaoImpl provideChannelInfoBeanGreenDaoImpl(Application application) {
         return new ChannelInfoBeanGreenDaoImpl(application);
     }
+
+    @Provides
+    public InfoListDataBeanGreenDaoImpl provideInfoListDataBeanGreenDaoImpl(Application application) {
+        return new InfoListDataBeanGreenDaoImpl(application);
+    }
+
+    @Provides
+    public InfoRecommendBeanGreenDaoImpl provideInfoRecommendBeanGreenDaoImpl(Application application) {
+        return new InfoRecommendBeanGreenDaoImpl(application);
+    }
+
 
 }

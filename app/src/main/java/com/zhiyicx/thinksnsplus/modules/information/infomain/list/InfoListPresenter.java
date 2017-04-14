@@ -8,7 +8,11 @@ import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
+import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.info.InfoRecommendBean;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoListBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.InfoListDataBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.InfoRecommendBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.InfoMainRepository;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
 
@@ -43,6 +47,12 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
     InfoListBeanGreenDaoImpl mInfoListBeanGreenDao;
 
     @Inject
+    InfoListDataBeanGreenDaoImpl mInfoListDataBeanGreenDao;
+
+    @Inject
+    InfoRecommendBeanGreenDaoImpl mInfoRecommendBeanGreenDao;
+
+    @Inject
     public InfoListPresenter(InfoMainContract.Reppsitory repository,
                              InfoMainContract.InfoListView rootInfoListView) {
         super(repository, rootInfoListView);
@@ -55,6 +65,8 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
+        String typeString = mRootView.getInfoType();
+        final int type = Integer.valueOf(typeString);
         Subscription subscription = mInfoMainRepository.getInfoList(mRootView.getInfoType()
                 , maxId, mRootView.getPage())
                 .subscribeOn(Schedulers.io())
@@ -64,10 +76,18 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
                     protected void onSuccess(InfoListBean data) {
                         List<BaseListBean> list = new ArrayList<>();
                         if (data.getRecommend() != null) {
+                            for (InfoRecommendBean recommendBean : data.getRecommend()) {
+                                recommendBean.setInfo_type(type);
+                            }
                             list.addAll(data.getRecommend());
+                            mInfoRecommendBeanGreenDao.saveMultiData(data.getRecommend());
                         }
                         if (data.getList() != null) {
+                            for (InfoListDataBean listDataBean : data.getList()) {
+                                listDataBean.setInfo_type(type);
+                            }
                             list.addAll(data.getList());
+                            mInfoListDataBeanGreenDao.saveMultiData(data.getList());
                         }
                         String typeString = mRootView.getInfoType();
                         int type = Integer.valueOf(typeString);
@@ -83,7 +103,6 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        LogUtils.i("onException" + throwable.getMessage());
                         mRootView.onResponseError(throwable, isLoadMore);
                     }
                 });
@@ -93,12 +112,12 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
     @Override
     public List<BaseListBean> requestCacheData(Long max_Id, final boolean isLoadMore) {
         final List<BaseListBean> localData = new ArrayList<>();
+        String typeString = mRootView.getInfoType();
+        final int type = Integer.valueOf(typeString);
         Observable.just(mInfoListBeanGreenDao)
                 .map(new Func1<InfoListBeanGreenDaoImpl, InfoListBean>() {
                     @Override
                     public InfoListBean call(InfoListBeanGreenDaoImpl infoListBeanGreenDao) {
-                        String typeString = mRootView.getInfoType();
-                        int type = Integer.valueOf(typeString);
                         return infoListBeanGreenDao
                                 .getInfoListByInfoType(type);
                     }
@@ -111,6 +130,8 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
                 }).subscribe(new Action1<InfoListBean>() {
             @Override
             public void call(InfoListBean data) {
+                LogUtils.d("call:::" + data.getInfo_type());
+                LogUtils.d("call:::" + data.getList().size());
                 if (data.getRecommend() != null) {
                     localData.addAll(data.getRecommend());
                 }

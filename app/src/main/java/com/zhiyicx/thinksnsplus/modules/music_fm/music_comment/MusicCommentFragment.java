@@ -79,6 +79,8 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 .getSerializable(CURRENT_COMMENT);
         if (mHeaderInfo != null) {
             mMusicCommentHeader.setHeadInfo(mHeaderInfo);
+        }else{
+
         }
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
 
@@ -175,7 +177,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
 
     @Override
     protected Long getMaxId(@NotNull List<MusicCommentListBean> data) {
-        return (long) data.get(data.size() - 1).getId();
+        return data.get(data.size() - 1).getId();
     }
 
     @Override

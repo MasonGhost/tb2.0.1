@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
@@ -15,7 +14,7 @@ import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.io.Serializable;
-import java.util.List;
+import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
 public class InfoListDataBean extends BaseListBean implements Serializable {
@@ -191,6 +190,14 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         dest.writeParcelable(this.storage, flags);
     }
 
+    public Long get_id() {
+        return this._id;
+    }
+
+    public void set_id(Long _id) {
+        this._id = _id;
+    }
+
     protected InfoListDataBean(Parcel in) {
         super(in);
         this.id = in.readInt();
@@ -199,6 +206,19 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         this.from = in.readString();
         this.updated_at = in.readString();
         this.storage = in.readParcelable(StorageBean.class.getClassLoader());
+    }
+
+    @Generated(hash = 767231673)
+    public InfoListDataBean(Long _id, int id, int info_type, int is_collection_news, String title,
+            String from, String updated_at, StorageBean storage) {
+        this._id = _id;
+        this.id = id;
+        this.info_type = info_type;
+        this.is_collection_news = is_collection_news;
+        this.title = title;
+        this.from = from;
+        this.updated_at = updated_at;
+        this.storage = storage;
     }
 
     public static final Creator<InfoListDataBean> CREATOR = new Creator<InfoListDataBean>() {
@@ -214,11 +234,10 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
     };
 
 
-    public static class InfoStorageBeanConverter implements PropertyConverter<List<InfoListBean.RecommendBean>,
-            String> {
+    public static class InfoStorageBeanConverter implements PropertyConverter<StorageBean,String> {
 
         @Override
-        public List<InfoListBean.RecommendBean> convertToEntityProperty(String databaseValue) {
+        public StorageBean convertToEntityProperty(String databaseValue) {
             if (databaseValue == null) {
                 return null;
             }
@@ -226,7 +245,7 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         }
 
         @Override
-        public String convertToDatabaseValue(List<InfoListBean.RecommendBean> entityProperty) {
+        public String convertToDatabaseValue(StorageBean entityProperty) {
             if (entityProperty == null) {
                 return null;
             }

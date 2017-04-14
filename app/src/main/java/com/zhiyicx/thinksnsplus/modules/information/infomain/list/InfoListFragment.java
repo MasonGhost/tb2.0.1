@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
+import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoBannerItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoListItem;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
@@ -61,7 +62,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
         adapter.addItemViewDelegate(new InfoBannerItem());
         adapter.addItemViewDelegate(new InfoListItem() {
             @Override
-            public void itemClick(int position, TextView title, InfoListBean.ListBean realData) {
+            public void itemClick(int position, TextView title, InfoListDataBean realData) {
                 if (!AppApplication.sOverRead.contains(position + "")) {
                     AppApplication.sOverRead.add(position + "");
                 }
@@ -138,12 +139,12 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
 
     @Override
     protected Long getMaxId(@NotNull List<BaseListBean> data) {
-        InfoListBean.ListBean needData = (InfoListBean.ListBean) data.get(data.size() - 1);
+        InfoListDataBean needData = (InfoListDataBean) data.get(data.size() - 1);
         return (long) needData.getId();
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_INFO_LIST_COLLECT)
-    public void handleCollectInfo(InfoListBean.ListBean info) {
+    public void handleCollectInfo(InfoListDataBean info) {
         LogUtils.d("handleCollectInfo");
         onCacheResponseSuccess(requestCacheData(mMaxId, false), false);
     }

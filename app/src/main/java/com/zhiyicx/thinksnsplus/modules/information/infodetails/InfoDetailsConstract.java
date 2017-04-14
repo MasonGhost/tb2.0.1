@@ -7,6 +7,7 @@ import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
+import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public interface InfoDetailsConstract {
     interface View extends ITSListView<InfoCommentListBean,Presenter> {
         Long getNewsId();
         void setCollect(boolean isCollected);
-        InfoListBean.ListBean getCurrentInfo();
+        InfoListDataBean getCurrentInfo();
         int getInfoType();
     }
 

@@ -66,9 +66,6 @@ public class InfoContainerPresenter extends BasePresenter<InfoMainContract.Repps
                 }).subscribe(new Action1<InfoTypeBean>() {
             @Override
             public void call(InfoTypeBean infoTypeBean) {
-                for (InfoTypeMyCatesBean data:infoTypeBean.getMy_cates()){
-                    LogUtils.d("locoal:::"+data.getName());
-                }
                 mRootView.setInfoType(infoTypeBean);
             }
         });
@@ -80,9 +77,6 @@ public class InfoContainerPresenter extends BasePresenter<InfoMainContract.Repps
                     @Override
                     protected void onSuccess(InfoTypeBean infoTypeBean) {
                         mInfoTypeBeanGreenDao.updateSingleData(infoTypeBean);
-                        for (InfoTypeMyCatesBean data:infoTypeBean.getMy_cates()){
-                            LogUtils.d("remote:::"+data.getName());
-                        }
                         mRootView.setInfoType(infoTypeBean);
                     }
 
