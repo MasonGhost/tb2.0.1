@@ -45,6 +45,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 
 /**
@@ -376,8 +377,22 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
             last_request_time = System.currentTimeMillis() / 1000;
         }
         last_request_time++;//  由于请求接口数据时间是以秒级时间戳 建议调用传入时间间隔1秒以上 以防止数据重复
+
         mUserInfoRepository.getMyFlushMessage(last_request_time, "")
-                .subscribe(new BaseSubscribe<List<FlushMessages>>() {
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        mRootView.showTopRightLoading();
+                    }
+                }).subscribeOn(AndroidSchedulers.mainThread())
+                .doAfterTerminate(new Action0() {
+                    @Override
+                    public void call() {
+                        mRootView.closeTopRightLoading();
+                    }
+                })
+                .subscribe(new BaseSubscribe<List<FlushMessages>>()
+                {
                     @Override
                     protected void onSuccess(List<FlushMessages> data) {
                         SharePreferenceUtils.saveLong(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_LAST_FLUSHMESSAGE_TIME, System.currentTimeMillis() / 1000);
