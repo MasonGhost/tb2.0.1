@@ -39,7 +39,6 @@ import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -285,9 +284,8 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                 mRootView.getListDatas().get(i).setUnReadMessageNums(mRootView.getListDatas().get(i).getUnReadMessageNums() + 1);
                 mRootView.getListDatas().get(i).getConversation().setLast_message(message);
                 mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
-                if (i != 0) {
-                    Collections.swap(mRootView.getListDatas(), i, 0);
-                }
+                mRootView.getListDatas().add(0, mRootView.getListDatas().get(i));
+                mRootView.getListDatas().remove(i + 1);
                 mRootView.refreshData(); // 加上 header 的位置
                 isHasConversion = true;
                 break;
@@ -391,8 +389,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                         mRootView.closeTopRightLoading();
                     }
                 })
-                .subscribe(new BaseSubscribe<List<FlushMessages>>()
-                {
+                .subscribe(new BaseSubscribe<List<FlushMessages>>() {
                     @Override
                     protected void onSuccess(List<FlushMessages> data) {
                         SharePreferenceUtils.saveLong(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_LAST_FLUSHMESSAGE_TIME, System.currentTimeMillis() / 1000);
