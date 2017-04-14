@@ -86,5 +86,15 @@ public class DigedBeanGreenDaoImpl extends CommonCacheImpl<DigedBean> {
         DigedBeanDao digedBeanDao = getWDaoSession().getDigedBeanDao();
         return digedBeanDao.insertOrReplace(newData);
     }
-
+    public DigedBean getLastData() {
+        DigedBeanDao digedBeanDao = getWDaoSession().getDigedBeanDao();
+        List<DigedBean> datas = digedBeanDao.queryBuilder()
+                .orderDesc(DigedBeanDao.Properties.Id)
+                .limit(1)
+                .list();
+        if (datas.isEmpty()) {
+            return null;
+        }
+        return datas.get(0);
+    }
 }

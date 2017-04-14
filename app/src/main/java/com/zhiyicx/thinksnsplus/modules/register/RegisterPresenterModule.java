@@ -36,10 +36,4 @@ public class RegisterPresenterModule {
         return new RegisterRepository(serviceManager, application);
     }
 
-    @Provides
-    IAuthRepository provideIAuthRepository(ServiceManager serviceManager, Application application) {
-        return new AuthRepository(serviceManager, application);
-    }
-
-
 }

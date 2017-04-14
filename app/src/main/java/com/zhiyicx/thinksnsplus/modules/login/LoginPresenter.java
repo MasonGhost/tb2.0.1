@@ -12,7 +12,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
@@ -43,7 +43,7 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
     }
 
     @Inject
-    IAuthRepository mAuthRepository;
+    AuthRepository mAuthRepository;
 
     @Inject
     UserInfoRepository mUserInfoRepository;
@@ -78,7 +78,7 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
                             // IM 登录 需要 token ,所以需要先保存登录信息
                             handleIMLogin();
                             // 获取用户信息
-                            List<Long> userids = new ArrayList<>();
+                            List<Object> userids = new ArrayList<>();
                             userids.add(Long.valueOf(authBeanBaseJson.getData().getUser_id()));
                             return mUserInfoRepository.getUserInfo(userids);
                         }

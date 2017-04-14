@@ -7,8 +7,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import rx.Observable;
-import rx.functions.Action1;
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 /**
  * @Describe
@@ -52,6 +51,15 @@ public class JavaTest {
             }
         });
         System.out.println("data2 = " + data2.toString());
+    }
+
+    @Test
+    public void testList() {
+        List<Long> userids = new ArrayList<>();
+        String test = "12,14";
+        String[] testarry = test.split(",");
+        userids.addAll(Arrays.asList(testarry));
+        System.out.println("testarry = " + userids.toString());
     }
 
 }

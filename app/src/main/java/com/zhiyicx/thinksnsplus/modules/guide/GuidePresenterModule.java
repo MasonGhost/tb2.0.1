@@ -34,8 +34,4 @@ public class GuidePresenterModule {
         return new GuideRepository(serviceManager);
     }
 
-    @Provides
-    IAuthRepository provideIAuthRepository(AuthRepository authRepository) {
-        return authRepository;
-    }
 }

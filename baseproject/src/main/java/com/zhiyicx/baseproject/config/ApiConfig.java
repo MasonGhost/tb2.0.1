@@ -61,6 +61,12 @@ public class ApiConfig {
     public static final String APP_PATH_GET_USER_INFO = "api/v1/users";// 获取用户信息
     public static final String APP_PATH_CHANGE_USER_INFO = "api/v1/users";// 修改用户信息
     public static final String APP_PATH_GET_IM_INFO = "api/v1/im/users";// 获取 IM 帐号信息
+    public static final String APP_PATH_GET_MY_DIGGS = "api/v1/users/mydiggs"; // 获取用户收到的点赞
+    public static final String APP_PATH_GET_MY_COMMENTS = "api/v1/users/mycomments"; // 获取用户收到的评论
+    public static final String APP_PATH_GET_MY_FLUSHMESSAGES = "api/v1/users/flushmessages"; // 获取用户收到的最新消息  查询关键字 默认查询全部 多个以逗号隔开 可选参数有 diggs comments follows
+    public static final String FLUSHMESSAGES_KEY_DIGGS = "diggs";
+    public static final String FLUSHMESSAGES_KEY_COMMENTS = "comments";
+    public static final String FLUSHMESSAGES_KEY_FOLLOWS = "follows";
 
     /**
      * 聊天相关
@@ -73,11 +79,9 @@ public class ApiConfig {
      * 关注粉丝 FollowFansClient
      */
     //api/v1/follows/follows/{user_id}/{max_id}
-    public static final String APP_PATH_FOLLOW_LIST =
-            "api/v1/follows/follows/{user_id}/{max_id}";// 获取用户关注列表
+    public static final String APP_PATH_FOLLOW_LIST = "api/v1/follows/follows/{user_id}/{max_id}";// 获取用户关注列表
     //api/v1/follows/followeds/{user_id}/{max_id}
-    public static final String APP_PATH_FANS_LIST =
-            "api/v1/follows/followeds/{user_id}/{max_id}";// 获取用户粉丝列表
+    public static final String APP_PATH_FANS_LIST = "api/v1/follows/followeds/{user_id}/{max_id}";// 获取用户粉丝列表
     public static final String APP_PATH_FOLLOW_USER = "api/v1/users/follow";// 关注用户
     public static final String APP_PATH_CANCEL_FOLLOW_USER = "api/v1/users/unFollow";// 取消用户关注
     public static final String APP_PATH_GET_USER_FOLLOW_STATE = "api/v1/users/followstatus";// 获取用户关注状态
@@ -117,13 +121,6 @@ public class ApiConfig {
     public static final String APP_PATH_HANDLE_COLLECT_FORMAT = "api/v1/feeds/%s/collection";
     // 增加动态浏览量
     public static final String APP_PATH_HANDLE_DYNAMIC_VIEWCOUNT = "api/v1/feeds/{feed_id}/viewcount";
-
-    // 获取用户收到的点赞
-    public static final String APP_PATH_GET_MY_DIGGS = "api/v1/users/mydiggs";
-
-    // 获取用户收到的评论
-    public static final String APP_PATH_GET_MY_COMMENTS = "api/v1/users/mycomments";
-
 
     /**
      * 资讯相关

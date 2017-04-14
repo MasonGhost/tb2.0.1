@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import javax.inject.Inject;
@@ -24,7 +24,7 @@ import rx.schedulers.Schedulers;
 public class SettingsPresenter extends BasePresenter<SettingsContract.Repository, SettingsContract.View> implements SettingsContract.Presenter {
 
     @Inject
-    IAuthRepository mIAuthRepository;
+    AuthRepository mIAuthRepository;
 
     @Inject
     public SettingsPresenter(SettingsContract.Repository repository, SettingsContract.View rootView) {

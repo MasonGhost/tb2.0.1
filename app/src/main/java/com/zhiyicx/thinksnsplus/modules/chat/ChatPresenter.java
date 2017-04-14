@@ -111,9 +111,11 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
      */
     @Override
     public void reSendText(ChatItemBean chatItemBean) {
-        if (ZBIMClient.getInstance().isConnected()) {
+        if (ZBIMClient.getInstance().isLogin()) {
             ChatClient.getInstance(mContext).sendMessage(chatItemBean.getLastMessage());
             mRootView.refreshData();
+        } else {
+            ZBIMClient.getInstance().reConnect();
         }
     }
 

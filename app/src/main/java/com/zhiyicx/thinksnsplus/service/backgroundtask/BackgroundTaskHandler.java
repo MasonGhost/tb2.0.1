@@ -8,9 +8,7 @@ import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.net.UpLoadFile;
 import com.zhiyicx.common.utils.ActivityHandler;
-import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.NetUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.imsdk.receiver.NetChangeReceiver;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
@@ -37,7 +35,6 @@ import com.zhiyicx.thinksnsplus.data.source.repository.SendDynamicRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
-import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
@@ -431,7 +428,7 @@ public class BackgroundTaskHandler {
         if (backgroundRequestTaskBean.getParams() == null || backgroundRequestTaskBean.getParams().get("user_id") == null) {
             return;
         }
-        List<Long> integers = new ArrayList<>();
+        List<Object> integers = new ArrayList<>();
         if (backgroundRequestTaskBean.getParams().get("user_id") instanceof List) {
             integers.addAll((Collection<? extends Long>) backgroundRequestTaskBean.getParams().get("user_id"));
         } else {

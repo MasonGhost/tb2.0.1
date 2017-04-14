@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoContract;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public interface MessageContract {
     /**
      * Model 层定义接口,外部只需关心 model 返回的数据,无需关心内部细节,及是否使用缓存
      */
-    interface Repository {
+    interface Repository extends UserInfoContract{
         /**
          * 获取对话列表信息
          *
@@ -73,5 +74,11 @@ public interface MessageContract {
          * @return
          */
         void getSingleConversation(int cid);
+
+        /**
+         * 通过 key 标记消息已读
+         * @param key
+         */
+        void readMessageByKey(String key);
     }
 }

@@ -15,7 +15,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
 
 import org.simple.eventbus.EventBus;
@@ -44,7 +44,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
     @Inject
     IUploadRepository mIUploadRepository;
     @Inject
-    IAuthRepository mIAuthRepository;
+    AuthRepository mIAuthRepository;
     public UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject

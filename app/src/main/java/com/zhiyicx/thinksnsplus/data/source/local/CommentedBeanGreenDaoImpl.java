@@ -51,8 +51,8 @@ public class CommentedBeanGreenDaoImpl extends CommonCacheImpl<CommentedBean> {
     public List<CommentedBean> getMultiDataFromCache() {
         CommentedBeanDao commentedBeanDao = getRDaoSession().getCommentedBeanDao();
         List<CommentedBean> datas = commentedBeanDao.queryDeep(" where "
-                       +" T."  + CommentedBeanDao.Properties.Id.columnName + " < ? "
-                        + " order by " + " T."  + CommentedBeanDao.Properties.Id.columnName + " DESC"// 按频道id倒序
+                        + " T." + CommentedBeanDao.Properties.Id.columnName + " < ? "
+                        + " order by " + " T." + CommentedBeanDao.Properties.Id.columnName + " DESC"// 按频道id倒序
                 , System.currentTimeMillis() + "");
         return datas;
     }
@@ -87,4 +87,15 @@ public class CommentedBeanGreenDaoImpl extends CommonCacheImpl<CommentedBean> {
         return commentedBeanDao.insertOrReplace(newData);
     }
 
+    public CommentedBean getLastData() {
+        CommentedBeanDao commentedBeanDao = getWDaoSession().getCommentedBeanDao();
+        List<CommentedBean> datas = commentedBeanDao.queryBuilder()
+                .orderDesc(CommentedBeanDao.Properties.Id)
+                .limit(1)
+                .list();
+        if (datas.isEmpty()) {
+            return null;
+        }
+        return datas.get(0);
+    }
 }

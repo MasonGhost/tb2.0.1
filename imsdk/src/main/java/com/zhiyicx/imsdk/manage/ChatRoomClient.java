@@ -233,7 +233,7 @@ public class ChatRoomClient implements ChatRoomSoupport, ImMsgReceveListener, Im
             //如果本条消息的seq大于之前的seq，重新赋值最大的seq
             if (seq > THE_NOW_MAX_SEQ) {
                 if (seq - THE_NOW_MAX_SEQ > 1) {
-                    ZBIMClient.getInstance().sync(cid, THE_NOW_MAX_SEQ, seq + 1, ++msgid);
+                    ZBIMClient.getInstance().syncAsc(cid, THE_NOW_MAX_SEQ, seq + 1, ++msgid);
                     System.out.println("-----请求seq--------" + THE_NOW_MAX_SEQ + "-----" + seq + 1);
                     result = true;
                 }

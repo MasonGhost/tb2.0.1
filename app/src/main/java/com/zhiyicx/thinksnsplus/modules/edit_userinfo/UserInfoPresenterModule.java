@@ -40,8 +40,5 @@ public class UserInfoPresenterModule {
     IUploadRepository provideIUploadRepository(ServiceManager serviceManager, Application application) {
         return new UpLoadRepository(serviceManager, application);
     }
-    @Provides
-    IAuthRepository provideIAuthRepository(ServiceManager serviceManager, Application application) {
-        return new AuthRepository(serviceManager, application);
-    }
+
 }

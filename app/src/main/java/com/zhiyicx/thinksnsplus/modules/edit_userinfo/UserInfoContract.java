@@ -7,6 +7,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
+import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
@@ -70,7 +71,7 @@ public interface UserInfoContract {
          * @param user_ids 用户 id 数组
          * @return
          */
-        Observable<BaseJson<List<UserInfoBean>>> getUserInfo(List<Long> user_ids);
+        Observable<BaseJson<List<UserInfoBean>>> getUserInfo(List<Object> user_ids);
 
         /**
          * 获取用户关注状态
@@ -107,6 +108,13 @@ public interface UserInfoContract {
         Observable<BaseJson<List<CommentedBean>>> getMyComments(int max_id);
 
 
+        /**
+         *
+         * @param time 零时区的秒级时间戳
+         * @param key 查询关键字 默认查询全部 多个以逗号隔开 可选参数有 diggs comments follows
+         * @return
+         */
+        Observable<BaseJson<List<FlushMessages>>> getMyFlushMessage(long time, String key);
     }
 
     interface Presenter extends IBasePresenter {
