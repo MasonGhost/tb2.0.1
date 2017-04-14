@@ -25,6 +25,7 @@ import rx.Observable;
 public interface DynamicDetailContract {
     //对于经常使用的关于UI的方法可以定义到BaseView中,如显示隐藏进度条,和显示文字消息
     interface View extends ITSListView<DynamicCommentBean, Presenter> {
+        void initDynamicDetial(DynamicBean dynamicBean);
         /**
          * 设置是否喜欢该动态
          *
@@ -100,6 +101,11 @@ public interface DynamicDetailContract {
     }
 
     interface Presenter extends ITSListPresenter<DynamicCommentBean> {
+        /**
+         * 获取当前动态
+         * @param feed_id
+         */
+        void getCurrentDynamic(long feed_id);
         /**
          * 获取当前动态的点赞列表
          */
