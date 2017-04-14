@@ -82,7 +82,7 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
                 break;
             case SendDynamicDataBean.CHANNEL_DYNAMIC:
                 // 发送到频道，不做处理
-                //EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_CHANNEL);
+                EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_CHANNEL);
                 break;
             default:
         }

@@ -414,6 +414,14 @@ public class ChannelDetailPresenter extends BasePresenter<ChannelDetailContract.
 
     }
 
+    /**
+     * 收到发送动态的通知
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_DYNAMIC_TO_CHANNEL)
+    public void getSendDynamic(DynamicBean dynamicBean) {
+        mRootView.sendDynamic();
+    }
+
     @Override
     public void handleChannelSubscrib(final ChannelSubscripBean channelSubscripBean) {
         Subscription subscription = mRepository.handleSubscribChannelByFragment(channelSubscripBean)
