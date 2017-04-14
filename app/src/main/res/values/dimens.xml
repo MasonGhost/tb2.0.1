@@ -21,5 +21,6 @@
     <dimen name="channel_subscrib_btn_width">63dp</dimen>
     <dimen name="channel_subscrib_btn_height">25dp</dimen>
     <dimen name="text_margin">16dp</dimen>
-
+    <!--频道详情，顶部图片距离顶部的距离-->
+    <dimen name="header_icon_top_margin">72dp</dimen>
 </resources>

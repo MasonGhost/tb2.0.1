@@ -285,10 +285,11 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
         channelName.setText(channelInfoBean.getTitle());
         // 设置简介
         tv_channel_description.setText(channelInfoBean.getDescription());
+
         // 设置订阅人数
-        tv_subscrib_count.setText(channelInfoBean.getFollow_status() + "");
+        tv_subscrib_count.setText(mActivity.getString(R.string.channel_follow) + " " + ConvertUtils.numberConvert(channelInfoBean.getFollow_status()));
         // 设置分享人数
-        tv_share_count.setText(channelInfoBean.getFeed_count() + "");
+        tv_share_count.setText(mActivity.getString(R.string.channel_share) + " " + ConvertUtils.numberConvert(channelInfoBean.getFeed_count()));
         // 设置封面
 
         mHeaderAndFooterWrapper.notifyDataSetChanged();

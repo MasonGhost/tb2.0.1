@@ -122,7 +122,7 @@
     <string name="subscrip_channel">我订阅的</string>
     <string name="all_channel">全部频道</string>
     <string name="channel_share">分享</string>
-    <string name="channel_follow">关注</string>
+    <string name="channel_follow">订阅</string>
 
     <!--收藏-->
     <string name="collect">收藏</string>
