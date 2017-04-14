@@ -48,6 +48,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForZ
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.widget.DynamicEmptyItem;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -120,6 +121,9 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     protected void initView(View rootView) {
         super.initView(rootView);
         initToolBar();
+        View mFooterView = new View(getContext());
+        mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
+        mHeaderAndFooterWrapper.addFootView(mFooterView);
         mItemChannelDetailHeader = new ItemChannelDetailHeader(getActivity(), mRvList, mHeaderAndFooterWrapper, mLlToolbarContainerParent, mPresenter);
         mItemChannelDetailHeader.initHeaderView(true);
         RxView.clicks(mBtnSendDynamic)
@@ -185,6 +189,9 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         setAdapter(adapter, new DynamicListItemForSevenImage(getContext()));
         setAdapter(adapter, new DynamicListItemForEightImage(getContext()));
         setAdapter(adapter, new DynamicListItemForNineImage(getContext()));
+        DynamicEmptyItem emptyItem = new DynamicEmptyItem();
+        adapter.addItemViewDelegate(emptyItem);
+        adapter.setOnItemClickListener(this);
         return adapter;
     }
 
@@ -243,6 +250,10 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
 
     @Override
     public void onNetResponseSuccess(@NotNull List<DynamicBean> data, boolean isLoadMore) {
+        if (!isLoadMore && data.isEmpty()) { // 增加空数据，用于显示占位图
+            DynamicBean emptyData = new DynamicBean();
+            data.add(emptyData);
+        }
         super.onNetResponseSuccess(data, isLoadMore);
         // 网络数据请求结束
         mItemChannelDetailHeader.refreshEnd();
