@@ -30,10 +30,14 @@ import java.util.concurrent.TimeUnit;
 
 import rx.functions.Action1;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_COMPONENT_SOURCE_TABLE_MUSICS;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentAdapter.BUNDLE_SOURCE_ID;
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT_TYPE_ABLUM;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT_TYPE_MUSIC;
 
 /**
  * @Describe
@@ -133,6 +137,7 @@ public class MessageLikeAdapter extends CommonAdapter<DigedBean> {
                 break;
             case ApiConfig.APP_COMPONENT_MUSIC:
                 intent = new Intent(mContext, MusicDetailActivity.class);
+                bundle.putString(CURRENT_COMMENT_TYPE, digedBean.getSource_table().equals(APP_COMPONENT_SOURCE_TABLE_MUSICS) ? CURRENT_COMMENT_TYPE_MUSIC : CURRENT_COMMENT_TYPE_ABLUM);
                 intent.putExtra(CURRENT_COMMENT, bundle);
                 break;
             case ApiConfig.APP_COMPONENT_NEWS:
