@@ -45,6 +45,7 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
     public MessageCommentAdapter(Context context, int layoutId, List<CommentedBean> datas) {
         super(context, layoutId, datas);
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
+
     }
 
     @Override
@@ -105,14 +106,7 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
                         toUserCenter(commentedBean.getCommentUserInfo());
                     }
                 });
-        RxView.clicks(holder.getConvertView())
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        doComment(commentedBean);
-                    }
-                });
+
         RxView.clicks(holder.getView(R.id.fl_detial))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(new Action1<Void>() {
@@ -175,15 +169,6 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
      */
     private void toDetail(CommentedBean commentedBean) {
 
-
-    }
-
-    /**
-     * 进入聊天页
-     *
-     * @param CommentedBean
-     */
-    private void doComment(CommentedBean CommentedBean) {
 
     }
 
