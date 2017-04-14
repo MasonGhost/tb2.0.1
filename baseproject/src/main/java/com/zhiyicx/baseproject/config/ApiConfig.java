@@ -236,4 +236,11 @@ public class ApiConfig {
     public static final String APP_PATH_SEND_DYNAMIC_TO_CHANNEL_S = "api/v1/channels/%s/feed";
     // 获取频道的动态列表
     public static final String APP_PATH_GET_CHANNEL_DYNAMIC_LIST = "api/v1/channels/{channel_id}/feeds";
+
+    /**
+     * 组件 目前：动态（feed）、音乐（music）、资讯（news）
+     */
+    public static final String APP_COMPONENT_FEED ="feed";
+    public static final String APP_COMPONENT_MUSIC ="music";
+    public static final String APP_COMPONENT_NEWS ="news";
 }

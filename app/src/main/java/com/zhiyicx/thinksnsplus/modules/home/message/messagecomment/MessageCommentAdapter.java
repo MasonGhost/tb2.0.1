@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagecomment;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.LinkBuilder;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
@@ -19,6 +22,8 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -30,6 +35,8 @@ import java.util.concurrent.TimeUnit;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT;
 
 /**
  * @Describe
@@ -39,6 +46,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 
 public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
+    public static final String BUNDLE_SOURCE_ID = "source_id";
+
     private ImageLoader mImageLoader;
 
     public MessageCommentAdapter(Context context, int layoutId, List<CommentedBean> datas) {
@@ -121,7 +130,7 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
                     @Override
                     public void call(Void aVoid) {
                         if (mOnItemClickListener != null)
-                            mOnItemClickListener.onItemClick(holder.getConvertView(),holder,position);
+                            mOnItemClickListener.onItemClick(holder.getConvertView(), holder, position);
                     }
                 });
     }
@@ -176,8 +185,29 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
      * @param commentedBean
      */
     private void toDetail(CommentedBean commentedBean) {
+        Intent intent;
+        Bundle bundle = new Bundle();
+        bundle.putLong(BUNDLE_SOURCE_ID, commentedBean.getSource_id());
+        switch (commentedBean.getComponent()) {
 
+            case ApiConfig.APP_COMPONENT_FEED:
+                intent = new Intent(mContext, DynamicDetailActivity.class);
+                intent.putExtras(bundle);
+                break;
+            case ApiConfig.APP_COMPONENT_MUSIC:
+                intent = new Intent(mContext, MusicCommentActivity.class);
+                intent.putExtra(CURRENT_COMMENT, bundle);
+                break;
+            case ApiConfig.APP_COMPONENT_NEWS:
+                intent = new Intent(mContext, MusicCommentActivity.class);
+                intent.putExtra(BUNDLE_INFO, bundle);
+                break;
+            default:
+                intent = new Intent(mContext, DynamicDetailActivity.class);
+                break;
 
+        }
+        mContext.startActivity(intent);
     }
 
 }
