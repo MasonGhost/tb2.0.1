@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.LinkBuilder;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
@@ -49,7 +48,7 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
     }
 
     @Override
-    protected void convert(ViewHolder holder, final CommentedBean commentedBean, int position) {
+    protected void convert(final ViewHolder holder, final CommentedBean commentedBean, final int position) {
 
 
         if (position == getItemCount() - 1) {
@@ -68,7 +67,7 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
             holder.setVisible(R.id.tv_deatil, View.GONE);
             holder.setVisible(R.id.iv_detail_image, View.VISIBLE);
             mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                    .url(ImageUtils.imagePathConvert(ApiConfig.IMAGE_PATH, commentedBean.getSource_cover()))
+                    .url(ImageUtils.imagePathConvert(commentedBean.getSource_cover() + "", ImageZipConfig.IMAGE_50_ZIP))
                     .imagerView((ImageView) holder.getView(R.id.iv_detail_image))
                     .build());
         } else {
@@ -115,7 +114,16 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
                         toDetail(commentedBean);
                     }
                 });
-
+        // 响应事件
+        RxView.clicks(holder.getView(R.id.tv_content))
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        if (mOnItemClickListener != null)
+                            mOnItemClickListener.onItemClick(holder.getConvertView(),holder,position);
+                    }
+                });
     }
 
     private List<Link> setLiknks(ViewHolder holder, final CommentedBean commentedBean, int position) {
