@@ -39,6 +39,7 @@ import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.DEFAULT_RESOU
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentAdapter.BUNDLE_SOURCE_ID;
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment
         .BUNDLE_INFO;
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment
@@ -118,6 +119,11 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         super.initView(rootView);
         initToolbar();
         mInfoMation = (InfoListBean.ListBean) getArguments().getSerializable(BUNDLE_INFO);
+        if (mInfoMation == null) {
+            mInfoMation = new InfoListBean.ListBean();
+            Long ids = getArguments().getLong(BUNDLE_SOURCE_ID);
+            mInfoMation.setId(ids.intValue());
+        }
 
         mTvToolbarCenter.setVisibility(View.VISIBLE);
         mTvToolbarCenter.setText(getString(R.string.info_details));
@@ -169,21 +175,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     }
 
     @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showMessage(String message) {
-
-    }
-
-    @Override
     public Long getNewsId() {
         return (long) mInfoMation.getId();
     }
@@ -200,7 +191,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     public void setCollect(boolean isCollected) {
-
         mDdDynamicTool.setItemIsChecked(isCollected, ITEM_POSITION_0);
     }
 
@@ -225,13 +215,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         mVShadow.setVisibility(View.GONE);
         mPresenter.sendComment(mReplyUserId, text);
         mLLBottomMenuContainer.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void refreshData() {
-
-
-        super.refreshData();
     }
 
     private void initBottomToolStyle() {

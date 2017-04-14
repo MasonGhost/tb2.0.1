@@ -9,6 +9,8 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Keep;
+import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
@@ -33,9 +35,9 @@ public class InfoListBean extends BaseListBean implements Serializable{
     @Unique
     private Long id;
     private int info_type;
-    @Convert(converter = InfoListConverter.class,columnType = String.class)
+    @ToMany(referencedJoinProperty  = "info_type")
     private List<ListBean> list;
-    @Convert(converter = InfoBannnerConverter.class,columnType = String.class)
+    @ToMany(referencedJoinProperty  = "info_type")
     private List<RecommendBean> recommend;
 
     public List<ListBean> getList() {
@@ -54,6 +56,7 @@ public class InfoListBean extends BaseListBean implements Serializable{
         this.recommend = recommend;
     }
 
+    @Entity
     public static class ListBean extends BaseListBean implements Serializable{
         @Transient
         private static final long serialVersionUID = 1L;
@@ -63,18 +66,30 @@ public class InfoListBean extends BaseListBean implements Serializable{
          * updated_at : 2017-03-13 09:59:32
          * storage : {"id":1,"image_width":null,"image_height":null}
          */
-
+        @Id(autoincrement = true)
+        private Long _id;
+        @Unique
         private int id;
+        private int info_type;
         private int is_collection_news;
         private String title;
         private String from;
         private String updated_at;
+        @Convert(converter = InfoStorageBeanConverter.class,columnType = String.class)
         private StorageBean storage;
 
         @Override
         public String toString() {
             return ""+id+"\n"+title+"\n"+"is_collection_news:"+(is_collection_news==1)
                     +"\n"+from+"\n"+updated_at;
+        }
+
+        public int getInfo_type() {
+            return info_type;
+        }
+
+        public void setInfo_type(int info_type) {
+            this.info_type = info_type;
         }
 
         public int getIs_collection_news() {
@@ -238,6 +253,7 @@ public class InfoListBean extends BaseListBean implements Serializable{
         };
     }
 
+    @Entity
     public static class RecommendBean extends BaseListBean implements  Serializable{
         @Transient
         private static final long serialVersionUID = 1L;
@@ -250,14 +266,26 @@ public class InfoListBean extends BaseListBean implements Serializable{
          * cover : {"id":1,"image_width":null,"image_height":null}
          * sort : 0
          */
-
+        @Id(autoincrement = true)
+        Long _id;
+        @Unique
         private int id;
+        private int info_type;
         private String created_at;
         private String updated_at;
         private int cate_id;
         private int news_id;
+        @Convert(converter = InfoCoverBeanConverter.class,columnType = String.class)
         private CoverBean cover;
         private int sort;
+
+        public int getInfo_type() {
+            return info_type;
+        }
+
+        public void setInfo_type(int info_type) {
+            this.info_type = info_type;
+        }
 
         public int getId() {
             return id;
@@ -487,25 +515,7 @@ public class InfoListBean extends BaseListBean implements Serializable{
         }
     };
 
-    public static class InfoListConverter implements PropertyConverter<List<ListBean>, String> {
-        @Override
-        public List<ListBean> convertToEntityProperty(String databaseValue) {
-            if (databaseValue == null) {
-                return null;
-            }
-            return ConvertUtils.base64Str2Object(databaseValue);
-        }
-
-        @Override
-        public String convertToDatabaseValue(List<ListBean> entityProperty) {
-            if (entityProperty == null) {
-                return null;
-            }
-            return ConvertUtils.object2Base64Str(entityProperty);
-        }
-    }
-
-    public static class InfoBannnerConverter implements PropertyConverter<List<RecommendBean>,
+    public static class InfoStorageBeanConverter implements PropertyConverter<List<RecommendBean>,
             String> {
 
         @Override
@@ -524,4 +534,24 @@ public class InfoListBean extends BaseListBean implements Serializable{
             return ConvertUtils.object2Base64Str(entityProperty);
         }
     }
+
+    public static class InfoCoverBeanConverter implements PropertyConverter<RecommendBean.CoverBean,String> {
+
+        @Override
+        public RecommendBean.CoverBean convertToEntityProperty(String databaseValue) {
+            if (databaseValue == null) {
+                return null;
+            }
+            return ConvertUtils.base64Str2Object(databaseValue);
+        }
+
+        @Override
+        public String convertToDatabaseValue(RecommendBean.CoverBean entityProperty) {
+            if (entityProperty == null) {
+                return null;
+            }
+            return ConvertUtils.object2Base64Str(entityProperty);
+        }
+    }
+
 }
