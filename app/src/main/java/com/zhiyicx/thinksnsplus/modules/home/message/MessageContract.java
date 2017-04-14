@@ -63,9 +63,8 @@ public interface MessageContract {
          * 刷新是否显示底部红点
          * 刷新当条item 的未读数
          *
-         * @param position 当条数据位置
          */
-        void refreshLastClicikPostion(int position);
+        void refreshConversationReadMessage();
 
         /**
          * 删除本地对话
