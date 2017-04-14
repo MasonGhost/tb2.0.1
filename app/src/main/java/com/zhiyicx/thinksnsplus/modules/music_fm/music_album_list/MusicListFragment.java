@@ -77,21 +77,6 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     }
 
     @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showMessage(String message) {
-
-    }
-
-    @Override
     protected CommonAdapter<MusicAlbumListBean> getAdapter() {
         CommonAdapter<MusicAlbumListBean> comAdapter = new CommonAdapter<MusicAlbumListBean>
                 (getActivity(), R.layout.item_music_list, mListDatas) {

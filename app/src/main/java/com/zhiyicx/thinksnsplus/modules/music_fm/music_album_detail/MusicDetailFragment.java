@@ -273,21 +273,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     }
 
     @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showMessage(String message) {
-
-    }
-
-    @Override
     public void setCollect(boolean isCollected) {
         if (isCollected) {
             mFragmentMusicDetailFavorite.setIconRes(R.mipmap.detail_ico_collect);
@@ -498,8 +483,8 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                         ImageZipConfig.IMAGE_70_ZIP))
                 .asBitmap()
                 .transform(new GlideStokeTransform(getActivity(), 20))
-                .placeholder(R.mipmap.icon_256)
-                .error(R.mipmap.icon_256)
+                .placeholder(R.drawable.shape_default_image)
+                .error(R.drawable.shape_default_image)
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap>

@@ -1,12 +1,21 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_play;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
+import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
+import com.zhiyicx.thinksnsplus.R;
 
 import javax.inject.Inject;
+
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAILS_FORMAT;
 
 /**
  * @Author Jliuer
@@ -16,7 +25,7 @@ import javax.inject.Inject;
  */
 @FragmentScoped
 public class MusicPlayPresenter extends BasePresenter<MusicPlayContract.Repository,
-        MusicPlayContract.View> implements MusicPlayContract.Presenter {
+        MusicPlayContract.View> implements MusicPlayContract.Presenter,OnShareCallbackListener {
 
     @Inject
     public MusicPlayPresenter(MusicPlayContract.Repository repository, MusicPlayContract
@@ -37,9 +46,38 @@ public class MusicPlayPresenter extends BasePresenter<MusicPlayContract.Reposito
 
     @Override
     public void shareMusic() {
+        ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
+        shareContent.setTitle(mRootView.getCurrentMusic().getMusic_info().getTitle());
+
+        shareContent.setUrl(String.format(ApiConfig.NO_PROCESS_IMAGE_PATH,
+                mRootView.getCurrentMusic().getMusic_info().getStorage()));
+
+            shareContent.setImage(String.format(ApiConfig.NO_PROCESS_IMAGE_PATH,
+                    mRootView.getCurrentMusic().getMusic_info()));
+
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
+    }
+
+    @Override
+    public void onStart(Share share) {
+
+    }
+
+    @Override
+    public void onSuccess(Share share) {
+        mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_sccuess));
+    }
+
+    @Override
+    public void onError(Share share, Throwable throwable) {
+        mRootView.showSnackErrorMessage(mContext.getString(R.string.share_fail));
+    }
+
+    @Override
+    public void onCancel(Share share) {
+        mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_cancel));
     }
 
     @Override
