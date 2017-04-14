@@ -156,9 +156,20 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     private Integer[] mOrderModule = new Integer[]{R.mipmap.music_ico_random, R.mipmap
             .music_ico_single, R.mipmap.music_ico_inorder};
 
+    /**
+     * 音乐服务是否连接
+     */
     private boolean isConnected;
 
+    /**
+     * 当前歌曲是否播放完
+     */
     private boolean isComplete;
+
+    /**
+     * 是否滚动磁盘切歌
+     */
+    private boolean isMediaDataChange;
 
     private MediaDescriptionCompat mMediaDescriptionCompat;
     private MusicAlbumDetailsBean mMusicAlbumDetailsBean;
@@ -255,7 +266,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         fragment.setArguments(args);
         return fragment;
     }
-
 
 
     @Override
@@ -370,23 +380,13 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     }
 
     @Override
+    public MusicAlbumDetailsBean.MusicsBean getCurrentMusic() {
+        return mCurrentMusic;
+    }
+
+    @Override
     public void setPresenter(MusicPlayContract.Presenter presenter) {
         mPresenter = presenter;
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showMessage(String message) {
-
     }
 
     /**
@@ -433,6 +433,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 stopAnimation(mCurrentView);
 
                 if (isConnected && !isComplete) {
+                    isMediaDataChange = true;
                     if (newPosition > oldPosition) {
                         getActivity().getSupportMediaController().getTransportControls()
                                 .skipToNext();
@@ -453,13 +454,15 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
             @Override
             public void OnIdle(int position) {
-//                ToastUtils.showToast("OnIdle");
-                mCurrentView = (ViewGroup) RecyclerViewUtils.getCenterXChild(mFragmentMusicPalyRv);
+                if (isMediaDataChange) {
+                    mCurrentView = (ViewGroup) RecyclerViewUtils.getCenterXChild(mFragmentMusicPalyRv);
+                    isMediaDataChange = false;
+                }
                 isDraging = false;
+                isComplete = false;
                 if (mCurrentValue != 0 || isComplete) {
                     doPhonographAnimation();
                 }
-                isComplete = false;
             }
 
         });
@@ -479,8 +482,10 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             getActivity().finish();
             return;
         }
+        Bundle bundle = new Bundle();
+        bundle.putInt(ORDER_ACTION, mDefalultOrder);
         mediaController.getTransportControls()
-                .sendCustomAction(mDefalultOrder + "", null);
+                .sendCustomAction(ORDER_ACTION, bundle);
         getActivity().setSupportMediaController(mediaController);
         mediaController.registerCallback(mCallback);
         PlaybackStateCompat state = mediaController.getPlaybackState();
@@ -671,6 +676,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     @Subscriber(tag = EVENT_SEND_MUSIC_COMPLETE, mode = ThreadMode.MAIN)
     public void onMusicEnd(int orderType) {
         isComplete = true;
+        isMediaDataChange = true;
         if (orderType != ORDERSINGLE) {
             doPointOutAnimation(500, 0);
             mFragmentMusicPalyRv.setSpeed(100);
@@ -831,7 +837,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         mAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-
+                handleLrc();
             }
 
             @Override
@@ -875,7 +881,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                     mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_high);
                     mCurrentMusic.getMusic_info().setIsdiggmusic(1);
                 }
-                EventBus.getDefault().post(mCurrentMusic,EVENT_MUSIC_LIKE);
+                EventBus.getDefault().post(mCurrentMusic, EVENT_MUSIC_LIKE);
                 break;
             case R.id.fragment_music_paly_comment: // 评论
                 Intent intent = new Intent(getActivity(), MusicCommentActivity.class);

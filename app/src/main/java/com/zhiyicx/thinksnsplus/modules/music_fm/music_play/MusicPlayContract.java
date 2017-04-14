@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.music_play;
 
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 
 /**
  * @Author Jliuer
@@ -12,6 +13,7 @@ import com.zhiyicx.common.mvp.i.IBaseView;
 public interface MusicPlayContract {
 
     interface View extends IBaseView<Presenter> {
+        MusicAlbumDetailsBean.MusicsBean getCurrentMusic();
     }
 
     interface Presenter extends IBasePresenter {
