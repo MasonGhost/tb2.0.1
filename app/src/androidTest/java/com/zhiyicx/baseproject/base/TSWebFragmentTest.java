@@ -56,7 +56,6 @@ public class TSWebFragmentTest {
                 "}\n" +
                 "</style></head><body style=\"margin: 0px;\"><img style=\"-webkit-user-select: none\" src=\"http://img.blog.csdn.net/20150821150205086\"></body></html>";
         List<String> images = mTSWebFragment.getAllImageUrlFromHtml(html);
-        System.out.println("images = " + images);
         Assert.assertFalse(images.isEmpty());
 
     }

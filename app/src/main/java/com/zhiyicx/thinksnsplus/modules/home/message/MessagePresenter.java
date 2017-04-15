@@ -403,47 +403,47 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                         FlushMessages commentFlushMessage = null;
                         FlushMessages diggFlushMessage = null;
                         FlushMessages followFlushMessage = null;
-                        for (FlushMessages flushMessages : data) {
-                            switch (flushMessages.getKey()) {
-                                case ApiConfig.FLUSHMESSAGES_KEY_COMMENTS:
-                                    commentFlushMessage = flushMessages;
-                                    break;
-                                case ApiConfig.FLUSHMESSAGES_KEY_DIGGS:
-                                    diggFlushMessage = flushMessages;
-                                    break;
-                                case ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS:
-                                    followFlushMessage = flushMessages;
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                        List<FlushMessages> flushMessages = mFlushMessageBeanGreenDao.getMultiDataFromCache();
-                        if (!flushMessages.isEmpty()) {
-                            for (FlushMessages flushMessage : flushMessages) {
-                                switch (flushMessage.getKey()) {
+
+                        List<FlushMessages> flushMessagesList = mFlushMessageBeanGreenDao.getMultiDataFromCache();
+                        if (!flushMessagesList.isEmpty()) {
+                            for (FlushMessages flushMessages : flushMessagesList) {
+                                switch (flushMessages.getKey()) {
                                     case ApiConfig.FLUSHMESSAGES_KEY_COMMENTS:
-                                        MessagePresenter.this.handleFlushMessage(commentFlushMessage, flushMessage);
+                                        commentFlushMessage = flushMessages;
                                         break;
                                     case ApiConfig.FLUSHMESSAGES_KEY_DIGGS:
-                                        MessagePresenter.this.handleFlushMessage(diggFlushMessage, flushMessage);
+                                        diggFlushMessage = flushMessages;
                                         break;
                                     case ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS:
-                                        MessagePresenter.this.handleFlushMessage(followFlushMessage, flushMessage);
+                                        followFlushMessage = flushMessages;
                                         break;
                                     default:
                                         break;
                                 }
                             }
-                            handleFlushMessageForItem(flushMessages);
+                            for (FlushMessages flushMessage : data) {
+                                switch (flushMessage.getKey()) {
+                                    case ApiConfig.FLUSHMESSAGES_KEY_COMMENTS:
+                                        MessagePresenter.this.handleFlushMessage(flushMessage, commentFlushMessage);
+                                        break;
+                                    case ApiConfig.FLUSHMESSAGES_KEY_DIGGS:
+                                        MessagePresenter.this.handleFlushMessage(flushMessage, diggFlushMessage);
+                                        break;
+                                    case ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS:
+                                        MessagePresenter.this.handleFlushMessage(flushMessage, followFlushMessage);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                            handleFlushMessageForItem(flushMessagesList);
                         } else {
                             handleFlushMessageForItem(data);
                         }
-
                         mRootView.updateLikeItemData(mItemBeanDigg);
                         // 更新我的消息提示
-                        FlushMessages followsflushMessages = mFlushMessageBeanGreenDao.getFlushMessgaeByKey(ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS);
-                        EventBus.getDefault().post(followsflushMessages != null && followsflushMessages.getCount() > 0, EventBusTagConfig.EVENT_IM_SET_MINE_TIP_VISABLE);
+                        EventBus.getDefault().post(EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE);
+
                     }
 
                     @Override
@@ -461,9 +461,9 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
 
     private void handleFlushMessageForItem(List<FlushMessages> flushMessages) {
         for (FlushMessages flushMessage : flushMessages) {
+            mFlushMessageBeanGreenDao.insertOrReplace(flushMessage);
             switch (flushMessage.getKey()) {
                 case ApiConfig.FLUSHMESSAGES_KEY_COMMENTS:
-
                     handleItemBean(mItemBeanComment, flushMessage);
                     break;
                 case ApiConfig.FLUSHMESSAGES_KEY_DIGGS:
@@ -475,7 +475,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                     break;
             }
         }
-        mFlushMessageBeanGreenDao.saveMultiData(flushMessages);
+
     }
 
     private void handleItemBean(MessageItemBean messageItemBean, FlushMessages flushMessage) {
@@ -537,8 +537,16 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         checkBottomMessageTip();
     }
 
+    /**
+     * @param commentFlushMessage from net
+     * @param flushMessage        from local
+     */
     private void handleFlushMessage(FlushMessages commentFlushMessage, FlushMessages flushMessage) {
         if (commentFlushMessage == null) {
+            return;
+        }
+        if (flushMessage == null) {
+            mFlushMessageBeanGreenDao.insertOrReplace(commentFlushMessage);
             return;
         }
         flushMessage.setCount(commentFlushMessage.getCount() + flushMessage.getCount());

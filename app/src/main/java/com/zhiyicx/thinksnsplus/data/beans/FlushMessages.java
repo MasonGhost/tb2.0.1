@@ -21,8 +21,8 @@ public class FlushMessages {
      * time : 2017-04-13 3:31:10
      * max_id : 1
      */
-    @Id
-    long id;
+    @Id(autoincrement = true)
+    Long id;
     @Unique
     private String key;
     private String uids;
@@ -30,8 +30,9 @@ public class FlushMessages {
     private String time;
     private long max_id;
 
-    @Generated(hash = 587326329)
-    public FlushMessages(long id, String key, String uids, int count, String time,
+
+    @Generated(hash = 1527859735)
+    public FlushMessages(Long id, String key, String uids, int count, String time,
             long max_id) {
         this.id = id;
         this.key = key;
@@ -41,9 +42,11 @@ public class FlushMessages {
         this.max_id = max_id;
     }
 
+
     @Generated(hash = 505793851)
     public FlushMessages() {
     }
+
 
     @Override
     public String toString() {
@@ -56,52 +59,66 @@ public class FlushMessages {
                 '}';
     }
 
-    public long getId() {
+
+    public Long getId() {
         return this.id;
     }
 
-    public void setId(long id) {
+
+    public void setId(Long id) {
         this.id = id;
     }
+
 
     public String getKey() {
         return this.key;
     }
 
+
     public void setKey(String key) {
         this.key = key;
     }
+
 
     public String getUids() {
         return this.uids;
     }
 
+
     public void setUids(String uids) {
         this.uids = uids;
     }
+
 
     public int getCount() {
         return this.count;
     }
 
+
     public void setCount(int count) {
         this.count = count;
     }
+
 
     public String getTime() {
         return this.time;
     }
 
+
     public void setTime(String time) {
         this.time = time;
     }
+
 
     public long getMax_id() {
         return this.max_id;
     }
 
+
     public void setMax_id(long max_id) {
         this.max_id = max_id;
     }
+
+  
 
 }

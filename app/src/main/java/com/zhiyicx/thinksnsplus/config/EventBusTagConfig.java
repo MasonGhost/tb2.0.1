@@ -80,6 +80,7 @@ public class EventBusTagConfig {
      */
     public static final String EVENT_IM_SET_MESSAGE_TIP_VISABLE = "setMessageTipVisable";
     public static final String EVENT_IM_SET_MINE_TIP_VISABLE = "setMineTipVisable";
+    public static final String EVENT_IM_SET_MINE_FANS_TIP_VISABLE = "setMineFansTipVisable";
     /**
      * Jpush  推送相关
      */

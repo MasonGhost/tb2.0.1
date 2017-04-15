@@ -62,15 +62,8 @@ public class FlushMessageBeanGreenDaoImpl extends CommonCacheImpl<FlushMessages>
             return null;
         }
         for (FlushMessages flushMessages : datas) {
-            switch (flushMessages.getKey()) {
-                case ApiConfig.FLUSHMESSAGES_KEY_COMMENTS:
-                    return flushMessages;
-                case ApiConfig.FLUSHMESSAGES_KEY_DIGGS:
-                    return flushMessages;
-                case ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS:
-                    return flushMessages;
-                default:
-                    break;
+            if(key.equals(flushMessages.getKey())){
+                return flushMessages;
             }
         }
         return null;

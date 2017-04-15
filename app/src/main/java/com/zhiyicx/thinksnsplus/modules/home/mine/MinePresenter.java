@@ -48,12 +48,7 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
         if (authBean != null) {
             UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache((long) authBean.getUser_id());
             mRootView.setUserInfo(userInfoBean);
-            FlushMessages flushMessages = mFlushMessageBeanGreenDao.getFlushMessgaeByKey(ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS);
-            if (flushMessages != null) {
-                mRootView.setNewFollowTip(flushMessages.getCount());
-            } else {
-                mRootView.setNewFollowTip(0);
-            }
+            setMineTipVisable();
         }
     }
 
@@ -72,6 +67,15 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
                 }
             }
         }
+    }
+
+    /**
+     * 更新粉丝数量
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE)
+    public void setMineTipVisable() {
+        FlushMessages flushMessages = mFlushMessageBeanGreenDao.getFlushMessgaeByKey(ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS);
+        mRootView.setNewFollowTip(flushMessages != null ? flushMessages.getCount() : 0);
     }
 
 }

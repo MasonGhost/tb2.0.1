@@ -207,7 +207,8 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
                                     dynamicBean.setStatus(listBaseJson3.isStatus());
                                     dynamicBean.getData().setDigUserInfoList(listBaseJson.getData());
                                     mFollowFansBeanGreenDao.insertOrReplace(listBaseJson2.getData().get(0)); // 保存关注状态
-                                    List<DynamicCommentBean> data = listBaseJson3.getData(); // 取出本地为发送成功的评论
+                                    List<DynamicCommentBean> data = listBaseJson3.getData();
+                                    // 取出本地为发送成功的评论
                                     List<DynamicCommentBean> myComments = mDynamicCommentBeanGreenDao.getMySendingComment(mRootView.getCurrentDynamic().getFeed_mark());
                                     if (!myComments.isEmpty()) {
                                         for (int i = 0; i < myComments.size(); i++) {

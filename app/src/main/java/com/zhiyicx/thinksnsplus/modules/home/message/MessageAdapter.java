@@ -92,7 +92,6 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
                 break;
             default:
         }
-        System.out.println("messageItemBean --------------------------= " + messageItemBean.toString());
         if (messageItemBean.getConversation().getLast_message() == null) {
             holder.setText(R.id.tv_content, "");
         } else {
