@@ -48,7 +48,7 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
         if (authBean != null) {
             UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache((long) authBean.getUser_id());
             mRootView.setUserInfo(userInfoBean);
-            setMineTipVisable();
+            setMineTipVisable(false);
         }
     }
 
@@ -57,7 +57,6 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_USERINFO_UPDATE)
     public void upDataUserInfo(List<UserInfoBean> data) {
-        com.zhiyicx.common.utils.log.LogUtils.i("upDataUserInfo-->" + data.toString());
         AuthBean authBean = AppApplication.getmCurrentLoginAuth();
         if (data != null) {
             for (UserInfoBean userInfoBean : data) {
@@ -73,7 +72,7 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
      * 更新粉丝数量
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE)
-    public void setMineTipVisable() {
+    public void setMineTipVisable(boolean isVisiable) {
         FlushMessages flushMessages = mFlushMessageBeanGreenDao.getFlushMessgaeByKey(ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS);
         mRootView.setNewFollowTip(flushMessages != null ? flushMessages.getCount() : 0);
     }

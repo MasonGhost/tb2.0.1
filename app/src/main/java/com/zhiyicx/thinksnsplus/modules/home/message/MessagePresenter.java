@@ -39,7 +39,6 @@ import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -442,7 +441,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                         }
                         mRootView.updateLikeItemData(mItemBeanDigg);
                         // 更新我的消息提示
-                        EventBus.getDefault().post(EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE);
+                        EventBus.getDefault().post(true, EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE);
 
                     }
 
@@ -486,10 +485,9 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                 textEndTip = mContext.getString(R.string.comment_me);
                 max_user_nums = MAX_USER_NUMS_COMMENT;
                 CommentedBean lastCommentedBean = mCommentedBeanGreenDao.getLastData();
-                if (lastCommentedBean != null && lastCommentedBean.getId() > flushMessage.getMax_id()) {
+                if (lastCommentedBean != null && flushMessage.getMax_id() != 0 && lastCommentedBean.getId() > flushMessage.getMax_id()) {// 如果本地查看的数据 id 已经大于 新消息的 id 说明已经读取过了
                     flushMessage.setCount(0);
                 }
-
                 break;
             case ApiConfig.FLUSHMESSAGES_KEY_DIGGS:
                 textEndTip = mContext.getString(R.string.like_me);
@@ -517,20 +515,27 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         if (!TextUtils.isEmpty(flushMessage.getUids())) {
             text = "";
             String[] uids = flushMessage.getUids().split(",");
-            HashSet<String> ueridSet = new HashSet<>();
-            for (int i = 0; i < uids.length; i++) { // 用户 信息去重
-                ueridSet.add(uids[i]);
+            List<String> ueridSet = new ArrayList<>();
+            for (int length = 0; length < uids.length; length++) {
+                if (!TextUtils.isEmpty(uids[length]) && !ueridSet.contains(uids[length])) {// 用户 信息去重,去空
+                    ueridSet.add(uids[length]);
+                }
             }
-            for (int i = 0; i < ueridSet.size(); i++) {
-                if (i < max_user_nums) {
+            int i = 0;
+            for (String s : ueridSet) {
+                if (i++ < max_user_nums) {
                     try {
-                        UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(Long.valueOf(uids[i]));
+                        UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(Long.valueOf(s));
                         text += userInfoBean.getName() + "、";
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }
+
+        }
+        if (text.endsWith("、")) {
+            text = text.substring(0, text.length() - 1);
         }
         messageItemBean.getConversation().getLast_message().setTxt(text
                 + textEndTip);
@@ -550,6 +555,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
             return;
         }
         flushMessage.setCount(commentFlushMessage.getCount() + flushMessage.getCount());
+        flushMessage.setTime(commentFlushMessage.getTime());
         if (commentFlushMessage.getCount() >= MAX_USER_NUMS_COMMENT) {
             flushMessage.setUids(commentFlushMessage.getUids());
         } else {

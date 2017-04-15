@@ -47,7 +47,6 @@ public class FlushMessages {
     public FlushMessages() {
     }
 
-
     @Override
     public String toString() {
         return "FlushMessages{" +
@@ -56,6 +55,7 @@ public class FlushMessages {
                 ", uids='" + uids + '\'' +
                 ", count=" + count +
                 ", time='" + time + '\'' +
+                ", max_id=" + max_id +
                 '}';
     }
 
