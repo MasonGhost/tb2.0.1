@@ -20,6 +20,12 @@ public interface MineContract {
          */
         void setUserInfo(UserInfoBean userInfoBean);
 
+        /**
+         *
+         * @param count
+         */
+        void setNewFollowTip(int count);
+
     }
 
     interface Presenter extends IBasePresenter {

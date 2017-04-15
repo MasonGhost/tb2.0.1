@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.home;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -75,6 +74,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     TextView mTvMessage;
     @BindView(R.id.iv_mine)
     ImageView mIvMine;
+    @BindView(R.id.v_mine_tip)
+    View mVMineTip;
     @BindView(R.id.tv_mine)
     TextView mTvMine;
     @BindView(R.id.vp_home)
@@ -262,6 +263,17 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         }
 
     }
+
+    @Override
+    public void setMineTipVisable(boolean tipVisable) {
+        if (tipVisable) {
+            mVMineTip.setVisibility(View.VISIBLE);
+        } else {
+            mVMineTip.setVisibility(View.INVISIBLE);
+        }
+
+    }
+
 
     @Override
     public void checkBottomItem(int positon) {

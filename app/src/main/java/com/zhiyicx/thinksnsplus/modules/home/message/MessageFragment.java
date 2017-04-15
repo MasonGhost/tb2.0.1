@@ -12,6 +12,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.widget.BadgeView;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -188,7 +189,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
             tvHeaderCommentTime.setVisibility(View.VISIBLE);
             tvHeaderCommentTime.setText(TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(commentItemData.getConversation().getLast_message_time())));
         }
-        tvHeaderCommentTip.setBadgeCount(commentItemData.getUnReadMessageNums());
+        tvHeaderCommentTip.setBadgeCount(Integer.parseInt(ConvertUtils.numberConvert(commentItemData.getUnReadMessageNums())));
 
         tvHeaderLikeContent.setText(likedItemData.getConversation().getLast_message().getTxt());
         if (likedItemData.getConversation().getLast_message_time() == 0) {
@@ -197,7 +198,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
             tvHeaderLikeTime.setVisibility(View.VISIBLE);
             tvHeaderLikeTime.setText(TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(likedItemData.getConversation().getLast_message_time())));
         }
-        tvHeaderLikeTip.setBadgeCount(likedItemData.getUnReadMessageNums());
+        tvHeaderLikeTip.setBadgeCount(Integer.parseInt(ConvertUtils.numberConvert(likedItemData.getUnReadMessageNums())));
         refreshData();
     }
 

@@ -27,6 +27,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
@@ -68,6 +69,8 @@ public class AuthRepository implements IAuthRepository {
     DigedBeanGreenDaoImpl mDigedBeanGreenDao;
     @Inject
     CommentedBeanGreenDaoImpl mCommentedBeanGreenDao;
+    @Inject
+    FlushMessageBeanGreenDaoImpl mFlushMessageBeanGreenDao;
 
     @Inject
     public AuthRepository(ServiceManager serviceManager, Application context) {
@@ -91,6 +94,9 @@ public class AuthRepository implements IAuthRepository {
         }
         if (mCommentedBeanGreenDao == null) {
             mCommentedBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().commentedBeanGreenDao();
+        }
+        if (mFlushMessageBeanGreenDao == null) {
+            mFlushMessageBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().flushMessageBeanGreenDao();
         }
     }
 
@@ -167,6 +173,7 @@ public class AuthRepository implements IAuthRepository {
         mDynamicToolBeanGreenDao.clearTable();
         mDigedBeanGreenDao.clearTable();
         mCommentedBeanGreenDao.clearTable();
+        mFlushMessageBeanGreenDao.clearTable();
         MessageDao.getInstance(context).delDataBase();
         return SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_AUTHBEAN)
                 && SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_IMCONFIG);

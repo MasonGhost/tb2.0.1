@@ -21,6 +21,12 @@ public interface HomeContract {
          * @param isVisiable
          */
         void setMessageTipVisable(boolean isVisiable);
+        /**
+         * 是否显示我的消息提示
+         *
+         * @param isVisiable
+         */
+        void setMineTipVisable(boolean isVisiable);
 
         /**
          * 选择 item

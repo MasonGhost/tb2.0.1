@@ -55,8 +55,30 @@ public class FlushMessageBeanGreenDaoImpl extends CommonCacheImpl<FlushMessages>
         return datas;
     }
 
+    public FlushMessages getFlushMessgaeByKey(String key) {
+        FlushMessagesDao flushMessagesDao = getRDaoSession().getFlushMessagesDao();
+        List<FlushMessages> datas = flushMessagesDao.loadAll();
+        if (datas.isEmpty()) {
+            return null;
+        }
+        for (FlushMessages flushMessages : datas) {
+            switch (flushMessages.getKey()) {
+                case ApiConfig.FLUSHMESSAGES_KEY_COMMENTS:
+                    return flushMessages;
+                case ApiConfig.FLUSHMESSAGES_KEY_DIGGS:
+                    return flushMessages;
+                case ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS:
+                    return flushMessages;
+                default:
+                    break;
+            }
+        }
+        return null;
+    }
+
     /**
      * 通过 key 标记消息已读
+     *
      * @param key
      */
     public void readMessageByKey(String key) {

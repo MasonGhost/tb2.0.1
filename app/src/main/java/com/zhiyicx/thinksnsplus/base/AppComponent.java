@@ -17,6 +17,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoTypeBeanGreenDaoImpl;
@@ -71,8 +72,12 @@ public interface AppComponent extends InjectComponent<AppApplication> {
     DynamicBeanGreenDaoImpl dynamicBeanGreenDao();
 
     DynamicCommentBeanGreenDaoImpl dynamicCommentBeanGreenDao();
+
     DigedBeanGreenDaoImpl digedBeanGreenDao();
+
     CommentedBeanGreenDaoImpl commentedBeanGreenDao();
+
+    FlushMessageBeanGreenDaoImpl flushMessageBeanGreenDao();
 
     DynamicDetailBeanGreenDaoImpl dynamicDetailBeanGreenDao();
 

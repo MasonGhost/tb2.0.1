@@ -443,7 +443,11 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                         } else {
                             handleFlushMessageForItem(data);
                         }
+
                         mRootView.updateLikeItemData(mItemBeanDigg);
+                        // 更新我的消息提示
+                        FlushMessages followsflushMessages = mFlushMessageBeanGreenDao.getFlushMessgaeByKey(ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS);
+                        EventBus.getDefault().post(followsflushMessages != null && followsflushMessages.getCount() > 0, EventBusTagConfig.EVENT_IM_SET_MINE_TIP_VISABLE);
                     }
 
                     @Override
@@ -541,8 +545,12 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         if (commentFlushMessage == null) {
             return;
         }
-        flushMessage.setCount(flushMessage.getCount() + commentFlushMessage.getCount());
-        flushMessage.setUids(flushMessage.getUids() + (TextUtils.isEmpty(commentFlushMessage.getUids()) ? "" : "," + commentFlushMessage.getUids()));
+        flushMessage.setCount(commentFlushMessage.getCount() + flushMessage.getCount());
+        if (commentFlushMessage.getCount() >= MAX_USER_NUMS_COMMENT) {
+            flushMessage.setUids(commentFlushMessage.getUids());
+        } else {
+            flushMessage.setUids((TextUtils.isEmpty(commentFlushMessage.getUids()) ? "" : "," + commentFlushMessage.getUids()) + flushMessage.getUids());
+        }
     }
 
     private void initHeaderItemData() {
@@ -587,7 +595,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
             }
         }
 
-        EventBus.getDefault().post(isShowMessgeTip, EventBusTagConfig.EVENT_IM_SETMESSAGETIPVISABLE);
+        EventBus.getDefault().post(isShowMessgeTip, EventBusTagConfig.EVENT_IM_SET_MESSAGE_TIP_VISABLE);
     }
 
 }

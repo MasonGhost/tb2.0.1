@@ -128,11 +128,28 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/iv_mine"
-                android:layout_width="@dimen/icon_for_home_bottom"
-                android:layout_height="@dimen/icon_for_home_bottom"
-                android:src="@mipmap/ic_launcher"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/icon_for_home_bottom">
+
+                <ImageView
+                    android:id="@+id/iv_mine"
+                    android:layout_width="@dimen/icon_for_home_bottom"
+                    android:layout_height="@dimen/icon_for_home_bottom"
+                    android:layout_centerHorizontal="true"
+                    android:src="@mipmap/ic_launcher"/>
+
+                <View
+                    android:id="@+id/v_mine_tip"
+                    android:layout_width="@dimen/chat_message_bottom_tip_size"
+                    android:layout_height="@dimen/chat_message_bottom_tip_size"
+                    android:layout_alignRight="@id/iv_mine"
+                    android:layout_margin="@dimen/spacing_tiny"
+                    android:background="@drawable/shape_dot_red"
+                    android:visibility="invisible"
+                    />
+            </RelativeLayout>
+
 
             <TextView
                 android:id="@+id/tv_mine"

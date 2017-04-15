@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity"
     android:layout_height="match_parent"
     android:background="@color/bgColor">
 
@@ -89,30 +90,40 @@
             android:paddingBottom="@dimen/spacing_mid"
             android:paddingTop="@dimen/spacing_mid">
             <!--粉丝-->
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/ll_fans_container"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="center"
                 android:orientation="vertical">
                 <!--粉丝数量-->
                 <TextView
                     android:id="@+id/tv_fans_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
                     android:textColor="@color/themeColor"
                     android:textSize="@dimen/size_content_assist"
                     tools:text="23456"/>
+                <com.zhiyicx.baseproject.widget.BadgeView
+                    android:id="@+id/bv_fans_new_count"
+                    android:layout_width="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_mid_small_8dp"
+                    android:layout_toRightOf="@id/tv_fans_count"
+                    android:textStyle="normal"
+                    android:textSize="@dimen/size_icon_assist"
+                    android:layout_height="wrap_content"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_small_4dp"
                     android:text="@string/fans"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/tv_fans_count"
                     android:textColor="@color/important_for_content"
                     android:textSize="@dimen/size_content_assist"/>
-            </LinearLayout>
+            </RelativeLayout>
 
             <ImageView
                 style="@style/style_divider_veitical_light"
