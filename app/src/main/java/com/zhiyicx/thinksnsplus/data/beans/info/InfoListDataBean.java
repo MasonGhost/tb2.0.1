@@ -14,6 +14,7 @@ import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.io.Serializable;
+
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
@@ -210,7 +211,7 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
 
     @Generated(hash = 767231673)
     public InfoListDataBean(Long _id, int id, int info_type, int is_collection_news, String title,
-            String from, String updated_at, StorageBean storage) {
+                            String from, String updated_at, StorageBean storage) {
         this._id = _id;
         this.id = id;
         this.info_type = info_type;
@@ -234,7 +235,7 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
     };
 
 
-    public static class InfoStorageBeanConverter implements PropertyConverter<StorageBean,String> {
+    public static class InfoStorageBeanConverter implements PropertyConverter<StorageBean, String> {
 
         @Override
         public StorageBean convertToEntityProperty(String databaseValue) {
@@ -251,6 +252,15 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
             }
             return ConvertUtils.object2Base64Str(entityProperty);
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null && obj instanceof InfoListDataBean) {
+            InfoListDataBean infoListDataBean = (InfoListDataBean) obj;
+            return infoListDataBean.getId() == id;
+        }
+        return super.equals(obj);
     }
 }
 
