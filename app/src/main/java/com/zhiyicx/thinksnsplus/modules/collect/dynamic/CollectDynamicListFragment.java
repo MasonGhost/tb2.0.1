@@ -103,11 +103,11 @@ public class CollectDynamicListFragment extends DynamicFragment {
 
         } else {
             mListDatas.add(dynamicBean);
-            // 按动态mark大小进行逆序排列，防止上啦加载重复
+            // 按动态feedid大小进行逆序排列，防止上啦加载重复
             Collections.sort(mListDatas, new Comparator<DynamicBean>() {
                 @Override
                 public int compare(DynamicBean o1, DynamicBean o2) {
-                    return o2.getFeed_mark().longValue() > o1.getFeed_mark().longValue() ? 1 : -1;
+                    return o2.getFeed_id().longValue() > o1.getFeed_id().longValue() ? 1 : -1;
                 }
             });
         }
