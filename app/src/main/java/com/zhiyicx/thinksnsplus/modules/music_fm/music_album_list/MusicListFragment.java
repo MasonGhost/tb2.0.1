@@ -49,7 +49,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     /**
      * 数量改变 event_bus 来的
      */
-    private MusicAlbumListBean mMusicAlbumListBean;
+    protected MusicAlbumListBean mMusicAlbumListBean;
 
     @Override
     protected void initData() {
@@ -147,6 +147,6 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
                 mHeaderAndFooterWrapper.notifyDataSetChanged();
             }
         });
-        LogUtils.d("EVENT_ABLUM_COLLECT");
+        LogUtils.d("MusicListFragment-->EVENT_ABLUM_COLLECT");
     }
 }
