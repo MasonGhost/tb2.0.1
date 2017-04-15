@@ -92,11 +92,6 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         super(repository, rootView);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        handleFlushMessage();
-    }
 
     @Override
     protected boolean useEventBus() {
@@ -381,7 +376,8 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
      *
      * @return
      */
-    private void handleFlushMessage() {
+    @Override
+    public void handleFlushMessage() {
         Long last_request_time = SharePreferenceUtils.getLong(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_LAST_FLUSHMESSAGE_TIME);
         if (last_request_time == 0) {
             last_request_time = System.currentTimeMillis() / 1000 - ConstantConfig.HOUR / 1000;
@@ -584,7 +580,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         } else {
             isShowMessgeTip = true;
         }
-        if (isShowMessgeTip) {
+        if (!isShowMessgeTip) {
             for (MessageItemBean messageItemBean : mRootView.getListDatas()) {
                 if (messageItemBean.getUnReadMessageNums() > 0) {
                     isShowMessgeTip = true;

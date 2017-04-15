@@ -254,7 +254,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                     MessageContainer messageContainer = mMessageContainers.poll();
 
                     if (messageContainer != null) {
-                        if (messageContainer.msg.ext.customID != MessageType.MESSAGE_CUSTOM_ID_ZAN)//点赞不处理超时
+                        if (messageContainer.msg.ext == null || messageContainer.msg.ext.customID != MessageType.MESSAGE_CUSTOM_ID_ZAN)//点赞不处理超时
                         {
                             addTimeoutTask(messageContainer);
                         }
@@ -506,7 +506,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                  * 通过消息序号同步消息
                  */
                 case TAG_IM_SYNC:
-                    result = sendSyncMessage(bundle.getInt(BUNDLE_ROOMID), bundle.getInt(BUNDLE_MSG_GT), bundle.getInt(BUNDLE_MSG_LT, 0),bundle.getInt(BUNDLE_MSG_ORDER, ZBIMClient.SYN_ASC), bundle.getInt(BUNDLE_MSG_ID));
+                    result = sendSyncMessage(bundle.getInt(BUNDLE_ROOMID), bundle.getInt(BUNDLE_MSG_GT), bundle.getInt(BUNDLE_MSG_LT, 0), bundle.getInt(BUNDLE_MSG_ORDER, ZBIMClient.SYN_ASC), bundle.getInt(BUNDLE_MSG_ID));
                     break;
                 /**
                  * 获取房间中最新的几条消息
@@ -666,12 +666,12 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param msgid 本条消息的 id
      * @return
      */
-    private boolean sendSyncMessage(int cid, int gt, int lt,int order, int msgid) {
+    private boolean sendSyncMessage(int cid, int gt, int lt, int order, int msgid) {
         if (cid == 0) {
             return false;
         }
         addTimeoutTask(new MessageContainer(ImService.CONVR_MSG_SYNC, new Message(msgid), cid, null));
-        return mService.sendSyncMessage(cid, gt, lt,order, ImService.SEQ_LIMIT, msgid);
+        return mService.sendSyncMessage(cid, gt, lt, order, ImService.SEQ_LIMIT, msgid);
     }
 
     /**
@@ -687,7 +687,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
             return false;
         }
         addTimeoutTask(new MessageContainer(ImService.CONVR_MSG_SYNC, new Message(msgid), cid, null));
-        return mService.sendSyncMessage(cid, 0, 0,ZBIMClient.SYN_ASC, limit, msgid);
+        return mService.sendSyncMessage(cid, 0, 0, ZBIMClient.SYN_ASC, limit, msgid);
     }
 
     /**

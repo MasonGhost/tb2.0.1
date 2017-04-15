@@ -4,7 +4,6 @@ import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import java.util.List;
 
@@ -61,6 +60,11 @@ public interface FollowFansListContract {
         void followUser(int index, FollowFansBean followFansBean);
 
         void cancleFollowUser(int index, FollowFansBean followFansBean);
+
+        /**
+         * 清除新 fans 数量
+         */
+        void cleanNewFans();
     }
 
     interface Repository {

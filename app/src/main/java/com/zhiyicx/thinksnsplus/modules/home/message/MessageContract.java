@@ -87,5 +87,10 @@ public interface MessageContract {
          * @param key
          */
         void readMessageByKey(String key);
+
+        /**
+         * 检查当前消息记录
+         */
+        void handleFlushMessage();
     }
 }

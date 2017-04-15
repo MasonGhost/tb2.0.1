@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.follow_fans;
 
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
@@ -8,6 +9,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
@@ -37,6 +39,8 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
 
     @Inject
     UserInfoRepository mUserInfoRepository;
+    @Inject
+    FlushMessageBeanGreenDaoImpl mFlushMessageBeanGreenDao;
 
     private int mPageType;
     private long mUserId;
@@ -127,6 +131,11 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
     public void cancleFollowUser(int index, FollowFansBean followFansBean) {
         mUserInfoRepository.handleFollow(followFansBean);
         mRootView.upDateFollowFansState(index);
+    }
+
+    @Override
+    public void cleanNewFans() {
+        mFlushMessageBeanGreenDao.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS);
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW)

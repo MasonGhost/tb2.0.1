@@ -110,6 +110,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                 .build()
                 .inject(this);
         super.initData();// 需要在 dagger 注入后
+        mPresenter.handleFlushMessage();
     }
 
     @Override
