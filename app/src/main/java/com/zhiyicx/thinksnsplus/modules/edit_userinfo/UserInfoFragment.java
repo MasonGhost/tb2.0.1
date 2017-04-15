@@ -121,7 +121,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     private PhotoSelectorImpl mPhotoSelector;
 
     private UserInfoBean mUserInfoBean;// 用户未修改前的用户信息
-    private int upLoadCount = 0;// 当前文件上传的次数，>0表示已经上传成功，但是还没有提交修改用户信息
     private boolean userNameChanged, sexChanged, cityChanged, introduceChanged;
     private boolean isFirstOpenCityPicker = true;// 是否是第一次打开城市选择器：默认是第一次打开
     private int upDateHeadIconStorageId = 0;// 上传成功返回的图片id
@@ -339,7 +338,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     @Override
     protected void setRightClick() {
         // 点击完成，修改用户信息
-        mPresenter.changUserInfo(packageUserInfo());
+        mPresenter.changUserInfo(packageUserInfo(), false);
     }
 
     @Override
@@ -374,8 +373,10 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 mTSnackbarUploadIcon.show();
                 break;
             case 1:
-                upLoadCount++;
                 upDateHeadIconStorageId = taskId;
+                mPresenter.changUserInfo(packageUserHeadIcon(), true);
+                break;
+            case 2:
                 TSnackbar.getTSnackBar(mTSnackbarUploadIcon, mSnackRootView,
                         getString(R.string.update_head_success), TSnackbar.LENGTH_SHORT)
                         .setPromptThemBackground(Prompt.SUCCESS)
@@ -383,7 +384,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 break;
             default:
         }
-        canChangerUserInfo();
     }
 
     @Override
@@ -644,7 +644,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
      */
     private HashMap<String, String> packageUserInfo() {
         HashMap<String, String> fieldMap = new HashMap<>();
-        // 图片上传的任务id，姓名。。。
         // 只上传改变的信息
         if (userNameChanged) {
             fieldMap.put(USER_NAME, mEtUserName.getText().toString());
@@ -668,20 +667,28 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         if (introduceChanged) {
             fieldMap.put(USER_INTRO, mEtUserIntroduce.getInputContent());
         }
-        if (upLoadCount > 0) {
-            // avatar
-            fieldMap.put(USER_STORAGE_TASK_ID, upDateHeadIconStorageId + "");
-            fieldMap.put(USER_LOCAL_IMG_PATH, path);// 本地图片的路径，因为没有返回storage_id,用来更新图片
-        }
+
         return fieldMap;
     }
 
     /**
-     * 判断是否需要修改信息：如果头像，用户名，性别。。。其中任意一项发生变化，都可以提交修改
+     * 用户头像再上传图片后自动提交修改，不和用户信息一起提交
+     *
+     * @return
+     */
+    private HashMap<String, String> packageUserHeadIcon() {
+        HashMap<String, String> fieldMap = new HashMap<>();
+        // avatar
+        fieldMap.put(USER_STORAGE_TASK_ID, upDateHeadIconStorageId + "");
+        fieldMap.put(USER_LOCAL_IMG_PATH, path);// 本地图片的路径，因为没有返回storage_id,用来更新图片
+        return fieldMap;
+    }
+
+    /**
+     * 判断是否需要修改信息：如果用户名，性别。。。其中任意一项发生变化，都可以提交修改
      */
     private void canChangerUserInfo() {
-        if (userNameChanged || sexChanged || cityChanged || introduceChanged
-                || upLoadCount > 0) {
+        if (userNameChanged || sexChanged || cityChanged || introduceChanged) {
             mToolbarRight.setEnabled(true);
         } else {
             mToolbarRight.setEnabled(false);
