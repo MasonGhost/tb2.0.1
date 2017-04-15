@@ -10,6 +10,8 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
+import org.greenrobot.greendao.query.QueryBuilder;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -103,6 +105,16 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
                 break;
             case ApiConfig.DYNAMIC_TYPE_NEW:
 
+                break;
+            case ApiConfig.DYNAMIC_TYPE_MY_COLLECTION:
+                DynamicToolBeanDao dynamicToolBeanDao = getWDaoSession().getDynamicToolBeanDao();
+                QueryBuilder<DynamicToolBean> queryBuilder = dynamicToolBeanDao.queryBuilder();
+                queryBuilder.where(DynamicToolBeanDao.Properties.Is_collection_feed.eq(1));
+                List<DynamicToolBean> dynamicToolBeanList = queryBuilder.list();
+                for (DynamicToolBean dynamicToolBean : dynamicToolBeanList) {
+                    dynamicToolBean.setIs_collection_feed(0);
+                }
+                dynamicToolBeanDao.insertOrReplaceInTx(dynamicToolBeanList);
                 break;
             default:
         }
@@ -209,7 +221,7 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
         DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
         List<DynamicBean> datas = dynamicBeanDao.queryDeep(" where "
                         + " T1." + DynamicToolBeanDao.Properties.Is_collection_feed.columnName + " = ? "
-                        + " ORDER BY  T." + DynamicBeanDao.Properties.Feed_mark.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// 按照Feedmark倒序：userId+时间戳 ：越新的动态，feedmark越大
+                        + " ORDER BY  T." + DynamicBeanDao.Properties.Feed_id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// 按照Feed_id倒序：越新的动态，Feed_id越大
                 , "1");
         return datas;
     }
@@ -223,7 +235,7 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
         DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
         List<DynamicBean> datas = dynamicBeanDao.queryDeep(" where "
                         + " T." + DynamicBeanDao.Properties.User_id.columnName + " = ? "
-                        + " ORDER BY  T." + DynamicBeanDao.Properties.Feed_mark.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// 按照Feedmark倒序：userId+时间戳 ：越新的动态，feedmark越大
+                        + " ORDER BY  T." + DynamicBeanDao.Properties.Feed_id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// 按照Feed_id倒序：越新的动态，Feed_id越大
                 , new String[]{String.valueOf(userId)});
         return datas;
     }

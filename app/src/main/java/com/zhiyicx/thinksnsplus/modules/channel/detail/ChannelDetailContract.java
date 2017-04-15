@@ -40,6 +40,11 @@ public interface ChannelDetailContract {
          * @param message      接口返回message
          */
         void subscribChannelState(boolean stateSuccess, ChannelSubscripBean channelSubscripBean, String message);
+
+        /**
+         * 动态已发送的ui通知
+         */
+        void sendDynamic();
     }
 
     interface Repository extends IBaseChannelRepository {

@@ -67,7 +67,7 @@
                 android:id="@+id/tv_share_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
+                android:layout_marginLeft="@dimen/spacing_normal_large"
                 android:textColor="@color/channel_detail_white_alpha"
                 android:textSize="@dimen/size_content_assist"
                 tools:text="分享 26"/>

@@ -23,10 +23,10 @@ import com.zhiyicx.common.utils.log.LogUtils;
  */
 
 public class ZoomView {
-    // 手指移动的最大放缩距离，单位像素
-    private static final int MAX_DEFAULT_DISTANCE = 500;
-    // 最小可刷新的距离：手指移动累计位移如果小于它，就无法刷新
-    public static final int CAN_REFRESH_DISTANCE = 200;
+    // 控件移动的最大放缩距离，单位像素
+    private static final int MAX_DEFAULT_DISTANCE = 300;
+    // 最小可刷新的距离：控件累计位移如果小于它，就无法刷新：为MAX_DEFAULT_DISTANCE的一半
+    public static final int CAN_REFRESH_DISTANCE = 150;
     // 滑动系数，用来处理手指滑动和布局放大的系数比：布局放大尺寸=手指滑动距离*DEFAULT_MOVE_RATIO
     public static final float DEFAULT_MOVE_RATIO = 0.6f;
     // 是否正在放大
@@ -55,8 +55,16 @@ public class ZoomView {
         mLinearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
         this.originHeight = originHeight;
         this.originWidth = originWidth;
-        // 最大拉动放大距离为屏幕高度一半
-        max_distance = DeviceUtils.getScreenHeight(activity) / 2;
+
+        int halfScreenHeight = DeviceUtils.getScreenHeight(activity) / 2;
+        // 下边缘可以放大到屏幕高度一半
+        // 如果控件原始高度太矮，导致无法放大到屏幕一半的位置，就增大max_distance的距离，否则就用默认的max_distance
+        if (originHeight + max_distance <= halfScreenHeight) {
+            max_distance = halfScreenHeight - originHeight;
+        }
+        LogUtils.i("ZoomViewConstructor" + "   max_distance" + max_distance + "  originHeight" + originHeight);
+        can_refresh_distance = max_distance / 2;//可刷新距离，为最大移动距离的一半
+
     }
 
     /**
@@ -121,8 +129,8 @@ public class ZoomView {
                         }
                         // 处理放大，需要注意的是，被放缩的控件一定要在父布局的水平方向居中显示，这样放大，才会往两边扩展
                         mScaling = true;
-                        lp.width = originWidth + distance;
-                        lp.height = originHeight + distance * originHeight / originWidth;
+                        lp.width = originWidth + scaleDistance;
+                        lp.height = originHeight + distance;
                         zoomView.setLayoutParams(lp);
                         return true; // 返回true表示已经完成触摸事件，不再处理
                 }

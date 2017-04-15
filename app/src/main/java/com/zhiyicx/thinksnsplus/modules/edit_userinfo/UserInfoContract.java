@@ -34,14 +34,15 @@ public interface UserInfoContract {
         /**
          * 设置头像上传的状态
          *
-         * @param upLoadState -1 失败 1进行中 2 成功
+         * @param upLoadState -1 失败 0进行中 1 图片上传成功 2图片用户信息修改成功
          * @param taskId      返回的图片任务id
          */
         void setUpLoadHeadIconState(int upLoadState, int taskId);
 
         /**
          * 设置信息修改提交状态
-         * @param changeUserInfoState  -1 失败 1进行中 2 成功
+         *
+         * @param changeUserInfoState -1 失败 1进行中 2 成功
          */
         void setChangeUserInfoState(int changeUserInfoState, String message);
 
@@ -87,6 +88,7 @@ public interface UserInfoContract {
 
         /**
          * 获取点赞排行榜
+         *
          * @param page
          * @return
          */
@@ -94,6 +96,7 @@ public interface UserInfoContract {
 
         /**
          * 获取用户收到的点赞
+         *
          * @param max_id
          * @return
          */
@@ -102,6 +105,7 @@ public interface UserInfoContract {
 
         /**
          * 获取用户收到的评论
+         *
          * @param max_id
          * @return
          */
@@ -109,9 +113,8 @@ public interface UserInfoContract {
 
 
         /**
-         *
          * @param time 零时区的秒级时间戳
-         * @param key 查询关键字 默认查询全部 多个以逗号隔开 可选参数有 diggs comments follows
+         * @param key  查询关键字 默认查询全部 多个以逗号隔开 可选参数有 diggs comments follows
          * @return
          */
         Observable<BaseJson<List<FlushMessages>>> getMyFlushMessage(long time, String key);
@@ -127,7 +130,12 @@ public interface UserInfoContract {
          */
         void changeUserHeadIcon(String filePath);
 
-        void changUserInfo(HashMap<String, String> userInfos);
+        /**
+         * @param userInfos
+         * @param isHeadIcon 仅仅修改头像
+         */
+        void changUserInfo(HashMap<String, String> userInfos, boolean isHeadIcon);
+
 
         /**
          * 初始化用户界面数据

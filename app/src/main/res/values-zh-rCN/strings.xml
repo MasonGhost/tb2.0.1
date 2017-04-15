@@ -126,6 +126,7 @@
     <string name="all_channel">全部频道</string>
     <string name="channel_share">分享</string>
     <string name="channel_follow">订阅</string>
+    <string name="had_send_dynamic_to_channel">动态将在审核成功后发布</string>
 
     <!--收藏-->
     <string name="collect">收藏</string>

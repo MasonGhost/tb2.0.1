@@ -92,8 +92,9 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
     private View bootomDivider;// 底部的分割线
     private ImageView refreshImage;// 刷新小菊花
     private ChannelDetailContract.Presenter mChannelDetailPresenter;
+    private View headerView;
+    private boolean isRefreshing = false;// 是否正在刷新
 
-    private ImageLoader mImageLoader;
 
     /**
      * 标题文字的颜色:#333333
@@ -132,14 +133,12 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
      */
     public static int[] TOOLBAR_RIGHT_BLUE = {89, 182, 215};
 
-    private View headerView;
 
     public ItemChannelDetailHeader(Activity activity, RecyclerView recyclerView, HeaderAndFooterWrapper headerAndFooterWrapper, View mToolBarContainer, ChannelDetailContract.Presenter channelDetailPresenter) {
         mActivity = activity;
         mRecyclerView = recyclerView;
         mHeaderAndFooterWrapper = headerAndFooterWrapper;
         this.mToolBarContainer = mToolBarContainer;
-        mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         mToolBar = mToolBarContainer.findViewById(R.id.rl_toolbar_container);
         back = (ImageView) mToolBarContainer.findViewById(R.id.iv_back);
         subscribBtn = (ColorFilterTextView) mToolBarContainer.findViewById(R.id.iv_subscrib_btn);
@@ -287,7 +286,7 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
         tv_channel_description.setText(channelInfoBean.getDescription());
 
         // 设置订阅人数
-        tv_subscrib_count.setText(mActivity.getString(R.string.channel_follow) + " " + ConvertUtils.numberConvert(channelInfoBean.getFollow_status()));
+        tv_subscrib_count.setText(mActivity.getString(R.string.channel_follow) + " " + ConvertUtils.numberConvert(channelInfoBean.getFollow_count()));
         // 设置分享人数
         tv_share_count.setText(mActivity.getString(R.string.channel_share) + " " + ConvertUtils.numberConvert(channelInfoBean.getFeed_count()));
         // 设置封面
@@ -339,18 +338,20 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
         // 在网络请求结束后，进行调用
         mChannelDetailPresenter.requestNetData(0l, false);
         ((AnimationDrawable) refreshImage.getDrawable()).start();
-
+        isRefreshing = true;
     }
 
     @Override
     public void refreshEnd() {
         ((AnimationDrawable) refreshImage.getDrawable()).stop();
         refreshImage.setVisibility(View.GONE);
+        isRefreshing = false;
     }
 
     @Override
     public void canRefresh(int moveDistance, boolean canRefresh) {
-        if (canRefresh) {
+        // 移动时，如果正在刷新或者可刷新，就显示刷新菊花
+        if (canRefresh || isRefreshing) {
             refreshImage.setVisibility(View.VISIBLE);
         } else {
             refreshImage.setVisibility(View.GONE);

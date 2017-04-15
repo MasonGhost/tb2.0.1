@@ -23,4 +23,6 @@
     <dimen name="text_margin">16dp</dimen>
     <!--频道详情，顶部图片距离顶部的距离-->
     <dimen name="header_icon_top_margin">72dp</dimen>
+    <!--25dp的高度减去图片4个dp的透明都-->
+    <dimen name="floating_button_bottom_margin">21dp</dimen>
 </resources>

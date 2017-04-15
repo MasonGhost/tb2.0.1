@@ -475,11 +475,17 @@ public class BackgroundTaskHandler {
         if (sendDynamicDataBean != null) {
             dynamicBelong = sendDynamicDataBean.getDynamicBelong();
             channel_id = sendDynamicDataBean.getDynamicChannlId();
+
         } else {
             dynamicBelong = SendDynamicDataBean.MORMAL_DYNAMIC;
             channel_id = 0;
         }
-        final DynamicBean dynamicBean = mDynamicBeanGreenDao.getDynamicByFeedMark(feedMark);
+        final DynamicBean dynamicBean;
+        if (dynamicBelong == SendDynamicDataBean.CHANNEL_DYNAMIC) {
+            dynamicBean = (DynamicBean) params.get("dynamicbean");
+        } else {
+            dynamicBean = mDynamicBeanGreenDao.getDynamicByFeedMark(feedMark);
+        }
         if (dynamicBean == null) {
             mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
             return;

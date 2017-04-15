@@ -90,6 +90,9 @@ public class DeviceUtils {
     }
 
     public static int getStatuBarHeight(Context context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            return 0;
+        }
         Class<?> c = null;
         Object obj = null;
         Field field = null;

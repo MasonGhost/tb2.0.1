@@ -1,7 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.channel.detail;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,10 +18,14 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
+import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.ZoomView;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -48,6 +55,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForZ
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.widget.DynamicEmptyItem;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -66,10 +74,16 @@ import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.ItemChannelDetailHeader.TOOLBAR_RIGHT_WHITE;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_POSITION;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.LOOK_COMMENT_MORE;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM_SPACING;
+import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.STATUS_RGB;
+import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.TOOLBAR_BLACK_ICON;
+import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.TOOLBAR_DIVIDER_RGB;
+import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.TOOLBAR_RGB;
+import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.TOOLBAR_WHITE_ICON;
 
 /**
  * @author LiuChao
@@ -80,7 +94,8 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM
 
 public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.Presenter, DynamicBean> implements ChannelDetailContract.View, DynamicListBaseItem.OnReSendClickListener,
         DynamicNoPullRecycleView.OnCommentStateClickListener, DynamicListCommentView.OnCommentClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, OnUserInfoClickListener,
-        DynamicListCommentView.OnMoreCommentClickListener, InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener {
+        DynamicListCommentView.OnMoreCommentClickListener, InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener
+        , PhotoSelectorImpl.IPhotoBackListener {
 
     public static final String CHANNEL_HEADER_INFO_DATA = "channel_header_info_data";
 
@@ -115,34 +130,32 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     private ActionPopupWindow mReSendDynamicPopWindow;
     private int mCurrentPostion;// 当前评论的动态位置
     private long mReplyToUserId;// 被评论者的 id
+    private PhotoSelectorImpl mPhotoSelector;
 
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        setLoadViewHolderImag(R.mipmap.img_default_internet);
         initToolBar();
+        initPhotoPicker();
+        View mFooterView = new View(getContext());
+        mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
+        mHeaderAndFooterWrapper.addFootView(mFooterView);
         mItemChannelDetailHeader = new ItemChannelDetailHeader(getActivity(), mRvList, mHeaderAndFooterWrapper, mLlToolbarContainerParent, mPresenter);
-        mItemChannelDetailHeader.initHeaderView(true);
-        RxView.clicks(mBtnSendDynamic)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        // 跳转到发送动态页面
-                        SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
-                        sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.CHANNEL_DYNAMIC);
-                        sendDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
-                        sendDynamicDataBean.setDynamicChannlId(mChannelSubscripBean.getId());
-                        SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
-                    }
-                });
+        mItemChannelDetailHeader.initHeaderView(false);
+
+        mItemChannelDetailHeader.setViewColorWithAlpha(mLlToolbarContainerParent, STATUS_RGB, 255);
+        mItemChannelDetailHeader.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.rl_toolbar_container), TOOLBAR_RGB, 255);
+        mItemChannelDetailHeader.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.v_horizontal_line), TOOLBAR_DIVIDER_RGB, 255);
+        mItemChannelDetailHeader.setToolbarIconColor(Color.argb(255, TOOLBAR_BLACK_ICON[0],
+                TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
+        mIvSubscribBtn.setVisibility(View.GONE);// 隐藏订阅按钮
         initListener();
     }
 
     @Override
     protected void initData() {
         mChannelSubscripBean = getArguments().getParcelable(CHANNEL_HEADER_INFO_DATA);
-        initSubscribState(mChannelSubscripBean);
-        mItemChannelDetailHeader.initHeaderViewData(mChannelSubscripBean);
         mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
         super.initData();
     }
@@ -173,6 +186,12 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     }
 
     @Override
+    protected void setLoadingViewHolderClick() {
+        super.setLoadingViewHolderClick();
+        mPresenter.requestNetData(0l, false);
+    }
+
+    @Override
     protected RecyclerView.Adapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mListDatas);
         setAdapter(adapter, new DynamicListItemForZeroImage(getContext()));
@@ -185,6 +204,9 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         setAdapter(adapter, new DynamicListItemForSevenImage(getContext()));
         setAdapter(adapter, new DynamicListItemForEightImage(getContext()));
         setAdapter(adapter, new DynamicListItemForNineImage(getContext()));
+        DynamicEmptyItem emptyItem = new DynamicEmptyItem();
+        adapter.addItemViewDelegate(emptyItem);
+        adapter.setOnItemClickListener(this);
         return adapter;
     }
 
@@ -213,11 +235,30 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     @Override
     public void allDataReady() {
         closeLoadingView();
+        mItemChannelDetailHeader.setViewColorWithAlpha(mLlToolbarContainerParent, STATUS_RGB, 0);
+        mItemChannelDetailHeader.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.rl_toolbar_container), TOOLBAR_RGB, 0);
+        mItemChannelDetailHeader.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.v_horizontal_line), TOOLBAR_DIVIDER_RGB, 0);
+        mItemChannelDetailHeader.setToolbarIconColor(Color.argb(255, TOOLBAR_WHITE_ICON[0]
+                , TOOLBAR_WHITE_ICON[1], TOOLBAR_WHITE_ICON[2]));
+        mItemChannelDetailHeader.setScrollListenter();
+        // 状态栏文字设为白色
+        StatusBarUtils.statusBarDarkMode(mActivity);
+        initSubscribState(mChannelSubscripBean);// 尝试显示订阅按钮
+        mItemChannelDetailHeader.initHeaderViewData(mChannelSubscripBean);
     }
 
     @Override
     public void loadAllError() {
         showLoadViewLoadError();
+        // 网络数据请求结束
+        mItemChannelDetailHeader.refreshEnd();
+    }
+
+    @Override
+    public void showMessage(String message) {
+        super.showMessage(message);
+        // 网络数据请求结束
+        mItemChannelDetailHeader.refreshEnd();
     }
 
     @Override
@@ -242,7 +283,16 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     }
 
     @Override
+    public void sendDynamic() {
+        showSnackSuccessMessage(getString(R.string.had_send_dynamic_to_channel));
+    }
+
+    @Override
     public void onNetResponseSuccess(@NotNull List<DynamicBean> data, boolean isLoadMore) {
+        if (!isLoadMore && data.isEmpty()) { // 增加空数据，用于显示占位图
+            DynamicBean emptyData = new DynamicBean();
+            data.add(emptyData);
+        }
         super.onNetResponseSuccess(data, isLoadMore);
         // 网络数据请求结束
         mItemChannelDetailHeader.refreshEnd();
@@ -547,7 +597,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     private void initToolBar() {
         // toolBar 设置状态栏高度的 marginTop
         int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelSize(R.dimen.divider_line);
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
+        CoordinatorLayout.LayoutParams layoutParams = new CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
         mLlToolbarContainerParent.setLayoutParams(layoutParams);
 
     }
@@ -580,6 +630,16 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                     }
                 });
 
+        RxView.clicks(mBtnSendDynamic)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        // 跳转到发送动态页面
+                        clickSendPhotoTextDynamic();
+                    }
+                });
+        longClickSendTextDynamic();
         mIlvComment.setOnSendClickListener(this);
 
     }
@@ -604,5 +664,60 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
 
     private void setBtnSendDynamicClickState(boolean clickable) {
         mBtnSendDynamic.setClickable(clickable);
+    }
+
+    /**
+     * 点击动态发送按钮，进入文字图片的动态发布
+     */
+    private void clickSendPhotoTextDynamic() {
+        mPhotoSelector.getPhotoListFromSelector(9, null);
+    }
+
+    private void initPhotoPicker() {
+        mPhotoSelector = DaggerPhotoSelectorImplComponent
+                .builder()
+                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
+                        .NO_CRAFT))
+                .build().photoSelectorImpl();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPhotoSelector.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void getPhotoSuccess(List<ImageBean> photoList) {
+        // 跳转到发送动态页面
+        SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+        sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.CHANNEL_DYNAMIC);
+        sendDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
+        sendDynamicDataBean.setDynamicPrePhotos(photoList);
+        sendDynamicDataBean.setDynamicChannlId(mChannelSubscripBean.getId());
+        SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
+    }
+
+    @Override
+    public void getPhotoFailure(String errorMsg) {
+
+    }
+
+    /**
+     * 长按动态发送按钮，进入纯文字的动态发布
+     */
+    private void longClickSendTextDynamic() {
+        mBtnSendDynamic.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                // 跳转到发送动态页面
+                SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+                sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.CHANNEL_DYNAMIC);
+                sendDynamicDataBean.setDynamicType(SendDynamicDataBean.TEXT_ONLY_DYNAMIC);
+                sendDynamicDataBean.setDynamicChannlId(mChannelSubscripBean.getId());
+                SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
+                return true;
+            }
+        });
     }
 }
