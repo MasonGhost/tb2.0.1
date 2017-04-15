@@ -25,6 +25,8 @@ public class EventBusTagConfig {
     public static final String EVENT_SEND_DYNAMIC_TO_LIST = "event_send_dynamic_to_List";
     // 发送动态到频道动态列表
     public static final String EVENT_SEND_DYNAMIC_TO_CHANNEL="event_send_dynamic_to_channel";
+    // 收藏动态
+    public static final String EVENT_COLLECT_DYNAMIC="event_collect_dynamic";
     //更新动态列表
     public static final String EVENT_UPDATE_DYNAMIC = "event_update_dynamic";
     // 动态列表发送评论

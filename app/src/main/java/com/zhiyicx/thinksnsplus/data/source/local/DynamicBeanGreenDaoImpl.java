@@ -10,6 +10,8 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
+import org.greenrobot.greendao.query.QueryBuilder;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -103,6 +105,16 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
                 break;
             case ApiConfig.DYNAMIC_TYPE_NEW:
 
+                break;
+            case ApiConfig.DYNAMIC_TYPE_MY_COLLECTION:
+                DynamicToolBeanDao dynamicToolBeanDao = getWDaoSession().getDynamicToolBeanDao();
+                QueryBuilder<DynamicToolBean> queryBuilder = dynamicToolBeanDao.queryBuilder();
+                queryBuilder.where(DynamicToolBeanDao.Properties.Is_collection_feed.eq(1));
+                List<DynamicToolBean> dynamicToolBeanList = queryBuilder.list();
+                for (DynamicToolBean dynamicToolBean : dynamicToolBeanList) {
+                    dynamicToolBean.setIs_collection_feed(0);
+                }
+                dynamicToolBeanDao.insertOrReplaceInTx(dynamicToolBeanList);
                 break;
             default:
         }

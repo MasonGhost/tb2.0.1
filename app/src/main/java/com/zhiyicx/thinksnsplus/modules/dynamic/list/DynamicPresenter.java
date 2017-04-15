@@ -9,6 +9,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
@@ -154,6 +155,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                 } else {
                     datas = mDynamicBeanGreenDao.getNewestDynamicList(maxId);
                 }
+                break;
             case ApiConfig.DYNAMIC_TYPE_MY_COLLECTION:
                 datas = mDynamicBeanGreenDao.getMyCollectDynamic();
                 break;
@@ -164,6 +166,7 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                 datas.get(i).setComments(mDynamicCommentBeanGreenDao.getLocalComments(datas.get(i).getFeed_mark()));
             }
         }
+        LogUtils.i("requestCacheData DYNAMIC_TYPE_MY_COLLECTION");
         return datas;
     }
 
@@ -448,24 +451,11 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                 .map(new Func1<Bundle, Integer>() {
                     @Override
                     public Integer call(Bundle bundle) {
-                        String type = bundle.getString(DYNAMIC_DETAIL_DATA_TYPE);
-                        int position = bundle.getInt(DYNAMIC_DETAIL_DATA_POSITION);
                         boolean isNeedRefresh = bundle.getBoolean(DYNAMIC_LIST_NEED_REFRESH);
                         DynamicBean dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
-                        if (mRootView.getDynamicType().equals(type)) { // 先刷新当前页面，再刷新其他页面
-                            mRootView.getListDatas().set(position, dynamicBean);
-                            return isNeedRefresh ? position : -1;
-                        }
-                        int size = mRootView.getListDatas().size();
-                        int dynamicPosition = -1;
-                        for (int i = 0; i < size; i++) {
-                            if (mRootView.getListDatas().get(i).getFeed_mark().equals(dynamicBean.getFeed_mark())) {
-                                dynamicPosition = i;
-                                break;
-                            }
-                        }
+                        int dynamicPosition = mRootView.getListDatas().indexOf(dynamicBean);
                         if (dynamicPosition != -1) {// 如果列表有当前评论
-                            mRootView.getListDatas().set(position, dynamicBean);
+                            mRootView.getListDatas().set(dynamicPosition, dynamicBean);
                         }
 
                         return isNeedRefresh ? dynamicPosition : -1;

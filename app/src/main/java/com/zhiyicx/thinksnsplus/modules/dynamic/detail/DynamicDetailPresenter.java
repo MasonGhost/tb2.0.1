@@ -331,23 +331,33 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
     }
 
     @Override
-    public void handleCollect(boolean isCollected, Long feed_id, DynamicToolBean dynamicToolBean) {
+    public void handleCollect(DynamicBean dynamicBean) {
+        // 收藏
+        // 修改数据
+        DynamicToolBean collectToolBean = dynamicBean.getTool();
+        int is_collection = collectToolBean.getIs_collection_feed();// 旧状态
+        // 新状态
+        is_collection = is_collection == DynamicToolBean.STATUS_COLLECT_FEED_UNCHECKED
+                ? DynamicToolBean.STATUS_COLLECT_FEED_CHECKED : DynamicToolBean.STATUS_COLLECT_FEED_UNCHECKED;
+        collectToolBean.setIs_collection_feed(is_collection);
+        boolean newCollectState = is_collection == DynamicToolBean.STATUS_COLLECT_FEED_UNCHECKED ? false : true;
         // 更新UI
-        mRootView.setCollect(isCollected);
+        mRootView.setCollect(newCollectState);
         // 更新数据库
-        mDynamicToolBeanGreenDao.insertOrReplace(dynamicToolBean);
+        mDynamicToolBeanGreenDao.insertOrReplace(collectToolBean);
         // 通知服务器
         BackgroundRequestTaskBean backgroundRequestTaskBean;
         HashMap<String, Object> params = new HashMap<>();
-        params.put("feed_id", feed_id);
+        params.put("feed_id", dynamicBean.getFeed_id());
         // 后台处理
-        if (isCollected) {
+        if (newCollectState) {
             backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST, params);
         } else {
             backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
         }
-        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_HANDLE_COLLECT_FORMAT, feed_id));
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_HANDLE_COLLECT_FORMAT, dynamicBean.getFeed_id()));
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+        EventBus.getDefault().post(dynamicBean, EventBusTagConfig.EVENT_COLLECT_DYNAMIC);
     }
 
     @Override
