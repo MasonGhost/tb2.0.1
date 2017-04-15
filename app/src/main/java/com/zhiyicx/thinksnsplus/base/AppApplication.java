@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
 import com.antfortune.freeline.FreelineCore;
@@ -22,17 +21,19 @@ import com.zhiyicx.common.net.intercept.CommonRequestIntercept;
 import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.manage.ZBIMSDK;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
+import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
+import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.QueueManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.WindowUtils;
-import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.io.File;
@@ -67,7 +68,8 @@ public class AppApplication extends TSApplication {
     private AlertDialog alertDialog; // token 过期弹框
     private static AuthBean mCurrentLoginAuth; //当前登录用户的信息
     private static HttpProxyCacheServer mMediaProxyCacheServer;
-    private static QueueManager mQueueManager;
+    private static QueueManager sQueueManager;
+    private static PlaybackManager sPlaybackManager;
     public static List<String> sOverRead = new ArrayList<>();
     public int mActivityCount = 0;
 
@@ -313,11 +315,19 @@ public class AppApplication extends TSApplication {
     }
 
     public static QueueManager getmQueueManager() {
-        return mQueueManager;
+        return sQueueManager;
+    }
+
+    public static PlaybackManager getPlaybackManager() {
+        return sPlaybackManager;
     }
 
     public static void setmQueueManager(QueueManager mQueueManager) {
-        AppApplication.mQueueManager = mQueueManager;
+        AppApplication.sQueueManager = mQueueManager;
+    }
+
+    public static void setPlaybackManager(PlaybackManager playbackManager) {
+        AppApplication.sPlaybackManager = playbackManager;
     }
 
     private void registerActivityCallBacks() {

@@ -241,6 +241,7 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
         mPlaybackManager.updatePlaybackState(null);
         mSession.setCallback(mPlaybackManager.getMediaSessionCallback());
         AppApplication.setmQueueManager(mQueueManager);
+        AppApplication.setPlaybackManager(mPlaybackManager);
     }
 
 }

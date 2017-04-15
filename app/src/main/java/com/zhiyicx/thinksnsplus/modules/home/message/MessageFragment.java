@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home.message;
 
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -44,8 +45,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Inject
     protected MessagePresenter mMessagePresenter;
 
-    private int mLastClickPostion = -1;// 纪录上次聊天 item ,用于单条刷新
-
     public static MessageFragment newInstance() {
         MessageFragment fragment = new MessageFragment();
         Bundle args = new Bundle();
@@ -57,6 +56,11 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     protected int setLeftImg() {
         return 0;
+    }
+
+    @Override
+    protected int setRightImg() {
+        return R.drawable.frame_loading_grey;
     }
 
     @Override
@@ -77,6 +81,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        mToolbarRight.setVisibility(View.GONE);
         initHeaderView();
     }
 
@@ -109,13 +114,8 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     public void onResume() {
         super.onResume();
-        if (mLastClickPostion != -1) {
-            // 刷新当条信息内容
-            mPresenter.refreshLastClicikPostion(mLastClickPostion);
-            mLastClickPostion = -1;
-        } else {
-            refreshData();
-        }
+        // 刷新信息内容
+        mPresenter.refreshConversationReadMessage();
     }
 
     @Override
@@ -182,18 +182,18 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
             tvHeaderLikeTip = (BadgeView) headerview.findViewById(R.id.tv_header_like_tip);
         }
         tvHeaderCommentContent.setText(commentItemData.getConversation().getLast_message().getTxt());
-        if(commentItemData.getConversation().getLast_message_time()==0){
+        if (commentItemData.getConversation().getLast_message_time() == 0) {
             tvHeaderCommentTime.setVisibility(View.INVISIBLE);
-        }else {
+        } else {
             tvHeaderCommentTime.setVisibility(View.VISIBLE);
             tvHeaderCommentTime.setText(TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(commentItemData.getConversation().getLast_message_time())));
         }
         tvHeaderCommentTip.setBadgeCount(commentItemData.getUnReadMessageNums());
 
         tvHeaderLikeContent.setText(likedItemData.getConversation().getLast_message().getTxt());
-        if(likedItemData.getConversation().getLast_message_time()==0){
+        if (likedItemData.getConversation().getLast_message_time() == 0) {
             tvHeaderLikeTime.setVisibility(View.INVISIBLE);
-        }else {
+        } else {
             tvHeaderLikeTime.setVisibility(View.VISIBLE);
             tvHeaderLikeTime.setText(TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(likedItemData.getConversation().getLast_message_time())));
         }
@@ -233,6 +233,19 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     @Override
+    public void showTopRightLoading() {
+        ((AnimationDrawable) (mToolbarRight.getCompoundDrawables())[2]).start();
+        mToolbarRight.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void closeTopRightLoading() {
+        ((AnimationDrawable) (mToolbarRight.getCompoundDrawables())[2]).stop();
+        mToolbarRight.setVisibility(View.GONE);
+
+    }
+
+    @Override
     public void refreshData() {
         super.refreshData();
         mHeaderAndFooterWrapper.notifyDataSetChanged();
@@ -267,7 +280,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         bundle.putParcelable(ChatFragment.BUNDLE_MESSAGEITEMBEAN, messageItemBean);
         to.putExtras(bundle);
         startActivity(to);
-        mLastClickPostion = positon;//
     }
 
     @Override

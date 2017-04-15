@@ -3,13 +3,13 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.imsdk.db.dao.ConversationDao;
-import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.AuthData;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
@@ -39,13 +39,18 @@ import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * @Describe
@@ -210,24 +215,31 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     /**
      * 刷新是否显示底部红点
      * 刷新当条item 的未读数
-     *
-     * @param positon 当条数据位置
      */
     @Override
-    public void refreshLastClicikPostion(int positon) {
-
-        // 刷新当条item 的未读数
-        Message message = MessageDao.getInstance(mContext).getLastMessageByCid(mRootView.getListDatas().get(positon).getConversation().getCid());
-        if (message != null) {
-            mRootView.getListDatas().get(positon).getConversation().setLast_message_time(message.getCreate_time());
-            mRootView.getListDatas().get(positon).getConversation().setLast_message(message);
-        }
-        mRootView.getListDatas().get(positon).setUnReadMessageNums(0);
-
-        mRootView.refreshData(); // 刷新加上 header
-        checkBottomMessageTip();
-
-
+    public void refreshConversationReadMessage() {
+        Subscription represhSu = Observable.just("")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<String, List<MessageItemBean>>() {
+                    @Override
+                    public List<MessageItemBean> call(String s) {
+                        return mChatRepository.getConversionListData(mAuthRepository.getAuthBean().getUser_id());
+                    }
+                })
+                .subscribe(new Action1<List<MessageItemBean>>() {
+                    @Override
+                    public void call(List<MessageItemBean> data) {
+                        mRootView.onCacheResponseSuccess(data, false);
+                        checkBottomMessageTip();
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
+        addSubscrebe(represhSu);
     }
 
     @Override
@@ -284,9 +296,8 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                 mRootView.getListDatas().get(i).setUnReadMessageNums(mRootView.getListDatas().get(i).getUnReadMessageNums() + 1);
                 mRootView.getListDatas().get(i).getConversation().setLast_message(message);
                 mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
-                if (i != 0) {
-                    Collections.swap(mRootView.getListDatas(), i, 0);
-                }
+                mRootView.getListDatas().add(0, mRootView.getListDatas().get(i));
+                mRootView.getListDatas().remove(i + 1);
                 mRootView.refreshData(); // 加上 header 的位置
                 isHasConversion = true;
                 break;
@@ -373,10 +384,22 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     private void handleFlushMessage() {
         Long last_request_time = SharePreferenceUtils.getLong(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_LAST_FLUSHMESSAGE_TIME);
         if (last_request_time == 0) {
-            last_request_time = System.currentTimeMillis() / 1000;
+            last_request_time = System.currentTimeMillis() / 1000 - ConstantConfig.HOUR / 1000;
         }
         last_request_time++;//  由于请求接口数据时间是以秒级时间戳 建议调用传入时间间隔1秒以上 以防止数据重复
         mUserInfoRepository.getMyFlushMessage(last_request_time, "")
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        mRootView.showTopRightLoading();
+                    }
+                }).subscribeOn(AndroidSchedulers.mainThread())
+                .doAfterTerminate(new Action0() {
+                    @Override
+                    public void call() {
+                        mRootView.closeTopRightLoading();
+                    }
+                })
                 .subscribe(new BaseSubscribe<List<FlushMessages>>() {
                     @Override
                     protected void onSuccess(List<FlushMessages> data) {

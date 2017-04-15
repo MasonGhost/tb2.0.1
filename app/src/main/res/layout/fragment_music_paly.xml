@@ -148,6 +148,8 @@
                     android:indeterminate="false"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:paddingTop="@dimen/margin_10dp"
+                    android:paddingBottom="@dimen/margin_10dp"
                     android:max="100"
                     android:maxHeight="3dp"
                     android:minHeight="3dp"

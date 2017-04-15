@@ -106,7 +106,7 @@ public class ApiConfig {
     // 点赞一条动态,取消点赞
     public static final String APP_PATH_DYNAMIC_HANDLE_LIKE = "api/v1/feeds/{feed_id}/digg";
     public static final String APP_PATH_DYNAMIC_HANDLE_LIKE_FORMAT = "api/v1/feeds/%s/digg";
-    // 删除一条评论
+    // 删除一条评论评论
     public static final String APP_PATH_DYNAMIC_DELETE_COMMENT = "api/v1/feeds/%s/comment/%s";
     // 对一条动态或一条动态评论进行评论
     public static final String APP_PATH_DYNAMIC_SEND_COMMENT = "api/v1/feeds/%s/comment";
@@ -236,4 +236,16 @@ public class ApiConfig {
     public static final String APP_PATH_SEND_DYNAMIC_TO_CHANNEL_S = "api/v1/channels/%s/feed";
     // 获取频道的动态列表
     public static final String APP_PATH_GET_CHANNEL_DYNAMIC_LIST = "api/v1/channels/{channel_id}/feeds";
+
+    /**
+     * 组件 目前：动态（feed）、音乐（music）、资讯（news）
+     */
+    public static final String APP_COMPONENT_FEED = "feed";
+    public static final String APP_COMPONENT_MUSIC = "music";
+    public static final String APP_COMPONENT_NEWS = "news";
+    //     feeds musics music_specials news
+    public static final String APP_COMPONENT_SOURCE_TABLE_FEEDS = "feeds";
+    public static final String APP_COMPONENT_SOURCE_TABLE_MUSICS = "musics";
+    public static final String APP_COMPONENT_SOURCE_TABLE_MUSIC_SPECIALS = "music_specials";
+    public static final String APP_COMPONENT_SOURCE_TABLE_NEWS = "news";
 }

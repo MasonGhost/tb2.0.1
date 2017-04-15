@@ -2,9 +2,12 @@ package com.zhiyicx.thinksnsplus.modules.home.message.messagecomment;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -14,6 +17,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 
 /**
  * @Describe
@@ -23,7 +28,8 @@ import rx.Subscription;
  */
 @FragmentScoped
 public class MessageCommentPresenter extends BasePresenter<MessageCommentContract.Repository, MessageCommentContract.View> implements MessageCommentContract.Presenter {
-
+    @Inject
+    CommentRepository mCommentRepository;
     @Inject
     CommentedBeanGreenDaoImpl mCommentedBeanGreenDao;
 
@@ -73,6 +79,34 @@ public class MessageCommentPresenter extends BasePresenter<MessageCommentContrac
 
     @Override
     public void sendComment(int mCurrentPostion, long replyToUserId, String commentContent) {
+        CommentedBean currentCommentBean = mRootView.getListDatas().get(mCurrentPostion);
+        String path = CommentRepository.getCommentPath(currentCommentBean.getSource_id(), currentCommentBean.getComponent(), currentCommentBean.getSource_table());
+        Subscription commentSub = mCommentRepository.sendComment(commentContent, replyToUserId, Long.parseLong(AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis()), path)
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        mRootView.showSnackLoadingMessage(mContext.getString(R.string.comment_ing));
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribe<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.comment_success));
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.comment_fail));
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.comment_fail));
+                    }
+                });
+        addSubscrebe(commentSub);
 
     }
 }

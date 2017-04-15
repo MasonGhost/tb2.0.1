@@ -54,6 +54,7 @@ import rx.functions.Func1;
 import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 
+import static com.zhiyicx.baseproject.base.TSListFragment.DEFAULT_PAGE_MAX_ID;
 import static com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean.STATUS_DIGG_FEED_CHECKED;
 import static com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
@@ -162,6 +163,32 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         mDynamicCommentBeanGreenDao.deleteCacheByFeedMark(mRootView.getCurrentDynamic().getFeed_mark());// 删除本条动态的本地评论
         mDynamicCommentBeanGreenDao.insertOrReplace(data);
         return true;
+    }
+
+    @Override
+    public void getCurrentDynamic(long feed_id) {
+        mRepository.getDynamicList(ApiConfig.DYNAMIC_TYPE_NEW, DEFAULT_PAGE_MAX_ID, 1, String.valueOf(feed_id), false)
+                .subscribe(new BaseSubscribe<List<DynamicBean>>() {
+                    @Override
+                    protected void onSuccess(List<DynamicBean> data) {
+                        mRootView.initDynamicDetial(data.get(0));
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        LogUtils.i(message);
+                        if (code == ErrorCodeConfig.DYNAMIC_HAS_BE_DELETED) {
+                            mRootView.dynamicHasBeDeleted();
+                        } else {
+                            mRootView.loadAllError();
+                        }
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        mRootView.loadAllError();
+                    }
+                });
     }
 
     @Override
@@ -494,15 +521,18 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Bundle bundle = mRootView.getArgumentsBundle();
+
         // 清除占位图数据
         if (mRootView.getListDatas() != null && mRootView.getListDatas().size() == 1 && TextUtils.isEmpty(mRootView.getListDatas().get(0).getComment_content())) {
             mRootView.getListDatas().clear();
         }
-        mRootView.getCurrentDynamic().setComments(mRootView.getListDatas());
-        bundle.putParcelable(DYNAMIC_DETAIL_DATA, mRootView.getCurrentDynamic());
-        bundle.putBoolean(DYNAMIC_LIST_NEED_REFRESH, mIsNeedDynamicListRefresh);
-        EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_DYNAMIC);
+        Bundle bundle = mRootView.getArgumentsBundle();
+        if (bundle != null && bundle.containsKey(DYNAMIC_DETAIL_DATA)) {
+            mRootView.getCurrentDynamic().setComments(mRootView.getListDatas());
+            bundle.putParcelable(DYNAMIC_DETAIL_DATA, mRootView.getCurrentDynamic());
+            bundle.putBoolean(DYNAMIC_LIST_NEED_REFRESH, mIsNeedDynamicListRefresh);
+            EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_DYNAMIC);
+        }
     }
 
     public void setNeedDynamicListRefresh(boolean needDynamicListRefresh) {

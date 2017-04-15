@@ -1,9 +1,12 @@
 package com.zhiyicx.thinksnsplus.data.source.local;
 
+import android.app.Application;
 import android.content.Context;
 
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.info.InfoRecommendBean;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.List;
@@ -20,10 +23,13 @@ public class InfoListBeanGreenDaoImpl extends CommonCacheImpl<InfoListBean> {
 
     private InfoListBeanDao mInfoListBeanDao;
 
+    InfoListDataBeanGreenDaoImpl mInfoListDataBeanGreenDao;
+
     @Inject
     public InfoListBeanGreenDaoImpl(Context context) {
         super(context);
         mInfoListBeanDao = getWDaoSession().getInfoListBeanDao();
+        mInfoListDataBeanGreenDao=new InfoListDataBeanGreenDaoImpl((Application)context);
     }
 
     @Override
@@ -43,7 +49,7 @@ public class InfoListBeanGreenDaoImpl extends CommonCacheImpl<InfoListBean> {
 
     @Override
     public InfoListBean getSingleDataFromCache(Long primaryKey) {
-        return mInfoListBeanDao.load(primaryKey);
+        return mInfoListBeanDao.load(primaryKey.intValue());
     }
 
     @Override
@@ -89,13 +95,19 @@ public class InfoListBeanGreenDaoImpl extends CommonCacheImpl<InfoListBean> {
         return infoListBeen.get(0);
     }
 
-    public void saveCollect(int info_type, int info_id, int is_collection_news) {
+    @Deprecated
+    private void saveCollect(int info_type, int info_id, int is_collection_news) {
         InfoListBean infoListBean = getInfoListByInfoType(info_type);
-        for (InfoListBean.ListBean data : infoListBean.getList()) {
+        for (InfoListDataBean data : infoListBean.getList()) {
             if (data.getId() == info_id) {
                 data.setIs_collection_news(is_collection_news);
+                mInfoListDataBeanGreenDao.updateSingleData(data);
             }
         }
-        insertOrReplace(infoListBean);
+    }
+
+    public void saveCollect(InfoListDataBean data, int is_collection_news) {
+        data.setIs_collection_news(is_collection_news);
+        mInfoListDataBeanGreenDao.updateSingleData(data);
     }
 }

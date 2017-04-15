@@ -113,7 +113,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
     private CommonAdapter mAdapter;
     private List<MediaBrowserCompat.MediaItem> mAdapterList = new ArrayList<>();
-    private ImageLoader mImageLoader;
 
     private static final String ARG_MEDIA_ID = "media_id";
     public static final String MUSIC_INFO = "music_info";
@@ -207,7 +206,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 .MATCH_PARENT, titleHeight);
         mFragmentMusicDetailScrollview.setNotConsumeHeight(titleHeight);
         mFragmentMusicDetailTitle.setLayoutParams(titleParam);
-        mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
     }
 
     @Override
@@ -270,21 +268,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         if (mCompatProvider.getMediaBrowser().isConnected()) {
             onConnected();
         }
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showMessage(String message) {
-
     }
 
     @Override
@@ -498,8 +481,8 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                         ImageZipConfig.IMAGE_70_ZIP))
                 .asBitmap()
                 .transform(new GlideStokeTransform(getActivity(), 20))
-                .placeholder(R.mipmap.icon_256)
-                .error(R.mipmap.icon_256)
+                .placeholder(R.drawable.shape_default_image)
+                .error(R.drawable.shape_default_image)
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap>

@@ -27,12 +27,16 @@ public interface MessageContract {
 
         void updateLikeItemData(MessageItemBean messageItemBean);
 
+        void showTopRightLoading();
+
+        void closeTopRightLoading();
+
     }
 
     /**
      * Model 层定义接口,外部只需关心 model 返回的数据,无需关心内部细节,及是否使用缓存
      */
-    interface Repository extends UserInfoContract{
+    interface Repository extends UserInfoContract {
         /**
          * 获取对话列表信息
          *
@@ -43,6 +47,7 @@ public interface MessageContract {
 
         /**
          * 通过 对话 id 获取对话信息
+         *
          * @param cid 对话 id
          * @return
          */
@@ -58,18 +63,19 @@ public interface MessageContract {
          * 刷新是否显示底部红点
          * 刷新当条item 的未读数
          *
-         * @param position                当条数据位置
          */
-        void refreshLastClicikPostion(int position);
+        void refreshConversationReadMessage();
 
         /**
-         *  删除本地对话
+         * 删除本地对话
+         *
          * @param messageItemBean
          */
         void deletConversation(MessageItemBean messageItemBean);
 
         /**
          * 通过 对话 id 获取对话信息
+         *
          * @param cid 对话 id
          * @return
          */
@@ -77,6 +83,7 @@ public interface MessageContract {
 
         /**
          * 通过 key 标记消息已读
+         *
          * @param key
          */
         void readMessageByKey(String key);

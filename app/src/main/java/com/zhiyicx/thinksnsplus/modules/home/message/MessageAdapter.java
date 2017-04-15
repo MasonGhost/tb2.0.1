@@ -92,10 +92,15 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
                 break;
             default:
         }
-        if (messageItemBean.getConversation().getLast_message().getSend_status()== MessageStatus.SEND_FAIL) {
-            holder.setText(R.id.tv_content,holder.getConvertView().getResources().getString(R.string.send_fail) );
+        System.out.println("messageItemBean --------------------------= " + messageItemBean.toString());
+        if (messageItemBean.getConversation().getLast_message() == null) {
+            holder.setText(R.id.tv_content, "");
         } else {
-            holder.setText(R.id.tv_content, messageItemBean.getConversation().getLast_message().getTxt());
+            if (messageItemBean.getConversation().getLast_message().getSend_status() == MessageStatus.SEND_FAIL) {
+                holder.setText(R.id.tv_content, holder.getConvertView().getResources().getString(R.string.send_fail));
+            } else {
+                holder.setText(R.id.tv_content, messageItemBean.getConversation().getLast_message().getTxt());
+            }
         }
         if (messageItemBean.getConversation().getLast_message_time() == 0) {
             holder.setText(R.id.tv_time, "");

@@ -16,6 +16,7 @@ import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
+import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -28,13 +29,13 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
 
     @Override
     public boolean isForViewType(BaseListBean item, int position) {
-        return item instanceof InfoListBean.ListBean;
+        return item instanceof InfoListDataBean;
     }
 
     @Override
     public void convert(ViewHolder holder, BaseListBean baseListBean, BaseListBean lastT,
                         final int position) {
-        final InfoListBean.ListBean realData = (InfoListBean.ListBean) baseListBean;
+        final InfoListDataBean realData = (InfoListDataBean) baseListBean;
         final TextView title = holder.getView(R.id.item_info_title);
         ImageView imageView = holder.getView(R.id.item_info_imag);
 
@@ -61,6 +62,6 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
         });
     }
 
-    public abstract void itemClick(int position, TextView title, InfoListBean.ListBean realData);
+    public abstract void itemClick(int position, TextView title, InfoListDataBean realData);
 
 }

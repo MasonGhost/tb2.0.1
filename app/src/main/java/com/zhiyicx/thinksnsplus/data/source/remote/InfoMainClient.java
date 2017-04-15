@@ -4,6 +4,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
+import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
 
 import java.util.List;
 
@@ -47,9 +48,9 @@ public interface InfoMainClient {
 
     // 获取收藏的资讯列表
     @GET(APP_PATH_INFO_COLLECT_LIST)
-    Observable<BaseJson<List<InfoListBean.ListBean>>> getInfoCollectList(@Query("max_id") Long max_id,
-                                                                         @Query("limit") Long limit,
-                                                                         @Query("page") Long page);
+    Observable<BaseJson<List<InfoListDataBean>>> getInfoCollectList(@Query("max_id") Long max_id,
+                                                                    @Query("limit") Long limit,
+                                                                    @Query("page") Long page);
 
     // 订阅某类资讯
     @FormUrlEncoded
@@ -71,7 +72,7 @@ public interface InfoMainClient {
                                                                        @Query("limit") Long limit);
 
     @GET(APP_PATH_INFO_SEARCH)
-    Observable<BaseJson<List<InfoListBean.ListBean>>> searchInfoList(@Query("key") String key,
+    Observable<BaseJson<List<InfoListDataBean>>> searchInfoList(@Query("key") String key,
                                                                      @Query("max_id") Long max_id,
                                                                      @Query("limit") Long limit);
 

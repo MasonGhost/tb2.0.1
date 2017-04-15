@@ -74,10 +74,24 @@ public class AuthRepository implements IAuthRepository {
         mUserInfoClient = serviceManager.getUserInfoClient();
         mCommonClient = serviceManager.getCommonClient();
         mContext = context;
-//        mDynamicBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicBeanGreenDao();
-//        mDynamicDetailBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicDetailBeanGreenDao();
-//        mDynamicToolBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicToolBeanGreenDao();
-//        mDynamicCommentBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicCommentBeanGreenDao();
+        if (mDynamicBeanGreenDao == null) {
+            mDynamicBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicBeanGreenDao();
+        }
+        if (mDynamicDetailBeanGreenDao == null) {
+            mDynamicDetailBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicDetailBeanGreenDao();
+        }
+        if (mDynamicToolBeanGreenDao == null) {
+            mDynamicToolBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicToolBeanGreenDao();
+        }
+        if (mDynamicCommentBeanGreenDao == null) {
+            mDynamicCommentBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicCommentBeanGreenDao();
+        }
+        if (mDigedBeanGreenDao == null) {
+            mDigedBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().digedBeanGreenDao();
+        }
+        if (mCommentedBeanGreenDao == null) {
+            mCommentedBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().commentedBeanGreenDao();
+        }
     }
 
 
@@ -143,6 +157,9 @@ public class AuthRepository implements IAuthRepository {
      */
     @Override
     public boolean clearAuthBean() {
+        if (AppApplication.getPlaybackManager() != null) { // 释放音乐播放器
+            AppApplication.getPlaybackManager().handleStopRequest(null);
+        }
         MessageDao.getInstance(mContext).delDataBase();// 清空聊天信息、对话
         mDynamicBeanGreenDao.clearTable();
         mDynamicCommentBeanGreenDao.clearTable();
