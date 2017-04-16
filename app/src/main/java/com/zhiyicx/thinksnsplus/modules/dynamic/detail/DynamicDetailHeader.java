@@ -163,15 +163,15 @@ public class DynamicDetailHeader {
         String imgUrl = "";
         // 如果有本地图片，优先显示本地图片
         int height = 0;// 图片需要显示的高度
+        height = (int) (imageBean.getHeight() * picWidth / imageBean.getWidth());
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-            height = (int) (imageBean.getHeight() * picWidth / imageBean.getWidth());
+
             int part = (int) (screenWidth / imageBean.getWidth() * 100);
             if (part > 100) {
                 part = 100;
             }
             imgUrl = String.format(ApiConfig.IMAGE_PATH, imageBean.getStorage_id(), part);
         } else {
-            height = ViewGroup.LayoutParams.WRAP_CONTENT;
             imgUrl = imageBean.getImgUrl();
         }
         // 提前设置图片控件的大小，使得占位图显示
