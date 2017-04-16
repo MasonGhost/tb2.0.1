@@ -79,11 +79,11 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_POSITION;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.LOOK_COMMENT_MORE;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM_SPACING;
-import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.STATUS_RGB;
-import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.TOOLBAR_BLACK_ICON;
-import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.TOOLBAR_DIVIDER_RGB;
-import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.TOOLBAR_RGB;
-import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.TOOLBAR_WHITE_ICON;
+import static com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.ItemChannelDetailHeader.STATUS_RGB;
+import static com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.ItemChannelDetailHeader.TOOLBAR_BLACK_ICON;
+import static com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.ItemChannelDetailHeader.TOOLBAR_DIVIDER_RGB;
+import static com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.ItemChannelDetailHeader.TOOLBAR_RGB;
+import static com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.ItemChannelDetailHeader.TOOLBAR_WHITE_ICON;
 
 /**
  * @author LiuChao
@@ -145,7 +145,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         mItemChannelDetailHeader.initHeaderView(false);
 
         mItemChannelDetailHeader.setViewColorWithAlpha(mLlToolbarContainerParent, STATUS_RGB, 255);
-        mItemChannelDetailHeader.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.rl_toolbar_container), TOOLBAR_RGB, 255);
+        //mItemChannelDetailHeader.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.rl_toolbar_container), TOOLBAR_RGB, 255);
         mItemChannelDetailHeader.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.v_horizontal_line), TOOLBAR_DIVIDER_RGB, 255);
         mItemChannelDetailHeader.setToolbarIconColor(Color.argb(255, TOOLBAR_BLACK_ICON[0],
                 TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
@@ -236,7 +236,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     public void allDataReady() {
         closeLoadingView();
         mItemChannelDetailHeader.setViewColorWithAlpha(mLlToolbarContainerParent, STATUS_RGB, 0);
-        mItemChannelDetailHeader.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.rl_toolbar_container), TOOLBAR_RGB, 0);
+        //mItemChannelDetailHeader.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.rl_toolbar_container), TOOLBAR_RGB, 0);
         mItemChannelDetailHeader.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.v_horizontal_line), TOOLBAR_DIVIDER_RGB, 0);
         mItemChannelDetailHeader.setToolbarIconColor(Color.argb(255, TOOLBAR_WHITE_ICON[0]
                 , TOOLBAR_WHITE_ICON[1], TOOLBAR_WHITE_ICON[2]));

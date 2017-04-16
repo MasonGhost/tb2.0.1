@@ -119,7 +119,7 @@ public class PersonalCenterHeaderViewItem {
         // 设置初始透明度为0
         setViewColorWithAlpha(userName, TITLE_RGB, 0);
         setViewColorWithAlpha(mToolBarContainer, STATUS_RGB, 0);
-        setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, 0);
+        //setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, 0);
         setViewColorWithAlpha(bootomDivider, TOOLBAR_DIVIDER_RGB, 0);
 
     }
@@ -154,7 +154,7 @@ public class PersonalCenterHeaderViewItem {
                 if (mDistanceY <= headerViewHeight) {
                     float scale = (float) mDistanceY / headerViewHeight;
                     float alpha = scale * 255;
-                    setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, (int) alpha);
+                    //setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, (int) alpha);
                     setViewColorWithAlpha(mToolBarContainer, STATUS_RGB, (int) alpha);
                     setViewColorWithAlpha(bootomDivider, TOOLBAR_DIVIDER_RGB, (int) alpha);
                     if (alpha == 0) {
@@ -173,7 +173,7 @@ public class PersonalCenterHeaderViewItem {
                     //如果不是完全不透明状态的bug，将标题栏的颜色设置为完全不透明状态
                     setViewColorWithAlpha(userName, TITLE_RGB, 255);
                     setViewColorWithAlpha(mToolBarContainer, STATUS_RGB, 255);
-                    setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, 255);
+                    //setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, 255);
                     setViewColorWithAlpha(bootomDivider, TOOLBAR_DIVIDER_RGB, 255);
 
                     setToolbarIconColor(Color.argb(255, TOOLBAR_BLACK_ICON[0],
@@ -185,7 +185,7 @@ public class PersonalCenterHeaderViewItem {
                 if (headerTop >= 0) {
                     setViewColorWithAlpha(userName, TITLE_RGB, 0);
                     setViewColorWithAlpha(mToolBarContainer, STATUS_RGB, 0);
-                    setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, 0);
+                   // setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, 0);
                     setViewColorWithAlpha(bootomDivider, TOOLBAR_DIVIDER_RGB, 0);
                     setToolbarIconColor(Color.argb(255, TOOLBAR_WHITE_ICON[0]
                             , TOOLBAR_WHITE_ICON[1], TOOLBAR_WHITE_ICON[2]));
