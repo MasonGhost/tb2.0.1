@@ -47,7 +47,9 @@ public abstract class SimpleTextNoPullRecycleView<T> extends NoPullRecycleView {
     private void init(@Nullable AttributeSet attrs, int defStyle) {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         setLayoutManager(linearLayoutManager);
-        addItemDecoration(new LinearDecoration(0, getResources().getDimensionPixelSize(R.dimen.spacing_mid_small), 0, 0));
+        LinearDecoration linearDecoration = new LinearDecoration(0, getResources().getDimensionPixelSize(R.dimen.spacing_mid_small), 0, 0);
+        linearDecoration.setNeedLastDecoration(false);
+        addItemDecoration(linearDecoration);
     }
 
     public void setOnIitemClickListener(OnIitemClickListener onIitemClickListener) {
@@ -88,7 +90,7 @@ public abstract class SimpleTextNoPullRecycleView<T> extends NoPullRecycleView {
         mAdapter = new CommonAdapter<T>(getContext(), R.layout.item_simple_text_comment, data) {
             @Override
             protected void convert(com.zhy.adapter.recyclerview.base.ViewHolder holder, T t, final int position) {
-              convertData(holder,t,position);
+                convertData(holder, t, position);
 
             }
         };
