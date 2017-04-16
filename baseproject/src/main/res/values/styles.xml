@@ -31,7 +31,8 @@
     <style name="BackGroundLauncherTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:screenOrientation">portrait</item>
         <!--<item name="android:windowBackground">>@mipmap/splash</item>-->
-        <item name="android:windowBackground">@color/themeColor</item>
+        <item name="android:windowBackground">@mipmap/guide</item>
+        <item name="android:windowFullscreen">true</item>
     </style>
     <!--加载框Dialog的样式-->
     <style name="loadingDialogStyle" parent="android:Theme.Dialog">

@@ -4,8 +4,13 @@ import android.content.Intent;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.thinksnsplus.R;
+
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 public class GuideFragment extends TSFragment<GuideContract.Presenter> implements GuideContract.View {
 
@@ -19,13 +24,33 @@ public class GuideFragment extends TSFragment<GuideContract.Presenter> implement
     }
 
     @Override
+    protected boolean showToolbar() {
+        return false;
+    }
+
+    @Override
     protected void initData() {
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Observable.timer(1000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long aLong) {
+                        mPresenter.checkLogin();
+                    }
+                });
     }
 
     @Override
     public void startActivity(Class aClass) {
         startActivity(new Intent(getActivity(), aClass));
         getActivity().finish();
+        getActivity().overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
     }
+
 }

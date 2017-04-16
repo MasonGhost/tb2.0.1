@@ -453,6 +453,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void onResponseError(Throwable throwable, boolean isLoadMore) {
+        closeLoadingView();
         handleRefreshState(isLoadMore);
         if (!isLoadMore && (mListDatas.size() == 0)) { // 刷新
             mEmptyView.setErrorType(EmptyView.STATE_NETWORK_ERROR);

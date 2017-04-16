@@ -25,7 +25,6 @@ public class DynamicListItemForZeroImage extends DynamicListBaseItem {
 
     @Override
     public boolean isForViewType(DynamicBean item, int position) {
-        LogUtils.i("DynamicListItemForZeroImage-->"+item);
         return item.getFeed_mark() != null && (item.getFeed().getStorages() == null||item.getFeed().getStorages().isEmpty());
     }
 

@@ -178,12 +178,12 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * 关闭加载动画
      */
     protected void closeLoadingView() {
-        if (mCenterLoadingView == null)
-            throw new NullPointerException("loadingView is null,you must use setUseCenterLoading() and return true");
+        if (mCenterLoadingView == null) {
+            return;
+        }
         if (mCenterLoadingView.getVisibility() == View.VISIBLE) {
             ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).stop();
             mCenterLoadingView.setVisibility(View.GONE);
-//            mCenterLoadingView.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
         }
     }
 
@@ -191,13 +191,15 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * 开启加载动画
      */
     protected void showLoadingView() {
-        if (mCenterLoadingView == null)
-            throw new NullPointerException("loadingView is null,you must use setUseCenterLoading() and return true");
+        if (mCenterLoadingView == null) {
+            return;
+        }
         if (mCenterLoadingView.getVisibility() == View.GONE) {
+            mCenterLoadingView.findViewById(R.id
+                    .iv_center_load).setVisibility(View.VISIBLE);
             ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id
                     .iv_center_load)).getDrawable()).start();
             mCenterLoadingView.setVisibility(View.VISIBLE);
-//            mCenterLoadingView.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
         }
     }
 
@@ -205,8 +207,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * 加载失败，占位图点击事件
      */
     protected void setLoadingViewHolderClick() {
-        if (mCenterLoadingView == null)
-            throw new NullPointerException("loadingView is null,you must use setUseCenterLoading() and return true");
+        if (mCenterLoadingView == null) {
+            return;
+        }
         mCenterLoadingView.setVisibility(View.VISIBLE);
         mCenterLoadingView.findViewById(R.id.iv_center_load).setVisibility(View.VISIBLE);
         mCenterLoadingView.findViewById(R.id.iv_center_holder).setVisibility(View.GONE);
@@ -231,10 +234,12 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     private void showErrorImage() {
-        if (mCenterLoadingView == null)
-            throw new NullPointerException("loadingView is null,you must use setUseCenterLoading() and return true");
+        if (mCenterLoadingView == null) {
+            return;
+        }
         mCenterLoadingView.setVisibility(View.VISIBLE);
         ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).stop();
+        mCenterLoadingView.findViewById(R.id.iv_center_load).setVisibility(View.GONE);
         mCenterLoadingView.findViewById(R.id.iv_center_holder).setVisibility(View.VISIBLE);
     }
 
@@ -249,8 +254,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * @param resId
      */
     protected void setLoadViewHolderImag(@DrawableRes int resId) {
-        if (mCenterLoadingView == null)
-            throw new NullPointerException("loadingView is null,you must use setUseCenterLoading() and return true");
+        if (mCenterLoadingView == null) {
+            return;
+        }
         ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_holder)).setImageResource(resId);
     }
 

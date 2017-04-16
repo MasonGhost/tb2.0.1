@@ -134,7 +134,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/v_line"
         android:layout_marginLeft="@dimen/zero_image_left_margin"
-        android:layout_marginRight="@dimen/spacing_normal"
+        android:layout_marginRight="@dimen/spacing_mid"
         android:layout_marginTop="@dimen/divider_line"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingRight="@dimen/spacing_tiny">
