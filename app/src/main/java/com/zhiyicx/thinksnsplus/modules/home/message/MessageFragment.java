@@ -164,7 +164,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                             toCommentList();
                             mPresenter.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_COMMENTS);
                             mPresenter.updateCommnetItemData().setUnReadMessageNums(0);
-                            refreshData();
+                            updateCommnetItemData( mPresenter.updateCommnetItemData());
                         }
                     });
             liked = headerview.findViewById(R.id.rl_liked);
@@ -176,7 +176,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                             toLikeList();
                             mPresenter.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_DIGGS);
                             mPresenter.updateLikeItemData().setUnReadMessageNums(0);
-                            refreshData();
+                            updateCommnetItemData( mPresenter.updateLikeItemData());
                         }
                     });
             tvHeaderCommentContent = (TextView) headerview.findViewById(R.id.tv_header_comment_content);

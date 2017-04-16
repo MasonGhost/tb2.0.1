@@ -28,6 +28,10 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
     @Override
     public void onStart() {
         super.onStart();
+    }
+
+    @Override
+    public void checkLogin() {
         // 系统扩展配置信息处理
         mIAuthRepository.getComponentStatusFromServer();
         mIAuthRepository.getComponentConfigFromServer(ApiConfig.APP_PATH_GET_COMPONENT_CONFIGS_IM);
@@ -41,6 +45,5 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
             mRootView.startActivity(LoginActivity.class);
         }
     }
-
 }
 

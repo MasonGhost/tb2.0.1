@@ -21,6 +21,7 @@ public interface GuideContract {
     interface View extends IBaseView<Presenter> {
         /**
          * 跳转
+         *
          * @param tClass
          */
         void startActivity(Class tClass);
@@ -39,6 +40,7 @@ public interface GuideContract {
 
     interface Presenter extends IBasePresenter {
 
+        void checkLogin();
     }
 
 }

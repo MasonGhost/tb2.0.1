@@ -65,7 +65,6 @@ public class DigRankBeanGreenDaoImpl extends CommonCacheImpl<DigRankBean> {
                 }
             }
         });
-
         return datas;
     }
 
