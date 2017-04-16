@@ -29,7 +29,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.subscriptions.CompositeSubscription;
 
 import static com.umeng.socialize.utils.DeviceConfig.context;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -42,6 +46,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 
 public abstract class TSWebFragment extends TSFragment {
+
+    private static final int DEFALUT_SHOW_PROGRESS = 90;
     // 获取img标签正则
     private static final String IMAGE_URL_TAG = "<img.*src=(.*?)[^>]*?>";
     // 获取src路径的正则
@@ -56,6 +62,9 @@ public abstract class TSWebFragment extends TSFragment {
     private List<String> mImageList = new ArrayList<>();// 网页内图片地址
     private String mLongClickUrl;// 长按图片的地址
     private boolean mIsLoadError;// 加载错误
+
+    private Subscription subscription;
+    private CompositeSubscription mCompositeSubscription;
 
 
     WebViewClient mWebViewClient = new WebViewClient() {
@@ -181,18 +190,18 @@ public abstract class TSWebFragment extends TSFragment {
         }
 
         private void setProgress(int newProgress) {
-            System.out.println("newProgress = " + newProgress);
-
             if (!mIsNeedProgress) {
                 return;
             }
-            if (newProgress == getResources().getInteger(R.integer.progressbar_max)) {
-                mProgressBar.setVisibility(View.GONE);
-            } else {
+            if (newProgress > DEFALUT_SHOW_PROGRESS && newProgress < getResources().getInteger(R.integer.progressbar_max)) {
+                rxUnsub();
                 if (View.GONE == mProgressBar.getVisibility()) {
                     mProgressBar.setVisibility(View.VISIBLE);
                 }
                 mProgressBar.setProgress(newProgress);
+            } else if (newProgress == getResources().getInteger(R.integer.progressbar_max)) {
+                rxUnsub();
+                mProgressBar.setVisibility(View.GONE);
             }
         }
 
@@ -207,7 +216,7 @@ public abstract class TSWebFragment extends TSFragment {
             // 判断标题 title 中是否包含有“error”字段，如果包含“error”字段，则设置加载失败，显示加载失败的视图
             if (!TextUtils.isEmpty(title) && title.toLowerCase().contains("error")) {
                 mIsLoadError = true;
-            }else {
+            } else {
                 mToolbarCenter.setVisibility(View.VISIBLE);
                 mToolbarCenter.setText(title);
             }
@@ -331,6 +340,25 @@ public abstract class TSWebFragment extends TSFragment {
      */
     public void loadUrl(String url) {
         mWebView.loadUrl(url);
+        if (!mIsNeedProgress) {
+            return;
+        }
+        //参数一：延迟时间  参数二：间隔时间  参数三：时间颗粒度  模拟 {@link DEFALUT_SHOW_PROGRESS} 的进度
+        mCompositeSubscription = new CompositeSubscription();
+        subscription = Observable.interval(0, 20, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long newProgress) {
+                        mProgressBar.setProgress(newProgress.intValue());
+                        if (newProgress == DEFALUT_SHOW_PROGRESS) {
+                            rxUnsub();
+                        }
+                    }
+                });
+        mCompositeSubscription.add(subscription);
+
+
     }
 
     /**
@@ -384,6 +412,13 @@ public abstract class TSWebFragment extends TSFragment {
             mWebView.setWebViewClient(null);
             mWebView.destroy();
             mWebView = null;
+        }
+        rxUnsub();
+    }
+
+    private void rxUnsub() {
+        if (mCompositeSubscription != null) {
+            mCompositeSubscription.unsubscribe();
         }
     }
 

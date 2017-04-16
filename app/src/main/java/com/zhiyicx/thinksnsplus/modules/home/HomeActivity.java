@@ -12,7 +12,6 @@ import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.common.utils.ActivityUtils;
-import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 
 import java.io.BufferedReader;
