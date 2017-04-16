@@ -40,7 +40,8 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/iv_back"
-                android:src="@drawable/frame_loading_grey"/>
+                android:src="@drawable/frame_loading_grey"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/tv_channel_name"

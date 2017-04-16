@@ -337,6 +337,7 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
     public void refreshStart(int moveDistance) {
         // 在网络请求结束后，进行调用
         mChannelDetailPresenter.requestNetData(0l, false);
+        refreshImage.setVisibility(View.VISIBLE);
         ((AnimationDrawable) refreshImage.getDrawable()).start();
         isRefreshing = true;
     }
