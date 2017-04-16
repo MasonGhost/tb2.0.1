@@ -96,8 +96,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     LinearLayout mLlCityContainer;
     @BindView(R.id.et_user_introduce)
     UserInfoInroduceInputView mEtUserIntroduce;
-    @BindView(R.id.tv_edit_introduce)
-    TextView mTvEditIntroduce;
     @BindView(R.id.ll_container)
     LinearLayout mLlContainer;
     @BindView(R.id.v_horizontal_line)
@@ -256,21 +254,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                         canChangerUserInfo();
                     }
                 });
-        RxView.focusChanges(mEtUserIntroduce.getEtContent())
-                .compose(this.<Boolean>bindToLifecycle())
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        // 没有焦点，并且简介为空的时候隐藏编辑框，显示编辑简介
-                        if (!aBoolean && TextUtils.isEmpty(mEtUserIntroduce.getInputContent())) {
-                            mTvEditIntroduce.setVisibility(View.VISIBLE);// 显示编辑简介
-                            mEtUserIntroduce.setVisibility(View.GONE);// 隐藏编辑框
-                        } else {
-                            mTvEditIntroduce.setVisibility(View.GONE);// 隐藏编辑简介
-                            mEtUserIntroduce.setVisibility(View.VISIBLE);// 显示编辑框
-                        }
-                    }
-                });
     }
 
     @Override
@@ -308,7 +291,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         return true;
     }
 
-    @OnClick({R.id.rl_change_head_container, R.id.ll_sex_container, R.id.ll_city_container, R.id.tv_edit_introduce})
+    @OnClick({R.id.rl_change_head_container, R.id.ll_sex_container, R.id.ll_city_container})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_change_head_container:
@@ -325,11 +308,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 // 尝试隐藏键盘
                 DeviceUtils.hideSoftKeyboard(getContext(), mLlCityContainer);
                 mAreaPickerView.show();
-                break;
-            case R.id.tv_edit_introduce:
-                mEtUserIntroduce.getEtContent().requestFocus();
-                mEtUserIntroduce.getEtContent().requestFocusFromTouch();
-                DeviceUtils.showSoftKeyboard(getContext(), mEtUserIntroduce.getEtContent());
                 break;
             default:
         }
@@ -426,15 +404,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         mTvCity.setText(mUserInfoBean.getLocation());
         // 设置简介
         String intro = getIntro(mUserInfoBean);
-        // 如果没有简介
-        if (TextUtils.isEmpty(intro)) {
-            mTvEditIntroduce.setVisibility(View.VISIBLE);// 显示编辑简介
-            mEtUserIntroduce.setVisibility(View.GONE);// 隐藏编辑框
-        } else {
-            mTvEditIntroduce.setVisibility(View.GONE);// 隐藏编辑简介
-            mEtUserIntroduce.setVisibility(View.VISIBLE);// 显示编辑框
-            mEtUserIntroduce.setText(intro);// 设置简介
-        }
+        mEtUserIntroduce.setText(intro);// 设置简介
 
         // 设置头像
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();

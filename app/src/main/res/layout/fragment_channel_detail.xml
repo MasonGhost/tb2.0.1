@@ -23,8 +23,7 @@
         <RelativeLayout
             android:id="@+id/rl_toolbar_container"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/toolbar_height"
-            android:background="@color/white">
+            android:layout_height="@dimen/toolbar_height">
 
             <ImageView
                 android:id="@+id/iv_back"
@@ -41,7 +40,8 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/iv_back"
-                android:src="@drawable/frame_loading_grey"/>
+                android:src="@drawable/frame_loading_grey"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/tv_channel_name"

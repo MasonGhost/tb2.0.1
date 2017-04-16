@@ -239,7 +239,8 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         LogUtils.i("imageBean = " + imageBean.toString());
 
         if (imageBean.getImgUrl() != null) {
-
+            int with = 800;// 图片宽度显示的像素：防止图片过大卡顿
+            int height = (int) (with * imageBean.getHeight() / imageBean.getWidth());
             // 加载本地图片
             Glide.with(context)
                     .load(imageBean.getImgUrl())
@@ -247,13 +248,11 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     .error(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .thumbnail(0.1f)
-                    .override(800, 800)
+                    .override(with, height)
                     .centerCrop()
                     .into(new GallarySimpleTarget(rect));
         } else {
             // 加载网络图片
-            int with = (int) (mScreenWith);
-            int height = (int) (with * imageBean.getHeight() / imageBean.getWidth());
             DrawableRequestBuilder thumbnailBuilder = Glide
                     .with(context)
                     .load(new CustomImageSizeModelImp(imageBean)
