@@ -86,6 +86,8 @@
                     android:background="@color/white"
                     android:hint="@string/edit_user_name"
                     android:paddingRight="@dimen/spacing_mid"
+                    android:maxLines="1"
+                    android:inputType="text"
                     android:textColor="@color/important_for_content"
                     android:textColorHint="@color/general_for_hint"
                     android:textSize="@dimen/size_sub_title"/>
