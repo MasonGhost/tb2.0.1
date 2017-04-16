@@ -7,14 +7,18 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
@@ -23,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.iwf.photopicker.adapter.PhotoGridAdapter;
 import me.iwf.photopicker.entity.Photo;
@@ -36,6 +41,7 @@ import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumListFragmen
 import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumListFragment.SELECTED_DIRECTORY_NUMBER;
 import static me.iwf.photopicker.PhotoPicker.DEFAULT_COLUMN_NUMBER;
 import static me.iwf.photopicker.PhotoPicker.DEFAULT_MAX_COUNT;
+import static me.iwf.photopicker.PhotoPicker.EXTRA_PREVIEW_ENABLED;
 import static me.iwf.photopicker.PhotoPicker.EXTRA_SHOW_GIF;
 
 /**
@@ -57,8 +63,9 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
     public static final String EXTRA_VIEW_SELECTED_PHOTOS = "view_selected_photos";
 
     public final static String EXTRA_MAX_COUNT = "MAX_COUNT";
-    private int maxCount = DEFAULT_MAX_COUNT;
 
+    @BindView(R.id.ll_bottom_container)
+    LinearLayout mLlBottomContainer;
     @BindView(R.id.rv_album_details)
     RecyclerView mRvAlbumDetails;
     @BindView(R.id.tv_preview)
@@ -73,7 +80,8 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
     private RequestManager mGlideRequestManager;
     private int column;// 图片列数
     private int selected_directory;// 获取被选中的目录位置
-
+    private boolean canPreview = true;// 是否能够预览
+    private int maxCount = DEFAULT_MAX_COUNT;
 
     @Override
     protected int getBodyLayoutId() {
@@ -110,7 +118,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         intent.setClass(getContext(), PhotoAlbumListActivity.class);
         intent.putExtras(bundle);
         startActivityForResult(intent, TO_ALBUM_LIST_REQUEST_CODE);
-        getActivity().overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+        getActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
     }
 
     @Override
@@ -129,10 +137,13 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         originalPhotos = getArguments().getStringArrayList(EXTRA_ORIGIN);
         selected_directory = getArguments().getInt(SELECTED_DIRECTORY_NUMBER, 0);
         maxCount = getArguments().getInt(EXTRA_MAX_COUNT, DEFAULT_MAX_COUNT);
-
+        canPreview = getArguments().getBoolean(EXTRA_PREVIEW_ENABLED);
+        LogUtils.i(TAG + " ccanPreview " + canPreview);
+        // 如果不能预览图片，就隐藏下方的预览和完成按钮
+        mLlBottomContainer.setVisibility(canPreview ? View.VISIBLE : View.GONE);
         photoGridAdapter = new PhotoGridAdapter(getActivity(), mGlideRequestManager, directories, originalPhotos, column);
         photoGridAdapter.setShowCamera(false);
-        photoGridAdapter.setPreviewEnable(true);
+        photoGridAdapter.setPreviewEnable(canPreview);
 
         final GridLayoutManager layoutManager = new GridLayoutManager(getContext(), column);
         mRvAlbumDetails.setLayoutManager(layoutManager);
@@ -145,9 +156,11 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         photoGridAdapter.setOnItemCheckListener(new OnItemCheckListener() {
             @Override
             public boolean onItemCheck(int position, Photo photo, int selectedItemCount) {
+                boolean isEnable = true;
                 mBtComplete.setEnabled(selectedItemCount > 0);
                 // 设置预览按钮的状态
                 mTvPreview.setEnabled(selectedItemCount > 0);
+                // 单张选择
                 if (maxCount <= 1) {
                     List<String> photos = photoGridAdapter.getSelectedPhotos();
                     // 当前选择的图片，没有被选择过
@@ -161,16 +174,19 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                     }
                     // 设置当前选择的数量
                     mBtComplete.setText(getString(R.string.album_selected_count, selectedItemCount, maxCount));
-                    return true;
+                    isEnable = true;
+                } else {
+                    // 数量超过时，进行提示
+                    if (selectedItemCount > maxCount) {
+                        ToastUtils.showToast(getString(R.string.choose_max_photos, maxCount));
+                        isEnable = false;
+                    } else {
+                        // 设置当前选择的数量
+                        mBtComplete.setText(getString(R.string.album_selected_count, selectedItemCount, maxCount));
+                        isEnable = true;
+                    }
                 }
-                // 数量超过时，进行提示
-                if (selectedItemCount > maxCount) {
-                    ToastUtils.showToast(getString(R.string.choose_max_photos, maxCount));
-                    return false;
-                }
-                // 设置当前选择的数量
-                mBtComplete.setText(getString(R.string.album_selected_count, selectedItemCount, maxCount));
-                return true;
+                return isEnable;
             }
         });
         // 设置图片item的点击事件
@@ -301,5 +317,13 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
             photoGridAdapter.setCurrentDirectoryIndex(selected_directory);
             photoGridAdapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: inflate a fragment view
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        ButterKnife.bind(this, rootView);
+        return rootView;
     }
 }

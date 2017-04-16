@@ -1,6 +1,8 @@
 package me.iwf.photopicker.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -47,19 +49,21 @@ public class PhotoGridAdapter extends SelectableAdapter<PhotoGridAdapter.PhotoVi
 
     private int imageSize;
     private int columnNumber = COL_NUMBER_DEFAULT;
-
+    private Context mContext;
 
     public PhotoGridAdapter(Context context, RequestManager requestManager, List<PhotoDirectory> photoDirectories) {
         this.photoDirectories = photoDirectories;
         this.glide = requestManager;
         inflater = LayoutInflater.from(context);
         setColumnNumber(context, columnNumber);
+        this.mContext = context;
     }
 
     public PhotoGridAdapter(Context context, RequestManager requestManager, List<PhotoDirectory> photoDirectories, ArrayList<String> orginalPhotos, int colNum) {
         this(context, requestManager, photoDirectories);
         setColumnNumber(context, colNum);
         selectedPhotos = new ArrayList<>();
+        this.mContext = context;
         if (orginalPhotos != null) selectedPhotos.addAll(orginalPhotos);
     }
 
@@ -132,7 +136,7 @@ public class PhotoGridAdapter extends SelectableAdapter<PhotoGridAdapter.PhotoVi
 
             holder.vSelected.setSelected(isChecked);
             holder.ivPhoto.setSelected(isChecked);
-
+            holder.vSelected.setVisibility(previewEnable ? View.VISIBLE : View.GONE);
             holder.ivPhoto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -159,6 +163,13 @@ public class PhotoGridAdapter extends SelectableAdapter<PhotoGridAdapter.PhotoVi
                     if (isEnable) {
                         toggleSelection(photo);
                         notifyItemChanged(pos);
+                    }
+                    // 如果不能预览，点击item，就直接跳转到截图页面
+                    if (!previewEnable) {
+                        Intent it = new Intent();
+                        it.putStringArrayListExtra("photos", getSelectedPhotoPaths());
+                        ((Activity) mContext).setResult(Activity.RESULT_OK, it);
+                        ((Activity) mContext).finish();
                     }
                 }
             });

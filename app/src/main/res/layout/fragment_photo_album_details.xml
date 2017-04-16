@@ -13,36 +13,43 @@
         android:layout_height="0dp"
         android:layout_weight="1"></android.support.v7.widget.RecyclerView>
 
-    <include layout="@layout/include_horizontal_divider"></include>
-
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/ll_bottom_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/photo_selector_bottom_view"
-        android:background="@color/white">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_preview"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:enabled="false"
-            android:gravity="center"
-            android:paddingLeft="@dimen/spacing_normal"
-            android:paddingRight="@dimen/spacing_normal"
-            android:text="@string/preview"
-            android:textColor="@color/selector_text_color"/>
+        <include layout="@layout/include_horizontal_divider"></include>
 
-        <TextView
-            android:id="@+id/bt_complete"
-            android:layout_width="@dimen/photo_selector_bottom_complete_width_view"
-            android:layout_height="@dimen/photo_selector_bottom_complete_height_view"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/spacing_normal"
-            android:background="@drawable/selector_button_corner_solid_small"
-            android:enabled="false"
-            android:gravity="center"
-            android:text="@string/complete"
-            android:textColor="@color/white"
-            android:textSize="@dimen/button_text_size_small"/>
-    </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/photo_selector_bottom_view"
+            android:background="@color/white">
+
+            <TextView
+                android:id="@+id/tv_preview"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:enabled="false"
+                android:gravity="center"
+                android:paddingLeft="@dimen/spacing_normal"
+                android:paddingRight="@dimen/spacing_normal"
+                android:text="@string/preview"
+                android:textColor="@color/selector_text_color"/>
+
+            <TextView
+                android:id="@+id/bt_complete"
+                android:layout_width="@dimen/photo_selector_bottom_complete_width_view"
+                android:layout_height="@dimen/photo_selector_bottom_complete_height_view"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/spacing_normal"
+                android:background="@drawable/selector_button_corner_solid_small"
+                android:enabled="false"
+                android:gravity="center"
+                android:text="@string/complete"
+                android:textColor="@color/white"
+                android:textSize="@dimen/button_text_size_small"/>
+        </RelativeLayout>
+    </LinearLayout>
 </LinearLayout>
