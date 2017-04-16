@@ -225,7 +225,6 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
         if (mRootView.getListDatas() == null || mRootView.getListDatas().size() == 0) {// 第一次加载的时候将自己没有发送成功的动态状态修改为失败
             mDynamicBeanGreenDao.insertOrReplace(datas);
         }
-        System.out.println("datas -----------------------------= " + datas.toString());
 
         return datas;
     }
