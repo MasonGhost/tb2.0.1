@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:gravity="center_horizontal"
               android:orientation="vertical"
               android:paddingLeft="@dimen/spacing_normal"
@@ -19,9 +19,9 @@
         <com.zhiyicx.baseproject.widget.imageview.FilterImageView
             android:id="@+id/iv_chat_headpic"
             style="@style/style_chat_headpic"
-            app:pressShape="circle"
             android:layout_alignParentRight="true"
-            android:layout_marginLeft="@dimen/spacing_normal"/>
+            android:layout_marginLeft="@dimen/spacing_normal"
+            app:pressShape="circle"/>
 
         <TextView
             android:id="@+id/tv_chat_name"
@@ -31,26 +31,32 @@
             tools:text="李四"/>
 
         <RelativeLayout
-            android:id="@+id/rl_chat_bubble"
-            style="@style/style_chat_bubble"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@id/tv_chat_name"
+            android:layout_marginTop="@dimen/chat_list_content_margintop"
             android:layout_toLeftOf="@id/iv_chat_headpic"
-            android:background="@drawable/shape_message_bubble_my">
+            android:gravity="right">
 
-            <TextView
-                android:id="@+id/tv_chat_content"
-                style="@style/style_chat_content"
-                android:gravity="center|left"
-                android:textIsSelectable="true"
-                tools:text="今天天气弱爆了"/>
+            <RelativeLayout
+                android:id="@+id/rl_chat_bubble"
+                style="@style/style_chat_bubble"
+                android:background="@drawable/shape_message_bubble_my">
+
+                <TextView
+                    android:id="@+id/tv_chat_content"
+                    style="@style/style_chat_content"
+                    android:gravity="center|left"
+                    android:textIsSelectable="true"
+                    tools:text="今天天气弱爆了"/>
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/msg_status"
+                style="@style/style_chat_status"
+                android:layout_marginRight="@dimen/spacing_normal"
+                android:layout_toLeftOf="@id/rl_chat_bubble"/>
         </RelativeLayout>
-
-        <ImageView
-            android:id="@+id/msg_status"
-            style="@style/style_chat_status"
-            android:layout_marginRight="@dimen/spacing_normal"
-            android:layout_toLeftOf="@id/rl_chat_bubble"/>
-
     </RelativeLayout>
 
 </LinearLayout>
