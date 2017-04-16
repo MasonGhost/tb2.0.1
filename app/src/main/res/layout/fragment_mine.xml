@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity"
     android:layout_height="match_parent"
-    android:background="@color/bgColor">
+    android:background="@color/bgColor"
+    tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -87,8 +87,8 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:orientation="horizontal"
-            android:paddingBottom="@dimen/spacing_mid"
-            android:paddingTop="@dimen/spacing_mid">
+            android:paddingBottom="@dimen/spacing_normal"
+            android:paddingTop="@dimen/spacing_normal">
             <!--粉丝-->
             <RelativeLayout
                 android:id="@+id/ll_fans_container"
@@ -105,22 +105,23 @@
                     android:textColor="@color/themeColor"
                     android:textSize="@dimen/size_content_assist"
                     tools:text="23456"/>
+
                 <com.zhiyicx.baseproject.widget.BadgeView
                     android:id="@+id/bv_fans_new_count"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/spacing_mid_small_8dp"
                     android:layout_toRightOf="@id/tv_fans_count"
-                    android:textStyle="normal"
                     android:textSize="@dimen/size_icon_assist"
-                    android:layout_height="wrap_content"/>
+                    android:textStyle="normal"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_fans_count"
+                    android:layout_centerHorizontal="true"
                     android:layout_marginTop="@dimen/spacing_small_4dp"
                     android:text="@string/fans"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@+id/tv_fans_count"
                     android:textColor="@color/important_for_content"
                     android:textSize="@dimen/size_content_assist"/>
             </RelativeLayout>
@@ -165,7 +166,7 @@
             android:id="@+id/bt_personal_page"
             android:layout_width="match_parent"
             android:layout_height="@dimen/full_button_height"
-            android:layout_marginTop="@dimen/spacing_mid"
+            android:layout_marginTop="@dimen/spacing_normal"
             app:dividerLeftMargin="@dimen/spacing_normal"
             app:dividerRightMargin="@dimen/spacing_normal"
             app:leftImage="@mipmap/ico_me_homepage"
@@ -224,7 +225,7 @@
             android:id="@+id/bt_setting"
             android:layout_width="match_parent"
             android:layout_height="@dimen/full_button_height"
-            android:layout_marginTop="@dimen/spacing_mid"
+            android:layout_marginTop="@dimen/spacing_normal"
             app:leftImage="@mipmap/ico_me_setting"
             app:leftText="@string/setting"
             app:rightImage="@mipmap/ic_arrow_smallgrey"
