@@ -1,8 +1,8 @@
 <com.zhiyicx.baseproject.widget.dragview.DragViewGroup xmlns:android="http://schemas.android.com/apk/res/android"
                                                        xmlns:app="http://schemas.android.com/apk/res-auto"
                                                        xmlns:tools="http://schemas.android.com/tools"
-                                                       android:layout_width="match_parent"
                                                        android:id="@+id/dv_view_group"
+                                                       android:layout_width="match_parent"
                                                        android:layout_height="match_parent"
                                                        android:background="@color/bgColor">
 
@@ -174,52 +174,33 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:gravity="center_vertical"
-                android:orientation="vertical">
+                android:minHeight="@dimen/userinfo_btn_height"
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/userinfo_btn_height"
-                    android:background="@color/white"
+                <TextView
+                    android:layout_width="@dimen/uerinfo_sub_title_hint_with"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_mid"
+                    android:layout_marginRight="@dimen/spacing_mid"
+                    android:layout_marginTop="@dimen/introduce_padding_top"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="@dimen/uerinfo_sub_title_hint_with"
-                        android:layout_height="@dimen/userinfo_btn_height"
-                        android:layout_marginLeft="@dimen/spacing_mid"
-                        android:layout_marginRight="@dimen/spacing_mid"
-                        android:gravity="center_vertical"
-                        android:text="@string/introduce"
-                        android:textColor="@color/normal_for_assist_text"
-                        android:textSize="@dimen/size_sub_title"/>
-
-                    <TextView
-                        android:id="@+id/tv_edit_introduce"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:text="@string/edit_introduce"
-                        android:textColor="@color/general_for_hint"
-                        android:textSize="@dimen/size_sub_title"
-                        android:visibility="gone"/>
-
-                </LinearLayout>
-
+                    android:text="@string/introduce"
+                    android:textColor="@color/normal_for_assist_text"
+                    android:textSize="@dimen/size_sub_title"/>
                 <!--简介编辑框-->
                 <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
                     android:id="@+id/et_user_introduce"
                     style="@style/style_edit_cursor"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/spacing_mid"
                     android:layout_marginRight="@dimen/spacing_mid"
+                    android:layout_weight="1"
                     android:paddingBottom="@dimen/spacing_mid"
-                    android:visibility="gone"
+                    android:paddingTop="@dimen/introduce_padding_top"
+                    android:visibility="visible"
+                    app:hintContent="@string/edit_introduce"
                     app:limitSize="@integer/introduce_input_max_size"
                     app:showLimitSize="@integer/show_introduce_input_size"></com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView>
-
             </LinearLayout>
         </LinearLayout>
     </com.zhiyicx.baseproject.widget.dragview.DragScrollView>
