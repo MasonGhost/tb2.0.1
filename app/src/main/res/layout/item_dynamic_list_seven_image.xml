@@ -205,7 +205,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/nrv_image"
-        android:layout_marginRight="@dimen/spacing_normal"
+        android:layout_marginRight="@dimen/spacing_mid"
         android:layout_marginTop="@dimen/divider_line"
         android:layout_toRightOf="@+id/iv_headpic"
         android:paddingLeft="@dimen/spacing_normal"
