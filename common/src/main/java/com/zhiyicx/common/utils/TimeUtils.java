@@ -383,7 +383,7 @@ public class TimeUtils {
      * 通过时间戳获取 dd,MM月
      */
     public static String getStandardTimeWithMothAndDayOne(long timestamp) {
-        return getTime(timestamp, "dd,M月");
+        return getTime(timestamp, "dd,M 月");
     }
 
     /**
