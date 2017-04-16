@@ -14,6 +14,7 @@
     <dimen name="spacing_small">5dp</dimen>
     <dimen name="spacing_small_4dp">4dp</dimen>
     <dimen name="spacing_small_3dp">3dp</dimen>
+    <!--dynamice_spacing_small  应该是 3 的倍数，便于计算动态中 6 张图片时的间距-->
     <dimen name="dynamice_spacing_small">3dp</dimen>
     <dimen name="spacing_tiny">2dp</dimen>
     <dimen name="spacing_big_line">1dp</dimen>
