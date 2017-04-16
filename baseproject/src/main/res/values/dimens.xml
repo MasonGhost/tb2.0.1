@@ -58,7 +58,7 @@
     <!--#########################################      聊天       ################################-->
     <dimen name="chat_list_new_msg_tip_with">50dp</dimen>
     <dimen name="chat_list_msg_text_maxwith">225dp</dimen>
-    <dimen name="chat_list_content_margintop">7.5dp</dimen>
+    <dimen name="chat_list_content_margintop">7dp</dimen>
     <dimen name="chat_message_bubble_padding">10dp</dimen>
     <dimen name="chat_message_bubble_paddingBottom">7.5dp</dimen>// 去掉行高所占的位置
     <dimen name="chat_message_bubble_radus">10dp</dimen>

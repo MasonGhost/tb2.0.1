@@ -25,7 +25,7 @@
             android:id="@+id/tv_chat_name"
             style="@style/style_chat_name"
             android:layout_toRightOf="@id/iv_chat_headpic"
-            android:gravity="center|left"
+            android:gravity="top|left"
             tools:text="李四"/>
 
         <RelativeLayout
