@@ -13,6 +13,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 public class GuideFragment extends TSFragment<GuideContract.Presenter> implements GuideContract.View {
+    public static final int DEFAULT_DELAY_TIME = 1000;
 
     @Override
     protected int getBodyLayoutId() {
@@ -29,6 +30,11 @@ public class GuideFragment extends TSFragment<GuideContract.Presenter> implement
     }
 
     @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
     protected void initData() {
 
     }
@@ -36,7 +42,7 @@ public class GuideFragment extends TSFragment<GuideContract.Presenter> implement
     @Override
     public void onResume() {
         super.onResume();
-        Observable.timer(1000, TimeUnit.MILLISECONDS)
+        Observable.timer(DEFAULT_DELAY_TIME, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Long>() {
                     @Override
