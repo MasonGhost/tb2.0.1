@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus;
 
+import com.zhiyicx.common.utils.ConvertUtils;
+
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -60,6 +62,23 @@ public class JavaTest {
         String[] testarry = test.split(",");
         userids.addAll(Arrays.asList(testarry));
         System.out.println("testarry = " + userids.toString());
+    }
+
+    /**
+     * 去除头部符号
+     */
+    @Test
+    public void removeSymbolStartWith() {
+        String test = ",,2,3";
+        System.out.println("ConvertUtils.removeSymbolStartWith(test,\",\") = " + ConvertUtils.removeSymbolStartWith(test, ","));
+    }
+    /**
+     * 去除wei部符号
+     */
+    @Test
+    public void removeSymbolEndWith() {
+        String test = ",,2,3,,";
+        System.out.println("ConvertUtils.removeSymbolStartWith(test,\",\") = " + ConvertUtils.removeSymbolEndWith(test, ","));
     }
 
 }
