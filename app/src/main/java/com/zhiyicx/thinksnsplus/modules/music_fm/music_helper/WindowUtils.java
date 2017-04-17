@@ -1,9 +1,13 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_helper;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -16,7 +20,14 @@ import android.widget.ImageView;
 
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
+
+import java.math.BigDecimal;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailFragment.MUSIC_INFO;
 
 
 /**
@@ -33,6 +44,7 @@ public class WindowUtils {
     private static View mView = null;
     private static WindowManager mWindowManager = null;
     private static Context mContext = null;
+    private static MusicAlbumDetailsBean sMusicAlbumDetailsBean;
 
     private static Boolean isShown = false;
     private static WindowManager.LayoutParams mLayoutParams;
@@ -41,6 +53,20 @@ public class WindowUtils {
 
     private static ImageView mImageView;
     private static RotateAnimation mRotateAnimation;
+
+    private static AnimationTimerTask mAnimationTask;
+    private static Timer mAnimationTimer;
+    private static GetTokenRunnable mGetTokenRunnable;
+    private static Handler mHander = new Handler();
+
+    private static int mWidth;
+    private static int mHeight;
+    private static float mPrevX;
+    private static float mPrevY;
+    private static int mGetTokenPeriodTime = 500;
+    private static int mAnimatonPeriodTime = 16;
+    private static boolean isMove = false;
+    private static BigDecimal mStartClickTime;
 
     public interface OnWindowDismisslistener {
         void onDismiss();
@@ -58,11 +84,12 @@ public class WindowUtils {
 
         isShown = true;
         // 获取应用的Context
-        mContext = context.getApplicationContext();
+        mContext = context;
         // 获取WindowManager
         mWindowManager = (WindowManager) mContext
                 .getSystemService(Context.WINDOW_SERVICE);
         mView = setUpView(context, "");
+
         mImageView = (ImageView) mView.findViewById(R.id.musci);
         mLayoutParams = new LayoutParams();
         String packname = context.getPackageName();
@@ -88,7 +115,7 @@ public class WindowUtils {
         mImageView.setAnimation(mRotateAnimation);
         mRotateAnimation.start();
         mWindowManager.addView(mView, mLayoutParams);
-
+        initDrag();
     }
 
     /**
@@ -108,19 +135,6 @@ public class WindowUtils {
     private static View setUpView(final Context context, String str) {
         View defaultView = LayoutInflater.from(context).inflate(R.layout.windows_music,
                 null);
-
-        defaultView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    Intent intent = new Intent(context, MusicPlayActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent
-                            .FLAG_ACTIVITY_NEW_TASK);
-//                    context.startActivity(intent);
-                }
-                return true;
-            }
-        });
         return defaultView;
     }
 
@@ -134,5 +148,157 @@ public class WindowUtils {
         mLayoutParams.x = 20;
         mLayoutParams.y = 5;
         mWindowManager.updateViewLayout(mView, mLayoutParams);
+    }
+
+    public static Boolean getIsShown() {
+        return isShown;
+    }
+
+    public static MusicAlbumDetailsBean getMusicAlbumDetailsBean() {
+        return sMusicAlbumDetailsBean;
+    }
+
+    public static void setMusicAlbumDetailsBean(MusicAlbumDetailsBean musicAlbumDetailsBean) {
+        sMusicAlbumDetailsBean = musicAlbumDetailsBean;
+    }
+
+    private static void initDrag() {
+        mView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getActionMasked()) {
+                    case MotionEvent.ACTION_DOWN:
+                        mPrevX = motionEvent.getRawX();
+                        mPrevY = motionEvent.getRawY();
+                        mStartClickTime = BigDecimal.valueOf(System.currentTimeMillis());
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        float deltaX = motionEvent.getRawX() - mPrevX;
+                        float deltaY = motionEvent.getRawY() - mPrevY;
+                        mLayoutParams.x -= deltaX;
+                        mLayoutParams.y += deltaY;
+                        mPrevX = motionEvent.getRawX();
+                        mPrevY = motionEvent.getRawY();
+
+//                        if (mLayoutParams.x < 0) mLayoutParams.x = 0;
+//                        if (mLayoutParams.x > mWidth - mView.getWidth()) mLayoutParams.x = mWidth - mView.getWidth();
+//                        if (mLayoutParams.y < 0) mLayoutParams.y = 0;
+//                        if (mLayoutParams.y > mHeight - mView.getHeight() * 2) mLayoutParams.y = mHeight - mView.getHeight() * 2;
+
+                        try {
+                            mWindowManager.updateViewLayout(mView, mLayoutParams);
+                        } catch (Exception e) {
+                            LogUtils.d(e.toString());
+                        }
+
+                        if (deltaX > 10 | deltaY > 10) isMove = true;
+                        break;
+                    case MotionEvent.ACTION_CANCEL:
+                    case MotionEvent.ACTION_UP:
+
+                        BigDecimal now = BigDecimal.valueOf(System.currentTimeMillis());
+                        if (!isMove && (Math.abs(now.subtract(mStartClickTime).floatValue()) < 500)) {
+                            // TODO.. click
+                            if (getMusicAlbumDetailsBean()==null){
+                                return true;
+                            }
+                            Intent intent = new Intent(mContext, MusicPlayActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable(MUSIC_INFO, getMusicAlbumDetailsBean());
+                            intent.putExtra(MUSIC_INFO, bundle);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            mContext.startActivity(intent);
+                            return false;
+                        }
+
+//                        mAnimationTimer = new Timer();
+//                        mAnimationTask = new AnimationTimerTask();
+//                        mAnimationTimer.schedule(mAnimationTask, 0, mAnimatonPeriodTime);
+
+                        break;
+                }
+
+                return false;
+            }
+        });
+    }
+
+    static class AnimationTimerTask extends TimerTask {
+        int mStepX;
+        int mDestX;
+
+        public AnimationTimerTask() {
+            if (mLayoutParams.x > mWidth / 2) {
+                mDestX = mWidth - mView.getWidth();
+                mStepX = (mWidth - mLayoutParams.x) / 10;
+            } else {
+                mDestX = 0;
+                mStepX = -((mLayoutParams.x) / 10);
+            }
+
+        }
+
+        @Override
+        public void run() {
+            if (Math.abs(mDestX - mLayoutParams.x) <= Math.abs(mStepX)) {
+                mLayoutParams.x = mDestX;
+            } else {
+                mLayoutParams.x += mStepX;
+            }
+
+            try {
+                mHander.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mWindowManager.updateViewLayout(mView, mLayoutParams);
+                    }
+                });
+            } catch (Exception e) {
+
+            }
+
+            if (mLayoutParams.x == mDestX) {
+                mAnimationTask.cancel();
+                mAnimationTimer.cancel();
+            }
+        }
+    }
+
+    class GetTokenRunnable implements Runnable {
+        int count = 0;
+        private Activity mActivity;
+
+        public GetTokenRunnable(Activity activity) {
+            this.mActivity = activity;
+        }
+
+        @Override
+        public void run() {
+
+            if (null == mActivity)
+                return;
+            IBinder token = null;
+            try {
+                token = mActivity.getWindow().getDecorView().getWindowToken();
+            } catch (Exception e) {
+
+            }
+
+            if (null != token) {
+                try {
+                    mLayoutParams.token = token;
+                    mWindowManager.addView(mView, mLayoutParams);
+                    mActivity = null;
+                    return;
+                } catch (Exception e) {
+                }
+            }
+            count++;
+            mLayoutParams.token = null;
+            if (count < 10 && null != mLayoutParams) {
+                mHander.postDelayed(mGetTokenRunnable, 500);
+            }
+
+        }
     }
 }

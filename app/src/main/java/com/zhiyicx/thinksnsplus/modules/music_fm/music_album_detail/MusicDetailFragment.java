@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
@@ -366,6 +367,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 bundle.putSerializable(MUSIC_INFO, mAlbumDetailsBean);
                 intent.putExtra(MUSIC_INFO, bundle);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                WindowUtils.setMusicAlbumDetailsBean(mAlbumDetailsBean);
                 MediaControllerCompat controller = getActivity().getSupportMediaController();
                 MediaMetadataCompat metadata = controller.getMetadata();
                 if (metadata != null) {
@@ -483,11 +485,10 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 .transform(new GlideStokeTransform(getActivity(), 20))
                 .placeholder(R.drawable.shape_default_image)
                 .error(R.drawable.shape_default_image)
-                .into(new SimpleTarget<Bitmap>() {
+                .into(new ImageViewTarget<Bitmap>(mFragmentMusicDetailHeadIamge) {
                     @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap>
-                            glideAnimation) {
-                        mBgBitmap = resource.copy(Bitmap.Config.RGB_565, false);
+                    protected void setResource(Bitmap resource) {
+                        mBgBitmap = resource.copy(Bitmap.Config.ARGB_8888, false);
                         mFragmentMusicDetailHeadIamge.setImageBitmap(resource);
                         mPalette = Palette.from(mBgBitmap).generate();
                         BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap

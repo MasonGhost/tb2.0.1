@@ -10,6 +10,8 @@ import com.zhiyicx.common.utils.log.LogUtils;
 
 import org.simple.eventbus.EventBus;
 
+import java.util.Random;
+
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_COMPLETE;
 
 /**
@@ -137,6 +139,13 @@ public class PlaybackManager implements Playback.Callback {
                 EVENT_SEND_MUSIC_COMPLETE);
         switch (orderType) {
             case ORDERRANDOM:
+                Random random=new Random();
+                if (mQueueManager.skipQueuePosition(random.nextInt(mQueueManager.getCurrentQueueSize()))) {
+                    handlePlayRequest();
+                    mQueueManager.updateMetadata();
+                } else {
+                    handleStopRequest(null);
+                }
             case ORDERLOOP:
                 if (mQueueManager.skipQueuePosition(1)) {
                     handlePlayRequest();
@@ -316,10 +325,10 @@ public class PlaybackManager implements Playback.Callback {
         }
         switch (orderType) {
             case ORDERLOOP:
-                mQueueManager.setNormalQueue(currentMusicMediaId);
+//                mQueueManager.setNormalQueue(currentMusicMediaId);
                 break;
             case ORDERRANDOM:
-                mQueueManager.setRandomQueue(currentMusicMediaId);
+//                mQueueManager.setRandomQueue(currentMusicMediaId);
                 break;
             default:
                 break;

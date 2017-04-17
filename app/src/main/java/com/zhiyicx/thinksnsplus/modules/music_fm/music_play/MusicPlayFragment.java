@@ -638,6 +638,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     }
 
     private void updateProgress() {
+
         if (mLastPlaybackState == null || mFragmentMusicPalyProgress == null) {
             return;
         }

@@ -56,6 +56,8 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
         mScroller = new OverScroller(context);
     }
 
+
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
