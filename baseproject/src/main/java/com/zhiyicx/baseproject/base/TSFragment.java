@@ -54,6 +54,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     private boolean mIscUseSatusbar = false;// 内容是否需要占用状态栏
     protected ViewGroup mSnackRootView;
     private boolean mIsNeedClick = true;// 缺省图是否需要点击
+    private boolean isFirstIn = true;// 是否是第一次进入页面
 
 
     @Override
@@ -345,8 +346,19 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * 音乐悬浮窗是否正在显示
      */
     protected void musicWindowsStatus(boolean isShow) {
-        LogUtils.d("musicWindowsStatus:::"+isShow);
+        LogUtils.d("musicWindowsStatus:::" + isShow);
+        View view = getLeftViewOfMusicWindow();
+        if (view != null && view.getVisibility() == View.VISIBLE && isShow && isFirstIn) {
+            // 向左移动一定距离
+            view.setTranslationX(-100f);
+            isFirstIn = false;
+        }
     }
+
+    protected View getLeftViewOfMusicWindow() {
+        return mToolbarRight;
+    }
+
 
     /**
      * 是否显示分割线,默认显示

@@ -160,6 +160,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         return true;
     }
 
+    @Override
+    protected View getLeftViewOfMusicWindow() {
+        return mIvMore;
+    }
+
     private void initListener() {
         // 添加关注点击事件
         RxView.clicks(mLlFollowContainer)
@@ -379,7 +384,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     public void allDataReady() {
         closeLoadingView();
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent, STATUS_RGB, 0);
-       // mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.rl_toolbar_container), TOOLBAR_RGB, 0);
+        // mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.rl_toolbar_container), TOOLBAR_RGB, 0);
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.v_horizontal_line), TOOLBAR_DIVIDER_RGB, 0);
         mPersonalCenterHeaderViewItem.setToolbarIconColor(Color.argb(255, TOOLBAR_WHITE_ICON[0]
                 , TOOLBAR_WHITE_ICON[1], TOOLBAR_WHITE_ICON[2]));
