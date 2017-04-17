@@ -17,6 +17,7 @@ import android.webkit.WebViewClient;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
@@ -248,10 +249,13 @@ public abstract class InfoDetailWebItem implements ItemViewDelegate<InfoCommentL
                         InfoCommentListBean lastT, int position) {
         WebView web = holder.getView(R.id.info_detail_content);
         initWebViewData(web);
-        web.loadUrl(String.format(APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
-                infoCommentListBean.getId()));
+        String url = String.format(APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
+                infoCommentListBean.getId());
+        web.loadUrl(url);
+        LogUtils.d("convertUrl:::" + url);
         dealCommentCount(holder);
     }
+
     public abstract void dealCommentCount(ViewHolder holder);
 
     private void initWebViewData(WebView mWebView) {
