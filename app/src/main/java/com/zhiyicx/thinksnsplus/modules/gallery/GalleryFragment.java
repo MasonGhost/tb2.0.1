@@ -178,7 +178,8 @@ public class GalleryFragment extends TSFragment {
     }
 
     public void backPress() {
-
+        // 退出隐藏圆点指示器，防止显示在透明背景上
+        mMiIndicator.setVisibility(View.GONE);
         GalleryPictureContainerFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
         if (fragment != null && fragment.canAnimateCloseActivity()) {
             backgroundColor = new ColorDrawable(Color.BLACK);

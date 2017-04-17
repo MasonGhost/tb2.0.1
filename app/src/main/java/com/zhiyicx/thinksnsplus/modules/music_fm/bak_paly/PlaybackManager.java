@@ -10,6 +10,8 @@ import com.zhiyicx.common.utils.log.LogUtils;
 
 import org.simple.eventbus.EventBus;
 
+import java.util.Random;
+
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_COMPLETE;
 
 /**
@@ -137,6 +139,13 @@ public class PlaybackManager implements Playback.Callback {
                 EVENT_SEND_MUSIC_COMPLETE);
         switch (orderType) {
             case ORDERRANDOM:
+                Random random=new Random();
+                if (mQueueManager.skipQueuePosition(random.nextInt(mQueueManager.getCurrentQueueSize()))) {
+                    handlePlayRequest();
+                    mQueueManager.updateMetadata();
+                } else {
+                    handleStopRequest(null);
+                }
             case ORDERLOOP:
                 if (mQueueManager.skipQueuePosition(1)) {
                     handlePlayRequest();
@@ -179,12 +188,16 @@ public class PlaybackManager implements Playback.Callback {
         mServiceCallback.onBufferingUpdate(percent);
     }
 
+    public int getState(){
+        return mPlayback.getState();
+    }
+
     public void switchToPlayback(Playback playback, boolean resumePlaying) {
         if (playback == null) {
             throw new IllegalArgumentException("Playback cannot be null");
         }
         // suspend the current one.
-        int oldState = mPlayback.getState();
+        int oldState = getState();
         int pos = mPlayback.getCurrentStreamPosition();
         String currentMediaId = mPlayback.getCurrentMediaId();
         mPlayback.stop(false);
@@ -316,10 +329,10 @@ public class PlaybackManager implements Playback.Callback {
         }
         switch (orderType) {
             case ORDERLOOP:
-                mQueueManager.setNormalQueue(currentMusicMediaId);
+//                mQueueManager.setNormalQueue(currentMusicMediaId);
                 break;
             case ORDERRANDOM:
-                mQueueManager.setRandomQueue(currentMusicMediaId);
+//                mQueueManager.setRandomQueue(currentMusicMediaId);
                 break;
             default:
                 break;

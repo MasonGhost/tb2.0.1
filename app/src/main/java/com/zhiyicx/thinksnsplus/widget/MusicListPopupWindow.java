@@ -71,7 +71,7 @@ public class MusicListPopupWindow extends PopupWindow {
     private void initView() {
         initLayout();
         setWidth(LinearLayout.LayoutParams.MATCH_PARENT);
-        setHeight((int)(DeviceUtils.getScreenHeight(mActivity)*0.6));
+        setHeight((int) (DeviceUtils.getScreenHeight(mActivity) * 0.6));
         setFocusable(mIsFocus);
         setOutsideTouchable(mIsOutsideTouch);
         setAnimationStyle(R.style.style_actionPopupAnimation);
@@ -93,7 +93,7 @@ public class MusicListPopupWindow extends PopupWindow {
         });
         mTileTextView = (TextView) mContentView.findViewById(R.id.tv_pop_list_title);
         mSizeTextView = (TextView) mContentView.findViewById(R.id.tv_pop_list_size);
-        mSizeTextView.setText(String.format(" (%d)",mDatas.size()));
+        mSizeTextView.setText(String.format(" (%d)", mDatas.size()));
         mContentView.findViewById(R.id.tv_pop_list_cancle).setOnClickListener(new View
                 .OnClickListener() {
             @Override

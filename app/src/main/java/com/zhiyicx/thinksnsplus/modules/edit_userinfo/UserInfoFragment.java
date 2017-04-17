@@ -52,6 +52,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -385,7 +386,15 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                         getString(R.string.edit_userinfo_success), TSnackbar.LENGTH_SHORT)
                         .setPromptThemBackground(Prompt.SUCCESS)
                         .show();
-                getActivity().finish();
+                // 为了让用户看到提示成功的消息，添加定时器：1.5s后关闭页面
+                Observable.timer(1500, TimeUnit.MILLISECONDS)
+                        .compose(this.<Long>bindToLifecycle())
+                        .subscribe(new Action1<Long>() {
+                            @Override
+                            public void call(Long aLong) {
+                                getActivity().finish();
+                            }
+                        });
                 break;
             default:
         }

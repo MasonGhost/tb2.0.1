@@ -18,11 +18,13 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.trycatch.mysnackbar.Prompt;
 import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.R;
+import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.UIUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -56,6 +58,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     @Override
     protected View getContentView() {
+
         LinearLayout linearLayout = new LinearLayout(getActivity());
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -122,6 +125,12 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         linearLayout.addView(frameLayout);
         mSnackRootView = (ViewGroup) getActivity().findViewById(android.R.id.content).getRootView();
         return linearLayout;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        musicWindowsStatus(WindowUtils.getIsShown());
     }
 
     @Override
@@ -330,6 +339,13 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      */
     protected boolean showToolBarDivider() {
         return false;
+    }
+
+    /**
+     * 音乐悬浮窗是否正在显示
+     */
+    protected void musicWindowsStatus(boolean isShow) {
+        LogUtils.d("musicWindowsStatus:::"+isShow);
     }
 
     /**

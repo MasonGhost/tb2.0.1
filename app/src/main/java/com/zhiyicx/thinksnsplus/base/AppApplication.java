@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 
@@ -21,19 +22,18 @@ import com.zhiyicx.common.net.intercept.CommonRequestIntercept;
 import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.FileUtils;
-import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.manage.ZBIMSDK;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
-import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.QueueManager;
-import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.WindowUtils;
+import com.zhiyicx.baseproject.utils.WindowUtils;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.io.File;
@@ -72,6 +72,7 @@ public class AppApplication extends TSApplication {
     private static PlaybackManager sPlaybackManager;
     public static List<String> sOverRead = new ArrayList<>();
     public int mActivityCount = 0;
+    private int mPlayActivity = 0;
 
     @Override
     public void onCreate() {
@@ -339,10 +340,16 @@ public class AppApplication extends TSApplication {
                 if (mActivityCount == 0) {// 切到后台
                     WindowUtils.hidePopupWindow();
                 }
+                if ((activity instanceof MusicPlayActivity)) {
+                    mPlayActivity = 0;
+                }
             }
 
             @Override
             public void onActivityStarted(Activity activity) {
+                if ((activity instanceof MusicPlayActivity)) {
+                    mPlayActivity = 1;
+                }
                 mActivityCount++;
             }
 
@@ -352,12 +359,13 @@ public class AppApplication extends TSApplication {
 
             @Override
             public void onActivityResumed(Activity activity) {
-//                if ((activity instanceof MusicPlayActivity)) {
-//                    WindowUtils.hidePopupWindow();
-//                } else if (((AppCompatActivity) activity).getSupportMediaController() != null) {
-//                    WindowUtils.showPopupWindow(AppApplication.this);
-//                }
+                if ((activity instanceof MusicPlayActivity)) {
+                    WindowUtils.hidePopupWindow();
+                } else if (sPlaybackManager != null&&sPlaybackManager.getState()!= PlaybackStateCompat.STATE_NONE
+                        &&sPlaybackManager.getState()!= PlaybackStateCompat.STATE_STOPPED) {
+                    WindowUtils.showPopupWindow(AppApplication.this);
 
+                }
             }
 
             @Override
