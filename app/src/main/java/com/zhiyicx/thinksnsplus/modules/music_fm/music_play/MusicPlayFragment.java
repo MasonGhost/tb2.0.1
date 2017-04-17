@@ -461,11 +461,12 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                     mCurrentView = (ViewGroup) RecyclerViewUtils.getCenterXChild(mFragmentMusicPalyRv);
                     isMediaDataChange = false;
                 }
+                mCurrentView = (ViewGroup) RecyclerViewUtils.getCenterXChild(mFragmentMusicPalyRv);
                 isDraging = false;
-                isComplete = false;
                 if (mCurrentValue != 0 || isComplete) {
                     doPhonographAnimation();
                 }
+                isComplete = false;
             }
 
         });
