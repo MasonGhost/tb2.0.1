@@ -11,6 +11,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.cache.CacheImp;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
@@ -370,7 +371,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                             List<Object> userIdstmp = new ArrayList();
                             for (FlushMessages flushMessages : listBaseJson.getData()) {
                                 if (!TextUtils.isEmpty(flushMessages.getUids())) {
-                                    userIdstmp.addAll(Arrays.asList(flushMessages.getUids().split(",")));
+                                    userIdstmp.addAll(Arrays.asList(flushMessages.getUids().split(ConstantConfig.SPLIT_SMBOL)));
                                 }
                             }
                             if (userIdstmp.isEmpty()) {

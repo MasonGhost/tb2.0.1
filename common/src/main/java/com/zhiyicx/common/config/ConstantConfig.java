@@ -12,6 +12,7 @@ public class ConstantConfig {
         throw new UnsupportedOperationException("u can't instantiate me...");
     }
 
+    public static final String SPLIT_SMBOL = ",";
     /**
      * 抖动间隔时间，单位 s
      */
