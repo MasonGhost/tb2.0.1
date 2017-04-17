@@ -93,6 +93,7 @@
 
     <!--音乐FM-->
     <string name="music_fm">音乐FM</string>
+    <string name="music_lyric">暂无歌词</string>
 
     <!--动态列表-->
     <string name="dynamic_list_more_comment">查看全部评论</string>
@@ -143,6 +144,6 @@
     <string name="favorite">收藏</string>
     <string name="get_dynamic_dig_list_failure">获取点赞列表失败</string>
     <string name="default_input_hint">随便说说~</string>
-    <string name="default_input_chat_hint">说点什么</string>
+    <string name="default_input_chat_hint">@string/default_input_hint</string>
     <string name="see_origin_photos_failure">查看失败</string>
 </resources>

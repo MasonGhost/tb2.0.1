@@ -560,8 +560,8 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         if (commentFlushMessage.getCount() >= MAX_USER_NUMS_COMMENT) {
             flushMessage.setUids(commentFlushMessage.getUids());
         } else {
-            String uids = ConvertUtils.removeSymbolStartWith((TextUtils.isEmpty(commentFlushMessage.getUids()) ? "" : "," + commentFlushMessage.getUids()) + flushMessage.getUids(), ",");
-            uids = ConvertUtils.removeSymbolEndWith(uids, ",");
+            String uids = ConvertUtils.removeSymbolStartWith(commentFlushMessage.getUids() + ConstantConfig.SPLIT_SMBOL + flushMessage.getUids(), ConstantConfig.SPLIT_SMBOL);
+            uids = ConvertUtils.removeSymbolEndWith(uids, ConstantConfig.SPLIT_SMBOL);
             flushMessage.setUids(uids);
         }
     }
