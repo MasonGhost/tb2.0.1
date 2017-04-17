@@ -49,7 +49,7 @@ public class InfoListBeanGreenDaoImpl extends CommonCacheImpl<InfoListBean> {
 
     @Override
     public InfoListBean getSingleDataFromCache(Long primaryKey) {
-        return mInfoListBeanDao.load(primaryKey.intValue());
+        return mInfoListBeanDao.load(primaryKey);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class InfoListBeanGreenDaoImpl extends CommonCacheImpl<InfoListBean> {
         return mInfoListBeanDao.insertOrReplace(newData);
     }
 
-    public InfoListBean getInfoListByInfoType(int info_type) {
+    public InfoListBean getInfoListByInfoType(long info_type) {
         List<InfoListBean> infoListBeen = mInfoListBeanDao.queryBuilder()
                 .where(InfoListBeanDao.Properties.Info_type.eq(info_type))
                 .list();

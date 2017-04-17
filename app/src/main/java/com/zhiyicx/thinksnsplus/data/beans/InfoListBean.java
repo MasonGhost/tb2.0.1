@@ -38,7 +38,7 @@ public class InfoListBean extends BaseListBean implements Serializable{
     private static final long serialVersionUID = 1L;
     @Id
     @Unique
-    private int info_type;
+    private Long info_type;
     @ToMany(joinProperties = {@JoinProperty(name = "info_type", referencedName = "info_type")})
     private List<InfoListDataBean> list;
     @ToMany(joinProperties = {@JoinProperty(name = "info_type", referencedName = "info_type")})
@@ -49,17 +49,19 @@ public class InfoListBean extends BaseListBean implements Serializable{
     /** Used for active entity operations. */
     @Generated(hash = 1359304970)
     private transient InfoListBeanDao myDao;
-    @Generated(hash = 1443485232)
-    public InfoListBean(int info_type) {
+
+    @Generated(hash = 359076140)
+    public InfoListBean(Long info_type) {
         this.info_type = info_type;
     }
     @Generated(hash = 1530804200)
     public InfoListBean() {
     }
-    public int getInfo_type() {
+
+    public Long getInfo_type() {
         return this.info_type;
     }
-    public void setInfo_type(int info_type) {
+    public void setInfo_type(Long info_type) {
         this.info_type = info_type;
     }
 
@@ -71,7 +73,6 @@ public class InfoListBean extends BaseListBean implements Serializable{
     public void setRecommend(List<InfoRecommendBean> recommend) {
         this.recommend = recommend;
     }
-
     /**
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
@@ -84,8 +85,7 @@ public class InfoListBean extends BaseListBean implements Serializable{
                 throw new DaoException("Entity is detached from DAO context");
             }
             InfoListDataBeanDao targetDao = daoSession.getInfoListDataBeanDao();
-            List<InfoListDataBean> listNew = targetDao
-                    ._queryInfoListBean_List(info_type);
+            List<InfoListDataBean> listNew = targetDao._queryInfoListBean_List(info_type);
             synchronized (this) {
                 if (list == null) {
                     list = listNew;
@@ -111,8 +111,7 @@ public class InfoListBean extends BaseListBean implements Serializable{
                 throw new DaoException("Entity is detached from DAO context");
             }
             InfoRecommendBeanDao targetDao = daoSession.getInfoRecommendBeanDao();
-            List<InfoRecommendBean> recommendNew = targetDao
-                    ._queryInfoListBean_Recommend(info_type);
+            List<InfoRecommendBean> recommendNew = targetDao._queryInfoListBean_Recommend(info_type);
             synchronized (this) {
                 if (recommend == null) {
                     recommend = recommendNew;
@@ -159,40 +158,11 @@ public class InfoListBean extends BaseListBean implements Serializable{
         }
         myDao.update(this);
     }
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeInt(this.info_type);
-        dest.writeTypedList(this.list);
-        dest.writeTypedList(this.recommend);
-    }
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1149138458)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getInfoListBeanDao() : null;
     }
-    protected InfoListBean(Parcel in) {
-        super(in);
-        this.info_type = in.readInt();
-        this.list = in.createTypedArrayList(InfoListDataBean.CREATOR);
-        this.recommend = in.createTypedArrayList(InfoRecommendBean.CREATOR);
-    }
 
-    public static final Creator<InfoListBean> CREATOR = new Creator<InfoListBean>() {
-        @Override
-        public InfoListBean createFromParcel(Parcel source) {
-            return new InfoListBean(source);
-        }
-
-        @Override
-        public InfoListBean[] newArray(int size) {
-            return new InfoListBean[size];
-        }
-    };
 }
