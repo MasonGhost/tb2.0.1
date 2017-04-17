@@ -49,5 +49,7 @@ public class UpDBHelper extends DaoMaster.OpenHelper {
         MigrationHelper.getInstance().migrate(db, MusicCommentListBeanDao.class);
         MigrationHelper.getInstance().migrate(db, ChannelSubscripBeanDao.class);
         MigrationHelper.getInstance().migrate(db, ChannelInfoBeanDao.class);
+        MigrationHelper.getInstance().migrate(db, InfoTypeMyCatesBeanDao.class);
+        MigrationHelper.getInstance().migrate(db, InfoTypeMoreCatesBeanDao.class);
     }
 }

@@ -19,6 +19,7 @@ import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -75,12 +76,18 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
                     @Override
                     protected void onSuccess(InfoListBean data) {
                         List<BaseListBean> list = new ArrayList<>();
-                        if (data.getRecommend() != null) {
-                            for (InfoRecommendBean recommendBean : data.getRecommend()) {
+                        List<InfoRecommendBean> recommendList;
+                        try {
+                            recommendList = data.getRecommend();
+                        } catch (Exception e) {
+                            recommendList = data.getNetRecommend();
+                        }
+                        if (recommendList != null) {
+                            for (InfoRecommendBean recommendBean : recommendList) {
                                 recommendBean.setInfo_type(type);
                             }
-                            list.addAll(data.getRecommend());
-                            mInfoRecommendBeanGreenDao.saveMultiData(data.getRecommend());
+                            list.addAll(recommendList);
+                            mInfoRecommendBeanGreenDao.saveMultiData(recommendList);
                         }
                         if (data.getList() != null) {
                             for (InfoListDataBean listDataBean : data.getList()) {

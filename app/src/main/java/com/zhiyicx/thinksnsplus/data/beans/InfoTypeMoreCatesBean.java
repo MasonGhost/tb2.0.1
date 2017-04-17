@@ -31,6 +31,7 @@ public class InfoTypeMoreCatesBean implements Parcelable, Serializable {
      * name : 分类1
      */
     @Id
+    private Long _id;
     @Unique
     private Long id;
     @Unique
@@ -54,8 +55,9 @@ public class InfoTypeMoreCatesBean implements Parcelable, Serializable {
     }
 
 
-    @Generated(hash = 824074184)
-    public InfoTypeMoreCatesBean(Long id, Long info_type, String name) {
+    @Generated(hash = 1151404240)
+    public InfoTypeMoreCatesBean(Long _id, Long id, Long info_type, String name) {
+        this._id = _id;
         this.id = id;
         this.info_type = info_type;
         this.name = name;
@@ -178,6 +180,16 @@ public class InfoTypeMoreCatesBean implements Parcelable, Serializable {
         dest.writeValue(this.info_type);
         dest.writeString(this.name);
         dest.writeParcelable(this.mInfoListBean, flags);
+    }
+
+
+    public Long get_id() {
+        return this._id;
+    }
+
+
+    public void set_id(Long _id) {
+        this._id = _id;
     }
 
 
