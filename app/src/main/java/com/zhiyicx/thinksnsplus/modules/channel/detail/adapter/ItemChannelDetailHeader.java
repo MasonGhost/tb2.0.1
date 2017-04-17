@@ -70,6 +70,7 @@ import static com.zhiyicx.thinksnsplus.R.id.fl_cover_contaner;
  */
 
 public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRefresh {
+    private static final String TAG = "ItemChannelDetailHeader";
     /**********************************
      * headerView控件
      ********************************/
@@ -132,7 +133,7 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
      * toolbar右边订阅图标主题色：从顶部往下滑动的时候
      */
     public static int[] TOOLBAR_RIGHT_BLUE = {89, 182, 215};
-
+    private int channelNameFirstY = 0;
 
     public ItemChannelDetailHeader(Activity activity, RecyclerView recyclerView, HeaderAndFooterWrapper headerAndFooterWrapper, View mToolBarContainer, ChannelDetailContract.Presenter channelDetailPresenter) {
         mActivity = activity;
@@ -143,6 +144,8 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
         back = (ImageView) mToolBarContainer.findViewById(R.id.iv_back);
         subscribBtn = (ColorFilterTextView) mToolBarContainer.findViewById(R.id.iv_subscrib_btn);
         channelName = (TextView) mToolBarContainer.findViewById(R.id.tv_channel_name);
+        int translationY = mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_height);
+        channelName.setY(translationY);
         bootomDivider = mToolBarContainer.findViewById(R.id.v_horizontal_line);
         refreshImage = (ImageView) mToolBarContainer.findViewById(R.id.iv_refresh);
         this.mChannelDetailPresenter = channelDetailPresenter;
@@ -176,13 +179,23 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
                 //滑动的距离
                 mDistanceY += dy;
                 int headerTop = headerView.getTop();
-                //int headerViewHeight = headerView.getHeight();
-                // 移动距离为封面图的高度，也就是屏幕宽度的一般，如果改了封面高度，记得修改这儿
-                int headerViewHeight = UIUtils.getWindowWidth(mActivity) / 2;
-
+                //toolbar文字上边缘距离toolbar上边缘的距离
+                int userNamePadding = (mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_height) - mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_center_text_size)) / 2;
+                // 滑动距离为多少时，toolbar完全不透明
+                int needDistanceY = channelNameFirstY - mToolBarContainer.getHeight() - userNamePadding;
+                LogUtils.i(TAG + " mToolBarContainer.getHeight() " + mToolBarContainer.getHeight() + " needDistanceY " + needDistanceY + " mDistanceY " + mDistanceY);
+                // toolbar文字移动到toolbar中间，这期间的最大滑动距离
+                int maxDistance = needDistanceY + mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_height);
+                if (mDistanceY >= needDistanceY && mDistanceY <= maxDistance) {
+                    channelName.setTranslationY(maxDistance - mDistanceY);
+                } else if (mDistanceY > maxDistance) {
+                    channelName.setTranslationY(0);
+                } else {
+                    channelName.setTranslationY(mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_height));
+                }
                 //当滑动的距离 <= headerView高度的时候，改变Toolbar背景色的透明度，达到渐变的效果
-                if (mDistanceY <= headerViewHeight) {
-                    float scale = (float) mDistanceY / headerViewHeight;
+                if (mDistanceY <= needDistanceY) {
+                    float scale = (float) mDistanceY / needDistanceY;
                     float alpha = scale * 255;
                     //setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, (int) alpha);
                     setViewColorWithAlpha(mToolBarContainer, STATUS_RGB, (int) alpha);
@@ -230,7 +243,6 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
                     // 尝试设置状态栏文字成白色
                     StatusBarUtils.statusBarDarkMode(mActivity);
                 }
-                LogUtils.i("onScrolled--> headerViewHeight" + headerViewHeight + " mDistanceY-->" + mDistanceY);
             }
         });
     }
@@ -280,6 +292,15 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
 
         // 设置频道名称
         tv_channel_name.setText(channelInfoBean.getTitle());
+        tv_channel_name.post(new Runnable() {
+            @Override
+            public void run() {
+                int[] location = new int[2];
+                tv_channel_name.getLocationOnScreen(location);
+                channelNameFirstY = location[1];
+                LogUtils.i(TAG + "tv_user_name " + channelNameFirstY);
+            }
+        });
         // 标题栏的频道名称
         channelName.setText(channelInfoBean.getTitle());
         // 设置简介
