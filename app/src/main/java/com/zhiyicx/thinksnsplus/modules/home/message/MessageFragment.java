@@ -164,7 +164,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                             toCommentList();
                             mPresenter.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_COMMENTS);
                             mPresenter.updateCommnetItemData().setUnReadMessageNums(0);
-                            updateCommnetItemData( mPresenter.updateCommnetItemData());
+                            updateCommnetItemData(mPresenter.updateCommnetItemData());
                         }
                     });
             liked = headerview.findViewById(R.id.rl_liked);
@@ -176,7 +176,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                             toLikeList();
                             mPresenter.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_DIGGS);
                             mPresenter.updateLikeItemData().setUnReadMessageNums(0);
-                            updateCommnetItemData( mPresenter.updateLikeItemData());
+                            updateCommnetItemData(mPresenter.updateLikeItemData());
                         }
                     });
             tvHeaderCommentContent = (TextView) headerview.findViewById(R.id.tv_header_comment_content);
@@ -188,7 +188,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
             tvHeaderLikeTip = (BadgeView) headerview.findViewById(R.id.tv_header_like_tip);
         }
         tvHeaderCommentContent.setText(commentItemData.getConversation().getLast_message().getTxt());
-        if (commentItemData.getConversation().getLast_message_time() == 0) {
+        if (commentItemData.getConversation().getLast_message_time() == 0 || commentItemData.getConversation().getLast_message().getTxt().contains(getString(R.string.has_no_body))) {
             tvHeaderCommentTime.setVisibility(View.INVISIBLE);
         } else {
             tvHeaderCommentTime.setVisibility(View.VISIBLE);
@@ -197,7 +197,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         tvHeaderCommentTip.setBadgeCount(Integer.parseInt(ConvertUtils.numberConvert(commentItemData.getUnReadMessageNums())));
 
         tvHeaderLikeContent.setText(likedItemData.getConversation().getLast_message().getTxt());
-        if (likedItemData.getConversation().getLast_message_time() == 0) {
+        if (likedItemData.getConversation().getLast_message_time() == 0 || likedItemData.getConversation().getLast_message().getTxt().contains(getString(R.string.has_no_body))) {
             tvHeaderLikeTime.setVisibility(View.INVISIBLE);
         } else {
             tvHeaderLikeTime.setVisibility(View.VISIBLE);

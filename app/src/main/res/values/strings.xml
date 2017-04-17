@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TinkSNS+</string>
+    <string name="app_name">ThinkSNS+</string>
     <!-- 主页  -->
     <string name="home">首页</string>
     <string name="find">发现</string>
@@ -19,6 +19,7 @@
     <string name="comment_fail">评论失败</string>
     <string name="comment_ing">评论中...</string>
     <string name="default_message_group">群组</string>
+    <string name="has_no_body">还没有人</string>
     <!--我的-->
     <string name="personal_page">个人主页</string>
     <string name="ranking">排行榜</string>

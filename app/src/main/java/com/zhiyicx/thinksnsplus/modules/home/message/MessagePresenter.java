@@ -511,7 +511,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         messageItemBean.setUnReadMessageNums(flushMessage.getCount());
         messageItemBean.getConversation().setLast_message_time(TextUtils.isEmpty(flushMessage.getTime()) ? System.currentTimeMillis() : TimeUtils.string2MillisDefaultLocal(flushMessage.getTime()));
         messageItemBean.getConversation().getLast_message().setCreate_time(TextUtils.isEmpty(flushMessage.getTime()) ? System.currentTimeMillis() : TimeUtils.string2MillisDefaultLocal(flushMessage.getTime()));
-        String text = "还没有人";
+        String text = mContext.getString(R.string.has_no_body);
         if (!TextUtils.isEmpty(flushMessage.getUids())) {
             text = "";
             String[] uids = flushMessage.getUids().split(",");
