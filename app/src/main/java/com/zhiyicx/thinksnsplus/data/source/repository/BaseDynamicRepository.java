@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
@@ -112,8 +113,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
      */
     @Override
     public Observable<BaseJson<List<DynamicBean>>> getDynamicList(final String type, Long max_id, int page, String feeds_id, final boolean isLoadMore) {
-        feeds_id=feeds_id.replace("[","");
-        feeds_id=feeds_id.replace("]","");
+        feeds_id = feeds_id.replace("[", "");
+        feeds_id = feeds_id.replace("]", "");
         return dealWithDynamicList(mDynamicClient.getDynamicList(type, max_id,
                 Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE), page, feeds_id), type, isLoadMore);
     }
@@ -281,7 +282,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                 if (i == 0) {
                                     userIdString = dynamicDigListBean.getUser_id() + "";
                                 } else {
-                                    userIdString += "," + dynamicDigListBean.getUser_id();
+                                    userIdString += ConstantConfig.SPLIT_SMBOL + dynamicDigListBean.getUser_id();
                                 }
                             }
                             // 通过用户id列表请求用户信息和用户关注状态

@@ -32,7 +32,7 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
 
     public FollowFansListRepository(ServiceManager serviceManager, Application context) {
         mFollowFansClient = serviceManager.getFollowFansClient();
-        mUserInfoRepository = new UserInfoRepository(serviceManager,context);
+        mUserInfoRepository = new UserInfoRepository(serviceManager, context);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
     @Override
     public Observable<BaseJson<List<FollowFansBean>>> getFansListFromNet(final long userId, int maxId) {
         // 将网络请求获取的数据，通过map转换
-        return mFollowFansClient.getUserFansList(userId, maxId,TSListFragment.DEFAULT_PAGE_SIZE)
+        return mFollowFansClient.getUserFansList(userId, maxId, TSListFragment.DEFAULT_PAGE_SIZE)
                 .flatMap(new Func1<BaseJson<GsonFollowFansBean>, Observable<BaseJson<List<FollowFansBean>>>>() {
                     @Override
                     public Observable<BaseJson<List<FollowFansBean>>> call(BaseJson<GsonFollowFansBean> gsonFollowFansBeanBaseJson) {
@@ -83,6 +83,7 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
             for (FollowFansBean followFansBean : followFansBeanList) {
                 targetUserIds.add(followFansBean.getTargetUserId());
             }
+            targetUserIds.add(AppApplication.getmCurrentLoginAuth().getUser_id());
             return mUserInfoRepository.getUserInfo(targetUserIds)
                     .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<FollowFansBean>>>() {
                         @Override
