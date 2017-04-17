@@ -4,7 +4,7 @@
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
              android:layout_gravity="center_horizontal"
-             android:background="@color/white"
+             android:background="@drawable/shape_default_image"
              android:orientation="vertical">
 
     <LinearLayout
@@ -22,7 +22,8 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/header_icon_top_margin"
             android:scaleType="centerCrop"
-            tools:src="@drawable/girl_head_xinyuanjieyi"/>
+            android:src="@drawable/shape_default_image"
+            />
 
         <TextView
             android:id="@+id/tv_channel_name"

@@ -29,7 +29,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
@@ -70,6 +72,7 @@ import static com.zhiyicx.thinksnsplus.R.id.fl_cover_contaner;
  */
 
 public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRefresh {
+    private static final String TAG = "ItemChannelDetailHeader";
     /**********************************
      * headerView控件
      ********************************/
@@ -132,7 +135,7 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
      * toolbar右边订阅图标主题色：从顶部往下滑动的时候
      */
     public static int[] TOOLBAR_RIGHT_BLUE = {89, 182, 215};
-
+    private int channelNameFirstY = 0;
 
     public ItemChannelDetailHeader(Activity activity, RecyclerView recyclerView, HeaderAndFooterWrapper headerAndFooterWrapper, View mToolBarContainer, ChannelDetailContract.Presenter channelDetailPresenter) {
         mActivity = activity;
@@ -143,6 +146,8 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
         back = (ImageView) mToolBarContainer.findViewById(R.id.iv_back);
         subscribBtn = (ColorFilterTextView) mToolBarContainer.findViewById(R.id.iv_subscrib_btn);
         channelName = (TextView) mToolBarContainer.findViewById(R.id.tv_channel_name);
+        int translationY = mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_height);
+        channelName.setY(translationY);
         bootomDivider = mToolBarContainer.findViewById(R.id.v_horizontal_line);
         refreshImage = (ImageView) mToolBarContainer.findViewById(R.id.iv_refresh);
         this.mChannelDetailPresenter = channelDetailPresenter;
@@ -176,13 +181,23 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
                 //滑动的距离
                 mDistanceY += dy;
                 int headerTop = headerView.getTop();
-                //int headerViewHeight = headerView.getHeight();
-                // 移动距离为封面图的高度，也就是屏幕宽度的一般，如果改了封面高度，记得修改这儿
-                int headerViewHeight = UIUtils.getWindowWidth(mActivity) / 2;
-
+                //toolbar文字上边缘距离toolbar上边缘的距离
+                int userNamePadding = (mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_height) - mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_center_text_size)) / 2;
+                // 滑动距离为多少时，toolbar完全不透明
+                int needDistanceY = channelNameFirstY - mToolBarContainer.getHeight() - userNamePadding;
+                LogUtils.i(TAG + " mToolBarContainer.getHeight() " + mToolBarContainer.getHeight() + " needDistanceY " + needDistanceY + " mDistanceY " + mDistanceY);
+                // toolbar文字移动到toolbar中间，这期间的最大滑动距离
+                int maxDistance = needDistanceY + mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_height);
+                if (mDistanceY >= needDistanceY && mDistanceY <= maxDistance) {
+                    channelName.setTranslationY(maxDistance - mDistanceY);
+                } else if (mDistanceY > maxDistance) {
+                    channelName.setTranslationY(0);
+                } else {
+                    channelName.setTranslationY(mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_height));
+                }
                 //当滑动的距离 <= headerView高度的时候，改变Toolbar背景色的透明度，达到渐变的效果
-                if (mDistanceY <= headerViewHeight) {
-                    float scale = (float) mDistanceY / headerViewHeight;
+                if (mDistanceY <= needDistanceY) {
+                    float scale = (float) mDistanceY / needDistanceY;
                     float alpha = scale * 255;
                     //setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, (int) alpha);
                     setViewColorWithAlpha(mToolBarContainer, STATUS_RGB, (int) alpha);
@@ -230,7 +245,6 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
                     // 尝试设置状态栏文字成白色
                     StatusBarUtils.statusBarDarkMode(mActivity);
                 }
-                LogUtils.i("onScrolled--> headerViewHeight" + headerViewHeight + " mDistanceY-->" + mDistanceY);
             }
         });
     }
@@ -255,31 +269,38 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
         ChannelInfoBean channelInfoBean = channelSubscripBean.getChannelInfoBean();
         // 显示头像
         ChannelInfoBean.ChannelCoverBean channelCoverBean = channelInfoBean.getCover();
-
+        // 图片边框宽度2dp
+        int strokeWidth = ConvertUtils.dp2px(mActivity, 2);
         Glide.with(mActivity)
                 .load(ImageUtils.imagePathConvert(channelCoverBean.getId() + "",
                         ImageZipConfig.IMAGE_70_ZIP))
                 .asBitmap()
-                .transform(new GlideStokeTransform(mActivity, 20))
-                .placeholder(R.mipmap.icon_256)
-                .error(R.mipmap.icon_256)
-                .into(new SimpleTarget<Bitmap>() {
+                .transform(new GlideStokeTransform(mActivity, strokeWidth))
+                .placeholder(R.drawable.shape_default_image)
+                .error(R.drawable.shape_default_image)
+                .into(new ImageViewTarget<Bitmap>(iv_channel_header_icon) {
                     @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap>
-                            glideAnimation) {
-                        Bitmap mBgBitmap = resource.copy(Bitmap.Config.RGB_565, false);
+                    protected void setResource(Bitmap resource) {
                         // 设置封面
                         iv_channel_header_icon.setImageBitmap(resource);
-                        Palette mPalette = Palette.from(mBgBitmap).generate();
+                        Bitmap mBgBitmap = resource.copy(Bitmap.Config.RGB_565, false);
                         // 设置封面
                         BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap
                                 (mBgBitmap, mBgBitmap.getWidth(), mBgBitmap.getHeight()));
                         fl_header_container.setBackgroundDrawable(drawable);
                     }
                 });
-
         // 设置频道名称
         tv_channel_name.setText(channelInfoBean.getTitle());
+        tv_channel_name.post(new Runnable() {
+            @Override
+            public void run() {
+                int[] location = new int[2];
+                tv_channel_name.getLocationOnScreen(location);
+                channelNameFirstY = location[1];
+                LogUtils.i(TAG + "tv_user_name " + channelNameFirstY);
+            }
+        });
         // 标题栏的频道名称
         channelName.setText(channelInfoBean.getTitle());
         // 设置简介
