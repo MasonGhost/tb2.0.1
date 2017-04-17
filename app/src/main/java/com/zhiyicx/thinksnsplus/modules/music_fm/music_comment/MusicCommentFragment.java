@@ -84,6 +84,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 .getSerializable(CURRENT_COMMENT);
         if (mHeaderInfo != null) {
             mMusicCommentHeader.setHeadInfo(mHeaderInfo);
+            mToolbarCenter.setText(String.format("评论(%d)",mHeaderInfo.getCommentCount()));
         } else {
             Long ids = getArguments().getLong(BUNDLE_SOURCE_ID);
             mHeaderInfo = new MusicCommentHeader.HeaderInfo();
@@ -101,6 +102,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     public void setHeaderInfo(MusicCommentHeader.HeaderInfo headerInfo) {
         mHeaderInfo = headerInfo;
         mMusicCommentHeader.setHeadInfo(mHeaderInfo);
+        mToolbarCenter.setText(String.format("评论(%d)",mHeaderInfo.getCommentCount()));
     }
 
     @Override
