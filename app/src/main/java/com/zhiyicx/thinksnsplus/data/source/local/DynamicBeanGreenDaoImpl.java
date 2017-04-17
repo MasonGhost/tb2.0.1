@@ -123,8 +123,11 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
 
                 break;
             case ApiConfig.DYNAMIC_TYPE_NEW:
-
-                break;
+                datas = dynamicBeanDao.queryBuilder()
+                        .whereOr(DynamicBeanDao.Properties.Hot_creat_time.isNull(), DynamicBeanDao.Properties.Hot_creat_time.eq(0), DynamicBeanDao.Properties.IsFollowed.eq(false))
+                        .list();
+                dynamicBeanDao.deleteInTx(datas);
+                return;
             case ApiConfig.DYNAMIC_TYPE_MY_COLLECTION:
                 DynamicToolBeanDao dynamicToolBeanDao = getWDaoSession().getDynamicToolBeanDao();
                 QueryBuilder<DynamicToolBean> queryBuilder = dynamicToolBeanDao.queryBuilder();
