@@ -78,6 +78,7 @@
                 android:layout_marginTop="@dimen/spacing_mid"
                 app:dividerLeftMargin="@dimen/spacing_normal"
                 app:dividerRightMargin="@dimen/spacing_normal"
+                android:visibility="gone"
                 app:leftImage="@mipmap/discover_ico_findpeople"
                 app:leftText="@string/find_person"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
