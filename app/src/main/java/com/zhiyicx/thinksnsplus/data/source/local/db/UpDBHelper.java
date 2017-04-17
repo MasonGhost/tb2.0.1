@@ -6,8 +6,11 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.CommentedBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.DaoMaster;
+import com.zhiyicx.thinksnsplus.data.beans.DigedBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.FlushMessagesDao;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBeanDao;
@@ -51,5 +54,8 @@ public class UpDBHelper extends DaoMaster.OpenHelper {
         MigrationHelper.getInstance().migrate(db, ChannelInfoBeanDao.class);
         MigrationHelper.getInstance().migrate(db, InfoTypeMyCatesBeanDao.class);
         MigrationHelper.getInstance().migrate(db, InfoTypeMoreCatesBeanDao.class);
+        MigrationHelper.getInstance().migrate(db, FlushMessagesDao.class);
+        MigrationHelper.getInstance().migrate(db, DigedBeanDao.class);
+        MigrationHelper.getInstance().migrate(db, CommentedBeanDao.class);
     }
 }

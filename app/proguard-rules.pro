@@ -32,6 +32,15 @@
 #   public *;
 #}
 
+
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+-keep class android.content.Context
+-keepattributes InnerClasses
+
 ################messagepack###############
 -keep class org.** { *; }
 -keep interface org.** { *; }
@@ -40,11 +49,6 @@
 -keep class javassist.** { *; }
 -keep interface javassist.** { *; }
 
-
-################jpush###############
--dontoptimize
--dontwarn cn.jpush.**
--keep class cn.jpush.** { *; }
 
 ################crop###############
 -keep class com.soundcloud.android.** { *; }
@@ -58,27 +62,52 @@
 -keep class com.bigkoo.pickerview.** { *; }
 -keep interface com.bigkoo.pickerview.** { *; }
 
+################banner###############
+-keep class com.youth.banner.** { *; }
+-keep interface  com.youth.banner.** { *; }
 
--keepclassmembers enum * {
-    public static **[] values();
-    public static ** valueOf(java.lang.String);
+################baseadapter-recyclerview###############
+-keep class com.zhy.adapter.recyclerview.** { *; }
+-keep interface  com.zhy.adapter.recyclerview.** { *; }
+
+################baseprojectw###############
+-keep public class com.zhiyicx.baseproject.R$*{
+public static final int *;
 }
-
--keep class android.content.Context
--keepattributes InnerClasses
+-keep class com.zhiyicx.baseproject.** { *; }
+-keep interface  com.zhiyicx.baseproject.** { *; }
 
 ################common###############
 -keep public class com.zhiyicx.common.R$*{
 public static final int *;
 }
 
+-keep interface  com.zhiyicx.common.** { *; }
 -keep class com.zhiyicx.thinksnsplus.data.beans.** { *; } #实体类不参与混淆
 
--keep interface com.zhiyicx.common.net.** { *; } #实体类不参与混淆
 -keep class com.zhiyicx.common.net.** { *; } #实体类不参与混淆
+-keep class com.zhiyicx.common.utils.** { *; } #实体类不参与混淆
 
 -keep class com.zhiyicx.thinksnsplus.widget.** { *; } #自定义控件不参与混淆
 
+################mysnackbar###############
+-keep class com.trycatch.mysnackbar.** { *; }
+-keep interface  com.trycatch.mysnackbar.** { *; }
+
+################PhotoPicker###############
+-keep class me.iwf.photopicker.** { *; }
+-keep interface  me.iwf.photopicker.** { *; }
+
+################rxerrorhandler###############
+-keep class com.zhiyicx.rxerrorhandler.** { *; }
+-keep interface  com.zhiyicx.rxerrorhandler.** { *; }
+
+################skinlibrary###############
+-keep class solid.ren.skinlibrary.** { *; }
+-keep interface  solid.ren.skinlibrary.** { *; }
+
+
+################IM###############
 -keep class com.zhiyicx.imsdk.** { *; } #实体类不参与混淆
 -keep interface com.zhiyicx.imsdk.** { *; } #实体类不参与混淆
 -keep class * implements android.os.Parcelable {
@@ -316,3 +345,19 @@ public static final int *;
 
 -dontwarn cn.jiguang.**
 -keep class cn.jiguang.** { *; }
+
+################ ucrop ###############
+
+-dontwarn com.yalantis.ucrop**
+-keep class com.yalantis.ucrop** { *; }
+-keep interface com.yalantis.ucrop** { *; }
+
+
+################ greenDAO 3 ###############
+#greendao3.2.0,此是针对3.2.0，如果是之前的，可能需要更换下包名
+-keep class org.greenrobot.greendao.**{*;}
+-keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
+public static java.lang.String TABLENAME;
+}
+-keep class **$Properties
+-keep class com.zhiyicx.thinksnsplus.data.beans.*{ *; }

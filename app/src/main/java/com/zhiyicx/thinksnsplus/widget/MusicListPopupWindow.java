@@ -8,22 +8,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.antfortune.freeline.util.AppUtils;
-import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 
 import java.util.List;
 
-import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERLOOP;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERRANDOM;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERSINGLE;
 
