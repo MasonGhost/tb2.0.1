@@ -33,9 +33,10 @@ public class InfoTypeMyCatesBean implements Parcelable, Serializable {
      * name : 分类1
      */
     @Id
+    private Long _id;
     @Unique
     private Long id;
-    private int info_type;
+    private Long info_type;
     private String name;
     @ToOne(joinProperty = "info_type")
     private InfoListBean mInfoListBean;
@@ -45,8 +46,8 @@ public class InfoTypeMyCatesBean implements Parcelable, Serializable {
     /** Used for active entity operations. */
     @Generated(hash = 1359965412)
     private transient InfoTypeMyCatesBeanDao myDao;
-    @Generated(hash = 808470471)
-    private transient Integer mInfoListBean__resolvedKey;
+    @Generated(hash = 1585318719)
+    private transient Long mInfoListBean__resolvedKey;
 
     @Keep
     public InfoTypeMyCatesBean(Long id, String name) {
@@ -54,16 +55,20 @@ public class InfoTypeMyCatesBean implements Parcelable, Serializable {
         this.name = name;
     }
 
-    @Generated(hash = 1183454999)
-    public InfoTypeMyCatesBean(Long id, int info_type, String name) {
+
+    @Generated(hash = 1170839248)
+    public InfoTypeMyCatesBean(Long _id, Long id, Long info_type, String name) {
+        this._id = _id;
         this.id = id;
         this.info_type = info_type;
         this.name = name;
     }
 
+
     @Generated(hash = 1718315182)
     public InfoTypeMyCatesBean() {
     }
+
 
     public Long getId() {
         return this.id;
@@ -73,13 +78,6 @@ public class InfoTypeMyCatesBean implements Parcelable, Serializable {
         this.id = id;
     }
 
-    public int getInfo_type() {
-        return this.info_type;
-    }
-
-    public void setInfo_type(int info_type) {
-        this.info_type = info_type;
-    }
 
     public String getName() {
         return this.name;
@@ -89,10 +87,21 @@ public class InfoTypeMyCatesBean implements Parcelable, Serializable {
         this.name = name;
     }
 
+
+    public Long getInfo_type() {
+        return this.info_type;
+    }
+
+
+    public void setInfo_type(Long info_type) {
+        this.info_type = info_type;
+    }
+
+
     /** To-one relationship, resolved on first access. */
-    @Generated(hash = 2049587271)
+    @Generated(hash = 1758891489)
     public InfoListBean getMInfoListBean() {
-        int __key = this.info_type;
+        Long __key = this.info_type;
         if (mInfoListBean__resolvedKey == null
                 || !mInfoListBean__resolvedKey.equals(__key)) {
             final DaoSession daoSession = this.daoSession;
@@ -109,19 +118,17 @@ public class InfoTypeMyCatesBean implements Parcelable, Serializable {
         return mInfoListBean;
     }
 
+
     /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1546371682)
-    public void setMInfoListBean(@NotNull InfoListBean mInfoListBean) {
-        if (mInfoListBean == null) {
-            throw new DaoException(
-                    "To-one property 'info_type' has not-null constraint; cannot set to-one to null");
-        }
+    @Generated(hash = 1677007819)
+    public void setMInfoListBean(InfoListBean mInfoListBean) {
         synchronized (this) {
             this.mInfoListBean = mInfoListBean;
-            info_type = mInfoListBean.getInfo_type();
+            info_type = mInfoListBean == null ? null : mInfoListBean.getInfo_type();
             mInfoListBean__resolvedKey = info_type;
         }
     }
+
 
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
@@ -135,6 +142,7 @@ public class InfoTypeMyCatesBean implements Parcelable, Serializable {
         myDao.delete(this);
     }
 
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
      * Entity must attached to an entity context.
@@ -146,6 +154,7 @@ public class InfoTypeMyCatesBean implements Parcelable, Serializable {
         }
         myDao.refresh(this);
     }
+
 
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
@@ -159,6 +168,7 @@ public class InfoTypeMyCatesBean implements Parcelable, Serializable {
         myDao.update(this);
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -167,10 +177,21 @@ public class InfoTypeMyCatesBean implements Parcelable, Serializable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(this.id);
-        dest.writeInt(this.info_type);
+        dest.writeValue(this.info_type);
         dest.writeString(this.name);
         dest.writeParcelable(this.mInfoListBean, flags);
     }
+
+
+    public Long get_id() {
+        return this._id;
+    }
+
+
+    public void set_id(Long _id) {
+        this._id = _id;
+    }
+
 
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1827653171)
@@ -179,9 +200,10 @@ public class InfoTypeMyCatesBean implements Parcelable, Serializable {
         myDao = daoSession != null ? daoSession.getInfoTypeMyCatesBeanDao() : null;
     }
 
+
     protected InfoTypeMyCatesBean(Parcel in) {
         this.id = (Long) in.readValue(Long.class.getClassLoader());
-        this.info_type = in.readInt();
+        this.info_type = (Long) in.readValue(Long.class.getClassLoader());
         this.name = in.readString();
         this.mInfoListBean = in.readParcelable(InfoListBean.class.getClassLoader());
     }

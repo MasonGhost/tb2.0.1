@@ -19,6 +19,7 @@ import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -66,7 +67,7 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
         String typeString = mRootView.getInfoType();
-        final int type = Integer.valueOf(typeString);
+        final long type = Long.parseLong(typeString);
         Subscription subscription = mInfoMainRepository.getInfoList(mRootView.getInfoType()
                 , maxId, mRootView.getPage())
                 .subscribeOn(Schedulers.io())
@@ -75,12 +76,18 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
                     @Override
                     protected void onSuccess(InfoListBean data) {
                         List<BaseListBean> list = new ArrayList<>();
-                        if (data.getRecommend() != null) {
-                            for (InfoRecommendBean recommendBean : data.getRecommend()) {
+                        List<InfoRecommendBean> recommendList;
+                        try {
+                            recommendList = data.getRecommend();
+                        } catch (Exception e) {
+                            recommendList = data.getNetRecommend();
+                        }
+                        if (recommendList != null) {
+                            for (InfoRecommendBean recommendBean : recommendList) {
                                 recommendBean.setInfo_type(type);
                             }
-                            list.addAll(data.getRecommend());
-                            mInfoRecommendBeanGreenDao.saveMultiData(data.getRecommend());
+                            list.addAll(recommendList);
+                            mInfoRecommendBeanGreenDao.saveMultiData(recommendList);
                         }
                         if (data.getList() != null) {
                             for (InfoListDataBean listDataBean : data.getList()) {
@@ -89,8 +96,6 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
                             list.addAll(data.getList());
                             mInfoListDataBeanGreenDao.saveMultiData(data.getList());
                         }
-                        String typeString = mRootView.getInfoType();
-                        int type = Integer.valueOf(typeString);
                         data.setInfo_type(type);
                         mInfoListBeanGreenDao.insertOrReplace(data);
                         mRootView.onNetResponseSuccess(list, isLoadMore);
@@ -113,7 +118,7 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
     public List<BaseListBean> requestCacheData(Long max_Id, final boolean isLoadMore) {
         final List<BaseListBean> localData = new ArrayList<>();
         String typeString = mRootView.getInfoType();
-        final int type = Integer.valueOf(typeString);
+        final long type = Long.parseLong(typeString);
         Observable.just(mInfoListBeanGreenDao)
                 .map(new Func1<InfoListBeanGreenDaoImpl, InfoListBean>() {
                     @Override
@@ -130,15 +135,13 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
                 }).subscribe(new Action1<InfoListBean>() {
             @Override
             public void call(InfoListBean data) {
-                LogUtils.d("call:::" + data.getInfo_type());
-                LogUtils.d("call:::" + data.getList().size());
                 if (data.getRecommend() != null) {
                     localData.addAll(data.getRecommend());
                 }
                 if (data.getList() != null) {
                     localData.addAll(data.getList());
                 }
-                data.setInfo_type(Integer.valueOf(mRootView.getInfoType()));
+                data.setInfo_type(type);
             }
         });
         return localData;

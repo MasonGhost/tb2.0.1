@@ -25,6 +25,8 @@ public class CollectAlbumListFragment extends MusicListFragment {
     @Inject
     MusicPresenter mMusicPresenter;
 
+    private MusicAlbumListBean mMusicAlbumListBean;
+
     @Override
     protected void initData() {
        /* DaggerCollectAlbumListPresenterComponent.builder()
@@ -71,6 +73,7 @@ public class CollectAlbumListFragment extends MusicListFragment {
                 albumListBean_same.setTaste_count(mMusicAlbumListBean.getTaste_count());
                 mPresenter.updateOneMusic(albumListBean_same);
                 // 为什么收藏是0不是1吗，问Jliuer@aliyun.com
+                // 回答：因为是本地的收藏状态改变，如果操作前是 1 ，操作手动修改为 0
                 if (albumListBean_same.getIs_collection() == 0) {
                     if (!mListDatas.contains(albumListBean_same)) {
                         mListDatas.add(albumListBean_same);

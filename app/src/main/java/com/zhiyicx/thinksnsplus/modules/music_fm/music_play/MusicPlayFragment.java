@@ -25,6 +25,7 @@ import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -132,6 +133,8 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     TextView mFragmentMusicPalyTotalTime;
     @BindView(R.id.fragment_music_paly_lrc)
     TextView mFragmentMusicPalyLrc;
+    @BindView(R.id.fragment_music_paly_deal)
+    LinearLayout mFragmentMusicPalyDeal;
 
 
     /**
@@ -458,11 +461,12 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                     mCurrentView = (ViewGroup) RecyclerViewUtils.getCenterXChild(mFragmentMusicPalyRv);
                     isMediaDataChange = false;
                 }
+                mCurrentView = (ViewGroup) RecyclerViewUtils.getCenterXChild(mFragmentMusicPalyRv);
                 isDraging = false;
-                isComplete = false;
                 if (mCurrentValue != 0 || isComplete) {
                     doPhonographAnimation();
                 }
+                isComplete = false;
             }
 
         });
@@ -854,11 +858,13 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 .VISIBLE ? View.VISIBLE : View.GONE);
 
         mFragmentMusicPalyPhonographPoint.setVisibility(mFragmentMusicPalyLrc.getVisibility() ==
-                View
-                        .VISIBLE ? View.VISIBLE : View.GONE);
+                View.VISIBLE ? View.VISIBLE : View.GONE);
 
         mFragmentMusicPalyLrc.setVisibility(mFragmentMusicPalyLrc.getVisibility() == View
                 .VISIBLE ? View.GONE : View.VISIBLE);
+
+        mFragmentMusicPalyDeal.setVisibility(mFragmentMusicPalyLrc.getVisibility() == View
+                .VISIBLE ? View.INVISIBLE : View.VISIBLE);
     }
 
     @OnClick({R.id.fragment_music_paly_share, R.id.fragment_music_paly_like, R.id
@@ -963,7 +969,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 break;
 //            case R.id.fragment_music_paly_bg:
             case R.id.fragment_music_paly_lyrics:// 歌词显示
-//            case R.id.fragment_music_paly_lrc:
+            case R.id.fragment_music_paly_lrc:
                 handleLrc();
                 break;
             default:

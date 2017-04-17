@@ -49,7 +49,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     /**
      * 数量改变 event_bus 来的
      */
-    protected MusicAlbumListBean mMusicAlbumListBean;
+    private MusicAlbumListBean mMusicAlbumListBean;
 
     @Override
     protected void initData() {
@@ -92,7 +92,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
                                 ImageZipConfig.IMAGE_70_ZIP))
                         .build());
 
-                holder.setText(R.id.music_list_taste_count, "" + musicListBean.getCollect_count());
+                holder.setText(R.id.music_list_taste_count, "" + musicListBean.getTaste_count());
                 holder.setText(R.id.music_list_title, musicListBean.getTitle());
 
             }
@@ -147,6 +147,6 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
                 mHeaderAndFooterWrapper.notifyDataSetChanged();
             }
         });
-        LogUtils.d("MusicListFragment-->EVENT_ABLUM_COLLECT");
+        LogUtils.d("EVENT_ABLUM_COLLECT");
     }
 }

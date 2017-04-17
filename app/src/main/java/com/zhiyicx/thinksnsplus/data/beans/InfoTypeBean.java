@@ -36,6 +36,9 @@ public class InfoTypeBean extends BaseListBean implements Serializable {
         this.more_cates = more_cates;
     }
 
+    public InfoTypeBean() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -47,9 +50,6 @@ public class InfoTypeBean extends BaseListBean implements Serializable {
         dest.writeValue(this.id);
         dest.writeTypedList(this.my_cates);
         dest.writeTypedList(this.more_cates);
-    }
-
-    public InfoTypeBean() {
     }
 
     protected InfoTypeBean(Parcel in) {

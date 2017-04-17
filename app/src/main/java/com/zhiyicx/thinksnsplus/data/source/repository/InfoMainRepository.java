@@ -54,7 +54,7 @@ public class InfoMainRepository implements InfoMainContract.Reppsitory {
                                 BaseJson<InfoListBean> infoListBeanBaseJson = new BaseJson<>();
                                 InfoListBean infoListBean = new InfoListBean();
                                 infoListBean.setList(listBeanList);
-                                infoListBean.setInfo_type(Integer.parseInt(cate_id));
+                                infoListBean.setInfo_type(Long.parseLong(cate_id));
                                 infoListBeanBaseJson.setData(infoListBean);
                                 infoListBeanBaseJson.setMessage(listBaseJson.getMessage());
                                 infoListBeanBaseJson.setStatus(listBaseJson.isStatus());

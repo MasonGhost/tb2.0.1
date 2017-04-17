@@ -33,7 +33,7 @@ public class InfoRecommendBean extends BaseListBean implements Serializable {
     Long _id;
     @Unique
     private int id;
-    private int info_type;
+    private Long info_type;
     private String created_at;
     private String updated_at;
     private int cate_id;
@@ -42,13 +42,7 @@ public class InfoRecommendBean extends BaseListBean implements Serializable {
     private CoverBean cover;
     private int sort;
 
-    public int getInfo_type() {
-        return info_type;
-    }
 
-    public void setInfo_type(int info_type) {
-        this.info_type = info_type;
-    }
 
     public int getId() {
         return id;
@@ -202,6 +196,14 @@ public class InfoRecommendBean extends BaseListBean implements Serializable {
         this._id = _id;
     }
 
+    public Long getInfo_type() {
+        return this.info_type;
+    }
+
+    public void setInfo_type(Long info_type) {
+        this.info_type = info_type;
+    }
+
     public InfoRecommendBean() {
     }
 
@@ -216,8 +218,8 @@ public class InfoRecommendBean extends BaseListBean implements Serializable {
         this.sort = in.readInt();
     }
 
-    @Generated(hash = 408952920)
-    public InfoRecommendBean(Long _id, int id, int info_type, String created_at, String updated_at,
+    @Generated(hash = 792287468)
+    public InfoRecommendBean(Long _id, int id, Long info_type, String created_at, String updated_at,
             int cate_id, int news_id, CoverBean cover, int sort) {
         this._id = _id;
         this.id = id;
@@ -229,6 +231,7 @@ public class InfoRecommendBean extends BaseListBean implements Serializable {
         this.cover = cover;
         this.sort = sort;
     }
+
 
     public static final Creator<InfoRecommendBean> CREATOR = new Creator<InfoRecommendBean>() {
         @Override
