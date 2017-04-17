@@ -31,7 +31,7 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
     private Long _id;
     @Unique
     private int id;
-    private int info_type;
+    private Long info_type;
     private int is_collection_news;
     private String title;
     private String from;
@@ -45,13 +45,7 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
                 + "\n" + from + "\n" + updated_at;
     }
 
-    public int getInfo_type() {
-        return info_type;
-    }
 
-    public void setInfo_type(int info_type) {
-        this.info_type = info_type;
-    }
 
     public int getIs_collection_news() {
         return is_collection_news;
@@ -209,9 +203,11 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         this.storage = in.readParcelable(StorageBean.class.getClassLoader());
     }
 
-    @Generated(hash = 767231673)
-    public InfoListDataBean(Long _id, int id, int info_type, int is_collection_news, String title,
-                            String from, String updated_at, StorageBean storage) {
+
+
+    @Generated(hash = 1012796026)
+    public InfoListDataBean(Long _id, int id, Long info_type, int is_collection_news, String title,
+            String from, String updated_at, StorageBean storage) {
         this._id = _id;
         this.id = id;
         this.info_type = info_type;
@@ -221,6 +217,7 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         this.updated_at = updated_at;
         this.storage = storage;
     }
+
 
     public static final Creator<InfoListDataBean> CREATOR = new Creator<InfoListDataBean>() {
         @Override
@@ -261,6 +258,18 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
             return infoListDataBean.getId() == id;
         }
         return super.equals(obj);
+    }
+
+
+
+    public Long getInfo_type() {
+        return this.info_type;
+    }
+
+
+
+    public void setInfo_type(Long info_type) {
+        this.info_type = info_type;
     }
 }
 

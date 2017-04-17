@@ -52,22 +52,4 @@ public class InfoTypeBean extends BaseListBean implements Serializable {
     public InfoTypeBean() {
     }
 
-    protected InfoTypeBean(Parcel in) {
-        super(in);
-        this.id = (Long) in.readValue(Long.class.getClassLoader());
-        this.my_cates = in.createTypedArrayList(InfoTypeMyCatesBean.CREATOR);
-        this.more_cates = in.createTypedArrayList(InfoTypeMoreCatesBean.CREATOR);
-    }
-
-    public static final Creator<InfoTypeBean> CREATOR = new Creator<InfoTypeBean>() {
-        @Override
-        public InfoTypeBean createFromParcel(Parcel source) {
-            return new InfoTypeBean(source);
-        }
-
-        @Override
-        public InfoTypeBean[] newArray(int size) {
-            return new InfoTypeBean[size];
-        }
-    };
 }

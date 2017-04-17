@@ -66,7 +66,7 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
         String typeString = mRootView.getInfoType();
-        final int type = Integer.valueOf(typeString);
+        final long type = Long.parseLong(typeString);
         Subscription subscription = mInfoMainRepository.getInfoList(mRootView.getInfoType()
                 , maxId, mRootView.getPage())
                 .subscribeOn(Schedulers.io())
@@ -89,8 +89,6 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
                             list.addAll(data.getList());
                             mInfoListDataBeanGreenDao.saveMultiData(data.getList());
                         }
-                        String typeString = mRootView.getInfoType();
-                        int type = Integer.valueOf(typeString);
                         data.setInfo_type(type);
                         mInfoListBeanGreenDao.insertOrReplace(data);
                         mRootView.onNetResponseSuccess(list, isLoadMore);
@@ -113,7 +111,7 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
     public List<BaseListBean> requestCacheData(Long max_Id, final boolean isLoadMore) {
         final List<BaseListBean> localData = new ArrayList<>();
         String typeString = mRootView.getInfoType();
-        final int type = Integer.valueOf(typeString);
+        final long type = Long.parseLong(typeString);
         Observable.just(mInfoListBeanGreenDao)
                 .map(new Func1<InfoListBeanGreenDaoImpl, InfoListBean>() {
                     @Override
@@ -138,7 +136,7 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
                 if (data.getList() != null) {
                     localData.addAll(data.getList());
                 }
-                data.setInfo_type(Integer.valueOf(mRootView.getInfoType()));
+                data.setInfo_type(type);
             }
         });
         return localData;
