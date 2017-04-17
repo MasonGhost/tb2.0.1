@@ -24,6 +24,8 @@ import javax.inject.Inject;
  */
 
 public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
+
+
     @Inject
     public DynamicBeanGreenDaoImpl(Application context) {
         super(context);
@@ -63,8 +65,10 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
 
     @Override
     public void deleteSingleCache(Long primaryKey) {
-
+        DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
+        dynamicBeanDao.deleteByKey(primaryKey);
     }
+
 
     @Override
     public void deleteSingleCache(DynamicBean dta) {
@@ -78,6 +82,21 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
                     .unique();
         }
         dynamicBeanDao.delete(dta);
+    }
+
+    /**
+     * 根据动态 feed_id 删除动态
+     *
+     * @param feed_id
+     */
+    public void deleteDynamicByFeedId(long feed_id) {
+        DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
+        DynamicBean dta = dynamicBeanDao.queryBuilder()
+                .where(DynamicBeanDao.Properties.Feed_id.eq(feed_id))
+                .unique();
+        if (dta != null) {
+            dynamicBeanDao.delete(dta);
+        }
     }
 
     /**
@@ -104,8 +123,11 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
 
                 break;
             case ApiConfig.DYNAMIC_TYPE_NEW:
-
-                break;
+                datas = dynamicBeanDao.queryBuilder()
+                        .whereOr(DynamicBeanDao.Properties.Hot_creat_time.isNull(), DynamicBeanDao.Properties.Hot_creat_time.eq(0), DynamicBeanDao.Properties.IsFollowed.eq(false))
+                        .list();
+                dynamicBeanDao.deleteInTx(datas);
+                return;
             case ApiConfig.DYNAMIC_TYPE_MY_COLLECTION:
                 DynamicToolBeanDao dynamicToolBeanDao = getWDaoSession().getDynamicToolBeanDao();
                 QueryBuilder<DynamicToolBean> queryBuilder = dynamicToolBeanDao.queryBuilder();

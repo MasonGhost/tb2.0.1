@@ -166,7 +166,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
     }
 
     @Override
-    public void getCurrentDynamic(long feed_id) {
+    public void getCurrentDynamic(final long feed_id) {
         mRepository.getDynamicList(ApiConfig.DYNAMIC_TYPE_NEW, DEFAULT_PAGE_MAX_ID, 1, String.valueOf(feed_id), false)
                 .subscribe(new BaseSubscribe<List<DynamicBean>>() {
                     @Override
@@ -177,11 +177,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
                     @Override
                     protected void onFailure(String message, int code) {
                         LogUtils.i(message);
-                        if (code == ErrorCodeConfig.DYNAMIC_HAS_BE_DELETED) {
-                            mRootView.dynamicHasBeDeleted();
-                        } else {
-                            mRootView.loadAllError();
-                        }
+                        handleDynamicHasBeDeleted(code, feed_id);
                     }
 
                     @Override
@@ -254,11 +250,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
                     @Override
                     protected void onFailure(String message, int code) {
                         LogUtils.i(message);
-                        if (code == ErrorCodeConfig.DYNAMIC_HAS_BE_DELETED) {
-                            mRootView.dynamicHasBeDeleted();
-                        } else {
-                            mRootView.loadAllError();
-                        }
+                        handleDynamicHasBeDeleted(code, feed_id);
                     }
 
                     @Override
@@ -267,6 +259,21 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
                     }
                 });
         addSubscrebe(subscription);
+    }
+
+    /**
+     * 处理动态被删除了
+     *
+     * @param code
+     * @param feed_id
+     */
+    private void handleDynamicHasBeDeleted(int code, Long feed_id) {
+        if (code == ErrorCodeConfig.DYNAMIC_HAS_BE_DELETED) {
+            mDynamicBeanGreenDao.deleteDynamicByFeedId(feed_id);
+            mRootView.dynamicHasBeDeleted();
+        } else {
+            mRootView.loadAllError();
+        }
     }
 
     @Override

@@ -381,6 +381,8 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
      * @param backgroundAnimator
      */
     public void animationExit(ObjectAnimator backgroundAnimator) {
+        // 退出隐藏查看原图按钮，防止显示在透明背景上
+        mTvOriginPhoto.setVisibility(View.GONE);
         // 高清图片可见，那就高清图片退出动画
         if (mIvPager.getVisibility() == View.VISIBLE) {
             // 图片处于放大状态，先让它复原
@@ -417,6 +419,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             public void run() {
                 Bundle bundle = getArguments();
                 bundle.putBoolean("animationIn", false);
+                LogUtils.i("startInAnim"+"endAction");
             }
         };
         TransferImageAnimationUtil.startInAnim(rect, mIvPager, endAction);

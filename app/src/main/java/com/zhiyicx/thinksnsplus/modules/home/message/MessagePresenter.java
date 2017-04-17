@@ -7,6 +7,7 @@ import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.ActivityHandler;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.imsdk.db.dao.ConversationDao;
@@ -493,7 +494,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                 textEndTip = mContext.getString(R.string.like_me);
                 max_user_nums = MAX_USER_NUMS_DIGG;
                 DigedBean lastDiggBend = mDigedBeanGreenDao.getLastData();
-                if (lastDiggBend != null && lastDiggBend.getId() > flushMessage.getMax_id()) {
+                if (lastDiggBend != null && flushMessage.getMax_id() != 0 && lastDiggBend.getId() > flushMessage.getMax_id()) {
                     flushMessage.setCount(0);
                 }
 
@@ -559,7 +560,9 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         if (commentFlushMessage.getCount() >= MAX_USER_NUMS_COMMENT) {
             flushMessage.setUids(commentFlushMessage.getUids());
         } else {
-            flushMessage.setUids((TextUtils.isEmpty(commentFlushMessage.getUids()) ? "" : "," + commentFlushMessage.getUids()) + flushMessage.getUids());
+            String uids = ConvertUtils.removeSymbolStartWith((TextUtils.isEmpty(commentFlushMessage.getUids()) ? "" : "," + commentFlushMessage.getUids()) + flushMessage.getUids(), ",");
+            uids = ConvertUtils.removeSymbolEndWith(uids, ",");
+            flushMessage.setUids(uids);
         }
     }
 

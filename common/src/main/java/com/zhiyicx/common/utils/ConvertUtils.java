@@ -57,6 +57,7 @@ public class ConvertUtils {
         }
         return String.valueOf(number);
     }
+
     /**
      * ⦁	消息的字数显示不超过99，超过99均显示99
      *
@@ -65,10 +66,42 @@ public class ConvertUtils {
      */
     public static String messageNumberConvert(int number) {
         if (number > 99) {
-           return String.valueOf(99);
+            return String.valueOf(99);
         }
         return String.valueOf(number);
     }
+
+    /**
+     * 去除头部符号
+     *
+     * @param str
+     * @param symbol
+     * @return
+     */
+    public static String removeSymbolStartWith(String str, String symbol) {
+
+        if (str.startsWith(symbol)) {
+            str = removeSymbolStartWith(str.substring(1, str.length()), symbol);
+        }
+        return str;
+    }
+
+    /**
+     * 去除尾部符号
+     *
+     * @param str
+     * @param symbol
+     * @return
+     */
+    public static String removeSymbolEndWith(String str, String symbol) {
+
+        if (str.endsWith(symbol)) {
+            str = removeSymbolEndWith(str.substring(0, str.length() - 1), symbol);
+        }
+
+        return str;
+    }
+
     /**
      * byteArr 转 hexString
      * <p>例如：</p>
