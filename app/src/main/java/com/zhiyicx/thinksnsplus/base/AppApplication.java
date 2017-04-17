@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -363,7 +364,8 @@ public class AppApplication extends TSApplication {
             public void onActivityResumed(Activity activity) {
                 if ((activity instanceof MusicPlayActivity)) {
                     WindowUtils.hidePopupWindow();
-                } else if (sPlaybackManager != null) {
+                } else if (sPlaybackManager != null&&sPlaybackManager.getState()!= PlaybackStateCompat.STATE_NONE
+                        &&sPlaybackManager.getState()!= PlaybackStateCompat.STATE_STOPPED) {
                     WindowUtils.showPopupWindow(AppApplication.this);
                 }
 

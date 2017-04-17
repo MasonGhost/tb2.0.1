@@ -188,12 +188,16 @@ public class PlaybackManager implements Playback.Callback {
         mServiceCallback.onBufferingUpdate(percent);
     }
 
+    public int getState(){
+        return mPlayback.getState();
+    }
+
     public void switchToPlayback(Playback playback, boolean resumePlaying) {
         if (playback == null) {
             throw new IllegalArgumentException("Playback cannot be null");
         }
         // suspend the current one.
-        int oldState = mPlayback.getState();
+        int oldState = getState();
         int pos = mPlayback.getCurrentStreamPosition();
         String currentMediaId = mPlayback.getCurrentMediaId();
         mPlayback.stop(false);
