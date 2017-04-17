@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
 import com.antfortune.freeline.FreelineCore;
@@ -23,19 +22,17 @@ import com.zhiyicx.common.net.intercept.CommonRequestIntercept;
 import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.FileUtils;
-import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.manage.ZBIMSDK;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
-import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.QueueManager;
-import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.WindowUtils;
+import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
@@ -367,8 +364,8 @@ public class AppApplication extends TSApplication {
                 } else if (sPlaybackManager != null&&sPlaybackManager.getState()!= PlaybackStateCompat.STATE_NONE
                         &&sPlaybackManager.getState()!= PlaybackStateCompat.STATE_STOPPED) {
                     WindowUtils.showPopupWindow(AppApplication.this);
-                }
 
+                }
             }
 
             @Override

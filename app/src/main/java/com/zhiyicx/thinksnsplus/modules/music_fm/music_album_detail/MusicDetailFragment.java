@@ -24,17 +24,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.ImageViewTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideStokeTransform;
 import com.zhiyicx.baseproject.utils.ImageUtils;
-import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FastBlur;
-import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -43,7 +39,7 @@ import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentHeader;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
-import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.WindowUtils;
+import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 import com.zhiyicx.thinksnsplus.widget.IconTextView;
 import com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout;
@@ -63,7 +59,6 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
-import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_ABLUM_COLLECT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_LIKE;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListFragment.BUNDLE_MUSIC_ABLUM;
@@ -367,7 +362,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 bundle.putSerializable(MUSIC_INFO, mAlbumDetailsBean);
                 intent.putExtra(MUSIC_INFO, bundle);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                WindowUtils.setMusicAlbumDetailsBean(mAlbumDetailsBean);
+                WindowUtils.setMusicAlbumDetailsBean(bundle);
                 MediaControllerCompat controller = getActivity().getSupportMediaController();
                 MediaMetadataCompat metadata = controller.getMetadata();
                 if (metadata != null) {
@@ -482,7 +477,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 .load(ImageUtils.imagePathConvert(albumListBean.getStorage().getId() + "",
                         ImageZipConfig.IMAGE_70_ZIP))
                 .asBitmap()
-                .transform(new GlideStokeTransform(getActivity(), 20))
+                .transform(new GlideStokeTransform(getActivity(), 5))
                 .placeholder(R.drawable.shape_default_image)
                 .error(R.drawable.shape_default_image)
                 .into(new ImageViewTarget<Bitmap>(mFragmentMusicDetailHeadIamge) {

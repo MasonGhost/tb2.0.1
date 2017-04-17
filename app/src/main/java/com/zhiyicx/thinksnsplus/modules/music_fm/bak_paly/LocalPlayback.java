@@ -12,13 +12,11 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
 
-import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProvider;
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProviderSource;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
-import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.WindowUtils;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayService;
 
 import org.simple.eventbus.EventBus;

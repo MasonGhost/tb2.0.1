@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.music_fm.music_helper;
+package com.zhiyicx.baseproject.utils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,16 +18,12 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 
+import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
-import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 
 import java.math.BigDecimal;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailFragment.MUSIC_INFO;
 
 
 /**
@@ -44,7 +40,7 @@ public class WindowUtils {
     private static View mView = null;
     private static WindowManager mWindowManager = null;
     private static Context mContext = null;
-    private static MusicAlbumDetailsBean sMusicAlbumDetailsBean;
+    private static Bundle sMusicAlbumDetailsBean;
 
     private static Boolean isShown = false;
     private static WindowManager.LayoutParams mLayoutParams;
@@ -154,11 +150,11 @@ public class WindowUtils {
         return isShown;
     }
 
-    public static MusicAlbumDetailsBean getMusicAlbumDetailsBean() {
+    public static Bundle getMusicAlbumDetailsBean() {
         return sMusicAlbumDetailsBean;
     }
 
-    public static void setMusicAlbumDetailsBean(MusicAlbumDetailsBean musicAlbumDetailsBean) {
+    public static void setMusicAlbumDetailsBean(Bundle musicAlbumDetailsBean) {
         sMusicAlbumDetailsBean = musicAlbumDetailsBean;
     }
 
@@ -202,12 +198,15 @@ public class WindowUtils {
                             if (getMusicAlbumDetailsBean()==null){
                                 return true;
                             }
-                            Intent intent = new Intent(mContext, MusicPlayActivity.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable(MUSIC_INFO, getMusicAlbumDetailsBean());
-                            intent.putExtra(MUSIC_INFO, bundle);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            mContext.startActivity(intent);
+
+//                            Intent intent = new Intent(mContext, MusicPlayActivity.class);
+                            Intent intent1 = new Intent("android.intent.action.MAIN");
+                            intent1.setClassName(mContext,"com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity");
+//                            Bundle bundle = new Bundle();
+//                            bundle.putSerializable(MusicDetailFragment.MUSIC_INFO, getMusicAlbumDetailsBean());
+                            intent1.putExtra("music_info", getMusicAlbumDetailsBean());
+                            intent1.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            mContext.startActivity(intent1);
                             return false;
                         }
 
