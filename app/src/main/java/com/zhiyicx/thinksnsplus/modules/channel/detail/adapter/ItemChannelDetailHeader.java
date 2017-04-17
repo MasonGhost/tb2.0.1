@@ -29,7 +29,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
@@ -267,29 +269,27 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
         ChannelInfoBean channelInfoBean = channelSubscripBean.getChannelInfoBean();
         // 显示头像
         ChannelInfoBean.ChannelCoverBean channelCoverBean = channelInfoBean.getCover();
-
+        // 图片边框宽度2dp
+        int strokeWidth = ConvertUtils.dp2px(mActivity, 2);
         Glide.with(mActivity)
                 .load(ImageUtils.imagePathConvert(channelCoverBean.getId() + "",
                         ImageZipConfig.IMAGE_70_ZIP))
                 .asBitmap()
-                .transform(new GlideStokeTransform(mActivity, 20))
-                .placeholder(R.mipmap.icon_256)
-                .error(R.mipmap.icon_256)
-                .into(new SimpleTarget<Bitmap>() {
+                .transform(new GlideStokeTransform(mActivity, strokeWidth))
+                .placeholder(R.drawable.shape_default_image)
+                .error(R.drawable.shape_default_image)
+                .into(new ImageViewTarget<Bitmap>(iv_channel_header_icon) {
                     @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap>
-                            glideAnimation) {
-                        Bitmap mBgBitmap = resource.copy(Bitmap.Config.RGB_565, false);
+                    protected void setResource(Bitmap resource) {
                         // 设置封面
                         iv_channel_header_icon.setImageBitmap(resource);
-                        Palette mPalette = Palette.from(mBgBitmap).generate();
+                        Bitmap mBgBitmap = resource.copy(Bitmap.Config.RGB_565, false);
                         // 设置封面
                         BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap
                                 (mBgBitmap, mBgBitmap.getWidth(), mBgBitmap.getHeight()));
                         fl_header_container.setBackgroundDrawable(drawable);
                     }
                 });
-
         // 设置频道名称
         tv_channel_name.setText(channelInfoBean.getTitle());
         tv_channel_name.post(new Runnable() {
