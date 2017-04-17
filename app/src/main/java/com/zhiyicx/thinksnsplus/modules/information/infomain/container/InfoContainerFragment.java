@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMyCatesBean;
@@ -181,22 +182,14 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
         mInfoTypeBean = infoType;
         mInfoTypeBean.getMy_cates().add(0, new InfoTypeMyCatesBean(-1L, getString(R.string
                 .info_recommend)));
-
-        Observable.from(infoType.getMy_cates())
-                .filter(new Func1<InfoTypeMyCatesBean, Boolean>() {
-                    @Override
-                    public Boolean call(InfoTypeMyCatesBean myCatesBean) {
-                        return mInfoTypeBean.getMy_cates().indexOf(myCatesBean) != 0
-                                && !mTitle.contains(myCatesBean.getName());
-                    }
-                })
-                .subscribe(new Action1<InfoTypeMyCatesBean>() {
-                    @Override
-                    public void call(InfoTypeMyCatesBean myCatesBean) {
-                        mTitle.add(myCatesBean.getName());
-                        mFragments.add(InfoListFragment.newInstance(myCatesBean.getId() + ""));
-                    }
-                });
+        for (InfoTypeMyCatesBean myCatesBean:infoType.getMy_cates()){
+            if (mInfoTypeBean.getMy_cates().indexOf(myCatesBean) != 0
+                    && !mTitle.contains(myCatesBean.getName())){
+                LogUtils.d(myCatesBean.getName());
+                mTitle.add(myCatesBean.getName());
+                mFragments.add(InfoListFragment.newInstance(myCatesBean.getId() + ""));
+            }
+        }
         mMyAdapter.notifyDataSetChanged();
         initMagicIndicator(mTitle);
     }

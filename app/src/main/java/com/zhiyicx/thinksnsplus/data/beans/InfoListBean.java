@@ -69,9 +69,15 @@ public class InfoListBean extends BaseListBean implements Serializable{
     public void setList(List<InfoListDataBean> list) {
         this.list = list;
     }
+
     @Keep
     public void setRecommend(List<InfoRecommendBean> recommend) {
         this.recommend = recommend;
+    }
+
+    @Keep
+    public List<InfoRecommendBean> getNetRecommend() {
+        return recommend;
     }
     /**
      * To-many relationship, resolved on first access (and after reset).
@@ -158,11 +164,40 @@ public class InfoListBean extends BaseListBean implements Serializable{
         }
         myDao.update(this);
     }
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.info_type);
+        dest.writeTypedList(this.list);
+        dest.writeTypedList(this.recommend);
+    }
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1149138458)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getInfoListBeanDao() : null;
     }
+    protected InfoListBean(Parcel in) {
+        super(in);
+        this.info_type = (Long) in.readValue(Long.class.getClassLoader());
+        this.list = in.createTypedArrayList(InfoListDataBean.CREATOR);
+        this.recommend = in.createTypedArrayList(InfoRecommendBean.CREATOR);
+    }
 
+    public static final Creator<InfoListBean> CREATOR = new Creator<InfoListBean>() {
+        @Override
+        public InfoListBean createFromParcel(Parcel source) {
+            return new InfoListBean(source);
+        }
+
+        @Override
+        public InfoListBean[] newArray(int size) {
+            return new InfoListBean[size];
+        }
+    };
 }

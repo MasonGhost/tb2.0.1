@@ -95,13 +95,11 @@ public class InfoTypeBeanGreenDaoImpl extends CommonCacheImpl<InfoTypeBean> {
 
     public List<InfoTypeMyCatesBean> getMyCatesList() {
         List<InfoTypeMyCatesBean> data = mInfoTypeMyCatesBeanDao.loadAll();
-        Collections.reverse(data);
         return data;
     }
 
     public List<InfoTypeMoreCatesBean> getMoreCatesList() {
         List<InfoTypeMoreCatesBean> data = mTypeMoreCatesBeanDao.loadAll();
-        Collections.reverse(data);
         return data;
     }
 

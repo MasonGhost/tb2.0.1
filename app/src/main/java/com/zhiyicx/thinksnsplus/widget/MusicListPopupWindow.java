@@ -8,11 +8,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.antfortune.freeline.util.AppUtils;
+import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -72,7 +76,7 @@ public class MusicListPopupWindow extends PopupWindow {
     private void initView() {
         initLayout();
         setWidth(LinearLayout.LayoutParams.MATCH_PARENT);
-        setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+        setHeight((int)(DeviceUtils.getScreenHeight(mActivity)*0.6));
         setFocusable(mIsFocus);
         setOutsideTouchable(mIsOutsideTouch);
         setAnimationStyle(R.style.style_actionPopupAnimation);
