@@ -128,8 +128,6 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
                 }).subscribe(new Action1<InfoListBean>() {
             @Override
             public void call(InfoListBean data) {
-                LogUtils.d("call:::" + data.getInfo_type());
-                LogUtils.d("call:::" + data.getList().size());
                 if (data.getRecommend() != null) {
                     localData.addAll(data.getRecommend());
                 }
