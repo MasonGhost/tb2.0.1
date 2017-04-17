@@ -42,6 +42,7 @@
         android:layout_marginTop="@dimen/spacing_normal"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_sub_title"
+        android:includeFontPadding="false"
         tools:text="阿超的超能力"/>
 
     <TextView

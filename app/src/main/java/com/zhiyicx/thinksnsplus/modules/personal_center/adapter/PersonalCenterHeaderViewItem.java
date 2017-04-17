@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.support.v7.widget.RecyclerViewScrollEvent;
+import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView;
+import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.view.ViewScrollChangeEvent;
+import com.jakewharton.rxbinding.widget.RxAdapter;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBorderTransform;
@@ -38,6 +44,8 @@ import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
+import rx.functions.Action1;
+
 /**
  * @author LiuChao
  * @describe 个人中心头部
@@ -46,6 +54,7 @@ import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
  */
 
 public class PersonalCenterHeaderViewItem {
+    private static final String TAG = "PersonalCenterHeaderVie";
     /**********************************
      * headerView控件
      ********************************/
@@ -103,6 +112,7 @@ public class PersonalCenterHeaderViewItem {
     public static int[] TOOLBAR_BLACK_ICON = {51, 51, 51};
 
     private View headerView;
+    private int userNameFirstY = 0;
 
     public PersonalCenterHeaderViewItem(Activity activity, PhotoSelectorImpl photoSelector, RecyclerView recyclerView, HeaderAndFooterWrapper headerAndFooterWrapper, View mToolBarContainer) {
         mActivity = activity;
@@ -115,9 +125,11 @@ public class PersonalCenterHeaderViewItem {
         back = (ImageView) mToolBarContainer.findViewById(R.id.iv_back);
         more = (ImageView) mToolBarContainer.findViewById(R.id.iv_more);
         userName = (TextView) mToolBarContainer.findViewById(R.id.tv_user_name);
+        int translationY = mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_height);
+        userName.setY(translationY);
         bootomDivider = mToolBarContainer.findViewById(R.id.v_horizontal_line);
         // 设置初始透明度为0
-        setViewColorWithAlpha(userName, TITLE_RGB, 0);
+        setViewColorWithAlpha(userName, TITLE_RGB, 255);
         setViewColorWithAlpha(mToolBarContainer, STATUS_RGB, 0);
         //setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, 0);
         setViewColorWithAlpha(bootomDivider, TOOLBAR_DIVIDER_RGB, 0);
@@ -146,13 +158,23 @@ public class PersonalCenterHeaderViewItem {
                 //滑动的距离
                 mDistanceY += dy;
                 int headerTop = headerView.getTop();
-                //int headerViewHeight = headerView.getHeight();
-                // 移动距离为封面图的高度，也就是屏幕宽度的一般，如果改了封面高度，记得修改这儿
-                int headerViewHeight = UIUtils.getWindowWidth(mActivity) / 2;
-
-                //当滑动的距离 <= headerView高度的时候，改变Toolbar背景色的透明度，达到渐变的效果
-                if (mDistanceY <= headerViewHeight) {
-                    float scale = (float) mDistanceY / headerViewHeight;
+                //toolbar文字上边缘距离toolbar上边缘的距离
+                int userNamePadding = (mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_height) - mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_center_text_size)) / 2;
+                // 滑动距离为多少时，toolbar完全不透明
+                int needDistanceY = userNameFirstY - mToolBarContainer.getHeight() - userNamePadding;
+                LogUtils.i(TAG + " mToolBarContainer.getHeight() " + mToolBarContainer.getHeight() + " needDistanceY " + needDistanceY + " mDistanceY " + mDistanceY);
+                // toolbar文字移动到toolbar中间，这期间的最大滑动距离
+                int maxDistance = needDistanceY + mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_height);
+                if (mDistanceY >= needDistanceY && mDistanceY <= maxDistance) {
+                    userName.setTranslationY(maxDistance - mDistanceY);
+                } else if (mDistanceY > maxDistance) {
+                    userName.setTranslationY(0);
+                } else {
+                    userName.setTranslationY(mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_height));
+                }
+                //当滑动的距离 <= needDistanceY高度的时候，改变Toolbar背景色的透明度，达到渐变的效果
+                if (mDistanceY <= needDistanceY) {
+                    float scale = (float) mDistanceY / needDistanceY;
                     float alpha = scale * 255;
                     //setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, (int) alpha);
                     setViewColorWithAlpha(mToolBarContainer, STATUS_RGB, (int) alpha);
@@ -185,14 +207,13 @@ public class PersonalCenterHeaderViewItem {
                 if (headerTop >= 0) {
                     setViewColorWithAlpha(userName, TITLE_RGB, 0);
                     setViewColorWithAlpha(mToolBarContainer, STATUS_RGB, 0);
-                   // setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, 0);
+                    // setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, 0);
                     setViewColorWithAlpha(bootomDivider, TOOLBAR_DIVIDER_RGB, 0);
                     setToolbarIconColor(Color.argb(255, TOOLBAR_WHITE_ICON[0]
                             , TOOLBAR_WHITE_ICON[1], TOOLBAR_WHITE_ICON[2]));
                     // 尝试设置状态栏文字成白色
                     StatusBarUtils.statusBarDarkMode(mActivity);
                 }
-                LogUtils.i("onScrolled--> headerViewHeight" + headerViewHeight + " mDistanceY-->" + mDistanceY);
             }
         });
     }
@@ -214,6 +235,15 @@ public class PersonalCenterHeaderViewItem {
                 .build());
         // 设置用户名
         tv_user_name.setText(userInfoBean.getName());
+        tv_user_name.post(new Runnable() {
+            @Override
+            public void run() {
+                int[] location = new int[2];
+                tv_user_name.getLocationOnScreen(location);
+                userNameFirstY = location[1];
+                LogUtils.i(TAG + "tv_user_name " + userNameFirstY);
+            }
+        });
         // 标题栏的用户名
         userName.setText(userInfoBean.getName());
         // 设置简介
