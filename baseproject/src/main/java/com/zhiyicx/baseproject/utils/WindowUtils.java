@@ -44,6 +44,7 @@ public class WindowUtils {
     private static Bundle sMusicAlbumDetailsBean;
 
     private static Boolean isShown = false;
+    private static Boolean isPause = false;
     private static WindowManager.LayoutParams mLayoutParams;
 
     private static OnWindowDismisslistener windowDismisslistener;
@@ -88,6 +89,7 @@ public class WindowUtils {
         mView = setUpView(context, "");
 
         mImageView = (ImageView) mView.findViewById(R.id.musci);
+        changeToBlackIcon();
         mLayoutParams = new LayoutParams();
         String packname = context.getPackageName();
         PackageManager pm = context.getPackageManager();
@@ -137,6 +139,26 @@ public class WindowUtils {
 
     public static Boolean getIsShown() {
         return isShown;
+    }
+
+    public static Boolean getIsPause() {
+        return isPause;
+    }
+
+    public static void setIsPause(Boolean isPause) {
+        WindowUtils.isPause = isPause;
+    }
+
+    public static void changeToWhiteIcon(){
+        if (mImageView!=null){
+            mImageView.setImageResource(R.mipmap.music_ico_suspension_white);
+        }
+    }
+
+    public static void changeToBlackIcon(){
+        if (mImageView!=null){
+            mImageView.setImageResource(R.mipmap.music_ico_suspension_black);
+        }
     }
 
     public static Bundle getMusicAlbumDetailsBean() {
