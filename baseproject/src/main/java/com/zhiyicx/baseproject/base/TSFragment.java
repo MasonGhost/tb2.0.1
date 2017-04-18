@@ -364,7 +364,6 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * 音乐悬浮窗是否正在显示
      */
     protected void musicWindowsStatus(boolean isShow) {
-        LogUtils.d("musicWindowsStatus:::" + isShow);
         final View view = getLeftViewOfMusicWindow();
         if (isShow && !rightViewHadTranslated) {
             if (view.getVisibility() == View.VISIBLE) {

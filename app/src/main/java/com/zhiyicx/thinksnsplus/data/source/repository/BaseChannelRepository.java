@@ -56,13 +56,15 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
         // 发送订阅后台处理任务
         BackgroundRequestTaskBean backgroundRequestTaskBean = null;
         backgroundRequestTaskBean = new BackgroundRequestTaskBean();
+        ChannelInfoBean channelInfoBean = channelSubscripBean.getChannelInfoBean();
         if (channelSubscripBean.getChannelSubscriped()) {
             // 已经订阅，变为未订阅
             backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
-
+            channelInfoBean.setFollow_count(channelInfoBean.getFollow_count() - 1);// 订阅数-1
         } else {
             // 未订阅，变为已订阅
             backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST);
+            channelInfoBean.setFollow_count(channelInfoBean.getFollow_count() + 1);// 订阅数+1
         }
         // 设置请求路径
         backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_HANDLE_SUBSCRIB_CHANNEL_S, channelSubscripBean.getId() + ""));
@@ -76,7 +78,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
 
     @Override
     public Observable<BaseJson<Object>> handleSubscribChannelByFragment(final ChannelSubscripBean channelSubscripBean) {
-        boolean subscribState = channelSubscripBean.getChannelSubscriped();
+        final boolean subscribState = channelSubscripBean.getChannelSubscriped();
         long channelId = channelSubscripBean.getId();
         Observable<BaseJson<Object>> observable = null;
         if (subscribState) {
@@ -91,6 +93,12 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
             public void call(BaseJson<Object> objectBaseJson) {
                 if (objectBaseJson.isStatus() || objectBaseJson.getCode() == 0) {
                     // 服务器返回正常状态：操作数据库，数据源
+                    ChannelInfoBean channelInfoBean = channelSubscripBean.getChannelInfoBean();
+                    if (subscribState) {
+                        channelInfoBean.setFollow_count(channelInfoBean.getFollow_count() - 1);// 订阅数-1
+                    } else {
+                        channelInfoBean.setFollow_count(channelInfoBean.getFollow_count() + 1);// 订阅数+1
+                    }
                     // 更改数据源，切换订阅状态
                     channelSubscripBean.setChannelSubscriped(!channelSubscripBean.getChannelSubscriped());
                     // 更新数据库

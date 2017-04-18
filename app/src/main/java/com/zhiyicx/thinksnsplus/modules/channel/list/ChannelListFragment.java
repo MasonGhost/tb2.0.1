@@ -69,7 +69,7 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
 
     @Override
     protected boolean isNeedRefreshDataWhenComeIn() {
-        return false;
+        return true;
     }
 
     @Override

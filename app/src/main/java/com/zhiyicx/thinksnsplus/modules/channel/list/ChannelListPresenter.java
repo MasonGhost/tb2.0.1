@@ -129,6 +129,8 @@ public class ChannelListPresenter extends BasePresenter<ChannelListContract.Repo
         if (position > -1) {
             //更新item的状态
             ChannelSubscripBean currentItem = currentPageData.get(position);
+            int newFollowCount = channelSubscripBean.getChannelInfoBean().getFollow_count();
+            currentItem.getChannelInfoBean().setFollow_count(newFollowCount);
             currentItem.setChannelSubscriped(channelSubscripBean.getChannelSubscriped());
             mRootView.refreshData(position);
         } else {

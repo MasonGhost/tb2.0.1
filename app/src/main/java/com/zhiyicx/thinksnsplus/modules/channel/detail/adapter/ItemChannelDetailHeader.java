@@ -315,6 +315,14 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
+    /**
+     * 刷新订阅数
+     */
+    public void refreshSubscribeData(ChannelInfoBean channelInfoBean) {
+        // 设置订阅人数
+        tv_subscrib_count.setText(mActivity.getString(R.string.channel_follow) + " " + ConvertUtils.numberConvert(channelInfoBean.getFollow_count()));
+    }
+
     private void initHeaderViewUI(View headerView) {
         ViewGroup.LayoutParams headerLayoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         headerView.setLayoutParams(headerLayoutParams);
