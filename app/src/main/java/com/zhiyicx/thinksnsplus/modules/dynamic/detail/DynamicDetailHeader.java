@@ -202,15 +202,13 @@ public class DynamicDetailHeader {
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (animationRectBeanArrayList.isEmpty()) {
-                        for (int i = 0; i < mPhotoContainer.getChildCount(); i++) {
-                            View photoView = mPhotoContainer.getChildAt(i);
-                            ImageView imageView = (ImageView) photoView.findViewById(R.id.dynamic_content_img);
-                            AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
-                            animationRectBeanArrayList.add(rect);
-                        }
+                    animationRectBeanArrayList.clear();
+                    for (int i = 0; i < mPhotoContainer.getChildCount(); i++) {
+                        View photoView = mPhotoContainer.getChildAt(i);
+                        ImageView imageView = (ImageView) photoView.findViewById(R.id.dynamic_content_img);
+                        AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
+                        animationRectBeanArrayList.add(rect);
                     }
-
                     GalleryActivity.startToGallery(mContext, mPhotoContainer.indexOfChild(photoView), photoList, animationRectBeanArrayList);
                 }
             });

@@ -7,6 +7,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -56,9 +57,26 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     private boolean mIscUseSatusbar = false;// 内容是否需要占用状态栏
     protected ViewGroup mSnackRootView;
     private boolean mIsNeedClick = true;// 缺省图是否需要点击
+    private boolean rightViewHadTranslated = false;// 右上角的按钮因为音乐播放悬浮显示，是否已经偏左移动
     private boolean isFirstIn = true;// 是否是第一次进入页面
     private Subscription mViewTreeSubscription = null;// View 树监听订阅器
 
+    @Nullable
+    @Override
+
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        if (getLeftViewOfMusicWindow() != null) {
+            RxView.globalLayouts(getLeftViewOfMusicWindow())
+                    .subscribe(new Action1<Void>() {
+                        @Override
+                        public void call(Void aVoid) {
+                            musicWindowsStatus(WindowUtils.getIsShown());
+                        }
+                    });
+        }
+        return view;
+    }
 
     @Override
     protected View getContentView() {
@@ -69,7 +87,11 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         if (setUseSatusbar() && setUseStatusView()) { // 是否添加和状态栏等高的占位 View
             mStatusPlaceholderView = new View(getContext());
             mStatusPlaceholderView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceUtils.getStatuBarHeight(getContext())));
-            mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), setToolBarBackgroud()));
+            if (StatusBarUtils.intgetType(getActivity().getWindow()) == 0 && ContextCompat.getColor(getContext(), setToolBarBackgroud()) == Color.WHITE) {
+                mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.themeColor));
+            } else {
+                mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), setToolBarBackgroud()));
+            }
             linearLayout.addView(mStatusPlaceholderView);
         }
         if (showToolbar()) {// 在需要显示toolbar时，进行添加
@@ -364,6 +386,22 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     /**
      * 音乐悬浮窗是否正在显示
      */
+/*    protected void musicWindowsStatus(boolean isShow) {
+        final View view = getLeftViewOfMusicWindow();
+        if (isShow && !rightViewHadTranslated) {
+            if (view.getVisibility() == View.VISIBLE) {
+                // 向左移动一定距离
+                int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
+                view.setTranslationX(-rightX);
+                rightViewHadTranslated = true;
+            } else {
+                view.setTranslationX(0);
+                rightViewHadTranslated = false;
+            }
+        }
+    }*/
+
+
     protected void musicWindowsStatus(final boolean isShow) {
         LogUtils.d("musicWindowsStatus:::" + isShow);
         WindowUtils.changeToBlackIcon();

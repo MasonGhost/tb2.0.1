@@ -16,7 +16,7 @@
             android:id="@+id/et_dynamic_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_large"
+            android:layout_marginBottom="@dimen/spacing_normal"
             style="@style/style_edit_cursor"
             android:layout_marginLeft="@dimen/spacing_normal_large"
             android:layout_marginRight="@dimen/spacing_normal_large"
@@ -29,8 +29,8 @@
             layout="@layout/include_horizontal_divider_light"
             android:layout_width="match_parent"
             android:layout_height="@dimen/divider_line"
-            android:layout_marginLeft="@dimen/spacing_normal_large"
-            android:layout_marginRight="@dimen/spacing_normal_large"
+            android:layout_marginLeft="@dimen/spacing_large"
+            android:layout_marginRight="@dimen/spacing_large"
             ></include>
 
         <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView

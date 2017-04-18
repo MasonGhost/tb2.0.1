@@ -284,6 +284,10 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         } else if (!stateSuccess && !subscribState) {
             // 取消订阅失败
         }
+        if (stateSuccess) {
+            // 操作成功，需要刷新订阅数量
+            mItemChannelDetailHeader.refreshSubscribeData(channelSubscripBean.getChannelInfoBean());
+        }
         initSubscribState(channelSubscripBean);
     }
 
