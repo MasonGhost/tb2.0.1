@@ -75,7 +75,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
         mIlvComment.post(new Runnable() { // 处理评论框位置协调
             @Override
             public void run() {
-//                mRvList.setPadding(0, 0, 0, mIlvComment.getHeight());
+                mRvList.setPadding(0, 0, 0, mIlvComment.getHeight());
             }
         });
         mMusicCommentHeader = new MusicCommentHeader(getActivity());

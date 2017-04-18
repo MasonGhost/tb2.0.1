@@ -73,7 +73,6 @@ public class AppApplication extends TSApplication {
     private static PlaybackManager sPlaybackManager;
     public static List<String> sOverRead = new ArrayList<>();
     public int mActivityCount = 0;
-    private int mPlayActivity = 0;
 
     @Override
     public void onCreate() {
@@ -353,16 +352,10 @@ public class AppApplication extends TSApplication {
                 if (mActivityCount == 0) {// 切到后台
                     WindowUtils.hidePopupWindow();
                 }
-                if ((activity instanceof MusicPlayActivity)) {
-                    mPlayActivity = 0;
-                }
             }
 
             @Override
             public void onActivityStarted(Activity activity) {
-                if ((activity instanceof MusicPlayActivity)) {
-                    mPlayActivity = 1;
-                }
                 mActivityCount++;
             }
 

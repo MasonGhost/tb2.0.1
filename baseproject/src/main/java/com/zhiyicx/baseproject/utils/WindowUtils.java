@@ -96,8 +96,10 @@ public class WindowUtils {
         boolean permission = (PackageManager.PERMISSION_GRANTED == pm.checkPermission("android" +
                 ".permission.SYSTEM_ALERT_WINDOW", packname));
         if (permission) {
+            LogUtils.d("TYPE_PHONE");
             mLayoutParams.type = LayoutParams.TYPE_PHONE;
         } else {
+            LogUtils.d("TYPE_TOAST");
             mLayoutParams.type = LayoutParams.TYPE_TOAST;
         }
 
