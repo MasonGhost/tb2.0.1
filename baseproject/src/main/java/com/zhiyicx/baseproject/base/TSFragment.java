@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +41,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact 335891510@qq.com
  */
 
-public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<P> {
+public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<P> implements WindowUtils.OnWindowDismisslistener {
     private static final int DEFAULT_TOOLBAR = R.layout.toolbar_custom; // 默认的toolbar
     private static final int DEFAULT_TOOLBAR_BACKGROUD_COLOR = R.color.white;// 默认的toolbar背景色
     private static final int DEFAULT_DIVIDER_COLOR = R.color.general_for_line;// 默认的toolbar下方分割线颜色
@@ -58,7 +57,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     protected ViewGroup mSnackRootView;
     private boolean mIsNeedClick = true;// 缺省图是否需要点击
     private boolean isFirstIn = true;// 是否是第一次进入页面
-    private Subscription mViewTreeSubscription=null;// View 树监听订阅器
+    private Subscription mViewTreeSubscription = null;// View 树监听订阅器
 
 
     @Override
@@ -137,6 +136,13 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     public void onResume() {
         super.onResume();
         musicWindowsStatus(WindowUtils.getIsShown());
+        WindowUtils.setWindowDismisslistener(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        WindowUtils.setWindowDismisslistener(null);
     }
 
     @Override
@@ -187,6 +193,14 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     @Override
     public void showMessage(String message) {
 
+    }
+
+    @Override
+    public void onDismiss() {
+        View view = getLeftViewOfMusicWindow();
+        if (view != null) {
+            view.setTranslationX(0);
+        }
     }
 
     /**
@@ -366,7 +380,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                                     view.setTranslationX(-rightX);
                                 }
                             }
-                            if (mViewTreeSubscription!=null){
+                            if (mViewTreeSubscription != null) {
                                 mViewTreeSubscription.unsubscribe();
                             }
                         }
@@ -537,4 +551,5 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             mStatusPlaceholderView.setBackgroundColor(resId);
         }
     }
+
 }

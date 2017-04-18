@@ -46,7 +46,7 @@ import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoLis
  * @Description
  */
 public class SearchFragment extends TSListFragment<SearchContract.Presenter, InfoListDataBean>
-        implements SearchContract.View, WindowUtils.OnWindowDismisslistener {
+        implements SearchContract.View{
 
     @BindView(R.id.fragment_info_search_back)
     ImageView mFragmentInfoSearchBack;
@@ -68,7 +68,6 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
     protected void musicWindowsStatus(boolean isShow) {
         super.musicWindowsStatus(isShow);
         if (isShow) {
-            WindowUtils.setWindowDismisslistener(this);
             int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
             mFragmentInfoSearchContainer.setPadding(0, 0, rightX, 0);
         }
@@ -151,13 +150,8 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
 
     @Override
     public void onDismiss() {
+        super.onDismiss();
         mFragmentInfoSearchContainer.setPadding(0, 0, 0, 0);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        WindowUtils.setWindowDismisslistener(null);
     }
 
     @Override
