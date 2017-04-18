@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.UIUtils;
@@ -28,6 +30,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.util.concurrent.TimeUnit;
 
+import rx.Subscription;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -54,6 +57,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     private boolean mIscUseSatusbar = false;// 内容是否需要占用状态栏
     protected ViewGroup mSnackRootView;
     private boolean mIsNeedClick = true;// 缺省图是否需要点击
+    private boolean isFirstIn = true;// 是否是第一次进入页面
+    private Subscription mViewTreeSubscription = null;// View 树监听订阅器
 
 
     @Override
@@ -128,6 +133,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
         linearLayout.addView(frameLayout);
         mSnackRootView = (ViewGroup) getActivity().findViewById(android.R.id.content).getRootView();
+
         return linearLayout;
     }
 
@@ -348,9 +354,35 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     /**
      * 音乐悬浮窗是否正在显示
      */
-    protected void musicWindowsStatus(boolean isShow) {
+
+    protected void musicWindowsStatus(final boolean isShow) {
         LogUtils.d("musicWindowsStatus:::" + isShow);
+        WindowUtils.changeToBlackIcon();
+        final View view = getLeftViewOfMusicWindow();
+        if (getLeftViewOfMusicWindow() != null) {
+            mViewTreeSubscription = RxView.globalLayouts(getLeftViewOfMusicWindow())
+                    .subscribe(new Action1<Void>() {
+                        @Override
+                        public void call(Void aVoid) {
+                            if (view != null && isShow) {
+                                if (view.getVisibility() == View.VISIBLE) {
+                                    // 向左移动一定距离
+                                    int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
+                                    view.setTranslationX(-rightX);
+                                }
+                            }
+                            if (mViewTreeSubscription != null) {
+                                mViewTreeSubscription.unsubscribe();
+                            }
+                        }
+                    });
+        }
     }
+
+    protected View getLeftViewOfMusicWindow() {
+        return mToolbarRight;
+    }
+
 
     /**
      * 是否显示分割线,默认显示

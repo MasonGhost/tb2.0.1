@@ -46,6 +46,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
 
     private ImageLoader mImageLoader;
     public static final String BUNDLE_MUSIC_ABLUM = "music_ablum";
+
     /**
      * 数量改变 event_bus 来的
      */
@@ -57,6 +58,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
         mRvList.setOverScrollMode(View.OVER_SCROLL_NEVER);
         mRvList.setPadding(20, 20, 0, 0);
         mRvList.addItemDecoration(new TGridDecoration(20, 20, true));
+        mRvList.setBackgroundColor(0xffffffff);
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
 
     }

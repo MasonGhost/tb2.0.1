@@ -38,12 +38,14 @@ import java.util.TimerTask;
 
 public class WindowUtils {
     private static final String LOG_TAG = "WindowUtils";
+    public static final boolean CAN_DRAG = false;
     private static View mView = null;
     private static WindowManager mWindowManager = null;
     private static Context mContext = null;
     private static Bundle sMusicAlbumDetailsBean;
 
     private static Boolean isShown = false;
+    private static Boolean isPause = false;
     private static WindowManager.LayoutParams mLayoutParams;
 
     private static OnWindowDismisslistener windowDismisslistener;
@@ -105,14 +107,14 @@ public class WindowUtils {
         mLayoutParams.width = ConvertUtils.dp2px(mContext, 44) * 3 / 4;
         mLayoutParams.height = ConvertUtils.dp2px(mContext, 44) * 3 / 4;
         mLayoutParams.x = ConvertUtils.dp2px(mContext, 15);
-        mLayoutParams.y = ConvertUtils.dp2px(mContext, 44) * 1 / 8;
+        mLayoutParams.y = ConvertUtils.dp2px(mContext, 44) / 8;
 
         mRotateAnimation = (RotateAnimation) AnimationUtils.loadAnimation(mContext, R.anim
                 .music_window_rotate);
         mImageView.setAnimation(mRotateAnimation);
         mRotateAnimation.start();
         mWindowManager.addView(mView, mLayoutParams);
-        initDrag();
+        initClickAndDrag();
     }
 
     /**
@@ -130,25 +132,34 @@ public class WindowUtils {
     }
 
     private static View setUpView(final Context context, String str) {
-        View defaultView = LayoutInflater.from(context).inflate(R.layout.windows_music,
+        return LayoutInflater.from(context).inflate(R.layout.windows_music,
                 null);
-        return defaultView;
-    }
-
-    public static void goLeft() {
-        mLayoutParams.x = 90;
-        mLayoutParams.y = 5;
-        mWindowManager.updateViewLayout(mView, mLayoutParams);
-    }
-
-    public static void goRight() {
-        mLayoutParams.x = 20;
-        mLayoutParams.y = 5;
-        mWindowManager.updateViewLayout(mView, mLayoutParams);
     }
 
     public static Boolean getIsShown() {
         return isShown;
+    }
+
+    public static Boolean getIsPause() {
+        return isPause;
+    }
+
+    public static void setIsPause(Boolean isPause) {
+        WindowUtils.isPause = isPause;
+    }
+
+    public static void changeToWhiteIcon() {
+        if (mImageView != null) {
+            LogUtils.d("changeToWhiteIcon");
+            mImageView.setImageResource(R.mipmap.music_ico_suspension_white);
+        }
+    }
+
+    public static void changeToBlackIcon() {
+        if (mImageView != null) {
+            LogUtils.d("changeToBlackIcon");
+            mImageView.setImageResource(R.mipmap.music_ico_suspension_black);
+        }
     }
 
     public static Bundle getMusicAlbumDetailsBean() {
@@ -159,7 +170,7 @@ public class WindowUtils {
         sMusicAlbumDetailsBean = musicAlbumDetailsBean;
     }
 
-    private static void initDrag() {
+    private static void initClickAndDrag() {
         mView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -183,7 +194,9 @@ public class WindowUtils {
 //                        if (mLayoutParams.y > mHeight - mView.getHeight() * 2) mLayoutParams.y = mHeight - mView.getHeight() * 2;
 
                         try {
-                            mWindowManager.updateViewLayout(mView, mLayoutParams);
+                            if (CAN_DRAG) {
+                                mWindowManager.updateViewLayout(mView, mLayoutParams);
+                            }
                         } catch (Exception e) {
                             LogUtils.d(e.toString());
                         }
