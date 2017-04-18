@@ -38,6 +38,7 @@ import java.util.TimerTask;
 
 public class WindowUtils {
     private static final String LOG_TAG = "WindowUtils";
+    public static final boolean CAN_DRAG = false;
     private static View mView = null;
     private static WindowManager mWindowManager = null;
     private static Context mContext = null;
@@ -89,7 +90,6 @@ public class WindowUtils {
         mView = setUpView(context, "");
 
         mImageView = (ImageView) mView.findViewById(R.id.musci);
-        changeToBlackIcon();
         mLayoutParams = new LayoutParams();
         String packname = context.getPackageName();
         PackageManager pm = context.getPackageManager();
@@ -193,7 +193,9 @@ public class WindowUtils {
 //                        if (mLayoutParams.y > mHeight - mView.getHeight() * 2) mLayoutParams.y = mHeight - mView.getHeight() * 2;
 
                         try {
-                            mWindowManager.updateViewLayout(mView, mLayoutParams);
+                            if (CAN_DRAG) {
+                                mWindowManager.updateViewLayout(mView, mLayoutParams);
+                            }
                         } catch (Exception e) {
                             LogUtils.d(e.toString());
                         }

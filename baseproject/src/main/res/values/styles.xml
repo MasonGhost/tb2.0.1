@@ -20,6 +20,15 @@
         <!-- Used for the background -->
         <!--<item name="android:background">#4CAF50</item>-->
     </style>
+    <!--修改系统dialog样式-->
+    <style name="TSWarningAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!-- Used for the buttons -->
+        <item name="colorAccent">@color/important_for_note</item>
+        <!-- Used for the title and text -->
+        <!--<item name="android:textColorPrimary">#FFFFFF</item>-->
+        <!-- Used for the background -->
+        <!--<item name="android:background">#4CAF50</item>-->
+    </style>
 
     <style name="TSToolBar" parent="Widget.AppCompat.Toolbar">
         <!--左边边距-->

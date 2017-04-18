@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.UIUtils;
@@ -54,6 +56,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     private boolean mIscUseSatusbar = false;// 内容是否需要占用状态栏
     protected ViewGroup mSnackRootView;
     private boolean mIsNeedClick = true;// 缺省图是否需要点击
+    private boolean isFirstIn = true;// 是否是第一次进入页面
 
 
     @Override
@@ -124,13 +127,21 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
         linearLayout.addView(frameLayout);
         mSnackRootView = (ViewGroup) getActivity().findViewById(android.R.id.content).getRootView();
+        if (getLeftViewOfMusicWindow() != null) {
+            RxView.globalLayouts(getLeftViewOfMusicWindow())
+                    .subscribe(new Action1<Void>() {
+                        @Override
+                        public void call(Void aVoid) {
+                            musicWindowsStatus(WindowUtils.getIsShown());
+                        }
+                    });
+        }
         return linearLayout;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        musicWindowsStatus(WindowUtils.getIsShown());
     }
 
     @Override
@@ -345,8 +356,23 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * 音乐悬浮窗是否正在显示
      */
     protected void musicWindowsStatus(boolean isShow) {
-        LogUtils.d("musicWindowsStatus:::"+isShow);
+        LogUtils.d("musicWindowsStatus:::" + isShow);
+        WindowUtils.changeToBlackIcon();
+        final View view = getLeftViewOfMusicWindow();
+        if (view != null && isShow && isFirstIn) {
+            if (view.getVisibility() == View.VISIBLE) {
+                // 向左移动一定距离
+                int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
+                view.setTranslationX(-rightX);
+                isFirstIn = false;
+            }
+        }
     }
+
+    protected View getLeftViewOfMusicWindow() {
+        return mToolbarRight;
+    }
+
 
     /**
      * 是否显示分割线,默认显示

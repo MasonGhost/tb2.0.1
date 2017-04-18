@@ -154,6 +154,11 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     }
 
     @Override
+    protected View getLeftViewOfMusicWindow() {
+        return mIvSubscribBtn;
+    }
+
+    @Override
     protected void initData() {
         mChannelSubscripBean = getArguments().getParcelable(CHANNEL_HEADER_INFO_DATA);
         mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);

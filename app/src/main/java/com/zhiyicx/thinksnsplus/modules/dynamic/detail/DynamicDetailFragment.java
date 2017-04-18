@@ -104,6 +104,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
+    protected View getLeftViewOfMusicWindow() {
+        return mTvToolbarRight;
+    }
+
+    @Override
     protected boolean showToolBarDivider() {
         return false;
     }
