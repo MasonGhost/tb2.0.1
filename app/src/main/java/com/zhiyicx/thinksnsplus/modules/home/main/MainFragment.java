@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
@@ -69,6 +70,9 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
         // toolBar设置状态栏高度的marginTop
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, DeviceUtils.getStatuBarHeight(getContext()));
         mStatusBarPlaceholder.setLayoutParams(layoutParams);
+        if (StatusBarUtils.intgetType(getActivity().getWindow()) == 0) { // 适配非6.0以上、非魅族系统、非小米系统状态栏
+            mStatusBarPlaceholder.setBackgroundResource(R.color.themeColor);
+        }
         mTsvToolbar.setLeftImg(0);//不需要返回键
     }
 
@@ -133,7 +137,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
      * viewpager页面切换公开方法
      */
     public void setPagerSelection(int position) {
-        mVpFragment.setCurrentItem(position,true);
+        mVpFragment.setCurrentItem(position, true);
     }
 
 }
