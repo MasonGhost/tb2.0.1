@@ -105,14 +105,14 @@ public class WindowUtils {
         mLayoutParams.width = ConvertUtils.dp2px(mContext, 44) * 3 / 4;
         mLayoutParams.height = ConvertUtils.dp2px(mContext, 44) * 3 / 4;
         mLayoutParams.x = ConvertUtils.dp2px(mContext, 15);
-        mLayoutParams.y = ConvertUtils.dp2px(mContext, 44) * 1 / 8;
+        mLayoutParams.y = ConvertUtils.dp2px(mContext, 44) / 8;
 
         mRotateAnimation = (RotateAnimation) AnimationUtils.loadAnimation(mContext, R.anim
                 .music_window_rotate);
         mImageView.setAnimation(mRotateAnimation);
         mRotateAnimation.start();
         mWindowManager.addView(mView, mLayoutParams);
-        initDrag();
+        initClickAndDrag();
     }
 
     /**
@@ -135,18 +135,6 @@ public class WindowUtils {
         return defaultView;
     }
 
-    public static void goLeft() {
-        mLayoutParams.x = 90;
-        mLayoutParams.y = 5;
-        mWindowManager.updateViewLayout(mView, mLayoutParams);
-    }
-
-    public static void goRight() {
-        mLayoutParams.x = 20;
-        mLayoutParams.y = 5;
-        mWindowManager.updateViewLayout(mView, mLayoutParams);
-    }
-
     public static Boolean getIsShown() {
         return isShown;
     }
@@ -159,7 +147,7 @@ public class WindowUtils {
         sMusicAlbumDetailsBean = musicAlbumDetailsBean;
     }
 
-    private static void initDrag() {
+    private static void initClickAndDrag() {
         mView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {

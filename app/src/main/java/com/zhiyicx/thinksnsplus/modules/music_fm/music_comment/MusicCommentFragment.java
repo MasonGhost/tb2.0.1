@@ -223,7 +223,6 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        mIlvComment.setVisibility(View.GONE);
                         mIlvComment.clearFocus();
                         DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
                         mVShadow.setVisibility(View.GONE);
