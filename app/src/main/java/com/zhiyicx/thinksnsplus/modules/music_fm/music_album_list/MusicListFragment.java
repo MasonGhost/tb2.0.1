@@ -60,7 +60,14 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
         mRvList.addItemDecoration(new TGridDecoration(20, 20, true));
         mRvList.setBackgroundColor(0xffffffff);
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
+    }
 
+    @Override
+    public void onNetResponseSuccess(@NotNull List<MusicAlbumListBean> data, boolean isLoadMore) {
+        super.onNetResponseSuccess(data, isLoadMore);
+        if (mListDatas.isEmpty()){
+            mRvList.setBackground(null);
+        }
     }
 
     @Override
@@ -86,6 +93,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
             protected void convert(ViewHolder holder, MusicAlbumListBean musicListBean, int
                     position) {
                 ImageView imag = holder.getView(R.id.music_list_image);
+                imag.setImageResource(R.drawable.shape_default_image);
                 mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
                         .placeholder(R.drawable.shape_default_image)
                         .errorPic(R.drawable.shape_default_image)
@@ -146,6 +154,9 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
                 albumListBean_same.setComment_count(mMusicAlbumListBean.getComment_count());
                 albumListBean_same.setTaste_count(mMusicAlbumListBean.getTaste_count());
                 mPresenter.updateOneMusic(albumListBean_same);
+                if (mListDatas.isEmpty()){
+                    mRvList.setBackground(null);
+                }
                 mHeaderAndFooterWrapper.notifyDataSetChanged();
             }
         });
