@@ -277,6 +277,12 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     }
 
     @Override
+    protected void musicWindowsStatus(boolean isShow) {
+        super.musicWindowsStatus(isShow);
+        WindowUtils.changeToWhiteIcon();
+    }
+
+    @Override
     protected boolean showToolbar() {
         return false;
     }

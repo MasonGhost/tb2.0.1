@@ -374,10 +374,10 @@ public class AppApplication extends TSApplication {
             public void onActivityResumed(Activity activity) {
                 if ((activity instanceof MusicPlayActivity)) {
                     WindowUtils.hidePopupWindow();
-                } else if (sPlaybackManager != null && sPlaybackManager.getState() != PlaybackStateCompat.STATE_NONE
-                        && sPlaybackManager.getState() != PlaybackStateCompat.STATE_STOPPED) {
+                } else if (sPlaybackManager != null&&sPlaybackManager.getState()!= PlaybackStateCompat.STATE_NONE
+                        &&sPlaybackManager.getState()!= PlaybackStateCompat.STATE_STOPPED
+                        &&!WindowUtils.getIsPause()) {
                     WindowUtils.showPopupWindow(AppApplication.this);
-
                 }
             }
 

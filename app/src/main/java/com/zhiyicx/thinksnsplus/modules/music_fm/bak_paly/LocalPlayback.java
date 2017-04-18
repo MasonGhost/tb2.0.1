@@ -12,6 +12,7 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
 
+import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProvider;
@@ -22,6 +23,10 @@ import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayService;
 import org.simple.eventbus.EventBus;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.functions.Action1;
 
 import static android.media.MediaPlayer.OnCompletionListener;
 import static android.media.MediaPlayer.OnErrorListener;
@@ -174,6 +179,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
     @Override
     public void play(QueueItem item) {
         mPlayOnFocusGain = true;
+        WindowUtils.setIsPause(false);
         tryToGetAudioFocus();
         registerAudioNoisyReceiver();
         String mediaId = item.getDescription().getMediaId();
@@ -245,6 +251,13 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
         if (mState == PlaybackStateCompat.STATE_PLAYING) {
             if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
                 mMediaPlayer.pause();
+                Observable.timer(5, TimeUnit.SECONDS).subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long aLong) {
+                        WindowUtils.setIsPause(true);
+                        WindowUtils.hidePopupWindow();
+                    }
+                });
                 mCurrentPosition = mMediaPlayer.getCurrentPosition();
             }
 
