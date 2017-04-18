@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -56,8 +57,23 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     private boolean mIscUseSatusbar = false;// 内容是否需要占用状态栏
     protected ViewGroup mSnackRootView;
     private boolean mIsNeedClick = true;// 缺省图是否需要点击
-    private boolean isFirstIn = true;// 是否是第一次进入页面
+    private boolean rightViewHadTranslated = false;// 右上角的按钮因为音乐播放悬浮显示，是否已经偏左移动
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        if (getLeftViewOfMusicWindow() != null) {
+            RxView.globalLayouts(getLeftViewOfMusicWindow())
+                    .subscribe(new Action1<Void>() {
+                        @Override
+                        public void call(Void aVoid) {
+                            musicWindowsStatus(WindowUtils.getIsShown());
+                        }
+                    });
+        }
+        return view;
+    }
 
     @Override
     protected View getContentView() {
@@ -127,15 +143,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
         linearLayout.addView(frameLayout);
         mSnackRootView = (ViewGroup) getActivity().findViewById(android.R.id.content).getRootView();
-        if (getLeftViewOfMusicWindow() != null) {
-            RxView.globalLayouts(getLeftViewOfMusicWindow())
-                    .subscribe(new Action1<Void>() {
-                        @Override
-                        public void call(Void aVoid) {
-                            musicWindowsStatus(WindowUtils.getIsShown());
-                        }
-                    });
-        }
+
         return linearLayout;
     }
 
@@ -358,12 +366,15 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     protected void musicWindowsStatus(boolean isShow) {
         LogUtils.d("musicWindowsStatus:::" + isShow);
         final View view = getLeftViewOfMusicWindow();
-        if (view != null && isShow && isFirstIn) {
+        if (isShow && !rightViewHadTranslated) {
             if (view.getVisibility() == View.VISIBLE) {
                 // 向左移动一定距离
                 int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
                 view.setTranslationX(-rightX);
-                isFirstIn = false;
+                rightViewHadTranslated = true;
+            } else {
+                view.setTranslationX(0);
+                rightViewHadTranslated = false;
             }
         }
     }
