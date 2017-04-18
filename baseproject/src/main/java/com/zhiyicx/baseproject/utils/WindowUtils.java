@@ -19,6 +19,7 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.R;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.math.BigDecimal;
@@ -101,10 +102,10 @@ public class WindowUtils {
         mLayoutParams.format = PixelFormat.TRANSPARENT;
         mLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         mLayoutParams.gravity = Gravity.RIGHT | Gravity.TOP;
-        mLayoutParams.width = 70;
-        mLayoutParams.height = 70;
-        mLayoutParams.x = 20;
-        mLayoutParams.y = 5;
+        mLayoutParams.width = ConvertUtils.dp2px(mContext, 44) * 3 / 4;
+        mLayoutParams.height = ConvertUtils.dp2px(mContext, 44) * 3 / 4;
+        mLayoutParams.x = ConvertUtils.dp2px(mContext, 15);
+        mLayoutParams.y = ConvertUtils.dp2px(mContext, 44) * 1 / 8;
 
         mRotateAnimation = (RotateAnimation) AnimationUtils.loadAnimation(mContext, R.anim
                 .music_window_rotate);
@@ -195,13 +196,13 @@ public class WindowUtils {
                         BigDecimal now = BigDecimal.valueOf(System.currentTimeMillis());
                         if (!isMove && (Math.abs(now.subtract(mStartClickTime).floatValue()) < 500)) {
                             // TODO.. click
-                            if (getMusicAlbumDetailsBean()==null){
+                            if (getMusicAlbumDetailsBean() == null) {
                                 return true;
                             }
 
 //                            Intent intent = new Intent(mContext, MusicPlayActivity.class);
                             Intent intent1 = new Intent("android.intent.action.MAIN");
-                            intent1.setClassName(mContext,"com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity");
+                            intent1.setClassName(mContext, "com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity");
 //                            Bundle bundle = new Bundle();
 //                            bundle.putSerializable(MusicDetailFragment.MUSIC_INFO, getMusicAlbumDetailsBean());
                             intent1.putExtra("music_info", getMusicAlbumDetailsBean());

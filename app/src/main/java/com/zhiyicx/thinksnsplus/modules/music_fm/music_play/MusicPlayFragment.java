@@ -15,6 +15,7 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -559,9 +560,11 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                         R.mipmap.music_ico_comment_complete);
                 mFragmentMusicPalyCommentCount.setText("");
             }
-
-
-            mFragmentMusicPalyLrc.setText(mCurrentMusic.getMusic_info().getLyric());
+            String lyric = mCurrentMusic.getMusic_info().getLyric();
+            if (TextUtils.isEmpty(lyric)) {
+                lyric = getString(R.string.music_lyric);
+            }
+            mFragmentMusicPalyLrc.setText(lyric);
 
             if (mCurrentMusic.getMusic_info().getIsdiggmusic() == 1) {
                 mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_high);
