@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -28,7 +29,7 @@ public class StatusBarUtils {
     public static final int STATUS_TYPE_ANDROID_M = 3;
 
     /**
-     * 修改状态栏为全透明
+     * 修改状态栏为全透明,侵入式
      *
      * @param activity
      */
@@ -57,16 +58,22 @@ public class StatusBarUtils {
      * @param colorId
      */
     public static void setStatusBarColor(Activity activity, int colorId) {
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (intgetType(activity.getWindow()) == 0) {
+                return;
+            } else {
             Window window = activity.getWindow();
-            window.setStatusBarColor(activity.getResources().getColor(colorId));
+            window.setStatusBarColor(ContextCompat.getColor(activity, colorId));
+            }
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            //使用SystemBarTint库使4.4版本状态栏变色，需要先将状态栏设置为透明
+            if (intgetType(activity.getWindow()) == 0) {
+                return;
+            } else {       //使用SystemBarTint库使4.4版本状态栏变色，需要先将状态栏设置为透明
             transparencyBar(activity);
             SystemBarTintManager tintManager = new SystemBarTintManager(activity);
             tintManager.setStatusBarTintEnabled(true);
             tintManager.setStatusBarTintResource(colorId);
+            }
         }
     }
 
@@ -215,4 +222,30 @@ public class StatusBarUtils {
         return result;
     }
 
+    /**
+     * 获取系统类型
+     *
+     * @param window
+     * @return
+     */
+    public static int intgetType(Window window) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            return STATUS_TYPE_ANDROID_M;
+        if (window != null) {
+            try {
+                WindowManager.LayoutParams lp = window.getAttributes();
+                Field darkFlag = WindowManager.LayoutParams.class
+                        .getDeclaredField("MEIZU_FLAG_DARK_STATUS_BAR_ICON");
+                if (darkFlag != null)
+                    return STATUS_TYPE_FLYME;
+                Class layoutParams = Class.forName("android.view.MiuiWindowManager$LayoutParams");
+                if (layoutParams != null)
+                    return STATUS_TYPE_MIUUI;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+        return 0;
+    }
 }

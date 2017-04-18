@@ -65,7 +65,11 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         if (setUseSatusbar() && setUseStatusView()) { // 是否添加和状态栏等高的占位 View
             mStatusPlaceholderView = new View(getContext());
             mStatusPlaceholderView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceUtils.getStatuBarHeight(getContext())));
-            mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), setToolBarBackgroud()));
+            if (StatusBarUtils.intgetType(getActivity().getWindow()) == 0 && ContextCompat.getColor(getContext(), setToolBarBackgroud()) == Color.WHITE) {
+                mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.themeColor));
+            } else {
+                mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), setToolBarBackgroud()));
+            }
             linearLayout.addView(mStatusPlaceholderView);
         }
         if (showToolbar()) {// 在需要显示toolbar时，进行添加
@@ -345,7 +349,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * 音乐悬浮窗是否正在显示
      */
     protected void musicWindowsStatus(boolean isShow) {
-        LogUtils.d("musicWindowsStatus:::"+isShow);
+        LogUtils.d("musicWindowsStatus:::" + isShow);
     }
 
     /**
