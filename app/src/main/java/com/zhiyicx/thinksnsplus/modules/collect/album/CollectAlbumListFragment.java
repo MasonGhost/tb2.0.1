@@ -81,6 +81,9 @@ public class CollectAlbumListFragment extends MusicListFragment {
                 } else {
                     mListDatas.remove(albumListBean_same);
                 }
+                if (mListDatas.isEmpty()){
+                    mRvList.setBackground(null);
+                }
                refreshData();
             }
         });
