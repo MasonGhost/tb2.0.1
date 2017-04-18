@@ -93,6 +93,7 @@
 
     <!--音乐FM-->
     <string name="music_fm">音乐FM</string>
+    <string name="music_lyric">暂无歌词</string>
 
     <!--动态列表-->
     <string name="dynamic_list_more_comment">查看全部评论</string>

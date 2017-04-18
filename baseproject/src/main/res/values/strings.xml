@@ -90,6 +90,8 @@
     <string name="music_order_nomal">顺序播放</string>
     <string name="music_order_random">随机播放</string>
     <string name="music_order_single">单曲循环</string>
+    <string name="windows_permission">悬浮窗权限设置</string>
+    <string name="setting_windows_permission_hint">请为TS+开放悬浮窗权限: 手机设置-授权管理-TS+(打开)</string>
 
     <!--资讯-->
     <string name="info_editor">编辑</string>
