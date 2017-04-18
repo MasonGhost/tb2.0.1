@@ -158,13 +158,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     public void onResume() {
         super.onResume();
         musicWindowsStatus(WindowUtils.getIsShown());
-        WindowUtils.setWindowDismisslistener(this);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        WindowUtils.setWindowDismisslistener(null);
+        if (!this.getClass().getSimpleName().equals("InfoListFragment")){
+            WindowUtils.setWindowDismisslistener(this);
+        }
     }
 
     @Override
@@ -220,8 +216,11 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     @Override
     public void onDismiss() {
         View view = getLeftViewOfMusicWindow();
-        if (view != null) {
+        if (view != null && WindowUtils.getIsPause()) {
             view.setTranslationX(0);
+        }
+        if (WindowUtils.getIsPause()) {
+            WindowUtils.setWindowDismisslistener(null);
         }
     }
 
@@ -400,8 +399,6 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             }
         }
     }*/
-
-
     protected void musicWindowsStatus(final boolean isShow) {
         LogUtils.d("musicWindowsStatus:::" + isShow);
         WindowUtils.changeToBlackIcon();
