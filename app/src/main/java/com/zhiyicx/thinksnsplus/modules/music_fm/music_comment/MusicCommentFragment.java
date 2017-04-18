@@ -75,7 +75,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
         mIlvComment.post(new Runnable() { // 处理评论框位置协调
             @Override
             public void run() {
-                mRvList.setPadding(0, 0, 0, mIlvComment.getHeight());
+//                mRvList.setPadding(0, 0, 0, mIlvComment.getHeight());
             }
         });
         mMusicCommentHeader = new MusicCommentHeader(getActivity());
@@ -89,7 +89,13 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
             Long ids = getArguments().getLong(BUNDLE_SOURCE_ID);
             mHeaderInfo = new MusicCommentHeader.HeaderInfo();
             mHeaderInfo.setId(ids.intValue());
+            if (getType().equals(CURRENT_COMMENT_TYPE_MUSIC)){
+                mPresenter.getMusicDetails(ids.intValue()+"");
+            }else if(getType().equals(CURRENT_COMMENT_TYPE_ABLUM)){
+                mPresenter.getMusicAblum(ids.intValue()+"");
+            }
         }
+
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
 
         mHeaderAndFooterWrapper.addHeaderView(mMusicCommentHeader.getMusicCommentHeader());

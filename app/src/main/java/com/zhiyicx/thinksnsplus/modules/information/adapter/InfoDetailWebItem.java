@@ -14,6 +14,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.common.utils.ToastUtils;
@@ -261,7 +262,18 @@ public abstract class InfoDetailWebItem implements ItemViewDelegate<InfoCommentL
     private void initWebViewData(WebView mWebView) {
         WebSettings mWebSettings = mWebView.getSettings();
         mWebSettings.setSupportZoom(true);
-//        mWebSettings.setTextSize(WebSettings.TextSize.LARGEST);
+
+        //可以取1-72之间的任意值，默认16
+        if (DeviceUtils.getDisplayMetrics(mContext).densityDpi >= 240) {
+            mWebSettings.setTextZoom(240);
+            LogUtils.d("getDisplayMetrics::"+240);
+        } else if (DeviceUtils.getDisplayMetrics(mContext).densityDpi >= 360) {
+            mWebSettings.setTextZoom(360);
+            LogUtils.d("getDisplayMetrics::"+360);
+        } else if (DeviceUtils.getDisplayMetrics(mContext).densityDpi >= 480) {
+            mWebSettings.setTextZoom(480);
+            LogUtils.d("getDisplayMetrics::"+480);
+        }
         mWebSettings.setUseWideViewPort(true);
         mWebSettings.setLoadWithOverviewMode(true);
         mWebSettings.setSupportZoom(true);
