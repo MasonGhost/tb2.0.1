@@ -18,7 +18,7 @@ import javax.inject.Inject;
 
 /**
  * @author LiuChao
- * @describe
+ * @describe 页面数据加载逻辑：如果本地数据为空，则从网络加载数据，否则，本次加载上次网络请求的数据，本次的网络请求数据会保存到数据库中，供下次显示
  * @date 2017/4/8
  * @contact email:450127106@qq.com
  */
@@ -52,14 +52,23 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
 
     @Override
     public void onNetResponseSuccess(@NotNull List<ChannelSubscripBean> data, boolean isLoadMore) {
-        super.onNetResponseSuccess(data, isLoadMore);
+        if (mListDatas.isEmpty()) {
+            // 如果界面数据为空,加载数据到界面
+            super.onNetResponseSuccess(data, isLoadMore);
+        } else {
+            // 如果界面数据不为空，网络请求获取到的数据，那就下次加载
+        }
         closeLoadingView();
     }
 
     @Override
     public void onCacheResponseSuccess(@NotNull List<ChannelSubscripBean> data, boolean isLoadMore) {
         super.onCacheResponseSuccess(data, isLoadMore);
-        closeLoadingView();
+        if (mListDatas.isEmpty()) {
+            // 数据库数据为空，还需要从网络请求数据，这时还不能够关闭loadingview
+        } else {
+            closeLoadingView();
+        }
     }
 
     @Override
