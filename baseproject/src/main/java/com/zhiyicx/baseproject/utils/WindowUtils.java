@@ -132,9 +132,8 @@ public class WindowUtils {
     }
 
     private static View setUpView(final Context context, String str) {
-        View defaultView = LayoutInflater.from(context).inflate(R.layout.windows_music,
+        return LayoutInflater.from(context).inflate(R.layout.windows_music,
                 null);
-        return defaultView;
     }
 
     public static Boolean getIsShown() {
@@ -149,14 +148,16 @@ public class WindowUtils {
         WindowUtils.isPause = isPause;
     }
 
-    public static void changeToWhiteIcon(){
-        if (mImageView!=null){
+    public static void changeToWhiteIcon() {
+        if (mImageView != null) {
+            LogUtils.d("changeToWhiteIcon");
             mImageView.setImageResource(R.mipmap.music_ico_suspension_white);
         }
     }
 
-    public static void changeToBlackIcon(){
-        if (mImageView!=null){
+    public static void changeToBlackIcon() {
+        if (mImageView != null) {
+            LogUtils.d("changeToBlackIcon");
             mImageView.setImageResource(R.mipmap.music_ico_suspension_black);
         }
     }
