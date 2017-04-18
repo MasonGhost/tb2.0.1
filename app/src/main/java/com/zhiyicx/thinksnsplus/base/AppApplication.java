@@ -9,12 +9,14 @@ import android.support.annotation.NonNull;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 
 import com.antfortune.freeline.FreelineCore;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.google.gson.Gson;
 import com.umeng.analytics.MobclickAgent;
 import com.zhiyicx.baseproject.base.TSApplication;
+import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.net.HttpsSSLFactroyUtils;
@@ -32,7 +34,6 @@ import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.QueueManager;
-import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
@@ -179,8 +180,20 @@ public class AppApplication extends TSApplication {
                     @Override
                     public void call() {
                         alertDialog = new AlertDialog.Builder(ActivityHandler
-                                .getInstance().currentActivity())
-                                .setTitle(tipStr)
+                                .getInstance().currentActivity(), R.style.TSWarningAlertDialogStyle)
+                                .setMessage(tipStr)
+                                .setOnKeyListener(new DialogInterface.OnKeyListener() {
+
+                                    @Override
+                                    public boolean onKey(DialogInterface dialog, int keyCode,
+                                                         KeyEvent event) {
+                                        if (alertDialog.isShowing() && keyCode == KeyEvent.KEYCODE_BACK
+                                                && event.getRepeatCount() == 0) {
+                                            return true;
+                                        }
+                                        return false;
+                                    }
+                                })
                                 .setPositiveButton(R.string.sure, new
                                         DialogInterface.OnClickListener() {
                                             @Override
@@ -361,8 +374,8 @@ public class AppApplication extends TSApplication {
             public void onActivityResumed(Activity activity) {
                 if ((activity instanceof MusicPlayActivity)) {
                     WindowUtils.hidePopupWindow();
-                } else if (sPlaybackManager != null&&sPlaybackManager.getState()!= PlaybackStateCompat.STATE_NONE
-                        &&sPlaybackManager.getState()!= PlaybackStateCompat.STATE_STOPPED) {
+                } else if (sPlaybackManager != null && sPlaybackManager.getState() != PlaybackStateCompat.STATE_NONE
+                        && sPlaybackManager.getState() != PlaybackStateCompat.STATE_STOPPED) {
                     WindowUtils.showPopupWindow(AppApplication.this);
 
                 }
