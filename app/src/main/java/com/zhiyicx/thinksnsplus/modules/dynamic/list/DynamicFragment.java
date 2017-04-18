@@ -136,9 +136,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 针对部分手机进入首页状态栏颜色修改无效
             getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
-        if ((Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT)) {
             AndroidBug5497Workaround.assistActivity(getActivity());
-        }
     }
 
     private void initInputView() {
