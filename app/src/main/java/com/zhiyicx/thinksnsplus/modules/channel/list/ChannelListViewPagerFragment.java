@@ -52,4 +52,13 @@ public class ChannelListViewPagerFragment extends TSViewPagerFragment<ChannelLis
         channelListViewPagerFragment.setArguments(bundle);
         return channelListViewPagerFragment;
     }
+
+    /**
+     * 设置选择的页面
+     *
+     * @param page
+     */
+    public void setSelectPager(int page) {
+        mVpFragment.setCurrentItem(page);
+    }
 }

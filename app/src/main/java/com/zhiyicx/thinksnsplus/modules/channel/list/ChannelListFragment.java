@@ -16,6 +16,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListViewPagerFragment.PAGE_ALL_CHANNEL_LIST;
+
 /**
  * @author LiuChao
  * @describe 页面数据加载逻辑：如果本地数据为空，则从网络加载数据，否则，本次加载上次网络请求的数据，本次的网络请求数据会保存到数据库中，供下次显示
@@ -65,6 +67,13 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
         if (mListDatas.isEmpty()) {
             // 如果界面数据为空,加载数据到界面
             super.onNetResponseSuccess(data, isLoadMore);
+            // 如果界面上没有显示数据，从网络获取后界面上仍然没有数据，就切换到所有频道的页面
+            if (data == null || data.isEmpty()) {
+                ChannelListViewPagerFragment channelListViewPagerFragment = (ChannelListViewPagerFragment) getParentFragment();
+                if (channelListViewPagerFragment != null) {
+                    channelListViewPagerFragment.setSelectPager(PAGE_ALL_CHANNEL_LIST);
+                }
+            }
         } else {
             // 如果界面数据不为空，网络请求获取到的数据，那就下次加载
         }

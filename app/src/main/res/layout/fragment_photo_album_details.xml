@@ -7,11 +7,20 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_album_details"
+    <com.wcy.overscroll.OverScrollLayout
+        android:id="@+id/overscroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"></android.support.v7.widget.RecyclerView>
+        android:layout_weight="1"
+        android:background="@color/bgColor"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_album_details"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            ></android.support.v7.widget.RecyclerView>
+    </com.wcy.overscroll.OverScrollLayout>
 
     <LinearLayout
         android:id="@+id/ll_bottom_container"

@@ -1531,7 +1531,6 @@ public class SocketService extends BaseService implements ImService.ImListener {
              * 主动断开
              */
             case WebSocket.ConnectionHandler.CLOSE_NORMAL:
-
                 break;
             /**
              * 无法连接到服务器（主要是网络太差出现）
