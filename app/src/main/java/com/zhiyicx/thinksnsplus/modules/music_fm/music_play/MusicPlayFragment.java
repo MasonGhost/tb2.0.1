@@ -17,6 +17,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
+import android.text.method.CharacterPickerDialog;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -45,6 +47,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
+import com.zhiyicx.thinksnsplus.modules.gallery.GalleryPictureFragment;
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProviderSource;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentActivity;
@@ -135,7 +138,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     TextView mFragmentMusicPalyLrc;
     @BindView(R.id.fragment_music_paly_deal)
     LinearLayout mFragmentMusicPalyDeal;
-
 
     /**
      * 播放进度条更新间隔
@@ -231,7 +233,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
             if (metadata != null) {
-                EventBus.getDefault().post(1,EVENT_MUSIC_CHANGE);
+                EventBus.getDefault().post(1, EVENT_MUSIC_CHANGE);
                 if (WindowUtils.getAblumHeadInfo() != null) {
                     WindowUtils.getAblumHeadInfo().setListenCount(WindowUtils.getAblumHeadInfo().getListenCount() + 1);
                 }
@@ -904,7 +906,8 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             .fragment_music_paly_comment, R.id.fragment_music_paly_lyrics, R.id
             .fragment_music_paly_order, R.id.fragment_music_paly_preview, R.id
             .fragment_music_paly_palyer, R.id.fragment_music_paly_nextview, R.id
-            .fragment_music_paly_list, R.id.fragment_music_paly_bg, R.id.fragment_music_paly_lrc})
+            .fragment_music_paly_list, R.id.fragment_music_paly_bg, R.id.fragment_music_paly_lrc,
+            R.id.fragment_music_paly_container})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.fragment_music_paly_share:// 分享
@@ -1003,6 +1006,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 //            case R.id.fragment_music_paly_bg:
             case R.id.fragment_music_paly_lyrics:// 歌词显示
             case R.id.fragment_music_paly_lrc:
+//            case R.id.fragment_music_paly_container:
                 handleLrc();
                 break;
             default:

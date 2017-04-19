@@ -81,6 +81,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
      * 传入的资讯信息
      */
     private InfoListDataBean mInfoMation;
+    private boolean isFirstIn = true;
 
     private int mReplyUserId;// 被评论者的 id ,评论动态 id = 0
 
@@ -92,8 +93,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     protected MultiItemTypeAdapter getAdapter() {
-//        InfoCommentAdapter adapter = new InfoCommentAdapter(getActivity(), mListDatas);
-//        adapter.setOnWebEventListener(new WebEvent());
         MultiItemTypeAdapter multiItemTypeAdapter = new MultiItemTypeAdapter<>(getActivity(),
                 mListDatas);
         multiItemTypeAdapter.addItemViewDelegate(new InfoDetailWebItem(getActivity(), new
@@ -118,7 +117,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        initToolbar();
         mInfoMation = (InfoListDataBean) getArguments().getSerializable(BUNDLE_INFO);
         if (mInfoMation == null) {
             mInfoMation = new InfoListDataBean();
@@ -128,16 +126,11 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
         mTvToolbarCenter.setVisibility(View.VISIBLE);
         mTvToolbarCenter.setText(getString(R.string.info_details));
-        mTvToolbarCenter.setCompoundDrawables(null, null, null, null);
 
         initBottomToolStyle();
         initBottomToolListener();
         initListener();
         setCollect(mInfoMation.getIs_collection_news() == 1);
-    }
-
-    private void initToolbar() {
-        mToolbar.setPadding(0, DeviceUtils.getStatuBarHeight(getContext()), 0, 0);
     }
 
     @Override
@@ -152,12 +145,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     protected boolean setUseSatusbar() {
-        return true;
-    }
-
-    @Override
-    protected int getstatusbarAndToolbarHeight() {
-        return getResources().getDimensionPixelSize(R.dimen.toolbar_height_include_line_height) + DeviceUtils.getStatuBarHeight(getContext());
+        return false;
     }
 
     @Override
@@ -342,12 +330,18 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
         @Override
         public void onLoadFinish() {
-            closeLoadingView();
+            if (isFirstIn){
+                closeLoadingView();
+            }
+            isFirstIn=false;
         }
 
         @Override
         public void onLoadStart() {
-            showLoadingView();
+            if (isFirstIn){
+                showLoadingView();
+            }
+
         }
 
         @Override
@@ -355,8 +349,8 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
             if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth()
                     .getUser_id()) {// 自己的评论
 //                if (mListDatas.get(position).getId() != -1) {
-                    initLoginOutPopupWindow(mListDatas.get(position));
-                    mDeletCommentPopWindow.show();
+                initLoginOutPopupWindow(mListDatas.get(position));
+                mDeletCommentPopWindow.show();
 //                } else {
 //                    return;
 //                }
