@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.trycatch.mysnackbar.Prompt;
 import com.trycatch.mysnackbar.TSnackbar;
+import com.umeng.analytics.MobclickAgent;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.base.BaseFragment;
@@ -161,6 +162,13 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         if (!this.getClass().getSimpleName().equals("InfoListFragment")){
             WindowUtils.setWindowDismisslistener(this);
         }
+        MobclickAgent.onResume(getContext());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(getContext());
     }
 
     @Override
