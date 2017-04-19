@@ -322,7 +322,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 .build();
     }
 
-    private class WebEvent implements InfoCommentAdapter.OnWebEventListener {
+    class ItemOnWebEventListener implements InfoDetailWebItem.OnWebEventListener {
         @Override
         public void onWebImageLongClick(String mLongClickUrl) {
 
@@ -347,49 +347,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 showLoadingView();
             }
 
-        }
-
-        @Override
-        public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-            if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth()
-                    .getUser_id()) {// 自己的评论
-//                if (mListDatas.get(position).getId() != -1) {
-                initLoginOutPopupWindow(mListDatas.get(position));
-                mDeletCommentPopWindow.show();
-//                } else {
-//                    return;
-//                }
-            } else {
-                mReplyUserId = (int) mListDatas.get(position).getUser_id();
-                showCommentView();
-                String contentHint = getString(R.string.default_input_hint);
-                if (mListDatas.get(position).getReply_to_user_id() != mInfoMation.getId()) {
-                    contentHint = getString(R.string.reply, mListDatas.get(position).getFromUserInfoBean().getName());
-                }
-                mIlvComment.setEtContentHint(contentHint);
-            }
-        }
-    }
-
-    class ItemOnWebEventListener implements InfoDetailWebItem.OnWebEventListener {
-        @Override
-        public void onWebImageLongClick(String mLongClickUrl) {
-
-        }
-
-        @Override
-        public void onWebImageClick(String url, List<String> mImageList) {
-
-        }
-
-        @Override
-        public void onLoadFinish() {
-            closeLoadingView();
-        }
-
-        @Override
-        public void onLoadStart() {
-            showLoadingView();
         }
     }
 
