@@ -316,4 +316,8 @@ public class WindowUtils {
 
         }
     }
+
+    public class AblumInfo{
+
+    }
 }
