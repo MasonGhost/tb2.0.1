@@ -11,7 +11,9 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.info.InfoWebBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.InfoMainClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsConstract;
@@ -51,7 +53,8 @@ public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
     public Observable<BaseJson<List<InfoCommentListBean>>> getInfoCommentList(String feed_id,
                                                                               Long max_id, Long
                                                                                       limit) {
-        return mInfoMainClient.getInfoCommentList(feed_id, max_id,
+
+        Observable<BaseJson<List<InfoCommentListBean>>> comment = mInfoMainClient.getInfoCommentList(feed_id, max_id,
                 Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
                 .flatMap(new Func1<BaseJson<List<InfoCommentListBean>>,
                         Observable<BaseJson<List<InfoCommentListBean>>>>() {
@@ -60,9 +63,9 @@ public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
                     public Observable<BaseJson<List<InfoCommentListBean>>> call
                             (final BaseJson<List<InfoCommentListBean>> listBaseJson) {
 
-                        if (listBaseJson.getData().isEmpty()){
+                        if (listBaseJson.getData().isEmpty()) {
                             return Observable.just(listBaseJson);
-                        }else{
+                        } else {
                             final List<Object> user_ids = new ArrayList<>();
                             for (InfoCommentListBean commentListBean : listBaseJson.getData()) {
                                 user_ids.add(commentListBean.getUser_id());
@@ -116,6 +119,7 @@ public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
                         }
                     }
                 });
+        return comment;
     }
 
     @Override
@@ -181,5 +185,10 @@ public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
                 .APP_PATH_INFO_DELETE_COMMENT_FORMAT, news_id, comment_id));
         BackgroundTaskManager.getInstance(context).addBackgroundRequestTask
                 (backgroundRequestTaskBean);
+    }
+
+    @Override
+    public Observable<BaseJson<InfoWebBean>> getInfoWebContent(String news_id) {
+        return mInfoMainClient.getInfoWebContent(news_id);
     }
 }

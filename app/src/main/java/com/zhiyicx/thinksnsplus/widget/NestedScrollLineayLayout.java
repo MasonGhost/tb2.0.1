@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.widget;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.support.v4.view.NestedScrollingParent;
 import android.support.v4.view.NestedScrollingParentHelper;
 import android.support.v4.view.ViewCompat;
@@ -33,6 +34,7 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
     private boolean showTop;
     // 阻尼系数
     private static final float SCROLL_RATIO = 0.5f;
+    private float mPreX, mPreY, mDistanceY;
 
     public NestedScrollLineayLayout(Context context) {
         super(context);
@@ -56,7 +58,48 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
         mScroller = new OverScroller(context);
     }
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+//        switch (ev.getAction()) {
+//            case MotionEvent.ACTION_DOWN:
+//                mPreX = ev.getX();
+//                mPreY = ev.getY();
+//                break;
+//            case MotionEvent.ACTION_MOVE:
+//                mDistanceY = ev.getY() - mPreY;
+//                LogUtils.d("onStopNestedScroll");
+//                break;
+//        }
+        return super.dispatchTouchEvent(ev);
+    }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mPreX = ev.getX();
+                mPreY = ev.getY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                mDistanceY = ev.getY() - mPreY;
+                LogUtils.d("onTouchEvent");
+                break;
+        }
+        return super.onTouchEvent(ev);
+    }
+
+    /**
+     * 判断HeadView是否完全显示了.
+     *
+     * @return true, 完全显示, false 没有显示
+     */
+    private boolean isDisplayHeaderView() {
+        int[] location = new int[2]; // 0位存储的是x轴的值, 1是y轴的值
+        // 获取HeadView屏幕中y轴的值
+        headerView.getLocationOnScreen(location);
+        int mSecondHeaderViewYOnScreen = location[1];
+        return mSecondHeaderViewYOnScreen > 0 ? true : false;
+    }
 
     @Override
     protected void onFinishInflate() {
@@ -113,7 +156,7 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
         if (mOnHeadFlingListener != null && getScrollY() <= mTopViewHeight) {
             mOnHeadFlingListener.onHeadFling(getScrollY());
         }
-        LogUtils.d("onNestedPreScroll");
+        LogUtils.d("onNestedPreScroll:::");
     }
 
     @Override
@@ -144,7 +187,7 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
             mScroller.fling(0, scrollY, (int) velocityX, (int) velocityY, 0, 0, 0,
                     mTopViewHeight);
             mOnHeadFlingListener.onHeadFling(mTopViewHeight);
-        } else if (showTop){
+        } else if (showTop) {
             LogUtils.d("showTop");
             mScroller.fling(0, scrollY, (int) velocityX, (int) velocityY, 0, 0, 0,
                     -mTopViewHeight);
@@ -173,20 +216,6 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
             scrollTo(0, mScroller.getCurrY());
             invalidate();
         }
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()){
-            case MotionEvent.ACTION_DOWN:
-                break;
-            case MotionEvent.ACTION_MOVE:
-
-                break;
-            case MotionEvent.ACTION_UP:
-                break;
-        }
-        return super.onTouchEvent(event);
     }
 
     protected void smoothScrollBy(int dx, int dy) {

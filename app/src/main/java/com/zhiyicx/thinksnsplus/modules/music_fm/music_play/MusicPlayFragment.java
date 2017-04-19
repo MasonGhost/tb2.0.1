@@ -548,31 +548,35 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 @Override
                 public void call(MusicAlbumDetailsBean.MusicsBean musicsBean) {
                     mCurrentMusic = musicsBean;
+                    dealCurrentMusic();
                 }
             });
 
-            if (mCurrentMusic.getMusic_info().getComment_count() > 0) {
-                mFragmentMusicPalyComment.setImageResource(
-                        R.mipmap.music_ico_comment_incomplete);
-                mFragmentMusicPalyCommentCount.setText("" + mCurrentMusic.getMusic_info().getComment_count());
-            } else {
-                mFragmentMusicPalyComment.setImageResource(
-                        R.mipmap.music_ico_comment_complete);
-                mFragmentMusicPalyCommentCount.setText("");
-            }
-            String lyric = mCurrentMusic.getMusic_info().getLyric();
-            if (TextUtils.isEmpty(lyric)) {
-                lyric = getString(R.string.music_lyric);
-            }
-            mFragmentMusicPalyLrc.setText(lyric);
-
-            if (mCurrentMusic.getMusic_info().getIsdiggmusic() == 1) {
-                mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_high);
-            } else {
-                mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_normal);
-            }
         }
 
+    }
+
+    private void dealCurrentMusic() {
+        if (mCurrentMusic.getMusic_info().getComment_count() > 0) {
+            mFragmentMusicPalyComment.setImageResource(
+                    R.mipmap.music_ico_comment_incomplete);
+            mFragmentMusicPalyCommentCount.setText("" + mCurrentMusic.getMusic_info().getComment_count());
+        } else {
+            mFragmentMusicPalyComment.setImageResource(
+                    R.mipmap.music_ico_comment_complete);
+            mFragmentMusicPalyCommentCount.setText("");
+        }
+        String lyric = mCurrentMusic.getMusic_info().getLyric();
+        if (TextUtils.isEmpty(lyric)) {
+            lyric = getString(R.string.music_lyric);
+        }
+        mFragmentMusicPalyLrc.setText(lyric);
+
+        if (mCurrentMusic.getMusic_info().getIsdiggmusic() == 1) {
+            mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_high);
+        } else {
+            mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_normal);
+        }
     }
 
     private void updateDuration(MediaMetadataCompat metadata) {
