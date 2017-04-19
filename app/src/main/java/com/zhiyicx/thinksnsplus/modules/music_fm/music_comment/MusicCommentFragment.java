@@ -9,6 +9,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.utils.ImageUtils;
+import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -25,6 +26,7 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +37,7 @@ import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_COMMENT_COUNT;
 import static com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentAdapter.BUNDLE_SOURCE_ID;
 
 /**
@@ -69,6 +72,11 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     }
 
     @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         mIlvComment.setSendButtonVisiable(true);
@@ -84,15 +92,15 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 .getSerializable(CURRENT_COMMENT);
         if (mHeaderInfo != null) {
             mMusicCommentHeader.setHeadInfo(mHeaderInfo);
-            mToolbarCenter.setText(String.format("评论(%d)",mHeaderInfo.getCommentCount()));
+            mToolbarCenter.setText(String.format("评论(%d)", mHeaderInfo.getCommentCount()));
         } else {
             Long ids = getArguments().getLong(BUNDLE_SOURCE_ID);
             mHeaderInfo = new MusicCommentHeader.HeaderInfo();
             mHeaderInfo.setId(ids.intValue());
-            if (getType().equals(CURRENT_COMMENT_TYPE_MUSIC)){
-                mPresenter.getMusicDetails(ids.intValue()+"");
-            }else if(getType().equals(CURRENT_COMMENT_TYPE_ABLUM)){
-                mPresenter.getMusicAblum(ids.intValue()+"");
+            if (getType().equals(CURRENT_COMMENT_TYPE_MUSIC)) {
+                mPresenter.getMusicDetails(ids.intValue() + "");
+            } else if (getType().equals(CURRENT_COMMENT_TYPE_ABLUM)) {
+                mPresenter.getMusicAblum(ids.intValue() + "");
             }
         }
 
@@ -108,7 +116,8 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     public void setHeaderInfo(MusicCommentHeader.HeaderInfo headerInfo) {
         mHeaderInfo = headerInfo;
         mMusicCommentHeader.setHeadInfo(mHeaderInfo);
-        mToolbarCenter.setText(String.format("评论(%d)",mHeaderInfo.getCommentCount()));
+        mToolbarCenter.setText(String.format("评论(%d)", mHeaderInfo.getCommentCount()));
+        EventBus.getDefault().post(mHeaderInfo, EVENT_MUSIC_COMMENT_COUNT);
     }
 
     @Override
@@ -136,7 +145,11 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     public void onSendClick(View v, String text) {
         DeviceUtils.hideSoftKeyboard(getContext(), v);
         mHeaderInfo.setCommentCount(mHeaderInfo.getCommentCount() + 1);
+        setHeaderInfo(mHeaderInfo);
         mPresenter.sendComment(mReplyUserId, text);
+        if (WindowUtils.getAblumHeadInfo() != null) {
+            WindowUtils.getAblumHeadInfo().setCommentCount(WindowUtils.getAblumHeadInfo().getCommentCount() + 1);
+        }
     }
 
     @Override
@@ -259,6 +272,10 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                     @Override
                     public void onItem1Clicked() {
                         mHeaderInfo.setCommentCount(mHeaderInfo.getCommentCount() - 1);
+                        setHeaderInfo(mHeaderInfo);
+                        if (WindowUtils.getAblumHeadInfo() != null) {
+                            WindowUtils.getAblumHeadInfo().setCommentCount(WindowUtils.getAblumHeadInfo().getCommentCount() - 1);
+                        }
                         mPresenter.deleteComment(data);
                         mDeletCommentPopWindow.hide();
                     }

@@ -36,6 +36,7 @@ import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideMusicBgTransform;
 import com.zhiyicx.baseproject.utils.ImageUtils;
+import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -73,6 +74,8 @@ import rx.Subscription;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_CHANGE;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_COMMENT_COUNT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_LIKE;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_CACHE_PROGRESS;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_COMPLETE;
@@ -228,6 +231,10 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
             if (metadata != null) {
+                EventBus.getDefault().post(1,EVENT_MUSIC_CHANGE);
+                if (WindowUtils.getAblumHeadInfo() != null) {
+                    WindowUtils.getAblumHeadInfo().setListenCount(WindowUtils.getAblumHeadInfo().getListenCount() + 1);
+                }
                 //noinspection ResourceType
                 String musicUrl = metadata.getString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE);
                 boolean isCached = AppApplication.getProxy().isCached(musicUrl);
@@ -430,6 +437,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             @Override
             public void OnPageChanged(int oldPosition, int newPosition) {
                 mCurrentValue = 0;
+                int realPosition = newPosition % mMusicList.size();
                 stopAnimation(mCurrentView);
 
                 if (isConnected && !isComplete) {
@@ -444,8 +452,10 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 }
                 if (mMusicList.size() == 1) {
                     mCurrentMusic = mMusicList.get(0);
-                    dealCurrentMusic();
+                } else {
+                    mCurrentMusic = mMusicList.get(realPosition);
                 }
+                dealCurrentMusic();
             }
 
             @Override
@@ -873,6 +883,21 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
         mFragmentMusicPalyDeal.setVisibility(mFragmentMusicPalyLrc.getVisibility() == View
                 .VISIBLE ? View.INVISIBLE : View.VISIBLE);
+    }
+
+    @Subscriber(tag = EVENT_MUSIC_COMMENT_COUNT, mode = ThreadMode.MAIN)
+    public void onCommentCountUpdate(MusicCommentHeader.HeaderInfo headerInfo) {
+        mCurrentMusic.getMusic_info().setComment_count(headerInfo.getCommentCount());
+        if (mCurrentMusic.getMusic_info().getComment_count() > 0) {
+            mFragmentMusicPalyComment.setImageResource(
+                    R.mipmap.music_ico_comment_incomplete);
+            mFragmentMusicPalyCommentCount.setText("" + mCurrentMusic.getMusic_info().getComment_count());
+        } else {
+            mFragmentMusicPalyComment.setImageResource(
+                    R.mipmap.music_ico_comment_complete);
+            mFragmentMusicPalyCommentCount.setText("");
+        }
+        LogUtils.d("EVENT_MUSIC_COMMENT_COUNT");
     }
 
     @OnClick({R.id.fragment_music_paly_share, R.id.fragment_music_paly_like, R.id

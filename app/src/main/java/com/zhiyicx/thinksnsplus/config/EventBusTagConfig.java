@@ -66,6 +66,12 @@ public class EventBusTagConfig {
     // 音乐单曲喜欢
     public static final String EVENT_MUSIC_LIKE = "event_music_like";
 
+    // 音乐单曲评论
+    public static final String EVENT_MUSIC_COMMENT_COUNT = "event_music_comment_count";
+
+    // 音乐单曲切换
+    public static final String EVENT_MUSIC_CHANGE = "event_music_change";
+
     /**
      * IM 相关
      */
