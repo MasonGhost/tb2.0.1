@@ -55,7 +55,7 @@ public class ZBIMClient implements IMSoupport {
     private boolean mIsLogin; // IM 是否登录成功
 
     public boolean isLogin() {
-        return mIsLogin;
+        return mIsConnected && mIsLogin;
     }
 
     public boolean isConnected() {

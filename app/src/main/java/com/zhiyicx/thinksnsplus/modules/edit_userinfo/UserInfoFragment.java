@@ -20,6 +20,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.trycatch.mysnackbar.Prompt;
 import com.trycatch.mysnackbar.TSnackbar;
+import com.wcy.overscroll.OverScrollLayout;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
@@ -29,7 +30,6 @@ import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.utils.ImageUtils;
-import com.zhiyicx.baseproject.widget.dragview.DragViewGroup;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -101,8 +101,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     LinearLayout mLlContainer;
     @BindView(R.id.v_horizontal_line)
     View mVHorizontalLine;
-    @BindView(R.id.dv_view_group)
-    DragViewGroup mDvViewGroup;
+    @BindView(R.id.overscroll)
+    OverScrollLayout mDvViewGroup;
 
     private TSnackbar mTSnackbarUserInfo;
     private TSnackbar mTSnackbarUploadIcon;

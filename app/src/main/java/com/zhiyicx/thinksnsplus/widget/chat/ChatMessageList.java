@@ -18,6 +18,8 @@ import android.widget.FrameLayout;
 
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
+import com.wcy.overscroll.OverScrollCheckListener;
+import com.wcy.overscroll.OverScrollLayout;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -64,6 +66,7 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
 
     private int mLastVisibleItemPosition;//　记录上次加载的最有一个 item
     private boolean mIsHandledDrag;// 标记是否已经处理过拖动事件了
+    private OverScrollLayout overscroll;
 
     public ChatMessageList(Context context) {
         super(context);
@@ -123,6 +126,7 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());//设置动画
         mRefreshLayout.setRefreshEnabled(true);
+        mRefreshLayout.setLoadMoreEnabled(false);
         mRefreshLayout.setOnRefreshListener(this);
         mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -147,6 +151,52 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
                 return false;
             }
         });
+
+        overscroll = (OverScrollLayout)findViewById(R.id.overscroll);
+        overscroll.setOverScrollCheckListener(new OverScrollCheckListener() {
+            @Override
+            public int getContentViewScrollDirection() {
+                return OverScrollLayout.SCROLL_VERTICAL;
+            }
+
+            @Override
+            public boolean canScrollUp() {
+                if (mRefreshLayout.isRefreshEnabled()) {
+                    return true;
+                } else {
+                    // 如果不能够下拉刷新，并且到了顶部 就可以scrollUp
+                    if (!mRecyclerView.canScrollVertically(-1)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            @Override
+            public boolean canScrollDown() {
+                // 如果能够上拉加载，就不能够overScroll Down
+                if (mRefreshLayout.isLoadMoreEnabled()) {
+                    return true;
+                } else {
+                    // 如果不能够上拉加载，并且到了底部 就可以scrollUp
+                    if (!mRecyclerView.canScrollVertically(1)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            @Override
+            public boolean canScrollLeft() {
+                return false;
+            }
+
+            @Override
+            public boolean canScrollRight() {
+                return false;
+            }
+        });
+
     }
 
     private boolean handleSoftInput(View v) {

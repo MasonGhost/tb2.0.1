@@ -15,6 +15,9 @@ import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.jakewharton.rxbinding.view.RxView;
+import com.wcy.overscroll.OnOverScrollListener;
+import com.wcy.overscroll.OverScrollCheckListener;
+import com.wcy.overscroll.OverScrollLayout;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -65,6 +68,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     protected View mFlTopTipContainer;
     protected TextView mTvTopTip;
     protected RecyclerView.LayoutManager layoutManager;
+    protected OverScrollLayout overscroll;
 
 
     protected EmptyView mEmptyView; // 因为添加了 header 和 footer 故取消了 adater 的 emptyview，改为手动判断
@@ -144,6 +148,61 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
         mHeaderAndFooterWrapper.addFootView(getFooterView());
         mRvList.setAdapter(mHeaderAndFooterWrapper);
+        overscroll = (OverScrollLayout) rootView.findViewById(R.id.overscroll);
+        overscroll.setOverScrollCheckListener(new OverScrollCheckListener() {
+            @Override
+            public int getContentViewScrollDirection() {
+                return OverScrollLayout.SCROLL_VERTICAL;
+            }
+
+            @Override
+            public boolean canScrollUp() {
+                if (mRefreshlayout.isRefreshEnabled()) {
+                    return true;
+                } else {
+                    // 如果不能够下拉刷新，并且到了顶部 就可以scrollUp
+                    if (!mRvList.canScrollVertically(-1)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            @Override
+            public boolean canScrollDown() {
+                // 如果能够上拉加载，就不能够overScroll Down
+                if (mRefreshlayout.isLoadMoreEnabled()) {
+                    return true;
+                } else {
+                    // 如果不能够上拉加载，并且到了底部 就可以scrollUp
+                    if (!mRvList.canScrollVertically(1)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            @Override
+            public boolean canScrollLeft() {
+                return false;
+            }
+
+            @Override
+            public boolean canScrollRight() {
+                return false;
+            }
+        });
+    }
+
+    protected void setOverScroll(Boolean topOverScroll, Boolean bottomOverScroll) {
+        if (overscroll != null) {
+            if (topOverScroll != null) {
+                overscroll.setTopOverScrollEnable(topOverScroll);
+            }
+            if (bottomOverScroll != null) {
+                overscroll.setBottomOverScrollEnable(bottomOverScroll);
+            }
+        }
     }
 
     /**
