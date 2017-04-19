@@ -78,7 +78,7 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
      * 重新封装服务器数据
      */
     private Observable<BaseJson<List<FollowFansBean>>> packageData(BaseJson<GsonFollowFansBean> gsonFollowFansBeanBaseJson, final long userId, final List<FollowFansBean> followFansBeanList) {
-        if (gsonFollowFansBeanBaseJson.isStatus() && followFansBeanList != null && !followFansBeanList.isEmpty()) {
+        if (gsonFollowFansBeanBaseJson.isStatus() && followFansBeanList != null) {
             List<Object> targetUserIds = new ArrayList<>();
             for (FollowFansBean followFansBean : followFansBeanList) {
                 targetUserIds.add(followFansBean.getTargetUserId());

@@ -7,7 +7,9 @@ import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.info.InfoWebBean;
 
 import java.util.List;
 
@@ -46,6 +48,8 @@ public interface InfoDetailsConstract {
         Observable<BaseJson<List<InfoCommentListBean>>> getInfoCommentList(String news_id,
                                                                            Long max_id,
                                                                            Long limit);
+
+        Observable<BaseJson<InfoWebBean>> getInfoWebContent(String news_id);
 
         void handleCollect(boolean isCollected, String news_id);
 

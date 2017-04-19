@@ -14,6 +14,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.common.utils.ToastUtils;
@@ -261,7 +262,7 @@ public abstract class InfoDetailWebItem implements ItemViewDelegate<InfoCommentL
     private void initWebViewData(WebView mWebView) {
         WebSettings mWebSettings = mWebView.getSettings();
         mWebSettings.setSupportZoom(true);
-//        mWebSettings.setTextSize(WebSettings.TextSize.LARGEST);
+
         mWebSettings.setUseWideViewPort(true);
         mWebSettings.setLoadWithOverviewMode(true);
         mWebSettings.setSupportZoom(true);

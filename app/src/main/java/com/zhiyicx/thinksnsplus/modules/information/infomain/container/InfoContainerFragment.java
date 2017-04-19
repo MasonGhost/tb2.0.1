@@ -16,6 +16,7 @@ import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
+import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -39,10 +40,12 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.Simple
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
@@ -56,7 +59,7 @@ import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoLis
  * @Description 资讯的分类
  */
 public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoContainerPresenter>
-        implements InfoMainContract.InfoContainerView {
+        implements InfoMainContract.InfoContainerView{
 
     @BindView(R.id.fragment_infocontainer_indoctor)
     MagicIndicator mFragmentInfocontainerIndoctor;
@@ -197,21 +200,6 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     @Override
     public void setPresenter(InfoMainContract.InfoContainerPresenter infoContainerPresenter) {
         mPresenter = infoContainerPresenter;
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showMessage(String message) {
-
     }
 
     protected List<String> initTitles() {

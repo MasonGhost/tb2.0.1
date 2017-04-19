@@ -1,6 +1,5 @@
 package com.zhiyicx.baseproject.widget.popwindow;
 
-import android.app.Activity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;

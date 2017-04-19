@@ -5,6 +5,7 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.info.InfoWebBean;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COLLECT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COLLECT_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COMMENT_LIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAILS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_FOLLOW_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_SEARCH;
@@ -38,6 +40,10 @@ public interface InfoMainClient {
     // 获取资讯分类
     @GET(APP_PATH_INFO_TYPE)
     Observable<BaseJson<InfoTypeBean>> getInfoType();
+
+    // 获取资讯分类
+    @GET(APP_PATH_INFO_DETAILS)
+    Observable<BaseJson<InfoWebBean>> getInfoWebContent(@Path("news_id")String news_id);
 
     // 获取某类资讯列表
     @GET(APP_PATH_INFO_LIST)

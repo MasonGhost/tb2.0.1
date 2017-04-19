@@ -54,7 +54,7 @@ public class MusicPlayPresenter extends BasePresenter<MusicPlayContract.Reposito
                 mRootView.getCurrentMusic().getMusic_info().getStorage()));
 
             shareContent.setImage(String.format(ApiConfig.NO_PROCESS_IMAGE_PATH,
-                    mRootView.getCurrentMusic().getMusic_info()));
+                    mRootView.getCurrentMusic().getMusic_info().getSinger().getCover().getId()));
 
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
