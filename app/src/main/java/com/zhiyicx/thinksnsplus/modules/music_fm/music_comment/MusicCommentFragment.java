@@ -227,6 +227,8 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
             mMusicCommentHeader.setCommentList(0);
         } else if (!isLoadMore && !data.isEmpty()) {
             mMusicCommentHeader.setCommentList(data.size());
+            mHeaderInfo.setCommentCount(data.size());
+            setHeaderInfo(mHeaderInfo);
         }
         super.onNetResponseSuccess(data, isLoadMore);
     }

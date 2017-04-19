@@ -62,7 +62,7 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
     }
 
     @Override
-    public void requestNetData(String music_id, Long maxId, final boolean isLoadMore) {
+    public void requestNetData(final String music_id, Long maxId, final boolean isLoadMore) {
         Subscription subscription;
         if (mRootView.getType().equals(CURRENT_COMMENT_TYPE_MUSIC)) {
             subscription = mMusicCommentRepositroty.getMusicCommentList(music_id, maxId)
@@ -73,14 +73,14 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                             if (!data.isEmpty()) {
                                 mCommentListBeanGreenDao.saveMultiData(data);
                             }
-                            List<MusicCommentListBean> localComment=mCommentListBeanGreenDao.getMultiDataFromCache();
+                            List<MusicCommentListBean> localComment = mCommentListBeanGreenDao.getMyMusicComment(Integer.valueOf(music_id));
                             if (!localComment.isEmpty()) {
                                 for (int i = 0; i < localComment.size(); i++) {
                                     localComment.get(i).setFromUserInfoBean(mUserInfoBeanGreenDao
-                                            .getSingleDataFromCache((long)localComment.get(i).getUser_id()));
+                                            .getSingleDataFromCache((long) localComment.get(i).getUser_id()));
                                     if (localComment.get(i).getReply_to_user_id() != 0) {
                                         localComment.get(i).setToUserInfoBean(mUserInfoBeanGreenDao
-                                                .getSingleDataFromCache((long)localComment.get(i)
+                                                .getSingleDataFromCache((long) localComment.get(i)
                                                         .getReply_to_user_id()));
                                     }
                                 }
@@ -110,14 +110,14 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                             if (!data.isEmpty()) {
                                 mCommentListBeanGreenDao.saveMultiData(data);
                             }
-                            List<MusicCommentListBean> localComment=mCommentListBeanGreenDao.getMultiDataFromCache();
+                            List<MusicCommentListBean> localComment = mCommentListBeanGreenDao.getMultiDataFromCache();
                             if (!localComment.isEmpty()) {
                                 for (int i = 0; i < localComment.size(); i++) {
                                     localComment.get(i).setFromUserInfoBean(mUserInfoBeanGreenDao
-                                            .getSingleDataFromCache((long)localComment.get(i).getUser_id()));
+                                            .getSingleDataFromCache((long) localComment.get(i).getUser_id()));
                                     if (localComment.get(i).getReply_to_user_id() != 0) {
                                         localComment.get(i).setToUserInfoBean(mUserInfoBeanGreenDao
-                                                .getSingleDataFromCache((long)localComment.get(i)
+                                                .getSingleDataFromCache((long) localComment.get(i)
                                                         .getReply_to_user_id()));
                                     }
                                 }
@@ -146,15 +146,19 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
     @Override
     public void sendComment(int reply_id, String content) {
         String path;
+        MusicCommentListBean createComment = new MusicCommentListBean();
         if (mRootView.getType().equals(CURRENT_COMMENT_TYPE_MUSIC)) {
             path = APP_PATH_MUSIC_COMMENT_FORMAT;
+            createComment.setMusic_id(mRootView.getCommentId());
         } else {
             path = APP_PATH_MUSIC_ABLUM_COMMENT_FORMAT;
+            createComment.setSpecial_id(mRootView.getCommentId());
         }
         mRepository.sendComment(mRootView.getCommentId(), reply_id, content, path);
 
-        MusicCommentListBean createComment = new MusicCommentListBean();
+
         createComment.setState(SEND_ING);
+
         createComment.setReply_to_user_id(reply_id);
         createComment.setComment_content(content);
         String comment_mark = AppApplication.getmCurrentLoginAuth().getUser_id()
