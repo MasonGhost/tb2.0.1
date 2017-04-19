@@ -66,15 +66,15 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        if (getLeftViewOfMusicWindow() != null) {
-            RxView.globalLayouts(getLeftViewOfMusicWindow())
-                    .subscribe(new Action1<Void>() {
-                        @Override
-                        public void call(Void aVoid) {
-                            musicWindowsStatus(WindowUtils.getIsShown());
-                        }
-                    });
-        }
+//        if (getLeftViewOfMusicWindow() != null) {
+//            RxView.globalLayouts(getLeftViewOfMusicWindow())
+//                    .subscribe(new Action1<Void>() {
+//                        @Override
+//                        public void call(Void aVoid) {
+//                            musicWindowsStatus(WindowUtils.getIsShown());
+//                        }
+//                    });
+//        }
         return view;
     }
 

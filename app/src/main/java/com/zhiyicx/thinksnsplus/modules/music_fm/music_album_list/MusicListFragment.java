@@ -93,7 +93,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
             protected void convert(ViewHolder holder, MusicAlbumListBean musicListBean, int
                     position) {
                 ImageView imag = holder.getView(R.id.music_list_image);
-
+//                imag.setImageResource(R.drawable.shape_default_image);
                 mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
                         .placeholder(R.drawable.shape_default_image)
                         .errorPic(R.drawable.shape_default_image)

@@ -263,17 +263,6 @@ public abstract class InfoDetailWebItem implements ItemViewDelegate<InfoCommentL
         WebSettings mWebSettings = mWebView.getSettings();
         mWebSettings.setSupportZoom(true);
 
-        //可以取1-72之间的任意值，默认16
-        if (DeviceUtils.getDisplayMetrics(mContext).densityDpi >= 240) {
-            mWebSettings.setTextZoom(240);
-            LogUtils.d("getDisplayMetrics::"+240);
-        } else if (DeviceUtils.getDisplayMetrics(mContext).densityDpi >= 360) {
-            mWebSettings.setTextZoom(360);
-            LogUtils.d("getDisplayMetrics::"+360);
-        } else if (DeviceUtils.getDisplayMetrics(mContext).densityDpi >= 480) {
-            mWebSettings.setTextZoom(480);
-            LogUtils.d("getDisplayMetrics::"+480);
-        }
         mWebSettings.setUseWideViewPort(true);
         mWebSettings.setLoadWithOverviewMode(true);
         mWebSettings.setSupportZoom(true);
