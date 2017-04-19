@@ -338,6 +338,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
     private void allready() {
         if (mInterfaceNum == NEED_INTERFACE_NUM) {
             mRootView.allDataReady();
+            mInterfaceNum = 0;
         }
     }
 

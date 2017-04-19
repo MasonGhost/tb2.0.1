@@ -303,6 +303,7 @@ public abstract class TSWebFragment extends TSFragment {
         mWebSettings.setSupportZoom(true);
         mWebSettings.setLoadWithOverviewMode(true);
         mWebSettings.setUseWideViewPort(true);
+
         mWebSettings.setDefaultTextEncodingName("utf-8");
         // 支持自动加载图片
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

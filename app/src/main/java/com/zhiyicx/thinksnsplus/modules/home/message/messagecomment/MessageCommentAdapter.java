@@ -169,7 +169,7 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
     private String handleName(CommentedBean commentedBean) {
         String content = "";
         if (commentedBean.getReply_to_user_id() != null && commentedBean.getReply_to_user_id() != 0) { // 当没有回复者时，就是回复评论
-            content += "回复 " + commentedBean.getReplyUserInfo().getName() + " " + commentedBean.getComment_content();
+            content += "回复 " + commentedBean.getReplyUserInfo().getName() + ": " + commentedBean.getComment_content();
         } else {
             content = commentedBean.getComment_content();
         }

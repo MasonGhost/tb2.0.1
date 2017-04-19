@@ -22,9 +22,9 @@
         android:layout_width="@dimen/rec_image_for_list"
         android:layout_height="@dimen/rec_image_for_list"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="@dimen/spacing_mid"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_marginRight="@dimen/spacing_mid"
         android:background="@color/bgColor">
 
         <TextView
@@ -41,6 +41,7 @@
             android:id="@+id/iv_detail_image"
             android:layout_width="@dimen/rec_image_for_list"
             android:layout_height="@dimen/rec_image_for_list"
+            android:scaleType="centerCrop"
             android:visibility="gone"
             tools:src="@mipmap/ic_launcher">
         </com.zhiyicx.baseproject.widget.imageview.FilterImageView>
@@ -66,8 +67,6 @@
         android:layout_below="@id/tv_name"
         android:layout_toLeftOf="@id/fl_detial"
         android:layout_toRightOf="@id/iv_headpic"
-        android:ellipsize="end"
-        android:maxLines="1"
         android:paddingTop="@dimen/spacing_small"
         android:textColor="@color/normal_for_assist_text"
         android:textSize="@dimen/size_content"
@@ -80,8 +79,8 @@
         android:layout_below="@id/tv_content"
         android:layout_toRightOf="@id/iv_headpic"
         android:maxLines="1"
-        android:paddingTop="@dimen/spacing_small"
         android:paddingBottom="@dimen/spacing_mid"
+        android:paddingTop="@dimen/spacing_small"
         android:textColor="@color/general_for_hint"
         android:textSize="@dimen/size_icon_assist"
         tools:text="6分钟前"/>
@@ -89,7 +88,7 @@
     <View
         android:id="@+id/v_bottom_line"
         style="@style/style_divider_horizontal_light"
-        android:layout_toRightOf="@+id/iv_headpic"
         android:layout_below="@+id/tv_time"
+        android:layout_toRightOf="@+id/iv_headpic"
         />
 </RelativeLayout>

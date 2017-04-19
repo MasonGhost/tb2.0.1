@@ -40,6 +40,7 @@
             android:id="@+id/iv_detail_image"
             android:layout_width="@dimen/rec_image_for_list"
             android:layout_height="@dimen/rec_image_for_list"
+            android:scaleType="centerCrop"
             android:visibility="gone"
             tools:src="@mipmap/ic_launcher">
         </com.zhiyicx.baseproject.widget.imageview.FilterImageView>
