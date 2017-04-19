@@ -1,7 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.information.infochannel;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -288,13 +290,20 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
             @Override
             protected void convert(ViewHolder holder, InfoTypeMyCatesBean data
                     , final int position) {
+                TextView textView=holder.getView(R.id.item_info_channel);
                 ImageView delete = holder.getView(R.id.item_info_channel_deal);
+
+
+
                 if (position == 0) {
-                    holder.getView(R.id.item_info_channel).setBackgroundResource(R.drawable
-                            .item_channel_bg_blue);
+                    textView.setBackgroundResource(R.drawable.item_channel_bg_blue);
+                    textView.setTextColor(Color.WHITE);
+                    if (isEditor){
+                        textView.setBackgroundColor(Color.WHITE);
+                        textView.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
+                    }
                 } else {
-                    holder.getView(R.id.item_info_channel).setBackgroundResource(R.drawable
-                            .item_channel_bg_normal);
+                    textView.setBackgroundResource(R.drawable.item_channel_bg_normal);
                 }
                 if (isEditor && position != 0) {
                     delete.setVisibility(View.VISIBLE);
