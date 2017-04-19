@@ -51,7 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/fragment_music_detail_dec"
-                android:layout_marginBottom="@dimen/spacing_large"
+                android:layout_marginBottom="@dimen/music_album_detail_bottom_18dp"
                 android:layout_marginTop="@dimen/spacing_large">
 
                 <com.zhiyicx.thinksnsplus.widget.IconTextView
