@@ -92,6 +92,11 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     }
 
     @Override
+    protected int setToolBarBackgroud() {
+        return ContextCompat.getColor(getContext(),R.color.themeColor);
+    }
+
+    @Override
     protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter multiItemTypeAdapter = new MultiItemTypeAdapter<>(getActivity(),
                 mListDatas);

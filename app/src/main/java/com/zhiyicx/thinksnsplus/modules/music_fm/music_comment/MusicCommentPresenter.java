@@ -70,8 +70,25 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                     .subscribe(new BaseSubscribe<List<MusicCommentListBean>>() {
                         @Override
                         protected void onSuccess(List<MusicCommentListBean> data) {
+                            if (!data.isEmpty()) {
+                                mCommentListBeanGreenDao.saveMultiData(data);
+                            }
+                            List<MusicCommentListBean> localComment=mCommentListBeanGreenDao.getMultiDataFromCache();
+                            if (!localComment.isEmpty()) {
+                                for (int i = 0; i < localComment.size(); i++) {
+                                    localComment.get(i).setFromUserInfoBean(mUserInfoBeanGreenDao
+                                            .getSingleDataFromCache((long)localComment.get(i).getUser_id()));
+                                    if (localComment.get(i).getReply_to_user_id() != 0) {
+                                        localComment.get(i).setToUserInfoBean(mUserInfoBeanGreenDao
+                                                .getSingleDataFromCache((long)localComment.get(i)
+                                                        .getReply_to_user_id()));
+                                    }
+                                }
+                                localComment.addAll(data);
+                                data.clear();
+                                data.addAll(localComment);
+                            }
                             mRootView.onNetResponseSuccess(data, isLoadMore);
-                            mCommentListBeanGreenDao.saveMultiData(data);
                         }
 
                         @Override
@@ -90,8 +107,26 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                     .subscribe(new BaseSubscribe<List<MusicCommentListBean>>() {
                         @Override
                         protected void onSuccess(List<MusicCommentListBean> data) {
+                            if (!data.isEmpty()) {
+                                mCommentListBeanGreenDao.saveMultiData(data);
+                            }
+                            List<MusicCommentListBean> localComment=mCommentListBeanGreenDao.getMultiDataFromCache();
+                            if (!localComment.isEmpty()) {
+                                for (int i = 0; i < localComment.size(); i++) {
+                                    localComment.get(i).setFromUserInfoBean(mUserInfoBeanGreenDao
+                                            .getSingleDataFromCache((long)localComment.get(i).getUser_id()));
+                                    if (localComment.get(i).getReply_to_user_id() != 0) {
+                                        localComment.get(i).setToUserInfoBean(mUserInfoBeanGreenDao
+                                                .getSingleDataFromCache((long)localComment.get(i)
+                                                        .getReply_to_user_id()));
+                                    }
+                                }
+                                localComment.addAll(data);
+                                data.clear();
+                                data.addAll(localComment);
+                            }
                             mRootView.onNetResponseSuccess(data, isLoadMore);
-                            mCommentListBeanGreenDao.saveMultiData(data);
+
                         }
 
                         @Override
@@ -111,12 +146,12 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
     @Override
     public void sendComment(int reply_id, String content) {
         String path;
-        if (mRootView.getType().equals(CURRENT_COMMENT_TYPE_MUSIC)){
-            path=APP_PATH_MUSIC_COMMENT_FORMAT;
-        }else{
-            path=APP_PATH_MUSIC_ABLUM_COMMENT_FORMAT;
+        if (mRootView.getType().equals(CURRENT_COMMENT_TYPE_MUSIC)) {
+            path = APP_PATH_MUSIC_COMMENT_FORMAT;
+        } else {
+            path = APP_PATH_MUSIC_ABLUM_COMMENT_FORMAT;
         }
-        mRepository.sendComment(mRootView.getCommentId(),reply_id, content, path);
+        mRepository.sendComment(mRootView.getCommentId(), reply_id, content, path);
 
         MusicCommentListBean createComment = new MusicCommentListBean();
         createComment.setState(SEND_ING);
@@ -138,6 +173,7 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
         }
         createComment.setFromUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache((long)
                 AppApplication.getmCurrentLoginAuth().getUser_id()));
+
         mCommentListBeanGreenDao.insertOrReplace(createComment);
         if (mRootView.getListDatas().get(0).getComment_content() == null) {
             mRootView.getListDatas().remove(0);// 去掉占位图
@@ -152,10 +188,10 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                 .subscribe(new BaseSubscribe<MusicDetaisBean>() {
                     @Override
                     protected void onSuccess(MusicDetaisBean data) {
-                        MusicCommentHeader.HeaderInfo headerInfo=new MusicCommentHeader.HeaderInfo();
+                        MusicCommentHeader.HeaderInfo headerInfo = new MusicCommentHeader.HeaderInfo();
                         headerInfo.setCommentCount(data.getComment_count());
                         headerInfo.setId(data.getId());
-                        headerInfo.setLitenerCount(data.getTaste_count()+"");
+                        headerInfo.setLitenerCount(data.getTaste_count() + "");
                         headerInfo.setImageUrl(ImageUtils.imagePathConvert(data.getSinger().getCover().getId() + "",
                                 ImageZipConfig.IMAGE_70_ZIP));
                         headerInfo.setTitle(data.getTitle());
@@ -180,11 +216,11 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                 .subscribe(new BaseSubscribe<MusicAlbumDetailsBean>() {
                     @Override
                     protected void onSuccess(MusicAlbumDetailsBean data) {
-                        MusicCommentHeader.HeaderInfo headerInfo=new MusicCommentHeader.HeaderInfo();
+                        MusicCommentHeader.HeaderInfo headerInfo = new MusicCommentHeader.HeaderInfo();
                         headerInfo.setCommentCount(data.getComment_count());
                         headerInfo.setId(data.getId());
-                        headerInfo.setLitenerCount(data.getTaste_count()+"");
-                        headerInfo.setImageUrl(ImageUtils.imagePathConvert(data.getStorage() + "",ImageZipConfig.IMAGE_70_ZIP));
+                        headerInfo.setLitenerCount(data.getTaste_count() + "");
+                        headerInfo.setImageUrl(ImageUtils.imagePathConvert(data.getStorage() + "", ImageZipConfig.IMAGE_70_ZIP));
                         headerInfo.setTitle(data.getTitle());
                         mRootView.setHeaderInfo(headerInfo);
                     }
@@ -209,10 +245,10 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
     @Override
     public void deleteComment(MusicCommentListBean data) {
         mCommentListBeanGreenDao.deleteSingleCache(data);
-        CommentBean commentBean=new CommentBean();
+        CommentBean commentBean = new CommentBean();
         commentBean.setComment_id(data.getComment_id());
         commentBean.setNetRequestUrl(String.format(ApiConfig
-                .APP_PATH_MUSIC_DELETE_COMMENT_FORMAT,data.getComment_id()));
+                .APP_PATH_MUSIC_DELETE_COMMENT_FORMAT, data.getComment_id()));
         CommentCore.getInstance(CommentCore.CommentState.DELETE)
                 .set$$Comment(commentBean)
                 .handleComment();
