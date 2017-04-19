@@ -965,7 +965,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                         mFragmentMusicPalyRv.getCurrentPosition() - 1
                 );
 
-                mFragmentMusicPalyProgress.setProgress(0);
                 break;
             case R.id.fragment_music_paly_palyer:// 播放暂停
                 PlaybackStateCompat state = getActivity().getSupportMediaController()
@@ -998,7 +997,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 mFragmentMusicPalyRv.smoothScrollToPosition(
                         mFragmentMusicPalyRv.getCurrentPosition() + 1
                 );
-                mFragmentMusicPalyProgress.setProgress(0);
                 break;
             case R.id.fragment_music_paly_list:// 歌曲目录
                 mListPopupWindow.show();
