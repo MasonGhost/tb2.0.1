@@ -95,6 +95,8 @@ public class ChannelListFragmentAdapter extends CommonAdapter<ChannelSubscripBea
 
         // 设置订阅状态
         tv_channel_subscrib.setChecked(channelSubscripBean.getChannelSubscriped());
+        tv_channel_subscrib.setText(channelSubscripBean.getChannelSubscriped() ? getContext().getString(R.string.channel_followed) : getContext().getString(R.string.channel_follow));
+        tv_channel_subscrib.setPadding(channelSubscripBean.getChannelSubscriped() ?getContext().getResources().getDimensionPixelSize(R.dimen.spacing_small):getContext().getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
         RxView.clicks(tv_channel_subscrib)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(new Action1<Void>() {

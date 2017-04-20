@@ -38,6 +38,7 @@
             android:enabled="false"
             android:imeOptions="actionSend"
             android:text="@string/send"
+            android:gravity="center"
             android:textColor="@color/white"
             android:textSize="@dimen/button_text_size_small"
             android:visibility="gone"
