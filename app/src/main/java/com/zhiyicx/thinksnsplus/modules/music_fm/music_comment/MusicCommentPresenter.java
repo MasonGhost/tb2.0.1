@@ -287,24 +287,24 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
 
     @Override
     public List<MusicCommentListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        List<MusicCommentListBean> localComment;
-        if (mRootView.getType().equals(CURRENT_COMMENT_TYPE_MUSIC)) {
-            localComment = mCommentListBeanGreenDao.getLocalMusicComment(mRootView.getCommentId());
-        } else {
-            localComment = mCommentListBeanGreenDao.getLocalAblumComment(mRootView.getCommentId());
-        }
-
-        if (!localComment.isEmpty()) {
-            for (int i = 0; i < localComment.size(); i++) {
-                localComment.get(i).setFromUserInfoBean(mUserInfoBeanGreenDao
-                        .getSingleDataFromCache((long) localComment.get(i).getUser_id()));
-                if (localComment.get(i).getReply_to_user_id() != 0) {
-                    localComment.get(i).setToUserInfoBean(mUserInfoBeanGreenDao
-                            .getSingleDataFromCache((long) localComment.get(i)
-                                    .getReply_to_user_id()));
-                }
-            }
-        }
+        List<MusicCommentListBean> localComment=new ArrayList<>();
+//        if (mRootView.getType().equals(CURRENT_COMMENT_TYPE_MUSIC)) {
+//            localComment = mCommentListBeanGreenDao.getLocalMusicComment(mRootView.getCommentId());
+//        } else {
+//            localComment = mCommentListBeanGreenDao.getLocalAblumComment(mRootView.getCommentId());
+//        }
+//
+//        if (!localComment.isEmpty()) {
+//            for (int i = 0; i < localComment.size(); i++) {
+//                localComment.get(i).setFromUserInfoBean(mUserInfoBeanGreenDao
+//                        .getSingleDataFromCache((long) localComment.get(i).getUser_id()));
+//                if (localComment.get(i).getReply_to_user_id() != 0) {
+//                    localComment.get(i).setToUserInfoBean(mUserInfoBeanGreenDao
+//                            .getSingleDataFromCache((long) localComment.get(i)
+//                                    .getReply_to_user_id()));
+//                }
+//            }
+//        }
         return localComment;
     }
 
