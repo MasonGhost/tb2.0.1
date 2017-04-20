@@ -27,7 +27,7 @@
             tools:text="视卡鼓励进口大幅拉升刚刚加息公积金阿哥电视卡鼓励进口大幅拉刚刚加息公积金阿哥电视卡鼓励进口大幅拉刚刚加"
             />
 
-        <Button
+        <TextView
             android:id="@+id/bt_send"
             android:layout_width="@dimen/button_send_with"
             android:layout_height="@dimen/button_send_height"
