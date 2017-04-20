@@ -254,7 +254,7 @@ public class IconTextView extends View {
 
         composeDrawableBound();
         setMeasuredDimension(width + getPaddingLeft() + getPaddingRight(), height +
-                getPaddingBottom() + getPaddingTop());
+                getPaddingBottom() + getPaddingTop()+10);
     }
 
     private int measureAdjustHeight(int heightSize, int heightMode) {
