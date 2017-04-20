@@ -296,11 +296,9 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
 
 
                 if (position == 0) {
-                    textView.setBackgroundResource(R.drawable.item_channel_bg_blue);
-                    textView.setTextColor(Color.WHITE);
+                    textView.setBackgroundColor(getResources().getColor(R.color.like_theme));
                     if (isEditor){
                         textView.setBackgroundColor(Color.WHITE);
-                        textView.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
                     }
                 } else {
                     textView.setBackgroundResource(R.drawable.item_channel_bg_normal);

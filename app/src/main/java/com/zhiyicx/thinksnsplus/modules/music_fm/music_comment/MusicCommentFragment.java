@@ -172,12 +172,12 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
         position = position - 1;
         if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth()
                 .getUser_id()) {// 自己的评论
-            if (mListDatas.get(position).getId() != -1) {
+//            if (mListDatas.get(position).getId() != -1) {
                 initLoginOutPopupWindow(mListDatas.get(position));
                 mDeletCommentPopWindow.show();
-            } else {
-                return;
-            }
+//            } else {
+//                return;
+//            }
         } else {
             mReplyUserId = mListDatas.get(position).getUser_id();
             showCommentView();
@@ -215,11 +215,6 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     }
 
     @Override
-    protected List<MusicCommentListBean> requestCacheData(Long maxId, boolean isLoadMore) {
-        return new ArrayList<>();
-    }
-
-    @Override
     public void onNetResponseSuccess(@NotNull List<MusicCommentListBean> data, boolean isLoadMore) {
         if (!isLoadMore && data.isEmpty()) { // 增加空数据，用于显示占位图
             MusicCommentListBean emptyData = new MusicCommentListBean();
@@ -227,8 +222,8 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
             mMusicCommentHeader.setCommentList(0);
         } else if (!isLoadMore && !data.isEmpty()) {
             mMusicCommentHeader.setCommentList(data.size());
-            mHeaderInfo.setCommentCount(data.size());
-            setHeaderInfo(mHeaderInfo);
+//            mHeaderInfo.setCommentCount(data.size());
+//            setHeaderInfo(mHeaderInfo);
         }
         super.onNetResponseSuccess(data, isLoadMore);
     }
@@ -276,6 +271,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                         mHeaderInfo.setCommentCount(mHeaderInfo.getCommentCount() - 1);
                         setHeaderInfo(mHeaderInfo);
                         if (WindowUtils.getAblumHeadInfo() != null) {
+                            if (WindowUtils.getAblumHeadInfo().getCommentCount()>0)
                             WindowUtils.getAblumHeadInfo().setCommentCount(WindowUtils.getAblumHeadInfo().getCommentCount() - 1);
                         }
                         mPresenter.deleteComment(data);

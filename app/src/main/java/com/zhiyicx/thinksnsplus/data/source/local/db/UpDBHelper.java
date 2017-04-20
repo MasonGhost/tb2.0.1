@@ -57,5 +57,6 @@ public class UpDBHelper extends DaoMaster.OpenHelper {
         MigrationHelper.getInstance().migrate(db, FlushMessagesDao.class);
         MigrationHelper.getInstance().migrate(db, DigedBeanDao.class);
         MigrationHelper.getInstance().migrate(db, CommentedBeanDao.class);
+        MigrationHelper.getInstance().migrate(db, MusicCommentListBeanDao.class);
     }
 }

@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.wcy.overscroll.OverScrollLayout;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.common.utils.FileUtils;
@@ -57,6 +58,7 @@ public abstract class TSWebFragment extends TSFragment {
     protected TextView mCloseView;
     private ProgressBar mProgressBar;
     private EmptyView mEmptyView;// 错误提示
+    private OverScrollLayout mOverScrollLayout;
 
     private boolean mIsNeedProgress = true;// 是否需要进度条
     private List<String> mImageList = new ArrayList<>();// 网页内图片地址
@@ -290,6 +292,10 @@ public abstract class TSWebFragment extends TSFragment {
                         mWebView.reload();
                     }
                 });
+        mOverScrollLayout = (OverScrollLayout) rootView.findViewById(R.id.overscroll);
+//        if(mOverScrollLayout !=null){// 是否需要下拉
+            mOverScrollLayout.setTopOverScrollEnable(false);
+//        }
     }
 
 

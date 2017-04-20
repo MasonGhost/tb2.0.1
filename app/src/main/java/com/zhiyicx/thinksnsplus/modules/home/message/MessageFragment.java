@@ -194,7 +194,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
             tvHeaderCommentTime.setVisibility(View.VISIBLE);
             tvHeaderCommentTime.setText(TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(commentItemData.getConversation().getLast_message_time())));
         }
-        tvHeaderCommentTip.setBadgeCount(Integer.parseInt(ConvertUtils.numberConvert(commentItemData.getUnReadMessageNums())));
+        tvHeaderCommentTip.setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert(commentItemData.getUnReadMessageNums())));
 
         tvHeaderLikeContent.setText(likedItemData.getConversation().getLast_message().getTxt());
         if (likedItemData.getConversation().getLast_message_time() == 0 || likedItemData.getConversation().getLast_message().getTxt().contains(getString(R.string.has_no_body))) {
@@ -203,7 +203,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
             tvHeaderLikeTime.setVisibility(View.VISIBLE);
             tvHeaderLikeTime.setText(TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(likedItemData.getConversation().getLast_message_time())));
         }
-        tvHeaderLikeTip.setBadgeCount(Integer.parseInt(ConvertUtils.numberConvert(likedItemData.getUnReadMessageNums())));
+        tvHeaderLikeTip.setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert(likedItemData.getUnReadMessageNums())));
         refreshData();
     }
 
