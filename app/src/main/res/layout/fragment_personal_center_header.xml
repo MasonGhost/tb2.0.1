@@ -19,7 +19,7 @@
             android:id="@+id/iv_background_cover"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
+            android:layout_gravity="center_horizontal|top"
             android:layout_marginBottom="@dimen/spacing_large"
             android:scaleType="centerCrop"
             android:src="@mipmap/default_pic_personal"/>
@@ -40,9 +40,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/spacing_normal"
+        android:includeFontPadding="false"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_sub_title"
-        android:includeFontPadding="false"
         tools:text="阿超的超能力"/>
 
     <TextView
