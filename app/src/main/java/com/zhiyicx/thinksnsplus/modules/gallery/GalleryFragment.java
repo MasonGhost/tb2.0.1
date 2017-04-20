@@ -189,6 +189,7 @@ public class GalleryFragment extends TSFragment {
             mVpPhotos.setBackground(backgroundColor);
             // ((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
         }
+        setIndiactorVisible(true);
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -203,6 +204,12 @@ public class GalleryFragment extends TSFragment {
             public void onAnimationUpdate(ValueAnimator animation) {
                 mVpPhotos.setBackground(backgroundColor);
                 //((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
+            }
+        });
+        bgAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                setIndiactorVisible(true);
             }
         });
         return bgAnim;
@@ -258,5 +265,9 @@ public class GalleryFragment extends TSFragment {
         mMiIndicator.setNavigator(circleNavigator);
         ViewPagerHelper.bind(mMiIndicator, mVpPhotos);
 
+    }
+
+    public void setIndiactorVisible(boolean visible) {
+        mMiIndicator.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 }
