@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import android.view.ViewGroup;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.indicator_expand.ScaleCircleNavigator;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 
@@ -83,8 +85,48 @@ public class GalleryFragment extends TSFragment {
             addCircleNavigator();
             mMiIndicator.onPageSelected(currentItem);
         }
+        mVpPhotos.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                LogUtils.i("addOnPageChangeListener  onPageScrolled" + "  postion --》" + position
+                        + "  positionOffset-->" + positionOffset + "  positionOffsetPixels" + positionOffsetPixels);
+                LogUtils.i("canScrollHorizontally" + mVpPhotos.canScrollHorizontally(ViewPager.LAYOUT_DIRECTION_RTL));
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                LogUtils.i("addOnPageChangeListener  onPageSelected" + "  postion --》" + position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                LogUtils.i("addOnPageChangeListener  onPageScrollStateChanged" + "state--》" + state);
+                viewPageState = state;
+                // 刚拖动
+                if (viewPageState == ViewPager.SCROLL_STATE_DRAGGING) {
+                    // 获取到的是当前要退出的fragment
+                    GalleryPictureContainerFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
+                    GalleryPictureFragment galleryPicturFragment = fragment.getChildFragment();
+                    if (galleryPicturFragment != null) {
+                        galleryPicturFragment.showOrHideOriginBtn(false);
+
+                    }
+                }
+                // 通过手指滑动切换到新的fragment，而不是第一次进入切换到fragment
+                if (viewPageState == ViewPager.SCROLL_STATE_SETTLING || viewPageState == ViewPager.SCROLL_STATE_IDLE) {
+                    // 获取到的是当前要进入的fragment
+                    GalleryPictureContainerFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
+                    GalleryPictureFragment galleryPicturFragment = fragment.getChildFragment();
+                    if (galleryPicturFragment != null) {
+                        galleryPicturFragment.showOrHideOriginBtn(true);
+                    }
+                }
+            }
+        });
 
     }
+
+    private int viewPageState = 0;
 
     @Override
     protected void initData() {

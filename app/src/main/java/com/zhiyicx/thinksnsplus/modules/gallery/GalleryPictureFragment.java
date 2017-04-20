@@ -10,6 +10,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewPropertyAnimatorListener;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.widget.DrawableUtils;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -55,6 +58,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.utils.TransferImageAnimationUtil;
+import com.zhiyicx.thinksnsplus.widget.coordinatorlayout.ScrollAwareFABBehavior;
 
 import java.io.File;
 import java.io.IOException;
@@ -210,6 +214,33 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         }
     }
 
+    private static final android.view.animation.Interpolator INTERPOLATOR =
+            new FastOutSlowInInterpolator();
+
+    /**
+     * 显示或者隐藏查看原图按钮
+     *
+     * @param isIn 是否是进入页面
+     */
+    public void showOrHideOriginBtn(boolean isIn) {
+        // 如果查看原图按钮不可见也就没有必要控制显示隐藏
+        if (mTvOriginPhoto.getVisibility() != View.VISIBLE) {
+            return;
+        } else {
+            if (isIn) {
+                ViewCompat.animate(mTvOriginPhoto).alpha(1.0f).scaleX(1.0f).scaleY(1.0f)
+                        .setDuration(500)
+                        .setInterpolator(INTERPOLATOR).withLayer()
+                        .start();
+            } else {
+                ViewCompat.animate(mTvOriginPhoto).alpha(0.0f).scaleX(0.0f).scaleY(0.0f)
+                        .setDuration(100)
+                        .setInterpolator(INTERPOLATOR).withLayer()
+                        .start();
+            }
+        }
+    }
+
     public void saveImage() {
         // 通过GLide获取bitmap,有缓存读缓存
         Glide.with(getActivity())
@@ -271,7 +302,27 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                             LogUtils.i(TAG + "加载原图失败");
-                            mTvOriginPhoto.setVisibility(View.VISIBLE);
+
+                            ViewCompat.animate(mTvOriginPhoto).alpha(1.0f).scaleX(1.0f).scaleY(1.0f)
+                                    .setDuration(500)
+                                    .setInterpolator(INTERPOLATOR)
+                                    .setListener(new ViewPropertyAnimatorListener() {
+                                        @Override
+                                        public void onAnimationStart(View view) {
+                                            mTvOriginPhoto.setVisibility(View.VISIBLE);
+                                        }
+
+                                        @Override
+                                        public void onAnimationEnd(View view) {
+
+                                        }
+
+                                        @Override
+                                        public void onAnimationCancel(View view) {
+
+                                        }
+                                    })
+                                    .start();
                             // 原图没有缓存，从cacheOnlyStreamLoader抛出异常，在这儿加载高清图
                             Glide.with(context)
                                     .using(new CustomImageModelLoader(context))
@@ -419,7 +470,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             public void run() {
                 Bundle bundle = getArguments();
                 bundle.putBoolean("animationIn", false);
-                LogUtils.i("startInAnim"+"endAction");
+                LogUtils.i("startInAnim" + "endAction");
             }
         };
         TransferImageAnimationUtil.startInAnim(rect, mIvPager, endAction);
