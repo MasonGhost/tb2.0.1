@@ -307,13 +307,17 @@ public class BackgroundTaskHandler {
      * 处理Post请求类型的后台任务
      */
     private void postMethod(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
-        final OnNetResponseCallBack callBack= (OnNetResponseCallBack)backgroundRequestTaskBean.getParams().get(NET_CALLBACK);
-        backgroundRequestTaskBean.getParams().remove(NET_CALLBACK);
-        mServiceManager.getCommonClient().handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
+        HashMap params = backgroundRequestTaskBean.getParams();
+        if (params == null) {
+            params = new HashMap();
+        }
+        final OnNetResponseCallBack callBack = (OnNetResponseCallBack) params.get(NET_CALLBACK);
+        params.remove(NET_CALLBACK);
+        mServiceManager.getCommonClient().handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, params))
                 .subscribe(new BaseSubscribe<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
-                        if (callBack!=null){
+                        if (callBack != null) {
                             callBack.onSuccess(data);
                         }
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
@@ -326,15 +330,15 @@ public class BackgroundTaskHandler {
                         } else {
                             mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                         }
-                        if (callBack!=null){
-                            callBack.onFailure(message,code);
+                        if (callBack != null) {
+                            callBack.onFailure(message, code);
                         }
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         addBackgroundRequestTask(backgroundRequestTaskBean);
-                        if (callBack!=null){
+                        if (callBack != null) {
                             callBack.onException(throwable);
                         }
                     }
