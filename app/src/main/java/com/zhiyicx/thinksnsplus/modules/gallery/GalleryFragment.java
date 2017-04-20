@@ -85,19 +85,7 @@ public class GalleryFragment extends TSFragment {
             addCircleNavigator();
             mMiIndicator.onPageSelected(currentItem);
         }
-        mVpPhotos.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                LogUtils.i("addOnPageChangeListener  onPageScrolled" + "  postion --》" + position
-                        + "  positionOffset-->" + positionOffset + "  positionOffsetPixels" + positionOffsetPixels);
-                LogUtils.i("canScrollHorizontally" + mVpPhotos.canScrollHorizontally(ViewPager.LAYOUT_DIRECTION_RTL));
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                LogUtils.i("addOnPageChangeListener  onPageSelected" + "  postion --》" + position);
-            }
-
+        mVpPhotos.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageScrollStateChanged(int state) {
                 LogUtils.i("addOnPageChangeListener  onPageScrollStateChanged" + "state--》" + state);
@@ -107,9 +95,9 @@ public class GalleryFragment extends TSFragment {
                     // 获取到的是当前要退出的fragment
                     GalleryPictureContainerFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
                     GalleryPictureFragment galleryPicturFragment = fragment.getChildFragment();
+                    LogUtils.i("galleryPicturFragment state" + viewPageState + " position" + mVpPhotos.getCurrentItem() + galleryPicturFragment == null ? " null" : " not null");
                     if (galleryPicturFragment != null) {
                         galleryPicturFragment.showOrHideOriginBtn(false);
-
                     }
                 }
                 // 通过手指滑动切换到新的fragment，而不是第一次进入切换到fragment
@@ -117,6 +105,7 @@ public class GalleryFragment extends TSFragment {
                     // 获取到的是当前要进入的fragment
                     GalleryPictureContainerFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
                     GalleryPictureFragment galleryPicturFragment = fragment.getChildFragment();
+                    LogUtils.i("galleryPicturFragment state" + viewPageState + "  position" + mVpPhotos.getCurrentItem() + galleryPicturFragment == null ? " null" : " not null");
                     if (galleryPicturFragment != null) {
                         galleryPicturFragment.showOrHideOriginBtn(true);
                     }
@@ -200,6 +189,7 @@ public class GalleryFragment extends TSFragment {
             mVpPhotos.setBackground(backgroundColor);
             // ((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
         }
+        setIndiactorVisible(true);
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -214,6 +204,12 @@ public class GalleryFragment extends TSFragment {
             public void onAnimationUpdate(ValueAnimator animation) {
                 mVpPhotos.setBackground(backgroundColor);
                 //((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
+            }
+        });
+        bgAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                setIndiactorVisible(true);
             }
         });
         return bgAnim;
@@ -269,5 +265,9 @@ public class GalleryFragment extends TSFragment {
         mMiIndicator.setNavigator(circleNavigator);
         ViewPagerHelper.bind(mMiIndicator, mVpPhotos);
 
+    }
+
+    public void setIndiactorVisible(boolean visible) {
+        mMiIndicator.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 }

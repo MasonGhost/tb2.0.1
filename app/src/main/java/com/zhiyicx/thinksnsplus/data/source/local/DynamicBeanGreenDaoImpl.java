@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
@@ -124,7 +125,7 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
                 break;
             case ApiConfig.DYNAMIC_TYPE_NEW:
                 datas = dynamicBeanDao.queryBuilder()
-                        .where(DynamicBeanDao.Properties.Feed_id.isNotNull())
+                        .where(DynamicBeanDao.Properties.Feed_id.isNotNull(),DynamicBeanDao.Properties.User_id.notEq(AppApplication.getmCurrentLoginAuth().getUser_id()))
                         .whereOr(DynamicBeanDao.Properties.Hot_creat_time.isNull(), DynamicBeanDao.Properties.Hot_creat_time.eq(0), DynamicBeanDao.Properties.IsFollowed.eq(false))
                         .list();
                 dynamicBeanDao.deleteInTx(datas);

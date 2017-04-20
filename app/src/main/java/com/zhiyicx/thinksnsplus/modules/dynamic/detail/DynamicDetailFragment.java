@@ -5,7 +5,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -46,7 +45,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
@@ -252,7 +250,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
             if (mDynamicBean == null) {
                 mPresenter.getCurrentDynamic(bundle.getLong(MessageCommentAdapter.BUNDLE_SOURCE_ID));
             } else {
-                initDynamicDetial(mDynamicBean);
+                mPresenter.getCurrentDynamic(mDynamicBean.getFeed_id());
             }
         }
     }

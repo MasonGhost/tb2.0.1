@@ -160,7 +160,6 @@ public class SocketService extends BaseService implements ImService.ImListener {
                      * ping后或者发送普通消息{@Link HEART_PING_PONG_RATE}s收不到回应则重连
                      */
                     if (System.currentTimeMillis() - sendTime > HEART_PING_PONG_RATE && sendTime > responsTime) {
-                        LogUtils.debugInfo(TAG, "----------------------System.currentTimeMillis() - sendTime > HEART_PING_PONG_RATE && sendTime ---------------------- = ");
                         socketReconnect();
                         heartRateThreadSleep(HEART_BEAT_RATE_INTERVAL_FOR_CPU);
                         continue;
@@ -178,7 +177,6 @@ public class SocketService extends BaseService implements ImService.ImListener {
                             mService.ping();
                             LogUtils.debugInfo(TAG, "----------ping-------");
                         } else {
-                            LogUtils.debugInfo(TAG, "----------------------System.currentTimeMillis() - sendTime > HEART_BEAT_RATE && System.currentTimeMillis() - responsTime---------------------- = ");
                             socketReconnect();
                         }
                     }
@@ -314,7 +312,6 @@ public class SocketService extends BaseService implements ImService.ImListener {
      */
     private void resetTime() {
         sendTime = System.currentTimeMillis();
-        LogUtils.debugInfo(TAG,"---------------sendTime------"+sendTime);
     }
 
     /**
@@ -322,7 +319,6 @@ public class SocketService extends BaseService implements ImService.ImListener {
      */
     private void responseTime() {
         responsTime = System.currentTimeMillis();
-        LogUtils.debugInfo(TAG,"---------------responsTime------"+responsTime);
     }
 
     public void setService(ImService service) {
@@ -472,7 +468,6 @@ public class SocketService extends BaseService implements ImService.ImListener {
                  * 重连
                  */
                 case TAG_IM_RECONNECT:
-                    LogUtils.debugInfo(TAG, "--------------------------------------TAG_IM_RECONNECT = ");
                     result = connect();
                     break;
                 /**

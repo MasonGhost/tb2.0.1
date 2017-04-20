@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.personal_center;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -277,9 +278,11 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(userInfoBean.getName());
-        shareContent.setContent(userInfoBean.getIntro());
+        shareContent.setContent(TextUtils.isEmpty(userInfoBean.getIntro())?mContext.getString(R.string.intro_default):userInfoBean.getIntro());
         if (userInfoBean.getAvatar() != null) {
             shareContent.setImage(ImageUtils.imagePathConvert(userInfoBean.getAvatar(), 100));
+        }else {
+            shareContent.setBitmap(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.pic_default_portrait1));
         }
         shareContent.setUrl(String.format(ApiConfig.APP_PATH_SHARE_USERINFO, userInfoBean.getUser_id()));
         mSharePolicy.setShareContent(shareContent);

@@ -156,7 +156,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         } else {
             boolean canLoadImage = AndroidLifecycleUtils.canLoadImage(context);
             if (canLoadImage) {
-                loadImage(mImageBean, rect);
+                loadImage(mImageBean, rect, animateIn);
             }
         }
     }
@@ -266,7 +266,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     }
 
     // 加载图片不带监听
-    private void loadImage(final ImageBean imageBean, final AnimationRectBean rect) {
+    private void loadImage(final ImageBean imageBean, final AnimationRectBean rect, final boolean animationIn) {
         LogUtils.i("imageBean = " + imageBean.toString());
 
         if (imageBean.getImgUrl() != null) {
@@ -302,27 +302,13 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                             LogUtils.i(TAG + "加载原图失败");
-
-                            ViewCompat.animate(mTvOriginPhoto).alpha(1.0f).scaleX(1.0f).scaleY(1.0f)
-                                    .setDuration(500)
-                                    .setInterpolator(INTERPOLATOR)
-                                    .setListener(new ViewPropertyAnimatorListener() {
-                                        @Override
-                                        public void onAnimationStart(View view) {
-                                            mTvOriginPhoto.setVisibility(View.VISIBLE);
-                                        }
-
-                                        @Override
-                                        public void onAnimationEnd(View view) {
-
-                                        }
-
-                                        @Override
-                                        public void onAnimationCancel(View view) {
-
-                                        }
-                                    })
-                                    .start();
+                            // 如果不是点击放大进入的那张图片，就需要设置查看原图按钮为缩小状态，这样第一次切换到该页面，才能有放大到1.0的效果
+                            if (!animationIn) {
+                                mTvOriginPhoto.setScaleY(0.0f);
+                                mTvOriginPhoto.setScaleX(0.0f);
+                                mTvOriginPhoto.setAlpha(0.0f);
+                            }
+                            mTvOriginPhoto.setVisibility(View.VISIBLE);
                             // 原图没有缓存，从cacheOnlyStreamLoader抛出异常，在这儿加载高清图
                             Glide.with(context)
                                     .using(new CustomImageModelLoader(context))
