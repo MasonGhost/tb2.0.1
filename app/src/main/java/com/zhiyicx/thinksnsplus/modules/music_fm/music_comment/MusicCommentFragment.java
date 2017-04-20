@@ -1,23 +1,25 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_comment;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.config.ImageZipConfig;
-import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.UIUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
-import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.adapter.MusicCommentItem;
@@ -28,12 +30,15 @@ import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import butterknife.OnClick;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -54,6 +59,10 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     InputLimitView mIlvComment;
     @BindView(R.id.v_shadow)
     View mVShadow;
+    @BindView(R.id.tv_toolbar_center)
+    TextView mTvToolbarCenter;
+    @BindView(R.id.tv_toolbar_left)
+    TextView mTvToolbarLeft;
 
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     public static final String CURRENT_COMMENT = "current_comment";
@@ -77,6 +86,11 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     }
 
     @Override
+    protected boolean showToolbar() {
+        return false;
+    }
+
+    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         mIlvComment.setSendButtonVisiable(true);
@@ -92,7 +106,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 .getSerializable(CURRENT_COMMENT);
         if (mHeaderInfo != null) {
             mMusicCommentHeader.setHeadInfo(mHeaderInfo);
-            mToolbarCenter.setText(String.format("评论(%d)", mHeaderInfo.getCommentCount()));
+            mTvToolbarCenter.setText(String.format("评论(%d)", mHeaderInfo.getCommentCount()));
         } else {
             Long ids = getArguments().getLong(BUNDLE_SOURCE_ID);
             mHeaderInfo = new MusicCommentHeader.HeaderInfo();
@@ -116,7 +130,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     public void setHeaderInfo(MusicCommentHeader.HeaderInfo headerInfo) {
         mHeaderInfo = headerInfo;
         mMusicCommentHeader.setHeadInfo(mHeaderInfo);
-        mToolbarCenter.setText(String.format("评论(%d)", mHeaderInfo.getCommentCount()));
+        mTvToolbarCenter.setText(String.format("评论(%d)", mHeaderInfo.getCommentCount()));
         EventBus.getDefault().post(mHeaderInfo, EVENT_MUSIC_COMMENT_COUNT);
     }
 
@@ -146,6 +160,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
         DeviceUtils.hideSoftKeyboard(getContext(), v);
         mHeaderInfo.setCommentCount(mHeaderInfo.getCommentCount() + 1);
         setHeaderInfo(mHeaderInfo);
+        mVShadow.setVisibility(View.GONE);
         mPresenter.sendComment(mReplyUserId, text);
         if (WindowUtils.getAblumHeadInfo() != null) {
             WindowUtils.getAblumHeadInfo().setCommentCount(WindowUtils.getAblumHeadInfo().getCommentCount() + 1);
@@ -173,8 +188,8 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
         if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth()
                 .getUser_id()) {// 自己的评论
 //            if (mListDatas.get(position).getId() != -1) {
-                initLoginOutPopupWindow(mListDatas.get(position));
-                mDeletCommentPopWindow.show();
+            initLoginOutPopupWindow(mListDatas.get(position));
+            mDeletCommentPopWindow.show();
 //            } else {
 //                return;
 //            }
@@ -246,6 +261,35 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                     }
                 });
         mIlvComment.setOnSendClickListener(this);
+
+        RxView.globalLayouts(mIlvComment)
+                .flatMap(new Func1<Void, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(Void aVoid) {
+                        Rect rect = new Rect();
+                        //获取root在窗体的可视区域
+                        mIlvComment.getWindowVisibleDisplayFrame(rect);
+                        //获取root在窗体的不可视区域高度(被其他View遮挡的区域高度)
+                        int rootInvisibleHeight = mIlvComment.getRootView().getHeight() - rect.bottom;
+                        int dispayHeight = UIUtils.getWindowHeight(getContext());
+                        return Observable.just(rootInvisibleHeight > (dispayHeight * (1f / 3)));
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        //若不可视区域高度大于1/3屏幕高度，则键盘显示
+                        LogUtils.i(TAG + "---RxView   " + aBoolean);
+                        if (aBoolean) {
+                            mVShadow.setVisibility(View.VISIBLE);
+                        } else {
+                            mVShadow.setVisibility(View.GONE);
+                        }
+                    }
+                });
+
     }
 
     public void showCommentView() {
@@ -271,8 +315,8 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                         mHeaderInfo.setCommentCount(mHeaderInfo.getCommentCount() - 1);
                         setHeaderInfo(mHeaderInfo);
                         if (WindowUtils.getAblumHeadInfo() != null) {
-                            if (WindowUtils.getAblumHeadInfo().getCommentCount()>0)
-                            WindowUtils.getAblumHeadInfo().setCommentCount(WindowUtils.getAblumHeadInfo().getCommentCount() - 1);
+                            if (WindowUtils.getAblumHeadInfo().getCommentCount() > 0)
+                                WindowUtils.getAblumHeadInfo().setCommentCount(WindowUtils.getAblumHeadInfo().getCommentCount() - 1);
                         }
                         mPresenter.deleteComment(data);
                         mDeletCommentPopWindow.hide();
@@ -287,4 +331,8 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 .build();
     }
 
+    @OnClick(R.id.tv_toolbar_left)
+    public void onViewClicked() {
+        getActivity().finish();
+    }
 }

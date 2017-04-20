@@ -350,13 +350,13 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
             if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth()
                     .getUser_id()) {// 自己的评论
-                if (mListDatas.get(position).getId() != -1) {
+//                if (mListDatas.get(position).getId() != -1) {
                     initLoginOutPopupWindow(mListDatas.get(position));
                     mDeletCommentPopWindow.show();
-                } else {
-
-                    return;
-                }
+//                } else {
+//
+//                    return;
+//                }
             } else {
                 mReplyUserId = (int) mListDatas.get(position).getUser_id();
                 showCommentView();
