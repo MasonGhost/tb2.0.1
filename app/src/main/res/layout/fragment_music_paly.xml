@@ -16,22 +16,33 @@
         android:weightSum="3">
 
         <RelativeLayout
+            android:id="@+id/fragment_music_paly_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2"
             android:animateLayoutChanges="true">
 
-            <TextView
-                android:layout_marginEnd="20dp"
-                android:layout_marginRight="20dp"
-                android:id="@+id/fragment_music_paly_lrc"
-                android:layout_width="wrap_content"
+            <ScrollView
+                android:fillViewport="true"
+                android:id="@+id/fragment_music_paly_lrc_container"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginEnd="20dp"
                 android:layout_centerHorizontal="true"
-                android:fadingEdge="vertical"
-                android:gravity="center"
+                android:layout_marginRight="20dp"
                 android:layout_centerInParent="true"
-                android:visibility="gone"/>
+                android:fadingEdgeLength="50dp"
+                android:requiresFadingEdge="vertical">
+
+                <TextView
+                    android:id="@+id/fragment_music_paly_lrc"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:visibility="gone"/>
+
+            </ScrollView>
 
             <com.zhiyicx.thinksnsplus.widget.pager_recyclerview.LoopPagerRecyclerView
                 android:id="@+id/fragment_music_paly_rv"
@@ -133,7 +144,6 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginStart="20dp"
                     android:gravity="center"
-                    android:text="00:00"
                     android:textColor="@color/__picker_black_40"
                     android:textSize="16sp"/>
 
@@ -150,8 +160,8 @@
                     android:indeterminate="false"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:paddingTop="@dimen/margin_10dp"
-                    android:paddingBottom="@dimen/margin_10dp"
+                    android:paddingTop="@dimen/spacing_small_3dp"
+                    android:paddingBottom="@dimen/spacing_small_3dp"
                     android:max="100"
                     android:maxHeight="3dp"
                     android:minHeight="3dp"
@@ -165,7 +175,6 @@
                     android:layout_marginEnd="20dp"
                     android:layout_marginRight="20dp"
                     android:gravity="center"
-                    android:text="03:23"
                     android:textColor="@color/__picker_black_40"
                     android:textSize="16sp"/>
             </LinearLayout>

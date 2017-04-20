@@ -17,6 +17,7 @@ import com.zhiyicx.imsdk.core.ChatType;
 import com.zhiyicx.imsdk.db.dao.ConversationDao;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
+import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
@@ -194,6 +195,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     @Override
     public void onBubbleClick(ChatItemBean message) {
         LogUtils.d("----------------onBubbleClick----------");
+        DeviceUtils.hideSoftKeyboard(getContext(),mMessageList.getListView());
 
     }
 

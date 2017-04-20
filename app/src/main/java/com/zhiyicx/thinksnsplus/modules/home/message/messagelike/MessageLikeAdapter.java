@@ -74,7 +74,7 @@ public class MessageLikeAdapter extends CommonAdapter<DigedBean> {
             holder.setVisible(R.id.tv_deatil, View.GONE);
             holder.setVisible(R.id.iv_detail_image, View.VISIBLE);
             mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                    .url(ImageUtils.imagePathConvert(ApiConfig.IMAGE_PATH, digedBean.getSource_cover()))
+                    .url(ImageUtils.imagePathConvert(digedBean.getSource_cover() + "", ImageZipConfig.IMAGE_50_ZIP))
                     .imagerView((ImageView) holder.getView(R.id.iv_detail_image))
                     .build());
         } else {

@@ -9,6 +9,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.umeng.analytics.MobclickAgent;
 import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.io.File;
@@ -52,6 +53,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
 
     @Override
     public void uncaughtException(Thread thread, Throwable throwable) {
+        MobclickAgent.reportError(mContext, throwable);
         // 如果用户没有自己处理这些异常，就让系统自己来
         if (!handleException(throwable) && mUncaughtExceptionHandler != null) {
             mUncaughtExceptionHandler.uncaughtException(thread, throwable);

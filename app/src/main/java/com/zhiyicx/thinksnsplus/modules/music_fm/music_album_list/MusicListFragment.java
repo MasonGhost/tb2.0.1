@@ -12,6 +12,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.utils.ImageUtils;
+import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.TGridDecoration;
@@ -65,7 +66,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     @Override
     public void onNetResponseSuccess(@NotNull List<MusicAlbumListBean> data, boolean isLoadMore) {
         super.onNetResponseSuccess(data, isLoadMore);
-        if (mListDatas.isEmpty()){
+        if (mListDatas.isEmpty()) {
             mRvList.setBackground(null);
         }
     }
@@ -113,7 +114,8 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 Intent intent = new Intent(getActivity(), MusicDetailActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(BUNDLE_MUSIC_ABLUM, mListDatas.get(position));
+                MusicAlbumListBean albumListBean = mListDatas.get(position);
+                bundle.putParcelable(BUNDLE_MUSIC_ABLUM, albumListBean);
                 intent.putExtra(BUNDLE_MUSIC_ABLUM, bundle);
                 startActivity(intent);
             }

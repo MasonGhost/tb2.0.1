@@ -81,6 +81,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
      * 传入的资讯信息
      */
     private InfoListDataBean mInfoMation;
+    private boolean isFirstIn = true;
 
     private int mReplyUserId;// 被评论者的 id ,评论动态 id = 0
 
@@ -91,9 +92,12 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     }
 
     @Override
+    protected int setToolBarBackgroud() {
+        return ContextCompat.getColor(getContext(),R.color.themeColor);
+    }
+
+    @Override
     protected MultiItemTypeAdapter getAdapter() {
-//        InfoCommentAdapter adapter = new InfoCommentAdapter(getActivity(), mListDatas);
-//        adapter.setOnWebEventListener(new WebEvent());
         MultiItemTypeAdapter multiItemTypeAdapter = new MultiItemTypeAdapter<>(getActivity(),
                 mListDatas);
         multiItemTypeAdapter.addItemViewDelegate(new InfoDetailWebItem(getActivity(), new
@@ -118,7 +122,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        initToolbar();
         mInfoMation = (InfoListDataBean) getArguments().getSerializable(BUNDLE_INFO);
         if (mInfoMation == null) {
             mInfoMation = new InfoListDataBean();
@@ -128,16 +131,11 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
         mTvToolbarCenter.setVisibility(View.VISIBLE);
         mTvToolbarCenter.setText(getString(R.string.info_details));
-        mTvToolbarCenter.setCompoundDrawables(null, null, null, null);
 
         initBottomToolStyle();
         initBottomToolListener();
         initListener();
         setCollect(mInfoMation.getIs_collection_news() == 1);
-    }
-
-    private void initToolbar() {
-        mToolbar.setPadding(0, DeviceUtils.getStatuBarHeight(getContext()), 0, 0);
     }
 
     @Override
@@ -152,12 +150,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     protected boolean setUseSatusbar() {
-        return true;
-    }
-
-    @Override
-    protected int getstatusbarAndToolbarHeight() {
-        return getResources().getDimensionPixelSize(R.dimen.toolbar_height_include_line_height) + DeviceUtils.getStatuBarHeight(getContext());
+        return false;
     }
 
     @Override
@@ -329,49 +322,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 .build();
     }
 
-    private class WebEvent implements InfoCommentAdapter.OnWebEventListener {
-        @Override
-        public void onWebImageLongClick(String mLongClickUrl) {
-
-        }
-
-        @Override
-        public void onWebImageClick(String url, List<String> mImageList) {
-
-        }
-
-        @Override
-        public void onLoadFinish() {
-            closeLoadingView();
-        }
-
-        @Override
-        public void onLoadStart() {
-            showLoadingView();
-        }
-
-        @Override
-        public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-            if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth()
-                    .getUser_id()) {// 自己的评论
-                if (mListDatas.get(position).getId() != -1) {
-                    initLoginOutPopupWindow(mListDatas.get(position));
-                    mDeletCommentPopWindow.show();
-                } else {
-                    return;
-                }
-            } else {
-                mReplyUserId = (int) mListDatas.get(position).getUser_id();
-                showCommentView();
-                String contentHint = getString(R.string.default_input_hint);
-                if (mListDatas.get(position).getReply_to_user_id() != mInfoMation.getId()) {
-                    contentHint = getString(R.string.reply, mListDatas.get(position).getFromUserInfoBean().getName());
-                }
-                mIlvComment.setEtContentHint(contentHint);
-            }
-        }
-    }
-
     class ItemOnWebEventListener implements InfoDetailWebItem.OnWebEventListener {
         @Override
         public void onWebImageLongClick(String mLongClickUrl) {
@@ -385,12 +335,18 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
         @Override
         public void onLoadFinish() {
-            closeLoadingView();
+            if (isFirstIn){
+                closeLoadingView();
+            }
+            isFirstIn=false;
         }
 
         @Override
         public void onLoadStart() {
-            showLoadingView();
+            if (isFirstIn){
+                showLoadingView();
+            }
+
         }
     }
 

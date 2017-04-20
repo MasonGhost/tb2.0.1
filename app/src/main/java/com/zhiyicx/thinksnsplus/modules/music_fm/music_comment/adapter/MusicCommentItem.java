@@ -4,11 +4,9 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
-import com.klinker.android.link_builder.LinkBuilder;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
@@ -139,7 +137,7 @@ public class MusicCommentItem implements ItemViewDelegate<MusicCommentListBean> 
     private String handleName(MusicCommentListBean musicCommentListBean) {
         String content = "";
         if (musicCommentListBean.getReply_to_user_id() != 0) { // 当没有回复者时，就是回复评论
-            content += " 回复 " + musicCommentListBean.getToUserInfoBean().getName() + " " +
+            content += " 回复 " + musicCommentListBean.getToUserInfoBean().getName() + ": " +
                     musicCommentListBean.getComment_content();
         } else {
             content = musicCommentListBean.getComment_content();

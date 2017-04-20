@@ -17,9 +17,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
+import android.text.method.CharacterPickerDialog;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -27,6 +26,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -38,7 +38,7 @@ import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideMusicBgTransform;
 import com.zhiyicx.baseproject.utils.ImageUtils;
-import com.zhiyicx.baseproject.widget.BadgeView;
+import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -47,6 +47,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
+import com.zhiyicx.thinksnsplus.modules.gallery.GalleryPictureFragment;
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProviderSource;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentActivity;
@@ -76,7 +77,8 @@ import rx.Subscription;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
-import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_ABLUM_COLLECT;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_CHANGE;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_COMMENT_COUNT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_LIKE;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_CACHE_PROGRESS;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_COMPLETE;
@@ -136,7 +138,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     TextView mFragmentMusicPalyLrc;
     @BindView(R.id.fragment_music_paly_deal)
     LinearLayout mFragmentMusicPalyDeal;
-
 
     /**
      * 播放进度条更新间隔
@@ -232,6 +233,10 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
             if (metadata != null) {
+                EventBus.getDefault().post(1, EVENT_MUSIC_CHANGE);
+                if (WindowUtils.getAblumHeadInfo() != null) {
+                    WindowUtils.getAblumHeadInfo().setListenCount(WindowUtils.getAblumHeadInfo().getListenCount() + 1);
+                }
                 //noinspection ResourceType
                 String musicUrl = metadata.getString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE);
                 boolean isCached = AppApplication.getProxy().isCached(musicUrl);
@@ -434,6 +439,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             @Override
             public void OnPageChanged(int oldPosition, int newPosition) {
                 mCurrentValue = 0;
+                int realPosition = newPosition % mMusicList.size();
                 stopAnimation(mCurrentView);
 
                 if (isConnected && !isComplete) {
@@ -446,6 +452,12 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                                 .skipToPrevious();
                     }
                 }
+                if (mMusicList.size() == 1) {
+                    mCurrentMusic = mMusicList.get(0);
+                } else {
+                    mCurrentMusic = mMusicList.get(realPosition);
+                }
+                dealCurrentMusic();
             }
 
             @Override
@@ -875,11 +887,27 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 .VISIBLE ? View.INVISIBLE : View.VISIBLE);
     }
 
+    @Subscriber(tag = EVENT_MUSIC_COMMENT_COUNT, mode = ThreadMode.MAIN)
+    public void onCommentCountUpdate(MusicCommentHeader.HeaderInfo headerInfo) {
+        mCurrentMusic.getMusic_info().setComment_count(headerInfo.getCommentCount());
+        if (mCurrentMusic.getMusic_info().getComment_count() > 0) {
+            mFragmentMusicPalyComment.setImageResource(
+                    R.mipmap.music_ico_comment_incomplete);
+            mFragmentMusicPalyCommentCount.setText("" + mCurrentMusic.getMusic_info().getComment_count());
+        } else {
+            mFragmentMusicPalyComment.setImageResource(
+                    R.mipmap.music_ico_comment_complete);
+            mFragmentMusicPalyCommentCount.setText("");
+        }
+        LogUtils.d("EVENT_MUSIC_COMMENT_COUNT");
+    }
+
     @OnClick({R.id.fragment_music_paly_share, R.id.fragment_music_paly_like, R.id
             .fragment_music_paly_comment, R.id.fragment_music_paly_lyrics, R.id
             .fragment_music_paly_order, R.id.fragment_music_paly_preview, R.id
             .fragment_music_paly_palyer, R.id.fragment_music_paly_nextview, R.id
-            .fragment_music_paly_list, R.id.fragment_music_paly_bg, R.id.fragment_music_paly_lrc})
+            .fragment_music_paly_list, R.id.fragment_music_paly_bg, R.id.fragment_music_paly_lrc,
+            R.id.fragment_music_paly_container})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.fragment_music_paly_share:// 分享
@@ -937,7 +965,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                         mFragmentMusicPalyRv.getCurrentPosition() - 1
                 );
 
-                mFragmentMusicPalyProgress.setProgress(0);
                 break;
             case R.id.fragment_music_paly_palyer:// 播放暂停
                 PlaybackStateCompat state = getActivity().getSupportMediaController()
@@ -970,7 +997,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 mFragmentMusicPalyRv.smoothScrollToPosition(
                         mFragmentMusicPalyRv.getCurrentPosition() + 1
                 );
-                mFragmentMusicPalyProgress.setProgress(0);
                 break;
             case R.id.fragment_music_paly_list:// 歌曲目录
                 mListPopupWindow.show();
@@ -978,6 +1004,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 //            case R.id.fragment_music_paly_bg:
             case R.id.fragment_music_paly_lyrics:// 歌词显示
             case R.id.fragment_music_paly_lrc:
+//            case R.id.fragment_music_paly_container:
                 handleLrc();
                 break;
             default:

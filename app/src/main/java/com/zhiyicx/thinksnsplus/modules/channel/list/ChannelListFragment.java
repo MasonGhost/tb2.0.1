@@ -52,8 +52,18 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
         super.initView(rootView);
     }
 
+    /**
+     * 内容区域在 viewpager 中
+     * @return
+     */
+    @Override
+    protected int getstatusbarAndToolbarHeight() {
+        return 0;
+    }
+
     @Override
     public void onNetResponseSuccess(@NotNull List<ChannelSubscripBean> data, boolean isLoadMore) {
+        closeLoadingView();
         if (mListDatas.isEmpty()) {
             // 如果界面数据为空,加载数据到界面
             super.onNetResponseSuccess(data, isLoadMore);
@@ -67,7 +77,7 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
         } else {
             // 如果界面数据不为空，网络请求获取到的数据，那就下次加载
         }
-        closeLoadingView();
+
     }
 
     @Override
