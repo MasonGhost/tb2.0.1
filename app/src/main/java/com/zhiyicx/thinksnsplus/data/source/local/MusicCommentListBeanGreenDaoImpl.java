@@ -99,7 +99,9 @@ public class MusicCommentListBeanGreenDaoImpl extends CommonCacheImpl<MusicComme
     }
 
     public MusicCommentListBean getMusicCommentByCommentMark(long mark) {
-        return mMusicCommentListBeanDao.queryBuilder().where(MusicCommentListBeanDao.Properties.Comment_mark.eq(mark)).build().list().get(0);
+        MusicCommentListBean commentListBean=mMusicCommentListBeanDao.queryBuilder()
+                .where(MusicCommentListBeanDao.Properties.Comment_mark.eq(mark)).build().list().get(0);
+        return commentListBean;
     }
 
     @Override

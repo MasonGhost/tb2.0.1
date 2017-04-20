@@ -214,6 +214,7 @@ public class ApiConfig {
      */
     public static final String APP_PATH_SHARE_USERINFO = APP_DOMAIN + "profile/%s";// 用户信息分享地址 url/profile/{user_id}
     public static final String APP_PATH_SHARE_DYNAMIC = APP_DOMAIN + "feeds/detail/%s";// 动态信息分享地址 url/feeds/detail/{feed_id}
+    public static final String APP_PATH_SHARE_DEFAULT = APP_DOMAIN + "api/develop";// 开发中的提示
 
 
     /**

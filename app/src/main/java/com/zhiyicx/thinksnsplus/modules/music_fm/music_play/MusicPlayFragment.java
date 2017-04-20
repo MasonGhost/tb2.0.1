@@ -930,7 +930,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 Bundle musicBundle = new Bundle();
                 MusicCommentHeader.HeaderInfo headerInfo = new MusicCommentHeader.HeaderInfo();
                 headerInfo.setCommentCount(mCurrentMusic.getMusic_info().getComment_count());
-                headerInfo.setId(mCurrentMusic.getId());
+                headerInfo.setId(mCurrentMusic.getMusic_id());
                 headerInfo.setTitle(mCurrentMusic.getMusic_info().getTitle());
                 headerInfo.setLitenerCount(mCurrentMusic.getMusic_info().getTaste_count() + "");
                 headerInfo.setImageUrl(ImageUtils.imagePathConvert(mCurrentMusic.getMusic_info().getSinger().getCover().getId() + "",
