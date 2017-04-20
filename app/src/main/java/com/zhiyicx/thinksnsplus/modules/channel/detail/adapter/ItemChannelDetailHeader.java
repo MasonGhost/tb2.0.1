@@ -217,7 +217,7 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
                         setViewColorWithAlpha(channelName, TITLE_RGB, (int) alpha);
                     }
                     // 尝试设置状态栏文字成白色
-                    StatusBarUtils.statusBarDarkMode(mActivity);
+                    //StatusBarUtils.statusBarDarkMode(mActivity);
                 } else {
                     //如果不是完全不透明状态的bug，将标题栏的颜色设置为完全不透明状态
                     setViewColorWithAlpha(channelName, TITLE_RGB, 255);
@@ -230,7 +230,7 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
                     setRightTextViewColor(Color.argb(255, TOOLBAR_RIGHT_BLUE[0],
                             TOOLBAR_RIGHT_BLUE[1], TOOLBAR_RIGHT_BLUE[2]));
                     // 尝试设置状态栏文字成黑色
-                    StatusBarUtils.statusBarLightMode(mActivity);
+                    // StatusBarUtils.statusBarLightMode(mActivity);
                 }
                 // 有可能到顶部了，仍然有一点白色透明背景，强制设置成完全透明
                 if (headerTop >= 0) {
@@ -243,7 +243,7 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
                     setRightTextViewColor(Color.argb(255, TOOLBAR_RIGHT_WHITE[0],
                             TOOLBAR_RIGHT_WHITE[1], TOOLBAR_RIGHT_WHITE[2]));
                     // 尝试设置状态栏文字成白色
-                    StatusBarUtils.statusBarDarkMode(mActivity);
+                    //StatusBarUtils.statusBarDarkMode(mActivity);
                 }
             }
         });

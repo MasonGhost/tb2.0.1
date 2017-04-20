@@ -500,6 +500,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 break;
             case SendDynamicDataBean.TEXT_ONLY_DYNAMIC:
                 mRvPhotoList.setVisibility(View.GONE);// 隐藏图片控件
+                mEtDynamicContent.getEtContent().setHint(getString(R.string.dynamic_content_no_pic_hint));
                 break;
             default:
         }

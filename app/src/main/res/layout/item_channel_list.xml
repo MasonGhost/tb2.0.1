@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/spacing_mid"
+        android:layout_marginLeft="@dimen/spacing_normal"
         android:layout_toLeftOf="@+id/tv_channel_subscrib"
         android:layout_toRightOf="@id/iv_channel_cover"
         android:orientation="vertical">
@@ -27,6 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
+            android:includeFontPadding="false"
             android:maxLines="1"
             android:text="我是频道名称"
             android:textColor="@color/important_for_content"
@@ -42,6 +43,7 @@
                 android:id="@+id/tv_channel_feed_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:includeFontPadding="false"
                 android:text="分享 3.4万"
                 android:textSize="@dimen/size_content_assist"/>
 
@@ -50,6 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing_mid"
+                android:includeFontPadding="false"
                 android:text="关注 2.6万"
                 android:textSize="@dimen/size_content_assist"/>
         </LinearLayout>

@@ -182,6 +182,11 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     }
 
     @Override
+    protected boolean setStatusbarGrey() {
+        return true;
+    }
+
+    @Override
     protected boolean showToolBarDivider() {
         return false;
     }
@@ -248,7 +253,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 , TOOLBAR_WHITE_ICON[1], TOOLBAR_WHITE_ICON[2]));
         mItemChannelDetailHeader.setScrollListenter();
         // 状态栏文字设为白色
-        StatusBarUtils.statusBarDarkMode(mActivity);
+        //StatusBarUtils.statusBarDarkMode(mActivity);
         initSubscribState(mChannelSubscripBean);// 尝试显示订阅按钮
         mItemChannelDetailHeader.initHeaderViewData(mChannelSubscripBean);
     }

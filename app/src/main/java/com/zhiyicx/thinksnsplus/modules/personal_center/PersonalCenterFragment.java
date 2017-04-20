@@ -393,7 +393,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mIvMore.setVisibility(View.VISIBLE);
         mPersonalCenterHeaderViewItem.setScrollListenter();
         // 状态栏文字设为白色
-        StatusBarUtils.statusBarDarkMode(mActivity);
+        //StatusBarUtils.statusBarDarkMode(mActivity);
         initListener();
         // 进入页面尝试设置头部信息
         setHeaderInfo(mUserInfoBean);

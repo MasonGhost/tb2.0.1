@@ -190,7 +190,7 @@ public class PersonalCenterHeaderViewItem {
                         setViewColorWithAlpha(userName, TITLE_RGB, (int) alpha);
                     }
                     // 尝试设置状态栏文字成白色
-                    StatusBarUtils.statusBarDarkMode(mActivity);
+                    //StatusBarUtils.statusBarDarkMode(mActivity);
                 } else {
                     //如果不是完全不透明状态的bug，将标题栏的颜色设置为完全不透明状态
                     setViewColorWithAlpha(userName, TITLE_RGB, 255);
@@ -201,7 +201,7 @@ public class PersonalCenterHeaderViewItem {
                     setToolbarIconColor(Color.argb(255, TOOLBAR_BLACK_ICON[0],
                             TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
                     // 尝试设置状态栏文字成黑色
-                    StatusBarUtils.statusBarLightMode(mActivity);
+                    //StatusBarUtils.statusBarLightMode(mActivity);
                 }
                 // 有可能到顶部了，仍然有一点白色透明背景，强制设置成完全透明
                 if (headerTop >= 0) {
@@ -212,7 +212,7 @@ public class PersonalCenterHeaderViewItem {
                     setToolbarIconColor(Color.argb(255, TOOLBAR_WHITE_ICON[0]
                             , TOOLBAR_WHITE_ICON[1], TOOLBAR_WHITE_ICON[2]));
                     // 尝试设置状态栏文字成白色
-                    StatusBarUtils.statusBarDarkMode(mActivity);
+                   // StatusBarUtils.statusBarDarkMode(mActivity);
                 }
             }
         });

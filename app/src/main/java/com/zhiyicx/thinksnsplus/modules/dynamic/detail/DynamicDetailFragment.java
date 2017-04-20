@@ -5,6 +5,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -45,6 +46,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
@@ -88,6 +90,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     InputLimitView mIlvComment;
     @BindView(R.id.ll_bottom_menu_container)
     ViewGroup mLLBottomMenuContainer;
+    @BindView(R.id.toolbar_top_blank)
+    View mToolbarTopBlank;
 
     private DynamicBean mDynamicBean;// 上一个页面传进来的数据
     private FollowFansBean mFollowFansBean;// 用户关注状态
@@ -162,6 +166,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     protected void initView(View rootView) {
         super.initView(rootView);
         initToolbar();
+        initToolbarTopBlankHeight();
         initBottomToolUI();
         initBottomToolListener();
         initHeaderView();
@@ -588,4 +593,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .build();
     }
 
+    /**
+     * 为了防止toolbar移动，导致状态栏透明，添加一个白色的色块
+     */
+    private void initToolbarTopBlankHeight() {
+        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mToolbarTopBlank.getLayoutParams();
+        layoutParams.height = DeviceUtils.getStatuBarHeight(getContext());
+    }
 }
