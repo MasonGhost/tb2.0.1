@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail;
 
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -23,6 +24,7 @@ import org.simple.eventbus.EventBus;
 
 import javax.inject.Inject;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SHARE_DEFAULT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_ABLUM_COLLECT;
 
 /**
@@ -33,7 +35,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_ABLUM_COLL
  */
 @FragmentScoped
 public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repository,
-        MusicDetailContract.View> implements MusicDetailContract.Presenter,OnShareCallbackListener {
+        MusicDetailContract.View> implements MusicDetailContract.Presenter, OnShareCallbackListener {
 
     @Inject
     MusicDetailRepository mMusicDetailRepository;
@@ -123,7 +125,7 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
         mRootView.getmMusicAlbumListBean().setCollect_count(mRootView.getCurrentAblum().getCollect_count() + countChange);
         mRootView.getCurrentAblum().setCollect_count(mRootView.getCurrentAblum().getCollect_count() + countChange);
         mMusicAlbumDetailsBeanGreenDao.insertOrReplace(mRootView.getCurrentAblum());
-        EventBus.getDefault().post(mRootView.getmMusicAlbumListBean(),EVENT_ABLUM_COLLECT);
+        EventBus.getDefault().post(mRootView.getmMusicAlbumListBean(), EVENT_ABLUM_COLLECT);
         mRootView.setCollect(isUnCollected);
         mMusicDetailRepository.handleCollect(isUnCollected, special_id);
 
@@ -131,13 +133,17 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
 
     @Override
     public void shareMusicAlbum() {
+
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
 
         shareContent.setTitle(mRootView.getCurrentAblum().getTitle());
+        shareContent.setContent(mRootView.getCurrentAblum().getIntro());
         shareContent.setImage(ImageUtils.imagePathConvert(mRootView.getCurrentAblum()
-                .getStorage() + "", 100));
-        shareContent.setUrl("http://www.baidu.com");
+                .getStorage().getId() + "", 100));
+
+
+        shareContent.setUrl(APP_PATH_SHARE_DEFAULT);
 
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
