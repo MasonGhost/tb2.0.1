@@ -53,6 +53,14 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(timer!=null){
+            timer.cancel();
+        }
+    }
+
     /**
      * 找回密码
      *

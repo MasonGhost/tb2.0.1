@@ -66,7 +66,9 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
     @Override
     public void onDestroy() {
         super.onDestroy();
-        timer.cancel();
+        if (timer != null) {
+            timer.cancel();
+        }
     }
 
     /**

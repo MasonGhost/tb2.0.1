@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareAPI;
@@ -74,7 +73,7 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
     private void init(Context mContext) {
 
         UMShareAPI.get(mContext);
-        Config.DEBUG = true;
+//        Config.DEBUG = true;
         initSharePopupWindow();
     }
 
