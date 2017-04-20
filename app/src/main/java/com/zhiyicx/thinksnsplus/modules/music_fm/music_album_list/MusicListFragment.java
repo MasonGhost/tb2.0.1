@@ -2,17 +2,25 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list;
 
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideStokeTransform;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.utils.WindowUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.TGridDecoration;
@@ -88,20 +96,21 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
 
     @Override
     protected CommonAdapter<MusicAlbumListBean> getAdapter() {
+        final int width = DeviceUtils.getScreenWidth(getActivity()) - 60;
         CommonAdapter<MusicAlbumListBean> comAdapter = new CommonAdapter<MusicAlbumListBean>
                 (getActivity(), R.layout.item_music_list, mListDatas) {
             @Override
             protected void convert(ViewHolder holder, MusicAlbumListBean musicListBean, int
                     position) {
                 ImageView imag = holder.getView(R.id.music_list_image);
-//                imag.setImageResource(R.drawable.shape_default_image);
-                mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
-                        .placeholder(R.drawable.shape_default_image)
-                        .errorPic(R.drawable.shape_default_image)
-                        .imagerView(imag)
-                        .url(ImageUtils.imagePathConvert(musicListBean.getStorage().getId() + "",
+                Glide.with(getContext())
+                        .load(ImageUtils.imagePathConvert(musicListBean.getStorage().getId() + "",
                                 ImageZipConfig.IMAGE_70_ZIP))
-                        .build());
+                        .placeholder(R.drawable.shape_default_image)
+                        .override(width / 2, width / 2)
+                        .error(R.drawable.shape_default_image)
+                        .into(imag);
+
 
                 holder.setText(R.id.music_list_taste_count, "" + musicListBean.getTaste_count());
                 holder.setText(R.id.music_list_title, musicListBean.getTitle());

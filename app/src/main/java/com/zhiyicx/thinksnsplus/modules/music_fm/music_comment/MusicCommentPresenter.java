@@ -187,9 +187,9 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
         BackgroundTaskHandler.OnNetResponseCallBack callBack = new BackgroundTaskHandler.OnNetResponseCallBack() {
             @Override
             public void onSuccess(Object data) {
-                LogUtils.d("sendComment:::" + data.toString());
-                createComment.setId(Long.parseLong(data.toString()));
-                mCommentListBeanGreenDao.insertOrReplace(createComment);
+                MusicCommentListBean commentListBean = mCommentListBeanGreenDao.getMusicCommentByCommentMark(createComment.getComment_mark());
+                commentListBean.setId(((Double) data).longValue());
+                mCommentListBeanGreenDao.insertOrReplace(commentListBean);
             }
 
             @Override
@@ -287,7 +287,7 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
 
     @Override
     public List<MusicCommentListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        List<MusicCommentListBean> localComment=new ArrayList<>();
+        List<MusicCommentListBean> localComment = new ArrayList<>();
 //        if (mRootView.getType().equals(CURRENT_COMMENT_TYPE_MUSIC)) {
 //            localComment = mCommentListBeanGreenDao.getLocalMusicComment(mRootView.getCommentId());
 //        } else {
