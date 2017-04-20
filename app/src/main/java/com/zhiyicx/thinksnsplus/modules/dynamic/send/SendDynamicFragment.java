@@ -31,6 +31,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
@@ -358,6 +359,9 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         long userId = AppApplication.getmCurrentLoginAuth() != null ? AppApplication.getmCurrentLoginAuth().getUser_id() : 0;
         String feedMarkString = userId + "" + System.currentTimeMillis();
         long feedMark = Long.parseLong(feedMarkString);
+        DynamicToolBean toolBean=new DynamicToolBean();
+        toolBean.setFeed_mark(feedMark);
+        toolBean.setFeed_view_count(1);// 浏览量没有 0 ，从1 开始
         DynamicDetailBean dynamicDetailBean = new DynamicDetailBean();
         dynamicDetailBean.setFeed_mark(feedMark);
         dynamicDetailBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
@@ -387,6 +391,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         dynamicBean.setState(DynamicBean.SEND_ING);
         dynamicBean.setFeed_mark(feedMark);
         dynamicBean.setUser_id(userId);
+        dynamicBean.setTool(toolBean);
         return dynamicBean;
     }
 

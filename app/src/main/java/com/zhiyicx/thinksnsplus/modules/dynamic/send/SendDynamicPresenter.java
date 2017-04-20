@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
@@ -12,6 +11,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
@@ -44,6 +44,8 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
     DynamicDetailBeanGreenDaoImpl mDynamicDetailBeanGreenDao;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
 
     @Inject
     public SendDynamicPresenter(SendDynamicContract.Repository repository, SendDynamicContract.View rootView) {
@@ -76,6 +78,7 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
                 // 将动态信息存入数据库
                 mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
                 mDynamicDetailBeanGreenDao.insertOrReplace(dynamicBean.getFeed());
+                mDynamicToolBeanGreenDao.insertOrReplace(dynamicBean.getTool());
                 EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
                 break;
             case SendDynamicDataBean.CHANNEL_DYNAMIC:

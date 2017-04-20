@@ -187,7 +187,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                 if (dynamicToolBean != null) {
                     dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicToolBean.getFeed_digg_count()), dynamicToolBean.getIs_digg_feed() == STATUS_DIGG_FEED_CHECKED, 0);
                     dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicToolBean.getFeed_comment_count()), false, 1);
-                    dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicToolBean.getFeed_view_count()), false, 2);
+                    dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicToolBean.getFeed_view_count() == 0 ? 1 : dynamicToolBean.getFeed_view_count()), false, 2);// 浏览量没有 0
                 }
                 // 控制更多按钮的显示隐藏
                 if (dynamicBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
