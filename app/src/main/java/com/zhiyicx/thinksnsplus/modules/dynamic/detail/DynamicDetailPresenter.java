@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
 
@@ -172,6 +173,9 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
                     @Override
                     protected void onSuccess(List<DynamicBean> data) {
                         mRootView.initDynamicDetial(data.get(0));
+                        mDynamicBeanGreenDao.insertOrReplace(data.get(0));
+                        mDynamicCommentBeanGreenDao.insertOrReplace(data.get(0).getComments());
+                        mDynamicToolBeanGreenDao.insertOrReplace(data.get(0).getTool());
                     }
 
                     @Override
@@ -372,10 +376,12 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
     public void shareDynamic() {
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
-        shareContent.setTitle(mRootView.getCurrentDynamic().getFeed().getTitle());
-        shareContent.setContent(mRootView.getCurrentDynamic().getFeed().getContent());
+        shareContent.setTitle(TextUtils.isEmpty(mRootView.getCurrentDynamic().getFeed().getTitle()) ? mContext.getString(R.string.share) : mRootView.getCurrentDynamic().getFeed().getTitle());
+        shareContent.setContent(TextUtils.isEmpty(mRootView.getCurrentDynamic().getFeed().getContent()) ? mContext.getString(R.string.share_dynamic) : mRootView.getCurrentDynamic().getFeed().getContent());
         if (mRootView.getCurrentDynamic().getFeed().getStorages() != null && mRootView.getCurrentDynamic().getFeed().getStorages().size() > 0) {
             shareContent.setImage(ImageUtils.imagePathConvert(mRootView.getCurrentDynamic().getFeed().getStorages().get(0).getStorage_id() + "", 100));
+        } else {
+            shareContent.setBitmap(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon_256));
         }
         shareContent.setUrl(String.format(ApiConfig.APP_PATH_SHARE_DYNAMIC, mRootView.getCurrentDynamic().getFeed_id() == null ? "" : mRootView.getCurrentDynamic().getFeed_id()));
         mSharePolicy.setShareContent(shareContent);
