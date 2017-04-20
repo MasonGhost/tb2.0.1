@@ -7,6 +7,7 @@ import android.util.SparseArray;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
@@ -17,6 +18,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.MusicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentContract;
+import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.ArrayList;
@@ -27,6 +29,8 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
+
+import static com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler.NET_CALLBACK;
 
 /**
  * @Author Jliuer
@@ -179,11 +183,13 @@ public class MusicCommentRepositroty implements MusicCommentContract.Repository 
     }
 
     @Override
-    public void sendComment(int music_id, int reply_id, String content, String path) {
+    public void sendComment(int music_id, int reply_id, String content, String path,Long comment_mark,
+                            BackgroundTaskHandler.OnNetResponseCallBack callBack) {
         BackgroundRequestTaskBean backgroundRequestTaskBean;
         HashMap<String, Object> params = new HashMap<>();
         params.put("comment_content", content);
         params.put("reply_to_user_id", reply_id);
+        params.put(NET_CALLBACK,callBack);
         // 后台处理
         backgroundRequestTaskBean = new BackgroundRequestTaskBean
                 (BackgroundTaskRequestMethodConfig.POST, params);

@@ -423,9 +423,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                                     view.setTranslationX(-rightX);
                                 }
                             }
-                            if (mViewTreeSubscription != null) {
-                                mViewTreeSubscription.unsubscribe();
-                            }
+//                            if (mViewTreeSubscription != null) {
+//                                mViewTreeSubscription.unsubscribe();
+//                            }
                         }
                     });
         }

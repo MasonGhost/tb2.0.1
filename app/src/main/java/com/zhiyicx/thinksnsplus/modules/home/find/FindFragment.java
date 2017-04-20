@@ -2,7 +2,9 @@ package com.zhiyicx.thinksnsplus.modules.home.find;
 
 import android.Manifest;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -26,6 +28,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.functions.Action1;
+import rx.functions.Func1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -126,25 +129,16 @@ public class FindFragment extends TSFragment {
             case R.id.find_active:
                 break;
             case R.id.find_music:
-                mRxPermissions
-                        .requestEach(Manifest.permission.SYSTEM_ALERT_WINDOW)
-                        .subscribe(new Action1<Permission>() {
-                            @Override
-                            public void call(Permission permission) {
-                                if (permission.granted) {
-                                    // 权限被允许
-                                    startActivity(new Intent(getActivity(), MusicListActivity.class));
-                                } else if (permission.shouldShowRequestPermissionRationale) {
-                                    // 权限没有被彻底禁止
-                                    startActivity(new Intent(getActivity(), MusicListActivity.class));
-                                } else {
-                                    // 权限被彻底禁止
-                                    startActivity(new Intent(getActivity(), MusicListActivity.class));
-//                                    initPermissionPopUpWindow();
-//                                    mActionPopupWindow.show();
-                                }
-                            }
-                        });
+                if (Build.VERSION.SDK_INT >= 23) {
+                    if (Settings.canDrawOverlays(getContext())) {
+                        startActivity(new Intent(getActivity(), MusicListActivity.class));
+                    } else {
+                        initPermissionPopUpWindow();
+                        mActionPopupWindow.show();
+                    }
+                } else {
+                    startActivity(new Intent(getActivity(), MusicListActivity.class));
+                }
                 break;
             case R.id.find_buy:
                 Intent intent = new Intent(getActivity(), CustomWEBActivity.class);
@@ -175,7 +169,8 @@ public class FindFragment extends TSFragment {
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
                     public void onItem2Clicked() {
-                        DeviceUtils.openAppDetail(getContext());
+                        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                        startActivity(intent);
                         mActionPopupWindow.hide();
                     }
                 })

@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicDetailRepository;
+import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
 
 import java.util.List;
 
@@ -43,7 +44,7 @@ public interface MusicCommentContract {
 
         Observable<BaseJson<List<MusicCommentListBean>>> getAblumCommentList(String special_id,
                                                                              Long max_id);
-        void sendComment(int music_id,int reply_id, String content,String path);
+        void sendComment(int music_id,int reply_id, String content,String path,Long comment_mark,BackgroundTaskHandler.OnNetResponseCallBack callBack);
 
         void deleteComment(int music_id,int comment_id);
 

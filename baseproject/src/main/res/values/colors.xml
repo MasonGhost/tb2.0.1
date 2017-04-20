@@ -32,4 +32,7 @@
     <color name="music_progress">#09b6d7</color>
     <!--图片查看器，查看原图按钮,背景色 透明度为10%的黑色-->
     <color name="origin_back_color">#1a000000</color>
+
+    <!--资讯订阅-->
+    <color name="like_theme">#d9eef6</color>
 </resources>

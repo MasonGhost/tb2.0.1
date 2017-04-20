@@ -9,6 +9,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.net.UpLoadFile;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.NetUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.imsdk.receiver.NetChangeReceiver;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
@@ -69,6 +70,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_DYNAM
 
 public class BackgroundTaskHandler {
     private static final int RETRY_MAX_COUNT = 3; // 最大重试次
+    public static final String NET_CALLBACK = "net_callback";
     private static final int RETRY_INTERVAL_TIME = 5; // 循环间隔时间 单位 s
     private static final long MESSAGE_SEND_INTERVAL_FOR_CPU = 1000;// 消息发送间隔时间，防止 cpu 占用过高
     private static final long MESSAGE_SEND_INTERVAL_FOR_CPU_TIME_OUT = 3000;// 消息发送间隔时间，防止 cpu 占用过高
@@ -305,12 +307,16 @@ public class BackgroundTaskHandler {
      * 处理Post请求类型的后台任务
      */
     private void postMethod(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
-
+        final OnNetResponseCallBack callBack= (OnNetResponseCallBack)backgroundRequestTaskBean.getParams().get(NET_CALLBACK);
+        backgroundRequestTaskBean.getParams().remove(NET_CALLBACK);
         mServiceManager.getCommonClient().handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
                 .subscribe(new BaseSubscribe<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
                         mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                        if (callBack!=null){
+                            callBack.onSuccess(data);
+                        }
                     }
 
                     @Override
@@ -320,11 +326,17 @@ public class BackgroundTaskHandler {
                         } else {
                             mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
                         }
+                        if (callBack!=null){
+                            callBack.onFailure(message,code);
+                        }
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         addBackgroundRequestTask(backgroundRequestTaskBean);
+                        if (callBack!=null){
+                            callBack.onException(throwable);
+                        }
                     }
                 });
     }
@@ -716,5 +728,13 @@ public class BackgroundTaskHandler {
                 result = false;
         }
         return result;
+    }
+
+    public interface OnNetResponseCallBack {
+        void onSuccess(Object data);
+
+        void onFailure(String message, int code);
+
+        void onException(Throwable throwable);
     }
 }
