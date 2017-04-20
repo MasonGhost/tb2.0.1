@@ -6,6 +6,7 @@ import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
@@ -17,9 +18,11 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicCommentRepositroty;
 import com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment.CommentBean;
 import com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment.CommentCore;
+import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -73,21 +76,21 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                             if (!data.isEmpty()) {
                                 mCommentListBeanGreenDao.saveMultiData(data);
                             }
-                            List<MusicCommentListBean> localComment = mCommentListBeanGreenDao.getMyMusicComment(Integer.valueOf(music_id));
-                            if (!localComment.isEmpty()) {
-                                for (int i = 0; i < localComment.size(); i++) {
-                                    localComment.get(i).setFromUserInfoBean(mUserInfoBeanGreenDao
-                                            .getSingleDataFromCache((long) localComment.get(i).getUser_id()));
-                                    if (localComment.get(i).getReply_to_user_id() != 0) {
-                                        localComment.get(i).setToUserInfoBean(mUserInfoBeanGreenDao
-                                                .getSingleDataFromCache((long) localComment.get(i)
-                                                        .getReply_to_user_id()));
-                                    }
-                                }
-                                localComment.addAll(data);
-                                data.clear();
-                                data.addAll(localComment);
-                            }
+//                            List<MusicCommentListBean> localComment = mCommentListBeanGreenDao.getMyMusicComment(Integer.valueOf(music_id));
+//                            if (!localComment.isEmpty()) {
+//                                for (int i = 0; i < localComment.size(); i++) {
+//                                    localComment.get(i).setFromUserInfoBean(mUserInfoBeanGreenDao
+//                                            .getSingleDataFromCache((long) localComment.get(i).getUser_id()));
+//                                    if (localComment.get(i).getReply_to_user_id() != 0) {
+//                                        localComment.get(i).setToUserInfoBean(mUserInfoBeanGreenDao
+//                                                .getSingleDataFromCache((long) localComment.get(i)
+//                                                        .getReply_to_user_id()));
+//                                    }
+//                                }
+//                                localComment.addAll(data);
+//                                data.clear();
+//                                data.addAll(localComment);
+//                            }
                             mRootView.onNetResponseSuccess(data, isLoadMore);
                         }
 
@@ -110,21 +113,21 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                             if (!data.isEmpty()) {
                                 mCommentListBeanGreenDao.saveMultiData(data);
                             }
-                            List<MusicCommentListBean> localComment = mCommentListBeanGreenDao.getMultiDataFromCache();
-                            if (!localComment.isEmpty()) {
-                                for (int i = 0; i < localComment.size(); i++) {
-                                    localComment.get(i).setFromUserInfoBean(mUserInfoBeanGreenDao
-                                            .getSingleDataFromCache((long) localComment.get(i).getUser_id()));
-                                    if (localComment.get(i).getReply_to_user_id() != 0) {
-                                        localComment.get(i).setToUserInfoBean(mUserInfoBeanGreenDao
-                                                .getSingleDataFromCache((long) localComment.get(i)
-                                                        .getReply_to_user_id()));
-                                    }
-                                }
-                                localComment.addAll(data);
-                                data.clear();
-                                data.addAll(localComment);
-                            }
+//                            List<MusicCommentListBean> localComment = mCommentListBeanGreenDao.getMyAblumComment(Integer.valueOf(music_id));
+//                            if (!localComment.isEmpty()) {
+//                                for (int i = 0; i < localComment.size(); i++) {
+//                                    localComment.get(i).setFromUserInfoBean(mUserInfoBeanGreenDao
+//                                            .getSingleDataFromCache((long) localComment.get(i).getUser_id()));
+//                                    if (localComment.get(i).getReply_to_user_id() != 0) {
+//                                        localComment.get(i).setToUserInfoBean(mUserInfoBeanGreenDao
+//                                                .getSingleDataFromCache((long) localComment.get(i)
+//                                                        .getReply_to_user_id()));
+//                                    }
+//                                }
+//                                localComment.addAll(data);
+//                                data.clear();
+//                                data.addAll(localComment);
+//                            }
                             mRootView.onNetResponseSuccess(data, isLoadMore);
 
                         }
@@ -146,7 +149,7 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
     @Override
     public void sendComment(int reply_id, String content) {
         String path;
-        MusicCommentListBean createComment = new MusicCommentListBean();
+        final MusicCommentListBean createComment = new MusicCommentListBean();
         if (mRootView.getType().equals(CURRENT_COMMENT_TYPE_MUSIC)) {
             path = APP_PATH_MUSIC_COMMENT_FORMAT;
             createComment.setMusic_id(mRootView.getCommentId());
@@ -154,9 +157,6 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
             path = APP_PATH_MUSIC_ABLUM_COMMENT_FORMAT;
             createComment.setSpecial_id(mRootView.getCommentId());
         }
-        mRepository.sendComment(mRootView.getCommentId(), reply_id, content, path);
-
-
         createComment.setState(SEND_ING);
 
         createComment.setReply_to_user_id(reply_id);
@@ -184,6 +184,25 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
         }
         mRootView.getListDatas().add(0, createComment);
         mRootView.refreshData();
+        BackgroundTaskHandler.OnNetResponseCallBack callBack = new BackgroundTaskHandler.OnNetResponseCallBack() {
+            @Override
+            public void onSuccess(Object data) {
+                LogUtils.d("sendComment:::" + data.toString());
+                createComment.setId(Long.parseLong(data.toString()));
+                mCommentListBeanGreenDao.insertOrReplace(createComment);
+            }
+
+            @Override
+            public void onFailure(String message, int code) {
+
+            }
+
+            @Override
+            public void onException(Throwable throwable) {
+
+            }
+        };
+        mRepository.sendComment(mRootView.getCommentId(), reply_id, content, path, createComment.getComment_mark(), callBack);
     }
 
     @Override
@@ -250,9 +269,9 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
     public void deleteComment(MusicCommentListBean data) {
         mCommentListBeanGreenDao.deleteSingleCache(data);
         CommentBean commentBean = new CommentBean();
-        commentBean.setComment_id(data.getComment_id());
+        commentBean.setComment_id(data.getId() == null ? 1 : data.getId().intValue());
         commentBean.setNetRequestUrl(String.format(ApiConfig
-                .APP_PATH_MUSIC_DELETE_COMMENT_FORMAT, data.getComment_id()));
+                .APP_PATH_MUSIC_DELETE_COMMENT_FORMAT, data.getId()));
         CommentCore.getInstance(CommentCore.CommentState.DELETE)
                 .set$$Comment(commentBean)
                 .handleComment();
@@ -268,7 +287,25 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
 
     @Override
     public List<MusicCommentListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return mCommentListBeanGreenDao.getMultiDataFromCache();
+        List<MusicCommentListBean> localComment=new ArrayList<>();
+//        if (mRootView.getType().equals(CURRENT_COMMENT_TYPE_MUSIC)) {
+//            localComment = mCommentListBeanGreenDao.getLocalMusicComment(mRootView.getCommentId());
+//        } else {
+//            localComment = mCommentListBeanGreenDao.getLocalAblumComment(mRootView.getCommentId());
+//        }
+//
+//        if (!localComment.isEmpty()) {
+//            for (int i = 0; i < localComment.size(); i++) {
+//                localComment.get(i).setFromUserInfoBean(mUserInfoBeanGreenDao
+//                        .getSingleDataFromCache((long) localComment.get(i).getUser_id()));
+//                if (localComment.get(i).getReply_to_user_id() != 0) {
+//                    localComment.get(i).setToUserInfoBean(mUserInfoBeanGreenDao
+//                            .getSingleDataFromCache((long) localComment.get(i)
+//                                    .getReply_to_user_id()));
+//                }
+//            }
+//        }
+        return localComment;
     }
 
     @Override

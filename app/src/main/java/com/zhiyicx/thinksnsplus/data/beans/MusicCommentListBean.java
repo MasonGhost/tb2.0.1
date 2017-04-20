@@ -34,6 +34,8 @@ public class MusicCommentListBean extends BaseListBean {
      * special_id : 0
      */
     @Id
+    private Long _id;
+    @Unique
     private Long id;
     private int comment_id = -1;
     private String created_at;
@@ -202,6 +204,14 @@ public class MusicCommentListBean extends BaseListBean {
         myDao.update(this);
     }
 
+    public Long get_id() {
+        return this._id;
+    }
+
+    public void set_id(Long _id) {
+        this._id = _id;
+    }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 870552357)
     public void __setDaoSession(DaoSession daoSession) {
@@ -212,10 +222,11 @@ public class MusicCommentListBean extends BaseListBean {
     public MusicCommentListBean() {
     }
 
-    @Generated(hash = 742266630)
-    public MusicCommentListBean(Long id, int comment_id, String created_at, String updated_at,
-            String comment_content, int user_id, int reply_to_user_id, int music_id,
-            int special_id, Long comment_mark, int state) {
+    @Generated(hash = 1644174397)
+    public MusicCommentListBean(Long _id, Long id, int comment_id, String created_at,
+            String updated_at, String comment_content, int user_id, int reply_to_user_id,
+            int music_id, int special_id, Long comment_mark, int state) {
+        this._id = _id;
         this.id = id;
         this.comment_id = comment_id;
         this.created_at = created_at;
