@@ -60,8 +60,8 @@ import rx.schedulers.Schedulers;
  */
 @FragmentScoped
 public class MessagePresenter extends BasePresenter<MessageContract.Repository, MessageContract.View> implements MessageContract.Presenter {
-    private static final int MAX_USER_NUMS_COMMENT = 3;
-    private static final int MAX_USER_NUMS_DIGG = 2;
+    private static final int MAX_USER_NUMS_COMMENT = 2;
+    private static final int MAX_USER_NUMS_DIGG = 3;
 
     @Inject
     ChatContract.Repository mChatRepository;

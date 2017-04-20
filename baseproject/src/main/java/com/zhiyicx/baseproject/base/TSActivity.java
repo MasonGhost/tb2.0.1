@@ -41,15 +41,4 @@ public abstract class TSActivity<P extends BasePresenter, F extends Fragment> ex
      */
     protected abstract F getFragment();
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        MobclickAgent.onResume(this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        MobclickAgent.onPause(this);
-    }
 }

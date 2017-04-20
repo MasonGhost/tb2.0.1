@@ -162,14 +162,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         if (!this.getClass().getSimpleName().equals("InfoListFragment")){
             WindowUtils.setWindowDismisslistener(this);
         }
-        MobclickAgent.onResume(getContext());
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        MobclickAgent.onPause(getContext());
-    }
 
     @Override
     public void setPresenter(P presenter) {
