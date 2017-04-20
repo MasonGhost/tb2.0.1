@@ -68,7 +68,8 @@ public class BackgroundRequestTaskBeanGreenDaoImpl extends CommonCacheImpl<Backg
 
     @Override
     public void clearTable() {
-
+        BackgroundRequestTaskBeanDao backgroundRequestTaskBeanDao = getWDaoSession().getBackgroundRequestTaskBeanDao();
+        backgroundRequestTaskBeanDao.deleteAll();
     }
 
     @Override
@@ -77,7 +78,8 @@ public class BackgroundRequestTaskBeanGreenDaoImpl extends CommonCacheImpl<Backg
 
     @Override
     public void deleteSingleCache(BackgroundRequestTaskBean dta) {
-
+        BackgroundRequestTaskBeanDao backgroundRequestTaskBeanDao = getWDaoSession().getBackgroundRequestTaskBeanDao();
+        backgroundRequestTaskBeanDao.delete(dta);
     }
 
     @Override

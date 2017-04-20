@@ -58,7 +58,6 @@ import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_DYNAMIC_LIST;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_INFO_LIST;
-import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_DYNAMIC_TO_CHANNEL;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_DYNAMIC_TO_LIST;
 
 /**
@@ -100,7 +99,7 @@ public class BackgroundTaskHandler {
 
     private Queue<BackgroundRequestTaskBean> mTaskBeanConcurrentLinkedQueue = new ConcurrentLinkedQueue<>();// 线程安全的队列
 
-    private List<BackgroundRequestTaskBean> mBackgroundRequestTaskBeanCaches = new ArrayList<>();
+//    private List<BackgroundRequestTaskBean> mBackgroundRequestTaskBeanCaches = new ArrayList<>();
 
     private boolean mIsExit = false; // 是否关闭
 
@@ -121,7 +120,7 @@ public class BackgroundTaskHandler {
             return false;
         }
         if (mTaskBeanConcurrentLinkedQueue.add(backgroundRequestTaskBean)) {
-            mBackgroundRequestTaskBeanCaches.add(backgroundRequestTaskBean);
+            mBackgroundRequestTaskBeanGreenDao.insertOrReplace(backgroundRequestTaskBean);
             return true;
         }
         return false;
@@ -159,6 +158,7 @@ public class BackgroundTaskHandler {
             return;
         }
         List<BackgroundRequestTaskBean> cacheDatas = mBackgroundRequestTaskBeanGreenDao.getMultiDataFromCacheByUserId(Long.valueOf(AppApplication.getmCurrentLoginAuth().getUser_id()));
+        LogUtils.d("-------------------cacheDatas = " + cacheDatas.toString());
         if (cacheDatas != null) {
             for (BackgroundRequestTaskBean tmp : cacheDatas) {
                 mTaskBeanConcurrentLinkedQueue.add(tmp);
@@ -181,10 +181,10 @@ public class BackgroundTaskHandler {
                 threadSleep();
             }
             mIsExit = true;
-            // 存储未执行的数据到数据库，下次执行
-            if (mBackgroundRequestTaskBeanCaches.size() > 0) {
-                mBackgroundRequestTaskBeanGreenDao.saveMultiData(mBackgroundRequestTaskBeanCaches);
-            }
+//            // 存储未执行的数据到数据库，下次执行
+//            if (mBackgroundRequestTaskBeanCaches.size() > 0) {
+//                mBackgroundRequestTaskBeanGreenDao.saveMultiData(mBackgroundRequestTaskBeanCaches);
+//            }
             // 取消 event 监听
             EventBus.getDefault().unregister(BackgroundTaskHandler.this);
         }
@@ -313,10 +313,10 @@ public class BackgroundTaskHandler {
                 .subscribe(new BaseSubscribe<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
-                        mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
                         if (callBack!=null){
                             callBack.onSuccess(data);
                         }
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                     }
 
                     @Override
@@ -324,7 +324,7 @@ public class BackgroundTaskHandler {
                         if (checkIsNeedReRequest(code)) {
                             addBackgroundRequestTask(backgroundRequestTaskBean);
                         } else {
-                            mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                         }
                         if (callBack!=null){
                             callBack.onFailure(message,code);
@@ -350,7 +350,7 @@ public class BackgroundTaskHandler {
                 .subscribe(new BaseSubscribe<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
-                        mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                     }
 
                     @Override
@@ -358,7 +358,7 @@ public class BackgroundTaskHandler {
                         if (checkIsNeedReRequest(code)) {
                             addBackgroundRequestTask(backgroundRequestTaskBean);
                         } else {
-                            mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                         }
                     }
 
@@ -380,7 +380,7 @@ public class BackgroundTaskHandler {
                 .subscribe(new BaseSubscribe<CacheBean>() {
                     @Override
                     protected void onSuccess(CacheBean data) {
-                        mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                     }
 
                     @Override
@@ -388,7 +388,7 @@ public class BackgroundTaskHandler {
                         if (checkIsNeedReRequest(code)) {
                             addBackgroundRequestTask(backgroundRequestTaskBean);
                         } else {
-                            mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                         }
                     }
 
@@ -407,7 +407,7 @@ public class BackgroundTaskHandler {
                 .subscribe(new BaseSubscribe<IMBean>() {
                     @Override
                     protected void onSuccess(IMBean data) {
-                        mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                         IMConfig imConfig = new IMConfig();
                         imConfig.setImUid(data.getUser_id());
                         imConfig.setToken(data.getIm_password());
@@ -421,7 +421,7 @@ public class BackgroundTaskHandler {
                         if (checkIsNeedReRequest(code)) {
                             addBackgroundRequestTask(backgroundRequestTaskBean);
                         } else {
-                            mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                         }
                     }
 
@@ -451,7 +451,7 @@ public class BackgroundTaskHandler {
                 .subscribe(new BaseSubscribe<List<UserInfoBean>>() {
                     @Override
                     protected void onSuccess(List<UserInfoBean> data) {
-                        mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                         mUserInfoBeanGreenDao.insertOrReplace(data);
                         // 用户信息获取成功后就可以通知界面刷新了
                         EventBus.getDefault().post(data, EventBusTagConfig.EVENT_USERINFO_UPDATE);
@@ -463,7 +463,7 @@ public class BackgroundTaskHandler {
                         if (checkIsNeedReRequest(code)) {
                             addBackgroundRequestTask(backgroundRequestTaskBean);
                         } else {
-                            mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                         }
                     }
 
@@ -499,7 +499,7 @@ public class BackgroundTaskHandler {
             dynamicBean = mDynamicBeanGreenDao.getDynamicByFeedMark(feedMark);
         }
         if (dynamicBean == null) {
-            mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
             return;
         }
         // 发送动态到动态列表：状态为发送中
@@ -588,7 +588,7 @@ public class BackgroundTaskHandler {
                 EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
                 if (sendSuccess) {
                     // 动态发送成功
-                    mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                    mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                     dynamicBean.setState(DynamicBean.SEND_SUCCESS);
                     dynamicBean.setFeed_id(((Double) data).longValue());
                     mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
@@ -614,7 +614,7 @@ public class BackgroundTaskHandler {
         final Long commentMark = (Long) params.get("comment_mark");
         final DynamicCommentBean dynamicCommentBean = mDynamicCommentBeanGreenDao.getCommentByCommentMark(commentMark);
         if (dynamicCommentBean == null) {
-            mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
             return;
         }
         // 发送动态到动态列表：状态为发送中
@@ -624,7 +624,7 @@ public class BackgroundTaskHandler {
                 .subscribe(new BaseSubscribe<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
-                        mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                         dynamicCommentBean.setComment_id(((Double) data).longValue());
                         dynamicCommentBean.setState(DynamicBean.SEND_SUCCESS);
                         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
@@ -658,7 +658,7 @@ public class BackgroundTaskHandler {
         final InfoCommentListBean infoCommentListBean = mInfoCommentListBeanDao.getCommentByCommentMark
                 (commentMark);
         if (infoCommentListBean == null) {
-            mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
             return;
         }
         mServiceManager.getCommonClient()
@@ -667,7 +667,7 @@ public class BackgroundTaskHandler {
                 .subscribe(new BaseSubscribe<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
-                        mBackgroundRequestTaskBeanCaches.remove(backgroundRequestTaskBean);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                         infoCommentListBean.setId(((Double) data).intValue());
                         infoCommentListBean.setState(DynamicBean.SEND_SUCCESS);
                         mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);

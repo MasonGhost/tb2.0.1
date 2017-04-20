@@ -499,7 +499,6 @@ public class ZBIMClient implements IMSoupport {
                         if (listener != null) {
                             if (eventContainer.err == 0) {
                                 listener.onAuthSuccess(eventContainer.mAuthData);
-
                             } else {
                                 listener.onError((Exception) bundle.getSerializable(KEY_CONNECTED_ERR));
 
@@ -507,10 +506,10 @@ public class ZBIMClient implements IMSoupport {
                         }
                     }
                 }
-                if (eventContainer.err == 0) {
-                    mIsLogin = false;
-                } else {
+                if (eventContainer.err == 0) {// 登录成功
                     mIsLogin = true;
+                } else {
+                    mIsLogin = false;
                 }
                 break;
 

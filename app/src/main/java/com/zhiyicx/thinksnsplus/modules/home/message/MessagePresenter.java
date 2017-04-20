@@ -515,7 +515,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         String text = mContext.getString(R.string.has_no_body);
         if (!TextUtils.isEmpty(flushMessage.getUids())) {
             text = "";
-            String[] uids = flushMessage.getUids().split(",");
+            String[] uids = flushMessage.getUids().split(ConstantConfig.SPLIT_SMBOL);
             List<String> ueridSet = new ArrayList<>();
             for (int length = 0; length < uids.length; length++) {
                 if (!TextUtils.isEmpty(uids[length]) && !ueridSet.contains(uids[length])) {// 用户 信息去重,去空

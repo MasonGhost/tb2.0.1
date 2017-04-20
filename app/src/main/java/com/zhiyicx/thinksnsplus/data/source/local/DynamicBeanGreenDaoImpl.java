@@ -124,6 +124,7 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
                 break;
             case ApiConfig.DYNAMIC_TYPE_NEW:
                 datas = dynamicBeanDao.queryBuilder()
+                        .where(DynamicBeanDao.Properties.Feed_id.isNotNull())
                         .whereOr(DynamicBeanDao.Properties.Hot_creat_time.isNull(), DynamicBeanDao.Properties.Hot_creat_time.eq(0), DynamicBeanDao.Properties.IsFollowed.eq(false))
                         .list();
                 dynamicBeanDao.deleteInTx(datas);

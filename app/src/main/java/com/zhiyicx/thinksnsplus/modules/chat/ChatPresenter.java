@@ -96,7 +96,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     public void sendTextMessage(String text, int cid) {
         Message message = ChatClient.getInstance(mContext).sendTextMsg(text, cid, "");// usid 暂不使用
         message.setUid(AppApplication.getmCurrentLoginAuth() != null ? AppApplication.getmCurrentLoginAuth().getUser_id() : 0);// 更新
-        if (!ZBIMClient.getInstance().isConnected()) { // IM 没有连接成功
+        if (!ZBIMClient.getInstance().isLogin()) { // IM 没有连接成功
             message.setSend_status(MessageStatus.SEND_FAIL);
         }
         message.setIs_read(true); // 更新
@@ -220,12 +220,13 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONERROR)
     private void onError(Exception error) {
+        LogUtils.d(" 超时   message = " + error);
 //        mRootView.showSnackSuccessMessage("IM 聊天错误" + error.toString());
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGETIMEOUT)
     private void onMessageTimeout(Message message) {
-//        System.out.println(" 超时   message = " + message);
+        LogUtils.d(" 超时   message = " + message);
         mRootView.updateMessageStatus(message);
     }
 }
