@@ -59,6 +59,11 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
     }
 
     @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
 //        switch (ev.getAction()) {
 //            case MotionEvent.ACTION_DOWN:
@@ -216,22 +221,6 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
             scrollTo(0, mScroller.getCurrY());
             invalidate();
         }
-    }
-
-    protected void smoothScrollBy(int dx, int dy) {
-        mScroller.startScroll(0, mScroller.getFinalY(), 0, dy);
-        invalidate();
-    }
-
-    protected void smoothScrollTo(int fx, int fy) {
-        int dx = fx - mScroller.getFinalX();
-        int dy = fy - mScroller.getFinalY();
-        smoothScrollBy(0, dy);
-    }
-
-    public void fling(int velocityY) {
-        mScroller.fling(0, getScrollY(), 0, velocityY, 0, 0, 0, mTopViewHeight);
-        invalidate();
     }
 
     public void setOnHeadFlingListener(OnHeadFlingListener onHeadFlingListener) {

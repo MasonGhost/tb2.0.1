@@ -57,6 +57,7 @@ public class WindowUtils {
     private static Timer mAnimationTimer;
     private static GetTokenRunnable mGetTokenRunnable;
     private static Handler mHander = new Handler();
+    private static AblumHeadInfo sAblumHeadInfo;
 
     private static int mWidth;
     private static int mHeight;
@@ -314,6 +315,53 @@ public class WindowUtils {
                 mHander.postDelayed(mGetTokenRunnable, 500);
             }
 
+        }
+    }
+
+    public static AblumHeadInfo getAblumHeadInfo() {
+        return sAblumHeadInfo;
+    }
+
+    public static void setAblumHeadInfo(AblumHeadInfo ablumHeadInfo) {
+        sAblumHeadInfo = ablumHeadInfo;
+    }
+
+    public static class AblumHeadInfo{
+        int  listenCount;
+        int  shareCount;
+        int  commentCount;
+        int  likeCount;
+
+        public int getListenCount() {
+            return listenCount;
+        }
+
+        public void setListenCount(int listenCount) {
+            this.listenCount = listenCount;
+        }
+
+        public int getShareCount() {
+            return shareCount;
+        }
+
+        public void setShareCount(int shareCount) {
+            this.shareCount = shareCount;
+        }
+
+        public int getCommentCount() {
+            return commentCount;
+        }
+
+        public void setCommentCount(int commentCount) {
+            this.commentCount = commentCount;
+        }
+
+        public int getLikeCount() {
+            return likeCount;
+        }
+
+        public void setLikeCount(int likeCount) {
+            this.likeCount = likeCount;
         }
     }
 }

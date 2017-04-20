@@ -58,14 +58,14 @@ public abstract class InfoDetailWebItem implements ItemViewDelegate<InfoCommentL
     WebViewClient mWebViewClient = new WebViewClient() {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.loadUrl(url);
+//            view.loadUrl(url);
             return true;
         }
 
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-            view.loadUrl(request.getUrl().toString());
+//            view.loadUrl(request.getUrl().toString());
             return true;
         }
 

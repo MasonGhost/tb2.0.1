@@ -59,6 +59,8 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_CHANGE;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_COMMENT_COUNT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_LIKE;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListFragment.BUNDLE_MUSIC_ABLUM;
@@ -205,6 +207,12 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        initHeadInfo(mMusicAlbumListBean);
+    }
+
+    @Override
     protected void initData() {
         mMusicAlbumListBean = getArguments().getParcelable(BUNDLE_MUSIC_ABLUM);
         mAlbumDetailsBean = mPresenter.getCacheAblumDetail(mMusicAlbumListBean.getId());
@@ -252,6 +260,13 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @Override
     public void setMusicAblum(MusicAlbumDetailsBean musicAblum) {
         mAlbumDetailsBean = musicAblum;
+
+        WindowUtils.AblumHeadInfo ablumHeadInfo = new WindowUtils.AblumHeadInfo();
+        ablumHeadInfo.setCommentCount(musicAblum.getComment_count());
+        ablumHeadInfo.setShareCount(musicAblum.getShare_count());
+        ablumHeadInfo.setListenCount(musicAblum.getTaste_count());
+        WindowUtils.setAblumHeadInfo(ablumHeadInfo);
+
         mFragmentMusicDetailCenterTitle.setText(mAlbumDetailsBean.getTitle());
         mFragmentMusicDetailCenterSubTitle.setText(mAlbumDetailsBean.getIntro());
         mFragmentMusicDetailDec.setText(mAlbumDetailsBean.getIntro());
@@ -362,7 +377,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
 
                 MediaBrowserCompat.MediaItem item = mAdapterList.get(position);
-
                 Intent intent = new Intent(getActivity(), MusicPlayActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(MUSIC_INFO, mAlbumDetailsBean);
@@ -472,12 +486,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     }
 
     private void initHeadInfo(MusicAlbumListBean albumListBean) {
-        mFragmentMusicDetailName.setText(albumListBean.getTitle());
-        mFragmentMusicDetailDec.setText(albumListBean.getIntro());
-        mFragmentMusicDetailShare.setText(albumListBean.getShare_count() + "");
-        mFragmentMusicDetailComment.setText(albumListBean.getComment_count() + "");
-        mFragmentMusicDetailFavorite.setText(albumListBean.getCollect_count() + "");
-        mFragmentMusicDetailPlayvolume.setText(albumListBean.getTaste_count() + "");
 
         Glide.with(getContext())
                 .load(ImageUtils.imagePathConvert(albumListBean.getStorage().getId() + "",
@@ -497,6 +505,19 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                         mFragmentMusicDetailHeadInfo.setBackgroundDrawable(drawable);
                     }
                 });
+        if (WindowUtils.getAblumHeadInfo() != null) {
+            WindowUtils.AblumHeadInfo ablumHeadInfo = WindowUtils.getAblumHeadInfo();
+            albumListBean.setShare_count(ablumHeadInfo.getShareCount());
+            albumListBean.setTaste_count(ablumHeadInfo.getListenCount());
+            albumListBean.setComment_count(ablumHeadInfo.getCommentCount());
+        }
+        mFragmentMusicDetailName.setText(albumListBean.getTitle());
+        mFragmentMusicDetailDec.setText(albumListBean.getIntro());
+        mFragmentMusicDetailShare.setText(albumListBean.getShare_count() + "");
+        mFragmentMusicDetailComment.setText(albumListBean.getComment_count() + "");
+        mFragmentMusicDetailFavorite.setText(albumListBean.getCollect_count() + "");
+        mFragmentMusicDetailPlayvolume.setText(albumListBean.getTaste_count() + "");
+
     }
 
     public interface MediaBrowserCompatProvider {
@@ -558,5 +579,18 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
             }
         });
         LogUtils.d("EVENT_MUSIC_LIKE");
+    }
+
+    @Subscriber(tag = EVENT_MUSIC_COMMENT_COUNT, mode = ThreadMode.MAIN)
+    public void onCommentCountUpdate(MusicCommentHeader.HeaderInfo headerInfo) {
+        mMusicAlbumListBean.setComment_count((mMusicAlbumListBean.getComment_count() + 1));
+        mFragmentMusicDetailComment.setText(mMusicAlbumListBean.getComment_count() + "");
+        LogUtils.d("EVENT_MUSIC_COMMENT_COUNT");
+    }
+
+    @Subscriber(tag = EVENT_MUSIC_CHANGE, mode = ThreadMode.MAIN)
+    public void onMusicChange(int change) {
+        mPresenter.getMusicDetails(mCurrentMediaId);
+        LogUtils.d("EVENT_MUSIC_CHANGE");
     }
 }

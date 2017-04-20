@@ -55,6 +55,8 @@
                 android:layout_marginTop="@dimen/spacing_large">
 
                 <com.zhiyicx.thinksnsplus.widget.IconTextView
+                    android:layout_marginTop="1dp"
+                    android:layout_marginBottom="1dp"
                     android:id="@+id/fragment_music_detail_playvolume"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -66,6 +68,8 @@
                     app:itv_textColor="@color/white" />
 
                 <com.zhiyicx.thinksnsplus.widget.IconTextView
+                    android:layout_marginTop="1dp"
+                    android:layout_marginBottom="1dp"
                     android:id="@+id/fragment_music_detail_share"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -77,6 +81,8 @@
                     app:itv_textColor="@color/white" />
 
                 <com.zhiyicx.thinksnsplus.widget.IconTextView
+                    android:layout_marginTop="1dp"
+                    android:layout_marginBottom="1dp"
                     android:id="@+id/fragment_music_detail_comment"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -88,6 +94,8 @@
                     app:itv_textColor="@color/white" />
 
                 <com.zhiyicx.thinksnsplus.widget.IconTextView
+                    android:layout_marginTop="1dp"
+                    android:layout_marginBottom="1dp"
                     android:id="@+id/fragment_music_detail_favorite"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
