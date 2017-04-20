@@ -214,6 +214,8 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                     protected void onFailure(String message, int code) {
                         MusicCommentListBean commentListBean = mCommentListBeanGreenDao.getMusicCommentByCommentMark(createComment.getComment_mark());
                         commentListBean.setState(SEND_ERROR);
+                        mRootView.getListDatas().set(0,commentListBean);
+                        mRootView.refreshData();
                         mCommentListBeanGreenDao.insertOrReplace(commentListBean);
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.comment_fail));
                     }
@@ -222,6 +224,8 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                     protected void onException(Throwable throwable) {
                         MusicCommentListBean commentListBean = mCommentListBeanGreenDao.getMusicCommentByCommentMark(createComment.getComment_mark());
                         commentListBean.setState(SEND_ERROR);
+                        mRootView.getListDatas().set(0,commentListBean);
+                        mRootView.refreshData();
                         mCommentListBeanGreenDao.insertOrReplace(commentListBean);
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.comment_fail));
                     }
