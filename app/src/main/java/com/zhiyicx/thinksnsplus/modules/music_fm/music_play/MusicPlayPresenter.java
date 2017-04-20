@@ -49,7 +49,7 @@ public class MusicPlayPresenter extends BasePresenter<MusicPlayContract.Reposito
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(mRootView.getCurrentMusic().getMusic_info().getTitle());
-
+        shareContent.setContent(mRootView.getCurrentMusic().getMusic_info().getLyric());
         shareContent.setUrl(String.format(ApiConfig.NO_PROCESS_IMAGE_PATH,
                 mRootView.getCurrentMusic().getMusic_info().getStorage()));
 

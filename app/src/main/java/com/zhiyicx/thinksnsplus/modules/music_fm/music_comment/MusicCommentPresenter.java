@@ -7,6 +7,7 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
@@ -15,6 +16,7 @@ import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicCommentListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicCommentRepositroty;
 import com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment.CommentBean;
 import com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment.CommentCore;
@@ -28,10 +30,14 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_ABLUM_COMMENT_FORMAT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_COMMENT_FORMAT;
+import static com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean.SEND_ERROR;
 import static com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean.SEND_ING;
+import static com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean.SEND_SUCCESS;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT_TYPE_MUSIC;
 
 /**
@@ -52,6 +58,9 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
 
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+
+    @Inject
+    CommentRepository mCommentRepository;
 
     @Inject
     public MusicCommentPresenter(MusicCommentContract.Repository repository, MusicCommentContract
@@ -184,25 +193,44 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
         }
         mRootView.getListDatas().add(0, createComment);
         mRootView.refreshData();
-        BackgroundTaskHandler.OnNetResponseCallBack callBack = new BackgroundTaskHandler.OnNetResponseCallBack() {
+        path=String.format(path, mRootView.getCommentId());
+        Subscription subscription = mCommentRepository.sendComment(content, reply_id, createComment.getComment_mark(), path).doOnSubscribe(new Action0() {
             @Override
-            public void onSuccess(Object data) {
-                MusicCommentListBean commentListBean = mCommentListBeanGreenDao.getMusicCommentByCommentMark(createComment.getComment_mark());
-                commentListBean.setId(((Double) data).longValue());
-                mCommentListBeanGreenDao.insertOrReplace(commentListBean);
+            public void call() {
+                mRootView.showSnackLoadingMessage(mContext.getString(R.string.comment_ing));
             }
+        }).subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribe<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        MusicCommentListBean commentListBean = mCommentListBeanGreenDao.getMusicCommentByCommentMark(createComment.getComment_mark());
+                        commentListBean.setId(((Double) data).longValue());
+                        commentListBean.setState(SEND_SUCCESS);
+                        mCommentListBeanGreenDao.insertOrReplace(commentListBean);
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.comment_success));
+                    }
 
-            @Override
-            public void onFailure(String message, int code) {
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        MusicCommentListBean commentListBean = mCommentListBeanGreenDao.getMusicCommentByCommentMark(createComment.getComment_mark());
+                        commentListBean.setState(SEND_ERROR);
+                        mRootView.getListDatas().set(0,commentListBean);
+                        mRootView.refreshData();
+                        mCommentListBeanGreenDao.insertOrReplace(commentListBean);
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.comment_fail));
+                    }
 
-            }
-
-            @Override
-            public void onException(Throwable throwable) {
-
-            }
-        };
-        mRepository.sendComment(mRootView.getCommentId(), reply_id, content, path, createComment.getComment_mark(), callBack);
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        MusicCommentListBean commentListBean = mCommentListBeanGreenDao.getMusicCommentByCommentMark(createComment.getComment_mark());
+                        commentListBean.setState(SEND_ERROR);
+                        mRootView.getListDatas().set(0,commentListBean);
+                        mRootView.refreshData();
+                        mCommentListBeanGreenDao.insertOrReplace(commentListBean);
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.comment_fail));
+                    }
+                });
+        addSubscrebe(subscription);
     }
 
     @Override
