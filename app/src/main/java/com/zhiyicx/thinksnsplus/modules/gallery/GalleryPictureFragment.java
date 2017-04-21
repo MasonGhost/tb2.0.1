@@ -1,25 +1,15 @@
 package com.zhiyicx.thinksnsplus.modules.gallery;
 
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
-import android.support.v7.widget.DrawableUtils;
-import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -27,17 +17,12 @@ import android.widget.TextView;
 import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
-import com.bumptech.glide.load.ResourceDecoder;
-import com.bumptech.glide.load.ResourceEncoder;
 import com.bumptech.glide.load.data.DataFetcher;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.load.model.stream.StreamModelLoader;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.load.resource.gifbitmap.GifBitmapWrapper;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.jakewharton.rxbinding.view.RxView;
@@ -49,29 +34,23 @@ import com.zhiyicx.baseproject.config.PathConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressListener;
 import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressModelLoader;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
-import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.photoview.PhotoViewAttacher;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.utils.TransferImageAnimationUtil;
-import com.zhiyicx.thinksnsplus.widget.coordinatorlayout.ScrollAwareFABBehavior;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import me.iwf.photopicker.utils.AndroidLifecycleUtils;
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -418,8 +397,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
      * @param backgroundAnimator
      */
     public void animationExit(ObjectAnimator backgroundAnimator) {
-        // 退出隐藏查看原图按钮，防止显示在透明背景上
-        mTvOriginPhoto.setVisibility(View.GONE);
+
         // 高清图片可见，那就高清图片退出动画
         if (mIvPager.getVisibility() == View.VISIBLE) {
             // 图片处于放大状态，先让它复原
@@ -427,6 +405,8 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                 mPhotoViewAttacherNormal.setScale(1, true);
                 return;
             }
+            // 退出隐藏查看原图按钮，防止显示在透明背景上
+            mTvOriginPhoto.setVisibility(View.GONE);
             getActivity().overridePendingTransition(0, 0);
             AnimationRectBean rect = getArguments().getParcelable("rect");
             TransferImageAnimationUtil.animateClose(backgroundAnimator, rect, mIvPager);
@@ -438,6 +418,8 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                 mPhotoViewAttacherOrigin.setScale(1, true);
                 return;
             }
+            // 退出隐藏查看原图按钮，防止显示在透明背景上
+            mTvOriginPhoto.setVisibility(View.GONE);
             getActivity().overridePendingTransition(0, 0);
             AnimationRectBean rect = getArguments().getParcelable("rect");
             TransferImageAnimationUtil.animateClose(backgroundAnimator, rect, mIvOriginPager);

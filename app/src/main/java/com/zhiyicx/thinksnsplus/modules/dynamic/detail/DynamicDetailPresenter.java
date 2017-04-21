@@ -168,7 +168,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
 
     @Override
     public void getCurrentDynamic(final long feed_id) {
-        mRepository.getDynamicList(ApiConfig.DYNAMIC_TYPE_NEW, DEFAULT_PAGE_MAX_ID, 1, String.valueOf(feed_id), false)
+        Subscription subscription = mRepository.getDynamicList(ApiConfig.DYNAMIC_TYPE_NEW, DEFAULT_PAGE_MAX_ID, 1, String.valueOf(feed_id), false)
                 .subscribe(new BaseSubscribe<List<DynamicBean>>() {
                     @Override
                     protected void onSuccess(List<DynamicBean> data) {
@@ -189,6 +189,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
                         mRootView.loadAllError();
                     }
                 });
+        addSubscrebe(subscription);
     }
 
     @Override

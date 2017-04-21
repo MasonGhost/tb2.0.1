@@ -1,9 +1,9 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:paddingBottom="@dimen/spacing_mid"
     android:paddingTop="@dimen/spacing_mid"
@@ -11,11 +11,11 @@
 
     <com.zhiyicx.baseproject.widget.imageview.FilterImageView
         android:id="@+id/iv_headpic"
-        app:pressShape="circle"
         android:layout_width="@dimen/headpic_for_list"
         android:layout_height="@dimen/headpic_for_list"
         android:layout_marginLeft="@dimen/spacing_normal"
-        android:src="@drawable/shape_default_image_circle"/>
+        android:src="@drawable/shape_default_image_circle"
+        app:pressShape="circle"/>
 
     <TextView
         android:id="@+id/tv_name"
@@ -66,8 +66,9 @@
         android:layout_below="@+id/tv_title"
         android:layout_marginRight="@dimen/spacing_normal"
         android:layout_toRightOf="@+id/iv_headpic"
+        android:ellipsize="end"
+        android:maxLines="@integer/dynamic_list_content_show_lines"
         android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
-        android:maxLength="@integer/dynamic_list_content_max_show_size"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingTop="@dimen/spacing_small"
         android:textColor="@color/normal_for_assist_text"
@@ -92,8 +93,8 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_line"
-        android:background="@color/general_for_line_light"
-        android:layout_below="@+id/nrv_image"/>
+        android:layout_below="@+id/nrv_image"
+        android:background="@color/general_for_line_light"/>
 
     <com.zhiyicx.baseproject.widget.DynamicListMenuView
         android:id="@+id/dlmv_menu"
@@ -107,14 +108,16 @@
         android:paddingRight="@dimen/spacing_tiny">
 
     </com.zhiyicx.baseproject.widget.DynamicListMenuView>
+
     <include
-        layout="@layout/view_hint_info2"
         android:id="@+id/fl_tip"
+        layout="@layout/view_hint_info2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/iv_headpic"
         android:layout_below="@id/dlmv_menu"
+        android:layout_toRightOf="@+id/iv_headpic"
         />
+
     <com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView
         android:id="@+id/fl_comment"
         android:layout_width="match_parent"

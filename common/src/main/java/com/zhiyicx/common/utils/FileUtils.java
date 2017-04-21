@@ -1,14 +1,9 @@
 package com.zhiyicx.common.utils;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.ContextWrapper;
-import android.media.MediaMetadataRetriever;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
-
-import com.bumptech.glide.Glide;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
@@ -20,6 +15,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLConnection;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -681,6 +677,30 @@ public class FileUtils {
             return type;
         }
         return "file/*";
+    }
+
+    /**
+     * 获取文件的MIME类型
+     *
+     * @param fileName
+     * @return
+     */
+    public static String getMimeTypeByFileName(String fileName) {
+        return URLConnection.guessContentTypeFromName(fileName);
+    }
+
+    /**
+     * 通过文件获取   mimeType
+     * @param file
+     * @return
+     */
+    public static String getMimeTypeByFile(File file) {
+        String result = null;
+        result = getMimeType(file.getPath());
+        if (TextUtils.isEmpty(result)) {
+            result = getMimeTypeByFileName(file.getName());
+        }
+        return result;
     }
 
     private static String getSuffix(File file) {

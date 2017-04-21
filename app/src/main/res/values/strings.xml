@@ -14,8 +14,8 @@
     <string name="comment">评论</string>
     <string name="like">赞</string>
     <string name="liked">赞过的</string>
-    <string name="like_me">赞了我</string>
-    <string name="comment_me">评论了我</string>
+    <string name="like_me">等人赞了我</string>
+    <string name="comment_me">等人评论了我</string>
     <string name="comment_success">评论成功</string>
     <string name="comment_fail">评论失败</string>
     <string name="comment_ing">评论中...</string>
@@ -101,7 +101,7 @@
     <string name="dynamic_list_delete_comment">删除评论</string>
     <string name="dynamic_list_resend_comment">重发评论</string>
     <string name="dynamic_list_resend_dynamic">重新发送</string>
-    <string name="reply">回复: %s</string>
+    <string name="reply">回复%s:</string>
     <!--发布动态-->
     <string name="send_dynamic">发布动态</string>
     <string name="dynamic_title_hint">有标题更吸引人</string>
@@ -130,6 +130,7 @@
     <string name="all_channel">全部频道</string>
     <string name="channel_share">分享</string>
     <string name="channel_follow">订阅</string>
+    <string name="channel_followed">已订阅</string>
     <string name="had_send_dynamic_to_channel">动态将在审核成功后发布</string>
 
     <!--收藏-->

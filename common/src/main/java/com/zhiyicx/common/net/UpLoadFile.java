@@ -1,5 +1,9 @@
 package com.zhiyicx.common.net;
 
+import android.text.TextUtils;
+
+import com.zhiyicx.common.utils.FileUtils;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +55,9 @@ public class UpLoadFile {
             for (String fileParam : filePathKey) {
                 try {
                     File file = new File(filePathList.get(fileParam));//filePath 图片地址
-                    RequestBody imageBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+                    String mimeType = FileUtils.getMimeTypeByFile(file);
+                    RequestBody imageBody = RequestBody.create(
+                            MediaType.parse(TextUtils.isEmpty(mimeType) ? "multipart/form-data" : mimeType), file);
                     builder.addFormDataPart(fileParam, file.getName(), imageBody);//imgfile 后台接收图片流的参数名
                 } catch (NullPointerException e) {
                     e.printStackTrace();
