@@ -19,10 +19,10 @@
 
         <ImageView
             android:src="@mipmap/sec_nav_arrow"
-            android:paddingLeft="@dimen/spacing_small"
+            android:paddingLeft="6dp"
             android:scaleType="centerInside"
             android:id="@+id/fragment_infocontainer_change"
-            android:layout_width="@dimen/toolbar_height"
+            android:layout_width="48dp"
             android:layout_height="match_parent"
             android:background="@mipmap/arrow_bg"/>
 

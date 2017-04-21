@@ -216,11 +216,8 @@ public class WindowUtils {
                                 return true;
                             }
 
-//                            Intent intent = new Intent(mContext, MusicPlayActivity.class);
                             Intent intent1 = new Intent("android.intent.action.MAIN");
                             intent1.setClassName(mContext, "com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity");
-//                            Bundle bundle = new Bundle();
-//                            bundle.putSerializable(MusicDetailFragment.MUSIC_INFO, getMusicAlbumDetailsBean());
                             intent1.putExtra("music_info", getMusicAlbumDetailsBean());
                             intent1.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             mContext.startActivity(intent1);
