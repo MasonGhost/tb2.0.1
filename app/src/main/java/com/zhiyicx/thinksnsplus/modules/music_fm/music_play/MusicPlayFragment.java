@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_play;
 
+import android.animation.AnimatorInflater;
+import android.animation.LayoutTransition;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,7 +19,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
-import android.text.method.CharacterPickerDialog;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.ViewGroup;
@@ -138,6 +139,8 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     TextView mFragmentMusicPalyLrc;
     @BindView(R.id.fragment_music_paly_deal)
     LinearLayout mFragmentMusicPalyDeal;
+    @BindView(R.id.fragment_music_paly_container)
+    RelativeLayout mFragmentMusicPalyContainer;
 
     /**
      * 播放进度条更新间隔
@@ -350,6 +353,11 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     @Override
     protected void initView(View rootView) {
+        LayoutTransition transition = new LayoutTransition();
+        transition.setDuration(1000);
+        transition.setAnimator(LayoutTransition.APPEARING, AnimatorInflater.loadAnimator(getActivity(), R.animator.view_visible_alpha));
+        transition.setAnimator(LayoutTransition.DISAPPEARING, AnimatorInflater.loadAnimator(getActivity(), R.animator.view_gone_alpha));
+        mFragmentMusicPalyContainer.setLayoutTransition(transition);
         mFragmentMusicPalyProgress.setThumb(R.mipmap.music_pic_progressbar_circle);
         initListener();
         mToolbarCenter.setText(AppApplication.getmQueueManager().getCurrentMusic().getDescription().getTitle());
