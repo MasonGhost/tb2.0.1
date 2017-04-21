@@ -58,11 +58,6 @@ public class MessageLikeAdapter extends CommonAdapter<DigedBean> {
     @Override
     protected void convert(final ViewHolder holder, final DigedBean digedBean, final int position) {
 
-        if (position == getItemCount() - 1) {
-            holder.setVisible(R.id.v_bottom_line, View.GONE);
-        } else {
-            holder.setVisible(R.id.v_bottom_line, View.VISIBLE);
-        }
         mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
                 .url(ImageUtils.imagePathConvert(digedBean.getDigUserInfo().getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
                 .transformation(new GlideCircleTransform(getContext()))

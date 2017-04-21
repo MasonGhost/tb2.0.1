@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagecomment;
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -11,6 +12,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
+import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
@@ -75,14 +77,17 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
     protected int getBodyLayoutId() {
         return R.layout.fragment_list_with_input_and_toolbar;
     }
+
     @Override
     protected boolean isNeedRefreshDataWhenComeIn() {
         return true;
     }
 
     @Override
-    protected float getItemDecorationSpacing() {
-        return 0;
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        CustomLinearDecoration itemDecoration = new CustomLinearDecoration(0, 1, 0, 0, ContextCompat.getDrawable(getContext(), R.drawable.shape_recyclerview_divider));
+        itemDecoration.setMarginLeft(getResources().getDimensionPixelSize(R.dimen.message_comment_and_digg_line_margin));
+        return itemDecoration;
     }
 
     @Override
