@@ -185,8 +185,6 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
         registerAudioNoisyReceiver();
         String mediaId = item.getDescription().getMediaId();
         boolean mediaHasChanged = !TextUtils.equals(mediaId, mCurrentMediaId);
-        LogUtils.d("mCurrentPosition:::mCurrentMediaId"+mCurrentMediaId);
-        LogUtils.d("mCurrentPosition:::mediaId"+mediaId);
 
         if (mediaHasChanged) {
             mCurrentPosition = 0;

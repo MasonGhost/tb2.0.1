@@ -164,6 +164,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                         mCurrentMediaId = MediaIDHelper.extractMusicIDFromMediaID(mCurrentMusic.getDescription().getMediaId());
                     }
                     fragmentMusicDetailMusicCount.setText(String.format("(共%d首)", children.size()));
+                    LogUtils.d("onChildrenLoaded:::"+children.size());
                     mAdapter.dataChange(children);
                 }
 
@@ -215,7 +216,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @Override
     protected void initData() {
         mMusicAlbumListBean = getArguments().getParcelable(BUNDLE_MUSIC_ABLUM);
-        mAlbumDetailsBean = mPresenter.getCacheAblumDetail(mMusicAlbumListBean.getId());
+//        mAlbumDetailsBean = mPresenter.getCacheAblumDetail(mMusicAlbumListBean.getId());
         initHeadInfo(mMusicAlbumListBean);
         mPresenter.getMusicAblum(mMusicAlbumListBean.getId() + "");
         mAdapter = getCommonAdapter();
@@ -323,11 +324,13 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         if (mMediaId == null) {
             mMediaId = mCompatProvider.getMediaBrowser().getRoot();
         }
-        mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
-        mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
+//        mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
+//        mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
         MediaControllerCompat controller = getActivity()
                 .getSupportMediaController();
+
         if (controller != null) {
+            controller.registerCallback(mMediaControllerCallback);
             if (mAlbumDetailsBean != null) {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(MUSIC_ACTION, mAlbumDetailsBean);
@@ -336,7 +339,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
                 mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
             }
-            controller.registerCallback(mMediaControllerCallback);
+
         }
 
     }

@@ -19,13 +19,18 @@ import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoLongClickListener;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import rx.functions.Action1;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean.SEND_ERROR;
 
 /**
  * @Describe
@@ -37,6 +42,7 @@ import rx.functions.Action1;
 public class MusicCommentItem implements ItemViewDelegate<MusicCommentListBean> {
     private OnUserInfoClickListener mOnUserInfoClickListener;
     private OnUserInfoLongClickListener mOnUserInfoLongClickListener;
+    protected OnReSendClickListener mOnReSendClickListener;
 
     public void setOnUserInfoClickListener(OnUserInfoClickListener onUserInfoClickListener) {
         mOnUserInfoClickListener = onUserInfoClickListener;
@@ -44,6 +50,10 @@ public class MusicCommentItem implements ItemViewDelegate<MusicCommentListBean> 
 
     public void setOnUserInfoLongClickListener(OnUserInfoLongClickListener onUserInfoLongClickListener) {
         mOnUserInfoLongClickListener = onUserInfoLongClickListener;
+    }
+
+    public void setOnReSendClickListener(OnReSendClickListener onReSendClickListener) {
+        mOnReSendClickListener = onReSendClickListener;
     }
 
     @Override
@@ -57,9 +67,9 @@ public class MusicCommentItem implements ItemViewDelegate<MusicCommentListBean> 
     }
 
     @Override
-    public void convert(ViewHolder holder, MusicCommentListBean musicCommentListBean,
-                        MusicCommentListBean lastT, int position) {
-        if (musicCommentListBean.getFromUserInfoBean()!=null){
+    public void convert(ViewHolder holder,final MusicCommentListBean musicCommentListBean,
+                        MusicCommentListBean lastT, final int position) {
+        if (musicCommentListBean.getFromUserInfoBean() != null) {
             AppApplication.AppComponentHolder.getAppComponent()
                     .imageLoader()
                     .loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
@@ -77,6 +87,21 @@ public class MusicCommentItem implements ItemViewDelegate<MusicCommentListBean> 
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(musicCommentListBean
                     .getCreated_at()));
             holder.setText(R.id.tv_content, setShowText(musicCommentListBean, position));
+            if (musicCommentListBean.getState() == SEND_ERROR) {
+                holder.getView(R.id.fl_tip).setVisibility(View.VISIBLE);
+            } else {
+                holder.getView(R.id.fl_tip).setVisibility(View.GONE);
+            }
+            RxView.clicks(holder.getView(R.id.fl_tip))
+                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                    .subscribe(new Action1<Void>() {
+                        @Override
+                        public void call(Void aVoid) {
+                            if (mOnReSendClickListener != null) {
+                                mOnReSendClickListener.onReSendClick(musicCommentListBean);
+                            }
+                        }
+                    });
         }
 
     }
@@ -145,5 +170,10 @@ public class MusicCommentItem implements ItemViewDelegate<MusicCommentListBean> 
         return content;
     }
 
-
+    /**
+     * resend interface
+     */
+    public interface OnReSendClickListener {
+        void onReSendClick(MusicCommentListBean musicCommentListBean);
+    }
 }

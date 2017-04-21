@@ -97,10 +97,8 @@ public class WindowUtils {
         boolean permission = (PackageManager.PERMISSION_GRANTED == pm.checkPermission("android" +
                 ".permission.SYSTEM_ALERT_WINDOW", packname));
         if (permission) {
-            LogUtils.d("TYPE_PHONE");
             mLayoutParams.type = LayoutParams.TYPE_PHONE;
         } else {
-            LogUtils.d("TYPE_TOAST");
             mLayoutParams.type = LayoutParams.TYPE_TOAST;
         }
 
@@ -153,14 +151,12 @@ public class WindowUtils {
 
     public static void changeToWhiteIcon() {
         if (mImageView != null) {
-            LogUtils.d("changeToWhiteIcon");
             mImageView.setImageResource(R.mipmap.music_ico_suspension_white);
         }
     }
 
     public static void changeToBlackIcon() {
         if (mImageView != null) {
-            LogUtils.d("changeToBlackIcon");
             mImageView.setImageResource(R.mipmap.music_ico_suspension_black);
         }
     }

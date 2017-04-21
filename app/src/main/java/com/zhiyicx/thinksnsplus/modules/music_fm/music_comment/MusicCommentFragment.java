@@ -4,9 +4,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -53,7 +51,8 @@ import static com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.Messa
  */
 public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Presenter,
         MusicCommentListBean> implements MusicCommentContract.View, OnUserInfoClickListener,
-        InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener {
+        InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener,
+        MusicCommentItem.OnReSendClickListener {
 
     @BindView(R.id.ilv_comment)
     InputLimitView mIlvComment;
@@ -73,6 +72,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     private MusicCommentHeader mMusicCommentHeader;
     private int mReplyUserId = 0;// 被评论者的 id ,评论动态 id = 0
     private ActionPopupWindow mDeletCommentPopWindow;
+    private ActionPopupWindow mReSendCommentPopWindow;
 
     public static MusicCommentFragment newInstance(Bundle params) {
         MusicCommentFragment fragment = new MusicCommentFragment();
@@ -168,6 +168,11 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     }
 
     @Override
+    public void onReSendClick(MusicCommentListBean musicCommentListBean) {
+        initReSendCommentPopupWindow(musicCommentListBean);
+    }
+
+    @Override
     public int getCommentId() {
         return mHeaderInfo.getId();
     }
@@ -188,7 +193,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
         if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth()
                 .getUser_id()) {// 自己的评论
 //            if (mListDatas.get(position).getId() != -1) {
-            initLoginOutPopupWindow(mListDatas.get(position));
+            initDeleteCommentPopupWindow(mListDatas.get(position));
             mDeletCommentPopWindow.show();
 //            } else {
 //                return;
@@ -300,7 +305,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
         DeviceUtils.showSoftKeyboard(getActivity(), mIlvComment.getEtContent());
     }
 
-    private void initLoginOutPopupWindow(final MusicCommentListBean data) {
+    private void initDeleteCommentPopupWindow(final MusicCommentListBean data) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_comment))
                 .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
@@ -326,6 +331,31 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                     @Override
                     public void onBottomClicked() {
                         mDeletCommentPopWindow.hide();
+                    }
+                })
+                .build();
+    }
+
+    private void initReSendCommentPopupWindow(final MusicCommentListBean commentBean) {
+        mReSendCommentPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.dynamic_list_resend_comment))
+                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+
+                        mReSendCommentPopWindow.hide();
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mReSendCommentPopWindow.hide();
                     }
                 })
                 .build();
