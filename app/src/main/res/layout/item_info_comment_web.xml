@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:descendantFocusability="blocksDescendants"
@@ -10,12 +10,13 @@
     <WebView
         android:id="@+id/info_detail_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        tools:ignore="WebViewLayout"/>
 
 
     <include
         layout="@layout/item_dynamic_detail_dig"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <FrameLayout
         android:id="@+id/info_detail_comment"
@@ -40,16 +41,16 @@
                 android:paddingRight="@dimen/spacing_normal"
                 android:paddingTop="@dimen/spacing_mid"
                 android:textColor="@color/important_for_content"
-                android:textSize="@dimen/size_content_assist" />
+                android:textSize="@dimen/size_content_assist"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/shape_line_bottom_themcolor" />
+                android:background="@drawable/shape_line_bottom_themcolor"/>
         </LinearLayout>
 
         <View
             style="@style/style_divider_horizontal_light"
-            android:layout_gravity="bottom" />
+            android:layout_gravity="bottom"/>
     </FrameLayout>
 </LinearLayout>
