@@ -25,7 +25,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAILS_FOR
  */
 @FragmentScoped
 public class MusicPlayPresenter extends BasePresenter<MusicPlayContract.Repository,
-        MusicPlayContract.View> implements MusicPlayContract.Presenter,OnShareCallbackListener {
+        MusicPlayContract.View> implements MusicPlayContract.Presenter, OnShareCallbackListener {
 
     @Inject
     public MusicPlayPresenter(MusicPlayContract.Repository repository, MusicPlayContract
@@ -53,8 +53,8 @@ public class MusicPlayPresenter extends BasePresenter<MusicPlayContract.Reposito
         shareContent.setUrl(String.format(ApiConfig.NO_PROCESS_IMAGE_PATH,
                 mRootView.getCurrentMusic().getMusic_info().getStorage()));
 
-            shareContent.setImage(String.format(ApiConfig.NO_PROCESS_IMAGE_PATH,
-                    mRootView.getCurrentMusic().getMusic_info().getSinger().getCover().getId()));
+        shareContent.setImage(String.format(ApiConfig.NO_PROCESS_IMAGE_PATH,
+                mRootView.getCurrentMusic().getMusic_info().getSinger().getCover().getId()));
 
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
@@ -67,6 +67,7 @@ public class MusicPlayPresenter extends BasePresenter<MusicPlayContract.Reposito
 
     @Override
     public void onSuccess(Share share) {
+        mRepository.shareMusic(mRootView.getCurrentMusic().getMusic_info().getId() + "");
         mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_sccuess));
     }
 

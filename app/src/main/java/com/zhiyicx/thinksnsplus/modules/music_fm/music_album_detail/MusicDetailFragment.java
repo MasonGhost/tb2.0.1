@@ -216,7 +216,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @Override
     protected void initData() {
         mMusicAlbumListBean = getArguments().getParcelable(BUNDLE_MUSIC_ABLUM);
-//        mAlbumDetailsBean = mPresenter.getCacheAblumDetail(mMusicAlbumListBean.getId());
+        mAlbumDetailsBean = mPresenter.getCacheAblumDetail(mMusicAlbumListBean.getId());
         initHeadInfo(mMusicAlbumListBean);
         mPresenter.getMusicAblum(mMusicAlbumListBean.getId() + "");
         mAdapter = getCommonAdapter();
@@ -515,7 +515,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
             albumListBean.setComment_count(ablumHeadInfo.getCommentCount());
         }
         mFragmentMusicDetailName.setText(albumListBean.getTitle());
-        mFragmentMusicDetailDec.setText(albumListBean.getIntro());
+//        mFragmentMusicDetailDec.setText(albumListBean.getIntro());
         mFragmentMusicDetailShare.setText(albumListBean.getShare_count() + "");
         mFragmentMusicDetailComment.setText(albumListBean.getComment_count() + "");
         mFragmentMusicDetailFavorite.setText(albumListBean.getCollect_count() + "");
