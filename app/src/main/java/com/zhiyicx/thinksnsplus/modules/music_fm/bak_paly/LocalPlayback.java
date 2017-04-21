@@ -185,8 +185,6 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
         registerAudioNoisyReceiver();
         String mediaId = item.getDescription().getMediaId();
         boolean mediaHasChanged = !TextUtils.equals(mediaId, mCurrentMediaId);
-        LogUtils.d("mCurrentPosition:::mCurrentMediaId"+mCurrentMediaId);
-        LogUtils.d("mCurrentPosition:::mediaId"+mediaId);
 
         if (mediaHasChanged) {
             mCurrentPosition = 0;
@@ -252,15 +250,6 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
         if (mState == PlaybackStateCompat.STATE_PLAYING) {
             if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
                 mMediaPlayer.pause();
-                Observable.timer(5, TimeUnit.SECONDS)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<Long>() {
-                    @Override
-                    public void call(Long aLong) {
-                        WindowUtils.setIsPause(true);
-                        WindowUtils.hidePopupWindow();
-                    }
-                });
                 mCurrentPosition = mMediaPlayer.getCurrentPosition();
             }
 

@@ -97,10 +97,8 @@ public class WindowUtils {
         boolean permission = (PackageManager.PERMISSION_GRANTED == pm.checkPermission("android" +
                 ".permission.SYSTEM_ALERT_WINDOW", packname));
         if (permission) {
-            LogUtils.d("TYPE_PHONE");
             mLayoutParams.type = LayoutParams.TYPE_PHONE;
         } else {
-            LogUtils.d("TYPE_TOAST");
             mLayoutParams.type = LayoutParams.TYPE_TOAST;
         }
 
@@ -153,14 +151,12 @@ public class WindowUtils {
 
     public static void changeToWhiteIcon() {
         if (mImageView != null) {
-            LogUtils.d("changeToWhiteIcon");
             mImageView.setImageResource(R.mipmap.music_ico_suspension_white);
         }
     }
 
     public static void changeToBlackIcon() {
         if (mImageView != null) {
-            LogUtils.d("changeToBlackIcon");
             mImageView.setImageResource(R.mipmap.music_ico_suspension_black);
         }
     }
@@ -216,11 +212,8 @@ public class WindowUtils {
                                 return true;
                             }
 
-//                            Intent intent = new Intent(mContext, MusicPlayActivity.class);
                             Intent intent1 = new Intent("android.intent.action.MAIN");
                             intent1.setClassName(mContext, "com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity");
-//                            Bundle bundle = new Bundle();
-//                            bundle.putSerializable(MusicDetailFragment.MUSIC_INFO, getMusicAlbumDetailsBean());
                             intent1.putExtra("music_info", getMusicAlbumDetailsBean());
                             intent1.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             mContext.startActivity(intent1);

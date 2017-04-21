@@ -164,6 +164,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                         mCurrentMediaId = MediaIDHelper.extractMusicIDFromMediaID(mCurrentMusic.getDescription().getMediaId());
                     }
                     fragmentMusicDetailMusicCount.setText(String.format("(共%d首)", children.size()));
+                    LogUtils.d("onChildrenLoaded:::"+children.size());
                     mAdapter.dataChange(children);
                 }
 
@@ -323,11 +324,13 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         if (mMediaId == null) {
             mMediaId = mCompatProvider.getMediaBrowser().getRoot();
         }
-        mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
-        mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
+//        mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
+//        mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
         MediaControllerCompat controller = getActivity()
                 .getSupportMediaController();
+
         if (controller != null) {
+            controller.registerCallback(mMediaControllerCallback);
             if (mAlbumDetailsBean != null) {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(MUSIC_ACTION, mAlbumDetailsBean);
@@ -336,7 +339,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
                 mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
             }
-            controller.registerCallback(mMediaControllerCallback);
+
         }
 
     }
@@ -491,7 +494,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 .load(ImageUtils.imagePathConvert(albumListBean.getStorage().getId() + "",
                         ImageZipConfig.IMAGE_70_ZIP))
                 .asBitmap()
-                .transform(new GlideStokeTransform(getActivity(), 5))
+                .transform(new GlideStokeTransform(getActivity(), 10))
                 .placeholder(R.drawable.shape_default_image)
                 .error(R.drawable.shape_default_image)
                 .into(new ImageViewTarget<Bitmap>(mFragmentMusicDetailHeadIamge) {
@@ -512,7 +515,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
             albumListBean.setComment_count(ablumHeadInfo.getCommentCount());
         }
         mFragmentMusicDetailName.setText(albumListBean.getTitle());
-        mFragmentMusicDetailDec.setText(albumListBean.getIntro());
+//        mFragmentMusicDetailDec.setText(albumListBean.getIntro());
         mFragmentMusicDetailShare.setText(albumListBean.getShare_count() + "");
         mFragmentMusicDetailComment.setText(albumListBean.getComment_count() + "");
         mFragmentMusicDetailFavorite.setText(albumListBean.getCollect_count() + "");

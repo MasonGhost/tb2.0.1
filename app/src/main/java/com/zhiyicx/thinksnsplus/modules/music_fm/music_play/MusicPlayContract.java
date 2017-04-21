@@ -23,6 +23,7 @@ public interface MusicPlayContract {
     }
 
     interface Repository {
+        void shareMusic(String music_id);
         void handleLike(boolean isLiked, String music_id);
     }
 }

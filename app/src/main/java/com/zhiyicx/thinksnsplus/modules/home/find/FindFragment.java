@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.home.find;
 
 import android.Manifest;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -169,8 +170,7 @@ public class FindFragment extends TSFragment {
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
                     public void onItem2Clicked() {
-                        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-                        startActivity(intent);
+                        DeviceUtils.openAppDetail(getActivity());
                         mActionPopupWindow.hide();
                     }
                 })

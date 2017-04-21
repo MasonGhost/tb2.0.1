@@ -67,11 +67,6 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
 
     @Override
     public void getMusicAblum(String id) {
-//        MusicAlbumDetailsBean cacheData = getCacheAblumDetail(Integer.valueOf(id));
-//        if (cacheData != null) {
-//            mRootView.setMusicAblum(cacheData);
-//        }
-
         mMusicDetailRepository.getMusicAblum(id).compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribe<MusicAlbumDetailsBean>() {
                     @Override
@@ -147,8 +142,6 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
 
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
-
-        mMusicDetailRepository.shareAblum(mRootView.getCurrentAblum().getId() + "");
     }
 
     @Override
@@ -158,6 +151,7 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
 
     @Override
     public void onSuccess(Share share) {
+        mMusicDetailRepository.shareAblum(mRootView.getCurrentAblum().getId() + "");
         mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_sccuess));
     }
 

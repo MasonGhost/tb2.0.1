@@ -33,7 +33,9 @@ public interface MusicCommentContract {
     interface Presenter extends ITSListPresenter<MusicCommentListBean>{
         void requestNetData(String music_id,Long maxId, boolean isLoadMore);
         void sendComment(int reply_id,String content);
+
         void deleteComment(MusicCommentListBean data);
+        void reSendComment(MusicCommentListBean data);
         void getMusicDetails(String music_id);
         void getMusicAblum(String id);
     }

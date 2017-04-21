@@ -66,4 +66,18 @@ public class MusicPlayRepository implements MusicPlayContract.Repository {
                     }
                 });
     }
+
+    @Override
+    public void shareMusic(String music_id) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("music_id", music_id);
+        // 后台处理
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                (BackgroundTaskRequestMethodConfig.PATCH, params);
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig
+                .APP_PATH_MUSIC_SHARE, music_id));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
+                (backgroundRequestTaskBean);
+    }
 }
