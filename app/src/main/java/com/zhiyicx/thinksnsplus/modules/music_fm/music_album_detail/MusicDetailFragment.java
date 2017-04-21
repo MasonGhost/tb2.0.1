@@ -494,7 +494,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 .load(ImageUtils.imagePathConvert(albumListBean.getStorage().getId() + "",
                         ImageZipConfig.IMAGE_70_ZIP))
                 .asBitmap()
-                .transform(new GlideStokeTransform(getActivity(), 5))
+                .transform(new GlideStokeTransform(getActivity(), 10))
                 .placeholder(R.drawable.shape_default_image)
                 .error(R.drawable.shape_default_image)
                 .into(new ImageViewTarget<Bitmap>(mFragmentMusicDetailHeadIamge) {

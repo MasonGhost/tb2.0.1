@@ -8,5 +8,5 @@
     <dimen name="music_album_detail_head_height_64dp">64dp</dimen>
     <dimen name="music_play_head">110dp</dimen>
     <!--#########################################      方形图片尺寸       ################################-->
-    <dimen name="music_album_detail_head">60dp</dimen>
+    <dimen name="music_album_detail_head">70dp</dimen>
 </resources>

@@ -44,6 +44,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.net.ssl.SSLSocketFactory;
@@ -371,6 +372,17 @@ public class AppApplication extends TSApplication {
                         &&sPlaybackManager.getState()!= PlaybackStateCompat.STATE_STOPPED
                         &&!WindowUtils.getIsPause()) {
                     WindowUtils.showPopupWindow(AppApplication.this);
+                    if (sPlaybackManager.getState()== PlaybackStateCompat.STATE_PAUSED){
+                        Observable.timer(5, TimeUnit.SECONDS)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Action1<Long>() {
+                                    @Override
+                                    public void call(Long aLong) {
+                                        WindowUtils.setIsPause(true);
+                                        WindowUtils.hidePopupWindow();
+                                    }
+                                });
+                    }
                 }
             }
 
