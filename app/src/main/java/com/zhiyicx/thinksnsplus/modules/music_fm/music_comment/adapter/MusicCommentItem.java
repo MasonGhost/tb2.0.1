@@ -4,9 +4,11 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
+import com.klinker.android.link_builder.LinkBuilder;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
@@ -102,6 +104,12 @@ public class MusicCommentItem implements ItemViewDelegate<MusicCommentListBean> 
                             }
                         }
                     });
+            List<Link> links = setLiknks(holder, musicCommentListBean, position);
+            if (!links.isEmpty()) {
+                LinkBuilder.on((TextView) holder.getView(R.id.tv_content))
+                        .addLinks(links)
+                        .build();
+            }
         }
 
     }
@@ -121,10 +129,10 @@ public class MusicCommentItem implements ItemViewDelegate<MusicCommentListBean> 
         return handleName(musicCommentListBean);
     }
 
-    protected List<Link> setLiknks(ViewHolder holder, final DynamicCommentBean dynamicCommentBean, int position) {
+    protected List<Link> setLiknks(ViewHolder holder, final MusicCommentListBean musicCommentListBean, int position) {
         List<Link> links = new ArrayList<>();
-        if (dynamicCommentBean.getReplyUser() != null && dynamicCommentBean.getReplyUser().getName() != null) {
-            Link replyNameLink = new Link(dynamicCommentBean.getReplyUser().getName())
+        if (musicCommentListBean.getToUserInfoBean() != null && musicCommentListBean.getToUserInfoBean().getName() != null) {
+            Link replyNameLink = new Link(musicCommentListBean.getToUserInfoBean().getName())
                     .setTextColor(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.important_for_content))                  // optional, defaults to holo blue
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) // optional, defaults to holo blue
                     .setHighlightAlpha(.5f)                                     // optional, defaults to .15f
@@ -133,7 +141,7 @@ public class MusicCommentItem implements ItemViewDelegate<MusicCommentListBean> 
                         @Override
                         public void onLongClick(String clickedText) {
                             if (mOnUserInfoLongClickListener != null) {
-                                mOnUserInfoLongClickListener.onUserInfoLongClick(dynamicCommentBean.getReplyUser());
+                                mOnUserInfoLongClickListener.onUserInfoLongClick(musicCommentListBean.getToUserInfoBean());
                             }
                         }
                     })
@@ -142,7 +150,7 @@ public class MusicCommentItem implements ItemViewDelegate<MusicCommentListBean> 
                         public void onClick(String clickedText) {
                             // single clicked
                             if (mOnUserInfoClickListener != null) {
-                                mOnUserInfoClickListener.onUserInfoClick(dynamicCommentBean.getReplyUser());
+                                mOnUserInfoClickListener.onUserInfoClick(musicCommentListBean.getToUserInfoBean());
                             }
                         }
                     });

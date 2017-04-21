@@ -81,6 +81,11 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     }
 
     @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return true;
+    }
+
+    @Override
     protected boolean useEventBus() {
         return true;
     }
@@ -138,6 +143,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     protected MultiItemTypeAdapter<MusicCommentListBean> getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
         MusicCommentItem musicCommentItem = new MusicCommentItem();
+        musicCommentItem.setOnReSendClickListener(this);
         musicCommentItem.setOnUserInfoClickListener(this);
         adapter.addItemViewDelegate(musicCommentItem);
         adapter.addItemViewDelegate(new MusicEmptyCommentItem());
@@ -170,6 +176,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     @Override
     public void onReSendClick(MusicCommentListBean musicCommentListBean) {
         initReSendCommentPopupWindow(musicCommentListBean);
+        mReSendCommentPopWindow.show();
     }
 
     @Override
@@ -348,7 +355,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
                     public void onItem1Clicked() {
-
+                        mPresenter.reSendComment(commentBean);
                         mReSendCommentPopWindow.hide();
                     }
                 })

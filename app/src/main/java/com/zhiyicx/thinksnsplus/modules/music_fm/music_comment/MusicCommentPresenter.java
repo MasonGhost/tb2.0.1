@@ -85,6 +85,7 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                             if (!data.isEmpty()) {
                                 mCommentListBeanGreenDao.saveMultiData(data);
                             }
+
 //                            List<MusicCommentListBean> localComment = mCommentListBeanGreenDao.getMyMusicComment(Integer.valueOf(music_id));
 //                            if (!localComment.isEmpty()) {
 //                                for (int i = 0; i < localComment.size(); i++) {
@@ -193,7 +194,7 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
         }
         mRootView.getListDatas().add(0, createComment);
         mRootView.refreshData();
-        path=String.format(path, mRootView.getCommentId());
+        path = String.format(path, mRootView.getCommentId());
         Subscription subscription = mCommentRepository.sendComment(content, reply_id, createComment.getComment_mark(), path).doOnSubscribe(new Action0() {
             @Override
             public void call() {
@@ -214,7 +215,7 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                     protected void onFailure(String message, int code) {
                         MusicCommentListBean commentListBean = mCommentListBeanGreenDao.getMusicCommentByCommentMark(createComment.getComment_mark());
                         commentListBean.setState(SEND_ERROR);
-                        mRootView.getListDatas().set(0,commentListBean);
+                        mRootView.getListDatas().set(0, commentListBean);
                         mRootView.refreshData();
                         mCommentListBeanGreenDao.insertOrReplace(commentListBean);
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.comment_fail));
@@ -224,9 +225,62 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                     protected void onException(Throwable throwable) {
                         MusicCommentListBean commentListBean = mCommentListBeanGreenDao.getMusicCommentByCommentMark(createComment.getComment_mark());
                         commentListBean.setState(SEND_ERROR);
-                        mRootView.getListDatas().set(0,commentListBean);
+                        mRootView.getListDatas().set(0, commentListBean);
                         mRootView.refreshData();
                         mCommentListBeanGreenDao.insertOrReplace(commentListBean);
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.comment_fail));
+                    }
+                });
+        addSubscrebe(subscription);
+    }
+
+    @Override
+    public void reSendComment(final MusicCommentListBean createComment) {
+        String path;
+        if (mRootView.getType().equals(CURRENT_COMMENT_TYPE_MUSIC)) {
+            path = APP_PATH_MUSIC_COMMENT_FORMAT;
+        } else {
+            path = APP_PATH_MUSIC_ABLUM_COMMENT_FORMAT;
+        }
+        createComment.setState(SEND_ING);
+        mCommentListBeanGreenDao.insertOrReplace(createComment);
+        if (mRootView.getListDatas().get(0).getComment_content() == null) {
+            mRootView.getListDatas().remove(0);// 去掉占位图
+        }
+        mRootView.getListDatas().set(0, createComment);
+        mRootView.refreshData();
+        path = String.format(path, mRootView.getCommentId());
+        Subscription subscription = mCommentRepository.sendComment(createComment.getComment_content(), createComment.getReply_to_user_id(),
+                createComment.getComment_mark(), path).doOnSubscribe(new Action0() {
+            @Override
+            public void call() {
+                mRootView.showSnackLoadingMessage(mContext.getString(R.string.comment_ing));
+            }
+        }).subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribe<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        createComment.setId(((Double) data).longValue());
+                        createComment.setState(SEND_SUCCESS);
+                        mCommentListBeanGreenDao.insertOrReplace(createComment);
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.comment_success));
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        createComment.setState(SEND_ERROR);
+                        mRootView.getListDatas().set(0, createComment);
+                        mRootView.refreshData();
+                        mCommentListBeanGreenDao.insertOrReplace(createComment);
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.comment_fail));
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        createComment.setState(SEND_ERROR);
+                        mRootView.getListDatas().set(0, createComment);
+                        mRootView.refreshData();
+                        mCommentListBeanGreenDao.insertOrReplace(createComment);
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.comment_fail));
                     }
                 });
@@ -316,23 +370,23 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
     @Override
     public List<MusicCommentListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
         List<MusicCommentListBean> localComment = new ArrayList<>();
-//        if (mRootView.getType().equals(CURRENT_COMMENT_TYPE_MUSIC)) {
-//            localComment = mCommentListBeanGreenDao.getLocalMusicComment(mRootView.getCommentId());
-//        } else {
-//            localComment = mCommentListBeanGreenDao.getLocalAblumComment(mRootView.getCommentId());
-//        }
-//
-//        if (!localComment.isEmpty()) {
-//            for (int i = 0; i < localComment.size(); i++) {
-//                localComment.get(i).setFromUserInfoBean(mUserInfoBeanGreenDao
-//                        .getSingleDataFromCache((long) localComment.get(i).getUser_id()));
-//                if (localComment.get(i).getReply_to_user_id() != 0) {
-//                    localComment.get(i).setToUserInfoBean(mUserInfoBeanGreenDao
-//                            .getSingleDataFromCache((long) localComment.get(i)
-//                                    .getReply_to_user_id()));
-//                }
-//            }
-//        }
+        if (mRootView.getType().equals(CURRENT_COMMENT_TYPE_MUSIC)) {
+            localComment = mCommentListBeanGreenDao.getLocalMusicComment(mRootView.getCommentId());
+        } else {
+            localComment = mCommentListBeanGreenDao.getLocalAblumComment(mRootView.getCommentId());
+        }
+
+        if (!localComment.isEmpty()) {
+            for (int i = 0; i < localComment.size(); i++) {
+                localComment.get(i).setFromUserInfoBean(mUserInfoBeanGreenDao
+                        .getSingleDataFromCache((long) localComment.get(i).getUser_id()));
+                if (localComment.get(i).getReply_to_user_id() != 0) {
+                    localComment.get(i).setToUserInfoBean(mUserInfoBeanGreenDao
+                            .getSingleDataFromCache((long) localComment.get(i)
+                                    .getReply_to_user_id()));
+                }
+            }
+        }
         return localComment;
     }
 

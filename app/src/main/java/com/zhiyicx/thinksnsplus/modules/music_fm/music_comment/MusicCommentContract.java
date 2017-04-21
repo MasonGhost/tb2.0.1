@@ -35,6 +35,7 @@ public interface MusicCommentContract {
         void sendComment(int reply_id,String content);
 
         void deleteComment(MusicCommentListBean data);
+        void reSendComment(MusicCommentListBean data);
         void getMusicDetails(String music_id);
         void getMusicAblum(String id);
     }
