@@ -8,6 +8,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.password.changepassword.ChangePasswordActivity;
@@ -77,6 +78,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
     @Override
     protected void initData() {
         mPresenter.getDirCacheSize();// 获取缓存大小
+        mBtAboutUs.setRightText("V" + DeviceUtils.getVersionName(getContext()));
     }
 
     @Override
@@ -181,7 +183,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
         mLoginoutPopupWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.is_sure_login_out))
                 .item2Str(getString(R.string.login_out_sure))
-                .item2StrColor(ContextCompat.getColor(getContext(),R.color.important_for_note))
+                .item2StrColor(ContextCompat.getColor(getContext(), R.color.important_for_note))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)

@@ -85,8 +85,7 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
 
     @Override
     protected RecyclerView.ItemDecoration getItemDecoration() {
-        CustomLinearDecoration itemDecoration = new CustomLinearDecoration(0, 1, 0, 0, ContextCompat.getDrawable(getContext(), R.drawable.shape_recyclerview_divider));
-        itemDecoration.setMarginLeft(getResources().getDimensionPixelSize(R.dimen.message_comment_and_digg_line_margin));
+        CustomLinearDecoration itemDecoration = new CustomLinearDecoration(0, getResources().getDimensionPixelSize(R.dimen.divider_line), 0, 0, ContextCompat.getDrawable(getContext(), R.drawable.shape_recyclerview_divider));
         return itemDecoration;
     }
 

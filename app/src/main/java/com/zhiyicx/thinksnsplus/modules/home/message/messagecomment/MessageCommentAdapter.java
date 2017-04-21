@@ -63,6 +63,13 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
 
     @Override
     protected void convert(final ViewHolder holder, final CommentedBean commentedBean, final int position) {
+
+
+        if (position == getItemCount() - 1) {
+            holder.setVisible(R.id.v_bottom_line, View.GONE);
+        } else {
+            holder.setVisible(R.id.v_bottom_line, View.VISIBLE);
+        }
         mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
                 .url(ImageUtils.imagePathConvert(commentedBean.getCommentUserInfo().getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
                 .transformation(new GlideCircleTransform(getContext()))

@@ -41,8 +41,7 @@ public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Pres
 
     @Override
     protected RecyclerView.ItemDecoration getItemDecoration() {
-        CustomLinearDecoration itemDecoration = new CustomLinearDecoration(0, getResources().getDimensionPixelSize(R.dimen.divider_line), 0, 0, ContextCompat.getDrawable(getContext(), R.drawable.shape_recyclerview_divider));
-        itemDecoration.setMarginLeft(getResources().getDimensionPixelSize(R.dimen.message_comment_and_digg_line_margin));
+        CustomLinearDecoration itemDecoration = new CustomLinearDecoration(0, 1, 0, 0, ContextCompat.getDrawable(getContext(), R.drawable.shape_recyclerview_divider));
         return itemDecoration;
     }
 
@@ -59,6 +58,11 @@ public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Pres
     @Override
     protected CommonAdapter<DigedBean> getAdapter() {
         return new MessageLikeAdapter(getActivity(), R.layout.item_message_like_list, mListDatas);
+    }
+
+    @Override
+    protected int setEmptView() {
+        return R.mipmap.img_default_nothing;
     }
 
 }
