@@ -81,7 +81,7 @@ import static com.trycatch.mysnackbar.AnimationUtils.FAST_OUT_SLOW_IN_INTERPOLAT
  */
 public final class TSnackbar {
 
-    public static final int DEFALUT_ELEVATION = 0;
+    public static final int DEFALUT_ELEVATION = 10;
 
     /**
      * Callback class for {@link TSnackbar} instances.

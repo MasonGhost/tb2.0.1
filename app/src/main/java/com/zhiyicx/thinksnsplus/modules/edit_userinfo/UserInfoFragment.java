@@ -300,6 +300,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 mPhotoPopupWindow.show();
                 break;
             case R.id.ll_sex_container:
+                // 尝试隐藏键盘
+                DeviceUtils.hideSoftKeyboard(getContext(), mLlCityContainer);
                 initGenderPopupWindow();
                 mGenderPopupWindow.show();
                 break;
