@@ -118,7 +118,7 @@
         android:layout_toRightOf="@+id/ll_time_container"
         android:background="@color/white"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/spacing_normal">
+        android:paddingBottom="@dimen/dynamic_image_padding_bottom">
 
         <com.zhiyicx.baseproject.widget.imageview.SquareImageView
             android:id="@+id/siv_0"
