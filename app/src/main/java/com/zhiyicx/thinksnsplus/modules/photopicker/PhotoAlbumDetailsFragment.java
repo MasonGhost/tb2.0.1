@@ -56,9 +56,9 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
     public static final int TO_ALBUM_LIST_REQUEST_CODE = 2000;
     public static final String EXTRA_BACK_HERE = "back_here";// 回到当前图片列表页面，是否停留
     public final static String EXTRA_ORIGIN = "ORIGINAL_PHOTOS";
-    private final static String EXTRA_COLUMN = "column";
     public final static String EXTRA_VIEW_INDEX = "view_index";
-
+    public final static String EXTRA_CAMERA = "camera";
+    private final static String EXTRA_COLUMN = "column";
     public static final String EXTRA_VIEW_ALL_PHOTOS = "view_photos";
     public static final String EXTRA_VIEW_SELECTED_PHOTOS = "view_selected_photos";
 
@@ -142,7 +142,8 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         // 如果不能预览图片，就隐藏下方的预览和完成按钮
         mLlBottomContainer.setVisibility(canPreview ? View.VISIBLE : View.GONE);
         photoGridAdapter = new PhotoGridAdapter(getActivity(), mGlideRequestManager, directories, originalPhotos, column);
-        photoGridAdapter.setShowCamera(false);
+        boolean showCamera = getArguments().getBoolean(EXTRA_CAMERA, false);
+        photoGridAdapter.setShowCamera(showCamera);
         photoGridAdapter.setPreviewEnable(canPreview);
 
         final GridLayoutManager layoutManager = new GridLayoutManager(getContext(), column);
