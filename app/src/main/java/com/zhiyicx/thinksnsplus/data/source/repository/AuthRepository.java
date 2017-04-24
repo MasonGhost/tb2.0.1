@@ -166,6 +166,7 @@ public class AuthRepository implements IAuthRepository {
         if (AppApplication.getPlaybackManager() != null) { // 释放音乐播放器
             AppApplication.getPlaybackManager().handleStopRequest(null);
         }
+        BackgroundTaskManager.getInstance(mContext).closeBackgroundTask();// 关闭后台任务
         MessageDao.getInstance(mContext).delDataBase();// 清空聊天信息、对话
         mDynamicBeanGreenDao.clearTable();
         mDynamicCommentBeanGreenDao.clearTable();

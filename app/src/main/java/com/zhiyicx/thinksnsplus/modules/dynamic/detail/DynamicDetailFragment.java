@@ -465,7 +465,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 mDdDynamicTool.getTag(R.id.view_data);
                 switch (postion) {
                     case DynamicDetailMenuView.ITEM_POSITION_0:
-
                         // 处理喜欢逻辑，包括服务器，数据库，ui
                         mPresenter.handleLike(mDynamicBean.getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED,
                                 mDynamicBean.getFeed_id(), mDynamicBean.getTool());

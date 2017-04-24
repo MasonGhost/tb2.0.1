@@ -50,11 +50,17 @@ public class BackgroundTaskHandleService extends Service {
 
     @Subscriber(tag = EVENT_BACKGROUND_TASK, mode = ThreadMode.POST)
     public boolean addBackgroundRequestTask(BackgroundRequestTaskBean backgroundRequestTaskBean) {
+        if (mBackgroundTaskHandler == null) {
+            init();
+        }
         return mBackgroundTaskHandler.addBackgroundRequestTask(backgroundRequestTaskBean);
     }
 
     @Subscriber(tag = EVENT_STOP_BACKGROUND_TASK, mode = ThreadMode.POST)
     public void stopBackgroundRequestTask() {
+        if (mBackgroundTaskHandler == null) {
+            return;
+        }
         mBackgroundTaskHandler.stopTask();
     }
 
