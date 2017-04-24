@@ -593,7 +593,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
     @Subscriber(tag = EVENT_MUSIC_CHANGE, mode = ThreadMode.MAIN)
     public void onMusicChange(int change) {
-        mPresenter.getMusicDetails(mCurrentMediaId);
+        mPresenter.getMusicDetails(change+"");
         LogUtils.d("EVENT_MUSIC_CHANGE");
     }
 }

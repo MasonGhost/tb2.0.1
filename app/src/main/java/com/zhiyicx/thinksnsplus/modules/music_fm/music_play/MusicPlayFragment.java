@@ -236,7 +236,8 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
             if (metadata != null) {
-                EventBus.getDefault().post(1, EVENT_MUSIC_CHANGE);
+                mCurrentMediaId = metadata.getDescription().getMediaId();
+                EventBus.getDefault().post(Integer.valueOf(mCurrentMediaId), EVENT_MUSIC_CHANGE);
                 if (WindowUtils.getAblumHeadInfo() != null) {
                     WindowUtils.getAblumHeadInfo().setListenCount(WindowUtils.getAblumHeadInfo().getListenCount() + 1);
                 }
@@ -250,7 +251,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 }
                 LogUtils.d("Second:::" + mFragmentMusicPalyProgress.getSecondaryProgress());
                 mToolbarCenter.setText(metadata.getText(MediaMetadataCompat.METADATA_KEY_ALBUM));
-                mCurrentMediaId = metadata.getDescription().getMediaId();
+
                 mListPopupWindow.getAdapter().notifyDataSetChanged();
                 updateMediaDescription(metadata.getDescription());
                 updateDuration(metadata);
@@ -562,7 +563,9 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             Observable.from(mMusicList).filter(new Func1<MusicAlbumDetailsBean.MusicsBean, Boolean>() {
                 @Override
                 public Boolean call(MusicAlbumDetailsBean.MusicsBean musicsBean) {
-                    return (musicsBean.getId() + "").equals(description.getMediaId());
+                    LogUtils.d("mCurrentMediaId:::" + mCurrentMediaId);
+                    LogUtils.d("musicsBean.getId():::" + musicsBean.getMusic_info().getId());
+                    return (musicsBean.getId() + "").equals(mCurrentMediaId);
                 }
             }).subscribe(new Action1<MusicAlbumDetailsBean.MusicsBean>() {
                 @Override
@@ -571,7 +574,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                     dealCurrentMusic();
                 }
             });
-
         }
 
     }
