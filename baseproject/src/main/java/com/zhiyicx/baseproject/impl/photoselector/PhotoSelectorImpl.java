@@ -197,7 +197,10 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
         if (resultCode == RESULT_OK) {
             // 从相机中获取照片
             if (requestCode == CAMERA_PHOTO_CODE && !TextUtils.isEmpty(mTakePhotoPath)) {
-                if (new File(mTakePhotoPath).exists()) {
+                File file = new File(mTakePhotoPath);
+                if (file.exists()) {
+                    // 图片插入系统图库
+                    FileUtils.insertPhotoToAlbumAndRefresh(mContext, file);
                     // 是否需要剪裁，不需要就直接返回结果
                     if (isNeededCraft(mTakePhotoPath)) {
                         startToCraft(mTakePhotoPath);

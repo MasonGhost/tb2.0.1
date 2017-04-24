@@ -1,7 +1,10 @@
 package com.zhiyicx.common.utils;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
@@ -34,6 +37,23 @@ public class FileUtils {
 
     private FileUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
+    }
+
+    /**
+     * 把图片插入系统插入图
+     * @param context
+     * @param file
+     */
+    public static void insertPhotoToAlbumAndRefresh(Context context, File file) {
+        // 其次把文件插入到系统图库
+        try {
+            MediaStore.Images.Media.insertImage(context.getContentResolver(),
+                    file.getAbsolutePath(), file.getName(), null);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        // 最后通知图库更新
+        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + file.getAbsolutePath())));
     }
 
     /**
@@ -691,6 +711,7 @@ public class FileUtils {
 
     /**
      * 通过文件获取   mimeType
+     *
      * @param file
      * @return
      */
