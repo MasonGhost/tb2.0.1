@@ -62,6 +62,20 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     private MusicAlbumListBean mMusicAlbumListBean;
 
     @Override
+    public void onResume() {
+        super.onResume();
+        for (MusicAlbumListBean musicListBean:mListDatas){
+            WindowUtils.AblumHeadInfo ablumHeadInfo = WindowUtils.getAblumHeadInfo();
+            if (ablumHeadInfo != null && ablumHeadInfo.getAblumId() == musicListBean.getId()) {
+                musicListBean.setComment_count(ablumHeadInfo.getCommentCount());
+                musicListBean.setTaste_count(ablumHeadInfo.getListenCount());
+                musicListBean.setShare_count(ablumHeadInfo.getShareCount());
+                musicListBean.setCollect_count(ablumHeadInfo.getLikeCount());
+            }
+        }
+    }
+
+    @Override
     protected void initData() {
         super.initData();
         mRvList.setOverScrollMode(View.OVER_SCROLL_NEVER);
@@ -110,8 +124,6 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
                         .override(width / 2, width / 2)
                         .error(R.drawable.shape_default_image)
                         .into(imag);
-
-
                 holder.setText(R.id.music_list_taste_count, "" + musicListBean.getTaste_count());
                 holder.setText(R.id.music_list_title, musicListBean.getTitle());
 
@@ -126,6 +138,12 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
                 MusicAlbumListBean albumListBean = mListDatas.get(position);
                 bundle.putParcelable(BUNDLE_MUSIC_ABLUM, albumListBean);
                 intent.putExtra(BUNDLE_MUSIC_ABLUM, bundle);
+                WindowUtils.AblumHeadInfo ablumHeadInfo = new WindowUtils.AblumHeadInfo();
+                ablumHeadInfo.setCommentCount(albumListBean.getComment_count());
+                ablumHeadInfo.setShareCount(albumListBean.getShare_count());
+                ablumHeadInfo.setListenCount(albumListBean.getTaste_count());
+                ablumHeadInfo.setAblumId(albumListBean.getId());
+                WindowUtils.setAblumHeadInfo(ablumHeadInfo);
                 startActivity(intent);
             }
 

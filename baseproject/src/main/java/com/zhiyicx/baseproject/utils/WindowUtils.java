@@ -324,6 +324,15 @@ public class WindowUtils {
         int  shareCount;
         int  commentCount;
         int  likeCount;
+        int  ablumId;
+
+        public int getAblumId() {
+            return ablumId;
+        }
+
+        public void setAblumId(int ablumId) {
+            this.ablumId = ablumId;
+        }
 
         public int getListenCount() {
             return listenCount;
