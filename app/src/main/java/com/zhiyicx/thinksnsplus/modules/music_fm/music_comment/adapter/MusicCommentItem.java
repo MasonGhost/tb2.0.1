@@ -110,6 +110,9 @@ public class MusicCommentItem implements ItemViewDelegate<MusicCommentListBean> 
                         .addLinks(links)
                         .build();
             }
+
+            setUserInfoClick(holder.getView(R.id.tv_name), musicCommentListBean.getFromUserInfoBean());
+            setUserInfoClick(holder.getView(R.id.iv_headpic), musicCommentListBean.getFromUserInfoBean());
         }
 
     }

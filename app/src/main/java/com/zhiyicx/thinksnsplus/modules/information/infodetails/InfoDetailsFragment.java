@@ -57,7 +57,7 @@ import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoLis
  */
 public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Presenter,
         InfoCommentListBean> implements InfoDetailsConstract.View, InputLimitView
-        .OnSendClickListener, OnUserInfoClickListener {
+        .OnSendClickListener{
 
     @BindView(R.id.behavior_demo_coordinatorLayout)
     CoordinatorLayout mCoordinatorLayout;
@@ -118,7 +118,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         });
         InfoDetailCommentItem infoDetailCommentItem = new InfoDetailCommentItem(new
                 ItemOnCommentListener());
-        infoDetailCommentItem.setOnUserInfoClickListener(this);
         multiItemTypeAdapter.addItemViewDelegate(infoDetailCommentItem);
         multiItemTypeAdapter.addItemViewDelegate(new InfoDetailCommentEmptyItem());
         return multiItemTypeAdapter;
@@ -219,11 +218,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         mVShadow.setVisibility(View.GONE);
         mPresenter.sendComment(mReplyUserId, text);
         mLLBottomMenuContainer.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onUserInfoClick(UserInfoBean userInfoBean) {
-        PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
     }
 
     private void initBottomToolStyle() {
@@ -386,6 +380,11 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 }
                 mIlvComment.setEtContentHint(contentHint);
             }
+        }
+
+        @Override
+        public void onUserInfoClick(UserInfoBean userInfoBean) {
+            PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
         }
     }
 }

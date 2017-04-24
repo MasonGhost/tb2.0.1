@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.LinkBuilder;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
@@ -18,6 +19,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoLongClickListener;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
@@ -25,6 +27,8 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import rx.functions.Action1;
 
 /**
  * @Author Jliuer
@@ -90,7 +94,22 @@ public class InfoDetailCommentItem implements ItemViewDelegate<InfoCommentListBe
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mOnCommentItemListener.onItemClick(v,holder,position);
+                if (mOnCommentItemListener != null) {
+                    mOnCommentItemListener.onItemClick(v, holder, position);
+                }
+            }
+        });
+        setUserInfoClick(holder.getView(R.id.tv_name), infoCommentListBean.getFromUserInfoBean());
+        setUserInfoClick(holder.getView(R.id.iv_headpic), infoCommentListBean.getFromUserInfoBean());
+    }
+
+    private void setUserInfoClick(View v, final UserInfoBean userInfoBean) {
+        RxView.clicks(v).subscribe(new Action1<Void>() {
+            @Override
+            public void call(Void aVoid) {
+                if (mOnCommentItemListener != null) {
+                    mOnCommentItemListener.onUserInfoClick(userInfoBean);
+                }
             }
         });
     }
@@ -101,7 +120,7 @@ public class InfoDetailCommentItem implements ItemViewDelegate<InfoCommentListBe
 
     protected List<Link> setLiknks(ViewHolder holder, final InfoCommentListBean infoCommentListBean, int position) {
         List<Link> links = new ArrayList<>();
-        if (infoCommentListBean.getToUserInfoBean() != null &&  infoCommentListBean.getReply_to_user_id() != 0 && infoCommentListBean.getToUserInfoBean().getName() != null) {
+        if (infoCommentListBean.getToUserInfoBean() != null && infoCommentListBean.getReply_to_user_id() != 0 && infoCommentListBean.getToUserInfoBean().getName() != null) {
             Link replyNameLink = new Link(infoCommentListBean.getToUserInfoBean().getName())
                     .setTextColor(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.important_for_content))                  // optional, defaults to holo blue
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) // optional, defaults to holo blue
@@ -148,5 +167,7 @@ public class InfoDetailCommentItem implements ItemViewDelegate<InfoCommentListBe
 
     public interface OnCommentItemListener {
         void onItemClick(View view, RecyclerView.ViewHolder holder, int position);
+
+        void onUserInfoClick(UserInfoBean userInfoBean);
     }
 }
