@@ -19,9 +19,7 @@ import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
-import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoCommentAdapter;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailWebItem;
@@ -41,10 +39,8 @@ import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentAdapter.BUNDLE_SOURCE_ID;
-import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment
-        .BUNDLE_INFO;
-import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment
-        .BUNDLE_INFO_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO;
+import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO_TYPE;
 
 /**
  * @Author Jliuer
@@ -94,6 +90,21 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     protected boolean isNeedRefreshAnimation() {
         return false;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    /**
+     * 特别修改
+     *
+     * @return
+     */
+    @Override
+    protected int getstatusbarAndToolbarHeight() {
+        return getResources().getDimensionPixelSize(R.dimen.toolbar_height_include_line_height);
     }
 
     @Override
@@ -335,15 +346,15 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
         @Override
         public void onLoadFinish() {
-            if (isFirstIn){
+            if (isFirstIn) {
                 closeLoadingView();
             }
-            isFirstIn=false;
+            isFirstIn = false;
         }
 
         @Override
         public void onLoadStart() {
-            if (isFirstIn){
+            if (isFirstIn) {
                 showLoadingView();
             }
 
@@ -356,8 +367,8 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
             if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth()
                     .getUser_id()) {// 自己的评论
 //                if (mListDatas.get(position).getId() != -1) {
-                    initLoginOutPopupWindow(mListDatas.get(position));
-                    mDeletCommentPopWindow.show();
+                initLoginOutPopupWindow(mListDatas.get(position));
+                mDeletCommentPopWindow.show();
 //                } else {
 //
 //                    return;
