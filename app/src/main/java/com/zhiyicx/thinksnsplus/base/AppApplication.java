@@ -179,6 +179,10 @@ public class AppApplication extends TSApplication {
                 .doOnCompleted(new Action0() {
                     @Override
                     public void call() {
+                        if ((alertDialog != null && alertDialog.isShowing()) || ActivityHandler
+                                .getInstance().currentActivity() instanceof LoginActivity) { // 认证失败，弹框去重
+                            return;
+                        }
                         alertDialog = new AlertDialog.Builder(ActivityHandler
                                 .getInstance().currentActivity(), R.style.TSWarningAlertDialogStyle)
                                 .setMessage(tipStr)
@@ -368,11 +372,11 @@ public class AppApplication extends TSApplication {
             public void onActivityResumed(Activity activity) {
                 if ((activity instanceof MusicPlayActivity)) {
                     WindowUtils.hidePopupWindow();
-                } else if (sPlaybackManager != null&&sPlaybackManager.getState()!= PlaybackStateCompat.STATE_NONE
-                        &&sPlaybackManager.getState()!= PlaybackStateCompat.STATE_STOPPED
-                        &&!WindowUtils.getIsPause()) {
+                } else if (sPlaybackManager != null && sPlaybackManager.getState() != PlaybackStateCompat.STATE_NONE
+                        && sPlaybackManager.getState() != PlaybackStateCompat.STATE_STOPPED
+                        && !WindowUtils.getIsPause()) {
                     WindowUtils.showPopupWindow(AppApplication.this);
-                    if (sPlaybackManager.getState()== PlaybackStateCompat.STATE_PAUSED){
+                    if (sPlaybackManager.getState() == PlaybackStateCompat.STATE_PAUSED) {
                         Observable.timer(5, TimeUnit.SECONDS)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new Action1<Long>() {
