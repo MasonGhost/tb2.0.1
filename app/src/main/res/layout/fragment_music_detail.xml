@@ -26,12 +26,13 @@
                 android:scaleType="centerCrop" />
 
             <TextView
+                android:textStyle="bold"
                 android:id="@+id/fragment_music_detail_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/fragment_music_detail_head_iamge"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_mid"
                 android:text="Climber's High"
                 android:textColor="@color/white" />
 
@@ -43,7 +44,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="@dimen/spacing_mid"
                 android:layout_marginRight="@dimen/spacing_mid"
-                android:layout_marginTop="@dimen/spacing_mid"
+                android:layout_marginTop="@dimen/spacing_normal"
                 android:text="踏风而来，随风而去"
                 android:textColor="@color/white" />
 
@@ -51,8 +52,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/fragment_music_detail_dec"
-                android:layout_marginBottom="@dimen/spacing_large"
-                android:layout_marginTop="@dimen/spacing_large">
+                android:layout_marginBottom="@dimen/spacing_mid"
+                android:layout_marginTop="@dimen/spacing_mid">
 
                 <com.zhiyicx.thinksnsplus.widget.IconTextView
                     android:id="@+id/fragment_music_detail_playvolume"
