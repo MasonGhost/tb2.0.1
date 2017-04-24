@@ -490,7 +490,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     /**
-     * 初始化动态删除选择弹框
+     * 初始化他人动态操作选择弹框
      *
      * @param dynamicBean curent dynamic
      * @param position    curent dynamic postion
@@ -532,7 +532,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     /**
-     * 初始化动态相关操作弹窗
+     * 初始化我的动态操作弹窗
      *
      * @param dynamicBean curent dynamic
      * @param position    curent dynamic postion
@@ -540,7 +540,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private void initMyDynamicPopupWindow(final DynamicBean dynamicBean, final int position, boolean isCollected) {
         mMyDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(isCollected?R.string.dynamic_list_uncollect_dynamic:R.string.dynamic_list_collect_dynamic))
-                .item2Str(getString(R.string.dynamic_list_delete_dynamic_))
+                .item2Str(getString(R.string.dynamic_list_delete_dynamic))
                 .item3Str(getString(R.string.dynamic_list_share_dynamic))
                 .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))

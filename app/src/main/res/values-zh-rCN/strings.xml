@@ -99,7 +99,6 @@
     <string name="dynamic_list_more_comment">查看全部评论</string>
     <string name="dynamic_list_delete_dynamic">删除动态</string>
     <string name="dynamic_list_share_dynamic">分享</string>
-    <string name="dynamic_list_delete_dynamic_">删除</string>
     <string name="dynamic_list_collect_dynamic">收藏</string>
     <string name="dynamic_list_uncollect_dynamic">取消收藏</string>
     <string name="dynamic_list_report_dynamic">举报</string>
