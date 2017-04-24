@@ -152,8 +152,6 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         }
         mJpushAlias = new JpushAlias(getContext(), AppApplication.getmCurrentLoginAuth().getUser_id() + "");// 设置极光推送别名
         mJpushAlias.setAlias();
-
-        Glide.with(getActivity()).load("");
     }
 
     @Override

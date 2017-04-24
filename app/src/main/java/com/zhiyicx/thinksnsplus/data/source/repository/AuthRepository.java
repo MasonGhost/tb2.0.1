@@ -31,6 +31,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
+import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.ArrayList;
@@ -167,6 +168,7 @@ public class AuthRepository implements IAuthRepository {
             AppApplication.getPlaybackManager().handleStopRequest(null);
         }
         BackgroundTaskManager.getInstance(mContext).closeBackgroundTask();// 关闭后台任务
+        new JpushAlias(mContext, "").setAlias();
         MessageDao.getInstance(mContext).delDataBase();// 清空聊天信息、对话
         mDynamicBeanGreenDao.clearTable();
         mDynamicCommentBeanGreenDao.clearTable();
