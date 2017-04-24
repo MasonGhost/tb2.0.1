@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.home;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.appprocess.BackgroundUtil;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.AuthData;
 import com.zhiyicx.imsdk.entity.ChatRoomContainer;
@@ -12,10 +13,14 @@ import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.imsdk.manage.listener.ImMsgReceveListener;
 import com.zhiyicx.imsdk.manage.listener.ImStatusListener;
 import com.zhiyicx.imsdk.manage.listener.ImTimeoutListener;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.utils.NotificationUtil;
 
 import org.simple.eventbus.EventBus;
@@ -29,6 +34,8 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
+import static com.umeng.socialize.utils.DeviceConfig.context;
+
 
 /**
  * @Describe
@@ -40,6 +47,11 @@ import rx.schedulers.Schedulers;
 class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.View> implements HomeContract.Presenter, ImMsgReceveListener, ImStatusListener, ImTimeoutListener {
     @Inject
     AuthRepository mAuthRepository;
+
+    @Inject
+    UserInfoRepository mUserInfoRepository;
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
 
@@ -71,16 +83,30 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
      *********************************************/
 
     @Override
-    public void onMessageReceived(Message message) {
+    public void onMessageReceived(final Message message) {
         setMessageTipVisable(true);
         EventBus.getDefault().post(message, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED);
-        JpushMessageBean jpushMessageBean = new JpushMessageBean();
-        jpushMessageBean.setType(JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM);
-        jpushMessageBean.setMessage(message.getTxt());
-        jpushMessageBean.setNofity(false);
-        NotificationUtil.showNotifyMessage(mContext, jpushMessageBean);
+        if (!BackgroundUtil.getLinuxCoreInfoForIsForeground(mContext, mContext.getPackageName())) {   // 应用在后台
+            mUserInfoRepository.getLocalUserInfoBeforeNet(message.getUid())
+                    .subscribe(new BaseSubscribe<UserInfoBean>() {
+                        @Override
+                        protected void onSuccess(UserInfoBean data) {
+                            JpushMessageBean jpushMessageBean = new JpushMessageBean();
+                            jpushMessageBean.setType(JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM);
+                            jpushMessageBean.setMessage(data.getName() + ":" + message.getTxt());
+                            jpushMessageBean.setNofity(false);
+                            NotificationUtil.showNotifyMessage(mContext, jpushMessageBean);
+                        }
 
+                        @Override
+                        protected void onFailure(String message, int code) {
+                        }
 
+                        @Override
+                        protected void onException(Throwable throwable) {
+                        }
+                    });
+        }
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_SET_MESSAGE_TIP_VISABLE)

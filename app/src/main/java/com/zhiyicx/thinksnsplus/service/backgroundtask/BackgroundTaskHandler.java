@@ -122,10 +122,10 @@ public class BackgroundTaskHandler {
             return false;
         }
         mIsExit = false;
-        if(mBackTaskDealThread==null){
-            mBackTaskDealThread= new Thread(handleTaskRunnable);
+        if (mBackTaskDealThread == null) {
+            mBackTaskDealThread = new Thread(handleTaskRunnable);
         }
-        if(!mBackTaskDealThread.isAlive()){
+        if (!mBackTaskDealThread.isAlive()) {
             mBackTaskDealThread.getState();
         }
         if (mTaskBeanConcurrentLinkedQueue.add(backgroundRequestTaskBean)) {
@@ -184,7 +184,7 @@ public class BackgroundTaskHandler {
         public void run() {
 
             while (!mIsExit && ActivityHandler.getInstance().getActivityStack() != null) {
-                LogUtils.d("---------back----------handleTaskRunnable ---------- ");
+//                LogUtils.d("---------backTask------- ");
                 if (mIsNetConnected && !mTaskBeanConcurrentLinkedQueue.isEmpty()) {
                     BackgroundRequestTaskBean backgroundRequestTaskBean = mTaskBeanConcurrentLinkedQueue.poll();
                     handleTask(backgroundRequestTaskBean);
