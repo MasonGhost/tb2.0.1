@@ -14,6 +14,7 @@ import com.zhiyicx.imsdk.db.dao.ConversationDao;
 import com.zhiyicx.imsdk.entity.AuthData;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
+import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
@@ -36,6 +37,8 @@ import com.zhiyicx.thinksnsplus.modules.chat.ChatContract;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
@@ -351,6 +354,16 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
 
         switch (jpushMessageBean.getType()) {
             case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM: // 推送携带的消息  {"seq":36,"msg_type":0,"cid":1,"mid":338248648800337924,"type":"im","uid":20} IM 消息通过IM接口 同步，故不需要对 推送消息做处理
+                String extras = jpushMessageBean.getExtras();
+                try {
+                    JSONObject jsonObject = new JSONObject(extras);
+                    Message message = new Message();
+                    message.setCid(jsonObject.getInt("cid"));
+                    message.setSeq(jsonObject.getInt("seq"));
+                    ZBIMClient.getInstance().syncAsc(message.getCid(), message.getSeq() - 1, message.getSeq() + 1, (int) System.currentTimeMillis());// 获取推送的信息
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
                 break;
             case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_FEED:

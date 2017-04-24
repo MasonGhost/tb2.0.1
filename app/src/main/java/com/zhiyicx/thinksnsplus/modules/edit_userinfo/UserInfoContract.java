@@ -75,6 +75,14 @@ public interface UserInfoContract {
         Observable<BaseJson<List<UserInfoBean>>> getUserInfo(List<Object> user_ids);
 
         /**
+         * 获取用户信息,先从本地获取，本地没有再从网络 获取
+         *
+         * @param user_id 用户 id
+         * @return
+         */
+        Observable<BaseJson<UserInfoBean>> getLocalUserInfoBeforeNet(long user_id);
+
+        /**
          * 获取用户关注状态
          */
         Observable<BaseJson<List<FollowFansBean>>> getUserFollowState(String user_ids);

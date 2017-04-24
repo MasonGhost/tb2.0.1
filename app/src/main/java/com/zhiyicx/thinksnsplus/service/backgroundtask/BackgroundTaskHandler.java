@@ -122,10 +122,10 @@ public class BackgroundTaskHandler {
             return false;
         }
         mIsExit = false;
-        if(mBackTaskDealThread==null){
-            mBackTaskDealThread= new Thread(handleTaskRunnable);
+        if (mBackTaskDealThread == null) {
+            mBackTaskDealThread = new Thread(handleTaskRunnable);
         }
-        if(!mBackTaskDealThread.isAlive()){
+        if (!mBackTaskDealThread.isAlive()) {
             mBackTaskDealThread.getState();
         }
         if (mTaskBeanConcurrentLinkedQueue.add(backgroundRequestTaskBean)) {
@@ -184,7 +184,7 @@ public class BackgroundTaskHandler {
         public void run() {
 
             while (!mIsExit && ActivityHandler.getInstance().getActivityStack() != null) {
-                LogUtils.d("---------back----------handleTaskRunnable ---------- ");
+//                LogUtils.d("---------backTask------- ");
                 if (mIsNetConnected && !mTaskBeanConcurrentLinkedQueue.isEmpty()) {
                     BackgroundRequestTaskBean backgroundRequestTaskBean = mTaskBeanConcurrentLinkedQueue.poll();
                     handleTask(backgroundRequestTaskBean);
@@ -461,7 +461,6 @@ public class BackgroundTaskHandler {
         } else {
             integers.add(Long.valueOf(backgroundRequestTaskBean.getParams().get("user_id") + ""));
         }
-
         mUserInfoRepository.getUserInfo(integers)
                 .subscribe(new BaseSubscribe<List<UserInfoBean>>() {
                     @Override
@@ -470,7 +469,6 @@ public class BackgroundTaskHandler {
                         mUserInfoBeanGreenDao.insertOrReplace(data);
                         // 用户信息获取成功后就可以通知界面刷新了
                         EventBus.getDefault().post(data, EventBusTagConfig.EVENT_USERINFO_UPDATE);
-                        new JpushAlias(mContext, data.get(0).getUser_id() + "");// 设置极光推送别名
                     }
 
                     @Override

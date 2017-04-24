@@ -1,24 +1,17 @@
 package com.zhiyicx.baseproject.impl.photoselector;
 
 import android.Manifest;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
-import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
-import android.support.v4.BuildConfig;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
-import android.view.View;
 
-import com.jakewharton.rxbinding.view.RxView;
 import com.tbruyelle.rxpermissions.Permission;
 import com.yalantis.ucrop.UCrop;
 import com.zhiyicx.baseproject.R;
@@ -32,15 +25,12 @@ import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import me.iwf.photopicker.PhotoPicker;
-import rx.Observable;
 import rx.functions.Action1;
 
 import static android.app.Activity.RESULT_OK;
@@ -54,13 +44,15 @@ import static android.app.Activity.RESULT_OK;
 
 public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
 
-    private static final int CAMERA_PHOTO_CODE = 8888;
+    public static final int PHOTO_CLUMS_SIZE = 4;
+    public static final int MAX_DEFAULT_COUNT = 9;
     // 添加几种默认的裁剪框形状
     public static final int NO_CRAFT = 0;// 不剪切
     public static final int SHAPE_SQUARE = 1;// 正方形
     public static final int SHAPE_RCTANGLE = 2;// 长方形，宽度占满
     private static final int SQUARE_LEFT_MARGIN = 36;// 裁剪框距离屏幕左边缘的距离；右边也是一样的
-    private static final int MAX_DEFAULT_COUNT = 9;
+    private static final int CAMERA_PHOTO_CODE = 8888;
+
 
     private IPhotoBackListener mTIPhotoBackListener;
     private BaseFragment mFragment;
@@ -87,7 +79,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
         // 选择相册
         PhotoPicker.builder()
                 .setPreviewEnabled(maxCount == 1 ? false : true) // 是否可预览
-                .setGridColumnCount(4)      // 每行的图片数量
+                .setGridColumnCount(PHOTO_CLUMS_SIZE)      // 每行的图片数量
                 .setPhotoCount(maxCount)    //  每次能够选择的最
                 .setShowCamera(false)        // 是否需要展示相机
                 .setSelected(selectedPhotos)// 已经选择的图片
@@ -205,7 +197,10 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
         if (resultCode == RESULT_OK) {
             // 从相机中获取照片
             if (requestCode == CAMERA_PHOTO_CODE && !TextUtils.isEmpty(mTakePhotoPath)) {
-                if (new File(mTakePhotoPath).exists()) {
+                File file = new File(mTakePhotoPath);
+                if (file.exists()) {
+                    // 图片插入系统图库
+                    FileUtils.insertPhotoToAlbumAndRefresh(mContext, file);
                     // 是否需要剪裁，不需要就直接返回结果
                     if (isNeededCraft(mTakePhotoPath)) {
                         startToCraft(mTakePhotoPath);

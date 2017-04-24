@@ -131,6 +131,43 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     }
 
     /**
+     * 获取用户信息,先从本地获取，本地没有再从网络 获取
+     *
+     * @param user_id 用户 id
+     * @return
+     */
+    @Override
+    public Observable<BaseJson<UserInfoBean>> getLocalUserInfoBeforeNet(long user_id) {
+        final BaseJson<UserInfoBean> beanBaseJson = new BaseJson<>();
+        UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(user_id);
+        if (userInfoBean != null) {
+            beanBaseJson.setStatus(true);
+            beanBaseJson.setData(userInfoBean);
+            return Observable.just(beanBaseJson);
+        }
+        List<Object> user_ids = new ArrayList<>();
+        user_ids.add(user_id);
+        HashMap<String, Object> datas = new HashMap<>();
+        datas.put("user_ids", user_ids);
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(datas));
+        return mUserInfoClient.getUserInfo(body)
+                .subscribeOn(Schedulers.io()).
+                        observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<UserInfoBean>>() {
+                    @Override
+                    public BaseJson<UserInfoBean> call(BaseJson<List<UserInfoBean>> listBaseJson) {
+                        beanBaseJson.setCode(listBaseJson.getCode());
+                        beanBaseJson.setMessage(listBaseJson.getMessage());
+                        beanBaseJson.setStatus(listBaseJson.isStatus());
+                        if (listBaseJson.isStatus()) {
+                            beanBaseJson.setData(listBaseJson.getData().get(0));
+                        }
+                        return beanBaseJson;
+                    }
+                });
+    }
+
+    /**
      * 获取用户关注状态
      *
      * @param user_ids

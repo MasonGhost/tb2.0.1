@@ -14,30 +14,22 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.utils.ToastUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 
-import org.simple.eventbus.EventBus;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -116,7 +108,7 @@ public class PhotoViewFragment extends TSFragment {
             }
         });
         // 初始化设置当前选择的数量
-        //mBtComplete.setEnabled(seletedPaths.size() > 0);
+        mBtComplete.setEnabled(seletedPaths.size() > 0);
         mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(), maxCount));
         // 初始化选择checkbox
         mRbSelectPhoto.setChecked(seletedPaths.contains(allPaths.get(currentItem)));
@@ -140,8 +132,8 @@ public class PhotoViewFragment extends TSFragment {
                     // 当前取消选择改图片，直接移除
                     seletedPaths.remove(path);
                 }
-                // 没有选择图片时，是否可以点击完成，应该可以点击，所以注释了下面的代码
-                // mBtComplete.setEnabled(seletedPaths.size() > 0);
+                // 没有选择图片时，是否可以点击完成，应该可以点击，所以注释了下面的代码；需求改变，不需要点击了 #337
+                 mBtComplete.setEnabled(seletedPaths.size() > 0);
                 // 重置当前的选择数量
                 mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(), maxCount));
                 // 通知图片列表进行刷新

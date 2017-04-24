@@ -7,9 +7,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.iwf.photopicker.adapter.PhotoGridAdapter;
 import me.iwf.photopicker.entity.Photo;
@@ -56,9 +53,9 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
     public static final int TO_ALBUM_LIST_REQUEST_CODE = 2000;
     public static final String EXTRA_BACK_HERE = "back_here";// 回到当前图片列表页面，是否停留
     public final static String EXTRA_ORIGIN = "ORIGINAL_PHOTOS";
-    private final static String EXTRA_COLUMN = "column";
     public final static String EXTRA_VIEW_INDEX = "view_index";
-
+    public final static String EXTRA_CAMERA = "camera";
+    private final static String EXTRA_COLUMN = "column";
     public static final String EXTRA_VIEW_ALL_PHOTOS = "view_photos";
     public static final String EXTRA_VIEW_SELECTED_PHOTOS = "view_selected_photos";
 
@@ -118,6 +115,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         intent.setClass(getContext(), PhotoAlbumListActivity.class);
         intent.putExtras(bundle);
         startActivityForResult(intent, TO_ALBUM_LIST_REQUEST_CODE);
+        getActivity().finish();
         getActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
     }
 
@@ -142,7 +140,8 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         // 如果不能预览图片，就隐藏下方的预览和完成按钮
         mLlBottomContainer.setVisibility(canPreview ? View.VISIBLE : View.GONE);
         photoGridAdapter = new PhotoGridAdapter(getActivity(), mGlideRequestManager, directories, originalPhotos, column);
-        photoGridAdapter.setShowCamera(false);
+        boolean showCamera = getArguments().getBoolean(EXTRA_CAMERA, false);
+        photoGridAdapter.setShowCamera(showCamera);
         photoGridAdapter.setPreviewEnable(canPreview);
 
         final GridLayoutManager layoutManager = new GridLayoutManager(getContext(), column);
@@ -165,7 +164,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                     List<String> photos = photoGridAdapter.getSelectedPhotos();
                     // 当前选择的图片，没有被选择过
                     if (!photos.contains(photo.getPath())) {
-                        // 之前已经选择过该图片，就需要-1张
+                        // 之前已经选择过该图片，就需要 -1 张
                         if (!photos.isEmpty()) {
                             selectedItemCount -= 1;
                         }
@@ -189,7 +188,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 return isEnable;
             }
         });
-        // 设置图片item的点击事件
+        // 设置图片 item 的点击事件
         photoGridAdapter.setOnPhotoClickListener(new OnPhotoClickListener() {
             @Override
             public void onClick(View v, int position, boolean showCamera) {
@@ -220,7 +219,6 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
             }
         });
     }
-
 
     @Override
     protected void initData() {
@@ -319,11 +317,4 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate a fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        ButterKnife.bind(this, rootView);
-        return rootView;
-    }
 }
