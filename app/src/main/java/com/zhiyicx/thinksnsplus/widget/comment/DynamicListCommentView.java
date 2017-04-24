@@ -115,7 +115,6 @@ public class DynamicListCommentView extends LinearLayout {
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                LogUtils.d("DynamicListCommentView is clicke");
             }
         });
         mDynamicNoPullRecycleView.setOnCommentStateClickListener(new DynamicNoPullRecycleView.OnCommentStateClickListener() {

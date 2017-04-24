@@ -105,6 +105,8 @@ public class BackgroundTaskHandler {
 
     private boolean mIsNetConnected = false;
 
+    private Thread mBackTaskDealThread;
+
     public BackgroundTaskHandler() {
         init();
     }
@@ -118,6 +120,13 @@ public class BackgroundTaskHandler {
     public boolean addBackgroundRequestTask(BackgroundRequestTaskBean backgroundRequestTaskBean) {
         if (backgroundRequestTaskBean == null) {
             return false;
+        }
+        mIsExit = false;
+        if(mBackTaskDealThread==null){
+            mBackTaskDealThread= new Thread(handleTaskRunnable);
+        }
+        if(!mBackTaskDealThread.isAlive()){
+            mBackTaskDealThread.getState();
         }
         if (mTaskBeanConcurrentLinkedQueue.add(backgroundRequestTaskBean)) {
             mBackgroundRequestTaskBeanGreenDao.insertOrReplace(backgroundRequestTaskBean);
@@ -136,7 +145,8 @@ public class BackgroundTaskHandler {
     private void init() {
         AppApplication.AppComponentHolder.getAppComponent().inject(this);
         getCacheData();
-        new Thread(handleTaskRunnable).start();
+        mBackTaskDealThread = new Thread(handleTaskRunnable);
+        mBackTaskDealThread.start();
         EventBus.getDefault().register(this);
         mIsNetConnected = NetUtils.netIsConnected(mContext);
     }
@@ -174,6 +184,7 @@ public class BackgroundTaskHandler {
         public void run() {
 
             while (!mIsExit && ActivityHandler.getInstance().getActivityStack() != null) {
+                LogUtils.d("---------back----------handleTaskRunnable ---------- ");
                 if (mIsNetConnected && !mTaskBeanConcurrentLinkedQueue.isEmpty()) {
                     BackgroundRequestTaskBean backgroundRequestTaskBean = mTaskBeanConcurrentLinkedQueue.poll();
                     handleTask(backgroundRequestTaskBean);
