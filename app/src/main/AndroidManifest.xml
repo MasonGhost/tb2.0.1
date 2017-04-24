@@ -119,6 +119,7 @@
         </activity>
         <activity
             android:name=".modules.gallery.GalleryActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait"
             android:theme="@style/GalleryTheme">
         </activity>

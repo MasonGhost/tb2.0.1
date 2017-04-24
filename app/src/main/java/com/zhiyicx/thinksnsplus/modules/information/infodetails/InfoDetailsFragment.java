@@ -20,11 +20,14 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoCommentAdapter;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailWebItem;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -54,7 +57,7 @@ import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoLis
  */
 public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Presenter,
         InfoCommentListBean> implements InfoDetailsConstract.View, InputLimitView
-        .OnSendClickListener {
+        .OnSendClickListener, OnUserInfoClickListener {
 
     @BindView(R.id.behavior_demo_coordinatorLayout)
     CoordinatorLayout mCoordinatorLayout;
@@ -113,8 +116,10 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 }
             }
         });
-        multiItemTypeAdapter.addItemViewDelegate(new InfoDetailCommentItem(new
-                ItemOnCommentListener()));
+        InfoDetailCommentItem infoDetailCommentItem = new InfoDetailCommentItem(new
+                ItemOnCommentListener());
+        infoDetailCommentItem.setOnUserInfoClickListener(this);
+        multiItemTypeAdapter.addItemViewDelegate(infoDetailCommentItem);
         multiItemTypeAdapter.addItemViewDelegate(new InfoDetailCommentEmptyItem());
         return multiItemTypeAdapter;
     }
@@ -156,6 +161,11 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_info_detail;
+    }
+
+    @Override
+    protected Long getMaxId(@NotNull List<InfoCommentListBean> data) {
+        return (long) mListDatas.get(mListDatas.size() - 1).getId();
     }
 
     @Override
@@ -209,6 +219,11 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         mVShadow.setVisibility(View.GONE);
         mPresenter.sendComment(mReplyUserId, text);
         mLLBottomMenuContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onUserInfoClick(UserInfoBean userInfoBean) {
+        PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
     }
 
     private void initBottomToolStyle() {
@@ -335,15 +350,15 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
         @Override
         public void onLoadFinish() {
-            if (isFirstIn){
+            if (isFirstIn) {
                 closeLoadingView();
             }
-            isFirstIn=false;
+            isFirstIn = false;
         }
 
         @Override
         public void onLoadStart() {
-            if (isFirstIn){
+            if (isFirstIn) {
                 showLoadingView();
             }
 
@@ -356,8 +371,8 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
             if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth()
                     .getUser_id()) {// 自己的评论
 //                if (mListDatas.get(position).getId() != -1) {
-                    initLoginOutPopupWindow(mListDatas.get(position));
-                    mDeletCommentPopWindow.show();
+                initLoginOutPopupWindow(mListDatas.get(position));
+                mDeletCommentPopWindow.show();
 //                } else {
 //
 //                    return;
