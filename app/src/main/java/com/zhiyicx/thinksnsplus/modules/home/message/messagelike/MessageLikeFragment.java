@@ -1,15 +1,14 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagelike;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
-import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
-import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 
 /**
@@ -41,8 +40,9 @@ public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Pres
     }
 
     @Override
-    protected float getItemDecorationSpacing() {
-        return 0;
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        CustomLinearDecoration itemDecoration = new CustomLinearDecoration(0, 1, 0, 0, ContextCompat.getDrawable(getContext(), R.drawable.shape_recyclerview_divider));
+        return itemDecoration;
     }
 
     @Override
@@ -60,5 +60,9 @@ public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Pres
         return new MessageLikeAdapter(getActivity(), R.layout.item_message_like_list, mListDatas);
     }
 
+    @Override
+    protected int setEmptView() {
+        return R.mipmap.img_default_nothing;
+    }
 
 }

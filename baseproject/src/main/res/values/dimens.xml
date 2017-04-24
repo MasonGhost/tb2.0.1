@@ -50,36 +50,10 @@
     <!-- 补位宽度 -->
     <dimen name="textview_spacing_offset_height">-1.5dp</dimen>
     <!-- 加载更多 -->
-    <dimen name="load_more_height">30dp</dimen>
+    <dimen name="load_more_height">35dp</dimen>
     <!--#########################################      圆角尺寸       ################################-->
     <!--提示信息背景角度-->
     <dimen name="hintview_corner">5dp</dimen>
 
-    <!--#########################################      聊天       ################################-->
-    <dimen name="chat_list_new_msg_tip_with">50dp</dimen>
-    <dimen name="chat_list_msg_text_maxwith">225dp</dimen>
-    <dimen name="chat_list_content_margintop">7dp</dimen>
-    <dimen name="chat_message_bubble_padding">10dp</dimen>
-    <dimen name="chat_message_bubble_paddingBottom">7.5dp</dimen>// 去掉行高所占的位置
-    <dimen name="chat_message_bubble_radus">10dp</dimen>
-    <dimen name="chat_message_bubble_stroke_width">0.5dp</dimen>
-    <dimen name="chat_message_bottom_tip_size">6dp</dimen>
-
-
-    <!--#########################################      动态相关       ################################-->
-
-    <dimen name="dynamic_menu_text_with">50dp</dimen>
-    <dimen name="dynamic_list_image_marginright">58dp</dimen>
-    <dimen name="dynamic_list_comment_marginright">40dp</dimen>
-    <!--dynamice_spacing_small  应该是 3 的倍数，便于计算动态中 6 张图片时的间距-->
-    <dimen name="dynamice_spacing_small">3dp</dimen>
-    <!--dynamice_more_comment_mariginleft 的值等于评论 tv_simple_text_comment 的marginleft + status image 的宽度 -->
-    <dimen name="dynamice_more_comment_mariginleft">18dp</dimen>
-    <!--分享弹框文字和图片的间距-->
-    <dimen name="share_image_text_padding">12dp</dimen>
-
-    <!--图片查看器，查看原图按钮-->
-    <dimen name="origin_btn_width">76dp</dimen>
-    <dimen name="origin_btn_height">26dp</dimen>
 
 </resources>

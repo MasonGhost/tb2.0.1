@@ -113,7 +113,7 @@
                 android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
                 android:ellipsize="end"
                 android:maxLines="@integer/dynamic_list_content_show_lines"
-                android:paddingBottom="@dimen/spacing_normal"
+                android:paddingBottom="@dimen/dynamic_image_padding_bottom"
                 android:paddingLeft="@dimen/spacing_normal"
                 android:textColor="@color/normal_for_dynamic_list_content"
                 android:textSize="@dimen/size_content_assist"

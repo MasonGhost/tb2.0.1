@@ -154,6 +154,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         return ITEM_SPACING;
     }
 
+
     @Override
     protected boolean isLoadingMoreEnable() {
         return true;

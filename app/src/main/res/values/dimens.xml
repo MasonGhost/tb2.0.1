@@ -26,4 +26,7 @@
     <dimen name="header_icon_top_margin">72dp</dimen>
     <!--25dp的高度减去图片4个dp的透明都-->
     <dimen name="floating_button_bottom_margin">21dp</dimen>
+
+    <!--消息中 的评论的点赞的线的 margin-->
+    <dimen name="message_comment_and_digg_line_margin">63dp</dimen>
 </resources>
