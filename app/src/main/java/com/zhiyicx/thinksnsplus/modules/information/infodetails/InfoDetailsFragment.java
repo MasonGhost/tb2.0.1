@@ -18,11 +18,14 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailWebItem;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -50,7 +53,7 @@ import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoLis
  */
 public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Presenter,
         InfoCommentListBean> implements InfoDetailsConstract.View, InputLimitView
-        .OnSendClickListener {
+        .OnSendClickListener{
 
     @BindView(R.id.behavior_demo_coordinatorLayout)
     CoordinatorLayout mCoordinatorLayout;
@@ -72,6 +75,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     ViewGroup mLLBottomMenuContainer;
 
     private ActionPopupWindow mDeletCommentPopWindow;
+    private ActionPopupWindow mDealInfoMationPopWindow;
 
     /**
      * 传入的资讯信息
@@ -124,8 +128,9 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 }
             }
         });
-        multiItemTypeAdapter.addItemViewDelegate(new InfoDetailCommentItem(new
-                ItemOnCommentListener()));
+        InfoDetailCommentItem infoDetailCommentItem = new InfoDetailCommentItem(new
+                ItemOnCommentListener());
+        multiItemTypeAdapter.addItemViewDelegate(infoDetailCommentItem);
         multiItemTypeAdapter.addItemViewDelegate(new InfoDetailCommentEmptyItem());
         return multiItemTypeAdapter;
     }
@@ -167,6 +172,11 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_info_detail;
+    }
+
+    @Override
+    protected Long getMaxId(@NotNull List<InfoCommentListBean> data) {
+        return (long) mListDatas.get(mListDatas.size() - 1).getId();
     }
 
     @Override
@@ -223,16 +233,16 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     }
 
     private void initBottomToolStyle() {
-        mDdDynamicTool.setButtonText(new int[]{R.string.info_collect, R.string.comment,
-                R.string.share, R.string.more});
-        mDdDynamicTool.setImageNormalResourceIds(new int[]{R.mipmap.detail_ico_good_uncollect,
+        mDdDynamicTool.setButtonText(new int[]{R.string.comment,
+                R.string.share, R.string.more,R.string.more});
+        mDdDynamicTool.setImageNormalResourceIds(new int[]{
                 R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal,
-                //R.mipmap.home_ico_more
+                R.mipmap.home_ico_more,
                 DEFAULT_RESOURES_ID});
 
-        mDdDynamicTool.setImageCheckedResourceIds(new int[]{R.mipmap.detail_ico_collect,
+        mDdDynamicTool.setImageCheckedResourceIds(new int[]{
                 R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal, R.mipmap
-                .home_ico_more});
+                .home_ico_more,DEFAULT_RESOURES_ID});
         mDdDynamicTool.setData();
 
     }
@@ -243,16 +253,16 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
             public void onItemClick(ViewGroup parent, View v, int postion) {
                 mDdDynamicTool.getTag(R.id.view_data);
                 switch (postion) {
-                    case DynamicDetailMenuView.ITEM_POSITION_0:
-                        mPresenter.handleCollect(mInfoMation.getIs_collection_news() == 0,
-                                mInfoMation.getId() + "");
-                        break;
-                    case DynamicDetailMenuView.ITEM_POSITION_1:
+                    case DynamicDetailMenuView.ITEM_POSITION_0:// 评论
                         showCommentView();
                         mReplyUserId = 0;
                         break;
-                    case DynamicDetailMenuView.ITEM_POSITION_2:
+                    case DynamicDetailMenuView.ITEM_POSITION_1:// 分享
                         mPresenter.shareInfo();
+                        break;
+                    case DynamicDetailMenuView.ITEM_POSITION_2:// 更多
+                        initDealInfoMationPopupWindow(mInfoMation,mInfoMation.getIs_collection_news() == 1);
+                        mDealInfoMationPopWindow.show();
                         break;
                     case DynamicDetailMenuView.ITEM_POSITION_3:
                         ToastUtils.showToast("more");
@@ -308,7 +318,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     /**
      * 初始化评论删除选择弹框
      */
-    private void initLoginOutPopupWindow(final InfoCommentListBean data) {
+    private void initDeleteCommentPopupWindow(final InfoCommentListBean data) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_comment))
                 .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
@@ -328,6 +338,36 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                     @Override
                     public void onBottomClicked() {
                         mDeletCommentPopWindow.hide();
+                    }
+                })
+                .build();
+    }
+
+    /**
+     * 初始化他人动态操作选择弹框
+     *
+     * @param infoMation curent infoMation
+     */
+    private void initDealInfoMationPopupWindow(final InfoListDataBean infoMation, boolean isCollected) {
+        mDealInfoMationPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(isCollected?R.string.dynamic_list_uncollect_dynamic:R.string.dynamic_list_collect_dynamic))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {// 收藏
+                        mPresenter.handleCollect(infoMation.getIs_collection_news() == 0,
+                                mInfoMation.getId() + "");
+                        mDealInfoMationPopWindow.hide();
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mDealInfoMationPopWindow.hide();
                     }
                 })
                 .build();
@@ -367,7 +407,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
             if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth()
                     .getUser_id()) {// 自己的评论
 //                if (mListDatas.get(position).getId() != -1) {
-                initLoginOutPopupWindow(mListDatas.get(position));
+                initDeleteCommentPopupWindow(mListDatas.get(position));
                 mDeletCommentPopWindow.show();
 //                } else {
 //
@@ -382,6 +422,11 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 }
                 mIlvComment.setEtContentHint(contentHint);
             }
+        }
+
+        @Override
+        public void onUserInfoClick(UserInfoBean userInfoBean) {
+            PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
         }
     }
 }

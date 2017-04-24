@@ -73,6 +73,7 @@ public class ChannelDetailPresenter extends BasePresenter<ChannelDetailContract.
     @Inject
     DynamicDetailBeanGreenDaoImpl mDynamicDetailBeanGreenDao;
 
+
     private int mInterfaceNum = 0;//纪录请求接口数量，用于统计接口是否全部请求完成，需要接口全部请求完成后在显示界面
     SparseArray<Long> msendingStatus = new SparseArray<>();
 
@@ -290,6 +291,16 @@ public class ChannelDetailPresenter extends BasePresenter<ChannelDetailContract.
         mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(mCurrentPostion).getTool());
         mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
         mRepository.sendComment(commentContent, mRootView.getListDatas().get(mCurrentPostion).getFeed_id(), replyToUserId, creatComment.getComment_mark());
+
+    }
+
+    @Override
+    public void handleCollect(DynamicBean dynamicBean) {
+
+    }
+
+    @Override
+    public void shareDynamic(DynamicBean dynamicBean) {
 
     }
 

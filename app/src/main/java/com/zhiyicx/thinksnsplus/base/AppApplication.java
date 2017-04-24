@@ -31,6 +31,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.QueueManager;
@@ -366,7 +367,7 @@ public class AppApplication extends TSApplication {
 
             @Override
             public void onActivityResumed(Activity activity) {
-                if ((activity instanceof MusicPlayActivity)) {
+                if (activity instanceof MusicPlayActivity||activity instanceof GalleryActivity) {
                     WindowUtils.hidePopupWindow();
                 } else if (sPlaybackManager != null && sPlaybackManager.getState() != PlaybackStateCompat.STATE_NONE
                         && sPlaybackManager.getState() != PlaybackStateCompat.STATE_STOPPED
