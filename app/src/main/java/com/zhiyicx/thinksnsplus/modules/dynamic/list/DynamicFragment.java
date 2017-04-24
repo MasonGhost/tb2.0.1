@@ -139,7 +139,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 针对部分手机进入首页状态栏颜色修改无效
             getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
-            AndroidBug5497Workaround.assistActivity(getActivity());
+        AndroidBug5497Workaround.assistActivity(getActivity());
     }
 
     private void initInputView() {
@@ -352,12 +352,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 break;
 
             case 3: // 更多
-                if (mListDatas.get(dataPosition).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()){
-                    initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition,mListDatas.get(dataPosition)
+                if (mListDatas.get(dataPosition).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
+                    initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
                             .getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED);
                     mMyDynamicPopWindow.show();
-                }else{
-                    initOtherDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition,mListDatas.get(dataPosition)
+                } else {
+                    initOtherDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
                             .getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED);
                     mOtherDynamicPopWindow.show();
                 }
@@ -497,7 +497,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     private void initOtherDynamicPopupWindow(final DynamicBean dynamicBean, final int position, boolean isCollected) {
         mOtherDynamicPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(isCollected?R.string.dynamic_list_uncollect_dynamic:R.string.dynamic_list_collect_dynamic))
+                .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
                 .item2Str(getString(R.string.dynamic_list_share_dynamic))
                 .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
@@ -539,7 +539,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     private void initMyDynamicPopupWindow(final DynamicBean dynamicBean, final int position, boolean isCollected) {
         mMyDynamicPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(isCollected?R.string.dynamic_list_uncollect_dynamic:R.string.dynamic_list_collect_dynamic))
+                .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
                 .item2Str(getString(R.string.dynamic_list_delete_dynamic))
                 .item3Str(getString(R.string.dynamic_list_share_dynamic))
                 .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))

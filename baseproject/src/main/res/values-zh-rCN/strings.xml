@@ -115,6 +115,7 @@
     <string name="weCircle_share">朋友圈</string>
     <string name="weibo_share">微博</string>
     <string name="share_sccuess">分享成功</string>
+    <string name="share_ing">分享中...</string>
     <string name="share_fail">分享失败</string>
     <string name="share_cancel">取消分享</string>
 </resources>

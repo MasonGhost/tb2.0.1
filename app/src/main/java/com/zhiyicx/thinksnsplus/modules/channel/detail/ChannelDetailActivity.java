@@ -1,9 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.channel.detail;
 
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 public class ChannelDetailActivity extends TSActivity<ChannelDetailPresenter, ChannelDetailFragment> {
@@ -13,6 +11,7 @@ public class ChannelDetailActivity extends TSActivity<ChannelDetailPresenter, Ch
         DaggerChannelDetailPresenterComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .channelDetailPresenterModule(new ChannelDetailPresenterModule(mContanierFragment))
+                .shareModule(new ShareModule(this))
                 .build().inject(this);
     }
 

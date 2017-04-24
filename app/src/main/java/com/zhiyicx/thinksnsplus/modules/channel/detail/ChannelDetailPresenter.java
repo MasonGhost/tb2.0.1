@@ -1,14 +1,22 @@
 package com.zhiyicx.thinksnsplus.modules.channel.detail;
 
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
+import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
+import com.zhiyicx.common.thridmanager.share.ShareContent;
+import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -19,6 +27,7 @@ import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
@@ -58,7 +67,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  */
 @FragmentScoped
 public class ChannelDetailPresenter extends BasePresenter<ChannelDetailContract.Repository, ChannelDetailContract.View>
-        implements ChannelDetailContract.Presenter {
+        implements ChannelDetailContract.Presenter, OnShareCallbackListener {
     private static final int NEED_INTERFACE_NUM = 1;
     @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
@@ -72,6 +81,8 @@ public class ChannelDetailPresenter extends BasePresenter<ChannelDetailContract.
     DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
     @Inject
     DynamicDetailBeanGreenDaoImpl mDynamicDetailBeanGreenDao;
+    @Inject
+    public SharePolicy mSharePolicy;
 
 
     private int mInterfaceNum = 0;//纪录请求接口数量，用于统计接口是否全部请求完成，需要接口全部请求完成后在显示界面
@@ -296,12 +307,65 @@ public class ChannelDetailPresenter extends BasePresenter<ChannelDetailContract.
 
     @Override
     public void handleCollect(DynamicBean dynamicBean) {
-
+        // 收藏
+        // 修改数据
+        DynamicToolBean collectToolBean = dynamicBean.getTool();
+        int is_collection = collectToolBean.getIs_collection_feed();// 旧状态
+        // 新状态
+        is_collection = is_collection == DynamicToolBean.STATUS_COLLECT_FEED_UNCHECKED
+                ? DynamicToolBean.STATUS_COLLECT_FEED_CHECKED : DynamicToolBean.STATUS_COLLECT_FEED_UNCHECKED;
+        collectToolBean.setIs_collection_feed(is_collection);
+        boolean newCollectState = is_collection == DynamicToolBean.STATUS_COLLECT_FEED_UNCHECKED ? false : true;
+        // 更新数据库
+        mDynamicToolBeanGreenDao.insertOrReplace(collectToolBean);
+        // 通知服务器
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("feed_id", dynamicBean.getFeed_id());
+        // 后台处理
+        if (newCollectState) {
+            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST, params);
+        } else {
+            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
+        }
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_HANDLE_COLLECT_FORMAT, dynamicBean.getFeed_id()));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+        EventBus.getDefault().post(dynamicBean, EventBusTagConfig.EVENT_COLLECT_DYNAMIC);
     }
 
     @Override
     public void shareDynamic(DynamicBean dynamicBean) {
+        ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
+        ShareContent shareContent = new ShareContent();
+        shareContent.setTitle(TextUtils.isEmpty(dynamicBean.getFeed().getTitle()) ? mContext.getString(R.string.share) : dynamicBean.getFeed().getTitle());
+        shareContent.setContent(TextUtils.isEmpty(dynamicBean.getFeed().getContent()) ? mContext.getString(R.string.share_dynamic) : dynamicBean.getFeed().getContent());
+        if (dynamicBean.getFeed().getStorages() != null && dynamicBean.getFeed().getStorages().size() > 0) {
+            shareContent.setImage(ImageUtils.imagePathConvert(dynamicBean.getFeed().getStorages().get(0).getStorage_id() + "", 100));
+        } else {
+            shareContent.setBitmap(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon_256));
+        }
+        shareContent.setUrl(String.format(ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean.getFeed_id() == null ? "" : dynamicBean.getFeed_id()));
+        mSharePolicy.setShareContent(shareContent);
+        mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
+    }
 
+    @Override
+    public void onStart(Share share) {
+    }
+
+    @Override
+    public void onSuccess(Share share) {
+        mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_sccuess));
+    }
+
+    @Override
+    public void onError(Share share, Throwable throwable) {
+        mRootView.showSnackErrorMessage(mContext.getString(R.string.share_fail));
+    }
+
+    @Override
+    public void onCancel(Share share) {
+        mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_cancel));
     }
 
     /**

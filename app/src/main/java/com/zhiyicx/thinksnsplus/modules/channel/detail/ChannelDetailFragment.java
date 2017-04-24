@@ -128,6 +128,10 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     private ActionPopupWindow mDeletDynamicPopWindow;
     private ActionPopupWindow mReSendCommentPopWindow;
     private ActionPopupWindow mReSendDynamicPopWindow;
+
+    private ActionPopupWindow mOtherDynamicPopWindow;
+    private ActionPopupWindow mMyDynamicPopWindow;
+
     private int mCurrentPostion;// 当前评论的动态位置
     private long mReplyToUserId;// 被评论者的 id
     private PhotoSelectorImpl mPhotoSelector;
@@ -388,8 +392,16 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 break;
 
             case 3: // 更多
-                initDeletDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition);
-                mDeletDynamicPopWindow.show();
+                dataPosition += 1;
+                if (mListDatas.get(dataPosition).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
+                    initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
+                            .getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED);
+                    mMyDynamicPopWindow.show();
+                } else {
+                    initOtherDynamicPopupWindow(mListDatas.get(dataPosition), mListDatas.get(dataPosition)
+                            .getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED);
+                    mOtherDynamicPopWindow.show();
+                }
                 break;
             default:
                 onItemClick(null, null, (dataPosition + 1)); // 加上 header
@@ -716,6 +728,111 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     @Override
     public void getPhotoFailure(String errorMsg) {
 
+    }
+
+    /**
+     * 初始化他人动态操作选择弹框
+     *
+     * @param dynamicBean curent dynamic
+     */
+    private void initOtherDynamicPopupWindow(final DynamicBean dynamicBean, boolean isCollected) {
+        mOtherDynamicPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
+                .item2Str(getString(R.string.dynamic_list_share_dynamic))
+                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {// 收藏
+                        mPresenter.handleCollect(dynamicBean);
+                        mOtherDynamicPopWindow.hide();
+                        showBottomView(true);
+                    }
+                })
+                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
+                    @Override
+                    public void onItem2Clicked() {// 分享
+                        mPresenter.shareDynamic(dynamicBean);
+                        mOtherDynamicPopWindow.hide();
+                        showBottomView(true);
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mOtherDynamicPopWindow.hide();
+                        showBottomView(true);
+                    }
+                })
+                .build();
+    }
+
+    /**
+     * 初始化我的动态操作弹窗
+     *
+     * @param dynamicBean curent dynamic
+     * @param position    curent dynamic postion
+     */
+    private void initMyDynamicPopupWindow(final DynamicBean dynamicBean, final int position, boolean isCollected) {
+        mMyDynamicPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
+                .item2Str(getString(R.string.dynamic_list_delete_dynamic))
+                .item3Str(getString(R.string.dynamic_list_share_dynamic))
+                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {// 收藏
+                        mMyDynamicPopWindow.hide();
+                        showBottomView(true);
+                    }
+                })
+                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
+                    @Override
+                    public void onItem2Clicked() {// 删除
+                        mMyDynamicPopWindow.hide();
+                        mPresenter.deleteDynamic(dynamicBean, position);
+                        showBottomView(true);
+                    }
+                })
+                .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
+                    @Override
+                    public void onItem3Clicked() {// 分享
+                        mMyDynamicPopWindow.hide();
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {//取消
+                        mMyDynamicPopWindow.hide();
+                        showBottomView(true);
+                    }
+                })
+                .build();
+    }
+
+    private void showBottomView(boolean isShow) {
+        if (isShow) {
+            mVShadow.setVisibility(View.GONE);
+            mIlvComment.setVisibility(View.GONE);
+            mIlvComment.clearFocus();
+            mIlvComment.setSendButtonVisiable(false);
+            DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+        } else {
+            mVShadow.setVisibility(View.VISIBLE);
+            mIlvComment.setVisibility(View.VISIBLE);
+            mIlvComment.getFocus();
+            mIlvComment.setSendButtonVisiable(true);
+            DeviceUtils.showSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+        }
     }
 
     /**

@@ -1,12 +1,16 @@
 package com.zhiyicx.thinksnsplus.modules.information.infodetails;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
+import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -44,7 +48,7 @@ import static com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean.SEND_ING;
  */
 @FragmentScoped
 public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Repository,
-        InfoDetailsConstract.View> implements InfoDetailsConstract.Presenter {
+        InfoDetailsConstract.View> implements InfoDetailsConstract.Presenter,OnShareCallbackListener {
 
     @Inject
     public SharePolicy mSharePolicy;
@@ -113,6 +117,7 @@ public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Rep
 
     @Override
     public void shareInfo() {
+        ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(mRootView.getCurrentInfo().getTitle());
         shareContent.setUrl(String.format(APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
@@ -242,6 +247,25 @@ public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Rep
         mRootView.refreshData();
         mRepository.sendComment(content, mRootView.getNewsId(), reply_id,
                 createComment.getComment_mark());
+    }
+
+    @Override
+    public void onStart(Share share) {
+    }
+
+    @Override
+    public void onSuccess(Share share) {
+        mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_sccuess));
+    }
+
+    @Override
+    public void onError(Share share, Throwable throwable) {
+        mRootView.showSnackErrorMessage(mContext.getString(R.string.share_fail));
+    }
+
+    @Override
+    public void onCancel(Share share) {
+        mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_cancel));
     }
 
     @Override
