@@ -114,5 +114,15 @@ public interface DynamicContract {
          * @return
          */
         int getCurrenPosiotnInDataList(long feedMark);
+
+        /**
+         * 处理收藏逻辑
+         */
+        void handleCollect(DynamicBean dynamicBean);
+
+        /**
+         * 动态分享
+         */
+        void shareDynamic(DynamicBean dynamicBean);
     }
 }

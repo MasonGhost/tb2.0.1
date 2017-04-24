@@ -462,6 +462,16 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
 
     }
 
+    @Override
+    public void handleCollect(DynamicBean dynamicBean) {
+
+    }
+
+    @Override
+    public void shareDynamic(DynamicBean dynamicBean) {
+
+    }
+
     /**
      * 通过 feedMark 获取当前数据的位置
      *

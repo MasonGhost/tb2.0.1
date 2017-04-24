@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
@@ -87,7 +88,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private String mDynamicType = ApiConfig.DYNAMIC_TYPE_NEW;
 
     private ActionPopupWindow mDeletCommentPopWindow;
-    private ActionPopupWindow mDeletDynamicPopWindow;
+    private ActionPopupWindow mOtherDynamicPopWindow;
+    // 每条动态都有三个点点了
+    private ActionPopupWindow mMyDynamicPopWindow;
     private ActionPopupWindow mReSendCommentPopWindow;
     private ActionPopupWindow mReSendDynamicPopWindow;
     private int mCurrentPostion;// 当前评论的动态位置
@@ -200,6 +203,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         DaggerDynamicComponent // 在 super.initData();之前，因为initdata 会使用到 presenter
                 .builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .shareModule(new ShareModule(getActivity()))
                 .dynamicPresenterModule(new DynamicPresenterModule(this))
                 .build().inject(this);
         mDynamicType = getArguments().getString(BUNDLE_DYNAMIC_TYPE);
@@ -348,8 +352,16 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 break;
 
             case 3: // 更多
-                initDeletDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition);
-                mDeletDynamicPopWindow.show();
+                if (mListDatas.get(dataPosition).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()){
+                    initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition,mListDatas.get(dataPosition)
+                            .getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED);
+                    mMyDynamicPopWindow.show();
+                }else{
+                    initOtherDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition,mListDatas.get(dataPosition)
+                            .getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED);
+                    mOtherDynamicPopWindow.show();
+                }
+
                 break;
             default:
                 onItemClick(null, null, dataPosition);
@@ -483,9 +495,10 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      * @param dynamicBean curent dynamic
      * @param position    curent dynamic postion
      */
-    private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean, final int position) {
-        mDeletDynamicPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.dynamic_list_delete_dynamic))
+    private void initOtherDynamicPopupWindow(final DynamicBean dynamicBean, final int position, boolean isCollected) {
+        mOtherDynamicPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(isCollected?R.string.dynamic_list_uncollect_dynamic:R.string.dynamic_list_collect_dynamic))
+                .item2Str(getString(R.string.dynamic_list_share_dynamic))
                 .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -494,16 +507,72 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
-                        mDeletDynamicPopWindow.hide();
-                        mPresenter.deleteDynamic(dynamicBean, position);
+                    public void onItem1Clicked() {// 收藏
+                        mPresenter.handleCollect(dynamicBean);
+                        mOtherDynamicPopWindow.hide();
+                        showBottomView(true);
+                    }
+                })
+                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
+                    @Override
+                    public void onItem2Clicked() {// 分享
+                        mPresenter.shareDynamic(dynamicBean);
+                        mOtherDynamicPopWindow.hide();
                         showBottomView(true);
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
                     public void onBottomClicked() {
-                        mDeletDynamicPopWindow.hide();
+                        mOtherDynamicPopWindow.hide();
+                        showBottomView(true);
+                    }
+                })
+                .build();
+    }
+
+    /**
+     * 初始化动态相关操作弹窗
+     *
+     * @param dynamicBean curent dynamic
+     * @param position    curent dynamic postion
+     */
+    private void initMyDynamicPopupWindow(final DynamicBean dynamicBean, final int position, boolean isCollected) {
+        mMyDynamicPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(isCollected?R.string.dynamic_list_uncollect_dynamic:R.string.dynamic_list_collect_dynamic))
+                .item2Str(getString(R.string.dynamic_list_delete_dynamic_))
+                .item3Str(getString(R.string.dynamic_list_share_dynamic))
+                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {// 收藏
+                        mMyDynamicPopWindow.hide();
+                        showBottomView(true);
+                    }
+                })
+                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
+                    @Override
+                    public void onItem2Clicked() {// 删除
+                        mMyDynamicPopWindow.hide();
+                        mPresenter.deleteDynamic(dynamicBean, position);
+                        showBottomView(true);
+                    }
+                })
+                .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
+                    @Override
+                    public void onItem3Clicked() {// 分享
+                        mMyDynamicPopWindow.hide();
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {//取消
+                        mMyDynamicPopWindow.hide();
                         showBottomView(true);
                     }
                 })

@@ -190,11 +190,12 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                     dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicToolBean.getFeed_view_count() == 0 ? 1 : dynamicToolBean.getFeed_view_count()), false, 2);// 浏览量没有 0
                 }
                 // 控制更多按钮的显示隐藏
-                if (dynamicBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-                    dynamicListMenuView.setItemPositionVisiable(3, View.VISIBLE);
-                } else {
-                    dynamicListMenuView.setItemPositionVisiable(3, View.GONE);
-                }
+                dynamicListMenuView.setItemPositionVisiable(3, View.VISIBLE);
+//                if (dynamicBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
+//                    dynamicListMenuView.setItemPositionVisiable(3, View.VISIBLE);
+//                } else {
+//                    dynamicListMenuView.setItemPositionVisiable(3, View.GONE);
+//                }
                 // 设置工具栏的点击事件
                 dynamicListMenuView.setItemOnClick(new DynamicListMenuView.OnItemClickListener() {
                     @Override
