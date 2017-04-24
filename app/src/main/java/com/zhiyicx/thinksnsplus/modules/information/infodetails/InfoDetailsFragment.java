@@ -42,10 +42,8 @@ import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentAdapter.BUNDLE_SOURCE_ID;
-import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment
-        .BUNDLE_INFO;
-import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment
-        .BUNDLE_INFO_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO;
+import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO_TYPE;
 
 /**
  * @Author Jliuer
@@ -96,6 +94,21 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     protected boolean isNeedRefreshAnimation() {
         return false;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    /**
+     * 特别修改
+     *
+     * @return
+     */
+    @Override
+    protected int getstatusbarAndToolbarHeight() {
+        return getResources().getDimensionPixelSize(R.dimen.toolbar_height_include_line_height);
     }
 
     @Override
