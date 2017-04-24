@@ -164,7 +164,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                         mCurrentMediaId = MediaIDHelper.extractMusicIDFromMediaID(mCurrentMusic.getDescription().getMediaId());
                     }
                     fragmentMusicDetailMusicCount.setText(String.format("(共%d首)", children.size()));
-                    LogUtils.d("onChildrenLoaded:::"+children.size());
+                    LogUtils.d("onChildrenLoaded:::" + children.size());
                     mAdapter.dataChange(children);
                 }
 
@@ -266,6 +266,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         ablumHeadInfo.setCommentCount(musicAblum.getComment_count());
         ablumHeadInfo.setShareCount(musicAblum.getShare_count());
         ablumHeadInfo.setListenCount(musicAblum.getTaste_count());
+        ablumHeadInfo.setAblumId(musicAblum.getId());
         WindowUtils.setAblumHeadInfo(ablumHeadInfo);
 
         mFragmentMusicDetailCenterTitle.setText(mAlbumDetailsBean.getTitle());
@@ -515,7 +516,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
             albumListBean.setComment_count(ablumHeadInfo.getCommentCount());
         }
         mFragmentMusicDetailName.setText(albumListBean.getTitle());
-//        mFragmentMusicDetailDec.setText(albumListBean.getIntro());
         mFragmentMusicDetailShare.setText(albumListBean.getShare_count() + "");
         mFragmentMusicDetailComment.setText(albumListBean.getComment_count() + "");
         mFragmentMusicDetailFavorite.setText(albumListBean.getCollect_count() + "");
@@ -525,10 +525,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
     public interface MediaBrowserCompatProvider {
         MediaBrowserCompat getMediaBrowser();
-    }
-
-    public class MusicAblumHeadInfo {
-        private int iamgeId;
     }
 
     @OnClick({R.id.fragment_music_detail_playvolume, R.id.fragment_music_detail_share, R.id
@@ -593,7 +589,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
     @Subscriber(tag = EVENT_MUSIC_CHANGE, mode = ThreadMode.MAIN)
     public void onMusicChange(int change) {
-        mPresenter.getMusicDetails(change+"");
+        mPresenter.getMusicDetails(change + "");
         LogUtils.d("EVENT_MUSIC_CHANGE");
     }
 }
