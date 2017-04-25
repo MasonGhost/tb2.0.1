@@ -34,5 +34,6 @@ public class ErrorCodeConfig {
      * 需要手动处理
      */
     public static final int DYNAMIC_HAS_BE_DELETED = 6004;// 	查询的动态不存在或已删除
+    public static final int INFO_HAS_BE_DELETED = 9002;// 	查询的资讯不存在或已删除
 
 }

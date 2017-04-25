@@ -485,12 +485,12 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                         break;
                     case DynamicDetailMenuView.ITEM_POSITION_3:
                         // 处理喜欢逻辑，包括服务器，数据库，ui
-                        if (mDynamicBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()){
-                            initMyDynamicPopupWindow(mDynamicBean,mDynamicBean.getTool().getIs_collection_feed() ==
+                        if (mDynamicBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
+                            initMyDynamicPopupWindow(mDynamicBean, mDynamicBean.getTool().getIs_collection_feed() ==
                                     DynamicToolBean.STATUS_COLLECT_FEED_CHECKED);
                             mMyDynamicPopWindow.show();
-                        }else{
-                            initOtherDynamicPopupWindow(mDynamicBean,mDynamicBean.getTool().getIs_collection_feed() ==
+                        } else {
+                            initOtherDynamicPopupWindow(mDynamicBean, mDynamicBean.getTool().getIs_collection_feed() ==
                                     DynamicToolBean.STATUS_COLLECT_FEED_CHECKED);
                             mOtherDynamicPopWindow.show();
                         }
@@ -609,7 +609,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      */
     private void initOtherDynamicPopupWindow(final DynamicBean dynamicBean, boolean isCollected) {
         mOtherDynamicPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(isCollected?R.string.dynamic_list_uncollect_dynamic:R.string.dynamic_list_collect_dynamic))
+                .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
 //                .item2Str(getString(R.string.dynamic_list_share_dynamic))
 //                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
@@ -645,9 +645,9 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      *
      * @param dynamicBean curent dynamic
      */
-    private void initMyDynamicPopupWindow(final DynamicBean dynamicBean,boolean isCollected) {
+    private void initMyDynamicPopupWindow(final DynamicBean dynamicBean, boolean isCollected) {
         mMyDynamicPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(isCollected?R.string.dynamic_list_uncollect_dynamic:R.string.dynamic_list_collect_dynamic))
+                .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
                 .item2Str(getString(R.string.dynamic_list_delete_dynamic))
 //                .item3Str(getString(R.string.dynamic_list_share_dynamic))
 //                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
@@ -666,7 +666,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
                     public void onItem2Clicked() {// 删除
-                        EventBus.getDefault().post(dynamicBean,DYNAMIC_LIST_DELETE_UPDATE);
+                        EventBus.getDefault().post(dynamicBean, DYNAMIC_LIST_DELETE_UPDATE);
                         mMyDynamicPopWindow.hide();
                         getActivity().finish();
                     }

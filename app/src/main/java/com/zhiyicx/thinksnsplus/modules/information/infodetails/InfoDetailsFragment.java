@@ -159,6 +159,22 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     }
 
     @Override
+    public void loadAllError() {
+        setLoadViewHolderImag(R.mipmap.img_default_internet);
+        mTvToolbarRight.setVisibility(View.GONE);
+        mTvToolbarCenter.setVisibility(View.GONE);
+        showLoadViewLoadError();
+    }
+
+    @Override
+    public void infoMationHasBeDeleted() {
+        setLoadViewHolderImag(R.mipmap.img_default_delete);
+        mTvToolbarRight.setVisibility(View.GONE);
+        mTvToolbarCenter.setVisibility(View.GONE);
+        showLoadViewLoadErrorDisableClick();
+    }
+
+    @Override
     protected boolean showToolbar() {
         return false;
     }

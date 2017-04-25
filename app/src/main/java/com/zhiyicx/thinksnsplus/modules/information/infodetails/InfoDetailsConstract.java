@@ -32,6 +32,8 @@ public interface InfoDetailsConstract {
         void setDigg(boolean isDigged);
         InfoListDataBean getCurrentInfo();
         int getInfoType();
+        void infoMationHasBeDeleted();
+        void loadAllError();
     }
 
     interface Presenter extends ITSListPresenter<InfoCommentListBean>{

@@ -14,6 +14,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -39,6 +40,7 @@ import rx.schedulers.Schedulers;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAILS_FORMAT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_INFO_LIST_COLLECT;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_INFO_LIST_DELETE_UPDATE;
 import static com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean.SEND_ING;
 
 /**
@@ -100,13 +102,12 @@ public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Rep
                             data.clear();
                             data.addAll(localComment);
                         }
-
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
-                        mRootView.showMessage(message);
+                        handleInfoHasBeDeleted(code);
                     }
 
                     @Override
@@ -114,6 +115,16 @@ public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Rep
                         mRootView.onResponseError(throwable, isLoadMore);
                     }
                 });
+    }
+
+    private void handleInfoHasBeDeleted(int code) {
+        if (code == ErrorCodeConfig.INFO_HAS_BE_DELETED) {
+            mInfoListBeanGreenDao.deleteInfo(mRootView.getCurrentInfo());
+            EventBus.getDefault().post(mRootView.getCurrentInfo(),EVENT_SEND_INFO_LIST_DELETE_UPDATE);
+            mRootView.infoMationHasBeDeleted();
+        } else {
+            mRootView.loadAllError();
+        }
     }
 
     @Override
