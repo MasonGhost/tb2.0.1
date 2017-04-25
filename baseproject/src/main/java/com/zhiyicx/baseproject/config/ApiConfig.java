@@ -209,6 +209,9 @@ public class ApiConfig {
     public static final String APP_PATH_GET_COMPONENT_CONFIGS = "api/v1/system/component/configs";// 获取扩展包配置信息
     public static final String APP_PATH_GET_COMPONENT_CONFIGS_IM = "im";// 获取扩展包配置信息 类容
 
+    public static final String APP_PATH_SYSTEM_FEEDBACK = "api/v1/system/feedback";// 意见反馈
+    public static final String APP_PATH_GET_SYSTEM_CONVERSATIONS = "api/v1/system/conversations";// 获取系统会话列表
+
     /**
      * 分享相关
      */

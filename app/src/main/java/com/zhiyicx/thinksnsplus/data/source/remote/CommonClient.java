@@ -35,10 +35,12 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CREATE_STORAGE_T
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DELETE_STORAGE_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_COMPONENT_CONFIGS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_COMPONENT_STATUS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SYSTEM_CONVERSATIONS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_VERTIFYCODE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_HANDLE_BACKGROUND_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_NOTIFY_STORAGE_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFRESH_TOKEN;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SYSTEM_FEEDBACK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_TOKEN_EXPIERD;
 
 /**
@@ -61,7 +63,7 @@ public interface CommonClient {
     public static final String VERTIFY_CODE_TYPE_CHANGE = "change";
 
 
-
+    /*******************************************  系统相关  *********************************************/
 
 
     /**
@@ -87,13 +89,45 @@ public interface CommonClient {
     @PATCH(APP_PATH_REFRESH_TOKEN)
     Observable<BaseJson<AuthBean>> refreshToken(@Query("refresh_token") String refrshToken, @Query("device_code") String deviceCode);
 
+    /**
+     * 查看扩展包安装状态
+     *
+     * @return
+     */
     @GET(APP_PATH_GET_COMPONENT_STATUS)
     Observable<BaseJson<ComponentStatusBean>> getComponentStatus();
 
+    /**
+     * 获取扩展包配置信息
+     *
+     * @param component
+     * @return
+     */
     @GET(APP_PATH_GET_COMPONENT_CONFIGS)
     Observable<BaseJson<List<ComponentConfigBean>>> getComponentConfigs(@Query("component") String component);
 
-    ///////////////////////////////////////文件上传////////////////////////////////////////////////////
+    /**
+     * 意见反馈
+     *
+     * @param content
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(APP_PATH_SYSTEM_FEEDBACK)
+    Observable<BaseJson<CacheBean>> systemFeedBack(@Field("content") String content);
+
+    /**
+     * 获取系统会话列表
+     *
+     * @param max_id
+     * @param limit
+     * @return
+     */
+    @GET(APP_PATH_GET_SYSTEM_CONVERSATIONS)
+    Observable<BaseJson<List<ComponentConfigBean>>> getSystemConversations(@Query("max_id") long max_id, @Query("limit") int limit);
+
+
+    /*******************************************  文件上传  *********************************************/
 
     /**
      * 储存任务创建
@@ -169,5 +203,5 @@ public interface CommonClient {
 
     @Multipart
     @PATCH(APP_PATH_HANDLE_BACKGROUND_TASK)
-    Observable<BaseJson<Object>> handleBackGroundTaskPatch(@Path("path") String path,@Part List<MultipartBody.Part> partList);
+    Observable<BaseJson<Object>> handleBackGroundTaskPatch(@Path("path") String path, @Part List<MultipartBody.Part> partList);
 }
