@@ -113,7 +113,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
     }
 
     @Override
-    public void requestNetData(Long maxId, final boolean isLoadMore, long user_id) {
+    public void requestNetData(Long maxId, final boolean isLoadMore, final long user_id) {
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
@@ -124,7 +124,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
                     @Override
                     public BaseJson<List<DynamicBean>> call(BaseJson<List<DynamicBean>> listBaseJson) {
                         if (listBaseJson.isStatus()) {
-                            if (!isLoadMore) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
+                            if (!isLoadMore && AppApplication.getmCurrentLoginAuth().getUser_id() == user_id) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
                                 List<DynamicBean> data = getDynamicBeenFromDB();
                                 mRootView.updateDynamicCounts(data.size());//修改动态条数
                                 data.addAll(listBaseJson.getData());
@@ -278,10 +278,10 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(userInfoBean.getName());
-        shareContent.setContent(TextUtils.isEmpty(userInfoBean.getIntro())?mContext.getString(R.string.intro_default):userInfoBean.getIntro());
+        shareContent.setContent(TextUtils.isEmpty(userInfoBean.getIntro()) ? mContext.getString(R.string.intro_default) : userInfoBean.getIntro());
         if (userInfoBean.getAvatar() != null) {
             shareContent.setImage(ImageUtils.imagePathConvert(userInfoBean.getAvatar(), 100));
-        }else {
+        } else {
             shareContent.setBitmap(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.pic_default_portrait1));
         }
         shareContent.setUrl(String.format(ApiConfig.APP_PATH_SHARE_USERINFO, userInfoBean.getUser_id()));
