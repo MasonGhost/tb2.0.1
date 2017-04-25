@@ -11,9 +11,7 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.info.InfoRecommendBean;
-import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -32,7 +30,7 @@ public class InfoBannerItem implements ItemViewDelegate<BaseListBean> {
 
     @Override
     public void convert(ViewHolder holder, BaseListBean baseListBean, BaseListBean lastT,
-                        int position) {
+                        int position,int itemCounts) {
         InfoRecommendBean realData = (InfoRecommendBean) baseListBean;
         String url = String.format(ApiConfig.IMAGE_PATH, realData.getCover().getId(), 50);
         Banner banner = holder.getView(R.id.item_banner);

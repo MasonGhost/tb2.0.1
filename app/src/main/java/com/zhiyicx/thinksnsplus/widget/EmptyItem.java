@@ -23,7 +23,7 @@ public abstract class EmptyItem<T> implements ItemViewDelegate<T> {
     public abstract boolean isForViewType(T item, int position);
 
     @Override
-    public void convert(ViewHolder holder, T baseListBean, T lastT, int position) {
+    public void convert(ViewHolder holder, T baseListBean, T lastT, int position,int itemCounts) {
         EmptyView emptyView = holder.getView(R.id.comment_emptyview);
         emptyView.setNeedTextTip(false);
         emptyView.setErrorType(EmptyView.STATE_NODATA);

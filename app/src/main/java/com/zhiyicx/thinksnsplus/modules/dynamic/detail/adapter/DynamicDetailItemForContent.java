@@ -43,7 +43,7 @@ public class DynamicDetailItemForContent implements ItemViewDelegate<DynamicBean
     }
 
     @Override
-    public void convert(ViewHolder holder, DynamicBean dynamicBean, DynamicBean lastT, int position) {
+    public void convert(ViewHolder holder, DynamicBean dynamicBean, DynamicBean lastT, int position,int itemCounts) {
         TextView title = holder.getView(R.id.tv_dynamic_title);
         TextView content = holder.getView(R.id.tv_dynamic_content);
         LinearLayout photoContainer = holder.getView(R.id.ll_dynamic_photos_container);

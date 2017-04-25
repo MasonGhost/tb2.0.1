@@ -71,7 +71,14 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
     }
 
     @Override
-    public void convert(final ViewHolder holder, final ChatItemBean chatItemBean, ChatItemBean lastChatItemBean, int position) {
+    public void convert(final ViewHolder holder, final ChatItemBean chatItemBean, ChatItemBean lastChatItemBean, int position, int itemCounts) {
+
+        if (position == itemCounts - 1) { // 为最后一项加上间距
+            holder.getConvertView().setPadding(0, 0, 0, holder.getConvertView().getResources().getDimensionPixelSize(R.dimen.spacing_mid));
+        } else {
+            holder.getConvertView().setPadding(0, 0, 0, 0);
+        }
+
 //        holder.getView(R.id.rl_chat_bubble).setBackgroundDrawable(mBubbleBg);
         // 显示时间的，最大间隔时间；当两条消息间隔 > MAX_SPACING_TIME 时显示时间
         if (lastChatItemBean == null || (chatItemBean.getLastMessage().getCreate_time() - lastChatItemBean.getLastMessage().getCreate_time()) >= (MAX_SPACING_TIME * ConstantConfig.MIN)) {
@@ -173,7 +180,6 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
         }
 
     }
-
 
 }
 

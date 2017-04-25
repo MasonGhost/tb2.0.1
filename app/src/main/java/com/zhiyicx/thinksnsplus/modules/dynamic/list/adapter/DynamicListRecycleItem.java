@@ -77,9 +77,10 @@ public class DynamicListRecycleItem extends DynamicListBaseItem {
                 || item.getFeed().getStorages().size() == IMAGE_COUNTS_9;
     }
 
+
     @Override
-    public void convert(ViewHolder holder, DynamicBean dynamicBean, DynamicBean lastT, int position) {
-        super.convert(holder, dynamicBean, lastT, position);
+    public void convert(ViewHolder holder, final DynamicBean dynamicBean, DynamicBean lastT, int position,int itemCounts) {
+        super.convert(holder, dynamicBean, lastT, position,itemCounts);
         RecyclerView recyclerView = holder.getView(R.id.nrv_image);
         int colums;
         switch (dynamicBean.getFeed().getStorages().size()) { // 根据设计规范，计算出当前数量图片应该分成几列

@@ -17,7 +17,6 @@ import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
@@ -67,7 +66,7 @@ public class InfoDetailCommentItem implements ItemViewDelegate<InfoCommentListBe
 
     @Override
     public void convert(final ViewHolder holder, InfoCommentListBean infoCommentListBean,
-                        InfoCommentListBean lastT, final int position) {
+                        InfoCommentListBean lastT, final int position,int itemCounts) {
         AppApplication.AppComponentHolder.getAppComponent()
                 .imageLoader()
                 .loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()

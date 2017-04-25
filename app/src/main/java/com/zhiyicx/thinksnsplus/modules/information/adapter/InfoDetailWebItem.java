@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Message;
 import android.support.annotation.RequiresApi;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -14,7 +13,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.common.utils.ToastUtils;
@@ -247,7 +245,7 @@ public abstract class InfoDetailWebItem implements ItemViewDelegate<InfoCommentL
 
     @Override
     public void convert(ViewHolder holder, InfoCommentListBean infoCommentListBean,
-                        InfoCommentListBean lastT, int position) {
+                        InfoCommentListBean lastT, int position,int itemCounts) {
         WebView web = holder.getView(R.id.info_detail_content);
         initWebViewData(web);
         String url = String.format(APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,

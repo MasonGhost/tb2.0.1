@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -11,7 +10,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
-import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -50,9 +48,10 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
         return IMAGE_COUNTS;
     }
 
+
     @Override
-    public void convert(ViewHolder holder, final DynamicBean dynamicBean, DynamicBean lastT, int position) {
-        super.convert(holder, dynamicBean, lastT, position);
+    public void convert(ViewHolder holder, final DynamicBean dynamicBean, DynamicBean lastT, int position,int itemCounts) {
+        super.convert(holder, dynamicBean, lastT, position,itemCounts);
         initImageView(holder, (ImageView) holder.getView(R.id.siv_0), dynamicBean, 0, 1);
     }
 

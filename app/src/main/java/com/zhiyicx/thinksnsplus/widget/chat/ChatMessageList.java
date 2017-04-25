@@ -11,7 +11,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
@@ -21,9 +20,6 @@ import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.wcy.overscroll.OverScrollCheckListener;
 import com.wcy.overscroll.OverScrollLayout;
 import com.zhiyicx.baseproject.R;
-import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.utils.common.DeviceUtils;
@@ -121,36 +117,37 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
         mRecyclerView = (RecyclerView) findViewById(R.id.swipe_target);
         mLinearLayoutManager = new LinearLayoutManager(context);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
-        mRecyclerView.addItemDecoration(new LinearDecoration(0, ConvertUtils.dp2px(getContext(), RECYCLEVIEW_ITEMDECORATION_SPACING), 0, 0));//设置Item的间隔
+//        mRecyclerView.addItemDecoration(new LinearDecoration(0, ConvertUtils.dp2px(getContext(), RECYCLEVIEW_ITEMDECORATION_SPACING), 0, 0),-1);//设置最后一个 Item 的间隔
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());//设置动画
         mRefreshLayout.setRefreshEnabled(true);
         mRefreshLayout.setLoadMoreEnabled(false);
         mRefreshLayout.setOnRefreshListener(this);
-        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                LogUtils.d("event = " + event.getAction());
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_MOVE:
-                        if (!mIsHandledDrag) {
-                            mIsHandledDrag = true;
-                            if (handleSoftInput(v)) return false;
-                        }
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        mIsHandledDrag = false;
-                        if (handleSoftInput(v)) return true;
-                        break;
-                    case MotionEvent.ACTION_CANCEL:
-                        if (handleSoftInput(v)) return true;
-                        break;
-                    default:
-                }
-                return false;
-            }
-        });
+        // 因为增加了过度拉动动画，故取消此监听
+//        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                LogUtils.d("event = " + event.getAction());
+//                switch (event.getAction()) {
+//                    case MotionEvent.ACTION_MOVE:
+//                        if (!mIsHandledDrag) {
+//                            mIsHandledDrag = true;
+//                            if (handleSoftInput(v)) return false;
+//                        }
+//                        break;
+//                    case MotionEvent.ACTION_UP:
+//                        mIsHandledDrag = false;
+//                        if (handleSoftInput(v)) return true;
+//                        break;
+//                    case MotionEvent.ACTION_CANCEL:
+//                        if (handleSoftInput(v)) return true;
+//                        break;
+//                    default:
+//                }
+//                return false;
+//            }
+//        });
 
         overscroll = (OverScrollLayout)findViewById(R.id.overscroll);
         overscroll.setOverScrollCheckListener(new OverScrollCheckListener() {
@@ -238,6 +235,7 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
                 return false;
             }
         });
+
         // TODO: 2017/1/7 添加图片、视频、音频等Delegate
         mRecyclerView.setAdapter(messageAdapter);
         mRecyclerView.setItemAnimator(new SlideInUpAnimator());

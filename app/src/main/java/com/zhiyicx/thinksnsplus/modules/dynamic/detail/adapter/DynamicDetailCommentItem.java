@@ -58,7 +58,7 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
     }
 
     @Override
-    public void convert(ViewHolder holder, DynamicCommentBean dynamicCommentBean, DynamicCommentBean lastT, int position) {
+    public void convert(ViewHolder holder, DynamicCommentBean dynamicCommentBean, DynamicCommentBean lastT, int position,int itemCounts) {
         holder.setText(R.id.tv_name, dynamicCommentBean.getCommentUser().getName());
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicCommentBean.getCreated_at()));
         holder.setText(R.id.tv_content, setShowText(dynamicCommentBean, position));

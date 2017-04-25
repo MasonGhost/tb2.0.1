@@ -1,32 +1,19 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
-import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListFragment;
 import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author LiuChao
@@ -48,7 +35,7 @@ public class DynamicDetailItemForDig implements ItemViewDelegate<DynamicBean> {
     }
 
     @Override
-    public void convert(final ViewHolder holder, DynamicBean dynamicBean, DynamicBean lastT, int position) {
+    public void convert(final ViewHolder holder, DynamicBean dynamicBean, DynamicBean lastT, int position,int itemCounts) {
 
         DynamicHorizontalStackIconView dynamicHorizontalStackIconView = holder.getView(R.id.detail_dig_view);
         final DynamicDetailBean dynamicDetailBean = dynamicBean.getFeed();

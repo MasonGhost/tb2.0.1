@@ -1,11 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center.adapter;
 
 import android.content.Context;
-import android.view.View;
-import android.widget.RelativeLayout;
 
-import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -31,8 +27,9 @@ public class PersonalCenterDynamicListForZeroImage extends PersonalCenterDynamic
         return position == 0 || (item.getFeed_mark() != null && (item.getFeed().getStorages() == null||item.getFeed().getStorages().isEmpty()));
     }
 
+
     @Override
-    public void convert(ViewHolder holder, DynamicBean dynamicBean, DynamicBean lastT, int position) {
-        super.convert(holder, dynamicBean, lastT, position);
+    public void convert(ViewHolder holder, final DynamicBean dynamicBean, DynamicBean lastT, int position,int itemCounts) {
+        super.convert(holder, dynamicBean, lastT, position,itemCounts);
     }
 }

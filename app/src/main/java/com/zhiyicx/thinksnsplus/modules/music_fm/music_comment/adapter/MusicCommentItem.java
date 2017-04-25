@@ -16,12 +16,10 @@ import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoLongClickListener;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -70,7 +68,7 @@ public class MusicCommentItem implements ItemViewDelegate<MusicCommentListBean> 
 
     @Override
     public void convert(ViewHolder holder,final MusicCommentListBean musicCommentListBean,
-                        MusicCommentListBean lastT, final int position) {
+                        MusicCommentListBean lastT, final int position,int itemCounts) {
         if (musicCommentListBean.getFromUserInfoBean() != null) {
             AppApplication.AppComponentHolder.getAppComponent()
                     .imageLoader()

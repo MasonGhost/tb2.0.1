@@ -50,7 +50,7 @@ public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     }
 
     public void convert(ViewHolder holder, T t, T lastT) {
-        mItemViewDelegateManager.convert(holder, t, lastT, holder.getAdapterPosition());
+        mItemViewDelegateManager.convert(holder, t, lastT, holder.getAdapterPosition(),getItemCount());
     }
 
     protected boolean isEnabled(int viewType) {

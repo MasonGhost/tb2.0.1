@@ -142,7 +142,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
      * @param position
      */
     @Override
-    public void convert(ViewHolder holder, DynamicBean dynamicBean, DynamicBean lastT, final int position) {
+    public void convert(ViewHolder holder, DynamicBean dynamicBean, DynamicBean lastT, final int position,int itemCounts) {
         try {
             String userIconUrl = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getUserInfoBean().getAvatar(), ImageZipConfig.IMAGE_38_ZIP);
             mImageLoader.loadImage(mContext, GlideImageConfig.builder()
