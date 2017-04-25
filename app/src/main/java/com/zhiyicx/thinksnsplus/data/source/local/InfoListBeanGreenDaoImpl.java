@@ -6,6 +6,7 @@ import android.content.Context;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.info.InfoRecommendBean;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
@@ -29,7 +30,7 @@ public class InfoListBeanGreenDaoImpl extends CommonCacheImpl<InfoListBean> {
     public InfoListBeanGreenDaoImpl(Context context) {
         super(context);
         mInfoListBeanDao = getWDaoSession().getInfoListBeanDao();
-        mInfoListDataBeanGreenDao=new InfoListDataBeanGreenDaoImpl((Application)context);
+        mInfoListDataBeanGreenDao = new InfoListDataBeanGreenDaoImpl((Application) context);
     }
 
     @Override
@@ -109,5 +110,18 @@ public class InfoListBeanGreenDaoImpl extends CommonCacheImpl<InfoListBean> {
     public void saveCollect(InfoListDataBean data, int is_collection_news) {
         data.setIs_collection_news(is_collection_news);
         mInfoListDataBeanGreenDao.updateSingleData(data);
+    }
+
+    public void saveDig(InfoListDataBean data, int is_dig_news) {
+        data.setIs_digg_news(is_dig_news);
+        mInfoListDataBeanGreenDao.updateSingleData(data);
+    }
+
+    public boolean isDiged(int news_id) {
+        return mInfoListDataBeanGreenDao.isDiged(news_id);
+    }
+
+    public boolean isCollected(int news_id) {
+        return mInfoListDataBeanGreenDao.isCollected(news_id);
     }
 }

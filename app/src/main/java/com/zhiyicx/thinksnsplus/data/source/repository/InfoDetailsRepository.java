@@ -156,6 +156,39 @@ public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
     }
 
     @Override
+    public void handleLike(boolean isLiked,final String news_id) {
+        Observable.just(isLiked)
+                .observeOn(Schedulers.io())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        BackgroundRequestTaskBean backgroundRequestTaskBean;
+                        HashMap<String, Object> params = new HashMap<>();
+                        params.put("news_id", news_id);
+                        // 后台处理
+                        if (aBoolean) {
+                            backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                                    (BackgroundTaskRequestMethodConfig.POST, params);
+                            LogUtils.d(backgroundRequestTaskBean.getMethodType());
+                        } else {
+                            backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                                    (BackgroundTaskRequestMethodConfig.DELETE, params);
+                            LogUtils.d(backgroundRequestTaskBean.getMethodType());
+                        }
+                        backgroundRequestTaskBean.setPath(String.format(ApiConfig
+                                .APP_PATH_INFO_DIG_FORMAT, news_id));
+                        BackgroundTaskManager.getInstance(context).addBackgroundRequestTask
+                                (backgroundRequestTaskBean);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
+    }
+
+    @Override
     public void sendComment(String comment_content, Long new_id, int reply_to_user_id,
                             Long comment_mark) {
         BackgroundRequestTaskBean backgroundRequestTaskBean;

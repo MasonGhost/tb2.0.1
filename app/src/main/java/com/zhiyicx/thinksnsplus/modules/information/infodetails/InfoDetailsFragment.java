@@ -16,6 +16,7 @@ import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -53,7 +54,7 @@ import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoLis
  */
 public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Presenter,
         InfoCommentListBean> implements InfoDetailsConstract.View, InputLimitView
-        .OnSendClickListener{
+        .OnSendClickListener {
 
     @BindView(R.id.behavior_demo_coordinatorLayout)
     CoordinatorLayout mCoordinatorLayout;
@@ -151,7 +152,9 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         initBottomToolStyle();
         initBottomToolListener();
         initListener();
-        setCollect(mInfoMation.getIs_collection_news() == 1);
+        mInfoMation.setIs_collection_news(mPresenter.isCollected() ? 1 : 0);
+        mInfoMation.setIs_digg_news(mPresenter.isDiged() ? 1 : 0);
+        setDigg(mPresenter.isDiged());
     }
 
     @Override
@@ -206,7 +209,12 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     public void setCollect(boolean isCollected) {
-        mDdDynamicTool.setItemIsChecked(isCollected, ITEM_POSITION_0);
+//        mDdDynamicTool.setItemIsChecked(isCollected, ITEM_POSITION_0);
+    }
+
+    @Override
+    public void setDigg(boolean isDigged) {
+        mDdDynamicTool.setItemIsChecked(isDigged, ITEM_POSITION_0);
     }
 
     @Override
@@ -233,18 +241,16 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     }
 
     private void initBottomToolStyle() {
-        mDdDynamicTool.setButtonText(new int[]{R.string.comment,
-                R.string.share, R.string.more,R.string.more});
+        mDdDynamicTool.setButtonText(new int[]{R.string.dynamic_like, R.string.comment,
+                R.string.share, R.string.more});
         mDdDynamicTool.setImageNormalResourceIds(new int[]{
-                R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal,
-                R.mipmap.home_ico_more,
-                DEFAULT_RESOURES_ID});
+                R.mipmap.home_ico_good_normal, R.mipmap.home_ico_comment_normal,
+                R.mipmap.detail_ico_share_normal, R.mipmap.home_ico_more});
 
         mDdDynamicTool.setImageCheckedResourceIds(new int[]{
-                R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal, R.mipmap
-                .home_ico_more,DEFAULT_RESOURES_ID});
+                R.mipmap.home_ico_good_high, R.mipmap.home_ico_comment_normal,
+                R.mipmap.detail_ico_share_normal, R.mipmap.home_ico_more, R.mipmap.home_ico_more});
         mDdDynamicTool.setData();
-
     }
 
     private void initBottomToolListener() {
@@ -253,19 +259,22 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
             public void onItemClick(ViewGroup parent, View v, int postion) {
                 mDdDynamicTool.getTag(R.id.view_data);
                 switch (postion) {
-                    case DynamicDetailMenuView.ITEM_POSITION_0:// 评论
+                    case DynamicDetailMenuView.ITEM_POSITION_0:// 点赞
+                        mPresenter.handleLike(mInfoMation.getIs_digg_news() == 0,
+                                mInfoMation.getId() + "");
+                        break;
+                    case DynamicDetailMenuView.ITEM_POSITION_1:// 评论
                         showCommentView();
                         mReplyUserId = 0;
                         break;
-                    case DynamicDetailMenuView.ITEM_POSITION_1:// 分享
+                    case DynamicDetailMenuView.ITEM_POSITION_2:// 分享
                         mPresenter.shareInfo();
                         break;
-                    case DynamicDetailMenuView.ITEM_POSITION_2:// 更多
-                        initDealInfoMationPopupWindow(mInfoMation,mInfoMation.getIs_collection_news() == 1);
+                    case DynamicDetailMenuView.ITEM_POSITION_3:// 更多
+                        initDealInfoMationPopupWindow(mInfoMation, mInfoMation.getIs_collection_news() == 1);
                         mDealInfoMationPopWindow.show();
                         break;
-                    case DynamicDetailMenuView.ITEM_POSITION_3:
-                        ToastUtils.showToast("more");
+                    default:
                         break;
                 }
             }
@@ -349,8 +358,10 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
      * @param infoMation curent infoMation
      */
     private void initDealInfoMationPopupWindow(final InfoListDataBean infoMation, boolean isCollected) {
+        boolean isLiked = infoMation.getIs_digg_news() == 1;
         mDealInfoMationPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(isCollected?R.string.dynamic_list_uncollect_dynamic:R.string.dynamic_list_collect_dynamic))
+                .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
+//                .item2Str(getString(isLiked ? R.string.info_dig_cancel : R.string.info_dig))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -360,6 +371,14 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                     @Override
                     public void onItem1Clicked() {// 收藏
                         mPresenter.handleCollect(infoMation.getIs_collection_news() == 0,
+                                mInfoMation.getId() + "");
+                        mDealInfoMationPopWindow.hide();
+                    }
+                })
+                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
+                    @Override
+                    public void onItem2Clicked() {// 点赞
+                        mPresenter.handleLike(infoMation.getIs_digg_news() == 0,
                                 mInfoMation.getId() + "");
                         mDealInfoMationPopWindow.hide();
                     }

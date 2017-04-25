@@ -4,6 +4,7 @@ import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.data.source.local.InfoListDataBeanGreenDaoImpl;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,8 +22,10 @@ import rx.Subscription;
  * @Description
  */
 public class InfoSearchPresenter extends BasePresenter<SearchContract.Repository, SearchContract
-        .View>
-        implements SearchContract.Presenter {
+        .View> implements SearchContract.Presenter {
+
+    @Inject
+    InfoListDataBeanGreenDaoImpl mInfoListDataBeanGreenDao;
 
     @Inject
     public InfoSearchPresenter(SearchContract.Repository repository,
@@ -46,6 +49,9 @@ public class InfoSearchPresenter extends BasePresenter<SearchContract.Repository
                 .subscribe(new BaseSubscribe<List<InfoListDataBean>>() {
                     @Override
                     protected void onSuccess(List<InfoListDataBean> data) {
+                        if (!data.isEmpty()){
+                            mInfoListDataBeanGreenDao.saveMultiData(data);
+                        }
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 
