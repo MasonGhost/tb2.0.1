@@ -5,9 +5,13 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.chat.BaseChatFragment;
+
+import java.util.List;
 
 /**
  * @Describe
@@ -29,18 +33,27 @@ public class SystemConversationFragment extends BaseChatFragment<SystemConversat
 
     @Override
     protected String setCenterTitle() {
-        return "";
+        return "TS+小助手";
     }
 
 
     @Override
     protected void initData() {
         super.initData();
+        mPresenter.requestCacheData(mMax_id);
+        initMessageList();
+        mMessageList.getRefreshLayout().setRefreshing(true);
     }
 
     @Override
     protected MessageItemBean initMessageItemBean() {
-        return null;
+        MessageItemBean messageItemBean=new MessageItemBean();
+        Conversation  conversation=new Conversation();
+        messageItemBean.setConversation(conversation);
+        UserInfoBean userInfoBean=new UserInfoBean();
+        userInfoBean.setName("TS+小助手");
+        messageItemBean.setUserInfo(userInfoBean);
+        return messageItemBean;
     }
 
     /**
@@ -70,5 +83,16 @@ public class SystemConversationFragment extends BaseChatFragment<SystemConversat
     @Override
     public void onRefresh() {
         mPresenter.requestNetData(mMax_id, mIsLoadMore);
+    }
+
+    @Override
+    public void updateData(List<ChatItemBean> datas) {
+        mDatas.addAll(datas);
+        mMessageList.refresh();
+        if (mDatas.isEmpty()) {
+            mMax_id = TSListFragment.DEFAULT_PAGE_MAX_ID;
+        } else {
+            mMax_id = mDatas.get(0).getLastMessage().getId();
+        }
     }
 }

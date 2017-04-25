@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.system_conversation;
 
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.ISystemRepository;
 
@@ -17,6 +18,8 @@ import java.util.List;
 public interface SystemConversationContract {
 
     interface View extends IBaseView<Presenter> {
+
+        void updateData(List<ChatItemBean> datas);
 
 
     }

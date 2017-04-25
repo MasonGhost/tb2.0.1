@@ -218,7 +218,6 @@ public abstract class BaseChatFragment<P extends IBasePresenter> extends TSFragm
      * 初始化消息列表
      */
     protected void initMessageList() {
-
         mMessageList.init(mMessageItemBean.getConversation().getType() == ChatType.CHAT_TYPE_PRIVATE ? mMessageItemBean.getUserInfo().getName() : getString(R.string.default_message_group)
                 , mMessageItemBean.getConversation().getType(), mDatas);
         mMessageList.scrollToBottom();

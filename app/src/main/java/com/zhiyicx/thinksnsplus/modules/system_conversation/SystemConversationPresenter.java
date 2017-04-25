@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.cache.CacheBean;
+import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.imsdk.entity.Message;
@@ -21,6 +22,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -74,10 +76,29 @@ public class SystemConversationPresenter extends BasePresenter<SystemConversatio
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
         Subscription systemconversationsSub = mRepository.getSystemConversations(maxId, TSListFragment.DEFAULT_PAGE_SIZE)
-                .subscribe(new BaseSubscribe<List<SystemConversationBean>>() {
+                .map(new Func1<BaseJson<List<SystemConversationBean>>, BaseJson<List<ChatItemBean>>>() {
                     @Override
-                    protected void onSuccess(List<SystemConversationBean> data) {
-
+                    public BaseJson<List<ChatItemBean>> call(BaseJson<List<SystemConversationBean>> listBaseJson) {
+                        BaseJson<List<ChatItemBean>> chatData = new BaseJson<List<ChatItemBean>>();
+                        chatData.setCode(listBaseJson.getCode());
+                        chatData.setMessage(listBaseJson.getMessage());
+                        chatData.setStatus(listBaseJson.isStatus());
+                        if (listBaseJson.isStatus()) {
+                            chatData.setData(packageChatItemBean(listBaseJson.getData()));
+                        }
+                        return chatData;
+                    }
+                })
+                .doAfterTerminate(new Action0() {
+                    @Override
+                    public void call() {
+                        mRootView.hideLoading();
+                    }
+                })
+                .subscribe(new BaseSubscribe<List<ChatItemBean>>() {
+                    @Override
+                    protected void onSuccess(List<ChatItemBean> data) {
+                        mRootView.updateData(data);
                     }
 
                     @Override
@@ -130,6 +151,7 @@ public class SystemConversationPresenter extends BasePresenter<SystemConversatio
         for (SystemConversationBean systemConversationBean : systemConversationBeen) {
             ChatItemBean chatItemBean = new ChatItemBean();
             Message message = new Message();
+            message.setId(systemConversationBean.getId().intValue());
             message.setTxt(systemConversationBean.getContent());
             message.setCreate_time(TimeUtils.string2MillisDefaultLocal(systemConversationBean.getCreated_at()));
             message.setSend_status(MessageStatus.SEND_SUCCESS);

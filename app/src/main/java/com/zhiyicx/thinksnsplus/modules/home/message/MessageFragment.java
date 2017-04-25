@@ -21,6 +21,7 @@ import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagelike.MessageLikeActivity;
+import com.zhiyicx.thinksnsplus.modules.system_conversation.SystemConversationActivity;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import java.util.concurrent.TimeUnit;
@@ -161,10 +162,11 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                     .subscribe(new Action1<Void>() {
                         @Override
                         public void call(Void aVoid) {
-                            toCommentList();
-                            mPresenter.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_COMMENTS);
-                            mPresenter.updateCommnetItemData().setUnReadMessageNums(0);
-                            updateCommnetItemData(mPresenter.updateCommnetItemData());
+//                            toCommentList();
+//                            mPresenter.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_COMMENTS);
+//                            mPresenter.updateCommnetItemData().setUnReadMessageNums(0);
+//                            updateCommnetItemData(mPresenter.updateCommnetItemData());
+                            startActivity(new Intent(getActivity(), SystemConversationActivity.class));
                         }
                     });
             liked = headerview.findViewById(R.id.rl_liked);
