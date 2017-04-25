@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 import android.app.Application;
 import android.content.Context;
 
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
@@ -18,8 +17,6 @@ import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
-import com.zhiyicx.thinksnsplus.data.beans.ComponentConfigBean;
-import com.zhiyicx.thinksnsplus.data.beans.ComponentStatusBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
@@ -33,9 +30,6 @@ import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -207,93 +201,6 @@ public class AuthRepository implements IAuthRepository {
         ZBIMClient.getInstance().login(getIMConfig());
     }
 
-    /**
-     * @return
-     */
-    public ComponentStatusBean getComponentStatusLocal() {
-        ComponentStatusBean componentStatusBean = SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_COMPONENT_STATUS);
-        if (componentStatusBean == null) { //默认开启 IM
-            componentStatusBean = new ComponentStatusBean();
-            componentStatusBean.setIm(true);
-        }
-        return componentStatusBean;
-    }
-
-    /**
-     * @param componentStatusBean
-     * @return
-     */
-    public boolean saveComponentStatus(ComponentStatusBean componentStatusBean) {
-        return SharePreferenceUtils.saveObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_COMPONENT_STATUS, componentStatusBean);
-    }
-
-    /**
-     * @return
-     */
-    public List<ComponentConfigBean> getComponentConfigLocal() {
-        List<ComponentConfigBean> result = SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_COMPONENT_CONFIG);
-        if (result == null || result.size() == 0) { //本地默认地址
-            result = new ArrayList<>();
-            ComponentConfigBean componentConfigBean = new ComponentConfigBean();
-            componentConfigBean.setName("serverurl");
-            componentConfigBean.setValue(ApiConfig.APP_IM_DOMAIN);
-            result.add(componentConfigBean);
-        }
-        return result;
-    }
-
-    /**
-     * @param componentConfigBeens
-     * @return
-     */
-    public boolean saveComponentConfig(List<ComponentConfigBean> componentConfigBeens) {
-        return SharePreferenceUtils.saveObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_COMPONENT_CONFIG, componentConfigBeens);
-    }
-
-    @Override
-    public void getComponentStatusFromServer() {
-        mCommonClient.getComponentStatus()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new BaseSubscribe<ComponentStatusBean>() {
-                    @Override
-                    protected void onSuccess(ComponentStatusBean data) {
-                        saveComponentStatus(data);
-                    }
-
-                    @Override
-                    protected void onFailure(String message, int code) {
-
-                    }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-
-                    }
-                });
-    }
-
-    @Override
-    public void getComponentConfigFromServer(String component) {
-        mCommonClient.getComponentConfigs(component)
-                .subscribeOn(Schedulers.io())
-                .subscribe(new BaseSubscribe<List<ComponentConfigBean>>() {
-                    @Override
-                    protected void onSuccess(List<ComponentConfigBean> data) {
-                        saveComponentConfig(data);
-
-                    }
-
-                    @Override
-                    protected void onFailure(String message, int code) {
-
-                    }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-
-                    }
-                });
-    }
 
     /**
      * 是否需要刷新token

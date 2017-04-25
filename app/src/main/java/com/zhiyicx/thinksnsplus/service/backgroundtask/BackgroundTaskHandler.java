@@ -33,9 +33,9 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SendDynamicRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
-import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
@@ -84,6 +84,8 @@ public class BackgroundTaskHandler {
     BackgroundRequestTaskBeanGreenDaoImpl mBackgroundRequestTaskBeanGreenDao;
     @Inject
     AuthRepository mAuthRepository;
+    @Inject
+    SystemRepository mSystemRepository;
     @Inject
     UserInfoRepository mUserInfoRepository;
     @Inject
@@ -426,7 +428,7 @@ public class BackgroundTaskHandler {
                         IMConfig imConfig = new IMConfig();
                         imConfig.setImUid(data.getUser_id());
                         imConfig.setToken(data.getIm_password());
-                        imConfig.setWeb_socket_authority("ws://" + mAuthRepository.getComponentConfigLocal().get(0).getValue());
+                        imConfig.setWeb_socket_authority("ws://" + mSystemRepository.getComponentConfigLocal().get(0).getValue());
                         mAuthRepository.saveIMConfig(imConfig);
                         mAuthRepository.loginIM();
                     }

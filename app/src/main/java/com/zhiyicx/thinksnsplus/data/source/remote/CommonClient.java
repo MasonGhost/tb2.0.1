@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.ComponentConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.ComponentStatusBean;
 import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 
 import java.util.HashMap;
 import java.util.List;
@@ -114,7 +115,7 @@ public interface CommonClient {
      */
     @FormUrlEncoded
     @POST(APP_PATH_SYSTEM_FEEDBACK)
-    Observable<BaseJson<CacheBean>> systemFeedBack(@Field("content") String content);
+    Observable<BaseJson<CacheBean>> systemFeedback(@Field("content") String content);
 
     /**
      * 获取系统会话列表
@@ -124,7 +125,7 @@ public interface CommonClient {
      * @return
      */
     @GET(APP_PATH_GET_SYSTEM_CONVERSATIONS)
-    Observable<BaseJson<List<ComponentConfigBean>>> getSystemConversations(@Query("max_id") long max_id, @Query("limit") int limit);
+    Observable<BaseJson<List<SystemConversationBean>>> getSystemConversations(@Query("max_id") long max_id, @Query("limit") int limit);
 
 
     /*******************************************  文件上传  *********************************************/

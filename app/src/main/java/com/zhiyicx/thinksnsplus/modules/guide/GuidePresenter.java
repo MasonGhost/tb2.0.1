@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.guide;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 
@@ -19,6 +20,8 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
 
     @Inject
     AuthRepository mIAuthRepository;
+    @Inject
+    SystemRepository mSystemRepository;
 
     @Inject
     public GuidePresenter(GuideContract.Repository repository, GuideContract.View rootView) {
@@ -33,8 +36,8 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
     @Override
     public void checkLogin() {
         // 系统扩展配置信息处理
-        mIAuthRepository.getComponentStatusFromServer();
-        mIAuthRepository.getComponentConfigFromServer(ApiConfig.APP_PATH_GET_COMPONENT_CONFIGS_IM);
+        mSystemRepository.getComponentStatusFromServer();
+        mSystemRepository.getComponentConfigFromServer(ApiConfig.APP_PATH_GET_COMPONENT_CONFIGS_IM);
 
         if (mIAuthRepository.isLogin()) {
             // TODO: 2017/2/10 刷新 Token 时间，过期前一天刷新

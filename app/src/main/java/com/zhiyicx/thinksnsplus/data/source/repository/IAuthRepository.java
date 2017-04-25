@@ -3,11 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
-import com.zhiyicx.thinksnsplus.data.beans.ComponentConfigBean;
-import com.zhiyicx.thinksnsplus.data.beans.ComponentStatusBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
-
-import java.util.List;
 
 import rx.Observable;
 
@@ -75,41 +71,4 @@ public interface IAuthRepository {
     IMConfig getIMConfig();
 
     void loginIM();
-
-    /**
-     * 获取扩展组件状态
-     *
-     * @return
-     */
-    ComponentStatusBean getComponentStatusLocal();
-
-    /**
-     * 保存扩张组件状态
-     *
-     * @param componentStatusBean
-     * @return
-     */
-    boolean saveComponentStatus(ComponentStatusBean componentStatusBean);
-
-    /**
-     * 获取扩展组件配置
-     *
-     * @return
-     */
-    List<ComponentConfigBean> getComponentConfigLocal();
-
-    /**
-     * 保存扩展组件
-     *
-     * @param componentConfigBeens
-     * @return
-     */
-
-    boolean saveComponentConfig(List<ComponentConfigBean> componentConfigBeens);
-
-
-    void getComponentStatusFromServer();
-
-    void getComponentConfigFromServer(String component);
-
 }
