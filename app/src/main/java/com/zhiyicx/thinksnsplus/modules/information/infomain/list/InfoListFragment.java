@@ -149,6 +149,13 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
 //        onCacheResponseSuccess(requestCacheData(mMaxId, false), false);
     }
 
+    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_INFO_LIST_DELETE_UPDATE)
+    public void handleDeleteInfo(InfoListDataBean info) {
+        LogUtils.d("handleDeleteInfo");
+        mListDatas.remove(mListDatas.indexOf(info));
+        refreshData();
+    }
+
     public void setInfoType(String infoType) {
         mInfoType = infoType;
     }

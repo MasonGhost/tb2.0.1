@@ -40,6 +40,7 @@ import rx.schedulers.Schedulers;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAILS_FORMAT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_INFO_LIST_COLLECT;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_INFO_LIST_DELETE_UPDATE;
 import static com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean.SEND_ING;
 
 /**
@@ -119,7 +120,7 @@ public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Rep
     private void handleInfoHasBeDeleted(int code) {
         if (code == ErrorCodeConfig.INFO_HAS_BE_DELETED) {
             mInfoListBeanGreenDao.deleteInfo(mRootView.getCurrentInfo());
-
+            EventBus.getDefault().post(mRootView.getCurrentInfo(),EVENT_SEND_INFO_LIST_DELETE_UPDATE);
             mRootView.infoMationHasBeDeleted();
         } else {
             mRootView.loadAllError();
