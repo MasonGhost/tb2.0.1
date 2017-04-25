@@ -50,7 +50,7 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
                 .imagerView(imageView)
                 .build());
 
-        String from = TextUtils.isEmpty(realData.getFrom()) ? "" : "\b\b\b" + realData.getFrom();
+        String from = TextUtils.isEmpty(realData.getFrom()) ? "" : "\b\b\b来自\b" + realData.getFrom();
         holder.setText(R.id.item_info_timeform, TimeUtils.getTimeFriendlyNormal(realData
                 .getUpdated_at()) + from);
 

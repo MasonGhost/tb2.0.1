@@ -143,6 +143,10 @@ public class ApiConfig {
     public static final String APP_PATH_INFO_COLLECT = "api/v1/news/{news_id}/collection";
     public static final String APP_PATH_INFO_COLLECT_FORMAT = "api/v1/news/%s/collection";
 
+    // 点赞资讯
+    public static final String APP_PATH_INFO_DIG = "api/v1/news/{news_id}/digg";
+    public static final String APP_PATH_INFO_DIG_FORMAT = "api/v1/news/%s/digg";
+
     // 订阅资讯频道
     public static final String APP_PATH_INFO_FOLLOW_LIST = "api/v1/news/cates/follow";
     public static final String APP_PATH_INFO_SEARCH = "/api/v1/news/search";

@@ -610,7 +610,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     private void initOtherDynamicPopupWindow(final DynamicBean dynamicBean, boolean isCollected) {
         mOtherDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(isCollected?R.string.dynamic_list_uncollect_dynamic:R.string.dynamic_list_collect_dynamic))
-                .item2Str(getString(R.string.dynamic_list_share_dynamic))
+//                .item2Str(getString(R.string.dynamic_list_share_dynamic))
                 .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -649,7 +649,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mMyDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(isCollected?R.string.dynamic_list_uncollect_dynamic:R.string.dynamic_list_collect_dynamic))
                 .item2Str(getString(R.string.dynamic_list_delete_dynamic))
-                .item3Str(getString(R.string.dynamic_list_share_dynamic))
+//                .item3Str(getString(R.string.dynamic_list_share_dynamic))
                 .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
