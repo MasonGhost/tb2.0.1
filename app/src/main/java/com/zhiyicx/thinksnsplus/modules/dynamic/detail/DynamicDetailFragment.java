@@ -694,4 +694,10 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mToolbarTopBlank.getLayoutParams();
         layoutParams.height = DeviceUtils.getStatuBarHeight(getContext());
     }
+
+    @Override
+    protected void onOverScrolled() {
+        super.onOverScrolled();
+//        mLLBottomMenuContainer.setVisibility(View.INVISIBLE);
+    }
 }
