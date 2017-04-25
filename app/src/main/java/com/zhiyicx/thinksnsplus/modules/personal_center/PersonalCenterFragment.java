@@ -683,7 +683,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      * @param position    curent dynamic postion
      */
     private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean, final int position) {
-        boolean isCollected = dynamicBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
+        boolean isCollected = dynamicBean.getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED;
         mDeletDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
                 .item2Str(getString(R.string.dynamic_list_delete_dynamic))

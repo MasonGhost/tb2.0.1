@@ -19,7 +19,6 @@
         android:drawableLeft="@mipmap/music_ico_playvolume"
         android:drawablePadding="@dimen/spacing_small_4dp"
         android:padding="@dimen/spacing_normal"
-        android:text="2333"
         android:textColor="@color/white"/>
 
     <View
@@ -37,10 +36,10 @@
         android:paddingLeft="@dimen/spacing_mid_small_8dp"
         android:paddingRight="@dimen/spacing_mid_small_8dp"
         android:paddingTop="@dimen/spacing_mid"
-        android:text="一壶清酒，一曲离殇,三生三世，十里桃花"
         android:textColor="@color/normal_for_dynamic_list_content"/>
 
     <ImageView
+        android:scaleType="fitXY"
         android:layout_width="match_parent"
         android:src="@mipmap/pic_layer_transparent"
         android:layout_height="wrap_content"/>

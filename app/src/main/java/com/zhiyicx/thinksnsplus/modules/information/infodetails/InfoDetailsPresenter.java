@@ -10,6 +10,7 @@ import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
@@ -119,9 +120,10 @@ public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Rep
     public void shareInfo() {
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
-        shareContent.setTitle(mRootView.getCurrentInfo().getTitle());
+        shareContent.setTitle("ThinkSNS+\b\b资讯");
         shareContent.setUrl(String.format(APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
                 mRootView.getCurrentInfo().getId()));
+        shareContent.setContent(mRootView.getCurrentInfo().getTitle());
         if (mRootView.getCurrentInfo().getStorage() != null) {
             shareContent.setImage(ImageUtils.imagePathConvert(mRootView.getCurrentInfo()
                     .getStorage().getId() + "", 100));
