@@ -4,9 +4,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.zhiyicx.imsdk.db.dao.ConversationDao;
-import com.zhiyicx.imsdk.entity.Conversation;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.modules.chat.BaseChatFragment;
@@ -17,8 +15,10 @@ import com.zhiyicx.thinksnsplus.modules.chat.BaseChatFragment;
  * @Date 2017/04/26
  * @Contact master.jungle68@gmail.com
  */
-public class SystemConversationFragment extends BaseChatFragment<SystemConversationContract.Presenter> implements SystemConversationContract.View{
-    public static final String BUNDLE_MESSAGEITEMBEAN = "MessageItemBean";
+public class SystemConversationFragment extends BaseChatFragment<SystemConversationContract.Presenter> implements SystemConversationContract.View {
+
+    private boolean mIsLoadMore = false;
+    private long mMax_id = TSListFragment.DEFAULT_PAGE_MAX_ID;
 
     public static SystemConversationFragment newInstance() {
         Bundle args = new Bundle();
@@ -35,17 +35,7 @@ public class SystemConversationFragment extends BaseChatFragment<SystemConversat
 
     @Override
     protected void initData() {
-        if (mMessageItemBean.getConversation() == null) { // 先获取本地信息，如果本地信息存在，直接使用，如果没有直接创建
-            Conversation conversation = ConversationDao.getInstance(getContext()).getPrivateChatConversationByUids(AppApplication.getmCurrentLoginAuth().getUser_id(), mMessageItemBean.getUserInfo().getUser_id().intValue());
-            if (conversation == null) {
-            } else {
-                mMessageItemBean.setConversation(conversation);
-                initMessageList();
-            }
-        } else {
-            initMessageList();
-        }
-
+        super.initData();
     }
 
     @Override
@@ -79,11 +69,6 @@ public class SystemConversationFragment extends BaseChatFragment<SystemConversat
 
     @Override
     public void onRefresh() {
-        if (mMessageItemBean.getConversation() == null) {
-            hideLoading();
-            return;
-        }
-        mDatas.clear();
-        mMessageList.refresh();
+        mPresenter.requestNetData(mMax_id, mIsLoadMore);
     }
 }

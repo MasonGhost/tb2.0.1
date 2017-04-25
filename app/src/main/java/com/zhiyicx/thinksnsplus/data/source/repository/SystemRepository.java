@@ -12,6 +12,7 @@ import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ComponentConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.ComponentStatusBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
+import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 
@@ -21,6 +22,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -31,6 +34,10 @@ import rx.schedulers.Schedulers;
  */
 
 public class SystemRepository implements ISystemRepository {
+
+    @Inject
+    protected SystemConversationBeanGreenDaoImpl mSystemConversationBeanGreenDao;
+
     private CommonClient mCommonClient;
     private Context mContext;
 
@@ -83,6 +90,9 @@ public class SystemRepository implements ISystemRepository {
         return SharePreferenceUtils.saveObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_COMPONENT_CONFIG, componentConfigBeens);
     }
 
+    /**
+     *
+     */
     @Override
     public void getComponentStatusFromServer() {
         mCommonClient.getComponentStatus()
@@ -105,6 +115,9 @@ public class SystemRepository implements ISystemRepository {
                 });
     }
 
+    /**
+     * @param component
+     */
     @Override
     public void getComponentConfigFromServer(String component) {
         mCommonClient.getComponentConfigs(component)
@@ -128,13 +141,36 @@ public class SystemRepository implements ISystemRepository {
                 });
     }
 
+    /**
+     * @param content 反馈内容
+     * @return
+     */
     @Override
     public Observable<BaseJson<CacheBean>> systemFeedback(String content) {
-        return null;
+        return mCommonClient.systemFeedback(content)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
+    /**
+     * @param max_id
+     * @param limit
+     * @return
+     */
     @Override
     public Observable<BaseJson<List<SystemConversationBean>>> getSystemConversations(long max_id, int limit) {
-        return null;
+        return mCommonClient.getSystemConversations(max_id, limit)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<BaseJson<List<SystemConversationBean>>, BaseJson<List<SystemConversationBean>>>() {
+                    @Override
+                    public BaseJson<List<SystemConversationBean>> call(BaseJson<List<SystemConversationBean>> listBaseJson) {
+                        if (listBaseJson.isStatus()) {
+                            mSystemConversationBeanGreenDao.clearTable();
+                            mSystemConversationBeanGreenDao.saveMultiData(listBaseJson.getData());
+                        }
+                        return listBaseJson;
+                    }
+                });
     }
 }

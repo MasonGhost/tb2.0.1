@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
 
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
@@ -54,6 +55,24 @@ public class SystemConversationBeanGreenDaoImpl extends CommonCacheImpl<SystemCo
                         + " T." + SystemConversationBeanDao.Properties.Id.columnName + " < ? "
                         + " order by " + " T." + SystemConversationBeanDao.Properties.Id.columnName + " DESC"// 按频道id倒序
                 , System.currentTimeMillis() + "");
+        return datas;
+    }
+
+    /**
+     * 通过 max_id 获取分页数据
+     *
+     * @param max_id
+     * @return
+     */
+    public List<SystemConversationBean> getMultiDataFromCacheByMaxId(long max_id) {
+        if (max_id <= 0) {
+            max_id = System.currentTimeMillis();
+        }
+        SystemConversationBeanDao systemConversationBeanDao = getRDaoSession().getSystemConversationBeanDao();
+        List<SystemConversationBean> datas = systemConversationBeanDao.queryDeep(" where "
+                        + " T." + SystemConversationBeanDao.Properties.Id.columnName + " < ? "
+                        + " order by " + " T." + SystemConversationBeanDao.Properties.Id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// 按频道id倒序
+                , max_id + "");
         return datas;
     }
 

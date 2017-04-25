@@ -22,6 +22,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoTypeBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumListBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
@@ -92,6 +93,7 @@ public interface AppComponent extends InjectComponent<AppApplication> {
     ChannelSubscripBeanGreenDaoImpl channelSubscripBeanGreenDaoImpl();
 
     MusicAlbumListBeanGreenDaoImpl musicAlbumListBeanGreenDaoImpl();
+    SystemConversationBeanGreenDaoImpl systemConversationBeanGreenDaoImpl();
 
     UserInfoRepository userInfoRepository();
 
