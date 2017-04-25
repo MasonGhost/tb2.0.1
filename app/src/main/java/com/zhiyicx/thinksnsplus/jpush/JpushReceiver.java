@@ -110,7 +110,7 @@ public class JpushReceiver extends BroadcastReceiver {
         JpushMessageBean jpushMessageBean = new Gson().fromJson(extras, JpushMessageBean.class);
         jpushMessageBean.setCreat_time(System.currentTimeMillis());
         jpushMessageBean.setNofity(isNofiy);
-        jpushMessageBean.setMessage(bundle.getString(JPushInterface.EXTRA_MESSAGE) + (isNofiy ? " - 通知" : " - 自定义消息"));
+        jpushMessageBean.setMessage(bundle.getString(JPushInterface.EXTRA_MESSAGE));
         jpushMessageBean.setExtras(extras);
         EventBus.getDefault().post(jpushMessageBean, EventBusTagConfig.EVENT_JPUSH_RECIEVED_MESSAGE_UPDATE_MESSAGE_LIST);
         LogUtils.d(TAG, "-----------------extras = " + extras);

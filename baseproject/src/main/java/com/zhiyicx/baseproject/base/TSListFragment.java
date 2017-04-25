@@ -222,6 +222,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         //通过这个lastChildView得到这个view当前的position值
         int lastPosition = recyclerView.getLayoutManager().getPosition(lastChildView);
 
+        System.out.println("lastChildBottom = " + lastChildBottom);
+        System.out.println("recyclerBottom = " + recyclerBottom);
         //判断lastChildView的bottom值跟recyclerBottom
         //判断lastPosition是不是最后一个position
         //如果两个条件都满足则说明是真正的滑动到了底部
