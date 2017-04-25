@@ -30,6 +30,8 @@ public class EventBusTagConfig {
     public static final String EVENT_COLLECT_DYNAMIC="event_collect_dynamic";
     //更新动态列表
     public static final String EVENT_UPDATE_DYNAMIC = "event_update_dynamic";
+    // 详情界面删除内容通知
+    public static final String DYNAMIC_LIST_DELETE_UPDATE = "dynamic_list_delete_update";
     // 动态列表发送评论
     public static final String EVENT_SEND_COMMENT_TO_DYNAMIC_LIST = "event_send_dynamic_to_List";
     // 资讯列表发送评论

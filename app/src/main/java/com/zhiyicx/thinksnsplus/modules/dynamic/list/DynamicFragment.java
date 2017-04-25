@@ -551,6 +551,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
                     public void onItem1Clicked() {// 收藏
+                        mPresenter.handleCollect(dynamicBean);
                         mMyDynamicPopWindow.hide();
                         showBottomView(true);
                     }

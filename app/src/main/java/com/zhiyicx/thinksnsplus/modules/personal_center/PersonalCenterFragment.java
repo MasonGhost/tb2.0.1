@@ -683,8 +683,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      * @param position    curent dynamic postion
      */
     private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean, final int position) {
+        boolean isCollected = dynamicBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
         mDeletDynamicPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.dynamic_list_delete_dynamic))
+                .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
+                .item2Str(getString(R.string.dynamic_list_delete_dynamic))
+                .item3Str(getString(R.string.dynamic_list_share_dynamic))
                 .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -694,9 +697,24 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
                     public void onItem1Clicked() {
+                        mPresenter.handleCollect(dynamicBean);
+                        mDeletDynamicPopWindow.hide();
+                    }
+                })
+                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
+                    @Override
+                    public void onItem2Clicked() {
                         mDeletDynamicPopWindow.hide();
                         updateDynamicCounts(-1);
                         mPresenter.deleteDynamic(dynamicBean, position);
+                        mDeletDynamicPopWindow.hide();
+                    }
+                })
+                .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
+                    @Override
+                    public void onItem3Clicked() {
+                        mPresenter.shareDynamic(dynamicBean);
+                        mDeletDynamicPopWindow.hide();
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {

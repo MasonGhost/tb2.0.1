@@ -557,4 +557,10 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
 
     }
 
+    @Subscriber(tag = EventBusTagConfig.DYNAMIC_LIST_DELETE_UPDATE)
+    public void deleteDynamic(DynamicBean dynamicBean) {
+        deleteDynamic(dynamicBean, mRootView.getListDatas().indexOf(dynamicBean));
+        LogUtils.d(EventBusTagConfig.DYNAMIC_LIST_DELETE_UPDATE);
+    }
+
 }
