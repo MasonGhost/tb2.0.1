@@ -420,22 +420,21 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
 
     @Override
     public void onStart(Share share) {
-
     }
 
     @Override
     public void onSuccess(Share share) {
-
+        mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_sccuess));
     }
 
     @Override
     public void onError(Share share, Throwable throwable) {
-
+        mRootView.showSnackErrorMessage(mContext.getString(R.string.share_fail));
     }
 
     @Override
     public void onCancel(Share share) {
-
+        mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_cancel));
     }
 
     /**

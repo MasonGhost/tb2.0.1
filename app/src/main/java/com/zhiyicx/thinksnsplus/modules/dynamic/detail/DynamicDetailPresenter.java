@@ -566,7 +566,6 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
 
     @Override
     public void onStart(Share share) {
-
     }
 
     @Override
