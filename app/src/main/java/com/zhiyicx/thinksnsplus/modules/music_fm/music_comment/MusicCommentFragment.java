@@ -100,6 +100,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     protected void initView(View rootView) {
         super.initView(rootView);
         mIlvComment.setSendButtonVisiable(true);
+        mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
         mIlvComment.post(new Runnable() { // 处理评论框位置协调
             @Override
             public void run() {
