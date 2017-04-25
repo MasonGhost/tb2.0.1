@@ -143,6 +143,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
                 ablumHeadInfo.setShareCount(albumListBean.getShare_count());
                 ablumHeadInfo.setListenCount(albumListBean.getTaste_count());
                 ablumHeadInfo.setAblumId(albumListBean.getId());
+                ablumHeadInfo.setLikeCount(albumListBean.getCollect_count());
                 WindowUtils.setAblumHeadInfo(ablumHeadInfo);
                 startActivity(intent);
             }

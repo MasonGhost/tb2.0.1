@@ -40,6 +40,7 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.EventBus;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -51,6 +52,7 @@ import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_3;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.DYNAMIC_LIST_DELETE_UPDATE;
 
 /**
  * @author LiuChao
@@ -608,8 +610,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     private void initOtherDynamicPopupWindow(final DynamicBean dynamicBean, boolean isCollected) {
         mOtherDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(isCollected?R.string.dynamic_list_uncollect_dynamic:R.string.dynamic_list_collect_dynamic))
-                .item2Str(getString(R.string.dynamic_list_share_dynamic))
-                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+//                .item2Str(getString(R.string.dynamic_list_share_dynamic))
+//                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -647,8 +649,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mMyDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(isCollected?R.string.dynamic_list_uncollect_dynamic:R.string.dynamic_list_collect_dynamic))
                 .item2Str(getString(R.string.dynamic_list_delete_dynamic))
-                .item3Str(getString(R.string.dynamic_list_share_dynamic))
-                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+//                .item3Str(getString(R.string.dynamic_list_share_dynamic))
+//                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -664,7 +666,9 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
                     public void onItem2Clicked() {// 删除
+                        EventBus.getDefault().post(dynamicBean,DYNAMIC_LIST_DELETE_UPDATE);
                         mMyDynamicPopWindow.hide();
+                        getActivity().finish();
                     }
                 })
                 .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {

@@ -172,6 +172,10 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
                 .subscribe(new BaseSubscribe<List<DynamicBean>>() {
                     @Override
                     protected void onSuccess(List<DynamicBean> data) {
+                        if (data.isEmpty()) {
+                            onFailure("", ErrorCodeConfig.DYNAMIC_HAS_BE_DELETED);
+                            return;
+                        }
                         mRootView.initDynamicDetial(data.get(0));
                         mDynamicBeanGreenDao.insertOrReplace(data.get(0));
                         mDynamicCommentBeanGreenDao.insertOrReplace(data.get(0).getComments());

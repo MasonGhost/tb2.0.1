@@ -267,6 +267,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         ablumHeadInfo.setShareCount(musicAblum.getShare_count());
         ablumHeadInfo.setListenCount(musicAblum.getTaste_count());
         ablumHeadInfo.setAblumId(musicAblum.getId());
+        ablumHeadInfo.setLikeCount(musicAblum.getCollect_count());
         WindowUtils.setAblumHeadInfo(ablumHeadInfo);
 
         mFragmentMusicDetailCenterTitle.setText(mAlbumDetailsBean.getTitle());
@@ -511,6 +512,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 });
         if (WindowUtils.getAblumHeadInfo() != null) {
             WindowUtils.AblumHeadInfo ablumHeadInfo = WindowUtils.getAblumHeadInfo();
+            albumListBean.setCollect_count(ablumHeadInfo.getLikeCount());
             albumListBean.setShare_count(ablumHeadInfo.getShareCount());
             albumListBean.setTaste_count(ablumHeadInfo.getListenCount());
             albumListBean.setComment_count(ablumHeadInfo.getCommentCount());

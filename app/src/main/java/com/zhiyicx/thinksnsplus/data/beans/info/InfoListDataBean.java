@@ -33,6 +33,7 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
     private int id;
     private Long info_type;
     private int is_collection_news;
+    private int is_digg_news;
     private String title;
     private String from;
     private String updated_at;
@@ -44,8 +45,6 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         return "" + id + "\n" + title + "\n" + "is_collection_news:" + (is_collection_news == 1)
                 + "\n" + from + "\n" + updated_at;
     }
-
-
 
     public int getIs_collection_news() {
         return is_collection_news;
@@ -205,13 +204,14 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
 
 
 
-    @Generated(hash = 1012796026)
-    public InfoListDataBean(Long _id, int id, Long info_type, int is_collection_news, String title,
-            String from, String updated_at, StorageBean storage) {
+    @Generated(hash = 1322048907)
+    public InfoListDataBean(Long _id, int id, Long info_type, int is_collection_news, int is_digg_news,
+            String title, String from, String updated_at, StorageBean storage) {
         this._id = _id;
         this.id = id;
         this.info_type = info_type;
         this.is_collection_news = is_collection_news;
+        this.is_digg_news = is_digg_news;
         this.title = title;
         this.from = from;
         this.updated_at = updated_at;
@@ -270,6 +270,14 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
 
     public void setInfo_type(Long info_type) {
         this.info_type = info_type;
+    }
+
+    public int getIs_digg_news() {
+        return this.is_digg_news;
+    }
+
+    public void setIs_digg_news(int is_digg_news) {
+        this.is_digg_news = is_digg_news;
     }
 }
 

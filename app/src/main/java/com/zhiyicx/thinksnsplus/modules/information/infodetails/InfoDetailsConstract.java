@@ -29,6 +29,7 @@ public interface InfoDetailsConstract {
     interface View extends ITSListView<InfoCommentListBean,Presenter> {
         Long getNewsId();
         void setCollect(boolean isCollected);
+        void setDigg(boolean isDigged);
         InfoListDataBean getCurrentInfo();
         int getInfoType();
     }
@@ -42,6 +43,12 @@ public interface InfoDetailsConstract {
         void handleCollect(boolean isCollected, final String news_id);
 
         void deleteComment(InfoCommentListBean data);
+
+        void handleLike(boolean isLiked, final String news_id);
+
+        boolean isCollected();
+
+        boolean isDiged();
     }
 
     interface Repository{
@@ -52,6 +59,8 @@ public interface InfoDetailsConstract {
         Observable<BaseJson<InfoWebBean>> getInfoWebContent(String news_id);
 
         void handleCollect(boolean isCollected, String news_id);
+
+        void handleLike(boolean isLiked, final String news_id);
 
         void sendComment(String comment_content,Long news_id,
                          int reply_to_user_id,Long comment_mark);

@@ -95,6 +95,10 @@
     <string name="music_fm">音乐FM</string>
     <string name="music_lyric">暂无歌词</string>
 
+    <!--资讯-->
+    <string name="info_dig">点赞</string>
+    <string name="info_dig_cancel">取消点赞</string>
+
     <!--动态列表-->
     <string name="dynamic_list_more_comment">查看全部评论</string>
     <string name="dynamic_list_delete_dynamic">删除动态</string>

@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
+
 import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
@@ -73,5 +74,24 @@ public class InfoListDataBeanGreenDaoImpl extends CommonCacheImpl<InfoListDataBe
     @Override
     public long insertOrReplace(InfoListDataBean newData) {
         return 0;
+    }
+
+    public boolean isDiged(int news_id) {
+        try {
+            return mInfoListDataBeanDao.queryBuilder().where(InfoListDataBeanDao.Properties.Id.eq(news_id)).build().list().get(0).getIs_digg_news() == 1;
+        } catch (Exception e) {
+            return false;
+        }
+
+    }
+
+    public boolean isCollected(int news_id) {
+        try {
+            return mInfoListDataBeanDao.queryBuilder().where(InfoListDataBeanDao.Properties.Id.eq(news_id)).build().list()
+                    .get(0).getIs_collection_news() == 1;
+        } catch (Exception e) {
+            return false;
+        }
+
     }
 }

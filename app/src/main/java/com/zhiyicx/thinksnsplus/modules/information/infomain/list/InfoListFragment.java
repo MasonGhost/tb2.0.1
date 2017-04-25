@@ -146,7 +146,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_INFO_LIST_COLLECT)
     public void handleCollectInfo(InfoListDataBean info) {
         LogUtils.d("handleCollectInfo");
-        onCacheResponseSuccess(requestCacheData(mMaxId, false), false);
+//        onCacheResponseSuccess(requestCacheData(mMaxId, false), false);
     }
 
     public void setInfoType(String infoType) {

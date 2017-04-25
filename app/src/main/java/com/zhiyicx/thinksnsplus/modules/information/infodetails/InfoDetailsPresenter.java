@@ -10,6 +10,7 @@ import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
@@ -48,7 +49,7 @@ import static com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean.SEND_ING;
  */
 @FragmentScoped
 public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Repository,
-        InfoDetailsConstract.View> implements InfoDetailsConstract.Presenter,OnShareCallbackListener {
+        InfoDetailsConstract.View> implements InfoDetailsConstract.Presenter, OnShareCallbackListener {
 
     @Inject
     public SharePolicy mSharePolicy;
@@ -119,9 +120,10 @@ public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Rep
     public void shareInfo() {
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
-        shareContent.setTitle(mRootView.getCurrentInfo().getTitle());
+        shareContent.setTitle("ThinkSNS+\b\b资讯");
         shareContent.setUrl(String.format(APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
                 mRootView.getCurrentInfo().getId()));
+        shareContent.setContent(mRootView.getCurrentInfo().getTitle());
         if (mRootView.getCurrentInfo().getStorage() != null) {
             shareContent.setImage(ImageUtils.imagePathConvert(mRootView.getCurrentInfo()
                     .getStorage().getId() + "", 100));
@@ -140,11 +142,37 @@ public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Rep
         mRootView.getCurrentInfo().setIs_collection_news(is_collection_news);
 
         if (mRootView.getInfoType() == -100) {
-            return;// 搜索出来的资讯，收藏状态有待优化
+            //return;// 搜索出来的资讯，收藏状态有待优化  已处理
         }
         mInfoListBeanGreenDao.saveCollect(mRootView.getCurrentInfo(), is_collection_news);
         EventBus.getDefault().post(mRootView.getCurrentInfo(), EVENT_SEND_INFO_LIST_COLLECT);
         mRepository.handleCollect(isUnCollected, news_id);
+    }
+
+    @Override
+    public void handleLike(boolean isLiked, String news_id) {
+        if (AppApplication.getmCurrentLoginAuth() == null) {
+            return;
+        }
+        mRootView.setDigg(isLiked);
+        int is_dig_news = isLiked ? 1 : 0;
+        mRootView.getCurrentInfo().setIs_digg_news(is_dig_news);
+
+        if (mRootView.getInfoType() == -100) {
+            //return;// 搜索出来的资讯，收藏状态有待优化  已处理
+        }
+        mInfoListBeanGreenDao.saveDig(mRootView.getCurrentInfo(), is_dig_news);
+        mRepository.handleLike(isLiked, news_id);
+    }
+
+    @Override
+    public boolean isCollected() {
+        return mInfoListBeanGreenDao.isCollected(mRootView.getNewsId().intValue());
+    }
+
+    @Override
+    public boolean isDiged() {
+        return mInfoListBeanGreenDao.isDiged(mRootView.getNewsId().intValue());
     }
 
     @Override
