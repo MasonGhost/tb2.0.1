@@ -17,7 +17,7 @@ import org.greenrobot.greendao.DaoException;
  * @Contact master.jungle68@gmail.com
  */
 @Entity
-public class SystemConversation extends BaseListBean {
+public class SystemConversationBean extends BaseListBean {
 
     /**
      * id : 2
@@ -30,95 +30,22 @@ public class SystemConversation extends BaseListBean {
      * updated_at : 2017-03-02 08:14:13
      */
     @Id
-    private int id;                  //  数据 id
+    private Long id;                  //  数据 id
     private String type;            // 会话类型 system-系统通知 feedback-用户意见反馈
     private Long user_id;             // 发送者 id 系统通知时为 0
-    @ToOne(joinProperty ="user_id")
+    @ToOne(joinProperty = "user_id")
     private UserInfoBean userInfo;
     private Long to_user_id;             // 接收者 id 系统广播通知及意见反馈时为 0
-    @ToOne(joinProperty ="to_user_id")
+    @ToOne(joinProperty = "to_user_id")
     private UserInfoBean toUserInfo;
     private String content;             // 内容
     private String options;             //  系统通知额外扩展参数
     private String created_at;
     private String updated_at;
 
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeInt(this.id);
-        dest.writeString(this.type);
-        dest.writeValue(this.user_id);
-        dest.writeParcelable(this.userInfo, flags);
-        dest.writeValue(this.to_user_id);
-        dest.writeParcelable(this.toUserInfo, flags);
-        dest.writeString(this.content);
-        dest.writeString(this.options);
-        dest.writeString(this.created_at);
-        dest.writeString(this.updated_at);
-    }
-
-    public SystemConversation() {
-    }
-
-    protected SystemConversation(Parcel in) {
-        super(in);
-        this.id = in.readInt();
-        this.type = in.readString();
-        this.user_id = (Long) in.readValue(Long.class.getClassLoader());
-        this.userInfo = in.readParcelable(UserInfoBean.class.getClassLoader());
-        this.to_user_id = (Long) in.readValue(Long.class.getClassLoader());
-        this.toUserInfo = in.readParcelable(UserInfoBean.class.getClassLoader());
-        this.content = in.readString();
-        this.options = in.readString();
-        this.created_at = in.readString();
-        this.updated_at = in.readString();
-    }
-
-    @Generated(hash = 1430458362)
-    public SystemConversation(int id, String type, Long user_id, Long to_user_id, String content,
-            String options, String created_at, String updated_at) {
-        this.id = id;
-        this.type = type;
-        this.user_id = user_id;
-        this.to_user_id = to_user_id;
-        this.content = content;
-        this.options = options;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-    }
-
-    public static final Creator<SystemConversation> CREATOR = new Creator<SystemConversation>() {
-        @Override
-        public SystemConversation createFromParcel(Parcel source) {
-            return new SystemConversation(source);
-        }
-
-        @Override
-        public SystemConversation[] newArray(int size) {
-            return new SystemConversation[size];
-        }
-    };
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /** Used for active entity operations. */
-    @Generated(hash = 1350682540)
-    private transient SystemConversationDao myDao;
-    @Generated(hash = 2066097151)
-    private transient Long userInfo__resolvedKey;
-    @Generated(hash = 815130429)
-    private transient Long toUserInfo__resolvedKey;
-
     @Override
     public String toString() {
-        return "SystemConversation{" +
+        return "SystemConversationBean{" +
                 "id=" + id +
                 ", type='" + type + '\'' +
                 ", user_id=" + user_id +
@@ -132,69 +59,112 @@ public class SystemConversation extends BaseListBean {
                 '}';
     }
 
-    public int getId() {
+ 
+    @Override
+    public Long getMaxId() {
+        return id;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.id);
+        dest.writeString(this.type);
+        dest.writeValue(this.user_id);
+        dest.writeParcelable(this.userInfo, flags);
+        dest.writeValue(this.to_user_id);
+        dest.writeParcelable(this.toUserInfo, flags);
+        dest.writeString(this.content);
+        dest.writeString(this.options);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+    }
+
+
+    public Long getId() {
         return this.id;
     }
 
-    public void setId(int id) {
+
+    public void setId(Long id) {
         this.id = id;
     }
+
 
     public String getType() {
         return this.type;
     }
 
+
     public void setType(String type) {
         this.type = type;
     }
+
 
     public Long getUser_id() {
         return this.user_id;
     }
 
+
     public void setUser_id(Long user_id) {
         this.user_id = user_id;
     }
+
 
     public Long getTo_user_id() {
         return this.to_user_id;
     }
 
+
     public void setTo_user_id(Long to_user_id) {
         this.to_user_id = to_user_id;
     }
+
 
     public String getContent() {
         return this.content;
     }
 
+
     public void setContent(String content) {
         this.content = content;
     }
+
 
     public String getOptions() {
         return this.options;
     }
 
+
     public void setOptions(String options) {
         this.options = options;
     }
+
 
     public String getCreated_at() {
         return this.created_at;
     }
 
+
     public void setCreated_at(String created_at) {
         this.created_at = created_at;
     }
+
 
     public String getUpdated_at() {
         return this.updated_at;
     }
 
+
     public void setUpdated_at(String updated_at) {
         this.updated_at = updated_at;
     }
+
 
     /** To-one relationship, resolved on first access. */
     @Generated(hash = 1544759941)
@@ -215,6 +185,7 @@ public class SystemConversation extends BaseListBean {
         return userInfo;
     }
 
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1576466957)
     public void setUserInfo(UserInfoBean userInfo) {
@@ -224,6 +195,7 @@ public class SystemConversation extends BaseListBean {
             userInfo__resolvedKey = user_id;
         }
     }
+
 
     /** To-one relationship, resolved on first access. */
     @Generated(hash = 1921703876)
@@ -244,6 +216,7 @@ public class SystemConversation extends BaseListBean {
         return toUserInfo;
     }
 
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1067491086)
     public void setToUserInfo(UserInfoBean toUserInfo) {
@@ -253,6 +226,7 @@ public class SystemConversation extends BaseListBean {
             toUserInfo__resolvedKey = to_user_id;
         }
     }
+
 
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
@@ -266,6 +240,7 @@ public class SystemConversation extends BaseListBean {
         myDao.delete(this);
     }
 
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
      * Entity must attached to an entity context.
@@ -277,6 +252,7 @@ public class SystemConversation extends BaseListBean {
         }
         myDao.refresh(this);
     }
+
 
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
@@ -290,10 +266,65 @@ public class SystemConversation extends BaseListBean {
         myDao.update(this);
     }
 
+
     /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 2084651414)
+    @Generated(hash = 1997120082)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getSystemConversationDao() : null;
+        myDao = daoSession != null ? daoSession.getSystemConversationBeanDao() : null;
     }
+
+
+    public SystemConversationBean() {
+    }
+
+    protected SystemConversationBean(Parcel in) {
+        super(in);
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.type = in.readString();
+        this.user_id = (Long) in.readValue(Long.class.getClassLoader());
+        this.userInfo = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.to_user_id = (Long) in.readValue(Long.class.getClassLoader());
+        this.toUserInfo = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.content = in.readString();
+        this.options = in.readString();
+        this.created_at = in.readString();
+        this.updated_at = in.readString();
+    }
+
+
+    @Generated(hash = 1770694770)
+    public SystemConversationBean(Long id, String type, Long user_id, Long to_user_id, String content,
+            String options, String created_at, String updated_at) {
+        this.id = id;
+        this.type = type;
+        this.user_id = user_id;
+        this.to_user_id = to_user_id;
+        this.content = content;
+        this.options = options;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+    }
+
+    public static final Creator<SystemConversationBean> CREATOR = new Creator<SystemConversationBean>() {
+        @Override
+        public SystemConversationBean createFromParcel(Parcel source) {
+            return new SystemConversationBean(source);
+        }
+
+        @Override
+        public SystemConversationBean[] newArray(int size) {
+            return new SystemConversationBean[size];
+        }
+    };
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 1970441704)
+    private transient SystemConversationBeanDao myDao;
+    @Generated(hash = 2066097151)
+    private transient Long userInfo__resolvedKey;
+    @Generated(hash = 815130429)
+    private transient Long toUserInfo__resolvedKey;
 }
