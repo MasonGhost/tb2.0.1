@@ -3,6 +3,7 @@ package com.zhiyicx.baseproject.base;
 
 import android.graphics.Canvas;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +16,6 @@ import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.jakewharton.rxbinding.view.RxView;
-import com.wcy.overscroll.OnOverScrollListener;
 import com.wcy.overscroll.OverScrollCheckListener;
 import com.wcy.overscroll.OverScrollLayout;
 import com.zhiyicx.baseproject.R;
@@ -79,6 +79,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     private boolean mIsTipMessageSticky;// 提示信息是否需要常驻
     private View mTvNoMoredataText;
+    private boolean mIsLastVisiable;// 最后一个 item 是否显示完了
 
     @Override
     protected int getBodyLayoutId() {
@@ -136,7 +137,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mRefreshlayout.setOnRefreshListener(this);
         mRefreshlayout.setOnLoadMoreListener(this);
         if (setListBackColor() != -1) {
-            mRvList.setBackgroundColor(getResources().getColor(setListBackColor()));
+            mRvList.setBackgroundColor(ContextCompat.getColor(getContext(), setListBackColor()));
         }
         layoutManager = getLayoutManager();
         mRvList.setLayoutManager(layoutManager);
@@ -148,6 +149,20 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
         mHeaderAndFooterWrapper.addFootView(getFooterView());
         mRvList.setAdapter(mHeaderAndFooterWrapper);
+
+        mRvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                getLastItemVisibility(mRvList);
+            }
+
+        });
+
         overscroll = (OverScrollLayout) rootView.findViewById(R.id.overscroll);
         overscroll.setOverScrollCheckListener(new OverScrollCheckListener() {
             @Override
@@ -157,6 +172,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
             @Override
             public boolean canScrollUp() {
+
                 if (mRefreshlayout.isRefreshEnabled()) {
                     return true;
                 } else {
@@ -174,8 +190,10 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 if (mRefreshlayout.isLoadMoreEnabled()) {
                     return true;
                 } else {
+                    getLastItemVisibility(mRvList);
                     // 如果不能够上拉加载，并且到了底部 就可以scrollUp
-                    if (!mRvList.canScrollVertically(1)) {
+                    if (mIsLastVisiable && !mRvList.canScrollVertically(1)) {
+                        onOverScrolled();
                         return false;
                     }
                 }
@@ -192,6 +210,26 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 return false;
             }
         });
+    }
+
+    private void getLastItemVisibility(RecyclerView recyclerView) {
+        //得到当前显示的最后一个item的view
+        View lastChildView = recyclerView.getLayoutManager().getChildAt(recyclerView.getLayoutManager().getChildCount() - 1);
+        //得到lastChildView的bottom坐标值
+        int lastChildBottom = lastChildView.getBottom();
+        //得到Recyclerview的底部坐标减去底部padding值，也就是显示内容最底部的坐标
+        int recyclerBottom = recyclerView.getBottom() - recyclerView.getPaddingBottom();
+        //通过这个lastChildView得到这个view当前的position值
+        int lastPosition = recyclerView.getLayoutManager().getPosition(lastChildView);
+
+        //判断lastChildView的bottom值跟recyclerBottom
+        //判断lastPosition是不是最后一个position
+        //如果两个条件都满足则说明是真正的滑动到了底部
+        if (lastChildBottom == recyclerBottom && lastPosition == recyclerView.getLayoutManager().getItemCount() - 1) {
+            mIsLastVisiable = true;
+        } else {
+            mIsLastVisiable = false;
+        }
     }
 
     protected void setOverScroll(Boolean topOverScroll, Boolean bottomOverScroll) {
@@ -597,5 +635,12 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         } else {
             mRefreshlayout.setRefreshing(false);
         }
+    }
+
+    /**
+     * 过度拉动了
+     */
+    protected void onOverScrolled() {
+
     }
 }
