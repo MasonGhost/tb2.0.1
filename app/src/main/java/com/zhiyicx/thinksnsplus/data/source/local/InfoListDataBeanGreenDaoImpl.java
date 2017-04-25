@@ -63,7 +63,7 @@ public class InfoListDataBeanGreenDaoImpl extends CommonCacheImpl<InfoListDataBe
 
     @Override
     public void deleteSingleCache(InfoListDataBean dta) {
-
+        mInfoListDataBeanDao.delete(dta);
     }
 
     @Override

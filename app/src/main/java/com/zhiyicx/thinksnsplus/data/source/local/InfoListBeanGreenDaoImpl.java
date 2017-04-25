@@ -107,6 +107,10 @@ public class InfoListBeanGreenDaoImpl extends CommonCacheImpl<InfoListBean> {
         }
     }
 
+    public void deleteInfo(InfoListDataBean data){
+        mInfoListDataBeanGreenDao.deleteSingleCache(data);
+    }
+
     public void saveCollect(InfoListDataBean data, int is_collection_news) {
         data.setIs_collection_news(is_collection_news);
         mInfoListDataBeanGreenDao.updateSingleData(data);
