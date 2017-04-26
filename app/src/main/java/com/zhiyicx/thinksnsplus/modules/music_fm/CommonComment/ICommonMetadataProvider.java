@@ -1,6 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment;
 
-import java.util.Iterator;
+import java.util.List;
 
 /**
  * @Author Jliuer
@@ -9,5 +9,5 @@ import java.util.Iterator;
  * @Description
  */
 public interface ICommonMetadataProvider {
-    Iterator<CommonMetadata> iterator();
+    List<CommonMetadata> iterator();
 }

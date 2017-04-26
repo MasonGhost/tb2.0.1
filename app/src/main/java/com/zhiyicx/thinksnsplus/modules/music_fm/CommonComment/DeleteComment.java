@@ -1,12 +1,15 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment;
 
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
+import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.HashMap;
+
+import javax.inject.Inject;
 
 /**
  * @Author Jliuer
@@ -16,22 +19,36 @@ import java.util.HashMap;
  */
 public class DeleteComment implements ICommentEvent<ICommentBean> {
 
+    private BackgroundTaskHandler.OnNetResponseCallBack mCallBack;
+    @Inject
+    CommentRepository mCommentRepository;
+
     @Override
-    public void handleComment(ICommentBean comment) {
-        CommentBean commentBean = comment.get$$Comment();
+    public void setListener(BackgroundTaskHandler.OnNetResponseCallBack callBack) {
+        mCallBack = callBack;
+    }
+
+    @Override
+    public void handleCommentInBackGroud(ICommentBean comment) {
+        CommonMetadata commentBean = comment.get$$Comment();
         deleteComment(commentBean);
         BackgroundRequestTaskBean backgroundRequestTaskBean;
         HashMap<String, Object> params = new HashMap<>();
-        params.put("comment_id", commentBean.getComment_id());
+        params.put(BackgroundTaskHandler.NET_CALLBACK,mCallBack);
         // 后台处理
         backgroundRequestTaskBean = new BackgroundRequestTaskBean
                 (BackgroundTaskRequestMethodConfig.DELETE, params);
-        backgroundRequestTaskBean.setPath(commentBean.getNetRequestUrl());
+        backgroundRequestTaskBean.setPath(commentBean.getString(CommonMetadata.METADATA_KEY_COMMENT_URL));
         BackgroundTaskManager.getInstance(BaseApplication.getContext()).addBackgroundRequestTask
                 (backgroundRequestTaskBean);
     }
 
-    protected void deleteComment(CommentBean commentBean) {
+    @Override
+    public void handleComment(ICommentBean comment) {
+
+    }
+
+    protected void deleteComment(CommonMetadata commentBean) {
 
     }
 }

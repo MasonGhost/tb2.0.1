@@ -350,15 +350,16 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
     @Override
     public void deleteComment(MusicCommentListBean data) {
         mCommentListBeanGreenDao.deleteSingleCache(data);
-        CommentBean commentBean = new CommentBean();
-        commentBean.setComment_id(data.getId() == null ? 1 : data.getId().intValue());
-        commentBean.setNetRequestUrl(String.format(ApiConfig
-                .APP_PATH_MUSIC_DELETE_COMMENT_FORMAT, data.getId()));
-        CommentCore.getInstance(CommentCore.CommentState.DELETE)
-                .set$$Comment(commentBean)
-                .handleComment();
+//        CommentBean commentBean = new CommentBean();
+//        commentBean.setComment_id(data.getId() == null ? 1 : data.getId().intValue());
+//        commentBean.setNetRequestUrl(String.format(ApiConfig
+//                .APP_PATH_MUSIC_DELETE_COMMENT_FORMAT, data.getId()));
+//
+//        CommentCore.getInstance(CommentCore.CommentState.DELETE)
+//                .set$$Comment(commentBean)
+//                .handleCommentInBackGroud();
 
-//        mRepository.deleteComment(mRootView.getCommentId(),data.getComment_id());
+        mRepository.deleteComment(mRootView.getCommentId(),data.getComment_id());
         mRootView.getListDatas().remove(data);
         if (mRootView.getListDatas().size() == 0) {// 占位
             MusicCommentListBean emptyData = new MusicCommentListBean();

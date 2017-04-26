@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment;
 
+import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
+
 /**
  * @Author Jliuer
  * @Date 2017/04/12/9:25
@@ -7,5 +9,7 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment;
  * @Description 评论抽取
  */
 public interface ICommentEvent<C> {
+    void handleCommentInBackGroud(C comment);
     void handleComment(C comment);
+    void setListener(BackgroundTaskHandler.OnNetResponseCallBack callBack);
 }
