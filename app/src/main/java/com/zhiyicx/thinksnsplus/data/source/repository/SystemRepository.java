@@ -178,7 +178,6 @@ public class SystemRepository implements ISystemRepository {
                     @Override
                     public BaseJson<List<SystemConversationBean>> call(BaseJson<List<SystemConversationBean>> listBaseJson) {
                         if (listBaseJson.isStatus()) {
-                            mSystemConversationBeanGreenDao.clearTable();
                             mSystemConversationBeanGreenDao.saveMultiData(listBaseJson.getData());
                             handleTsHelperUserInfo(listBaseJson.getData());
                         }
@@ -189,7 +188,7 @@ public class SystemRepository implements ISystemRepository {
 
     @Override
     public List<SystemConversationBean> requestCacheData(long max_Id) {
-        List<SystemConversationBean> list = mSystemConversationBeanGreenDao.getMultiDataFromCache();
+        List<SystemConversationBean> list = mSystemConversationBeanGreenDao.getMultiDataFromCacheByMaxId(max_Id);
         handleTsHelperUserInfo(list);
         return list;
     }

@@ -61,7 +61,7 @@ public class SystemConversationPresenter extends BasePresenter<SystemConversatio
         systemConversationBean.setType(ApiConfig.SYSTEM_CONVERSATIONS_TYPE_FEEDBACK);
         systemConversationBean.setSystem_mark(Long.valueOf((AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis())));
         final Message message = new Message();
-        message.setId(systemConversationBean.getSystem_mark().intValue());
+        message.setId(systemConversationBean.get_id().intValue());
         message.setCreate_time(System.currentTimeMillis());
         message.setTxt(systemConversationBean.getContent());
         message.setSend_status(MessageStatus.SEND_SUCCESS);
@@ -97,10 +97,9 @@ public class SystemConversationPresenter extends BasePresenter<SystemConversatio
      * 获取网络数据
      *
      * @param maxId      当前获取到数据的最大 id
-     * @param isLoadMore true 加载更多，false 刷新
      */
     @Override
-    public void requestNetData(Long maxId, final boolean isLoadMore) {
+    public void requestNetData(Long maxId) {
         Subscription systemconversationsSub = mRepository.getSystemConversations(maxId, TSListFragment.DEFAULT_PAGE_SIZE)
                 .map(new Func1<BaseJson<List<SystemConversationBean>>, BaseJson<List<ChatItemBean>>>() {
                     @Override
@@ -124,7 +123,7 @@ public class SystemConversationPresenter extends BasePresenter<SystemConversatio
                 .subscribe(new BaseSubscribe<List<ChatItemBean>>() {
                     @Override
                     protected void onSuccess(List<ChatItemBean> data) {
-                        mRootView.updateData(data, isLoadMore);
+                        mRootView.updateNetData(data);
                     }
 
                     @Override
@@ -157,10 +156,16 @@ public class SystemConversationPresenter extends BasePresenter<SystemConversatio
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doAfterTerminate(new Action0() {
+                    @Override
+                    public void call() {
+                        mRootView.hideLoading();
+                    }
+                })
                 .subscribe(new Action1<List<ChatItemBean>>() {
                     @Override
                     public void call(List<ChatItemBean> chatItemBeen) {
-                        mRootView.updateData(chatItemBeen, true);
+                        mRootView.updateCacheData(chatItemBeen);
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -177,7 +182,7 @@ public class SystemConversationPresenter extends BasePresenter<SystemConversatio
         for (SystemConversationBean systemConversationBean : systemConversationBeen) {
             ChatItemBean chatItemBean = new ChatItemBean();
             Message message = new Message();
-            message.setId(systemConversationBean.getSystem_mark().intValue());
+            message.setId(systemConversationBean.get_id().intValue());
             message.setTxt(systemConversationBean.getContent());
             message.setCreate_time(TimeUtils.string2MillisDefaultLocal(systemConversationBean.getCreated_at()));
             message.setSend_status(systemConversationBean.getId() == null ? MessageStatus.SEND_FAIL : MessageStatus.SEND_SUCCESS);

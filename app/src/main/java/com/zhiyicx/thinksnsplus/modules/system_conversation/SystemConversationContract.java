@@ -18,7 +18,9 @@ public interface SystemConversationContract {
 
     interface View extends IBaseView<Presenter> {
 
-        void updateData(List<ChatItemBean> datas,boolean isLoadMore);
+        void updateNetData(List<ChatItemBean> datas);
+
+        void updateCacheData(List<ChatItemBean> datas);
 
 
         void updateSendText(ChatItemBean chatItemBean);
@@ -42,9 +44,8 @@ public interface SystemConversationContract {
          * 请求列表数据
          *
          * @param maxId      当前获取到数据的最大 id
-         * @param isLoadMore true 加载更多，false 刷新
          */
-        void requestNetData(Long maxId, boolean isLoadMore);
+        void requestNetData(Long maxId);
 
         /**
          * 获取本地数据

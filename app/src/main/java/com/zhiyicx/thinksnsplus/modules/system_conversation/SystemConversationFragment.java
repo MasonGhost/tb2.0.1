@@ -21,9 +21,8 @@ import java.util.List;
  * @Contact master.jungle68@gmail.com
  */
 public class SystemConversationFragment extends BaseChatFragment<SystemConversationContract.Presenter> implements SystemConversationContract.View {
-
-    private boolean mIsLoadMore = false;
     private long mMax_id = TSListFragment.DEFAULT_PAGE_MAX_ID;
+    private boolean mIsRequestNeted = false;
 
     public static SystemConversationFragment newInstance() {
         Bundle args = new Bundle();
@@ -84,18 +83,28 @@ public class SystemConversationFragment extends BaseChatFragment<SystemConversat
 
     @Override
     public void onRefresh() {
-        if (!mIsLoadMore) {
+        if (!mIsRequestNeted) {
             mMax_id = TSListFragment.DEFAULT_PAGE_MAX_ID;
+            mPresenter.requestNetData(mMax_id);
+        } else {
+            mPresenter.requestCacheData(mMax_id);
         }
-        mPresenter.requestNetData(mMax_id, mIsLoadMore);
+
     }
 
     @Override
-    public void updateData(List<ChatItemBean> datas, boolean isLoadMore) {
-        if (!isLoadMore) { // 只有第一次进入页面是下拉刷新
-            mDatas.clear();
-            mIsLoadMore = true;
+    public void updateNetData(List<ChatItemBean> datas) {
+        mDatas.addAll(datas);
+        mMessageList.refresh();
+        if (mDatas.isEmpty()) {
+            mMax_id = TSListFragment.DEFAULT_PAGE_MAX_ID;
+        } else {
+            mMax_id = mDatas.get(0).getLastMessage().getId();
         }
+    }
+
+    @Override
+    public void updateCacheData(List<ChatItemBean> datas) {
         datas.addAll(mDatas);
         mDatas.clear();
         mDatas.addAll(datas);
