@@ -4,7 +4,6 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageLoaderStrategy;
@@ -14,6 +13,7 @@ import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.imsdk.entity.MessageStatus;
 import com.zhiyicx.imsdk.entity.MessageType;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -74,11 +74,10 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
     public void convert(final ViewHolder holder, final ChatItemBean chatItemBean, ChatItemBean lastChatItemBean, int position, int itemCounts) {
 
         if (position == itemCounts - 1) { // 为最后一项加上间距
-            holder.getConvertView().setPadding(0, 0, 0, holder.getConvertView().getResources().getDimensionPixelSize(R.dimen.spacing_mid));
+            holder.getConvertView().setPadding(holder.getConvertView().getPaddingLeft(), holder.getConvertView().getPaddingTop(), holder.getConvertView().getPaddingRight(), holder.getConvertView().getResources().getDimensionPixelSize(R.dimen.spacing_mid));
         } else {
-            holder.getConvertView().setPadding(0, 0, 0, 0);
+            holder.getConvertView().setPadding(holder.getConvertView().getPaddingLeft(), holder.getConvertView().getPaddingTop(), holder.getConvertView().getPaddingRight(), 0);
         }
-
 //        holder.getView(R.id.rl_chat_bubble).setBackgroundDrawable(mBubbleBg);
         // 显示时间的，最大间隔时间；当两条消息间隔 > MAX_SPACING_TIME 时显示时间
         if (lastChatItemBean == null || (chatItemBean.getLastMessage().getCreate_time() - lastChatItemBean.getLastMessage().getCreate_time()) >= (MAX_SPACING_TIME * ConstantConfig.MIN)) {
@@ -120,14 +119,18 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
         // 是否需要显示头像
         if (mIsShowAvatar) {
             holder.setVisible(R.id.iv_chat_headpic, View.VISIBLE);
-            mImageLoader.loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
-                    .url(ImageUtils.imagePathConvert(chatItemBean.getUserInfo().getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
-                    .placeholder(R.mipmap.pic_default_portrait1)
-                    .transformation(new GlideCircleTransform(holder.getConvertView().getContext()))
-                    .errorPic(R.mipmap.pic_default_portrait1)
-                    .imagerView((ImageView) holder.getView(R.id.iv_chat_headpic))
-                    .build()
-            );
+            if (chatItemBean.getUserInfo().getName().equals(holder.getConvertView().getContext().getString(R.string.ts_helper))) { // TS 助手
+                ((ImageView) holder.getView(R.id.iv_chat_headpic)).setImageResource(R.mipmap.ico_ts_assistant);
+            } else {
+                mImageLoader.loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
+                        .url(ImageUtils.imagePathConvert(chatItemBean.getUserInfo().getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
+                        .placeholder(R.mipmap.pic_default_portrait1)
+                        .transformation(new GlideCircleTransform(holder.getConvertView().getContext()))
+                        .errorPic(R.mipmap.pic_default_portrait1)
+                        .imagerView((ImageView) holder.getView(R.id.iv_chat_headpic))
+                        .build()
+                );
+            }
         } else {
             holder.setVisible(R.id.iv_chat_headpic, View.GONE);
         }

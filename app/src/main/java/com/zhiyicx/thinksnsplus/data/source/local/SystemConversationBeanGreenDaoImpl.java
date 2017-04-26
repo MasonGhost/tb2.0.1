@@ -52,8 +52,8 @@ public class SystemConversationBeanGreenDaoImpl extends CommonCacheImpl<SystemCo
     public List<SystemConversationBean> getMultiDataFromCache() {
         SystemConversationBeanDao systemConversationBeanDao = getRDaoSession().getSystemConversationBeanDao();
         List<SystemConversationBean> datas = systemConversationBeanDao.queryDeep(" where "
-                        + " T." + SystemConversationBeanDao.Properties.Id.columnName + " < ? "
-                        + " order by " + " T." + SystemConversationBeanDao.Properties.Id.columnName + " DESC"// 按频道id倒序
+                        + " T." + SystemConversationBeanDao.Properties._id.columnName + " < ? "
+                        + " order by " + " T." + SystemConversationBeanDao.Properties._id.columnName + " DESC"// 按频道id倒序
                 , System.currentTimeMillis() + "");
         return datas;
     }

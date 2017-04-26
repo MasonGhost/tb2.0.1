@@ -98,7 +98,7 @@ public abstract class BaseChatFragment<P extends IBasePresenter> extends TSFragm
                     @Override
                     public void call(Boolean aBoolean) {
                         //若不可视区域高度大于1/3屏幕高度，则键盘显示
-                        LogUtils.i(TAG + "---RxView   " + aBoolean);
+//                        LogUtils.i(TAG + "---RxView   " + aBoolean);
                         if (aBoolean) {
                             if (!mKeyboradIsOpen && mMessageItemBean.getConversation() != null) {// 如果对话没有创建，不做处理
                                 mMessageList.scrollToBottom();

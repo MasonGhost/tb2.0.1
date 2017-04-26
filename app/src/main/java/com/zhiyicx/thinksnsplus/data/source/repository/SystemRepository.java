@@ -3,16 +3,19 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 import android.app.Application;
 import android.content.Context;
 
-import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
+import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ComponentConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.ComponentStatusBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 
@@ -36,6 +39,8 @@ import rx.schedulers.Schedulers;
 public class SystemRepository implements ISystemRepository {
 
     @Inject
+    protected UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
     protected SystemConversationBeanGreenDaoImpl mSystemConversationBeanGreenDao;
 
     private CommonClient mCommonClient;
@@ -45,6 +50,13 @@ public class SystemRepository implements ISystemRepository {
     public SystemRepository(ServiceManager serviceManager, Application context) {
         mCommonClient = serviceManager.getCommonClient();
         mContext = context;
+        if (mSystemConversationBeanGreenDao == null) {
+            mSystemConversationBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().systemConversationBeanGreenDaoImpl();
+        }
+        if (mUserInfoBeanGreenDao == null) {
+            mUserInfoBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao();
+        }
+
     }
 
     /**
@@ -146,7 +158,7 @@ public class SystemRepository implements ISystemRepository {
      * @return
      */
     @Override
-    public Observable<BaseJson<CacheBean>> systemFeedback(String content) {
+    public Observable<BaseJson<Object>> systemFeedback(String content) {
         return mCommonClient.systemFeedback(content)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -168,9 +180,31 @@ public class SystemRepository implements ISystemRepository {
                         if (listBaseJson.isStatus()) {
                             mSystemConversationBeanGreenDao.clearTable();
                             mSystemConversationBeanGreenDao.saveMultiData(listBaseJson.getData());
+                            handleTsHelperUserInfo(listBaseJson.getData());
                         }
                         return listBaseJson;
                     }
                 });
+    }
+
+    @Override
+    public List<SystemConversationBean> requestCacheData(long max_Id) {
+        List<SystemConversationBean> list = mSystemConversationBeanGreenDao.getMultiDataFromCache();
+        handleTsHelperUserInfo(list);
+        return list;
+    }
+
+    /**
+     * 处理 TS 助手和用户信息
+     * @param list
+     */
+    private void handleTsHelperUserInfo(List<SystemConversationBean> list) {
+        UserInfoBean myUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache(Long.valueOf(AppApplication.getmCurrentLoginAuth().getUser_id()));
+        UserInfoBean tsHleper = new UserInfoBean();
+        tsHleper.setName(mContext.getString(R.string.ts_helper));
+        for (SystemConversationBean systemConversationBean : list) {
+            systemConversationBean.setUserInfo(systemConversationBean.getUser_id() == null || systemConversationBean.getUser_id() == 0 ? tsHleper : myUserInfo);
+            systemConversationBean.setToUserInfo(systemConversationBean.getTo_user_id() == null || systemConversationBean.getTo_user_id() == 0 ? tsHleper : myUserInfo);
+        }
     }
 }

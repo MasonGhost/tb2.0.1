@@ -21,6 +21,7 @@
     <string name="comment_ing">评论中...</string>
     <string name="default_message_group">群组</string>
     <string name="has_no_body">还没有人</string>
+    <string name="ts_helper">TS助手</string>
     <!--我的-->
     <string name="personal_page">个人主页</string>
     <string name="ranking">排行榜</string>
@@ -95,9 +96,17 @@
     <string name="music_fm">音乐FM</string>
     <string name="music_lyric">暂无歌词</string>
 
+    <!--资讯-->
+    <string name="info_dig">点赞</string>
+    <string name="info_dig_cancel">取消点赞</string>
+
     <!--动态列表-->
     <string name="dynamic_list_more_comment">查看全部评论</string>
     <string name="dynamic_list_delete_dynamic">删除动态</string>
+    <string name="dynamic_list_share_dynamic">分享</string>
+    <string name="dynamic_list_collect_dynamic">收藏</string>
+    <string name="dynamic_list_uncollect_dynamic">取消收藏</string>
+    <string name="dynamic_list_report_dynamic">举报</string>
     <string name="dynamic_list_delete_comment">删除评论</string>
     <string name="dynamic_list_resend_comment">重发评论</string>
     <string name="dynamic_list_resend_dynamic">重新发送</string>

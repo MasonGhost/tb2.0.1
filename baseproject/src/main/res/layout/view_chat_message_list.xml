@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.wcy.overscroll.OverScrollLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/overscroll"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<!--<com.wcy.overscroll.OverScrollLayout-->
+    <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:id="@+id/overscroll"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:orientation="vertical">-->
 
     <com.aspsine.swipetoloadlayout.SwipeToLoadLayout
-
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/refreshlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -25,4 +25,4 @@
         </android.support.v7.widget.RecyclerView>
 
     </com.aspsine.swipetoloadlayout.SwipeToLoadLayout>
-</com.wcy.overscroll.OverScrollLayout>
+<!--</com.wcy.overscroll.OverScrollLayout>-->

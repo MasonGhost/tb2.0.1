@@ -215,6 +215,9 @@ public class ApiConfig {
 
     public static final String APP_PATH_SYSTEM_FEEDBACK = "api/v1/system/feedback";// 意见反馈
     public static final String APP_PATH_GET_SYSTEM_CONVERSATIONS = "api/v1/system/conversations";// 获取系统会话列表
+    // 会话类型
+    public static final String SYSTEM_CONVERSATIONS_TYPE_FEEDBACK = "feedback";// 用户意见反馈
+    public static final String SYSTEM_CONVERSATIONS_TYPE_SYSTEM = "system";// 系统通知
 
     /**
      * 分享相关

@@ -115,7 +115,7 @@ public interface CommonClient {
      */
     @FormUrlEncoded
     @POST(APP_PATH_SYSTEM_FEEDBACK)
-    Observable<BaseJson<CacheBean>> systemFeedback(@Field("content") String content);
+    Observable<BaseJson<Object>> systemFeedback(@Field("content") String content);
 
     /**
      * 获取系统会话列表

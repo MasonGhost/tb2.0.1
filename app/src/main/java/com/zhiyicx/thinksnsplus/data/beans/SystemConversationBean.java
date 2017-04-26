@@ -29,7 +29,10 @@ public class SystemConversationBean extends BaseListBean {
      * created_at : 2017-03-02 08:14:13
      * updated_at : 2017-03-02 08:14:13
      */
-    @Id
+
+    @Id(autoincrement = true)
+    private Long _id;
+    private Long system_mark;  //标记状态
     private Long id;                  //  数据 id
     private String type;            // 会话类型 system-系统通知 feedback-用户意见反馈
     private Long user_id;             // 发送者 id 系统通知时为 0
@@ -59,11 +62,12 @@ public class SystemConversationBean extends BaseListBean {
                 '}';
     }
 
- 
+
     @Override
     public Long getMaxId() {
         return id;
     }
+
 
     @Override
     public int describeContents() {
@@ -73,6 +77,8 @@ public class SystemConversationBean extends BaseListBean {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
+        dest.writeValue(this._id);
+        dest.writeValue(this.system_mark);
         dest.writeValue(this.id);
         dest.writeString(this.type);
         dest.writeValue(this.user_id);
@@ -83,6 +89,26 @@ public class SystemConversationBean extends BaseListBean {
         dest.writeString(this.options);
         dest.writeString(this.created_at);
         dest.writeString(this.updated_at);
+    }
+
+
+    public Long get_id() {
+        return this._id;
+    }
+
+
+    public void set_id(Long _id) {
+        this._id = _id;
+    }
+
+
+    public Long getSystem_mark() {
+        return this.system_mark;
+    }
+
+
+    public void setSystem_mark(Long system_mark) {
+        this.system_mark = system_mark;
     }
 
 
@@ -280,6 +306,8 @@ public class SystemConversationBean extends BaseListBean {
 
     protected SystemConversationBean(Parcel in) {
         super(in);
+        this._id = (Long) in.readValue(Long.class.getClassLoader());
+        this.system_mark = (Long) in.readValue(Long.class.getClassLoader());
         this.id = (Long) in.readValue(Long.class.getClassLoader());
         this.type = in.readString();
         this.user_id = (Long) in.readValue(Long.class.getClassLoader());
@@ -293,9 +321,11 @@ public class SystemConversationBean extends BaseListBean {
     }
 
 
-    @Generated(hash = 1770694770)
-    public SystemConversationBean(Long id, String type, Long user_id, Long to_user_id, String content,
-            String options, String created_at, String updated_at) {
+    @Generated(hash = 1323510984)
+    public SystemConversationBean(Long _id, Long system_mark, Long id, String type, Long user_id, Long to_user_id,
+            String content, String options, String created_at, String updated_at) {
+        this._id = _id;
+        this.system_mark = system_mark;
         this.id = id;
         this.type = type;
         this.user_id = user_id;

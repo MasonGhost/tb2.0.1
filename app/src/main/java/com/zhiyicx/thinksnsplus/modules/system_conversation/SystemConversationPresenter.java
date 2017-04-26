@@ -1,18 +1,22 @@
 package com.zhiyicx.thinksnsplus.modules.system_conversation;
 
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.cache.CacheBean;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.entity.MessageStatus;
+import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +39,10 @@ import rx.schedulers.Schedulers;
  */
 
 public class SystemConversationPresenter extends BasePresenter<SystemConversationContract.Repository, SystemConversationContract.View> implements SystemConversationContract.Presenter {
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    SystemConversationBeanGreenDaoImpl mSystemConversationBeanGreenDao;
 
     @Inject
     public SystemConversationPresenter(SystemConversationContract.Repository repository, SystemConversationContract.View rootView) {
@@ -44,25 +52,43 @@ public class SystemConversationPresenter extends BasePresenter<SystemConversatio
 
     @Override
     public void sendTextMessage(String text) {
-        if (TextUtils.isEmpty(text)) {
-            mRootView.showSnackWarningMessage("消息不能为空");
-            return;
-        }
+        final ChatItemBean chatItemBean = new ChatItemBean();
+        chatItemBean.setUserInfo(mUserInfoBeanGreenDao.getSingleDataFromCache(Long.valueOf(AppApplication.getmCurrentLoginAuth().getUser_id())));
+        final SystemConversationBean systemConversationBean = new SystemConversationBean();
+        systemConversationBean.setUser_id(Long.valueOf(AppApplication.getmCurrentLoginAuth().getUser_id()));
+        systemConversationBean.setContent(text);
+        systemConversationBean.setCreated_at(TimeUtils.millis2String(System.currentTimeMillis()));
+        systemConversationBean.setType(ApiConfig.SYSTEM_CONVERSATIONS_TYPE_FEEDBACK);
+        systemConversationBean.setSystem_mark(Long.valueOf((AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis())));
+        final Message message = new Message();
+        message.setId(systemConversationBean.getSystem_mark().intValue());
+        message.setCreate_time(System.currentTimeMillis());
+        message.setTxt(systemConversationBean.getContent());
+        message.setSend_status(MessageStatus.SEND_SUCCESS);
+        chatItemBean.setLastMessage(message);
+        mRootView.updateSendText(chatItemBean);
+        mSystemConversationBeanGreenDao.insertOrReplace(systemConversationBean);
         mRepository.systemFeedback(text)
-                .subscribe(new BaseSubscribe<CacheBean>() {
+                .subscribe(new BaseSubscribe<Object>() {
                     @Override
-                    protected void onSuccess(CacheBean data) {
-
+                    protected void onSuccess(Object data) {
+                        systemConversationBean.setId(((Double) data).longValue());
+                        mSystemConversationBeanGreenDao.insertOrReplace(systemConversationBean);
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
-
+                        feedbackFail();
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
+                        feedbackFail();
+                    }
 
+                    private void feedbackFail() {
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.err_net_not_work));
+                        chatItemBean.getLastMessage().setSend_status(MessageStatus.SEND_FAIL);
                     }
                 });
     }
@@ -74,7 +100,7 @@ public class SystemConversationPresenter extends BasePresenter<SystemConversatio
      * @param isLoadMore true 加载更多，false 刷新
      */
     @Override
-    public void requestNetData(Long maxId, boolean isLoadMore) {
+    public void requestNetData(Long maxId, final boolean isLoadMore) {
         Subscription systemconversationsSub = mRepository.getSystemConversations(maxId, TSListFragment.DEFAULT_PAGE_SIZE)
                 .map(new Func1<BaseJson<List<SystemConversationBean>>, BaseJson<List<ChatItemBean>>>() {
                     @Override
@@ -98,7 +124,7 @@ public class SystemConversationPresenter extends BasePresenter<SystemConversatio
                 .subscribe(new BaseSubscribe<List<ChatItemBean>>() {
                     @Override
                     protected void onSuccess(List<ChatItemBean> data) {
-                        mRootView.updateData(data);
+                        mRootView.updateData(data, isLoadMore);
                     }
 
                     @Override
@@ -134,7 +160,7 @@ public class SystemConversationPresenter extends BasePresenter<SystemConversatio
                 .subscribe(new Action1<List<ChatItemBean>>() {
                     @Override
                     public void call(List<ChatItemBean> chatItemBeen) {
-
+                        mRootView.updateData(chatItemBeen, true);
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -151,13 +177,19 @@ public class SystemConversationPresenter extends BasePresenter<SystemConversatio
         for (SystemConversationBean systemConversationBean : systemConversationBeen) {
             ChatItemBean chatItemBean = new ChatItemBean();
             Message message = new Message();
-            message.setId(systemConversationBean.getId().intValue());
+            message.setId(systemConversationBean.getSystem_mark().intValue());
             message.setTxt(systemConversationBean.getContent());
             message.setCreate_time(TimeUtils.string2MillisDefaultLocal(systemConversationBean.getCreated_at()));
-            message.setSend_status(MessageStatus.SEND_SUCCESS);
-            message.setUid(systemConversationBean.getUser_id().intValue());
+            message.setSend_status(systemConversationBean.getId() == null ? MessageStatus.SEND_FAIL : MessageStatus.SEND_SUCCESS);
+            message.setUid(systemConversationBean.getUser_id() == null ? 0 : systemConversationBean.getUser_id().intValue());
             chatItemBean.setLastMessage(message);
-            chatItemBean.setUserInfo(systemConversationBean.getUserInfo());
+            if (systemConversationBean.getUserInfo() == null) {
+                UserInfoBean userInfoBean = new UserInfoBean();
+                userInfoBean.setName(mContext.getString(R.string.ts_helper));
+                chatItemBean.setUserInfo(userInfoBean);
+            } else {
+                chatItemBean.setUserInfo(systemConversationBean.getUserInfo());
+            }
             datas.add(chatItemBean);
         }
         return datas;
