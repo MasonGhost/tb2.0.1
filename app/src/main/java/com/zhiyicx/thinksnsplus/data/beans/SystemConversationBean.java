@@ -9,6 +9,7 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
+import org.greenrobot.greendao.annotation.Unique;
 
 /**
  * @Describe
@@ -32,7 +33,9 @@ public class SystemConversationBean extends BaseListBean {
 
     @Id(autoincrement = true)
     private Long _id;
+    @Unique
     private Long system_mark;  //标记状态
+    @Unique
     private Long id;                  //  数据 id
     private String type;            // 会话类型 system-系统通知 feedback-用户意见反馈
     private Long user_id;             // 发送者 id 系统通知时为 0
@@ -192,7 +195,9 @@ public class SystemConversationBean extends BaseListBean {
     }
 
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 1544759941)
     public UserInfoBean getUserInfo() {
         Long __key = this.user_id;
@@ -212,7 +217,9 @@ public class SystemConversationBean extends BaseListBean {
     }
 
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 1576466957)
     public void setUserInfo(UserInfoBean userInfo) {
         synchronized (this) {
@@ -223,7 +230,9 @@ public class SystemConversationBean extends BaseListBean {
     }
 
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 1921703876)
     public UserInfoBean getToUserInfo() {
         Long __key = this.to_user_id;
@@ -243,7 +252,9 @@ public class SystemConversationBean extends BaseListBean {
     }
 
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 1067491086)
     public void setToUserInfo(UserInfoBean toUserInfo) {
         synchronized (this) {
@@ -323,7 +334,7 @@ public class SystemConversationBean extends BaseListBean {
 
     @Generated(hash = 1323510984)
     public SystemConversationBean(Long _id, Long system_mark, Long id, String type, Long user_id, Long to_user_id,
-            String content, String options, String created_at, String updated_at) {
+                                  String content, String options, String created_at, String updated_at) {
         this._id = _id;
         this.system_mark = system_mark;
         this.id = id;
@@ -347,10 +358,14 @@ public class SystemConversationBean extends BaseListBean {
             return new SystemConversationBean[size];
         }
     };
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 1970441704)
     private transient SystemConversationBeanDao myDao;
     @Generated(hash = 2066097151)

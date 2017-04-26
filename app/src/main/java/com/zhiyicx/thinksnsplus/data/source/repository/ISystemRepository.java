@@ -68,7 +68,7 @@ public interface ISystemRepository {
      * @param content 反馈内容
      * @return
      */
-    Observable<BaseJson<Object>> systemFeedback(String content);
+    Observable<BaseJson<Object>> systemFeedback(String content,long system_mark);
 
     /**
      * 获取系统会话列表

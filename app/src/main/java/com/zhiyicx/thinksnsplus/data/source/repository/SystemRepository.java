@@ -20,6 +20,8 @@ import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -158,8 +160,8 @@ public class SystemRepository implements ISystemRepository {
      * @return
      */
     @Override
-    public Observable<BaseJson<Object>> systemFeedback(String content) {
-        return mCommonClient.systemFeedback(content)
+    public Observable<BaseJson<Object>> systemFeedback(String content,long system_mark) {
+        return mCommonClient.systemFeedback(content,system_mark)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -178,6 +180,7 @@ public class SystemRepository implements ISystemRepository {
                     @Override
                     public BaseJson<List<SystemConversationBean>> call(BaseJson<List<SystemConversationBean>> listBaseJson) {
                         if (listBaseJson.isStatus()) {
+                            descSystemConversation(listBaseJson.getData());
                             mSystemConversationBeanGreenDao.saveMultiData(listBaseJson.getData());
                             handleTsHelperUserInfo(listBaseJson.getData());
                         }
@@ -186,15 +189,26 @@ public class SystemRepository implements ISystemRepository {
                 });
     }
 
+    private void descSystemConversation(List<SystemConversationBean> datas) {
+        Collections.sort(datas, new Comparator<SystemConversationBean>() { // 排序，最大的放在最后面
+            @Override
+            public int compare(SystemConversationBean o1, SystemConversationBean o2) {
+                return o1.getId().intValue() - o2.getId().intValue();
+            }
+        });
+    }
+
     @Override
     public List<SystemConversationBean> requestCacheData(long max_Id) {
         List<SystemConversationBean> list = mSystemConversationBeanGreenDao.getMultiDataFromCacheByMaxId(max_Id);
+        descSystemConversation(list);
         handleTsHelperUserInfo(list);
         return list;
     }
 
     /**
      * 处理 TS 助手和用户信息
+     *
      * @param list
      */
     private void handleTsHelperUserInfo(List<SystemConversationBean> list) {

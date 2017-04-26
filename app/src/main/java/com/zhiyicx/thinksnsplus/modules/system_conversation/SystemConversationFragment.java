@@ -40,9 +40,8 @@ public class SystemConversationFragment extends BaseChatFragment<SystemConversat
     @Override
     protected void initData() {
         super.initData();
-        mPresenter.requestCacheData(mMax_id);
         initMessageList();
-        mMessageList.getRefreshLayout().setRefreshing(true);
+        mPresenter.requestCacheData(mMax_id);
     }
 
     @Override
@@ -94,8 +93,10 @@ public class SystemConversationFragment extends BaseChatFragment<SystemConversat
 
     @Override
     public void updateNetData(List<ChatItemBean> datas) {
+        mIsRequestNeted = true;
+        mDatas.clear();
         mDatas.addAll(datas);
-        mMessageList.refresh();
+        mMessageList.refreshSoomthBottom();
         if (mDatas.isEmpty()) {
             mMax_id = TSListFragment.DEFAULT_PAGE_MAX_ID;
         } else {
@@ -105,6 +106,10 @@ public class SystemConversationFragment extends BaseChatFragment<SystemConversat
 
     @Override
     public void updateCacheData(List<ChatItemBean> datas) {
+        hideLoading();
+        if (!mIsRequestNeted) {
+            mMessageList.getRefreshLayout().setRefreshing(true);
+        }
         datas.addAll(mDatas);
         mDatas.clear();
         mDatas.addAll(datas);
@@ -124,6 +129,6 @@ public class SystemConversationFragment extends BaseChatFragment<SystemConversat
         } else {
             mDatas.add(chatItemBean);
         }
-        mMessageList.refresh();
+        mMessageList.refreshSoomthBottom();
     }
 }
