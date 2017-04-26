@@ -7,6 +7,6 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment;
  * @Description
  */
 public interface ICommentBean {
-    CommentBean get$$Comment();
-    ICommentBean set$$Comment(CommentBean comment);
+    CommonMetadata get$$Comment();
+    ICommentBean set$$Comment(CommonMetadata comment);
 }
