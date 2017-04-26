@@ -67,6 +67,7 @@ public class ApiConfig {
     public static final String FLUSHMESSAGES_KEY_DIGGS = "diggs";
     public static final String FLUSHMESSAGES_KEY_COMMENTS = "comments";
     public static final String FLUSHMESSAGES_KEY_FOLLOWS = "follows";
+    public static final String FLUSHMESSAGES_KEY_NOTICES = "notices";
 
     /**
      * 聊天相关

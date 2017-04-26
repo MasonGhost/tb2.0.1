@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 
 import android.text.TextUtils;
 
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -26,12 +27,15 @@ import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatContract;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
@@ -54,6 +58,8 @@ import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+import static com.zhiyicx.baseproject.config.ApiConfig.FLUSHMESSAGES_KEY_NOTICES;
 
 /**
  * @Describe
@@ -86,9 +92,15 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
 
     @Inject
     DigedBeanGreenDaoImpl mDigedBeanGreenDao;
+    @Inject
+    SystemConversationBeanGreenDaoImpl mSystemConversationBeanGreenDao;
+
+    @Inject
+    SystemRepository mSystemRepository;
 
     private MessageItemBean mItemBeanComment;
     private MessageItemBean mItemBeanDigg;
+    private MessageItemBean mItemBeanNotices;
 
     @Inject
     public MessagePresenter(MessageContract.Repository repository, MessageContract.View rootView) {
@@ -370,10 +382,33 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
             case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_CHANNEL:
             case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_MUSIC:
             case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_NEWS:
+            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_USER:
+            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_SYSTEM:
             default:
                 switch (jpushMessageBean.getAction()) {
                     case JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_COMMENT:
                     case JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_DIGG:
+                    case JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_FOLLOW:
+                    case JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_NOTICE:
+                        mSystemRepository.getSystemConversations(System.currentTimeMillis(), TSListFragment.DEFAULT_PAGE_SIZE)
+                                .subscribe(new BaseSubscribe<List<SystemConversationBean>>() {
+                                    @Override
+                                    protected void onSuccess(List<SystemConversationBean> data) {
+                                        // 服务器同步未读评论和点赞消息
+                                        handleFlushMessage();
+                                    }
+
+                                    @Override
+                                    protected void onFailure(String message, int code) {
+
+                                    }
+
+                                    @Override
+                                    protected void onException(Throwable throwable) {
+
+                                    }
+                                });
+                        break;
                     default:
                         // 服务器同步未读评论和点赞消息
                         handleFlushMessage();
@@ -416,6 +451,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                         FlushMessages commentFlushMessage = null;
                         FlushMessages diggFlushMessage = null;
                         FlushMessages followFlushMessage = null;
+                        FlushMessages noticeFlushMessage = null;
 
                         List<FlushMessages> flushMessagesList = mFlushMessageBeanGreenDao.getMultiDataFromCache();
                         if (!flushMessagesList.isEmpty()) {
@@ -429,6 +465,9 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                                         break;
                                     case ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS:
                                         followFlushMessage = flushMessages;
+                                        break;
+                                    case FLUSHMESSAGES_KEY_NOTICES:
+                                        noticeFlushMessage = flushMessages;
                                         break;
                                     default:
                                         break;
@@ -444,6 +483,9 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                                         break;
                                     case ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS:
                                         MessagePresenter.this.handleFlushMessage(flushMessage, followFlushMessage);
+                                        break;
+                                    case FLUSHMESSAGES_KEY_NOTICES:
+                                        MessagePresenter.this.handleFlushMessage(flushMessage, noticeFlushMessage);
                                         break;
                                     default:
                                         break;
@@ -484,6 +526,9 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                     break;
                 case ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS:
                     break;
+                case FLUSHMESSAGES_KEY_NOTICES:
+                    handleItemBean(mItemBeanNotices, flushMessage);
+                    break;
                 default:
                     break;
             }
@@ -510,6 +555,11 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                 if (lastDiggBend != null && flushMessage.getMax_id() != 0 && lastDiggBend.getId() > flushMessage.getMax_id()) {
                     flushMessage.setCount(0);
                 }
+
+                break;
+            case FLUSHMESSAGES_KEY_NOTICES:
+                SystemConversationBean systemConversationBean = mSystemConversationBeanGreenDao.getLastData();
+                textEndTip = systemConversationBean.getContent();
 
                 break;
             default:
@@ -550,6 +600,13 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         }
         if (text.endsWith("、")) {
             text = text.substring(0, text.length() - 1);
+        }
+        if (flushMessage.getKey().equals(FLUSHMESSAGES_KEY_NOTICES)) {
+            messageItemBean.getConversation().getLast_message().setTxt(
+                    textEndTip);
+        } else {
+            messageItemBean.getConversation().getLast_message().setTxt(text
+                    + textEndTip);
         }
         messageItemBean.getConversation().getLast_message().setTxt(text
                 + textEndTip);
@@ -596,6 +653,12 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         mItemBeanDigg.getConversation().getLast_message().setTxt("还没有人"
                 + mContext.getString(R.string.like_me));
 
+        mItemBeanNotices = new MessageItemBean();
+        Conversation noticeConveration = new Conversation();
+        Message noticemessage = new Message();
+        noticeConveration.setLast_message(noticemessage);
+        mItemBeanNotices.setConversation(noticeConveration);
+        mItemBeanNotices.getConversation().getLast_message().setTxt("");
     }
 
 
