@@ -109,7 +109,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
                     i.setAction(MusicPlayService.ACTION_CMD);
                     i.putExtra(MusicPlayService.CMD_NAME, MusicPlayService.CMD_PAUSE);
                     mContext.startService(i);
-                }else{
+                } else {
                 }
             }
         }
@@ -191,8 +191,8 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
             mCurrentMediaId = mediaId;
         }
 
-        if (!mediaHasChanged && mMediaPlayer !=
-                null) { //没有切歌
+        // 防止未准备好的时候 重新播放该歌曲
+        if (mState == PlaybackStateCompat.STATE_PAUSED && !mediaHasChanged && mMediaPlayer != null) { //没有切歌
             LogUtils.d("mCurrentPosition:::没有切歌");
             configMediaPlayerState();
         } else {
