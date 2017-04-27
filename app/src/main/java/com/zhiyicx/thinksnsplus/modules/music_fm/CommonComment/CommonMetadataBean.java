@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.io.Serializable;
@@ -17,6 +18,9 @@ import java.io.Serializable;
  */
 @Entity
 public class CommonMetadataBean implements Serializable{
+
+    @Transient
+    private static final long serialVersionUID = 1L;
 
     public static final int SEND_ING = 0;
     public static final int SEND_SUCCESS = 1;
