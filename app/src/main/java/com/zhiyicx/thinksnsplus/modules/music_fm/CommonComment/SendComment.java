@@ -26,6 +26,7 @@ public class SendComment implements ICommentEvent<ICommentBean> {
     @Override
     public void handleCommentInBackGroud(ICommentBean comment) {
         CommonMetadata commentBean = comment.get$$Comment();
+        commentBean.newBuilder().putState(CommonMetadata.METADATA_KEY_COMMENT_STATE,CommonMetadata.SEND_ING);
         sendComment(commentBean);
         BackgroundRequestTaskBean backgroundRequestTaskBean;
         HashMap<String, Object> params = new HashMap<>();

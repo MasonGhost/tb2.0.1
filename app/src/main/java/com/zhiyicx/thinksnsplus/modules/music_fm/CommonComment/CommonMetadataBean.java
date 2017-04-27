@@ -3,9 +3,9 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment;
 import com.google.gson.annotations.SerializedName;
 
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
-import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * @Author Jliuer
@@ -20,14 +20,13 @@ public class CommonMetadataBean {
     public static final int SEND_SUCCESS = 1;
     public static final int SEND_ERROR = 2;
 
-    @Id
+    @Id(autoincrement = true)
     private Long _id;
 
     @SerializedName("id")
-    @Unique
     private int comment_id;// 这条评论id
 
-    private String comment_type;
+    private int comment_type;
 
     private int source_id;// 这个资源id
 
@@ -43,6 +42,7 @@ public class CommonMetadataBean {
     private String comment_content;
 
     private String comment_url;
+    private String delete_url;
 
     @SerializedName("created_at")
     private String created_at;
@@ -52,13 +52,13 @@ public class CommonMetadataBean {
 
     @SerializedName("comment_mark")
     @Unique
-    private Long comment_mark;
+    private Long comment_mark;// 拼接的 用户id+时间戳
 
-    @Generated(hash = 942400670)
-    public CommonMetadataBean(Long _id, int comment_id, String comment_type,
-            int source_id, int comment_state, int to_user, int from_user,
-            String comment_content, String comment_url, String created_at,
-            String updated_at, Long comment_mark) {
+    @Generated(hash = 168821524)
+    public CommonMetadataBean(Long _id, int comment_id, int comment_type,
+                              int source_id, int comment_state, int to_user, int from_user,
+                              String comment_content, String comment_url, String delete_url,
+                              String created_at, String updated_at, Long comment_mark) {
         this._id = _id;
         this.comment_id = comment_id;
         this.comment_type = comment_type;
@@ -68,6 +68,7 @@ public class CommonMetadataBean {
         this.from_user = from_user;
         this.comment_content = comment_content;
         this.comment_url = comment_url;
+        this.delete_url = delete_url;
         this.created_at = created_at;
         this.updated_at = updated_at;
         this.comment_mark = comment_mark;
@@ -85,11 +86,11 @@ public class CommonMetadataBean {
         this.comment_id = comment_id;
     }
 
-    public String getComment_type() {
+    public int getComment_type() {
         return comment_type;
     }
 
-    public void setComment_type(String comment_type) {
+    public void setComment_type(int comment_type) {
         this.comment_type = comment_type;
     }
 
@@ -171,5 +172,13 @@ public class CommonMetadataBean {
 
     public void set_id(Long _id) {
         this._id = _id;
+    }
+
+    public String getDelete_url() {
+        return this.delete_url;
+    }
+
+    public void setDelete_url(String delete_url) {
+        this.delete_url = delete_url;
     }
 }

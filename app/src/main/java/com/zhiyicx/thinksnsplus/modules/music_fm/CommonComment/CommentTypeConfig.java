@@ -8,7 +8,7 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment;
  */
 public class CommentTypeConfig {
 
-    public static final String TS_SPECIAL_COMMENT = "special";// 专辑评论
+    public static final int TS_SPECIAL_COMMENT = 1000;// 专辑评论
 
-    public static final String TS_MUSIC_COMMENT = "music";// 歌曲评论
+    public static final int TS_MUSIC_COMMENT = 2000;// 歌曲评论
 }

@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment;
 
 import com.zhiyicx.common.base.BaseApplication;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
@@ -38,7 +39,7 @@ public class DeleteComment implements ICommentEvent<ICommentBean> {
         // 后台处理
         backgroundRequestTaskBean = new BackgroundRequestTaskBean
                 (BackgroundTaskRequestMethodConfig.DELETE, params);
-        backgroundRequestTaskBean.setPath(commentBean.getString(CommonMetadata.METADATA_KEY_COMMENT_URL));
+        backgroundRequestTaskBean.setPath(commentBean.getString(CommonMetadata.METADATA_KEY_DELETE_URL));
         BackgroundTaskManager.getInstance(BaseApplication.getContext()).addBackgroundRequestTask
                 (backgroundRequestTaskBean);
     }

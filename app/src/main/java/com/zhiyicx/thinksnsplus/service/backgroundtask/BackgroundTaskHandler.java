@@ -391,6 +391,11 @@ public class BackgroundTaskHandler {
      */
     private void deleteMethod(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
         HashMap<String, Object> datas = backgroundRequestTaskBean.getParams();
+        if (datas == null) {
+            datas = new HashMap();
+        }
+        final OnNetResponseCallBack callBack = (OnNetResponseCallBack) datas.get(NET_CALLBACK);
+        datas.remove(NET_CALLBACK);
         RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(datas));
         mServiceManager.getCommonClient().handleBackGroudTaskDelete(backgroundRequestTaskBean.getPath()
                 , body)

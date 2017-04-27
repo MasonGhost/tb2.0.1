@@ -5,6 +5,7 @@ import android.app.Application;
 import com.zhiyicx.thinksnsplus.data.source.local.BackgroundRequestTaskBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelSubscripBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.CommonMetadataBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
@@ -121,5 +122,8 @@ public class GreenDaoModule {
         return new InfoRecommendBeanGreenDaoImpl(application);
     }
 
-
+    @Provides
+    public CommonMetadataBeanGreenDaoImpl provideCommonMetadataBeanGreenDaoImpl(Application application) {
+        return new CommonMetadataBeanGreenDaoImpl(application);
+    }
 }
