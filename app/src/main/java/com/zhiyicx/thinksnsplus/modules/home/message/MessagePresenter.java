@@ -559,7 +559,11 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                 break;
             case FLUSHMESSAGES_KEY_NOTICES:
                 SystemConversationBean systemConversationBean = mSystemConversationBeanGreenDao.getLastData();
-                textEndTip = systemConversationBean.getContent();
+                if (systemConversationBean == null) {
+                    textEndTip=mContext.getString(R.string.ts_helper_default_tip);
+                } else {
+                    textEndTip = systemConversationBean.getContent();
+                }
 
                 break;
             default:

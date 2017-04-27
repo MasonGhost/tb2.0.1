@@ -1,7 +1,6 @@
 package com.zhiyicx.common.utils;
 
 import android.app.Activity;
-import android.content.Context;
 
 import java.util.Stack;
 
@@ -132,7 +131,13 @@ public class ActivityHandler {
      * 它能有效的释放 JVM 之外的资源,执行清除任务，运行相关的 finalizer 方法终结对象，
      * 而 finish 只是退出了 Activity。
      */
-    public void AppExit(Context context) {
+    public void AppExit( ) {
+        // app主线程等待3秒，让用户处理好崩溃异常后，杀死进程
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         try {
             finishAllActivity();
             //DalvikVM的本地方法
