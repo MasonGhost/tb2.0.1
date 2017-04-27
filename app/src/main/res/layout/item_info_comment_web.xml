@@ -15,7 +15,8 @@
 
 
     <include
-        layout="@layout/item_dynamic_detail_dig"/>
+        layout="@layout/item_dynamic_detail_dig"
+        android:visibility="gone"/>
 
     <FrameLayout
         android:id="@+id/info_detail_comment"

@@ -23,11 +23,6 @@ import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayService;
 import org.simple.eventbus.EventBus;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 
 import static android.media.MediaPlayer.OnCompletionListener;
 import static android.media.MediaPlayer.OnErrorListener;
@@ -191,7 +186,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
             mCurrentMediaId = mediaId;
         }
 
-        // 防止未准备好的时候 重新播放该歌曲
+        // 防止未准备好的时候 重新播放该歌曲 mState == PlaybackStateCompat.STATE_PAUSED &&
         if (mState == PlaybackStateCompat.STATE_PAUSED && !mediaHasChanged && mMediaPlayer != null) { //没有切歌
             LogUtils.d("mCurrentPosition:::没有切歌");
             configMediaPlayerState();
