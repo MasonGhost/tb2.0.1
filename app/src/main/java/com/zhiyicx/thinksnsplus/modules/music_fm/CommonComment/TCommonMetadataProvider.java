@@ -20,7 +20,7 @@ public class TCommonMetadataProvider extends CommonMetadataProvider<MusicComment
     @Override
     public CommonMetadata buildCommonMetadata(MusicCommentListBean commentData) {
         return new CommonMetadata.Builder()
-                .putInteger(CommonMetadata.METADATA_KEY_COMMENT_ID, commentData.getId().intValue())
+                .putInteger(CommonMetadata.METADATA_KEY_COMMENT_ID, commentData.getId() == null ? -1 : commentData.getId().intValue())
                 .putInteger(CommonMetadata.METADATA_KEY_COMMENT_STATE, CommonMetadata.SEND_SUCCESS)
                 .putLong(CommonMetadata.METADATA_KEY_COMMENT_MARK, commentData.getComment_mark())
                 .putString(CommonMetadata.METADATA_KEY_COMMENT_CONTENT, commentData.getComment_content())
@@ -41,7 +41,7 @@ public class TCommonMetadataProvider extends CommonMetadataProvider<MusicComment
         CommonMetadataBean commonMetadataBean = new CommonMetadataBean();
         commonMetadataBean.setComment_mark(commentData.getComment_mark());
         commonMetadataBean.setComment_content(commentData.getComment_content());
-        commonMetadataBean.setComment_id(commentData.getId().intValue());
+        commonMetadataBean.setComment_id(commentData.getId() == null ? -1 : commentData.getId().intValue());
         commonMetadataBean.setSource_id(commentData.getMusic_id() != 0 ? commentData.getMusic_id() : commentData.getSpecial_id());
         commonMetadataBean.setTo_user(commentData.getReply_to_user_id());
         commonMetadataBean.setFrom_user(commentData.getUser_id());

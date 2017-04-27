@@ -49,7 +49,7 @@ public abstract class CommonMetadataProvider<T> implements ICommonMetadataProvid
         return mCommonMetadataBeanGreenDao.getCommonMetadataListByTypeAndID(type, sourceId);
     }
 
-    public void insertOrReplace(CommonMetadataBean commonMetadataBean){
+    public void insertOrReplaceOne(CommonMetadataBean commonMetadataBean){
         mCommonMetadataBeanGreenDao.insertOrReplace(commonMetadataBean);
     }
 

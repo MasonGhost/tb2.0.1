@@ -25,6 +25,7 @@ import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,7 +88,7 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                                 mCommentListBeanGreenDao.saveMultiData(data);
                             }
 
-                            TCommonMetadataProvider test=new TCommonMetadataProvider(data);
+                            TCommonMetadataProvider test = new TCommonMetadataProvider(data);
                             test.iterator();
 
                             mRootView.onNetResponseSuccess(data, isLoadMore);
@@ -113,7 +114,7 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                                 mCommentListBeanGreenDao.saveMultiData(data);
                             }
 
-                            TCommonMetadataProvider test=new TCommonMetadataProvider(data);
+                            TCommonMetadataProvider test = new TCommonMetadataProvider(data);
                             test.iterator();
 
 //                            List<MusicCommentListBean> localComment = mCommentListBeanGreenDao.getMyAblumComment(Integer.valueOf(music_id));
@@ -148,6 +149,8 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
         }
         addSubscrebe(subscription);
     }
+
+
 
     @Override
     public void sendComment(int reply_id, String content) {
@@ -188,43 +191,65 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
         mRootView.getListDatas().add(0, createComment);
         mRootView.refreshData();
         path = String.format(path, mRootView.getCommentId());
-        Subscription subscription = mCommentRepository.sendComment(content, reply_id, createComment.getComment_mark(), path).doOnSubscribe(new Action0() {
-            @Override
-            public void call() {
-                mRootView.showSnackLoadingMessage(mContext.getString(R.string.comment_ing));
-            }
-        }).subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<Object>() {
-                    @Override
-                    protected void onSuccess(Object data) {
-                        MusicCommentListBean commentListBean = mCommentListBeanGreenDao.getMusicCommentByCommentMark(createComment.getComment_mark());
-                        commentListBean.setId(((Double) data).longValue());
-                        commentListBean.setState(SEND_SUCCESS);
-                        mCommentListBeanGreenDao.insertOrReplace(commentListBean);
-                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.comment_success));
-                    }
+        CommentCore.getInstance(CommentCore.CommentState.SEND, new CallBack())
+//                .set$$Comment(provider.buildCommonMetadata(data))
+                .set$$Comment_(createComment,new TCommonMetadataProvider(null))
+                .handleCommentInBackGroud();
 
-                    @Override
-                    protected void onFailure(String message, int code) {
-                        MusicCommentListBean commentListBean = mCommentListBeanGreenDao.getMusicCommentByCommentMark(createComment.getComment_mark());
-                        commentListBean.setState(SEND_ERROR);
-                        mRootView.getListDatas().set(0, commentListBean);
-                        mRootView.refreshData();
-                        mCommentListBeanGreenDao.insertOrReplace(commentListBean);
-                        mRootView.showSnackErrorMessage(mContext.getString(R.string.comment_fail));
-                    }
+//        Subscription subscription = mCommentRepository.sendComment(content, reply_id, createComment.getComment_mark(), path).doOnSubscribe(new Action0() {
+//            @Override
+//            public void call() {
+//                mRootView.showSnackLoadingMessage(mContext.getString(R.string.comment_ing));
+//            }
+//        }).subscribeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new BaseSubscribe<Object>() {
+//                    @Override
+//                    protected void onSuccess(Object data) {
+//                        MusicCommentListBean commentListBean = mCommentListBeanGreenDao.getMusicCommentByCommentMark(createComment.getComment_mark());
+//                        commentListBean.setId(((Double) data).longValue());
+//                        commentListBean.setState(SEND_SUCCESS);
+//                        mCommentListBeanGreenDao.insertOrReplace(commentListBean);
+//                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.comment_success));
+//                    }
+//
+//                    @Override
+//                    protected void onFailure(String message, int code) {
+//                        MusicCommentListBean commentListBean = mCommentListBeanGreenDao.getMusicCommentByCommentMark(createComment.getComment_mark());
+//                        commentListBean.setState(SEND_ERROR);
+//                        mRootView.getListDatas().set(0, commentListBean);
+//                        mRootView.refreshData();
+//                        mCommentListBeanGreenDao.insertOrReplace(commentListBean);
+//                        mRootView.showSnackErrorMessage(mContext.getString(R.string.comment_fail));
+//                    }
+//
+//                    @Override
+//                    protected void onException(Throwable throwable) {
+//                        MusicCommentListBean commentListBean = mCommentListBeanGreenDao.getMusicCommentByCommentMark(createComment.getComment_mark());
+//                        commentListBean.setState(SEND_ERROR);
+//                        mRootView.getListDatas().set(0, commentListBean);
+//                        mRootView.refreshData();
+//                        mCommentListBeanGreenDao.insertOrReplace(commentListBean);
+//                        mRootView.showSnackErrorMessage(mContext.getString(R.string.comment_fail));
+//                    }
+//                });
+//        addSubscrebe(subscription);
+    }
 
-                    @Override
-                    protected void onException(Throwable throwable) {
-                        MusicCommentListBean commentListBean = mCommentListBeanGreenDao.getMusicCommentByCommentMark(createComment.getComment_mark());
-                        commentListBean.setState(SEND_ERROR);
-                        mRootView.getListDatas().set(0, commentListBean);
-                        mRootView.refreshData();
-                        mCommentListBeanGreenDao.insertOrReplace(commentListBean);
-                        mRootView.showSnackErrorMessage(mContext.getString(R.string.comment_fail));
-                    }
-                });
-        addSubscrebe(subscription);
+    class CallBack implements BackgroundTaskHandler.OnNetResponseCallBack, Serializable {
+        @Override
+        public void onSuccess(Object data) {
+            LogUtils.d("--------------------------------------------------------------");
+        }
+
+        @Override
+        public void onFailure(String message, int code) {
+
+        }
+
+        @Override
+        public void onException(Throwable throwable) {
+
+        }
     }
 
     @Override
@@ -348,11 +373,12 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
 //        commentBean.setNetRequestUrl(String.format(ApiConfig
 //                .APP_PATH_MUSIC_DELETE_COMMENT_FORMAT, data.getId()));
 
-        TCommonMetadataProvider provider=new TCommonMetadataProvider(null);
-        CommentCore.getInstance(CommentCore.CommentState.DELETE,new CommentCore.CallBack())
-                .set$$Comment(provider.buildCommonMetadata(data))
+//        TCommonMetadataProvider provider = new TCommonMetadataProvider(null);
+        CommentCore.getInstance(CommentCore.CommentState.DELETE, new CommentCore.CallBack())
+//                .set$$Comment(provider.buildCommonMetadata(data))
+                .set$$Comment_(data,new TCommonMetadataProvider(null))
                 .handleCommentInBackGroud();
-        provider.deleteOne(provider.buildCommonMetadataBean(data));
+//        provider.deleteOne(provider.buildCommonMetadataBean(data));
 
 //        mRepository.deleteComment(mRootView.getCommentId(),data.getComment_id());
         mRootView.getListDatas().remove(data);
