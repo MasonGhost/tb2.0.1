@@ -92,4 +92,14 @@
 
     <string name="code_7001">反馈内容不存在</string>
 
+
+    <!--#########################################      资讯模块       ################################-->
+
+    <string name="code_9001">资讯id不能为空</string>
+    <string name="code_9002">该资讯不存在或已删除</string>
+    <string name="code_9003">已收藏该资讯</string>
+    <string name="code_9004">未收藏该资讯</string>
+    <string name="code_9005">已点赞该资讯</string>
+    <string name="code_9006">未点赞该资讯</string>
+
 </resources>
