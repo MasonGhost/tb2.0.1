@@ -9,6 +9,8 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.umeng.analytics.MobclickAgent;
+import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.io.File;
@@ -22,6 +24,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import rx.Observable;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * @author LiuChao
@@ -52,20 +58,26 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
 
     @Override
     public void uncaughtException(Thread thread, Throwable throwable) {
-//        MobclickAgent.reportError(mContext, throwable);
+        Observable.just(throwable)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        MobclickAgent.reportError(mContext, throwable);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        MobclickAgent.reportError(mContext, throwable);
+                    }
+                });
         // 如果用户没有自己处理这些异常，就让系统自己来
         if (!handleException(throwable) && mUncaughtExceptionHandler != null) {
             mUncaughtExceptionHandler.uncaughtException(thread, throwable);
         } else {
-            // app主线程等待3秒，让用户处理好崩溃异常后，杀死进程
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            //退出程序
-            android.os.Process.killProcess(android.os.Process.myPid());
-            System.exit(1);
+            ActivityHandler.getInstance().AppExit();
         }
 
     }
@@ -89,19 +101,20 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         if (ex == null) {
             return false;
         }
+        //收集设备参数信息
+        collectDeviceInfo(mContext);
+        //保存日志文件
+        saveCrashInfo2File(ex);
         //使用Toast来显示异常信息,也可以做些其他的
         new Thread() {
             @Override
             public void run() {
                 Looper.prepare();
-                Toast.makeText(mContext, "很抱歉,程序出现异常,即将退出.", Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, "很抱歉,程序出现异常,请重新打开使用!", Toast.LENGTH_LONG).show();
                 Looper.loop();
+                ActivityHandler.getInstance().AppExit();
             }
         }.start();
-        //收集设备参数信息
-        collectDeviceInfo(mContext);
-        //保存日志文件
-        saveCrashInfo2File(ex);
         return true;
     }
 
