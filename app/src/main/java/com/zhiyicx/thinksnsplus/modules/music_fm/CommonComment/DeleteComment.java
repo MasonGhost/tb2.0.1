@@ -46,7 +46,7 @@ public class DeleteComment implements ICommentEvent<ICommentBean> {
 
     @Override
     public void handleComment(ICommentBean comment) {
-
+        CommonMetadata commentBean = comment.get$$Comment();
     }
 
     protected void deleteComment(CommonMetadata commentBean) {

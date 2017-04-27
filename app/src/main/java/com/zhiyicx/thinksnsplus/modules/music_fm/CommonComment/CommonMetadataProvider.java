@@ -49,6 +49,15 @@ public abstract class CommonMetadataProvider<T> implements ICommonMetadataProvid
         return mCommonMetadataBeanGreenDao.getCommonMetadataListByTypeAndID(type, sourceId);
     }
 
+    public List<T> getCacheCommonComments(int type, int sourceId) {
+        List<T> needDatas=new ArrayList<>();
+        List<CommonMetadataBean> cacheDatas=mCommonMetadataBeanGreenDao.getCommonMetadataListByTypeAndID(type, sourceId);
+        for (CommonMetadataBean data:cacheDatas){
+            needDatas.add(buildCommonData(data));
+        }
+        return needDatas;
+    }
+
     public void insertOrReplaceOne(CommonMetadataBean commonMetadataBean){
         mCommonMetadataBeanGreenDao.insertOrReplace(commonMetadataBean);
     }
@@ -58,6 +67,8 @@ public abstract class CommonMetadataProvider<T> implements ICommonMetadataProvid
     }
 
     public abstract CommonMetadata buildCommonMetadata(T commentData);
+
+    public abstract T buildCommonData(CommonMetadataBean commonMetadataBean);
 
     public abstract CommonMetadataBean buildCommonMetadataBean(T commentData);
 

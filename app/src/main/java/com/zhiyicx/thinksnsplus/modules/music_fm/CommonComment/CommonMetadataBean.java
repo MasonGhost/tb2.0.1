@@ -7,6 +7,8 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
 
+import java.io.Serializable;
+
 /**
  * @Author Jliuer
  * @Date 2017/04/26/16:34
@@ -14,7 +16,7 @@ import org.greenrobot.greendao.annotation.Unique;
  * @Description
  */
 @Entity
-public class CommonMetadataBean {
+public class CommonMetadataBean implements Serializable{
 
     public static final int SEND_ING = 0;
     public static final int SEND_SUCCESS = 1;
