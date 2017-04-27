@@ -21,6 +21,8 @@ import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatContract;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import rx.Observable;
@@ -141,6 +143,12 @@ public class ChatRepository implements ChatContract.Repository {
             itemBean.setUnReadMessageNums(unreadMessageCount);
             messageItemBeens.add(itemBean);
         }
+        Collections.sort(messageItemBeens, new Comparator<MessageItemBean>() { // 按最新消息排序
+            @Override
+            public int compare(MessageItemBean o1, MessageItemBean o2) {
+                return (int) (o2.getConversation().getLast_message().getCreate_time()-o1.getConversation().getLast_message().getCreate_time());
+            }
+        });
         return messageItemBeens;
     }
 

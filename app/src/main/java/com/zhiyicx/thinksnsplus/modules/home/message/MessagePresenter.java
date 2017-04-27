@@ -129,6 +129,9 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                 .subscribe(new BaseSubscribe<List<MessageItemBean>>() {
                     @Override
                     protected void onSuccess(final List<MessageItemBean> data) {
+                        if (mItemBeanNotices != null && mItemBeanNotices.getConversation().getCid() != 0) {
+                            data.add(mItemBeanNotices);
+                        }
                         mRootView.onNetResponseSuccess(data, false);
                     }
 
@@ -195,16 +198,6 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                 .map(new Func1<String, List<MessageItemBean>>() {
                     @Override
                     public List<MessageItemBean> call(String s) {
-//                        List<MessageItemBean> data = mChatRepository.getConversionListData(mAuthRepository.getAuthBean().getUser_id()); // 获取聊天会话数据
-//                        if (mItemBeanNotices != null && mItemBeanNotices.getConversation().getLast_message_time() != 0) { // 添加 TS 助手
-//                            data.add(mItemBeanNotices);
-//                        }
-//                        Collections.sort(data, new Comparator<MessageItemBean>() { // 按最新消息排序
-//                            @Override
-//                            public int compare(MessageItemBean o1, MessageItemBean o2) {
-//                                return (int) (o2.getConversation().getLast_message_time() - o1.getConversation().getLast_message_time());
-//                            }
-//                        });
                         int size = mRootView.getListDatas().size();
                         for (int i = 0; i < size; i++) {
                             if (mRootView.getListDatas().get(i).getConversation().getCid() != DEFAULT_TS_HLEPER_CONVERSATION_ID) { // 聊天消息
@@ -651,7 +644,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         Message message = new Message();
         commentMessage.setLast_message(message);
         mItemBeanComment.setConversation(commentMessage);
-        mItemBeanComment.getConversation().getLast_message().setTxt("还没有人"
+        mItemBeanComment.getConversation().getLast_message().setTxt(mContext.getString(R.string.has_no_body)
                 + mContext.getString(R.string.comment_me));
 
         mItemBeanDigg = new MessageItemBean();
@@ -659,7 +652,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         Message diggmessage = new Message();
         diggConveration.setLast_message(diggmessage);
         mItemBeanDigg.setConversation(diggConveration);
-        mItemBeanDigg.getConversation().getLast_message().setTxt("还没有人"
+        mItemBeanDigg.getConversation().getLast_message().setTxt(mContext.getString(R.string.has_no_body)
                 + mContext.getString(R.string.like_me));
 
         mItemBeanNotices = new MessageItemBean();
@@ -668,7 +661,11 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         Message noticemessage = new Message();
         noticeConveration.setLast_message(noticemessage);
         mItemBeanNotices.setConversation(noticeConveration);
-        mItemBeanNotices.getConversation().getLast_message().setTxt("");
+        mItemBeanNotices.getConversation().getLast_message().setTxt(mContext.getString(R.string.ts_helper_default_tip));
+        UserInfoBean tsHelperUserInfo = new UserInfoBean();
+        tsHelperUserInfo.setName(mContext.getString(R.string.ts_helper));
+        mItemBeanNotices.setUserInfo(tsHelperUserInfo);
+
     }
 
 

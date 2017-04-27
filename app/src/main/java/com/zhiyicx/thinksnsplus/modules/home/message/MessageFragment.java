@@ -230,14 +230,12 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     @Override
     public void updateCommnetItemData(MessageItemBean messageItemBean) {
-//        mListDatas.set(ITEM_TYPE_COMMNETED, messageItemBean); 以 item 的形式呈现
         updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter.updateLikeItemData());
         refreshData();
     }
 
     @Override
     public void updateLikeItemData(MessageItemBean messageItemBean) {
-//        mListDatas.set(ITEM_TYPE_LIKED, messageItemBean);
         updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter.updateLikeItemData());
         refreshData();
     }
@@ -246,14 +244,12 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     public void showTopRightLoading() {
         ((AnimationDrawable) (mToolbarRight.getCompoundDrawables())[2]).start();
         mToolbarRight.setVisibility(View.VISIBLE);
-        System.out.println("------------showTopRightLoading------------- ");
     }
 
     @Override
     public void closeTopRightLoading() {
         ((AnimationDrawable) (mToolbarRight.getCompoundDrawables())[2]).stop();
         mToolbarRight.setVisibility(View.GONE);
-        System.out.println("------------closeTopRightLoading------------- ");
 
     }
 
