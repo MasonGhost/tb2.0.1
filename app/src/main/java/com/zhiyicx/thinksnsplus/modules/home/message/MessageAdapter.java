@@ -95,6 +95,8 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
                 swipeLayout.setSwipeEnabled(true);
                 break;
             default:
+                holder.getView(R.id.tv_name).setOnClickListener(null);
+                holder.getView(R.id.iv_headpic).setOnClickListener(null);
                 holder.setImageResource(R.id.iv_headpic, R.mipmap.ico_ts_assistant);
                 holder.setText(R.id.tv_name, holder.getConvertView().getResources().getString(R.string.ts_helper));
                 swipeLayout.setSwipeEnabled(false);

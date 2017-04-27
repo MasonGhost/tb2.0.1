@@ -12,6 +12,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.imsdk.db.dao.ConversationDao;
+import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.AuthData;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
@@ -47,8 +48,6 @@ import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -179,6 +178,11 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         return mItemBeanDigg;
     }
 
+    @Override
+    public MessageItemBean updateNoticesItemData() {
+        return mItemBeanNotices;
+    }
+
     /**
      * 刷新是否显示底部红点
      * 刷新当条item 的未读数
@@ -191,24 +195,36 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                 .map(new Func1<String, List<MessageItemBean>>() {
                     @Override
                     public List<MessageItemBean> call(String s) {
-                        List<MessageItemBean> data = mChatRepository.getConversionListData(mAuthRepository.getAuthBean().getUser_id()); // 获取聊天会话数据
-                        if (mItemBeanNotices != null && mItemBeanNotices.getConversation().getLast_message_time() != 0) { // 添加 TS 助手
-                            data.add(mItemBeanNotices);
-                        }
-                        Collections.sort(data, new Comparator<MessageItemBean>() { // 按最新消息排序
-                            @Override
-                            public int compare(MessageItemBean o1, MessageItemBean o2) {
-                                return (int) (o2.getConversation().getLast_message_time() - o1.getConversation().getLast_message_time());
-                            }
-                        });
+//                        List<MessageItemBean> data = mChatRepository.getConversionListData(mAuthRepository.getAuthBean().getUser_id()); // 获取聊天会话数据
+//                        if (mItemBeanNotices != null && mItemBeanNotices.getConversation().getLast_message_time() != 0) { // 添加 TS 助手
+//                            data.add(mItemBeanNotices);
+//                        }
+//                        Collections.sort(data, new Comparator<MessageItemBean>() { // 按最新消息排序
+//                            @Override
+//                            public int compare(MessageItemBean o1, MessageItemBean o2) {
+//                                return (int) (o2.getConversation().getLast_message_time() - o1.getConversation().getLast_message_time());
+//                            }
+//                        });
+                        int size = mRootView.getListDatas().size();
+                        for (int i = 0; i < size; i++) {
+                            if (mRootView.getListDatas().get(i).getConversation().getCid() != DEFAULT_TS_HLEPER_CONVERSATION_ID) { // 聊天消息
+                                Message message = MessageDao.getInstance(mContext).getLastMessageByCid(mRootView.getListDatas().get(i).getConversation().getCid());
+                                mRootView.getListDatas().get(i).getConversation().setLast_message(message);
+                                mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
+                                mRootView.getListDatas().get(i).setUnReadMessageNums(MessageDao.getInstance(mContext).getUnReadMessageCount(mRootView.getListDatas().get(i).getConversation().getCid()));
+                            } else { // Ts 助手
 
-                        return data;
+                            }
+                        }
+
+                        return mRootView.getListDatas();
                     }
                 })
                 .subscribe(new Action1<List<MessageItemBean>>() {
                     @Override
                     public void call(List<MessageItemBean> data) {
-                        mRootView.onCacheResponseSuccess(data, false);
+//                        mRootView.onCacheResponseSuccess(data, false);
+                        mRootView.refreshData();
                         checkBottomMessageTip();
                     }
                 }, new Action1<Throwable>() {

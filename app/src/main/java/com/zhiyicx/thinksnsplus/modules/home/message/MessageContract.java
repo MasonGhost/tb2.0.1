@@ -80,6 +80,8 @@ public interface MessageContract {
 
         MessageItemBean updateLikeItemData();
 
+        MessageItemBean updateNoticesItemData();
+
         /**
          * 刷新是否显示底部红点
          * 刷新当条item 的未读数

@@ -322,6 +322,8 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         position = position - 1;// 减去 header
         if (mListDatas.get(position).getConversation().getCid() == DEFAULT_TS_HLEPER_CONVERSATION_ID) { // TS 助手
             startActivity(new Intent(getActivity(), SystemConversationActivity.class));
+            mPresenter.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_NOTICES);
+            mPresenter.updateNoticesItemData().setUnReadMessageNums(0);
         } else { // 进入聊天详情
             toChat(mListDatas.get(position), position);
         }
