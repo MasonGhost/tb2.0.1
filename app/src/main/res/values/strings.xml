@@ -22,7 +22,7 @@
     <string name="default_message_group">群组</string>
     <string name="has_no_body">还没有人</string>
     <string name="ts_helper">TS助手</string>
-    <string name="ts_helper_default_tip">有问题找我哦</string>
+    <string name="ts_helper_default_tip">小助手在线，点击告诉我们你的需求，即时快速反应。</string>
     <!--我的-->
     <string name="personal_page">个人主页</string>
     <string name="ranking">排行榜</string>
