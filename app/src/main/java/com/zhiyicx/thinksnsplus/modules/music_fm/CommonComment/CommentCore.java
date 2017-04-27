@@ -17,13 +17,14 @@ public class CommentCore implements ICommentBean {
     private ICommentEvent defaultSate = SENDCOMMENT;
     private static CommentCore sCommentCore;
     private CommonMetadata mCommentBean;
+    private CommonMetadataProvider mMetadataProvider;
 
 
     private CommentCore() {
 
     }
 
-    public static CommentCore getInstance(CommentState sate,CallBack callBack) {
+    public static CommentCore getInstance(CommentState sate, BackgroundTaskHandler.OnNetResponseCallBack callBack) {
         if (sCommentCore == null) {
             synchronized (CommentCore.class) {
                 if (sCommentCore == null) {
@@ -59,7 +60,7 @@ public class CommentCore implements ICommentBean {
         defaultSate.handleCommentInBackGroud(core);
     }
 
-    public static class CallBack implements BackgroundTaskHandler.OnNetResponseCallBack,Serializable{
+    public static class CallBack implements BackgroundTaskHandler.OnNetResponseCallBack, Serializable {
         @Override
         public void onSuccess(Object data) {
             LogUtils.d("--------------------------------------------------------------");
@@ -79,6 +80,16 @@ public class CommentCore implements ICommentBean {
     @Override
     public CommentCore set$$Comment(CommonMetadata comment) {
         mCommentBean = comment;
+        return sCommentCore;
+    }
+
+    public <C> CommentCore set$$Comment_(C comment, CommonMetadataProvider mMetadataProvider) {
+        mCommentBean = mMetadataProvider.buildCommonMetadata(comment);
+        if (defaultSate == DELETECOMMENT) {
+            mMetadataProvider.deleteOne(mMetadataProvider.buildCommonMetadataBean(comment));
+        } else if (defaultSate == SENDCOMMENT) {
+            mMetadataProvider.insertOrReplaceOne(mMetadataProvider.buildCommonMetadataBean(comment));
+        }
         return sCommentCore;
     }
 

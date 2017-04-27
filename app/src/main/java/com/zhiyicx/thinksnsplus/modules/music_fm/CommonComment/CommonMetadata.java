@@ -46,6 +46,7 @@ public class CommonMetadata {
     private static final int METADATA_TYPE_STRING = 1;
     private static final int METADATA_TYPE_INTEGER = 2;
     private static final int METADATA_TYPE_OBJECT = 4;
+
     private static final ArrayMap<String, Integer> METADATA_KEYS_TYPE;
 
     private final Bundle mBundle;
