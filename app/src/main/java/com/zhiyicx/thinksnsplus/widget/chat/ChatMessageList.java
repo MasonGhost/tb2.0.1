@@ -18,6 +18,7 @@ import android.widget.FrameLayout;
 
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
+import com.wcy.overscroll.OverScrollCheckListener;
 import com.wcy.overscroll.OverScrollLayout;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -139,60 +140,60 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
                         break;
                     case MotionEvent.ACTION_UP:
                         mIsHandledDrag = false;
-                        if (handleSoftInput(v)) return true;
+                        if (handleSoftInput(v)) return false;
                         break;
                     case MotionEvent.ACTION_CANCEL:
-                        if (handleSoftInput(v)) return true;
+                        if (handleSoftInput(v)) return false;
                         break;
                     default:
                 }
                 return false;
             }
         });
-//        overscroll = (OverScrollLayout)findViewById(R.id.overscroll);
-//        overscroll.setOverScrollCheckListener(new OverScrollCheckListener() {
-//            @Override
-//            public int getContentViewScrollDirection() {
-//                return OverScrollLayout.SCROLL_VERTICAL;
-//            }
-//
-//            @Override
-//            public boolean canScrollUp() {
-//                if (mRefreshLayout.isRefreshEnabled()) {
-//                    return true;
-//                } else {
-//                    // 如果不能够下拉刷新，并且到了顶部 就可以scrollUp
-//                    if (!mRecyclerView.canScrollVertically(-1)) {
-//                        return false;
-//                    }
-//                }
-//                return true;
-//            }
-//
-//            @Override
-//            public boolean canScrollDown() {
-//                // 如果能够上拉加载，就不能够overScroll Down
-//                if (mRefreshLayout.isLoadMoreEnabled()) {
-//                    return true;
-//                } else {
-//                    // 如果不能够上拉加载，并且到了底部 就可以scrollUp
-//                    if (!mRecyclerView.canScrollVertically(1)) {
-//                        return false;
-//                    }
-//                }
-//                return true;
-//            }
-//
-//            @Override
-//            public boolean canScrollLeft() {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean canScrollRight() {
-//                return false;
-//            }
-//        });
+        overscroll = (OverScrollLayout)findViewById(R.id.overscroll);
+        overscroll.setOverScrollCheckListener(new OverScrollCheckListener() {
+            @Override
+            public int getContentViewScrollDirection() {
+                return OverScrollLayout.SCROLL_VERTICAL;
+            }
+
+            @Override
+            public boolean canScrollUp() {
+                if (mRefreshLayout.isRefreshEnabled()) {
+                    return true;
+                } else {
+                    // 如果不能够下拉刷新，并且到了顶部 就可以scrollUp
+                    if (!mRecyclerView.canScrollVertically(-1)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            @Override
+            public boolean canScrollDown() {
+                // 如果能够上拉加载，就不能够overScroll Down
+                if (mRefreshLayout.isLoadMoreEnabled()) {
+                    return true;
+                } else {
+                    // 如果不能够上拉加载，并且到了底部 就可以scrollUp
+                    if (!mRecyclerView.canScrollVertically(1)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            @Override
+            public boolean canScrollLeft() {
+                return false;
+            }
+
+            @Override
+            public boolean canScrollRight() {
+                return false;
+            }
+        });
     }
 
     private boolean handleSoftInput(View v) {
