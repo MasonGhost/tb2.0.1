@@ -140,8 +140,10 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                     if (metadata == null) {
                         return;
                     }
-                    mAdapter.notifyDataSetChanged();
                     mCurrentMediaId = metadata.getDescription().getMediaId();
+                    LogUtils.d("onMetadataChanged:::" + mCurrentMediaId);
+                    mAdapter.notifyDataSetChanged();
+
                     mPresenter.getMusicDetails(mCurrentMediaId);
                 }
 

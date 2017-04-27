@@ -22,7 +22,7 @@
             android:paddingLeft="6dp"
             android:scaleType="centerInside"
             android:id="@+id/fragment_infocontainer_change"
-            android:layout_width="48dp"
+            android:layout_width="50dp"
             android:layout_height="match_parent"
             android:background="@mipmap/arrow_bg"/>
 
