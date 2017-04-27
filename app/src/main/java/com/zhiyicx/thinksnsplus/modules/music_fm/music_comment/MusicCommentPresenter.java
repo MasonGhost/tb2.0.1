@@ -88,8 +88,8 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                                 mCommentListBeanGreenDao.saveMultiData(data);
                             }
 
-                            TCommonMetadataProvider test = new TCommonMetadataProvider(data);
-                            test.iterator();
+//                            TCommonMetadataProvider test = new TCommonMetadataProvider(data);
+//                            test.iterator();
 
                             mRootView.onNetResponseSuccess(data, isLoadMore);
                         }
@@ -114,8 +114,8 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                                 mCommentListBeanGreenDao.saveMultiData(data);
                             }
 
-                            TCommonMetadataProvider test = new TCommonMetadataProvider(data);
-                            test.iterator();
+//                            TCommonMetadataProvider test = new TCommonMetadataProvider(data);
+//                            test.iterator();
 
 //                            List<MusicCommentListBean> localComment = mCommentListBeanGreenDao.getMyAblumComment(Integer.valueOf(music_id));
 //                            if (!localComment.isEmpty()) {
