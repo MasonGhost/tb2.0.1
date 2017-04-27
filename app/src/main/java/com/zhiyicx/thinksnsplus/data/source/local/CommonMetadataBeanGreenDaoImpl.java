@@ -1,12 +1,14 @@
 package com.zhiyicx.thinksnsplus.data.source.local;
 
-import android.content.Context;
+import android.app.Application;
 
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 import com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment.CommonMetadataBean;
 import com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment.CommonMetadataBeanDao;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * @Author Jliuer
@@ -18,8 +20,10 @@ public class CommonMetadataBeanGreenDaoImpl extends CommonCacheImpl<CommonMetada
 
     private CommonMetadataBeanDao mCommonMetadataBeanDao;
 
-    public CommonMetadataBeanGreenDaoImpl(Context context) {
+    @Inject
+    public CommonMetadataBeanGreenDaoImpl(Application context) {
         super(context);
+        mCommonMetadataBeanDao = getRDaoSession().getCommonMetadataBeanDao();
     }
 
     @Override
@@ -29,7 +33,7 @@ public class CommonMetadataBeanGreenDaoImpl extends CommonCacheImpl<CommonMetada
 
     @Override
     public void saveMultiData(List<CommonMetadataBean> multiData) {
-
+        mCommonMetadataBeanDao.insertOrReplaceInTx(multiData);
     }
 
     @Override
@@ -49,7 +53,7 @@ public class CommonMetadataBeanGreenDaoImpl extends CommonCacheImpl<CommonMetada
 
     @Override
     public void clearTable() {
-
+        mCommonMetadataBeanDao.deleteAll();
     }
 
     @Override
@@ -59,16 +63,37 @@ public class CommonMetadataBeanGreenDaoImpl extends CommonCacheImpl<CommonMetada
 
     @Override
     public void deleteSingleCache(CommonMetadataBean dta) {
-
+        List<CommonMetadataBean> readyToDelete = mCommonMetadataBeanDao.queryBuilder()
+                .where(CommonMetadataBeanDao.Properties.Comment_mark.eq(dta.getComment_mark()))
+                .build()
+                .list();
+        if (!readyToDelete.isEmpty()) {
+            mCommonMetadataBeanDao.delete(readyToDelete.get(0));
+        }
     }
 
     @Override
     public void updateSingleData(CommonMetadataBean newData) {
-
+        List<CommonMetadataBean> readyToDelete = mCommonMetadataBeanDao.queryBuilder()
+                .where(CommonMetadataBeanDao.Properties.Comment_mark.eq(newData.getComment_mark()))
+                .build()
+                .list();
+        if (!readyToDelete.isEmpty()) {
+            mCommonMetadataBeanDao.insertOrReplace(readyToDelete.get(0));
+        }
     }
 
     @Override
     public long insertOrReplace(CommonMetadataBean newData) {
-        return 0;
+        return mCommonMetadataBeanDao.insertOrReplace(newData);
     }
+
+    public List<CommonMetadataBean> getCommonMetadataListByTypeAndID(int type, int sourceId) {
+        return mCommonMetadataBeanDao.queryBuilder()
+                .where(CommonMetadataBeanDao.Properties.Comment_type.eq(type),
+                        CommonMetadataBeanDao.Properties.Source_id.eq(sourceId))
+                .build()
+                .list();
+    }
+
 }

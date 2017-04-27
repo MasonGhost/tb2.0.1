@@ -22,9 +22,9 @@ import static android.support.annotation.RestrictTo.Scope.GROUP_ID;
 public class CommonMetadata {
     private static final String TAG = "CommonMetadata";
 
-    private static final int SEND_ING = 0;
-    private static final int SEND_SUCCESS = 1;
-    private static final int SEND_ERROR = 2;
+    public static final int SEND_ING = 0;
+    public static final int SEND_SUCCESS = 1;
+    public static final int SEND_ERROR = 2;
 
     public static final String METADATA_KEY_COMMENT_ID = "zhiyi.common.metadata.comment_id";
     public static final String METADATA_KEY_COMMENT_TYPE = "zhiyi.common.metadata.comment_type";
@@ -32,6 +32,7 @@ public class CommonMetadata {
     public static final String METADATA_KEY_TARGET_ID = "zhiyi.common.metadata.target_id";
     public static final String METADATA_KEY_COMMENT_STATE = "zhiyi.common.metadata.comment_state";
     public static final String METADATA_KEY_COMMENT_URL = "zhiyi.common.metadata.comment_url";
+    public static final String METADATA_KEY_DELETE_URL = "zhiyi.common.metadata.delete_url";
     public static final String METADATA_KEY_COMMENT_CONTENT = "zhiyi.common.metadata.comment_content";
     public static final String METADATA_KEY_COMMENT_MARK = "zhiyi.common.metadata.comment_mark";
     public static final String METADATA_KEY_TO_USER = "zhiyi.common.metadata.to_user";
@@ -60,8 +61,9 @@ public class CommonMetadata {
     static {
         METADATA_KEYS_TYPE = new ArrayMap<>();
         METADATA_KEYS_TYPE.put(METADATA_KEY_COMMENT_ID, METADATA_TYPE_INTEGER);
-        METADATA_KEYS_TYPE.put(METADATA_KEY_COMMENT_TYPE, METADATA_TYPE_STRING);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_COMMENT_TYPE, METADATA_TYPE_INTEGER);
         METADATA_KEYS_TYPE.put(METADATA_KEY_COMMENT_URL, METADATA_TYPE_STRING);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_DELETE_URL, METADATA_TYPE_STRING);
         METADATA_KEYS_TYPE.put(METADATA_KEY_COMMENT_STATE, METADATA_TYPE_INTEGER);
         METADATA_KEYS_TYPE.put(METADATA_KEY_COMMENT_CONTENT, METADATA_TYPE_STRING);
         METADATA_KEYS_TYPE.put(METADATA_KEY_COMMENT_MARK, METADATA_TYPE_LONG);
@@ -78,7 +80,7 @@ public class CommonMetadata {
      */
     @RestrictTo(GROUP_ID)
     @StringDef({METADATA_KEY_COMMENT_URL, METADATA_KEY_COMMENT_CONTENT, METADATA_KEY_CREATED_DATE,
-            METADATA_KEY_UPDATED_DATE})
+            METADATA_KEY_UPDATED_DATE,METADATA_KEY_DELETE_URL})
     @Retention(RetentionPolicy.SOURCE)
     public @interface TextKey {
     }
@@ -142,7 +144,7 @@ public class CommonMetadata {
 
         public Builder putInteger(@IntegerKey String key, Integer value) {
             if (METADATA_KEYS_TYPE.containsKey(key)) {
-                if (METADATA_KEYS_TYPE.get(key) != METADATA_TYPE_STRING) {
+                if (METADATA_KEYS_TYPE.get(key) != METADATA_TYPE_INTEGER) {
                     throw new IllegalArgumentException("The " + key
                             + " key cannot be used to put a Integer");
                 }
@@ -153,7 +155,7 @@ public class CommonMetadata {
 
         public Builder putState(@IntegerKey String key, @StateValue Integer value) {
             if (METADATA_KEYS_TYPE.containsKey(key)) {
-                if (METADATA_KEYS_TYPE.get(key) != METADATA_TYPE_STRING) {
+                if (METADATA_KEYS_TYPE.get(key) != METADATA_TYPE_INTEGER) {
                     throw new IllegalArgumentException("The " + key
                             + " key cannot be used to put a Integer");
                 }

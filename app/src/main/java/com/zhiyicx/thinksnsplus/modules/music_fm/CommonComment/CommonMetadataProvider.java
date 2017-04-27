@@ -1,7 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment;
 
+import android.app.Application;
+
+import com.zhiyicx.common.base.BaseApplication;
+import com.zhiyicx.thinksnsplus.data.source.local.CommonMetadataBeanGreenDaoImpl;
+
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -15,25 +19,47 @@ public abstract class CommonMetadataProvider<T> implements ICommonMetadataProvid
     private List<T> mComments;
     private List<CommonMetadataBean> mCommonComments;
 
+    protected CommonMetadataBeanGreenDaoImpl mCommonMetadataBeanGreenDao;
+
     public CommonMetadataProvider(List<T> comments) {
         mComments = comments;
+        mCommonMetadataBeanGreenDao = new CommonMetadataBeanGreenDaoImpl((Application) BaseApplication.getContext());
     }
 
     @Override
     public List<CommonMetadata> iterator() {
         ArrayList<CommonMetadata> tracks = new ArrayList<>();
         mCommonComments = new ArrayList<>();
-        if (mComments == null) {
+        if (mComments == null || mComments.isEmpty()) {
             return tracks;
         }
         for (T data : mComments) {
             mCommonComments.add(buildCommonMetadataBean(data));
             tracks.add(buildCommonMetadata(data));
         }
+        saveCommonMetadataList(mCommonComments);
         return tracks;
     }
 
-    protected abstract CommonMetadata buildCommonMetadata(T commentData);
+    public void setComments(List<T> comments) {
+        mComments = comments;
+    }
 
-    protected abstract CommonMetadataBean buildCommonMetadataBean(T commentData);
+    public List<CommonMetadataBean> getLocalCommonComments(int type, int sourceId) {
+        return mCommonMetadataBeanGreenDao.getCommonMetadataListByTypeAndID(type, sourceId);
+    }
+
+    public void insertOrReplace(CommonMetadataBean commonMetadataBean){
+        mCommonMetadataBeanGreenDao.insertOrReplace(commonMetadataBean);
+    }
+
+    public void deleteOne(CommonMetadataBean commonMetadataBean){
+        mCommonMetadataBeanGreenDao.deleteSingleCache(commonMetadataBean);
+    }
+
+    public abstract CommonMetadata buildCommonMetadata(T commentData);
+
+    public abstract CommonMetadataBean buildCommonMetadataBean(T commentData);
+
+    public abstract void saveCommonMetadataList(List<CommonMetadataBean> commonComments);
 }

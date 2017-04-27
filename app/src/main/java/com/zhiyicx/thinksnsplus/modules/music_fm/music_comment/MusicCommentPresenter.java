@@ -20,6 +20,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicCommentRepositroty;
 import com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment.CommentBean;
 import com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment.CommentCore;
+import com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment.TCommonMetadataProvider;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
 
 import org.jetbrains.annotations.NotNull;
@@ -86,21 +87,9 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                                 mCommentListBeanGreenDao.saveMultiData(data);
                             }
 
-//                            List<MusicCommentListBean> localComment = mCommentListBeanGreenDao.getMyMusicComment(Integer.valueOf(music_id));
-//                            if (!localComment.isEmpty()) {
-//                                for (int i = 0; i < localComment.size(); i++) {
-//                                    localComment.get(i).setFromUserInfoBean(mUserInfoBeanGreenDao
-//                                            .getSingleDataFromCache((long) localComment.get(i).getUser_id()));
-//                                    if (localComment.get(i).getReply_to_user_id() != 0) {
-//                                        localComment.get(i).setToUserInfoBean(mUserInfoBeanGreenDao
-//                                                .getSingleDataFromCache((long) localComment.get(i)
-//                                                        .getReply_to_user_id()));
-//                                    }
-//                                }
-//                                localComment.addAll(data);
-//                                data.clear();
-//                                data.addAll(localComment);
-//                            }
+                            TCommonMetadataProvider test=new TCommonMetadataProvider(data);
+                            test.iterator();
+
                             mRootView.onNetResponseSuccess(data, isLoadMore);
                         }
 
@@ -123,6 +112,10 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                             if (!data.isEmpty()) {
                                 mCommentListBeanGreenDao.saveMultiData(data);
                             }
+
+                            TCommonMetadataProvider test=new TCommonMetadataProvider(data);
+                            test.iterator();
+
 //                            List<MusicCommentListBean> localComment = mCommentListBeanGreenDao.getMyAblumComment(Integer.valueOf(music_id));
 //                            if (!localComment.isEmpty()) {
 //                                for (int i = 0; i < localComment.size(); i++) {
@@ -354,12 +347,14 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
 //        commentBean.setComment_id(data.getId() == null ? 1 : data.getId().intValue());
 //        commentBean.setNetRequestUrl(String.format(ApiConfig
 //                .APP_PATH_MUSIC_DELETE_COMMENT_FORMAT, data.getId()));
-//
-//        CommentCore.getInstance(CommentCore.CommentState.DELETE)
-//                .set$$Comment(commentBean)
-//                .handleCommentInBackGroud();
 
-        mRepository.deleteComment(mRootView.getCommentId(),data.getComment_id());
+        TCommonMetadataProvider provider=new TCommonMetadataProvider(null);
+        CommentCore.getInstance(CommentCore.CommentState.DELETE,new CommentCore.CallBack())
+                .set$$Comment(provider.buildCommonMetadata(data))
+                .handleCommentInBackGroud();
+        provider.deleteOne(provider.buildCommonMetadataBean(data));
+
+//        mRepository.deleteComment(mRootView.getCommentId(),data.getComment_id());
         mRootView.getListDatas().remove(data);
         if (mRootView.getListDatas().size() == 0) {// 占位
             MusicCommentListBean emptyData = new MusicCommentListBean();

@@ -1,6 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment;
 
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
+
+import java.io.Serializable;
 
 /**
  * @Author Jliuer
@@ -56,10 +59,10 @@ public class CommentCore implements ICommentBean {
         defaultSate.handleCommentInBackGroud(core);
     }
 
-    public static class CallBack implements BackgroundTaskHandler.OnNetResponseCallBack{
+    public static class CallBack implements BackgroundTaskHandler.OnNetResponseCallBack,Serializable{
         @Override
         public void onSuccess(Object data) {
-
+            LogUtils.d("--------------------------------------------------------------");
         }
 
         @Override
