@@ -71,6 +71,9 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
      * @param position        当前数据位置
      */
     private void setItemData(ViewHolder holder, final MessageItemBean messageItemBean, final int position) {
+        // 右边
+        final SwipeLayout swipeLayout = holder.getView(R.id.swipe);
+
         switch (messageItemBean.getConversation().getType()) {
             case ChatType.CHAT_TYPE_PRIVATE:// 私聊
                 AppApplication.AppComponentHolder.getAppComponent().imageLoader().loadImage(mContext, GlideImageConfig.builder()
@@ -83,14 +86,21 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
                 holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getName());     // 响应事件
                 setUserInfoClick(holder.getView(R.id.tv_name), messageItemBean.getUserInfo());
                 setUserInfoClick(holder.getView(R.id.iv_headpic), messageItemBean.getUserInfo());
-
+                swipeLayout.setSwipeEnabled(true);
                 break;
             case ChatType.CHAT_TYPE_GROUP:// 群组
                 holder.setImageResource(R.id.iv_headpic, R.drawable.shape_default_image_circle);
                 holder.setText(R.id.tv_name, TextUtils.isEmpty(messageItemBean.getConversation().getName())
                         ? mContext.getString(R.string.default_message_group) : messageItemBean.getConversation().getName());
+                swipeLayout.setSwipeEnabled(true);
                 break;
             default:
+                holder.getView(R.id.tv_name).setOnClickListener(null);
+                holder.getView(R.id.iv_headpic).setOnClickListener(null);
+                holder.setImageResource(R.id.iv_headpic, R.mipmap.ico_ts_assistant);
+                holder.setText(R.id.tv_name, holder.getConvertView().getResources().getString(R.string.ts_helper));
+                swipeLayout.setSwipeEnabled(false);
+                break;
         }
         if (messageItemBean.getConversation().getLast_message() == null) {
             holder.setText(R.id.tv_content, "");
@@ -112,8 +122,7 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
             e.printStackTrace();
         }
 
-        // 右边
-        final SwipeLayout swipeLayout = holder.getView(R.id.swipe);
+
         swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
         swipeLayout.addSwipeListener(new SimpleSwipeListener() {
             @Override

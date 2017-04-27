@@ -2,7 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.system_conversation;
 
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
+import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.ISystemRepository;
 
 import java.util.List;
@@ -18,12 +18,16 @@ public interface SystemConversationContract {
 
     interface View extends IBaseView<Presenter> {
 
+        void updateNetData(List<ChatItemBean> datas);
 
+        void updateCacheData(List<ChatItemBean> datas);
+
+
+        void updateSendText(ChatItemBean chatItemBean);
     }
 
     interface Repository extends ISystemRepository {
 
-        List<SystemConversationBean> requestCacheData(long max_Id);
 
     }
 
@@ -40,9 +44,8 @@ public interface SystemConversationContract {
          * 请求列表数据
          *
          * @param maxId      当前获取到数据的最大 id
-         * @param isLoadMore true 加载更多，false 刷新
          */
-        void requestNetData(Long maxId, boolean isLoadMore);
+        void requestNetData(Long maxId);
 
         /**
          * 获取本地数据

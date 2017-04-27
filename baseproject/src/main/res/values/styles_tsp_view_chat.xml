@@ -13,7 +13,7 @@
         <item name="android:layout_height">@dimen/headpic_for_list</item>
         <item name="android:layout_alignParentTop">true</item>
         <item name="android:scaleType">centerCrop</item>
-        <item name="android:src">@mipmap/login_ico_closeye</item>
+        <item name="android:src">@mipmap/pic_default_portrait1</item>
     </style>
     <!-- 聊天名字 -->
     <style name="style_chat_name">

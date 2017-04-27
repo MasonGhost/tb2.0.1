@@ -21,6 +21,8 @@
     <string name="comment_ing">评论中...</string>
     <string name="default_message_group">群组</string>
     <string name="has_no_body">还没有人</string>
+    <string name="ts_helper">TS助手</string>
+    <string name="ts_helper_default_tip">有问题找我哦</string>
     <!--我的-->
     <string name="personal_page">个人主页</string>
     <string name="ranking">排行榜</string>

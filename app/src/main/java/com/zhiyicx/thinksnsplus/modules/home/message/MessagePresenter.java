@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 
 import android.text.TextUtils;
 
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -11,6 +12,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.imsdk.db.dao.ConversationDao;
+import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.AuthData;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
@@ -26,12 +28,15 @@ import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatContract;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
@@ -55,6 +60,8 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.FLUSHMESSAGES_KEY_NOTICES;
+
 /**
  * @Describe
  * @Author Jungle68
@@ -63,6 +70,7 @@ import rx.schedulers.Schedulers;
  */
 @FragmentScoped
 public class MessagePresenter extends BasePresenter<MessageContract.Repository, MessageContract.View> implements MessageContract.Presenter {
+    public static final int DEFAULT_TS_HLEPER_CONVERSATION_ID = -100; // TS 助手默认的会话 id
     private static final int MAX_USER_NUMS_COMMENT = 2;
     private static final int MAX_USER_NUMS_DIGG = 3;
 
@@ -86,9 +94,15 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
 
     @Inject
     DigedBeanGreenDaoImpl mDigedBeanGreenDao;
+    @Inject
+    SystemConversationBeanGreenDaoImpl mSystemConversationBeanGreenDao;
+
+    @Inject
+    SystemRepository mSystemRepository;
 
     private MessageItemBean mItemBeanComment;
     private MessageItemBean mItemBeanDigg;
+    private MessageItemBean mItemBeanNotices;
 
     @Inject
     public MessagePresenter(MessageContract.Repository repository, MessageContract.View rootView) {
@@ -115,6 +129,9 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                 .subscribe(new BaseSubscribe<List<MessageItemBean>>() {
                     @Override
                     protected void onSuccess(final List<MessageItemBean> data) {
+                        if (mItemBeanNotices != null && mItemBeanNotices.getConversation().getCid() != 0) {
+                            data.add(mItemBeanNotices);
+                        }
                         mRootView.onNetResponseSuccess(data, false);
                     }
 
@@ -156,58 +173,17 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
 
     @Override
     public MessageItemBean updateCommnetItemData() {
-//  长期注释：用于评论的、点赞的和下面的对话信息一样，不需要头部时
-//        List<JpushMessageBean> mCommentJpushMessageBeen = mJpushMessageBeanGreenDao.getCommentJpushMessage();
-//
-//        if (mItemBeanComment == null) {
-//            mItemBeanComment = new MessageItemBean();
-//            Conversation commentMessage = new Conversation();
-//            Message message = new Message();
-//            commentMessage.setLast_message(message);
-//            mItemBeanComment.setConversation(commentMessage);
-//        }
-//        for (JpushMessageBean jpushMessageBean : mCommentJpushMessageBeen) {
-//            if (jpushMessageBean.getCreat_time() > mItemBeanComment.getConversation().getLast_message_time()) {
-//                mItemBeanComment.getConversation().setLast_message_time(jpushMessageBean.getCreat_time());
-//            }
-//            if (!jpushMessageBean.isRead()) {
-//                mItemBeanComment.setUnReadMessageNums(mItemBeanComment.getUnReadMessageNums() + 1);
-//            }
-//            // TODO: 2017/4/12 添加用户信息
-//        }
-//        mItemBeanComment.getConversation().getLast_message().setTxt("还没有人"
-//                + mContext.getString(R.string.comment_me));
-
-
         return mItemBeanComment;
     }
 
     @Override
     public MessageItemBean updateLikeItemData() {
-        //  长期注释：用于评论的、点赞的和下面的对话信息一样，不需要头部时
-//        List<JpushMessageBean> mDigJpushMessageBeen = mJpushMessageBeanGreenDao.getDigJpushMessage();
-//
-//        if (mItemBeanDigg == null) {
-//            mItemBeanDigg = new MessageItemBean();
-//            Conversation likeConversation = new Conversation();
-//            Message message = new Message();
-//            likeConversation.setLast_message(message);
-//            mItemBeanDigg.setConversation(likeConversation);
-//        }
-//        for (JpushMessageBean jpushMessageBean : mDigJpushMessageBeen) {
-//            if (jpushMessageBean.getCreat_time() > mItemBeanDigg.getConversation().getLast_message_time()) {
-//                mItemBeanDigg.getConversation().setLast_message_time(jpushMessageBean.getCreat_time());
-//            }
-//            if (!jpushMessageBean.isRead()) {
-//                mItemBeanDigg.setUnReadMessageNums(mItemBeanDigg.getUnReadMessageNums() + 1);
-//            }
-//            // TODO: 2017/4/12 添加用户信息
-//        }
-//
-//        mItemBeanDigg.getConversation().getLast_message().setTxt("还没有人"
-//                + mContext.getString(R.string.like_me));
-
         return mItemBeanDigg;
+    }
+
+    @Override
+    public MessageItemBean updateNoticesItemData() {
+        return mItemBeanNotices;
     }
 
     /**
@@ -222,13 +198,26 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                 .map(new Func1<String, List<MessageItemBean>>() {
                     @Override
                     public List<MessageItemBean> call(String s) {
-                        return mChatRepository.getConversionListData(mAuthRepository.getAuthBean().getUser_id());
+                        int size = mRootView.getListDatas().size();
+                        for (int i = 0; i < size; i++) {
+                            if (mRootView.getListDatas().get(i).getConversation().getCid() != DEFAULT_TS_HLEPER_CONVERSATION_ID) { // 聊天消息
+                                Message message = MessageDao.getInstance(mContext).getLastMessageByCid(mRootView.getListDatas().get(i).getConversation().getCid());
+                                mRootView.getListDatas().get(i).getConversation().setLast_message(message);
+                                mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
+                                mRootView.getListDatas().get(i).setUnReadMessageNums(MessageDao.getInstance(mContext).getUnReadMessageCount(mRootView.getListDatas().get(i).getConversation().getCid()));
+                            } else { // Ts 助手
+
+                            }
+                        }
+
+                        return mRootView.getListDatas();
                     }
                 })
                 .subscribe(new Action1<List<MessageItemBean>>() {
                     @Override
                     public void call(List<MessageItemBean> data) {
-                        mRootView.onCacheResponseSuccess(data, false);
+//                        mRootView.onCacheResponseSuccess(data, false);
+                        mRootView.refreshData();
                         checkBottomMessageTip();
                     }
                 }, new Action1<Throwable>() {
@@ -254,7 +243,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                         if (mRootView.getListDatas().size() == 0) {
                             mRootView.getListDatas().add(data);
                         } else {
-                            mRootView.getListDatas().set(0, data);// 置顶新消息
+                            mRootView.getListDatas().add(0, data);// 置顶新消息
                         }
                         mRootView.refreshData();
                     }
@@ -294,7 +283,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                 mRootView.getListDatas().get(i).setUnReadMessageNums(mRootView.getListDatas().get(i).getUnReadMessageNums() + 1);
                 mRootView.getListDatas().get(i).getConversation().setLast_message(message);
                 mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
-                mRootView.getListDatas().add(0, mRootView.getListDatas().get(i));
+                mRootView.getListDatas().add(0, mRootView.getListDatas().get(i)); // 加到第一个
                 mRootView.getListDatas().remove(i + 1);
                 mRootView.refreshData(); // 加上 header 的位置
                 isHasConversion = true;
@@ -354,26 +343,39 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
 
         switch (jpushMessageBean.getType()) {
             case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM: // 推送携带的消息  {"seq":36,"msg_type":0,"cid":1,"mid":338248648800337924,"type":"im","uid":20} IM 消息通过IM接口 同步，故不需要对 推送消息做处理
-                String extras = jpushMessageBean.getExtras();
-                try {
-                    JSONObject jsonObject = new JSONObject(extras);
-                    Message message = new Message();
-                    message.setCid(jsonObject.getInt("cid"));
-                    message.setSeq(jsonObject.getInt("seq"));
-                    ZBIMClient.getInstance().syncAsc(message.getCid(), message.getSeq() - 1, message.getSeq() + 1, (int) System.currentTimeMillis());// 获取推送的信息
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
+                handleIMPush(jpushMessageBean);
                 break;
             case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_FEED:
             case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_CHANNEL:
             case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_MUSIC:
             case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_NEWS:
+            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_USER:
+            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_SYSTEM:
             default:
                 switch (jpushMessageBean.getAction()) {
                     case JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_COMMENT:
                     case JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_DIGG:
+                    case JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_FOLLOW:
+                    case JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_NOTICE:
+                        mSystemRepository.getSystemConversations(System.currentTimeMillis(), TSListFragment.DEFAULT_PAGE_SIZE)
+                                .subscribe(new BaseSubscribe<List<SystemConversationBean>>() {
+                                    @Override
+                                    protected void onSuccess(List<SystemConversationBean> data) {
+                                        // 服务器同步未读评论和点赞消息
+                                        handleFlushMessage();
+                                    }
+
+                                    @Override
+                                    protected void onFailure(String message, int code) {
+
+                                    }
+
+                                    @Override
+                                    protected void onException(Throwable throwable) {
+
+                                    }
+                                });
+                        break;
                     default:
                         // 服务器同步未读评论和点赞消息
                         handleFlushMessage();
@@ -381,6 +383,24 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                 }
                 break;
 
+        }
+    }
+
+    /**
+     * 处理聊天推送
+     *
+     * @param jpushMessageBean
+     */
+    private void handleIMPush(JpushMessageBean jpushMessageBean) {
+        String extras = jpushMessageBean.getExtras();
+        try {
+            JSONObject jsonObject = new JSONObject(extras);
+            Message message = new Message();
+            message.setCid(jsonObject.getInt("cid"));
+            message.setSeq(jsonObject.getInt("seq"));
+            ZBIMClient.getInstance().syncAsc(message.getCid(), message.getSeq() - 1, message.getSeq() + 1, (int) System.currentTimeMillis());// 获取推送的信息
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
@@ -401,6 +421,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                     @Override
                     public void call() {
                         mRootView.showTopRightLoading();
+
                     }
                 }).subscribeOn(AndroidSchedulers.mainThread())
                 .doAfterTerminate(new Action0() {
@@ -416,6 +437,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                         FlushMessages commentFlushMessage = null;
                         FlushMessages diggFlushMessage = null;
                         FlushMessages followFlushMessage = null;
+                        FlushMessages noticeFlushMessage = null;
 
                         List<FlushMessages> flushMessagesList = mFlushMessageBeanGreenDao.getMultiDataFromCache();
                         if (!flushMessagesList.isEmpty()) {
@@ -430,6 +452,9 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                                     case ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS:
                                         followFlushMessage = flushMessages;
                                         break;
+                                    case FLUSHMESSAGES_KEY_NOTICES:
+                                        noticeFlushMessage = flushMessages;
+                                        break;
                                     default:
                                         break;
                                 }
@@ -437,13 +462,24 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                             for (FlushMessages flushMessage : data) {
                                 switch (flushMessage.getKey()) {
                                     case ApiConfig.FLUSHMESSAGES_KEY_COMMENTS:
-                                        MessagePresenter.this.handleFlushMessage(flushMessage, commentFlushMessage);
+                                        if (flushMessage.getCount() != 0) {
+                                            MessagePresenter.this.handleFlushMessage(flushMessage, commentFlushMessage);
+                                        }
                                         break;
                                     case ApiConfig.FLUSHMESSAGES_KEY_DIGGS:
-                                        MessagePresenter.this.handleFlushMessage(flushMessage, diggFlushMessage);
+                                        if (flushMessage.getCount() != 0) {
+                                            MessagePresenter.this.handleFlushMessage(flushMessage, diggFlushMessage);
+                                        }
                                         break;
                                     case ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS:
-                                        MessagePresenter.this.handleFlushMessage(flushMessage, followFlushMessage);
+                                        if (flushMessage.getCount() != 0) {
+                                            MessagePresenter.this.handleFlushMessage(flushMessage, followFlushMessage);
+                                        }
+                                        break;
+                                    case FLUSHMESSAGES_KEY_NOTICES:
+                                        if (flushMessage.getCount() != 0) {
+                                            MessagePresenter.this.handleFlushMessage(flushMessage, noticeFlushMessage);
+                                        }
                                         break;
                                     default:
                                         break;
@@ -484,6 +520,9 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                     break;
                 case ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS:
                     break;
+                case FLUSHMESSAGES_KEY_NOTICES:
+                    handleItemBean(mItemBeanNotices, flushMessage);
+                    break;
                 default:
                     break;
             }
@@ -491,6 +530,12 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
 
     }
 
+    /**
+     * 头部信息和 TS 助手数据赋值
+     *
+     * @param messageItemBean
+     * @param flushMessage
+     */
     private void handleItemBean(MessageItemBean messageItemBean, FlushMessages flushMessage) {
         String textEndTip = "";
         int max_user_nums = MAX_USER_NUMS_COMMENT;
@@ -512,6 +557,11 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                 }
 
                 break;
+            case FLUSHMESSAGES_KEY_NOTICES:
+                SystemConversationBean systemConversationBean = mSystemConversationBeanGreenDao.getLastData();
+                textEndTip = systemConversationBean.getContent();
+
+                break;
             default:
                 break;
         }
@@ -523,8 +573,8 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
             messageItemBean.setConversation(commentMessage);
         }
         messageItemBean.setUnReadMessageNums(flushMessage.getCount());
-        messageItemBean.getConversation().setLast_message_time(TextUtils.isEmpty(flushMessage.getTime()) ? System.currentTimeMillis() : TimeUtils.string2MillisDefaultLocal(flushMessage.getTime()));
-        messageItemBean.getConversation().getLast_message().setCreate_time(TextUtils.isEmpty(flushMessage.getTime()) ? System.currentTimeMillis() : TimeUtils.string2MillisDefaultLocal(flushMessage.getTime()));
+        messageItemBean.getConversation().setLast_message_time(TextUtils.isEmpty(flushMessage.getTime()) ? System.currentTimeMillis() : TimeUtils.utc2LocalLong(flushMessage.getTime()));
+        messageItemBean.getConversation().getLast_message().setCreate_time(TextUtils.isEmpty(flushMessage.getTime()) ? System.currentTimeMillis() : TimeUtils.utc2LocalLong(flushMessage.getTime()));
         String text = mContext.getString(R.string.has_no_body);
         if (!TextUtils.isEmpty(flushMessage.getUids())) {
             text = "";
@@ -551,8 +601,14 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         if (text.endsWith("、")) {
             text = text.substring(0, text.length() - 1);
         }
-        messageItemBean.getConversation().getLast_message().setTxt(text
-                + textEndTip);
+        if (flushMessage.getKey().equals(FLUSHMESSAGES_KEY_NOTICES)) {
+            messageItemBean.getConversation().getLast_message().setTxt(
+                    textEndTip);
+            mRootView.updateTSHelper(mItemBeanNotices);
+        } else {
+            messageItemBean.getConversation().getLast_message().setTxt(text
+                    + textEndTip);
+        }
         checkBottomMessageTip();
     }
 
@@ -579,13 +635,16 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         }
     }
 
+    /**
+     * 初始化 header 数据
+     */
     private void initHeaderItemData() {
         mItemBeanComment = new MessageItemBean();
         Conversation commentMessage = new Conversation();
         Message message = new Message();
         commentMessage.setLast_message(message);
         mItemBeanComment.setConversation(commentMessage);
-        mItemBeanComment.getConversation().getLast_message().setTxt("还没有人"
+        mItemBeanComment.getConversation().getLast_message().setTxt(mContext.getString(R.string.has_no_body)
                 + mContext.getString(R.string.comment_me));
 
         mItemBeanDigg = new MessageItemBean();
@@ -593,8 +652,19 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         Message diggmessage = new Message();
         diggConveration.setLast_message(diggmessage);
         mItemBeanDigg.setConversation(diggConveration);
-        mItemBeanDigg.getConversation().getLast_message().setTxt("还没有人"
+        mItemBeanDigg.getConversation().getLast_message().setTxt(mContext.getString(R.string.has_no_body)
                 + mContext.getString(R.string.like_me));
+
+        mItemBeanNotices = new MessageItemBean();
+        Conversation noticeConveration = new Conversation();
+        noticeConveration.setCid(DEFAULT_TS_HLEPER_CONVERSATION_ID);
+        Message noticemessage = new Message();
+        noticeConveration.setLast_message(noticemessage);
+        mItemBeanNotices.setConversation(noticeConveration);
+        mItemBeanNotices.getConversation().getLast_message().setTxt(mContext.getString(R.string.ts_helper_default_tip));
+        UserInfoBean tsHelperUserInfo = new UserInfoBean();
+        tsHelperUserInfo.setName(mContext.getString(R.string.ts_helper));
+        mItemBeanNotices.setUserInfo(tsHelperUserInfo);
 
     }
 
@@ -605,7 +675,10 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     private void checkBottomMessageTip() {
         // 是否显示底部红点
         boolean isShowMessgeTip;
-        if (mItemBeanDigg != null && mItemBeanComment != null && mItemBeanDigg.getUnReadMessageNums() == 0 && mItemBeanComment.getUnReadMessageNums() == 0) {
+        if (mItemBeanNotices != null && mItemBeanDigg != null && mItemBeanComment != null
+                && mItemBeanNotices.getUnReadMessageNums() == 0
+                && mItemBeanDigg.getUnReadMessageNums() == 0
+                && mItemBeanComment.getUnReadMessageNums() == 0) {
             isShowMessgeTip = false;
         } else {
             isShowMessgeTip = true;

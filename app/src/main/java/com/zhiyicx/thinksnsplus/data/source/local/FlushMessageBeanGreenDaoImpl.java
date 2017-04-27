@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
 
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessagesDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
@@ -62,7 +61,7 @@ public class FlushMessageBeanGreenDaoImpl extends CommonCacheImpl<FlushMessages>
             return null;
         }
         for (FlushMessages flushMessages : datas) {
-            if(key.equals(flushMessages.getKey())){
+            if (key.equals(flushMessages.getKey())) {
                 return flushMessages;
             }
         }
@@ -81,18 +80,9 @@ public class FlushMessageBeanGreenDaoImpl extends CommonCacheImpl<FlushMessages>
             return;
         }
         for (FlushMessages flushMessages : datas) {
-            switch (flushMessages.getKey()) {
-                case ApiConfig.FLUSHMESSAGES_KEY_COMMENTS:
-                    flushMessages.setCount(0);
-                    break;
-                case ApiConfig.FLUSHMESSAGES_KEY_DIGGS:
-                    flushMessages.setCount(0);
-                    break;
-                case ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS:
-                    flushMessages.setCount(0);
-                    break;
-                default:
-                    break;
+            if (key.equals(flushMessages.getKey())) {
+                flushMessages.setCount(0);
+                break;
             }
         }
         flushMessagesDao.insertOrReplaceInTx(datas);

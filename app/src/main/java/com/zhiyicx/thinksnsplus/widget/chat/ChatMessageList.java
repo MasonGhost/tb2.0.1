@@ -11,15 +11,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
-import com.wcy.overscroll.OverScrollCheckListener;
 import com.wcy.overscroll.OverScrollLayout;
 import com.zhiyicx.baseproject.R;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.utils.common.DeviceUtils;
@@ -125,75 +126,73 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
         mRefreshLayout.setLoadMoreEnabled(false);
         mRefreshLayout.setOnRefreshListener(this);
         // 因为增加了过度拉动动画，故取消此监听
-//        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                LogUtils.d("event = " + event.getAction());
-//                switch (event.getAction()) {
-//                    case MotionEvent.ACTION_MOVE:
-//                        if (!mIsHandledDrag) {
-//                            mIsHandledDrag = true;
-//                            if (handleSoftInput(v)) return false;
-//                        }
-//                        break;
-//                    case MotionEvent.ACTION_UP:
-//                        mIsHandledDrag = false;
-//                        if (handleSoftInput(v)) return true;
-//                        break;
-//                    case MotionEvent.ACTION_CANCEL:
-//                        if (handleSoftInput(v)) return true;
-//                        break;
-//                    default:
-//                }
-//                return false;
-//            }
-//        });
-
-        overscroll = (OverScrollLayout)findViewById(R.id.overscroll);
-        overscroll.setOverScrollCheckListener(new OverScrollCheckListener() {
+        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public int getContentViewScrollDirection() {
-                return OverScrollLayout.SCROLL_VERTICAL;
-            }
-
-            @Override
-            public boolean canScrollUp() {
-                if (mRefreshLayout.isRefreshEnabled()) {
-                    return true;
-                } else {
-                    // 如果不能够下拉刷新，并且到了顶部 就可以scrollUp
-                    if (!mRecyclerView.canScrollVertically(-1)) {
-                        return false;
-                    }
+            public boolean onTouch(View v, MotionEvent event) {
+                LogUtils.d("event = " + event.getAction());
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_MOVE:
+                        if (!mIsHandledDrag) {
+                            mIsHandledDrag = true;
+                            if (handleSoftInput(v)) return false;
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        mIsHandledDrag = false;
+                        if (handleSoftInput(v)) return true;
+                        break;
+                    case MotionEvent.ACTION_CANCEL:
+                        if (handleSoftInput(v)) return true;
+                        break;
+                    default:
                 }
-                return true;
-            }
-
-            @Override
-            public boolean canScrollDown() {
-                // 如果能够上拉加载，就不能够overScroll Down
-                if (mRefreshLayout.isLoadMoreEnabled()) {
-                    return true;
-                } else {
-                    // 如果不能够上拉加载，并且到了底部 就可以scrollUp
-                    if (!mRecyclerView.canScrollVertically(1)) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-
-            @Override
-            public boolean canScrollLeft() {
-                return false;
-            }
-
-            @Override
-            public boolean canScrollRight() {
                 return false;
             }
         });
-
+//        overscroll = (OverScrollLayout)findViewById(R.id.overscroll);
+//        overscroll.setOverScrollCheckListener(new OverScrollCheckListener() {
+//            @Override
+//            public int getContentViewScrollDirection() {
+//                return OverScrollLayout.SCROLL_VERTICAL;
+//            }
+//
+//            @Override
+//            public boolean canScrollUp() {
+//                if (mRefreshLayout.isRefreshEnabled()) {
+//                    return true;
+//                } else {
+//                    // 如果不能够下拉刷新，并且到了顶部 就可以scrollUp
+//                    if (!mRecyclerView.canScrollVertically(-1)) {
+//                        return false;
+//                    }
+//                }
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean canScrollDown() {
+//                // 如果能够上拉加载，就不能够overScroll Down
+//                if (mRefreshLayout.isLoadMoreEnabled()) {
+//                    return true;
+//                } else {
+//                    // 如果不能够上拉加载，并且到了底部 就可以scrollUp
+//                    if (!mRecyclerView.canScrollVertically(1)) {
+//                        return false;
+//                    }
+//                }
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean canScrollLeft() {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean canScrollRight() {
+//                return false;
+//            }
+//        });
     }
 
     private boolean handleSoftInput(View v) {

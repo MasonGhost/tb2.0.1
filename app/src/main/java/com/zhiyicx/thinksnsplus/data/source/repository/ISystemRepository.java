@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.ComponentConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.ComponentStatusBean;
@@ -69,7 +68,7 @@ public interface ISystemRepository {
      * @param content 反馈内容
      * @return
      */
-    Observable<BaseJson<CacheBean>> systemFeedback(String content);
+    Observable<BaseJson<Object>> systemFeedback(String content,long system_mark);
 
     /**
      * 获取系统会话列表
@@ -79,4 +78,12 @@ public interface ISystemRepository {
      * @return
      */
     Observable<BaseJson<List<SystemConversationBean>>> getSystemConversations(long max_id, int limit);
+
+    /**
+     * 获取本地系统会话列表
+     *
+     * @param max_Id
+     * @return
+     */
+    List<SystemConversationBean> requestCacheData(long max_Id);
 }
