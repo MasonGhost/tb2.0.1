@@ -157,13 +157,17 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
      */
     @Override
     public List<MessageItemBean> requestCacheData(Long maxId, boolean isLoadMore) {
-        initHeaderItemData();
-        handleFlushMessageForItem(mFlushMessageBeanGreenDao.getMultiDataFromCache()); // 处理本地消息
-        mRootView.updateLikeItemData(mItemBeanDigg);
         if (mAuthRepository.getAuthBean() == null) {
             return new ArrayList<>();
         }
-        return mChatRepository.getConversionListData(mAuthRepository.getAuthBean().getUser_id());
+        initHeaderItemData();
+        handleFlushMessageForItem(mFlushMessageBeanGreenDao.getMultiDataFromCache()); // 处理本地消息
+        mRootView.updateLikeItemData(mItemBeanDigg);
+        List<MessageItemBean> cacheData = mChatRepository.getConversionListData(mAuthRepository.getAuthBean().getUser_id());
+        if (!isLoadMore && mItemBeanNotices != null && mItemBeanNotices.getConversation().getCid() != 0) {
+            cacheData.add(mItemBeanNotices);
+        }
+        return cacheData;
     }
 
     @Override
@@ -460,26 +464,21 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                                 }
                             }
                             for (FlushMessages flushMessage : data) {
+                                if (flushMessage.getCount() == 0) {
+                                    continue;
+                                }
                                 switch (flushMessage.getKey()) {
                                     case ApiConfig.FLUSHMESSAGES_KEY_COMMENTS:
-                                        if (flushMessage.getCount() != 0) {
-                                            MessagePresenter.this.handleFlushMessage(flushMessage, commentFlushMessage);
-                                        }
+                                        MessagePresenter.this.handleFlushMessage(flushMessage, commentFlushMessage);
                                         break;
                                     case ApiConfig.FLUSHMESSAGES_KEY_DIGGS:
-                                        if (flushMessage.getCount() != 0) {
-                                            MessagePresenter.this.handleFlushMessage(flushMessage, diggFlushMessage);
-                                        }
+                                        MessagePresenter.this.handleFlushMessage(flushMessage, diggFlushMessage);
                                         break;
                                     case ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS:
-                                        if (flushMessage.getCount() != 0) {
-                                            MessagePresenter.this.handleFlushMessage(flushMessage, followFlushMessage);
-                                        }
+                                        MessagePresenter.this.handleFlushMessage(flushMessage, followFlushMessage);
                                         break;
                                     case FLUSHMESSAGES_KEY_NOTICES:
-                                        if (flushMessage.getCount() != 0) {
-                                            MessagePresenter.this.handleFlushMessage(flushMessage, noticeFlushMessage);
-                                        }
+                                        MessagePresenter.this.handleFlushMessage(flushMessage, noticeFlushMessage);
                                         break;
                                     default:
                                         break;
@@ -510,6 +509,9 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
 
     private void handleFlushMessageForItem(List<FlushMessages> flushMessages) {
         for (FlushMessages flushMessage : flushMessages) {
+            if (flushMessage.getCount() == 0) {
+                continue;
+            }
             mFlushMessageBeanGreenDao.insertOrReplace(flushMessage);
             switch (flushMessage.getKey()) {
                 case ApiConfig.FLUSHMESSAGES_KEY_COMMENTS:
@@ -560,7 +562,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
             case FLUSHMESSAGES_KEY_NOTICES:
                 SystemConversationBean systemConversationBean = mSystemConversationBeanGreenDao.getLastData();
                 if (systemConversationBean == null) {
-                    textEndTip=mContext.getString(R.string.ts_helper_default_tip);
+                    textEndTip = mContext.getString(R.string.ts_helper_default_tip);
                 } else {
                     textEndTip = systemConversationBean.getContent();
                 }
