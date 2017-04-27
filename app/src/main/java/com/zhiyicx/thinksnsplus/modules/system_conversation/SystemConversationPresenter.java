@@ -45,8 +45,6 @@ public class SystemConversationPresenter extends BasePresenter<SystemConversatio
     SystemConversationBeanGreenDaoImpl mSystemConversationBeanGreenDao;
 
 
-
-
     @Inject
     public SystemConversationPresenter(SystemConversationContract.Repository repository, SystemConversationContract.View rootView) {
         super(repository, rootView);
@@ -60,7 +58,7 @@ public class SystemConversationPresenter extends BasePresenter<SystemConversatio
         final SystemConversationBean systemConversationBean = new SystemConversationBean();
         systemConversationBean.setUser_id(Long.valueOf(AppApplication.getmCurrentLoginAuth().getUser_id()));
         systemConversationBean.setContent(text);
-        systemConversationBean.setCreated_at(TimeUtils.millis2String(System.currentTimeMillis()));
+        systemConversationBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         systemConversationBean.setType(ApiConfig.SYSTEM_CONVERSATIONS_TYPE_FEEDBACK);
         systemConversationBean.setSystem_mark(Long.valueOf((AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis())));
         mSystemConversationBeanGreenDao.insertOrReplace(systemConversationBean);
@@ -71,7 +69,7 @@ public class SystemConversationPresenter extends BasePresenter<SystemConversatio
         message.setSend_status(MessageStatus.SEND_SUCCESS);
         chatItemBean.setLastMessage(message);
         mRootView.updateSendText(chatItemBean);
-        mRepository.systemFeedback(text,systemConversationBean.getSystem_mark())
+        mRepository.systemFeedback(text, systemConversationBean.getSystem_mark())
                 .subscribe(new BaseSubscribe<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
@@ -81,25 +79,52 @@ public class SystemConversationPresenter extends BasePresenter<SystemConversatio
 
                     @Override
                     protected void onFailure(String message, int code) {
-                        feedbackFail();
+                        feedbackFail(chatItemBean);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        feedbackFail();
+                        feedbackFail(chatItemBean);
                     }
 
-                    private void feedbackFail() {
-                        mRootView.showSnackErrorMessage(mContext.getString(R.string.err_net_not_work));
-                        chatItemBean.getLastMessage().setSend_status(MessageStatus.SEND_FAIL);
-                    }
                 });
     }
 
+    @Override
+    public void reSendTextMessage(final ChatItemBean chatItemBean) {
+        final SystemConversationBean systemConversationBean = mSystemConversationBeanGreenDao.getSingleDataFromCache(Long.valueOf(chatItemBean.getLastMessage().getId()));
+        if (systemConversationBean == null) {
+            return;
+        }
+        mRepository.systemFeedback(chatItemBean.getLastMessage().getTxt(), systemConversationBean.getSystem_mark())
+                .subscribe(new BaseSubscribe<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        systemConversationBean.setId(((Double) data).longValue());
+                        mSystemConversationBeanGreenDao.insertOrReplace(systemConversationBean);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        feedbackFail(chatItemBean);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        feedbackFail(chatItemBean);
+                    }
+
+
+                });
+    }
+    private void feedbackFail(ChatItemBean chatItemBean) {
+        chatItemBean.getLastMessage().setSend_status(MessageStatus.SEND_FAIL);
+        mRootView.updateSendText(chatItemBean);
+    }
     /**
      * 获取网络数据
      *
-     * @param maxId      当前获取到数据的最大 id
+     * @param maxId 当前获取到数据的最大 id
      */
     @Override
     public void requestNetData(Long maxId) {

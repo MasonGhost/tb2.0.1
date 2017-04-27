@@ -4,13 +4,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -25,9 +22,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.UIUtils;
-import com.zhiyicx.common.utils.ZoomView;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -68,13 +63,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.ItemChannelDetailHeader.TOOLBAR_RIGHT_WHITE;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_POSITION;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.LOOK_COMMENT_MORE;
@@ -82,7 +75,6 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM
 import static com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.ItemChannelDetailHeader.STATUS_RGB;
 import static com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.ItemChannelDetailHeader.TOOLBAR_BLACK_ICON;
 import static com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.ItemChannelDetailHeader.TOOLBAR_DIVIDER_RGB;
-import static com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.ItemChannelDetailHeader.TOOLBAR_RGB;
 import static com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.ItemChannelDetailHeader.TOOLBAR_WHITE_ICON;
 
 /**
@@ -549,7 +541,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
      */
     private void initReSendDynamicPopupWindow(final int position) {
         mReSendDynamicPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.dynamic_list_resend_dynamic))
+                .item1Str(getString(R.string.resend))
                 .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)

@@ -585,7 +585,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     private void initReSendDynamicPopupWindow(final int position) {
         mReSendDynamicPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.dynamic_list_resend_dynamic))
+                .item1Str(getString(R.string.resend))
                 .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)

@@ -41,6 +41,12 @@ public interface SystemConversationContract {
         void sendTextMessage(String text);
 
         /**
+         * 重发
+         * @param chatItemBean
+         */
+        void reSendTextMessage(ChatItemBean chatItemBean);
+
+        /**
          * 请求列表数据
          *
          * @param maxId      当前获取到数据的最大 id

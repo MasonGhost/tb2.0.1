@@ -10,6 +10,7 @@ import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.InputLimitView;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -36,6 +37,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
+import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
+
 /**
  * @Describe
  * @Author Jungle68
@@ -51,7 +54,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     InputLimitView mIlvContainer; // 输入控件
     @BindView(R.id.rl_container)
     RelativeLayout mRlContainer;  // 页面容器
-
+    private ActionPopupWindow mDeletCommentPopWindow;
 
     private List<ChatItemBean> mDatas = new ArrayList<>();
     private MessageItemBean mMessageItemBean;
@@ -184,7 +187,8 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
      */
     @Override
     public void onStatusClick(ChatItemBean chatItemBean) {
-        mPresenter.reSendText(chatItemBean);
+        initDeletCommentPopupWindow(chatItemBean);
+        mDeletCommentPopWindow.show();
     }
 
     /**
@@ -302,4 +306,36 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
                 , mMessageItemBean.getConversation().getType(), mDatas);
         mMessageList.scrollToBottom();
     }
+    /**
+     * 初始化评论删除选择弹框
+     */
+    private void initDeletCommentPopupWindow(final ChatItemBean chatItemBean) {
+        mDeletCommentPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.resend))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+                        onResendClick(chatItemBean);
+                        mDeletCommentPopWindow.hide();
+
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mDeletCommentPopWindow.hide();
+                    }
+                })
+                .build();
+    }
+
+    private void onResendClick(ChatItemBean chatItemBean) {
+        mPresenter.reSendText(chatItemBean);
+    }
+
 }
