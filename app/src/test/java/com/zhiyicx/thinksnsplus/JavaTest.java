@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus;
 
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 
 import org.junit.Test;
 
@@ -72,6 +73,7 @@ public class JavaTest {
         String test = ",,2,3";
         System.out.println("ConvertUtils.removeSymbolStartWith(test,\",\") = " + ConvertUtils.removeSymbolStartWith(test, ","));
     }
+
     /**
      * 去除wei部符号
      */
@@ -79,6 +81,27 @@ public class JavaTest {
     public void removeSymbolEndWith() {
         String test = ",,2,3,,";
         System.out.println("ConvertUtils.removeSymbolStartWith(test,\",\") = " + ConvertUtils.removeSymbolEndWith(test, ","));
+    }
+
+    /**
+     * list 的 set 方法测试
+     */
+    @Test
+    public void listSetAndAddest() {
+        String test = "jungle68";
+        List<String> datas = new ArrayList<>();
+//        for (int i = 0; i < 5; i++) {
+//            datas.add("test   " + i);
+//        }
+//        datas.add(0, test); 没有数据的时候set异常
+        System.out.println("datas = " + datas.toString());
+
+        datas.add(0, test);
+
+        System.out.println("datas = "  +datas.toString());
+//        1493234850000
+        System.out.println("TimeUtils.string2MillisDefaultLocal(); = " + TimeUtils.utc2LocalLong("2017-04-27 03:37:03"));
+        System.out.println("TimeUtils.millis2String(1493235423000) = " + TimeUtils.millis2String(TimeUtils.utc2LocalLong("2017-04-27 03:37:03")));
     }
 
 }

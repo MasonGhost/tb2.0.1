@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class SystemConversationFragment extends BaseChatFragment<SystemConversationContract.Presenter> implements SystemConversationContract.View {
     private long mMax_id = TSListFragment.DEFAULT_PAGE_MAX_ID;
-    private boolean mIsRequestNeted = false;
+    private boolean mIsRequestNeted = true; // 页面 是否需要进入时刷新
 
     public static SystemConversationFragment newInstance() {
         Bundle args = new Bundle();
@@ -113,7 +113,11 @@ public class SystemConversationFragment extends BaseChatFragment<SystemConversat
         datas.addAll(mDatas);
         mDatas.clear();
         mDatas.addAll(datas);
-        mMessageList.refresh();
+        if (datas.size() == mDatas.size()) { // 第一次加载
+            mMessageList.refreshSoomthBottom();
+        } else {
+            mMessageList.refresh();
+        }
         if (mDatas.isEmpty()) {
             mMax_id = TSListFragment.DEFAULT_PAGE_MAX_ID;
         } else {
@@ -123,7 +127,14 @@ public class SystemConversationFragment extends BaseChatFragment<SystemConversat
 
     @Override
     public void updateSendText(ChatItemBean chatItemBean) {
-        int position = mDatas.indexOf(chatItemBean);
+        int size = mDatas.size();
+        int position = -1;
+        for (int i = 0; i < size; i++) {
+            if (mDatas.get(i).getLastMessage().getId() == chatItemBean.getLastMessage().getId()) {
+                position = i;
+                break;
+            }
+        }
         if (position != -1) {
             mDatas.set(position, chatItemBean);
         } else {
