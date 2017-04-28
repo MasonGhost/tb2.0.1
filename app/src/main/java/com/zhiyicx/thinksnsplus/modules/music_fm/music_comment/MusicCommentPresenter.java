@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_comment;
 
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -18,9 +17,6 @@ import com.zhiyicx.thinksnsplus.data.source.local.MusicCommentListBeanGreenDaoIm
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicCommentRepositroty;
-import com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment.CommentBean;
-import com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment.CommentCore;
-import com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment.TCommonMetadataProvider;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
 
 import org.jetbrains.annotations.NotNull;
@@ -367,10 +363,6 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
     @Override
     public void deleteComment(MusicCommentListBean data) {
         mCommentListBeanGreenDao.deleteSingleCache(data);
-        CommentBean commentBean = new CommentBean();
-        commentBean.setComment_id(data.getId() == null ? 1 : data.getId().intValue());
-        commentBean.setNetRequestUrl(String.format(ApiConfig
-                .APP_PATH_MUSIC_DELETE_COMMENT_FORMAT, data.getId()));
 
         // 新的评论模块
 //        CommentCore.getInstance(CommentCore.CommentState.DELETE, new CommentCore.CallBack())

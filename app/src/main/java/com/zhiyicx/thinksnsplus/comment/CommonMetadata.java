@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment;
+package com.zhiyicx.thinksnsplus.comment;
 
 import android.os.Bundle;
 import android.os.Parcelable;

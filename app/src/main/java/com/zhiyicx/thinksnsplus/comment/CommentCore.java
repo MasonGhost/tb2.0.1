@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment;
+package com.zhiyicx.thinksnsplus.comment;
 
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
@@ -18,7 +18,6 @@ public class CommentCore implements ICommentBean {
     private static CommentCore sCommentCore;
     private CommonMetadata mCommentBean;
     private CommonMetadataProvider mMetadataProvider;
-
 
     private CommentCore() {
 
@@ -78,6 +77,7 @@ public class CommentCore implements ICommentBean {
     }
 
     @Override
+    @Deprecated
     public CommentCore set$$Comment(CommonMetadata comment) {
         mCommentBean = comment;
         return sCommentCore;

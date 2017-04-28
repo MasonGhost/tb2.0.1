@@ -8,7 +8,6 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.info.InfoRecommendBean;
 
-import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.JoinProperty;
@@ -16,14 +15,11 @@ import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
-import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.io.Serializable;
 import java.util.List;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
-import com.zhiyicx.thinksnsplus.data.beans.info.InfoRecommendBeanDao;
-import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBeanDao;
 
 /**
  * @Author Jliuer

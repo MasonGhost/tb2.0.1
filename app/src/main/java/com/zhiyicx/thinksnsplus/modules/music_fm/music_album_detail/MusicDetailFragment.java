@@ -141,7 +141,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                         return;
                     }
                     mCurrentMediaId = metadata.getDescription().getMediaId();
-                    LogUtils.d("onMetadataChanged:::" + mCurrentMediaId);
+                    LogUtils.d("onMetadataChanged::detail:" + mCurrentMediaId);
                     mAdapter.notifyDataSetChanged();
 
                     mPresenter.getMusicDetails(mCurrentMediaId);
@@ -161,6 +161,9 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 @Override
                 public void onChildrenLoaded(@NonNull String parentId,
                                              @NonNull List<MediaBrowserCompat.MediaItem> children) {
+                    if (children.isEmpty()) {
+                        return;
+                    }
                     MediaSessionCompat.QueueItem mCurrentMusic = AppApplication.getmQueueManager().getCurrentMusic();
                     if (mCurrentMusic != null) {
                         mCurrentMediaId = MediaIDHelper.extractMusicIDFromMediaID(mCurrentMusic.getDescription().getMediaId());
@@ -339,6 +342,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(MUSIC_ACTION, mAlbumDetailsBean);
                 controller.getTransportControls().sendCustomAction(MUSIC_ACTION, bundle);
+                LogUtils.d("sendCustomAction:::+onConnected");
 
                 mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
                 mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
@@ -463,12 +467,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     }
 
     private void initTitle() {
-        mBgBitmap = BitmapFactory
-                .decodeResource(getResources(), R.mipmap.icon_256);
-        mPalette = Palette.from(mBgBitmap).generate();
-        BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap
-                (mBgBitmap, mBgBitmap.getWidth(), mBgBitmap.getHeight()));
-        mFragmentMusicDetailHeadInfo.setBackgroundDrawable(drawable);
+        mFragmentMusicDetailHeadInfo.setBackgroundResource(R.drawable.shape_default_image);
 
         mFragmentMusicDetailScrollview.setOnHeadFlingListener(new NestedScrollLineayLayout
                 .OnHeadFlingListener() {
@@ -477,7 +476,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 int distance = mFragmentMusicDetailScrollview.getTopViewHeight();
                 int alpha = 255 * scrollY / distance;
                 alpha = alpha > 255 ? 255 : alpha;
-                mFragmentMusicDetailTitle.setBackgroundColor(mPalette.getDarkVibrantColor
+                mFragmentMusicDetailTitle.setBackgroundColor(mPalette.getDarkMutedColor
                         (0xffdedede));
                 if ((float) alpha / 255f > 0.7) {
                     mFragmentMusicDetailCenterTitle.setVisibility(View.VISIBLE);
@@ -594,6 +593,8 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @Subscriber(tag = EVENT_MUSIC_CHANGE, mode = ThreadMode.MAIN)
     public void onMusicChange(int change) {
         mPresenter.getMusicDetails(change + "");
+        mCurrentMediaId = change + "";
+        mAdapter.notifyDataSetChanged();
         LogUtils.d("EVENT_MUSIC_CHANGE");
     }
 }

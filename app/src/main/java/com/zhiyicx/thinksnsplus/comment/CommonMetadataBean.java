@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment;
+package com.zhiyicx.thinksnsplus.comment;
 
 import com.google.gson.annotations.SerializedName;
 
