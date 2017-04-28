@@ -161,6 +161,9 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 @Override
                 public void onChildrenLoaded(@NonNull String parentId,
                                              @NonNull List<MediaBrowserCompat.MediaItem> children) {
+                    if (children.isEmpty()) {
+                        return;
+                    }
                     MediaSessionCompat.QueueItem mCurrentMusic = AppApplication.getmQueueManager().getCurrentMusic();
                     if (mCurrentMusic != null) {
                         mCurrentMediaId = MediaIDHelper.extractMusicIDFromMediaID(mCurrentMusic.getDescription().getMediaId());
@@ -339,6 +342,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(MUSIC_ACTION, mAlbumDetailsBean);
                 controller.getTransportControls().sendCustomAction(MUSIC_ACTION, bundle);
+                LogUtils.d("sendCustomAction:::+onConnected");
 
                 mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
                 mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
@@ -589,7 +593,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @Subscriber(tag = EVENT_MUSIC_CHANGE, mode = ThreadMode.MAIN)
     public void onMusicChange(int change) {
         mPresenter.getMusicDetails(change + "");
-        mCurrentMediaId = change+"";
+        mCurrentMediaId = change + "";
         mAdapter.notifyDataSetChanged();
         LogUtils.d("EVENT_MUSIC_CHANGE");
     }

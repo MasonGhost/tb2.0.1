@@ -19,7 +19,6 @@ public class CommentCore implements ICommentBean {
     private CommonMetadata mCommentBean;
     private CommonMetadataProvider mMetadataProvider;
 
-
     private CommentCore() {
 
     }
@@ -78,6 +77,7 @@ public class CommentCore implements ICommentBean {
     }
 
     @Override
+    @Deprecated
     public CommentCore set$$Comment(CommonMetadata comment) {
         mCommentBean = comment;
         return sCommentCore;
