@@ -150,7 +150,7 @@ public interface CommonClient {
      */
     @Multipart
     @POST
-    Observable<String> upLoadFileByPost(@Url String url, @HeaderMap HashMap<String, String> headers, @Part List<MultipartBody.Part> params);
+    Observable<String> upLoadFileByPost(@Url String url, @HeaderMap HashMap<String, String> headers, @Part  List<MultipartBody.Part> params);
 
     /**
      * 通过Put方法上传文件

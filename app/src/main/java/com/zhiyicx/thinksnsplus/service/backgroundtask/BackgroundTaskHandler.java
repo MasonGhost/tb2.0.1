@@ -540,7 +540,7 @@ public class BackgroundTaskHandler {
                 int photoWidth = (int) imageBean.getWidth();
                 int photoHeight = (int) imageBean.getHeight();
                 String photoMimeType = imageBean.getImgMimeType();
-                upLoadPics.add(mUpLoadRepository.upLoadSingleFile("file" + i, filePath, photoMimeType, true, photoWidth, photoHeight));
+                upLoadPics.add(mUpLoadRepository.upLoadSingleFile(filePath, photoMimeType, true, photoWidth, photoHeight));
             }
             observable = // 组合多个图片上传任务
                     Observable.combineLatest(upLoadPics, new FuncN<List<Integer>>() {

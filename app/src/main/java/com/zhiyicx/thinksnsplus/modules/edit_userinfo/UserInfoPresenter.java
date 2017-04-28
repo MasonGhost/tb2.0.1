@@ -101,7 +101,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
     public void changeUserHeadIcon(String filePath) {
         mRootView.setUpLoadHeadIconState(0, 0);
         BitmapFactory.Options options = DrawableProvider.getPicsWHByFile(filePath);
-        Subscription subscription = mIUploadRepository.upLoadSingleFile("pic",
+        Subscription subscription = mIUploadRepository.upLoadSingleFile(
                 filePath, options.outMimeType, true, options.outWidth, options.outHeight)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

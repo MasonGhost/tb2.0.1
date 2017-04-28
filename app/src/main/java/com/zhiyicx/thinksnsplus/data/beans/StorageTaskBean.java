@@ -1,10 +1,5 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.List;
-
 /**
  * @author LiuChao
  * @describe 储存任务（文件上传）的返回体
@@ -20,7 +15,8 @@ public class StorageTaskBean {
     private String uri; // 上传附件的地址
     private String method;// 请求附件上传的方式
     private Object headers; // 请求头
-    private List<Object> options;// 请求体
+    private Object options;// 请求体
+    private String input ; // 上传资源的表单名称
 
     public int getStorage_id() {
         return storage_id;
@@ -62,12 +58,20 @@ public class StorageTaskBean {
         this.headers = headers;
     }
 
-    public List<Object> getOptions() {
+    public Object getOptions() {
         return options;
     }
 
-    public void setOptions(List<Object> options) {
+    public void setOptions(Object options) {
         this.options = options;
+    }
+
+    public String getInput() {
+        return input;
+    }
+
+    public void setInput(String input) {
+        this.input = input;
     }
 
     @Override
@@ -77,8 +81,9 @@ public class StorageTaskBean {
                 ", storage_task_id=" + storage_task_id +
                 ", uri='" + uri + '\'' +
                 ", method='" + method + '\'' +
-                ", headers=" + headers.toString() +
-                ", options=" + options.toString() +
+                ", headers=" + headers +
+                ", options=" + options +
+                ", input='" + input + '\'' +
                 '}';
     }
 }

@@ -219,7 +219,7 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
     @Override
     public void uploadUserCover(String filePath) {
         BitmapFactory.Options options = DrawableProvider.getPicsWHByFile(filePath);
-        Subscription subscription = mIUploadRepository.upLoadSingleFile("pic",
+        Subscription subscription = mIUploadRepository.upLoadSingleFile(
                 filePath, options.outMimeType, true, options.outWidth, options.outHeight)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
