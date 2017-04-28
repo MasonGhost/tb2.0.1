@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment;
+package com.zhiyicx.thinksnsplus.comment;
 
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;

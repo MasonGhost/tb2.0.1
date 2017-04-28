@@ -2,9 +2,9 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
 
+import com.zhiyicx.thinksnsplus.comment.CommonMetadataBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
-import com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment.CommonMetadataBean;
-import com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment.CommonMetadataBeanDao;
+import com.zhiyicx.thinksnsplus.comment.CommonMetadataBean;
 
 import java.util.List;
 

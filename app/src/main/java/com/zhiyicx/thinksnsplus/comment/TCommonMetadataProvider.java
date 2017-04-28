@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.music_fm.CommonComment;
+package com.zhiyicx.thinksnsplus.comment;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
