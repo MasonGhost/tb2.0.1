@@ -2,7 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
 
-import com.zhiyicx.thinksnsplus.comment.CommonMetadataBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.CommonMetadataBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 import com.zhiyicx.thinksnsplus.comment.CommonMetadataBean;
 

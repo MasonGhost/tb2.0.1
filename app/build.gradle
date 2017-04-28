@@ -117,7 +117,7 @@ greendao {
      * targetGenDirTest 生成的单元测试的根目录。
      */
     schemaVersion 23
-    //daoPackage 'com.zhiyicx.common.greendao.gen'
+    daoPackage 'com.zhiyicx.thinksnsplus.data.beans'
     //targetGenDir 'src/main/java'
 }
 buildscript {

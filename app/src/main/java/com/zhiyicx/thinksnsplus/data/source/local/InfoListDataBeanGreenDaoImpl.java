@@ -2,8 +2,8 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
 
+import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
-import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.List;

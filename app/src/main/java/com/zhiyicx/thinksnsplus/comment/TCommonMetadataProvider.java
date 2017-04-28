@@ -28,9 +28,7 @@ public class TCommonMetadataProvider extends CommonMetadataProvider<MusicComment
                 .putString(CommonMetadata.METADATA_KEY_COMMENT_URL, commentData.getMusic_id() == 0 ?
                         String.format(ApiConfig.APP_PATH_MUSIC_ABLUM_COMMENT_FORMAT, commentData.getSpecial_id()) :
                         String.format(ApiConfig.APP_PATH_MUSIC_COMMENT_FORMAT, commentData.getMusic_id()))
-                .putString(CommonMetadata.METADATA_KEY_DELETE_URL, commentData.getMusic_id() == 0 ?
-                        String.format(ApiConfig.APP_PATH_MUSIC_DELETE_COMMENT_FORMAT, commentData.getSpecial_id()) :
-                        String.format(ApiConfig.APP_PATH_MUSIC_DELETE_COMMENT_FORMAT, commentData.getMusic_id()))
+                .putString(CommonMetadata.METADATA_KEY_DELETE_URL,String.format(ApiConfig.APP_PATH_MUSIC_DELETE_COMMENT_FORMAT, commentData.getComment_id()))
                 .putObj(CommonMetadata.METADATA_KEY_TO_USER, commentData.getToUserInfoBean())
                 .putObj(CommonMetadata.METADATA_KEY_FROM_USER, commentData.getFromUserInfoBean())
                 .build();
@@ -50,9 +48,7 @@ public class TCommonMetadataProvider extends CommonMetadataProvider<MusicComment
         commonMetadataBean.setComment_url(commentData.getMusic_id() == 0 ?
                 String.format(ApiConfig.APP_PATH_MUSIC_ABLUM_COMMENT_FORMAT, commentData.getSpecial_id()) :
                 String.format(ApiConfig.APP_PATH_MUSIC_COMMENT_FORMAT, commentData.getMusic_id()));
-        commonMetadataBean.setDelete_url(commentData.getMusic_id() == 0 ?
-                String.format(ApiConfig.APP_PATH_MUSIC_DELETE_COMMENT_FORMAT, commentData.getSpecial_id()) :
-                String.format(ApiConfig.APP_PATH_MUSIC_DELETE_COMMENT_FORMAT, commentData.getMusic_id()));
+        commonMetadataBean.setDelete_url(String.format(ApiConfig.APP_PATH_MUSIC_DELETE_COMMENT_FORMAT, commentData.getComment_id()));
         commonMetadataBean.setCreated_at(commentData.getCreated_at());
         commonMetadataBean.setUpdated_at(commentData.getUpdated_at());
         commonMetadataBean.setComment_state(CommonMetadataBean.SEND_SUCCESS);

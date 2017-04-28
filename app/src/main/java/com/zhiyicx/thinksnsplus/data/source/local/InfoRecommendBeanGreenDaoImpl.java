@@ -1,10 +1,9 @@
 package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
-import android.content.Context;
 
+import com.zhiyicx.thinksnsplus.data.beans.InfoRecommendBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.info.InfoRecommendBean;
-import com.zhiyicx.thinksnsplus.data.beans.info.InfoRecommendBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.List;
