@@ -180,7 +180,7 @@ public class SystemRepository implements ISystemRepository {
                     @Override
                     public BaseJson<List<SystemConversationBean>> call(BaseJson<List<SystemConversationBean>> listBaseJson) {
                         if (listBaseJson.isStatus()) {
-                            descSystemConversation(listBaseJson.getData());
+                            descNetSystemConversation(listBaseJson.getData());
                             mSystemConversationBeanGreenDao.saveMultiData(listBaseJson.getData());
                             handleTsHelperUserInfo(listBaseJson.getData());
                         }
@@ -189,7 +189,7 @@ public class SystemRepository implements ISystemRepository {
                 });
     }
 
-    private void descSystemConversation(List<SystemConversationBean> datas) {
+    private void descNetSystemConversation(List<SystemConversationBean> datas) {
         Collections.sort(datas, new Comparator<SystemConversationBean>() { // 排序，最大的放在最后面
             @Override
             public int compare(SystemConversationBean o1, SystemConversationBean o2) {
@@ -197,11 +197,19 @@ public class SystemRepository implements ISystemRepository {
             }
         });
     }
+    private void descCacheSystemConversation(List<SystemConversationBean> datas) {
+        Collections.sort(datas, new Comparator<SystemConversationBean>() { // 排序，最大的放在最后面
+            @Override
+            public int compare(SystemConversationBean o1, SystemConversationBean o2) {
+                return o1.get_id().intValue() - o2.get_id().intValue();
+            }
+        });
+    }
 
     @Override
     public List<SystemConversationBean> requestCacheData(long max_Id) {
         List<SystemConversationBean> list = mSystemConversationBeanGreenDao.getMultiDataFromCacheByMaxId(max_Id);
-        descSystemConversation(list);
+        descCacheSystemConversation(list);
         handleTsHelperUserInfo(list);
         return list;
     }

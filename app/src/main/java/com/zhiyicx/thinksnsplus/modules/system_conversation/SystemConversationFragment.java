@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.imsdk.entity.Conversation;
+import com.zhiyicx.imsdk.entity.MessageStatus;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
@@ -23,6 +24,7 @@ import java.util.List;
 public class SystemConversationFragment extends BaseChatFragment<SystemConversationContract.Presenter> implements SystemConversationContract.View {
     private long mMax_id = TSListFragment.DEFAULT_PAGE_MAX_ID;
     private boolean mIsRequestNeted = true; // 页面 是否需要进入时刷新
+    private boolean mIsFristLoadCache = true;
 
     public static SystemConversationFragment newInstance() {
         Bundle args = new Bundle();
@@ -72,15 +74,17 @@ public class SystemConversationFragment extends BaseChatFragment<SystemConversat
 
     /**
      * 发送状态点击
-     *
-     * @param chatItemBean
      */
     @Override
-    public void onStatusClick(ChatItemBean chatItemBean) {
-
+    protected void onResendClick(ChatItemBean chatItemBean) {
+        chatItemBean.getLastMessage().setSend_status(MessageStatus.SEND_SUCCESS);
+        updateSendText(chatItemBean);
+        mPresenter.reSendTextMessage(chatItemBean);
     }
 
+
     @Override
+
     public void onRefresh() {
         if (!mIsRequestNeted) {
             mMax_id = TSListFragment.DEFAULT_PAGE_MAX_ID;
@@ -97,11 +101,7 @@ public class SystemConversationFragment extends BaseChatFragment<SystemConversat
         mDatas.clear();
         mDatas.addAll(datas);
         mMessageList.refreshSoomthBottom();
-        if (mDatas.isEmpty()) {
-            mMax_id = TSListFragment.DEFAULT_PAGE_MAX_ID;
-        } else {
-            mMax_id = mDatas.get(0).getLastMessage().getId();
-        }
+        setMaxId();
     }
 
     @Override
@@ -113,16 +113,12 @@ public class SystemConversationFragment extends BaseChatFragment<SystemConversat
         datas.addAll(mDatas);
         mDatas.clear();
         mDatas.addAll(datas);
-        if (datas.size() == mDatas.size()) { // 第一次加载
-            mMessageList.refreshSoomthBottom();
-        } else {
-            mMessageList.refresh();
+        mMessageList.refresh();
+        if (mIsFristLoadCache) { // 第一次加载
+            mMessageList.scrollToBottom();
+            mIsFristLoadCache = false;
         }
-        if (mDatas.isEmpty()) {
-            mMax_id = TSListFragment.DEFAULT_PAGE_MAX_ID;
-        } else {
-            mMax_id = mDatas.get(0).getLastMessage().getId();
-        }
+        setMaxId();
     }
 
     @Override
@@ -140,6 +136,16 @@ public class SystemConversationFragment extends BaseChatFragment<SystemConversat
         } else {
             mDatas.add(chatItemBean);
         }
-        mMessageList.refreshSoomthBottom();
+        mMessageList.refresh();
+        mMessageList.scrollToBottom();
+        setMaxId();
+    }
+
+    private void setMaxId() {
+        if (mDatas.isEmpty()) {
+            mMax_id = TSListFragment.DEFAULT_PAGE_MAX_ID;
+        } else {
+            mMax_id = mDatas.get(0).getLastMessage().getId();
+        }
     }
 }

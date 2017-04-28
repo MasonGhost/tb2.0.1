@@ -210,7 +210,12 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                                 mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
                                 mRootView.getListDatas().get(i).setUnReadMessageNums(MessageDao.getInstance(mContext).getUnReadMessageCount(mRootView.getListDatas().get(i).getConversation().getCid()));
                             } else { // Ts 助手
-
+                                SystemConversationBean systemConversationBean = mSystemConversationBeanGreenDao.getLastData();
+                                if (systemConversationBean != null) {
+                                    mRootView.getListDatas().get(i).getConversation().getLast_message().setTxt(systemConversationBean.getContent());
+                                    mRootView.getListDatas().get(i).getConversation().getLast_message().setCreate_time(TimeUtils.utc2LocalLong(systemConversationBean.getCreated_at()));
+                                    mRootView.getListDatas().get(i).getConversation().setLast_message_time(TimeUtils.utc2LocalLong(systemConversationBean.getCreated_at()));
+                                }
                             }
                         }
 
