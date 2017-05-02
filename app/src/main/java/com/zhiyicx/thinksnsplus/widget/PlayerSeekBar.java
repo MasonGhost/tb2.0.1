@@ -81,9 +81,9 @@ public class PlayerSeekBar extends AppCompatSeekBar {
             matrix.reset();
             float scale = 0.6f;
             if (drawable != null) {
-                scale = 1f /loading.getWidth() / (drawable.getIntrinsicWidth() * 9 / 10);
+                float result = (float) drawable.getIntrinsicWidth() / (float) loading.getWidth();
+                scale = (float)(Math.round(result * 100)) / 100;// 取两位小数
             }
-            LogUtils.d("onDraw",scale);
             matrix.setScale(scale, scale, loading.getWidth() / 2, loading.getHeight() / 2);
             matrix.postRotate(degree, loading.getWidth() / 2, loading.getHeight() / 2);
             canvas.translate(getPaddingLeft() + getThumb().getBounds().left + getThumb().getBounds

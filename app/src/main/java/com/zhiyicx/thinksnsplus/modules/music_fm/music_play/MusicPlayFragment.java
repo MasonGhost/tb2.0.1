@@ -562,8 +562,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             Observable.from(mMusicList).filter(new Func1<MusicAlbumDetailsBean.MusicsBean, Boolean>() {
                 @Override
                 public Boolean call(MusicAlbumDetailsBean.MusicsBean musicsBean) {
-                    LogUtils.d("mCurrentMediaId:::" + mCurrentMediaId);
-                    LogUtils.d("musicsBean.getId():::" + musicsBean.getMusic_info().getId());
                     return (musicsBean.getId() + "").equals(mCurrentMediaId);
                 }
             }).subscribe(new Action1<MusicAlbumDetailsBean.MusicsBean>() {
