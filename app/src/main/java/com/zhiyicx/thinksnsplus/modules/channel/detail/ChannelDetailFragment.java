@@ -384,7 +384,6 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 break;
 
             case 3: // 更多
-                dataPosition += 1;
                 if (mListDatas.get(dataPosition).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
                     initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
                             .getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED);
