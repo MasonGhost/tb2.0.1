@@ -12,7 +12,7 @@ import java.util.HashMap;
  * @Author Jliuer
  * @Date 2017/04/12/9:24
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 发送评论处理类
  */
 public class SendComment implements ICommentEvent<ICommentBean> {
 

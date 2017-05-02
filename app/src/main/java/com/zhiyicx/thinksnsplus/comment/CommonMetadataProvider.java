@@ -12,7 +12,7 @@ import java.util.List;
  * @Author Jliuer
  * @Date 2017/04/26/15:36
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 评论内容处理基类
  */
 public abstract class CommonMetadataProvider<T> implements ICommonMetadataProvider {
 

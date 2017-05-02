@@ -17,7 +17,7 @@ import static android.support.annotation.RestrictTo.Scope.GROUP_ID;
  * @Author Jliuer
  * @Date 2017/04/26/11:08
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 评论操作的公共类
  */
 public class CommonMetadata {
     private static final String TAG = "CommonMetadata";

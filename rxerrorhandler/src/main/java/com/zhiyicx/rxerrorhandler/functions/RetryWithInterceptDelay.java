@@ -54,6 +54,7 @@ public class RetryWithInterceptDelay implements
                            int time =mStartDelaySecond +mInterceptSecond * (mCurrentRetryCount-1);
                             Log.d(TAG, "get error, it will try after " + time
                                     + " second, retry count " + mCurrentRetryCount);
+                            Log.d(TAG,throwable.toString());
                             return Observable.timer(time,
                                     TimeUnit.SECONDS);
                         }

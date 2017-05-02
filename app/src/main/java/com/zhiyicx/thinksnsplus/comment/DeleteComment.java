@@ -15,7 +15,7 @@ import javax.inject.Inject;
  * @Author Jliuer
  * @Date 2017/04/12/9:44
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 删除评论处理类
  */
 public class DeleteComment implements ICommentEvent<ICommentBean> {
 

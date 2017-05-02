@@ -20,7 +20,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_HANDLE_BACKGROUN
  * @Author Jliuer
  * @Date 2017/04/27/17:54
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 暂未用到
  */
 public interface CommonCommentClient {
 
