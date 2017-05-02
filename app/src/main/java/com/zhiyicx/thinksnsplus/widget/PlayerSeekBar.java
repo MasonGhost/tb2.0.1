@@ -8,9 +8,11 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.v7.widget.AppCompatSeekBar;
 import android.util.AttributeSet;
 import android.widget.SeekBar;
 
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 
@@ -20,13 +22,13 @@ import com.zhiyicx.thinksnsplus.R;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class PlayerSeekBar extends SeekBar {
+public class PlayerSeekBar extends AppCompatSeekBar {
 
     private boolean drawLoading = false;
     private int degree = 0;
     private Matrix matrix = new Matrix();
-    private Bitmap loading = BitmapFactory.decodeResource(getResources(), R.drawable
-            .play_plybar_btn_loading);
+    private Bitmap loading = BitmapFactory.decodeResource(getResources(), R.mipmap
+            .default_white000);
     private Drawable drawable;
 
     public PlayerSeekBar(Context context) {
@@ -57,7 +59,7 @@ public class PlayerSeekBar extends SeekBar {
         }
     }
 
-    public void setThumb(int res){
+    public void setThumb(int res) {
         setThumb(getContext().getResources().getDrawable(res));
     }
 
@@ -77,7 +79,12 @@ public class PlayerSeekBar extends SeekBar {
             degree = ((int) (degree + 3.0F));
             degree %= 360;
             matrix.reset();
-            matrix.setScale(0.3f, 0.3f, loading.getWidth() / 2, loading.getHeight() / 2);
+            float scale = 0.6f;
+            if (drawable != null) {
+                scale = 1f /loading.getWidth() / (drawable.getIntrinsicWidth() * 9 / 10);
+            }
+            LogUtils.d("onDraw",scale);
+            matrix.setScale(scale, scale, loading.getWidth() / 2, loading.getHeight() / 2);
             matrix.postRotate(degree, loading.getWidth() / 2, loading.getHeight() / 2);
             canvas.translate(getPaddingLeft() + getThumb().getBounds().left + getThumb().getBounds
                             ().width() / 2 - loading.getWidth() / 2 - getThumbOffset(),

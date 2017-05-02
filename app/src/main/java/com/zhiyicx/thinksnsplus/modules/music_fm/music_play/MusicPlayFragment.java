@@ -158,6 +158,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
      * 播放模式
      */
     private int mDefalultOrder;
+    private int mCurrentDuration;
     /**
      * 播放模式图标
      */
@@ -244,12 +245,9 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 //noinspection ResourceType
                 String musicUrl = metadata.getString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE);
                 boolean isCached = AppApplication.getProxy().isCached(musicUrl);
-                LogUtils.d("isCached:::" + isCached);
-                LogUtils.d("thread:::" + Thread.currentThread().getName());
                 if (isCached) {
-                    mFragmentMusicPalyProgress.setSecondaryProgress(70);
+                    mFragmentMusicPalyProgress.setSecondaryProgress((int) metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION));
                 }
-                LogUtils.d("Second:::" + mFragmentMusicPalyProgress.getSecondaryProgress());
                 mToolbarCenter.setText(metadata.getText(MediaMetadataCompat.METADATA_KEY_ALBUM));
 
                 mListPopupWindow.getAdapter().notifyDataSetChanged();
@@ -360,6 +358,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         transition.setAnimator(LayoutTransition.DISAPPEARING, AnimatorInflater.loadAnimator(getActivity(), R.animator.view_gone_alpha));
         mFragmentMusicPalyContainer.setLayoutTransition(transition);
         mFragmentMusicPalyProgress.setThumb(R.mipmap.music_pic_progressbar_circle);
+
         initListener();
         mToolbarCenter.setText(AppApplication.getmQueueManager().getCurrentMusic().getDescription().getTitle());
         if (getArguments() != null) {
@@ -606,6 +605,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             return;
         }
         int duration = (int) metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION);
+        mCurrentDuration = duration;
         mFragmentMusicPalyProgress.setMax(duration);
         mFragmentMusicPalyTotalTime.setText(DateUtils.formatElapsedTime(duration / 1000));
     }
@@ -697,7 +697,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     @Subscriber(tag = EVENT_SEND_MUSIC_CACHE_PROGRESS, mode = ThreadMode.MAIN)
     public void onBufferingUpdate(int progress) {
-        mFragmentMusicPalyProgress.setSecondaryProgress(progress);
+        mFragmentMusicPalyProgress.setSecondaryProgress(mCurrentDuration * progress / 100);
         LogUtils.d("MUSIC_CACHE_PROGRESS", "" + progress);
     }
 

@@ -150,12 +150,15 @@
                 <!--android:maxHeight="3dp"-->
                 <!--android:minHeight="3dp"-->
                 <!--android:thumb="@mipmap/music_pic_progressbar_circle"-->
+                <!--style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"-->
                 <!--android:progressDrawable="@drawable/music_seekbar_style"-->
+                <!--com.zhiyicx.thinksnsplus.widget.PlayerSeekBar-->
 
                 <com.zhiyicx.thinksnsplus.widget.PlayerSeekBar
+                    style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+                    android:progressDrawable="@drawable/music_seekbar_style"
                     android:id="@+id/fragment_music_paly_progress"
                     android:layout_width="0dp"
-                    style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
                     android:layout_gravity="center"
                     android:indeterminate="false"
                     android:layout_height="wrap_content"
@@ -165,7 +168,7 @@
                     android:max="100"
                     android:maxHeight="3dp"
                     android:minHeight="3dp"
-                    android:progressDrawable="@drawable/music_seekbar_style"
+
                     android:thumb="@mipmap/music_pic_progressbar_circle"/>
 
                 <TextView

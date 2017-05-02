@@ -213,6 +213,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 .MATCH_PARENT, titleHeight);
         mFragmentMusicDetailScrollview.setNotConsumeHeight(titleHeight);
         mFragmentMusicDetailTitle.setLayoutParams(titleParam);
+        closeLoadingView();
     }
 
     @Override
@@ -311,11 +312,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @Override
     protected boolean setUseCenterLoading() {
         return true;
-    }
-
-    @Override
-    protected boolean setUseCenterLoadingAnimation() {
-        return false;
     }
 
     @Override
