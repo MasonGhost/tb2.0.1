@@ -24,7 +24,7 @@
                 android:layout_height="match_parent"
                 android:text="@string/info_sort"
                 android:textColor="@color/important_for_content"
-                android:textSize="@dimen/size_content"/>
+                android:textSize="@dimen/size_sub_title"/>
 
             <TextView
                 android:id="@+id/fragment_channel_editor"

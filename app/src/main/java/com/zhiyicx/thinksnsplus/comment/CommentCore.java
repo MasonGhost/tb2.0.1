@@ -23,7 +23,7 @@ public class CommentCore implements ICommentBean {
 
     }
 
-    public static CommentCore getInstance(CommentState sate, BackgroundTaskHandler.OnNetResponseCallBack callBack) {
+    public static CommentCore getInstance(ICommentState sate, BackgroundTaskHandler.OnNetResponseCallBack callBack) {
         if (sCommentCore == null) {
             synchronized (CommentCore.class) {
                 if (sCommentCore == null) {
@@ -33,7 +33,7 @@ public class CommentCore implements ICommentBean {
                 }
             }
         }
-        sCommentCore.setDefaultSate(sate.mCommentEvent);
+        sCommentCore.setDefaultSate(sate.getICommentEvent());
         return sCommentCore;
     }
 
@@ -62,7 +62,7 @@ public class CommentCore implements ICommentBean {
     public static class CallBack implements BackgroundTaskHandler.OnNetResponseCallBack, Serializable {
         @Override
         public void onSuccess(Object data) {
-            LogUtils.d("--------------------------------------------------------------");
+
         }
 
         @Override
@@ -98,7 +98,7 @@ public class CommentCore implements ICommentBean {
         return mCommentBean;
     }
 
-    public enum CommentState {
+    public enum CommentState implements ICommentState{
         SEND(SENDCOMMENT), DELETE(DELETECOMMENT);
 
         private ICommentEvent mCommentEvent;
@@ -107,6 +107,10 @@ public class CommentCore implements ICommentBean {
             mCommentEvent = commentEvent;
         }
 
+        @Override
+        public ICommentEvent getICommentEvent() {
+            return mCommentEvent;
+        }
     }
 
 }
