@@ -49,7 +49,12 @@ public class MusicPresenter extends BasePresenter<MusicContract.Repository, Musi
                 .subscribe(new BaseSubscribe<List<MusicAlbumListBean>>() {
                     @Override
                     protected void onSuccess(List<MusicAlbumListBean> data) {
-                        mMusicAlbumListDao.saveMultiData(data);
+                        if (data.isEmpty()){
+                            mMusicAlbumListDao.saveMultiData(data);
+                        }else{
+                            mMusicAlbumListDao.clearTable();
+                        }
+
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 

@@ -57,7 +57,7 @@ public class MusicAlbumListBeanGreenDaoImpl extends CommonCacheImpl<MusicAlbumLi
 
     @Override
     public void clearTable() {
-
+        mMusicAlbumListBeanDao.deleteAll();
     }
 
     @Override

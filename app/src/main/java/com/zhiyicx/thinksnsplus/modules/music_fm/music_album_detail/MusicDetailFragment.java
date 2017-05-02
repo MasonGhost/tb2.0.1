@@ -29,6 +29,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideStokeTransform;
 import com.zhiyicx.baseproject.utils.ImageUtils;
+import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -108,6 +109,8 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     IconTextView mFragmentMusicDetailFavorite;
     @BindView(R.id.fragment_music_detail_music_count)
     TextView fragmentMusicDetailMusicCount;
+    @BindView(R.id.fragment_album_detail)
+    FrameLayout fragmentAlbumDetail;
 
     private CommonAdapter mAdapter;
     private List<MediaBrowserCompat.MediaItem> mAdapterList = new ArrayList<>();
@@ -303,6 +306,28 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     protected void musicWindowsStatus(boolean isShow) {
         super.musicWindowsStatus(isShow);
         WindowUtils.changeToWhiteIcon();
+    }
+
+    @Override
+    protected boolean setUseCenterLoading() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseCenterLoadingAnimation() {
+        return false;
+    }
+
+    @Override
+    public void albumHasBeDeleted() {
+        fragmentAlbumDetail.setVisibility(View.GONE);
+        setLoadViewHolderImag(R.mipmap.img_default_delete);
+        showLoadViewLoadErrorDisableClick();
+    }
+
+    @Override
+    protected int getstatusbarAndToolbarHeight() {
+        return 0;
     }
 
     @Override

@@ -134,7 +134,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                 params.setMargins(0, getstatusbarAndToolbarHeight(), 0, 0);
             }
             mCenterLoadingView.setLayoutParams(params);
-            ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).start();
+            if (setUseCenterLoadingAnimation()){
+                ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).start();
+            }
             RxView.clicks(mCenterLoadingView.findViewById(R.id.iv_center_holder))
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                     .compose(this.<Void>bindToLifecycle())
@@ -328,6 +330,10 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      */
     protected boolean setUseCenterLoading() {
         return false;
+    }
+
+    protected boolean setUseCenterLoadingAnimation() {
+        return true;
     }
 
     /**

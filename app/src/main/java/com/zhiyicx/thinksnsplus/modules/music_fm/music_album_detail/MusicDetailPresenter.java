@@ -82,7 +82,7 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
 
                     @Override
                     protected void onException(Throwable throwable) {
-
+                        mRootView.albumHasBeDeleted();
                     }
                 });
     }

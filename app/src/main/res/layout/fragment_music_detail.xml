@@ -1,5 +1,7 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_album_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
@@ -23,10 +25,9 @@
                 android:layout_height="@dimen/music_album_detail_head"
                 android:layout_centerHorizontal="true"
                 android:contentDescription="@null"
-                android:scaleType="centerCrop" />
+                android:scaleType="centerCrop"/>
 
             <TextView
-                android:textStyle="bold"
                 android:id="@+id/fragment_music_detail_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -34,7 +35,8 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/spacing_mid"
                 android:text="Climber's High"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/fragment_music_detail_dec"
@@ -46,7 +48,7 @@
                 android:layout_marginRight="@dimen/spacing_mid"
                 android:layout_marginTop="@dimen/spacing_normal"
                 android:text="踏风而来，随风而去"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -64,7 +66,7 @@
                     app:itv_gap="@dimen/spacing_small_4dp"
                     app:itv_icon="@mipmap/music_ico_playvolume"
                     app:itv_text="6567"
-                    app:itv_textColor="@color/white" />
+                    app:itv_textColor="@color/white"/>
 
                 <com.zhiyicx.thinksnsplus.widget.IconTextView
                     android:id="@+id/fragment_music_detail_share"
@@ -75,7 +77,7 @@
                     app:itv_gap="@dimen/spacing_small_4dp"
                     app:itv_icon="@mipmap/music_ico_share"
                     app:itv_text="6567"
-                    app:itv_textColor="@color/white" />
+                    app:itv_textColor="@color/white"/>
 
                 <com.zhiyicx.thinksnsplus.widget.IconTextView
                     android:id="@+id/fragment_music_detail_comment"
@@ -86,7 +88,7 @@
                     app:itv_gap="@dimen/spacing_small_4dp"
                     app:itv_icon="@mipmap/music_ico_comment"
                     app:itv_text="6567"
-                    app:itv_textColor="@color/white" />
+                    app:itv_textColor="@color/white"/>
 
                 <com.zhiyicx.thinksnsplus.widget.IconTextView
                     android:id="@+id/fragment_music_detail_favorite"
@@ -97,7 +99,7 @@
                     app:itv_gap="@dimen/spacing_small_4dp"
                     app:itv_icon="@mipmap/music_ico_collect"
                     app:itv_text="6567"
-                    app:itv_textColor="@color/white" />
+                    app:itv_textColor="@color/white"/>
             </LinearLayout>
 
         </RelativeLayout>
@@ -115,19 +117,19 @@
                 android:gravity="center_vertical"
                 android:text="歌曲列表"
                 android:textColor="@color/important_for_content"
-                android:textSize="@dimen/size_sub_title" />
+                android:textSize="@dimen/size_sub_title"/>
 
             <TextView
                 android:id="@+id/fragment_music_detail_music_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/normal_for_assist_text"
-                android:textSize="@dimen/size_content_comment" />
+                android:textSize="@dimen/size_content_comment"/>
         </LinearLayout>
 
         <View
             style="@style/style_divider_horizontal_light"
-            android:layout_below="@+id/music_list_image" />
+            android:layout_below="@+id/music_list_image"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_music_detail_list"
@@ -148,7 +150,7 @@
         <View
             android:id="@+id/fragment_music_detail_empty"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spacing_large" />
+            android:layout_height="@dimen/spacing_large"/>
 
         <TextView
             android:id="@+id/fragment_music_detail_back"
@@ -158,7 +160,7 @@
             android:drawableLeft="@mipmap/topbar_back_white"
             android:gravity="center_vertical"
             android:padding="@dimen/spacing_normal"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -174,7 +176,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:textSize="@dimen/size_primary_title"
-                android:visibility="gone" />
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/fragment_music_detail_center_sub_title"
@@ -182,25 +184,25 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:textSize="@dimen/size_content"
-                android:visibility="gone" />
+                android:visibility="gone"/>
 
         </LinearLayout>
 
     </RelativeLayout>
 
     <android.support.v7.widget.CardView
-        android:visibility="gone"
         android:id="@+id/controls_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom">
+        android:layout_gravity="bottom"
+        android:visibility="gone">
 
         <fragment
             android:id="@+id/fragment_playback_controls"
             android:name="com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicPlayBackFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true" />
+            android:layout_alignParentBottom="true"/>
 
     </android.support.v7.widget.CardView>
 

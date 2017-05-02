@@ -26,6 +26,8 @@ public interface MusicDetailContract {
 
         void setCollect(boolean isCollected);
 
+        void albumHasBeDeleted();
+
         MusicAlbumDetailsBean getCurrentAblum();
 
         MusicAlbumListBean getmMusicAlbumListBean();
