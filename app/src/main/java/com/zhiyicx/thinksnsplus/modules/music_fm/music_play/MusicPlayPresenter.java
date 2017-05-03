@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_play;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -12,6 +14,7 @@ import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 import javax.inject.Inject;
@@ -55,7 +58,7 @@ public class MusicPlayPresenter extends BasePresenter<MusicPlayContract.Reposito
         shareContent.setUrl(String.format(ApiConfig.NO_PROCESS_IMAGE_PATH,
                 mRootView.getCurrentMusic().getMusic_info().getStorage()));
         if (bitmap==null){
-            shareContent.setResImage(R.mipmap.icon_256);
+            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.icon_256)));
         }else{
             shareContent.setBitmap(bitmap);
         }

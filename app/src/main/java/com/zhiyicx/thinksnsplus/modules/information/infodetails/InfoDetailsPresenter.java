@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.information.infodetails;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
@@ -11,6 +13,7 @@ import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -122,7 +125,7 @@ public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Rep
     private void handleInfoHasBeDeleted(int code) {
         if (code == ErrorCodeConfig.INFO_HAS_BE_DELETED) {
             mInfoListBeanGreenDao.deleteInfo(mRootView.getCurrentInfo());
-            EventBus.getDefault().post(mRootView.getCurrentInfo(),EVENT_SEND_INFO_LIST_DELETE_UPDATE);
+            EventBus.getDefault().post(mRootView.getCurrentInfo(), EVENT_SEND_INFO_LIST_DELETE_UPDATE);
             mRootView.infoMationHasBeDeleted();
         } else {
             mRootView.loadAllError();
@@ -138,9 +141,9 @@ public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Rep
                 mRootView.getCurrentInfo().getId()));
         shareContent.setContent(mRootView.getCurrentInfo().getTitle());
 
-        if (bitmap==null){
-            shareContent.setResImage(R.mipmap.icon_256);
-        }else{
+        if (bitmap == null) {
+            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE,BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.icon_256)));
+        } else {
             shareContent.setBitmap(bitmap);
         }
 

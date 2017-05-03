@@ -2,6 +2,8 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail;
 
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -13,6 +15,7 @@ import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.imsdk.core.autobahn.WampMessage;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -137,7 +140,7 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
         shareContent.setTitle(mRootView.getCurrentAblum().getTitle());
         shareContent.setContent(mRootView.getCurrentAblum().getIntro());
         if (bitmap==null){
-            shareContent.setResImage(R.mipmap.icon_256);
+            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.icon_256)));
         }else{
             shareContent.setBitmap(bitmap);
         }
