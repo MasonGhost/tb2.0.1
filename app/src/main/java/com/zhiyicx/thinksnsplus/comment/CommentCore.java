@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.comment;
 
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
 
 import java.io.Serializable;
@@ -12,12 +11,12 @@ import java.io.Serializable;
  * @Description 评论处理类
  */
 public class CommentCore implements ICommentBean {
+
     private static final ICommentEvent SENDCOMMENT = new SendComment();
     private static final ICommentEvent DELETECOMMENT = new DeleteComment();
     private ICommentEvent defaultSate = SENDCOMMENT;
     private static CommentCore sCommentCore;
     private CommonMetadata mCommentBean;
-    private CommonMetadataProvider mMetadataProvider;
 
     private CommentCore() {
 
@@ -77,6 +76,11 @@ public class CommentCore implements ICommentBean {
         }
     }
 
+    /**
+     * !!!弃用，该方法尚未完成扩展!!!
+     * @param comment
+     * @return
+     */
     @Override
     @Deprecated
     public CommentCore set$$Comment(CommonMetadata comment) {
@@ -99,7 +103,8 @@ public class CommentCore implements ICommentBean {
         return mCommentBean;
     }
 
-    public enum CommentState implements ICommentState{
+    // 可以自己实现 ICommentState 来扩展
+    public enum CommentState implements ICommentState {
         SEND(SENDCOMMENT), DELETE(DELETECOMMENT);
 
         private ICommentEvent mCommentEvent;
