@@ -2,10 +2,13 @@ package com.zhiyicx.thinksnsplus.modules.information.infomain.list;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -62,10 +65,11 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
         adapter.addItemViewDelegate(new InfoBannerItem());
         adapter.addItemViewDelegate(new InfoListItem() {
             @Override
-            public void itemClick(int position, TextView title, InfoListDataBean realData) {
+            public void itemClick(int position, ImageView imageView, TextView title, InfoListDataBean realData) {
                 if (!AppApplication.sOverRead.contains(position + "")) {
                     AppApplication.sOverRead.add(position + "");
                 }
+                FileUtils.saveBitmapToFile(getActivity(), ConvertUtils.drawable2BitmapWithWhiteBg(imageView.getDrawable()),"info_share");
                 title.setTextColor(getResources()
                         .getColor(R.color.normal_for_assist_text));
                 Intent intent = new Intent(getActivity(), InfoDetailsActivity.class);

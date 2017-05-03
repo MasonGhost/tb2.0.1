@@ -34,7 +34,7 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
                         final int position,int itemCounts) {
         final InfoListDataBean realData = (InfoListDataBean) baseListBean;
         final TextView title = holder.getView(R.id.item_info_title);
-        ImageView imageView = holder.getView(R.id.item_info_imag);
+        final ImageView imageView = holder.getView(R.id.item_info_imag);
 
         // 记录点击过后颜色
         if (AppApplication.sOverRead.contains(position + "")) {
@@ -54,11 +54,11 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                itemClick(position, title, realData);
+                itemClick(position,imageView, title, realData);
             }
         });
     }
 
-    public abstract void itemClick(int position, TextView title, InfoListDataBean realData);
+    public abstract void itemClick(int position,ImageView imageView, TextView title, InfoListDataBean realData);
 
 }

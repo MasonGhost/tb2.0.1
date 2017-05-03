@@ -2,6 +2,8 @@ package com.zhiyicx.common.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -41,6 +43,7 @@ public class FileUtils {
 
     /**
      * 把图片插入系统插入图
+     *
      * @param context
      * @param file
      */
@@ -678,6 +681,25 @@ public class FileUtils {
         int lastSep = filePath.lastIndexOf(File.separator);
         if (lastPoi == -1 || lastSep >= lastPoi) return "";
         return filePath.substring(lastPoi + 1);
+    }
+
+    public static void saveBitmapToFile(Context context, Bitmap bitmap,String name) {
+        String fileDir = getCacheFile(context, false).getAbsolutePath();
+        File file = new File(fileDir, name);  //将图片保存到刚创建好的目录下
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Bitmap readImgFromFile(Context context,String name) {
+        Bitmap bitmap = BitmapFactory.decodeFile(getCacheFile(context, false).getAbsolutePath() + "/"+name);
+        return bitmap;
     }
 
     /**
