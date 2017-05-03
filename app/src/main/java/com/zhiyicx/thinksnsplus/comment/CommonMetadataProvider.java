@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.thinksnsplus.data.source.local.CommonMetadataBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,11 +19,14 @@ public abstract class CommonMetadataProvider<T> implements ICommonMetadataProvid
 
     private List<T> mComments;
     private List<CommonMetadataBean> mCommonComments;
+    protected int[] mStates;
 
     protected CommonMetadataBeanGreenDaoImpl mCommonMetadataBeanGreenDao;
 
+
     public CommonMetadataProvider(List<T> comments) {
         mComments = comments;
+        mStates = new int[]{CommonMetadataBean.SEND_ING, CommonMetadataBean.SEND_SUCCESS, CommonMetadataBean.SEND_ERROR};
         mCommonMetadataBeanGreenDao = new CommonMetadataBeanGreenDaoImpl((Application) BaseApplication.getContext());
     }
 
@@ -41,8 +45,9 @@ public abstract class CommonMetadataProvider<T> implements ICommonMetadataProvid
         return tracks;
     }
 
-    public void setComments(List<T> comments) {
+    public CommonMetadataProvider setComments(List<T> comments) {
         mComments = comments;
+        return this;
     }
 
     public List<CommonMetadataBean> getLocalCommonComments(int type, int sourceId) {
@@ -50,25 +55,25 @@ public abstract class CommonMetadataProvider<T> implements ICommonMetadataProvid
     }
 
     public List<T> getCacheCommonComments(int type, int sourceId) {
-        List<T> needDatas=new ArrayList<>();
-        List<CommonMetadataBean> cacheDatas=mCommonMetadataBeanGreenDao.getCommonMetadataListByTypeAndID(type, sourceId);
-        for (CommonMetadataBean data:cacheDatas){
-            needDatas.add(buildCommonData(data));
+        List<T> needDatas = new ArrayList<>();
+        List<CommonMetadataBean> cacheDatas = mCommonMetadataBeanGreenDao.getCommonMetadataListByTypeAndID(type, sourceId);
+        for (CommonMetadataBean data : cacheDatas) {
+            needDatas.add(buildRealNeedData(data));
         }
         return needDatas;
     }
 
-    public void insertOrReplaceOne(CommonMetadataBean commonMetadataBean){
+    public void insertOrReplaceOne(CommonMetadataBean commonMetadataBean) {
         mCommonMetadataBeanGreenDao.insertOrReplace(commonMetadataBean);
     }
 
-    public void deleteOne(CommonMetadataBean commonMetadataBean){
+    public void deleteOne(CommonMetadataBean commonMetadataBean) {
         mCommonMetadataBeanGreenDao.deleteSingleCache(commonMetadataBean);
     }
 
     public abstract CommonMetadata buildCommonMetadata(T commentData);
 
-    public abstract T buildCommonData(CommonMetadataBean commonMetadataBean);
+    public abstract T buildRealNeedData(CommonMetadataBean commonMetadataBean);
 
     public abstract CommonMetadataBean buildCommonMetadataBean(T commentData);
 

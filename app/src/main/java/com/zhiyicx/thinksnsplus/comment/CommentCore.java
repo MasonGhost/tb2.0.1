@@ -28,7 +28,7 @@ public class CommentCore implements ICommentBean {
             synchronized (CommentCore.class) {
                 if (sCommentCore == null) {
                     SENDCOMMENT.setListener(callBack);
-                    DELETECOMMENT.setListener(callBack);
+//                    DELETECOMMENT.setListener(callBack);
                     sCommentCore = new CommentCore();
                 }
             }
@@ -60,6 +60,7 @@ public class CommentCore implements ICommentBean {
     }
 
     public static class CallBack implements BackgroundTaskHandler.OnNetResponseCallBack, Serializable {
+
         @Override
         public void onSuccess(Object data) {
 
