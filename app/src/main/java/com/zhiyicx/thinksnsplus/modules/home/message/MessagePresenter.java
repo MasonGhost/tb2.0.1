@@ -607,7 +607,21 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                     }
                 }
             }
+            switch (flushMessage.getKey()) { // 超过限定的人数才显示 “等人"
+                case ApiConfig.FLUSHMESSAGES_KEY_COMMENTS:
+                    if (ueridSet.size() > MAX_USER_NUMS_COMMENT) {
+                        text += mContext.getString(R.string.comment_digg_much_hint);
+                    }
+                    break;
+                case ApiConfig.FLUSHMESSAGES_KEY_DIGGS:
+                    if (ueridSet.size() > MAX_USER_NUMS_DIGG) {
+                        text += mContext.getString(R.string.comment_digg_much_hint);
+                    }
+                    break;
+                default:
+                    break;
 
+            }
         }
         if (text.endsWith("、")) {
             text = text.substring(0, text.length() - 1);
