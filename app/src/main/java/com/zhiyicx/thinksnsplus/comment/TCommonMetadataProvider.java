@@ -28,6 +28,7 @@ public class TCommonMetadataProvider extends CommonMetadataProvider<MusicComment
         return new CommonMetadata.Builder()
                 .putInteger(CommonMetadata.METADATA_KEY_COMMENT_ID, commentData.getId() == null ? -1 : commentData.getId().intValue())
                 .putInteger(CommonMetadata.METADATA_KEY_COMMENT_STATE, mStates[commentData.getState()])
+                .putInteger(CommonMetadata.METADATA_KEY_TO_USER_ID,commentData.getReply_to_user_id())
                 .putLong(CommonMetadata.METADATA_KEY_COMMENT_MARK, commentData.getComment_mark())
                 .putString(CommonMetadata.METADATA_KEY_COMMENT_CONTENT, commentData.getComment_content())
                 .putString(CommonMetadata.METADATA_KEY_CREATED_DATE, commentData.getCreated_at())

@@ -775,7 +775,6 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .item1Str(getString(feedIdIsNull ? R.string.empty :isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
                 .item2Str(getString(R.string.dynamic_list_delete_dynamic))
                 .item3Str(getString(feedIdIsNull ? R.string.empty :R.string.dynamic_list_share_dynamic))
-//                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)

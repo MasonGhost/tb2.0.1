@@ -1,15 +1,21 @@
 package com.zhiyicx.thinksnsplus.comment;
 
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseApplication;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
-import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
+import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.HashMap;
 
 import javax.inject.Inject;
+
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 
 /**
  * @Author Jliuer
@@ -20,8 +26,15 @@ import javax.inject.Inject;
 public class DeleteComment implements ICommentEvent<ICommentBean> {
 
     private BackgroundTaskHandler.OnNetResponseCallBack mCallBack;
+
     @Inject
-    CommentRepository mCommentRepository;
+    ServiceManager serviceManager;
+
+    CommonCommentClient mCommonCommentClient;
+
+    public DeleteComment() {
+        mCommonCommentClient = serviceManager.getCommonCommentClient();
+    }
 
     @Override
     public void setListener(BackgroundTaskHandler.OnNetResponseCallBack callBack) {
@@ -34,7 +47,7 @@ public class DeleteComment implements ICommentEvent<ICommentBean> {
         deleteComment(commentBean);
         BackgroundRequestTaskBean backgroundRequestTaskBean;
         HashMap<String, Object> params = new HashMap<>();
-        params.put(BackgroundTaskHandler.NET_CALLBACK,mCallBack);
+        params.put(BackgroundTaskHandler.NET_CALLBACK, mCallBack);
         // 后台处理
         backgroundRequestTaskBean = new BackgroundRequestTaskBean
                 (BackgroundTaskRequestMethodConfig.DELETE, params);
@@ -46,6 +59,26 @@ public class DeleteComment implements ICommentEvent<ICommentBean> {
     @Override
     public void handleComment(ICommentBean comment) {
         CommonMetadata commentBean = comment.get$$Comment();
+        mCommonCommentClient.deleteComment(ApiConfig.APP_DOMAIN + commentBean.getString(CommonMetadata.METADATA_KEY_DELETE_URL))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribe<Integer>() {
+                    @Override
+                    protected void onSuccess(Integer data) {
+                        mCallBack.onSuccess(data);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        mCallBack.onFailure(message, code);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        mCallBack.onException(throwable);
+                    }
+                });
+
     }
 
     protected void deleteComment(CommonMetadata commentBean) {

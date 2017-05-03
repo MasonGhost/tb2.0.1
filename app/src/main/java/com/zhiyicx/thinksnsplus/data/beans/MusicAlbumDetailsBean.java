@@ -7,6 +7,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
@@ -43,6 +44,8 @@ public class MusicAlbumDetailsBean implements Serializable {
      * "cover":{"id":2,"image_width":3264,"image_height":2448}},"storage":129,"last_time":180,
      * "lyric":"lalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallal","taste_count":4,"share_count":0,"comment_count":0}},{"id":2,"created_at":"2017-03-16 17:22:48","updated_at":"2017-03-16 17:22:50","special_id":1,"music_id":2,"music_info":{"id":2,"created_at":"2017-03-16 17:20:40","updated_at":"2017-03-16 17:20:43","deleted_at":null,"title":"thankyou","singer":{"id":2,"created_at":"2017-03-16 17:22:18","updated_at":"2017-03-16 17:22:20","name":"刘zz","cover":{"id":54,"image_width":690,"image_height":932}},"storage":130,"last_time":240,"lyric":"sdafasfasdfasdfasdfasdfsadf","taste_count":0,"share_count":0,"comment_count":0}}]
      */
+    @Id(autoincrement = true)
+    private Long _id;
     @Unique
     private int id;
     private String created_at;
