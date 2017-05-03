@@ -62,8 +62,9 @@ public class MusicAlbumDetailsBean implements Serializable {
     @Convert(converter = MusicListConverter.class, columnType = String.class)
     private List<MusicsBean> musics;
 
-    @Generated(hash = 1758975319)
-    public MusicAlbumDetailsBean(int id, String created_at, String updated_at, String title, String intro, StorageBean storage, int taste_count, int share_count, int comment_count, int collect_count, int is_collection, List<MusicsBean> musics) {
+    @Generated(hash = 2031763002)
+    public MusicAlbumDetailsBean(Long _id, int id, String created_at, String updated_at, String title, String intro, StorageBean storage, int taste_count, int share_count, int comment_count, int collect_count, int is_collection, List<MusicsBean> musics) {
+        this._id = _id;
         this.id = id;
         this.created_at = created_at;
         this.updated_at = updated_at;
@@ -248,6 +249,14 @@ public class MusicAlbumDetailsBean implements Serializable {
 
     public void setStorage(StorageBean storage) {
         this.storage = storage;
+    }
+
+    public Long get_id() {
+        return this._id;
+    }
+
+    public void set_id(Long _id) {
+        this._id = _id;
     }
 
 

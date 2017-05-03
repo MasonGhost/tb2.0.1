@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center;
 
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,7 +10,6 @@ import android.util.SparseArray;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
-import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
@@ -281,10 +281,10 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(userInfoBean.getName());
         shareContent.setContent(TextUtils.isEmpty(userInfoBean.getIntro()) ? mContext.getString(R.string.intro_default) : userInfoBean.getIntro());
-        if (userInfoBean.getAvatar() != null) {
-            shareContent.setImage(ImageUtils.imagePathConvert(userInfoBean.getAvatar(), 100));
+        if (null != mRootView.getUserHeadPic()) {
+            shareContent.setBitmap(mRootView.getUserHeadPic());
         } else {
-            shareContent.setBitmap(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.pic_default_portrait1));
+            shareContent.setResImage(R.mipmap.pic_default_portrait1);
         }
         shareContent.setUrl(String.format(ApiConfig.APP_PATH_SHARE_USERINFO, userInfoBean.getUser_id()));
         mSharePolicy.setShareContent(shareContent);
@@ -493,15 +493,17 @@ public class PersonalCenterPresenter extends BasePresenter<PersonalCenterContrac
     }
 
     @Override
-    public void shareDynamic(DynamicBean dynamicBean) {
+    public void shareDynamic(DynamicBean dynamicBean, Bitmap bitmap) {
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(TextUtils.isEmpty(dynamicBean.getFeed().getTitle()) ? mContext.getString(R.string.share) : dynamicBean.getFeed().getTitle());
         shareContent.setContent(TextUtils.isEmpty(dynamicBean.getFeed().getContent()) ? mContext.getString(R.string.share_dynamic) : dynamicBean.getFeed().getContent());
-        if (dynamicBean.getFeed().getStorages() != null && dynamicBean.getFeed().getStorages().size() > 0) {
-            shareContent.setImage(ImageUtils.imagePathConvert(dynamicBean.getFeed().getStorages().get(0).getStorage_id() + "", 100));
+//        if (dynamicBean.getFeed().getStorages() != null && dynamicBean.getFeed().getStorages().size() > 0) {
+//            shareContent.setImage(ImageUtils.imagePathConvert(dynamicBean.getFeed().getStorages().get(0).getStorage_id() + "", 100));
+        if (bitmap != null) {
+            shareContent.setBitmap(bitmap);
         } else {
-            shareContent.setBitmap(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon_256));
+            shareContent.setResImage(R.mipmap.icon_256);
         }
         shareContent.setUrl(String.format(ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean.getFeed_id() == null ? "" : dynamicBean.getFeed_id()));
         mSharePolicy.setShareContent(shareContent);

@@ -136,8 +136,6 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
         shareContent.setContent(mRootView.getCurrentAblum().getIntro());
         shareContent.setImage(ImageUtils.imagePathConvert(mRootView.getCurrentAblum()
                 .getStorage().getId() + "", 100));
-
-
         shareContent.setUrl(APP_PATH_SHARE_DEFAULT);
 
         mSharePolicy.setShareContent(shareContent);

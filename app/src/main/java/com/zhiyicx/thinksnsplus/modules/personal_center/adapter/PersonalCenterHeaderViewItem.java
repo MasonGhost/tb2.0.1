@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +17,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding.support.v7.widget.RecyclerViewScrollEvent;
-import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView;
-import com.jakewharton.rxbinding.view.RxView;
-import com.jakewharton.rxbinding.view.ViewScrollChangeEvent;
-import com.jakewharton.rxbinding.widget.RxAdapter;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBorderTransform;
@@ -31,7 +25,6 @@ import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.ZoomView;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -43,8 +36,6 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
-
-import rx.functions.Action1;
 
 /**
  * @author LiuChao
@@ -212,7 +203,7 @@ public class PersonalCenterHeaderViewItem {
                     setToolbarIconColor(Color.argb(255, TOOLBAR_WHITE_ICON[0]
                             , TOOLBAR_WHITE_ICON[1], TOOLBAR_WHITE_ICON[2]));
                     // 尝试设置状态栏文字成白色
-                   // StatusBarUtils.statusBarDarkMode(mActivity);
+                    // StatusBarUtils.statusBarDarkMode(mActivity);
                 }
             }
         });
@@ -432,4 +423,7 @@ public class PersonalCenterHeaderViewItem {
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
+    public ImageView getHeadView() {
+        return iv_head_icon;
+    }
 }
