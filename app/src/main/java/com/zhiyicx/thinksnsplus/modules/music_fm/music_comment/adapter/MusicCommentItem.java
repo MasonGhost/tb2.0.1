@@ -8,11 +8,11 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
-import com.klinker.android.link_builder.LinkBuilder;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.utils.ImageUtils;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -104,9 +104,7 @@ public class MusicCommentItem implements ItemViewDelegate<MusicCommentListBean> 
                     });
             List<Link> links = setLiknks(holder, musicCommentListBean, position);
             if (!links.isEmpty()) {
-                LinkBuilder.on((TextView) holder.getView(R.id.tv_content))
-                        .addLinks(links)
-                        .build();
+                ConvertUtils.stringLinkConvert((TextView) holder.getView(R.id.tv_content),links);
             }
 
             setUserInfoClick(holder.getView(R.id.tv_name), musicCommentListBean.getFromUserInfoBean());

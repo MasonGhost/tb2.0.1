@@ -12,7 +12,10 @@ import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.View;
+import android.widget.TextView;
 
+import com.klinker.android.link_builder.Link;
+import com.klinker.android.link_builder.LinkBuilder;
 import com.zhiyicx.common.config.ConstantConfig;
 
 import java.io.ByteArrayInputStream;
@@ -23,6 +26,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 /**
  * @Describe 转换相关工具类
@@ -39,6 +43,17 @@ public class ConvertUtils {
 
     private static final char hexDigits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
+    /**
+     * 字符串转换，用于评论名字颜色与点击处理
+     * @param textView
+     * @param links
+     */
+    public static void stringLinkConvert(TextView textView, List<Link> links) {
+        LinkBuilder.on(textView)
+                .setFindOnlyFirstMatchesForAnyLink(true)
+                .addLinks(links)
+                .build();
+    }
 
     /**
      * 数字格式转换，超过 9999 用 “1万”
@@ -729,7 +744,6 @@ public class ConvertUtils {
             return null;
         }
     }
-
 
 
 }

@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.LinkBuilder;
 import com.zhiyicx.baseproject.widget.SimpleTextNoPullRecycleView;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -51,9 +52,7 @@ public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<Dynami
         }
         holder.setText(com.zhiyicx.baseproject.R.id.tv_simple_text_comment, setShowText(dynamicCommentBean, position));
         // Add the links and make the links clickable
-        LinkBuilder.on((TextView) holder.getView(com.zhiyicx.baseproject.R.id.tv_simple_text_comment))
-                .addLinks(setLiknks(dynamicCommentBean, position))
-                .build();
+        ConvertUtils.stringLinkConvert((TextView) holder.getView(R.id.tv_simple_text_comment),setLiknks(dynamicCommentBean, position));
 
         holder.setOnClickListener(com.zhiyicx.baseproject.R.id.tv_simple_text_comment, new OnClickListener() {
             @Override
