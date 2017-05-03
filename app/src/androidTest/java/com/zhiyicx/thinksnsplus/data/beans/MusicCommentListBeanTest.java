@@ -2,9 +2,6 @@ package com.zhiyicx.thinksnsplus.data.beans;
 
 import org.greenrobot.greendao.test.AbstractDaoTestLongPk;
 
-import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
-import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBeanDao;
-
 public class MusicCommentListBeanTest extends AbstractDaoTestLongPk<MusicCommentListBeanDao, MusicCommentListBean> {
 
     public MusicCommentListBeanTest() {
@@ -15,12 +12,12 @@ public class MusicCommentListBeanTest extends AbstractDaoTestLongPk<MusicComment
     protected MusicCommentListBean createEntity(Long key) {
         MusicCommentListBean entity = new MusicCommentListBean();
         entity.set_id(key);
-        entity.setComment_id();
-        entity.setUser_id();
-        entity.setReply_to_user_id();
-        entity.setMusic_id();
-        entity.setSpecial_id();
-        entity.setState();
+        entity.setComment_id(12);
+        entity.setUser_id(15);
+        entity.setReply_to_user_id(2);
+        entity.setMusic_id(1);
+        entity.setSpecial_id(1);
+        entity.setState(1);
         return entity;
     }
 
