@@ -44,7 +44,7 @@ public class NotificationUtil {
      * @param jpushMessageBean
      */
     public static void showNotifyMessage(Context context, JpushMessageBean jpushMessageBean) {
-        if (!BackgroundUtil.getLinuxCoreInfoForIsForeground(context, context.getPackageName())) {   // 应用在后台
+        if (!BackgroundUtil.getAppIsForegroundStatus()) {   // 应用在后台
             NotificationUtil notiUtil = new NotificationUtil(context);
             notiUtil.postNotification(jpushMessageBean);
         }
