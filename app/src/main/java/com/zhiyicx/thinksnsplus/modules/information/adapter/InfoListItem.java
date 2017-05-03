@@ -44,6 +44,8 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
         title.setText(realData.getTitle());
         AppApplication.AppComponentHolder.getAppComponent().imageLoader().loadImage(BaseApplication.getContext(), GlideImageConfig.builder()
                 .url(ImageUtils.imagePathConvert(realData.getStorage().getId()+"",ImageZipConfig.IMAGE_50_ZIP))
+                .placeholder(R.drawable.shape_default_image)
+                .errorPic(R.drawable.shape_default_image)
                 .imagerView(imageView)
                 .build());
 
