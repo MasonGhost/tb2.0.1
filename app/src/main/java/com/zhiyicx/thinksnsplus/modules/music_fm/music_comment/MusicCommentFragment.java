@@ -295,7 +295,6 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                     @Override
                     public void call(Boolean aBoolean) {
                         //若不可视区域高度大于1/3屏幕高度，则键盘显示
-                        LogUtils.i(TAG + "---RxView   " + aBoolean);
                         if (aBoolean) {
                             mVShadow.setVisibility(View.VISIBLE);
                         } else {

@@ -16,6 +16,7 @@ import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PermissionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
@@ -165,7 +166,8 @@ public class FindFragment extends TSFragment {
                 .permissionName(getString(com.zhiyicx.baseproject.R.string.windows_permission))
                 .with(getActivity())
                 .bottomStr(getString(com.zhiyicx.baseproject.R.string.cancel))
-                .item1Str(getString(com.zhiyicx.baseproject.R.string.setting_windows_permission_hint))
+                .item1Str(getString(com.zhiyicx.baseproject.R.string.setting_windows_permission_hint) + "\n" +
+                        getString(com.zhiyicx.baseproject.R.string.oppo_setting_windows_permission_hint))
                 .item2Str(getString(com.zhiyicx.baseproject.R.string.setting_permission))
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override

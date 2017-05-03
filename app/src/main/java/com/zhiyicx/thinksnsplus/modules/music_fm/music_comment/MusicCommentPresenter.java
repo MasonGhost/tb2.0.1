@@ -67,12 +67,15 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
     public MusicCommentPresenter(MusicCommentContract.Repository repository, MusicCommentContract
             .View rootView) {
         super(repository, rootView);
+        mCommonMetadataProvider = new TCommonMetadataProvider(null);
     }
 
     @Inject
     void setupListeners() {
         mRootView.setPresenter(this);
     }
+
+    private TCommonMetadataProvider mCommonMetadataProvider;
 
     @Override
     public void requestNetData(final String music_id, Long maxId, final boolean isLoadMore) {
@@ -189,10 +192,33 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
         mRootView.getListDatas().add(0, createComment);
         mRootView.refreshData();
         path = String.format(path, mRootView.getCommentId());
+
         // 新的评论模块
-//        CommentCore.getInstance(CommentCore.CommentState.SEND, new CallBack())
-//                .set$$Comment_(createComment,new TCommonMetadataProvider(null))
-//                .handleCommentInBackGroud();
+        CommentCore.getInstance(CommentCore.CommentState.SEND,
+                new BackgroundTaskHandler.OnNetResponseCallBack() {
+                    @Override
+                    public void onSuccess(Object data) {
+                        CommonMetadataBean commonMetadataBean = mCommonMetadataProvider.getCommentByCommentMark(createComment.getComment_mark());
+                        commonMetadataBean.setComment_id(((Double) data).intValue());
+                        commonMetadataBean.setComment_state(CommonMetadataBean.SEND_SUCCESS);
+                        mCommonMetadataProvider.insertOrReplaceOne(commonMetadataBean);
+                    }
+
+                    @Override
+                    public void onFailure(String message, int code) {
+                        CommonMetadataBean commonMetadataBean = mCommonMetadataProvider.getCommentByCommentMark(createComment.getComment_mark());
+                        commonMetadataBean.setComment_state(CommonMetadataBean.SEND_ERROR);
+                        mCommonMetadataProvider.insertOrReplaceOne(commonMetadataBean);
+                    }
+
+                    @Override
+                    public void onException(Throwable throwable) {
+                        CommonMetadataBean commonMetadataBean = mCommonMetadataProvider.getCommentByCommentMark(createComment.getComment_mark());
+                        commonMetadataBean.setComment_state(CommonMetadataBean.SEND_ERROR);
+                        mCommonMetadataProvider.insertOrReplaceOne(commonMetadataBean);
+                    }
+                }).set$$Comment_(createComment, mCommonMetadataProvider)
+                .handleCommentInBackGroud();
 
         Subscription subscription = mCommentRepository.sendComment(content, reply_id, createComment.getComment_mark(), path).doOnSubscribe(new Action0() {
             @Override
@@ -231,23 +257,6 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                     }
                 });
         addSubscrebe(subscription);
-    }
-
-    class CallBack implements BackgroundTaskHandler.OnNetResponseCallBack, Serializable {
-        @Override
-        public void onSuccess(Object data) {
-            LogUtils.d("--------------------------------------------------------------");
-        }
-
-        @Override
-        public void onFailure(String message, int code) {
-
-        }
-
-        @Override
-        public void onException(Throwable throwable) {
-
-        }
     }
 
     @Override
@@ -368,11 +377,11 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
         mCommentListBeanGreenDao.deleteSingleCache(data);
 
         // 新的评论模块
-        CommentCore.getInstance(CommentCore.CommentState.DELETE, new CommentCore.CallBack())
-                .set$$Comment_(data,new TCommonMetadataProvider(null))
-                .handleComment();
+//        CommentCore.getInstance(CommentCore.CommentState.DELETE, new CommentCore.CallBack())
+//                .set$$Comment_(data,new TCommonMetadataProvider(null))
+//                .handleComment();
 
-        mRepository.deleteComment(mRootView.getCommentId(), data.getComment_id());
+        mRepository.deleteComment(mRootView.getCommentId(), data.getId().intValue());
         mRootView.getListDatas().remove(data);
         if (mRootView.getListDatas().size() == 0) {// 占位
             MusicCommentListBean emptyData = new MusicCommentListBean();

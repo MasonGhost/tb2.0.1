@@ -67,6 +67,10 @@ public abstract class CommonMetadataProvider<T> implements ICommonMetadataProvid
         mCommonMetadataBeanGreenDao.insertOrReplace(commonMetadataBean);
     }
 
+    public CommonMetadataBean getCommentByCommentMark(long mark){
+       return mCommonMetadataBeanGreenDao.getCommonMetadataListByCommentMark(mark);
+    }
+
     public void deleteOne(CommonMetadataBean commonMetadataBean) {
         mCommonMetadataBeanGreenDao.deleteSingleCache(commonMetadataBean);
     }

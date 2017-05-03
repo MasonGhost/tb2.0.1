@@ -63,23 +63,29 @@ public class DeleteComment implements ICommentEvent<ICommentBean> {
     @Override
     public void handleComment(ICommentBean comment) {
         CommonMetadata commentBean = comment.get$$Comment();
-        mCommonCommentClient.deleteComment(ApiConfig.APP_DOMAIN + commentBean.getString(CommonMetadata.METADATA_KEY_DELETE_URL))
+        mCommonCommentClient.deleteComment(commentBean.getString(CommonMetadata.METADATA_KEY_DELETE_URL))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribe<CacheBean>() {
                     @Override
                     protected void onSuccess(CacheBean data) {
-                        mCallBack.onSuccess(data);
+                        if (mCallBack!=null){
+                            mCallBack.onSuccess(data);
+                        }
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
-                        mCallBack.onFailure(message, code);
+                        if (mCallBack!=null){
+                            mCallBack.onFailure(message, code);
+                        }
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        mCallBack.onException(throwable);
+                        if (mCallBack!=null){
+                            mCallBack.onException(throwable);
+                        }
                     }
                 });
 

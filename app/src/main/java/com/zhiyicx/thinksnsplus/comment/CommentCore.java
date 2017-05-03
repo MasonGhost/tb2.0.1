@@ -16,7 +16,8 @@ public class CommentCore implements ICommentBean {
     private static final ICommentEvent DELETECOMMENT = new DeleteComment();
     private ICommentEvent defaultSate = SENDCOMMENT;
     private static CommentCore sCommentCore;
-    private CommonMetadata mCommentBean;
+    private static CommonMetadata mCommentBean;
+    private static CommonMetadataProvider mCommonMetadataProvider;
 
     private CommentCore() {
 
@@ -27,7 +28,12 @@ public class CommentCore implements ICommentBean {
             synchronized (CommentCore.class) {
                 if (sCommentCore == null) {
                     SENDCOMMENT.setListener(callBack);
-//                    DELETECOMMENT.setListener(callBack);
+                    DELETECOMMENT.setListener(callBack);
+
+                    if (callBack == null) {
+                        SENDCOMMENT.setListener(new SendCallBack());
+                    }
+
                     sCommentCore = new CommentCore();
                 }
             }
@@ -58,26 +64,9 @@ public class CommentCore implements ICommentBean {
         defaultSate.handleCommentInBackGroud(core);
     }
 
-    public static class CallBack implements BackgroundTaskHandler.OnNetResponseCallBack, Serializable {
-
-        @Override
-        public void onSuccess(Object data) {
-
-        }
-
-        @Override
-        public void onFailure(String message, int code) {
-
-        }
-
-        @Override
-        public void onException(Throwable throwable) {
-
-        }
-    }
-
     /**
      * !!!弃用，该方法尚未完成扩展!!!
+     *
      * @param comment
      * @return
      */
@@ -90,6 +79,7 @@ public class CommentCore implements ICommentBean {
 
     public <C> CommentCore set$$Comment_(C comment, CommonMetadataProvider mMetadataProvider) {
         mCommentBean = mMetadataProvider.buildCommonMetadata(comment);
+        mCommonMetadataProvider = mMetadataProvider;
         if (defaultSate == DELETECOMMENT) {
             mMetadataProvider.deleteOne(mMetadataProvider.buildCommonMetadataBean(comment));
         } else if (defaultSate == SENDCOMMENT) {
@@ -116,6 +106,30 @@ public class CommentCore implements ICommentBean {
         @Override
         public ICommentEvent getICommentEvent() {
             return mCommentEvent;
+        }
+    }
+
+    public static class SendCallBack implements BackgroundTaskHandler.OnNetResponseCallBack, Serializable {
+        @Override
+        public void onSuccess(Object data) {
+            CommonMetadataBean commonMetadataBean = mCommonMetadataProvider.getCommentByCommentMark(mCommentBean.getLong(CommonMetadata.METADATA_KEY_COMMENT_MARK));
+            commonMetadataBean.setComment_id(((Double) data).intValue());
+            commonMetadataBean.setComment_state(CommonMetadataBean.SEND_SUCCESS);
+            mCommonMetadataProvider.insertOrReplaceOne(commonMetadataBean);
+        }
+
+        @Override
+        public void onFailure(String message, int code) {
+            CommonMetadataBean commonMetadataBean = mCommonMetadataProvider.getCommentByCommentMark(mCommentBean.getLong(CommonMetadata.METADATA_KEY_COMMENT_MARK));
+            commonMetadataBean.setComment_state(CommonMetadataBean.SEND_ERROR);
+            mCommonMetadataProvider.insertOrReplaceOne(commonMetadataBean);
+        }
+
+        @Override
+        public void onException(Throwable throwable) {
+            CommonMetadataBean commonMetadataBean = mCommonMetadataProvider.getCommentByCommentMark(mCommentBean.getLong(CommonMetadata.METADATA_KEY_COMMENT_MARK));
+            commonMetadataBean.setComment_state(CommonMetadataBean.SEND_ERROR);
+            mCommonMetadataProvider.insertOrReplaceOne(commonMetadataBean);
         }
     }
 

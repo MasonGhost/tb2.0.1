@@ -96,4 +96,15 @@ public class CommonMetadataBeanGreenDaoImpl extends CommonCacheImpl<CommonMetada
                 .list();
     }
 
+    public CommonMetadataBean getCommonMetadataListByCommentMark(long comment_mark) {
+        List<CommonMetadataBean> dta=mCommonMetadataBeanDao.queryBuilder()
+                .where(CommonMetadataBeanDao.Properties.Comment_mark.eq(comment_mark))
+                .build()
+                .list();
+        if (dta.isEmpty()){
+            return null;
+        }
+        return dta.get(0);
+    }
+
 }

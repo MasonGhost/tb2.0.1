@@ -80,24 +80,30 @@ public class SendComment implements ICommentEvent<ICommentBean> {
         params.put("comment_content", commentBean.getString(CommonMetadata.METADATA_KEY_COMMENT_CONTENT));
         params.put("reply_to_user_id", commentBean.getInteger(CommonMetadata.METADATA_KEY_TO_USER_ID));
         params.put("comment_mark", commentBean.getLong(CommonMetadata.METADATA_KEY_COMMENT_MARK));
-        mCommonCommentClient.sendComment(ApiConfig.APP_DOMAIN + commentBean.getString(CommonMetadata.METADATA_KEY_COMMENT_URL),
+        mCommonCommentClient.sendComment(commentBean.getString(CommonMetadata.METADATA_KEY_COMMENT_URL),
                 upLoadFileAndParams(null, params))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribe<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
-                        mCallBack.onSuccess(data);
+                        if (mCallBack!=null){
+                            mCallBack.onSuccess(data);
+                        }
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
-                        mCallBack.onFailure(message, code);
+                        if (mCallBack!=null){
+                            mCallBack.onFailure(message, code);
+                        }
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        mCallBack.onException(throwable);
+                        if (mCallBack!=null){
+                            mCallBack.onException(throwable);
+                        }
                     }
                 });
     }
