@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.remote;
 
+import com.zhiyicx.thinksnsplus.comment.CommonCommentClient;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -24,6 +26,7 @@ public class ServiceManager {
     private FollowFansClient mFollowFansClient;
     private DynamicClient mDynamicClient;
     private ChannelClient mChannelClient;
+    private CommonCommentClient mCommonCommentClient;
 
     /**
      * 如果需要添加 service 只需在构造方法中添加对应的 service,在提供 get 方法返回出去,只要在 ServiceModule 提供了该 service
@@ -58,6 +61,10 @@ public class ServiceManager {
 
     public CommonClient getCommonClient() {
         return mCommonClient;
+    }
+
+    public CommonCommentClient getCommonCommentClient() {
+        return mCommonCommentClient;
     }
 
     public LoginClient getLoginClient() {

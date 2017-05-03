@@ -36,6 +36,7 @@ public class CommonMetadata {
     public static final String METADATA_KEY_COMMENT_CONTENT = "zhiyi.common.metadata.comment_content";
     public static final String METADATA_KEY_COMMENT_MARK = "zhiyi.common.metadata.comment_mark";
     public static final String METADATA_KEY_TO_USER = "zhiyi.common.metadata.to_user";
+    public static final String METADATA_KEY_TO_USER_ID = "zhiyi.common.metadata.to_user_id";
     public static final String METADATA_KEY_FROM_USER = "zhiyi.common.metadata.from_user";
     public static final String METADATA_KEY_AUTHOR_USER = "zhiyi.common.metadata.author_user";
     public static final String METADATA_KEY_CREATED_DATE = "zhiyi.common.metadata.created_at";
@@ -94,7 +95,7 @@ public class CommonMetadata {
 
     @RestrictTo(GROUP_ID)
     @StringDef({METADATA_KEY_COMMENT_ID, METADATA_KEY_COMMENT_STATE, METADATA_KEY_SOURCE_ID
-            , METADATA_KEY_TARGET_ID})
+            , METADATA_KEY_TARGET_ID,METADATA_KEY_TO_USER_ID})
     @Retention(RetentionPolicy.SOURCE)
     public @interface IntegerKey {
     }

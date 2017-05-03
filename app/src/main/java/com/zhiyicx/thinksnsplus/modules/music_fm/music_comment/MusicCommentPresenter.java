@@ -9,6 +9,9 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.comment.CommentCore;
+import com.zhiyicx.thinksnsplus.comment.CommonMetadataBean;
+import com.zhiyicx.thinksnsplus.comment.TCommonMetadataProvider;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
@@ -158,7 +161,7 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
             path = APP_PATH_MUSIC_ABLUM_COMMENT_FORMAT;
             createComment.setSpecial_id(mRootView.getCommentId());
         }
-        createComment.setState(SEND_ING);
+        createComment.setState(CommonMetadataBean.SEND_SUCCESS);
 
         createComment.setReply_to_user_id(reply_id);
         createComment.setComment_content(content);
@@ -365,9 +368,9 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
         mCommentListBeanGreenDao.deleteSingleCache(data);
 
         // 新的评论模块
-//        CommentCore.getInstance(CommentCore.CommentState.DELETE, new CommentCore.CallBack())
-//                .set$$Comment_(data,new TCommonMetadataProvider(null))
-//                .handleCommentInBackGroud();
+        CommentCore.getInstance(CommentCore.CommentState.DELETE, new CommentCore.CallBack())
+                .set$$Comment_(data,new TCommonMetadataProvider(null))
+                .handleComment();
 
         mRepository.deleteComment(mRootView.getCommentId(), data.getComment_id());
         mRootView.getListDatas().remove(data);

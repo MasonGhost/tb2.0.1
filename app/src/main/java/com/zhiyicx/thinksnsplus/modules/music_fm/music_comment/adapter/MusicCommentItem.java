@@ -168,7 +168,7 @@ public class MusicCommentItem implements ItemViewDelegate<MusicCommentListBean> 
      */
     private String handleName(MusicCommentListBean musicCommentListBean) {
         String content = "";
-        if (musicCommentListBean.getReply_to_user_id() != 0) { // 当没有回复者时，就是回复评论
+        if (musicCommentListBean.getReply_to_user_id() != 0&&musicCommentListBean.getToUserInfoBean()!=null) { // 当没有回复者时，就是回复评论
             content += " 回复 " + musicCommentListBean.getToUserInfoBean().getName() + ": " +
                     musicCommentListBean.getComment_content();
         } else {

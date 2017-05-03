@@ -769,11 +769,12 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
      * @param position    curent dynamic postion
      */
     private void initMyDynamicPopupWindow(final DynamicBean dynamicBean, final int position, boolean isCollected) {
+        Long feed_id = dynamicBean.getFeed_id();
+        boolean feedIdIsNull = feed_id == null || feed_id == 0;
         mMyDynamicPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
+                .item1Str(getString(feedIdIsNull ? R.string.empty :isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
                 .item2Str(getString(R.string.dynamic_list_delete_dynamic))
-                .item3Str(getString(R.string.dynamic_list_share_dynamic))
-//                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item3Str(getString(feedIdIsNull ? R.string.empty :R.string.dynamic_list_share_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)

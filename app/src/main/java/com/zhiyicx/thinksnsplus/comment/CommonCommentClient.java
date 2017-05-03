@@ -30,5 +30,5 @@ public interface CommonCommentClient {
 
     @Headers({"Content-type:application/json;charset=UTF-8"})
     @HTTP(method = "DELETE", path = APP_PATH_HANDLE_BACKGROUND_TASK)
-    Observable<BaseJson<CacheBean>> deleteComment(@Path("path") String path);
+    Observable<BaseJson<Integer>> deleteComment(@Path("path") String path);
 }
