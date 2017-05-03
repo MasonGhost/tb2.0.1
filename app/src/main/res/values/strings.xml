@@ -14,9 +14,10 @@
     <string name="comment">评论</string>
     <string name="like">赞</string>
     <string name="liked">赞过的</string>
-    <string name="like_me">等人赞了我</string>
-    <string name="comment_me">等人评论了我</string>
+    <string name="like_me">赞了我</string>
+    <string name="comment_me">评论了我</string>
     <string name="comment_success">评论成功</string>
+    <string name="comment_digg_much_hint">等人</string>
     <string name="comment_fail">评论失败</string>
     <string name="comment_ing">评论中...</string>
     <string name="default_message_group">群组</string>

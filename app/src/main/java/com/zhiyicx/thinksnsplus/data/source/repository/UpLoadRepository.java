@@ -113,6 +113,7 @@ public class UpLoadRepository implements IUploadRepository {
                                             .map(new Func1<String, String[]>() {
                                                 @Override
                                                 public String[] call(String s) {
+                                                    System.out.println("s = " + s.toString());
                                                     return new String[]{s.toString(), storageTaskId + ""};
                                                 }
                                             });

@@ -33,6 +33,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends SkinBaseActi
     protected P mPresenter;
     private Unbinder mUnbinder;
     protected LayoutInflater mLayoutInflater;
+    public boolean mIsForeground; // 用于应用是否处于前台还是后台的判断；
 
     @Nullable
     @Override
@@ -55,6 +56,18 @@ public abstract class BaseActivity<P extends BasePresenter> extends SkinBaseActi
         componentInject();// 依赖注入，必须放在initview后
         initData();
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mIsForeground = true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mIsForeground = false;
     }
 
     /**

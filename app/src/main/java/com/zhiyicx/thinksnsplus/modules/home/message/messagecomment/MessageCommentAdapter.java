@@ -16,6 +16,7 @@ import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.utils.ImageUtils;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
@@ -95,9 +96,7 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
         holder.setText(R.id.tv_content, setShowText(commentedBean, position));
         List<Link> links = setLiknks(holder, commentedBean, position);
         if (!links.isEmpty()) {
-            LinkBuilder.on((TextView) holder.getView(R.id.tv_content))
-                    .addLinks(links)
-                    .build();
+            ConvertUtils.stringLinkConvert((TextView) holder.getView(R.id.tv_content),links);
         }
 
 

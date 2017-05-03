@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.home.message;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,6 +15,7 @@ import com.daimajia.swipe.interfaces.SwipeAdapterInterface;
 import com.daimajia.swipe.interfaces.SwipeItemMangerInterface;
 import com.daimajia.swipe.util.Attributes;
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
@@ -27,6 +30,8 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBFragment;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -95,8 +100,8 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
                 swipeLayout.setSwipeEnabled(true);
                 break;
             default:
-                holder.getView(R.id.tv_name).setOnClickListener(null);
-                holder.getView(R.id.iv_headpic).setOnClickListener(null);
+                setTSHelperClick(holder.getView(R.id.tv_name));
+                setTSHelperClick(holder.getView(R.id.iv_headpic));
                 holder.setImageResource(R.id.iv_headpic, R.mipmap.ico_ts_assistant);
                 holder.setText(R.id.tv_name, holder.getConvertView().getResources().getString(R.string.ts_helper));
                 swipeLayout.setSwipeEnabled(false);
@@ -165,6 +170,28 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
                         toUserCenter(userInfoBean);
                     }
                 });
+    }
+
+    private void setTSHelperClick(View v) {
+        RxView.clicks(v)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        toTSHelper();
+                    }
+                });
+    }
+
+    /**
+     * 前往ts助手开发
+     */
+    private void toTSHelper() {
+        Intent intent = new Intent(getContext(), CustomWEBActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, ApiConfig.APP_PATH_SHARE_DEFAULT);
+        intent.putExtras(bundle);
+        getContext().startActivity(intent);
     }
 
     /**

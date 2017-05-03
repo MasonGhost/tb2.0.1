@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -9,6 +10,7 @@ import android.widget.RelativeLayout;
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.config.ConstantConfig;
@@ -24,6 +26,8 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBFragment;
 import com.zhiyicx.thinksnsplus.widget.chat.ChatMessageList;
 
 import org.jetbrains.annotations.NotNull;
@@ -199,7 +203,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     @Override
     public void onBubbleClick(ChatItemBean message) {
         LogUtils.d("----------------onBubbleClick----------");
-        DeviceUtils.hideSoftKeyboard(getContext(),mMessageList.getListView());
+        DeviceUtils.hideSoftKeyboard(getContext(), mMessageList.getListView());
 
     }
 
@@ -223,7 +227,22 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
      */
     @Override
     public void onUserInfoClick(ChatItemBean chatItemBean) {
-        PersonalCenterFragment.startToPersonalCenter(getContext(), chatItemBean.getUserInfo());
+        if (chatItemBean.getUserInfo().getName().equals(getString(R.string.ts_helper))) { // ts 助手;
+            toTSHelper();
+        } else { // 普通用户
+            PersonalCenterFragment.startToPersonalCenter(getContext(), chatItemBean.getUserInfo());
+        }
+    }
+
+    /**
+     * 前往ts助手开发
+     */
+    private void toTSHelper() {
+        Intent intent = new Intent(getContext(), CustomWEBActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, ApiConfig.APP_PATH_SHARE_DEFAULT);
+        intent.putExtras(bundle);
+        getContext().startActivity(intent);
     }
 
     /**
@@ -306,6 +325,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
                 , mMessageItemBean.getConversation().getType(), mDatas);
         mMessageList.scrollToBottom();
     }
+
     /**
      * 初始化评论删除选择弹框
      */

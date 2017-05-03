@@ -86,7 +86,7 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
     public void onMessageReceived(final Message message) {
         setMessageTipVisable(true);
         EventBus.getDefault().post(message, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED);
-        if (!BackgroundUtil.getLinuxCoreInfoForIsForeground(mContext, mContext.getPackageName())) {   // 应用在后台
+        if (!BackgroundUtil.getAppIsForegroundStatus()) {   // 应用在后台
             mUserInfoRepository.getLocalUserInfoBeforeNet(message.getUid())
                     .subscribe(new BaseSubscribe<UserInfoBean>() {
                         @Override
