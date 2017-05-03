@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_play;
 
+import android.graphics.Bitmap;
+
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
@@ -45,17 +47,18 @@ public class MusicPlayPresenter extends BasePresenter<MusicPlayContract.Reposito
     public SharePolicy mSharePolicy;
 
     @Override
-    public void shareMusic() {
+    public void shareMusic(Bitmap bitmap) {
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(mRootView.getCurrentMusic().getMusic_info().getTitle());
         shareContent.setContent(mRootView.getCurrentMusic().getMusic_info().getLyric());
         shareContent.setUrl(String.format(ApiConfig.NO_PROCESS_IMAGE_PATH,
                 mRootView.getCurrentMusic().getMusic_info().getStorage()));
-
-        shareContent.setImage(String.format(ApiConfig.NO_PROCESS_IMAGE_PATH,
-                mRootView.getCurrentMusic().getMusic_info().getSinger().getCover().getId()));
-
+        if (bitmap==null){
+            shareContent.setResImage(R.mipmap.icon_256);
+        }else{
+            shareContent.setBitmap(bitmap);
+        }
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
     }

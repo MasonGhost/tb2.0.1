@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.information.infodetails;
 
+import android.graphics.Bitmap;
+
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
@@ -40,7 +42,7 @@ public interface InfoDetailsConstract {
 
         void sendComment(int reply_id,String content);
 
-        void shareInfo();
+        void shareInfo(Bitmap bitmap);
 
         void handleCollect(boolean isCollected, final String news_id);
 

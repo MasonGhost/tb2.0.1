@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.information.infodetails;
 
+import android.graphics.Bitmap;
+
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.utils.ImageUtils;
@@ -128,13 +130,20 @@ public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Rep
     }
 
     @Override
-    public void shareInfo() {
+    public void shareInfo(Bitmap bitmap) {
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle("ThinkSNS+\b\b资讯");
         shareContent.setUrl(String.format(APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
                 mRootView.getCurrentInfo().getId()));
         shareContent.setContent(mRootView.getCurrentInfo().getTitle());
+
+        if (bitmap==null){
+            shareContent.setResImage(R.mipmap.icon_256);
+        }else{
+            shareContent.setBitmap(bitmap);
+        }
+
         if (mRootView.getCurrentInfo().getStorage() != null) {
             shareContent.setImage(ImageUtils.imagePathConvert(mRootView.getCurrentInfo()
                     .getStorage().getId() + "", 100));

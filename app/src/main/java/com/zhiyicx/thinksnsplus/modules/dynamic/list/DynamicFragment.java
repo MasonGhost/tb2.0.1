@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,7 @@ import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -327,6 +329,13 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
+        Bitmap shareBitMap = null;
+        try {
+            ImageView imageView = (ImageView) layoutManager.findViewByPosition(dataPosition+1).findViewById(R.id.siv_0);
+            shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(imageView.getDrawable());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         switch (viewPosition) { // 0 1 2 3 代表 view item 位置
             case 0: // 喜欢
                 // 还未发送成功的动态列表不查看详情
@@ -358,7 +367,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     mMyDynamicPopWindow.show();
                 } else {
                     initOtherDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
-                            .getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED);
+                            .getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED, shareBitMap);
                     mOtherDynamicPopWindow.show();
                 }
 
@@ -495,7 +504,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      * @param dynamicBean curent dynamic
      * @param position    curent dynamic postion
      */
-    private void initOtherDynamicPopupWindow(final DynamicBean dynamicBean, final int position, boolean isCollected) {
+    private void initOtherDynamicPopupWindow(final DynamicBean dynamicBean, final int position, boolean isCollected, final Bitmap shareBitmap) {
         mOtherDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
                 .item2Str(getString(R.string.dynamic_list_share_dynamic))
@@ -515,7 +524,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
                     public void onItem2Clicked() {// 分享
-                        mPresenter.shareDynamic(dynamicBean);
+                        mPresenter.shareDynamic(dynamicBean, shareBitmap);
                         mOtherDynamicPopWindow.hide();
                         showBottomView(true);
                     }

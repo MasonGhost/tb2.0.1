@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.personal_center;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -24,6 +25,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -337,6 +339,13 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
         dataPosition = dataPosition - 1;// 减去 header
         mCurrentPostion = dataPosition;
+        Bitmap shareBitMap = null;
+        try {
+            ImageView imageView = (ImageView) layoutManager.findViewByPosition(dataPosition+1).findViewById(R.id.siv_0);
+            shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(imageView.getDrawable());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         switch (viewPosition) { // 0 1 2 3 代表 view item 位置
             case 0: // 喜欢
                 // 还未发送成功的动态列表不查看详情
@@ -362,7 +371,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 break;
 
             case 3: // 更多
-                initDeletDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition);
+                initDeletDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, shareBitMap);
                 mDeletDynamicPopWindow.show();
                 break;
             default:
@@ -680,14 +689,14 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      * @param dynamicBean curent dynamic
      * @param position    curent dynamic postion
      */
-    private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean, final int position) {
+    private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean, final int position, final Bitmap shareBitmap) {
         boolean isCollected = dynamicBean.getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED;
         Long feed_id = dynamicBean.getFeed_id();
         boolean feedIdIsNull = feed_id == null || feed_id == 0;
         mDeletDynamicPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(feedIdIsNull ? R.string.empty :(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic)))
+                .item1Str(getString(feedIdIsNull ? R.string.empty : (isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic)))
                 .item2Str(getString(R.string.dynamic_list_delete_dynamic))
-                .item3Str(getString(feedIdIsNull ? R.string.empty :R.string.dynamic_list_share_dynamic))
+                .item3Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -712,7 +721,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
                     @Override
                     public void onItem3Clicked() {
-                        mPresenter.shareDynamic(dynamicBean);
+                        mPresenter.shareDynamic(dynamicBean, shareBitmap);
                         mDeletDynamicPopWindow.hide();
                     }
                 })
@@ -739,6 +748,14 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         }
         mUserInfoBean.setFeeds_count(String.valueOf(currenDynamicCounts));
         mPersonalCenterHeaderViewItem.upDateDynamicNums(currenDynamicCounts);
+    }
+
+    @Override
+    public Bitmap getUserHeadPic() {
+        if (mPersonalCenterHeaderViewItem.getHeadView() == null) {
+            return null;
+        }
+        return ConvertUtils.drawable2BitmapWithWhiteBg(mPersonalCenterHeaderViewItem.getHeadView().getDrawable());
     }
 
     /**

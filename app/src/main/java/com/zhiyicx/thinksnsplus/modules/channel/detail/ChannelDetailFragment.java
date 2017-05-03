@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.channel.detail;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -21,6 +22,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -68,14 +70,14 @@ import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_POSITION;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.LOOK_COMMENT_MORE;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM_SPACING;
 import static com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.ItemChannelDetailHeader.STATUS_RGB;
 import static com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.ItemChannelDetailHeader.TOOLBAR_BLACK_ICON;
 import static com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.ItemChannelDetailHeader.TOOLBAR_DIVIDER_RGB;
 import static com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.ItemChannelDetailHeader.TOOLBAR_WHITE_ICON;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_POSITION;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.LOOK_COMMENT_MORE;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM_SPACING;
 
 /**
  * @author LiuChao
@@ -359,6 +361,14 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
         dataPosition = dataPosition - 1;// 减去 header
         mCurrentPostion = dataPosition;
+
+        Bitmap shareBitMap = null;
+        try {
+            ImageView imageView = (ImageView) layoutManager.findViewByPosition(dataPosition+1).findViewById(R.id.siv_0);
+            shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(imageView.getDrawable());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         switch (viewPosition) { // 0 1 2 3 代表 view item 位置
             case 0: // 喜欢
                 // 还未发送成功的动态列表不查看详情
@@ -390,7 +400,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                     mMyDynamicPopWindow.show();
                 } else {
                     initOtherDynamicPopupWindow(mListDatas.get(dataPosition), mListDatas.get(dataPosition)
-                            .getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED);
+                            .getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED,shareBitMap);
                     mOtherDynamicPopWindow.show();
                 }
                 break;
@@ -726,7 +736,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
      *
      * @param dynamicBean curent dynamic
      */
-    private void initOtherDynamicPopupWindow(final DynamicBean dynamicBean, boolean isCollected) {
+    private void initOtherDynamicPopupWindow(final DynamicBean dynamicBean, boolean isCollected,final Bitmap shareBitmap) {
         mOtherDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
                 .item2Str(getString(R.string.dynamic_list_share_dynamic))
@@ -747,7 +757,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
                     public void onItem2Clicked() {// 分享
-                        mPresenter.shareDynamic(dynamicBean);
+                        mPresenter.shareDynamic(dynamicBean,shareBitmap);
                         mOtherDynamicPopWindow.hide();
                         showBottomView(true);
                     }

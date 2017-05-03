@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail;
 
 
+import android.graphics.Bitmap;
+
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
@@ -127,17 +129,18 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
     }
 
     @Override
-    public void shareMusicAlbum() {
+    public void shareMusicAlbum(Bitmap bitmap) {
 
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
 
         shareContent.setTitle(mRootView.getCurrentAblum().getTitle());
         shareContent.setContent(mRootView.getCurrentAblum().getIntro());
-        shareContent.setImage(ImageUtils.imagePathConvert(mRootView.getCurrentAblum()
-                .getStorage().getId() + "", 100));
-
-
+        if (bitmap==null){
+            shareContent.setResImage(R.mipmap.icon_256);
+        }else{
+            shareContent.setBitmap(bitmap);
+        }
         shareContent.setUrl(APP_PATH_SHARE_DEFAULT);
 
         mSharePolicy.setShareContent(shareContent);

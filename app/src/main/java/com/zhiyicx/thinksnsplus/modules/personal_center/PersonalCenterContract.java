@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center;
 
+import android.graphics.Bitmap;
+
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -62,6 +64,13 @@ public interface PersonalCenterContract {
          * @param changeNums
          */
         void updateDynamicCounts(int changeNums);
+
+        /**
+         * 获取用户头像，加快分享速度
+         *
+         * @return
+         */
+        Bitmap getUserHeadPic();
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存

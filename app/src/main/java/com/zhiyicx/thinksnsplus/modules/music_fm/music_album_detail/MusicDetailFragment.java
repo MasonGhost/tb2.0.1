@@ -559,7 +559,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
             case R.id.fragment_music_detail_playvolume:
                 break;
             case R.id.fragment_music_detail_share:
-                mPresenter.shareMusicAlbum();
+                mPresenter.shareMusicAlbum(mBgBitmap);
                 break;
             case R.id.fragment_music_detail_comment:
                 Intent intent = new Intent(getActivity(), MusicCommentActivity.class);

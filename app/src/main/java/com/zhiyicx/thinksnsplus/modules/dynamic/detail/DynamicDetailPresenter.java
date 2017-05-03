@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
 
@@ -386,7 +385,7 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
         if (mRootView.getCurrentDynamic().getFeed().getStorages() != null && mRootView.getCurrentDynamic().getFeed().getStorages().size() > 0) {
             shareContent.setImage(ImageUtils.imagePathConvert(mRootView.getCurrentDynamic().getFeed().getStorages().get(0).getStorage_id() + "", 100));
         } else {
-            shareContent.setBitmap(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon_256));
+            shareContent.setResImage(R.mipmap.icon_256);
         }
         shareContent.setUrl(String.format(ApiConfig.APP_PATH_SHARE_DYNAMIC, mRootView.getCurrentDynamic().getFeed_id() == null ? "" : mRootView.getCurrentDynamic().getFeed_id()));
         mSharePolicy.setShareContent(shareContent);

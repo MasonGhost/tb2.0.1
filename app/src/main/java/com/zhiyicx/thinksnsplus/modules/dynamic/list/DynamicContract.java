@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
+import android.graphics.Bitmap;
+
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
@@ -123,6 +125,6 @@ public interface DynamicContract {
         /**
          * 动态分享
          */
-        void shareDynamic(DynamicBean dynamicBean);
+        void shareDynamic(DynamicBean dynamicBean, Bitmap bitmap);
     }
 }

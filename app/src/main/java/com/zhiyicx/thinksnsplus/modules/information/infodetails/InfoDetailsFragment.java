@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.information.infodetails;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
@@ -9,17 +10,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.ToastUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
@@ -38,7 +40,6 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import rx.functions.Action1;
 
-import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.DEFAULT_RESOURES_ID;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -285,7 +286,15 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                         mReplyUserId = 0;
                         break;
                     case DynamicDetailMenuView.ITEM_POSITION_2:// 分享
-                        mPresenter.shareInfo();
+                        Bitmap bitmap = null;
+                        try {
+                            bitmap = Glide.with(getActivity())
+                                    .load(ImageUtils.imagePathConvert(getCurrentInfo().getStorage().getId() + "", ImageZipConfig.IMAGE_50_ZIP))
+                                    .asBitmap().into(ConvertUtils.dp2px(getActivity(), 95f), ConvertUtils.dp2px(getActivity(), 67.5f)).get();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        mPresenter.shareInfo(bitmap);
                         break;
                     case DynamicDetailMenuView.ITEM_POSITION_3:// 更多
                         initDealInfoMationPopupWindow(mInfoMation, mInfoMation.getIs_collection_news() == 1);

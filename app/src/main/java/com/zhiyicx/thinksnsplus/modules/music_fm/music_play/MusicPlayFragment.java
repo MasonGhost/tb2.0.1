@@ -40,6 +40,7 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideMusicBgTransform;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.utils.WindowUtils;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -224,6 +225,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
      */
     private Subscription mProgressSubscription;
     private Observable<Long> mProgressObservable;
+    private ImageView mCurrentImageView;
 
     /**
      * 音乐播放切换事件回调
@@ -550,10 +552,10 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             View item = RecyclerViewUtils
                     .getCenterXChild(mFragmentMusicPalyRv);
 
-            ImageView image = (ImageView) item.findViewById(R.id.fragment_music_paly_img);
+            mCurrentImageView = (ImageView) item.findViewById(R.id.fragment_music_paly_img);
 
             mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
-                    .imagerView(image)
+                    .imagerView(mCurrentImageView)
                     .errorPic(R.drawable.shape_default_image)
                     .placeholder(R.drawable.shape_default_image)
                     .url(description.getIconUri() + "")
@@ -919,7 +921,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.fragment_music_paly_share:// 分享
-                mPresenter.shareMusic();
+                mPresenter.shareMusic(ConvertUtils.drawable2BitmapWithWhiteBg(mCurrentImageView.getDrawable()));
                 break;
             case R.id.fragment_music_paly_like: // 点赞
                 mPresenter.handleLike(mCurrentMusic.getMusic_info().getIsdiggmusic() == 0,
