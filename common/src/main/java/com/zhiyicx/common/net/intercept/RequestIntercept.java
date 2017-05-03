@@ -50,10 +50,15 @@ public class RequestIntercept implements Interceptor {
         String logUrl = request.url() + "";
         String method = request.method();
         logUrl = URLDecoder.decode(logUrl, "utf-8");
-        LogUtils.d(TAG, "Sending " + method + " Request %s on %n formdata --->  %s%n Connection ---> %s%n Headers ---> %s", logUrl
-                , request.body() != null ? parseParams(request.body(), requestbuffer) : "null"
-                , chain.connection()
-                , request.headers());
+        try {
+            LogUtils.d(TAG, "Sending " + method + " Request %s on %n formdata --->  %s%n Connection ---> %s%n Headers ---> %s", logUrl
+                    , request.body() != null ? parseParams(request.body(), requestbuffer) : "null"
+                    , chain.connection()
+                    , request.headers());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         long t1 = System.nanoTime();
         Response originalResponse = chain.proceed(request);
         long t2 = System.nanoTime();
