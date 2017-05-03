@@ -28,14 +28,14 @@ public class TCommonMetadataProvider extends CommonMetadataProvider<MusicComment
         return new CommonMetadata.Builder()
                 .putInteger(CommonMetadata.METADATA_KEY_COMMENT_ID, commentData.getId() == null ? -1 : commentData.getId().intValue())
                 .putInteger(CommonMetadata.METADATA_KEY_COMMENT_STATE, mStates[commentData.getState()])
-                .putInteger(CommonMetadata.METADATA_KEY_TO_USER_ID,commentData.getReply_to_user_id())
+                .putInteger(CommonMetadata.METADATA_KEY_TO_USER_ID, commentData.getReply_to_user_id())
                 .putLong(CommonMetadata.METADATA_KEY_COMMENT_MARK, commentData.getComment_mark())
                 .putString(CommonMetadata.METADATA_KEY_COMMENT_CONTENT, commentData.getComment_content())
                 .putString(CommonMetadata.METADATA_KEY_CREATED_DATE, commentData.getCreated_at())
                 .putString(CommonMetadata.METADATA_KEY_COMMENT_URL, commentData.getMusic_id() == 0 ?
                         String.format(ApiConfig.APP_PATH_MUSIC_ABLUM_COMMENT_FORMAT, commentData.getSpecial_id()) :
                         String.format(ApiConfig.APP_PATH_MUSIC_COMMENT_FORMAT, commentData.getMusic_id()))
-                .putString(CommonMetadata.METADATA_KEY_DELETE_URL, String.format(ApiConfig.APP_PATH_MUSIC_DELETE_COMMENT_FORMAT, commentData.getComment_id()))
+                .putString(CommonMetadata.METADATA_KEY_DELETE_URL, String.format(ApiConfig.APP_PATH_MUSIC_DELETE_COMMENT_FORMAT, commentData.getId()))
                 .putObj(CommonMetadata.METADATA_KEY_TO_USER, commentData.getToUserInfoBean())
                 .putObj(CommonMetadata.METADATA_KEY_FROM_USER, commentData.getFromUserInfoBean())
                 .build();
@@ -55,7 +55,7 @@ public class TCommonMetadataProvider extends CommonMetadataProvider<MusicComment
         commonMetadataBean.setComment_url(commentData.getMusic_id() == 0 ?
                 String.format(ApiConfig.APP_PATH_MUSIC_ABLUM_COMMENT_FORMAT, commentData.getSpecial_id()) :
                 String.format(ApiConfig.APP_PATH_MUSIC_COMMENT_FORMAT, commentData.getMusic_id()));
-        commonMetadataBean.setDelete_url(String.format(ApiConfig.APP_PATH_MUSIC_DELETE_COMMENT_FORMAT, commentData.getComment_id()));
+        commonMetadataBean.setDelete_url(String.format(ApiConfig.APP_PATH_MUSIC_DELETE_COMMENT_FORMAT, commentData.getId()));
         commonMetadataBean.setCreated_at(commentData.getCreated_at());
         commonMetadataBean.setUpdated_at(commentData.getUpdated_at());
         commonMetadataBean.setComment_state(mStates[commentData.getState()]);

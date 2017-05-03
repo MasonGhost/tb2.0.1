@@ -2,10 +2,10 @@ package com.zhiyicx.thinksnsplus.comment;
 
 import android.text.TextUtils;
 
-import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
@@ -25,7 +25,6 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.android.schedulers.HandlerScheduler;
 import rx.schedulers.Schedulers;
 
 /**
@@ -44,6 +43,7 @@ public class SendComment implements ICommentEvent<ICommentBean> {
     CommonCommentClient mCommonCommentClient;
 
     public SendComment() {
+        AppApplication.AppComponentHolder.getAppComponent().inject(this);
         mCommonCommentClient = serviceManager.getCommonCommentClient();
     }
 

@@ -7,6 +7,8 @@ import com.zhiyicx.common.dagger.module.HttpClientModule;
 import com.zhiyicx.common.dagger.module.ImageModule;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.rxerrorhandler.RxErrorHandler;
+import com.zhiyicx.thinksnsplus.comment.DeleteComment;
+import com.zhiyicx.thinksnsplus.comment.SendComment;
 import com.zhiyicx.thinksnsplus.dagger.GreenDaoModule;
 import com.zhiyicx.thinksnsplus.data.source.local.CacheManager;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelInfoBeanGreenDaoImpl;
@@ -47,6 +49,10 @@ import okhttp3.OkHttpClient;
 @Component(modules = {AppModule.class, HttpClientModule.class, ServiceModule.class, CacheModule.class, ImageModule.class, GreenDaoModule.class})
 public interface AppComponent extends InjectComponent<AppApplication> {
     void inject(BackgroundTaskHandler backgroundTaskHandler);
+
+    void inject(DeleteComment deleteComment);
+
+    void inject(SendComment sendComment);
 
     Application Application();
 
@@ -93,6 +99,7 @@ public interface AppComponent extends InjectComponent<AppApplication> {
     ChannelSubscripBeanGreenDaoImpl channelSubscripBeanGreenDaoImpl();
 
     MusicAlbumListBeanGreenDaoImpl musicAlbumListBeanGreenDaoImpl();
+
     SystemConversationBeanGreenDaoImpl systemConversationBeanGreenDaoImpl();
 
     UserInfoRepository userInfoRepository();

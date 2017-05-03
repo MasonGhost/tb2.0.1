@@ -45,7 +45,8 @@ public class ServiceManager {
             , InfoMainClient infoMainClient
             , FollowFansClient followFansClient
             , DynamicClient mDynamicClient
-            , ChannelClient mChannelClient) {
+            , ChannelClient mChannelClient
+            , CommonCommentClient commonCommentClient) {
         this.mCommonClient = commonClient;
         this.mLoginClient = loginClient;
         this.mRegisterClient = registerClient;
@@ -57,6 +58,7 @@ public class ServiceManager {
         this.mFollowFansClient = followFansClient;
         this.mDynamicClient = mDynamicClient;
         this.mChannelClient = mChannelClient;
+        this.mCommonCommentClient = commonCommentClient;
     }
 
     public CommonClient getCommonClient() {

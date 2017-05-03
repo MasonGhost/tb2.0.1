@@ -16,6 +16,7 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMoreCatesBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMyCatesBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBeanDao;
 
@@ -58,5 +59,6 @@ public class UpDBHelper extends DaoMaster.OpenHelper {
         MigrationHelper.getInstance().migrate(db, DigedBeanDao.class);
         MigrationHelper.getInstance().migrate(db, CommentedBeanDao.class);
         MigrationHelper.getInstance().migrate(db, MusicCommentListBeanDao.class);
+        MigrationHelper.getInstance().migrate(db, MusicAlbumDetailsBeanDao.class);
     }
 }

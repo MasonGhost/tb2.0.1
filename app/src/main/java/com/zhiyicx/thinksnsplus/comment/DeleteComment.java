@@ -1,7 +1,10 @@
 package com.zhiyicx.thinksnsplus.comment;
 
+import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseApplication;
+import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
@@ -33,6 +36,7 @@ public class DeleteComment implements ICommentEvent<ICommentBean> {
     CommonCommentClient mCommonCommentClient;
 
     public DeleteComment() {
+        AppApplication.AppComponentHolder.getAppComponent().inject(this);
         mCommonCommentClient = serviceManager.getCommonCommentClient();
     }
 
@@ -62,9 +66,9 @@ public class DeleteComment implements ICommentEvent<ICommentBean> {
         mCommonCommentClient.deleteComment(ApiConfig.APP_DOMAIN + commentBean.getString(CommonMetadata.METADATA_KEY_DELETE_URL))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<Integer>() {
+                .subscribe(new BaseSubscribe<CacheBean>() {
                     @Override
-                    protected void onSuccess(Integer data) {
+                    protected void onSuccess(CacheBean data) {
                         mCallBack.onSuccess(data);
                     }
 
