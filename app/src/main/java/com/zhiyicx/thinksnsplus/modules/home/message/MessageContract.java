@@ -114,5 +114,10 @@ public interface MessageContract {
          * 检查当前消息记录
          */
         void handleFlushMessage();
+
+        /**
+         * ts 助手配置
+         */
+        void configTSHelper();
     }
 }

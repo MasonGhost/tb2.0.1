@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class SystemConversationFragment extends BaseChatFragment<SystemConversationContract.Presenter> implements SystemConversationContract.View {
     private long mMax_id = TSListFragment.DEFAULT_PAGE_MAX_ID;
-    private boolean mIsRequestNeted = true; // 页面 是否需要进入时刷新
+    private boolean mIsRequestNeted = true; // 页面 是否需要进入时刷新,代表是否已经从网络获取到了数据
     private boolean mIsFristLoadCache = true;
 
     public static SystemConversationFragment newInstance() {

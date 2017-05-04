@@ -93,6 +93,19 @@ public class SystemConversationBeanGreenDaoImpl extends CommonCacheImpl<SystemCo
         return datas.get(0);
     }
 
+    /**
+     * 通过 max_id 获取分页数据
+     *
+     * @return
+     */
+    public SystemConversationBean getSystemConversationById(Long id) {
+        SystemConversationBeanDao systemConversationBeanDao = getRDaoSession().getSystemConversationBeanDao();
+        return systemConversationBeanDao.queryBuilder()
+                .where(SystemConversationBeanDao.Properties.Id.eq(id))
+                .unique();
+
+    }
+
     @Override
     public void clearTable() {
         SystemConversationBeanDao systemConversationBeanDao = getWDaoSession().getSystemConversationBeanDao();

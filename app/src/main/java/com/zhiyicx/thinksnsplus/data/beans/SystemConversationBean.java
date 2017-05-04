@@ -19,7 +19,7 @@ import org.greenrobot.greendao.annotation.Unique;
  */
 @Entity
 public class SystemConversationBean extends BaseListBean {
-
+    public static final long DEFAULT_TSHELPER_SYSTEMCONVERSATION_ID = -1;
     /**
      * id : 2
      * type : system
