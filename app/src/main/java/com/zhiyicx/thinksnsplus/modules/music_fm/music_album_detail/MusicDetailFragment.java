@@ -519,8 +519,8 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                         ImageZipConfig.IMAGE_70_ZIP))
                 .asBitmap()
                 .transform(new GlideStokeTransform(getActivity(), 5))
-                .placeholder(R.drawable.shape_default_image)
-                .error(R.drawable.shape_default_image)
+                .placeholder(R.mipmap.default_pic_personal)
+                .error(R.mipmap.default_pic_personal)
                 .into(new ImageViewTarget<Bitmap>(mFragmentMusicDetailHeadIamge) {
                     @Override
                     protected void setResource(Bitmap resource) {

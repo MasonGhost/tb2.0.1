@@ -18,7 +18,6 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -495,6 +494,12 @@ public class DeviceUtils {
         return flag;
     }
 
+    /**
+     * 启动App
+     *
+     * @param context
+     * @param packagename 包名
+     */
     public static void startAppByPackageName(Context context, String packagename) {
 
         // 通过包名获取此APP详细信息，包括Activities、services、versioncode、name等等
