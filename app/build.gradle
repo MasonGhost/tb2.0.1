@@ -106,7 +106,6 @@ android {
         dexInProcess true
         preDexLibraries true
         javaMaxHeapSize "6g"//越大越好
-        incremental true
     }
 }
 greendao {
