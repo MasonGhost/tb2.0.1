@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.comment;
 
 import android.os.Bundle;
+import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.annotation.RestrictTo;
@@ -19,7 +20,7 @@ import static android.support.annotation.RestrictTo.Scope.GROUP_ID;
  * @Email Jliuer@aliyun.com
  * @Description 评论操作的公共类
  */
-public class CommonMetadata {
+public class CommonMetadata implements Parcelable {
     private static final String TAG = "CommonMetadata";
 
     public static final int SEND_ING = 0;
@@ -82,7 +83,7 @@ public class CommonMetadata {
      */
     @RestrictTo(GROUP_ID)
     @StringDef({METADATA_KEY_COMMENT_URL, METADATA_KEY_COMMENT_CONTENT, METADATA_KEY_CREATED_DATE,
-            METADATA_KEY_UPDATED_DATE,METADATA_KEY_DELETE_URL})
+            METADATA_KEY_UPDATED_DATE, METADATA_KEY_DELETE_URL})
     @Retention(RetentionPolicy.SOURCE)
     public @interface TextKey {
     }
@@ -95,7 +96,7 @@ public class CommonMetadata {
 
     @RestrictTo(GROUP_ID)
     @StringDef({METADATA_KEY_COMMENT_ID, METADATA_KEY_COMMENT_STATE, METADATA_KEY_SOURCE_ID
-            , METADATA_KEY_TARGET_ID,METADATA_KEY_TO_USER_ID})
+            , METADATA_KEY_TARGET_ID, METADATA_KEY_TO_USER_ID})
     @Retention(RetentionPolicy.SOURCE)
     public @interface IntegerKey {
     }
@@ -209,4 +210,29 @@ public class CommonMetadata {
         return mBundle.getParcelable(key);
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeBundle(this.mBundle);
+    }
+
+    protected CommonMetadata(Parcel in) {
+        this.mBundle = in.readBundle();
+    }
+
+    public static final Creator<CommonMetadata> CREATOR = new Creator<CommonMetadata>() {
+        @Override
+        public CommonMetadata createFromParcel(Parcel source) {
+            return new CommonMetadata(source);
+        }
+
+        @Override
+        public CommonMetadata[] newArray(int size) {
+            return new CommonMetadata[size];
+        }
+    };
 }
