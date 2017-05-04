@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.comment.CommentCore;
+import com.zhiyicx.thinksnsplus.comment.CommentCore_;
 import com.zhiyicx.thinksnsplus.comment.CommonMetadataBean;
 import com.zhiyicx.thinksnsplus.comment.TCommonMetadataProvider;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
@@ -63,6 +64,8 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
     @Inject
     CommentRepository mCommentRepository;
 
+    private TCommonMetadataProvider mCommonMetadataProvider;
+
     @Inject
     public MusicCommentPresenter(MusicCommentContract.Repository repository, MusicCommentContract
             .View rootView) {
@@ -74,8 +77,6 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
     void setupListeners() {
         mRootView.setPresenter(this);
     }
-
-    private TCommonMetadataProvider mCommonMetadataProvider;
 
     @Override
     public void requestNetData(final String music_id, Long maxId, final boolean isLoadMore) {
@@ -91,7 +92,7 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                             }
 
 //                            TCommonMetadataProvider test = new TCommonMetadataProvider(data);
-//                            test.iterator();
+//                            test.convertAndSave();
 
                             mRootView.onNetResponseSuccess(data, isLoadMore);
                         }
@@ -117,7 +118,7 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                             }
 
 //                            TCommonMetadataProvider test = new TCommonMetadataProvider(data);
-//                            test.iterator();
+//                            test.convertAndSave();
 
 //                            List<MusicCommentListBean> localComment = mCommentListBeanGreenDao.getMyAblumComment(Integer.valueOf(music_id));
 //                            if (!localComment.isEmpty()) {
@@ -193,32 +194,39 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
         mRootView.refreshData();
         path = String.format(path, mRootView.getCommentId());
 
+        // 更新的评论模块
+//        new CommentCore_.Builder()
+//                .buildCommentEvent(CommentCore_.CommentState.SEND)
+//                .buildCommonMetadataAndProvider(mCommonMetadataProvider,createComment)
+//                .build()
+//                .handleCommentInBackGroud();
+
         // 新的评论模块
-        CommentCore.getInstance(CommentCore.CommentState.SEND,
-                new BackgroundTaskHandler.OnNetResponseCallBack() {
-                    @Override
-                    public void onSuccess(Object data) {
-                        CommonMetadataBean commonMetadataBean = mCommonMetadataProvider.getCommentByCommentMark(createComment.getComment_mark());
-                        commonMetadataBean.setComment_id(((Double) data).intValue());
-                        commonMetadataBean.setComment_state(CommonMetadataBean.SEND_SUCCESS);
-                        mCommonMetadataProvider.insertOrReplaceOne(commonMetadataBean);
-                    }
-
-                    @Override
-                    public void onFailure(String message, int code) {
-                        CommonMetadataBean commonMetadataBean = mCommonMetadataProvider.getCommentByCommentMark(createComment.getComment_mark());
-                        commonMetadataBean.setComment_state(CommonMetadataBean.SEND_ERROR);
-                        mCommonMetadataProvider.insertOrReplaceOne(commonMetadataBean);
-                    }
-
-                    @Override
-                    public void onException(Throwable throwable) {
-                        CommonMetadataBean commonMetadataBean = mCommonMetadataProvider.getCommentByCommentMark(createComment.getComment_mark());
-                        commonMetadataBean.setComment_state(CommonMetadataBean.SEND_ERROR);
-                        mCommonMetadataProvider.insertOrReplaceOne(commonMetadataBean);
-                    }
-                }).set$$Comment_(createComment, mCommonMetadataProvider)
-                .handleCommentInBackGroud();
+//        CommentCore.getInstance(CommentCore.CommentState.SEND,
+//                new BackgroundTaskHandler.OnNetResponseCallBack() {
+//                    @Override
+//                    public void onSuccess(Object data) {
+//                        CommonMetadataBean commonMetadataBean = mCommonMetadataProvider.getCommentByCommentMark(createComment.getComment_mark());
+//                        commonMetadataBean.setComment_id(((Double) data).intValue());
+//                        commonMetadataBean.setComment_state(CommonMetadataBean.SEND_SUCCESS);
+//                        mCommonMetadataProvider.insertOrReplaceOne(commonMetadataBean);
+//                    }
+//
+//                    @Override
+//                    public void onFailure(String message, int code) {
+//                        CommonMetadataBean commonMetadataBean = mCommonMetadataProvider.getCommentByCommentMark(createComment.getComment_mark());
+//                        commonMetadataBean.setComment_state(CommonMetadataBean.SEND_ERROR);
+//                        mCommonMetadataProvider.insertOrReplaceOne(commonMetadataBean);
+//                    }
+//
+//                    @Override
+//                    public void onException(Throwable throwable) {
+//                        CommonMetadataBean commonMetadataBean = mCommonMetadataProvider.getCommentByCommentMark(createComment.getComment_mark());
+//                        commonMetadataBean.setComment_state(CommonMetadataBean.SEND_ERROR);
+//                        mCommonMetadataProvider.insertOrReplaceOne(commonMetadataBean);
+//                    }
+//                }).set$$Comment_(createComment, mCommonMetadataProvider)
+//                .handleCommentInBackGroud();
 
         Subscription subscription = mCommentRepository.sendComment(content, reply_id, createComment.getComment_mark(), path).doOnSubscribe(new Action0() {
             @Override

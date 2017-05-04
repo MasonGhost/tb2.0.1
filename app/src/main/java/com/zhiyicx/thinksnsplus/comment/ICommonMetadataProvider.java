@@ -9,5 +9,5 @@ import java.util.List;
  * @Description 评论内容转换
  */
 public interface ICommonMetadataProvider {
-    List<CommonMetadata> iterator();
+    List<CommonMetadata> convertAndSave();
 }
