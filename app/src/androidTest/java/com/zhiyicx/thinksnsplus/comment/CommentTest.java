@@ -98,7 +98,6 @@ public class CommentTest {
         createComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
         createComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
 
-
         UserInfoBean userInfoBean = new UserInfoBean();
         userInfoBean.setUser_id((long) 0);
         createComment.setToUserInfoBean(userInfoBean);

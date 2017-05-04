@@ -93,7 +93,7 @@
     <string name="music_order_single">单曲循环</string>
     <string name="windows_permission">悬浮窗权限设置</string>
     <string name="setting_windows_permission_hint">请为TS+开放悬浮窗权限: 手机设置-授权管理-TS+(打开)</string>
-    <string name="oppo_setting_windows_permission_hint">或者: 手机管家-权限管家-悬浮窗管理-TS+(打开)</string>
+    <string name="oppo_setting_windows_permission_hint">请为TS+开放悬浮窗权限: 手机管家-权限隐私-悬浮窗管理-TS+(打开)</string>
 
     <!--资讯-->
     <string name="info_editor">编辑</string>

@@ -1,15 +1,13 @@
 package com.zhiyicx.thinksnsplus.modules.home.find;
 
-import android.Manifest;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 
-import com.jakewharton.rxbinding.view.RxView;
-import com.tbruyelle.rxpermissions.Permission;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
@@ -24,15 +22,10 @@ import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActiv
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBFragment;
 
-import java.util.concurrent.TimeUnit;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func1;
-
-import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Describe 发现页面
@@ -131,6 +124,16 @@ public class FindFragment extends TSFragment {
             case R.id.find_active:
                 break;
             case R.id.find_music:
+                ActivityManager activityManager = (ActivityManager) getActivity()
+                        .getSystemService(Context.ACTIVITY_SERVICE);
+                List<ActivityManager.RunningAppProcessInfo> infos = activityManager
+                        .getRunningAppProcesses();
+
+                for (ActivityManager.RunningAppProcessInfo info : infos) {
+                    String name = info.processName;
+                    LogUtils.d(name);
+
+                }
                 if (Build.VERSION.SDK_INT >= 23) {
                     if (Settings.canDrawOverlays(getContext())) {
                         startActivity(new Intent(getActivity(), MusicListActivity.class));
@@ -162,18 +165,26 @@ public class FindFragment extends TSFragment {
         if (mActionPopupWindow != null) {
             return;
         }
+        String model = android.os.Build.MODEL;
+        final boolean isOppoR9s = model.equalsIgnoreCase("oppo r9s");
         mActionPopupWindow = PermissionPopupWindow.builder()
                 .permissionName(getString(com.zhiyicx.baseproject.R.string.windows_permission))
                 .with(getActivity())
                 .bottomStr(getString(com.zhiyicx.baseproject.R.string.cancel))
-                .item1Str(getString(com.zhiyicx.baseproject.R.string.setting_windows_permission_hint) + "\n" +
-                        getString(com.zhiyicx.baseproject.R.string.oppo_setting_windows_permission_hint))
+
+                .item1Str(getString(isOppoR9s ? com.zhiyicx.baseproject.R.string.oppo_setting_windows_permission_hint :
+                        com.zhiyicx.baseproject.R.string.setting_windows_permission_hint))
+
                 .item2Str(getString(com.zhiyicx.baseproject.R.string.setting_permission))
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
                     public void onItem2Clicked() {
-                        DeviceUtils.openAppDetail(getActivity());
                         mActionPopupWindow.hide();
+                        if (isOppoR9s) {
+                            DeviceUtils.startAppByPackageName(getActivity(), "com.coloros.safecenter");
+                        } else {
+                            DeviceUtils.openAppDetail(getActivity());
+                        }
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
