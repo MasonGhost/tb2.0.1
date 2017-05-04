@@ -31,7 +31,7 @@ public abstract class CommonMetadataProvider<T> implements ICommonMetadataProvid
     }
 
     @Override
-    public List<CommonMetadata> iterator() {
+    public List<CommonMetadata> convertAndSave() {
         ArrayList<CommonMetadata> tracks = new ArrayList<>();
         mCommonComments = new ArrayList<>();
         if (mComments == null || mComments.isEmpty()) {

@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.comment;
 
+import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
 
 import java.io.Serializable;
@@ -8,8 +10,9 @@ import java.io.Serializable;
  * @Author Jliuer
  * @Date 2017/04/12/9:46
  * @Email Jliuer@aliyun.com
- * @Description 评论处理类
+ * @Description 评论处理类,这个版本过时了哦，现在用 CommentCore_
  */
+@Deprecated
 public class CommentCore implements ICommentBean {
 
     private static final ICommentEvent SENDCOMMENT = new SendComment();
@@ -115,7 +118,9 @@ public class CommentCore implements ICommentBean {
             CommonMetadataBean commonMetadataBean = mCommonMetadataProvider.getCommentByCommentMark(mCommentBean.getLong(CommonMetadata.METADATA_KEY_COMMENT_MARK));
             commonMetadataBean.setComment_id(((Double) data).intValue());
             commonMetadataBean.setComment_state(CommonMetadataBean.SEND_SUCCESS);
+            commonMetadataBean.setDelete_url(String.format(ApiConfig.APP_PATH_MUSIC_DELETE_COMMENT_FORMAT, commonMetadataBean.getComment_id()));
             mCommonMetadataProvider.insertOrReplaceOne(commonMetadataBean);
+            LogUtils.d("SendCallBack:::","onSuccess");
         }
 
         @Override
@@ -123,6 +128,7 @@ public class CommentCore implements ICommentBean {
             CommonMetadataBean commonMetadataBean = mCommonMetadataProvider.getCommentByCommentMark(mCommentBean.getLong(CommonMetadata.METADATA_KEY_COMMENT_MARK));
             commonMetadataBean.setComment_state(CommonMetadataBean.SEND_ERROR);
             mCommonMetadataProvider.insertOrReplaceOne(commonMetadataBean);
+            LogUtils.d("SendCallBack:::","onFailure");
         }
 
         @Override
@@ -130,6 +136,7 @@ public class CommentCore implements ICommentBean {
             CommonMetadataBean commonMetadataBean = mCommonMetadataProvider.getCommentByCommentMark(mCommentBean.getLong(CommonMetadata.METADATA_KEY_COMMENT_MARK));
             commonMetadataBean.setComment_state(CommonMetadataBean.SEND_ERROR);
             mCommonMetadataProvider.insertOrReplaceOne(commonMetadataBean);
+            LogUtils.d("SendCallBack:::","onException");
         }
     }
 

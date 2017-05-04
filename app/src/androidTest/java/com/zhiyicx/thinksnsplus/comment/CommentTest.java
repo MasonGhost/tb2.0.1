@@ -2,22 +2,17 @@ package com.zhiyicx.thinksnsplus.comment;
 
 import android.app.Application;
 import android.support.test.filters.LargeTest;
-import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.zhiyicx.common.utils.TimeUtils;
-import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CommonMetadataBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.modules.AcitivityTest;
 import com.zhiyicx.thinksnsplus.modules.RxUnitTestTools;
-import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,13 +29,14 @@ import static com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean.SEND_ING;
  */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class CommentTest extends AcitivityTest {
+public class CommentTest {
 
     private CommonMetadataBeanGreenDaoImpl mCommonMetadataBeanGreenDao;
     private TCommonMetadataProvider metadataProvider;
 
     @Before
     public void setUp() throws Exception {
+        RxUnitTestTools.openRxTools();
         mCommonMetadataBeanGreenDao = new CommonMetadataBeanGreenDaoImpl((Application) AppApplication.getContext());
         metadataProvider = new TCommonMetadataProvider(null);
         AuthBean testAuthBean = new AuthBean();
@@ -61,7 +57,8 @@ public class CommentTest extends AcitivityTest {
         //新的评论模块
         CommentCore.getInstance(CommentCore.CommentState.SEND, null)
                 .set$$Comment_(createComment, metadataProvider)
-                .handleCommentInBackGroud();
+                .handleComment();
+
     }
 
     @Test
@@ -78,7 +75,7 @@ public class CommentTest extends AcitivityTest {
         //新的评论模块
         CommentCore.getInstance(CommentCore.CommentState.DELETE, null)
                 .set$$Comment_(createComment, metadataProvider)
-                .handleCommentInBackGroud();
+                .handleComment();
     }
 
     @Test
@@ -87,7 +84,7 @@ public class CommentTest extends AcitivityTest {
         for (int i = 0; i < 20; i++) {
             datas.add(buildComment());
         }
-        metadataProvider.setComments(datas).iterator();
+        metadataProvider.setComments(datas).convertAndSave();
     }
 
     private MusicCommentListBean buildComment() throws Exception {
@@ -107,5 +104,7 @@ public class CommentTest extends AcitivityTest {
         createComment.setToUserInfoBean(userInfoBean);
         return createComment;
     }
+
+
 
 }
