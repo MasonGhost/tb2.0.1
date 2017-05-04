@@ -100,9 +100,9 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     @Inject
     SystemRepository mSystemRepository;
 
-    private MessageItemBean mItemBeanComment;
-    private MessageItemBean mItemBeanDigg;
-    private MessageItemBean mItemBeanNotices;
+    private MessageItemBean mItemBeanComment; // 评论的
+    private MessageItemBean mItemBeanDigg;    // 点赞的
+    private MessageItemBean mItemBeanNotices; // ts 助手
 
     @Inject
     public MessagePresenter(MessageContract.Repository repository, MessageContract.View rootView) {
@@ -173,6 +173,30 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     @Override
     public boolean insertOrUpdateData(@NotNull List<MessageItemBean> data, boolean isLoadMore) {
         return mChatRepository.insertOrUpdateMessageItemBean(data);
+    }
+
+    /**
+     * 配置 TS 助手；如果本地没有 ts 助手，说明是第一次使用，添加一个 ts 助手
+     */
+    @Override
+    public void configTSHelper() {
+        SystemConversationBean tsHelper;
+        tsHelper = mSystemConversationBeanGreenDao.getSystemConversationById(SystemConversationBean.DEFAULT_TSHELPER_SYSTEMCONVERSATION_ID);
+        System.out.println("tsHelper = " + tsHelper);
+        if (tsHelper == null) {
+            tsHelper = new SystemConversationBean();
+            tsHelper.setId(SystemConversationBean.DEFAULT_TSHELPER_SYSTEMCONVERSATION_ID);
+            tsHelper.setType(ApiConfig.SYSTEM_CONVERSATIONS_TYPE_SYSTEM);
+            tsHelper.setContent(mContext.getString(R.string.ts_helper_default_tip));
+            tsHelper.setUser_id(0L);
+            tsHelper.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
+            mSystemConversationBeanGreenDao.insertOrReplace(tsHelper);
+            FlushMessages noticeFlushMessage = new FlushMessages();
+            noticeFlushMessage.setTime(tsHelper.getCreated_at());
+            noticeFlushMessage.setCount(1);
+            noticeFlushMessage.setKey(ApiConfig.FLUSHMESSAGES_KEY_NOTICES);
+            mFlushMessageBeanGreenDao.insertOrReplace(noticeFlushMessage);
+        }
     }
 
     @Override

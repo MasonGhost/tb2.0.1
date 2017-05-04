@@ -40,6 +40,7 @@ import static com.zhiyicx.thinksnsplus.modules.home.message.MessagePresenter.DEF
  * @Contact master.jungle68@gmail.com
  */
 public class MessageFragment extends TSListFragment<MessageContract.Presenter, MessageItemBean> implements MessageContract.View, MessageAdapter.OnSwipItemClickListener {
+
     private static final int ITEM_TYPE_COMMNETED = 0;
     private static final int ITEM_TYPE_LIKED = 1;
 
@@ -111,6 +112,8 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                 .messagePresenterModule(new MessagePresenterModule(this))
                 .build()
                 .inject(this);
+        // 配置 TS 助手
+        mPresenter.configTSHelper();
         super.initData();// 需要在 dagger 注入后
         mPresenter.handleFlushMessage();
     }
@@ -142,6 +145,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         mRvList.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
+
 
     /**
      * 更新 hederview 数据
