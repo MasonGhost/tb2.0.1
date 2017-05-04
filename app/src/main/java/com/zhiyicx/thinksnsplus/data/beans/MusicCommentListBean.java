@@ -126,11 +126,6 @@ public class MusicCommentListBean extends BaseListBean {
         this.comment_id = id.intValue();
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
 
     public int getState() {
         return this.state;
@@ -212,13 +207,6 @@ public class MusicCommentListBean extends BaseListBean {
         this._id = _id;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 870552357)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getMusicCommentListBeanDao() : null;
-    }
-
     public MusicCommentListBean() {
     }
 
@@ -254,4 +242,65 @@ public class MusicCommentListBean extends BaseListBean {
     private transient Integer fromUserInfoBean__resolvedKey;
     @Generated(hash = 1650243776)
     private transient Integer toUserInfoBean__resolvedKey;
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this._id);
+        dest.writeValue(this.id);
+        dest.writeInt(this.comment_id);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+        dest.writeString(this.comment_content);
+        dest.writeInt(this.user_id);
+        dest.writeInt(this.reply_to_user_id);
+        dest.writeParcelable(this.fromUserInfoBean, flags);
+        dest.writeParcelable(this.toUserInfoBean, flags);
+        dest.writeInt(this.music_id);
+        dest.writeInt(this.special_id);
+        dest.writeValue(this.comment_mark);
+        dest.writeInt(this.state);
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 870552357)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getMusicCommentListBeanDao() : null;
+    }
+
+    protected MusicCommentListBean(Parcel in) {
+        super(in);
+        this._id = (Long) in.readValue(Long.class.getClassLoader());
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.comment_id = in.readInt();
+        this.created_at = in.readString();
+        this.updated_at = in.readString();
+        this.comment_content = in.readString();
+        this.user_id = in.readInt();
+        this.reply_to_user_id = in.readInt();
+        this.fromUserInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.toUserInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.music_id = in.readInt();
+        this.special_id = in.readInt();
+        this.comment_mark = (Long) in.readValue(Long.class.getClassLoader());
+        this.state = in.readInt();
+    }
+
+    public static final Creator<MusicCommentListBean> CREATOR = new Creator<MusicCommentListBean>() {
+        @Override
+        public MusicCommentListBean createFromParcel(Parcel source) {
+            return new MusicCommentListBean(source);
+        }
+
+        @Override
+        public MusicCommentListBean[] newArray(int size) {
+            return new MusicCommentListBean[size];
+        }
+    };
 }
