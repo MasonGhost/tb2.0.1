@@ -182,7 +182,6 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     public void configTSHelper() {
         SystemConversationBean tsHelper;
         tsHelper = mSystemConversationBeanGreenDao.getSystemConversationById(SystemConversationBean.DEFAULT_TSHELPER_SYSTEMCONVERSATION_ID);
-        System.out.println("tsHelper = " + tsHelper);
         if (tsHelper == null) {
             tsHelper = new SystemConversationBean();
             tsHelper.setId(SystemConversationBean.DEFAULT_TSHELPER_SYSTEMCONVERSATION_ID);

@@ -18,6 +18,7 @@
         <EditText
             android:id="@+id/et_empty"
             android:layout_width="0dp"
+            android:inputType="text"
             android:layout_height="0dp"/>
 
         <EditText
@@ -36,7 +37,6 @@
             android:layout_marginLeft="@dimen/spacing_normal"
             android:background="@drawable/selector_button_corner_solid_small"
             android:enabled="false"
-            android:imeOptions="actionSend"
             android:text="@string/send"
             android:gravity="center"
             android:textColor="@color/white"

@@ -4,7 +4,6 @@
     <color name="themeColor">@color/important_for_theme</color>
     <!--背景色-->
     <color name="bgColor">@color/general_for_bg_light</color>
-    <color name="test">#20ffffff</color>
     <color name="bgColor_alpha_0.5">@color/general_for_bg_light_alpha_0.5</color>
     <!--titilebar背景色   your app's branding color (for the app bar) -->
     <color name="colorPrimary">@color/themeColor</color>
