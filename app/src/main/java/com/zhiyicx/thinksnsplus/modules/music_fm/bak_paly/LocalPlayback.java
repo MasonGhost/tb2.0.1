@@ -388,7 +388,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
 
     @Override
     public void onPrepared(MediaPlayer player) {
-        EventBus.getDefault().post(player.getDuration(),
+        EventBus.getDefault().post(player.getDuration() / 1000,
                 EVENT_SEND_MUSIC_LOAD);
         configMediaPlayerState();
     }

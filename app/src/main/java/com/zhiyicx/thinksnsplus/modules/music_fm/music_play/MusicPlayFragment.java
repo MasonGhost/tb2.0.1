@@ -703,7 +703,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     @Subscriber(tag = EVENT_SEND_MUSIC_LOAD, mode = ThreadMode.MAIN)
     public void onMusicLoading(int currentDuration) {
         LogUtils.d("MUSIC_LOADING", "" + (currentDuration > 0) + "");
-        mFragmentMusicPalyProgress.setLoading(currentDuration > 0);
+        mFragmentMusicPalyProgress.setLoading(!(currentDuration > 0));
         if (currentDuration > 0) {
             updateDuration(new MediaMetadataCompat.Builder().putLong(MediaMetadataCompat.METADATA_KEY_DURATION, currentDuration * 1000).build());
         }
