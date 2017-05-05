@@ -148,12 +148,12 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
 
     private void dealScale(float s) {
         float scaleTimes = (float) ((height + s) / (height * 1.0));
-        if (mOnHeadFlingListener != null && scaleTimes == 1.3f) {
-            mOnHeadFlingListener.onHeadZoom();
-        }
-        if (mOnHeadFlingListener != null && scaleTimes == 1.0f) {
-            mOnHeadFlingListener.onHeadRedu();
-        }
+//        if (mOnHeadFlingListener != null && scaleTimes == 1.3f) {
+//            mOnHeadFlingListener.onHeadZoom();
+//        }
+//        if (mOnHeadFlingListener != null && scaleTimes == 1.0f) {
+//            mOnHeadFlingListener.onHeadRedu();
+//        }
         // 如超过最大放大倍数，直接返回
         if (scaleTimes > 1.5f) return;
 
@@ -203,7 +203,7 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
         if (!mScroller.isFinished()) {
             mScroller.abortAnimation();
         }
-        
+
         if (hiddenTop) {
             LogUtils.d("hiddenTop");
             mScroller.fling(0, scrollY, (int) velocityX, (int) velocityY, 0, 0, 0,
