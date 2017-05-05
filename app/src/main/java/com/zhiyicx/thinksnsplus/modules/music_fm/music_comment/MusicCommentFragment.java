@@ -14,11 +14,11 @@ import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.i.OnCommentTextClickListener;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.adapter.MusicCommentItem;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.adapter.MusicEmptyCommentItem;
@@ -51,7 +51,7 @@ import static com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.Messa
  * @Description
  */
 public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Presenter,
-        MusicCommentListBean> implements MusicCommentContract.View, OnUserInfoClickListener,
+        MusicCommentListBean> implements MusicCommentContract.View, OnUserInfoClickListener,OnCommentTextClickListener,
         InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener,
         MusicCommentItem.OnReSendClickListener {
 
@@ -147,6 +147,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
         MusicCommentItem musicCommentItem = new MusicCommentItem();
         musicCommentItem.setOnReSendClickListener(this);
         musicCommentItem.setOnUserInfoClickListener(this);
+        musicCommentItem.setOnCommentTextClickListener(this);
         adapter.addItemViewDelegate(musicCommentItem);
         adapter.addItemViewDelegate(new MusicEmptyCommentItem());
         adapter.setOnItemClickListener(this);
@@ -198,6 +199,10 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        handleItemClick(position);
+    }
+
+    private void handleItemClick(int position) {
         position = position - 1;
         if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth()
                 .getUser_id()) {// 自己的评论
@@ -372,5 +377,10 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     @OnClick(R.id.tv_toolbar_left)
     public void onViewClicked() {
         getActivity().finish();
+    }
+
+    @Override
+    public void onCommentTextClick(int position) {
+        handleItemClick(position);
     }
 }

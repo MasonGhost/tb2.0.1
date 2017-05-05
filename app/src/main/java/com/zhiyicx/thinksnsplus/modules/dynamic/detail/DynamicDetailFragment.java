@@ -31,6 +31,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.i.OnCommentTextClickListener;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentAdapter;
@@ -61,7 +62,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.DYNAMIC_LIST_DEL
  * @contact email:450127106@qq.com
  */
 
-public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.Presenter, DynamicCommentBean> implements DynamicDetailContract.View, OnUserInfoClickListener, OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener {
+public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.Presenter, DynamicCommentBean> implements DynamicDetailContract.View, OnUserInfoClickListener, OnCommentTextClickListener, OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener {
     public static final String DYNAMIC_DETAIL_DATA = "dynamic_detail_data";
     public static final String DYNAMIC_LIST_NEED_REFRESH = "dynamic_list_need_refresh";
     public static final String DYNAMIC_DETAIL_DATA_TYPE = "dynamic_detail_data_type";
@@ -287,6 +288,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
         DynamicDetailCommentItem dynamicDetailCommentItem = new DynamicDetailCommentItem();
         dynamicDetailCommentItem.setOnUserInfoClickListener(this);
+        dynamicDetailCommentItem.setOnCommentTextClickListener(this);
         adapter.addItemViewDelegate(dynamicDetailCommentItem);
         DynamicCommentEmptyItem dynamicCommentEmptyItem = new DynamicCommentEmptyItem();
         adapter.addItemViewDelegate(dynamicCommentEmptyItem);
@@ -540,6 +542,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        System.out.println("-----------onItemClick----------------");
+        handleItemClick(position);
+    }
+
+    private void handleItemClick(int position) {
         position = position - 1;// 减去 header
         if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
             if (mListDatas.get(position).getComment_id() != null) {
@@ -552,13 +559,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
             mReplyUserId = mListDatas.get(position).getUser_id();
             showCommentView();
             String contentHint = getString(R.string.default_input_hint);
-            if (mListDatas.get(position).getReply_to_user_id() != mDynamicBean.getUser_id()) {
+            if (mListDatas.get(position).getUser_id() != AppApplication.getmCurrentLoginAuth().getUser_id()) {
                 contentHint = getString(R.string.reply, mListDatas.get(position).getCommentUser().getName());
             }
             mIlvComment.setEtContentHint(contentHint);
         }
-
-
     }
 
     @Override
@@ -699,5 +704,10 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     protected void onOverScrolled() {
         super.onOverScrolled();
 //        mLLBottomMenuContainer.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onCommentTextClick(int position) {
+        handleItemClick(position);
     }
 }

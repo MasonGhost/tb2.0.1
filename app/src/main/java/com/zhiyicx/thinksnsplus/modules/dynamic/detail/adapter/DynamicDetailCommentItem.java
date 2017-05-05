@@ -14,10 +14,12 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircle
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.i.OnCommentTextClickListener;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoLongClickListener;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
@@ -38,6 +40,11 @@ import rx.functions.Action1;
 public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicCommentBean> {
     private OnUserInfoClickListener mOnUserInfoClickListener;
     private OnUserInfoLongClickListener mOnUserInfoLongClickListener;
+    private OnCommentTextClickListener mOnCommentTextClickListener;
+
+    public void setOnCommentTextClickListener(OnCommentTextClickListener onCommentTextClickListener) {
+        mOnCommentTextClickListener = onCommentTextClickListener;
+    }
 
     public void setOnUserInfoClickListener(OnUserInfoClickListener onUserInfoClickListener) {
         mOnUserInfoClickListener = onUserInfoClickListener;
@@ -58,10 +65,19 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
     }
 
     @Override
-    public void convert(ViewHolder holder, DynamicCommentBean dynamicCommentBean, DynamicCommentBean lastT, int position,int itemCounts) {
+    public void convert(ViewHolder holder, DynamicCommentBean dynamicCommentBean, DynamicCommentBean lastT, final int position, int itemCounts) {
         holder.setText(R.id.tv_name, dynamicCommentBean.getCommentUser().getName());
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicCommentBean.getCreated_at()));
         holder.setText(R.id.tv_content, setShowText(dynamicCommentBean, position));
+        holder.getView(R.id.tv_content).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LogUtils.d("-----dy------onClick----------------");
+                if(mOnCommentTextClickListener!=null){
+                    mOnCommentTextClickListener.onCommentTextClick(position);
+                }
+            }
+        });
         List<Link> links = setLiknks(holder, dynamicCommentBean, position);
         if (!links.isEmpty()) {
             ConvertUtils.stringLinkConvert((TextView) holder.getView(R.id.tv_content),links);
@@ -115,6 +131,7 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
                     .setOnClickListener(new Link.OnClickListener() {
                         @Override
                         public void onClick(String clickedText) {
+                            LogUtils.d("-----dy------setOnClickListener----------------");
                             // single clicked
                             if (mOnUserInfoClickListener != null) {
                                 mOnUserInfoClickListener.onUserInfoClick(dynamicCommentBean.getReplyUser());

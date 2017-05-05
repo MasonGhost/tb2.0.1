@@ -66,7 +66,7 @@ public class InfoDetailCommentItem implements ItemViewDelegate<InfoCommentListBe
 
     @Override
     public void convert(final ViewHolder holder, InfoCommentListBean infoCommentListBean,
-                        InfoCommentListBean lastT, final int position,int itemCounts) {
+                        InfoCommentListBean lastT, final int position, int itemCounts) {
         AppApplication.AppComponentHolder.getAppComponent()
                 .imageLoader()
                 .loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
@@ -84,9 +84,17 @@ public class InfoDetailCommentItem implements ItemViewDelegate<InfoCommentListBe
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(infoCommentListBean
                 .getCreated_at()));
         holder.setText(R.id.tv_content, setShowText(infoCommentListBean, position));
+        holder.setOnClickListener(R.id.tv_content, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mOnCommentItemListener != null) {
+                    mOnCommentItemListener.onItemClick(v, holder, position);
+                }
+            }
+        });
         List<Link> links = setLiknks(holder, infoCommentListBean, position);
         if (!links.isEmpty()) {
-            ConvertUtils.stringLinkConvert((TextView) holder.getView(R.id.tv_content),links);
+            ConvertUtils.stringLinkConvert((TextView) holder.getView(R.id.tv_content), links);
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
