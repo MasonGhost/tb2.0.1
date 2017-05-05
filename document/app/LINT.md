@@ -15,4 +15,5 @@
 
 ### 推荐文章
  - [Android Lint Checks](http://tools.android.com/tips/lint-checks)
+  - [Android自定义Lint实践](http://tech.meituan.com/android_custom_lint.html)
  - [如何自定义Lint规则](https://github.com/Jungle68/android-tech-frontier/blob/master/issue-33/%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89Lint%E8%A7%84%E5%88%99.md)
