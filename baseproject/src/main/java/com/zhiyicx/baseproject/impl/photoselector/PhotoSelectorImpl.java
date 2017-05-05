@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import me.iwf.photopicker.PhotoPicker;
 import rx.functions.Action1;
@@ -295,7 +296,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
      * @return
      */
     private String format() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
         return dateFormat.format(new Date());
     }
 

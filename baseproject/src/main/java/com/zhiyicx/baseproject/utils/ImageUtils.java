@@ -2,6 +2,8 @@ package com.zhiyicx.baseproject.utils;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
 
+import java.util.Locale;
+
 /**
  * @Describe
  * @Author Jungle68
@@ -21,7 +23,7 @@ public class ImageUtils {
         try {
             // 如果图片的storage能够转成一个整数
             Integer.parseInt(storage);
-            return String.format(ApiConfig.IMAGE_PATH, storage, part);
+            return String.format(Locale.getDefault(),ApiConfig.IMAGE_PATH, storage, part);
         } catch (NumberFormatException e) {
             return storage;
         }

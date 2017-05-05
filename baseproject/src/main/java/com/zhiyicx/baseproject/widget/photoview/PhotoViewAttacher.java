@@ -39,6 +39,7 @@ import com.zhiyicx.baseproject.widget.photoview.log.LogManager;
 import com.zhiyicx.baseproject.widget.photoview.scrollerproxy.ScrollerProxy;
 
 import java.lang.ref.WeakReference;
+import java.util.Locale;
 
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
@@ -350,7 +351,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
 
         if (DEBUG) {
             LogManager.getLogger().d(LOG_TAG,
-                    String.format("onDrag: dx: %.2f. dy: %.2f", dx, dy));
+                    String.format(Locale.getDefault(),"onDrag: dx: %.2f. dy: %.2f", dx, dy));
         }
 
         ImageView imageView = getImageView();
@@ -437,7 +438,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
         if (DEBUG) {
             LogManager.getLogger().d(
                     LOG_TAG,
-                    String.format("onScale: scale: %.2f. fX: %.2f. fY: %.2f",
+                    String.format(Locale.getDefault(),"onScale: scale: %.2f. fX: %.2f. fY: %.2f",
                             scaleFactor, focusX, focusY));
         }
 

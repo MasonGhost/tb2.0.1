@@ -19,7 +19,6 @@
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:layout_gravity="center_horizontal"
-            android:drawableLeft="@drawable/abc_item_background_holo_light"
             android:gravity="center"
             android:paddingLeft="@dimen/toolbar_padding_left"
             android:paddingRight="@dimen/toolbar_padding_right"

@@ -10,6 +10,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.umeng.analytics.MobclickAgent;
+import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.log.LogUtils;
 
@@ -23,6 +24,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import rx.Observable;
@@ -38,17 +40,22 @@ import rx.schedulers.Schedulers;
 
 public class CrashHandler implements Thread.UncaughtExceptionHandler {
     public static final String TAG = "CrashHandler";
-    public static final String CRASH_FILE_FOLDER = "/sdcard/crash/";// crash文件保存路径
+    public static String CRASH_FILE_FOLDER;// crash文件保存路径"/sdcard/crash/";
     private Thread.UncaughtExceptionHandler mUncaughtExceptionHandler;
-    private Context mContext;
     //用来存储设备信息和异常信息
     private Map<String, String> infos = new HashMap<String, String>();
 
     //用于格式化日期,作为日志文件名的一部分
-    private DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+    private DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault());
     private static CrashHandler INSTANCE = new CrashHandler();
 
     private CrashHandler() {
+        try {
+            CRASH_FILE_FOLDER = Environment.getExternalStorageDirectory().getPath() + "/crash/";
+        } catch (Exception e) {
+            e.printStackTrace();
+            CRASH_FILE_FOLDER = "/sdcard/crash/";
+        }
 
     }
 
@@ -64,13 +71,13 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
                 .subscribe(new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        MobclickAgent.reportError(mContext, throwable);
+                        MobclickAgent.reportError(BaseApplication.getContext(), throwable);
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
                         throwable.printStackTrace();
-                        MobclickAgent.reportError(mContext, throwable);
+                        MobclickAgent.reportError(BaseApplication.getContext(), throwable);
                     }
                 });
         // 如果用户没有自己处理这些异常，就让系统自己来
@@ -82,8 +89,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
 
     }
 
-    public void init(Context context) {
-        mContext = context;
+    public void init() {
         //获取系统默认的UncaughtException处理器
         mUncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
         //设置该CrashHandler为程序的默认处理器
@@ -102,7 +108,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             return false;
         }
         //收集设备参数信息
-        collectDeviceInfo(mContext);
+        collectDeviceInfo(BaseApplication.getContext());
         //保存日志文件
         saveCrashInfo2File(ex);
         //使用Toast来显示异常信息,也可以做些其他的
@@ -110,7 +116,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             @Override
             public void run() {
                 Looper.prepare();
-                Toast.makeText(mContext, "很抱歉,程序出现异常,请重新打开使用!", Toast.LENGTH_LONG).show();
+                Toast.makeText(BaseApplication.getContext(), "很抱歉,程序出现异常,请重新打开使用!", Toast.LENGTH_LONG).show();
                 Looper.loop();
                 ActivityHandler.getInstance().AppExit();
             }

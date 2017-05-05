@@ -21,7 +21,7 @@ public abstract class TSApplication extends BaseApplication {
         super.onCreate();
         // 处理app崩溃异常
         CrashHandler crashHandler = CrashHandler.getInstance();
-        crashHandler.init(this);
+        crashHandler.init();
     }
 
     /**

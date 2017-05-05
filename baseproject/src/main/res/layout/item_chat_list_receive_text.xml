@@ -19,13 +19,15 @@
             android:id="@+id/iv_chat_headpic"
             style="@style/style_chat_headpic"
             android:layout_marginRight="@dimen/spacing_normal"
+            android:layout_marginEnd="@dimen/spacing_normal"
             app:pressShape="circle"/>
 
         <TextView
             android:id="@+id/tv_chat_name"
             style="@style/style_chat_name"
             android:layout_toRightOf="@id/iv_chat_headpic"
-            android:gravity="top|left"
+            android:layout_toEndOf="@id/iv_chat_headpic"
+            android:gravity="top|start"
             tools:text="李四"/>
 
         <RelativeLayout
