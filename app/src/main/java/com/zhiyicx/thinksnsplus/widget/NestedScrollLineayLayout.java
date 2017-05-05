@@ -1,13 +1,17 @@
 package com.zhiyicx.thinksnsplus.widget;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.support.v4.view.NestedScrollingParent;
 import android.support.v4.view.NestedScrollingParentHelper;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.OverScroller;
@@ -26,14 +30,17 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
     private NestedScrollingParentHelper parentHelper;
     private View headerView;
     private int mTopViewHeight;
+    private int width, height;
     private int mNotConsumeHeight;
     private OverScroller mScroller;
     private boolean addHeight;
     private OnHeadFlingListener mOnHeadFlingListener;
     private boolean hiddenTop;
     private boolean showTop;
+
     // 阻尼系数
-    private static final float SCROLL_RATIO = 0.5f;
+    private static final float SCROLL_RATIO = 0.3f;
+
     private float mPreX, mPreY, mDistanceY;
 
     public NestedScrollLineayLayout(Context context) {
@@ -61,36 +68,6 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-//        switch (ev.getAction()) {
-//            case MotionEvent.ACTION_DOWN:
-//                mPreX = ev.getX();
-//                mPreY = ev.getY();
-//                break;
-//            case MotionEvent.ACTION_MOVE:
-//                mDistanceY = ev.getY() - mPreY;
-//                LogUtils.d("onStopNestedScroll");
-//                break;
-//        }
-        return super.dispatchTouchEvent(ev);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mPreX = ev.getX();
-                mPreY = ev.getY();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                mDistanceY = ev.getY() - mPreY;
-                LogUtils.d("onTouchEvent");
-                break;
-        }
-        return super.onTouchEvent(ev);
     }
 
     /**
@@ -130,12 +107,15 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
 
     @Override
     public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes) {
+        height = headerView.getHeight();
         return true;
     }
 
     @Override
     public void onStopNestedScroll(View child) {
         parentHelper.onStopNestedScroll(child);
+        mDistanceY = 0;
+        replyView();
         LogUtils.d("onStopNestedScroll");
     }
 
@@ -145,8 +125,7 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
         //头部高度
         mTopViewHeight = headerView.getHeight() - mNotConsumeHeight;
         hiddenTop = dy > 0 && getScrollY() < mTopViewHeight;
-        showTop = dy < 0 && getScrollY() >= 0 && !ViewCompat.canScrollVertically(target,
-                -1);
+        showTop = dy < 0 && getScrollY() >= 0 && !ViewCompat.canScrollVertically(target, -1);
         if (hiddenTop || showTop) {
             if (!addHeight) {//只增加一次 高度 height
                 addHeight = true;
@@ -158,10 +137,48 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
             scrollBy(0, dy);
             consumed[1] = dy;
         }
-        if (mOnHeadFlingListener != null && getScrollY() <= mTopViewHeight) {
+        if (mOnHeadFlingListener != null && getScrollY() != 0 && getScrollY() <= mTopViewHeight) {
             mOnHeadFlingListener.onHeadFling(getScrollY());
         }
-        LogUtils.d("onNestedPreScroll:::");
+        if (getScrollY() == 0) {
+            mDistanceY += Math.abs(dy);
+            dealScale(mDistanceY * SCROLL_RATIO);
+        }
+    }
+
+    private void dealScale(float s) {
+        float scaleTimes = (float) ((height + s) / (height * 1.0));
+        if (mOnHeadFlingListener != null && scaleTimes == 1.3f) {
+            mOnHeadFlingListener.onHeadZoom();
+        }
+        if (mOnHeadFlingListener != null && scaleTimes == 1.0f) {
+            mOnHeadFlingListener.onHeadRedu();
+        }
+        // 如超过最大放大倍数，直接返回
+        if (scaleTimes > 1.5f) return;
+
+        ViewGroup.LayoutParams layoutParams = headerView.getLayoutParams();
+        int scaleHeight = (int) (height * scaleTimes);
+        layoutParams.height = scaleHeight;
+        headerView.setLayoutParams(layoutParams);
+        headerView.scrollTo(0, (height - scaleHeight) / 2);
+    }
+
+    /**
+     * 回弹
+     */
+    private void replyView() {
+        final float distance = headerView.getHeight() - height;
+        // 设置动画
+        ValueAnimator anim = ObjectAnimator.ofFloat(distance, 0.0F).setDuration((long) (distance * SCROLL_RATIO));
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                dealScale((Float) animation.getAnimatedValue());
+            }
+
+        });
+        anim.start();
     }
 
     @Override
@@ -186,7 +203,7 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
         if (!mScroller.isFinished()) {
             mScroller.abortAnimation();
         }
-
+        
         if (hiddenTop) {
             LogUtils.d("hiddenTop");
             mScroller.fling(0, scrollY, (int) velocityX, (int) velocityY, 0, 0, 0,
@@ -241,5 +258,9 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
 
     public interface OnHeadFlingListener {
         void onHeadFling(int scrollY);
+
+        void onHeadZoom();
+
+        void onHeadRedu();
     }
 }

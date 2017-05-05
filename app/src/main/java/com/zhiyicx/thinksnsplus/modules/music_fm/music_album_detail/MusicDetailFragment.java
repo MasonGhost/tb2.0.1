@@ -488,10 +488,11 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     }
 
     private void initTitle() {
-        mFragmentMusicDetailHeadInfo.setBackgroundResource(R.drawable.shape_default_image);
+        mFragmentMusicDetailHeadInfo.setBackgroundResource(R.mipmap.default_pic_personal);
 
         mFragmentMusicDetailScrollview.setOnHeadFlingListener(new NestedScrollLineayLayout
                 .OnHeadFlingListener() {
+
             @Override
             public void onHeadFling(int scrollY) {
                 int distance = mFragmentMusicDetailScrollview.getTopViewHeight();
@@ -507,6 +508,15 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                     mFragmentMusicDetailCenterSubTitle.setVisibility(View.GONE);
                 }
                 mFragmentMusicDetailTitle.getBackground().setAlpha(alpha);
+            }
+
+            @Override
+            public void onHeadZoom() {
+                mPresenter.getMusicDetails(mCurrentMediaId);
+            }
+
+            @Override
+            public void onHeadRedu() {
 
             }
         });
@@ -519,8 +529,8 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                         ImageZipConfig.IMAGE_70_ZIP))
                 .asBitmap()
                 .transform(new GlideStokeTransform(getActivity(), 5))
-                .placeholder(R.mipmap.default_pic_personal)
-                .error(R.mipmap.default_pic_personal)
+                .placeholder(R.drawable.shape_default_image)
+                .error(R.drawable.shape_default_image)
                 .into(new ImageViewTarget<Bitmap>(mFragmentMusicDetailHeadIamge) {
                     @Override
                     protected void setResource(Bitmap resource) {
@@ -613,8 +623,8 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
     @Subscriber(tag = EVENT_MUSIC_CHANGE, mode = ThreadMode.MAIN)
     public void onMusicChange(int change) {
-        mPresenter.getMusicDetails(change + "");
         mCurrentMediaId = change + "";
+        mPresenter.getMusicDetails(change + "");
         mAdapter.notifyDataSetChanged();
         LogUtils.d("EVENT_MUSIC_CHANGE");
     }
