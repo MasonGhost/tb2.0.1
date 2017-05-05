@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:paddingTop="@dimen/music_album_detail_head_paddingtop_60dp">
-            <!--@dimen/music_album_detail_head-->
+
             <ImageView
                 android:id="@+id/fragment_music_detail_head_iamge"
                 android:layout_width="@dimen/music_album_detail_head"

@@ -223,7 +223,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
                 mMediaPlayer.setDataSource(proxyUrl);
 
                 mMediaPlayer.prepareAsync();
-                EventBus.getDefault().post(true,
+                EventBus.getDefault().post(-1,
                         EVENT_SEND_MUSIC_LOAD);
 
                 mWifiLock.acquire();
@@ -388,7 +388,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
 
     @Override
     public void onPrepared(MediaPlayer player) {
-        EventBus.getDefault().post(false,
+        EventBus.getDefault().post(player.getDuration() / 1000,
                 EVENT_SEND_MUSIC_LOAD);
         configMediaPlayerState();
     }

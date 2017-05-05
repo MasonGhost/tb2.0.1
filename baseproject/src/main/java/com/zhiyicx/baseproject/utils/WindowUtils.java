@@ -1,13 +1,11 @@
 package com.zhiyicx.baseproject.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -41,7 +39,6 @@ public class WindowUtils {
     public static final boolean CAN_DRAG = false;
     private static View mView = null;
     private static WindowManager mWindowManager = null;
-    private static Context mContext = null;
     private static Bundle sMusicAlbumDetailsBean;
 
     private static Boolean isShown = false;
@@ -55,7 +52,6 @@ public class WindowUtils {
 
     private static AnimationTimerTask mAnimationTask;
     private static Timer mAnimationTimer;
-    private static GetTokenRunnable mGetTokenRunnable;
     private static Handler mHander = new Handler();
     private static AblumHeadInfo sAblumHeadInfo;
 
@@ -63,7 +59,6 @@ public class WindowUtils {
     private static int mHeight;
     private static float mPrevX;
     private static float mPrevY;
-    private static int mGetTokenPeriodTime = 500;
     private static int mAnimatonPeriodTime = 16;
     private static boolean isMove = false;
     private static BigDecimal mStartClickTime;
@@ -83,10 +78,8 @@ public class WindowUtils {
         }
 
         isShown = true;
-        // 获取应用的Context
-        mContext = context;
         // 获取WindowManager
-        mWindowManager = (WindowManager) mContext
+        mWindowManager = (WindowManager) context
                 .getSystemService(Context.WINDOW_SERVICE);
         mView = setUpView(context, "");
 
@@ -105,17 +98,17 @@ public class WindowUtils {
         mLayoutParams.format = PixelFormat.TRANSPARENT;
         mLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         mLayoutParams.gravity = Gravity.RIGHT | Gravity.TOP;
-        mLayoutParams.width = ConvertUtils.dp2px(mContext, 44) * 3 / 4;
-        mLayoutParams.height = ConvertUtils.dp2px(mContext, 44) * 3 / 4;
-        mLayoutParams.x = ConvertUtils.dp2px(mContext, 15);
-        mLayoutParams.y = ConvertUtils.dp2px(mContext, 44) / 8;
+        mLayoutParams.width = ConvertUtils.dp2px(context, 44) * 3 / 4;
+        mLayoutParams.height = ConvertUtils.dp2px(context, 44) * 3 / 4;
+        mLayoutParams.x = ConvertUtils.dp2px(context, 15);
+        mLayoutParams.y = ConvertUtils.dp2px(context, 44) / 8;
 
-        mRotateAnimation = (RotateAnimation) AnimationUtils.loadAnimation(mContext, R.anim
+        mRotateAnimation = (RotateAnimation) AnimationUtils.loadAnimation(context, R.anim
                 .music_window_rotate);
         mImageView.setAnimation(mRotateAnimation);
         mRotateAnimation.start();
         mWindowManager.addView(mView, mLayoutParams);
-        initClickAndDrag();
+        initClickAndDrag(context);
     }
 
     /**
@@ -169,7 +162,7 @@ public class WindowUtils {
         sMusicAlbumDetailsBean = musicAlbumDetailsBean;
     }
 
-    private static void initClickAndDrag() {
+    private static void initClickAndDrag(final Context context) {
         mView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -213,10 +206,10 @@ public class WindowUtils {
                             }
 
                             Intent intent1 = new Intent("android.intent.action.MAIN");
-                            intent1.setClassName(mContext, "com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity");
+                            intent1.setClassName(context, "com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity");
                             intent1.putExtra("music_info", getMusicAlbumDetailsBean());
                             intent1.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            mContext.startActivity(intent1);
+                            context.startActivity(intent1);
                             return false;
                         }
 
@@ -270,44 +263,6 @@ public class WindowUtils {
                 mAnimationTask.cancel();
                 mAnimationTimer.cancel();
             }
-        }
-    }
-
-    class GetTokenRunnable implements Runnable {
-        int count = 0;
-        private Activity mActivity;
-
-        public GetTokenRunnable(Activity activity) {
-            this.mActivity = activity;
-        }
-
-        @Override
-        public void run() {
-
-            if (null == mActivity)
-                return;
-            IBinder token = null;
-            try {
-                token = mActivity.getWindow().getDecorView().getWindowToken();
-            } catch (Exception e) {
-
-            }
-
-            if (null != token) {
-                try {
-                    mLayoutParams.token = token;
-                    mWindowManager.addView(mView, mLayoutParams);
-                    mActivity = null;
-                    return;
-                } catch (Exception e) {
-                }
-            }
-            count++;
-            mLayoutParams.token = null;
-            if (count < 10 && null != mLayoutParams) {
-                mHander.postDelayed(mGetTokenRunnable, 500);
-            }
-
         }
     }
 

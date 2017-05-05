@@ -49,7 +49,6 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
-import com.zhiyicx.thinksnsplus.modules.gallery.GalleryPictureFragment;
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProviderSource;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentActivity;
@@ -702,9 +701,12 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     }
 
     @Subscriber(tag = EVENT_SEND_MUSIC_LOAD, mode = ThreadMode.MAIN)
-    public void onMusicLoading(boolean l) {
-        LogUtils.d("MUSIC_LOADING", "" + l + "");
-        mFragmentMusicPalyProgress.setLoading(l);
+    public void onMusicLoading(int currentDuration) {
+        LogUtils.d("MUSIC_LOADING", "" + (currentDuration > 0) + "");
+//        mFragmentMusicPalyProgress.setLoading(!(currentDuration > 0));
+        if (currentDuration > 0) {
+            updateDuration(new MediaMetadataCompat.Builder().putLong(MediaMetadataCompat.METADATA_KEY_DURATION, currentDuration * 1000).build());
+        }
     }
 
     @Subscriber(tag = EVENT_SEND_MUSIC_COMPLETE, mode = ThreadMode.MAIN)
