@@ -37,11 +37,20 @@ public class MusicCommentHeader {
     private ImageView mHeaderImag;
     private ImageLoader mImageLoader;
     private FrameLayout mCommentCountView;
+    private HeadlerClickEvent mHeadlerClickEvent;
 
     public MusicCommentHeader(Context context) {
         this.mContext = context;
         mMusicCommentHeader = LayoutInflater.from(context).inflate(R.layout
                 .view_header_music_comment, null);
+        mMusicCommentHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mHeadlerClickEvent != null){
+                    mHeadlerClickEvent.headClick();
+                }
+            }
+        });
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         mMusicCommentHeader.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -55,18 +64,6 @@ public class MusicCommentHeader {
 
     public View getMusicCommentHeader() {
         return mMusicCommentHeader;
-    }
-
-    public void setHeadInfo(MusicAlbumDetailsBean.MusicsBean musicsBean) {
-        if (musicsBean == null)
-            return;
-        mTitle.setText(musicsBean.getMusic_info().getTitle());
-        mListenCount.setText(musicsBean.getMusic_info().getTaste_count() + "");
-        mImageLoader.loadImage(mContext, GlideImageConfig.builder()
-                .imagerView(mHeaderImag)
-                .url(ImageUtils.imagePathConvert(musicsBean.getMusic_info().getSinger().getCover().getId() + "",
-                        ImageZipConfig.IMAGE_70_ZIP))
-                .build());
     }
 
     public void setHeadInfo(HeaderInfo headInfo) {
@@ -89,6 +86,10 @@ public class MusicCommentHeader {
             mCommentCountView.setVisibility(View.GONE);
         }
 
+    }
+
+    public void setHeadlerClickEvent(HeadlerClickEvent headlerClickEvent) {
+        mHeadlerClickEvent = headlerClickEvent;
     }
 
     public static class HeaderInfo implements Serializable {
@@ -138,5 +139,9 @@ public class MusicCommentHeader {
         public void setImageUrl(String imageUrl) {
             this.imageUrl = imageUrl;
         }
+    }
+
+    public interface HeadlerClickEvent {
+        void headClick();
     }
 }
