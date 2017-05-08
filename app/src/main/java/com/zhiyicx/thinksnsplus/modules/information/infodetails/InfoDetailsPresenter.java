@@ -219,7 +219,7 @@ public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Rep
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_INFO_LIST)
     public void handleSendComment(InfoCommentListBean infoCommentListBean) {
-        System.out.println("dynamicCommentBean = " + infoCommentListBean.toString());
+        LogUtils.d(TAG,"dynamicCommentBean = " + infoCommentListBean.toString());
         Observable.just(infoCommentListBean)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

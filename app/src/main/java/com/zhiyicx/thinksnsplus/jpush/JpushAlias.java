@@ -2,6 +2,8 @@ package com.zhiyicx.thinksnsplus.jpush;
 
 import android.content.Context;
 
+import com.zhiyicx.common.utils.log.LogUtils;
+
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -62,7 +64,7 @@ public class JpushAlias {
                 default:
                     logs = "Failed with errorCode = " + code;
             }
-            System.out.println("logs = " + logs);
+           LogUtils.d(TAG,"logs = " + logs);
         }
     };
 

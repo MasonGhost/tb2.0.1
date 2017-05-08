@@ -4,6 +4,7 @@ import android.app.Application;
 import android.text.TextUtils;
 
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 
@@ -20,6 +21,7 @@ import java.util.List;
  * @Contact master.jungle68@gmail.com
  */
 public class DynamicCommentBeanGreenDaoImplTest {
+    private static final String TAG = "DynamicCommentBeanGreen";
     DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
 
     @Before
@@ -88,7 +90,7 @@ public class DynamicCommentBeanGreenDaoImplTest {
         dynamicCommentBean.setFeed_mark(feed_mark);
         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
         List<DynamicCommentBean> result = mDynamicCommentBeanGreenDao.getLocalComments(feed_mark);
-        System.out.println("result = " + result.toString());
+        LogUtils.d(TAG, "result = " + result.toString());
         Assert.assertTrue(result.size() > 0);
     }
 

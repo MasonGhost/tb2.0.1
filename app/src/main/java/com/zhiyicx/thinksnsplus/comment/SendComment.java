@@ -118,7 +118,6 @@ public class SendComment implements ICommentEvent<ICommentBean> {
         builder.setType(MultipartBody.FORM);//表单类型
         if (params != null) {
             for (Map.Entry<String, Object> entry : params.entrySet()) {
-                System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
                 builder.addFormDataPart(entry.getKey(), entry.getValue().toString());//ParamKey.TOKEN 自定义参数key常量类，即参数名
             }
         }

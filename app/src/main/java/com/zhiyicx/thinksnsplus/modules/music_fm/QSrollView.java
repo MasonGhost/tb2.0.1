@@ -2,17 +2,14 @@ package com.zhiyicx.thinksnsplus.modules.music_fm;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.Scroller;
 
-import java.io.InputStream;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 class QSrollView extends ViewGroup {
     public final static String TAG = QSrollView.class.getSimpleName();
@@ -83,7 +80,7 @@ class QSrollView extends ViewGroup {
                 break;
             case MotionEvent.ACTION_DOWN:
                 mLastMontionY = y;
-                Log.e(TAG, mScroller.isFinished() + "");
+                LogUtils.d(TAG, mScroller.isFinished() + "");
                 if (!mScroller.isFinished()) // 当动画还没有结束的时候强制结束
                 {
                     mScroller.abortAnimation();
@@ -97,7 +94,7 @@ class QSrollView extends ViewGroup {
                 mTouchState = TOUCH_STATE_DEFALUT;
                 break;
         }
-        Log.e(TAG, mTouchState + "====" + TOUCH_STATE_DEFALUT);
+        LogUtils.d(TAG, mTouchState + "====" + TOUCH_STATE_DEFALUT);
         return mTouchState != TOUCH_STATE_DEFALUT;
     }
 
@@ -129,7 +126,7 @@ class QSrollView extends ViewGroup {
                 mLastMontionY = (int) event.getY(touchIndex); // 记录上一次按下的点
                 break;
             case MotionEvent.ACTION_UP:
-                Log.d("edsheng", "Action UP");
+                LogUtils.d("edsheng", "Action UP");
                 mVelocityTracker.computeCurrentVelocity(1000);
                 if (Math.abs(mVelocityTracker.getYVelocity()) > mMaxmumVelocity && !checkIsBroad
                         ()) {
@@ -167,7 +164,7 @@ class QSrollView extends ViewGroup {
     private void actionUP() {
         if (getScrollY() < 0 || getHeight() > mTotalLength) // 顶部回弹
         {
-            Log.d("edsheng", "顶部回弹！！！！");
+            LogUtils.d("edsheng", "顶部回弹！！！！");
             mScroller.startScroll(0, getScrollY(), 0, -getScrollY()); // 开启回弹效果
             invalidate();
         } else if (getScrollY() + getHeight() > mTotalLength) // 底部回弹

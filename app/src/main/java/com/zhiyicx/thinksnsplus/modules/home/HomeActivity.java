@@ -12,6 +12,7 @@ import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.common.utils.ActivityUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 
 import java.io.BufferedReader;
@@ -50,7 +51,7 @@ public class HomeActivity extends TSActivity {
 
     @Override
     protected void componentInject() {
-        System.out.println("getDeviceInfo = " + getDeviceInfo(getApplicationContext()));
+        LogUtils.d(TAG,"getDeviceInfo = " + getDeviceInfo(getApplicationContext()));
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -16,6 +17,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * @Describe 动态列表 1、2、3、4、9张图片使用的 item 适配器   由于间距问题，暂不使用
@@ -53,7 +55,7 @@ public class DynamicListRecycleItem extends DynamicListBaseItem {
 //                        .url(String)
 //                        .imagerView((ImageView) holder.getView(R.id.iv_item_image))
 //                        .build());
-                System.out.println("imageSize  = " + imageSize+ "       poisiton  -----"+position);
+                LogUtils.d(TAG,"imageSize  = " + imageSize+ "       poisiton  -----"+position);
                 Glide.with(mContext)
                         .load(String)
                         .override(imageSize,imageSize)

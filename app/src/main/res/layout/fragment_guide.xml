@@ -10,7 +10,7 @@
         android:layout_marginBottom="@dimen/spacing_large"
         android:layout_gravity="bottom"
         android:gravity="center"
-        android:textSize="9sp"
+        android:textSize="@dimen/copyright_text_size"
         android:textColor="@color/copy_right_color"
         android:text="@string/copyright"
         />

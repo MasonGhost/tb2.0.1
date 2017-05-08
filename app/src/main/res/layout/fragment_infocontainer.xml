@@ -22,9 +22,9 @@
                 android:layout_weight="1"/>
 
             <ImageView
-                android:paddingLeft="6dp"
+                android:paddingLeft="@dimen/spacing_small"
                 android:visibility="invisible"
-                android:layout_width="50dp"
+                android:layout_width="@dimen/infocontainer_right_image_with"
                 android:layout_height="match_parent"
                 android:scaleType="centerInside"
                 android:src="@mipmap/sec_nav_arrow"/>

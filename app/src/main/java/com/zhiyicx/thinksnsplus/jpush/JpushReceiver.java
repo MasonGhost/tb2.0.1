@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -93,7 +92,7 @@ public class JpushReceiver extends BroadcastReceiver {
                 context.startActivity(mainIntent);
             } else {
                 //如果app进程已经被杀死，先重新启动app
-                Log.i(TAG, "the app process is dead");
+                LogUtils.d(TAG, "the app process is dead");
                 Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
                 launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
                 Bundle msgBundle = new Bundle();

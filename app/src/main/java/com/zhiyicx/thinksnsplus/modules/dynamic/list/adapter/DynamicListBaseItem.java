@@ -44,6 +44,7 @@ import static com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean.STATUS_DIGG_FE
  */
 
 public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
+    protected   final String TAG = this.getClass().getSimpleName();
     private static final int CURREN_CLOUMS = 0;
     private final int mWidthPixels; // 屏幕宽度
     private final int mMargin; // 图片容器的边距
@@ -142,7 +143,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
      * @param position
      */
     @Override
-    public void convert(ViewHolder holder, DynamicBean dynamicBean, DynamicBean lastT, final int position,int itemCounts) {
+    public void convert(ViewHolder holder, DynamicBean dynamicBean, DynamicBean lastT, final int position, int itemCounts) {
         try {
             String userIconUrl = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getUserInfoBean().getAvatar(), ImageZipConfig.IMAGE_38_ZIP);
             mImageLoader.loadImage(mContext, GlideImageConfig.builder()
