@@ -122,6 +122,7 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
 
     @Override
     public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
+
         //处理子view传上来的事件
         //头部高度
         mTopViewHeight = headerView.getHeight() - mNotConsumeHeight;
@@ -163,6 +164,8 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
         layoutParams.height = scaleHeight;
         headerView.setLayoutParams(layoutParams);
         int scrollTo = (height - scaleHeight);
+        
+
         headerView.scrollTo(0, scrollTo / 2);
         LogUtils.d("scrollTo:::" + scrollTo);
         LogUtils.d("heightscrollTo:::" + mTopViewHeight);
@@ -178,8 +181,6 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 dealScale((Float) animation.getAnimatedValue());
-                LogUtils.d("onAnimationUpdateTo::" + ((Float) animation.getAnimatedValue()).intValue() / 2);
-                scrollBy(0, -((Float) animation.getAnimatedValue()).intValue());
             }
         });
         anim.start();

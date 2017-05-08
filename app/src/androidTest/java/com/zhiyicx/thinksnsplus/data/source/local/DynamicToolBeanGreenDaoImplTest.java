@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
 
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 
@@ -16,6 +17,7 @@ import org.junit.Test;
  * @Contact master.jungle68@gmail.com
  */
 public class DynamicToolBeanGreenDaoImplTest {
+    private static final String TAG = "DynamicToolBeanGreenDao";
     private DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
     private DynamicToolBean mDynamicToolBean;
 
@@ -74,7 +76,7 @@ public class DynamicToolBeanGreenDaoImplTest {
     public void insertOrReplace() throws Exception {
         mDynamicToolBeanGreenDao.insertOrReplace(mDynamicToolBean);
         DynamicToolBean dynamicToolBean = mDynamicToolBeanGreenDao.getSingleDataFromCache(mDynamicToolBean.getFeed_mark());
-        System.out.println("dynamicToolBean = " + dynamicToolBean.toString());
+        LogUtils.d(TAG,"dynamicToolBean = " + dynamicToolBean.toString());
         Assert.assertTrue(dynamicToolBean.getFeed_comment_count() == 10);
         Assert.assertTrue(dynamicToolBean.getFeed_digg_count() == 10);
         Assert.assertTrue(dynamicToolBean.getIs_digg_feed() == 1);

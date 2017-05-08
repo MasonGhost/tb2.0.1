@@ -542,7 +542,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        System.out.println("-----------onItemClick----------------");
         handleItemClick(position);
     }
 

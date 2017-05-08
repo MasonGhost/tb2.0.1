@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 import android.app.Application;
 import android.support.test.rule.ActivityTestRule;
 
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
 
@@ -21,6 +22,7 @@ import java.util.List;
  * @Contact master.jungle68@gmail.com
  */
 public class DynamicBeanGreenDaoImplTest {
+    private static final String TAG = "DynamicBeanGreenDaoImpl";
 
     @Rule
     public ActivityTestRule<SettingsActivity> mActivityRule = new ActivityTestRule(SettingsActivity.class);
@@ -49,7 +51,7 @@ public class DynamicBeanGreenDaoImplTest {
         }
         mDynamicBeanGreenDao.insertOrReplace(datas);
         List<DynamicBean> result = mDynamicBeanGreenDao.getMySendingUnSuccessDynamic(1L);
-        System.out.println("result = " + result.toString());
+       LogUtils.d(TAG,"result = " + result.toString());
         Assert.assertTrue(result.size() > 0);
         result.get(0).setUser_id(2);
         mDynamicBeanGreenDao.insertOrReplace(result.get(0));

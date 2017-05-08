@@ -10,6 +10,7 @@ import android.os.Bundle;
 
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.utils.appprocess.BackgroundUtil;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 
@@ -98,7 +99,7 @@ public class NotificationUtil {
                     try {
                         Thread.sleep(1 * 1000);
                     } catch (InterruptedException e) {
-                        System.out.println("sleep failure");
+                        LogUtils.d("sleep failure");
                     }
                 }
                 builder.setContentTitle("Download complete")

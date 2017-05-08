@@ -504,13 +504,13 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
     }
 
     /**
-     * 处理发送动态数据
+     * 处理发送动态数据,动态发布成功回调
      *
      * @param dynamicCommentBean
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_DYNAMIC_LIST)
     public void handleSendComment(DynamicCommentBean dynamicCommentBean) {
-        System.out.println("dynamicCommentBean = " + dynamicCommentBean.toString());
+        LogUtils.d(TAG,"dynamic send success dynamicCommentBean = " + dynamicCommentBean.toString());
         Observable.just(dynamicCommentBean)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -534,7 +534,6 @@ public class DynamicDetailPresenter extends BasePresenter<DynamicDetailContract.
                 .subscribe(new Action1<Integer>() {
                     @Override
                     public void call(Integer integer) {
-                        System.out.println("integer = " + integer);
                         if (integer != -1) {
                             mRootView.refreshData(); // 加上 header
                         }

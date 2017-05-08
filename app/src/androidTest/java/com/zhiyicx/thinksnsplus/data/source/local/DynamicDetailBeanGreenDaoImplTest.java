@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 
@@ -21,7 +22,7 @@ import java.util.ArrayList;
  * @Contact master.jungle68@gmail.com
  */
 public class DynamicDetailBeanGreenDaoImplTest {
-
+    private static final String TAG = "DynamicDetailBeanGreenD";
     private DynamicDetailBeanGreenDaoImpl mDynamiDetialGreenDaoImpl;
     private DynamicDetailBean mDynamicDetailBean;
 
@@ -86,7 +87,7 @@ public class DynamicDetailBeanGreenDaoImplTest {
     public void insertOrReplace() throws Exception {
         mDynamiDetialGreenDaoImpl.insertOrReplace(mDynamicDetailBean);
         DynamicDetailBean dynamicToolBean = mDynamiDetialGreenDaoImpl.getSingleDataFromCache(mDynamicDetailBean.getFeed_mark());
-        System.out.println("dynamicToolBean = " + dynamicToolBean.toString());
+        LogUtils.d(TAG,"dynamicToolBean = " + dynamicToolBean.toString());
         Assert.assertTrue(dynamicToolBean.getFeed_from() == 10);
         Assert.assertTrue(!TextUtils.isEmpty(dynamicToolBean.getContent()));
         Assert.assertTrue(!TextUtils.isEmpty(dynamicToolBean.getTitle()));

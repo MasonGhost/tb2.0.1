@@ -21,6 +21,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.wcy.overscroll.OverScrollLayout;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.widget.EmptyView;
+import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.NetUtils;
 
@@ -295,7 +296,7 @@ public abstract class TSWebFragment extends TSFragment {
                 });
         mOverScrollLayout = (OverScrollLayout) rootView.findViewById(R.id.overscroll);
 //        if(mOverScrollLayout !=null){// 是否需要下拉
-            mOverScrollLayout.setTopOverScrollEnable(false);
+        mOverScrollLayout.setTopOverScrollEnable(false);
 //        }
     }
 
@@ -339,6 +340,10 @@ public abstract class TSWebFragment extends TSFragment {
                 return false;
             }
         });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && BuildConfig.DEBUG) {  // chorme 调试
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
     }
 
     /***

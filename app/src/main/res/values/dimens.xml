@@ -2,6 +2,10 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!-- copyright_text_size-->
+    <dimen name="copyright_text_size">9sp</dimen>
+
     <!--登录按钮margintop-->
     <dimen name="button_login_margin_top">23dp</dimen>
     <!--用户资料编辑分割线左边的距离-->
@@ -29,4 +33,11 @@
 
     <!--消息中 的评论的点赞的线的 margin-->
     <dimen name="message_comment_and_digg_line_margin">63dp</dimen>
+    <!---->
+    <dimen name="infocontainer_right_image_with">50dp</dimen>
+    <!--咨询中的 banner hight-->
+    <dimen name="info_banner_hight">200dp</dimen>
+    <!--滑动删除按钮的宽度-->
+    <dimen name="slide_button_with">80dp</dimen>
+
 </resources>

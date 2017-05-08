@@ -16,6 +16,7 @@ import android.webkit.WebViewClient;
 
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.NetUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ import static com.umeng.socialize.utils.DeviceConfig.context;
  * @Description
  */
 public class InfoDetailHeader {
-
+    private static final String TAG = "InfoDetailHeader";
     // 获取img标签正则
     private static final String IMAGE_URL_TAG = "<img.*src=(.*?)[^>]*?>";
     // 获取src路径的正则
@@ -109,7 +110,7 @@ public class InfoDetailHeader {
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String
                 failingUrl) {
-            System.out.println("errorCode = " + errorCode);
+           LogUtils.d(TAG,"errorCode = " + errorCode);
             mIsLoadError = true;
             super.onReceivedError(view, errorCode, description, failingUrl);
         }
@@ -192,7 +193,7 @@ public class InfoDetailHeader {
         }
 
         private void setProgress(int newProgress) {
-            System.out.println("newProgress = " + newProgress);
+          LogUtils.d(TAG,"newProgress = " + newProgress);
         }
 
         /**

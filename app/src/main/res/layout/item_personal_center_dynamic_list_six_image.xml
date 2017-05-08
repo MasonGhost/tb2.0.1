@@ -141,7 +141,7 @@
                     />
 
                 <View
-                    android:layout_width="1dp"
+                    android:layout_width="@dimen/dynamice_spacing_six_small"
                     android:layout_height="match_parent"
                     />
 
@@ -154,7 +154,7 @@
                 android:orientation="horizontal">
 
                 <View
-                    android:layout_width="2dp"
+                    android:layout_width="@dimen/dynamice_spacing_six_big"
                     android:layout_height="match_parent"
                     />
 

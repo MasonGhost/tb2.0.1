@@ -10,7 +10,7 @@
 
     <TextView
         android:id="@+id/tv_right"
-        android:layout_width="80dp"
+        android:layout_width="@dimen/slide_button_with"
         android:textSize="@dimen/size_content"
         android:textColor="@color/white"
         android:text="@string/delete"

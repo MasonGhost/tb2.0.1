@@ -8,6 +8,8 @@
     <dimen name="dynamic_list_comment_marginright">40dp</dimen>
     <!--dynamice_spacing_small  应该是 3 的倍数，便于计算动态中 6 张图片时的间距-->
     <dimen name="dynamice_spacing_small">3dp</dimen>
+    <dimen name="dynamice_spacing_six_small">1dp</dimen>
+    <dimen name="dynamice_spacing_six_big">2dp</dimen>
     <!--dynamice_more_comment_mariginleft 的值等于评论 tv_simple_text_comment 的marginleft + status image 的宽度 -->
     <dimen name="dynamice_more_comment_mariginleft">18dp</dimen>
     <!--分享弹框文字和图片的间距-->
