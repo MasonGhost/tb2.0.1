@@ -1,12 +1,15 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
+import android.content.Intent;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
@@ -18,6 +21,8 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBFragment;
 import com.zhiyicx.thinksnsplus.widget.chat.ChatMessageList;
 
 import java.util.ArrayList;
@@ -197,7 +202,23 @@ public abstract class BaseChatFragment<P extends IBasePresenter> extends TSFragm
      */
     @Override
     public void onUserInfoClick(ChatItemBean chatItemBean) {
-        PersonalCenterFragment.startToPersonalCenter(getContext(), chatItemBean.getUserInfo());
+        if (chatItemBean == null || chatItemBean.getUserInfo() == null || chatItemBean.getUserInfo().getName().equals(getString(R.string.ts_helper))) { // ts 助手;
+            toTSHelper();
+        } else { // 普通用户
+            PersonalCenterFragment.startToPersonalCenter(getContext(), chatItemBean.getUserInfo());
+        }
+
+    }
+
+    /**
+     * 前往ts助手开发
+     */
+    private void toTSHelper() {
+        Intent intent = new Intent(getContext(), CustomWEBActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, ApiConfig.APP_PATH_SHARE_DEFAULT);
+        intent.putExtras(bundle);
+        getContext().startActivity(intent);
     }
 
     /**
@@ -232,28 +253,28 @@ public abstract class BaseChatFragment<P extends IBasePresenter> extends TSFragm
      * 初始化评论删除选择弹框
      */
     private void initDeletCommentPopupWindow(final ChatItemBean chatItemBean) {
-            mDeletCommentPopWindow = ActionPopupWindow.builder()
-                    .item1Str(getString(R.string.resend))
-                    .bottomStr(getString(R.string.cancel))
-                    .isOutsideTouch(true)
-                    .isFocus(true)
-                    .backgroundAlpha(POPUPWINDOW_ALPHA)
-                    .with(getActivity())
-                    .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                        @Override
-                        public void onItem1Clicked() {
-                            onResendClick(chatItemBean);
-                            mDeletCommentPopWindow.hide();
+        mDeletCommentPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.resend))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+                        onResendClick(chatItemBean);
+                        mDeletCommentPopWindow.hide();
 
-                        }
-                    })
-                    .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                        @Override
-                        public void onBottomClicked() {
-                            mDeletCommentPopWindow.hide();
-                        }
-                    })
-                    .build();
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mDeletCommentPopWindow.hide();
+                    }
+                })
+                .build();
     }
 
     protected abstract void onResendClick(ChatItemBean chatItemBean);

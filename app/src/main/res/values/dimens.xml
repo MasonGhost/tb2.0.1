@@ -40,7 +40,4 @@
     <!--滑动删除按钮的宽度-->
     <dimen name="slide_button_with">80dp</dimen>
 
-
-
-
 </resources>

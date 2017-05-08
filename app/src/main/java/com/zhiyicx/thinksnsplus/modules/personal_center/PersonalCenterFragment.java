@@ -303,7 +303,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     protected void initData() {
         mUserInfoBean = getArguments().getParcelable(PERSONAL_CENTER_DATA);
-        requestData();
+        if (mUserInfoBean != null) {
+            requestData();
+        }
         super.initData();
     }
 
@@ -341,7 +343,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mCurrentPostion = dataPosition;
         Bitmap shareBitMap = null;
         try {
-            ImageView imageView = (ImageView) layoutManager.findViewByPosition(dataPosition+1).findViewById(R.id.siv_0);
+            ImageView imageView = (ImageView) layoutManager.findViewByPosition(dataPosition + 1).findViewById(R.id.siv_0);
             shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(imageView.getDrawable());
         } catch (Exception e) {
             e.printStackTrace();

@@ -227,7 +227,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
      */
     @Override
     public void onUserInfoClick(ChatItemBean chatItemBean) {
-        if (chatItemBean.getUserInfo().getName().equals(getString(R.string.ts_helper))) { // ts 助手;
+        if (chatItemBean==null||chatItemBean.getUserInfo()==null||chatItemBean.getUserInfo().getName().equals(getString(R.string.ts_helper))) { // ts 助手;
             toTSHelper();
         } else { // 普通用户
             PersonalCenterFragment.startToPersonalCenter(getContext(), chatItemBean.getUserInfo());
