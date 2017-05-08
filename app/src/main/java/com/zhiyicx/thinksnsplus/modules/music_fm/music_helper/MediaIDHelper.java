@@ -28,7 +28,7 @@ public class MediaIDHelper {
     public static String createMediaID(String musicID, String... categories) {
         StringBuilder sb = new StringBuilder();
         if (categories != null) {
-            for (int i=0; i < categories.length; i++) {
+            for (int i = 0; i < categories.length; i++) {
                 if (!isValidCategory(categories[i])) {
                     throw new IllegalArgumentException("Invalid category: " + categories[0]);
                 }
@@ -45,21 +45,22 @@ public class MediaIDHelper {
     }
 
     private static boolean isValidCategory(String category) {
-        return category == null ||
-                (
-                    category.indexOf(CATEGORY_SEPARATOR) < 0 &&
-                    category.indexOf(LEAF_SEPARATOR) < 0
-                );
+        return category == null || (
+                category.indexOf(CATEGORY_SEPARATOR) < 0 &&
+                        category.indexOf(LEAF_SEPARATOR) < 0);
     }
+
     public static String extractMusicIDFromMediaID(@NonNull String mediaID) {
         int pos = mediaID.indexOf(LEAF_SEPARATOR);
         if (pos >= 0) {
-            return mediaID.substring(pos+1);
+            return mediaID.substring(pos + 1);
         }
         return null;
     }
 
-    public static @NonNull String[] getHierarchy(@NonNull String mediaID) {
+    public static
+    @NonNull
+    String[] getHierarchy(@NonNull String mediaID) {
         int pos = mediaID.indexOf(LEAF_SEPARATOR);
         if (pos >= 0) {
             mediaID = mediaID.substring(0, pos);
@@ -87,7 +88,7 @@ public class MediaIDHelper {
         if (hierarchy.length <= 1) {
             return MEDIA_ID_ROOT;
         }
-        String[] parentHierarchy = Arrays.copyOf(hierarchy, hierarchy.length-1);
+        String[] parentHierarchy = Arrays.copyOf(hierarchy, hierarchy.length - 1);
         return createMediaID(null, parentHierarchy);
     }
 
