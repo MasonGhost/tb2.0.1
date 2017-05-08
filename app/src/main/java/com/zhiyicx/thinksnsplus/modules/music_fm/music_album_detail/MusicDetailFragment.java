@@ -487,20 +487,18 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     }
 
     private void initTitle() {
-        mFragmentMusicDetailHeadInfo.setBackgroundResource(R.mipmap.default_pic_personal);
+        mBgBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.default_pic_personal);
+        mPalette = Palette.from(mBgBitmap).generate();
+        BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap
+                (mBgBitmap, mBgBitmap.getWidth(), mBgBitmap.getHeight()));
+        mFragmentMusicDetailHeadInfo.setBackgroundDrawable(drawable);
 
         mFragmentMusicDetailScrollview.setOnHeadFlingListener(new NestedScrollLineayLayout
                 .OnHeadFlingListener() {
 
             @Override
             public void onHeadFling(int scrollY) {
-                if (mPalette == null) {
-                    mBgBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.default_pic_personal);
-                    mPalette = Palette.from(mBgBitmap).generate();
-                    if (mBgBitmap.isRecycled()) {
-                        mBgBitmap.recycle();
-                    }
-                }
+                
                 int distance = mFragmentMusicDetailScrollview.getTopViewHeight();
                 int alpha = 255 * scrollY / distance;
                 alpha = alpha > 255 ? 255 : alpha;
