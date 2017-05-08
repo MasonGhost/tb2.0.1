@@ -41,6 +41,8 @@ android {
         disable 'InvalidPackage'
         disable "ResourceType"
         abortOnError false
+        // if true, only report errors.
+//        ignoreWarnings true
     }
     /**
      * 保证 testDebug 执行完成后会执行 testRelease

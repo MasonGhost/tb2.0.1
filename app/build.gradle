@@ -94,6 +94,8 @@ android {
         //Lint gives this warning but SDK 20 would be Android L Beta.
         disable 'IconDensities'             //For testing purpose. This is safe to remove.
         disable 'IconMissingDensityFolder'  //For testing purpose. This is safe to remove.
+        // if true, only report errors.
+//        ignoreWarnings true
     }
     packagingOptions {
         exclude 'LICENSE.txt'
