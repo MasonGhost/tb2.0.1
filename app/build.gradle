@@ -3,7 +3,7 @@ apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'jacoco' //测试报告
 apply from: "$rootDir/jacocoCoverage.gradle"
- apply plugin: 'com.antfortune.freeline'
+apply plugin: 'com.antfortune.freeline'
 jacoco {
     toolVersion = "0.7.8"
     reportsDir = file("$buildDir/customJacocoReportDir")
@@ -26,9 +26,9 @@ android {
         }
         // 极光推送
         manifestPlaceholders = [
-                JPUSH_PKGNAME : applicationId,
+                JPUSH_PKGNAME: applicationId,
                 JPUSH_APPKEY : "85f8e1049e913108b9d9bc67", //JPush上注册的包名对应的appkey.
-                JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+                JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
         ]
 
         multiDexEnabled true
@@ -64,7 +64,11 @@ android {
             signingConfig signingConfigs.debug
         }
     }
-
+    repositories {
+        flatDir {
+            dirs 'libs'
+        }
+    }
     /**
      * 保证 testDebug 执行完成后会执行 testRelease
      * ｛@Link http://g.co/androidstudio/not-mocked｝
@@ -95,7 +99,7 @@ android {
         disable 'IconDensities'             //For testing purpose. This is safe to remove.
         disable 'IconMissingDensityFolder'  //For testing purpose. This is safe to remove.
         // if true, only report errors.
-//        ignoreWarnings true
+        ignoreWarnings true
     }
     packagingOptions {
         exclude 'LICENSE.txt'
@@ -139,10 +143,14 @@ configurations.all {
 }
 dependencies {
     def dataDependences = rootProject.ext.dataDependencies;
+    def supportDependences = rootProject.ext.sdksoupportDependencies;
     def testDependences = rootProject.ext.testDependencies;
 
-
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    //support
+    compile supportDependences.appcompatV7
+    compile supportDependences.paletteV7
+    compile supportDependences.supportV4
 
     // Test
     testCompile testDependences.junit
@@ -181,10 +189,6 @@ dependencies {
     compile dataDependences.jiguangJcore
 
     compile dataDependences.greendaoSqlcipher
-    //compile dataDependences.greendaoGenerator
-    compile 'com.android.support:appcompat-v7:25.0.1'
-    compile 'com.android.support:support-v4:25.0.1'
-    compile 'com.android.support:palette-v7:25.0.1'
-
+    compile(name: 'lint-library-release', ext: 'aar')
 }
 
