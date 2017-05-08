@@ -51,9 +51,9 @@ import static com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.Messa
  * @Description
  */
 public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Presenter,
-        MusicCommentListBean> implements MusicCommentContract.View, OnUserInfoClickListener,OnCommentTextClickListener,
+        MusicCommentListBean> implements MusicCommentContract.View, OnUserInfoClickListener, OnCommentTextClickListener,
         InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener,
-        MusicCommentItem.OnReSendClickListener {
+        MusicCommentItem.OnReSendClickListener, MusicCommentHeader.HeadlerClickEvent {
 
     @BindView(R.id.ilv_comment)
     InputLimitView mIlvComment;
@@ -101,19 +101,13 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
         super.initView(rootView);
         mIlvComment.setSendButtonVisiable(true);
         mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
-        mIlvComment.post(new Runnable() { // 处理评论框位置协调
-            @Override
-            public void run() {
-//                mRvList.setPadding(0, 0, 0, mIlvComment.getHeight());
-            }
-        });
         mMusicCommentHeader = new MusicCommentHeader(getActivity());
-
+        mMusicCommentHeader.setHeadlerClickEvent(this);
         mHeaderInfo = (MusicCommentHeader.HeaderInfo) getArguments()
                 .getSerializable(CURRENT_COMMENT);
         if (mHeaderInfo != null) {
             mMusicCommentHeader.setHeadInfo(mHeaderInfo);
-            mTvToolbarCenter.setText(String.format("评论(%d)", mHeaderInfo.getCommentCount()));
+            mTvToolbarCenter.setText(String.format("评论(%s)", mHeaderInfo.getCommentCount()));
         } else {
             Long ids = getArguments().getLong(BUNDLE_SOURCE_ID);
             mHeaderInfo = new MusicCommentHeader.HeaderInfo();
@@ -265,6 +259,11 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     @Override
     public String getType() {
         return getArguments().getString(CURRENT_COMMENT_TYPE, "");
+    }
+
+    @Override
+    public void headClick() {
+        getActivity().finish();
     }
 
     private void initLisener() {

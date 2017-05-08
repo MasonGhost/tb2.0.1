@@ -29,7 +29,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideStokeTransform;
 import com.zhiyicx.baseproject.utils.ImageUtils;
-import com.zhiyicx.baseproject.widget.EmptyView;
+import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -40,7 +40,6 @@ import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentHeader;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
-import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 import com.zhiyicx.thinksnsplus.widget.IconTextView;
 import com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout;
@@ -495,6 +494,13 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
             @Override
             public void onHeadFling(int scrollY) {
+                if (mPalette == null) {
+                    mBgBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.default_pic_personal);
+                    mPalette = Palette.from(mBgBitmap).generate();
+                    if (mBgBitmap.isRecycled()) {
+                        mBgBitmap.recycle();
+                    }
+                }
                 int distance = mFragmentMusicDetailScrollview.getTopViewHeight();
                 int alpha = 255 * scrollY / distance;
                 alpha = alpha > 255 ? 255 : alpha;
@@ -541,6 +547,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                                 (mBgBitmap, mBgBitmap.getWidth(), mBgBitmap.getHeight()));
                         mFragmentMusicDetailHeadInfo.setBackgroundDrawable(drawable);
                     }
+
                 });
         if (WindowUtils.getAblumHeadInfo() != null) {
             WindowUtils.AblumHeadInfo ablumHeadInfo = WindowUtils.getAblumHeadInfo();
