@@ -7,7 +7,8 @@
     android:layout_height="wrap_content"
     android:background="@color/themeColor"
     android:minHeight="@dimen/toolbar_height"
-    android:titleMargin="0dp">
+    android:titleMargin="0dp"
+    tools:ignore="UnusedAttribute">
 
     <RelativeLayout
         android:layout_width="match_parent"

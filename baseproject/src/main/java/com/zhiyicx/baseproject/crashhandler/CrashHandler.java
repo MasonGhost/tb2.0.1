@@ -40,7 +40,7 @@ import rx.schedulers.Schedulers;
 
 public class CrashHandler implements Thread.UncaughtExceptionHandler {
     public static final String TAG = "CrashHandler";
-    public static String CRASH_FILE_FOLDER;// crash文件保存路径"/sdcard/crash/";
+    public static String CRASH_FILE_FOLDER = "/crash/";// crash文件保存路径"/sdcard/crash/";
     private Thread.UncaughtExceptionHandler mUncaughtExceptionHandler;
     //用来存储设备信息和异常信息
     private Map<String, String> infos = new HashMap<String, String>();
@@ -51,10 +51,9 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
 
     private CrashHandler() {
         try {
-            CRASH_FILE_FOLDER = Environment.getExternalStorageDirectory().getPath() + "/crash/";
+            CRASH_FILE_FOLDER = Environment.getExternalStorageDirectory().getPath() + CRASH_FILE_FOLDER;
         } catch (Exception e) {
             e.printStackTrace();
-            CRASH_FILE_FOLDER = "/sdcard/crash/";
         }
 
     }
