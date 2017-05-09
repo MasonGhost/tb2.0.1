@@ -42,6 +42,7 @@ public class PlayerSeekBar extends AppCompatSeekBar {
     public void setLoading(boolean loading) {
         drawLoading = loading;
         if (drawLoading) {
+            setProgress(0);
             invalidate();
         }
     }
@@ -82,7 +83,7 @@ public class PlayerSeekBar extends AppCompatSeekBar {
             float scale = 0.6f;
             if (drawable != null) {
                 float result = (float) drawable.getIntrinsicWidth() / (float) loading.getWidth();
-                scale = (float)(Math.round(result * 100)) / 100;// 取两位小数
+                scale = (float) (Math.round(result * 100)) / 100;// 取两位小数
             }
             matrix.setScale(scale, scale, loading.getWidth() / 2, loading.getHeight() / 2);
             matrix.postRotate(degree, loading.getWidth() / 2, loading.getHeight() / 2);
