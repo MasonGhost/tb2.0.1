@@ -61,16 +61,16 @@ public class StatusBarUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (intgetType(activity.getWindow()) == 0) {
             } else {
-            Window window = activity.getWindow();
-            window.setStatusBarColor(ContextCompat.getColor(activity, colorId));
+                Window window = activity.getWindow();
+                window.setStatusBarColor(ContextCompat.getColor(activity, colorId));
             }
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (intgetType(activity.getWindow()) == 0) {
             } else {       //使用SystemBarTint库使4.4版本状态栏变色，需要先将状态栏设置为透明
-            transparencyBar(activity);
-            SystemBarTintManager tintManager = new SystemBarTintManager(activity);
-            tintManager.setStatusBarTintEnabled(true);
-            tintManager.setStatusBarTintResource(colorId);
+                transparencyBar(activity);
+                SystemBarTintManager tintManager = new SystemBarTintManager(activity);
+                tintManager.setStatusBarTintEnabled(true);
+                tintManager.setStatusBarTintResource(colorId);
             }
         }
     }
@@ -184,7 +184,7 @@ public class StatusBarUtils {
                 window.setAttributes(lp);
                 result = true;
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
         }
         return result;
@@ -214,7 +214,7 @@ public class StatusBarUtils {
                 }
                 result = true;
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
         }
         return result;

@@ -211,14 +211,14 @@ public class FileUtils {
         if (pathFrom.equalsIgnoreCase(pathTo)) {
             return;
         }
-
         FileChannel outputChannel = null;
         FileChannel inputChannel = null;
         try {
             inputChannel = new FileInputStream(new File(pathFrom)).getChannel();
             outputChannel = new FileOutputStream(new File(pathTo)).getChannel();
             inputChannel.transferTo(0, inputChannel.size(), outputChannel);
-            inputChannel.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             if (inputChannel != null) inputChannel.close();
             if (outputChannel != null) outputChannel.close();

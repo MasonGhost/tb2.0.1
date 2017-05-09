@@ -65,6 +65,7 @@ public class MigrationHelper {
                     try {
                         type = getTypeByClass(daoConfig.properties[j].type);
                     } catch (Exception exception) {
+                        exception.printStackTrace();
                     }
 
                     createTableStringBuilder.append(divider).append(columnName).append(" ").append(type);

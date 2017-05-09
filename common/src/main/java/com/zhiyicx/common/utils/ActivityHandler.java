@@ -144,6 +144,7 @@ public class ActivityHandler {
 //            android.os.Process.killProcess(android.os.Process.myPid());
             System.exit(0);
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

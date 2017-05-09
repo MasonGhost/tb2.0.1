@@ -135,7 +135,7 @@ public class JpushReceiver extends BroadcastReceiver {
                     Iterator<String> it = json.keys();
 
                     while (it.hasNext()) {
-                        String myKey = it.next().toString();
+                        String myKey = it.next();
                         sb.append("\nkey:" + key + ", value: [" +
                                 myKey + " - " + json.optString(myKey) + "]");
                     }

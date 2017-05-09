@@ -113,7 +113,7 @@ public class UpLoadRepository implements IUploadRepository {
                                             .map(new Func1<String, String[]>() {
                                                 @Override
                                                 public String[] call(String s) {
-                                                    return new String[]{s.toString(), storageTaskId + ""};
+                                                    return new String[]{s, storageTaskId + ""};
                                                 }
                                             });
                                 } else if (method.equalsIgnoreCase("post")) {
@@ -122,7 +122,7 @@ public class UpLoadRepository implements IUploadRepository {
                                             .map(new Func1<String, String[]>() {
                                                 @Override
                                                 public String[] call(String s) {
-                                                    return new String[]{s.toString(), storageTaskId + ""};
+                                                    return new String[]{s, storageTaskId + ""};
                                                 }
                                             });
                                 } else {

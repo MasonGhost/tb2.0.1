@@ -268,7 +268,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                     try {
                         connectToSession(mMediaBrowserCompat.getSessionToken());
                     } catch (RemoteException e) {
-
+                        e.printStackTrace();
                     }
                 }
             };

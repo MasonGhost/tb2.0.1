@@ -214,6 +214,7 @@ public class OverScrollView extends FrameLayout implements OnTouchListener
 				mScrollYField.setInt(this, value);
 			} catch (Exception e)
 			{
+				e.printStackTrace();
 			}
 		}
 	}
@@ -227,6 +228,7 @@ public class OverScrollView extends FrameLayout implements OnTouchListener
 				mScrollXField.setInt(this, value);
 			} catch (Exception e)
 			{
+				e.printStackTrace();
 			}
 		}
 	}

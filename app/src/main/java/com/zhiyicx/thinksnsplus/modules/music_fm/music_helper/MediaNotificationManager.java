@@ -120,7 +120,7 @@ public class MediaNotificationManager extends BroadcastReceiver {
                 mNotificationManager.cancel(NOTIFICATION_ID);
                 mService.unregisterReceiver(this);
             } catch (IllegalArgumentException ex) {
-
+                ex.printStackTrace();
             }
             mService.stopForeground(true);
         }
@@ -211,6 +211,7 @@ public class MediaNotificationManager extends BroadcastReceiver {
             try {
                 updateSessionToken();
             } catch (RemoteException e) {
+                e.printStackTrace();
             }
         }
     };

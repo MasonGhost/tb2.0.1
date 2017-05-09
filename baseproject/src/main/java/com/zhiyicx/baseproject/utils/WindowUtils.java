@@ -259,7 +259,7 @@ public class WindowUtils {
                     }
                 });
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
 
             if (mLayoutParams.x == mDestX) {

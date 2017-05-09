@@ -3,15 +3,11 @@ package com.zhiyicx.common.utils;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
-import android.graphics.Matrix;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.zhiyicx.common.utils.log.LogUtils;
 
@@ -81,7 +77,7 @@ public class ZoomView {
         mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                ViewGroup.LayoutParams lp = (ViewGroup.LayoutParams) zoomView.getLayoutParams();
+                ViewGroup.LayoutParams lp = zoomView.getLayoutParams();
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_UP:
                         mScaling = false;
@@ -144,7 +140,7 @@ public class ZoomView {
      * 松开手指，view复原动画
      */
     private void replyImage() {
-        final ViewGroup.LayoutParams lp = (ViewGroup.LayoutParams) zoomView.getLayoutParams();
+        final ViewGroup.LayoutParams lp = zoomView.getLayoutParams();
         final float w = zoomView.getLayoutParams().width;// 图片当前宽度
         final float h = zoomView.getLayoutParams().height;// 图片当前高度
         final float newW = originWidth;// 图片原宽度

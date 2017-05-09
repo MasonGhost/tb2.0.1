@@ -51,7 +51,7 @@ public class HomeActivity extends TSActivity {
 
     @Override
     protected void componentInject() {
-        LogUtils.d(TAG,"getDeviceInfo = " + getDeviceInfo(getApplicationContext()));
+        LogUtils.d(TAG, "getDeviceInfo = " + getDeviceInfo(getApplicationContext()));
     }
 
     @Override
@@ -110,21 +110,13 @@ public class HomeActivity extends TSActivity {
                     in = new BufferedReader(fstream, 1024);
                     mac = in.readLine();
                 } catch (IOException e) {
+                    e.printStackTrace();
                 } finally {
-                    if (fstream != null) {
-                        try {
-                            fstream.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    fstream.close();
                     if (in != null) {
-                        try {
-                            in.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        in.close();
                     }
+
                 }
             }
             json.put("mac", mac);
