@@ -909,7 +909,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
      *
      * @author Chris Banes
      */
-    public static interface OnMatrixChangedListener {
+    public  interface OnMatrixChangedListener {
         /**
          * Callback for when the Matrix displaying the Drawable has changed. This could be because
          * the View's bounds have changed, or the user has zoomed.
@@ -925,7 +925,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
      *
      * @author Chris Banes
      */
-    public static interface OnPhotoTapListener {
+    public  interface OnPhotoTapListener {
 
         /**
          * A callback to receive where the user taps on a photo. You will only receive a callback if
@@ -946,7 +946,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
      *
      * @author Chris Banes
      */
-    public static interface OnViewTapListener {
+    public  interface OnViewTapListener {
 
         /**
          * A callback to receive where the user taps on a ImageView. You will receive a callback if

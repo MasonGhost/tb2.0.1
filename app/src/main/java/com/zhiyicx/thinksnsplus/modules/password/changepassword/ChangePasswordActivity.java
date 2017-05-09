@@ -11,13 +11,6 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
  */
 
 public class ChangePasswordActivity extends TSActivity<ChangePasswordPresenter, ChangePasswordFragment> {
-    public static final String intent_password_type = "password_type";
-
-    static public enum PASSWORD {
-        CHANGE_PASSWORD,
-        FIND_PASSWORD;
-    }
-
     @Override
     protected void componentInject() {
         DaggerChangePasswordComponent

@@ -59,9 +59,9 @@ public interface CommonClient {
      * change: 修改,找回密码
      */
 
-    public static final String VERTIFY_CODE_TYPE_REGISTER = "register";
-    public static final String VERTIFY_CODE_TYPE_LOGIN = "login";
-    public static final String VERTIFY_CODE_TYPE_CHANGE = "change";
+     String VERTIFY_CODE_TYPE_REGISTER = "register";
+     String VERTIFY_CODE_TYPE_LOGIN = "login";
+     String VERTIFY_CODE_TYPE_CHANGE = "change";
 
 
     /*******************************************  系统相关  *********************************************/
