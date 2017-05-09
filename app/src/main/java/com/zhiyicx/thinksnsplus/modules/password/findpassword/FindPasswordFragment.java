@@ -58,8 +58,7 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
     private boolean isSureLoading;
 
     public static FindPasswordFragment newInstance() {
-        FindPasswordFragment fragment = new FindPasswordFragment();
-        return fragment;
+        return new FindPasswordFragment();
     }
 
     @Override

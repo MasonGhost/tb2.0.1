@@ -91,8 +91,7 @@ public class GalleryPictureContainerFragment extends TSFragment {
         if (fragmentList != null && !fragmentList.isEmpty()) {
             Fragment fragment = fragmentList.get(0);
             if (fragment instanceof GalleryPictureFragment) {
-                GalleryPictureFragment galleryPictureFragment = (GalleryPictureFragment) fragment;
-                return galleryPictureFragment;
+                return (GalleryPictureFragment) fragment;
             }
         }
         return null;

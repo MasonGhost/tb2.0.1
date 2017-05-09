@@ -47,9 +47,7 @@ public class PhotoViewActivity extends TSActivity {
         int index = bundle.getInt(EXTRA_VIEW_INDEX);
         int maxCount = bundle.getInt(EXTRA_MAX_COUNT);
         ArrayList<AnimationRectBean> animationRectBeen = bundle.getParcelableArrayList("rect");
-        PhotoViewFragment imagePagerFragment =
-                PhotoViewFragment.newInstance(selectedPhotos, allPhotos, animationRectBeen, index, maxCount);
-        return imagePagerFragment;
+        return PhotoViewFragment.newInstance(selectedPhotos, allPhotos, animationRectBeen, index, maxCount);
     }
 
     @Override

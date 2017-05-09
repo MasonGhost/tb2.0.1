@@ -52,11 +52,10 @@ public class JpushMessageBeanGreenDaoImpl extends CommonCacheImpl<JpushMessageBe
     @Override
     public List<JpushMessageBean> getMultiDataFromCache() {
         JpushMessageBeanDao jpushMessageDao = getRDaoSession().getJpushMessageBeanDao();
-        List<JpushMessageBean> datas = jpushMessageDao.queryBuilder()
+        return jpushMessageDao.queryBuilder()
                 .orderDesc(JpushMessageBeanDao.Properties.Creat_time)
                 .limit(TSListFragment.DEFAULT_PAGE_SIZE)
                 .list();
-        return datas;
     }
 
     /**
@@ -66,12 +65,11 @@ public class JpushMessageBeanGreenDaoImpl extends CommonCacheImpl<JpushMessageBe
      */
     public List<JpushMessageBean> getCommentJpushMessage() {
         JpushMessageBeanDao jpushMessageDao = getRDaoSession().getJpushMessageBeanDao();
-        List<JpushMessageBean> datas = jpushMessageDao.queryBuilder()
+        return jpushMessageDao.queryBuilder()
                 .where(JpushMessageBeanDao.Properties.Action.eq(JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_COMMENT))
                 .orderDesc(JpushMessageBeanDao.Properties.Creat_time)
                 .limit(3)
                 .list();
-        return datas;
     }
 
     /**
@@ -81,12 +79,11 @@ public class JpushMessageBeanGreenDaoImpl extends CommonCacheImpl<JpushMessageBe
      */
     public List<JpushMessageBean> getDigJpushMessage() {
         JpushMessageBeanDao jpushMessageDao = getRDaoSession().getJpushMessageBeanDao();
-        List<JpushMessageBean> datas = jpushMessageDao.queryBuilder()
+        return jpushMessageDao.queryBuilder()
                 .where(JpushMessageBeanDao.Properties.Action.eq(JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_DIGG))
                 .orderDesc(JpushMessageBeanDao.Properties.Creat_time)
                 .limit(3)
                 .list();
-        return datas;
     }
 
     @Override

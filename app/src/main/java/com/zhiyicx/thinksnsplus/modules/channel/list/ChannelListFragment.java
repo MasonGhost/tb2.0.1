@@ -1,17 +1,13 @@
 package com.zhiyicx.thinksnsplus.modules.channel.list;
 
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
-import com.zhy.adapter.recyclerview.CommonAdapter;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +15,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListViewPagerFragment.PAGE_ALL_CHANNEL_LIST;
 
 /**
@@ -37,9 +32,8 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        CommonAdapter<ChannelSubscripBean> commonAdapter = new ChannelListFragmentAdapter(getContext()
+        return new ChannelListFragmentAdapter(getContext()
                 , R.layout.item_channel_list, mListDatas, mPresenter);
-        return commonAdapter;
     }
 
     @Override
@@ -58,6 +52,7 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
 
     /**
      * 内容区域在 viewpager 中
+     *
      * @return
      */
     @Override

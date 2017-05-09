@@ -698,8 +698,7 @@ public class FileUtils {
     }
 
     public static Bitmap readImgFromFile(Context context,String name) {
-        Bitmap bitmap = BitmapFactory.decodeFile(getCacheFile(context, false).getAbsolutePath() + "/"+name);
-        return bitmap;
+        return BitmapFactory.decodeFile(getCacheFile(context, false).getAbsolutePath() + "/"+name);
     }
 
     /**

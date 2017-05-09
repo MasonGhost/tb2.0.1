@@ -100,11 +100,10 @@ public class ChannelSubscripBeanGreenDaoImpl extends CommonCacheImpl<ChannelSubs
      */
     public List<ChannelSubscripBean> getAllChannelList(long userId) {
         ChannelSubscripBeanDao channelSubscripBeanDao = getRDaoSession().getChannelSubscripBeanDao();
-        List<ChannelSubscripBean> channelSubscripBeanList = channelSubscripBeanDao.queryDeep(" where "
+        return channelSubscripBeanDao.queryDeep(" where "
                         + ChannelSubscripBeanDao.Properties.UserId.columnName + " = ? "
                         + " order by " + "T.\"" + ChannelSubscripBeanDao.Properties.Id.columnName + "\"" + " DESC"// 按频道id倒序
                 , userId + "");
-        return channelSubscripBeanList;
     }
 
     /**
@@ -114,13 +113,12 @@ public class ChannelSubscripBeanGreenDaoImpl extends CommonCacheImpl<ChannelSubs
      */
     public List<ChannelSubscripBean> getSomeOneSubscribChannelList(long userId) {
         ChannelSubscripBeanDao channelSubscripBeanDao = getRDaoSession().getChannelSubscripBeanDao();
-        List<ChannelSubscripBean> channelSubscripBeanList = channelSubscripBeanDao.queryDeep(" where "
+        return channelSubscripBeanDao.queryDeep(" where "
                         + ChannelSubscripBeanDao.Properties.UserId.columnName + " = ? and "
                         + ChannelSubscripBeanDao.Properties.ChannelSubscriped.columnName + " = ? " // 订阅状态
                         + " order by " + "T.\"" + ChannelSubscripBeanDao.Properties.Id.columnName + "\"" + " DESC"// 按频道id倒序
                 , userId + ""
                 , "1");
-        return channelSubscripBeanList;
     }
 
     /**

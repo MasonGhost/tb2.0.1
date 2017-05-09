@@ -46,8 +46,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
     private ActionPopupWindow mCleanCachePopupWindow;// 清理缓存选择弹框
 
     public static SettingsFragment newInstance() {
-        SettingsFragment fragment = new SettingsFragment();
-        return fragment;
+        return new SettingsFragment();
     }
 
     @Override

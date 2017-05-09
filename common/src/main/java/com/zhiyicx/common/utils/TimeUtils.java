@@ -461,8 +461,7 @@ public class TimeUtils {
         }
         SimpleDateFormat localFormater = new SimpleDateFormat(DEFAULT_PATTERN);
         localFormater.setTimeZone(TimeZone.getDefault());
-        String localTime = localFormater.format(gpsUTCDate.getTime());
-        return localTime;
+        return localFormater.format(gpsUTCDate.getTime());
     }
 
     /**

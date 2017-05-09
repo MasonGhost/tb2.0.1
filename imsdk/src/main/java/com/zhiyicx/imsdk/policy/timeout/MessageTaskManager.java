@@ -44,8 +44,7 @@ public class MessageTaskManager {
     public MessageContainer getMessageContanier() {
         synchronized (messageTasks) {
             if (messageTasks.size() > 0) {
-                MessageContainer messageContainer = messageTasks.removeFirst();
-                return messageContainer;
+                return messageTasks.removeFirst();
             }
         }
         return null;

@@ -41,8 +41,7 @@ public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Pres
 
     @Override
     protected RecyclerView.ItemDecoration getItemDecoration() {
-        CustomLinearDecoration itemDecoration = new CustomLinearDecoration(0, 1, 0, 0, ContextCompat.getDrawable(getContext(), R.drawable.shape_recyclerview_divider));
-        return itemDecoration;
+        return new CustomLinearDecoration(0, 1, 0, 0, ContextCompat.getDrawable(getContext(), R.drawable.shape_recyclerview_divider));
     }
 
     @Override

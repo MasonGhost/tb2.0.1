@@ -50,11 +50,10 @@ public class DigedBeanGreenDaoImpl extends CommonCacheImpl<DigedBean> {
     @Override
     public List<DigedBean> getMultiDataFromCache() {
         DigedBeanDao digedBeanDao = getRDaoSession().getDigedBeanDao();
-        List<DigedBean> datas = digedBeanDao.queryDeep(" where "
+        return digedBeanDao.queryDeep(" where "
                         +" T."  + DigedBeanDao.Properties.Id.columnName + " < ? "
                         + " order by " + " T."  + DigedBeanDao.Properties.Id.columnName  + " DESC"// 按频道id倒序
                 , System.currentTimeMillis() + "");
-        return datas;
     }
 
     @Override

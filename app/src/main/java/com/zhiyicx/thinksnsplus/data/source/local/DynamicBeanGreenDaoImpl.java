@@ -243,11 +243,10 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
      */
     public List<DynamicBean> getMyCollectDynamic() {
         DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
-        List<DynamicBean> datas = dynamicBeanDao.queryDeep(" where "
+        return  dynamicBeanDao.queryDeep(" where "
                         + " T1." + DynamicToolBeanDao.Properties.Is_collection_feed.columnName + " = ? "
                         + " ORDER BY  T." + DynamicBeanDao.Properties.Feed_id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// 按照Feed_id倒序：越新的动态，Feed_id越大
                 , "1");
-        return datas;
     }
 
     /**
@@ -257,11 +256,10 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
      */
     public List<DynamicBean> getMyDynamics(Long userId) {
         DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
-        List<DynamicBean> datas = dynamicBeanDao.queryDeep(" where "
+        return dynamicBeanDao.queryDeep(" where "
                         + " T." + DynamicBeanDao.Properties.User_id.columnName + " = ? "
                         + " ORDER BY  T." + DynamicBeanDao.Properties.Feed_id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// 按照Feed_id倒序：越新的动态，Feed_id越大
                 , new String[]{String.valueOf(userId)});
-        return datas;
     }
 
     /**

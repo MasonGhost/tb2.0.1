@@ -67,14 +67,12 @@ public class ZipHelper {
                         numberOfBytesToDecompress
                 );
 
-        int bufferSizeInBytes = numberOfBytesToDecompress;
-
         int numberOfBytesDecompressedSoFar = 0;
         List<Byte> bytesDecompressedSoFar = new ArrayList<Byte>();
 
         try {
             while (inflater.needsInput() == false) {
-                byte[] bytesDecompressedBuffer = new byte[bufferSizeInBytes];
+                byte[] bytesDecompressedBuffer = new byte[numberOfBytesToDecompress];
 
                 int numberOfBytesDecompressedThisTime = inflater.inflate
                         (

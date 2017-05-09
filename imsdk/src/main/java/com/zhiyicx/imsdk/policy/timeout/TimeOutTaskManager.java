@@ -48,8 +48,7 @@ public class TimeOutTaskManager {
     public TimeOutTask getTimeoutTask() {
         synchronized (mTimeOutTasks) {
             if (mTimeOutTasks.size() > 0) {
-                TimeOutTask timeOutTask = mTimeOutTasks.removeFirst();
-                return timeOutTask;
+                return  mTimeOutTasks.removeFirst();
             }
         }
         return null;

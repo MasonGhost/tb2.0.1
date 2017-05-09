@@ -54,8 +54,7 @@ public class RankPresenter extends BasePresenter<RankContract.Repository, RankCo
 
     @Override
     public List<DigRankBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        List<DigRankBean> cacheData = mDigBeanGreenDao.getMultiDataFromCache();
-        return cacheData;
+        return mDigBeanGreenDao.getMultiDataFromCache();
     }
 
     @Override

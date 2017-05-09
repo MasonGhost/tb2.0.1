@@ -66,8 +66,7 @@ public class PersonalCenterDynamicListItemForOneImage extends PersonalCenterDyna
         int with;
         int height;
         int proportion; // 压缩比例
-        int currentWith = getCurrenItemWith(part);
-        with = currentWith;
+        with = getCurrenItemWith(part);;
         ImageBean imageBean = dynamicBean.getFeed().getStorages().get(positon);
         height = (int) (with * imageBean.getHeight() / imageBean.getWidth());
         height = height > mImageMaxHeight ? mImageMaxHeight : height;

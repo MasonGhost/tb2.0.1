@@ -51,8 +51,7 @@ public class CollectAlbumListFragment extends MusicListFragment {
     }
 
     public static CollectAlbumListFragment newInstance() {
-        CollectAlbumListFragment collectAlbumListFragment = new CollectAlbumListFragment();
-        return collectAlbumListFragment;
+        return new CollectAlbumListFragment();
     }
 
     @Override

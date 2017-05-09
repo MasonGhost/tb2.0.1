@@ -139,10 +139,7 @@ public class MigrationHelper {
         if (type.equals(Boolean.class)) {
             return "BOOLEAN";
         }
-
-        Exception exception =
-                new Exception(CONVERSION_CLASS_NOT_FOUND_EXCEPTION.concat(" - Class: ").concat(type.toString()));
-        throw exception;
+        throw new Exception(CONVERSION_CLASS_NOT_FOUND_EXCEPTION.concat(" - Class: ").concat(type.toString()));
     }
 
     // 每次从数据库最多取出一条数据

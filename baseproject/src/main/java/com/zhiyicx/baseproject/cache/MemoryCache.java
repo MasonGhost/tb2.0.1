@@ -33,7 +33,7 @@ public class MemoryCache<T extends CacheBean> implements ICache<T> {
 
     @Override
     public Observable<BaseJson<T>> get(final Long key) {
-        Observable<BaseJson<T>> observable = Observable.create(new Observable.OnSubscribe<BaseJson<T>>() {
+        return Observable.create(new Observable.OnSubscribe<BaseJson<T>>() {
             @Override
             public void call(Subscriber<? super BaseJson<T>> subscriber) {
                 // 取消订阅
@@ -51,7 +51,6 @@ public class MemoryCache<T extends CacheBean> implements ICache<T> {
                 subscriber.onCompleted();
             }
         });
-        return observable;
     }
 
     @Override

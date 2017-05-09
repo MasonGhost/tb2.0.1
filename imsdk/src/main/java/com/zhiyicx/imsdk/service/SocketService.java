@@ -980,8 +980,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                 default:
             }
         } else if (jsonObject.has("ping")) {
-            AuthData authData = gson.fromJson(jsonObject.toString(), AuthData.class);
-            eventContainer.mAuthData = authData;
+            eventContainer.mAuthData = gson.fromJson(jsonObject.toString(), AuthData.class);
         }
         return eventContainer;
     }
@@ -1033,8 +1032,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                 cancleTimeoutListen(0 + "");
             JSONObject jsonObject = jsonArray.getJSONObject(1);
             MessageContainer messageContainer = new MessageContainer();
-            Message message = new Message();
-            messageContainer.msg = message;
+            messageContainer.msg = new Message();
             eventContainer.mMessageContainer = messageContainer;
 
             if (jsonObject != null && jsonObject.has("code")) {

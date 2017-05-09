@@ -85,7 +85,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      */
     @Override
     public Observable<ArrayList<AreaBean>> getAreaList() {
-        Observable<ArrayList<AreaBean>> observable = Observable.create(new Observable.OnSubscribe<ArrayList<AreaBean>>() {
+       return  Observable.create(new Observable.OnSubscribe<ArrayList<AreaBean>>() {
             @Override
             public void call(Subscriber<? super ArrayList<AreaBean>> subscriber) {
                 try {
@@ -100,7 +100,6 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                 }
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-        return observable;
     }
 
     /**

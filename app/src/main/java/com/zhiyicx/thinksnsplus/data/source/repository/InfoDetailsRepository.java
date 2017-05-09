@@ -11,7 +11,6 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.info.InfoWebBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.InfoMainClient;
@@ -53,8 +52,7 @@ public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
     public Observable<BaseJson<List<InfoCommentListBean>>> getInfoCommentList(String feed_id,
                                                                               Long max_id, Long
                                                                                       limit) {
-
-        Observable<BaseJson<List<InfoCommentListBean>>> comment = mInfoMainClient.getInfoCommentList(feed_id, max_id,
+        return mInfoMainClient.getInfoCommentList(feed_id, max_id,
                 Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
                 .flatMap(new Func1<BaseJson<List<InfoCommentListBean>>,
                         Observable<BaseJson<List<InfoCommentListBean>>>>() {
@@ -119,7 +117,6 @@ public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
                         }
                     }
                 });
-        return comment;
     }
 
     @Override
@@ -156,7 +153,7 @@ public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
     }
 
     @Override
-    public void handleLike(boolean isLiked,final String news_id) {
+    public void handleLike(boolean isLiked, final String news_id) {
         Observable.just(isLiked)
                 .observeOn(Schedulers.io())
                 .subscribe(new Action1<Boolean>() {

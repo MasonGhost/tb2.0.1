@@ -36,8 +36,7 @@ public class ChangePasswordFragment extends TSFragment<ChangePasswordContract.Pr
     private boolean isSureNewPasswordEdited;
 
     public static ChangePasswordFragment newInstance() {
-        ChangePasswordFragment fragment = new ChangePasswordFragment();
-        return fragment;
+        return  new ChangePasswordFragment();
     }
 
     @Override

@@ -22,9 +22,8 @@ public class ManyEdittextContentWatcher {
     }
 
     public void allEdittextHasContent(EditText... editTexts) {
-        EditText[] allEditText = editTexts;
-        if (allEditText != null && allEditText.length > 0) {
-            for (EditText editText : allEditText) {
+        if (editTexts != null && editTexts.length > 0) {
+            for (EditText editText : editTexts) {
                 editText.addTextChangedListener(new ContentTextWatcher());
             }
         }

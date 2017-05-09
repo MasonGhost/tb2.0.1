@@ -37,8 +37,7 @@ public class ViewHolder extends RecyclerView.ViewHolder
 
     public static ViewHolder createViewHolder(Context context, View itemView)
     {
-        ViewHolder holder = new ViewHolder(context, itemView);
-        return holder;
+        return new ViewHolder(context, itemView);
     }
 
     public static ViewHolder createViewHolder(Context context,
@@ -46,8 +45,7 @@ public class ViewHolder extends RecyclerView.ViewHolder
     {
         View itemView = LayoutInflater.from(context).inflate(layoutId, parent,
                 false);
-        ViewHolder holder = new ViewHolder(context, itemView);
-        return holder;
+        return new ViewHolder(context, itemView);
     }
 
     /**

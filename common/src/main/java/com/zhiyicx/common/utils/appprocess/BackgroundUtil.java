@@ -44,8 +44,8 @@ public class BackgroundUtil {
             return ((BaseActivity) ActivityHandler.getInstance().currentActivity()).mIsForeground;
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
         }
+        return false;
     }
 
 

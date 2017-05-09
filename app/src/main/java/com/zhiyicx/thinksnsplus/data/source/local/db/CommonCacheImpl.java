@@ -26,47 +26,42 @@ public abstract class CommonCacheImpl<T> implements IDataBaseOperate<T> {
      * 获取可读数据库
      */
     protected SQLiteDatabase getReadableDatabase() {
-        SQLiteDatabase db = sUpDBHelper.getReadableDatabase();
-        return db;
+        return  sUpDBHelper.getReadableDatabase();
+
     }
 
     /**
      * 获取可写数据库
      */
     protected SQLiteDatabase getWritableDatabase() {
-        SQLiteDatabase db = sUpDBHelper.getWritableDatabase();
-        return db;
+        return sUpDBHelper.getWritableDatabase();
     }
 
     /**
      * 获取可写数据库的DaoMaster
      */
     protected DaoMaster getWDaoMaster() {
-        DaoMaster daoMaster = new DaoMaster(getWritableDatabase());
-        return daoMaster;
+        return  new DaoMaster(getWritableDatabase());
     }
 
     /**
      * 获取可写数据库的DaoSession
      */
     protected DaoSession getWDaoSession() {
-        DaoSession daoSession = getWDaoMaster().newSession();
-        return daoSession;
+        return getWDaoMaster().newSession();
     }
 
     /**
      * 获取可写数据库的DaoMaster
      */
     protected DaoMaster getRDaoMaster() {
-        DaoMaster daoMaster = new DaoMaster(getWritableDatabase());
-        return daoMaster;
+        return new DaoMaster(getWritableDatabase());
     }
 
     /**
      * 获取可写数据库的DaoSession
      */
     protected DaoSession getRDaoSession() {
-        DaoSession daoSession = getRDaoMaster().newSession();
-        return daoSession;
+        return  getRDaoMaster().newSession();
     }
 }

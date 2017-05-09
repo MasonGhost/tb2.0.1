@@ -65,8 +65,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     private boolean isRegisting = false;
 
     public static RegisterFragment newInstance() {
-        RegisterFragment fragment = new RegisterFragment();
-        return fragment;
+        return  new RegisterFragment();
     }
 
     @Override

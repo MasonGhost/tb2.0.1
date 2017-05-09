@@ -47,8 +47,7 @@ public class UIUtils {
      * 通过资源名称查找resource
      */
     public static int getResourceByName(String name, String type, Context context) {
-        int id = context.getResources().getIdentifier(name, type, context.getPackageName());
-        return id;
+        return context.getResources().getIdentifier(name, type, context.getPackageName());
     }
 
     /**

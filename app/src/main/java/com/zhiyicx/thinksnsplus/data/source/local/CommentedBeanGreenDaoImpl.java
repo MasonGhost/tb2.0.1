@@ -50,11 +50,10 @@ public class CommentedBeanGreenDaoImpl extends CommonCacheImpl<CommentedBean> {
     @Override
     public List<CommentedBean> getMultiDataFromCache() {
         CommentedBeanDao commentedBeanDao = getRDaoSession().getCommentedBeanDao();
-        List<CommentedBean> datas = commentedBeanDao.queryDeep(" where "
+        return commentedBeanDao.queryDeep(" where "
                         + " T." + CommentedBeanDao.Properties.Id.columnName + " < ? "
                         + " order by " + " T." + CommentedBeanDao.Properties.Id.columnName + " DESC"// 按频道id倒序
                 , System.currentTimeMillis() + "");
-        return datas;
     }
 
     @Override

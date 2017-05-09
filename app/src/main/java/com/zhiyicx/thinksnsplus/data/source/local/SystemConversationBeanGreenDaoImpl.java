@@ -51,11 +51,10 @@ public class SystemConversationBeanGreenDaoImpl extends CommonCacheImpl<SystemCo
     @Override
     public List<SystemConversationBean> getMultiDataFromCache() {
         SystemConversationBeanDao systemConversationBeanDao = getRDaoSession().getSystemConversationBeanDao();
-        List<SystemConversationBean> datas = systemConversationBeanDao.queryDeep(" where "
+        return systemConversationBeanDao.queryDeep(" where "
                         + " T." + SystemConversationBeanDao.Properties._id.columnName + " < ? "
                         + " order by " + " T." + SystemConversationBeanDao.Properties._id.columnName + " DESC"// 按频道id倒序
                 , System.currentTimeMillis() + "");
-        return datas;
     }
 
     /**
@@ -69,11 +68,10 @@ public class SystemConversationBeanGreenDaoImpl extends CommonCacheImpl<SystemCo
             max_id = System.currentTimeMillis();
         }
         SystemConversationBeanDao systemConversationBeanDao = getRDaoSession().getSystemConversationBeanDao();
-        List<SystemConversationBean> datas = systemConversationBeanDao.queryDeep(" where "
+        return systemConversationBeanDao.queryDeep(" where "
                         + " T." + SystemConversationBeanDao.Properties._id.columnName + " < ? "
                         + " order by " + " T." + SystemConversationBeanDao.Properties._id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// 按频道id倒序
                 , max_id + "");
-        return datas;
     }
 
     /**

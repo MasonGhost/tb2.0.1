@@ -50,8 +50,7 @@ public class FlushMessageBeanGreenDaoImpl extends CommonCacheImpl<FlushMessages>
     @Override
     public List<FlushMessages> getMultiDataFromCache() {
         FlushMessagesDao flushMessagesDao = getRDaoSession().getFlushMessagesDao();
-        List<FlushMessages> datas = flushMessagesDao.loadAll();
-        return datas;
+        return flushMessagesDao.loadAll();
     }
 
     public FlushMessages getFlushMessgaeByKey(String key) {

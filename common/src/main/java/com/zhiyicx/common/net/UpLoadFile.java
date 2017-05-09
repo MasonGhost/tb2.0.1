@@ -71,8 +71,7 @@ public class UpLoadFile {
                 }
             }
         }
-        List<MultipartBody.Part> parts = builder.build().parts();
-        return parts;
+        return  builder.build().parts();
     }
 
     /**
@@ -108,7 +107,6 @@ public class UpLoadFile {
         if ((params == null || params.isEmpty()) && (filePathList == null || filePathList.isEmpty())) {
             builder.addFormDataPart("hehe", "hehe");
         }
-        List<MultipartBody.Part> parts = builder.build().parts();
-        return parts;
+        return builder.build().parts();
     }
 }

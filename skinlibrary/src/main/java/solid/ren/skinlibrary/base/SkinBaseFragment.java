@@ -55,8 +55,7 @@ public class SkinBaseFragment extends RxFragment implements IDynamicNewView {
     }
 
     public final LayoutInflater getLayoutInflater(Bundle savedInstanceState) {
-        LayoutInflater result = getActivity().getLayoutInflater();
-        return result;
+        return  getActivity().getLayoutInflater();
     }
 
     @Override

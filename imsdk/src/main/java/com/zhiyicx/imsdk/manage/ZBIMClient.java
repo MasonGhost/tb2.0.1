@@ -152,8 +152,7 @@ public class ZBIMClient implements IMSoupport {
         msg.id = msgid;
         msg.cid = cid;
         msg.type = msgType;
-        MessageExt ext = new MessageExt(null, DataDealUitls.transBean2Map(giftMessage));
-        msg.ext = ext;
+        msg.ext = new MessageExt(null, DataDealUitls.transBean2Map(giftMessage));
 //        MessageExt ext = new MessageExt();
 //        ext.gift = giftMessage;
 //        msg.msg = new Gson().toJson(giftMessage);
