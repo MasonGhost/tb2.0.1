@@ -125,7 +125,7 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
 
         //处理子view传上来的事件
         //头部高度
-        mTopViewHeight = headerView.getHeight() - mNotConsumeHeight;
+        mTopViewHeight = height - mNotConsumeHeight;
         hiddenTop = dy > 0 && getScrollY() < mTopViewHeight;
         showTop = dy < 0 && getScrollY() >= 0 && !ViewCompat.canScrollVertically(target, -1);
         if (hiddenTop || showTop) {
@@ -164,8 +164,6 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
         layoutParams.height = scaleHeight;
         headerView.setLayoutParams(layoutParams);
         int scrollTo = (height - scaleHeight);
-        
-
         headerView.scrollTo(0, scrollTo / 2);
         LogUtils.d("scrollTo:::" + scrollTo);
         LogUtils.d("heightscrollTo:::" + mTopViewHeight);
