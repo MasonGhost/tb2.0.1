@@ -168,7 +168,6 @@
                     android:max="100"
                     android:maxHeight="3dp"
                     android:minHeight="3dp"
-
                     android:thumb="@mipmap/music_pic_progressbar_circle"/>
 
                 <TextView

@@ -46,6 +46,10 @@ public class MusicPlayBackFragment extends TSFragment {
 
     private String mArtUrl;
 
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
 
     @Override
     protected int getBodyLayoutId() {

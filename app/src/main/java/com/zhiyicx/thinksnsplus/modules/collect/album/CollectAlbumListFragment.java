@@ -7,6 +7,11 @@ import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListFragm
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicPresenter;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicPresenterModule;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -29,15 +34,22 @@ public class CollectAlbumListFragment extends MusicListFragment {
 
     @Override
     protected void initData() {
-       /* DaggerCollectAlbumListPresenterComponent.builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .musicPresenterModule(new MusicPresenterModule(this))
-                .build().inject(this);*/
         DaggerCollectAlbumListPresenterComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .collectAlbumPresenterModule(new CollectAlbumPresenterModule(this))
                 .build().inject(this);
         super.initData();
+    }
+
+    @Override
+    public void onCacheResponseSuccess(@NotNull List<MusicAlbumListBean> data, boolean isLoadMore) {
+        List<MusicAlbumListBean> dealData = new ArrayList<>();
+        for (MusicAlbumListBean albumListBean : data) {
+            if (albumListBean.getIs_collection() == 1) {
+                dealData.add(albumListBean);
+            }
+        }
+        super.onCacheResponseSuccess(dealData, isLoadMore);
     }
 
     @Override
@@ -71,19 +83,18 @@ public class CollectAlbumListFragment extends MusicListFragment {
                 albumListBean_same.setComment_count(mMusicAlbumListBean.getComment_count());
                 albumListBean_same.setTaste_count(mMusicAlbumListBean.getTaste_count());
                 mPresenter.updateOneMusic(albumListBean_same);
-                // 为什么收藏是0不是1吗，问Jliuer@aliyun.com
-                // 回答：因为是本地的收藏状态改变，如果操作前是 1 ，操作手动修改为 0
-                if (albumListBean_same.getIs_collection() == 0) {
+
+                if (albumListBean_same.getIs_collection() == 1) {
                     if (!mListDatas.contains(albumListBean_same)) {
                         mListDatas.add(albumListBean_same);
                     }
                 } else {
                     mListDatas.remove(albumListBean_same);
                 }
-                if (mListDatas.isEmpty()){
+                if (mListDatas.isEmpty()) {
                     mRvList.setBackground(null);
                 }
-               refreshData();
+                refreshData();
             }
         });
         LogUtils.d("CollectAlbumListFragment-->EVENT_ABLUM_COLLECT");

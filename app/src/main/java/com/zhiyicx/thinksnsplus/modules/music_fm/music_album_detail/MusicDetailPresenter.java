@@ -118,8 +118,8 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
-        int is_collect = mRootView.getCurrentAblum().getIs_collection();
-        mRootView.getCurrentAblum().setIs_collection(is_collect == 0 ? 1 : 0);
+        int is_collect = mRootView.getCurrentAblum().getIs_collection()== 0 ? 1 : 0;
+        mRootView.getCurrentAblum().setIs_collection(is_collect);
         mRootView.getmMusicAlbumListBean().setIs_collection(is_collect);
         int countChange = isUnCollected ? 1 : -1;
         mRootView.getmMusicAlbumListBean().setCollect_count(mRootView.getCurrentAblum().getCollect_count() + countChange);
