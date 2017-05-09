@@ -19,7 +19,7 @@
     <string name="comment_success">评论成功</string>
     <string name="comment_digg_much_hint">等人</string>
     <string name="comment_fail">评论失败</string>
-    <string name="comment_ing">评论中...</string>
+    <string name="comment_ing">评论中&#8230;</string>
     <string name="default_message_group">群组</string>
     <string name="has_no_body">还没有人</string>
     <string name="ts_helper">TS助手</string>
@@ -58,10 +58,10 @@
     <string name="all">全部</string>
     <string name="edit_userinfo_success">信息修改成功</string>
     <string name="edit_userinfo_failure">信息修改失败</string>
-    <string name="edit_userinfo_ing">信息修改中...</string>
+    <string name="edit_userinfo_ing">信息修改中&#8230;</string>
     <string name="update_head_success">头像上传成功</string>
     <string name="update_head_failure">头像上传失败</string>
-    <string name="update_head_ing">头像上传中...</string>
+    <string name="update_head_ing">头像上传中&#8230;</string>
 
     <!-- 设置 -->
     <string name="vertify">认证</string>
@@ -80,7 +80,7 @@
     <!--裁剪-->
     <string name="crop_head_icon">更换头像</string>
     <string name="crop_bg_cover">更换封面</string>
-    <string name="crop_ing">图片裁剪中...</string>
+    <string name="crop_ing">图片裁剪中&#8230;</string>
     <string name="crop_success">图片裁剪成功</string>
     <string name="crop_failure">图片裁剪失败</string>
     <!--相册-->

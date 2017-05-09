@@ -18,11 +18,8 @@ import com.zhiyicx.thinksnsplus.data.beans.DaoSession;
 
 public abstract class CommonCacheImpl<T> implements IDataBaseOperate<T> {
     private static final UpDBHelper sUpDBHelper = new UpDBHelper(AppApplication.getContext(), DBConfig.DB_NAME);
-    private Context mContext;
 
     public CommonCacheImpl(Context context) {
-        this.mContext = context;
-        mContext = context;
     }
 
     /**

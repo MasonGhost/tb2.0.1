@@ -121,6 +121,9 @@ public class WindowUtils {
             }
             mWindowManager.removeView(mView);
             isShown = false;
+            if (mView != null) {
+                mView = null;
+            }
         }
 
     }
@@ -274,12 +277,12 @@ public class WindowUtils {
         sAblumHeadInfo = ablumHeadInfo;
     }
 
-    public static class AblumHeadInfo{
-        int  listenCount;
-        int  shareCount;
-        int  commentCount;
-        int  likeCount;
-        int  ablumId;
+    public static class AblumHeadInfo {
+        int listenCount;
+        int shareCount;
+        int commentCount;
+        int likeCount;
+        int ablumId;
 
         public int getAblumId() {
             return ablumId;
