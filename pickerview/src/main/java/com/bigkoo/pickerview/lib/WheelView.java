@@ -108,6 +108,7 @@ public class WheelView extends View {
     private int drawOutContentStart = 0;//非中间文字开始绘制位置
     private static final float SCALECONTENT = 1F;//非中间文字则用此控制高度，压扁形成3d错觉
     private static final float CENTERCONTENTOFFSET = 5;//中间文字文字居中需要此偏移值
+    private Object[] visibles;         //可见的item数组
 
     public WheelView(Context context) {
         this(context, null);
@@ -171,6 +172,8 @@ public class WheelView extends View {
         if (android.os.Build.VERSION.SDK_INT >= 11) {
             setLayerType(LAYER_TYPE_SOFTWARE, null);
         }
+        //可见的item数组
+        visibles = new Object[itemsVisible];
     }
 
     private void remeasure() {
@@ -304,8 +307,6 @@ public class WheelView extends View {
         if (adapter == null) {
             return;
         }
-        //可见的item数组
-        Object visibles[] = new Object[itemsVisible];
         //滚动的Y值高度除去每行Item的高度，得到滚动了多少个item，即change数
         change = (int) (totalScrollY / itemHeight);
         try {

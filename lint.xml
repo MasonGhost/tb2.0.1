@@ -31,5 +31,7 @@
     <!-- Change the severity of hardcoded strings to "error" -->
 
     <issue id="HardcodedText" severity="error"/>
+    <!-- not allowed allocation in onlayout or ondraw-->
+    <issue id="DrawAllocation" severity="error"/>
 
 </lint>
