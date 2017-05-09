@@ -27,6 +27,9 @@ public class CommentCore_ implements ICommentBean {
         mCommentBean = builder.mCommonMetadata;
         mCommonMetadataProvider = builder.mCommonMetadataProvider;
         mCallBack = builder.mCallBack;
+        if (mCallBack == null) {
+           // mCallBack = new SendCallBack();
+        }
         mICommentState.getICommentEvent().setListener(mCallBack);
     }
 

@@ -263,7 +263,6 @@ public class BackgroundTaskHandler {
              * 通用 DELETE 接口处理
              */
             case DELETE:
-
                 if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
                     EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
                     return;
