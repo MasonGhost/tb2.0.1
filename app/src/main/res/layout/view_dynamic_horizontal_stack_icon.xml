@@ -5,6 +5,7 @@
               android:layout_height="wrap_content"
               android:background="@color/white"
               android:gravity="center_vertical"
+              android:baselineAligned="false"
               android:orientation="horizontal"
               android:paddingBottom="@dimen/spacing_normal_large">
 

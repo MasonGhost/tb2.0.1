@@ -8,6 +8,7 @@
         android:id="@+id/ll_bottom_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/custom_navigationbar_height"
+        android:baselineAligned="false"
         android:layout_alignParentBottom="true"
         android:background="@color/home_bottom_navigate_bg"
         android:orientation="horizontal">
