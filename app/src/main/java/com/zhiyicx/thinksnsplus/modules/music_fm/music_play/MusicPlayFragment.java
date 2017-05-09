@@ -504,7 +504,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         MediaControllerCompat mediaController = new MediaControllerCompat(
                 getActivity(), token);
         if (mediaController.getMetadata() == null) {
-            ToastUtils.showToast("metadata_error");
+            showSnackErrorMessage("metadata_error");
             getActivity().finish();
             return;
         }
@@ -682,6 +682,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         }
         long currentPosition = mLastPlaybackState.getPosition();
         if (mLastPlaybackState.getState() != PlaybackStateCompat.STATE_PAUSED) {
+            mFragmentMusicPalyProgress.setLoading(false);
             long timeDelta = SystemClock.elapsedRealtime() -
                     mLastPlaybackState.getLastPositionUpdateTime();
             currentPosition += (int) timeDelta * mLastPlaybackState.getPlaybackSpeed();
@@ -707,7 +708,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     @Subscriber(tag = EVENT_SEND_MUSIC_CACHE_PROGRESS, mode = ThreadMode.MAIN)
     public void onBufferingUpdate(int progress) {
         mFragmentMusicPalyProgress.setSecondaryProgress(mCurrentDuration * progress / 100);
-        LogUtils.d("MUSIC_CACHE_PROGRESS", "" + progress);
     }
 
     @Subscriber(tag = EVENT_SEND_MUSIC_LOAD, mode = ThreadMode.MAIN)
