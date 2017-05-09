@@ -48,7 +48,6 @@
                 android:id="@+id/tv_time_down"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_time_up"
                 android:layout_marginTop="@dimen/spacing_small"
                 android:gravity="center_horizontal"
                 android:includeFontPadding="false"
@@ -60,7 +59,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/ll_time_container">
+           >
 
             <TextView
                 android:id="@+id/tv_name"
