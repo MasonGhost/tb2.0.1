@@ -577,7 +577,16 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     }
 
     private void dealCurrentMusic() {
-        mFragmentMusicPalyProgress.setLoading(true);
+        MediaControllerCompat controllerCompat = getActivity().getSupportMediaController();
+        if (controllerCompat != null) {
+            PlaybackStateCompat state = controllerCompat.getPlaybackState();
+            if (state.getState() != PlaybackStateCompat.STATE_PLAYING) {
+//                mFragmentMusicPalyProgress.setLoading(true);
+            }
+        } else {
+            mFragmentMusicPalyProgress.setLoading(true);
+        }
+
         if (mCurrentMusic.getMusic_info().getComment_count() > 0) {
             mFragmentMusicPalyComment.setImageResource(
                     R.mipmap.music_ico_comment_incomplete);
