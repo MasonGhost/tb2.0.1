@@ -4,12 +4,6 @@
 
     <!-- Disable the given check in this project -->
 
-    <issue id=" LogUse" severity="ignore">
-        <ignore path="com.zhiyicx.thinksnsplus.data.beans"/>
-    </issue>
-
-    <!-- Disable the given check in this project -->
-
     <issue id="IconMissingDensityFolder" severity="ignore"/>
 
 

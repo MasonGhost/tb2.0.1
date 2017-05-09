@@ -100,6 +100,7 @@ android {
         disable 'IconMissingDensityFolder'  //For testing purpose. This is safe to remove.
         // if true, only report errors.
         ignoreWarnings true
+        lintConfig file("lint.xml")
     }
     packagingOptions {
         exclude 'LICENSE.txt'
