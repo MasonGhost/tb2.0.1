@@ -537,9 +537,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
      * @param description 音乐信息数据
      */
     private void updateMediaDescription(final MediaDescriptionCompat description) {
-        if (description == null) {
-            return;
-        } else {
+        if (description != null) {
             mMediaDescriptionCompat = description;
             mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
                     .transformation(new GlideMusicBgTransform(getActivity()))

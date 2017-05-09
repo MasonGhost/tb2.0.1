@@ -279,7 +279,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         super.onResume();
         if (mDynamicBean != null && mPresenter.checkCurrentDynamicIsDeleted(mDynamicBean.getUser_id(), mDynamicBean.getFeed_mark())) {// 检测动态是否已经被删除了
             dynamicHasBeDeleted();
-            return;
         }
     }
 
@@ -551,8 +550,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
             if (mListDatas.get(position).getComment_id() != null) {
                 initLoginOutPopupWindow(mListDatas.get(position).getComment_id(), position);
                 mDeletCommentPopWindow.show();
-            } else {
-                return;
             }
         } else {
             mReplyUserId = mListDatas.get(position).getUser_id();

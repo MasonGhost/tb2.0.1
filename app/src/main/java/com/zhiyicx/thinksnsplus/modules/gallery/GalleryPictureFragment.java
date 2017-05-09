@@ -205,9 +205,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
      */
     public void showOrHideOriginBtn(boolean isIn) {
         // 如果查看原图按钮不可见也就没有必要控制显示隐藏
-        if (mTvOriginPhoto.getVisibility() != View.VISIBLE) {
-            return;
-        } else {
+        if (mTvOriginPhoto.getVisibility()== View.VISIBLE) {
             if (isIn) {
                 ViewCompat.animate(mTvOriginPhoto).alpha(1.0f).scaleX(1.0f).scaleY(1.0f)
                         .setDuration(500)

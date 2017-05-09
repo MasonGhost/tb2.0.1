@@ -60,14 +60,12 @@ public class StatusBarUtils {
     public static void setStatusBarColor(Activity activity, int colorId) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (intgetType(activity.getWindow()) == 0) {
-                return;
             } else {
             Window window = activity.getWindow();
             window.setStatusBarColor(ContextCompat.getColor(activity, colorId));
             }
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (intgetType(activity.getWindow()) == 0) {
-                return;
             } else {       //使用SystemBarTint库使4.4版本状态栏变色，需要先将状态栏设置为透明
             transparencyBar(activity);
             SystemBarTintManager tintManager = new SystemBarTintManager(activity);

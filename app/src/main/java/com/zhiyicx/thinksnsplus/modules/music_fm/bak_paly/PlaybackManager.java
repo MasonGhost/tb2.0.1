@@ -110,11 +110,9 @@ public class PlaybackManager implements Playback.Callback {
     private void setCustomAction(PlaybackStateCompat.Builder stateBuilder) {
         MediaSessionCompat.QueueItem currentMusic = mQueueManager.getCurrentMusic();
         if (currentMusic == null) {
-            return;
         }
         String mediaId = currentMusic.getDescription().getMediaId();
         if (mediaId == null) {
-            return;
         }
     }
 

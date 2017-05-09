@@ -411,8 +411,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             if (dynamicBean.getComments().get(position).getComment_id() != null) {
                 initDeletCommentPopupWindow(dynamicBean, mCurrentPostion, position);
                 mDeletCommentPopWindow.show();
-            } else {
-                return;
             }
         } else {
             showCommentView();

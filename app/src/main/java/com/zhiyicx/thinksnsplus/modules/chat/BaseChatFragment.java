@@ -236,7 +236,6 @@ public abstract class BaseChatFragment<P extends IBasePresenter> extends TSFragm
     public void onRefresh() {
         if (mMessageItemBean.getConversation() == null) {
             hideLoading();
-            return;
         }
     }
 
