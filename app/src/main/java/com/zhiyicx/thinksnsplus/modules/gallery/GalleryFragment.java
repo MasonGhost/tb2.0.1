@@ -75,7 +75,7 @@ public class GalleryFragment extends TSFragment {
     protected void initView(View rootView) {
         currentItem = getArguments().getInt(BUNDLE_IMAGS_POSITON);
         rectList = getArguments().getParcelableArrayList("rect");
-        allImages = getArguments().<ImageBean>getParcelableArrayList(BUNDLE_IMAGS);
+        allImages = getArguments().getParcelableArrayList(BUNDLE_IMAGS);
         mPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
         mVpPhotos.setAdapter(mPagerAdapter);
         mVpPhotos.setOffscreenPageLimit(MAX_OFF_SIZE);
