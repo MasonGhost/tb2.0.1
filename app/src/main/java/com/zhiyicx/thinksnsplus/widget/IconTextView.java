@@ -45,6 +45,10 @@ public class IconTextView extends View {
     private Paint mPaint;
 
     private int mTouchSlop;
+    /**
+     * 额外的高度，需求
+     */
+    private int mExtroHeight = 10;
     private boolean inTapRegion;
     private int mStartX, mStartY;
 
@@ -254,7 +258,7 @@ public class IconTextView extends View {
 
         composeDrawableBound();
         setMeasuredDimension(width + getPaddingLeft() + getPaddingRight(), height +
-                getPaddingBottom() + getPaddingTop()+10);
+                getPaddingBottom() + getPaddingTop() + mExtroHeight);
     }
 
     private int measureAdjustHeight(int heightSize, int heightMode) {
@@ -350,7 +354,7 @@ public class IconTextView extends View {
         }
         mDrawable.setBounds(mIconBound);
     }
-
+    // 区域可控点击
 //    @Override
 //    public boolean onTouchEvent(MotionEvent event) {
 //        switch (event.getAction()) {

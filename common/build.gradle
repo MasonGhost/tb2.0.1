@@ -13,7 +13,7 @@ android {
     }
     buildTypes {
         release {
-            buildConfigField "boolean", "USE_LOG", "false"
+            buildConfigField "boolean", "USE_LOG", "true"
             buildConfigField "boolean", "USE_CANARY", "false"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
