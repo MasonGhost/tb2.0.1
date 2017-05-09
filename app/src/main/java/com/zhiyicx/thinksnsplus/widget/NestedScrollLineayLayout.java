@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.widget;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -121,9 +122,10 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
 
     @Override
     public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
+
         //处理子view传上来的事件
         //头部高度
-        mTopViewHeight = headerView.getHeight() - mNotConsumeHeight;
+        mTopViewHeight = height - mNotConsumeHeight;
         hiddenTop = dy > 0 && getScrollY() < mTopViewHeight;
         showTop = dy < 0 && getScrollY() >= 0 && !ViewCompat.canScrollVertically(target, -1);
         if (hiddenTop || showTop) {
@@ -136,12 +138,15 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
             }
             scrollBy(0, dy);
             consumed[1] = dy;
+            if (getScrollY()>=mTopViewHeight){
+                replyView();
+            }
         }
         if (mOnHeadFlingListener != null && getScrollY() != 0 && getScrollY() <= mTopViewHeight) {
             mOnHeadFlingListener.onHeadFling(getScrollY());
         }
         if (getScrollY() == 0) {
-            mDistanceY += Math.abs(dy);
+            mDistanceY += -dy;
             dealScale(mDistanceY * SCROLL_RATIO);
         }
     }
@@ -161,14 +166,16 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
         int scaleHeight = (int) (height * scaleTimes);
         layoutParams.height = scaleHeight;
         headerView.setLayoutParams(layoutParams);
-        headerView.scrollTo(0, (height - scaleHeight) / 2);
+        int scrollTo = (height - scaleHeight);
+        headerView.scrollTo(0, scrollTo / 2);
+        LogUtils.d("scrollTo:::" + scrollTo);
+        LogUtils.d("heightscrollTo:::" + mTopViewHeight);
+        LogUtils.d("getScrollYscrollTo:::" + getScrollY());
     }
 
-    /**
-     * 回弹
-     */
     private void replyView() {
         final float distance = headerView.getHeight() - height;
+
         // 设置动画
         ValueAnimator anim = ObjectAnimator.ofFloat(distance, 0.0F).setDuration((long) (distance * SCROLL_RATIO));
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -176,9 +183,9 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
             public void onAnimationUpdate(ValueAnimator animation) {
                 dealScale((Float) animation.getAnimatedValue());
             }
-
         });
         anim.start();
+
     }
 
     @Override
@@ -221,6 +228,7 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
 
     @Override
     public void scrollTo(int x, int y) {
+
         if (y < 0) {
             y = 0;
         }

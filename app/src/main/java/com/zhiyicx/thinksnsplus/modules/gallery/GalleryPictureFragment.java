@@ -3,7 +3,9 @@ package com.zhiyicx.thinksnsplus.modules.gallery;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -470,6 +472,8 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                                 result = getString(R.string.save_failure2);
                                 break;
                             default:
+                                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                                        Uri.parse("file://" + result)));// 更新系统相册
                                 result = getString(R.string.save_success) + result;
 
                         }

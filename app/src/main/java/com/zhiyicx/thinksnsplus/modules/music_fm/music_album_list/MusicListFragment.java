@@ -64,7 +64,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     @Override
     public void onResume() {
         super.onResume();
-        for (MusicAlbumListBean musicListBean:mListDatas){
+        for (MusicAlbumListBean musicListBean : mListDatas) {
             WindowUtils.AblumHeadInfo ablumHeadInfo = WindowUtils.getAblumHeadInfo();
             if (ablumHeadInfo != null && ablumHeadInfo.getAblumId() == musicListBean.getId()) {
                 musicListBean.setComment_count(ablumHeadInfo.getCommentCount());
