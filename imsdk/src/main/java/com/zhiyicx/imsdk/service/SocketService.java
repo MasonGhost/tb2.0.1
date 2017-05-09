@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.SparseArray;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -46,9 +47,7 @@ import org.simple.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -148,7 +147,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
     private int send_serilize_type = ImService.BIN_MSGPACK;//向服务器发送的数据类型
 
     private Queue<MessageContainer> mMessageContainers = new ConcurrentLinkedQueue<>();//线程安全的队列
-    private Map<Integer, EventContainer> mEventContainerCache = new HashMap<>();
+    private SparseArray<EventContainer> mEventContainerCache = new SparseArray<>();
 
     private Runnable heartBeatRunnable = new Runnable() {
 
@@ -1357,7 +1356,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
         eventContainer.mConversations = conversations;
         if (conversations != null && conversations.size() > 0) {
             Conversation tmp = conversations.get(0);
-            if (mEventContainerCache.containsKey(tmp.getCid())) {
+            if (mEventContainerCache.get(tmp.getCid())!=null) {
                 eventContainer = mEventContainerCache.get(tmp.getCid());
                 tmp.setLast_message_time((eventContainer.mMessageContainer.msg.mid >> 23) + BaseDao.TIME_DEFAULT_ADD);
                 tmp.setIm_uid(mIMConfig.getImUid());

@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.drawable.AnimationDrawable;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -137,7 +136,7 @@ public class LoadingDialog {
         mHandler.sendMessageDelayed(message, SUCCESS_ERROR_STATE_TIME);
     }
 
-    private Handler mHandler = new Handler() {
+    private  Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == HANDLE_DELAY && sLoadingDialog != null) {
