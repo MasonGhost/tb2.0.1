@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +34,7 @@ import com.trycatch.mysnackbar.Prompt;
 import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.PathConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressListener;
 import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressModelLoader;
@@ -40,6 +43,7 @@ import com.zhiyicx.baseproject.widget.photoview.PhotoViewAttacher;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
+import com.zhiyicx.common.utils.imageloader.config.ImageConfig;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
@@ -114,7 +118,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        loadOriginImage(String.format(ApiConfig.IMAGE_PATH, mImageBean.getStorage_id(), 100));
+                        loadOriginImage(String.format(ApiConfig.IMAGE_PATH.toLowerCase(), mImageBean.getStorage_id(), ImageZipConfig.IMAGE_80_ZIP));
                     }
                 });
     }
@@ -205,7 +209,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
      */
     public void showOrHideOriginBtn(boolean isIn) {
         // 如果查看原图按钮不可见也就没有必要控制显示隐藏
-        if (mTvOriginPhoto.getVisibility()== View.VISIBLE) {
+        if (mTvOriginPhoto.getVisibility() == View.VISIBLE) {
             if (isIn) {
                 ViewCompat.animate(mTvOriginPhoto).alpha(1.0f).scaleX(1.0f).scaleY(1.0f)
                         .setDuration(500)
@@ -223,7 +227,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     public void saveImage() {
         // 通过GLide获取bitmap,有缓存读缓存
         Glide.with(getActivity())
-                .load(String.format(ApiConfig.IMAGE_PATH, mImageBean.getStorage_id(), 100))
+                .load(String.format(ApiConfig.IMAGE_PATH.toLowerCase(), mImageBean.getStorage_id(), ImageZipConfig.IMAGE_100_ZIP))
                 .asBitmap()
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
@@ -272,7 +276,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             // 尝试从缓存获取原图
             Glide.with(context)
                     .using(cacheOnlyStreamLoader)// 不从网络读取原图
-                    .load(String.format(ApiConfig.IMAGE_PATH, mImageBean.getStorage_id(), 100))
+                    .load(String.format(ApiConfig.IMAGE_PATH.toLowerCase(), mImageBean.getStorage_id(), ImageZipConfig.IMAGE_70_ZIP))
                     .thumbnail(thumbnailBuilder)// 加载缩略图，上一个页面已经缓存好了，直接读取
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.shape_default_image)
@@ -282,16 +286,19 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                             LogUtils.i(TAG + "加载原图失败");
                             // 如果不是点击放大进入的那张图片，就需要设置查看原图按钮为缩小状态，这样第一次切换到该页面，才能有放大到1.0的效果
-                            if (!animationIn) {
-                                mTvOriginPhoto.setScaleY(0.0f);
-                                mTvOriginPhoto.setScaleX(0.0f);
-                                mTvOriginPhoto.setAlpha(0.0f);
+                            if (mTvOriginPhoto != null) {
+                                if (!animationIn) {
+                                    mTvOriginPhoto.setScaleY(0.0f);
+                                    mTvOriginPhoto.setScaleX(0.0f);
+                                    mTvOriginPhoto.setAlpha(0.0f);
+                                }
+                                mTvOriginPhoto.setVisibility(View.VISIBLE);
                             }
-                            mTvOriginPhoto.setVisibility(View.VISIBLE);
                             // 原图没有缓存，从cacheOnlyStreamLoader抛出异常，在这儿加载高清图
                             Glide.with(context)
                                     .using(new CustomImageModelLoader(context))
                                     .load(new CustomImageSizeModelImp(imageBean))
+                                    .override(800,800)
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                                     .placeholder(R.drawable.shape_default_image)
                                     .error(R.drawable.shape_default_image)
@@ -300,7 +307,9 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                                         @Override
                                         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
                                             LogUtils.i(TAG + "加载高清图成功");
-                                            mIvPager.setImageDrawable(resource);
+                                            if (mIvPager != null) {
+                                                mIvPager.setImageDrawable(resource);
+                                            }
                                             mPhotoViewAttacherNormal.update();
                                         }
                                     });
@@ -496,12 +505,15 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             if (resource == null) {
                 return;
             }
-            mPbProgress.setVisibility(View.GONE);
-            mIvPager.setImageDrawable(resource);
+            if (mPbProgress != null) {
+                mPbProgress.setVisibility(View.GONE);
+            }
+            if (mIvPager != null) {
+                mIvPager.setImageDrawable(resource);
+            }
             mPhotoViewAttacherNormal.update();
             // 获取到模糊图进行放大动画
             if (!hasAnim) {
-                LogUtils.i(TAG + "加载缩略图成功");
                 hasAnim = true;
                 startInAnim(rect);
             }
@@ -537,11 +549,29 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         }
     };
 
+
     @Override
     public void onDestroy() {
-        //Glide.with(this).onDestroy(); 太慢了，流量都跑完了
+        releaseRes();
         LogUtils.i(TAG + "-->onDestroy");
-        // Glide.clear(mTvOriginPhoto);
         super.onDestroy();
     }
+
+    private void releaseImageViewResouce(ImageView imageView) {
+        if (imageView == null) return;
+        Drawable drawable = imageView.getDrawable();
+        if (drawable != null && drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            Bitmap bitmap = bitmapDrawable.getBitmap();
+            if (bitmap != null && !bitmap.isRecycled()) {
+                bitmap.recycle();
+            }
+        }
+    }
+
+    public void releaseRes() {
+        releaseImageViewResouce(mIvOriginPager);
+        releaseImageViewResouce(mIvPager);
+    }
+
 }

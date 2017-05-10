@@ -95,7 +95,7 @@ public class GalleryFragment extends TSFragment {
                     // 获取到的是当前要退出的fragment
                     GalleryPictureContainerFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
                     GalleryPictureFragment galleryPicturFragment = fragment.getChildFragment();
-                    LogUtils.i("galleryPicturFragment state" + viewPageState + " position" + mVpPhotos.getCurrentItem() + galleryPicturFragment == null ? " null" : " not null");
+                    LogUtils.d("galleryPicturFragment state::" + viewPageState + " position::" + mVpPhotos.getCurrentItem() , galleryPicturFragment == null ? " null" : " not null");
                     if (galleryPicturFragment != null) {
                         galleryPicturFragment.showOrHideOriginBtn(false);
                     }
@@ -105,7 +105,7 @@ public class GalleryFragment extends TSFragment {
                     // 获取到的是当前要进入的fragment
                     GalleryPictureContainerFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
                     GalleryPictureFragment galleryPicturFragment = fragment.getChildFragment();
-                    LogUtils.i("galleryPicturFragment state" + viewPageState + "  position" + mVpPhotos.getCurrentItem() + galleryPicturFragment == null ? " null" : " not null");
+                    LogUtils.d("galleryPicturFragment state::" + viewPageState + "  position::" + mVpPhotos.getCurrentItem() , galleryPicturFragment == null ? " null" : " not null");
                     if (galleryPicturFragment != null) {
                         galleryPicturFragment.showOrHideOriginBtn(true);
                     }

@@ -14,14 +14,14 @@ import com.bumptech.glide.module.GlideModule;
 import com.zhiyicx.common.utils.FileUtils;
 
 /**
- * @Describe   Glide配置信息
+ * @Describe Glide配置信息
  * @Author Jungle68
  * @Date 2016/12/15
  * @Contact 335891510@qq.com
  */
 
 public class GlideConfiguration implements GlideModule {
-    private static final int IMAGE_DISK_CACHE_MAX_SIZE = 200 * 1024 * 1024;//图片缓存文件最大值为200Mb
+    private static final int IMAGE_DISK_CACHE_MAX_SIZE = 250 * 1024 * 1024;//图片缓存文件最大值为200Mb
 
     @Override
     public void applyOptions(final Context context, GlideBuilder builder) {
@@ -32,14 +32,14 @@ public class GlideConfiguration implements GlideModule {
                 return DiskLruCacheWrapper.get(FileUtils.getCacheFile(context), IMAGE_DISK_CACHE_MAX_SIZE);
             }
         });*/
-        builder.setDiskCache(new DiskLruCacheFactory(FileUtils.getCacheFile(context,false).getAbsolutePath()+"/glide_cache", IMAGE_DISK_CACHE_MAX_SIZE));
+        builder.setDiskCache(new DiskLruCacheFactory(FileUtils.getCacheFile(context, false).getAbsolutePath() + "/glide_cache", IMAGE_DISK_CACHE_MAX_SIZE));
 
         MemorySizeCalculator calculator = new MemorySizeCalculator(context);
         int defaultMemoryCacheSize = calculator.getMemoryCacheSize();
         int defaultBitmapPoolSize = calculator.getBitmapPoolSize();
 
-        int customMemoryCacheSize = (int) (1.2 * defaultMemoryCacheSize);
-        int customBitmapPoolSize = (int) (1.2 * defaultBitmapPoolSize);
+        int customMemoryCacheSize = (int) (0.3 * defaultMemoryCacheSize);
+        int customBitmapPoolSize = (int) (0.3 * defaultBitmapPoolSize);
 
         builder.setMemoryCache(new LruResourceCache(customMemoryCacheSize));
         builder.setBitmapPool(new LruBitmapPool(customBitmapPoolSize));
