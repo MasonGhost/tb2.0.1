@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.modules.information.infosearch;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
+import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.data.source.local.InfoListDataBeanGreenDaoImpl;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -20,8 +22,10 @@ import rx.Subscription;
  * @Description
  */
 public class InfoSearchPresenter extends BasePresenter<SearchContract.Repository, SearchContract
-        .View>
-        implements SearchContract.Presenter {
+        .View> implements SearchContract.Presenter {
+
+    @Inject
+    InfoListDataBeanGreenDaoImpl mInfoListDataBeanGreenDao;
 
     @Inject
     public InfoSearchPresenter(SearchContract.Repository repository,
@@ -42,9 +46,12 @@ public class InfoSearchPresenter extends BasePresenter<SearchContract.Repository
     public void requestNetData(Long maxId, final boolean isLoadMore) {
         Subscription subscription = mRepository.searchInfoList(mRootView.getKeyWords(), maxId)
                 .compose(mSchedulersTransformer)
-                .subscribe(new BaseSubscribe<List<InfoListBean.ListBean>>() {
+                .subscribe(new BaseSubscribe<List<InfoListDataBean>>() {
                     @Override
-                    protected void onSuccess(List<InfoListBean.ListBean> data) {
+                    protected void onSuccess(List<InfoListDataBean> data) {
+                        if (!data.isEmpty()){
+                            mInfoListDataBeanGreenDao.saveMultiData(data);
+                        }
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 
@@ -62,12 +69,12 @@ public class InfoSearchPresenter extends BasePresenter<SearchContract.Repository
     }
 
     @Override
-    public List<InfoListBean.ListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+    public List<InfoListDataBean> requestCacheData(Long max_Id, boolean isLoadMore) {
         return new ArrayList<>();
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<InfoListBean.ListBean> data) {
+    public boolean insertOrUpdateData(@NotNull List<InfoListDataBean> data, boolean isLoadMore) {
         return false;
     }
 

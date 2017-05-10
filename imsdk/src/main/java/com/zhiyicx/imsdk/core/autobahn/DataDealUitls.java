@@ -1,9 +1,11 @@
 package com.zhiyicx.imsdk.core.autobahn;
 
 import org.msgpack.template.builder.beans.BeanInfo;
+import org.msgpack.template.builder.beans.IntrospectionException;
 import org.msgpack.template.builder.beans.Introspector;
 import org.msgpack.template.builder.beans.PropertyDescriptor;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,8 +42,6 @@ public class DataDealUitls {
             e.printStackTrace();
         }
 
-        return;
-
     }
 
     // Bean --> Map 1: 利用Introspector和PropertyDescriptor 将Bean --> Map
@@ -73,5 +73,40 @@ public class DataDealUitls {
         return map;
 
     }
+    /**
+     * 使用java.beans.Introspector转换
+     * @param object
+     * @return map
+     * @throws Exception
+     */
+    public static Map<String, Object> obj2Map(Object object){
+        Map<String, Object> map = new HashMap<String, Object>();
+        // 获取Object对象
+        BeanInfo beanInfo = null;
+        try {
+            beanInfo = Introspector.getBeanInfo(object.getClass());
+        } catch (IntrospectionException e) {
+            e.printStackTrace();
+        }
+        // 获取Object属性描述
+        PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
 
+        for (PropertyDescriptor property : propertyDescriptors) {
+            String key = property.getName(); //获取属性名
+            if (key.compareToIgnoreCase("class") == 0) {
+                continue;
+            }
+            Method getter = property.getReadMethod();
+            Object value = null;
+            try {
+                value = getter != null ? getter.invoke(object) : null;//获取值
+                map.put(key, value);
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+        return map;
     }
+
+
+}

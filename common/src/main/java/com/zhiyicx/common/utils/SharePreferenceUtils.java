@@ -46,6 +46,32 @@ public class SharePreferenceUtils {
      * @param key
      * @param value
      */
+    public static void saveLong(Context context, String key, Long value) {
+        if (mSharedPreferences == null) {
+            mSharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        }
+        mSharedPreferences.edit().putLong(key, value).commit();
+    }
+
+    /**
+     * 返回存在 sharedPreferences 的信息
+     *
+     * @param key
+     * @return
+     */
+    public static Long getLong(Context context, String key) {
+        if (mSharedPreferences == null) {
+            mSharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        }
+        return mSharedPreferences.getLong(key, 0L);
+    }
+
+    /**
+     * 存储重要信息到 sharedPreferences；
+     *
+     * @param key
+     * @param value
+     */
     public static void setInterger(Context context, String key, int value) {
         if (mSharedPreferences == null) {
             mSharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
@@ -73,7 +99,7 @@ public class SharePreferenceUtils {
         if (mSharedPreferences == null) {
             mSharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         }
-       return mSharedPreferences.edit().remove(key).commit();
+        return mSharedPreferences.edit().remove(key).commit();
     }
 
     /**
@@ -121,4 +147,3 @@ public class SharePreferenceUtils {
     }
 
 }
-

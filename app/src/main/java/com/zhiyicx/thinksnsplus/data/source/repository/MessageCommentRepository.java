@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
+import android.app.Application;
+
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentContract;
 
@@ -11,14 +12,10 @@ import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageComme
  * @Contact master.jungle68@gmail.com
  */
 
-public class MessageCommentRepository implements MessageCommentContract.Repository {
-    private CommonClient mCommonClient;
+public class MessageCommentRepository extends UserInfoRepository implements MessageCommentContract.Repository {
 
-    public MessageCommentRepository(ServiceManager serviceManager) {
-        super();
-        mCommonClient = serviceManager.getCommonClient();
+
+    public MessageCommentRepository(ServiceManager serviceManager, Application application) {
+        super(serviceManager, application);
     }
-
-
 }
-

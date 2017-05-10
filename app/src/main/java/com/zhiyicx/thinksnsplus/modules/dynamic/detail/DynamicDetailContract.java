@@ -25,6 +25,8 @@ import rx.Observable;
 public interface DynamicDetailContract {
     //对于经常使用的关于UI的方法可以定义到BaseView中,如显示隐藏进度条,和显示文字消息
     interface View extends ITSListView<DynamicCommentBean, Presenter> {
+        void initDynamicDetial(DynamicBean dynamicBean);
+
         /**
          * 设置是否喜欢该动态
          *
@@ -101,6 +103,13 @@ public interface DynamicDetailContract {
 
     interface Presenter extends ITSListPresenter<DynamicCommentBean> {
         /**
+         * 获取当前动态
+         *
+         * @param feed_id
+         */
+        void getCurrentDynamic(long feed_id);
+
+        /**
          * 获取当前动态的点赞列表
          */
         void getDetailAll(Long feed_id, Long max_id, String user_ids);
@@ -119,13 +128,9 @@ public interface DynamicDetailContract {
 
         /**
          * 处理收藏逻辑
-         *
-         * @param isCollected
-         * @param feed_id
-         * @param dynamicToolBean
          */
 
-        void handleCollect(boolean isCollected, Long feed_id, DynamicToolBean dynamicToolBean);
+        void handleCollect(DynamicBean dynamicBean);
 
         /**
          * 动态分享
@@ -159,11 +164,12 @@ public interface DynamicDetailContract {
         void deleteComment(long comment_id, int commentPosition);
 
         /**
-         *  check current dynamic is has been deleted
-         * @param user_id the dynamic is belong to
+         * check current dynamic is has been deleted
+         *
+         * @param user_id   the dynamic is belong to
          * @param feed_mark the dynamic's feed_mark
          * @return
          */
-        boolean checkCurrentDynamicIsDeleted(Long user_id,Long feed_mark);
+        boolean checkCurrentDynamicIsDeleted(Long user_id, Long feed_mark);
     }
 }

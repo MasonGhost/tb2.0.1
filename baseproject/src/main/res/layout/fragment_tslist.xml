@@ -13,33 +13,43 @@
             layout="@layout/view_top_tip"
             />
 
-        <com.zhiyicx.baseproject.widget.refresh.CoodinatorLayoutAndRecyclerViewRefreshLayout
-            android:id="@+id/refreshlayout"
+        <com.wcy.overscroll.OverScrollLayout
+            android:id="@+id/overscroll"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <com.zhiyicx.baseproject.widget.refresh.RefreshHeaderView
-                android:id="@id/swipe_refresh_header"
+            <com.zhiyicx.baseproject.widget.refresh.CoodinatorLayoutAndRecyclerViewRefreshLayout
+                android:id="@+id/refreshlayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"></com.zhiyicx.baseproject.widget.refresh.RefreshHeaderView>
+                android:layout_height="match_parent">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@id/swipe_target"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:overScrollMode="never">
-            </android.support.v7.widget.RecyclerView>
+                <com.zhiyicx.baseproject.widget.refresh.RefreshHeaderView
+                    android:id="@id/swipe_refresh_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"></com.zhiyicx.baseproject.widget.refresh.RefreshHeaderView>
 
-            <com.zhiyicx.baseproject.widget.refresh.RefreshFooterView
-                android:id="@id/swipe_load_more_footer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"></com.zhiyicx.baseproject.widget.refresh.RefreshFooterView>
-        </com.zhiyicx.baseproject.widget.refresh.CoodinatorLayoutAndRecyclerViewRefreshLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@id/swipe_target"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:overScrollMode="never">
+                </android.support.v7.widget.RecyclerView>
+
+
+                <com.zhiyicx.baseproject.widget.refresh.RefreshFooterView
+                    android:id="@id/swipe_load_more_footer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"></com.zhiyicx.baseproject.widget.refresh.RefreshFooterView>
+            </com.zhiyicx.baseproject.widget.refresh.CoodinatorLayoutAndRecyclerViewRefreshLayout>
+        </com.wcy.overscroll.OverScrollLayout>
     </LinearLayout>
+
     <com.zhiyicx.baseproject.widget.EmptyView
         android:id="@+id/empty_view"
-        android:visibility="gone"
-        android:layout_gravity="center"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"></com.zhiyicx.baseproject.widget.EmptyView>
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"></com.zhiyicx.baseproject.widget.EmptyView>
 </FrameLayout>

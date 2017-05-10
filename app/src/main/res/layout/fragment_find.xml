@@ -1,10 +1,13 @@
-<com.zhiyicx.baseproject.widget.dragview.DragViewGroup xmlns:android="http://schemas.android.com/apk/res/android"
+<com.wcy.overscroll.OverScrollLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/overscroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bgColor">
+    android:background="@color/bgColor"
+    android:orientation="vertical">
 
-    <com.zhiyicx.baseproject.widget.dragview.DragScrollView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/bgColor">
@@ -22,7 +25,7 @@
                 app:dividerRightMargin="@dimen/spacing_normal"
                 app:leftImage="@mipmap/discover_ico_information"
                 app:leftText="@string/information"
-                app:rightImage="@mipmap/ic_arrow_smallgrey" />
+                app:rightImage="@mipmap/ic_arrow_smallgrey"/>
             <!--频道-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                 android:id="@+id/find_chanel"
@@ -32,7 +35,8 @@
                 app:dividerRightMargin="@dimen/spacing_normal"
                 app:leftImage="@mipmap/discover_ico_channel"
                 app:leftText="@string/chanel"
-                app:rightImage="@mipmap/ic_arrow_smallgrey" />
+                app:rightImage="@mipmap/ic_arrow_smallgrey"
+                app:showLine="false"/>
             <!--活动-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                 android:id="@+id/find_active"
@@ -44,7 +48,7 @@
                 app:leftImage="@mipmap/discover_ico_activity"
                 app:leftText="@string/active"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
-                app:showLine="false" />
+                app:showLine="false"/>
 
             <!--音乐FM-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
@@ -56,7 +60,7 @@
                 app:dividerRightMargin="@dimen/spacing_normal"
                 app:leftImage="@mipmap/discover_ico_music"
                 app:leftText="@string/music_fm"
-                app:rightImage="@mipmap/ic_arrow_smallgrey" />
+                app:rightImage="@mipmap/ic_arrow_smallgrey"/>
             <!--购物-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                 android:id="@+id/find_buy"
@@ -66,7 +70,8 @@
                 app:dividerRightMargin="@dimen/spacing_normal"
                 app:leftImage="@mipmap/discover_ico_buy"
                 app:leftText="@string/buy_goods"
-                app:rightImage="@mipmap/ic_arrow_smallgrey" />
+                app:rightImage="@mipmap/ic_arrow_smallgrey"
+                app:showLine="false"/>
 
             <!--找人-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
@@ -74,11 +79,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/full_button_height"
                 android:layout_marginTop="@dimen/spacing_mid"
+                android:visibility="gone"
                 app:dividerLeftMargin="@dimen/spacing_normal"
                 app:dividerRightMargin="@dimen/spacing_normal"
                 app:leftImage="@mipmap/discover_ico_findpeople"
                 app:leftText="@string/find_person"
-                app:rightImage="@mipmap/ic_arrow_smallgrey" />
+                app:rightImage="@mipmap/ic_arrow_smallgrey"
+                app:showLine="false"/>
 
             <!--附近的人-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
@@ -91,8 +98,8 @@
                 app:leftImage="@mipmap/discover_ico_nearby"
                 app:leftText="@string/near_person"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
-                app:showLine="false" />
+                app:showLine="false"/>
 
         </LinearLayout>
-    </com.zhiyicx.baseproject.widget.dragview.DragScrollView>
-</com.zhiyicx.baseproject.widget.dragview.DragViewGroup>
+    </ScrollView>
+</com.wcy.overscroll.OverScrollLayout>

@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/spacing_mid"
+        android:layout_marginLeft="@dimen/spacing_normal"
         android:layout_toLeftOf="@+id/tv_channel_subscrib"
         android:layout_toRightOf="@id/iv_channel_cover"
         android:orientation="vertical">
@@ -27,10 +27,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
+            android:includeFontPadding="false"
             android:maxLines="1"
             android:text="我是频道名称"
             android:textColor="@color/important_for_content"
-            android:textSize="@dimen/size_content_assist"/>
+            android:textSize="@dimen/size_sub_title"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -42,25 +43,36 @@
                 android:id="@+id/tv_channel_feed_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="分享 3.4万"/>
+                android:includeFontPadding="false"
+                android:text="分享 3.4万"
+                android:textSize="@dimen/size_content_assist"/>
 
             <TextView
                 android:id="@+id/tv_channel_follow_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing_mid"
-                android:text="关注 2.6万"/>
+                android:includeFontPadding="false"
+                android:text="关注 2.6万"
+                android:textSize="@dimen/size_content_assist"/>
         </LinearLayout>
     </LinearLayout>
 
-    <TextView
+    <CheckBox
         android:id="@+id/tv_channel_subscrib"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/channel_subscrib_btn_width"
+        android:layout_height="@dimen/channel_subscrib_btn_height"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/spacing_mid"
         android:layout_marginRight="@dimen/spacing_normal"
-        android:text="订阅"/>
+        android:background="@drawable/shape_channel_list_subscrib_button"
+        android:button="@null"
+        android:drawableLeft="@drawable/selector_channel_list_subscrib_button_left_drawable"
+        android:drawablePadding="@dimen/spacing_small_3dp"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:text="订阅"
+        android:textColor="@color/selector_channel_list_subscrib_button_divider"
+        android:textSize="@dimen/size_content_comment"/>
 
 </RelativeLayout>

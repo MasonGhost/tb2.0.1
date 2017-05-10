@@ -11,6 +11,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.LoadingButton;
+import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.password.findpassword.FindPasswordActivity;
@@ -74,16 +75,17 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         RxView.clicks(mBtLoginLogin)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.<Void>bindToLifecycle())
-                .compose(mRxPermissions.ensure(Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.READ_PHONE_STATE))
+                .compose(mRxPermissions.ensure(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE))
                 .subscribe(new Action1<Boolean>() {
                     @Override
                     public void call(Boolean aBoolean) {
                         if (aBoolean) {// 获取到了权限
                             mPresenter.login(mEtLoginPhone.getText().toString().trim(), mEtLoginPassword.getText().toString().trim());
-                        } else  {// 拒绝权限，但是可以再次请求
+                        } else {// 拒绝权限，但是可以再次请求
                             showErrorTips(getString(R.string.permisson_refused));
+                        }
                     }
-                }});
+                });
 //                .subscribe(new Action1<Permission>() {
 //                    @Override
 //                    public void call(Permission permission) {
@@ -160,6 +162,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
             mEtLoginPassword.setText("");
             mEtLoginPhone.setText("");
             mEtLoginPhone.requestFocus();
+            DeviceUtils.hideSoftKeyboard(getContext(), mEtLoginPassword);
             Intent it = new Intent();
             it.setClass(getActivity(), HomeActivity.class);
             startActivity(it);

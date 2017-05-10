@@ -7,7 +7,6 @@ apply plugin: 'com.android.library'
 //    reportsDir = file("$buildDir/customJacocoReportDir")
 //}
 android {
-    def gConfig = rootProject.extensions.getByName("ext")
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
     useLibrary 'org.apache.http.legacy'
@@ -41,6 +40,8 @@ android {
         disable 'InvalidPackage'
         disable "ResourceType"
         abortOnError false
+        // if true, only report errors.
+//        ignoreWarnings true
     }
     /**
      * 保证 testDebug 执行完成后会执行 testRelease

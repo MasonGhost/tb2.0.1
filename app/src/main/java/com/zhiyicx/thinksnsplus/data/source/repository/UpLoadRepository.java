@@ -2,16 +2,12 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
 import android.content.Context;
-import android.graphics.BitmapFactory;
-import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.net.UpLoadFile;
-import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.FileUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -20,17 +16,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.inject.Inject;
 
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -52,7 +47,7 @@ public class UpLoadRepository implements IUploadRepository {
     }
 
     @Override
-    public Observable<BaseJson<Integer>> upLoadSingleFile(final String params, final String filePath, String mimeType, boolean isPic, int photoWidth, int photoHeight) {
+    public Observable<BaseJson<Integer>> upLoadSingleFile(final String filePath, String mimeType, boolean isPic, int photoWidth, int photoHeight) {
         File file = new File(filePath);
         // 封装上传文件的参数
         HashMap<String, String> paramMap = new HashMap<>();
@@ -87,28 +82,47 @@ public class UpLoadRepository implements IUploadRepository {
                                 // 创建上传任务成功，开始上传
                                 String method = storageTaskBean.getMethod();
                                 String uri = storageTaskBean.getUri();
-                                // 处理headers
-                                Object headers = storageTaskBean.getHeaders();
-                                HashMap<String, String> headerMap = parseJSONObject(headers);
+                                Gson gson = new Gson();
+                                // 处理 headers
+                                HashMap<String, String> headerMap;
+                                try {
+                                    headerMap = gson.fromJson(gson.toJson(storageTaskBean.getHeaders()),
+                                            new TypeToken<HashMap<String, String>>() {
+                                            }.getType());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    headerMap = new HashMap<String, String>();
+                                }
+
+                                // 处理 options
+                                HashMap<String, Object> optionsMap;
+                                try {
+                                    optionsMap = gson.fromJson(gson.toJson(storageTaskBean.getOptions()),
+                                            new TypeToken<HashMap<String, Object>>() {
+                                            }.getType());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    optionsMap = new HashMap<String, Object>();
+                                }
                                 // 封装图片File
                                 HashMap<String, String> fileMap = new HashMap<String, String>();
-                                fileMap.put(params, filePath);
+                                fileMap.put(storageTaskBean.getInput(), filePath);
                                 if (method.equalsIgnoreCase("put")) {
                                     // 使用map操作符携带任务id，继续向下传递
-                                    return mCommonClient.upLoadFileByPut(uri, headerMap, UpLoadFile.upLoadMultiFile(fileMap))
+                                    return mCommonClient.upLoadFileByPut(uri, headerMap, UpLoadFile.upLoadFileAndParams(fileMap, optionsMap))
                                             .map(new Func1<String, String[]>() {
                                                 @Override
                                                 public String[] call(String s) {
-                                                    return new String[]{s.toString(), storageTaskId + ""};
+                                                    return new String[]{s, storageTaskId + ""};
                                                 }
                                             });
                                 } else if (method.equalsIgnoreCase("post")) {
                                     // 使用map操作符携带任务id，继续向下传递
-                                    return mCommonClient.upLoadFileByPost(uri, headerMap, UpLoadFile.upLoadMultiFile(fileMap))
+                                    return mCommonClient.upLoadFileByPost(uri, headerMap, UpLoadFile.upLoadFileAndParams(fileMap, optionsMap))
                                             .map(new Func1<String, String[]>() {
                                                 @Override
                                                 public String[] call(String s) {
-                                                    return new String[]{s.toString(), storageTaskId + ""};
+                                                    return new String[]{s, storageTaskId + ""};
                                                 }
                                             });
                                 } else {
@@ -163,7 +177,7 @@ public class UpLoadRepository implements IUploadRepository {
     private HashMap<String, String> parseJSONObject(Object object) {
 
         if (object == null) {
-            return null;
+            return new HashMap<>();
         }
         String jsonString = object.toString();
         try {
@@ -182,6 +196,42 @@ public class UpLoadRepository implements IUploadRepository {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return null;
+        return new HashMap<>();
+    }
+
+    public static Map<String, Object> objectToMap(Object obj) {
+        if (obj == null) {
+            return null;
+        }
+        //获取关联的所有类，本类以及所有父类
+        boolean ret = true;
+        Class oo = obj.getClass();
+        List<Class> clazzs = new ArrayList<Class>();
+        while (ret) {
+            clazzs.add(oo);
+            oo = oo.getSuperclass();
+            if (oo == null || oo == Object.class) break;
+        }
+
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        for (int i = 0; i < clazzs.size(); i++) {
+            Field[] declaredFields = clazzs.get(i).getDeclaredFields();
+            for (Field field : declaredFields) {
+                int mod = field.getModifiers();
+                //过滤 static 和 final 类型
+                if (Modifier.isStatic(mod) || Modifier.isFinal(mod)) {
+                    continue;
+                }
+                field.setAccessible(true);
+                try {
+                    map.put(field.getName(), field.get(obj));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return map;
     }
 }

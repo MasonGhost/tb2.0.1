@@ -26,9 +26,6 @@ public class MusicPresenter extends BasePresenter<MusicContract.Repository, Musi
         implements MusicContract.Presenter {
 
     @Inject
-    MusicRepository mMusicRepository;
-
-    @Inject
     MusicAlbumListBeanGreenDaoImpl mMusicAlbumListDao;
 
     @Inject
@@ -47,12 +44,17 @@ public class MusicPresenter extends BasePresenter<MusicContract.Repository, Musi
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        Subscription subscription = mMusicRepository.getMusicAblumList(maxId)
+        Subscription subscription = mRepository.getMusicAblumList(maxId)
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribe<List<MusicAlbumListBean>>() {
                     @Override
                     protected void onSuccess(List<MusicAlbumListBean> data) {
-                        mMusicAlbumListDao.saveMultiData(data);
+                        if (data.isEmpty()){
+                            mMusicAlbumListDao.saveMultiData(data);
+                        }else{
+                            mMusicAlbumListDao.clearTable();
+                        }
+
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 
@@ -73,11 +75,16 @@ public class MusicPresenter extends BasePresenter<MusicContract.Repository, Musi
 
     @Override
     public List requestCacheData(Long maxId, boolean isLoadMore) {
-        return mMusicAlbumListDao.getMultiDataFromCache();
+        return mRepository.getMusicAlbumFromCache(maxId);
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<MusicAlbumListBean> data) {
+    public boolean insertOrUpdateData(@NotNull List<MusicAlbumListBean> data, boolean isLoadMore) {
         return false;
+    }
+
+    @Override
+    public void updateOneMusic(MusicAlbumListBean albumListBean){
+        mMusicAlbumListDao.updateSingleData(albumListBean);
     }
 }

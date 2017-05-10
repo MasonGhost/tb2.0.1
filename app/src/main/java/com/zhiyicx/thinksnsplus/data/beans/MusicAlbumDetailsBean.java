@@ -1,18 +1,20 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.zhiyicx.common.utils.ConvertUtils;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Keep;
+import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.io.Serializable;
 import java.util.List;
 
-import io.rx_cache.EncryptKey;
 import org.greenrobot.greendao.annotation.Generated;
 
 /**
@@ -42,27 +44,27 @@ public class MusicAlbumDetailsBean implements Serializable {
      * "cover":{"id":2,"image_width":3264,"image_height":2448}},"storage":129,"last_time":180,
      * "lyric":"lalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallal","taste_count":4,"share_count":0,"comment_count":0}},{"id":2,"created_at":"2017-03-16 17:22:48","updated_at":"2017-03-16 17:22:50","special_id":1,"music_id":2,"music_info":{"id":2,"created_at":"2017-03-16 17:20:40","updated_at":"2017-03-16 17:20:43","deleted_at":null,"title":"thankyou","singer":{"id":2,"created_at":"2017-03-16 17:22:18","updated_at":"2017-03-16 17:22:20","name":"刘zz","cover":{"id":54,"image_width":690,"image_height":932}},"storage":130,"last_time":240,"lyric":"sdafasfasdfasdfasdfasdfsadf","taste_count":0,"share_count":0,"comment_count":0}}]
      */
+    @Id(autoincrement = true)
+    private Long _id;
     @Unique
     private int id;
     private String created_at;
     private String updated_at;
     private String title;
     private String intro;
-    private int storage;
+    @Convert(converter = MusicAlbumLIstConverter.class, columnType = String.class)
+    private StorageBean storage;
     private int taste_count;
     private int share_count;
     private int comment_count;
     private int collect_count;
     private int is_collection;
-    @Convert(converter = MusicListConverter.class,columnType = String.class)
+    @Convert(converter = MusicListConverter.class, columnType = String.class)
     private List<MusicsBean> musics;
 
-    @Generated(hash = 1417869479)
-    public MusicAlbumDetailsBean() {
-    }
-
-    @Generated(hash = 1438009182)
-    public MusicAlbumDetailsBean(int id, String created_at, String updated_at, String title, String intro, int storage, int taste_count, int share_count, int comment_count, int collect_count, int is_collection, List<MusicsBean> musics) {
+    @Generated(hash = 2031763002)
+    public MusicAlbumDetailsBean(Long _id, int id, String created_at, String updated_at, String title, String intro, StorageBean storage, int taste_count, int share_count, int comment_count, int collect_count, int is_collection, List<MusicsBean> musics) {
+        this._id = _id;
         this.id = id;
         this.created_at = created_at;
         this.updated_at = updated_at;
@@ -75,6 +77,81 @@ public class MusicAlbumDetailsBean implements Serializable {
         this.collect_count = collect_count;
         this.is_collection = is_collection;
         this.musics = musics;
+    }
+
+    @Generated(hash = 1417869479)
+    public MusicAlbumDetailsBean() {
+    }
+
+    public static class StorageBean implements Parcelable, Serializable {
+        @Transient
+        private static final long serialVersionUID = 1L;
+        /**
+         * id : 5
+         * image_width : 1080
+         * image_height : 1800
+         */
+
+        private int id;
+        private int image_width;
+        private int image_height;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public int getImage_width() {
+            return image_width;
+        }
+
+        public void setImage_width(int image_width) {
+            this.image_width = image_width;
+        }
+
+        public int getImage_height() {
+            return image_height;
+        }
+
+        public void setImage_height(int image_height) {
+            this.image_height = image_height;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.id);
+            dest.writeInt(this.image_width);
+            dest.writeInt(this.image_height);
+        }
+
+        public StorageBean() {
+        }
+
+        protected StorageBean(Parcel in) {
+            this.id = in.readInt();
+            this.image_width = in.readInt();
+            this.image_height = in.readInt();
+        }
+
+        public static final Creator<MusicAlbumListBean.StorageBean> CREATOR = new Creator<MusicAlbumListBean.StorageBean>() {
+            @Override
+            public MusicAlbumListBean.StorageBean createFromParcel(Parcel source) {
+                return new MusicAlbumListBean.StorageBean(source);
+            }
+
+            @Override
+            public MusicAlbumListBean.StorageBean[] newArray(int size) {
+                return new MusicAlbumListBean.StorageBean[size];
+            }
+        };
     }
 
     public String getIntro() {
@@ -125,13 +202,6 @@ public class MusicAlbumDetailsBean implements Serializable {
         this.title = title;
     }
 
-    public int getStorage() {
-        return storage;
-    }
-
-    public void setStorage(int storage) {
-        this.storage = storage;
-    }
 
     public int getTaste_count() {
         return taste_count;
@@ -173,9 +243,24 @@ public class MusicAlbumDetailsBean implements Serializable {
         this.musics = musics;
     }
 
+    public StorageBean getStorage() {
+        return this.storage;
+    }
+
+    public void setStorage(StorageBean storage) {
+        this.storage = storage;
+    }
+
+    public Long get_id() {
+        return this._id;
+    }
+
+    public void set_id(Long _id) {
+        this._id = _id;
+    }
 
 
-    public static class MusicsBean implements Serializable{
+    public static class MusicsBean implements Serializable {
         private static final long serialVersionUID = 1L;
         /**
          * id : 1
@@ -245,7 +330,7 @@ public class MusicAlbumDetailsBean implements Serializable {
             this.music_info = music_info;
         }
 
-        public static class MusicInfoBean implements Serializable{
+        public static class MusicInfoBean implements Serializable {
             private static final long serialVersionUID = 1L;
             /**
              * id : 1
@@ -382,7 +467,7 @@ public class MusicAlbumDetailsBean implements Serializable {
                 this.comment_count = comment_count;
             }
 
-            public static class SingerBean implements Serializable{
+            public static class SingerBean implements Serializable {
                 private static final long serialVersionUID = 1L;
                 /**
                  * id : 1
@@ -438,7 +523,7 @@ public class MusicAlbumDetailsBean implements Serializable {
                     this.cover = cover;
                 }
 
-                public static class CoverBean implements Serializable{
+                public static class CoverBean implements Serializable {
                     private static final long serialVersionUID = 1L;
                     /**
                      * id : 2
@@ -478,7 +563,7 @@ public class MusicAlbumDetailsBean implements Serializable {
         }
     }
 
-    public static class MusicListConverter implements PropertyConverter<List<MusicsBean>,String>{
+    public static class MusicListConverter implements PropertyConverter<List<MusicsBean>, String> {
         @Override
         public List<MusicsBean> convertToEntityProperty(String databaseValue) {
             if (databaseValue == null) {
@@ -489,6 +574,24 @@ public class MusicAlbumDetailsBean implements Serializable {
 
         @Override
         public String convertToDatabaseValue(List<MusicsBean> entityProperty) {
+            if (entityProperty == null) {
+                return null;
+            }
+            return ConvertUtils.object2Base64Str(entityProperty);
+        }
+    }
+
+    public static class MusicAlbumLIstConverter implements PropertyConverter<StorageBean, String> {
+        @Override
+        public StorageBean convertToEntityProperty(String databaseValue) {
+            if (databaseValue == null) {
+                return null;
+            }
+            return ConvertUtils.base64Str2Object(databaseValue);
+        }
+
+        @Override
+        public String convertToDatabaseValue(StorageBean entityProperty) {
             if (entityProperty == null) {
                 return null;
             }

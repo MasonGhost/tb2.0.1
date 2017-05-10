@@ -7,6 +7,7 @@
     <dimen name="toolbar_and_statusbar_height">68dp</dimen>
     <dimen name="toolbar_padding_left">15dp</dimen>
     <dimen name="toolbar_padding_right">15dp</dimen>
+    <dimen name="toolbar_center_margin">100dp</dimen>
     <dimen name="toolbar_left_text_size">@dimen/size_sub_title</dimen>
     <dimen name="toolbar_center_text_size">@dimen/size_primary_title</dimen>
     <dimen name="toolbar_right_text_size">@dimen/size_sub_title</dimen>
@@ -24,6 +25,8 @@
     <dimen name="photo_selector_bottom_complete_width_view">70dp</dimen>
     <dimen name="photo_selector_bottom_complete_height_view">29dp</dimen>
     <dimen name="photo_album_list_picture_height">60dp</dimen>
+    <!--频道详情悬浮按钮宽高  40dp+8dp空白-->
+    <dimen name="channel_detail_float_btn_height">48dp</dimen>
     <!--刷新控件header的高度-->
     <dimen name="refresh_header_height">40dp</dimen>
     <!--登录注册编辑框左边的文字宽度-->
@@ -47,33 +50,10 @@
     <!-- 补位宽度 -->
     <dimen name="textview_spacing_offset_height">-1.5dp</dimen>
     <!-- 加载更多 -->
-    <dimen name="load_more_height">30dp</dimen>
+    <dimen name="load_more_height">35dp</dimen>
     <!--#########################################      圆角尺寸       ################################-->
     <!--提示信息背景角度-->
     <dimen name="hintview_corner">5dp</dimen>
 
-    <!--#########################################      聊天       ################################-->
-    <dimen name="chat_list_new_msg_tip_with">50dp</dimen>
-    <dimen name="chat_list_msg_text_maxwith">225dp</dimen>
-    <dimen name="chat_list_content_margintop">6dp</dimen>
-    <dimen name="chat_message_bubble_padding">12dp</dimen>
-    <dimen name="chat_message_bubble_paddingBottom">7.5dp</dimen>// 去掉行高所占的位置
-    <dimen name="chat_message_bubble_radus">10dp</dimen>
-    <dimen name="chat_message_bubble_stroke_width">0.5dp</dimen>
-    <dimen name="chat_message_bottom_tip_size">6dp</dimen>
-
-
-    <!--#########################################      动态相关       ################################-->
-
-    <dimen name="dynamic_menu_text_with">50dp</dimen>
-    <dimen name="dynamic_list_image_marginright">58dp</dimen>
-    <dimen name="dynamic_list_comment_marginright">40dp</dimen>
-
-    <!--分享弹框文字和图片的间距-->
-    <dimen name="share_image_text_padding">12dp</dimen>
-
-    <!--图片查看器，查看原图按钮-->
-    <dimen name="origin_btn_width">76dp</dimen>
-    <dimen name="origin_btn_height">26dp</dimen>
 
 </resources>

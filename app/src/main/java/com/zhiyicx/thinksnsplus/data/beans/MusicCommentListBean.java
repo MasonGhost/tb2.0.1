@@ -11,7 +11,6 @@ import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
-import org.greenrobot.greendao.annotation.NotNull;
 
 /**
  * @Author Jliuer
@@ -34,9 +33,11 @@ public class MusicCommentListBean extends BaseListBean {
      * music_id : 1
      * special_id : 0
      */
-    @Id(autoincrement = true)
-    Long _id;
-    private int id = -1;
+    @Id
+    private Long _id;
+    @Unique
+    private Long id;
+    private int comment_id = -1;
     private String created_at;
     private String updated_at;
     private String comment_content;
@@ -52,12 +53,16 @@ public class MusicCommentListBean extends BaseListBean {
     private Long comment_mark;
     private int state = SEND_SUCCESS;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public int getComment_id() {
+        return comment_id;
+    }
+
+    public void setComment_id(int comment_id) {
+        this.comment_id = comment_id;
     }
 
     public String getCreated_at() {
@@ -116,31 +121,11 @@ public class MusicCommentListBean extends BaseListBean {
         this.special_id = special_id;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public void setId(Long id) {
+        this.id = id;
+        this.comment_id = id.intValue();
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeInt(this.id);
-        dest.writeString(this.created_at);
-        dest.writeString(this.updated_at);
-        dest.writeString(this.comment_content);
-        dest.writeInt(this.user_id);
-        dest.writeInt(this.reply_to_user_id);
-        dest.writeInt(this.music_id);
-        dest.writeInt(this.special_id);
-    }
-
-    public Long get_id() {
-        return this._id;
-    }
-
-    public void set_id(Long _id) {
-        this._id = _id;
-    }
 
     public int getState() {
         return this.state;
@@ -214,34 +199,24 @@ public class MusicCommentListBean extends BaseListBean {
         myDao.update(this);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 870552357)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getMusicCommentListBeanDao() : null;
+    public Long get_id() {
+        return this._id;
+    }
+
+    public void set_id(Long _id) {
+        this._id = _id;
     }
 
     public MusicCommentListBean() {
     }
 
-    protected MusicCommentListBean(Parcel in) {
-        super(in);
-        this.id = in.readInt();
-        this.created_at = in.readString();
-        this.updated_at = in.readString();
-        this.comment_content = in.readString();
-        this.user_id = in.readInt();
-        this.reply_to_user_id = in.readInt();
-        this.music_id = in.readInt();
-        this.special_id = in.readInt();
-    }
-
-    @Generated(hash = 1940892176)
-    public MusicCommentListBean(Long _id, int id, String created_at, String updated_at,
-            String comment_content, int user_id, int reply_to_user_id, int music_id, int special_id,
-            Long comment_mark, int state) {
+    @Generated(hash = 1644174397)
+    public MusicCommentListBean(Long _id, Long id, int comment_id, String created_at,
+            String updated_at, String comment_content, int user_id, int reply_to_user_id,
+            int music_id, int special_id, Long comment_mark, int state) {
         this._id = _id;
         this.id = id;
+        this.comment_id = comment_id;
         this.created_at = created_at;
         this.updated_at = updated_at;
         this.comment_content = comment_content;
@@ -253,8 +228,71 @@ public class MusicCommentListBean extends BaseListBean {
         this.state = state;
     }
 
-    public static final Creator<MusicCommentListBean> CREATOR = new Creator<MusicCommentListBean>
-            () {
+    /**
+     * Used to resolve relations
+     */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /**
+     * Used for active entity operations.
+     */
+    @Generated(hash = 195439560)
+    private transient MusicCommentListBeanDao myDao;
+    @Generated(hash = 386266430)
+    private transient Integer fromUserInfoBean__resolvedKey;
+    @Generated(hash = 1650243776)
+    private transient Integer toUserInfoBean__resolvedKey;
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this._id);
+        dest.writeValue(this.id);
+        dest.writeInt(this.comment_id);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+        dest.writeString(this.comment_content);
+        dest.writeInt(this.user_id);
+        dest.writeInt(this.reply_to_user_id);
+        dest.writeParcelable(this.fromUserInfoBean, flags);
+        dest.writeParcelable(this.toUserInfoBean, flags);
+        dest.writeInt(this.music_id);
+        dest.writeInt(this.special_id);
+        dest.writeValue(this.comment_mark);
+        dest.writeInt(this.state);
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 870552357)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getMusicCommentListBeanDao() : null;
+    }
+
+    protected MusicCommentListBean(Parcel in) {
+        super(in);
+        this._id = (Long) in.readValue(Long.class.getClassLoader());
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.comment_id = in.readInt();
+        this.created_at = in.readString();
+        this.updated_at = in.readString();
+        this.comment_content = in.readString();
+        this.user_id = in.readInt();
+        this.reply_to_user_id = in.readInt();
+        this.fromUserInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.toUserInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.music_id = in.readInt();
+        this.special_id = in.readInt();
+        this.comment_mark = (Long) in.readValue(Long.class.getClassLoader());
+        this.state = in.readInt();
+    }
+
+    public static final Creator<MusicCommentListBean> CREATOR = new Creator<MusicCommentListBean>() {
         @Override
         public MusicCommentListBean createFromParcel(Parcel source) {
             return new MusicCommentListBean(source);
@@ -265,14 +303,4 @@ public class MusicCommentListBean extends BaseListBean {
             return new MusicCommentListBean[size];
         }
     };
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /** Used for active entity operations. */
-    @Generated(hash = 195439560)
-    private transient MusicCommentListBeanDao myDao;
-    @Generated(hash = 386266430)
-    private transient Integer fromUserInfoBean__resolvedKey;
-    @Generated(hash = 1650243776)
-    private transient Integer toUserInfoBean__resolvedKey;
 }

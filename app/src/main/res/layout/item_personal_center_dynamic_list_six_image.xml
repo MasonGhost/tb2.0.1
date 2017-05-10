@@ -39,7 +39,6 @@
             android:id="@+id/tv_time_down"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_time_up"
             android:layout_marginTop="@dimen/spacing_small"
             android:includeFontPadding="false"
             android:textColor="@color/important_for_content"
@@ -99,7 +98,8 @@
         android:layout_marginRight="@dimen/spacing_normal"
         android:layout_toRightOf="@+id/ll_time_container"
         android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
-        android:maxLength="@integer/dynamic_list_content_max_show_size"
+        android:ellipsize="end"
+        android:maxLines="@integer/dynamic_list_content_show_lines"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingBottom="@dimen/spacing_normal"
         android:textColor="@color/normal_for_dynamic_list_content"
@@ -117,17 +117,18 @@
         android:layout_toRightOf="@+id/ll_time_container"
         android:background="@color/white"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/spacing_normal">
+        android:paddingBottom="@dimen/dynamic_image_padding_bottom">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2"
+            android:baselineAligned="false"
             android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:orientation="horizontal"
                 >
@@ -135,12 +136,12 @@
                 <com.zhiyicx.baseproject.widget.imageview.SquareImageView
                     android:id="@+id/siv_0"
                     style="@style/style_dynamic_list_image_horizen"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     />
 
                 <View
-                    android:layout_width="2dp"
+                    android:layout_width="@dimen/dynamice_spacing_six_small"
                     android:layout_height="match_parent"
                     />
 
@@ -148,18 +149,18 @@
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="horizontal">
 
                 <View
-                    android:layout_width="4dp"
+                    android:layout_width="@dimen/dynamice_spacing_six_big"
                     android:layout_height="match_parent"
                     />
 
                 <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -227,6 +228,7 @@
     </LinearLayout>
 
     <View
+        android:id="@+id/v_line"
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_line"
         android:layout_below="@+id/nrv_image"

@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.personal_center;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -24,8 +25,8 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -79,7 +80,6 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
 import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.STATUS_RGB;
 import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.TOOLBAR_BLACK_ICON;
 import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.TOOLBAR_DIVIDER_RGB;
-import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.TOOLBAR_RGB;
 import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.TOOLBAR_WHITE_ICON;
 
 /**
@@ -149,15 +149,22 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mPersonalCenterHeaderViewItem = new PersonalCenterHeaderViewItem(getActivity(), mPhotoSelector, mRvList, mHeaderAndFooterWrapper, mLlToolbarContainerParent);
         mPersonalCenterHeaderViewItem.initHeaderView(false);
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent, STATUS_RGB, 255);
-        mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.rl_toolbar_container), TOOLBAR_RGB, 255);
+        //mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.rl_toolbar_container), TOOLBAR_RGB, 255);
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.v_horizontal_line), TOOLBAR_DIVIDER_RGB, 255);
         mPersonalCenterHeaderViewItem.setToolbarIconColor(Color.argb(255, TOOLBAR_BLACK_ICON[0],
                 TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
+        mIvMore.setVisibility(View.GONE);
+        setOverScroll(false, null);
     }
 
     @Override
     protected boolean usePermisson() {
         return true;
+    }
+
+    @Override
+    protected View getLeftViewOfMusicWindow() {
+        return mIvMore;
     }
 
     private void initListener() {
@@ -296,7 +303,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     protected void initData() {
         mUserInfoBean = getArguments().getParcelable(PERSONAL_CENTER_DATA);
-        requestData();
+        if (mUserInfoBean != null) {
+            requestData();
+        }
         super.initData();
     }
 
@@ -332,6 +341,13 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
         dataPosition = dataPosition - 1;// 减去 header
         mCurrentPostion = dataPosition;
+        Bitmap shareBitMap = null;
+        try {
+            ImageView imageView = (ImageView) layoutManager.findViewByPosition(dataPosition + 1).findViewById(R.id.siv_0);
+            shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(imageView.getDrawable());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         switch (viewPosition) { // 0 1 2 3 代表 view item 位置
             case 0: // 喜欢
                 // 还未发送成功的动态列表不查看详情
@@ -357,7 +373,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 break;
 
             case 3: // 更多
-                initDeletDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition);
+                initDeletDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, shareBitMap);
                 mDeletDynamicPopWindow.show();
                 break;
             default:
@@ -379,13 +395,14 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     public void allDataReady() {
         closeLoadingView();
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent, STATUS_RGB, 0);
-        mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.rl_toolbar_container), TOOLBAR_RGB, 0);
+        // mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.rl_toolbar_container), TOOLBAR_RGB, 0);
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.v_horizontal_line), TOOLBAR_DIVIDER_RGB, 0);
         mPersonalCenterHeaderViewItem.setToolbarIconColor(Color.argb(255, TOOLBAR_WHITE_ICON[0]
                 , TOOLBAR_WHITE_ICON[1], TOOLBAR_WHITE_ICON[2]));
+        mIvMore.setVisibility(View.VISIBLE);
         mPersonalCenterHeaderViewItem.setScrollListenter();
         // 状态栏文字设为白色
-        StatusBarUtils.statusBarDarkMode(mActivity);
+        //StatusBarUtils.statusBarDarkMode(mActivity);
         initListener();
         // 进入页面尝试设置头部信息
         setHeaderInfo(mUserInfoBean);
@@ -674,10 +691,14 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      * @param dynamicBean curent dynamic
      * @param position    curent dynamic postion
      */
-    private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean, final int position) {
+    private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean, final int position, final Bitmap shareBitmap) {
+        boolean isCollected = dynamicBean.getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED;
+        Long feed_id = dynamicBean.getFeed_id();
+        boolean feedIdIsNull = feed_id == null || feed_id == 0;
         mDeletDynamicPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.dynamic_list_delete_dynamic))
-                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item1Str(getString(feedIdIsNull ? R.string.empty : (isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic)))
+                .item2Str(getString(R.string.dynamic_list_delete_dynamic))
+                .item3Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -686,9 +707,24 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
                     public void onItem1Clicked() {
+                        mPresenter.handleCollect(dynamicBean);
+                        mDeletDynamicPopWindow.hide();
+                    }
+                })
+                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
+                    @Override
+                    public void onItem2Clicked() {
                         mDeletDynamicPopWindow.hide();
                         updateDynamicCounts(-1);
                         mPresenter.deleteDynamic(dynamicBean, position);
+                        mDeletDynamicPopWindow.hide();
+                    }
+                })
+                .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
+                    @Override
+                    public void onItem3Clicked() {
+                        mPresenter.shareDynamic(dynamicBean, shareBitmap);
+                        mDeletDynamicPopWindow.hide();
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
@@ -714,6 +750,14 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         }
         mUserInfoBean.setFeeds_count(String.valueOf(currenDynamicCounts));
         mPersonalCenterHeaderViewItem.upDateDynamicNums(currenDynamicCounts);
+    }
+
+    @Override
+    public Bitmap getUserHeadPic() {
+        if (mPersonalCenterHeaderViewItem.getHeadView() == null) {
+            return null;
+        }
+        return ConvertUtils.drawable2BitmapWithWhiteBg(mPersonalCenterHeaderViewItem.getHeadView().getDrawable());
     }
 
     /**
@@ -749,7 +793,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      */
     private void initReSendDynamicPopupWindow(final int position) {
         mReSendDynamicPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.dynamic_list_resend_dynamic))
+                .item1Str(getString(R.string.resend))
                 .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)

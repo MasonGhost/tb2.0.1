@@ -48,7 +48,6 @@
                 android:id="@+id/tv_time_down"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_time_up"
                 android:layout_marginTop="@dimen/spacing_small"
                 android:gravity="center_horizontal"
                 android:includeFontPadding="false"
@@ -60,7 +59,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/ll_time_container">
+           >
 
             <TextView
                 android:id="@+id/tv_name"
@@ -111,8 +110,9 @@
                 android:layout_below="@+id/tv_title"
                 android:layout_marginRight="@dimen/spacing_normal"
                 android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
-                android:maxLength="@integer/dynamic_list_content_max_show_size"
-                android:paddingBottom="@dimen/spacing_normal"
+                android:ellipsize="end"
+                android:maxLines="@integer/dynamic_list_content_show_lines"
+                android:paddingBottom="@dimen/dynamic_image_padding_bottom"
                 android:paddingLeft="@dimen/spacing_normal"
                 android:textColor="@color/normal_for_dynamic_list_content"
                 android:textSize="@dimen/size_content_assist"
@@ -134,7 +134,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/v_line"
         android:layout_marginLeft="@dimen/zero_image_left_margin"
-        android:layout_marginRight="@dimen/spacing_normal"
+        android:layout_marginRight="@dimen/spacing_mid"
         android:layout_marginTop="@dimen/divider_line"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingRight="@dimen/spacing_tiny">

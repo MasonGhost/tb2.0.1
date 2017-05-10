@@ -31,6 +31,8 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
+import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
@@ -304,6 +306,17 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     }
 
     @Override
+    public SendDynamicDataBean getDynamicSendData() {
+        Bundle bundle = getArguments();
+        SendDynamicDataBean sendDynamicDataBean = null;
+        if (bundle != null) {
+            sendDynamicDataBean = bundle.getParcelable(SendDynamicActivity.SEND_DYNAMIC_DATA);
+        }
+        return sendDynamicDataBean;
+    }
+
+
+    @Override
     protected void setRightClick() {
         mPresenter.sendDynamic(packageDynamicData());
     }
@@ -346,6 +359,9 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         long userId = AppApplication.getmCurrentLoginAuth() != null ? AppApplication.getmCurrentLoginAuth().getUser_id() : 0;
         String feedMarkString = userId + "" + System.currentTimeMillis();
         long feedMark = Long.parseLong(feedMarkString);
+        DynamicToolBean toolBean=new DynamicToolBean();
+        toolBean.setFeed_mark(feedMark);
+        toolBean.setFeed_view_count(1);// 浏览量没有 0 ，从1 开始
         DynamicDetailBean dynamicDetailBean = new DynamicDetailBean();
         dynamicDetailBean.setFeed_mark(feedMark);
         dynamicDetailBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
@@ -375,6 +391,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         dynamicBean.setState(DynamicBean.SEND_ING);
         dynamicBean.setFeed_mark(feedMark);
         dynamicBean.setUser_id(userId);
+        dynamicBean.setTool(toolBean);
         return dynamicBean;
     }
 
@@ -467,21 +484,23 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     private void initDynamicType() {
         Bundle bundle = getArguments();
         if (bundle != null) {
-            dynamicType = bundle.getInt(SendDynamicActivity.DYNAMIC_TYPE);
-            List<ImageBean> originPhotos = bundle.getParcelableArrayList(SendDynamicActivity.DYNAMIC_PHOTOS);
+            SendDynamicDataBean sendDynamicDataBean = bundle.getParcelable(SendDynamicActivity.SEND_DYNAMIC_DATA);
+            dynamicType = sendDynamicDataBean.getDynamicType();
+            List<ImageBean> originPhotos = sendDynamicDataBean.getDynamicPrePhotos();
             if (originPhotos != null) {
                 selectedPhotos = new ArrayList<>(MAX_PHOTOS);
                 selectedPhotos.addAll(originPhotos);
             }
         }
         switch (dynamicType) {
-            case SendDynamicActivity.PHOTO_TEXT_DYNAMIC:
+            case SendDynamicDataBean.PHOTO_TEXT_DYNAMIC:
                 // 没有图片就初始化这些
                 initPhotoSelector();
                 initPhotoList(bundle);
                 break;
-            case SendDynamicActivity.TEXT_ONLY_DYNAMIC:
+            case SendDynamicDataBean.TEXT_ONLY_DYNAMIC:
                 mRvPhotoList.setVisibility(View.GONE);// 隐藏图片控件
+                mEtDynamicContent.getEtContent().setHint(getString(R.string.dynamic_content_no_pic_hint));
                 break;
             default:
         }

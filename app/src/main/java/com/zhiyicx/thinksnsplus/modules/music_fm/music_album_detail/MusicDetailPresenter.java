@@ -1,12 +1,23 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail;
 
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
+import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
+import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.imsdk.core.autobahn.WampMessage;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
@@ -14,7 +25,12 @@ import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumDetailsBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicDetailRepository;
 
+import org.simple.eventbus.EventBus;
+
 import javax.inject.Inject;
+
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SHARE_DEFAULT;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_ABLUM_COLLECT;
 
 /**
  * @Author Jliuer
@@ -24,7 +40,7 @@ import javax.inject.Inject;
  */
 @FragmentScoped
 public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repository,
-        MusicDetailContract.View> implements MusicDetailContract.Presenter {
+        MusicDetailContract.View> implements MusicDetailContract.Presenter, OnShareCallbackListener {
 
     @Inject
     MusicDetailRepository mMusicDetailRepository;
@@ -34,6 +50,11 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
 
     @Inject
     public SharePolicy mSharePolicy;
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
 
     @Inject
     public MusicDetailPresenter(MusicDetailContract.Repository repository, MusicDetailContract
@@ -51,11 +72,6 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
 
     @Override
     public void getMusicAblum(String id) {
-//        MusicAlbumDetailsBean cacheData = getCacheAblumDetail(Integer.valueOf(id));
-//        if (cacheData != null) {
-//            mRootView.setMusicAblum(cacheData);
-//        }
-
         mMusicDetailRepository.getMusicAblum(id).compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribe<MusicAlbumDetailsBean>() {
                     @Override
@@ -71,7 +87,7 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
 
                     @Override
                     protected void onException(Throwable throwable) {
-
+                        mRootView.albumHasBeDeleted();
                     }
                 });
     }
@@ -102,31 +118,57 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
-        int is_collect = mRootView.getCurrentAblum().getIs_collection();
-        mRootView.getCurrentAblum().setIs_collection(is_collect == 0 ? 1 : 0);
+        int is_collect = mRootView.getCurrentAblum().getIs_collection()== 0 ? 1 : 0;
+        mRootView.getCurrentAblum().setIs_collection(is_collect);
+        mRootView.getmMusicAlbumListBean().setIs_collection(is_collect);
         int countChange = isUnCollected ? 1 : -1;
+        mRootView.getmMusicAlbumListBean().setCollect_count(mRootView.getCurrentAblum().getCollect_count() + countChange);
         mRootView.getCurrentAblum().setCollect_count(mRootView.getCurrentAblum().getCollect_count() + countChange);
-
         mMusicAlbumDetailsBeanGreenDao.insertOrReplace(mRootView.getCurrentAblum());
-
+        EventBus.getDefault().post(mRootView.getmMusicAlbumListBean(), EVENT_ABLUM_COLLECT);
         mRootView.setCollect(isUnCollected);
         mMusicDetailRepository.handleCollect(isUnCollected, special_id);
 
     }
 
     @Override
-    public void shareMusicAlbum() {
+    public void shareMusicAlbum(Bitmap bitmap) {
+
+        ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
 
         shareContent.setTitle(mRootView.getCurrentAblum().getTitle());
-        shareContent.setImage(ImageUtils.imagePathConvert(mRootView.getCurrentAblum()
-                .getStorage() + "", 100));
-        shareContent.setUrl("http://www.baidu.com");
+        shareContent.setContent(mRootView.getCurrentAblum().getIntro());
+        if (bitmap==null){
+            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.icon_256)));
+        }else{
+            shareContent.setBitmap(bitmap);
+        }
+        shareContent.setUrl(APP_PATH_SHARE_DEFAULT);
 
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
+    }
 
+    @Override
+    public void onStart(Share share) {
+
+    }
+
+    @Override
+    public void onSuccess(Share share) {
         mMusicDetailRepository.shareAblum(mRootView.getCurrentAblum().getId() + "");
+        mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_sccuess));
+    }
+
+    @Override
+    public void onError(Share share, Throwable throwable) {
+        mRootView.showSnackErrorMessage(mContext.getString(R.string.share_fail));
+    }
+
+    @Override
+    public void onCancel(Share share) {
+        mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_cancel));
     }
 
     @Override

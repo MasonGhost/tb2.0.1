@@ -36,16 +36,24 @@ public interface DynamicClient {
     Observable<BaseJson<Object>> sendDynamic(@Body RequestBody body);
 
     /**
+     * 发布动态到频道
+     */
+    @Headers({"Content-type:application/json;charset=UTF-8"})
+    @POST(ApiConfig.APP_PATH_SEND_DYNAMIC_TO_CHANNEL)
+    Observable<BaseJson<Object>> sendDynamicToChannel(@Path("channel_id") long channel_id, @Body RequestBody body);
+
+    /**
      * 获取动态列表
      *
-     * @param type   "" 代表最新；follows 代表关注 ； hots 代表热门
-     * @param max_id 用来翻页的记录id(对应数据体里的feed_id ,最新和关注选填)
-     * @param limit  请求数据条数 默认10条
-     * @param page   页码 热门选填
+     * @param type     "" 代表最新；follows 代表关注 ； hots 代表热门
+     * @param max_id   用来翻页的记录id(对应数据体里的feed_id ,最新和关注选填)
+     * @param limit    请求数据条数 默认10条
+     * @param page     页码 热门选填
+     * @param feed_ids 可以是以逗号隔开的id  可以是数组
      * @return dynamic list
      */
     @GET(ApiConfig.APP_PATH_GET_DYNAMIC_LIST)
-    Observable<BaseJson<List<DynamicBean>>> getDynamicList(@Path("type") String type, @Query("max_id") Long max_id, @Query("limit") Long limit, @Query("page") int page);
+    Observable<BaseJson<List<DynamicBean>>> getDynamicList(@Path("type") String type, @Query("max_id") Long max_id, @Query("limit") Long limit, @Query("page") int page, @Query("feed_ids") String feed_ids);
 
     /**
      * #点赞一条动态
@@ -73,7 +81,7 @@ public interface DynamicClient {
      * @return
      */
     @GET(ApiConfig.APP_PATH_DYNAMIC_DIG_LIST)
-    Observable<BaseJson<List<DynamicDigListBean>>> getDynamicDigList(@Path("feed_id") Long feed_id, @Query("max_id") Long max_id,@Query("limit") Integer limitCount);
+    Observable<BaseJson<List<DynamicDigListBean>>> getDynamicDigList(@Path("feed_id") Long feed_id, @Query("max_id") Long max_id, @Query("limit") Integer limitCount);
 
     /**
      * 收藏动态
@@ -99,7 +107,16 @@ public interface DynamicClient {
      * @return
      */
     @GET(ApiConfig.APP_PATH_DYNAMIC_COMMENT_LIST)
-    Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentList(@Path("feed_id") Long feed_id, @Query("max_id") Long max_id,@Query("limit") Long limit);
+    Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentList(@Path("feed_id") Long feed_id, @Query("max_id") Long max_id, @Query("limit") Long limit);
+
+    /**
+     * 根据id获取评论列表
+     *
+     * @param comment_ids 评论id 以逗号隔开或者数组形式传入
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_DYNAMIC_COMMENT_LIST_BY_COMMENT_ID)
+    Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentListByCommentsId(@Query("comment_ids") String comment_ids);
 
     /**
      * 增加动态浏览量

@@ -10,6 +10,8 @@ import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 
+import java.util.List;
+
 /**
  * @author LiuChao
  * @describe
@@ -82,6 +84,17 @@ public class GalleryPictureContainerFragment extends TSFragment {
         getChildFragmentManager().beginTransaction().replace(R.id.fl_picture_container, fragment)
                 .commitAllowingStateLoss();
 
+    }
+
+    public GalleryPictureFragment getChildFragment() {
+        List<Fragment> fragmentList = getChildFragmentManager().getFragments();
+        if (fragmentList != null && !fragmentList.isEmpty()) {
+            Fragment fragment = fragmentList.get(0);
+            if (fragment instanceof GalleryPictureFragment) {
+                return (GalleryPictureFragment) fragment;
+            }
+        }
+        return null;
     }
 
     public void animationExit(ObjectAnimator backgroundAnimator) {

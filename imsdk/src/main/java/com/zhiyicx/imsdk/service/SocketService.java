@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.SparseArray;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -14,6 +15,7 @@ import com.zhiyicx.imsdk.core.autobahn.WebSocket;
 import com.zhiyicx.imsdk.db.base.BaseDao;
 import com.zhiyicx.imsdk.db.dao.ConversationDao;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
+import com.zhiyicx.imsdk.entity.AuthData;
 import com.zhiyicx.imsdk.entity.ChatRoom;
 import com.zhiyicx.imsdk.entity.ChatRoomContainer;
 import com.zhiyicx.imsdk.entity.ChatRoomErr;
@@ -45,9 +47,7 @@ import org.simple.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -95,6 +95,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
     public static final String BUNDLE_MSG_GT = "gt";
     public static final String BUNDLE_MSG_LT = "lt";
     public static final String BUNDLE_MSG_LIMIT = "limit";
+    public static final String BUNDLE_MSG_ORDER = "order";
 
 
     public static final String SOCKET_RETRY_CONNECT = "com.zhiyicx.zhibo.socket_retry_connect";
@@ -146,7 +147,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
     private int send_serilize_type = ImService.BIN_MSGPACK;//向服务器发送的数据类型
 
     private Queue<MessageContainer> mMessageContainers = new ConcurrentLinkedQueue<>();//线程安全的队列
-    private Map<Integer, EventContainer> mEventContainerCache = new HashMap<>();
+    private SparseArray<EventContainer> mEventContainerCache = new SparseArray<>();
 
     private Runnable heartBeatRunnable = new Runnable() {
 
@@ -252,7 +253,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                     MessageContainer messageContainer = mMessageContainers.poll();
 
                     if (messageContainer != null) {
-                        if (messageContainer.msg.ext.customID != MessageType.MESSAGE_CUSTOM_ID_ZAN)//点赞不处理超时
+                        if (messageContainer.msg.ext == null || messageContainer.msg.ext.customID != MessageType.MESSAGE_CUSTOM_ID_ZAN)//点赞不处理超时
                         {
                             addTimeoutTask(messageContainer);
                         }
@@ -504,7 +505,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                  * 通过消息序号同步消息
                  */
                 case TAG_IM_SYNC:
-                    result = sendSyncMessage(bundle.getInt(BUNDLE_ROOMID), bundle.getInt(BUNDLE_MSG_GT), bundle.getInt(BUNDLE_MSG_LT, 0), bundle.getInt(BUNDLE_MSG_ID));
+                    result = sendSyncMessage(bundle.getInt(BUNDLE_ROOMID), bundle.getInt(BUNDLE_MSG_GT), bundle.getInt(BUNDLE_MSG_LT, 0), bundle.getInt(BUNDLE_MSG_ORDER, ZBIMClient.SYN_ASC), bundle.getInt(BUNDLE_MSG_ID));
                     break;
                 /**
                  * 获取房间中最新的几条消息
@@ -664,12 +665,12 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param msgid 本条消息的 id
      * @return
      */
-    private boolean sendSyncMessage(int cid, int gt, int lt, int msgid) {
+    private boolean sendSyncMessage(int cid, int gt, int lt, int order, int msgid) {
         if (cid == 0) {
             return false;
         }
         addTimeoutTask(new MessageContainer(ImService.CONVR_MSG_SYNC, new Message(msgid), cid, null));
-        return mService.sendSyncMessage(cid, gt, lt, ImService.SEQ_LIMIT, msgid);
+        return mService.sendSyncMessage(cid, gt, lt, order, ImService.SEQ_LIMIT, msgid);
     }
 
     /**
@@ -685,7 +686,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
             return false;
         }
         addTimeoutTask(new MessageContainer(ImService.CONVR_MSG_SYNC, new Message(msgid), cid, null));
-        return mService.sendSyncMessage(cid, 0, 0, limit, msgid);
+        return mService.sendSyncMessage(cid, 0, 0, ZBIMClient.SYN_ASC, limit, msgid);
     }
 
     /**
@@ -969,17 +970,17 @@ public class SocketService extends BaseService implements ImService.ImListener {
             eventContainer.errMsg = jsonObject.getString("msg");
             eventContainer.err = code;
             switch (code) {
-                case AUTH_FAILED_ERR_UID_OR_PWD: //1021
+                case AUTH_FAILED_ERR_UID_OR_PWD: // 1021 User disabled 被禁用
                     eventContainer.disa = jsonObject.getLong("disa");
 
                     break;
-                case AUTH_FAILED_NO_UID_OR_PWD:
+                case AUTH_FAILED_NO_UID_OR_PWD:// 1020 Auth failed  认证失败
 
                     break;
                 default:
             }
         } else if (jsonObject.has("ping")) {
-
+            eventContainer.mAuthData = gson.fromJson(jsonObject.toString(), AuthData.class);
         }
         return eventContainer;
     }
@@ -1002,8 +1003,6 @@ public class SocketService extends BaseService implements ImService.ImListener {
                     sendImBroadCast(tmp);
 
             }
-
-
         }
         eventContainer = null;
         return eventContainer;
@@ -1033,8 +1032,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                 cancleTimeoutListen(0 + "");
             JSONObject jsonObject = jsonArray.getJSONObject(1);
             MessageContainer messageContainer = new MessageContainer();
-            Message message = new Message();
-            messageContainer.msg = message;
+            messageContainer.msg = new Message();
             eventContainer.mMessageContainer = messageContainer;
 
             if (jsonObject != null && jsonObject.has("code")) {
@@ -1356,7 +1354,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
         eventContainer.mConversations = conversations;
         if (conversations != null && conversations.size() > 0) {
             Conversation tmp = conversations.get(0);
-            if (mEventContainerCache.containsKey(tmp.getCid())) {
+            if (mEventContainerCache.get(tmp.getCid())!=null) {
                 eventContainer = mEventContainerCache.get(tmp.getCid());
                 tmp.setLast_message_time((eventContainer.mMessageContainer.msg.mid >> 23) + BaseDao.TIME_DEFAULT_ADD);
                 tmp.setIm_uid(mIMConfig.getImUid());
@@ -1395,7 +1393,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      */
     private EventContainer parseMsgpackDataMessageErrACK(byte[] data, EventContainer eventContainer) {
         List<Value> dst1 = null;
-        System.out.println("data ----------= " + new String(data));
+        LogUtils.debugInfo(TAG,"data ----------= " + new String(data));
         try {
             dst1 = new MessagePack().read(MessageHelper.getRecievedBodyByte(data), Templates.tList(Templates.TValue));
             LogUtils.debugInfo(TAG, "------value----" + dst1.toString());
@@ -1530,7 +1528,6 @@ public class SocketService extends BaseService implements ImService.ImListener {
              * 主动断开
              */
             case WebSocket.ConnectionHandler.CLOSE_NORMAL:
-
                 break;
             /**
              * 无法连接到服务器（主要是网络太差出现）
@@ -1629,6 +1626,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
         if (DeviceUtils.netIsConnected(getApplicationContext()) && isNeedReConnected) {
             if (mService.isConnected()) {
                 if (!isDisconnecting) {
+                    LogUtils.debugInfo(TAG, "----------socketReconnect---by own---");
                     mService.disconnect();
                     isDisconnecting = true;
                 }
@@ -1660,6 +1658,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      */
     private boolean connect() {
         isNeedReConnected = true;
+
         return socketReconnect();
     }
 

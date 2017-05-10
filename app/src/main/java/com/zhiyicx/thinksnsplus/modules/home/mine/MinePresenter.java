@@ -1,11 +1,14 @@
 package com.zhiyicx.thinksnsplus.modules.home.mine;
 
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 
 import org.simple.eventbus.Subscriber;
@@ -26,6 +29,9 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
+    FlushMessageBeanGreenDaoImpl mFlushMessageBeanGreenDao;
+
+    @Inject
     public MinePresenter(MineContract.Repository repository, MineContract.View rootView) {
         super(repository, rootView);
     }
@@ -42,6 +48,7 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
         if (authBean != null) {
             UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache((long) authBean.getUser_id());
             mRootView.setUserInfo(userInfoBean);
+            setMineTipVisable(false);
         }
     }
 
@@ -50,7 +57,6 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_USERINFO_UPDATE)
     public void upDataUserInfo(List<UserInfoBean> data) {
-        com.zhiyicx.common.utils.log.LogUtils.i("upDataUserInfo-->" + data.toString());
         AuthBean authBean = AppApplication.getmCurrentLoginAuth();
         if (data != null) {
             for (UserInfoBean userInfoBean : data) {
@@ -60,6 +66,15 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
                 }
             }
         }
+    }
+
+    /**
+     * 更新粉丝数量
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE)
+    public void setMineTipVisable(boolean isVisiable) {
+        FlushMessages flushMessages = mFlushMessageBeanGreenDao.getFlushMessgaeByKey(ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS);
+        mRootView.setNewFollowTip(flushMessages != null ? flushMessages.getCount() : 0);
     }
 
 }

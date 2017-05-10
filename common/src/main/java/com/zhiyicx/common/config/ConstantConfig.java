@@ -12,6 +12,7 @@ public class ConstantConfig {
         throw new UnsupportedOperationException("u can't instantiate me...");
     }
 
+    public static final String SPLIT_SMBOL = ",";
     /**
      * 抖动间隔时间，单位 s
      */
@@ -102,6 +103,10 @@ public class ConstantConfig {
      * 正则：URL
      */
     public static final String REGEX_URL = "[a-zA-z]+://[^\\s]*";
+    /**
+     * 正则：汉字
+     */
+    public static final String REGEX_ZH_ = "[\\u4e00-\\u9fa5]";
     /**
      * 正则：汉字
      */

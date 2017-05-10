@@ -5,7 +5,6 @@ import android.widget.ImageView;
 
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForTwoImage;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 /**
@@ -38,8 +37,8 @@ public class PersonalCenterDynamicListItemForTwoImage extends PersonalCenterDyna
     }
 
     @Override
-    public void convert(ViewHolder holder, final DynamicBean dynamicBean, DynamicBean lastT, int position) {
-        super.convert(holder, dynamicBean, lastT, position);
+    public void convert(ViewHolder holder, final DynamicBean dynamicBean, DynamicBean lastT, int position,int itemCounts) {
+        super.convert(holder, dynamicBean, lastT, position,itemCounts);
         initImageView(holder,(ImageView) holder.getView(R.id.siv_0), dynamicBean, 0,1); // 数字 0 代表 image 当前的位置， 1 代表他相对与 CURREN_CLOUMS 的份数
         initImageView(holder,(ImageView) holder.getView(R.id.siv_1), dynamicBean, 1,1);
     }

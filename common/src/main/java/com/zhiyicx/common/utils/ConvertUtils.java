@@ -7,12 +7,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.View;
+import android.widget.TextView;
 
+import com.klinker.android.link_builder.Link;
+import com.klinker.android.link_builder.LinkBuilder;
 import com.zhiyicx.common.config.ConstantConfig;
 
 import java.io.ByteArrayInputStream;
@@ -23,6 +28,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 /**
  * @Describe 转换相关工具类
@@ -39,6 +45,18 @@ public class ConvertUtils {
 
     private static final char hexDigits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
+    /**
+     * 字符串转换，用于评论名字颜色与点击处理
+     *
+     * @param textView
+     * @param links
+     */
+    public static void stringLinkConvert(TextView textView, List<Link> links) {
+        LinkBuilder.on(textView)
+                .setFindOnlyFirstMatchesForAnyLink(true)
+                .addLinks(links)
+                .build();
+    }
 
     /**
      * 数字格式转换，超过 9999 用 “1万”
@@ -57,6 +75,7 @@ public class ConvertUtils {
         }
         return String.valueOf(number);
     }
+
     /**
      * ⦁	消息的字数显示不超过99，超过99均显示99
      *
@@ -65,10 +84,42 @@ public class ConvertUtils {
      */
     public static String messageNumberConvert(int number) {
         if (number > 99) {
-           return String.valueOf(99);
+            return String.valueOf(99);
         }
         return String.valueOf(number);
     }
+
+    /**
+     * 去除头部符号
+     *
+     * @param str
+     * @param symbol
+     * @return
+     */
+    public static String removeSymbolStartWith(String str, String symbol) {
+
+        if (str.startsWith(symbol)) {
+            str = removeSymbolStartWith(str.substring(1, str.length()), symbol);
+        }
+        return str;
+    }
+
+    /**
+     * 去除尾部符号
+     *
+     * @param str
+     * @param symbol
+     * @return
+     */
+    public static String removeSymbolEndWith(String str, String symbol) {
+
+        if (str.endsWith(symbol)) {
+            str = removeSymbolEndWith(str.substring(0, str.length() - 1), symbol);
+        }
+
+        return str;
+    }
+
     /**
      * byteArr 转 hexString
      * <p>例如：</p>
@@ -575,6 +626,50 @@ public class ConvertUtils {
     }
 
     /**
+     * @param drawable
+     * @return
+     */
+    public static Bitmap drawable2BitmapWithWhiteBg(Drawable drawable) {
+        // 取 drawable 的长宽
+        int w = drawable.getIntrinsicWidth();
+        int h = drawable.getIntrinsicHeight();
+
+
+        // 取 drawable 的颜色格式
+        Bitmap.Config config = drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
+                : Bitmap.Config.RGB_565;
+        // 建立对应 bitmap
+        Bitmap bitmap = Bitmap.createBitmap(w, h, config);
+        // 建立对应 bitmap 的画布
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawColor(Color.WHITE);
+        drawable.setBounds(0, 0, w, h);
+        // 把 drawable 内容画到画布中
+        drawable.draw(canvas);
+        return bitmap;
+    }
+
+
+    /**
+     * 然后给写一张白色背景
+     * 给图片画一张背景
+     *
+     * @param color
+     * @param orginBitmap
+     * @return
+     */
+    public static Bitmap drawBg4Bitmap(int color, Bitmap orginBitmap) {
+        Paint paint = new Paint();
+        paint.setColor(color);
+        Bitmap bitmap = Bitmap.createBitmap(orginBitmap.getWidth(),
+                orginBitmap.getHeight(), orginBitmap.getConfig());
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawRect(0, 0, orginBitmap.getWidth(), orginBitmap.getHeight(), paint);
+        canvas.drawBitmap(orginBitmap, 0, 0, paint);
+        return bitmap;
+    }
+
+    /**
      * drawable 转 byteArr
      *
      * @param drawable drawable对象
@@ -696,5 +791,6 @@ public class ConvertUtils {
             return null;
         }
     }
+
 
 }

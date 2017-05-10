@@ -14,20 +14,25 @@ import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.utils.ImageUtils;
+import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.collect.CollectListActivity;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
-import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.rank.RankActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
+
+import org.simple.eventbus.EventBus;
 
 import javax.inject.Inject;
 
@@ -52,8 +57,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     RelativeLayout mRlUserinfoContainer;
     @BindView(R.id.tv_fans_count)
     TextView mTvFansCount;
-    @BindView(R.id.ll_fans_container)
-    LinearLayout mLlFansContainer;
     @BindView(R.id.tv_follow_count)
     TextView mTvFollowCount;
     @BindView(R.id.ll_follow_container)
@@ -62,14 +65,17 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     CombinationButton mBtPersonalPage;
     @BindView(R.id.bt_ranking)
     CombinationButton mBtRanking;
-    @BindView(R.id.bt_gold)
-    CombinationButton mBtGold;
+    @BindView(R.id.bt_collect)
+    CombinationButton mBtCollect;
     @BindView(R.id.bt_suggestion)
     CombinationButton mBtSuggestion;
     @BindView(R.id.bt_question_answer)
     CombinationButton mBtQuestionAnswer;
     @BindView(R.id.bt_setting)
     CombinationButton mBtSetting;
+
+    @BindView(R.id.bv_fans_new_count)
+    BadgeView mVvFansNewCount;
 
     @Inject
     public MinePresenter mMinePresenter;
@@ -147,7 +153,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         return R.color.white;
     }
 
-    @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_gold, R.id.bt_suggestion, R.id.bt_question_answer, R.id.bt_setting})
+    @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_collect, R.id.bt_suggestion, R.id.bt_question_answer, R.id.bt_setting})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_userinfo_container:
@@ -179,6 +185,10 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 startActivity(intent);
                 break;
             case R.id.bt_ranking:
+
+                Intent toRank = new Intent(getContext(), RankActivity.class);
+                startActivity(toRank);
+
                 // 加载主题库方法，用于测试主题切换
                /* SkinManager.getInstance().loadSkin("tsplustheme.skin", new SkinLoaderListener() {
                     @Override
@@ -202,8 +212,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                     }
                 });*/
                 break;
-            case R.id.bt_gold:
-                startActivity(new Intent(getActivity(), GalleryActivity.class));
+            case R.id.bt_collect:
+                startActivity(new Intent(getActivity(), CollectListActivity.class));
                 break;
             case R.id.bt_suggestion:
                 //LoadingDialogUtils.showStateSuccess(getContext());
@@ -246,6 +256,12 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         // 设置关注数
         String followingCount = TextUtils.isEmpty(userInfoBean.getFollowing_count()) ? "0" : userInfoBean.getFollowing_count();
         mTvFollowCount.setText(ConvertUtils.numberConvert(Integer.parseInt(followingCount)));
+    }
+
+    @Override
+    public void setNewFollowTip(int count) {
+        mVvFansNewCount.setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert(count)));
+        EventBus.getDefault().post(count > 0, EventBusTagConfig.EVENT_IM_SET_MINE_TIP_VISABLE);
     }
 
 }

@@ -18,7 +18,6 @@ import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,7 +46,7 @@ public class DynamicBean extends BaseListBean {
     private DynamicToolBean tool;
     @ToOne(joinProperty = "user_id")// DynamicBean 的 user_id作为外键
     private UserInfoBean userInfoBean;
-    // DynamicBean的feed_id与DynamicCommentBean的feed_id关联
+    // DynamicBean 的 feed_mark 与 DynamicCommentBean 的 feed_mark 关联
     @ToMany(joinProperties = {@JoinProperty(name = "feed_mark", referencedName = "feed_mark")})
     private List<DynamicCommentBean> comments;
 
@@ -295,14 +294,6 @@ public class DynamicBean extends BaseListBean {
     }
 
 
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 210281324)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getDynamicBeanDao() : null;
-    }
-
-
     protected DynamicBean(Parcel in) {
         super(in);
         this.id = (Long) in.readValue(Long.class.getClassLoader());
@@ -360,4 +351,21 @@ public class DynamicBean extends BaseListBean {
     private transient Long tool__resolvedKey;
     @Generated(hash = 1005780391)
     private transient Long userInfoBean__resolvedKey;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null && obj instanceof DynamicBean) {
+            DynamicBean dynamicBean = (DynamicBean) obj;
+            return dynamicBean.getFeed_mark().longValue() == feed_mark.longValue();
+        }
+        return super.equals(obj);
+    }
+
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 210281324)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getDynamicBeanDao() : null;
+    }
 }

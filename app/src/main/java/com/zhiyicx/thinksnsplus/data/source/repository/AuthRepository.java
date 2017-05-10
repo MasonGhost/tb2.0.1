@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 import android.app.Application;
 import android.content.Context;
 
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
@@ -18,20 +17,20 @@ import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
-import com.zhiyicx.thinksnsplus.data.beans.ComponentConfigBean;
-import com.zhiyicx.thinksnsplus.data.beans.ComponentStatusBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
+import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
+import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -54,21 +53,52 @@ public class AuthRepository implements IAuthRepository {
     private UserInfoClient mUserInfoClient;
     private CommonClient mCommonClient;
     private Context mContext;
-
+    @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
+    @Inject
     DynamicDetailBeanGreenDaoImpl mDynamicDetailBeanGreenDao;
+    @Inject
     DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
+    @Inject
     DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
+    @Inject
+    DigedBeanGreenDaoImpl mDigedBeanGreenDao;
+    @Inject
+    CommentedBeanGreenDaoImpl mCommentedBeanGreenDao;
+    @Inject
+    FlushMessageBeanGreenDaoImpl mFlushMessageBeanGreenDao;
+    @Inject
+    SystemConversationBeanGreenDaoImpl mSystemConversationBeanGreenDao;
 
     @Inject
     public AuthRepository(ServiceManager serviceManager, Application context) {
         mUserInfoClient = serviceManager.getUserInfoClient();
         mCommonClient = serviceManager.getCommonClient();
         mContext = context;
-        mDynamicBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicBeanGreenDao();
-        mDynamicDetailBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicDetailBeanGreenDao();
-        mDynamicToolBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicToolBeanGreenDao();
-        mDynamicCommentBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicCommentBeanGreenDao();
+        if (mDynamicBeanGreenDao == null) {
+            mDynamicBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicBeanGreenDao();
+        }
+        if (mDynamicDetailBeanGreenDao == null) {
+            mDynamicDetailBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicDetailBeanGreenDao();
+        }
+        if (mDynamicToolBeanGreenDao == null) {
+            mDynamicToolBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicToolBeanGreenDao();
+        }
+        if (mDynamicCommentBeanGreenDao == null) {
+            mDynamicCommentBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicCommentBeanGreenDao();
+        }
+        if (mDigedBeanGreenDao == null) {
+            mDigedBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().digedBeanGreenDao();
+        }
+        if (mCommentedBeanGreenDao == null) {
+            mCommentedBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().commentedBeanGreenDao();
+        }
+        if (mFlushMessageBeanGreenDao == null) {
+            mFlushMessageBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().flushMessageBeanGreenDao();
+        }
+        if (mSystemConversationBeanGreenDao == null) {
+            mSystemConversationBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().systemConversationBeanGreenDaoImpl();
+        }
     }
 
 
@@ -134,11 +164,20 @@ public class AuthRepository implements IAuthRepository {
      */
     @Override
     public boolean clearAuthBean() {
+        if (AppApplication.getPlaybackManager() != null) { // 释放音乐播放器
+            AppApplication.getPlaybackManager().handleStopRequest(null);
+        }
+        BackgroundTaskManager.getInstance(mContext).closeBackgroundTask();// 关闭后台任务
+        new JpushAlias(mContext, "").setAlias(); // 注销极光
         MessageDao.getInstance(mContext).delDataBase();// 清空聊天信息、对话
         mDynamicBeanGreenDao.clearTable();
         mDynamicCommentBeanGreenDao.clearTable();
         mDynamicDetailBeanGreenDao.clearTable();
         mDynamicToolBeanGreenDao.clearTable();
+        mDigedBeanGreenDao.clearTable();
+        mCommentedBeanGreenDao.clearTable();
+        mFlushMessageBeanGreenDao.clearTable();
+        mSystemConversationBeanGreenDao.clearTable();
         MessageDao.getInstance(context).delDataBase();
         return SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_AUTHBEAN)
                 && SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_IMCONFIG);
@@ -169,93 +208,6 @@ public class AuthRepository implements IAuthRepository {
         ZBIMClient.getInstance().login(getIMConfig());
     }
 
-    /**
-     * @return
-     */
-    public ComponentStatusBean getComponentStatusLocal() {
-        ComponentStatusBean componentStatusBean = SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_COMPONENT_STATUS);
-        if (componentStatusBean == null) { //默认开启 IM
-            componentStatusBean = new ComponentStatusBean();
-            componentStatusBean.setIm(true);
-        }
-        return componentStatusBean;
-    }
-
-    /**
-     * @param componentStatusBean
-     * @return
-     */
-    public boolean saveComponentStatus(ComponentStatusBean componentStatusBean) {
-        return SharePreferenceUtils.saveObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_COMPONENT_STATUS, componentStatusBean);
-    }
-
-    /**
-     * @return
-     */
-    public List<ComponentConfigBean> getComponentConfigLocal() {
-        List<ComponentConfigBean> result = SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_COMPONENT_CONFIG);
-        if (result == null || result.size() == 0) { //本地默认地址
-            result = new ArrayList<>();
-            ComponentConfigBean componentConfigBean = new ComponentConfigBean();
-            componentConfigBean.setName("serverurl");
-            componentConfigBean.setValue(ApiConfig.APP_IM_DOMAIN);
-            result.add(componentConfigBean);
-        }
-        return result;
-    }
-
-    /**
-     * @param componentConfigBeens
-     * @return
-     */
-    public boolean saveComponentConfig(List<ComponentConfigBean> componentConfigBeens) {
-        return SharePreferenceUtils.saveObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_COMPONENT_CONFIG, componentConfigBeens);
-    }
-
-    @Override
-    public void getComponentStatusFromServer() {
-        mCommonClient.getComponentStatus()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new BaseSubscribe<ComponentStatusBean>() {
-                    @Override
-                    protected void onSuccess(ComponentStatusBean data) {
-                        saveComponentStatus(data);
-                    }
-
-                    @Override
-                    protected void onFailure(String message, int code) {
-
-                    }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-
-                    }
-                });
-    }
-
-    @Override
-    public void getComponentConfigFromServer(String component) {
-        mCommonClient.getComponentConfigs(component)
-                .subscribeOn(Schedulers.io())
-                .subscribe(new BaseSubscribe<List<ComponentConfigBean>>() {
-                    @Override
-                    protected void onSuccess(List<ComponentConfigBean> data) {
-                        saveComponentConfig(data);
-
-                    }
-
-                    @Override
-                    protected void onFailure(String message, int code) {
-
-                    }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-
-                    }
-                });
-    }
 
     /**
      * 是否需要刷新token

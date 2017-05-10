@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagecomment;
 
+import android.app.Application;
+
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.MessageCommentRepository;
 
@@ -26,8 +28,7 @@ public class MessageCommentPresenterModule {
     }
 
     @Provides
-    MessageCommentContract.Repository provideMessageCommentContractRepository(ServiceManager serviceManager) {
-        return new MessageCommentRepository(serviceManager);
+    MessageCommentContract.Repository provideMessageCommentContractRepository(ServiceManager serviceManager, Application application) {
+        return new MessageCommentRepository(serviceManager,application);
     }
 }
-

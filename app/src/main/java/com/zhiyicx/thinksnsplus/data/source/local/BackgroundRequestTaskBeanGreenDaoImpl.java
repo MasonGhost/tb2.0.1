@@ -8,6 +8,8 @@ import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * @Describe 用户信息存储实现
  * @Author Jungle68
@@ -16,6 +18,7 @@ import java.util.List;
  */
 
 public class BackgroundRequestTaskBeanGreenDaoImpl extends CommonCacheImpl<BackgroundRequestTaskBean> {
+    @Inject
     public BackgroundRequestTaskBeanGreenDaoImpl(Context context) {
         super(context);
     }
@@ -57,15 +60,15 @@ public class BackgroundRequestTaskBeanGreenDaoImpl extends CommonCacheImpl<Backg
      */
     public List<BackgroundRequestTaskBean> getMultiDataFromCacheByUserId(Long user_id) {
         BackgroundRequestTaskBeanDao backgroundRequestTaskBeanDao = getRDaoSession().getBackgroundRequestTaskBeanDao();
-        List<BackgroundRequestTaskBean> datas = backgroundRequestTaskBeanDao.queryBuilder()
+        return backgroundRequestTaskBeanDao.queryBuilder()
                 .where(BackgroundRequestTaskBeanDao.Properties.User_id.eq(user_id))
                 .list();
-        return datas;
     }
 
     @Override
     public void clearTable() {
-
+        BackgroundRequestTaskBeanDao backgroundRequestTaskBeanDao = getWDaoSession().getBackgroundRequestTaskBeanDao();
+        backgroundRequestTaskBeanDao.deleteAll();
     }
 
     @Override
@@ -74,7 +77,8 @@ public class BackgroundRequestTaskBeanGreenDaoImpl extends CommonCacheImpl<Backg
 
     @Override
     public void deleteSingleCache(BackgroundRequestTaskBean dta) {
-
+        BackgroundRequestTaskBeanDao backgroundRequestTaskBeanDao = getWDaoSession().getBackgroundRequestTaskBeanDao();
+        backgroundRequestTaskBeanDao.delete(dta);
     }
 
     @Override

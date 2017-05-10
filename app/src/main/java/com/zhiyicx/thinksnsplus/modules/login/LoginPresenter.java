@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.login;
 
+import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
@@ -9,15 +10,22 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
-import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -35,7 +43,12 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
     }
 
     @Inject
-    IAuthRepository mAuthRepository;
+    AuthRepository mAuthRepository;
+
+    @Inject
+    UserInfoRepository mUserInfoRepository;
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     /**
      * 将Presenter从传入fragment
@@ -56,15 +69,30 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
         Subscription subscription = mRepository.login(mContext, phone, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<AuthBean>() {
+                .flatMap(new Func1<BaseJson<AuthBean>, Observable<BaseJson<List<UserInfoBean>>>>() {
                     @Override
-                    protected void onSuccess(AuthBean data) {
-                        // 登录成功跳转
-                        mAuthRepository.saveAuthBean(data);// 保存auth信息
-                        // 获取用户信息
-                        getUserInfo(data);
-                        // IM 登录 需要 token ,所以需要先保存登录信息
-                        handleIMLogin();
+                    public Observable<BaseJson<List<UserInfoBean>>> call(BaseJson<AuthBean> authBeanBaseJson) {
+                        if (authBeanBaseJson.isStatus()) {
+                            // 登录成功跳转
+                            mAuthRepository.saveAuthBean(authBeanBaseJson.getData());// 保存auth信息
+                            // IM 登录 需要 token ,所以需要先保存登录信息
+                            handleIMLogin();
+                            // 获取用户信息
+                            List<Object> userids = new ArrayList<>();
+                            userids.add(Long.valueOf(authBeanBaseJson.getData().getUser_id()));
+                            return mUserInfoRepository.getUserInfo(userids);
+                        }
+                        BaseJson<List<UserInfoBean>> userInfobean = new BaseJson<>();
+                        userInfobean.setStatus(authBeanBaseJson.isStatus());
+                        userInfobean.setCode(authBeanBaseJson.getCode());
+                        userInfobean.setMessage(authBeanBaseJson.getMessage());
+                        return Observable.just(userInfobean);
+                    }
+                })
+                .subscribe(new BaseSubscribe<List<UserInfoBean>>() {
+                    @Override
+                    protected void onSuccess(List<UserInfoBean> data) {
+                        mUserInfoBeanGreenDao.insertOrReplace(data);
                         mRootView.setLoginState(true);
                     }
 

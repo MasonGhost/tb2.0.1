@@ -342,7 +342,7 @@ public class PagerRecyclerView extends RecyclerView {
                 }
             }
         }
-        return super.dispatchTouchEvent(ev);
+        return super.dispatchTouchEvent(ev)&&(Math.abs(ev.getRawY() - mLastY) <= Math.abs(ev.getRawX() - mLastX));
     }
 
     @Override

@@ -40,7 +40,9 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 public class HttpClientModule {
     private static final int HTTP_RESPONSE_DISK_CACHE_MAX_SIZE = 10 * 1024 * 1024;// 缓存文件最大值为 10Mb
     private static final String DEFAULT_BASEURL = "https://api.github.com/";
-    private static final int TOME_OUT = 10;
+    private static final int CONNECTED_TOME_OUT = 15;
+    private static final int WRITE_TOME_OUT = 15;
+    private static final int READE_TOME_OUT = 15;
 
     private HttpUrl mApiUrl;
     private RequestInterceptListener mHandler;
@@ -194,8 +196,10 @@ public class HttpClientModule {
     private OkHttpClient configureClient(OkHttpClient.Builder okHttpClient, Cache cache, Interceptor intercept) {
 
         OkHttpClient.Builder builder = okHttpClient
-                .connectTimeout(TOME_OUT, TimeUnit.SECONDS)
-                .readTimeout(TOME_OUT, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(true)
+                .connectTimeout(CONNECTED_TOME_OUT, TimeUnit.SECONDS)
+                .readTimeout(READE_TOME_OUT, TimeUnit.SECONDS)
+                .writeTimeout(WRITE_TOME_OUT,TimeUnit.SECONDS)
                 .cache(cache)//设置缓存
                 .addNetworkInterceptor(intercept);
         if (mSSLSocketFactory != null) {

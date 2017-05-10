@@ -7,14 +7,18 @@ import android.util.SparseArray;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
+import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.MusicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentContract;
+import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.ArrayList;
@@ -25,6 +29,8 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
+
+import static com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler.NET_CALLBACK;
 
 /**
  * @Author Jliuer
@@ -37,11 +43,13 @@ public class MusicCommentRepositroty implements MusicCommentContract.Repository 
     MusicClient mMusicClient;
     Context mContext;
     protected UserInfoRepository mUserInfoRepository;
+    MusicDetailRepository mMusicDetailRepository;
 
     @Inject
     public MusicCommentRepositroty(Application application, ServiceManager serviceManager) {
         mMusicClient = serviceManager.getMusicClient();
         mContext = application;
+        mMusicDetailRepository = new MusicDetailRepository(serviceManager, application);
         mUserInfoRepository = new UserInfoRepository(serviceManager, application);
     }
 
@@ -59,7 +67,7 @@ public class MusicCommentRepositroty implements MusicCommentContract.Repository 
                         if (listBaseJson.getData().isEmpty()) {
                             return Observable.just(listBaseJson);
                         } else {
-                            final List<Long> user_ids = new ArrayList<>();
+                            final List<Object> user_ids = new ArrayList<>();
                             for (MusicCommentListBean commentListBean : listBaseJson.getData()) {
                                 user_ids.add((long) commentListBean.getUser_id());
                                 user_ids.add((long) commentListBean.getReply_to_user_id());
@@ -123,7 +131,7 @@ public class MusicCommentRepositroty implements MusicCommentContract.Repository 
                         if (listBaseJson.getData().isEmpty()) {
                             return Observable.just(listBaseJson);
                         } else {
-                            final List<Long> user_ids = new ArrayList<>();
+                            final List<Object> user_ids = new ArrayList<>();
                             for (MusicCommentListBean commentListBean : listBaseJson.getData()) {
                                 user_ids.add((long) commentListBean.getUser_id());
                                 user_ids.add((long) commentListBean.getReply_to_user_id());
@@ -175,16 +183,43 @@ public class MusicCommentRepositroty implements MusicCommentContract.Repository 
     }
 
     @Override
-    public void sendComment(int reply_id, String content,String path) {
+    public void sendComment(int music_id, int reply_id, String content, String path,Long comment_mark,
+                            BackgroundTaskHandler.OnNetResponseCallBack callBack) {
         BackgroundRequestTaskBean backgroundRequestTaskBean;
         HashMap<String, Object> params = new HashMap<>();
         params.put("comment_content", content);
+        params.put("reply_to_user_id", reply_id);
+        params.put(NET_CALLBACK,callBack);
         // 后台处理
         backgroundRequestTaskBean = new BackgroundRequestTaskBean
                 (BackgroundTaskRequestMethodConfig.POST, params);
         backgroundRequestTaskBean.setPath(String.format(path,
-                reply_id));
+                music_id));
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
                 (backgroundRequestTaskBean);
+    }
+
+    @Override
+    public void deleteComment(int music_id, int comment_id) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("comment_id", comment_id);
+        // 后台处理
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                (BackgroundTaskRequestMethodConfig.DELETE, params);
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig
+                .APP_PATH_MUSIC_DELETE_COMMENT_FORMAT, comment_id));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
+                (backgroundRequestTaskBean);
+    }
+
+    @Override
+    public Observable<BaseJson<MusicDetaisBean>> getMusicDetails(String music_id) {
+        return mMusicClient.getMusicDetails(music_id);
+    }
+
+    @Override
+    public Observable<BaseJson<MusicAlbumDetailsBean>> getMusicAblum(String id) {
+        return mMusicClient.getMusicAblum(id);
     }
 }

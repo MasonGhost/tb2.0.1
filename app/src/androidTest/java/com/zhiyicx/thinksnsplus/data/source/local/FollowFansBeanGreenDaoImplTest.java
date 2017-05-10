@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 import android.app.Application;
 import android.text.TextUtils;
 
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -18,7 +19,7 @@ import org.junit.Test;
  * @Contact master.jungle68@gmail.com
  */
 public class FollowFansBeanGreenDaoImplTest {
-
+    private static final String TAG = "FollowFansBeanGreenDaoI";
     private FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
     private FollowFansBean mFollowFansBean;
 
@@ -48,7 +49,7 @@ public class FollowFansBeanGreenDaoImplTest {
     public void getSingleDataFromCache() throws Exception {
         mFollowFansBeanGreenDao.insertOrReplace(mFollowFansBean);
         FollowFansBean followFansBean = mFollowFansBeanGreenDao.getSingleDataFromCache(mFollowFansBean.getId());
-        System.out.println("followFansBean = " + followFansBean.toString());
+        LogUtils.d(TAG,"followFansBean = " + followFansBean.toString());
         Assert.assertTrue(followFansBean.getOriginUserId() == 10);
     }
 
@@ -87,7 +88,7 @@ public class FollowFansBeanGreenDaoImplTest {
     public void insertOrReplace() throws Exception {
         mFollowFansBeanGreenDao.insertOrReplace(mFollowFansBean);
         FollowFansBean dynamicToolBean = mFollowFansBeanGreenDao.getSingleDataFromCache(mFollowFansBean.getId());
-        System.out.println("dynamicToolBean = " + dynamicToolBean.toString());
+        LogUtils.d(TAG,"dynamicToolBean = " + dynamicToolBean.toString());
         Assert.assertTrue(dynamicToolBean.getOriginUserId() == 10);
         Assert.assertTrue(!TextUtils.isEmpty(dynamicToolBean.getOrigintargetUser()));
     }

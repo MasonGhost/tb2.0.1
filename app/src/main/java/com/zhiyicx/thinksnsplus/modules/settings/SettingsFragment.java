@@ -1,16 +1,18 @@
 package com.zhiyicx.thinksnsplus.modules.settings;
 
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.password.changepassword.ChangePasswordActivity;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.AboutUsActivity;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -44,8 +46,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
     private ActionPopupWindow mCleanCachePopupWindow;// 清理缓存选择弹框
 
     public static SettingsFragment newInstance() {
-        SettingsFragment fragment = new SettingsFragment();
-        return fragment;
+        return new SettingsFragment();
     }
 
     @Override
@@ -76,6 +77,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
     @Override
     protected void initData() {
         mPresenter.getDirCacheSize();// 获取缓存大小
+        mBtAboutUs.setRightText("V" + DeviceUtils.getVersionName(getContext()));
     }
 
     @Override
@@ -122,7 +124,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        startActivity(new Intent(getActivity(), AboutUsActivity.class));
+                        startActivity(new Intent(getActivity(), CustomWEBActivity.class));
                     }
                 });
         // 退出登录
@@ -180,7 +182,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
         mLoginoutPopupWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.is_sure_login_out))
                 .item2Str(getString(R.string.login_out_sure))
-                .item2StrColor(R.color.important_for_note)
+                .item2StrColor(ContextCompat.getColor(getContext(), R.color.important_for_note))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)

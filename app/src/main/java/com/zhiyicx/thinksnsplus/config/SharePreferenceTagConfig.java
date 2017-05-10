@@ -13,4 +13,8 @@ public class SharePreferenceTagConfig {
     public static final String SHAREPREFERENCE_TAG_MUSIC = "music";
     public static final String SHAREPREFERENCE_TAG_COMPONENT_STATUS = "component_status";
     public static final String SHAREPREFERENCE_TAG_COMPONENT_CONFIG = "component_config";
+
+    public static final String SHAREPREFERENCE_TAG_LAST_FLUSHMESSAGE_TIME = "last_flushmessage_time";
+
+
 }

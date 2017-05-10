@@ -54,7 +54,7 @@ public class DigListPresenter extends BasePresenter<DigListContract.Repository, 
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<FollowFansBean> data) {
+    public boolean insertOrUpdateData(@NotNull List<FollowFansBean> data, boolean isLoadMore) {
         DynamicBean dynamicBean = mRootView.getDynamicBean();
         dynamicBean.setDigUserInfoList(data);
         return mDynamicBeanGreenDao.insertOrReplace(dynamicBean) >= 0;

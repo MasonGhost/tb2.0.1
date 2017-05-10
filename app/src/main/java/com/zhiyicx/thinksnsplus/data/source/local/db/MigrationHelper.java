@@ -65,6 +65,7 @@ public class MigrationHelper {
                     try {
                         type = getTypeByClass(daoConfig.properties[j].type);
                     } catch (Exception exception) {
+                        exception.printStackTrace();
                     }
 
                     createTableStringBuilder.append(divider).append(columnName).append(" ").append(type);
@@ -139,10 +140,7 @@ public class MigrationHelper {
         if (type.equals(Boolean.class)) {
             return "BOOLEAN";
         }
-
-        Exception exception =
-                new Exception(CONVERSION_CLASS_NOT_FOUND_EXCEPTION.concat(" - Class: ").concat(type.toString()));
-        throw exception;
+        throw new Exception(CONVERSION_CLASS_NOT_FOUND_EXCEPTION.concat(" - Class: ").concat(type.toString()));
     }
 
     // 每次从数据库最多取出一条数据

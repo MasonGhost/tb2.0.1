@@ -2,18 +2,20 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent">
 
-    <!--<ImageView-->
-    <!--android:id="@+id/iv_tip"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="center"-->
-    <!--android:src="@mipmap/img_default_internet"/>-->
-
-    <WebView
-        android:id="@+id/wv_about_us"
+    <com.wcy.overscroll.OverScrollLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/overscroll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </WebView>
+        android:layout_height="match_parent"
+        android:background="@color/bgColor"
+        android:orientation="vertical">
+
+        <WebView
+            android:id="@+id/wv_about_us"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </WebView>
+    </com.wcy.overscroll.OverScrollLayout>
 
     <ProgressBar
         android:id="@+id/pb_bar"
@@ -27,4 +29,3 @@
         layout="@layout/include_empty_view"
         />
 </FrameLayout>
-

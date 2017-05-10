@@ -1,15 +1,17 @@
-<com.zhiyicx.baseproject.widget.dragview.DragViewGroup xmlns:android="http://schemas.android.com/apk/res/android"
-                                                       xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                       xmlns:tools="http://schemas.android.com/tools"
-                                                       android:layout_width="match_parent"
-                                                       android:layout_height="match_parent"
-                                                       android:background="@color/bgColor">
+<com.wcy.overscroll.OverScrollLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/overscroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bgColor"
+    android:orientation="vertical">
 
-    <com.zhiyicx.baseproject.widget.dragview.DragScrollView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bgColor"
-        >
+        android:background="@color/bgColor">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -61,5 +63,5 @@
                 app:showLine="false"></com.zhiyicx.baseproject.widget.button.CombinationButton>
 
         </LinearLayout>
-    </com.zhiyicx.baseproject.widget.dragview.DragScrollView>
-</com.zhiyicx.baseproject.widget.dragview.DragViewGroup>
+    </ScrollView>
+</com.wcy.overscroll.OverScrollLayout>

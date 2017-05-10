@@ -21,6 +21,10 @@ android {
         versionName gConfig.getAt("versionName")
         testInstrumentationRunner gConfig.testDependencies.androidJUnitRunner
     }
+    lintOptions {
+        abortOnError false
+    }
+
 }
 
 dependencies {

@@ -788,7 +788,7 @@ public class TouchImageView extends ImageView {
   }
 
   public interface OnTouchImageViewListener {
-    public void onMove();
+     void onMove();
   }
 
   /**

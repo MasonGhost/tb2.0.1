@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/fragment_back_albun_art"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="@dimen/rec_image_for_photo"
+        android:layout_height="@dimen/rec_image_for_photo"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:scaleType="centerCrop"

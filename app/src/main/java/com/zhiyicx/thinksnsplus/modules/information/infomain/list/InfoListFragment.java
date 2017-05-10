@@ -2,15 +2,19 @@ package com.zhiyicx.thinksnsplus.modules.information.infomain.list;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
+import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoBannerItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoListItem;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
@@ -61,10 +65,11 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
         adapter.addItemViewDelegate(new InfoBannerItem());
         adapter.addItemViewDelegate(new InfoListItem() {
             @Override
-            public void itemClick(int position, TextView title, InfoListBean.ListBean realData) {
+            public void itemClick(int position, ImageView imageView, TextView title, InfoListDataBean realData) {
                 if (!AppApplication.sOverRead.contains(position + "")) {
                     AppApplication.sOverRead.add(position + "");
                 }
+                FileUtils.saveBitmapToFile(getActivity(), ConvertUtils.drawable2BitmapWithWhiteBg(imageView.getDrawable()),"info_share");
                 title.setTextColor(getResources()
                         .getColor(R.color.normal_for_assist_text));
                 Intent intent = new Intent(getActivity(), InfoDetailsActivity.class);
@@ -132,15 +137,27 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
     protected Long getMaxId(@NotNull List<BaseListBean> data) {
-        InfoListBean.ListBean needData = (InfoListBean.ListBean) data.get(data.size() - 1);
+        InfoListDataBean needData = (InfoListDataBean) data.get(data.size() - 1);
         return (long) needData.getId();
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_INFO_LIST_COLLECT)
-    public void handleCollectInfo(InfoListBean.ListBean info) {
+    public void handleCollectInfo(InfoListDataBean info) {
         LogUtils.d("handleCollectInfo");
-        onCacheResponseSuccess(requestCacheData(mMaxId, false), false);
+//        onCacheResponseSuccess(requestCacheData(mMaxId, false), false);
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_INFO_LIST_DELETE_UPDATE)
+    public void handleDeleteInfo(InfoListDataBean info) {
+        LogUtils.d("handleDeleteInfo");
+        mListDatas.remove(mListDatas.indexOf(info));
+        refreshData();
     }
 
     public void setInfoType(String infoType) {

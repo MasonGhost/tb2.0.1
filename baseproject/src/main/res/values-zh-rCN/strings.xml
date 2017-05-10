@@ -8,8 +8,10 @@
     <string name="loading">加载更多</string>
     <string name="no_data">没有任何内容</string>
     <string name="no_more_data">没有更多数据了</string>
+    <string name="im_not_work">聊天当前不可用</string>
     <!-- 通用 -->
     <string name="statistical_unit_million">万</string>
+    <string name="empty">""</string>
     <string name="cancel">取消</string>
     <string name="delete">删除</string>
     <string name="close">关闭</string>
@@ -40,7 +42,7 @@
     <string name="intro_default">这家伙很懒,什么都没有留下</string>
     <!-- 注册 -->
     <string name="regist">注册</string>
-    <string name="username_input_hint">输入2-8位用户名</string>
+    <string name="username_input_hint">输入2&#8211;8位用户名</string>
     <string name="username_toast_hint">@string/username_input_hint</string>
     <string name="username_toast_not_number_start_hint">用户名不能以数字开头</string>
     <string name="username_toast_not_symbol_hint">用户名只能包含数字、字母和下划线</string>
@@ -89,6 +91,9 @@
     <string name="music_order_nomal">顺序播放</string>
     <string name="music_order_random">随机播放</string>
     <string name="music_order_single">单曲循环</string>
+    <string name="windows_permission">悬浮窗权限设置</string>
+    <string name="setting_windows_permission_hint">请为TS+开放悬浮窗权限: 手机设置-授权管理-TS+(打开)</string>
+    <string name="oppo_setting_windows_permission_hint">请为TS+开放悬浮窗权限: 手机管家-权限隐私-悬浮窗管理-TS+(打开)</string>
 
     <!--资讯-->
     <string name="info_editor">编辑</string>
@@ -112,6 +117,7 @@
     <string name="weCircle_share">朋友圈</string>
     <string name="weibo_share">微博</string>
     <string name="share_sccuess">分享成功</string>
+    <string name="share_ing">分享中&#8230;</string>
     <string name="share_fail">分享失败</string>
     <string name="share_cancel">取消分享</string>
 </resources>

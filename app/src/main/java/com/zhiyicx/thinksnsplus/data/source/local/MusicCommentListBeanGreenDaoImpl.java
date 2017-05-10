@@ -2,10 +2,13 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
 
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -59,6 +62,45 @@ public class MusicCommentListBeanGreenDaoImpl extends CommonCacheImpl<MusicComme
     @Override
     public void deleteSingleCache(Long primaryKey) {
 
+    }
+
+    public List<MusicCommentListBean> getMyMusicComment(int music_id) {
+        if (AppApplication.getmCurrentLoginAuth() == null) {
+            return new ArrayList<>();
+        }
+
+        return mMusicCommentListBeanDao.queryBuilder().where(MusicCommentListBeanDao.Properties.Music_id.eq(music_id)
+                , MusicCommentListBeanDao.Properties.User_id.eq
+                        (AppApplication.getmCurrentLoginAuth().getUser_id())).build().list();
+    }
+
+    public List<MusicCommentListBean> getLocalMusicComment(int music_id) {
+        if (AppApplication.getmCurrentLoginAuth() == null) {
+            return new ArrayList<>();
+        }
+        return mMusicCommentListBeanDao.queryBuilder().where(MusicCommentListBeanDao.Properties.Music_id.eq(music_id)).build().list();
+    }
+
+    public List<MusicCommentListBean> getLocalAblumComment(int special_id) {
+        if (AppApplication.getmCurrentLoginAuth() == null) {
+            return new ArrayList<>();
+        }
+        return mMusicCommentListBeanDao.queryBuilder().where(MusicCommentListBeanDao.Properties.Special_id.eq(special_id)).build().list();
+    }
+
+    public List<MusicCommentListBean> getMyAblumComment(int special_id) {
+        if (AppApplication.getmCurrentLoginAuth() == null) {
+            return new ArrayList<>();
+        }
+
+        return mMusicCommentListBeanDao.queryBuilder().where(MusicCommentListBeanDao.Properties.Special_id.eq(special_id)
+                , MusicCommentListBeanDao.Properties.User_id.eq
+                        (AppApplication.getmCurrentLoginAuth().getUser_id())).build().list();
+    }
+
+    public MusicCommentListBean getMusicCommentByCommentMark(long mark) {
+        return mMusicCommentListBeanDao.queryBuilder()
+                .where(MusicCommentListBeanDao.Properties.Comment_mark.eq(mark)).build().list().get(0);
     }
 
     @Override

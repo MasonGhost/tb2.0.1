@@ -62,8 +62,8 @@ public class ZBIMClientTest extends InstrumentationTestCase {
     @org.junit.Test
     public void sync() throws Exception {
 
-        mockClient.sync(1, 12, 20, 12);
-        verify(mockClient).sync(1, 12, 20, 12);
+        mockClient.syncAsc(1, 12, 20, 12);
+        verify(mockClient).syncAsc(1, 12, 20, 12);
     }
 
 

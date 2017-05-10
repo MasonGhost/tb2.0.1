@@ -36,9 +36,10 @@ public class DynamicListItemForSevenImage extends DynamicListBaseItem {
         return CURREN_CLOUMS;
     }
 
+
     @Override
-    public void convert(ViewHolder holder, final DynamicBean dynamicBean, DynamicBean lastT, int position) {
-        super.convert(holder, dynamicBean, lastT, position);
+    public void convert(ViewHolder holder, final DynamicBean dynamicBean, DynamicBean lastT, int position,int itemCounts) {
+        super.convert(holder, dynamicBean, lastT, position,itemCounts);
         initImageView(holder,(ImageView) holder.getView(R.id.siv_0), dynamicBean, 0,2); // 数字 0 代表 image 当前的位置， 2 代表他相对与 CURREN_CLOUMS 的份数
         initImageView(holder,(ImageView) holder.getView(R.id.siv_1), dynamicBean, 1,1);
         initImageView(holder,(ImageView) holder.getView(R.id.siv_2), dynamicBean, 2,1);

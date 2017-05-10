@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.home;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,12 +12,15 @@ import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.common.utils.ActivityUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Method;
+
 
 /**
  * @Describe
@@ -26,19 +30,33 @@ import java.lang.reflect.Method;
  */
 
 public class HomeActivity extends TSActivity {
+    public static final String BUNDLE_JPUSH_MESSAGE = "jpush_message";
+
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            JpushMessageBean jpushMessageBean = bundle.getParcelable(BUNDLE_JPUSH_MESSAGE);
+            if (jpushMessageBean != null) {
+                ((HomeContract.View) mContanierFragment).checkBottomItem(HomeFragment.PAGE_MESSAGE);
+            }
+        }
+    }
+
+    @Override
     protected void componentInject() {
-        System.out.println("getDeviceInfo = " + getDeviceInfo(getApplicationContext()));
+        LogUtils.d(TAG, "getDeviceInfo = " + getDeviceInfo(getApplicationContext()));
     }
 
     @Override
     protected Fragment getFragment() {
-        return HomeFragment.newInstance();
+        return HomeFragment.newInstance(getIntent().getExtras());
     }
 
     @Override
@@ -69,6 +87,7 @@ public class HomeActivity extends TSActivity {
         }
         return result;
     }
+
     public static String getDeviceInfo(Context context) {
         try {
             org.json.JSONObject json = new org.json.JSONObject();
@@ -91,21 +110,13 @@ public class HomeActivity extends TSActivity {
                     in = new BufferedReader(fstream, 1024);
                     mac = in.readLine();
                 } catch (IOException e) {
+                    e.printStackTrace();
                 } finally {
-                    if (fstream != null) {
-                        try {
-                            fstream.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    fstream.close();
                     if (in != null) {
-                        try {
-                            in.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        in.close();
                     }
+
                 }
             }
             json.put("mac", mac);
@@ -123,5 +134,6 @@ public class HomeActivity extends TSActivity {
         }
         return null;
     }
+
 
 }

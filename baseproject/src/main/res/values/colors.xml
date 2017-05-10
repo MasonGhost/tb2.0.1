@@ -4,7 +4,6 @@
     <color name="themeColor">@color/important_for_theme</color>
     <!--背景色-->
     <color name="bgColor">@color/general_for_bg_light</color>
-    <color name="test">#20ffffff</color>
     <color name="bgColor_alpha_0.5">@color/general_for_bg_light_alpha_0.5</color>
     <!--titilebar背景色   your app's branding color (for the app bar) -->
     <color name="colorPrimary">@color/themeColor</color>
@@ -30,6 +29,12 @@
     <color name="bg_pb_cover">#59b6d7</color>
 
     <color name="music_progress">#09b6d7</color>
-    <!--图片查看器，查看原图按钮,背景色 透明度为10%的黑色-->
-    <color name="origin_back_color">#1a000000</color>
+    <!--图片查看器，查看原图按钮,背景色 透明度为20%的黑色-->
+    <color name="origin_back_color">#33000000</color>
+    <!--图片查看器，查看原图按钮,边框 透明度为40%的黑色-->
+    <color name="origin_divider_color">#66ffffff</color>
+    <!--资讯订阅-->
+    <color name="like_theme">#d9eef6</color>
+
+
 </resources>

@@ -4,9 +4,14 @@ import android.app.Application;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
+
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.List;
 
@@ -20,6 +25,8 @@ import javax.inject.Inject;
  */
 
 public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
+
+
     @Inject
     public DynamicBeanGreenDaoImpl(Application context) {
         super(context);
@@ -59,8 +66,10 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
 
     @Override
     public void deleteSingleCache(Long primaryKey) {
-
+        DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
+        dynamicBeanDao.deleteByKey(primaryKey);
     }
+
 
     @Override
     public void deleteSingleCache(DynamicBean dta) {
@@ -74,6 +83,21 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
                     .unique();
         }
         dynamicBeanDao.delete(dta);
+    }
+
+    /**
+     * 根据动态 feed_id 删除动态
+     *
+     * @param feed_id
+     */
+    public void deleteDynamicByFeedId(long feed_id) {
+        DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
+        DynamicBean dta = dynamicBeanDao.queryBuilder()
+                .where(DynamicBeanDao.Properties.Feed_id.eq(feed_id))
+                .unique();
+        if (dta != null) {
+            dynamicBeanDao.delete(dta);
+        }
     }
 
     /**
@@ -100,7 +124,21 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
 
                 break;
             case ApiConfig.DYNAMIC_TYPE_NEW:
-
+                datas = dynamicBeanDao.queryBuilder()
+                        .where(DynamicBeanDao.Properties.Feed_id.isNotNull(),DynamicBeanDao.Properties.User_id.notEq(AppApplication.getmCurrentLoginAuth().getUser_id()))
+                        .whereOr(DynamicBeanDao.Properties.Hot_creat_time.isNull(), DynamicBeanDao.Properties.Hot_creat_time.eq(0), DynamicBeanDao.Properties.IsFollowed.eq(false))
+                        .list();
+                dynamicBeanDao.deleteInTx(datas);
+                return;
+            case ApiConfig.DYNAMIC_TYPE_MY_COLLECTION:
+                DynamicToolBeanDao dynamicToolBeanDao = getWDaoSession().getDynamicToolBeanDao();
+                QueryBuilder<DynamicToolBean> queryBuilder = dynamicToolBeanDao.queryBuilder();
+                queryBuilder.where(DynamicToolBeanDao.Properties.Is_collection_feed.eq(1));
+                List<DynamicToolBean> dynamicToolBeanList = queryBuilder.list();
+                for (DynamicToolBean dynamicToolBean : dynamicToolBeanList) {
+                    dynamicToolBean.setIs_collection_feed(0);
+                }
+                dynamicToolBeanDao.insertOrReplaceInTx(dynamicToolBeanList);
                 break;
             default:
         }
@@ -141,7 +179,7 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
         return dynamicBeanDao.queryDeep(" where "
                         + " T." + DynamicBeanDao.Properties.Hot_creat_time.columnName + " < ?  ORDER BY "
                         + " T." + DynamicBeanDao.Properties.Hot_creat_time.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// 创建时间倒序
-                , new String[]{String.valueOf(hotCreatTime)});
+                , String.valueOf(hotCreatTime));
     }
 
     /**
@@ -155,7 +193,7 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
         return dynamicBeanDao.queryDeep(" where " + " T." + DynamicBeanDao.Properties.IsFollowed.columnName + " = 1 and " // 0 false 1 true
                         + " T." + DynamicBeanDao.Properties.Feed_id.columnName + " < ?   ORDER BY "
                         + " T." + DynamicBeanDao.Properties.Feed_id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// feedId倒序
-                , new String[]{String.valueOf(feed_id)});
+                , String.valueOf(feed_id));
     }
 
     /**
@@ -168,7 +206,7 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
         DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
         return dynamicBeanDao.queryDeep(" where " + " T." + DynamicBeanDao.Properties.Feed_id.columnName + " < ?  ORDER BY "
                         + " T." + DynamicBeanDao.Properties.Feed_id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// feedId倒序
-                , new String[]{String.valueOf(feed_id)});
+                , String.valueOf(feed_id));
     }
 
     /**
@@ -179,7 +217,7 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
         DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
         return dynamicBeanDao.queryDeep(" where " + " T." + DynamicBeanDao.Properties.User_id.columnName + " = ? and " + " T." + DynamicBeanDao.Properties.State.columnName + " != " + DynamicBean.SEND_SUCCESS + "  ORDER BY "
                         + " T." + DynamicBeanDao.Properties.Id.columnName + " DESC "// feedId倒序
-                , new String[]{String.valueOf(userId)});
+                , String.valueOf(userId));
     }
 
     /**
@@ -191,11 +229,24 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
     public DynamicBean getDynamicByFeedMark(Long feed_mark) {
         DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
         List<DynamicBean> datas = dynamicBeanDao.queryDeep(" where " + " T." + DynamicBeanDao.Properties.Feed_mark.columnName + " = ? "// feedId倒序
-                , new String[]{String.valueOf(feed_mark)});
+                , String.valueOf(feed_mark));
         if (!datas.isEmpty()) {
             return datas.get(0);
         }
         return null;
+    }
+
+    /**
+     * 获取我收藏的动态
+     *
+     * @return
+     */
+    public List<DynamicBean> getMyCollectDynamic() {
+        DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
+        return  dynamicBeanDao.queryDeep(" where "
+                        + " T1." + DynamicToolBeanDao.Properties.Is_collection_feed.columnName + " = ? "
+                        + " ORDER BY  T." + DynamicBeanDao.Properties.Feed_id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// 按照Feed_id倒序：越新的动态，Feed_id越大
+                , "1");
     }
 
     /**
@@ -205,11 +256,10 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
      */
     public List<DynamicBean> getMyDynamics(Long userId) {
         DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
-        List<DynamicBean> datas = dynamicBeanDao.queryDeep(" where "
+        return dynamicBeanDao.queryDeep(" where "
                         + " T." + DynamicBeanDao.Properties.User_id.columnName + " = ? "
-                        + " ORDER BY  T." + DynamicBeanDao.Properties.Feed_mark.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// 按照Feedmark倒序：userId+时间戳 ：越新的动态，feedmark越大
-                , new String[]{String.valueOf(userId)});
-        return datas;
+                        + " ORDER BY  T." + DynamicBeanDao.Properties.Feed_id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// 按照Feed_id倒序：越新的动态，Feed_id越大
+                , String.valueOf(userId));
     }
 
     /**
@@ -222,7 +272,7 @@ public class DynamicBeanGreenDaoImpl extends CommonCacheImpl<DynamicBean> {
         DynamicBeanDao dynamicBeanDao = getRDaoSession().getDynamicBeanDao();
         List<DynamicBean> datas = dynamicBeanDao.queryDeep(" where "
                         + " T." + DynamicBeanDao.Properties.User_id.columnName + " = ? "
-                , new String[]{String.valueOf(userId)});
+                , String.valueOf(userId));
         for (DynamicBean data : datas) {
             data.setFollowed(isFollowed);
         }

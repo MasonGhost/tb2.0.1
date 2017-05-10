@@ -383,7 +383,7 @@ public class TimeUtils {
      * 通过时间戳获取 dd,MM月
      */
     public static String getStandardTimeWithMothAndDayOne(long timestamp) {
-        return getTime(timestamp, "dd,M月");
+        return getTime(timestamp, "dd,M 月");
     }
 
     /**
@@ -461,8 +461,7 @@ public class TimeUtils {
         }
         SimpleDateFormat localFormater = new SimpleDateFormat(DEFAULT_PATTERN);
         localFormater.setTimeZone(TimeZone.getDefault());
-        String localTime = localFormater.format(gpsUTCDate.getTime());
-        return localTime;
+        return localFormater.format(gpsUTCDate.getTime());
     }
 
     /**

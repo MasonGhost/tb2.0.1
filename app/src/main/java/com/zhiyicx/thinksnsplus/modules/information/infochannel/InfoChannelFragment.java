@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.information.infochannel;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,9 +13,9 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMoreCatesBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMyCatesBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infosearch.SearchActivity;
 import com.zhiyicx.thinksnsplus.widget.pager_recyclerview.itemtouch.DefaultItemTouchHelpCallback;
@@ -31,10 +32,8 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.functions.Action1;
 
-import static com.zhiyicx.thinksnsplus.modules.information.infomain.container
-        .InfoContainerFragment.SUBSCRIBE_EXTRA;
-import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment
-        .BUNDLE_INFO_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.information.infomain.container.InfoContainerFragment.SUBSCRIBE_EXTRA;
+import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO_TYPE;
 
 /**
  * @Author Jliuer
@@ -233,7 +232,7 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
             }
 
             @Override
-            protected void setListener(ViewGroup parent,final ViewHolder viewHolder, int viewType) {
+            protected void setListener(ViewGroup parent, final ViewHolder viewHolder, int viewType) {
                 RxView.clicks(viewHolder.itemView)
                         .throttleFirst(1, TimeUnit.SECONDS)
                         .compose(bindToLifecycle())
@@ -288,13 +287,16 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
             @Override
             protected void convert(ViewHolder holder, InfoTypeMyCatesBean data
                     , final int position) {
+                TextView textView = holder.getView(R.id.item_info_channel);
                 ImageView delete = holder.getView(R.id.item_info_channel_deal);
+
                 if (position == 0) {
-                    holder.getView(R.id.item_info_channel).setBackgroundResource(R.drawable
-                            .item_channel_bg_blue);
+                    textView.setBackgroundResource(R.drawable.item_channel_bg_blue);
+                    if (isEditor) {
+                        textView.setBackgroundColor(Color.WHITE);
+                    }
                 } else {
-                    holder.getView(R.id.item_info_channel).setBackgroundResource(R.drawable
-                            .item_channel_bg_normal);
+                    textView.setBackgroundResource(R.drawable.item_channel_bg_normal);
                 }
                 if (isEditor && position != 0) {
                     delete.setVisibility(View.VISIBLE);
@@ -305,7 +307,7 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
             }
 
             @Override
-            protected void setListener(ViewGroup parent,final ViewHolder viewHolder, int viewType) {
+            protected void setListener(ViewGroup parent, final ViewHolder viewHolder, int viewType) {
                 RxView.clicks(viewHolder.itemView)
                         .throttleFirst(1, TimeUnit.SECONDS)
                         .compose(bindToLifecycle())

@@ -11,7 +11,6 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -29,7 +28,7 @@ import com.zhiyicx.common.utils.ColorPhrase;
 public class InputLimitView extends FrameLayout {
 
     protected TextView mTvLimitTip;
-    protected Button mBtSend;
+    protected TextView mBtSend;
 
 
     protected EditText mEtContent;
@@ -68,7 +67,7 @@ public class InputLimitView extends FrameLayout {
     private void init(final Context context, AttributeSet attrs) {
         LayoutInflater.from(context).inflate(R.layout.view_input_limit_viewgroup, this);
         mTvLimitTip = (TextView) findViewById(R.id.tv_limit_tip);
-        mBtSend = (Button) findViewById(R.id.bt_send);
+        mBtSend = (TextView) findViewById(R.id.bt_send);
         mEtContent = (EditText) findViewById(R.id.et_content);
         mEtEmpty = (EditText) findViewById(R.id.et_empty);
         if (attrs != null) {

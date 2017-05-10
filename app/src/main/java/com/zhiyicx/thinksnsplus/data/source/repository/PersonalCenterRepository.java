@@ -35,7 +35,7 @@ public class PersonalCenterRepository extends BaseDynamicRepository implements P
 
     @Override
     public Observable<BaseJson<UserInfoBean>> getCurrentUserInfo(Long userId) {
-        List<Long> integers = new ArrayList<>();
+        List<Object> integers = new ArrayList<>();
         integers.add(userId);
         // 获取用户信息，并将它进行类型转换
         return mUserInfoRepository.getUserInfo(integers)
@@ -61,7 +61,7 @@ public class PersonalCenterRepository extends BaseDynamicRepository implements P
     @Override
     public Observable<BaseJson<List<DynamicBean>>> getDynamicListForSomeone(Long user_id, Long max_id) {
         String type = String.format(ApiConfig.DYNAMIC_TYPE_SOMEONE, user_id);
-        return mBaseDynamicRepository.getDynamicList(type, max_id, 0,false);
+        return mBaseDynamicRepository.getDynamicList(type, max_id, 0,"",false);
     }
 
     @Override

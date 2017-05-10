@@ -4,6 +4,10 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
+import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
+import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
+import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
+import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
@@ -30,14 +34,15 @@ public interface UserInfoContract {
         /**
          * 设置头像上传的状态
          *
-         * @param upLoadState -1 失败 1进行中 2 成功
+         * @param upLoadState -1 失败 0进行中 1 图片上传成功 2图片用户信息修改成功
          * @param taskId      返回的图片任务id
          */
         void setUpLoadHeadIconState(int upLoadState, int taskId);
 
         /**
          * 设置信息修改提交状态
-         * @param changeUserInfoState  -1 失败 1进行中 2 成功
+         *
+         * @param changeUserInfoState -1 失败 1进行中 2 成功
          */
         void setChangeUserInfoState(int changeUserInfoState, String message);
 
@@ -67,7 +72,15 @@ public interface UserInfoContract {
          * @param user_ids 用户 id 数组
          * @return
          */
-        Observable<BaseJson<List<UserInfoBean>>> getUserInfo(List<Long> user_ids);
+        Observable<BaseJson<List<UserInfoBean>>> getUserInfo(List<Object> user_ids);
+
+        /**
+         * 获取用户信息,先从本地获取，本地没有再从网络 获取
+         *
+         * @param user_id 用户 id
+         * @return
+         */
+        Observable<BaseJson<UserInfoBean>> getLocalUserInfoBeforeNet(long user_id);
 
         /**
          * 获取用户关注状态
@@ -81,6 +94,38 @@ public interface UserInfoContract {
          */
         void handleFollow(FollowFansBean followFansBean);
 
+        /**
+         * 获取点赞排行榜
+         *
+         * @param page
+         * @return
+         */
+        Observable<BaseJson<List<DigRankBean>>> getDidRankList(int page);
+
+        /**
+         * 获取用户收到的点赞
+         *
+         * @param max_id
+         * @return
+         */
+        Observable<BaseJson<List<DigedBean>>> getMyDiggs(int max_id);
+
+
+        /**
+         * 获取用户收到的评论
+         *
+         * @param max_id
+         * @return
+         */
+        Observable<BaseJson<List<CommentedBean>>> getMyComments(int max_id);
+
+
+        /**
+         * @param time 零时区的秒级时间戳
+         * @param key  查询关键字 默认查询全部 多个以逗号隔开 可选参数有 diggs comments follows
+         * @return
+         */
+        Observable<BaseJson<List<FlushMessages>>> getMyFlushMessage(long time, String key);
     }
 
     interface Presenter extends IBasePresenter {
@@ -93,7 +138,12 @@ public interface UserInfoContract {
          */
         void changeUserHeadIcon(String filePath);
 
-        void changUserInfo(HashMap<String, String> userInfos);
+        /**
+         * @param userInfos
+         * @param isHeadIcon 仅仅修改头像
+         */
+        void changUserInfo(HashMap<String, String> userInfos, boolean isHeadIcon);
+
 
         /**
          * 初始化用户界面数据

@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home.message;
 
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,7 +10,9 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.widget.BadgeView;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -18,6 +21,7 @@ import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagelike.MessageLikeActivity;
+import com.zhiyicx.thinksnsplus.modules.system_conversation.SystemConversationActivity;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import java.util.concurrent.TimeUnit;
@@ -27,6 +31,7 @@ import javax.inject.Inject;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.home.message.MessagePresenter.DEFAULT_TS_HLEPER_CONVERSATION_ID;
 
 /**
  * @Describe 消息页面
@@ -35,6 +40,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 public class MessageFragment extends TSListFragment<MessageContract.Presenter, MessageItemBean> implements MessageContract.View, MessageAdapter.OnSwipItemClickListener {
+
     private static final int ITEM_TYPE_COMMNETED = 0;
     private static final int ITEM_TYPE_LIKED = 1;
 
@@ -42,8 +48,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     @Inject
     protected MessagePresenter mMessagePresenter;
-
-    private int mLastClickPostion = -1;// 纪录上次聊天 item ,用于单条刷新
 
     public static MessageFragment newInstance() {
         MessageFragment fragment = new MessageFragment();
@@ -56,6 +60,11 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     protected int setLeftImg() {
         return 0;
+    }
+
+    @Override
+    protected int setRightImg() {
+        return R.drawable.frame_loading_grey;
     }
 
     @Override
@@ -76,6 +85,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        mToolbarRight.setVisibility(View.GONE);
         initHeaderView();
     }
 
@@ -102,21 +112,18 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                 .messagePresenterModule(new MessagePresenterModule(this))
                 .build()
                 .inject(this);
+        // 配置 TS 助手
+        mPresenter.configTSHelper();
         super.initData();// 需要在 dagger 注入后
-        updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter.updateLikeItemData());
+        mPresenter.handleFlushMessage();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mLastClickPostion != -1) {
-            // 刷新当条信息内容
-            mPresenter.refreshLastClicikPostion(mLastClickPostion);
-            mLastClickPostion = -1;
-        }
-        if (getListDatas().size() > 0) {
-            mPresenter.refreshLastClicikPostion(0);
-        }
+        // 刷新信息内容
+        mPresenter.refreshConversationReadMessage();
+        updateCommnetItemData(mPresenter.updateCommnetItemData());
     }
 
     @Override
@@ -138,6 +145,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         mRvList.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
+
 
     /**
      * 更新 hederview 数据
@@ -161,6 +169,10 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                         @Override
                         public void call(Void aVoid) {
                             toCommentList();
+                            mPresenter.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_COMMENTS);
+                            mPresenter.updateCommnetItemData().setUnReadMessageNums(0);
+                            updateCommnetItemData(mPresenter.updateCommnetItemData());
+
                         }
                     });
             liked = headerview.findViewById(R.id.rl_liked);
@@ -170,6 +182,9 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                         @Override
                         public void call(Void aVoid) {
                             toLikeList();
+                            mPresenter.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_DIGGS);
+                            mPresenter.updateLikeItemData().setUnReadMessageNums(0);
+                            updateCommnetItemData(mPresenter.updateLikeItemData());
                         }
                     });
             tvHeaderCommentContent = (TextView) headerview.findViewById(R.id.tv_header_comment_content);
@@ -181,12 +196,22 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
             tvHeaderLikeTip = (BadgeView) headerview.findViewById(R.id.tv_header_like_tip);
         }
         tvHeaderCommentContent.setText(commentItemData.getConversation().getLast_message().getTxt());
-        tvHeaderCommentTime.setText(TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(commentItemData.getConversation().getLast_message_time())));
-        tvHeaderCommentTip.setBadgeCount(commentItemData.getUnReadMessageNums());
+        if (commentItemData.getConversation().getLast_message_time() == 0 || commentItemData.getConversation().getLast_message().getTxt().contains(getString(R.string.has_no_body))) {
+            tvHeaderCommentTime.setVisibility(View.INVISIBLE);
+        } else {
+            tvHeaderCommentTime.setVisibility(View.VISIBLE);
+            tvHeaderCommentTime.setText(TimeUtils.getTimeFriendlyNormal(commentItemData.getConversation().getLast_message_time()));
+        }
+        tvHeaderCommentTip.setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert(commentItemData.getUnReadMessageNums())));
 
         tvHeaderLikeContent.setText(likedItemData.getConversation().getLast_message().getTxt());
-        tvHeaderLikeTime.setText(TimeUtils.getTimeFriendlyNormal(TimeUtils.millis2String(commentItemData.getConversation().getLast_message_time())));
-        tvHeaderLikeTip.setBadgeCount(likedItemData.getUnReadMessageNums());
+        if (likedItemData.getConversation().getLast_message_time() == 0 || likedItemData.getConversation().getLast_message().getTxt().contains(getString(R.string.has_no_body))) {
+            tvHeaderLikeTime.setVisibility(View.INVISIBLE);
+        } else {
+            tvHeaderLikeTime.setVisibility(View.VISIBLE);
+            tvHeaderLikeTime.setText(TimeUtils.getTimeFriendlyNormal(likedItemData.getConversation().getLast_message_time()));
+        }
+        tvHeaderLikeTip.setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert(likedItemData.getUnReadMessageNums())));
         refreshData();
     }
 
@@ -209,12 +234,50 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     @Override
     public void updateCommnetItemData(MessageItemBean messageItemBean) {
-        mListDatas.set(ITEM_TYPE_COMMNETED, messageItemBean);
+        updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter.updateLikeItemData());
+        refreshData();
     }
 
     @Override
     public void updateLikeItemData(MessageItemBean messageItemBean) {
-        mListDatas.set(ITEM_TYPE_LIKED, messageItemBean);
+        updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter.updateLikeItemData());
+        refreshData();
+    }
+
+    @Override
+    public void showTopRightLoading() {
+        ((AnimationDrawable) (mToolbarRight.getCompoundDrawables())[2]).start();
+        mToolbarRight.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void closeTopRightLoading() {
+        ((AnimationDrawable) (mToolbarRight.getCompoundDrawables())[2]).stop();
+        mToolbarRight.setVisibility(View.GONE);
+
+    }
+
+    @Override
+    public void updateTSHelper(MessageItemBean itemBeanNotices) {
+        if (mListDatas.isEmpty()) {
+            mListDatas.add(itemBeanNotices);
+            refreshData();
+        } else {
+            int size = mListDatas.size();
+            int position = -1;
+            for (int i = 0; i < size; i++) {
+                if (mListDatas.get(i).getConversation().getCid() == DEFAULT_TS_HLEPER_CONVERSATION_ID) {
+                    position = i;
+                    break;
+                }
+            }
+            mListDatas.add(0, itemBeanNotices);
+            if (position != -1) {
+                mListDatas.remove(position + 1);
+            }
+
+        }
+
     }
 
     @Override
@@ -252,13 +315,18 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         bundle.putParcelable(ChatFragment.BUNDLE_MESSAGEITEMBEAN, messageItemBean);
         to.putExtras(bundle);
         startActivity(to);
-        mLastClickPostion = positon;//
     }
 
     @Override
     public void onLeftClick(int position) {
         position = position - 1;// 减去 header
-        toChat(mListDatas.get(position), position);
+        if (mListDatas.get(position).getConversation().getCid() == DEFAULT_TS_HLEPER_CONVERSATION_ID) { // TS 助手
+            startActivity(new Intent(getActivity(), SystemConversationActivity.class));
+            mPresenter.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_NOTICES);
+            mPresenter.updateNoticesItemData().setUnReadMessageNums(0);
+        } else { // 进入聊天详情
+            toChat(mListDatas.get(position), position);
+        }
     }
 
     @Override

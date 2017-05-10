@@ -68,9 +68,9 @@ public class BadgeView extends TextView {
 
         // set default font
         setTextColor(Color.WHITE);
-        setTypeface(Typeface.DEFAULT_BOLD);
-        setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
-        setPadding(dip2Px(5), dip2Px(1), dip2Px(5), dip2Px(1));
+        setTypeface(Typeface.DEFAULT);
+        setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+        setPadding(dip2Px(5f),0, dip2Px(5f), 0);
 
         // set default background
         setBackground(20, Color.parseColor("#f4504d"));
@@ -245,4 +245,3 @@ public class BadgeView extends TextView {
         return (int) (dip * getContext().getResources().getDisplayMetrics().density + 0.5f);
     }
 }
-

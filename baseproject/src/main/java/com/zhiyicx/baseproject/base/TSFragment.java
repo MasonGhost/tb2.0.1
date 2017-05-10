@@ -7,6 +7,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -17,15 +18,20 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.trycatch.mysnackbar.Prompt;
 import com.trycatch.mysnackbar.TSnackbar;
+import com.umeng.analytics.MobclickAgent;
 import com.zhiyicx.baseproject.R;
+import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.UIUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.util.concurrent.TimeUnit;
 
+import rx.Subscription;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -37,7 +43,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact 335891510@qq.com
  */
 
-public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<P> {
+public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<P> implements WindowUtils.OnWindowDismisslistener {
     private static final int DEFAULT_TOOLBAR = R.layout.toolbar_custom; // 默认的toolbar
     private static final int DEFAULT_TOOLBAR_BACKGROUD_COLOR = R.color.white;// 默认的toolbar背景色
     private static final int DEFAULT_DIVIDER_COLOR = R.color.general_for_line;// 默认的toolbar下方分割线颜色
@@ -52,17 +58,41 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     private boolean mIscUseSatusbar = false;// 内容是否需要占用状态栏
     protected ViewGroup mSnackRootView;
     private boolean mIsNeedClick = true;// 缺省图是否需要点击
+    private boolean rightViewHadTranslated = false;// 右上角的按钮因为音乐播放悬浮显示，是否已经偏左移动
+    private boolean isFirstIn = true;// 是否是第一次进入页面
+    private Subscription mViewTreeSubscription = null;// View 树监听订阅器
 
+    @Nullable
+    @Override
+
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+//        if (getLeftViewOfMusicWindow() != null) {
+//            RxView.globalLayouts(getLeftViewOfMusicWindow())
+//                    .subscribe(new Action1<Void>() {
+//                        @Override
+//                        public void call(Void aVoid) {
+//                            musicWindowsStatus(WindowUtils.getIsShown());
+//                        }
+//                    });
+//        }
+        return view;
+    }
 
     @Override
     protected View getContentView() {
+
         LinearLayout linearLayout = new LinearLayout(getActivity());
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         if (setUseSatusbar() && setUseStatusView()) { // 是否添加和状态栏等高的占位 View
             mStatusPlaceholderView = new View(getContext());
             mStatusPlaceholderView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceUtils.getStatuBarHeight(getContext())));
-            mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), setToolBarBackgroud()));
+            if (StatusBarUtils.intgetType(getActivity().getWindow()) == 0 && ContextCompat.getColor(getContext(), setToolBarBackgroud()) == Color.WHITE) {
+                mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.themeColor));
+            } else {
+                mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), setToolBarBackgroud()));
+            }
             linearLayout.addView(mStatusPlaceholderView);
         }
         if (showToolbar()) {// 在需要显示toolbar时，进行添加
@@ -104,7 +134,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                 params.setMargins(0, getstatusbarAndToolbarHeight(), 0, 0);
             }
             mCenterLoadingView.setLayoutParams(params);
-            ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).start();
+            if (setUseCenterLoadingAnimation()){
+                ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).start();
+            }
             RxView.clicks(mCenterLoadingView.findViewById(R.id.iv_center_holder))
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                     .compose(this.<Void>bindToLifecycle())
@@ -121,8 +153,19 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
         linearLayout.addView(frameLayout);
         mSnackRootView = (ViewGroup) getActivity().findViewById(android.R.id.content).getRootView();
+
         return linearLayout;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        musicWindowsStatus(WindowUtils.getIsShown());
+        if (!this.getClass().getSimpleName().equals("InfoListFragment")){
+            WindowUtils.setWindowDismisslistener(this);
+        }
+    }
+
 
     @Override
     public void setPresenter(P presenter) {
@@ -162,20 +205,39 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     @Override
+    public void showSnackLoadingMessage(String message) {
+        TSnackbar.make(mSnackRootView, message, TSnackbar.LENGTH_INDEFINITE)
+                .setPromptThemBackground(Prompt.SUCCESS)
+                .addIconProgressLoading(0, true, false)
+                .show();
+    }
+
+    @Override
     public void showMessage(String message) {
 
+    }
+
+    @Override
+    public void onDismiss() {
+        View view = getLeftViewOfMusicWindow();
+        if (view != null && WindowUtils.getIsPause()) {
+            view.setTranslationX(0);
+        }
+        if (WindowUtils.getIsPause()) {
+            WindowUtils.setWindowDismisslistener(null);
+        }
     }
 
     /**
      * 关闭加载动画
      */
     protected void closeLoadingView() {
-        if (mCenterLoadingView == null)
-            throw new NullPointerException("loadingView is null,you must use setUseCenterLoading() and return true");
+        if (mCenterLoadingView == null) {
+            return;
+        }
         if (mCenterLoadingView.getVisibility() == View.VISIBLE) {
             ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).stop();
             mCenterLoadingView.setVisibility(View.GONE);
-//            mCenterLoadingView.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
         }
     }
 
@@ -183,13 +245,15 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * 开启加载动画
      */
     protected void showLoadingView() {
-        if (mCenterLoadingView == null)
-            throw new NullPointerException("loadingView is null,you must use setUseCenterLoading() and return true");
+        if (mCenterLoadingView == null) {
+            return;
+        }
         if (mCenterLoadingView.getVisibility() == View.GONE) {
+            mCenterLoadingView.findViewById(R.id
+                    .iv_center_load).setVisibility(View.VISIBLE);
             ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id
                     .iv_center_load)).getDrawable()).start();
             mCenterLoadingView.setVisibility(View.VISIBLE);
-//            mCenterLoadingView.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
         }
     }
 
@@ -197,8 +261,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * 加载失败，占位图点击事件
      */
     protected void setLoadingViewHolderClick() {
-        if (mCenterLoadingView == null)
-            throw new NullPointerException("loadingView is null,you must use setUseCenterLoading() and return true");
+        if (mCenterLoadingView == null) {
+            return;
+        }
         mCenterLoadingView.setVisibility(View.VISIBLE);
         mCenterLoadingView.findViewById(R.id.iv_center_load).setVisibility(View.VISIBLE);
         mCenterLoadingView.findViewById(R.id.iv_center_holder).setVisibility(View.GONE);
@@ -223,10 +288,12 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     private void showErrorImage() {
-        if (mCenterLoadingView == null)
-            throw new NullPointerException("loadingView is null,you must use setUseCenterLoading() and return true");
+        if (mCenterLoadingView == null) {
+            return;
+        }
         mCenterLoadingView.setVisibility(View.VISIBLE);
         ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).stop();
+        mCenterLoadingView.findViewById(R.id.iv_center_load).setVisibility(View.GONE);
         mCenterLoadingView.findViewById(R.id.iv_center_holder).setVisibility(View.VISIBLE);
     }
 
@@ -241,8 +308,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * @param resId
      */
     protected void setLoadViewHolderImag(@DrawableRes int resId) {
-        if (mCenterLoadingView == null)
-            throw new NullPointerException("loadingView is null,you must use setUseCenterLoading() and return true");
+        if (mCenterLoadingView == null) {
+            return;
+        }
         ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_holder)).setImageResource(resId);
     }
 
@@ -262,6 +330,10 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      */
     protected boolean setUseCenterLoading() {
         return false;
+    }
+
+    protected boolean setUseCenterLoadingAnimation() {
+        return true;
     }
 
     /**
@@ -317,6 +389,52 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     protected boolean showToolBarDivider() {
         return false;
     }
+
+    /**
+     * 音乐悬浮窗是否正在显示
+     */
+/*    protected void musicWindowsStatus(boolean isShow) {
+        final View view = getLeftViewOfMusicWindow();
+        if (isShow && !rightViewHadTranslated) {
+            if (view.getVisibility() == View.VISIBLE) {
+                // 向左移动一定距离
+                int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
+                view.setTranslationX(-rightX);
+                rightViewHadTranslated = true;
+            } else {
+                view.setTranslationX(0);
+                rightViewHadTranslated = false;
+            }
+        }
+    }*/
+    protected void musicWindowsStatus(final boolean isShow) {
+        LogUtils.d("musicWindowsStatus:::" + isShow);
+        WindowUtils.changeToBlackIcon();
+        final View view = getLeftViewOfMusicWindow();
+        if (getLeftViewOfMusicWindow() != null) {
+            mViewTreeSubscription = RxView.globalLayouts(getLeftViewOfMusicWindow())
+                    .subscribe(new Action1<Void>() {
+                        @Override
+                        public void call(Void aVoid) {
+                            if (view != null && isShow) {
+                                if (view.getVisibility() == View.VISIBLE) {
+                                    // 向左移动一定距离
+                                    int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
+                                    view.setTranslationX(-rightX);
+                                }
+                            }
+//                            if (mViewTreeSubscription != null) {
+//                                mViewTreeSubscription.unsubscribe();
+//                            }
+                        }
+                    });
+        }
+    }
+
+    protected View getLeftViewOfMusicWindow() {
+        return mToolbarRight;
+    }
+
 
     /**
      * 是否显示分割线,默认显示
@@ -476,4 +594,5 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             mStatusPlaceholderView.setBackgroundColor(resId);
         }
     }
+
 }

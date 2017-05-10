@@ -5,6 +5,7 @@ import android.content.Context;
 import com.zhiyicx.imsdk.builder.MessageBuilder;
 import com.zhiyicx.imsdk.core.ImService;
 import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
+import com.zhiyicx.imsdk.entity.AuthData;
 import com.zhiyicx.imsdk.entity.ChatRoomContainer;
 import com.zhiyicx.imsdk.entity.ChatRoomDataCount;
 import com.zhiyicx.imsdk.entity.Conversation;
@@ -232,7 +233,7 @@ public class ChatRoomClient implements ChatRoomSoupport, ImMsgReceveListener, Im
             //如果本条消息的seq大于之前的seq，重新赋值最大的seq
             if (seq > THE_NOW_MAX_SEQ) {
                 if (seq - THE_NOW_MAX_SEQ > 1) {
-                    ZBIMClient.getInstance().sync(cid, THE_NOW_MAX_SEQ, seq + 1, ++msgid);
+                    ZBIMClient.getInstance().syncAsc(cid, THE_NOW_MAX_SEQ, seq + 1, ++msgid);
                     System.out.println("-----请求seq--------" + THE_NOW_MAX_SEQ + "-----" + seq + 1);
                     result = true;
                 }
@@ -286,6 +287,12 @@ public class ChatRoomClient implements ChatRoomSoupport, ImMsgReceveListener, Im
             mImMsgReceveListener.onConversationMCACKReceived(conversations);
     }
 
+
+    @Override
+    public void onAuthSuccess(AuthData authData) {
+        if (mImStatusListener != null)
+            mImStatusListener.onAuthSuccess(authData);
+    }
 
     /**
      * 连接状态监听

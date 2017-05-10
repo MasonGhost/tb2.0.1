@@ -1,12 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.home;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -20,9 +19,11 @@ import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplCompone
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
@@ -43,7 +44,8 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 
-import static com.zhiyicx.common.utils.StatusBarUtils.STATUS_TYPE_ANDROID_M;
+import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.MAX_DEFAULT_COUNT;
+import static com.zhiyicx.thinksnsplus.modules.home.HomeActivity.BUNDLE_JPUSH_MESSAGE;
 
 /**
  * @Describe
@@ -75,6 +77,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     TextView mTvMessage;
     @BindView(R.id.iv_mine)
     ImageView mIvMine;
+    @BindView(R.id.v_mine_tip)
+    View mVMineTip;
     @BindView(R.id.tv_mine)
     TextView mTvMine;
     @BindView(R.id.vp_home)
@@ -94,12 +98,18 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     private PhotoSelectorImpl mPhotoSelector;
     private JpushAlias mJpushAlias;
 
+    private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
 
-    public static HomeFragment newInstance() {
+
+    public static HomeFragment newInstance(Bundle args) {
         HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    protected boolean usePermisson() {
+        return true;
     }
 
     /**
@@ -145,11 +155,13 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 .inject(this);
         initListener();
         changeNavigationButton(PAGE_HOME);
-        mVpHome.setCurrentItem(PAGE_HOME, false);
+        if (getArguments() != null && getArguments().getParcelable(BUNDLE_JPUSH_MESSAGE) != null) {
+            checkBottomItem(HomeFragment.PAGE_MESSAGE);
+        } else {
+            mVpHome.setCurrentItem(PAGE_HOME, false);
+        }
         mJpushAlias = new JpushAlias(getContext(), AppApplication.getmCurrentLoginAuth().getUser_id() + "");// 设置极光推送别名
         mJpushAlias.setAlias();
-
-        Glide.with(getActivity()).load("");
     }
 
     @Override
@@ -170,7 +182,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 break;
             // 添加动态
             case R.id.fl_add:
-                clickSendPhotoTextDynamic();
+                initPhotoPopupWindow();
+                mPhotoPopupWindow.show();
                 break;
             // 点击消息
             case R.id.ll_message:
@@ -260,6 +273,22 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 
     }
 
+    @Override
+    public void setMineTipVisable(boolean tipVisable) {
+        if (tipVisable) {
+            mVMineTip.setVisibility(View.VISIBLE);
+        } else {
+            mVMineTip.setVisibility(View.INVISIBLE);
+        }
+
+    }
+
+
+    @Override
+    public void checkBottomItem(int positon) {
+        mVpHome.setCurrentItem(positon, false);
+    }
+
     /**
      * 长按动态发送按钮，进入纯文字的动态发布
      */
@@ -267,11 +296,11 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         mFlAdd.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Intent it = new Intent(getContext(), SendDynamicActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putInt(SendDynamicActivity.DYNAMIC_TYPE, SendDynamicActivity.TEXT_ONLY_DYNAMIC);
-                it.putExtras(bundle);
-                startActivity(it);
+                // 跳转到发送动态页面
+                SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+                sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
+                sendDynamicDataBean.setDynamicType(SendDynamicDataBean.TEXT_ONLY_DYNAMIC);
+                SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
                 return true;
             }
         });
@@ -281,7 +310,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
      * 点击动态发送按钮，进入文字图片的动态发布
      */
     private void clickSendPhotoTextDynamic() {
-        mPhotoSelector.getPhotoListFromSelector(9, null);
+        mPhotoSelector.getPhotoListFromSelector(MAX_DEFAULT_COUNT, null);
     }
 
     private void initPhotoPicker() {
@@ -295,12 +324,11 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
         // 跳转到发送动态页面
-        Intent it = new Intent(getContext(), SendDynamicActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(SendDynamicActivity.DYNAMIC_PHOTOS, (ArrayList<? extends Parcelable>) photoList);
-        bundle.putInt(SendDynamicActivity.DYNAMIC_TYPE, SendDynamicActivity.PHOTO_TEXT_DYNAMIC);
-        it.putExtras(bundle);
-        startActivity(it);
+        SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+        sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
+        sendDynamicDataBean.setDynamicPrePhotos(photoList);
+        sendDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
+        SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
     }
 
     @Override
@@ -311,7 +339,10 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mPhotoSelector.onActivityResult(requestCode, resultCode, data);
+        // 获取图片选择器返回结果
+        if (mPhotoSelector != null) {
+            mPhotoSelector.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
@@ -328,6 +359,44 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
             mLlBottomContainer.setVisibility(View.GONE);
         }
 
+    }
+
+    /**
+     * 初始化图片选择弹框
+     */
+    private void initPhotoPopupWindow() {
+        if (mPhotoPopupWindow != null) {
+            return;
+        }
+        mPhotoPopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.choose_from_photo))
+                .item2Str(getString(R.string.choose_from_camera))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(0.8f)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+                        clickSendPhotoTextDynamic();
+                        mPhotoPopupWindow.hide();
+                    }
+                })
+                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
+                    @Override
+                    public void onItem2Clicked() {
+                        // 选择相机，拍照
+                        mPhotoSelector.getPhotoFromCamera(null);
+                        mPhotoPopupWindow.hide();
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mPhotoPopupWindow.hide();
+                    }
+                }).build();
     }
 
 }

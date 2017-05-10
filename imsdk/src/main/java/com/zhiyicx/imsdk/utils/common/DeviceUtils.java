@@ -252,8 +252,7 @@ public class DeviceUtils {
             flag = true;
         else if (GTE_ICS) {
             flag = ViewConfiguration.get(context).hasPermanentMenuKey();
-        }
-        else
+        } else
             flag = false;
         return flag;
     }
@@ -450,7 +449,7 @@ public class DeviceUtils {
             return context.getPackageManager()
                     .getPackageInfo(pckName, 0);
         } catch (PackageManager.NameNotFoundException e) {
-
+            e.printStackTrace();
         }
         return null;
     }
@@ -593,8 +592,7 @@ public class DeviceUtils {
                 .getLaunchIntentForPackage(packageName);
         if (mainIntent == null) {
             mainIntent = new Intent(packageName);
-        }
-        else {
+        } else {
         }
         context.startActivity(mainIntent);
     }
@@ -709,8 +707,7 @@ public class DeviceUtils {
         WindowManager.LayoutParams attrs = activity.getWindow().getAttributes();
         if ((attrs.flags & WindowManager.LayoutParams.FLAG_FULLSCREEN) == WindowManager.LayoutParams.FLAG_FULLSCREEN) {
             return false;
-        }
-        else {
+        } else {
             return true;
         }
     }
@@ -749,13 +746,11 @@ public class DeviceUtils {
             if (extraInfo != null && !extraInfo.isEmpty()) {
                 if (extraInfo.toLowerCase().equals("cmnet")) {
                     netType = NETTYPE_CMNET;
-                }
-                else {
+                } else {
                     netType = NETTYPE_CMWAP;
                 }
             }
-        }
-        else if (nType == ConnectivityManager.TYPE_WIFI) {
+        } else if (nType == ConnectivityManager.TYPE_WIFI) {
             netType = NETTYPE_WIFI;
         }
         return netType;
@@ -806,8 +801,7 @@ public class DeviceUtils {
                     if (appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND) {
                         Log.i("process Name:", appProcess.processName);
                         return true;
-                    }
-                    else {
+                    } else {
                         Log.i("process Name:", appProcess.processName);
                         return false;
                     }

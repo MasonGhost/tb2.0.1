@@ -7,7 +7,6 @@ import android.text.Editable;
 import android.text.Selection;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,6 +17,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.edittext.PasswordEditText;
+import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 
@@ -65,8 +65,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     private boolean isRegisting = false;
 
     public static RegisterFragment newInstance() {
-        RegisterFragment fragment = new RegisterFragment();
-        return fragment;
+        return  new RegisterFragment();
     }
 
     @Override
@@ -234,6 +233,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
 
     @Override
     public void goHome() {
+        DeviceUtils.hideSoftKeyboard(getContext(),mEtRegistPassword);
         startActivity(new Intent(getActivity(), HomeActivity.class));
     }
 

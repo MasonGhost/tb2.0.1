@@ -14,9 +14,11 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
 -->
+
 <view xmlns:android="http://schemas.android.com/apk/res/android"
-    class="com.trycatch.mysnackbar.TSnackbar$SnackbarLayout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="top"
-    style="@style/Widget.Design.Snackbar" />
+      style="@style/Widget.Design.Snackbar"
+      class="com.trycatch.mysnackbar.TSnackbar$SnackbarLayout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="top"
+    />

@@ -16,7 +16,6 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -25,15 +24,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideStokeTransform;
 import com.zhiyicx.baseproject.utils.ImageUtils;
+import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FastBlur;
-import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -49,14 +47,21 @@ import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import org.simple.eventbus.Subscriber;
+import org.simple.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
+import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_CHANGE;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_COMMENT_COUNT;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_LIKE;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListFragment.BUNDLE_MUSIC_ABLUM;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT;
@@ -103,10 +108,11 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     IconTextView mFragmentMusicDetailFavorite;
     @BindView(R.id.fragment_music_detail_music_count)
     TextView fragmentMusicDetailMusicCount;
+    @BindView(R.id.fragment_album_detail)
+    FrameLayout fragmentAlbumDetail;
 
     private CommonAdapter mAdapter;
     private List<MediaBrowserCompat.MediaItem> mAdapterList = new ArrayList<>();
-    private ImageLoader mImageLoader;
 
     private static final String ARG_MEDIA_ID = "media_id";
     public static final String MUSIC_INFO = "music_info";
@@ -136,8 +142,10 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                     if (metadata == null) {
                         return;
                     }
-                    mAdapter.notifyDataSetChanged();
                     mCurrentMediaId = metadata.getDescription().getMediaId();
+                    LogUtils.d("onMetadataChanged::detail:" + mCurrentMediaId);
+                    mAdapter.notifyDataSetChanged();
+
                     mPresenter.getMusicDetails(mCurrentMediaId);
                 }
 
@@ -155,11 +163,15 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 @Override
                 public void onChildrenLoaded(@NonNull String parentId,
                                              @NonNull List<MediaBrowserCompat.MediaItem> children) {
+                    if (children.isEmpty()) {
+                        return;
+                    }
                     MediaSessionCompat.QueueItem mCurrentMusic = AppApplication.getmQueueManager().getCurrentMusic();
                     if (mCurrentMusic != null) {
                         mCurrentMediaId = MediaIDHelper.extractMusicIDFromMediaID(mCurrentMusic.getDescription().getMediaId());
                     }
                     fragmentMusicDetailMusicCount.setText(String.format("(共%d首)", children.size()));
+                    LogUtils.d("onChildrenLoaded:::" + children.size());
                     mAdapter.dataChange(children);
                 }
 
@@ -176,6 +188,11 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     }
 
     @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_music_detail;
     }
@@ -183,6 +200,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @Override
     protected void initView(View rootView) {
         ViewGroup.LayoutParams titleParam;
+
         int titleHeight;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             titleHeight = ConvertUtils.dp2px(getActivity(), 84);
@@ -194,7 +212,13 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 .MATCH_PARENT, titleHeight);
         mFragmentMusicDetailScrollview.setNotConsumeHeight(titleHeight);
         mFragmentMusicDetailTitle.setLayoutParams(titleParam);
-        mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
+        closeLoadingView();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initHeadInfo(mMusicAlbumListBean);
     }
 
     @Override
@@ -245,30 +269,27 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @Override
     public void setMusicAblum(MusicAlbumDetailsBean musicAblum) {
         mAlbumDetailsBean = musicAblum;
+
+        WindowUtils.AblumHeadInfo ablumHeadInfo = new WindowUtils.AblumHeadInfo();
+        ablumHeadInfo.setCommentCount(musicAblum.getComment_count());
+        ablumHeadInfo.setShareCount(musicAblum.getShare_count());
+        ablumHeadInfo.setListenCount(musicAblum.getTaste_count());
+        ablumHeadInfo.setAblumId(musicAblum.getId());
+        ablumHeadInfo.setLikeCount(musicAblum.getCollect_count());
+        WindowUtils.setAblumHeadInfo(ablumHeadInfo);
+
         mFragmentMusicDetailCenterTitle.setText(mAlbumDetailsBean.getTitle());
         mFragmentMusicDetailCenterSubTitle.setText(mAlbumDetailsBean.getIntro());
         mFragmentMusicDetailDec.setText(mAlbumDetailsBean.getIntro());
+
+        mMusicAlbumListBean.setIs_collection(mAlbumDetailsBean.getIs_collection());
+
         if (mAlbumDetailsBean.getIs_collection() != 0) {
             mFragmentMusicDetailFavorite.setIconRes(R.mipmap.detail_ico_collect);
         }
         if (mCompatProvider.getMediaBrowser().isConnected()) {
             onConnected();
         }
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showMessage(String message) {
-
     }
 
     @Override
@@ -279,6 +300,29 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
             mFragmentMusicDetailFavorite.setIconRes(R.mipmap.music_ico_collect);
         }
         mFragmentMusicDetailFavorite.setText(mAlbumDetailsBean.getCollect_count() + "");
+    }
+
+    @Override
+    protected void musicWindowsStatus(boolean isShow) {
+        super.musicWindowsStatus(isShow);
+        WindowUtils.changeToWhiteIcon();
+    }
+
+    @Override
+    protected boolean setUseCenterLoading() {
+        return true;
+    }
+
+    @Override
+    public void albumHasBeDeleted() {
+        fragmentAlbumDetail.setVisibility(View.GONE);
+        setLoadViewHolderImag(R.mipmap.img_default_delete);
+        showLoadViewLoadErrorDisableClick();
+    }
+
+    @Override
+    protected int getstatusbarAndToolbarHeight() {
+        return 0;
     }
 
     @Override
@@ -307,20 +351,23 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         if (mMediaId == null) {
             mMediaId = mCompatProvider.getMediaBrowser().getRoot();
         }
-        mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
-        mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
+//        mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
+//        mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
         MediaControllerCompat controller = getActivity()
                 .getSupportMediaController();
+
         if (controller != null) {
+            controller.registerCallback(mMediaControllerCallback);
             if (mAlbumDetailsBean != null) {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(MUSIC_ACTION, mAlbumDetailsBean);
                 controller.getTransportControls().sendCustomAction(MUSIC_ACTION, bundle);
+                LogUtils.d("sendCustomAction:::+onConnected");
 
                 mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
                 mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
             }
-            controller.registerCallback(mMediaControllerCallback);
+
         }
 
     }
@@ -361,12 +408,12 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
 
                 MediaBrowserCompat.MediaItem item = mAdapterList.get(position);
-
                 Intent intent = new Intent(getActivity(), MusicPlayActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(MUSIC_INFO, mAlbumDetailsBean);
                 intent.putExtra(MUSIC_INFO, bundle);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                WindowUtils.setMusicAlbumDetailsBean(bundle);
                 MediaControllerCompat controller = getActivity().getSupportMediaController();
                 MediaMetadataCompat metadata = controller.getMetadata();
                 if (metadata != null) {
@@ -374,6 +421,11 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                             metadata.getDescription());
                 }
                 startActivity(intent);
+                MediaSessionCompat.QueueItem mCurrentMusic = AppApplication.getmQueueManager().getCurrentMusic();
+                if (mCurrentMusic != null) {
+                    mMediaId = mCurrentMusic.getDescription().getMediaId();
+                }
+
                 if (item.isPlayable()) {
                     MediaControllerCompat controllerCompat = getActivity()
                             .getSupportMediaController();
@@ -435,8 +487,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     }
 
     private void initTitle() {
-        mBgBitmap = BitmapFactory
-                .decodeResource(getResources(), R.mipmap.icon_256);
+        mBgBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.default_pic_personal);
         mPalette = Palette.from(mBgBitmap).generate();
         BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap
                 (mBgBitmap, mBgBitmap.getWidth(), mBgBitmap.getHeight()));
@@ -444,12 +495,14 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
         mFragmentMusicDetailScrollview.setOnHeadFlingListener(new NestedScrollLineayLayout
                 .OnHeadFlingListener() {
+
             @Override
             public void onHeadFling(int scrollY) {
+                
                 int distance = mFragmentMusicDetailScrollview.getTopViewHeight();
                 int alpha = 255 * scrollY / distance;
                 alpha = alpha > 255 ? 255 : alpha;
-                mFragmentMusicDetailTitle.setBackgroundColor(mPalette.getDarkVibrantColor
+                mFragmentMusicDetailTitle.setBackgroundColor(mPalette.getDarkMutedColor
                         (0xffdedede));
                 if ((float) alpha / 255f > 0.7) {
                     mFragmentMusicDetailCenterTitle.setVisibility(View.VISIBLE);
@@ -459,46 +512,58 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                     mFragmentMusicDetailCenterSubTitle.setVisibility(View.GONE);
                 }
                 mFragmentMusicDetailTitle.getBackground().setAlpha(alpha);
+            }
+
+            @Override
+            public void onHeadZoom() {
+                mPresenter.getMusicDetails(mCurrentMediaId);
+            }
+
+            @Override
+            public void onHeadRedu() {
 
             }
         });
     }
 
     private void initHeadInfo(MusicAlbumListBean albumListBean) {
-        mFragmentMusicDetailName.setText(albumListBean.getTitle());
-        mFragmentMusicDetailDec.setText(albumListBean.getIntro());
-        mFragmentMusicDetailShare.setText(albumListBean.getShare_count() + "");
-        mFragmentMusicDetailComment.setText(albumListBean.getComment_count() + "");
-        mFragmentMusicDetailFavorite.setText(albumListBean.getCollect_count() + "");
-        mFragmentMusicDetailPlayvolume.setText(albumListBean.getTaste_count() + "");
 
         Glide.with(getContext())
                 .load(ImageUtils.imagePathConvert(albumListBean.getStorage().getId() + "",
                         ImageZipConfig.IMAGE_70_ZIP))
                 .asBitmap()
-                .transform(new GlideStokeTransform(getActivity(), 20))
-                .placeholder(R.mipmap.icon_256)
-                .error(R.mipmap.icon_256)
-                .into(new SimpleTarget<Bitmap>() {
+                .transform(new GlideStokeTransform(getActivity(), 5))
+                .placeholder(R.drawable.shape_default_image)
+                .error(R.drawable.shape_default_image)
+                .into(new ImageViewTarget<Bitmap>(mFragmentMusicDetailHeadIamge) {
                     @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap>
-                            glideAnimation) {
-                        mBgBitmap = resource.copy(Bitmap.Config.RGB_565, false);
+                    protected void setResource(Bitmap resource) {
+                        mBgBitmap = resource.copy(Bitmap.Config.ARGB_8888, false);
                         mFragmentMusicDetailHeadIamge.setImageBitmap(resource);
                         mPalette = Palette.from(mBgBitmap).generate();
                         BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap
                                 (mBgBitmap, mBgBitmap.getWidth(), mBgBitmap.getHeight()));
                         mFragmentMusicDetailHeadInfo.setBackgroundDrawable(drawable);
                     }
+
                 });
+        if (WindowUtils.getAblumHeadInfo() != null) {
+            WindowUtils.AblumHeadInfo ablumHeadInfo = WindowUtils.getAblumHeadInfo();
+            albumListBean.setCollect_count(ablumHeadInfo.getLikeCount());
+            albumListBean.setShare_count(ablumHeadInfo.getShareCount());
+            albumListBean.setTaste_count(ablumHeadInfo.getListenCount());
+            albumListBean.setComment_count(ablumHeadInfo.getCommentCount());
+        }
+        mFragmentMusicDetailName.setText(albumListBean.getTitle());
+        mFragmentMusicDetailShare.setText(albumListBean.getShare_count() + "");
+        mFragmentMusicDetailComment.setText(albumListBean.getComment_count() + "");
+        mFragmentMusicDetailFavorite.setText(albumListBean.getCollect_count() + "");
+        mFragmentMusicDetailPlayvolume.setText(albumListBean.getTaste_count() + "");
+
     }
 
     public interface MediaBrowserCompatProvider {
         MediaBrowserCompat getMediaBrowser();
-    }
-
-    public class MusicAblumHeadInfo {
-        private int iamgeId;
     }
 
     @OnClick({R.id.fragment_music_detail_playvolume, R.id.fragment_music_detail_share, R.id
@@ -509,7 +574,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
             case R.id.fragment_music_detail_playvolume:
                 break;
             case R.id.fragment_music_detail_share:
-                mPresenter.shareMusicAlbum();
+                mPresenter.shareMusicAlbum(mBgBitmap);
                 break;
             case R.id.fragment_music_detail_comment:
                 Intent intent = new Intent(getActivity(), MusicCommentActivity.class);
@@ -534,5 +599,38 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
             default:
                 break;
         }
+    }
+
+    @Subscriber(tag = EVENT_MUSIC_LIKE, mode = ThreadMode.MAIN)
+    public void onLikeCountUpdate(final MusicAlbumDetailsBean.MusicsBean e_albumListBean) {
+
+        Observable.from(mAlbumDetailsBean.getMusics()).filter(new Func1<MusicAlbumDetailsBean.MusicsBean, Boolean>() {
+            @Override
+            public Boolean call(MusicAlbumDetailsBean.MusicsBean musicsBean) {
+                return e_albumListBean.getId() == musicsBean.getId();
+            }
+        }).subscribe(new Action1<MusicAlbumDetailsBean.MusicsBean>() {
+            @Override
+            public void call(MusicAlbumDetailsBean.MusicsBean musicsBean) {
+                musicsBean.getMusic_info().setIsdiggmusic(e_albumListBean.getMusic_info().getIsdiggmusic());
+                musicsBean.getMusic_info().setComment_count(e_albumListBean.getMusic_info().getComment_count());
+            }
+        });
+        LogUtils.d("EVENT_MUSIC_LIKE");
+    }
+
+    @Subscriber(tag = EVENT_MUSIC_COMMENT_COUNT, mode = ThreadMode.MAIN)
+    public void onCommentCountUpdate(MusicCommentHeader.HeaderInfo headerInfo) {
+        mMusicAlbumListBean.setComment_count((mMusicAlbumListBean.getComment_count() + 1));
+        mFragmentMusicDetailComment.setText(mMusicAlbumListBean.getComment_count() + "");
+        LogUtils.d("EVENT_MUSIC_COMMENT_COUNT");
+    }
+
+    @Subscriber(tag = EVENT_MUSIC_CHANGE, mode = ThreadMode.MAIN)
+    public void onMusicChange(int change) {
+        mCurrentMediaId = change + "";
+        mPresenter.getMusicDetails(change + "");
+        mAdapter.notifyDataSetChanged();
+        LogUtils.d("EVENT_MUSIC_CHANGE");
     }
 }

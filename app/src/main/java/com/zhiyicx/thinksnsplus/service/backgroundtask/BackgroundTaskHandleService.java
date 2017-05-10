@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 
 import org.simple.eventbus.EventBus;
@@ -23,7 +24,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_STOP_BACKG
  */
 
 public class BackgroundTaskHandleService extends Service {
-
+    private static final String TAG = "BackgroundTaskHandleSer";
     private BackgroundTaskHandler mBackgroundTaskHandler;
 
     @Override
@@ -36,7 +37,7 @@ public class BackgroundTaskHandleService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        System.out.println("------------------------BackgroundTaskHandleService---------------onDestroy-------------");
+        LogUtils.d(TAG, "onDestroy");
         mBackgroundTaskHandler.stopTask();
         EventBus.getDefault().unregister(this);
 
@@ -50,11 +51,17 @@ public class BackgroundTaskHandleService extends Service {
 
     @Subscriber(tag = EVENT_BACKGROUND_TASK, mode = ThreadMode.POST)
     public boolean addBackgroundRequestTask(BackgroundRequestTaskBean backgroundRequestTaskBean) {
+        if (mBackgroundTaskHandler == null) {
+            init();
+        }
         return mBackgroundTaskHandler.addBackgroundRequestTask(backgroundRequestTaskBean);
     }
 
     @Subscriber(tag = EVENT_STOP_BACKGROUND_TASK, mode = ThreadMode.POST)
     public void stopBackgroundRequestTask() {
+        if (mBackgroundTaskHandler == null) {
+            return;
+        }
         mBackgroundTaskHandler.stopTask();
     }
 

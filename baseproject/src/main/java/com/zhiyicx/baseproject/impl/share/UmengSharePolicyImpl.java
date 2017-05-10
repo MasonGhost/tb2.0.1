@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareAPI;
@@ -27,6 +26,8 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SHARE_DEFAULT;
 
 
 /**
@@ -72,7 +73,7 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
     private void init(Context mContext) {
 
         UMShareAPI.get(mContext);
-        Config.DEBUG = true;
+//        Config.DEBUG = true;
         initSharePopupWindow();
     }
 
@@ -207,7 +208,8 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
             image = new UMImage(activity, mShareContent.getFile());
         }
         if (!TextUtils.isEmpty(mShareContent.getUrl())) {
-            UMWeb web = new UMWeb(mShareContent.getUrl());
+//            UMWeb web = new UMWeb(mShareContent.getUrl());
+            UMWeb web = new UMWeb(APP_PATH_SHARE_DEFAULT); // 由于后台还未开发完毕，暂时使用
             if (!TextUtils.isEmpty(mShareContent.getTitle())) {
                 web.setTitle(mShareContent.getTitle());//标题
             }

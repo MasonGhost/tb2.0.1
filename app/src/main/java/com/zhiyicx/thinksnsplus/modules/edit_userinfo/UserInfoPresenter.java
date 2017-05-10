@@ -15,7 +15,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
 
 import org.simple.eventbus.EventBus;
@@ -44,7 +44,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
     @Inject
     IUploadRepository mIUploadRepository;
     @Inject
-    IAuthRepository mIAuthRepository;
+    AuthRepository mIAuthRepository;
     public UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
@@ -101,7 +101,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
     public void changeUserHeadIcon(String filePath) {
         mRootView.setUpLoadHeadIconState(0, 0);
         BitmapFactory.Options options = DrawableProvider.getPicsWHByFile(filePath);
-        Subscription subscription = mIUploadRepository.upLoadSingleFile("pic",
+        Subscription subscription = mIUploadRepository.upLoadSingleFile(
                 filePath, options.outMimeType, true, options.outWidth, options.outHeight)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -126,11 +126,14 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
     }
 
     @Override
-    public void changUserInfo(final HashMap<String, String> userInfos) {
+    public void changUserInfo(final HashMap<String, String> userInfos, final boolean isHeadIcon) {
         if (!checkChangedUserInfo(userInfos)) {
             return;
         }
-        mRootView.setChangeUserInfoState(0, "");
+        // 上传头像就不需要提示
+        if (!isHeadIcon) {
+            mRootView.setChangeUserInfoState(0, "");
+        }
         Subscription subscription = mRepository.changeUserInfo(userInfos)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -138,7 +141,11 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                     @Override
                     protected void onSuccess(Object data) {
                         // 修改成功后，关闭页面
-                        mRootView.setChangeUserInfoState(1, "");
+                        if (!isHeadIcon) {
+                            mRootView.setChangeUserInfoState(1, "");
+                        } else {
+                            mRootView.setUpLoadHeadIconState(2, 0);
+                        }
                         EventBus.getDefault().post(EventBusTagConfig.EVENT_USERINFO_UPDATE);
                         upDateUserInfo(userInfos);
                     }
@@ -146,12 +153,21 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                     @Override
                     protected void onFailure(String message, int code) {
                         // 修改失败，好尴尬
-                        mRootView.setChangeUserInfoState(-1, "");
+                        if (!isHeadIcon) {
+                            mRootView.setChangeUserInfoState(-1, "");
+                        } else {
+                            mRootView.setUpLoadHeadIconState(-1, 0);
+                        }
+
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        mRootView.setChangeUserInfoState(-1, "");
+                        if (!isHeadIcon) {
+                            mRootView.setChangeUserInfoState(-1, "");
+                        } else {
+                            mRootView.setUpLoadHeadIconState(-1, 0);
+                        }
                     }
                 });
         addSubscrebe(subscription);

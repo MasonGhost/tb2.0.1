@@ -7,18 +7,17 @@ package com.zhiyicx.imsdk.policy.timeout;
  * email:335891510@qq.com
  */
 
+import android.util.SparseArray;
+
 import com.zhiyicx.imsdk.entity.MessageContainer;
 
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 
 public class TimeOutTaskManager {
     private static final String TAG = "TimeOutTaskManager";
     // 请求队列
     private LinkedList<TimeOutTask> mTimeOutTasks;
-
-    private Map<Integer, TimeOutTask> mOutTaskHashMapCache = new HashMap<>();
+    private SparseArray<TimeOutTask> mOutTaskHashMapCache = new SparseArray<>();
     private static TimeOutTaskManager sTimeOutTaskManager;
 
     private TimeOutTaskManager() {
@@ -34,6 +33,7 @@ public class TimeOutTaskManager {
 
     /**
      * 加入队列
+     *
      * @param timeOutTask
      */
     public void addTimeoutTask(TimeOutTask timeOutTask) {
@@ -48,8 +48,7 @@ public class TimeOutTaskManager {
     public TimeOutTask getTimeoutTask() {
         synchronized (mTimeOutTasks) {
             if (mTimeOutTasks.size() > 0) {
-                TimeOutTask timeOutTask = mTimeOutTasks.removeFirst();
-                return timeOutTask;
+                return  mTimeOutTasks.removeFirst();
             }
         }
         return null;
@@ -61,10 +60,10 @@ public class TimeOutTaskManager {
      * @param str_id
      * @return
      */
-    public MessageContainer cancleTimeoutTask(String str_id){
+    public MessageContainer cancleTimeoutTask(String str_id) {
         int id = Integer.valueOf(str_id);
         MessageContainer messageConteainer = null;
-        if (mOutTaskHashMapCache.containsKey(id)) {
+        if (mOutTaskHashMapCache.get(id) != null) {
             messageConteainer = mOutTaskHashMapCache.get(id).getMessageContainer();
             mOutTaskHashMapCache.get(id).end();
             mOutTaskHashMapCache.remove(id);

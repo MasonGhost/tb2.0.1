@@ -23,8 +23,8 @@ public class PersonalCenterDynamicListBaseItem extends DynamicListBaseItem {
     }
 
     @Override
-    public void convert(ViewHolder holder, DynamicBean dynamicBean, DynamicBean lastT, int position) {
-        super.convert(holder, dynamicBean, lastT, position);
+    public void convert(ViewHolder holder, final DynamicBean dynamicBean, DynamicBean lastT, int position,int itemCounts) {
+        super.convert(holder, dynamicBean, lastT, position,itemCounts);
         //////这儿的时间处理放在了DynamicListBaseItem中，否则还要在每个ImageItem中重写//////
         ////////////////////////////添加个人中心时间处理/////////////////////////
         TextView timeUp = holder.getView(R.id.tv_time_up);

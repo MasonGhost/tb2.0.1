@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -9,7 +10,9 @@ import android.widget.RelativeLayout;
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.widget.InputLimitView;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -17,11 +20,14 @@ import com.zhiyicx.imsdk.core.ChatType;
 import com.zhiyicx.imsdk.db.dao.ConversationDao;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
+import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBFragment;
 import com.zhiyicx.thinksnsplus.widget.chat.ChatMessageList;
 
 import org.jetbrains.annotations.NotNull;
@@ -34,6 +40,8 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+
+import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 
 /**
  * @Describe
@@ -50,7 +58,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     InputLimitView mIlvContainer; // 输入控件
     @BindView(R.id.rl_container)
     RelativeLayout mRlContainer;  // 页面容器
-
+    private ActionPopupWindow mDeletCommentPopWindow;
 
     private List<ChatItemBean> mDatas = new ArrayList<>();
     private MessageItemBean mMessageItemBean;
@@ -183,7 +191,8 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
      */
     @Override
     public void onStatusClick(ChatItemBean chatItemBean) {
-        mPresenter.reSendText(chatItemBean);
+        initDeletCommentPopupWindow(chatItemBean);
+        mDeletCommentPopWindow.show();
     }
 
     /**
@@ -194,6 +203,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     @Override
     public void onBubbleClick(ChatItemBean message) {
         LogUtils.d("----------------onBubbleClick----------");
+        DeviceUtils.hideSoftKeyboard(getContext(), mMessageList.getListView());
 
     }
 
@@ -206,6 +216,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     @Override
     public boolean onBubbleLongClick(ChatItemBean message) {
         LogUtils.d("----------------onBubbleLongClick----------");
+        DeviceUtils.hideSoftKeyboard(getContext(), mMessageList.getListView());
         return true;
     }
 
@@ -216,7 +227,22 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
      */
     @Override
     public void onUserInfoClick(ChatItemBean chatItemBean) {
-        PersonalCenterFragment.startToPersonalCenter(getContext(), chatItemBean.getUserInfo());
+        if (chatItemBean==null||chatItemBean.getUserInfo()==null||chatItemBean.getUserInfo().getName().equals(getString(R.string.ts_helper))) { // ts 助手;
+            toTSHelper();
+        } else { // 普通用户
+            PersonalCenterFragment.startToPersonalCenter(getContext(), chatItemBean.getUserInfo());
+        }
+    }
+
+    /**
+     * 前往ts助手开发
+     */
+    private void toTSHelper() {
+        Intent intent = new Intent(getContext(), CustomWEBActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, ApiConfig.APP_PATH_SHARE_DEFAULT);
+        intent.putExtras(bundle);
+        getContext().startActivity(intent);
     }
 
     /**
@@ -299,4 +325,37 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
                 , mMessageItemBean.getConversation().getType(), mDatas);
         mMessageList.scrollToBottom();
     }
+
+    /**
+     * 初始化评论删除选择弹框
+     */
+    private void initDeletCommentPopupWindow(final ChatItemBean chatItemBean) {
+        mDeletCommentPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.resend))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+                        onResendClick(chatItemBean);
+                        mDeletCommentPopWindow.hide();
+
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mDeletCommentPopWindow.hide();
+                    }
+                })
+                .build();
+    }
+
+    private void onResendClick(ChatItemBean chatItemBean) {
+        mPresenter.reSendText(chatItemBean);
+    }
+
 }

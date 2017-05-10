@@ -5,7 +5,6 @@ import android.text.Editable;
 import android.text.Selection;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -39,7 +38,7 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
     @BindView(R.id.et_phone)
     DeleteEditText mEtPhone;
     @BindView(R.id.bt_send_vertify_code)
-    Button mBtSendVertifyCode;
+    TextView mBtSendVertifyCode;
     @BindView(R.id.iv_vertify_loading)
     ImageView mIvVertifyLoading;
     @BindView(R.id.rl_send_vertify_code_container)
@@ -59,8 +58,7 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
     private boolean isSureLoading;
 
     public static FindPasswordFragment newInstance() {
-        FindPasswordFragment fragment = new FindPasswordFragment();
-        return fragment;
+        return new FindPasswordFragment();
     }
 
     @Override

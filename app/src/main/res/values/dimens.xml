@@ -2,10 +2,15 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!-- copyright_text_size-->
+    <dimen name="copyright_text_size">9sp</dimen>
+
     <!--登录按钮margintop-->
     <dimen name="button_login_margin_top">23dp</dimen>
     <!--用户资料编辑分割线左边的距离-->
     <dimen name="useredit_divier_marginleft">77dp</dimen>
+    <dimen name="introduce_padding_top">22dp</dimen>
     <!--动态详情页面，五张叠加的小头像距离-->
     <dimen name="head4_right_margin">26dp</dimen>
     <dimen name="head3_right_margin">42dp</dimen>
@@ -16,5 +21,23 @@
     <dimen name="personal_center_bottom_view_height">46dp</dimen>
     <!--没有图的item，工具栏的左边margin-->
     <dimen name="zero_image_left_margin">48dp</dimen>
+    <!--频道列表-->
+    <!--频道订阅按钮宽度-->
+    <dimen name="channel_subscrib_btn_width">63dp</dimen>
+    <dimen name="channel_subscrib_btn_height">25dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+    <!--频道详情，顶部图片距离顶部的距离-->
+    <dimen name="header_icon_top_margin">72dp</dimen>
+    <!--25dp的高度减去图片4个dp的透明都-->
+    <dimen name="floating_button_bottom_margin">21dp</dimen>
+
+    <!--消息中 的评论的点赞的线的 margin-->
+    <dimen name="message_comment_and_digg_line_margin">63dp</dimen>
+    <!---->
+    <dimen name="infocontainer_right_image_with">50dp</dimen>
+    <!--咨询中的 banner hight-->
+    <dimen name="info_banner_hight">200dp</dimen>
+    <!--滑动删除按钮的宽度-->
+    <dimen name="slide_button_with">80dp</dimen>
 
 </resources>

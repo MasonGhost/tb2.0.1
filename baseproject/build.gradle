@@ -28,6 +28,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        abortOnError false
+        // if true, only report errors.
+        ignoreWarnings true
+    }
+
 }
 
 configurations.all {
@@ -65,11 +71,10 @@ dependencies {
     compile(dataDependences.refresh) {
         exclude group: 'com.android.support', module: 'support-compat'
     }
-
-    compile dataDependences.swipeLayout;
-    compile (dataDependences.recyclerviewAnimator){
-        exclude group:'com.android.support',module:'appcompat-v7'
-        exclude group:'com.android.support',module:'recyclerview-v7'
+    compile dataDependences.swipeLayout
+    compile(dataDependences.recyclerviewAnimator) {
+        exclude group: 'com.android.support', module: 'appcompat-v7'
+        exclude group: 'com.android.support', module: 'recyclerview-v7'
 
     }
     compile dataDependences.umeng
@@ -88,4 +93,5 @@ dependencies {
     androidTestCompile 'org.mockito:mockito-core:1.9.5'
     androidTestCompile 'com.google.dexmaker:dexmaker:1.1'
     androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.1'
+    compile project(':overscrolllib')
 }

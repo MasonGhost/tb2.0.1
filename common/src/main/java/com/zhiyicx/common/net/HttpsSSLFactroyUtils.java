@@ -69,8 +69,7 @@ public class HttpsSSLFactroyUtils {
      * {@link HostnameVerifier}
      */
     public static HostnameVerifier getHostnameVerifier(final String[] hostUrls) {
-
-        HostnameVerifier TRUSTED_VERIFIER = new HostnameVerifier() {
+        return  new HostnameVerifier() {
 
             public boolean verify(String hostname, SSLSession session) {
                 boolean ret = false;
@@ -82,8 +81,6 @@ public class HttpsSSLFactroyUtils {
                 return ret;
             }
         };
-
-        return TRUSTED_VERIFIER;
     }
 
     /**

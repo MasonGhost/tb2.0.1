@@ -10,7 +10,7 @@
 
     <TextView
         android:id="@+id/tv_right"
-        android:layout_width="80dp"
+        android:layout_width="@dimen/slide_button_with"
         android:textSize="@dimen/size_content"
         android:textColor="@color/white"
         android:text="@string/delete"
@@ -27,7 +27,6 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:id="@+id/rl_left"
-        android:paddingBottom="@dimen/spacing_mid"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingRight="@dimen/spacing_normal"
         android:paddingTop="@dimen/spacing_mid"
@@ -73,8 +72,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_below="@id/tv_time"
-            android:layout_marginTop="@dimen/spacing_normal"
-            android:paddingRight="@dimen/spacing_mid">
+            android:paddingTop="@dimen/spacing_small"
+            android:paddingRight="@dimen/spacing_small">
 
             <com.zhiyicx.baseproject.widget.BadgeView
                 android:id="@+id/tv_tip"
@@ -99,6 +98,7 @@
             android:ellipsize="end"
             android:gravity="bottom"
             android:layout_marginTop="@dimen/textview_spacing_offset_height"
+            android:paddingBottom="@dimen/spacing_mid"
             android:maxLines="1"
             android:paddingTop="@dimen/spacing_normal"
             android:textColor="@color/normal_for_assist_text"

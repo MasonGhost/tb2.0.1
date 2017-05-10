@@ -7,15 +7,24 @@ import com.zhiyicx.common.dagger.module.HttpClientModule;
 import com.zhiyicx.common.dagger.module.ImageModule;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.rxerrorhandler.RxErrorHandler;
+import com.zhiyicx.thinksnsplus.comment.DeleteComment;
+import com.zhiyicx.thinksnsplus.comment.SendComment;
 import com.zhiyicx.thinksnsplus.dagger.GreenDaoModule;
 import com.zhiyicx.thinksnsplus.data.source.local.CacheManager;
+import com.zhiyicx.thinksnsplus.data.source.local.ChannelInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.ChannelSubscripBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoTypeBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumListBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
@@ -40,6 +49,10 @@ import okhttp3.OkHttpClient;
 @Component(modules = {AppModule.class, HttpClientModule.class, ServiceModule.class, CacheModule.class, ImageModule.class, GreenDaoModule.class})
 public interface AppComponent extends InjectComponent<AppApplication> {
     void inject(BackgroundTaskHandler backgroundTaskHandler);
+
+    void inject(DeleteComment deleteComment);
+
+    void inject(SendComment sendComment);
 
     Application Application();
 
@@ -67,6 +80,12 @@ public interface AppComponent extends InjectComponent<AppApplication> {
 
     DynamicCommentBeanGreenDaoImpl dynamicCommentBeanGreenDao();
 
+    DigedBeanGreenDaoImpl digedBeanGreenDao();
+
+    CommentedBeanGreenDaoImpl commentedBeanGreenDao();
+
+    FlushMessageBeanGreenDaoImpl flushMessageBeanGreenDao();
+
     DynamicDetailBeanGreenDaoImpl dynamicDetailBeanGreenDao();
 
     DynamicToolBeanGreenDaoImpl dynamicToolBeanGreenDao();
@@ -74,6 +93,14 @@ public interface AppComponent extends InjectComponent<AppApplication> {
     InfoTypeBeanGreenDaoImpl infoTypeBeanGreenDaoImpl();
 
     InfoListBeanGreenDaoImpl infoListBeanGreenDaoImpl();
+
+    ChannelInfoBeanGreenDaoImpl channelInfoBeanGreenDaoImpl();
+
+    ChannelSubscripBeanGreenDaoImpl channelSubscripBeanGreenDaoImpl();
+
+    MusicAlbumListBeanGreenDaoImpl musicAlbumListBeanGreenDaoImpl();
+
+    SystemConversationBeanGreenDaoImpl systemConversationBeanGreenDaoImpl();
 
     UserInfoRepository userInfoRepository();
 

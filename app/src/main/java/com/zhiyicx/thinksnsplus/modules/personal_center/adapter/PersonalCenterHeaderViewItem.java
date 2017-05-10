@@ -25,7 +25,6 @@ import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.ZoomView;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -46,6 +45,7 @@ import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
  */
 
 public class PersonalCenterHeaderViewItem {
+    private static final String TAG = "PersonalCenterHeaderVie";
     /**********************************
      * headerView控件
      ********************************/
@@ -103,6 +103,7 @@ public class PersonalCenterHeaderViewItem {
     public static int[] TOOLBAR_BLACK_ICON = {51, 51, 51};
 
     private View headerView;
+    private int userNameFirstY = 0;
 
     public PersonalCenterHeaderViewItem(Activity activity, PhotoSelectorImpl photoSelector, RecyclerView recyclerView, HeaderAndFooterWrapper headerAndFooterWrapper, View mToolBarContainer) {
         mActivity = activity;
@@ -115,11 +116,13 @@ public class PersonalCenterHeaderViewItem {
         back = (ImageView) mToolBarContainer.findViewById(R.id.iv_back);
         more = (ImageView) mToolBarContainer.findViewById(R.id.iv_more);
         userName = (TextView) mToolBarContainer.findViewById(R.id.tv_user_name);
+        int translationY = mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_height);
+        userName.setY(translationY);
         bootomDivider = mToolBarContainer.findViewById(R.id.v_horizontal_line);
         // 设置初始透明度为0
-        setViewColorWithAlpha(userName, TITLE_RGB, 0);
+        setViewColorWithAlpha(userName, TITLE_RGB, 255);
         setViewColorWithAlpha(mToolBarContainer, STATUS_RGB, 0);
-        setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, 0);
+        //setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, 0);
         setViewColorWithAlpha(bootomDivider, TOOLBAR_DIVIDER_RGB, 0);
 
     }
@@ -146,15 +149,25 @@ public class PersonalCenterHeaderViewItem {
                 //滑动的距离
                 mDistanceY += dy;
                 int headerTop = headerView.getTop();
-                //int headerViewHeight = headerView.getHeight();
-                // 移动距离为封面图的高度，也就是屏幕宽度的一般，如果改了封面高度，记得修改这儿
-                int headerViewHeight = UIUtils.getWindowWidth(mActivity) / 2;
-
-                //当滑动的距离 <= headerView高度的时候，改变Toolbar背景色的透明度，达到渐变的效果
-                if (mDistanceY <= headerViewHeight) {
-                    float scale = (float) mDistanceY / headerViewHeight;
+                //toolbar文字上边缘距离toolbar上边缘的距离
+                int userNamePadding = (mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_height) - mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_center_text_size)) / 2;
+                // 滑动距离为多少时，toolbar完全不透明
+                int needDistanceY = userNameFirstY - mToolBarContainer.getHeight() - userNamePadding;
+                LogUtils.i(TAG + " mToolBarContainer.getHeight() " + mToolBarContainer.getHeight() + " needDistanceY " + needDistanceY + " mDistanceY " + mDistanceY);
+                // toolbar文字移动到toolbar中间，这期间的最大滑动距离
+                int maxDistance = needDistanceY + mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_height);
+                if (mDistanceY >= needDistanceY && mDistanceY <= maxDistance) {
+                    userName.setTranslationY(maxDistance - mDistanceY);
+                } else if (mDistanceY > maxDistance) {
+                    userName.setTranslationY(0);
+                } else {
+                    userName.setTranslationY(mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_height));
+                }
+                //当滑动的距离 <= needDistanceY高度的时候，改变Toolbar背景色的透明度，达到渐变的效果
+                if (mDistanceY <= needDistanceY) {
+                    float scale = (float) mDistanceY / needDistanceY;
                     float alpha = scale * 255;
-                    setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, (int) alpha);
+                    //setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, (int) alpha);
                     setViewColorWithAlpha(mToolBarContainer, STATUS_RGB, (int) alpha);
                     setViewColorWithAlpha(bootomDivider, TOOLBAR_DIVIDER_RGB, (int) alpha);
                     if (alpha == 0) {
@@ -168,31 +181,30 @@ public class PersonalCenterHeaderViewItem {
                         setViewColorWithAlpha(userName, TITLE_RGB, (int) alpha);
                     }
                     // 尝试设置状态栏文字成白色
-                    StatusBarUtils.statusBarDarkMode(mActivity);
+                    //StatusBarUtils.statusBarDarkMode(mActivity);
                 } else {
                     //如果不是完全不透明状态的bug，将标题栏的颜色设置为完全不透明状态
                     setViewColorWithAlpha(userName, TITLE_RGB, 255);
                     setViewColorWithAlpha(mToolBarContainer, STATUS_RGB, 255);
-                    setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, 255);
+                    //setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, 255);
                     setViewColorWithAlpha(bootomDivider, TOOLBAR_DIVIDER_RGB, 255);
 
                     setToolbarIconColor(Color.argb(255, TOOLBAR_BLACK_ICON[0],
                             TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
                     // 尝试设置状态栏文字成黑色
-                    StatusBarUtils.statusBarLightMode(mActivity);
+                    //StatusBarUtils.statusBarLightMode(mActivity);
                 }
                 // 有可能到顶部了，仍然有一点白色透明背景，强制设置成完全透明
                 if (headerTop >= 0) {
                     setViewColorWithAlpha(userName, TITLE_RGB, 0);
                     setViewColorWithAlpha(mToolBarContainer, STATUS_RGB, 0);
-                    setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, 0);
+                    // setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, 0);
                     setViewColorWithAlpha(bootomDivider, TOOLBAR_DIVIDER_RGB, 0);
                     setToolbarIconColor(Color.argb(255, TOOLBAR_WHITE_ICON[0]
                             , TOOLBAR_WHITE_ICON[1], TOOLBAR_WHITE_ICON[2]));
                     // 尝试设置状态栏文字成白色
-                    StatusBarUtils.statusBarDarkMode(mActivity);
+                    // StatusBarUtils.statusBarDarkMode(mActivity);
                 }
-                LogUtils.i("onScrolled--> headerViewHeight" + headerViewHeight + " mDistanceY-->" + mDistanceY);
             }
         });
     }
@@ -214,6 +226,15 @@ public class PersonalCenterHeaderViewItem {
                 .build());
         // 设置用户名
         tv_user_name.setText(userInfoBean.getName());
+        tv_user_name.post(new Runnable() {
+            @Override
+            public void run() {
+                int[] location = new int[2];
+                tv_user_name.getLocationOnScreen(location);
+                userNameFirstY = location[1];
+                LogUtils.i(TAG + "tv_user_name " + userNameFirstY);
+            }
+        });
         // 标题栏的用户名
         userName.setText(userInfoBean.getName());
         // 设置简介
@@ -402,4 +423,7 @@ public class PersonalCenterHeaderViewItem {
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
+    public ImageView getHeadView() {
+        return iv_head_icon;
+    }
 }

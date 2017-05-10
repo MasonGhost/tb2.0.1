@@ -1,0 +1,56 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            layout="@layout/view_top_tip"
+            />
+
+        <com.wcy.overscroll.OverScrollLayout
+            android:id="@+id/overscroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.zhiyicx.baseproject.widget.refresh.CoodinatorLayoutAndRecyclerViewRefreshLayout
+                android:id="@+id/refreshlayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.zhiyicx.baseproject.widget.refresh.RefreshHeaderView
+                    android:id="@id/swipe_refresh_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"></com.zhiyicx.baseproject.widget.refresh.RefreshHeaderView>
+
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@id/swipe_target"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:overScrollMode="never">
+                </android.support.v7.widget.RecyclerView>
+
+
+                <com.zhiyicx.baseproject.widget.refresh.RefreshFooterView
+                    android:id="@id/swipe_load_more_footer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"></com.zhiyicx.baseproject.widget.refresh.RefreshFooterView>
+            </com.zhiyicx.baseproject.widget.refresh.CoodinatorLayoutAndRecyclerViewRefreshLayout>
+        </com.wcy.overscroll.OverScrollLayout>
+    </LinearLayout>
+
+    <com.zhiyicx.baseproject.widget.EmptyView
+        android:id="@+id/empty_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"></com.zhiyicx.baseproject.widget.EmptyView>
+</FrameLayout>

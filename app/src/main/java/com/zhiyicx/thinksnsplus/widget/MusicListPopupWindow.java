@@ -13,13 +13,12 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 
 import java.util.List;
 
-import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERLOOP;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERRANDOM;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERSINGLE;
 
@@ -72,7 +71,7 @@ public class MusicListPopupWindow extends PopupWindow {
     private void initView() {
         initLayout();
         setWidth(LinearLayout.LayoutParams.MATCH_PARENT);
-        setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+        setHeight((int) (DeviceUtils.getScreenHeight(mActivity) * 0.6));
         setFocusable(mIsFocus);
         setOutsideTouchable(mIsOutsideTouch);
         setAnimationStyle(R.style.style_actionPopupAnimation);
@@ -94,7 +93,7 @@ public class MusicListPopupWindow extends PopupWindow {
         });
         mTileTextView = (TextView) mContentView.findViewById(R.id.tv_pop_list_title);
         mSizeTextView = (TextView) mContentView.findViewById(R.id.tv_pop_list_size);
-        mSizeTextView.setText(String.format(" (%d)",mDatas.size()));
+        mSizeTextView.setText(String.format(" (%d)", mDatas.size()));
         mContentView.findViewById(R.id.tv_pop_list_cancle).setOnClickListener(new View
                 .OnClickListener() {
             @Override

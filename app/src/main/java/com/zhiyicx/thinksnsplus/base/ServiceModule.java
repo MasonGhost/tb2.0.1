@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.base;
 
 
+import com.zhiyicx.thinksnsplus.comment.CommonCommentClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ChannelClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ChatInfoClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
@@ -142,6 +143,12 @@ public class ServiceModule {
     @Provides
     ChannelClient provideChannelClient(Retrofit retrofit) {
         return retrofit.create(ChannelClient.class);
+    }
+
+    @Singleton
+    @Provides
+    CommonCommentClient provideCommonCommentClient(Retrofit retrofit) {
+        return retrofit.create(CommonCommentClient.class);
     }
 
 }

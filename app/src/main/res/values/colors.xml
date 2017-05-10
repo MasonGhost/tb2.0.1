@@ -3,5 +3,6 @@
     <!-- 主页底部导航栏-->
     <color name="home_bottom_navigate_bg">#363844</color>
     <color name="home_bottom_navigate_text_normal">#707c81</color>
-
+    <!--频道详情，带透明度的白色-->
+    <color name="channel_detail_white_alpha">#b3ffffff</color>
 </resources>

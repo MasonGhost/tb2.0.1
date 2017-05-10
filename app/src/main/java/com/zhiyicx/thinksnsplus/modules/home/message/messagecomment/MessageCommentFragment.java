@@ -1,31 +1,27 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagecomment;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.common.utils.TimeUtils;
-import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
-import com.zhiyicx.imsdk.entity.Conversation;
-import com.zhiyicx.imsdk.entity.Message;
+import com.zhiyicx.baseproject.widget.InputLimitView;
+import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.UIUtils;
+import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
-import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
-import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
-import com.zhy.adapter.recyclerview.base.ViewHolder;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import butterknife.BindView;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -36,10 +32,21 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/17
  * @Contact master.jungle68@gmail.com
  */
-public class MessageCommentFragment extends TSListFragment<MessageCommentContract.Presenter, MessageItemBean> implements MessageCommentContract.View {
-
-
-    private ImageLoader mImageLoader;
+public class MessageCommentFragment extends TSListFragment<MessageCommentContract.Presenter, CommentedBean> implements MessageCommentContract.View, InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener {
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.tv_toolbar_center)
+    TextView mTvToolBarCenter;
+    @BindView(R.id.tv_toolbar_left)
+    TextView mTvToolBarLeft;
+    @BindView(R.id.tv_toolbar_right)
+    TextView mTvToolBarRight;
+    @BindView(R.id.ilv_comment)
+    InputLimitView mIlvComment;
+    @BindView(R.id.v_shadow)
+    View mVShadow;
+    private long mReplyUserId;// 被评论者的 id ,评论动态 id = 0
+    private int mCurrentPostion;// 当前点击的 item 位置
 
     public MessageCommentFragment() {
     }
@@ -51,203 +58,132 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
         return fragment;
     }
 
-
     @Override
-    protected String setCenterTitle() {
-        return getString(R.string.comment);
+    protected boolean showToolbar() {
+        return false;
     }
 
     @Override
-    protected float getItemDecorationSpacing() {
-        return 0;
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected int getBodyLayoutId() {
+        return R.layout.fragment_list_with_input_and_toolbar;
+    }
+
+    @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return true;
+    }
+
+    @Override
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        return new CustomLinearDecoration(0, getResources().getDimensionPixelSize(R.dimen.divider_line), 0, 0, ContextCompat.getDrawable(getContext(), R.drawable.shape_recyclerview_divider));
+
     }
 
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        initToolbar();
+        initInputView();
     }
 
     @Override
-    protected CommonAdapter<MessageItemBean> getAdapter() {
-        return new CommonAdapter<MessageItemBean>(getActivity(), R.layout.item_message_comment_list, mListDatas) {
-            @Override
-            protected void convert(ViewHolder holder, MessageItemBean messageItemBean, int position) {
-                setItemData(holder, messageItemBean, position);
-            }
-        };
+    protected CommonAdapter<CommentedBean> getAdapter() {
+        CommonAdapter commonAdapter = new MessageCommentAdapter(getActivity(), R.layout.item_message_comment_list, mListDatas);
+        commonAdapter.setOnItemClickListener(this);
+        return commonAdapter;
     }
-
 
     @Override
     protected void initData() {
-        mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        initCommentAndLike(mListDatas);
-        refreshData();
+        super.initData();
+
     }
 
+    private void initToolbar() {
+        mToolbar.setBackgroundResource(R.color.white);
+        mToolbar.setPadding(0, DeviceUtils.getStatuBarHeight(getContext()), 0, 0);
+        mTvToolBarCenter.setText(R.string.comment);
+        mTvToolBarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), setLeftImg()), null, null, null);
+        mTvToolBarLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setLeftClick();
+            }
+        });
+    }
 
-    /**
-     * 评论的和点赞的数据
-     */
-    private void initCommentAndLike(List<MessageItemBean> messageItemBeen) {
-        UserInfoBean testUserinfo = new UserInfoBean();
-        testUserinfo.setAvatar("http://image.xinmin.cn/2017/01/11/bedca80cdaa44849a813e7820fff8a26.jpg");
-        testUserinfo.setName("颤三");
-        testUserinfo.setUser_id(10L);
-        MessageItemBean commentItem = new MessageItemBean();
-        commentItem.setUserInfo(testUserinfo);
-        Conversation commentMessage = new Conversation();
-        Message message=new Message();
-        message.setTxt("默默的小红大家来到江苏高考加分临时价格来看大幅减少了国家法律的世界观浪费时间管理方式的建立各级地方楼市困局"
-                + getString(R.string.comment_me));
-        commentMessage.setLast_message(message);
-        commentMessage.setLast_message_time(System.currentTimeMillis());
-        commentItem.setConversation(commentMessage);
-        commentItem.setUnReadMessageNums(Math.round(15));
-        messageItemBeen.add(commentItem);
+    private void initInputView() {
+        mVShadow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeInputView();
+            }
+        });
+        RxView.clicks(mVShadow)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        closeInputView();
 
-        MessageItemBean likedmessageItemBean = new MessageItemBean();
-        likedmessageItemBean.setUserInfo(testUserinfo);
-        Conversation likeMessage = new Conversation();
-        Message messagelike=new Message();
-        messagelike.setTxt("一叶之秋、晴天色"
-                + getString(R.string.like_me));
-        likeMessage.setLast_message(messagelike);
-        likeMessage.setLast_message_time(System.currentTimeMillis());
-        likedmessageItemBean.setConversation(likeMessage);
-        likedmessageItemBean.setUnReadMessageNums(Math.round(15));
-        messageItemBeen.add(likedmessageItemBean);
-        MessageItemBean test = new MessageItemBean();
+                    }
+                });
+        mIlvComment.setOnSendClickListener(this);
+    }
 
-        test.setUserInfo(testUserinfo);
-        Message testMessage = new Message();
-        testMessage.setTxt("一叶之秋、晴天色"
-                + getString(R.string.like_me));
-        testMessage.setCreate_time(System.currentTimeMillis());
-        test.setConversation(likeMessage);
-        test.setUnReadMessageNums((int) (Math.random() * 10));
-        for (int i = 0; i <3; i++) {
-            messageItemBeen.add(test);
+    @Override
+    public void onSendClick(View v, String text) {
+        DeviceUtils.hideSoftKeyboard(getContext(), v);
+        mIlvComment.setVisibility(View.GONE);
+        mVShadow.setVisibility(View.GONE);
+        mPresenter.sendComment(mCurrentPostion, mReplyUserId, text);
+    }
+
+    @Override
+    public void closeInputView() {
+        if (mIlvComment.getVisibility() == View.VISIBLE) {
+            mIlvComment.setVisibility(View.GONE);
+            DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
         }
+        mVShadow.setVisibility(View.GONE);
     }
 
-    /**
-     * 设置item 数据
-     *
-     * @param holder      控件管理器
-     * @param messageItem 当前数据
-     * @param position    当前数据位置
-     */
+    public void showCommentView() {
+        // 评论
+        mIlvComment.setVisibility(View.VISIBLE);
+        mIlvComment.setSendButtonVisiable(true);
+        mIlvComment.getFocus();
+        mVShadow.setVisibility(View.VISIBLE);
+        DeviceUtils.showSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+    }
 
-    private void setItemData(ViewHolder holder, final MessageItemBean messageItem, int position) {
+    @Override
+    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {// 过滤自己的
 
-        if (position == mListDatas.size() - 1) {
-            holder.setVisible(R.id.v_bottom_line, View.GONE);
         } else {
-            holder.setVisible(R.id.v_bottom_line, View.VISIBLE);
+            mReplyUserId = mListDatas.get(position).getUser_id();
+            mCurrentPostion = position;
+            showCommentView();
+            String contentHint = getString(R.string.reply, mListDatas.get(position).getCommentUserInfo().getName());
+            mIlvComment.setEtContentHint(contentHint);
         }
-        mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url(messageItem.getUserInfo().getAvatar())
-                .transformation(new GlideCircleTransform(getContext()))
-                .imagerView((ImageView) holder.getView(R.id.iv_headpic))
-                .build());
-        if (position % 2 == 0) {
-            holder.setVisible(R.id.tv_deatil, View.GONE);
-            holder.setVisible(R.id.iv_detail_image, View.VISIBLE);
-            mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                    .url(messageItem.getUserInfo().getAvatar())
-                    .imagerView((ImageView) holder.getView(R.id.iv_detail_image))
-                    .build());
-        } else {
-            holder.setVisible(R.id.iv_detail_image, View.GONE);
-            holder.setVisible(R.id.tv_deatil, View.VISIBLE);
-            holder.setText(R.id.tv_deatil, messageItem.getConversation().getLast_message().getTxt());
-        }
-
-        holder.setText(R.id.tv_name, messageItem.getUserInfo().getName());
-        holder.setText(R.id.tv_content, messageItem.getConversation().getLast_message().getTxt());
-        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(messageItem.getConversation().getLast_message_time()));
-
-        // 响应事件
-        RxView.clicks(holder.getView(R.id.tv_name))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        toUserCenter( messageItem.getUserInfo());
-                    }
-                });
-        RxView.clicks(holder.getView(R.id.iv_headpic))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        toUserCenter( messageItem.getUserInfo());
-                    }
-                });
-        RxView.clicks(holder.getConvertView())
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        toChat(messageItem);
-                    }
-                });
-        RxView.clicks(holder.getView(R.id.iv_detail_image))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        toChat(messageItem);
-                    }
-                });
-        RxView.clicks(holder.getView(R.id.tv_deatil))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        toChat(messageItem);
-                    }
-                });
-    }
-
-    /**
-     * 进入聊天页
-     *
-     * @param messageItemBean
-     */
-    private void toChat(MessageItemBean messageItemBean) {
-        Intent to = new Intent(getActivity(), ChatActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ChatFragment.BUNDLE_MESSAGEITEMBEAN, messageItemBean);
-        to.putExtras(bundle);
-        startActivity(to);
-    }
-
-    /**
-     * 前往用户个人中心
-     */
-    private void toUserCenter(UserInfoBean userInfoBean) {
-        PersonalCenterFragment.startToPersonalCenter(getActivity(),userInfoBean);
     }
 
     @Override
-    public void setPresenter(MessageCommentContract.Presenter presenter) {
-        mPresenter = presenter;
+    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+        return false;
     }
 
-    @Override
-    public void showLoading() {
 
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showMessage(String message) {
-
-    }
 }

@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.login;
 
 import android.app.Application;
 
-import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
@@ -33,10 +32,5 @@ public class LoginPresenterModule {
     @Provides
     LoginContract.Repository provideLoginRepository(ServiceManager serviceManager, Application application) {
         return new LoginRepository(serviceManager, application);
-    }
-
-    @Provides
-    IAuthRepository provideIAuthRepository(ServiceManager serviceManager, Application application) {
-        return new AuthRepository(serviceManager, application);
     }
 }

@@ -12,6 +12,7 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
 
+import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProvider;
@@ -93,6 +94,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
     private final IntentFilter mAudioNoisyIntentFilter =
             new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
 
+    // Audio输出通道切换的事件的捕获与处理
     private final BroadcastReceiver mAudioNoisyReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -102,6 +104,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
                     i.setAction(MusicPlayService.ACTION_CMD);
                     i.putExtra(MusicPlayService.CMD_NAME, MusicPlayService.CMD_PAUSE);
                     mContext.startService(i);
+                } else {
                 }
             }
         }
@@ -172,17 +175,20 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
     @Override
     public void play(QueueItem item) {
         mPlayOnFocusGain = true;
+        WindowUtils.setIsPause(false);
         tryToGetAudioFocus();
         registerAudioNoisyReceiver();
         String mediaId = item.getDescription().getMediaId();
         boolean mediaHasChanged = !TextUtils.equals(mediaId, mCurrentMediaId);
+
         if (mediaHasChanged) {
             mCurrentPosition = 0;
             mCurrentMediaId = mediaId;
         }
 
-        if (mState == PlaybackStateCompat.STATE_PAUSED && !mediaHasChanged && mMediaPlayer !=
-                null) { //没有切歌
+        // 防止未准备好的时候 重新播放该歌曲 mState == PlaybackStateCompat.STATE_PAUSED &&
+        if (mState == PlaybackStateCompat.STATE_PAUSED && !mediaHasChanged && mMediaPlayer != null) { //没有切歌
+            LogUtils.d("mCurrentPosition:::没有切歌");
             configMediaPlayerState();
         } else {
             mState = PlaybackStateCompat.STATE_STOPPED;
@@ -217,7 +223,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
                 mMediaPlayer.setDataSource(proxyUrl);
 
                 mMediaPlayer.prepareAsync();
-                EventBus.getDefault().post(true,
+                EventBus.getDefault().post(-1,
                         EVENT_SEND_MUSIC_LOAD);
 
                 mWifiLock.acquire();
@@ -323,9 +329,11 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
             if (mPlayOnFocusGain) {
                 if (mMediaPlayer != null && !mMediaPlayer.isPlaying()) {
                     if (mCurrentPosition == mMediaPlayer.getCurrentPosition()) {
-                        mMediaPlayer.start();
+                        mMediaPlayer.start(); // 进入界面后是否自动播放
                         mState = PlaybackStateCompat.STATE_PLAYING;
+                        LogUtils.d("mCurrentPosition == mMediaPlayer.start()");
                     } else {
+                        LogUtils.d("mCurrentPosition == mMediaPlayer.seekTo");
                         mMediaPlayer.seekTo(mCurrentPosition);
                         mState = PlaybackStateCompat.STATE_BUFFERING;
                     }
@@ -380,7 +388,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
 
     @Override
     public void onPrepared(MediaPlayer player) {
-        EventBus.getDefault().post(false,
+        EventBus.getDefault().post(player.getDuration() / 1000,
                 EVENT_SEND_MUSIC_LOAD);
         configMediaPlayerState();
     }

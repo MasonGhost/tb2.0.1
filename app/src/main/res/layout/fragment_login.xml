@@ -1,79 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical">
+<com.wcy.overscroll.OverScrollLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/overscroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout
-        style="@style/style_edit_white_container">
-
-        <TextView
-            style="@style/style_small_text"
-            android:text="@string/phone_number"/>
-
-        <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
-            android:id="@+id/et_login_phone"
-            style="@style/style_edit"
-            android:hint="@string/phone_number_input_hint"
-            android:text=""
-            android:inputType="phone"
-            />
-    </LinearLayout>
-
-    <ImageView style="@style/style_divider_horizontal_light"/>
-
-    <LinearLayout
-        style="@style/style_edit_white_container">
-
-        <TextView
-            style="@style/style_small_text"
-            android:text="@string/password"/>
-
-        <com.zhiyicx.baseproject.widget.edittext.PasswordEditText
-            android:id="@+id/et_login_password"
-            style="@style/style_edit"
-            android:hint="@string/password_input_hint"
-            android:inputType="text"
-            android:text=""/>
-            />
-    </LinearLayout>
-
-    <!--登录异常相关提示-->
-    <include
-        layout="@layout/include_error_tip_text"/>
-
-    <com.zhiyicx.baseproject.widget.button.LoadingButton
-        android:id="@+id/bt_login_login"
-        style="@style/style_login_button"
-        android:layout_marginTop="@dimen/button_login_margin_top"
-        android:enabled="false"
-        app:text="@string/bt_login"/>
-
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_mid"
-        android:layout_marginRight="@dimen/spacing_mid"
-        android:layout_marginTop="@dimen/spacing_mid"
-        >
-        <!--随便逛逛-->
-        <TextView
-            android:id="@+id/tv_look_around"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:text="@string/no_login"
-            android:textColor="@color/normal_for_assist_text"
-            android:textSize="@dimen/size_content_comment"/>
-        <!--忘记密码-->
-        <TextView
-            android:id="@+id/tv_forget_password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="@string/forget_password"
-            android:textColor="@color/normal_for_assist_text"
-            android:textSize="@dimen/size_content_comment"/>
-    </RelativeLayout>
-</LinearLayout>
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                style="@style/style_edit_white_container">
+
+                <TextView
+                    style="@style/style_small_text"
+                    android:text="@string/phone_number"/>
+
+                <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
+                    android:id="@+id/et_login_phone"
+                    style="@style/style_edit"
+                    android:hint="@string/phone_number_input_hint"
+                    android:inputType="phone"
+                    android:text=""
+                    />
+            </LinearLayout>
+
+            <ImageView style="@style/style_divider_horizontal_light"/>
+
+            <LinearLayout
+                style="@style/style_edit_white_container">
+
+                <TextView
+                    style="@style/style_small_text"
+                    android:text="@string/password"/>
+
+                <com.zhiyicx.baseproject.widget.edittext.PasswordEditText
+                    android:id="@+id/et_login_password"
+                    style="@style/style_edit"
+                    android:hint="@string/password_input_hint"
+                    android:inputType="text"
+                    android:text=""/>
+                />
+            </LinearLayout>
+
+            <!--登录异常相关提示-->
+            <include
+                layout="@layout/include_error_tip_text"/>
+
+            <com.zhiyicx.baseproject.widget.button.LoadingButton
+                android:id="@+id/bt_login_login"
+                style="@style/style_login_button"
+                android:layout_marginTop="@dimen/button_login_margin_top"
+                android:enabled="false"
+                app:text="@string/bt_login"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:layout_marginTop="@dimen/spacing_mid"
+                >
+                <!--随便逛逛-->
+                <TextView
+                    android:id="@+id/tv_look_around"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_login"
+                    android:textColor="@color/normal_for_assist_text"
+                    android:textSize="@dimen/size_content_comment"
+                    android:visibility="invisible"/>
+                <!--忘记密码-->
+                <TextView
+                    android:id="@+id/tv_forget_password"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="@string/forget_password"
+                    android:textColor="@color/normal_for_assist_text"
+                    android:textSize="@dimen/size_content_comment"/>
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+</com.wcy.overscroll.OverScrollLayout>

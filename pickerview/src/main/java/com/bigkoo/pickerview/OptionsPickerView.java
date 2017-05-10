@@ -121,7 +121,6 @@ public class OptionsPickerView<T> extends BasePickerView implements View.OnClick
         if(tag.equals(TAG_CANCEL))
         {
             dismiss();
-            return;
         }
         else
         {
@@ -131,7 +130,6 @@ public class OptionsPickerView<T> extends BasePickerView implements View.OnClick
                 optionsSelectListener.onOptionsSelect(optionsCurrentItems[0], optionsCurrentItems[1], optionsCurrentItems[2]);
             }
             dismiss();
-            return;
         }
     }
 

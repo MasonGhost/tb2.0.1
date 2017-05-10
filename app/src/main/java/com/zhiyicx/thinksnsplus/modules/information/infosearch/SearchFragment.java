@@ -6,18 +6,23 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
+import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -40,8 +45,8 @@ import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoLis
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class SearchFragment extends TSListFragment<SearchContract.Presenter, InfoListBean.ListBean>
-        implements SearchContract.View {
+public class SearchFragment extends TSListFragment<SearchContract.Presenter, InfoListDataBean>
+        implements SearchContract.View{
 
     @BindView(R.id.fragment_info_search_back)
     ImageView mFragmentInfoSearchBack;
@@ -49,12 +54,23 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
     DeleteEditText mFragmentInfoSearchEdittext;
     @BindView(R.id.fragment_info_search_cancle)
     TextView mFragmentInfoSearchCancle;
-    private List<InfoListBean.ListBean> mData = new ArrayList<>();
+    @BindView(R.id.fragment_info_search_container)
+    RelativeLayout mFragmentInfoSearchContainer;
+
     private ImageLoader mImageLoader;
 
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_info_search;
+    }
+
+    @Override
+    protected void musicWindowsStatus(boolean isShow) {
+        super.musicWindowsStatus(isShow);
+        if (isShow) {
+            int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
+            mFragmentInfoSearchContainer.setPadding(0, 0, rightX, 0);
+        }
     }
 
     @Override
@@ -93,10 +109,10 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
 
     @Override
     protected MultiItemTypeAdapter getAdapter() {
-        return new CommonAdapter<InfoListBean.ListBean>(getActivity(),
+        return new CommonAdapter<InfoListDataBean>(getActivity(),
                 R.layout.item_info, mListDatas) {
             @Override
-            protected void convert(ViewHolder holder,final InfoListBean.ListBean realData,
+            protected void convert(ViewHolder holder, final InfoListDataBean realData,
                                    final int position) {
                 final TextView title = holder.getView(R.id.item_info_title);
                 ImageView imageView = holder.getView(R.id.item_info_imag);
@@ -133,6 +149,12 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
     }
 
     @Override
+    public void onDismiss() {
+        super.onDismiss();
+        mFragmentInfoSearchContainer.setPadding(0, 0, 0, 0);
+    }
+
+    @Override
     public void setPresenter(SearchContract.Presenter presenter) {
         mPresenter = presenter;
     }
@@ -143,12 +165,12 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
     }
 
     @Override
-    protected Long getMaxId(@NotNull List<InfoListBean.ListBean> data) {
+    protected Long getMaxId(@NotNull List<InfoListDataBean> data) {
         return (long) data.get(data.size() - 1).getId();
     }
 
     @Override
-    public void onCacheResponseSuccess(@NotNull List<InfoListBean.ListBean> data, boolean
+    public void onCacheResponseSuccess(@NotNull List<InfoListDataBean> data, boolean
             isLoadMore) {
     }
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import com.zhiyicx.imsdk.builder.MessageBuilder;
 import com.zhiyicx.imsdk.db.dao.ConversationDao;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
+import com.zhiyicx.imsdk.entity.AuthData;
 import com.zhiyicx.imsdk.entity.ChatRoomContainer;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
@@ -166,6 +167,12 @@ public class ChatClient implements ChatSoupport, ImMsgReceveListener, ImStatusLi
     @Override
     public void synchronousInitiaMessage(int limit) {
 
+    }
+
+    @Override
+    public void onAuthSuccess(AuthData authData) {
+        if (mImStatusListener != null)
+            mImStatusListener.onAuthSuccess(authData);
     }
 
     /**

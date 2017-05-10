@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">TS+</string>
+    <string name="app_name">ThinkSNS+</string>
+    <string name="copyright">Powered by ThinkSNS ©2017 ZhishiSoft All Rights Reserced.</string>
     <!-- 主页  -->
     <string name="home">首页</string>
     <string name="find">发现</string>
@@ -15,11 +16,20 @@
     <string name="liked">赞过的</string>
     <string name="like_me">赞了我</string>
     <string name="comment_me">评论了我</string>
+    <string name="comment_success">评论成功</string>
+    <string name="comment_digg_much_hint">等人</string>
+    <string name="comment_fail">评论失败</string>
+    <string name="comment_ing">评论中&#8230;</string>
     <string name="default_message_group">群组</string>
+    <string name="has_no_body">还没有人</string>
+    <string name="ts_helper">TS助手</string>
+    <string name="ts_helper_default_tip">小助手在线，点击告诉我们你的需求，即时快速反应。</string>
     <!--我的-->
     <string name="personal_page">个人主页</string>
     <string name="ranking">排行榜</string>
+    <string name="dig_ranking">点赞排行榜</string>
     <string name="gold">金币</string>
+    <string name="mine_collect">收藏</string>
     <string name="suggetion">意见反馈</string>
     <string name="question_answer">Q&amp;A</string>
     <string name="setting">设置</string>
@@ -48,10 +58,10 @@
     <string name="all">全部</string>
     <string name="edit_userinfo_success">信息修改成功</string>
     <string name="edit_userinfo_failure">信息修改失败</string>
-    <string name="edit_userinfo_ing">信息修改中...</string>
+    <string name="edit_userinfo_ing">信息修改中&#8230;</string>
     <string name="update_head_success">头像上传成功</string>
     <string name="update_head_failure">头像上传失败</string>
-    <string name="update_head_ing">头像上传中...</string>
+    <string name="update_head_ing">头像上传中&#8230;</string>
 
     <!-- 设置 -->
     <string name="vertify">认证</string>
@@ -60,6 +70,7 @@
     <string name="is_sure_clean_cache">确定清理缓存？</string>
     <string name="about_us">关于我们</string>
     <string name="login_out">退出登录</string>
+    <string name="login_out_sure">退出</string>
     <string name="is_sure_login_out">确定退出登录？</string>
     <string name="clean_success">删除成功</string>
     <string name="clean_failure">删除失败!</string>
@@ -69,7 +80,7 @@
     <!--裁剪-->
     <string name="crop_head_icon">更换头像</string>
     <string name="crop_bg_cover">更换封面</string>
-    <string name="crop_ing">图片裁剪中...</string>
+    <string name="crop_ing">图片裁剪中&#8230;</string>
     <string name="crop_success">图片裁剪成功</string>
     <string name="crop_failure">图片裁剪失败</string>
     <!--相册-->
@@ -85,18 +96,28 @@
 
     <!--音乐FM-->
     <string name="music_fm">音乐FM</string>
+    <string name="music_lyric">暂无歌词</string>
+
+    <!--资讯-->
+    <string name="info_dig">点赞</string>
+    <string name="info_dig_cancel">取消点赞</string>
 
     <!--动态列表-->
     <string name="dynamic_list_more_comment">查看全部评论</string>
     <string name="dynamic_list_delete_dynamic">删除动态</string>
+    <string name="dynamic_list_share_dynamic">分享</string>
+    <string name="dynamic_list_collect_dynamic">收藏</string>
+    <string name="dynamic_list_uncollect_dynamic">取消收藏</string>
+    <string name="dynamic_list_report_dynamic">举报</string>
     <string name="dynamic_list_delete_comment">删除评论</string>
     <string name="dynamic_list_resend_comment">重发评论</string>
-    <string name="dynamic_list_resend_dynamic">重新发送</string>
+    <string name="resend">重新发送</string>
     <string name="reply">回复%s:</string>
     <!--发布动态-->
     <string name="send_dynamic">发布动态</string>
     <string name="dynamic_title_hint">有标题更吸引人</string>
     <string name="dynamic_content_hint">输入要说的话，图文结合更精彩哦</string>
+    <string name="dynamic_content_no_pic_hint">输入要说的话</string>
     <string name="dynamic_send_cancel_hint">你还有没有发布的内容，是否放弃发布？</string>
     <!--动态详情-->
     <string name="dynamic_dig_count">%1$s人点赞</string>
@@ -108,18 +129,35 @@
 
     <!--个人中心-->
     <string name="chat">聊天</string>
-    <string name="dynamic_count">%1$s个动态</string>
+    <string name="dynamic_count">%1$s条动态</string>
     <string name="followed">已关注</string>
     <string name="followed_eachother">互相关注</string>
     <string name="cover_change_success">封面修改成功</string>
     <string name="cover_change_failure">封面修改失败</string>
     <string name="cover_uploadFailure">封面上传失败</string>
+
+    <!--频道-->
+    <string name="subscrip_channel">我订阅的</string>
+    <string name="all_channel">全部频道</string>
+    <string name="channel_share">分享</string>
+    <string name="channel_follow">订阅</string>
+    <string name="channel_followed">已订阅</string>
+    <string name="had_send_dynamic_to_channel">动态将在审核成功后发布</string>
+
+    <!--收藏-->
+    <string name="collect">收藏</string>
+    <string name="collect_dynamic">动态</string>
+    <string name="collect_info">资讯</string>
+    <string name="collect_activity">活动</string>
+    <string name="collect_album">专辑</string>
+
     <!--代码中的string-->
     <string name="token_expiers">token过期，请重新登陆</string>
     <string name="share">分享</string>
+    <string name="share_dynamic">分享动态</string>
     <string name="favorite">收藏</string>
     <string name="get_dynamic_dig_list_failure">获取点赞列表失败</string>
     <string name="default_input_hint">随便说说~</string>
-    <string name="default_input_chat_hint">说点什么</string>
+    <string name="default_input_chat_hint">@string/default_input_hint</string>
     <string name="see_origin_photos_failure">查看失败</string>
 </resources>

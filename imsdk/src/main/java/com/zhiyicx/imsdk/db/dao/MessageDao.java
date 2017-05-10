@@ -73,9 +73,9 @@ public class MessageDao extends BaseDao implements MessageDaoSoupport {
         if (message == null)
             throw new IllegalArgumentException("message can not be null");
         long rows = 0;
-        if ((message.getId() != 0 && hasMessageById(message.getId()))||(message.getMid()!=0)&& hasMessage(message.mid)) {// 插入
+        if ((message.getId() != 0 && hasMessageById(message.getId())) || (message.getMid() != 0) && hasMessage(message.mid)) {// 插入
             return updateMessage(message);
-        }else{//更新
+        } else {//更新
             rows = insertMessage(message);
         }
         return rows;
@@ -167,13 +167,23 @@ public class MessageDao extends BaseDao implements MessageDaoSoupport {
      */
     @Override
     public boolean hasMessageById(long id) {
-        SQLiteDatabase database = mHelper.getReadableDatabase();
-        String sql = "select * from " + TABLE_NAME + " where "
-                + COLUMN_NAME_MESSAGE_ID + " = ?";
-        Cursor cursor = database.rawQuery(sql,
-                new String[]{String.valueOf(id)});
-        boolean result = cursor.moveToFirst();
-        cursor.close();
+        Cursor cursor = null;
+        boolean result = false;
+        try {
+            SQLiteDatabase database = mHelper.getReadableDatabase();
+            String sql = "select * from " + TABLE_NAME + " where "
+                    + COLUMN_NAME_MESSAGE_ID + " = ?";
+            cursor = database.rawQuery(sql,
+                    new String[]{String.valueOf(id)});
+            result = cursor.moveToFirst();
+            cursor.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
         return result;
     }
 
@@ -185,13 +195,22 @@ public class MessageDao extends BaseDao implements MessageDaoSoupport {
      */
     @Override
     public boolean hasMessage(long mid) {
-        SQLiteDatabase database = mHelper.getReadableDatabase();
-        String sql = "select * from " + TABLE_NAME + " where "
-                + COLUMN_NAME_MESSAGE_MID + " = ?";
-        Cursor cursor = database.rawQuery(sql,
-                new String[]{String.valueOf(mid)});
-        boolean result = cursor.moveToFirst();
-        cursor.close();
+        Cursor cursor = null;
+        boolean result = false;
+        try {
+            SQLiteDatabase database = mHelper.getReadableDatabase();
+            String sql = "select * from " + TABLE_NAME + " where "
+                    + COLUMN_NAME_MESSAGE_MID + " = ?";
+            cursor = database.rawQuery(sql,
+                    new String[]{String.valueOf(mid)});
+            result = cursor.moveToFirst();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
         return result;
     }
 

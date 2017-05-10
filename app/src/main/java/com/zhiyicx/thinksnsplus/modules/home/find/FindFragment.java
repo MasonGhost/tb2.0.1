@@ -1,18 +1,28 @@
 package com.zhiyicx.thinksnsplus.modules.home.find;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.baseproject.widget.popwindow.PermissionPopupWindow;
+import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.channel.ChannelListActivity;
+import com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.AboutUsActivity;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.AboutUsFragment;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBFragment;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -39,6 +49,8 @@ public class FindFragment extends TSFragment {
     CombinationButton mFindPerson;
     @BindView(R.id.find_nearby)
     CombinationButton mFindNearby;
+
+    private ActionPopupWindow mActionPopupWindow;
 
     public FindFragment() {
     }
@@ -94,6 +106,11 @@ public class FindFragment extends TSFragment {
         return 0;
     }
 
+    @Override
+    protected boolean usePermisson() {
+        return true;
+    }
+
     @OnClick({R.id.find_info, R.id.find_chanel, R.id.find_active, R.id.find_music, R.id.find_buy,
             R.id.find_person, R.id.find_nearby})
     public void onClick(View view) {
@@ -107,12 +124,31 @@ public class FindFragment extends TSFragment {
             case R.id.find_active:
                 break;
             case R.id.find_music:
-                startActivity(new Intent(getActivity(), MusicListActivity.class));
+                ActivityManager activityManager = (ActivityManager) getActivity()
+                        .getSystemService(Context.ACTIVITY_SERVICE);
+                List<ActivityManager.RunningAppProcessInfo> infos = activityManager
+                        .getRunningAppProcesses();
+
+                for (ActivityManager.RunningAppProcessInfo info : infos) {
+                    String name = info.processName;
+                    LogUtils.d(name);
+
+                }
+                if (Build.VERSION.SDK_INT >= 23) {
+                    if (Settings.canDrawOverlays(getContext())) {
+                        startActivity(new Intent(getActivity(), MusicListActivity.class));
+                    } else {
+                        initPermissionPopUpWindow();
+                        mActionPopupWindow.show();
+                    }
+                } else {
+                    startActivity(new Intent(getActivity(), MusicListActivity.class));
+                }
                 break;
             case R.id.find_buy:
-                Intent intent=new Intent(getActivity(), AboutUsActivity.class);
-                Bundle bundle=new Bundle();
-                bundle.putString(AboutUsFragment.BUNDLE_PARAMS_WEB_URL, ApiConfig.URL_JIPU_SHOP);
+                Intent intent = new Intent(getActivity(), CustomWEBActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, ApiConfig.URL_JIPU_SHOP);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
@@ -123,5 +159,43 @@ public class FindFragment extends TSFragment {
             default:
                 break;
         }
+    }
+
+    private void initPermissionPopUpWindow() {
+        if (mActionPopupWindow != null) {
+            return;
+        }
+        String model = android.os.Build.MODEL;
+        final boolean isOppoR9s = model.equalsIgnoreCase("oppo r9s");
+        mActionPopupWindow = PermissionPopupWindow.builder()
+                .permissionName(getString(com.zhiyicx.baseproject.R.string.windows_permission))
+                .with(getActivity())
+                .bottomStr(getString(com.zhiyicx.baseproject.R.string.cancel))
+
+                .item1Str(getString(isOppoR9s ? com.zhiyicx.baseproject.R.string.oppo_setting_windows_permission_hint :
+                        com.zhiyicx.baseproject.R.string.setting_windows_permission_hint))
+
+                .item2Str(getString(com.zhiyicx.baseproject.R.string.setting_permission))
+                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
+                    @Override
+                    public void onItem2Clicked() {
+                        mActionPopupWindow.hide();
+                        if (isOppoR9s) {
+                            DeviceUtils.startAppByPackageName(getActivity(), "com.coloros.safecenter");
+                        } else {
+                            DeviceUtils.openAppDetail(getActivity());
+                        }
+                    }
+                })
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onBottomClicked() {
+                        mActionPopupWindow.hide();
+                    }
+                })
+                .isFocus(true)
+                .isOutsideTouch(true)
+                .backgroundAlpha(0.8f)
+                .build();
     }
 }

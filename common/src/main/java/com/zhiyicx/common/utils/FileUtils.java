@@ -1,14 +1,14 @@
 package com.zhiyicx.common.utils;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.ContextWrapper;
-import android.media.MediaMetadataRetriever;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
-
-import com.bumptech.glide.Glide;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
@@ -20,6 +20,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLConnection;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -38,6 +39,24 @@ public class FileUtils {
 
     private FileUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
+    }
+
+    /**
+     * 把图片插入系统插入图
+     *
+     * @param context
+     * @param file
+     */
+    public static void insertPhotoToAlbumAndRefresh(Context context, File file) {
+        // 其次把文件插入到系统图库
+        try {
+            MediaStore.Images.Media.insertImage(context.getContentResolver(),
+                    file.getAbsolutePath(), file.getName(), null);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        // 最后通知图库更新
+        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + file.getAbsolutePath())));
     }
 
     /**
@@ -664,6 +683,24 @@ public class FileUtils {
         return filePath.substring(lastPoi + 1);
     }
 
+    public static void saveBitmapToFile(Context context, Bitmap bitmap,String name) {
+        String fileDir = getCacheFile(context, false).getAbsolutePath();
+        File file = new File(fileDir, name);  //将图片保存到刚创建好的目录下
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Bitmap readImgFromFile(Context context,String name) {
+        return BitmapFactory.decodeFile(getCacheFile(context, false).getAbsolutePath() + "/"+name);
+    }
+
     /**
      * 获取文件的MIME类型
      *
@@ -681,6 +718,31 @@ public class FileUtils {
             return type;
         }
         return "file/*";
+    }
+
+    /**
+     * 获取文件的MIME类型
+     *
+     * @param fileName
+     * @return
+     */
+    public static String getMimeTypeByFileName(String fileName) {
+        return URLConnection.guessContentTypeFromName(fileName);
+    }
+
+    /**
+     * 通过文件获取   mimeType
+     *
+     * @param file
+     * @return
+     */
+    public static String getMimeTypeByFile(File file) {
+        String result = null;
+        result = getMimeType(file.getPath());
+        if (TextUtils.isEmpty(result)) {
+            result = getMimeTypeByFileName(file.getName());
+        }
+        return result;
     }
 
     private static String getSuffix(File file) {

@@ -7,6 +7,8 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.utils.log.LogUtils;
 
+import java.util.Locale;
+
 /**
  * @Describe
  * @Author Jungle68
@@ -32,8 +34,9 @@ public class CustomImageSizeModelImp implements CustomImageSizeModel, Parcelable
 
     @Override
     public String requestCustomSizeUrl() {
-        String url = mImageBean.getImgUrl() == null ? String.format(ApiConfig.IMAGE_PATH, mImageBean.getStorage_id(), mImageBean.getPart()) : mImageBean.getImgUrl();
-        return url;
+        return mImageBean.getImgUrl() == null
+                ? String.format(Locale.getDefault(),ApiConfig.IMAGE_PATH, mImageBean.getStorage_id(), mImageBean.getPart())
+                : mImageBean.getImgUrl();
     }
 
     @Override

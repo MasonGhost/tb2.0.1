@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:background="@color/input_view_bg_color">
 
     <View
         style="@style/style_divider_horizontal"/>
@@ -18,6 +18,7 @@
         <EditText
             android:id="@+id/et_empty"
             android:layout_width="0dp"
+            android:inputType="text"
             android:layout_height="0dp"/>
 
         <EditText
@@ -27,7 +28,7 @@
             tools:text="视卡鼓励进口大幅拉升刚刚加息公积金阿哥电视卡鼓励进口大幅拉刚刚加息公积金阿哥电视卡鼓励进口大幅拉刚刚加"
             />
 
-        <Button
+        <TextView
             android:id="@+id/bt_send"
             android:layout_width="@dimen/button_send_with"
             android:layout_height="@dimen/button_send_height"
@@ -36,8 +37,8 @@
             android:layout_marginLeft="@dimen/spacing_normal"
             android:background="@drawable/selector_button_corner_solid_small"
             android:enabled="false"
-            android:imeOptions="actionSend"
             android:text="@string/send"
+            android:gravity="center"
             android:textColor="@color/white"
             android:textSize="@dimen/button_text_size_small"
             android:visibility="gone"

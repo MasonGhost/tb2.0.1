@@ -5,6 +5,7 @@ import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
+import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
 
 import java.util.List;
 
@@ -18,17 +19,17 @@ import rx.Observable;
  */
 public interface SearchContract {
 
-    interface View extends ITSListView<InfoListBean.ListBean,Presenter>{
+    interface View extends ITSListView<InfoListDataBean,Presenter>{
         String getKeyWords();
     }
 
-    interface Presenter extends ITSListPresenter<InfoListBean.ListBean>{
+    interface Presenter extends ITSListPresenter<InfoListDataBean>{
 
     }
 
     interface Repository{
-        Observable<BaseJson<List<InfoListBean.ListBean>>> searchInfoList(String key,
-                                                                         long max_id);
+        Observable<BaseJson<List<InfoListDataBean>>> searchInfoList(String key,
+                                                                    long max_id);
     }
 
 

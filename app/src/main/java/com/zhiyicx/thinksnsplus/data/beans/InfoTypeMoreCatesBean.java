@@ -14,6 +14,7 @@ import java.io.Serializable;
 
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
+import org.greenrobot.greendao.annotation.NotNull;
 
 /**
  * @Author Jliuer
@@ -30,6 +31,7 @@ public class InfoTypeMoreCatesBean implements Parcelable, Serializable {
      * name : 分类1
      */
     @Id
+    private Long _id;
     @Unique
     private Long id;
     @Unique
@@ -37,14 +39,10 @@ public class InfoTypeMoreCatesBean implements Parcelable, Serializable {
     private String name;
     @ToOne(joinProperty = "info_type")
     private InfoListBean mInfoListBean;
-    /**
-     * Used to resolve relations
-     */
+    /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /**
-     * Used for active entity operations.
-     */
+    /** Used for active entity operations. */
     @Generated(hash = 962926367)
     private transient InfoTypeMoreCatesBeanDao myDao;
     @Generated(hash = 1585318719)
@@ -56,39 +54,56 @@ public class InfoTypeMoreCatesBean implements Parcelable, Serializable {
         this.name = name;
     }
 
+
+    @Generated(hash = 1151404240)
+    public InfoTypeMoreCatesBean(Long _id, Long id, Long info_type, String name) {
+        this._id = _id;
+        this.id = id;
+        this.info_type = info_type;
+        this.name = name;
+    }
+
+
     @Generated(hash = 40465761)
     public InfoTypeMoreCatesBean() {
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public InfoListBean getInfoListBean() {
-        return mInfoListBean;
+
+    public Long getId() {
+        return this.id;
     }
 
-    public void setInfoListBean(InfoListBean infoListBean) {
-        mInfoListBean = infoListBean;
+
+    public void setId(Long id) {
+        this.id = id;
     }
+
+
+    public Long getInfo_type() {
+        return this.info_type;
+    }
+
+
+    public void setInfo_type(Long info_type) {
+        this.info_type = info_type;
+    }
+
 
     /** To-one relationship, resolved on first access. */
     @Generated(hash = 1758891489)
     public InfoListBean getMInfoListBean() {
         Long __key = this.info_type;
-        if (mInfoListBean__resolvedKey == null || !mInfoListBean__resolvedKey.equals(__key)) {
+        if (mInfoListBean__resolvedKey == null
+                || !mInfoListBean__resolvedKey.equals(__key)) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
@@ -103,15 +118,17 @@ public class InfoTypeMoreCatesBean implements Parcelable, Serializable {
         return mInfoListBean;
     }
 
+
     /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1002296003)
+    @Generated(hash = 1677007819)
     public void setMInfoListBean(InfoListBean mInfoListBean) {
         synchronized (this) {
             this.mInfoListBean = mInfoListBean;
-            info_type = mInfoListBean == null ? null : mInfoListBean.getId();
+            info_type = mInfoListBean == null ? null : mInfoListBean.getInfo_type();
             mInfoListBean__resolvedKey = info_type;
         }
     }
+
 
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
@@ -125,6 +142,7 @@ public class InfoTypeMoreCatesBean implements Parcelable, Serializable {
         myDao.delete(this);
     }
 
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
      * Entity must attached to an entity context.
@@ -136,6 +154,7 @@ public class InfoTypeMoreCatesBean implements Parcelable, Serializable {
         }
         myDao.refresh(this);
     }
+
 
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
@@ -149,6 +168,7 @@ public class InfoTypeMoreCatesBean implements Parcelable, Serializable {
         myDao.update(this);
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -157,17 +177,21 @@ public class InfoTypeMoreCatesBean implements Parcelable, Serializable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(this.id);
+        dest.writeValue(this.info_type);
         dest.writeString(this.name);
         dest.writeParcelable(this.mInfoListBean, flags);
     }
 
-    public Long getInfo_type() {
-        return this.info_type;
+
+    public Long get_id() {
+        return this._id;
     }
 
-    public void setInfo_type(Long info_type) {
-        this.info_type = info_type;
+
+    public void set_id(Long _id) {
+        this._id = _id;
     }
+
 
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1943686829)
@@ -176,29 +200,23 @@ public class InfoTypeMoreCatesBean implements Parcelable, Serializable {
         myDao = daoSession != null ? daoSession.getInfoTypeMoreCatesBeanDao() : null;
     }
 
+
     protected InfoTypeMoreCatesBean(Parcel in) {
         this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.info_type = (Long) in.readValue(Long.class.getClassLoader());
         this.name = in.readString();
         this.mInfoListBean = in.readParcelable(InfoListBean.class.getClassLoader());
     }
 
-    @Generated(hash = 824074184)
-    public InfoTypeMoreCatesBean(Long id, Long info_type, String name) {
-        this.id = id;
-        this.info_type = info_type;
-        this.name = name;
-    }
+    public static final Creator<InfoTypeMoreCatesBean> CREATOR = new Creator<InfoTypeMoreCatesBean>() {
+        @Override
+        public InfoTypeMoreCatesBean createFromParcel(Parcel source) {
+            return new InfoTypeMoreCatesBean(source);
+        }
 
-    public static final Creator<InfoTypeMoreCatesBean> CREATOR = new
-            Creator<InfoTypeMoreCatesBean>() {
-                @Override
-                public InfoTypeMoreCatesBean createFromParcel(Parcel source) {
-                    return new InfoTypeMoreCatesBean(source);
-                }
-
-                @Override
-                public InfoTypeMoreCatesBean[] newArray(int size) {
-                    return new InfoTypeMoreCatesBean[size];
-                }
-            };
+        @Override
+        public InfoTypeMoreCatesBean[] newArray(int size) {
+            return new InfoTypeMoreCatesBean[size];
+        }
+    };
 }

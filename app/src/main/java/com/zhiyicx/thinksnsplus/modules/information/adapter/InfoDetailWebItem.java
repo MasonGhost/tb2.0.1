@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Message;
 import android.support.annotation.RequiresApi;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -17,6 +16,7 @@ import android.webkit.WebViewClient;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
@@ -56,14 +56,14 @@ public abstract class InfoDetailWebItem implements ItemViewDelegate<InfoCommentL
     WebViewClient mWebViewClient = new WebViewClient() {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.loadUrl(url);
+//            view.loadUrl(url);
             return true;
         }
 
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-            view.loadUrl(request.getUrl().toString());
+//            view.loadUrl(request.getUrl().toString());
             return true;
         }
 
@@ -245,21 +245,22 @@ public abstract class InfoDetailWebItem implements ItemViewDelegate<InfoCommentL
 
     @Override
     public void convert(ViewHolder holder, InfoCommentListBean infoCommentListBean,
-                        InfoCommentListBean lastT, int position) {
+                        InfoCommentListBean lastT, int position,int itemCounts) {
         WebView web = holder.getView(R.id.info_detail_content);
         initWebViewData(web);
-        web.loadUrl(String.format(APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
-                infoCommentListBean.getId()));
-        holder.setText(R.id.tv_comment_count,
-                mContext.getResources().getString(R.string.dynamic_comment_count,getDatasize()));
+        String url = String.format(APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
+                infoCommentListBean.getId());
+        web.loadUrl(url);
+        LogUtils.d("convertUrl:::" + url);
+        dealCommentCount(holder);
     }
 
-    public abstract int getDatasize();
+    public abstract void dealCommentCount(ViewHolder holder);
 
     private void initWebViewData(WebView mWebView) {
         WebSettings mWebSettings = mWebView.getSettings();
         mWebSettings.setSupportZoom(true);
-//        mWebSettings.setTextSize(WebSettings.TextSize.LARGEST);
+
         mWebSettings.setUseWideViewPort(true);
         mWebSettings.setLoadWithOverviewMode(true);
         mWebSettings.setSupportZoom(true);

@@ -406,7 +406,7 @@ public class InfoCommentAdapter extends MultiItemTypeAdapter<InfoCommentListBean
     private String handleName(InfoCommentListBean infoCommentListBean) {
         String content = "";
         if (infoCommentListBean.getReply_to_user_id() != 0) { // 当没有回复者时，就是回复评论
-            content += " 回复 " + infoCommentListBean.getToUserInfoBean().getName() + " " +
+            content += " 回复 " + infoCommentListBean.getToUserInfoBean().getName() + ": " +
                     infoCommentListBean.getComment_content();
         } else {
             content = infoCommentListBean.getComment_content();

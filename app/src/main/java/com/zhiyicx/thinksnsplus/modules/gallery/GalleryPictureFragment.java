@@ -1,22 +1,17 @@
 package com.zhiyicx.thinksnsplus.modules.gallery;
 
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Rect;
-import android.os.Build;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.widget.DrawableUtils;
-import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -24,17 +19,12 @@ import android.widget.TextView;
 import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
-import com.bumptech.glide.load.ResourceDecoder;
-import com.bumptech.glide.load.ResourceEncoder;
 import com.bumptech.glide.load.data.DataFetcher;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.load.model.stream.StreamModelLoader;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.load.resource.gifbitmap.GifBitmapWrapper;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.jakewharton.rxbinding.view.RxView;
@@ -46,28 +36,23 @@ import com.zhiyicx.baseproject.config.PathConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressListener;
 import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressModelLoader;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
-import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.photoview.PhotoViewAttacher;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.utils.TransferImageAnimationUtil;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import me.iwf.photopicker.utils.AndroidLifecycleUtils;
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -152,7 +137,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         } else {
             boolean canLoadImage = AndroidLifecycleUtils.canLoadImage(context);
             if (canLoadImage) {
-                loadImage(mImageBean, rect);
+                loadImage(mImageBean, rect, animateIn);
             }
         }
     }
@@ -210,6 +195,31 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         }
     }
 
+    private static final android.view.animation.Interpolator INTERPOLATOR =
+            new FastOutSlowInInterpolator();
+
+    /**
+     * 显示或者隐藏查看原图按钮
+     *
+     * @param isIn 是否是进入页面
+     */
+    public void showOrHideOriginBtn(boolean isIn) {
+        // 如果查看原图按钮不可见也就没有必要控制显示隐藏
+        if (mTvOriginPhoto.getVisibility()== View.VISIBLE) {
+            if (isIn) {
+                ViewCompat.animate(mTvOriginPhoto).alpha(1.0f).scaleX(1.0f).scaleY(1.0f)
+                        .setDuration(500)
+                        .setInterpolator(INTERPOLATOR).withLayer()
+                        .start();
+            } else {
+                ViewCompat.animate(mTvOriginPhoto).alpha(0.0f).scaleX(0.0f).scaleY(0.0f)
+                        .setDuration(100)
+                        .setInterpolator(INTERPOLATOR).withLayer()
+                        .start();
+            }
+        }
+    }
+
     public void saveImage() {
         // 通过GLide获取bitmap,有缓存读缓存
         Glide.with(getActivity())
@@ -235,11 +245,12 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     }
 
     // 加载图片不带监听
-    private void loadImage(final ImageBean imageBean, final AnimationRectBean rect) {
+    private void loadImage(final ImageBean imageBean, final AnimationRectBean rect, final boolean animationIn) {
         LogUtils.i("imageBean = " + imageBean.toString());
 
         if (imageBean.getImgUrl() != null) {
-
+            int with = 800;// 图片宽度显示的像素：防止图片过大卡顿
+            int height = (int) (with * imageBean.getHeight() / imageBean.getWidth());
             // 加载本地图片
             Glide.with(context)
                     .load(imageBean.getImgUrl())
@@ -247,13 +258,11 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     .error(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .thumbnail(0.1f)
-                    .override(800, 800)
+                    .override(with, height)
                     .centerCrop()
                     .into(new GallarySimpleTarget(rect));
         } else {
             // 加载网络图片
-            int with = (int) (mScreenWith);
-            int height = (int) (with * imageBean.getHeight() / imageBean.getWidth());
             DrawableRequestBuilder thumbnailBuilder = Glide
                     .with(context)
                     .load(new CustomImageSizeModelImp(imageBean)
@@ -272,6 +281,12 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                             LogUtils.i(TAG + "加载原图失败");
+                            // 如果不是点击放大进入的那张图片，就需要设置查看原图按钮为缩小状态，这样第一次切换到该页面，才能有放大到1.0的效果
+                            if (!animationIn) {
+                                mTvOriginPhoto.setScaleY(0.0f);
+                                mTvOriginPhoto.setScaleX(0.0f);
+                                mTvOriginPhoto.setAlpha(0.0f);
+                            }
                             mTvOriginPhoto.setVisibility(View.VISIBLE);
                             // 原图没有缓存，从cacheOnlyStreamLoader抛出异常，在这儿加载高清图
                             Glide.with(context)
@@ -382,6 +397,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
      * @param backgroundAnimator
      */
     public void animationExit(ObjectAnimator backgroundAnimator) {
+
         // 高清图片可见，那就高清图片退出动画
         if (mIvPager.getVisibility() == View.VISIBLE) {
             // 图片处于放大状态，先让它复原
@@ -389,6 +405,8 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                 mPhotoViewAttacherNormal.setScale(1, true);
                 return;
             }
+            // 退出隐藏查看原图按钮，防止显示在透明背景上
+            mTvOriginPhoto.setVisibility(View.GONE);
             getActivity().overridePendingTransition(0, 0);
             AnimationRectBean rect = getArguments().getParcelable("rect");
             TransferImageAnimationUtil.animateClose(backgroundAnimator, rect, mIvPager);
@@ -400,6 +418,8 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                 mPhotoViewAttacherOrigin.setScale(1, true);
                 return;
             }
+            // 退出隐藏查看原图按钮，防止显示在透明背景上
+            mTvOriginPhoto.setVisibility(View.GONE);
             getActivity().overridePendingTransition(0, 0);
             AnimationRectBean rect = getArguments().getParcelable("rect");
             TransferImageAnimationUtil.animateClose(backgroundAnimator, rect, mIvOriginPager);
@@ -418,6 +438,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             public void run() {
                 Bundle bundle = getArguments();
                 bundle.putBoolean("animationIn", false);
+                LogUtils.i("startInAnim" + "endAction");
             }
         };
         TransferImageAnimationUtil.startInAnim(rect, mIvPager, endAction);
@@ -449,6 +470,8 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                                 result = getString(R.string.save_failure2);
                                 break;
                             default:
+                                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                                        Uri.parse("file://" + result)));// 更新系统相册
                                 result = getString(R.string.save_success) + result;
 
                         }

@@ -35,6 +35,8 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
     private long userId;// 上一个页面传过来的用户id
     //private AuthBean mAuthBean;
 
+    private boolean mIsVisibleToUser;//页面显示给用户
+
     @Override
     protected CommonAdapter<FollowFansBean> getAdapter() {
         return new FollowFansListAdapter(getContext(), R.layout.item_follow_fans_list, mListDatas, pageType, mPresenter);
@@ -58,6 +60,25 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
     }
 
     @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        this.mIsVisibleToUser = isVisibleToUser;
+        if (mIsVisibleToUser && pageType == FANS_FRAGMENT_PAGE && mPresenter != null) {
+            //清除粉丝未读数
+            mPresenter.cleanNewFans();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mIsVisibleToUser && pageType == FANS_FRAGMENT_PAGE) {
+            //清除粉丝未读数
+            mFollowFansListPresenter.cleanNewFans();
+        }
+    }
+
+    @Override
     protected boolean showToolbar() {
         return false;
     }
@@ -77,20 +98,6 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
         mPresenter = presenter;
     }
 
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showMessage(String message) {
-
-    }
 
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {

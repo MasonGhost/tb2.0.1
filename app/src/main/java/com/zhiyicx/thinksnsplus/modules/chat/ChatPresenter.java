@@ -7,6 +7,7 @@ import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.ChatType;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
+import com.zhiyicx.imsdk.entity.AuthData;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.entity.MessageStatus;
@@ -95,7 +96,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     public void sendTextMessage(String text, int cid) {
         Message message = ChatClient.getInstance(mContext).sendTextMsg(text, cid, "");// usid 暂不使用
         message.setUid(AppApplication.getmCurrentLoginAuth() != null ? AppApplication.getmCurrentLoginAuth().getUser_id() : 0);// 更新
-        if (!ZBIMClient.getInstance().isConnected()) { // IM 没有连接成功
+        if (!ZBIMClient.getInstance().isLogin()) { // IM 没有连接成功
             message.setSend_status(MessageStatus.SEND_FAIL);
         }
         message.setIs_read(true); // 更新
@@ -110,9 +111,11 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
      */
     @Override
     public void reSendText(ChatItemBean chatItemBean) {
-        if (ZBIMClient.getInstance().isConnected()) {
+        if (ZBIMClient.getInstance().isLogin()) {
             ChatClient.getInstance(mContext).sendMessage(chatItemBean.getLastMessage());
             mRootView.refreshData();
+        } else {
+            ZBIMClient.getInstance().reConnect();
         }
     }
 
@@ -144,7 +147,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
 
                     @Override
                     protected void onFailure(String message, int code) {
-                        mRootView.showMessage(message);
+                        mRootView.showSnackWarningMessage(mContext.getString(R.string.im_not_work));
                     }
 
                     @Override
@@ -200,6 +203,11 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         mRootView.reFreshMessage(chatItemBean);
     }
 
+    @Subscriber(tag = EventBusTagConfig.EVENT_IM_AUTHSUCESSED)
+    private void onAuthSuccessed(AuthData authData) {
+//        mRootView.showSnackSuccessMessage("IM 聊天加载成功");
+    }
+
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONNECTED)
     private void onConnected() {
 //        mRootView.showSnackSuccessMessage("IM 聊天加载成功");
@@ -212,12 +220,13 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONERROR)
     private void onError(Exception error) {
+        LogUtils.d(" 超时   message = " + error);
 //        mRootView.showSnackSuccessMessage("IM 聊天错误" + error.toString());
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGETIMEOUT)
     private void onMessageTimeout(Message message) {
-//        System.out.println(" 超时   message = " + message);
+        LogUtils.d(" 超时   message = " + message);
         mRootView.updateMessageStatus(message);
     }
 }

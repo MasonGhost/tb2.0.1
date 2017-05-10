@@ -20,6 +20,15 @@
         <!-- Used for the background -->
         <!--<item name="android:background">#4CAF50</item>-->
     </style>
+    <!--修改系统dialog样式-->
+    <style name="TSWarningAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!-- Used for the buttons -->
+        <item name="colorAccent">@color/important_for_note</item>
+        <!-- Used for the title and text -->
+        <!--<item name="android:textColorPrimary">#FFFFFF</item>-->
+        <!-- Used for the background -->
+        <!--<item name="android:background">#4CAF50</item>-->
+    </style>
 
     <style name="TSToolBar" parent="Widget.AppCompat.Toolbar">
         <!--左边边距-->
@@ -31,7 +40,8 @@
     <style name="BackGroundLauncherTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:screenOrientation">portrait</item>
         <!--<item name="android:windowBackground">>@mipmap/splash</item>-->
-        <item name="android:windowBackground">@color/themeColor</item>
+        <item name="android:windowBackground">@mipmap/guide</item>
+        <item name="android:windowFullscreen">true</item>
     </style>
     <!--加载框Dialog的样式-->
     <style name="loadingDialogStyle" parent="android:Theme.Dialog">

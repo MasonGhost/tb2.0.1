@@ -6,11 +6,13 @@ import android.util.SparseArray;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.info.InfoWebBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.InfoMainClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsConstract;
@@ -59,10 +61,10 @@ public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
                     public Observable<BaseJson<List<InfoCommentListBean>>> call
                             (final BaseJson<List<InfoCommentListBean>> listBaseJson) {
 
-                        if (listBaseJson.getData().isEmpty()){
+                        if (listBaseJson.getData().isEmpty()) {
                             return Observable.just(listBaseJson);
-                        }else{
-                            final List<Long> user_ids = new ArrayList<>();
+                        } else {
+                            final List<Object> user_ids = new ArrayList<>();
                             for (InfoCommentListBean commentListBean : listBaseJson.getData()) {
                                 user_ids.add(commentListBean.getUser_id());
                                 user_ids.add(commentListBean.getReply_to_user_id());
@@ -131,12 +133,47 @@ public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
                         if (aBoolean) {
                             backgroundRequestTaskBean = new BackgroundRequestTaskBean
                                     (BackgroundTaskRequestMethodConfig.POST, params);
+                            LogUtils.d(backgroundRequestTaskBean.getMethodType());
                         } else {
                             backgroundRequestTaskBean = new BackgroundRequestTaskBean
                                     (BackgroundTaskRequestMethodConfig.DELETE, params);
+                            LogUtils.d(backgroundRequestTaskBean.getMethodType());
                         }
                         backgroundRequestTaskBean.setPath(String.format(ApiConfig
                                 .APP_PATH_INFO_COLLECT_FORMAT, news_id));
+                        BackgroundTaskManager.getInstance(context).addBackgroundRequestTask
+                                (backgroundRequestTaskBean);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
+    }
+
+    @Override
+    public void handleLike(boolean isLiked, final String news_id) {
+        Observable.just(isLiked)
+                .observeOn(Schedulers.io())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        BackgroundRequestTaskBean backgroundRequestTaskBean;
+                        HashMap<String, Object> params = new HashMap<>();
+                        params.put("news_id", news_id);
+                        // 后台处理
+                        if (aBoolean) {
+                            backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                                    (BackgroundTaskRequestMethodConfig.POST, params);
+                            LogUtils.d(backgroundRequestTaskBean.getMethodType());
+                        } else {
+                            backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                                    (BackgroundTaskRequestMethodConfig.DELETE, params);
+                            LogUtils.d(backgroundRequestTaskBean.getMethodType());
+                        }
+                        backgroundRequestTaskBean.setPath(String.format(ApiConfig
+                                .APP_PATH_INFO_DIG_FORMAT, news_id));
                         BackgroundTaskManager.getInstance(context).addBackgroundRequestTask
                                 (backgroundRequestTaskBean);
                     }
@@ -178,5 +215,10 @@ public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
                 .APP_PATH_INFO_DELETE_COMMENT_FORMAT, news_id, comment_id));
         BackgroundTaskManager.getInstance(context).addBackgroundRequestTask
                 (backgroundRequestTaskBean);
+    }
+
+    @Override
+    public Observable<BaseJson<InfoWebBean>> getInfoWebContent(String news_id) {
+        return mInfoMainClient.getInfoWebContent(news_id);
     }
 }

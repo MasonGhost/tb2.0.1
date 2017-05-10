@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.home.message;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,6 +15,7 @@ import com.daimajia.swipe.interfaces.SwipeAdapterInterface;
 import com.daimajia.swipe.interfaces.SwipeItemMangerInterface;
 import com.daimajia.swipe.util.Attributes;
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
@@ -27,6 +30,8 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBFragment;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -71,6 +76,9 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
      * @param position        当前数据位置
      */
     private void setItemData(ViewHolder holder, final MessageItemBean messageItemBean, final int position) {
+        // 右边
+        final SwipeLayout swipeLayout = holder.getView(R.id.swipe);
+
         switch (messageItemBean.getConversation().getType()) {
             case ChatType.CHAT_TYPE_PRIVATE:// 私聊
                 AppApplication.AppComponentHolder.getAppComponent().imageLoader().loadImage(mContext, GlideImageConfig.builder()
@@ -83,19 +91,30 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
                 holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getName());     // 响应事件
                 setUserInfoClick(holder.getView(R.id.tv_name), messageItemBean.getUserInfo());
                 setUserInfoClick(holder.getView(R.id.iv_headpic), messageItemBean.getUserInfo());
-
+                swipeLayout.setSwipeEnabled(true);
                 break;
             case ChatType.CHAT_TYPE_GROUP:// 群组
                 holder.setImageResource(R.id.iv_headpic, R.drawable.shape_default_image_circle);
                 holder.setText(R.id.tv_name, TextUtils.isEmpty(messageItemBean.getConversation().getName())
                         ? mContext.getString(R.string.default_message_group) : messageItemBean.getConversation().getName());
+                swipeLayout.setSwipeEnabled(true);
                 break;
             default:
+                setTSHelperClick(holder.getView(R.id.tv_name));
+                setTSHelperClick(holder.getView(R.id.iv_headpic));
+                holder.setImageResource(R.id.iv_headpic, R.mipmap.ico_ts_assistant);
+                holder.setText(R.id.tv_name, holder.getConvertView().getResources().getString(R.string.ts_helper));
+                swipeLayout.setSwipeEnabled(false);
+                break;
         }
-        if (messageItemBean.getConversation().getLast_message().getSend_status()== MessageStatus.SEND_FAIL) {
-            holder.setText(R.id.tv_content,holder.getConvertView().getResources().getString(R.string.send_fail) );
+        if (messageItemBean.getConversation().getLast_message() == null) {
+            holder.setText(R.id.tv_content, "");
         } else {
-            holder.setText(R.id.tv_content, messageItemBean.getConversation().getLast_message().getTxt());
+            if (messageItemBean.getConversation().getLast_message().getSend_status() == MessageStatus.SEND_FAIL) {
+                holder.setText(R.id.tv_content, holder.getConvertView().getResources().getString(R.string.send_fail));
+            } else {
+                holder.setText(R.id.tv_content, messageItemBean.getConversation().getLast_message().getTxt());
+            }
         }
         if (messageItemBean.getConversation().getLast_message_time() == 0) {
             holder.setText(R.id.tv_time, "");
@@ -108,8 +127,7 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
             e.printStackTrace();
         }
 
-        // 右边
-        final SwipeLayout swipeLayout = holder.getView(R.id.swipe);
+
         swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
         swipeLayout.addSwipeListener(new SimpleSwipeListener() {
             @Override
@@ -152,6 +170,28 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
                         toUserCenter(userInfoBean);
                     }
                 });
+    }
+
+    private void setTSHelperClick(View v) {
+        RxView.clicks(v)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        toTSHelper();
+                    }
+                });
+    }
+
+    /**
+     * 前往ts助手开发
+     */
+    private void toTSHelper() {
+        Intent intent = new Intent(getContext(), CustomWEBActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, ApiConfig.APP_PATH_SHARE_DEFAULT);
+        intent.putExtras(bundle);
+        getContext().startActivity(intent);
     }
 
     /**

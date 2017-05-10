@@ -109,7 +109,7 @@ public abstract class BaseSubscribe<T> extends Subscriber<BaseJson<T>> {
             boolean status = tBaseJson.isStatus();
             int code = tBaseJson.getCode();
             String message;
-
+            LogUtils.d("------baseSubscrib---------"+tBaseJson.toString());
             if (status) {
                 onSuccess(tBaseJson.getData());
             } else {

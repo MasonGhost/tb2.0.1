@@ -33,6 +33,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingRight="@dimen/spacing_normal"
+        android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_big"
         android:paddingBottom="@dimen/spacing_normal_large"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_content"

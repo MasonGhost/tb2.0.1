@@ -4,6 +4,7 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 import android.app.Application;
 import android.text.TextUtils;
 
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
@@ -51,7 +52,7 @@ public class UserInfoBeanGreenDaoImplTest {
     @Test
     public void getMultiDataFromCache() throws Exception {
         List<UserInfoBean> userinfoBeans = mUserInfoBeanGreenDao.getMultiDataFromCache();
-        System.out.println("userinfoBeans = " + userinfoBeans);
+        LogUtils.d("userinfoBeans = " + userinfoBeans);
         Assert.assertTrue(userinfoBeans.size() > 0);
     }
 

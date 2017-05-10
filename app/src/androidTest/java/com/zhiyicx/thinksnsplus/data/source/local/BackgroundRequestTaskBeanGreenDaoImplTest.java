@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.local;
 
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 
@@ -21,6 +22,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_LOGIN;
  * @Contact master.jungle68@gmail.com
  */
 public class BackgroundRequestTaskBeanGreenDaoImplTest {
+    private static final String TAG = "BackgroundRequestTaskBe";
     private BackgroundRequestTaskBeanGreenDaoImpl mBackgroundTaskBeanGreenDao;
 
     @Before
@@ -73,7 +75,7 @@ public class BackgroundRequestTaskBeanGreenDaoImplTest {
     @Test
     public void getMultiDataFromCache() throws Exception {
         List<BackgroundRequestTaskBean> datas = mBackgroundTaskBeanGreenDao.getMultiDataFromCache();
-        System.out.println("datas = " + datas.toString());
+        LogUtils.d(TAG,"datas = " + datas.toString());
         Assert.assertTrue(datas.size() > 0);
     }
 

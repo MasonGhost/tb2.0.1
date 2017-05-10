@@ -194,7 +194,7 @@ public class DefaultItemTouchHelpCallback extends ItemTouchHelper.Callback {
         super.onSelectedChanged(viewHolder, actionState);
         //当选中Item时候会调用该方法，重写此方法可以实现选中时候的一些动画逻辑
         if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
-            if (canScaleOnLongTouch()){
+            if (canScaleOnLongTouch()) {
                 viewHolder.itemView.setScaleX((float) 1.1);
                 viewHolder.itemView.setScaleY((float) 1.1);
             }
@@ -219,13 +219,11 @@ public class DefaultItemTouchHelpCallback extends ItemTouchHelper.Callback {
                                             int viewSizeOutOfBounds, int totalSize,
                                             long msSinceStartScroll) {
         //边界
-        int result = super.interpolateOutOfBoundsScroll(recyclerView, viewSize,
+        return super.interpolateOutOfBoundsScroll(recyclerView, viewSize,
                 viewSizeOutOfBounds, totalSize, msSinceStartScroll);
-//        Log.e("-------", "interpolateOutOfBoundsScroll: "+result );
-        return result;
     }
 
-    protected boolean canScaleOnLongTouch(){
+    protected boolean canScaleOnLongTouch() {
         return true;
     }
 }

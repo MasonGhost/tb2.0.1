@@ -22,9 +22,11 @@ public interface IDynamicReppsitory {
      * publish dynamic
      *
      * @param dynamicDetailBean dynamic content
+     * @param channel_id        如果动态是被发送到频道，需要channel_id
+     * @param dynamicBelong     判断动态是被发送到哪儿
      * @return basejson, object is null
      */
-    Observable<BaseJson<Object>> sendDynamic(DynamicDetailBean dynamicDetailBean);
+    Observable<BaseJson<Object>> sendDynamic(DynamicDetailBean dynamicDetailBean, int dynamicBelong, long channel_id);
 
     /**
      * get dynamic list
@@ -32,10 +34,11 @@ public interface IDynamicReppsitory {
      * @param type       "" 代表最新；follows 代表关注 ； hots 代表热门
      * @param max_id     用来翻页的记录id(对应数据体里的feed_id ,最新和关注选填)
      * @param page       页码 热门选填
+     * @param feed_ids   可以是以逗号隔开的id  可以是数组
      * @param isLoadMore 是否是刷新
      * @return dynamic list
      */
-    Observable<BaseJson<List<DynamicBean>>> getDynamicList(String type, Long max_id, int page, boolean isLoadMore);
+    Observable<BaseJson<List<DynamicBean>>> getDynamicList(String type, Long max_id, int page,String feed_ids, boolean isLoadMore);
 
     /**
      * 动态点赞
@@ -76,7 +79,7 @@ public interface IDynamicReppsitory {
      * @param datas
      * @param type
      */
-    void updateOrInsertDynamic(List<DynamicBean> datas,String type);
+    void updateOrInsertDynamic(List<DynamicBean> datas, String type);
 
     /**
      * 取消动态点赞
@@ -114,6 +117,14 @@ public interface IDynamicReppsitory {
      * @return
      */
     Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentList(Long feed_mark, Long feed_id, Long max_id);
+
+    /**
+     * 根据 id 获取评论列表
+     *
+     * @param comment_ids 评论id 以逗号隔开或者数组形式传入
+     * @return
+     */
+    Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentListByCommentIds(String comment_ids);
 
     /**
      * 增加动态浏览量

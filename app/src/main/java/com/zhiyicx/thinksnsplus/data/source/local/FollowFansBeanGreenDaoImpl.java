@@ -179,7 +179,7 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
             maxId = Integer.MAX_VALUE;
         }
         FollowFansBeanDao followFansBeanDao = getRDaoSession().getFollowFansBeanDao();
-        List<FollowFansBean> followFansBeanList = followFansBeanDao.queryDeep(" where " + FollowFansBeanDao
+        return followFansBeanDao.queryDeep(" where " + FollowFansBeanDao
                         .Properties.OriginUserId.columnName + " = ? and "
                         + FollowFansBeanDao.Properties.Origin_follow_status.columnName + " = ? and "
                         + FollowFansBeanDao.Properties.Target_follow_status.columnName + " = ? and "
@@ -191,7 +191,6 @@ public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> 
                 , FollowFansBean.IFOLLOWED_STATE + ""
                 , maxId + ""
                 , TSListFragment.DEFAULT_PAGE_SIZE + "");
-        return followFansBeanList;
 
     }
 

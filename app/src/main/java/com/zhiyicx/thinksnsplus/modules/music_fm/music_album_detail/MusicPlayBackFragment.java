@@ -3,23 +3,17 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
@@ -27,7 +21,6 @@ import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayService;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -36,7 +29,7 @@ import butterknife.OnClick;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class MusicPlayBackFragment extends Fragment {
+public class MusicPlayBackFragment extends TSFragment {
 
     @BindView(R.id.fragment_back_albun_art)
     ImageView mFragmentBackAlbunArt;
@@ -53,12 +46,14 @@ public class MusicPlayBackFragment extends Fragment {
 
     private String mArtUrl;
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View mRootView=inflater.inflate(R.layout.fragment_playback_controls,null);
-        ButterKnife.bind(this, mRootView);
-        return mRootView;
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected int getBodyLayoutId() {
+        return R.layout.fragment_playback_controls;
     }
 
     @Override
@@ -67,6 +62,16 @@ public class MusicPlayBackFragment extends Fragment {
         if (getActivity().getSupportMediaController() != null) {
             onConnected();
         }
+    }
+
+    @Override
+    protected void initView(View rootView) {
+
+    }
+
+    @Override
+    protected void initData() {
+
     }
 
     @Override
@@ -177,7 +182,7 @@ public class MusicPlayBackFragment extends Fragment {
                 enablePlay = true;
                 break;
             case PlaybackStateCompat.STATE_ERROR:
-                Toast.makeText(getActivity(), state.getErrorMessage(), Toast.LENGTH_LONG).show();
+                showSnackErrorMessage(state.getErrorMessage().toString());
                 break;
         }
 
@@ -215,4 +220,9 @@ public class MusicPlayBackFragment extends Fragment {
             MusicPlayBackFragment.this.onMetadataChanged(metadata);
         }
     };
+
+    @Override
+    public void setPresenter(Object presenter) {
+
+    }
 }

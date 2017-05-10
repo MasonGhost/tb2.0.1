@@ -2,15 +2,26 @@ package com.zhiyicx.thinksnsplus.modules.home;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.appprocess.BackgroundUtil;
+import com.zhiyicx.imsdk.db.dao.MessageDao;
+import com.zhiyicx.imsdk.entity.AuthData;
 import com.zhiyicx.imsdk.entity.ChatRoomContainer;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.manage.ChatClient;
+import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.imsdk.manage.listener.ImMsgReceveListener;
 import com.zhiyicx.imsdk.manage.listener.ImStatusListener;
 import com.zhiyicx.imsdk.manage.listener.ImTimeoutListener;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
+import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
+import com.zhiyicx.thinksnsplus.utils.NotificationUtil;
 
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
@@ -18,6 +29,12 @@ import org.simple.eventbus.Subscriber;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
+
+import static com.umeng.socialize.utils.DeviceConfig.context;
 
 
 /**
@@ -30,6 +47,11 @@ import javax.inject.Inject;
 class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.View> implements HomeContract.Presenter, ImMsgReceveListener, ImStatusListener, ImTimeoutListener {
     @Inject
     AuthRepository mAuthRepository;
+
+    @Inject
+    UserInfoRepository mUserInfoRepository;
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
 
@@ -61,14 +83,40 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
      *********************************************/
 
     @Override
-    public void onMessageReceived(Message message) {
+    public void onMessageReceived(final Message message) {
         setMessageTipVisable(true);
         EventBus.getDefault().post(message, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED);
+        if (!BackgroundUtil.getAppIsForegroundStatus()) {   // 应用在后台
+            mUserInfoRepository.getLocalUserInfoBeforeNet(message.getUid())
+                    .subscribe(new BaseSubscribe<UserInfoBean>() {
+                        @Override
+                        protected void onSuccess(UserInfoBean data) {
+                            JpushMessageBean jpushMessageBean = new JpushMessageBean();
+                            jpushMessageBean.setType(JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM);
+                            jpushMessageBean.setMessage(data.getName() + ":" + message.getTxt());
+                            jpushMessageBean.setNofity(false);
+                            NotificationUtil.showNotifyMessage(mContext, jpushMessageBean);
+                        }
+
+                        @Override
+                        protected void onFailure(String message, int code) {
+                        }
+
+                        @Override
+                        protected void onException(Throwable throwable) {
+                        }
+                    });
+        }
     }
 
-    @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED)
+    @Subscriber(tag = EventBusTagConfig.EVENT_IM_SET_MESSAGE_TIP_VISABLE)
     public void setMessageTipVisable(boolean isShow) {
         mRootView.setMessageTipVisable(isShow);
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_IM_SET_MINE_TIP_VISABLE)
+    public void setMineTipVisable(boolean isShow) {
+        mRootView.setMineTipVisable(isShow);
     }
 
     @Override
@@ -94,6 +142,37 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
     @Override
     public void synchronousInitiaMessage(int limit) {
 
+    }
+
+    @Override
+    public void onAuthSuccess(AuthData authData) {
+        EventBus.getDefault().post(authData, EventBusTagConfig.EVENT_IM_AUTHSUCESSED);
+        synIMMessage(authData);
+    }
+
+    /**
+     * IM 消息同步
+     *
+     * @param authData
+     */
+    private void synIMMessage(AuthData authData) {
+        Observable.from(authData.getSeqs()) // 消息同步
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(new Action1<AuthData.SeqsBean>() {
+                    @Override
+                    public void call(AuthData.SeqsBean seqsBean) {
+                        Message message = MessageDao.getInstance(mContext).getLastMessageByCid(seqsBean.getCid());
+                        if (message != null && message.getSeq() < seqsBean.getSeq()) {
+                            ZBIMClient.getInstance().syncAsc(message.getCid(), message.getSeq(), seqsBean.getSeq(), (int) System.currentTimeMillis());
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
     }
 
     @Override

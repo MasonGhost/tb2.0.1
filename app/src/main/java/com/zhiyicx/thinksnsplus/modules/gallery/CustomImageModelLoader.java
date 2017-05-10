@@ -31,10 +31,7 @@ public class CustomImageModelLoader extends BaseGlideUrlLoader<CustomImageSizeMo
         if (part > 100) {
             part = 100;
         }
-
         LogUtils.i("part = " + part);
-        String url = String.format(ApiConfig.IMAGE_PATH, model.getImageBean().getStorage_id(), part);
-
-        return url;
+        return String.format(ApiConfig.IMAGE_PATH, model.getImageBean().getStorage_id(), part);
     }
 }

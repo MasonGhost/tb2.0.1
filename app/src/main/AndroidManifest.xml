@@ -20,10 +20,11 @@
     <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
     <uses-permission android:name="android.permission.CAMERA"/>
-
+    <!-- allowBackup =true  用于 adb backup 与 adb restore;发布后需要关闭，保证数据安全-->
     <application
         android:name=".base.AppApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
+        tools:replace="android:allowBackup"
         android:icon="@mipmap/icon_256"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -42,6 +43,7 @@
 
         <activity
             android:name=".modules.guide.GuideActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/BackGroundLauncherTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -49,22 +51,32 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".modules.register.RegisterActivity">
+        <activity
+            android:name=".modules.register.RegisterActivity"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".modules.home.HomeActivity"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustResize">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
         </activity>
-        <activity android:name=".modules.settings.SettingsActivity">
+        <activity
+            android:name=".modules.settings.SettingsActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".modules.password.changepassword.ChangePasswordActivity">
+        <activity
+            android:name=".modules.password.changepassword.ChangePasswordActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".modules.password.findpassword.FindPasswordActivity">
+        <activity
+            android:name=".modules.password.findpassword.FindPasswordActivity"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".modules.login.LoginActivity"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".modules.chat.ChatActivity"
@@ -72,42 +84,85 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
         </activity>
-        <activity android:name=".modules.settings.aboutus.AboutUsActivity">
+        <activity
+            android:name=".modules.system_conversation.SystemConversationActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
+        </activity>
+        <activity
+            android:name=".modules.settings.aboutus.CustomWEBActivity"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".modules.edit_userinfo.UserInfoActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
         </activity>
-        <activity android:name=".modules.home.message.messagecomment.MessageCommentActivity">
+        <activity
+            android:name=".modules.home.message.messagecomment.MessageCommentActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".modules.home.message.messagelike.MessageLikeActivity">
+        <activity
+            android:name=".modules.home.message.messagelike.MessageLikeActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".modules.crop.CropActivity">
+        <activity
+            android:name=".modules.crop.CropActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".modules.photopicker.PhotoAlbumListActivity">
+        <activity
+            android:name=".modules.photopicker.PhotoAlbumListActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".modules.photopicker.PhotoAlbumDetailsActivity">
+        <activity
+            android:name=".modules.photopicker.PhotoAlbumDetailsActivity"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".modules.photopicker.PhotoViewActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/TransParentTheme">
         </activity>
         <activity
             android:name=".modules.gallery.GalleryActivity"
+            android:hardwareAccelerated="false"
+            android:screenOrientation="portrait"
             android:theme="@style/GalleryTheme">
         </activity>
-        <activity android:name=".modules.music_fm.music_album_list.MusicListActivity"/>
-        <activity android:name=".modules.follow_fans.FollowFansListActivity">
+        <activity
+            android:name=".modules.music_fm.music_album_list.MusicListActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.follow_fans.FollowFansListActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".modules.music_fm.music_album_detail.MusicDetailActivity"/>
-        <activity android:name=".modules.music_fm.music_play.MusicPlayActivity"/>
-        <activity android:name=".modules.information.infomain.InfoActivity"/>
-        <activity android:name=".modules.information.infodetails.InfoDetailsActivity"/>
+        <activity
+            android:name=".modules.music_fm.music_album_detail.MusicDetailActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.music_fm.music_play.MusicPlayActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.information.infomain.InfoActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.information.infodetails.InfoDetailsActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.information.infochannel.ChannelActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/activity_topin_bottomout"/>
-        <activity android:name=".modules.information.infosearch.SearchActivity"/>
-        <activity android:name=".modules.dynamic.send.SendDynamicActivity">
+        <activity
+            android:name=".modules.information.infosearch.SearchActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.dynamic.send.SendDynamicActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".modules.rank.RankActivity"
+            android:screenOrientation="portrait">
         </activity>
 
         <service
@@ -158,15 +213,21 @@
 
         <activity
             android:name=".modules.dynamic.detail.DynamicDetailActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize">
         </activity>
-        <activity android:name=".modules.dynamic.detail.dig_list.DigListActivity">
+        <activity
+            android:name=".modules.dynamic.detail.dig_list.DigListActivity"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".modules.personal_center.PersonalCenterActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize">
         </activity>
-        <activity android:name=".modules.music_fm.music_comment.MusicCommentActivity">
+        <activity
+            android:name=".modules.music_fm.music_comment.MusicCommentActivity"
+            android:screenOrientation="portrait">
         </activity>
         <!-- 新浪分享 -->
         <activity
@@ -182,15 +243,26 @@
         <activity
             android:name=".wxapi.WXEntryActivity"
             android:exported="true"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
 
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity android:name=".modules.channel.ChannelListActivity">
+        <activity
+            android:name=".modules.channel.list.ChannelListActivity"
+            android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".modules.channel.detail.ChannelDetailActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <activity
+            android:name=".modules.collect.CollectListActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

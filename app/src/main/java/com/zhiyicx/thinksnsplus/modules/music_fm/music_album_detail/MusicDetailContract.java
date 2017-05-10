@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail;
 
+import android.graphics.Bitmap;
+
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
@@ -26,6 +28,8 @@ public interface MusicDetailContract {
 
         void setCollect(boolean isCollected);
 
+        void albumHasBeDeleted();
+
         MusicAlbumDetailsBean getCurrentAblum();
 
         MusicAlbumListBean getmMusicAlbumListBean();
@@ -34,7 +38,7 @@ public interface MusicDetailContract {
     interface Presenter extends IBasePresenter {
         void getMusicAblum(String id);
 
-        void shareMusicAlbum();
+        void shareMusicAlbum(Bitmap bitmap);
 
         void handleCollect(boolean isUnCollected, String special_id);
 

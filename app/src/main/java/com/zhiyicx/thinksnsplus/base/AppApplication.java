@@ -1,17 +1,22 @@
 package com.zhiyicx.thinksnsplus.base;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 
 import com.antfortune.freeline.FreelineCore;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.google.gson.Gson;
 import com.umeng.analytics.MobclickAgent;
 import com.zhiyicx.baseproject.base.TSApplication;
+import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.net.HttpsSSLFactroyUtils;
@@ -26,9 +31,12 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
+import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
+import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.QueueManager;
-import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MusicWindows;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.io.File;
@@ -38,6 +46,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.net.ssl.SSLSocketFactory;
@@ -57,31 +66,34 @@ import rx.functions.Action1;
  * @Date 2016/12/16
  * @Contact 335891510@qq.com
  */
-
 public class AppApplication extends TSApplication {
     @Inject
     AuthRepository mAuthRepository;
+    @Inject
+    SystemRepository mSystemRepository;
+
     private AlertDialog alertDialog; // token 过期弹框
     private static AuthBean mCurrentLoginAuth; //当前登录用户的信息
     private static HttpProxyCacheServer mMediaProxyCacheServer;
-    private static QueueManager mQueueManager;
+    private static QueueManager sQueueManager;
+    private static PlaybackManager sPlaybackManager;
     public static List<String> sOverRead = new ArrayList<>();
-    private static MusicWindows sMusicWindows;
+    public int mActivityCount = 0;
 
     @Override
     public void onCreate() {
         super.onCreate();
         FreelineCore.init(this);
         initComponent();
-        if (mAuthRepository.getComponentStatusLocal().isIm()) { // 是否安装了 IM
+        if (mSystemRepository.getComponentStatusLocal().isIm()) { // 是否安装了 IM
             ZBIMSDK.init(getContext());
         }
         BackgroundTaskManager.getInstance(getContext()).startBackgroundTask();// 开启后台任务
         // 极光推送
         JPushInterface.setDebugMode(true);
         JPushInterface.init(this);
-        MobclickAgent.setDebugMode(true);
-        System.out.println("getPackageName() = " + getPackageName());
+        MobclickAgent.setDebugMode(com.zhiyicx.thinksnsplus.BuildConfig.DEBUG);
+        registerActivityCallBacks();
     }
 
     /**
@@ -171,38 +183,51 @@ public class AppApplication extends TSApplication {
                 .doOnCompleted(new Action0() {
                     @Override
                     public void call() {
-                        if (alertDialog == null) {
-                            alertDialog = new AlertDialog.Builder(ActivityHandler
-                                    .getInstance().currentActivity())
-                                    .setTitle(tipStr)
-                                    .setPositiveButton(R.string.sure, new
-                                            DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface
-                                                                            dialogInterface,
-                                                                    int i) {
-                                                    // TODO: 2017/2/8  清理登录信息 token 信息
-                                                    mAuthRepository.clearAuthBean();
-                                                    BackgroundTaskManager.getInstance
-                                                            (getContext())
-                                                            .closeBackgroundTask();//
-                                                    // 关闭后台任务
-                                                    Intent intent = new Intent
-                                                            (getContext(),
-                                                                    LoginActivity
-                                                                            .class);
-                                                    ActivityHandler.getInstance()
-                                                            .currentActivity()
-                                                            .startActivity
-                                                                    (intent);
-                                                    alertDialog.dismiss();
-                                                }
-                                            })
-                                    .create();
+                        if ((alertDialog != null && alertDialog.isShowing()) || ActivityHandler
+                                .getInstance().currentActivity() instanceof LoginActivity) { // 认证失败，弹框去重
+                            return;
                         }
-                        alertDialog.setCanceledOnTouchOutside(false);
-                        alertDialog.show();
+                        alertDialog = new AlertDialog.Builder(ActivityHandler
+                                .getInstance().currentActivity(), R.style.TSWarningAlertDialogStyle)
+                                .setMessage(tipStr)
+                                .setOnKeyListener(new DialogInterface.OnKeyListener() {
 
+                                    @Override
+                                    public boolean onKey(DialogInterface dialog, int keyCode,
+                                                         KeyEvent event) {
+                                        if (alertDialog.isShowing() && keyCode == KeyEvent.KEYCODE_BACK
+                                                && event.getRepeatCount() == 0) {
+                                            return true;
+                                        }
+                                        return false;
+                                    }
+                                })
+                                .setPositiveButton(R.string.sure, new
+                                        DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface
+                                                                        dialogInterface,
+                                                                int i) {
+                                                // TODO: 2017/2/8  清理登录信息 token 信息
+                                                mAuthRepository.clearAuthBean();
+                                                Intent intent = new Intent
+                                                        (getContext(),
+                                                                LoginActivity
+                                                                        .class);
+                                                ActivityHandler.getInstance()
+                                                        .currentActivity()
+                                                        .startActivity
+                                                                (intent);
+                                                alertDialog.dismiss();
+                                            }
+                                        })
+                                .create();
+                        alertDialog.setCanceledOnTouchOutside(false);
+                        try {
+                            alertDialog.show();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 })
                 .doOnError(new Action1<Throwable>() {
@@ -299,11 +324,6 @@ public class AppApplication extends TSApplication {
                 .mMediaProxyCacheServer = newProxy()) : AppApplication.mMediaProxyCacheServer;
     }
 
-    public static MusicWindows getMusicWindows() {
-        return sMusicWindows == null ? new MusicWindows(BaseApplication.getContext()) :
-                sMusicWindows;
-    }
-
     private static HttpProxyCacheServer newProxy() {
         return new HttpProxyCacheServer.Builder(BaseApplication.getContext())
                 .cacheDirectory(new File(FileUtils.getCacheFile(BaseApplication.getContext(), false)// liuchao 2017.3.27修改获取缓存历经
@@ -313,11 +333,81 @@ public class AppApplication extends TSApplication {
     }
 
     public static QueueManager getmQueueManager() {
-        return mQueueManager;
+        return sQueueManager;
+    }
+
+    public static PlaybackManager getPlaybackManager() {
+        return sPlaybackManager;
     }
 
     public static void setmQueueManager(QueueManager mQueueManager) {
-        AppApplication.mQueueManager = mQueueManager;
+        AppApplication.sQueueManager = mQueueManager;
     }
 
+    public static void setPlaybackManager(PlaybackManager playbackManager) {
+        AppApplication.sPlaybackManager = playbackManager;
+    }
+
+    private void registerActivityCallBacks() {
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+                mActivityCount--;
+                if (mActivityCount == 0) {// 切到后台
+                    WindowUtils.hidePopupWindow();
+                }
+            }
+
+            @Override
+            public void onActivityStarted(Activity activity) {
+                mActivityCount++;
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+                if (activity instanceof MusicPlayActivity || activity instanceof GalleryActivity) {
+                    WindowUtils.hidePopupWindow();
+                } else if (sPlaybackManager != null && sPlaybackManager.getState() != PlaybackStateCompat.STATE_NONE
+                        && sPlaybackManager.getState() != PlaybackStateCompat.STATE_STOPPED
+                        && !WindowUtils.getIsPause()) {
+                    WindowUtils.showPopupWindow(AppApplication.this);
+                    if (sPlaybackManager.getState() == PlaybackStateCompat.STATE_PAUSED) {
+                        Observable.timer(5, TimeUnit.SECONDS)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Action1<Long>() {
+                                    @Override
+                                    public void call(Long aLong) {
+                                        WindowUtils.setIsPause(true);
+                                        WindowUtils.hidePopupWindow();
+                                    }
+                                });
+                    }
+                }
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+            }
+
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        LogUtils.e("---------------------------------------------onLowMemory---------------------------------------------------");
+    }
 }

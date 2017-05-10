@@ -16,13 +16,13 @@
 
         <ImageView
             android:id="@+id/head_info_music_comment"
-            android:layout_width="@dimen/info_channel_list_image_width"
-            android:layout_height="@dimen/info_channel_list_image_width"
+            android:layout_width="@dimen/rec_image_for_list_normal"
+            android:layout_height="@dimen/rec_image_for_list_normal"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/spacing_mid"
             android:scaleType="centerCrop"
-            android:src="@mipmap/npc"/>
+            android:src="@drawable/shape_default_image"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -66,6 +66,8 @@
             android:src="@mipmap/ic_arrow_smallgrey"/>
     </RelativeLayout>
     <FrameLayout
+        android:visibility="gone"
+        android:id="@+id/head_info_music_comment_count"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_small"

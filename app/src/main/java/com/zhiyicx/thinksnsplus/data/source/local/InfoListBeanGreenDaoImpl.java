@@ -1,9 +1,11 @@
 package com.zhiyicx.thinksnsplus.data.source.local;
 
+import android.app.Application;
 import android.content.Context;
 
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.List;
@@ -20,10 +22,13 @@ public class InfoListBeanGreenDaoImpl extends CommonCacheImpl<InfoListBean> {
 
     private InfoListBeanDao mInfoListBeanDao;
 
+    InfoListDataBeanGreenDaoImpl mInfoListDataBeanGreenDao;
+
     @Inject
     public InfoListBeanGreenDaoImpl(Context context) {
         super(context);
         mInfoListBeanDao = getWDaoSession().getInfoListBeanDao();
+        mInfoListDataBeanGreenDao = new InfoListDataBeanGreenDaoImpl((Application) context);
     }
 
     @Override
@@ -79,7 +84,7 @@ public class InfoListBeanGreenDaoImpl extends CommonCacheImpl<InfoListBean> {
         return mInfoListBeanDao.insertOrReplace(newData);
     }
 
-    public InfoListBean getInfoListByInfoType(int info_type) {
+    public InfoListBean getInfoListByInfoType(long info_type) {
         List<InfoListBean> infoListBeen = mInfoListBeanDao.queryBuilder()
                 .where(InfoListBeanDao.Properties.Info_type.eq(info_type))
                 .list();
@@ -89,13 +94,36 @@ public class InfoListBeanGreenDaoImpl extends CommonCacheImpl<InfoListBean> {
         return infoListBeen.get(0);
     }
 
-    public void saveCollect(int info_type, int info_id, int is_collection_news) {
+    @Deprecated
+    private void saveCollect(int info_type, int info_id, int is_collection_news) {
         InfoListBean infoListBean = getInfoListByInfoType(info_type);
-        for (InfoListBean.ListBean data : infoListBean.getList()) {
+        for (InfoListDataBean data : infoListBean.getList()) {
             if (data.getId() == info_id) {
                 data.setIs_collection_news(is_collection_news);
+                mInfoListDataBeanGreenDao.updateSingleData(data);
             }
         }
-        insertOrReplace(infoListBean);
+    }
+
+    public void deleteInfo(InfoListDataBean data){
+        mInfoListDataBeanGreenDao.deleteSingleCache(data);
+    }
+
+    public void saveCollect(InfoListDataBean data, int is_collection_news) {
+        data.setIs_collection_news(is_collection_news);
+        mInfoListDataBeanGreenDao.updateSingleData(data);
+    }
+
+    public void saveDig(InfoListDataBean data, int is_dig_news) {
+        data.setIs_digg_news(is_dig_news);
+        mInfoListDataBeanGreenDao.updateSingleData(data);
+    }
+
+    public boolean isDiged(int news_id) {
+        return mInfoListDataBeanGreenDao.isDiged(news_id);
+    }
+
+    public boolean isCollected(int news_id) {
+        return mInfoListDataBeanGreenDao.isCollected(news_id);
     }
 }

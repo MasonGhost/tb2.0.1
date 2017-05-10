@@ -31,7 +31,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 
 public class DynamicListCommentView extends LinearLayout {
-    private static final int SHOW_MORE_COMMENT_SIZE_LIMIT = 4;
+    private static final int SHOW_MORE_COMMENT_SIZE_LIMIT = 6;
 
     private DynamicNoPullRecycleView mDynamicNoPullRecycleView;
     private TextView mMoreComment;
@@ -115,7 +115,6 @@ public class DynamicListCommentView extends LinearLayout {
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                LogUtils.d("DynamicListCommentView is clicke");
             }
         });
         mDynamicNoPullRecycleView.setOnCommentStateClickListener(new DynamicNoPullRecycleView.OnCommentStateClickListener() {
