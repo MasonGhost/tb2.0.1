@@ -92,7 +92,7 @@ public class AppApplication extends TSApplication {
         // 极光推送
         JPushInterface.setDebugMode(true);
         JPushInterface.init(this);
-        MobclickAgent.setDebugMode(true);
+        MobclickAgent.setDebugMode(com.zhiyicx.thinksnsplus.BuildConfig.DEBUG);
         registerActivityCallBacks();
     }
 
@@ -370,7 +370,7 @@ public class AppApplication extends TSApplication {
 
             @Override
             public void onActivityResumed(Activity activity) {
-                if (activity instanceof MusicPlayActivity||activity instanceof GalleryActivity) {
+                if (activity instanceof MusicPlayActivity || activity instanceof GalleryActivity) {
                     WindowUtils.hidePopupWindow();
                 } else if (sPlaybackManager != null && sPlaybackManager.getState() != PlaybackStateCompat.STATE_NONE
                         && sPlaybackManager.getState() != PlaybackStateCompat.STATE_STOPPED

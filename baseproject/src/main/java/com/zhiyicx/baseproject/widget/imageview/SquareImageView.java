@@ -28,11 +28,9 @@ public class SquareImageView extends FilterImageView {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(getDefaultSize(0, widthMeasureSpec),
                 getDefaultSize(0, heightMeasureSpec));
-
-        int childWidthSize = getMeasuredWidth();
         // 高度和宽度一样
         heightMeasureSpec = widthMeasureSpec = MeasureSpec.makeMeasureSpec(
-                childWidthSize, MeasureSpec.EXACTLY);
+                getMeasuredWidth(), MeasureSpec.EXACTLY);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
