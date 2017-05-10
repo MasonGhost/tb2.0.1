@@ -557,7 +557,6 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
 
     @Override
     public void onDestroy() {
-        releaseRes();
         LogUtils.i(TAG + "-->onDestroy");
         super.onDestroy();
     }
