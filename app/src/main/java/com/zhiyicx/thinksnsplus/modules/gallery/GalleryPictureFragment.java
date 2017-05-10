@@ -120,7 +120,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        loadOriginImage(String.format(ApiConfig.IMAGE_PATH.toLowerCase(), mImageBean.getStorage_id(), ImageZipConfig.IMAGE_80_ZIP));
+                        loadOriginImage(String.format(ApiConfig.IMAGE_PATH.toLowerCase(), mImageBean.getStorage_id(), ImageZipConfig.IMAGE_100_ZIP));
                     }
                 });
     }
