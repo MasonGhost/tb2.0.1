@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
+import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.view.RxView;
 import com.wcy.overscroll.OverScrollCheckListener;
 import com.wcy.overscroll.OverScrollLayout;
@@ -153,7 +154,14 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mRvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-
+                // SCROLL_STATE_FLING; //屏幕处于甩动状态
+                // SCROLL_STATE_IDLE; //停止滑动状态
+                // SCROLL_STATE_TOUCH_SCROLL;// 手指接触状态
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    Glide.with(getContext()).resumeRequests();
+                } else {
+                    Glide.with(getContext()).pauseRequests();
+                }
             }
 
             @Override
