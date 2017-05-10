@@ -43,7 +43,6 @@ import com.zhiyicx.baseproject.widget.photoview.PhotoViewAttacher;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
-import com.zhiyicx.common.utils.imageloader.config.ImageConfig;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
@@ -88,6 +87,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     private Context context;
     private double mScreenWith;
     private double mScreenHeiht;
+    private int screenW, screenH;
 
     private boolean hasAnim = false;
 
@@ -102,6 +102,8 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     @Override
     protected void initView(View rootView) {
         context = getContext();
+        screenW = DeviceUtils.getScreenWidth(context);
+        screenH = DeviceUtils.getScreenHeight(context);
         mScreenWith = DeviceUtils.getScreenWidth(context);
         mScreenHeiht = DeviceUtils.getScreenHeight(context);
         mPhotoViewAttacherNormal = new PhotoViewAttacher(mIvPager);
@@ -258,6 +260,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             // 加载本地图片
             Glide.with(context)
                     .load(imageBean.getImgUrl())
+                    .override(800, 800)
                     .placeholder(R.drawable.shape_default_image)
                     .error(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -272,11 +275,12 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     .load(new CustomImageSizeModelImp(imageBean)
                             .requestCustomSizeUrl())
                     .diskCacheStrategy(DiskCacheStrategy.ALL);
-
             // 尝试从缓存获取原图
             Glide.with(context)
                     .using(cacheOnlyStreamLoader)// 不从网络读取原图
                     .load(String.format(ApiConfig.IMAGE_PATH.toLowerCase(), mImageBean.getStorage_id(), ImageZipConfig.IMAGE_70_ZIP))
+                    .override(imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth(),
+                            imageBean.getHeight() > screenH ? screenH : (int) imageBean.getWidth())
                     .thumbnail(thumbnailBuilder)// 加载缩略图，上一个页面已经缓存好了，直接读取
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.shape_default_image)
@@ -298,7 +302,8 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                             Glide.with(context)
                                     .using(new CustomImageModelLoader(context))
                                     .load(new CustomImageSizeModelImp(imageBean))
-                                    .override(800,800)
+                                    .override(imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth(),
+                                            imageBean.getHeight() > screenH ? screenH : (int) imageBean.getWidth())
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                                     .placeholder(R.drawable.shape_default_image)
                                     .error(R.drawable.shape_default_image)
