@@ -1,4 +1,4 @@
-2017年1月17日 14:32:42
+2017年5月11日 13:52:58
 #刷新控件
 
 目前使用 [BGARefreshLayout-Android](https://github.com/bingoogolapple/BGARefreshLayout-Android)
