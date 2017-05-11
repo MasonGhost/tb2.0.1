@@ -95,7 +95,7 @@ public class GalleryFragment extends TSFragment {
                     // 获取到的是当前要退出的fragment
                     GalleryPictureContainerFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
                     GalleryPictureFragment galleryPicturFragment = fragment.getChildFragment();
-                    LogUtils.d("galleryPicturFragment Oldstate::" + viewPageState + " position::" + mVpPhotos.getCurrentItem() , galleryPicturFragment == null ? " null" : " not null");
+                    LogUtils.d("galleryPicturFragment Oldstate::" + viewPageState + " position::" + mVpPhotos.getCurrentItem(), galleryPicturFragment == null ? " null" : " not null");
                     if (galleryPicturFragment != null) {
                         galleryPicturFragment.showOrHideOriginBtn(false);
                     }
@@ -105,7 +105,7 @@ public class GalleryFragment extends TSFragment {
                     // 获取到的是当前要进入的fragment
                     GalleryPictureContainerFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
                     GalleryPictureFragment galleryPicturFragment = fragment.getChildFragment();
-                    LogUtils.d("galleryPicturFragment Newstate::" + viewPageState + "  position::" + mVpPhotos.getCurrentItem() , galleryPicturFragment == null ? " null" : " not null");
+                    LogUtils.d("galleryPicturFragment Newstate::" + viewPageState + "  position::" + mVpPhotos.getCurrentItem(), galleryPicturFragment == null ? " null" : " not null");
                     if (galleryPicturFragment != null) {
                         galleryPicturFragment.showOrHideOriginBtn(true);
                     }
@@ -226,6 +226,8 @@ public class GalleryFragment extends TSFragment {
                 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
+                    System.gc();
+                    System.runFinalization();
                     mVpPhotos.setBackground(backgroundColor);
                     //((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
                 }
@@ -238,8 +240,12 @@ public class GalleryFragment extends TSFragment {
                     getActivity().overridePendingTransition(-1, -1);
                 }
             });
+
+
             fragment.animationExit(bgAnim);
-        } else {
+        } else
+
+        {
             ((GalleryActivity) getActivity()).superBackpress();
         }
     }

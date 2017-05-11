@@ -280,7 +280,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     .using(cacheOnlyStreamLoader)// 不从网络读取原图
                     .load(String.format(ApiConfig.IMAGE_PATH.toLowerCase(), mImageBean.getStorage_id(), ImageZipConfig.IMAGE_70_ZIP))
                     .override(imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth(),
-                            imageBean.getHeight() > screenH ? screenH : (int) imageBean.getHeight())
+                            imageBean.getHeight() > screenH ? screenH /2: (int) imageBean.getHeight())
                     .thumbnail(thumbnailBuilder)// 加载缩略图，上一个页面已经缓存好了，直接读取
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.shape_default_image)
@@ -303,7 +303,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                                     .using(new CustomImageModelLoader(context))
                                     .load(new CustomImageSizeModelImp(imageBean))
                                     .override(imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth(),
-                                            imageBean.getHeight() > screenH ? screenH : (int) imageBean.getHeight())
+                                            imageBean.getHeight() > screenH ? screenH /2: (int) imageBean.getHeight())
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                                     .placeholder(R.drawable.shape_default_image)
                                     .error(R.drawable.shape_default_image)
@@ -424,6 +424,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             getActivity().overridePendingTransition(0, 0);
             AnimationRectBean rect = getArguments().getParcelable("rect");
             TransferImageAnimationUtil.animateClose(backgroundAnimator, rect, mIvPager);
+
         }
         // 原图可见，退出就是用原图
         if (mIvOriginPager.getVisibility() == View.VISIBLE) {
@@ -438,7 +439,13 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             AnimationRectBean rect = getArguments().getParcelable("rect");
             TransferImageAnimationUtil.animateClose(backgroundAnimator, rect, mIvOriginPager);
         }
+    }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        System.gc();
+        System.runFinalization();
     }
 
     /**
