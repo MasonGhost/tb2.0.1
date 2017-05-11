@@ -5,8 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -252,7 +250,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
 
     // 加载图片不带监听
     private void loadImage(final ImageBean imageBean, final AnimationRectBean rect, final boolean animationIn) {
-        LogUtils.i("imageBean = " + imageBean.toString());
+        LogUtils.e("imageBean = " + imageBean.toString());
 
         if (imageBean.getImgUrl() != null) {
             int with = 800;// 图片宽度显示的像素：防止图片过大卡顿
@@ -447,13 +445,6 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         }
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        System.gc();
-        System.runFinalization();
-    }
-
     /**
      * 进入动画，在加载图片后调用
      *
@@ -570,25 +561,9 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
 
     @Override
     public void onDestroy() {
-        LogUtils.i(TAG + "-->onDestroy");
+        DeviceUtils.gc();
         super.onDestroy();
     }
 
-    private void releaseImageViewResouce(ImageView imageView) {
-        if (imageView == null) return;
-        Drawable drawable = imageView.getDrawable();
-        if (drawable != null && drawable instanceof BitmapDrawable) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            Bitmap bitmap = bitmapDrawable.getBitmap();
-            if (bitmap != null && !bitmap.isRecycled()) {
-                bitmap.recycle();
-            }
-        }
-    }
-
-    public void releaseRes() {
-        releaseImageViewResouce(mIvOriginPager);
-        releaseImageViewResouce(mIvPager);
-    }
 
 }
