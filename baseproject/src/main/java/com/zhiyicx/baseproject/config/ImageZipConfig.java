@@ -37,4 +37,16 @@ public class ImageZipConfig {
      */
     public static final int IMAGE_70_ZIP = 45;
 
+    /**
+     * 原图
+     * 使用场景：画廊
+     */
+    public static final int IMAGE_100_ZIP = 100;
+
+    /**
+     * 原图
+     * 使用场景：画廊
+     */
+    public static final int IMAGE_80_ZIP = 80;
+
 }

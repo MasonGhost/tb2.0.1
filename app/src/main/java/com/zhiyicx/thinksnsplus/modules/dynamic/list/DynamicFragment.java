@@ -242,7 +242,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     public void onImageClick(ViewHolder holder, DynamicBean dynamicBean, int position) {
         List<ImageBean> imageBeanList = dynamicBean.getFeed().getStorages();
         ArrayList<AnimationRectBean> animationRectBeanArrayList
-                = new ArrayList<AnimationRectBean>();
+                = new ArrayList<>();
         for (int i = 0; i < imageBeanList.size(); i++) {
             int id = UIUtils.getResourceByName("siv_" + i, "id", getContext());
             ImageView imageView = holder.getView(id);
