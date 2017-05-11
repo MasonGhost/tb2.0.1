@@ -280,7 +280,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     .using(cacheOnlyStreamLoader)// 不从网络读取原图
                     .load(String.format(ApiConfig.IMAGE_PATH.toLowerCase(), mImageBean.getStorage_id(), ImageZipConfig.IMAGE_70_ZIP))
                     .override(imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth(),
-                            imageBean.getHeight() > screenH ? screenH /2: (int) imageBean.getHeight())
+                            imageBean.getHeight() > screenH ? screenH / 2 : (int) imageBean.getHeight())
                     .thumbnail(thumbnailBuilder)// 加载缩略图，上一个页面已经缓存好了，直接读取
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.shape_default_image)
@@ -296,14 +296,17 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                                     mTvOriginPhoto.setScaleX(0.0f);
                                     mTvOriginPhoto.setAlpha(0.0f);
                                 }
-                                mTvOriginPhoto.setVisibility(View.VISIBLE);
+                                if (e instanceof IOException) {  // 本地有圖片主動抛出異常
+                                }else {
+                                    mTvOriginPhoto.setVisibility(View.VISIBLE);
+                                }
                             }
                             // 原图没有缓存，从cacheOnlyStreamLoader抛出异常，在这儿加载高清图
                             Glide.with(context)
                                     .using(new CustomImageModelLoader(context))
                                     .load(new CustomImageSizeModelImp(imageBean))
                                     .override(imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth(),
-                                            imageBean.getHeight() > screenH ? screenH /2: (int) imageBean.getHeight())
+                                            imageBean.getHeight() > screenH ? screenH / 2 : (int) imageBean.getHeight())
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                                     .placeholder(R.drawable.shape_default_image)
                                     .error(R.drawable.shape_default_image)
@@ -316,6 +319,9 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                                                 mIvPager.setImageDrawable(resource);
                                             }
                                             mPhotoViewAttacherNormal.update();
+                                            if (mTvOriginPhoto != null) {
+                                                mTvOriginPhoto.setVisibility(View.GONE);
+                                            }
                                         }
                                     });
                             return false;
@@ -540,7 +546,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                 @Override
                 public InputStream loadData(Priority priority) throws Exception {
                     // 如果是从网络获取图片肯定会走这儿，直接抛出异常，缓存从其他方法获取
-                    throw new IOException();
+                    throw new IOException("intercupt net by own");
                 }
 
                 @Override
