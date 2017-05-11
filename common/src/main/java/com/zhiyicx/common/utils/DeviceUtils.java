@@ -539,4 +539,9 @@ public class DeviceUtils {
             context.startActivity(intent);
         }
     }
+
+    public static void gc(){
+        System.gc();
+        System.runFinalization();
+    }
 }

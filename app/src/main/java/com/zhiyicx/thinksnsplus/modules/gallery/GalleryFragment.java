@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.indicator_expand.ScaleCircleNavigator;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
@@ -216,8 +217,9 @@ public class GalleryFragment extends TSFragment {
     }
 
     public void backPress() {
+
         // 退出隐藏圆点指示器，防止显示在透明背景上
-        mMiIndicator.setVisibility(View.GONE);
+        //mMiIndicator.setVisibility(View.INVISIBLE);
         GalleryPictureContainerFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
         if (fragment != null && fragment.canAnimateCloseActivity()) {
             backgroundColor = new ColorDrawable(Color.BLACK);
@@ -226,27 +228,24 @@ public class GalleryFragment extends TSFragment {
                 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    System.gc();
-                    System.runFinalization();
-                    mVpPhotos.setBackground(backgroundColor);
+                    LogUtils.e("onAnimationUpdate");
+//                    DeviceUtils.gc();
+//                    mVpPhotos.setBackground(backgroundColor);
                     //((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
                 }
             });
             bgAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
+                    LogUtils.e("onAnimationEnd");
                     getActivity().finish();
                     getActivity().overridePendingTransition(-1, -1);
+
                 }
             });
-
-
             fragment.animationExit(bgAnim);
-        } else
-
-        {
-            ((GalleryActivity) getActivity()).superBackpress();
+        } else {
+            // ((GalleryActivity) getActivity()).superBackpress();
         }
     }
 
@@ -274,6 +273,6 @@ public class GalleryFragment extends TSFragment {
     }
 
     public void setIndiactorVisible(boolean visible) {
-        mMiIndicator.setVisibility(visible ? View.VISIBLE : View.GONE);
+//        mMiIndicator.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 }
