@@ -1,5 +1,6 @@
+2017年5月11日 13:57:00
 # common module
-结构目录
+## 结构目录
 ```
 -- base
 -- config
@@ -37,4 +38,14 @@ _**不建议除了当前项目开发人员和维护人员以外的人，对其�
     封装了一些常用的工具类，在版本升级或者维护中，会继续扩充更多的功能
 ### [widget目录：](WIDGET.md)
     封装了一些基础的，通用的自定义控件，在版本升级或者维护中，会继续扩充更多的功能
-2016年12月23日09:50:34
+
+## 文档说明
+[common](document/common/COMMON.md) 基础框架包，基础公用累，接入人员不用修改，不包含资源文件，可打成`jar`
+>- [辅助常量定义](document/common/CONSTANTCONFIG.md)
+>- [dagger2 说明](document/common/DAGGER2.md)
+>- [mvp 说明](document/common/MVP.md)
+>- [6.0 权限适配](document/common/PERMISSION.md)
+>- [日志说明](document/common/LOG.md)
+>- [日志说明](document/common/LOG.md)
+>- [常用工具类集合](document/common/UTILS.md)
+>- [基础自定义控件](document/common/WIDGET.md)

@@ -331,7 +331,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
         Bitmap shareBitMap = null;
         try {
-            ImageView imageView = (ImageView) layoutManager.findViewByPosition(dataPosition+1).findViewById(R.id.siv_0);
+            ImageView imageView = (ImageView) layoutManager.findViewByPosition(dataPosition).findViewById(R.id.siv_0);
             shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(imageView.getDrawable());
         } catch (Exception e) {
             e.printStackTrace();

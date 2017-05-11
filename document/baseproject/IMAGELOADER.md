@@ -1,4 +1,4 @@
-
+2017年5月11日 11:39:00
 # 图片加载实现
 
 ## 1.概述
@@ -220,4 +220,3 @@ public class GlideCircleBoundTransform extends BitmapTransformation {
 
 - GlideCircleTransform：加载圆形图片，和上方实现类似
 
-2017年1月12日11:41:18

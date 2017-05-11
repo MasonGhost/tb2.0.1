@@ -8,7 +8,6 @@ import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.ActivityHandler;
-import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.imsdk.db.dao.ConversationDao;
@@ -609,20 +608,19 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
         messageItemBean.getConversation().setLast_message_time(TextUtils.isEmpty(flushMessage.getTime()) ? System.currentTimeMillis() : TimeUtils.utc2LocalLong(flushMessage.getTime()));
         messageItemBean.getConversation().getLast_message().setCreate_time(TextUtils.isEmpty(flushMessage.getTime()) ? System.currentTimeMillis() : TimeUtils.utc2LocalLong(flushMessage.getTime()));
         String text = mContext.getString(R.string.has_no_body);
-        if (!TextUtils.isEmpty(flushMessage.getUids())) {
+        if (flushMessage != null && flushMessage.getUids() != null && !flushMessage.getUids().isEmpty()) {
             text = "";
-            String[] uids = flushMessage.getUids().split(ConstantConfig.SPLIT_SMBOL);
-            List<String> ueridSet = new ArrayList<>();
-            for (int length = 0; length < uids.length; length++) {
-                if (!TextUtils.isEmpty(uids[length]) && !ueridSet.contains(uids[length])) {// 用户 信息去重,去空
-                    ueridSet.add(uids[length]);
+            List<Long> uids = new ArrayList<>();
+            for (Long aLong : flushMessage.getUids()) {
+                if (!uids.contains(aLong)) {
+                    uids.add(aLong);
                 }
             }
             int i = 0;
-            for (String s : ueridSet) {
+            for (Long s : uids) {
                 if (i++ < max_user_nums) {
                     try {
-                        UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(Long.valueOf(s));
+                        UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(s);
                         text += userInfoBean.getName() + "、";
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -631,12 +629,12 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
             }
             switch (flushMessage.getKey()) { // 超过限定的人数才显示 “等人"
                 case ApiConfig.FLUSHMESSAGES_KEY_COMMENTS:
-                    if (ueridSet.size() > MAX_USER_NUMS_COMMENT) {
+                    if (uids.size() > MAX_USER_NUMS_COMMENT) {
                         text += mContext.getString(R.string.comment_digg_much_hint);
                     }
                     break;
                 case ApiConfig.FLUSHMESSAGES_KEY_DIGGS:
-                    if (ueridSet.size() > MAX_USER_NUMS_DIGG) {
+                    if (uids.size() > MAX_USER_NUMS_DIGG) {
                         text += mContext.getString(R.string.comment_digg_much_hint);
                     }
                     break;
@@ -660,25 +658,26 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
     }
 
     /**
-     * @param commentFlushMessage from net
-     * @param flushMessage        from local
+     * @param netFlushMessage   from net
+     * @param localFlushMessage from local
      */
-    private void handleFlushMessage(FlushMessages commentFlushMessage, FlushMessages flushMessage) {
-        if (commentFlushMessage == null) {
+    private void handleFlushMessage(FlushMessages netFlushMessage, FlushMessages localFlushMessage) {
+        if (netFlushMessage == null) {
             return;
         }
-        if (flushMessage == null) {
-            mFlushMessageBeanGreenDao.insertOrReplace(commentFlushMessage);
+        if (localFlushMessage == null) {
+            mFlushMessageBeanGreenDao.insertOrReplace(netFlushMessage);
             return;
         }
-        flushMessage.setCount(commentFlushMessage.getCount() + flushMessage.getCount());
-        flushMessage.setTime(commentFlushMessage.getTime());
-        if (commentFlushMessage.getCount() >= MAX_USER_NUMS_COMMENT) {
-            flushMessage.setUids(commentFlushMessage.getUids());
+        localFlushMessage.setCount(netFlushMessage.getCount() + localFlushMessage.getCount());
+        localFlushMessage.setTime(netFlushMessage.getTime());
+        if (netFlushMessage.getCount() >= MAX_USER_NUMS_COMMENT) {
+            localFlushMessage.setUids(netFlushMessage.getUids());
         } else {
-            String uids = ConvertUtils.removeSymbolStartWith(commentFlushMessage.getUids() + ConstantConfig.SPLIT_SMBOL + flushMessage.getUids(), ConstantConfig.SPLIT_SMBOL);
-            uids = ConvertUtils.removeSymbolEndWith(uids, ConstantConfig.SPLIT_SMBOL);
-            flushMessage.setUids(uids);
+            List<Long> tmp = new ArrayList<>();
+            tmp.addAll(netFlushMessage.getUids());
+            tmp.addAll(localFlushMessage.getUids());
+            localFlushMessage.setUids(tmp);
         }
     }
 

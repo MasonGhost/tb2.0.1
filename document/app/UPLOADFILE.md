@@ -1,7 +1,8 @@
+2017年5月11日 11:34:05
 # 文件上传
 
 ## 上传步骤：
- 具体文档请参见[储存任务概述](https://github.com/zhiyicx/thinksns-plus/blob/master/documents/api/v1/%E5%82%A8%E5%AD%98%E4%BB%BB%E5%8A%A1%E6%A6%82%E8%BF%B0.md)
+ 具体文档请参见[储存任务概述](https://github.com/zhiyicx/thinksns-plus/blob/master/documents/api/v1/storage-task-overview.md)
 - 1.储存任务创建
 - 2.上传文件
 - 3.储存任务通知
@@ -28,28 +29,47 @@ mCommonClient.createStorageTask(paramMap, null)
                                 // 创建上传任务成功，开始上传
                                 String method = storageTaskBean.getMethod();
                                 String uri = storageTaskBean.getUri();
-                                // 处理headers
-                                Object headers = storageTaskBean.getHeaders();
-                                HashMap<String, String> headerMap = parseJSONObject(headers);
+                                Gson gson = new Gson();
+                                // 处理 headers
+                                HashMap<String, String> headerMap;
+                                try {
+                                    headerMap = gson.fromJson(gson.toJson(storageTaskBean.getHeaders()),
+                                            new TypeToken<HashMap<String, String>>() {
+                                            }.getType());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    headerMap = new HashMap<String, String>();
+                                }
+
+                                // 处理 options
+                                HashMap<String, Object> optionsMap;
+                                try {
+                                    optionsMap = gson.fromJson(gson.toJson(storageTaskBean.getOptions()),
+                                            new TypeToken<HashMap<String, Object>>() {
+                                            }.getType());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    optionsMap = new HashMap<String, Object>();
+                                }
                                 // 封装图片File
                                 HashMap<String, String> fileMap = new HashMap<String, String>();
-                                fileMap.put(params, filePath);
+                                fileMap.put(storageTaskBean.getInput(), filePath);
                                 if (method.equalsIgnoreCase("put")) {
                                     // 使用map操作符携带任务id，继续向下传递
-                                    return mCommonClient.upLoadFileByPut(uri, headerMap, UpLoadFile.upLoadMultiFile(fileMap))
+                                    return mCommonClient.upLoadFileByPut(uri, headerMap, UpLoadFile.upLoadFileAndParams(fileMap, optionsMap))
                                             .map(new Func1<String, String[]>() {
                                                 @Override
                                                 public String[] call(String s) {
-                                                    return new String[]{s.toString(), storageTaskId + ""};
+                                                    return new String[]{s, storageTaskId + ""};
                                                 }
                                             });
                                 } else if (method.equalsIgnoreCase("post")) {
                                     // 使用map操作符携带任务id，继续向下传递
-                                    return mCommonClient.upLoadFileByPost(uri, headerMap, UpLoadFile.upLoadMultiFile(fileMap))
+                                    return mCommonClient.upLoadFileByPost(uri, headerMap, UpLoadFile.upLoadFileAndParams(fileMap, optionsMap))
                                             .map(new Func1<String, String[]>() {
                                                 @Override
                                                 public String[] call(String s) {
-                                                    return new String[]{s.toString(), storageTaskId + ""};
+                                                    return new String[]{s, storageTaskId + ""};
                                                 }
                                             });
                                 } else {
@@ -191,7 +211,6 @@ storage_id表示当前文件在服务器的存储表示，通过拼接：主机�
 ## 删除任务：
 暂无
 
-2017年3月2日10:51:47
 
 
 

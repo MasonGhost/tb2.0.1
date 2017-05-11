@@ -39,6 +39,7 @@
     <string name="code_1021">用户未被关注</string>
     <string name="code_1022">不能对自己进行关注相关操作</string>
     <string name="code_1023">关注相关列表的目标用户不存在</string>
+    <string name="code_1024">操作失败 请稍后重试</string>
     <!--用户认证失败-->
     <string name="code_1099">@string/auth_fail_relogin</string>
     <string name="auth_fail_relogin">你的账号已过期,请重新登录!</string>
@@ -89,6 +90,14 @@
     <!--#########################################      系统配置模块       ################################-->
 
     <string name="code_7001">反馈内容不存在</string>
+
+
+    <!--#########################################      音乐模块       ################################-->
+
+    <string name="code_8001">专辑不存在或已删除</string>
+    <string name="code_8002">歌曲不存在或已删除</string>
+    <string name="code_8003">已赞过该歌曲</string>
+    <string name="code_8004">未对歌曲点赞</string>
 
     <!--#########################################      资讯模块       ################################-->
 
