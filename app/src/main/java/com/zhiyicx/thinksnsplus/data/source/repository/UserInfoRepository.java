@@ -11,7 +11,6 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.cache.CacheImp;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
@@ -39,7 +38,6 @@ import org.simple.eventbus.EventBus;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -85,7 +83,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      */
     @Override
     public Observable<ArrayList<AreaBean>> getAreaList() {
-       return  Observable.create(new Observable.OnSubscribe<ArrayList<AreaBean>>() {
+        return Observable.create(new Observable.OnSubscribe<ArrayList<AreaBean>>() {
             @Override
             public void call(Subscriber<? super ArrayList<AreaBean>> subscriber) {
                 try {
@@ -406,9 +404,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                         if (listBaseJson.isStatus() && !listBaseJson.getData().isEmpty()) {
                             List<Object> userIdstmp = new ArrayList();
                             for (FlushMessages flushMessages : listBaseJson.getData()) {
-                                if (!TextUtils.isEmpty(flushMessages.getUids())) {
-                                    userIdstmp.addAll(Arrays.asList(flushMessages.getUids().split(ConstantConfig.SPLIT_SMBOL)));
-                                }
+                                userIdstmp.addAll(flushMessages.getUids());
                             }
                             if (userIdstmp.isEmpty()) {
                                 return Observable.just(listBaseJson);
