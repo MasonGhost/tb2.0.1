@@ -1,3 +1,4 @@
+2017年5月11日 11:41:47
 # TabSelectView自定义控件
 ToolBar上切换viewPager的选项卡控件
 
@@ -17,4 +18,3 @@ ToolBar上切换viewPager的选项卡控件
    ```
    **注意：当前只支持传入固定的页数，也就是说在调用initTabView方法后，不能动态修改**
 
-2017年2月14日15:41:36

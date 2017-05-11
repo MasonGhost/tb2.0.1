@@ -1,3 +1,4 @@
+2017年5月11日 11:41:28
 # 图片选择器的功能整合
 一般来说上传图片，包含这些功能，从本地相册选择图片，拍照获取图片，对图片进行裁剪；
 
@@ -166,4 +167,3 @@
                          mPhotoSelector.getPhotoFromCamera(ArrayList<String> selectedPhotos);
  ```
 
-2017年2月23日18:17:26
