@@ -69,8 +69,8 @@ public class SystemConversationBeanGreenDaoImpl extends CommonCacheImpl<SystemCo
         }
         SystemConversationBeanDao systemConversationBeanDao = getRDaoSession().getSystemConversationBeanDao();
         return systemConversationBeanDao.queryDeep(" where "
-                        + " T." + SystemConversationBeanDao.Properties._id.columnName + " < ? "
-                        + " order by " + " T." + SystemConversationBeanDao.Properties._id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// 按频道id倒序
+                        + " T." + SystemConversationBeanDao.Properties.Created_time.columnName + " < ? "
+                        + " order by " + " T." + SystemConversationBeanDao.Properties.Created_time.columnName + " ASC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// 按频道id倒序
                 , max_id + "");
     }
 

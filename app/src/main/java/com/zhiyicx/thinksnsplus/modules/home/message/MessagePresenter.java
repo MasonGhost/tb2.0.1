@@ -574,8 +574,6 @@ public class MessagePresenter extends BasePresenter<MessageContract.Repository, 
                 max_user_nums = MAX_USER_NUMS_COMMENT;
                 CommentedBean lastCommentedBean = mCommentedBeanGreenDao.getLastData();
                 if (lastCommentedBean != null && flushMessage.getMax_id() != 0 && lastCommentedBean.getId() > flushMessage.getMax_id()) {// 如果本地查看的数据 id 已经大于 新消息的 id 说明已经读取过了
-                    LogUtils.d(TAG,"---1---"+lastCommentedBean.toString());
-                    LogUtils.d(TAG,"---2--"+flushMessage.toString());
                     flushMessage.setCount(0);
                 }
                 break;

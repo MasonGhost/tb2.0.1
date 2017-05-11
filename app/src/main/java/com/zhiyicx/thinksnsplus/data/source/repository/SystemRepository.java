@@ -6,6 +6,7 @@ import android.content.Context;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
@@ -201,7 +202,7 @@ public class SystemRepository implements ISystemRepository {
         Collections.sort(datas, new Comparator<SystemConversationBean>() { // 排序，最大的放在最后面
             @Override
             public int compare(SystemConversationBean o1, SystemConversationBean o2) {
-                return o1.get_id().intValue() - o2.get_id().intValue();
+                return (int) (TimeUtils.utc2LocalLong(o1.getCreated_at()) - TimeUtils.utc2LocalLong(o2.getCreated_at()));
             }
         });
     }
@@ -209,7 +210,7 @@ public class SystemRepository implements ISystemRepository {
     @Override
     public List<SystemConversationBean> requestCacheData(long max_Id) {
         List<SystemConversationBean> list = mSystemConversationBeanGreenDao.getMultiDataFromCacheByMaxId(max_Id);
-        descCacheSystemConversation(list);
+//        descCacheSystemConversation(list);
         handleTsHelperUserInfo(list);
         return list;
     }
