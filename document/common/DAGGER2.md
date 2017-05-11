@@ -1,3 +1,4 @@
+2017年5月11日 13:58:57
 # dagger2说明
 
 ##  1.概述
@@ -144,7 +145,7 @@ public class AppApplication extends TSApplication {
 
 建议查看官方文档学习[Dagger2](https://google.github.io/dagger/users-guide)
 
-2016年12月29日10:08:52
+
 
 
 
