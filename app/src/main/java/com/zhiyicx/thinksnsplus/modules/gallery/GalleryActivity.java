@@ -61,6 +61,14 @@ public class GalleryActivity extends TSActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        LogUtils.i(TAG + "-->onDestroy");
+        LogUtils.e(TAG + "-->onDestroy");
+    }
+
+    @Override
+    protected void onStart() {
+        System.gc();
+        System.runFinalization();
+        LogUtils.e(TAG + "-->onStart");
+        super.onStart();
     }
 }

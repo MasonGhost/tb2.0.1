@@ -83,9 +83,4 @@ public class TCommonMetadataProvider extends CommonMetadataProvider<MusicComment
                 (long) commonMetadataBean.getTo_user()));
         return musicCommentListBean;
     }
-
-    @Override
-    public void saveCommonMetadataList(List<CommonMetadataBean> commonComments) {
-        mCommonMetadataBeanGreenDao.saveMultiData(commonComments);
-    }
 }

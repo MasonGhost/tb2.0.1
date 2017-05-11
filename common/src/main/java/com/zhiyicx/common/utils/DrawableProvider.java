@@ -1,6 +1,5 @@
 package com.zhiyicx.common.utils;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -234,7 +233,6 @@ public class DrawableProvider {
             rect.right = rect.left + imageView.getWidth();
             rect.bottom = rect.top + imageView.getHeight();
         }
-
         if (drawable != null) {
 
             int bitmapWidth = drawable.getIntrinsicWidth();
