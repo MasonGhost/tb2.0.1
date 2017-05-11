@@ -4,7 +4,6 @@ import android.app.Application;
 
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.thinksnsplus.data.source.local.CommonMetadataBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,12 +66,16 @@ public abstract class CommonMetadataProvider<T> implements ICommonMetadataProvid
         mCommonMetadataBeanGreenDao.insertOrReplace(commonMetadataBean);
     }
 
-    public CommonMetadataBean getCommentByCommentMark(long mark){
-       return mCommonMetadataBeanGreenDao.getCommonMetadataListByCommentMark(mark);
+    public CommonMetadataBean getCommentByCommentMark(long mark) {
+        return mCommonMetadataBeanGreenDao.getCommonMetadataListByCommentMark(mark);
     }
 
     public void deleteOne(CommonMetadataBean commonMetadataBean) {
         mCommonMetadataBeanGreenDao.deleteSingleCache(commonMetadataBean);
+    }
+
+    public void saveCommonMetadataList(List<CommonMetadataBean> commonComments) {
+        mCommonMetadataBeanGreenDao.saveMultiData(commonComments);
     }
 
     public abstract CommonMetadata buildCommonMetadata(T commentData);
@@ -81,5 +84,4 @@ public abstract class CommonMetadataProvider<T> implements ICommonMetadataProvid
 
     public abstract CommonMetadataBean buildCommonMetadataBean(T commentData);
 
-    public abstract void saveCommonMetadataList(List<CommonMetadataBean> commonComments);
 }
