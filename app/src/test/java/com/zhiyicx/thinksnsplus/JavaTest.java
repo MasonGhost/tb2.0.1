@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
@@ -25,6 +26,7 @@ import edu.emory.mathcs.backport.java.util.Arrays;
  */
 
 public class JavaTest {
+    private static final String TAG = "JavaTest";
 
     /**
      * utc 时间测试
@@ -48,7 +50,7 @@ public class JavaTest {
                 return o2 - o1;
             }
         });
-        System.out.println("data = " + data.toString());
+        LogUtils.d(TAG, "data = " + data.toString());
 
         List<Integer> data2 = new ArrayList<>();
 
@@ -58,7 +60,7 @@ public class JavaTest {
                 return o1 - o2;
             }
         });
-        System.out.println("data2 = " + data2.toString());
+        LogUtils.d(TAG, "data2 = " + data2.toString());
     }
 
     @Test
@@ -67,7 +69,7 @@ public class JavaTest {
         String test = "12,14";
         String[] testarry = test.split(",");
         userids.addAll(Arrays.asList(testarry));
-        System.out.println("testarry = " + userids.toString());
+        LogUtils.d(TAG, "testarry = " + userids.toString());
     }
 
     /**
@@ -76,7 +78,7 @@ public class JavaTest {
     @Test
     public void removeSymbolStartWith() {
         String test = ",,2,3";
-        System.out.println("ConvertUtils.removeSymbolStartWith(test,\",\") = " + ConvertUtils.removeSymbolStartWith(test, ","));
+        LogUtils.d(TAG, "ConvertUtils.removeSymbolStartWith(test,\",\") = " + ConvertUtils.removeSymbolStartWith(test, ","));
     }
 
     /**
@@ -85,7 +87,7 @@ public class JavaTest {
     @Test
     public void removeSymbolEndWith() {
         String test = ",,2,3,,";
-        System.out.println("ConvertUtils.removeSymbolStartWith(test,\",\") = " + ConvertUtils.removeSymbolEndWith(test, ","));
+        LogUtils.d(TAG, "ConvertUtils.removeSymbolStartWith(test,\",\") = " + ConvertUtils.removeSymbolEndWith(test, ","));
     }
 
     /**
@@ -97,7 +99,7 @@ public class JavaTest {
         List<String> datas = new ArrayList<>();
 
 //        datas.add(0, test); 没有数据的时候set异常
-        System.out.println("datas = " + datas.toString());
+        LogUtils.d(TAG, "datas = " + datas.toString());
         try {
             datas.set(0, test);
         } catch (Exception e) {
@@ -131,7 +133,7 @@ public class JavaTest {
         userInfoBean.setName("jungle68");
         Map<String, Object> optionsMap = DataDealUitls.transBean2Map(userInfoBean);
         for (Map.Entry<String, Object> entry : optionsMap.entrySet()) {
-            System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+            LogUtils.d(TAG, "Key = " + entry.getKey() + ", Value = " + entry.getValue());
         }
     }
 
@@ -142,18 +144,18 @@ public class JavaTest {
                 new TypeToken<Map<String, Object>>() {
                 }.getType());
         for (Map.Entry<String, Object> entry : retMap.entrySet()) {
-            System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+            LogUtils.d(TAG, "Key = " + entry.getKey() + ", Value = " + entry.getValue());
         }
     }
 
     @Test
     public void objecttst() {
-        Object object ="{\n" +
+        Object object = "{\n" +
                 "            \"token\":\"l6NOIWOwcwEzENBQWkb23s57MVmvjNLPHN4D7I5X:mrP5oxdTmdSqDGAQs8ZhtIZdCBY=:eyJyZXR1cm5Cb2R5Ijoie1wicmVzb3VyY2VcIjogJCh4OnJlc291cmNlKX0iLCJzY29wZSI6InRzcGx1czoyMDE3XC8wNFwvMjhcLzA3MDFcLzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZyIsImRlYWRsaW5lIjoxNDkzNDUxNjAxLCJ1cEhvc3RzIjpbImh0dHA6XC9cL3VwLXoyLnFpbml1LmNvbSIsImh0dHA6XC9cL3VwbG9hZC16Mi5xaW5pdS5jb20iLCItSCB1cC16Mi5xaW5pdS5jb20gaHR0cDpcL1wvMTgzLjYwLjIxNC4xOTgiXX0=\",\n" +
                 "            \"key\":\"2017/04/28/0701/9756FCCF72E47A2FBA935AE9213EB1E8.jpg\",\n" +
                 "            \"x:resource\":\"MjAxNy8wNC8yOC8wNzAxLzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZw==\"\n" +
                 "        }";
-        System.out.println("object = " + object.toString());
+        LogUtils.d(TAG, "object = " + object.toString());
     }
 
 }
