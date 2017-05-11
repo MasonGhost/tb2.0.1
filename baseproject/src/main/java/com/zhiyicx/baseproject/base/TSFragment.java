@@ -408,7 +408,6 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
     }*/
     protected void musicWindowsStatus(final boolean isShow) {
-        LogUtils.d("musicWindowsStatus:::" + isShow);
         WindowUtils.changeToBlackIcon();
         final View view = getLeftViewOfMusicWindow();
         if (getLeftViewOfMusicWindow() != null) {
