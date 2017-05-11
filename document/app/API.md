@@ -1,8 +1,6 @@
-2017年1月20日15:50:53
+2017年5月11日 10:33:05
 # 接口说明
-(等待后台具体接口出来后，再完成)
-
-[后台开发库](https://github.com/zhiyicx/thinksns-plus/tree/master/documents/api)
+请参考[后台开发库](https://github.com/zhiyicx/thinksns-plus/blob/master/documents/api/v1/overview.md)
 ## 接口外层结构
 ```
 {
@@ -30,8 +28,9 @@
     /**
      * 服务器正确接收到请求，主动返回错误状态以及数据
      * @param message 错误信息
+     * @param code 错误编码
      */
-    protected abstract void onFailure(String message);
+    protected abstract void onFailure(String message, int code);
 
     /**
      *  系统级错误，网络错误，系统内核错误等
@@ -53,7 +52,7 @@
                     }
 
                     @Override
-                    protected void onFailure(String message) {
+                    protected void onFailure(String message,int code) {
                         mRootView.showMessage(message);
                         mRootView.setVertifyCodeBtEnabled(true);
                         mRootView.setVertifyCodeLoadin(false);
