@@ -273,6 +273,6 @@ public class GalleryFragment extends TSFragment {
     }
 
     public void setIndiactorVisible(boolean visible) {
-//        mMiIndicator.setVisibility(visible ? View.VISIBLE : View.GONE);
+        mMiIndicator.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 }
