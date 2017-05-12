@@ -126,18 +126,24 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
-    protected boolean setUseSatusbar() {
-        return true;
-    }
-
-    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_dynamic_detail;
     }
 
+    //    @Override
+//    protected boolean setUseStatusView() {
+//        return false;
+//    }
+//
+//    @Override
+//    protected boolean setUseSatusbar() {
+//        return true;
+//    }
+//
     @Override
-    protected boolean setUseStatusView() {
-        return false;
+    protected int getstatusbarAndToolbarHeight() {
+        //getResources().getDimensionPixelSize(R.dimen.toolbar_height_include_line_height) + DeviceUtils.getStatuBarHeight(getContext())
+        return 0;
     }
 
     @Override
@@ -153,16 +159,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         } else {
             mPresenter.getDetailAll(mDynamicBean.getFeed_id(), DEFAULT_PAGE_MAX_ID, mDynamicBean.getUser_id() + "");
         }
-    }
-
-    /**
-     * 特别修改
-     *
-     * @return
-     */
-    @Override
-    protected int getstatusbarAndToolbarHeight() {
-        return getResources().getDimensionPixelSize(R.dimen.toolbar_height_include_line_height) + DeviceUtils.getStatuBarHeight(getContext());
     }
 
     @Override
