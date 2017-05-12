@@ -12,8 +12,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +21,6 @@ import android.view.ViewGroup;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.indicator_expand.ScaleCircleNavigator;
-import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
@@ -29,10 +28,8 @@ import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
 import net.lucode.hackware.magicindicator.buildins.UIUtil;
-import net.lucode.hackware.magicindicator.buildins.circlenavigator.CircleNavigator;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -47,7 +44,7 @@ import butterknife.BindView;
 public class GalleryFragment extends TSFragment {
     public static final String BUNDLE_IMAGS = "imags";
     public static final String BUNDLE_IMAGS_POSITON = "imags_positon";
-    private static final int MAX_OFF_SIZE = 9;
+    private static final int MAX_OFF_SIZE = 8;
     @BindView(R.id.vp_photos)
     ViewPager mVpPhotos;
     @BindView(R.id.mi_indicator)
@@ -139,7 +136,7 @@ public class GalleryFragment extends TSFragment {
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
