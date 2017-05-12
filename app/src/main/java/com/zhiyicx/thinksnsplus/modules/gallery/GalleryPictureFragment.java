@@ -162,6 +162,11 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     }
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     public boolean onLongClick(View v) {
         if (mActionPopupWindow == null) {
             mActionPopupWindow = ActionPopupWindow.builder()
@@ -276,8 +281,6 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             Glide.with(context)
                     .using(cacheOnlyStreamLoader)// 不从网络读取原图
                     .load(String.format(ApiConfig.IMAGE_PATH.toLowerCase(), mImageBean.getStorage_id(), ImageZipConfig.IMAGE_100_ZIP))
-                    .override(imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth(),
-                            imageBean.getHeight() > screenH ? screenH : (int) imageBean.getHeight())
                     .thumbnail(thumbnailBuilder)// 加载缩略图，上一个页面已经缓存好了，直接读取
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.shape_default_image)

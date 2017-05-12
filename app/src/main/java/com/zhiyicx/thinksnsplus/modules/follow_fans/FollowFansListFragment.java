@@ -84,6 +84,11 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
     }
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     protected boolean showToolBarDivider() {
         return false;
     }

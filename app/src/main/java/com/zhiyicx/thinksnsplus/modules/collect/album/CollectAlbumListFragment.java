@@ -33,6 +33,11 @@ public class CollectAlbumListFragment extends MusicListFragment {
     private MusicAlbumListBean mMusicAlbumListBean;
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     protected void initData() {
         DaggerCollectAlbumListPresenterComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())

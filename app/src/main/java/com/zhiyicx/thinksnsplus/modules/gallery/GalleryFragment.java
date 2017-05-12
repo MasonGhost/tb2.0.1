@@ -73,6 +73,11 @@ public class GalleryFragment extends TSFragment {
     }
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     protected void initView(View rootView) {
         currentItem = getArguments().getInt(BUNDLE_IMAGS_POSITON);
         rectList = getArguments().getParcelableArrayList("rect");
