@@ -118,7 +118,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        loadOriginImage(String.format(ApiConfig.IMAGE_PATH.toLowerCase(), mImageBean.getStorage_id(), ImageZipConfig.IMAGE_100_ZIP));
+                        loadOriginImage(mImageBean);
                     }
                 });
     }
@@ -258,7 +258,6 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             // 加载本地图片
             Glide.with(context)
                     .load(imageBean.getImgUrl())
-                    .override(800, 800)
                     .placeholder(R.drawable.shape_default_image)
                     .error(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -276,9 +275,9 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             // 尝试从缓存获取原图
             Glide.with(context)
                     .using(cacheOnlyStreamLoader)// 不从网络读取原图
-                    .load(String.format(ApiConfig.IMAGE_PATH.toLowerCase(), mImageBean.getStorage_id(), ImageZipConfig.IMAGE_70_ZIP))
-                    .override(imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth(),
-                            imageBean.getHeight() > screenH ? screenH / 2 : (int) imageBean.getHeight())
+                    .load(String.format(ApiConfig.IMAGE_PATH.toLowerCase(), mImageBean.getStorage_id(), ImageZipConfig.IMAGE_100_ZIP))
+//                    .override(imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth(),
+//                            imageBean.getHeight() > screenH ? screenH : (int) imageBean.getHeight())
                     .thumbnail(thumbnailBuilder)// 加载缩略图，上一个页面已经缓存好了，直接读取
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.shape_default_image)
@@ -294,21 +293,18 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                                     mTvOriginPhoto.setScaleX(0.0f);
                                     mTvOriginPhoto.setAlpha(0.0f);
                                 }
-                                if (e instanceof IOException) {  // 本地有圖片主動抛出異常
-                                }else {
-                                    mTvOriginPhoto.setVisibility(View.VISIBLE);
-                                }
+                                mTvOriginPhoto.setVisibility(View.VISIBLE);
                             }
                             // 原图没有缓存，从cacheOnlyStreamLoader抛出异常，在这儿加载高清图
                             Glide.with(context)
                                     .using(new CustomImageModelLoader(context))
                                     .load(new CustomImageSizeModelImp(imageBean))
                                     .override(imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth(),
-                                            imageBean.getHeight() > screenH ? screenH / 2 : (int) imageBean.getHeight())
+                                            imageBean.getHeight() > screenH ? screenH : (int) imageBean.getHeight())
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                                     .placeholder(R.drawable.shape_default_image)
                                     .error(R.drawable.shape_default_image)
-                                    .centerCrop()
+//                                    .centerCrop()
                                     .into(new SimpleTarget<GlideDrawable>() {
                                         @Override
                                         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
@@ -317,9 +313,6 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                                                 mIvPager.setImageDrawable(resource);
                                             }
                                             mPhotoViewAttacherNormal.update();
-                                            if (mTvOriginPhoto != null) {
-                                                mTvOriginPhoto.setVisibility(View.GONE);
-                                            }
                                         }
                                     });
                             return false;
@@ -341,7 +334,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     }
 
     // 加载原图:
-    private void loadOriginImage(String imageUrl) {
+    private void loadOriginImage(ImageBean imageBean) {
         // 禁止点击查看原图按钮
         mTvOriginPhoto.setClickable(false);
         // 刚点击查看原图，可能会有一段时间，进行重定位请求，所以立即设置进度
@@ -364,7 +357,9 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                         }
                     }
                 }))
-                .load(imageUrl)
+                .load(String.format(ApiConfig.IMAGE_PATH.toLowerCase(), imageBean.getStorage_id(), ImageZipConfig.IMAGE_100_ZIP))
+//                .override(imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth(),
+//                        imageBean.getHeight() > screenH ? screenH : (int) imageBean.getHeight())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.shape_default_image)
                 .error(R.drawable.shape_default_image)
@@ -384,6 +379,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                         return false;
                     }
                 })
+
                 .into(new SimpleTarget<GlideDrawable>() {
                           @Override
                           public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
