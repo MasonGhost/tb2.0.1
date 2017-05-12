@@ -395,6 +395,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
+        mState = PlaybackStateCompat.STATE_ERROR;
         if (mCallback != null) {
             mCallback.onError("MediaPlayer error " + what + " (" + extra + ")");
         }

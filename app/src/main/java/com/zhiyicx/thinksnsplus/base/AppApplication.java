@@ -376,7 +376,8 @@ public class AppApplication extends TSApplication {
                         && sPlaybackManager.getState() != PlaybackStateCompat.STATE_STOPPED
                         && !WindowUtils.getIsPause()) {
                     WindowUtils.showPopupWindow(AppApplication.this);
-                    if (sPlaybackManager.getState() == PlaybackStateCompat.STATE_PAUSED) {
+                    if (sPlaybackManager.getState() == PlaybackStateCompat.STATE_PAUSED ||
+                            sPlaybackManager.getState() == PlaybackStateCompat.STATE_ERROR) {
                         Observable.timer(5, TimeUnit.SECONDS)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new Action1<Long>() {
