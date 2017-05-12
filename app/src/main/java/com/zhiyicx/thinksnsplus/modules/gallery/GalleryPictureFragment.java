@@ -128,6 +128,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         boolean animateIn = getArguments().getBoolean("animationIn");
         final AnimationRectBean rect = getArguments().getParcelable("rect");
         mImageBean = getArguments() != null ? (ImageBean) getArguments().getParcelable("url") : null;
+        assert mImageBean != null;
         if (mImageBean.getImgUrl() != null) {
             // 本地图片不需要查看原图
             mTvOriginPhoto.setVisibility(View.GONE);
@@ -250,7 +251,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
 
     // 加载图片不带监听
     private void loadImage(final ImageBean imageBean, final AnimationRectBean rect, final boolean animationIn) {
-        LogUtils.e("imageBean = " + imageBean.toString());
+        LogUtils.e("imageBean = " + imageBean.toString()+"------"+animationIn);
 
         if (imageBean.getImgUrl() != null) {
             int with = 800;// 图片宽度显示的像素：防止图片过大卡顿

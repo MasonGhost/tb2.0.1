@@ -77,7 +77,6 @@ public class GalleryFragment extends TSFragment {
         mPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
         mVpPhotos.setAdapter(mPagerAdapter);
         mVpPhotos.setOffscreenPageLimit(MAX_OFF_SIZE);
-        mVpPhotos.setCurrentItem(currentItem);
         // 大于一张图片才会显示小圆点，否则隐藏
         if (allImages != null && allImages.size() > 1) {
             addCircleNavigator();
@@ -101,16 +100,38 @@ public class GalleryFragment extends TSFragment {
                 // 通过手指滑动切换到新的fragment，而不是第一次进入切换到fragment
                 if (viewPageState == ViewPager.SCROLL_STATE_SETTLING || viewPageState == ViewPager.SCROLL_STATE_IDLE) {
                     // 获取到的是当前要进入的fragment
-                    GalleryPictureContainerFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
-                    GalleryPictureFragment galleryPicturFragment = fragment.getChildFragment();
+                    GalleryPictureContainerFragment currentFragment = fragmentMap.get(mVpPhotos.getCurrentItem());
+                    GalleryPictureFragment galleryPicturFragment = currentFragment.getChildFragment();
                     LogUtils.d("galleryPicturFragment Newstate::" + viewPageState + "  position::" + mVpPhotos.getCurrentItem(), galleryPicturFragment == null ? " null" : " not null");
                     if (galleryPicturFragment != null) {
                         galleryPicturFragment.showOrHideOriginBtn(true);
                     }
                 }
             }
-        });
 
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                if (position + 1 < mVpPhotos.getChildCount()) { // 提前加载前后图片
+                    handlePreLoadData(mVpPhotos.getCurrentItem() + 1);
+                }
+                if (position - 1 >= 0) {
+                    handlePreLoadData(mVpPhotos.getCurrentItem() - 1);
+                }
+            }
+
+            /**
+             *  处理预加载图片
+             * @param key
+             */
+            private void handlePreLoadData(int key) {
+                GalleryPictureContainerFragment nextFragment = fragmentMap.get(key);
+                if (nextFragment != null) {
+                    nextFragment.preLoadData();
+                }
+            }
+        });
+        mVpPhotos.setCurrentItem(currentItem);
     }
 
     private int viewPageState = 0;
