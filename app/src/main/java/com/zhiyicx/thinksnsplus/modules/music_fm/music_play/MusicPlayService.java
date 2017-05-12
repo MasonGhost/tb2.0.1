@@ -47,6 +47,7 @@ import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelp
 public class MusicPlayService extends MediaBrowserServiceCompat implements
         PlaybackManager.PlaybackServiceCallback {
 
+
     public static final String EXTRA_CONNECTED_CAST = "com.zhiyicx.thinksnsplus.CAST_NAME";
     public static final String ACTION_CMD = "com.zhiyicx.thinksnsplus.ACTION_CMD";
     public static final String CMD_NAME = "CMD_NAME";
@@ -145,7 +146,6 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
     @Override
     public void onPlaybackStart() {
         mSession.setActive(true);
-//        AppApplication.getMusicWindows().showWindows();
         mDelayedStopHandler.removeCallbacksAndMessages(null);
         startService(new Intent(getApplicationContext(), MusicPlayService.class));
     }
@@ -153,7 +153,6 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
     @Override
     public void onPlaybackStop() {
         mSession.setActive(false);
-//        AppApplication.getMusicWindows().hideWindows();
         mDelayedStopHandler.removeCallbacksAndMessages(null);
         mDelayedStopHandler.sendEmptyMessageDelayed(0, STOP_DELAY);
         stopForeground(true);
