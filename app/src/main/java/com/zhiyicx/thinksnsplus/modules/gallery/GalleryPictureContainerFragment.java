@@ -2,8 +2,11 @@ package com.zhiyicx.thinksnsplus.modules.gallery;
 
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -20,6 +23,13 @@ import java.util.List;
  */
 
 public class GalleryPictureContainerFragment extends TSFragment {
+    private boolean mIsLoaded;  // 是否加载过了
+    private boolean mIsViewPrep;// view 是否准备好了
+    private boolean mIsVisible; // fragment 是否可见
+    private boolean mAnimateIn; // 是否是动画进入
+    private ImageBean mImageBean; // 图片资源
+    private Fragment mContentFragment; // 图片的内容
+
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_gallary_picture_container_layout;
@@ -30,6 +40,13 @@ public class GalleryPictureContainerFragment extends TSFragment {
 
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
     @Override
     protected boolean showToolbar() {
         return false;
@@ -38,6 +55,17 @@ public class GalleryPictureContainerFragment extends TSFragment {
     @Override
     protected boolean showToolBarDivider() {
         return false;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            mIsVisible = true;
+            handleData();
+        } else {
+            mIsVisible = false;
+        }
     }
 
     @Override
@@ -53,10 +81,22 @@ public class GalleryPictureContainerFragment extends TSFragment {
     @Override
     protected void initData() {
         Bundle bundle = getArguments();
-        ImageBean imageBean = bundle.getParcelable("url");
-        boolean animateIn = bundle.getBoolean("animationIn");
-        bundle.putBoolean("animationIn", false);
-        displayPicture(imageBean, animateIn);
+        mImageBean = bundle.getParcelable("url");
+        mAnimateIn = bundle.getBoolean("animationIn");
+        mIsViewPrep = true;
+        handleData();
+    }
+
+    public void preLoadData() {
+        if (!mIsLoaded && mImageBean != null) {
+            displayPicture(mImageBean, mAnimateIn);
+        }
+    }
+
+    private void handleData() {
+        if (mIsViewPrep && mIsVisible) {
+            displayPicture(mImageBean, mAnimateIn);
+        }
     }
 
     public static GalleryPictureContainerFragment newInstance(ImageBean imageBean, AnimationRectBean rect,
@@ -72,6 +112,7 @@ public class GalleryPictureContainerFragment extends TSFragment {
     }
 
     private void displayPicture(ImageBean imageBean, boolean animateIn) {
+        mIsLoaded = true;
         GalleryFragment galleryFragment = (GalleryFragment) getParentFragment();
         AnimationRectBean rect = getArguments().getParcelable("rect");
         boolean firstOpenPage = getArguments().getBoolean("firstOpenPage");
@@ -84,10 +125,12 @@ public class GalleryPictureContainerFragment extends TSFragment {
             }
             getArguments().putBoolean("firstOpenPage", false);
         }
-
-        Fragment fragment = GalleryPictureFragment.newInstance(imageBean, rect, animateIn);
-        getChildFragmentManager().beginTransaction().replace(R.id.fl_picture_container, fragment)
-                .commitAllowingStateLoss();
+        if (mContentFragment == null) {
+            mContentFragment = GalleryPictureFragment.newInstance(imageBean, rect, animateIn);
+            getChildFragmentManager().beginTransaction().replace(R.id.fl_picture_container, mContentFragment)
+                    .commitAllowingStateLoss();
+        }
+        this.mAnimateIn = false;
 
     }
 
