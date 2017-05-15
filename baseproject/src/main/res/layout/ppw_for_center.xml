@@ -16,7 +16,7 @@
         android:id="@+id/ppw_center_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/normal_for_dynamic_list_content"
+        android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_primary_title"
         tool:text="title"/>
 

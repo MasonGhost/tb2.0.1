@@ -3,7 +3,7 @@
     android:shape="rectangle" >
 
     <!-- 纯色 -->
-    <solid android:color="@color/normal_for_disable_button_text"/>
+    <solid android:color="@color/general_for_line_light"/>
     <stroke
         android:width="@dimen/button_stroke_width"
         android:color="@color/themeColor" />
