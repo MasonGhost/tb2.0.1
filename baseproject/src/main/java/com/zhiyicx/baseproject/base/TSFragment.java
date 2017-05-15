@@ -292,9 +292,13 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         mCenterLoadingView.findViewById(R.id.iv_center_holder).setVisibility(View.VISIBLE);
     }
 
+
+    /**
+     * 登录提示框
+     */
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void showLoginPop() {
+        showSnackSuccessMessage("该登录了，少年");
     }
 
     /**

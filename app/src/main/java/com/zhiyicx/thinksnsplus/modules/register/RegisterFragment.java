@@ -24,6 +24,7 @@ import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -65,7 +66,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     private boolean isRegisting = false;
 
     public static RegisterFragment newInstance() {
-        return  new RegisterFragment();
+        return new RegisterFragment();
     }
 
     @Override
@@ -238,7 +239,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
 
     @Override
     public void goHome() {
-        DeviceUtils.hideSoftKeyboard(getContext(),mEtRegistPassword);
+        DeviceUtils.hideSoftKeyboard(getContext(), mEtRegistPassword);
         startActivity(new Intent(getActivity(), HomeActivity.class));
     }
 
@@ -264,4 +265,13 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
         }
     }
 
+    @OnClick({R.id.tv_look_around})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tv_look_around:
+                startActivity(new Intent(getActivity(), HomeActivity.class));
+                break;
+            default:
+        }
+    }
 }

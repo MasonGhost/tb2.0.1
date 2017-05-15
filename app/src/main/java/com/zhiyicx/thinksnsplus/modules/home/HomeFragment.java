@@ -139,29 +139,25 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 
     @Override
     protected void initView(View rootView) {
-        initViewPager();
-        longClickSendTextDynamic();
-        initPhotoPicker();
-    }
-
-
-    @Override
-    protected void initData() {
         DaggerHomeComponent
                 .builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .homePresenterModule(new HomePresenterModule(this))
                 .build()
                 .inject(this);
+        initViewPager();
+        longClickSendTextDynamic();
+        initPhotoPicker();
         initListener();
+    }
+
+
+    @Override
+    protected void initData() {
+        setJpushAlias();
         changeNavigationButton(PAGE_HOME);
-        if (getArguments() != null && getArguments().getParcelable(BUNDLE_JPUSH_MESSAGE) != null) {
-            checkBottomItem(HomeFragment.PAGE_MESSAGE);
-        } else {
-            mVpHome.setCurrentItem(PAGE_HOME, false);
-        }
-        mJpushAlias = new JpushAlias(getContext(), AppApplication.getmCurrentLoginAuth().getUser_id() + "");// 设置极光推送别名
-        mJpushAlias.setAlias();
+        setCurrentPage();
+
     }
 
     @Override
@@ -182,18 +178,90 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 break;
             // 添加动态
             case R.id.fl_add:
-                initPhotoPopupWindow();
-                mPhotoPopupWindow.show();
+                if (!mPresenter.handleTouristControl()) {
+                    initPhotoPopupWindow();
+                    mPhotoPopupWindow.show();
+                }
                 break;
             // 点击消息
             case R.id.ll_message:
-                mVpHome.setCurrentItem(PAGE_MESSAGE, false);
+                if (!mPresenter.handleTouristControl()) {
+                    mVpHome.setCurrentItem(PAGE_MESSAGE, false);
+                }
                 break;
             // 点击我的
             case R.id.ll_mine:
-                mVpHome.setCurrentItem(PAGE_MINE, false);
+                if (!mPresenter.handleTouristControl()) {
+                    mVpHome.setCurrentItem(PAGE_MINE, false);
+                }
                 break;
             default:
+        }
+
+    }
+
+    @Override
+    public void setMessageTipVisable(boolean tipVisable) {
+        if (tipVisable) {
+            mVMessageTip.setVisibility(View.VISIBLE);
+        } else {
+            mVMessageTip.setVisibility(View.INVISIBLE);
+        }
+
+    }
+
+    @Override
+    public void setMineTipVisable(boolean tipVisable) {
+        if (tipVisable) {
+            mVMineTip.setVisibility(View.VISIBLE);
+        } else {
+            mVMineTip.setVisibility(View.INVISIBLE);
+        }
+
+    }
+
+
+    @Override
+    public void checkBottomItem(int positon) {
+        mVpHome.setCurrentItem(positon, false);
+    }
+
+    @Override
+    public void getPhotoSuccess(List<ImageBean> photoList) {
+        // 跳转到发送动态页面
+        SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+        sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
+        sendDynamicDataBean.setDynamicPrePhotos(photoList);
+        sendDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
+        SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
+    }
+
+    @Override
+    public void getPhotoFailure(String errorMsg) {
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // 获取图片选择器返回结果
+        if (mPhotoSelector != null) {
+            mPhotoSelector.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    public void onButtonMenuShow(boolean isShow) {
+        if (isShow) {
+            Observable.timer(getResources().getInteger(android.R.integer.config_longAnimTime), TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()).map(new Func1<Long, Object>() {
+                @Override
+                public Object call(Long aLong) {
+                    mLlBottomContainer.setVisibility(View.VISIBLE);
+                    return null;
+                }
+            }).subscribe();
+        } else {
+            mLlBottomContainer.setVisibility(View.GONE);
         }
 
     }
@@ -209,8 +277,10 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         List<Fragment> mFragmentList = new ArrayList<>();
         mFragmentList.add(MainFragment.newInstance(this));
         mFragmentList.add(FindFragment.newInstance());
-        mFragmentList.add(MessageFragment.newInstance());
-        mFragmentList.add(MineFragment.newInstance());
+        if (mPresenter.isLogin()) {
+            mFragmentList.add(MessageFragment.newInstance());
+            mFragmentList.add(MineFragment.newInstance());
+        }
         mHomePager.bindData(mFragmentList);//将List设置给adapter
         mVpHome.setAdapter(mHomePager);
     }
@@ -263,30 +333,26 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         mTvMine.setTextColor(position == PAGE_MINE ? checkedColor : unckeckedColor);
     }
 
-    @Override
-    public void setMessageTipVisable(boolean tipVisable) {
-        if (tipVisable) {
-            mVMessageTip.setVisibility(View.VISIBLE);
+    /**
+     * 设置当前页
+     */
+    private void setCurrentPage() {
+        if (getArguments() != null && getArguments().getParcelable(BUNDLE_JPUSH_MESSAGE) != null) {
+            checkBottomItem(HomeFragment.PAGE_MESSAGE);
         } else {
-            mVMessageTip.setVisibility(View.INVISIBLE);
+            mVpHome.setCurrentItem(PAGE_HOME, false);
         }
-
     }
 
-    @Override
-    public void setMineTipVisable(boolean tipVisable) {
-        if (tipVisable) {
-            mVMineTip.setVisibility(View.VISIBLE);
-        } else {
-            mVMineTip.setVisibility(View.INVISIBLE);
+    /**
+     * 设置极光推送别名
+     */
+    private void setJpushAlias() {
+        if (mPresenter.isLogin()) {
+            mJpushAlias = new JpushAlias(getContext(), AppApplication.getmCurrentLoginAuth().getUser_id() + "");// 设置极光推送别名
+            mJpushAlias.setAlias();
         }
 
-    }
-
-
-    @Override
-    public void checkBottomItem(int positon) {
-        mVpHome.setCurrentItem(positon, false);
     }
 
     /**
@@ -321,45 +387,6 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 .build().photoSelectorImpl();
     }
 
-    @Override
-    public void getPhotoSuccess(List<ImageBean> photoList) {
-        // 跳转到发送动态页面
-        SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
-        sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
-        sendDynamicDataBean.setDynamicPrePhotos(photoList);
-        sendDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
-        SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
-    }
-
-    @Override
-    public void getPhotoFailure(String errorMsg) {
-
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // 获取图片选择器返回结果
-        if (mPhotoSelector != null) {
-            mPhotoSelector.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    @Override
-    public void onButtonMenuShow(boolean isShow) {
-        if (isShow) {
-            Observable.timer(getResources().getInteger(android.R.integer.config_longAnimTime), TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()).map(new Func1<Long, Object>() {
-                @Override
-                public Object call(Long aLong) {
-                    mLlBottomContainer.setVisibility(View.VISIBLE);
-                    return null;
-                }
-            }).subscribe();
-        } else {
-            mLlBottomContainer.setVisibility(View.GONE);
-        }
-
-    }
 
     /**
      * 初始化图片选择弹框

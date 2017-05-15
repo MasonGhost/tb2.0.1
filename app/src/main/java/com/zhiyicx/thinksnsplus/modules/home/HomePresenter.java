@@ -34,8 +34,6 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-import static com.umeng.socialize.utils.DeviceConfig.context;
-
 
 /**
  * @Describe
@@ -208,5 +206,20 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
     @Override
     public void onConversationMcTimeout(List<Integer> roomIds) {
 
+    }
+
+    @Override
+    public boolean isLogin() {
+        return mAuthRepository.isLogin();
+    }
+
+    @Override
+    public boolean handleTouristControl() {
+        if (isLogin()) {
+            return false;
+        } else {
+            mRootView.showLoginPop();
+            return true;
+        }
     }
 }

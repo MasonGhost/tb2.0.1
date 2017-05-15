@@ -190,11 +190,12 @@ public class AuthRepository implements IAuthRepository {
      */
     @Override
     public boolean isLogin() {
-        return getAuthBean() != null && getIMConfig() != null;
+        return !isTourist() && getAuthBean() != null && getIMConfig() != null;
     }
 
     /**
      * 是否是游客
+     *
      * @return true
      */
     @Override

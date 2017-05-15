@@ -54,4 +54,9 @@ public interface IBaseView<VP> {
      */
     void showSnackLoadingMessage(String message);
 
+    /**
+     * 显示登录提示框
+     */
+    void showLoginPop();
+
 }

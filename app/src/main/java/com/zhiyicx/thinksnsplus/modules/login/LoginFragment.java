@@ -52,7 +52,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     @Override
     protected void initView(View rootView) {
         initListenter();
-        // 游客判断 
+        // 游客判断
         mTvLookAround.setVisibility(mPresenter.istourist() ? View.VISIBLE : View.GONE);
     }
 
@@ -188,6 +188,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_look_around:
+                startActivity(new Intent(getActivity(), HomeActivity.class));
                 break;
             case R.id.tv_forget_password:
                 startActivity(new Intent(getActivity(), FindPasswordActivity.class));
