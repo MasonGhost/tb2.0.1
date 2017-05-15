@@ -630,7 +630,6 @@ public class ConvertUtils {
         int w = drawable.getIntrinsicWidth();
         int h = drawable.getIntrinsicHeight();
 
-
         // 取 drawable 的颜色格式
         Bitmap.Config config = drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
                 : Bitmap.Config.RGB_565;
@@ -639,7 +638,7 @@ public class ConvertUtils {
         try {
             bitmap = Bitmap.createBitmap(w, h, config);
         } catch (Exception e) {
-            bitmap = BitmapFactory.decodeResource(context.getResources(), defaultRes);
+            bitmap = BitmapFactory.decodeResource(context.getResources(), defaultRes).copy(Bitmap.Config.RGB_565, true);
         }
         // 建立对应 bitmap 的画布
         Canvas canvas = new Canvas(bitmap);

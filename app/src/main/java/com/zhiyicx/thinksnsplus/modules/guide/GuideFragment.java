@@ -35,6 +35,11 @@ public class GuideFragment extends TSFragment<GuideContract.Presenter> implement
     }
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     protected void initData() {
 
     }
