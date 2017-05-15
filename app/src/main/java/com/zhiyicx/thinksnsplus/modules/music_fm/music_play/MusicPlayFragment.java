@@ -9,6 +9,7 @@ import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
@@ -42,7 +43,6 @@ import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -504,7 +504,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         MediaControllerCompat mediaController = new MediaControllerCompat(
                 getActivity(), token);
         if (mediaController.getMetadata() == null) {
-            showSnackErrorMessage("metadata_error");
+            showSnackErrorMessage(getString(R.string.music_not_found));
             getActivity().finish();
             return;
         }
@@ -644,7 +644,11 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             case PlaybackStateCompat.STATE_BUFFERING:
                 rxStopProgress();
                 break;
+            case PlaybackStateCompat.STATE_ERROR:
+                showSnackErrorMessage(getString(R.string.music_not_found));
+                break;
             default:
+                break;
         }
 
     }
@@ -931,7 +935,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.fragment_music_paly_share:// 分享
-                mPresenter.shareMusic(ConvertUtils.drawable2BitmapWithWhiteBg(mCurrentImageView.getDrawable()));
+                mPresenter.shareMusic(ConvertUtils.drawable2BitmapWithWhiteBg(getContext(),mCurrentImageView.getDrawable(),R.mipmap.icon_256));
                 break;
             case R.id.fragment_music_paly_like: // 点赞
                 mPresenter.handleLike(mCurrentMusic.getMusic_info().getIsdiggmusic() == 0,

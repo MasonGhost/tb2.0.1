@@ -27,6 +27,11 @@ public class CollectInformationListFragment extends InfoListFragment {
     }
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     protected boolean showToolBarDivider() {
         return false;
     }

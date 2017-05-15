@@ -331,8 +331,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
         Bitmap shareBitMap = null;
         try {
-            ImageView imageView = (ImageView) layoutManager.findViewByPosition(dataPosition+1).findViewById(R.id.siv_0);
-            shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(imageView.getDrawable());
+            ImageView imageView = (ImageView) layoutManager.findViewByPosition(dataPosition).findViewById(R.id.siv_0);
+            shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(),imageView.getDrawable(),R.mipmap.icon_256);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -363,7 +363,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             case 3: // 更多
                 if (mListDatas.get(dataPosition).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
                     initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
-                            .getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED);
+                            .getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED,shareBitMap);
                     mMyDynamicPopWindow.show();
                 } else {
                     initOtherDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
@@ -543,7 +543,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      * @param dynamicBean curent dynamic
      * @param position    curent dynamic postion
      */
-    private void initMyDynamicPopupWindow(final DynamicBean dynamicBean, final int position, boolean isCollected) {
+    private void initMyDynamicPopupWindow(final DynamicBean dynamicBean, final int position,
+                                          boolean isCollected,final Bitmap shareBitMap) {
 
         Long feed_id = dynamicBean.getFeed_id();
         boolean feedIdIsNull = feed_id == null || feed_id == 0;
@@ -577,6 +578,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
                     @Override
                     public void onItem3Clicked() {// 分享
+                        mPresenter.shareDynamic(dynamicBean,shareBitMap);
                         mMyDynamicPopWindow.hide();
                     }
                 })

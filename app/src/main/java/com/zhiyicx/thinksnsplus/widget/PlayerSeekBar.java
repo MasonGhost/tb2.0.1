@@ -43,6 +43,7 @@ public class PlayerSeekBar extends AppCompatSeekBar {
         drawLoading = loading;
         if (drawLoading) {
             setProgress(0);
+            setSecondaryProgress(0);
             invalidate();
         }
     }

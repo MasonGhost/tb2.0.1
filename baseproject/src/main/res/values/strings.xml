@@ -88,6 +88,7 @@
 
     <!--音乐FM-->
     <string name="music_fm">音乐FM</string>
+    <string name="music_not_found">当前音乐无法播放</string>
     <string name="music_order_nomal">顺序播放</string>
     <string name="music_order_random">随机播放</string>
     <string name="music_order_single">单曲循环</string>

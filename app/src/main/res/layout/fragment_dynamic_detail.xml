@@ -8,21 +8,21 @@
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/toolbar_height"
         app:elevation="0dp">
 
         <android.support.v7.widget.Toolbar
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/toolbar_height"
             android:background="@color/white"
             android:titleMargin="0dp"
             app:layout_scrollFlags="scroll|enterAlways|snap">
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/toolbar_height_include_line_height">
+                android:layout_height="@dimen/toolbar_height">
 
                 <com.zhiyicx.baseproject.widget.textview.DrawableSizeTextView
                     android:id="@+id/tv_toolbar_center"
@@ -93,14 +93,14 @@
         layout="@layout/fragment_tslist"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"></include>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <!--为了防止状态栏透明，添加一个白色的色块-->
     <View
         android:id="@+id/toolbar_top_blank"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/white"></View>
+        android:background="@color/white"/>
 
     <LinearLayout
         android:id="@+id/ll_bottom_menu_container"

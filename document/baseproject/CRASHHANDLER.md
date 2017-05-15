@@ -1,3 +1,5 @@
+2017年5月11日 11:37:59
+
 # 程序异常崩溃处理
  app遇到各种没有捕获的异常，导致崩溃时，可能需要进行相关的处理，比如友好提示，异常信息收集。。。
 
@@ -22,5 +24,4 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         crashHandler.init(this);
 ```
 
-2017年1月24日16:08:11
-
+注意： 发布版本不需要,用与本地测试错误收集

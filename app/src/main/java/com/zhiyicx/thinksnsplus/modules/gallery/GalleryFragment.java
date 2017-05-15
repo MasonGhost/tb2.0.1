@@ -12,8 +12,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,10 +28,8 @@ import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
 import net.lucode.hackware.magicindicator.buildins.UIUtil;
-import net.lucode.hackware.magicindicator.buildins.circlenavigator.CircleNavigator;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -46,7 +44,7 @@ import butterknife.BindView;
 public class GalleryFragment extends TSFragment {
     public static final String BUNDLE_IMAGS = "imags";
     public static final String BUNDLE_IMAGS_POSITON = "imags_positon";
-    private static final int MAX_OFF_SIZE = 9;
+    private static final int MAX_OFF_SIZE = 8;
     @BindView(R.id.vp_photos)
     ViewPager mVpPhotos;
     @BindView(R.id.mi_indicator)
@@ -72,6 +70,11 @@ public class GalleryFragment extends TSFragment {
     }
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     protected void initView(View rootView) {
         currentItem = getArguments().getInt(BUNDLE_IMAGS_POSITON);
         rectList = getArguments().getParcelableArrayList("rect");
@@ -79,7 +82,6 @@ public class GalleryFragment extends TSFragment {
         mPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
         mVpPhotos.setAdapter(mPagerAdapter);
         mVpPhotos.setOffscreenPageLimit(MAX_OFF_SIZE);
-        mVpPhotos.setCurrentItem(currentItem);
         // 大于一张图片才会显示小圆点，否则隐藏
         if (allImages != null && allImages.size() > 1) {
             addCircleNavigator();
@@ -95,7 +97,7 @@ public class GalleryFragment extends TSFragment {
                     // 获取到的是当前要退出的fragment
                     GalleryPictureContainerFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
                     GalleryPictureFragment galleryPicturFragment = fragment.getChildFragment();
-                    LogUtils.d("galleryPicturFragment Oldstate::" + viewPageState + " position::" + mVpPhotos.getCurrentItem() , galleryPicturFragment == null ? " null" : " not null");
+                    LogUtils.d("galleryPicturFragment Oldstate::" + viewPageState + " position::" + mVpPhotos.getCurrentItem(), galleryPicturFragment == null ? " null" : " not null");
                     if (galleryPicturFragment != null) {
                         galleryPicturFragment.showOrHideOriginBtn(false);
                     }
@@ -103,16 +105,38 @@ public class GalleryFragment extends TSFragment {
                 // 通过手指滑动切换到新的fragment，而不是第一次进入切换到fragment
                 if (viewPageState == ViewPager.SCROLL_STATE_SETTLING || viewPageState == ViewPager.SCROLL_STATE_IDLE) {
                     // 获取到的是当前要进入的fragment
-                    GalleryPictureContainerFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
-                    GalleryPictureFragment galleryPicturFragment = fragment.getChildFragment();
-                    LogUtils.d("galleryPicturFragment Newstate::" + viewPageState + "  position::" + mVpPhotos.getCurrentItem() , galleryPicturFragment == null ? " null" : " not null");
+                    GalleryPictureContainerFragment currentFragment = fragmentMap.get(mVpPhotos.getCurrentItem());
+                    GalleryPictureFragment galleryPicturFragment = currentFragment.getChildFragment();
+                    LogUtils.d("galleryPicturFragment Newstate::" + viewPageState + "  position::" + mVpPhotos.getCurrentItem(), galleryPicturFragment == null ? " null" : " not null");
                     if (galleryPicturFragment != null) {
                         galleryPicturFragment.showOrHideOriginBtn(true);
                     }
                 }
             }
-        });
 
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                if (position + 1 < mVpPhotos.getChildCount()) { // 提前加载前后图片
+                    handlePreLoadData(mVpPhotos.getCurrentItem() + 1);
+                }
+                if (position - 1 >= 0) {
+                    handlePreLoadData(mVpPhotos.getCurrentItem() - 1);
+                }
+            }
+
+            /**
+             *  处理预加载图片
+             * @param key
+             */
+            private void handlePreLoadData(int key) {
+                GalleryPictureContainerFragment nextFragment = fragmentMap.get(key);
+                if (nextFragment != null) {
+                    nextFragment.preLoadData();
+                }
+            }
+        });
+        mVpPhotos.setCurrentItem(currentItem);
     }
 
     private int viewPageState = 0;
@@ -138,7 +162,7 @@ public class GalleryFragment extends TSFragment {
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -216,8 +240,9 @@ public class GalleryFragment extends TSFragment {
     }
 
     public void backPress() {
+
         // 退出隐藏圆点指示器，防止显示在透明背景上
-        mMiIndicator.setVisibility(View.GONE);
+        //mMiIndicator.setVisibility(View.INVISIBLE);
         GalleryPictureContainerFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
         if (fragment != null && fragment.canAnimateCloseActivity()) {
             backgroundColor = new ColorDrawable(Color.BLACK);
@@ -226,21 +251,24 @@ public class GalleryFragment extends TSFragment {
                 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    mVpPhotos.setBackground(backgroundColor);
+                    LogUtils.e("onAnimationUpdate");
+//                    DeviceUtils.gc();
+//                    mVpPhotos.setBackground(backgroundColor);
                     //((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
                 }
             });
             bgAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
+                    LogUtils.e("onAnimationEnd");
                     getActivity().finish();
                     getActivity().overridePendingTransition(-1, -1);
+
                 }
             });
             fragment.animationExit(bgAnim);
         } else {
-            ((GalleryActivity) getActivity()).superBackpress();
+            // ((GalleryActivity) getActivity()).superBackpress();
         }
     }
 

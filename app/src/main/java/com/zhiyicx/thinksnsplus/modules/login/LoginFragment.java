@@ -86,18 +86,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                         }
                     }
                 });
-//                .subscribe(new Action1<Permission>() {
-//                    @Override
-//                    public void call(Permission permission) {
-//                        if (permission.granted) {// 获取到了权限
-//                            mPresenter.login(mEtLoginPhone.getText().toString().trim(), mEtLoginPassword.getText().toString().trim());
-//                        } else if (permission.shouldShowRequestPermissionRationale) {// 拒绝权限，但是可以再次请求
-//                            showErrorTips(getString(R.string.permisson_refused));
-//                        } else {//永久拒绝
-//                            showErrorTips(getString(R.string.permisson_refused_nerver_ask));
-//                        }
-//                    }
-//                });
+
     }
 
     @Override

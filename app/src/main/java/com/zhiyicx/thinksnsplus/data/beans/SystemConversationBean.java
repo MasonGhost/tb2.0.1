@@ -3,13 +3,14 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
+import com.zhiyicx.common.utils.TimeUtils;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.ToOne;
+import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
-import org.greenrobot.greendao.annotation.Unique;
 
 /**
  * @Describe
@@ -47,12 +48,48 @@ public class SystemConversationBean extends BaseListBean {
     private String content;             // 内容
     private String options;             //  系统通知额外扩展参数
     private String created_at;
+    private Long created_time;
     private String updated_at;
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 1970441704)
+    private transient SystemConversationBeanDao myDao;
+
+    @Generated(hash = 873800144)
+    public SystemConversationBean(Long _id, Long system_mark, Long id, String type,
+            Long user_id, Long to_user_id, String content, String options,
+            String created_at, Long created_time, String updated_at) {
+        this._id = _id;
+        this.system_mark = system_mark;
+        this.id = id;
+        this.type = type;
+        this.user_id = user_id;
+        this.to_user_id = to_user_id;
+        this.content = content;
+        this.options = options;
+        this.created_at = created_at;
+        this.created_time = created_time;
+        this.updated_at = updated_at;
+    }
+
+    @Generated(hash = 2093826292)
+    public SystemConversationBean() {
+    }
+
+
+    @Generated(hash = 2066097151)
+    private transient Long userInfo__resolvedKey;
+    @Generated(hash = 815130429)
+    private transient Long toUserInfo__resolvedKey;
 
     @Override
     public String toString() {
         return "SystemConversationBean{" +
-                "id=" + id +
+                "_id=" + _id +
+                ", system_mark=" + system_mark +
+                ", id=" + id +
                 ", type='" + type + '\'' +
                 ", user_id=" + user_id +
                 ", userInfo=" + userInfo +
@@ -61,10 +98,10 @@ public class SystemConversationBean extends BaseListBean {
                 ", content='" + content + '\'' +
                 ", options='" + options + '\'' +
                 ", created_at='" + created_at + '\'' +
+                ", created_time=" + created_time +
                 ", updated_at='" + updated_at + '\'' +
                 '}';
     }
-
 
     @Override
     public Long getMaxId() {
@@ -91,6 +128,7 @@ public class SystemConversationBean extends BaseListBean {
         dest.writeString(this.content);
         dest.writeString(this.options);
         dest.writeString(this.created_at);
+        dest.writeLong(this.created_time);
         dest.writeString(this.updated_at);
     }
 
@@ -184,6 +222,13 @@ public class SystemConversationBean extends BaseListBean {
         this.created_at = created_at;
     }
 
+    public Long getCreated_time() {
+        return TimeUtils.utc2LocalLong(created_at);
+    }
+
+    public void setCreated_time(Long created_time) {
+        this.created_time = created_time;
+    }
 
     public String getUpdated_at() {
         return this.updated_at;
@@ -194,10 +239,7 @@ public class SystemConversationBean extends BaseListBean {
         this.updated_at = updated_at;
     }
 
-
-    /**
-     * To-one relationship, resolved on first access.
-     */
+    /** To-one relationship, resolved on first access. */
     @Generated(hash = 1544759941)
     public UserInfoBean getUserInfo() {
         Long __key = this.user_id;
@@ -216,10 +258,7 @@ public class SystemConversationBean extends BaseListBean {
         return userInfo;
     }
 
-
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1576466957)
     public void setUserInfo(UserInfoBean userInfo) {
         synchronized (this) {
@@ -229,14 +268,12 @@ public class SystemConversationBean extends BaseListBean {
         }
     }
 
-
-    /**
-     * To-one relationship, resolved on first access.
-     */
+    /** To-one relationship, resolved on first access. */
     @Generated(hash = 1921703876)
     public UserInfoBean getToUserInfo() {
         Long __key = this.to_user_id;
-        if (toUserInfo__resolvedKey == null || !toUserInfo__resolvedKey.equals(__key)) {
+        if (toUserInfo__resolvedKey == null
+                || !toUserInfo__resolvedKey.equals(__key)) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
@@ -251,10 +288,7 @@ public class SystemConversationBean extends BaseListBean {
         return toUserInfo;
     }
 
-
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1067491086)
     public void setToUserInfo(UserInfoBean toUserInfo) {
         synchronized (this) {
@@ -263,7 +297,6 @@ public class SystemConversationBean extends BaseListBean {
             toUserInfo__resolvedKey = to_user_id;
         }
     }
-
 
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
@@ -277,7 +310,6 @@ public class SystemConversationBean extends BaseListBean {
         myDao.delete(this);
     }
 
-
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
      * Entity must attached to an entity context.
@@ -289,7 +321,6 @@ public class SystemConversationBean extends BaseListBean {
         }
         myDao.refresh(this);
     }
-
 
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
@@ -303,7 +334,6 @@ public class SystemConversationBean extends BaseListBean {
         myDao.update(this);
     }
 
-
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1997120082)
     public void __setDaoSession(DaoSession daoSession) {
@@ -312,64 +342,4 @@ public class SystemConversationBean extends BaseListBean {
     }
 
 
-    public SystemConversationBean() {
-    }
-
-    protected SystemConversationBean(Parcel in) {
-        super(in);
-        this._id = (Long) in.readValue(Long.class.getClassLoader());
-        this.system_mark = (Long) in.readValue(Long.class.getClassLoader());
-        this.id = (Long) in.readValue(Long.class.getClassLoader());
-        this.type = in.readString();
-        this.user_id = (Long) in.readValue(Long.class.getClassLoader());
-        this.userInfo = in.readParcelable(UserInfoBean.class.getClassLoader());
-        this.to_user_id = (Long) in.readValue(Long.class.getClassLoader());
-        this.toUserInfo = in.readParcelable(UserInfoBean.class.getClassLoader());
-        this.content = in.readString();
-        this.options = in.readString();
-        this.created_at = in.readString();
-        this.updated_at = in.readString();
-    }
-
-
-    @Generated(hash = 1323510984)
-    public SystemConversationBean(Long _id, Long system_mark, Long id, String type, Long user_id, Long to_user_id,
-                                  String content, String options, String created_at, String updated_at) {
-        this._id = _id;
-        this.system_mark = system_mark;
-        this.id = id;
-        this.type = type;
-        this.user_id = user_id;
-        this.to_user_id = to_user_id;
-        this.content = content;
-        this.options = options;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-    }
-
-    public static final Creator<SystemConversationBean> CREATOR = new Creator<SystemConversationBean>() {
-        @Override
-        public SystemConversationBean createFromParcel(Parcel source) {
-            return new SystemConversationBean(source);
-        }
-
-        @Override
-        public SystemConversationBean[] newArray(int size) {
-            return new SystemConversationBean[size];
-        }
-    };
-    /**
-     * Used to resolve relations
-     */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /**
-     * Used for active entity operations.
-     */
-    @Generated(hash = 1970441704)
-    private transient SystemConversationBeanDao myDao;
-    @Generated(hash = 2066097151)
-    private transient Long userInfo__resolvedKey;
-    @Generated(hash = 815130429)
-    private transient Long toUserInfo__resolvedKey;
 }

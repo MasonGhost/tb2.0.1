@@ -182,7 +182,7 @@ public class MusicPlayBackFragment extends TSFragment {
                 enablePlay = true;
                 break;
             case PlaybackStateCompat.STATE_ERROR:
-                showSnackErrorMessage(state.getErrorMessage().toString());
+//                showSnackErrorMessage(state.getErrorMessage().toString());
                 break;
         }
 

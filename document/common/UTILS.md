@@ -1,4 +1,4 @@
-2017年1月12日17:38:24
+2017年5月11日 14:07:03
 # 常用工具类集合
  - imageloader文件夹：项目所使用的图片加载框架接口
 
@@ -11,7 +11,7 @@
 
  - CloseUtils：IO关闭工具类
 
- - ConvertUtils:一些转换方法：包括时分秒，存储单位，stream和byte转换，drawable转换，像素转换。。。
+ - ConvertUtils:一些转换方法：数据显示专函，包括时分秒，存储单位，stream和byte转换，drawable转换，像素转换。。。
 
  - DrawableProvider：drawable辅助类：图片压缩，尺寸变化，旋转。。。
 

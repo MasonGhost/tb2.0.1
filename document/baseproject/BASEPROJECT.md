@@ -1,17 +1,17 @@
+2017年5月11日 11:55:22
 # baseproject module
-结构目录
+## 结构目录
  ```
  --base
-    TSWebFragment.java
-    ...
  --cache
  --config
-    ...
  --crashhandler
  --impl
     --share
     --photoselector
     --imageloader
+--utils
+--widget
  ```
  ts项目的基类包，主工程是在此基础上直接进行开发的
 
@@ -42,4 +42,21 @@
    - [app启动优化](APPLAUNCHEROPTIMIZE.md)
    - [动态工具栏](DYNAMICMENU.md)
 
-2017年3月2日11:52:40
+## 文档说明
+[baseproject](document/baseproject/BASEPROJECT.md) 项目基类定义，和各种配置信息,接入人员可修改，包涵资源文件
+>- [App 启动优化](document/baseproject/APPLAUNCHEROPTIMIZE.md)
+>- [关于 TSActivity 和 TSFragment 说明](document/baseproject/BASEClASS.md)
+>- [缓存策略](document/baseproject/CACHE.md)
+>- [程序异常崩溃处理](document/baseproject/CRASHHANDLER.md)
+>- [动态工具栏类说明](document/baseproject/DYNAMICMENU.md)
+>- [GreenDao3.0+ 的使用](document/baseproject/GREENDAO.md)
+>- [图片加载实现](document/baseproject/IMAGELOADER.md)
+>- [实体类说明](document/baseproject/JAVABEAN.md)
+>- [信息弹框](document/baseproject/LOADINGDIALOG.md)
+>- [图片选择器的功能整合](document/baseproject/PHOTOSELECTOR.md)
+>- [刷新控件](document/baseproject/REFRESH.md)
+>- [TabSelectView 自定义控件](document/baseproject/TABSELECTVIEW.md)
+>- [分享功能](document/baseproject/THIRDSHARE.md)
+>- [基础列表类说明](document/baseproject/TSLISTFRAGMENT.md)
+>- [基础浏览器说明](document/baseproject/TSWEBFRAGMENT.md)
+>- [uCrop 图片裁剪开源库](document/baseproject/UCROP.md)

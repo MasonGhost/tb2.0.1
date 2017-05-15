@@ -5,8 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -120,7 +118,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        loadOriginImage(String.format(ApiConfig.IMAGE_PATH.toLowerCase(), mImageBean.getStorage_id(), ImageZipConfig.IMAGE_100_ZIP));
+                        loadOriginImage(mImageBean);
                     }
                 });
     }
@@ -130,6 +128,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         boolean animateIn = getArguments().getBoolean("animationIn");
         final AnimationRectBean rect = getArguments().getParcelable("rect");
         mImageBean = getArguments() != null ? (ImageBean) getArguments().getParcelable("url") : null;
+        assert mImageBean != null;
         if (mImageBean.getImgUrl() != null) {
             // 本地图片不需要查看原图
             mTvOriginPhoto.setVisibility(View.GONE);
@@ -161,6 +160,11 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     @Override
     protected boolean setUseSatusbar() {
         return true;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
     }
 
     @Override
@@ -252,7 +256,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
 
     // 加载图片不带监听
     private void loadImage(final ImageBean imageBean, final AnimationRectBean rect, final boolean animationIn) {
-        LogUtils.i("imageBean = " + imageBean.toString());
+        LogUtils.e("imageBean = " + imageBean.toString()+"------"+animationIn);
 
         if (imageBean.getImgUrl() != null) {
             int with = 800;// 图片宽度显示的像素：防止图片过大卡顿
@@ -260,7 +264,6 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             // 加载本地图片
             Glide.with(context)
                     .load(imageBean.getImgUrl())
-                    .override(800, 800)
                     .placeholder(R.drawable.shape_default_image)
                     .error(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -278,9 +281,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             // 尝试从缓存获取原图
             Glide.with(context)
                     .using(cacheOnlyStreamLoader)// 不从网络读取原图
-                    .load(String.format(ApiConfig.IMAGE_PATH.toLowerCase(), mImageBean.getStorage_id(), ImageZipConfig.IMAGE_70_ZIP))
-                    .override(imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth(),
-                            imageBean.getHeight() > screenH ? screenH : (int) imageBean.getHeight())
+                    .load(String.format(ApiConfig.IMAGE_PATH.toLowerCase(), mImageBean.getStorage_id(), ImageZipConfig.IMAGE_100_ZIP))
                     .thumbnail(thumbnailBuilder)// 加载缩略图，上一个页面已经缓存好了，直接读取
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.shape_default_image)
@@ -307,7 +308,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                                     .placeholder(R.drawable.shape_default_image)
                                     .error(R.drawable.shape_default_image)
-                                    .centerCrop()
+//                                    .centerCrop()
                                     .into(new SimpleTarget<GlideDrawable>() {
                                         @Override
                                         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
@@ -337,7 +338,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     }
 
     // 加载原图:
-    private void loadOriginImage(String imageUrl) {
+    private void loadOriginImage(ImageBean imageBean) {
         // 禁止点击查看原图按钮
         mTvOriginPhoto.setClickable(false);
         // 刚点击查看原图，可能会有一段时间，进行重定位请求，所以立即设置进度
@@ -360,7 +361,9 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                         }
                     }
                 }))
-                .load(imageUrl)
+                .load(String.format(ApiConfig.IMAGE_PATH.toLowerCase(), imageBean.getStorage_id(), ImageZipConfig.IMAGE_100_ZIP))
+//                .override(imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth(),
+//                        imageBean.getHeight() > screenH ? screenH : (int) imageBean.getHeight())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.shape_default_image)
                 .error(R.drawable.shape_default_image)
@@ -380,6 +383,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                         return false;
                     }
                 })
+
                 .into(new SimpleTarget<GlideDrawable>() {
                           @Override
                           public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
@@ -424,6 +428,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             getActivity().overridePendingTransition(0, 0);
             AnimationRectBean rect = getArguments().getParcelable("rect");
             TransferImageAnimationUtil.animateClose(backgroundAnimator, rect, mIvPager);
+
         }
         // 原图可见，退出就是用原图
         if (mIvOriginPager.getVisibility() == View.VISIBLE) {
@@ -438,7 +443,6 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             AnimationRectBean rect = getArguments().getParcelable("rect");
             TransferImageAnimationUtil.animateClose(backgroundAnimator, rect, mIvOriginPager);
         }
-
     }
 
     /**
@@ -533,7 +537,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                 @Override
                 public InputStream loadData(Priority priority) throws Exception {
                     // 如果是从网络获取图片肯定会走这儿，直接抛出异常，缓存从其他方法获取
-                    throw new IOException();
+                    throw new IOException("intercupt net by own");
                 }
 
                 @Override
@@ -557,25 +561,9 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
 
     @Override
     public void onDestroy() {
-        LogUtils.i(TAG + "-->onDestroy");
+        DeviceUtils.gc();
         super.onDestroy();
     }
 
-    private void releaseImageViewResouce(ImageView imageView) {
-        if (imageView == null) return;
-        Drawable drawable = imageView.getDrawable();
-        if (drawable != null && drawable instanceof BitmapDrawable) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            Bitmap bitmap = bitmapDrawable.getBitmap();
-            if (bitmap != null && !bitmap.isRecycled()) {
-                bitmap.recycle();
-            }
-        }
-    }
-
-    public void releaseRes() {
-        releaseImageViewResouce(mIvOriginPager);
-        releaseImageViewResouce(mIvPager);
-    }
 
 }

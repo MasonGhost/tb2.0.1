@@ -2,6 +2,7 @@ package com.zhiyicx.baseproject.base;
 
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
@@ -18,7 +19,6 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.trycatch.mysnackbar.Prompt;
 import com.trycatch.mysnackbar.TSnackbar;
-import com.umeng.analytics.MobclickAgent;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.base.BaseFragment;
@@ -27,7 +27,6 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.UIUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -67,15 +66,6 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-//        if (getLeftViewOfMusicWindow() != null) {
-//            RxView.globalLayouts(getLeftViewOfMusicWindow())
-//                    .subscribe(new Action1<Void>() {
-//                        @Override
-//                        public void call(Void aVoid) {
-//                            musicWindowsStatus(WindowUtils.getIsShown());
-//                        }
-//                    });
-//        }
         return view;
     }
 
@@ -134,7 +124,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                 params.setMargins(0, getstatusbarAndToolbarHeight(), 0, 0);
             }
             mCenterLoadingView.setLayoutParams(params);
-            if (setUseCenterLoadingAnimation()){
+            if (setUseCenterLoadingAnimation()) {
                 ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).start();
             }
             RxView.clicks(mCenterLoadingView.findViewById(R.id.iv_center_holder))
@@ -161,7 +151,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     public void onResume() {
         super.onResume();
         musicWindowsStatus(WindowUtils.getIsShown());
-        if (!this.getClass().getSimpleName().equals("InfoListFragment")){
+        if (!this.getClass().getSimpleName().equals("InfoListFragment")) {
             WindowUtils.setWindowDismisslistener(this);
         }
     }
@@ -287,6 +277,11 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         mIsNeedClick = false;
     }
 
+    protected void showLoadViewLoadErrorDisableClick(boolean isNeedClick) {
+        showErrorImage();
+        mIsNeedClick = isNeedClick;
+    }
+
     private void showErrorImage() {
         if (mCenterLoadingView == null) {
             return;
@@ -337,15 +332,6 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     /**
-     * 设置是否需要添加和状态栏等高的占位 view
-     *
-     * @return
-     */
-    protected boolean setUseStatusView() {
-        return false;
-    }
-
-    /**
      * 状态栏默认为灰色
      * 支持小米、魅族以及 6.0 以上机型
      *
@@ -361,7 +347,23 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * @return 默认不可用
      */
     protected boolean setUseSatusbar() {
+        if (!this.getActivity().getClass().getSimpleName().contains("HomeActivity")) {
+            mIscUseSatusbar = Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+        }
         return mIscUseSatusbar;
+    }
+
+    /**
+     * 设置是否需要添加和状态栏等高的占位 view
+     *
+     * @return
+     */
+    protected boolean setUseStatusView() {
+        boolean userStatusView = false;
+        if (!this.getActivity().getClass().getSimpleName().contains("HomeActivity")) {
+            userStatusView = Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+        }
+        return userStatusView;
     }
 
 
@@ -463,8 +465,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         mToolbarLeft.setText(setLeftTitle());
         mToolbarRight.setVisibility(TextUtils.isEmpty(setRightTitle()) && setRightImg() == 0 ? View.GONE : View.VISIBLE);
         mToolbarRight.setText(setRightTitle());
-        mToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), setLeftImg()), null, null, null);
-        mToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), setRightImg()), null);
+        setToolBarLeftImage(setLeftImg());
+        setToolBarRightImage(setRightImg());
         RxView.clicks(mToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.<Void>bindToLifecycle())
@@ -483,6 +485,24 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                         setRightClick();
                     }
                 });
+    }
+
+    /**
+     * set ToolBar left image
+     *
+     * @param resImg image resourse
+     */
+    protected void setToolBarLeftImage(int resImg) {
+        mToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), resImg), null, null, null);
+    }
+
+    /**
+     * set ToolBar left image
+     *
+     * @param resImg image resourse
+     */
+    protected void setToolBarRightImage(int resImg) {
+        mToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), resImg), null);
     }
 
     /**

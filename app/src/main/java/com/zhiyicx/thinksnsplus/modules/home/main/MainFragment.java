@@ -96,8 +96,8 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
                 }
             }
         });
-        // 启动 app，如果本地没有数据，应跳到“热门”页面 关联 github  #113
-        if (AppApplication.AppComponentHolder.getAppComponent().dynamicBeanGreenDao().getFollowedDynamicList(System.currentTimeMillis()).size() == 0) {
+        // 启动 app，如果本地没有最新数据，应跳到“热门”页面 关联 github  #113  #366
+        if (AppApplication.AppComponentHolder.getAppComponent().dynamicBeanGreenDao().getNewestDynamicList(System.currentTimeMillis()).size() == 0) {
             mVpFragment.setCurrentItem(1);
         }
 
@@ -106,17 +106,17 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     @Override
     protected List<String> initTitles() {
         List<String> titles = new ArrayList<>();
-        titles.add(getString(R.string.follow));
-        titles.add(getString(R.string.hot));
         titles.add(getString(R.string.the_last));
+        titles.add(getString(R.string.hot));
+        titles.add(getString(R.string.follow));
         return titles;
     }
 
     @Override
     protected List<Fragment> initFragments() {
-        fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS, this));
-        fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
         fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this));
+        fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
+        fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS, this));
         return fragments;
     }
 

@@ -1,7 +1,11 @@
+2017年5月11日 11:25:19
 # Lint 检测说明
 
     Lint 工具可检查您的 Android 项目源文件是否包含潜在错误，以及在正确性、安全性、性能、易用性、便利性和国际化方面是否需要优化改进。
-    目前使用的是 Android 自带的 lint 规则 ；了解更多可以查看 [Android Studio 开发指南](https://developer.android.google.cn/studio/write/lint.html)
+    目前使用的是 Android 自带的 lint 规则 ；了解更多可以查看 Android Studio 开发指南
+
+[hintdev]:https://developer.android.google.cn/studio/write/lint.html
+[Android Studio 开发指南](hintdev)
 
 ## 自定义 Lint 规则
 

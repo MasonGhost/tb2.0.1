@@ -136,11 +136,13 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
                 this.setLayoutParams(params);
                 requestLayout();
             }
-            scrollBy(0, dy);
-            consumed[1] = dy;
-            if (getScrollY()>=mTopViewHeight){
+
+            if (getScrollY() == mTopViewHeight) {
                 replyView();
             }
+            scrollBy(0, dy);
+            consumed[1] = dy;
+
         }
         if (mOnHeadFlingListener != null && getScrollY() != 0 && getScrollY() <= mTopViewHeight) {
             mOnHeadFlingListener.onHeadFling(getScrollY());

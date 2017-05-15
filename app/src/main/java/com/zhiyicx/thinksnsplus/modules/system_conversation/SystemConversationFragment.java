@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class SystemConversationFragment extends BaseChatFragment<SystemConversationContract.Presenter> implements SystemConversationContract.View {
     private long mMax_id = TSListFragment.DEFAULT_PAGE_MAX_ID;
-    private boolean mIsRequestNeted = true; // 页面 是否需要进入时刷新,代表是否已经从网络获取到了数据
+    private boolean mIsRequestNeted = true; // 页面 是否需要进入时刷新,代表是否已经从网络获取到了数据  true 代表加载本地，false 代表需要从网络获取
     private boolean mIsFristLoadCache = true;
 
     public static SystemConversationFragment newInstance() {
@@ -145,7 +145,7 @@ public class SystemConversationFragment extends BaseChatFragment<SystemConversat
         if (mDatas.isEmpty()) {
             mMax_id = TSListFragment.DEFAULT_PAGE_MAX_ID;
         } else {
-            mMax_id = mDatas.get(0).getLastMessage().getId();
+            mMax_id = mDatas.get(0).getLastMessage().getCreate_time();
         }
     }
 }

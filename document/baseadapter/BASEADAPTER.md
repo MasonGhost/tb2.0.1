@@ -1,4 +1,4 @@
-2017年3月9日 17:20:59
+2017年5月11日 11:36:42
 # 基础列表Adapter
  Android 万能的Adapter for ListView,RecyclerView,GridView等，支持多种Item类型的情况。
  基于[baseAdapter](https://github.com/hongyangAndroid/baseAdapter)，具体使用以及说明，请点击查看[baseAdapter](https://github.com/hongyangAndroid/baseAdapter)

@@ -1,3 +1,4 @@
+2017年5月11日 11:38:56
 # GreenDao3.0+的使用
 
 ## 1.建立多表关联
@@ -85,4 +86,3 @@ public class UpDBHelper extends DaoMaster.OpenHelper {
     xxx表示该表的Dao
       MigrationHelper.getInstance().migrate(db, xxxDao.class);
 
-2017年2月20日11:39:17

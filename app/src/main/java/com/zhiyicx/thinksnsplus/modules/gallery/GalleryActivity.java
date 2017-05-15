@@ -38,9 +38,6 @@ public class GalleryActivity extends TSActivity {
 
     @Override
     public void onBackPressed() {
-        // 按返回键就要回收 Glide，防止查看原图时，因为 Fragment 回收不及时浪费流量
-        // ，这样主动回收，可能节约流量
-        Glide.with(this).onDestroy();
         ((GalleryFragment) mContanierFragment).backPress();
     }
 
@@ -56,11 +53,5 @@ public class GalleryActivity extends TSActivity {
         bundle.putParcelableArrayList("rect", (ArrayList<? extends Parcelable>) animationRectBeanList);
         intent.putExtras(bundle);
         context.startActivity(intent);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        LogUtils.i(TAG + "-->onDestroy");
     }
 }
