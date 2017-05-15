@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tool="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="@dimen/width"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_popwindow"
     android:gravity="center"
@@ -16,6 +16,7 @@
         android:id="@+id/ppw_center_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/normal_for_dynamic_list_content"
         android:textSize="@dimen/size_primary_title"
         tool:text="title"/>
 
@@ -37,16 +38,16 @@
         android:id="@+id/ppw_center_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/spacing_normal"
-        android:paddingRight="@dimen/spacing_normal"
         android:layout_marginBottom="@dimen/spacing_bigger_large"
         android:layout_marginTop="@dimen/spacing_normal"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:paddingRight="@dimen/spacing_normal"
+        android:textColor="@color/normal_for_assist_text"
         tool:text="我不要钱"/>
 
     <TextView
-
         android:id="@+id/ppw_center_item1"
-        android:layout_width="200dp"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/button_login_height"
         android:background="@drawable/selector_button_corner_solid_big"
         android:gravity="center"
@@ -56,7 +57,7 @@
 
     <TextView
         android:id="@+id/ppw_center_item2"
-        android:layout_width="200dp"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/button_login_height"
         android:layout_marginTop="@dimen/spacing_normal"
         android:background="@drawable/selector_button_corner_ppw_item"

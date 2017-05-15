@@ -634,7 +634,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .isOutsideTouch(true)
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
-                .buildDescrStr(String.format(getString(R.string.buy_pay_desc),4.4))
+                .buildDescrStr(String.format(getString(R.string.buy_pay_desc) + getString(R.string.buy_pay_member), 4.4))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
