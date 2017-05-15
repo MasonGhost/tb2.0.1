@@ -65,6 +65,11 @@ public class CollectDynamicListFragment extends DynamicFragment {
         return false;
     }
 
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
     protected void setAdapter(MultiItemTypeAdapter adapter, DynamicListBaseItem dynamicListBaseItem) {
         dynamicListBaseItem.setOnImageClickListener(this);
         dynamicListBaseItem.setOnUserInfoClickListener(this);

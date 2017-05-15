@@ -121,6 +121,11 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
     }
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     protected boolean showToolBarDivider() {
         return false;
     }

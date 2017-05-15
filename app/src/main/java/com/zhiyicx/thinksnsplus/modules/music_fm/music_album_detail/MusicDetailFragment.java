@@ -268,6 +268,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
     @Override
     public void setMusicAblum(MusicAlbumDetailsBean musicAblum) {
+        closeLoadingView();
         mAlbumDetailsBean = musicAblum;
 
         WindowUtils.AblumHeadInfo ablumHeadInfo = new WindowUtils.AblumHeadInfo();
@@ -309,6 +310,11 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     }
 
     @Override
+    protected boolean setUseCenterLoadingAnimation() {
+        return false;
+    }
+
+    @Override
     protected boolean setUseCenterLoading() {
         return true;
     }
@@ -318,6 +324,19 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         fragmentAlbumDetail.setVisibility(View.GONE);
         setLoadViewHolderImag(R.mipmap.img_default_delete);
         showLoadViewLoadErrorDisableClick();
+    }
+
+    @Override
+    protected void setLoadingViewHolderClick() {
+        super.setLoadingViewHolderClick();
+        mPresenter.getMusicAblum(mMusicAlbumListBean.getId() + "");
+    }
+
+    @Override
+    public void noNetWork() {
+//        fragmentAlbumDetail.setVisibility(View.GONE);
+        setLoadViewHolderImag(R.mipmap.img_default_internet);
+        showLoadViewLoadErrorDisableClick(true);
     }
 
     @Override
@@ -498,7 +517,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
             @Override
             public void onHeadFling(int scrollY) {
-                
+
                 int distance = mFragmentMusicDetailScrollview.getTopViewHeight();
                 int alpha = 255 * scrollY / distance;
                 alpha = alpha > 255 ? 255 : alpha;

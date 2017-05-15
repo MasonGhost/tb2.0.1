@@ -195,6 +195,11 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     }
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     protected void setLoadingViewHolderClick() {
         super.setLoadingViewHolderClick();
         mPresenter.requestNetData(0l, false);

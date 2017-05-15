@@ -30,6 +30,8 @@ public interface MusicDetailContract {
 
         void albumHasBeDeleted();
 
+        void noNetWork();
+
         MusicAlbumDetailsBean getCurrentAblum();
 
         MusicAlbumListBean getmMusicAlbumListBean();

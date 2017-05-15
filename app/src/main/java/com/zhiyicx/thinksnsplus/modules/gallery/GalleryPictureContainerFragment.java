@@ -74,6 +74,11 @@ public class GalleryPictureContainerFragment extends TSFragment {
     }
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     protected void initData() {
         Bundle bundle = getArguments();
         mImageBean = bundle.getParcelable("url");

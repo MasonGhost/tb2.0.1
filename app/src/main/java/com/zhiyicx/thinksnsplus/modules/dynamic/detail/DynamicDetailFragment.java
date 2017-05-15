@@ -126,23 +126,18 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
-    protected boolean setUseSatusbar() {
-        return true;
-    }
-
-    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_dynamic_detail;
     }
 
     @Override
-    protected boolean setUseStatusView() {
-        return false;
+    protected boolean setUseCenterLoading() {
+        return true;
     }
 
     @Override
-    protected boolean setUseCenterLoading() {
-        return true;
+    protected int getstatusbarAndToolbarHeight() {
+        return 0;
     }
 
     @Override
@@ -155,21 +150,13 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         }
     }
 
-    /**
-     * 特别修改
-     *
-     * @return
-     */
-    @Override
-    protected int getstatusbarAndToolbarHeight() {
-        return getResources().getDimensionPixelSize(R.dimen.toolbar_height_include_line_height) + DeviceUtils.getStatuBarHeight(getContext());
-    }
-
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         initToolbar();
-        initToolbarTopBlankHeight();
+        if (!setUseStatusView()) {
+            //initToolbarTopBlankHeight();
+        }
         initBottomToolUI();
         initBottomToolListener();
         initHeaderView();

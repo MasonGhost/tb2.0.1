@@ -82,12 +82,12 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
 
                     @Override
                     protected void onFailure(String message, int code) {
-
+                        mRootView.albumHasBeDeleted();
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        mRootView.albumHasBeDeleted();
+                        mRootView.noNetWork();
                     }
                 });
     }
@@ -118,7 +118,7 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
-        int is_collect = mRootView.getCurrentAblum().getIs_collection()== 0 ? 1 : 0;
+        int is_collect = mRootView.getCurrentAblum().getIs_collection() == 0 ? 1 : 0;
         mRootView.getCurrentAblum().setIs_collection(is_collect);
         mRootView.getmMusicAlbumListBean().setIs_collection(is_collect);
         int countChange = isUnCollected ? 1 : -1;
@@ -139,9 +139,9 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
 
         shareContent.setTitle(mRootView.getCurrentAblum().getTitle());
         shareContent.setContent(mRootView.getCurrentAblum().getIntro());
-        if (bitmap==null){
-            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.icon_256)));
-        }else{
+        if (bitmap == null) {
+            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon_256)));
+        } else {
             shareContent.setBitmap(bitmap);
         }
         shareContent.setUrl(APP_PATH_SHARE_DEFAULT);

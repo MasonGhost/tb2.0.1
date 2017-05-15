@@ -100,16 +100,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         return false;
     }
 
-    /**
-     * 特别修改
-     *
-     * @return
-     */
-    @Override
-    protected int getstatusbarAndToolbarHeight() {
-        return getResources().getDimensionPixelSize(R.dimen.toolbar_height_include_line_height);
-    }
-
     @Override
     protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter multiItemTypeAdapter = new MultiItemTypeAdapter<>(getActivity(),
@@ -174,16 +164,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     protected boolean showToolbar() {
-        return false;
-    }
-
-    @Override
-    protected boolean setUseStatusView() {
-        return false;
-    }
-
-    @Override
-    protected boolean setUseSatusbar() {
         return false;
     }
 
