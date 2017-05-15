@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:background="@drawable/bg_popwindow"
+    android:layout_marginBottom="@dimen/margin_tb"
+    android:layout_marginLeft="@dimen/margin_lr"
+    android:layout_marginRight="@dimen/margin_lr"
+    android:layout_marginTop="@dimen/margin_tb"
+    android:orientation="vertical">
+
+    <TextView
+        tool:text="title"
+        android:id="@+id/ppw_center_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        tool:text="4.4"
+        android:id="@+id/ppw_center_money"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        tool:text="我不要钱"
+        android:id="@+id/ppw_center_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        style="@style/style_login_button"
+        android:textColor="@color/white"
+        tool:text="购买"
+        android:id="@+id/ppw_center_item1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:textColor="@color/themeColor"
+        tool:text="返回"
+        android:id="@+id/ppw_center_item2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
