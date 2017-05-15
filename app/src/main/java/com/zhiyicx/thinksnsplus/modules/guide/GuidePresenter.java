@@ -42,7 +42,6 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
         if (mIAuthRepository.isLogin()) {
             // TODO: 2017/2/10 刷新 Token 时间，过期前一天刷新
 //        mIAuthRepository.refreshToken();
-            // IM login
             mRootView.startActivity(HomeActivity.class);
         } else {
             mRootView.startActivity(LoginActivity.class);

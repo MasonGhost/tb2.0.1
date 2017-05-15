@@ -152,7 +152,7 @@
                     android:text="@string/no_login"
                     android:textColor="@color/normal_for_assist_text"
                     android:textSize="@dimen/size_content_comment"
-                    android:visibility="invisible"/>
+                    />
 
             </RelativeLayout>
         </LinearLayout>

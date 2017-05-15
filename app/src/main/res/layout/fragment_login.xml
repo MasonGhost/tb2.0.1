@@ -77,7 +77,7 @@
                     android:text="@string/no_login"
                     android:textColor="@color/normal_for_assist_text"
                     android:textSize="@dimen/size_content_comment"
-                    android:visibility="invisible"/>
+                    />
                 <!--忘记密码-->
                 <TextView
                     android:id="@+id/tv_forget_password"

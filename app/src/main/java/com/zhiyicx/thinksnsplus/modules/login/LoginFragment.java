@@ -51,6 +51,11 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
 
     @Override
     protected void initView(View rootView) {
+        initListenter();
+
+    }
+
+    private void initListenter() {
         // 手机号码输入框观察
         RxTextView.textChanges(mEtLoginPhone)
                 .compose(this.<CharSequence>bindToLifecycle())
@@ -86,7 +91,6 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                         }
                     }
                 });
-
     }
 
     @Override

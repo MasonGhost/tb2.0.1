@@ -91,7 +91,11 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     @Override
     protected void initView(View rootView) {
         mVertifyAnimationDrawable = (AnimationDrawable) mIvVertifyLoading.getDrawable();
+        initListener();
 
+    }
+
+    private void initListener() {
         // 用户名观察
         RxTextView.textChanges(mEtRegistUsername)
                 .compose(this.<CharSequence>bindToLifecycle())

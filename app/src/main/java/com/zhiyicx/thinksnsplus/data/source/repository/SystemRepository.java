@@ -106,7 +106,7 @@ public class SystemRepository implements ISystemRepository {
     }
 
     /**
-     *
+     * 从服务器获取组件状态信息
      */
     @Override
     public void getComponentStatusFromServer() {
@@ -131,7 +131,9 @@ public class SystemRepository implements ISystemRepository {
     }
 
     /**
-     * @param component
+     * 通过组件查看配置信息
+     *
+     * @param component 组件
      */
     @Override
     public void getComponentConfigFromServer(String component) {
@@ -157,19 +159,23 @@ public class SystemRepository implements ISystemRepository {
     }
 
     /**
+     * 系统反馈
+     *
      * @param content 反馈内容
      * @return
      */
     @Override
-    public Observable<BaseJson<Object>> systemFeedback(String content,long system_mark) {
-        return mCommonClient.systemFeedback(content,system_mark)
+    public Observable<BaseJson<Object>> systemFeedback(String content, long system_mark) {
+        return mCommonClient.systemFeedback(content, system_mark)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     /**
-     * @param max_id
-     * @param limit
+     * 获取系统对话信息
+     *
+     * @param max_id 分页标识
+     * @param limit  每页数量
      * @return
      */
     @Override
@@ -198,6 +204,7 @@ public class SystemRepository implements ISystemRepository {
             }
         });
     }
+
     private void descCacheSystemConversation(List<SystemConversationBean> datas) {
         Collections.sort(datas, new Comparator<SystemConversationBean>() { // 排序，最大的放在最后面
             @Override

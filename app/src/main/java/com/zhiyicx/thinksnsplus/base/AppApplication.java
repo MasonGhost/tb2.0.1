@@ -88,7 +88,7 @@ public class AppApplication extends TSApplication {
         FreelineCore.init(this);
         initComponent();
         // IM
-        if (mSystemRepository.getComponentStatusLocal().isIm()) { // 是否安装了 IM
+        if (!mAuthRepository.isLogin() && mSystemRepository.getComponentStatusLocal().isIm()) { // 不是游客并且安装了 IM
             ZBIMSDK.init(getContext());
         }
         BackgroundTaskManager.getInstance(getContext()).startBackgroundTask();// 开启后台任务

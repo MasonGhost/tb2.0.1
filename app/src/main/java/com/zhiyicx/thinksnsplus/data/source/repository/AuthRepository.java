@@ -193,6 +193,15 @@ public class AuthRepository implements IAuthRepository {
         return getAuthBean() != null && getIMConfig() != null;
     }
 
+    /**
+     * 是否是游客
+     * @return true
+     */
+    @Override
+    public boolean isTourist() {
+        return true;
+    }
+
     @Override
     public boolean saveIMConfig(IMConfig imConfig) {
         return SharePreferenceUtils.saveObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_IMCONFIG, imConfig);
