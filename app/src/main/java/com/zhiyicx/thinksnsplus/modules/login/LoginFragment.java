@@ -52,7 +52,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     @Override
     protected void initView(View rootView) {
         initListenter();
-
+        // 游客判断 
+        mTvLookAround.setVisibility(mPresenter.istourist() ? View.VISIBLE : View.GONE);
     }
 
     private void initListenter() {

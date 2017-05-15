@@ -256,4 +256,9 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
         }
         return false;
     }
+
+    @Override
+    public boolean istourist() {
+        return mAuthRepository.isTourist();
+    }
 }

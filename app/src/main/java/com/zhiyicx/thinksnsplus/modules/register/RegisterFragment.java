@@ -92,7 +92,8 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     protected void initView(View rootView) {
         mVertifyAnimationDrawable = (AnimationDrawable) mIvVertifyLoading.getDrawable();
         initListener();
-
+        // 游客判断
+        mTvLookAround.setVisibility(mPresenter.istourist() ? View.VISIBLE : View.GONE);
     }
 
     private void initListener() {
