@@ -638,7 +638,7 @@ public class ConvertUtils {
         try {
             bitmap = Bitmap.createBitmap(w, h, config);
         } catch (Exception e) {
-            bitmap = BitmapFactory.decodeResource(context.getResources(), defaultRes).copy(Bitmap.Config.RGB_565, true);
+            bitmap = BitmapFactory.decodeResource(context.getResources(), defaultRes).copy(config, true);
         }
         // 建立对应 bitmap 的画布
         Canvas canvas = new Canvas(bitmap);
