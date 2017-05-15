@@ -182,6 +182,8 @@ dependencies {
     compile project(":baseproject")
     compile project(":media-cache")
     compile project(':banner')
+    compile project(':tspay')
+
     // database
     compile dataDependences.greendao
     compile dataDependences.guava

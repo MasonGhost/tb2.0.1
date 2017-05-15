@@ -241,6 +241,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+        <!--微信分享结果类-->
         <activity
             android:name=".wxapi.WXEntryActivity"
             android:exported="true"
@@ -252,6 +253,11 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+        <!--微信支付结果类-->
+        <activity
+            android:name=".wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop"/>
         <activity
             android:name=".modules.channel.list.ChannelListActivity"
             android:screenOrientation="portrait">

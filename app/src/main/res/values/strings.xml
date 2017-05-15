@@ -160,4 +160,8 @@
     <string name="default_input_hint">随便说说~</string>
     <string name="default_input_chat_hint">@string/default_input_hint</string>
     <string name="see_origin_photos_failure">查看失败</string>
+
+    <!-- WXPayEntryActivity -->
+    <string name="pay_result_tip">这个界面用于显示第三方app通过微信支付的结果</string>
+    <string name="pay_result_callback_msg" formatted="false">微信支付结果：%s</string>
 </resources>
