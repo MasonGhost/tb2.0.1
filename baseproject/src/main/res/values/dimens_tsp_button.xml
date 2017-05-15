@@ -9,5 +9,7 @@
     <!-- button 大小-->
     <dimen name="button_send_with">45dp</dimen>
     <dimen name="button_send_height">25dp</dimen>
+    <!-- 描边 -->
+    <dimen name="button_stroke_width">1dp</dimen>
 
 </resources>

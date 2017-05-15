@@ -1,11 +1,13 @@
 package com.zhiyicx.common.widget.popwindow;
 
+import android.app.Activity;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.PopupWindow;
 
@@ -15,20 +17,30 @@ import android.widget.PopupWindow;
  * @Date 2016/12/15
  * @Contact 335891510@qq.com
  */
-
 public class CustomPopupWindow extends PopupWindow {
-    private View mContentView;
-    private View mParentView;
+    public static final float POPUPWINDOW_ALPHA = .8f;
 
-    private boolean isOutsideTouch;
-    private boolean isFocus;
-    private boolean isWrap;
-    private int mAnimationStyle;
-    private Drawable mBackgroundDrawable;
-    private CustomPopupWindowListener mListener;
+    protected View mContentView;
+    protected int mContentViewId;
+    protected Activity mActivity;
+    protected View mParentView;
 
-    private CustomPopupWindow(Builder builder) {
-        this.mContentView = builder.contentView;
+    protected boolean isOutsideTouch;
+    protected boolean isFocus;
+    protected boolean isWrap;
+    protected int mAnimationStyle;
+    protected Drawable mBackgroundDrawable;
+    protected CustomPopupWindowListener mListener;
+    protected float mAlpha;
+    protected int width;
+    protected int height;
+
+    protected CustomPopupWindow(Builder builder) {
+        this.mAlpha = builder.mAlpha;
+        this.width = builder.width;
+        this.height = builder.height;
+        this.mActivity = builder.mActivity;
+        this.mContentViewId = builder.contentViewId;
         this.mParentView = builder.parentView;
         this.mListener = builder.listener;
         this.isOutsideTouch = builder.isOutsideTouch;
@@ -39,14 +51,23 @@ public class CustomPopupWindow extends PopupWindow {
         initLayout();
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    private void initLayout() {
-        mListener.initPopupView(mContentView);
+    protected void initLayout() {
+        mContentView = LayoutInflater.from(mActivity).inflate(mContentViewId, null);
+        setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                setWindowAlpha(1.0f);
+            }
+        });
+        //mListener.initPopupView(mContentView);
         setWidth(isWrap ? LayoutParams.WRAP_CONTENT : LayoutParams.MATCH_PARENT);
         setHeight(isWrap ? LayoutParams.WRAP_CONTENT : LayoutParams.MATCH_PARENT);
+        if (width > 0) {
+            setWidth(width);
+        }
+        if (height > 0) {
+            setHeight(height);
+        }
         setFocusable(isFocus);
         setOutsideTouchable(isOutsideTouch);
         setBackgroundDrawable(mBackgroundDrawable);
@@ -80,6 +101,7 @@ public class CustomPopupWindow extends PopupWindow {
      * 默认显示到中间
      */
     public void show() {
+        setWindowAlpha(mAlpha);
         if (mParentView == null) {
             showAtLocation(mContentView, Gravity.CENTER | Gravity.CENTER_HORIZONTAL, 0, 0);
         } else {
@@ -87,23 +109,57 @@ public class CustomPopupWindow extends PopupWindow {
         }
     }
 
+    private void setWindowAlpha(float alpha) {
+        WindowManager.LayoutParams params = mActivity.getWindow().getAttributes();
+        params.alpha = alpha;
+        params.verticalMargin = 100;
+        mActivity.getWindow().setAttributes(params);
+    }
 
-    public static final class Builder {
-        private View contentView;
-        private View parentView;
+    public void hide() {
+        dismiss();
+    }
 
-        private boolean isOutsideTouch = true;// 默认为true
-        private boolean isFocus = true;// 默认为true
-        private boolean isWrap;// 是否wrap_content
-        private int animationStyle = -1;
-        private Drawable backgroundDrawable = new ColorDrawable(0x00000000);// 默认为透明
-        private CustomPopupWindowListener listener;
+    public static class Builder {
+        protected float mAlpha;
+        protected int contentViewId;
+        protected View parentView;
+        protected Activity mActivity;
+        protected boolean isOutsideTouch = true;// 默认为true
+        protected boolean isFocus = true;// 默认为true
+        protected boolean isWrap;// 是否wrap_content
+        protected int animationStyle = -1;
+        protected Drawable backgroundDrawable = new ColorDrawable(0x00000000);// 默认为透明
+        protected CustomPopupWindowListener listener;
 
-        private Builder() {
+        private int width;
+        private int height;
+
+        protected Builder() {
         }
 
-        public Builder contentView(View contentView) {
-            this.contentView = contentView;
+        public Builder backgroundAlpha(float alpha) {
+            this.mAlpha = alpha;
+            return this;
+        }
+
+        public Builder width(int width) {
+            this.width = width;
+            return this;
+        }
+
+        public Builder height(int height) {
+            this.height = height;
+            return this;
+        }
+
+        public Builder with(Activity activity) {
+            this.mActivity = activity;
+            return this;
+        }
+
+        public Builder contentView(int contentViewId) {
+            this.contentViewId = contentViewId;
             return this;
         }
 
@@ -145,10 +201,10 @@ public class CustomPopupWindow extends PopupWindow {
         }
 
         public CustomPopupWindow build() {
-            if (contentView == null)
+            if (contentViewId <= 0)
                 throw new IllegalStateException("contentView is required");
-            if (listener == null)
-                throw new IllegalStateException("CustomPopupWindowListener is required");
+//            if (listener == null)
+//                throw new IllegalStateException("CustomPopupWindowListener is required");
 
             return new CustomPopupWindow(this);
         }
