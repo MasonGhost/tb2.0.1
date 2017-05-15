@@ -3,8 +3,9 @@
     android:shape="rectangle" >
 
     <!-- 纯色 -->
-    <stroke android:color="@color/bt_disable" />
-    <corners
-        android:radius="@dimen/button_corner_big"
-        ></corners>
+    <solid android:color="@color/bt_disable"/>
+    <stroke
+        android:width="@dimen/button_stroke_width"
+        android:color="@color/themeColor" />
+    <corners android:radius="@dimen/button_corner_big" />
 </shape>

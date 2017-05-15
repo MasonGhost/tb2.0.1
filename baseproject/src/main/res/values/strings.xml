@@ -82,9 +82,14 @@
     <string name="share">分享</string>
     <string name="more">更多</string>
     <string name="send_fail">发送失败</string>
-
-
     <string name="see_origin_photo">查看原图</string>
+
+    <!-- 中间弹窗 -->
+    <string name="buy_pay">购买支付</string>
+    <string name="buy_pay_desc">您只需￥%f元就可查看图片\n会员可免费查看，</string>
+    <string name="buy_pay_member">成为会员？</string>
+    <string name="buy_pay_in">购买</string>
+    <string name="buy_pay_out">返回</string>
 
     <!--音乐FM-->
     <string name="music_fm">音乐FM</string>
