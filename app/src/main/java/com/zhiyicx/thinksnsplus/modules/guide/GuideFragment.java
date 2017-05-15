@@ -29,10 +29,6 @@ public class GuideFragment extends TSFragment<GuideContract.Presenter> implement
         return false;
     }
 
-    @Override
-    protected boolean setUseSatusbar() {
-        return true;
-    }
 
     @Override
     protected boolean setUseStatusView() {
