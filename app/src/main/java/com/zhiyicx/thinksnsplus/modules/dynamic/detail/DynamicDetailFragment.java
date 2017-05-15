@@ -153,10 +153,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        initToolbar();
-        if (!setUseStatusView()) {
-            //initToolbarTopBlankHeight();
-        }
+        //initToolbar();
+        //initToolbarTopBlankHeight();
         initBottomToolUI();
         initBottomToolListener();
         initHeaderView();

@@ -96,6 +96,11 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     }
 
     @Override
+    protected int getstatusbarAndToolbarHeight() {
+        return 0;
+    }
+
+    @Override
     protected boolean showToolBarDivider() {
         return false;
     }
