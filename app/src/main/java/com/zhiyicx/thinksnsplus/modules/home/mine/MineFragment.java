@@ -129,6 +129,11 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     }
 
     @Override
+    protected int setRightImg() {
+        return R.mipmap.ico_me_message_normal;
+    }
+
+    @Override
     protected boolean showToolBarDivider() {
         return true;
     }
