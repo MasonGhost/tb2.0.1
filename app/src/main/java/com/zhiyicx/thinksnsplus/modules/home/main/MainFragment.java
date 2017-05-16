@@ -12,6 +12,7 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 
@@ -34,6 +35,8 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     @BindView(R.id.v_shadow)
     View mVShadow;
     List<Fragment> fragments = new ArrayList<>();
+
+    private IAuthRepository mIAuthRepository;
 
     public void setOnImageClickListener(DynamicFragment.OnCommentClickListener onCommentClickListener) {
         mOnCommentClickListener = onCommentClickListener;
@@ -63,7 +66,6 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     protected void initView(View rootView) {
         super.initView(rootView);
         initToolBar();
-
     }
 
     private void initToolBar() {
@@ -78,6 +80,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
 
     @Override
     protected void initData() {
+        mIAuthRepository = AppApplication.AppComponentHolder.getAppComponent().authRepository();
         mVpFragment.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -86,7 +89,9 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
 
             @Override
             public void onPageSelected(int position) {
-
+                if (position == mVpFragment.getChildCount() - 1 && !mIAuthRepository.isLogin()) { // 游客处理
+                    showLoginPop();
+                }
             }
 
             @Override
