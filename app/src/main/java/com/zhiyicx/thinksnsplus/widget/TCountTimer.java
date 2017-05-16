@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.widget;
 
 import android.os.CountDownTimer;
+import android.text.TextUtils;
 import android.widget.TextView;
 
 /**
@@ -10,84 +11,189 @@ import android.widget.TextView;
  * @Description 倒计时
  */
 public class TCountTimer extends CountDownTimer {
-    public static final int TIME_COUNT = 6000;//时间防止从119s开始显示（以倒计时120s为例子）
-    private TextView btn;
-    private String endStrRid;
-    private int normalColor, timingColor;//未计时的文字颜色，计时期间的文字颜色
-    private String durText = "-1";
 
-    /**
-     * 参数 millisInFuture  倒计时总时间（如60S，120s等）
-     * 参数 countDownInterval  渐变时间（每次倒计1s）
-     * <p>
-     * 参数 btn点击的按钮(因为Button是TextView子类，为了通用我的参数设置为TextView）
-     * <p>
-     * 参数 endStrRid 倒计时结束后，按钮对应显示的文字
-     */
-    public TCountTimer(long millisInFuture, long countDownInterval, TextView btn,
-                       String endStrRid) {
-        super(millisInFuture, countDownInterval);
-        this.btn = btn;
-        this.endStrRid = endStrRid;
+    private int mTime_count = 6000;
+    private int mTime_interval = 1000;
+    private TextView mBtn;
+    private String mEndStr;
+    private int mNormalColor, mTimingColor;
+    private String mDurStr;
+    private boolean canUseOntick;
+    private boolean canUseListener;
+    private boolean durStrBehindTime;
+    private OnTimeListener mOnTimeListener;
+
+    public static final class Builder {
+        private int time_count = 6000;
+        private int time_interval = 1000;
+        private TextView btn;
+        private String endStr;
+        private int normalColor, timingColor;
+        private String durStr;
+        private boolean canUseOntick;
+        private boolean canUseListener;
+        private boolean durStrBehindTime;
+        private OnTimeListener onTimeListener;
+
+        private Builder(TCountTimer timer) {
+            this.time_count = timer.mTime_count;
+            this.time_interval = timer.mTime_interval;
+            this.btn = timer.mBtn;
+            this.endStr = timer.mEndStr;
+            this.normalColor = timer.mNormalColor;
+            this.timingColor = timer.mTimingColor;
+            this.durStr = timer.mDurStr;
+            this.canUseOntick = timer.canUseOntick;
+            this.canUseListener = timer.canUseListener;
+            this.durStrBehindTime = timer.durStrBehindTime;
+            this.onTimeListener = timer.mOnTimeListener;
+        }
+
+        private Builder() {
+        }
+
+        public Builder buildTimeCount(int time_count) {
+            this.time_count = time_count;
+            return this;
+        }
+
+        public Builder buildTimeInterval(int time_interval) {
+            this.time_interval = time_interval;
+            return this;
+        }
+
+        public Builder buildBtn(TextView btn) {
+            this.btn = btn;
+            return this;
+        }
+
+        public Builder buildEndStr(String endStr) {
+            this.endStr = endStr;
+            return this;
+        }
+
+        public Builder buildDurText(String durStr) {
+            this.durStr = durStr;
+            return this;
+        }
+
+        public Builder buildNormalColor(int normalColor) {
+            this.normalColor = normalColor;
+            return this;
+        }
+
+        public Builder buildTimingColor(int timingColor) {
+            this.timingColor = timingColor;
+            return this;
+        }
+
+        public Builder buildCanUseOntick(boolean canUseOntick) {
+            this.canUseOntick = canUseOntick;
+            return this;
+        }
+
+        public Builder buildCanUseListener(boolean canUseListener) {
+            this.canUseListener = canUseListener;
+            return this;
+        }
+
+        public Builder buildDurStrBehindTime(boolean durStrBehindTime) {
+            this.durStrBehindTime = durStrBehindTime;
+            return this;
+        }
+
+        public Builder buildOnTimeListener(OnTimeListener onTimeListener) {
+            this.onTimeListener = onTimeListener;
+            return this;
+        }
+
+        public TCountTimer build() {
+            if (btn == null)
+                throw new IllegalArgumentException("view can not be null");
+            return new TCountTimer(this);
+        }
     }
 
-    public TCountTimer(TextView btn, String endStrRid) {
-        super(TIME_COUNT, 1000);
-        this.btn = btn;
-        this.endStrRid = endStrRid;
+    public TCountTimer(Builder builder) {
+        super(builder.time_count, builder.time_interval);
+        this.mBtn = builder.btn;
+        this.mDurStr = builder.durStr;
+        this.mEndStr = builder.endStr;
+        this.mNormalColor = builder.normalColor;
+        this.mTimingColor = builder.timingColor;
+        this.mTime_interval = builder.time_interval;
+        this.mTime_count = builder.time_count;
+        this.canUseOntick = builder.canUseOntick;
+        this.canUseListener = builder.canUseListener;
+        this.durStrBehindTime = builder.durStrBehindTime;
+        this.mOnTimeListener = builder.onTimeListener;
     }
 
-    public TCountTimer(TextView btn) {
-        super(TIME_COUNT, 1000);
-        this.btn = btn;
-        this.endStrRid = "";
+    public static Builder builder() {
+        return new Builder();
     }
 
-
-    public TCountTimer(TextView tv_varify, int normalColor, int timingColor) {
-        this(tv_varify);
-        this.normalColor = normalColor;
-        this.timingColor = timingColor;
+    public Builder newBuilder() {
+        return new Builder(this);
     }
+
 
     // 计时完毕时触发
     @Override
     public void onFinish() {
-        if (normalColor > 0) {
-            btn.setTextColor(normalColor);
+        if (mNormalColor > 0) {
+            mBtn.setTextColor(mNormalColor);
         }
-        btn.setText(endStrRid);
-        btn.setEnabled(true);
+        mBtn.setText(mEndStr);
+        mBtn.setEnabled(true);
+        if (mOnTimeListener != null && canUseListener) {
+            mOnTimeListener.onFinish();
+        }
     }
 
     // 计时过程显示
     @Override
     public void onTick(long millisUntilFinished) {
-        if (timingColor > 0) {
-            btn.setTextColor(timingColor);
+        if (mBtn == null) {
+            replease();
+            return;
         }
-//        btn.setEnabled(false);
-        if (!durText.equals("-1")) {
-            btn.setText(durText + " " + millisUntilFinished / 1000 + "s");
+        if (mTimingColor > 0) {
+            mBtn.setTextColor(mTimingColor);
+        }
+        mBtn.setEnabled(canUseOntick);
+        if (!TextUtils.isEmpty(mDurStr)) {
+            String str = mDurStr + " " + millisUntilFinished / 1000 + "s";
+            if (durStrBehindTime) {
+                str = millisUntilFinished / 1000 + "s" + " " + mDurStr;
+            }
+            mBtn.setText(str);
         } else {
-            btn.setText(millisUntilFinished / 1000 + "s");
+            mBtn.setText(millisUntilFinished / 1000 + "s");
         }
 
-    }
+        if (mOnTimeListener != null && canUseListener) {
+            mOnTimeListener.onTick();
+        }
 
-    /**
-     * 倒计时 中显示的文字
-     */
-    public void setBtnText(String str) {
-        this.durText = str;
     }
 
     public void rest() {
         cancel();
-        if (normalColor > 0) {
-            btn.setTextColor(normalColor);
+        if (mNormalColor > 0) {
+            mBtn.setTextColor(mNormalColor);
         }
-        btn.setText(endStrRid);
-        btn.setEnabled(true);
+        mBtn.setText(mEndStr);
+        mBtn.setEnabled(true);
+    }
+
+    private void replease() {
+        cancel();
+    }
+
+    public interface OnTimeListener {
+        void onTick();
+
+        void onFinish();
     }
 }

@@ -449,11 +449,13 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
 
 
     public void startAutoPlay() {
+        isAutoPlay = true;
         handler.removeCallbacks(task);
         handler.postDelayed(task, delayTime);
     }
 
     public void stopAutoPlay() {
+        isAutoPlay = false;
         handler.removeCallbacks(task);
     }
 
@@ -635,5 +637,9 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
 
     public void releaseBanner() {
         handler.removeCallbacksAndMessages(null);
+    }
+
+    public int getCurrentItem() {
+        return toRealPosition(currentItem);
     }
 }
