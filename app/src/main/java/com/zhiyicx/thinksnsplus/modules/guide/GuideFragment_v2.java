@@ -46,7 +46,6 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     @Override
     protected void initView(View rootView) {
         mTimer = new TCountTimer(mGuideText);
-
         mTimer.start();
         mGuideBanner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR);
         mGuideBanner.setImageLoader(new BannerImageLoaderUtil());
@@ -66,15 +65,13 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
 
             @Override
             public void onPageSelected(int position) {
-                
                 position = mGuideBanner.toRealPosition(position);
-                ToastUtils.showToast(position + "");
                 if (position > 0) {
                     mTimer.setBtnText("跳过");
                     mGuideText.setClickable(true);
                 }
                 mTimer.start();
-                if (position == 4) {
+                if (position == 3) {
                     mPresenter.checkLogin();
                 }
             }
@@ -84,7 +81,6 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
 
             }
         });
-
         mGuideBanner.start();
     }
 
