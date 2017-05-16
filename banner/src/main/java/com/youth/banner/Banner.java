@@ -430,6 +430,7 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
         currentItem = 1;
         if (adapter == null) {
             adapter = new BannerPagerAdapter();
+
             viewPager.addOnPageChangeListener(this);
         }
         viewPager.setAdapter(adapter);
@@ -448,11 +449,13 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
 
 
     public void startAutoPlay() {
+        isAutoPlay = true;
         handler.removeCallbacks(task);
         handler.postDelayed(task, delayTime);
     }
 
     public void stopAutoPlay() {
+        isAutoPlay = false;
         handler.removeCallbacks(task);
     }
 
@@ -461,7 +464,6 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
         public void run() {
             if (count > 1 && isAutoPlay) {
                 currentItem = currentItem % (count + 1) + 1;
-//                Log.i(tag, "curr:" + currentItem + " count:" + count);
                 if (currentItem == 1) {
                     viewPager.setCurrentItem(currentItem, false);
                     handler.post(task);
@@ -635,5 +637,9 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
 
     public void releaseBanner() {
         handler.removeCallbacksAndMessages(null);
+    }
+
+    public int getCurrentItem() {
+        return toRealPosition(currentItem);
     }
 }

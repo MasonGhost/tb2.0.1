@@ -32,6 +32,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicBannerHeader;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForEightImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForFiveImage;
@@ -101,6 +102,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private int mCurrentPostion;// 当前评论的动态位置
     private long mReplyToUserId;// 被评论者的 id
 
+    private DynamicBannerHeader mDynamicBannerHeader;
+
 
     public void setOnCommentClickListener(OnCommentClickListener onCommentClickListener) {
         mOnCommentClickListener = onCommentClickListener;
@@ -140,11 +143,33 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        //initTestAdvert();
         initInputView();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 针对部分手机进入首页状态栏颜色修改无效
             getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
         AndroidBug5497Workaround.assistActivity(getActivity());
+    }
+
+    private void initTestAdvert() {
+        List<String> test = new ArrayList<>();
+        test.add("one");
+        test.add("two");
+        test.add("three");
+        test.add("four");
+        mDynamicBannerHeader = new DynamicBannerHeader(getActivity());
+        DynamicBannerHeader.DynamicBannerHeaderInfo headerInfo = mDynamicBannerHeader.new DynamicBannerHeaderInfo();
+        headerInfo.setTitles(test);
+        headerInfo.setUrls(test);
+        headerInfo.setDelay(4000);
+        mDynamicBannerHeader.setHeadInfo(headerInfo);
+        mHeaderAndFooterWrapper.addHeaderView(mDynamicBannerHeader.getDynamicBannerHeader());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mDynamicBannerHeader.stopBanner();
     }
 
     private void initInputView() {
