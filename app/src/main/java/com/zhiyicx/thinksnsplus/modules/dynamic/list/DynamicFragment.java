@@ -262,6 +262,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onUserInfoClick(UserInfoBean userInfoBean) {
+        if (mPresenter.handleTouristControl()) { // 游客处理
+            return;
+        }
         PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
     }
 
@@ -320,7 +323,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        if (mPresenter.handleTouristControl()) { // 游客处理
+            return;
+        }
         goDynamicDetail(position, false);
+
     }
 
 
@@ -331,25 +338,20 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
-        Bitmap shareBitMap = null;
-        try {
-            ImageView imageView = (ImageView) layoutManager.findViewByPosition(dataPosition).findViewById(R.id.siv_0);
-            shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView.getDrawable(), R.mipmap.icon_256);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
         switch (viewPosition) { // 0 1 2 3 代表 view item 位置
             case 0: // 喜欢
                 // 还未发送成功的动态列表不查看详情
-                if (mListDatas.get(dataPosition).getFeed_id() == null || mListDatas.get(dataPosition).getFeed_id() == 0) {
+                if (mPresenter.handleTouristControl() || mListDatas.get(dataPosition).getFeed_id() == null || mListDatas.get(dataPosition).getFeed_id() == 0) {
                     return;
                 }
                 handleLike(dataPosition);
                 break;
 
             case 1: // 评论
+
                 // 还未发送成功的动态列表不查看详情
-                if (mListDatas.get(dataPosition).getFeed_id() == null || mListDatas.get(dataPosition).getFeed_id() == 0) {
+                if (mPresenter.handleTouristControl() || mListDatas.get(dataPosition).getFeed_id() == null || mListDatas.get(dataPosition).getFeed_id() == 0) {
                     return;
                 }
                 showCommentView();
@@ -363,6 +365,13 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 break;
 
             case 3: // 更多
+                Bitmap shareBitMap = null;
+                try {
+                    ImageView imageView = (ImageView) layoutManager.findViewByPosition(dataPosition).findViewById(R.id.siv_0);
+                    shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView.getDrawable(), R.mipmap.icon_256);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 if (mListDatas.get(dataPosition).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
                     initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
                             .getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED, shareBitMap);
@@ -377,7 +386,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             default:
                 onItemClick(null, null, dataPosition);
         }
-
     }
 
     /**
@@ -408,6 +416,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onCommentContentClick(DynamicBean dynamicBean, int position) {
+        if (mPresenter.handleTouristControl()) {
+            return;
+        }
         mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
         if (dynamicBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
             if (dynamicBean.getComments().get(position).getComment_id() != null) {

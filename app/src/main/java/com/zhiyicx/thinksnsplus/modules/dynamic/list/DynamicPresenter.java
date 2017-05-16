@@ -423,6 +423,21 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
     }
 
     @Override
+    public boolean isLogin() {
+        return mAuthRepository.isLogin();
+    }
+
+    @Override
+    public boolean handleTouristControl() {
+        if (isLogin()) {
+            return false;
+        } else {
+            mRootView.showLoginPop();
+            return true;
+        }
+    }
+
+    @Override
     public void onStart(Share share) {
     }
 

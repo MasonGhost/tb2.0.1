@@ -126,5 +126,16 @@ public interface DynamicContract {
          * 动态分享
          */
         void shareDynamic(DynamicBean dynamicBean, Bitmap bitmap);
+
+
+        /**
+         * 是否登录
+         */
+        boolean isLogin();
+
+        /**
+         * 处理游客模式点击处理
+         */
+        boolean handleTouristControl();
     }
 }
