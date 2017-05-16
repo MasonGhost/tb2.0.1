@@ -165,12 +165,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         mHeaderAndFooterWrapper.addHeaderView(mDynamicBannerHeader.getDynamicBannerHeader());
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        mDynamicBannerHeader.stopBanner();
-    }
-
     private void initInputView() {
         mVShadow.setOnClickListener(new View.OnClickListener() {
             @Override

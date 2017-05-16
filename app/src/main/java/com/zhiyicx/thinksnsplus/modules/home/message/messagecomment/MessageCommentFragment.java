@@ -111,7 +111,7 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
 
     private void initToolbar() {
         mToolbar.setBackgroundResource(R.color.white);
-        mToolbar.setPadding(0, DeviceUtils.getStatuBarHeight(getContext()), 0, 0);
+        //mToolbar.setPadding(0, DeviceUtils.getStatuBarHeight(getContext()), 0, 0);
         mTvToolBarCenter.setText(R.string.comment);
         mTvToolBarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), setLeftImg()), null, null, null);
         mTvToolBarLeft.setOnClickListener(new View.OnClickListener() {
