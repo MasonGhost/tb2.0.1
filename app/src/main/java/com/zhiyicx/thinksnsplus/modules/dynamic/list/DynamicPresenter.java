@@ -13,7 +13,6 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
@@ -23,6 +22,7 @@ import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.BaseListPresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -66,7 +66,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, DynamicContract.View>
+public class DynamicPresenter extends BaseListPresenter<DynamicContract.Repository, DynamicContract.View,DynamicBean>
         implements DynamicContract.Presenter, OnShareCallbackListener {
 
     @Inject
@@ -422,20 +422,6 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
     }
 
-    @Override
-    public boolean isLogin() {
-        return mAuthRepository.isLogin();
-    }
-
-    @Override
-    public boolean handleTouristControl() {
-        if (isLogin()) {
-            return false;
-        } else {
-            mRootView.showLoginPop();
-            return true;
-        }
-    }
 
     @Override
     public void onStart(Share share) {
@@ -494,7 +480,6 @@ public class DynamicPresenter extends BasePresenter<DynamicContract.Repository, 
                 .subscribe(new Action1<Integer>() {
                     @Override
                     public void call(Integer integer) {
-                        System.out.println("integer = " + integer);
                         if (integer != -1) {
                             mRootView.refreshData(integer);
                         }

@@ -8,7 +8,6 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
@@ -18,6 +17,7 @@ import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.BaseListPresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -55,8 +55,8 @@ import static com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean.SEND_ING;
  * @Description
  */
 @FragmentScoped
-public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Repository,
-        InfoDetailsConstract.View> implements InfoDetailsConstract.Presenter, OnShareCallbackListener {
+public class InfoDetailsPresenter extends BaseListPresenter<InfoDetailsConstract.Repository,
+        InfoDetailsConstract.View,InfoCommentListBean> implements InfoDetailsConstract.Presenter, OnShareCallbackListener {
 
     @Inject
     public SharePolicy mSharePolicy;

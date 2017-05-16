@@ -13,7 +13,6 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
@@ -22,6 +21,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.BaseListPresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -67,7 +67,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class ChannelDetailPresenter extends BasePresenter<ChannelDetailContract.Repository, ChannelDetailContract.View>
+public class ChannelDetailPresenter extends BaseListPresenter<ChannelDetailContract.Repository, ChannelDetailContract.View,DynamicBean>
         implements ChannelDetailContract.Presenter, OnShareCallbackListener {
     private static final int NEED_INTERFACE_NUM = 1;
     @Inject

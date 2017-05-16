@@ -516,6 +516,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     public void onLoadMore() {
+        if (mPresenter.handleTouristControl()) { // 游客加载跟多处理
+            return;
+        }
         mPage++;
         requestNetData(mMaxId, true);
     }

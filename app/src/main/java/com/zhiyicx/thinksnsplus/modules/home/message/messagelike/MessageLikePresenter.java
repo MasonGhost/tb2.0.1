@@ -1,7 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagelike;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.thinksnsplus.base.BaseListPresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
@@ -22,7 +22,7 @@ import rx.Subscription;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class MessageLikePresenter extends BasePresenter<MessageLikeContract.Repository, MessageLikeContract.View> implements MessageLikeContract.Presenter {
+public class MessageLikePresenter extends BaseListPresenter<MessageLikeContract.Repository, MessageLikeContract.View,DigedBean> implements MessageLikeContract.Presenter {
     @Inject
     DigedBeanGreenDaoImpl mDigedBeanGreenDao;
 
