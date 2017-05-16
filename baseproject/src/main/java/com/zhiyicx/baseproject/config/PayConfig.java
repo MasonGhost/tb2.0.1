@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.config;
+package com.zhiyicx.baseproject.config;
 
 /**
  * @Describe the config for pay
