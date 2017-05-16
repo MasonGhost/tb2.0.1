@@ -16,7 +16,7 @@ public class BannerImageLoaderUtil extends com.youth.banner.loader.ImageLoader {
                 .loadImage(context, GlideImageConfig.builder()
                         .imagerView(imageView)
                         .url((String) path)
-                        .errorPic(R.drawable.shape_default_image)
+                        .errorPic(R.mipmap.guide)
                         .build());
     }
 
