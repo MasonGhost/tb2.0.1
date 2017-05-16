@@ -190,7 +190,7 @@ public class AuthRepository implements IAuthRepository {
      */
     @Override
     public boolean isLogin() {
-        return !isTourist() && getAuthBean() != null && getIMConfig() != null;
+        return !isTourist() && getAuthBean() != null;
     }
 
     /**
@@ -200,7 +200,7 @@ public class AuthRepository implements IAuthRepository {
      */
     @Override
     public boolean isTourist() {
-        return true;
+        return getAuthBean() == null;
     }
 
     @Override

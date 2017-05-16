@@ -187,6 +187,8 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         return fragment;
     }
 
+
+
     @Override
     protected boolean useEventBus() {
         return true;
@@ -352,6 +354,11 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @Override
     protected boolean setUseSatusbar() {
         return true;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
     }
 
     public String getMediaId() {
