@@ -17,12 +17,28 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
  */
 
 public class LoginActivity extends TSActivity<LoginPresenter, LoginFragment> {
+    public static final String BUNDLE_TOURIST_LOGIN = "bundle_tourist_login";
+
+    private boolean mIsTourstLogin = false;
 
     @Nullable
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActivityHandler.getInstance().removeCurrentTopActivity();// 清除 homeAcitivity 重新加载
+        checkIntent(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        checkIntent(intent);
+    }
+
+    private void checkIntent(Intent intent) {
+        if (intent!= null && intent.getBooleanExtra(BUNDLE_TOURIST_LOGIN,false)) {
+            mIsTourstLogin = true;
+        }
     }
 
     @Override
@@ -40,6 +56,10 @@ public class LoginActivity extends TSActivity<LoginPresenter, LoginFragment> {
 
     @Override
     public void onBackPressed() {
-        ActivityUtils.goHome(this);
+        if (mIsTourstLogin) {
+            super.onBackPressed();
+        } else {
+            ActivityUtils.goHome(this);
+        }
     }
 }

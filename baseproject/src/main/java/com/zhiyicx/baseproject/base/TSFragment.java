@@ -1,5 +1,6 @@
 package com.zhiyicx.baseproject.base;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
@@ -298,7 +299,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      */
     @Override
     public void showLoginPop() {
-        showSnackSuccessMessage("该登录了，少年");
+        goLogin();
     }
 
     /**
@@ -618,4 +619,19 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
     }
 
+    /**
+     * 登录跳转
+     */
+    private void goLogin() {
+        //创建一个隐式的 Intent 对象，
+        Intent intent = new Intent();
+        intent.setAction("zhiyicx.intent.action.LOGIN");
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        intent.putExtra("bundle_tourist_login", true);
+        intent.setType("text/plain");
+        // Verify that the intent will resolve to an activity
+        if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
 }

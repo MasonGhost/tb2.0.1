@@ -27,6 +27,7 @@ import rx.Observable;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHANGE_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_IM_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_INFO_2;
 
 /**
  * @author LiuChao
@@ -48,13 +49,22 @@ public interface UserInfoClient {
     Observable<BaseJson> changeUserInfo(@FieldMap HashMap<String, String> userFieldMap);
 
     /**
-     * 获取用户信息
+     * 获取用户信息  v1 版本
      *
      * @return
      */
     @Headers({"Content-type:application/json;charset=UTF-8"})
     @POST(APP_PATH_GET_USER_INFO)
     Observable<BaseJson<List<UserInfoBean>>> getUserInfo(@Body RequestBody requestBody);
+
+    /**
+     * 获取用户信息 v2 版本
+     *
+     * @return
+     */
+    @Headers({"Content-type:application/json;charset=UTF-8"})
+    @GET(APP_PATH_GET_USER_INFO_2)
+    Observable<List<UserInfoBean>> getUserInfoV2(@Query("user") String user_ids);
 
 
     @GET(APP_PATH_GET_IM_INFO)

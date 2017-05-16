@@ -65,6 +65,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
 
     @Override
     protected void initView(View rootView) {
+        mIAuthRepository = AppApplication.AppComponentHolder.getAppComponent().authRepository();
         super.initView(rootView);
         initToolBar();
     }
@@ -81,7 +82,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
 
     @Override
     protected void initData() {
-        mIAuthRepository = AppApplication.AppComponentHolder.getAppComponent().authRepository();
+
         mVpFragment.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -92,6 +93,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
             public void onPageSelected(int position) {
                 if (!TouristConfig.FOLLOW_CAN_LOOK && position == mVpFragment.getChildCount() - 1 && !mIAuthRepository.isLogin()) { // 游客处理
                     showLoginPop();
+                    mVpFragment.setCurrentItem(1);// 转回热门
                 }
             }
 
@@ -122,7 +124,11 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     protected List<Fragment> initFragments() {
         fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this));
         fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
-        fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS, this));
+        if (TouristConfig.FOLLOW_CAN_LOOK || mIAuthRepository.isLogin()) { // 游客处理
+            fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS, this));
+        } else {
+            fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this));// 用于viewpager 占位
+        }
         return fragments;
     }
 
