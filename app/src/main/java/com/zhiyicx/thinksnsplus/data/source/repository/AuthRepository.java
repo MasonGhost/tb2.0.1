@@ -200,7 +200,7 @@ public class AuthRepository implements IAuthRepository {
      */
     @Override
     public boolean isTourist() {
-        return true;
+        return getAuthBean() == null;
     }
 
     @Override
