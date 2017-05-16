@@ -13,6 +13,7 @@ import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.baseproject.widget.InputLimitView;
@@ -262,10 +263,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onUserInfoClick(UserInfoBean userInfoBean) {
-        if (mPresenter.handleTouristControl()) { // 游客处理
+        if (!TouristConfig.USER_INFO_CAN_LOOK && mPresenter.handleTouristControl()) { // 游客处理
             return;
         }
         PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
+
     }
 
     @Override
@@ -323,7 +325,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        if (mPresenter.handleTouristControl()) { // 游客处理
+        if (!TouristConfig.DYNAMIC_DETAIL_CAN_LOOK && mPresenter.handleTouristControl()) { // 游客处理
             return;
         }
         goDynamicDetail(position, false);
@@ -342,7 +344,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         switch (viewPosition) { // 0 1 2 3 代表 view item 位置
             case 0: // 喜欢
                 // 还未发送成功的动态列表不查看详情
-                if (mPresenter.handleTouristControl() || mListDatas.get(dataPosition).getFeed_id() == null || mListDatas.get(dataPosition).getFeed_id() == 0) {
+                if ((!TouristConfig.DYNAMIC_CAN_DIGG && mPresenter.handleTouristControl()) || mListDatas.get(dataPosition).getFeed_id() == null || mListDatas.get(dataPosition).getFeed_id() == 0) {
                     return;
                 }
                 handleLike(dataPosition);
@@ -351,7 +353,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             case 1: // 评论
 
                 // 还未发送成功的动态列表不查看详情
-                if (mPresenter.handleTouristControl() || mListDatas.get(dataPosition).getFeed_id() == null || mListDatas.get(dataPosition).getFeed_id() == 0) {
+                if ((!TouristConfig.DYNAMIC_CAN_COMMENT && mPresenter.handleTouristControl()) || mListDatas.get(dataPosition).getFeed_id() == null || mListDatas.get(dataPosition).getFeed_id() == 0) {
                     return;
                 }
                 showCommentView();
@@ -372,7 +374,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                if (mListDatas.get(dataPosition).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
+                if (AppApplication.getmCurrentLoginAuth() != null && mListDatas.get(dataPosition).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
                     initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
                             .getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED, shareBitMap);
                     mMyDynamicPopWindow.show();
@@ -416,7 +418,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onCommentContentClick(DynamicBean dynamicBean, int position) {
-        if (mPresenter.handleTouristControl()) {
+        if (!TouristConfig.DYNAMIC_CAN_COMMENT && mPresenter.handleTouristControl()) {
             return;
         }
         mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
@@ -470,7 +472,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void onMoreCommentClick(View view, DynamicBean dynamicBean) {
-
+        if (!TouristConfig.MORE_COMMENT_CAN_LOOK && mPresenter.handleTouristControl()) {
+            return;
+        }
         int position = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
         goDynamicDetail(position, true);
     }
@@ -527,6 +531,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
                     public void onItem1Clicked() {// 收藏
+                        if (!TouristConfig.DYNAMIC_CAN_COLLECT && mPresenter.handleTouristControl()) {
+                            return;
+                        }
                         mPresenter.handleCollect(dynamicBean);
                         mOtherDynamicPopWindow.hide();
                         showBottomView(true);

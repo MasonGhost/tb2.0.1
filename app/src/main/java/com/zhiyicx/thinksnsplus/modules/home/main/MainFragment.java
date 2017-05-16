@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -89,7 +90,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
 
             @Override
             public void onPageSelected(int position) {
-                if (position == mVpFragment.getChildCount() - 1 && !mIAuthRepository.isLogin()) { // 游客处理
+                if (!TouristConfig.FOLLOW_CAN_LOOK && position == mVpFragment.getChildCount() - 1 && !mIAuthRepository.isLogin()) { // 游客处理
                     showLoginPop();
                 }
             }

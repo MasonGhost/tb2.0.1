@@ -181,6 +181,7 @@ public class AuthRepository implements IAuthRepository {
         mFlushMessageBeanGreenDao.clearTable();
         mSystemConversationBeanGreenDao.clearTable();
         MessageDao.getInstance(context).delDataBase();
+        AppApplication.setmCurrentLoginAuth(null);
         return SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_AUTHBEAN)
                 && SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_IMCONFIG);
     }

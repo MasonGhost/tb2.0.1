@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.bumptech.glide.BitmapRequestBuilder;
-import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.GenericRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
@@ -31,7 +29,7 @@ public class GlideImageLoaderStrategy implements ImageLoaderStrategy<GlideImageC
         String imgUrl = config.getUrl();
         boolean isFromNet = !TextUtils.isEmpty(imgUrl) && imgUrl.startsWith("http");// 是否来源于网络
         GenericRequestBuilder requestBuilder = manager.load(TextUtils.isEmpty(imgUrl) ? config.getResourceId() : isFromNet ? imgUrl : "file://" + imgUrl)
-                .asBitmap()
+                .asBitmap() // asbitmap 就不能使用crossfade
                 .diskCacheStrategy(isFromNet ? DiskCacheStrategy.ALL : DiskCacheStrategy.NONE)
                 // .skipMemoryCache(isFromNet ? false : true) 本地图片也需要缓存到内存中
                 .centerCrop();

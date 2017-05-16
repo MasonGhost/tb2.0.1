@@ -19,6 +19,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.trycatch.mysnackbar.Prompt;
 import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
@@ -344,7 +345,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         Bitmap shareBitMap = null;
         try {
             ImageView imageView = (ImageView) layoutManager.findViewByPosition(dataPosition + 1).findViewById(R.id.siv_0);
-            shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(),imageView.getDrawable(),R.mipmap.icon_256);
+            shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView.getDrawable(), R.mipmap.icon_256);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -577,6 +578,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      * 跳转到当前的个人中心页面
      */
     public static void startToPersonalCenter(Context context, UserInfoBean userInfoBean) {
+        if (!TouristConfig.USER_INFO_CAN_LOOK) {
+            return;
+        }
         Intent intent = new Intent(context, PersonalCenterActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA, userInfoBean);
@@ -757,7 +761,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         if (mPersonalCenterHeaderViewItem.getHeadView() == null) {
             return null;
         }
-        return ConvertUtils.drawable2BitmapWithWhiteBg(getContext(),mPersonalCenterHeaderViewItem.getHeadView().getDrawable(),R.mipmap.icon_256);
+        return ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), mPersonalCenterHeaderViewItem.getHeadView().getDrawable(), R.mipmap.icon_256);
     }
 
     /**

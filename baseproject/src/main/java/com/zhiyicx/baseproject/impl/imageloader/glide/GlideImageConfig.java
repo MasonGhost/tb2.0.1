@@ -14,7 +14,9 @@ import com.zhiyicx.common.utils.imageloader.config.ImageConfig;
  */
 
 public class GlideImageConfig extends ImageConfig {
+
     private Transformation<Bitmap> transformation;
+    private boolean crossFade;
 
 
     private GlideImageConfig(Buidler builder) {
@@ -23,11 +25,16 @@ public class GlideImageConfig extends ImageConfig {
         this.imageView = builder.imageView;
         this.placeholder = builder.placeholder;
         this.errorPic = builder.errorPic;
+        this.crossFade = builder.crossFade;
         this.transformation = builder.transformation;
     }
 
     public Transformation<Bitmap> getTransformation() {
         return transformation;
+    }
+
+    public boolean isCrossFade() {
+        return crossFade;
     }
 
     public static Buidler builder() {
@@ -41,6 +48,7 @@ public class GlideImageConfig extends ImageConfig {
         private ImageView imageView;
         private int placeholder;
         private int errorPic;
+        private boolean crossFade;
         private Transformation<Bitmap> transformation;
 
         private Buidler() {
@@ -73,6 +81,11 @@ public class GlideImageConfig extends ImageConfig {
 
         public Buidler imagerView(ImageView imageView) {
             this.imageView = imageView;
+            return this;
+        }
+
+        public Buidler crossFade(boolean crossFade) {
+            this.crossFade = crossFade;
             return this;
         }
 

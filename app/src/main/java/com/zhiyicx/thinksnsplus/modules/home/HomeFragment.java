@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
+import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
@@ -178,20 +179,20 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 break;
             // 添加动态
             case R.id.fl_add:
-                if (!mPresenter.handleTouristControl()) {
+                if (TouristConfig.DYNAMIC_CAN_PUBLISH || !mPresenter.handleTouristControl()) {
                     initPhotoPopupWindow();
                     mPhotoPopupWindow.show();
                 }
                 break;
             // 点击消息
             case R.id.ll_message:
-                if (!mPresenter.handleTouristControl()) {
+                if (TouristConfig.MESSAGE_CAN_LOOK || !mPresenter.handleTouristControl()) {
                     mVpHome.setCurrentItem(PAGE_MESSAGE, false);
                 }
                 break;
             // 点击我的
             case R.id.ll_mine:
-                if (!mPresenter.handleTouristControl()) {
+                if (TouristConfig.MINE_CAN_LOOK || !mPresenter.handleTouristControl()) {
                     mVpHome.setCurrentItem(PAGE_MINE, false);
                 }
                 break;
@@ -277,11 +278,13 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         List<Fragment> mFragmentList = new ArrayList<>();
         mFragmentList.add(MainFragment.newInstance(this));
         mFragmentList.add(FindFragment.newInstance());
-        if (mPresenter.isLogin()) {
+        if (TouristConfig.MESSAGE_CAN_LOOK || mPresenter.isLogin()) {
             mFragmentList.add(MessageFragment.newInstance());
+        }
+        if (TouristConfig.MINE_CAN_LOOK || mPresenter.isLogin()) {
             mFragmentList.add(MineFragment.newInstance());
         }
-        mHomePager.bindData(mFragmentList);//将List设置给adapter
+        mHomePager.bindData(mFragmentList);//将 List 设置给 adapter
         mVpHome.setAdapter(mHomePager);
     }
 
