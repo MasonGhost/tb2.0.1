@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.modules.register;
 import android.Manifest;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.TextUtils;
@@ -17,6 +19,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.edittext.PasswordEditText;
+import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
@@ -29,6 +32,7 @@ import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.common.config.ConstantConfig.MOBILE_PHONE_NUMBER_LENGHT;
+import static com.zhiyicx.thinksnsplus.modules.login.LoginActivity.BUNDLE_TOURIST_LOGIN;
 
 /**
  * @Describe
@@ -64,9 +68,14 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     private boolean isPassEdited;
     private boolean mIsVertifyCodeEnalbe = true;
     private boolean isRegisting = false;
+    private boolean mIsToourist;
 
-    public static RegisterFragment newInstance() {
-        return new RegisterFragment();
+    public static RegisterFragment newInstance(boolean isTourist) {
+        RegisterFragment fragment = new RegisterFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(BUNDLE_TOURIST_LOGIN, isTourist);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -90,11 +99,20 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        if (getArguments() != null) {
+            mIsToourist = getArguments().getBoolean(BUNDLE_TOURIST_LOGIN);
+        }
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     protected void initView(View rootView) {
+
         mVertifyAnimationDrawable = (AnimationDrawable) mIvVertifyLoading.getDrawable();
         initListener();
         // 游客判断
-        mTvLookAround.setVisibility(mPresenter.istourist() ? View.VISIBLE : View.GONE);
+        mTvLookAround.setVisibility((!mIsToourist && mPresenter.istourist()) ? View.VISIBLE : View.GONE);
     }
 
     private void initListener() {
@@ -240,7 +258,9 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     @Override
     public void goHome() {
         DeviceUtils.hideSoftKeyboard(getContext(), mEtRegistPassword);
+        ActivityHandler.getInstance().finishAllActivityEcepteCurrent();// 清除 homeAcitivity 重新加载
         startActivity(new Intent(getActivity(), HomeActivity.class));
+        getActivity().finish();
     }
 
     @Override
@@ -269,9 +289,10 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_look_around:
-                startActivity(new Intent(getActivity(), HomeActivity.class));
+                goHome();
                 break;
             default:
         }
     }
+
 }

@@ -121,6 +121,19 @@ public class ActivityHandler {
     }
 
     /**
+     * 结束所有Activity
+     */
+    public void finishAllActivityEcepteCurrent() {
+        Activity activity = activityStack.lastElement();
+        for (int i = 0; i < activityStack.size(); i++) {
+            if (null != activityStack.get(i) && activityStack.get(i) != activity) {
+                activityStack.get(i).finish();
+            }
+        }
+        activityStack.clear();
+    }
+
+    /**
      * 退出应用程序
      * 这里关闭的是所有的 Activity，没有关闭 Activity 之外的其他组件;
      * android.os.Process.killProcess(android.os.Process.myPid())
@@ -130,7 +143,7 @@ public class ActivityHandler {
      * 它能有效的释放 JVM 之外的资源,执行清除任务，运行相关的 finalizer 方法终结对象，
      * 而 finish 只是退出了 Activity。
      */
-    public void AppExit( ) {
+    public void AppExit() {
         // app主线程等待3秒，让用户处理好崩溃异常后，杀死进程
         try {
             Thread.sleep(3000);

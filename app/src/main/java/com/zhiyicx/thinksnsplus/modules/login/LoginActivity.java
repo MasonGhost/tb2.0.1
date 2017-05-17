@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.zhiyicx.baseproject.base.TSActivity;
-import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
@@ -25,7 +24,6 @@ public class LoginActivity extends TSActivity<LoginPresenter, LoginFragment> {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivityHandler.getInstance().removeCurrentTopActivity();// 清除 homeAcitivity 重新加载
         checkIntent(getIntent());
     }
 
@@ -36,14 +34,14 @@ public class LoginActivity extends TSActivity<LoginPresenter, LoginFragment> {
     }
 
     private void checkIntent(Intent intent) {
-        if (intent!= null && intent.getBooleanExtra(BUNDLE_TOURIST_LOGIN,false)) {
+        if (intent != null && intent.getBooleanExtra(BUNDLE_TOURIST_LOGIN, false)) {
             mIsTourstLogin = true;
         }
     }
 
     @Override
     protected LoginFragment getFragment() {
-        return new LoginFragment();
+        return LoginFragment.newInstance(getIntent().getBooleanExtra(BUNDLE_TOURIST_LOGIN, false));
     }
 
     @Override
@@ -57,7 +55,7 @@ public class LoginActivity extends TSActivity<LoginPresenter, LoginFragment> {
     @Override
     public void onBackPressed() {
         if (mIsTourstLogin) {
-            super.onBackPressed();
+            finish();
         } else {
             ActivityUtils.goHome(this);
         }
