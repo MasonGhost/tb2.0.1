@@ -59,6 +59,7 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
 
     @Override
     public void login(String phone, String password) {
+
         if (!RegexUtils.isMobileExact(phone)) {
             // 不符合手机号格式
             mRootView.showErrorTips(mContext.getString(R.string.phone_number_toast_hint));

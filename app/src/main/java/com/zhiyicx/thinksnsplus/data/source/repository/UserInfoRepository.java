@@ -14,6 +14,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
@@ -133,7 +134,6 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                 .map(new Func1<List<UserInfoBean>, BaseJson<List<UserInfoBean>>>() {
                     @Override
                     public BaseJson<List<UserInfoBean>> call(List<UserInfoBean> userInfoBeen) {
-                        LogUtils.d("-----userInfo----------"+userInfoBeen.toString());
                         BaseJson<List<UserInfoBean>> baseJson = new BaseJson<List<UserInfoBean>>();
                         baseJson.setStatus(true);
                         baseJson.setData(userInfoBeen);

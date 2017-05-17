@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.UIUtils;
@@ -13,6 +14,7 @@ import com.zhiyicx.thinksnsplus.R;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
@@ -34,10 +36,13 @@ public abstract class BaseSubscribe<T> extends Subscriber<BaseJson<T>> {
 
     @Override
     public void onCompleted() {
+        // 打印返回的json结果
+//        LogUtils.d(TAG, "------onCompleted---------");
     }
 
     @Override
     public void onError(Throwable e) {
+//        LogUtils.d(TAG, "------onError---e------" + e.toString());
         if (e instanceof HttpException) {
             Response response = ((HttpException) e).response();
             try {
@@ -69,10 +74,22 @@ public abstract class BaseSubscribe<T> extends Subscriber<BaseJson<T>> {
                         bodyString = clone.readString(charset);
                     }
                     // 打印返回的json结果
-                    LogUtils.json(TAG, bodyString);
-                    BaseJson tBaseJson = new Gson().fromJson(bodyString, BaseJson.class);
+                    LogUtils.d(TAG, "------onError-body--------" + bodyString);
                     // 数据发射成功，该数据为 BaseJson 的泛型类
-                    handleStatus(tBaseJson);
+                    try {
+                        // api v1 版本的数据， 错误信息带有 status  code  message
+                        BaseJson tBaseJson = new Gson().fromJson(bodyString, BaseJson.class);
+                        handleStatus(tBaseJson);
+                    } catch (JsonSyntaxException jse) {
+                        // api v2版本的数据， 错误信息带有 n +1 表示  详情查看 ：https://github.com/zhiyicx/thinksns-plus/blob/master/docs/ai/v2/overvie.md
+                        Map<String, String[]> errorMessageMap = new Gson().fromJson(bodyString,
+                                new TypeToken<Map<String, String[]>>() {
+                                }.getType());
+                        for (String[] value : errorMessageMap.values()) {
+                            onFailure(value[0], 0); //  app 端只需要一个
+                            break;
+                        }
+                    }
 
                 } else {
                     handleError(e);
@@ -95,6 +112,7 @@ public abstract class BaseSubscribe<T> extends Subscriber<BaseJson<T>> {
 
     @Override
     public void onNext(BaseJson<T> tBaseJson) {
+//        LogUtils.d(TAG, "---onNext-------" + tBaseJson.toString());
         // 数据发射成功，该数据为 BaseJson 的泛型类
         handleStatus(tBaseJson);
     }
@@ -109,7 +127,6 @@ public abstract class BaseSubscribe<T> extends Subscriber<BaseJson<T>> {
             boolean status = tBaseJson.isStatus();
             int code = tBaseJson.getCode();
             String message;
-            LogUtils.d("------baseSubscrib---------"+tBaseJson.toString());
             if (status) {
                 onSuccess(tBaseJson.getData());
             } else {

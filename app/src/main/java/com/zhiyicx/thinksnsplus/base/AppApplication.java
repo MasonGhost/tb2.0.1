@@ -14,8 +14,10 @@ import android.view.KeyEvent;
 import com.antfortune.freeline.FreelineCore;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.umeng.analytics.MobclickAgent;
 import com.zhiyicx.baseproject.base.TSApplication;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.base.BaseJson;
@@ -29,7 +31,6 @@ import com.zhiyicx.imsdk.manage.ZBIMSDK;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
@@ -131,12 +132,10 @@ public class AppApplication extends TSApplication {
                     response) {
                 // 这里可以先客户端一步拿到每一次http请求的结果,可以解析成json,做一些操作,如检测到token过期后
                 // token过期，调到登陆页面重新请求token,
-                LogUtils.i("baseJson-->" + httpResult);
                 BaseJson baseJson = null;
                 try {
                     baseJson = new Gson().fromJson(httpResult, BaseJson.class);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } catch (JsonSyntaxException e) {
                 }
 
                 String tipStr = null;
